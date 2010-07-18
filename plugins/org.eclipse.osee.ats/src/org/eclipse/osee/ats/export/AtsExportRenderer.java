@@ -50,11 +50,6 @@ public class AtsExportRenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public void open(List<Artifact> artifacts) throws OseeCoreException {
-      AtsExportManager.export(artifacts, ExportOption.POPUP_DIALOG);
-   }
-
-   @Override
    public AtsExportRenderer newInstance() throws OseeCoreException {
       return new AtsExportRenderer();
    }
@@ -68,12 +63,12 @@ public class AtsExportRenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public void preview(List<Artifact> artifacts) throws OseeCoreException {
-      open(artifacts);
+   public int minimumRanking() throws OseeCoreException {
+      return NO_MATCH;
    }
 
    @Override
-   public int minimumRanking() throws OseeCoreException {
-      return NO_MATCH;
+   public void open(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
+      AtsExportManager.export(artifacts, ExportOption.POPUP_DIALOG);
    }
 }

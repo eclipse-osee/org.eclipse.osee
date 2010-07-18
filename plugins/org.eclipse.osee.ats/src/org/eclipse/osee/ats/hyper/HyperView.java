@@ -48,7 +48,8 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
+import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -142,7 +143,11 @@ public class HyperView extends ViewPart implements IPartListener {
    }
 
    enum RelationEnum {
-      TOP, BOTTOM, BOTTOM2, LEFT, RIGHT
+      TOP,
+      BOTTOM,
+      BOTTOM2,
+      LEFT,
+      RIGHT
    };
 
    public boolean provideBackForwardActions() {
@@ -201,8 +206,7 @@ public class HyperView extends ViewPart implements IPartListener {
          System.out.println("gridLoad");
       }
       /*
-       * If grid already loaded and it was a collection, remove old home and all links associated
-       * with it.
+       * If grid already loaded and it was a collection, remove old home and all links associated with it.
        */
       if (homeSearchItem != null) {
          for (HyperViewItem hyperItem : homeSearchItem.getBottom()) {
@@ -401,8 +405,8 @@ public class HyperView extends ViewPart implements IPartListener {
          // drawQuadrant(leftQuadrantStart, quadrant);
          // drawQuadrant(rightQuadrantStart, quadrant);
          /*
-          * Bottomren draw from right to left Tops draw from left to right Left draws from low to
-          * high Usedby draws from high to low
+          * Bottomren draw from right to left Tops draw from left to right Left draws from low to high Usedby draws from
+          * high to low
           */
          // Draw other nodes
          drawNodes(RelationEnum.TOP, hvi.getTop(), cPoint, sourceAnchor);
@@ -575,7 +579,7 @@ public class HyperView extends ViewPart implements IPartListener {
          }
          if (hvi.getBottom().size() > 0) {
             drawNodes(RelationEnum.BOTTOM, hvi.getBottom(), new Point((nwPoint.x + dim.width / 2),
-                  (nwPoint.y + dim.height / 2)), thisAnchor);
+               (nwPoint.y + dim.height / 2)), thisAnchor);
          }
          if (hvi.getLeft().size() > 0) {
             drawNodes(RelationEnum.LEFT, hvi.getLeft(), cPoint, thisAnchor);
@@ -653,7 +657,7 @@ public class HyperView extends ViewPart implements IPartListener {
                public void widgetSelected(SelectionEvent e) {
                   try {
                      if (MessageDialog.openQuestion(Display.getCurrent().getActiveShell(), "Delete Link",
-                           "Delete Link\n\n" + hvi.getLink().toString() + "\n\nAre you sure?")) {
+                        "Delete Link\n\n" + hvi.getLink().toString() + "\n\nAre you sure?")) {
                         Artifact artA = hvi.getLink().getArtifactA();
                         hvi.getLink().delete(true);
                         artA.persist();
@@ -830,7 +834,11 @@ public class HyperView extends ViewPart implements IPartListener {
                      a = ((ActionHyperItem) fHvi).getArtifact();
                   }
                   if (a != null) {
-                     ArtifactEditor.editArtifact(a);
+                     try {
+                        RendererManager.open(a, PresentationType.GENERALIZED_EDIT);
+                     } catch (OseeCoreException ex) {
+                        OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+                     }
                   }
                   popupMenu.dispose();
                   popupMenu = null;
@@ -853,7 +861,7 @@ public class HyperView extends ViewPart implements IPartListener {
                   dialogText.append("\"" + art.getName() + "\"\nguid: " + art.getGuid());
                   dialogText.append("\n\n Are you sure you want to delete this artifact and its default-hierarchy children?");
                   if (MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                        dialogTitle, dialogText.toString())) {
+                     dialogTitle, dialogText.toString())) {
                      if (art instanceof StateMachineArtifact) {
                         SMAEditor.close(Collections.singleton((StateMachineArtifact) art), false);
                      }
@@ -941,7 +949,7 @@ public class HyperView extends ViewPart implements IPartListener {
          backAction.setText("Back");
          backAction.setToolTipText("Back");
          backAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(
-               ISharedImages.IMG_TOOL_BACK));
+            ISharedImages.IMG_TOOL_BACK));
          // Forward Action
          forwardAction = new Action() {
 
@@ -958,7 +966,7 @@ public class HyperView extends ViewPart implements IPartListener {
          forwardAction.setText("Forward");
          forwardAction.setToolTipText("Forward");
          forwardAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(
-               ISharedImages.IMG_TOOL_FORWARD));
+            ISharedImages.IMG_TOOL_FORWARD));
       }
       // // Home
       // Action homeAction = new Action() {
@@ -1042,7 +1050,7 @@ public class HyperView extends ViewPart implements IPartListener {
          public void run() {
             if (homeSearchItem == null) {
                MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                     "Refresh Error", "Viewer not loaded, nothing to refresh.");
+                  "Refresh Error", "Viewer not loaded, nothing to refresh.");
                return;
             }
             handleRefreshButton();

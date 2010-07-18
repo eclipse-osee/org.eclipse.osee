@@ -12,18 +12,22 @@ package org.eclipse.osee.ats.workflow.editor;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.Displays;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.IEditorInput;
 
 /**
  * @author Donald G. Dunne
@@ -43,19 +47,6 @@ public class AtsWorkflowConfigRenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public void open(List<Artifact> artifacts) throws OseeCoreException {
-      try {
-         for (Artifact artifact : artifacts) {
-            if (artifact.isOfType(CoreArtifactTypes.WorkFlowDefinition)) {
-               AtsWorkflowConfigEditor.editWorkflow(new WorkFlowDefinition(artifact));
-            }
-         }
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-   }
-
-   @Override
    public AtsWorkflowConfigRenderer newInstance() throws OseeCoreException {
       return new AtsWorkflowConfigRenderer();
    }
@@ -66,11 +57,6 @@ public class AtsWorkflowConfigRenderer extends DefaultArtifactRenderer {
          return PRESENTATION_SUBTYPE_MATCH;
       }
       return NO_MATCH;
-   }
-
-   @Override
-   public void preview(List<Artifact> artifacts) throws OseeCoreException {
-      open(artifacts);
    }
 
    @Override
@@ -87,4 +73,20 @@ public class AtsWorkflowConfigRenderer extends DefaultArtifactRenderer {
       return commandIds;
    }
 
+   @Override
+   public void open(final List<Artifact> artifacts, PresentationType presentationType) {
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            for (Artifact artifact : artifacts) {
+               try {
+                  IEditorInput input = new AtsWorkflowConfigEditorInput(new WorkFlowDefinition(artifact));
+                  AWorkbench.getActivePage().openEditor(input, AtsWorkflowConfigEditor.EDITOR_ID);
+               } catch (CoreException ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               }
+            }
+         }
+      });
+   }
 }

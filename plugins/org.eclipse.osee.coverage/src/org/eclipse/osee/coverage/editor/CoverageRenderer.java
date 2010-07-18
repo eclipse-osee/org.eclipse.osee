@@ -53,17 +53,6 @@ public class CoverageRenderer extends DefaultArtifactRenderer {
       super();
    }
 
-   @Override
-   public void open(List<Artifact> artifacts) throws OseeCoreException {
-      for (Artifact artifact : artifacts) {
-         if (artifact.isOfType(CoverageArtifactTypes.CoveragePackage) || //
-         artifact.isOfType(CoverageArtifactTypes.CoverageFolder) || //
-         artifact.isOfType(CoverageArtifactTypes.CoverageUnit)) {
-            recurseAndOpenCoveragePackage(artifact);
-         }
-      }
-   }
-
    private void recurseAndOpenCoveragePackage(Artifact artifact) throws OseeCoreException {
       if (artifact.isOfType(CoverageArtifactTypes.CoveragePackage)) {
          CoverageEditor.open(new CoverageEditorInput(artifact.getName(), artifact, null, false));
@@ -90,16 +79,22 @@ public class CoverageRenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public void preview(List<Artifact> artifacts) throws OseeCoreException {
-      open(artifacts);
-   }
-
-   @Override
    public int minimumRanking() throws OseeCoreException {
       if (AccessControlManager.isOseeAdmin()) {
          return NO_MATCH;
       } else {
          return PRESENTATION_TYPE;
+      }
+   }
+
+   @Override
+   public void open(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
+      for (Artifact artifact : artifacts) {
+         if (artifact.isOfType(CoverageArtifactTypes.CoveragePackage) || //
+         artifact.isOfType(CoverageArtifactTypes.CoverageFolder) || //
+         artifact.isOfType(CoverageArtifactTypes.CoverageUnit)) {
+            recurseAndOpenCoveragePackage(artifact);
+         }
       }
    }
 }

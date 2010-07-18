@@ -15,14 +15,9 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerTextFilter;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.change.ViewWordChangeReportHandler;
-import org.eclipse.osee.framework.ui.skynet.preferences.EditorsPreferencePage;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.swt.SWT;
@@ -46,26 +41,15 @@ public class ChangeXViewer extends XViewer {
 
    @Override
    public void handleDoubleClick() {
-      try {
-         if (getSelectedChanges().isEmpty()) {
-            return;
-         }
+      if (getSelectedChanges().isEmpty()) {
+         return;
+      }
 
-         Change change = getSelectedChanges().iterator().next();
-         Artifact artifact = (Artifact) ((IAdaptable) change).getAdapter(Artifact.class);
+      Change change = getSelectedChanges().iterator().next();
+      Artifact artifact = (Artifact) ((IAdaptable) change).getAdapter(Artifact.class);
 
-         if (artifact != null) {
-            ArrayList<Artifact> artifacts = new ArrayList<Artifact>(1);
-            artifacts.add(artifact);
-
-            if (EditorsPreferencePage.isPreviewOnDoubleClickForWordArtifacts()) {
-               RendererManager.previewInJob(artifacts);
-            } else {
-               RendererManager.openInJob(artifacts, PresentationType.GENERALIZED_EDIT);
-            }
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      if (artifact != null) {
+         RendererManager.openInJob(artifact, PresentationType.DEFAULT_OPEN);
       }
    }
 
@@ -131,6 +115,7 @@ public class ChangeXViewer extends XViewer {
       xChangeTextFilter.setShowDocumentOrderFilter(showDocumentOrderFilter);
    }
 
+   @Override
    public boolean isRemoveItemsMenuOptionEnabled() {
       return false;
    }

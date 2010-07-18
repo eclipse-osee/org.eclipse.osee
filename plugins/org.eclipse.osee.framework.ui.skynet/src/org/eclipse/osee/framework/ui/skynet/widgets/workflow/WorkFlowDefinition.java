@@ -16,8 +16,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -49,7 +49,7 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
    // fromPageId --- TransitionType ---> toPageIds
    // Contains locally defined transitions
    private final Map<String, Map<TransitionType, Set<String>>> pageIdToPageIdsViaTransitionType =
-         new HashMap<String, Map<TransitionType, Set<String>>>();
+      new HashMap<String, Map<TransitionType, Set<String>>>();
    // Contains locally and inherited transitions 
    protected Map<String, Map<TransitionType, Set<String>>> inheritedPageIdToPageIdsViaTransitionType;
    // Contains local and inherited pageNameToPageIds
@@ -57,6 +57,7 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
    protected List<WorkPageDefinition> pages = new ArrayList<WorkPageDefinition>();
    protected String startPageId;
    protected String resolvedStartPageId;
+   private Artifact artifact;
 
    public WorkFlowDefinition(String name, String id, String parentId) {
       super(name, id, parentId);
@@ -64,7 +65,7 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
 
    public WorkFlowDefinition(Artifact artifact) throws OseeCoreException {
       this(artifact.getName(), artifact.getSoleAttributeValue(WorkItemAttributes.WORK_ID.getAttributeTypeName(), ""),
-            artifact.getSoleAttributeValue(WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName(), (String) null));
+         artifact.getSoleAttributeValue(WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName(), (String) null));
       setType(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_TYPE.getAttributeTypeName(), (String) null));
       loadWorkDataKeyValueMap(artifact);
 
@@ -73,7 +74,9 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
 
       // Read in this workflow's start page
       startPageId =
-            artifact.getSoleAttributeValue(WorkItemAttributes.START_PAGE.getAttributeTypeName(), null, String.class);
+         artifact.getSoleAttributeValue(WorkItemAttributes.START_PAGE.getAttributeTypeName(), null, String.class);
+
+      this.artifact = artifact;
    }
 
    @Override
@@ -82,7 +85,7 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
       // Make sure start page is defined in this or parent's definition
       if (getResolvedStartPageId() == null) {
          throw new IllegalStateException(
-               "For WorkFlowDefinition " + getId() + ".  Start Page not defined.  Must be in this or a parent's WorkFlowDefinition.");
+            "For WorkFlowDefinition " + getId() + ".  Start Page not defined.  Must be in this or a parent's WorkFlowDefinition.");
       }
       // Only store start page if it's part of this definition
       if (startPageId != null) {
@@ -92,7 +95,7 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
       List<String> transitionItems = new ArrayList<String>();
       for (Entry<String, Map<TransitionType, Set<String>>> pageToTransEntry : pageIdToPageIdsViaTransitionType.entrySet()) {
          for (Entry<TransitionType, Set<String>> transToPageIdsEntry : pageIdToPageIdsViaTransitionType.get(
-               pageToTransEntry.getKey()).entrySet()) {
+            pageToTransEntry.getKey()).entrySet()) {
             for (String toPage : transToPageIdsEntry.getValue()) {
                transitionItems.add(pageToTransEntry.getKey() + ";" + transToPageIdsEntry.getKey().name() + ";" + toPage);
             }
@@ -111,10 +114,10 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
 
    public static void loadInheritedData(WorkFlowDefinition workFlowDefinition, String workflowId, Map<String, Map<TransitionType, Set<String>>> inheritedPageIdToPageIdsViaTransitionType) throws OseeCoreException {
       addTransitionsFromArtifact(WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(workFlowDefinition.getId()),
-            inheritedPageIdToPageIdsViaTransitionType, workflowId);
+         inheritedPageIdToPageIdsViaTransitionType, workflowId);
       if (workFlowDefinition.hasParent()) {
          WorkFlowDefinition.loadInheritedData((WorkFlowDefinition) workFlowDefinition.getParent(), workflowId,
-               inheritedPageIdToPageIdsViaTransitionType);
+            inheritedPageIdToPageIdsViaTransitionType);
       }
    }
 
@@ -142,14 +145,14 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
          pageNameToPageId = new HashMap<String, String>();
          for (String pageNameOrId : inheritedPageIdToPageIdsViaTransitionType.keySet()) {
             WorkPageDefinition workPageDefinition =
-                  (WorkPageDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(getFullPageId(pageNameOrId));
+               (WorkPageDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(getFullPageId(pageNameOrId));
             pages.add(workPageDefinition);
             pageNameToPageId.put(workPageDefinition.getPageName(), workPageDefinition.id);
             for (Map<TransitionType, Set<String>> transTypeToPageIds : inheritedPageIdToPageIdsViaTransitionType.values()) {
                for (TransitionType transType : transTypeToPageIds.keySet()) {
                   for (String pageId2 : transTypeToPageIds.get(transType)) {
                      workPageDefinition =
-                           (WorkPageDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(getFullPageId(pageId2));
+                        (WorkPageDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(getFullPageId(pageId2));
                      pageNameToPageId.put(workPageDefinition.getPageName(), workPageDefinition.id);
                   }
                }
@@ -205,7 +208,7 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
       Set<WorkRuleDefinition> workRules = new HashSet<WorkRuleDefinition>();
       // Get work rules from team definition
       for (Artifact art : WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(getId()).getRelatedArtifacts(
-            CoreRelationTypes.WorkItem__Child)) {
+         CoreRelationTypes.WorkItem__Child)) {
          String id = art.getSoleAttributeValue(WorkItemAttributes.WORK_ID.getAttributeTypeName(), "");
          if (id != null && !id.equals("")) {
             workRules.add((WorkRuleDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(id));
@@ -249,10 +252,10 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
          String[] strs = transition.split(";");
          if (strs.length != 3) {
             OseeLog.log(
-                  SkynetGuiPlugin.class,
-                  OseeLevel.SEVERE_POPUP,
-                  new OseeStateException(
-                        "Transition attribute from artifact " + artifact.getGuid() + " is invalid.  Must be <fromState>;<transitionType>;<toState>"));
+               SkynetGuiPlugin.class,
+               OseeLevel.SEVERE_POPUP,
+               new OseeStateException(
+                  "Transition attribute from artifact " + artifact.getGuid() + " is invalid.  Must be <fromState>;<transitionType>;<toState>"));
             continue;
          }
          TransitionType transType = TransitionType.valueOf(strs[1]);
@@ -424,7 +427,7 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
     */
    public List<WorkPageDefinition> getToPages(WorkPageDefinition workPageDefinition) throws OseeCoreException {
       return getPageDefinitions(workPageDefinition.getId(), TransitionType.ToPage, TransitionType.ToPageAsDefault,
-            TransitionType.ToPageAsReturn);
+         TransitionType.ToPageAsReturn);
    }
 
    /**
@@ -448,6 +451,7 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
       }
    }
 
+   @Override
    public IArtifactType getArtifactType() {
       return CoreArtifactTypes.WorkFlowDefinition;
    }
@@ -482,5 +486,9 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
          return getResolvedStartPageId((WorkFlowDefinition) workFlowDefinition.getParent(), workflowId);
       }
       return null;
+   }
+
+   public Artifact getArtifact() {
+      return artifact;
    }
 }

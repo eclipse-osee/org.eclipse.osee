@@ -67,8 +67,9 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeEditor;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
+import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
@@ -99,7 +100,7 @@ public final class AtsUtil {
    public final static String activeColor = "#EEEEEE";
    private static BranchGuidEventFilter branchGuidEventFilter;
    private static ArtifactTypeEventFilter atsObjectArtifactTypesFilter, reviewArtifactTypesFilter,
-         teamWorkflowArtifactTypesFilter, workItemArtifactTypesFilter;
+      teamWorkflowArtifactTypesFilter, workItemArtifactTypesFilter;
    private static List<IEventFilter> atsObjectEventFilter;
 
    private AtsUtil() {
@@ -229,10 +230,6 @@ public final class AtsUtil {
       }
    }
 
-   public static void open(String guid, OseeEditor view) {
-      openArtifact(guid, view);
-   }
-
    public static void openArtifact(String guidOrHrid, Integer branchId, OseeEditor view) {
       try {
          Branch branch = BranchManager.getBranch(branchId);
@@ -247,6 +244,7 @@ public final class AtsUtil {
     * Only to be used by browser. Use open (artifact) instead.
     * 
     * @param guid
+    * @throws OseeCoreException
     */
    public static void openArtifact(String guid, OseeEditor view) {
       AtsBulkLoad.loadConfig(false);
@@ -258,16 +256,20 @@ public final class AtsUtil {
          return;
       }
 
-      if (view == OseeEditor.ActionEditor) {
-         if (artifact instanceof StateMachineArtifact || artifact instanceof ActionArtifact) {
-            openATSAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
-         } else {
-            ArtifactEditor.editArtifact(artifact);
+      try {
+         if (view == OseeEditor.ActionEditor) {
+            if (artifact instanceof StateMachineArtifact || artifact instanceof ActionArtifact) {
+               openATSAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
+            } else {
+               RendererManager.open(artifact, PresentationType.GENERALIZED_EDIT);
+            }
+         } else if (view == OseeEditor.ArtifactEditor) {
+            RendererManager.open(artifact, PresentationType.GENERALIZED_EDIT);
+         } else if (view == OseeEditor.ArtifactHyperViewer) {
+            AWorkbench.popup("ERROR", "Unimplemented");
          }
-      } else if (view == OseeEditor.ArtifactEditor) {
-         ArtifactEditor.editArtifact(artifact);
-      } else if (view == OseeEditor.ArtifactHyperViewer) {
-         AWorkbench.popup("ERROR", "Unimplemented");
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -275,11 +277,11 @@ public final class AtsUtil {
       // Ensure actionable item is configured for ATS before continuing
       try {
          AtsCacheManager.getSoleArtifactByName(ArtifactTypeManager.getType(AtsArtifactTypes.ActionableItem),
-               actionableItemName);
+            actionableItemName);
       } catch (ArtifactDoesNotExist ex) {
          AWorkbench.popup(
-               "Configuration Error",
-               "Actionable Item \"" + actionableItemName + "\" is not configured for ATS tracking.\n\nAction can not be created.");
+            "Configuration Error",
+            "Actionable Item \"" + actionableItemName + "\" is not configured for ATS tracking.\n\nAction can not be created.");
          return;
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -315,7 +317,7 @@ public final class AtsUtil {
                }
             } else if (atsOpenOption == AtsOpenOption.AtsWorld) {
                WorldEditor.open(new WorldEditorSimpleProvider("Action " + actionArt.getHumanReadableId(),
-                     Arrays.asList(actionArt)));
+                  Arrays.asList(actionArt)));
             } else if (atsOpenOption == AtsOpenOption.OpenOneOrPopupSelect) {
                if (teams.size() == 1) {
                   SMAEditor.editArtifact(teams.iterator().next());
@@ -367,7 +369,7 @@ public final class AtsUtil {
       for (Artifact art : artifacts) {
          if (art.isOfType(CoreArtifactTypes.UniversalGroup)) {
             WorldEditor.open(new WorldEditorUISearchItemProvider(new GroupWorldSearchItem(art), null,
-                  TableLoadOption.None));
+               TableLoadOption.None));
          } else {
             otherArts.add(art);
          }
@@ -422,14 +424,13 @@ public final class AtsUtil {
     * @param active state to validate against; Both will return all artifacts matching type
     * @param clazz type of artifacts to consider; null for all
     * @return set of Artifacts of type clazz that match the given active state of the "Active" or "ats.Active" attribute
-    *         value. If no attribute exists, Active == true; If does exist then attribute value "yes" == true, "no" ==
-    *         false.
+    * value. If no attribute exists, Active == true; If does exist then attribute value "yes" == true, "no" == false.
     */
    @SuppressWarnings("unchecked")
    public static <A extends Artifact> List<A> getActive(Collection<A> artifacts, Active active, Class<? extends Artifact> clazz) throws OseeCoreException {
       List<A> results = new ArrayList<A>();
       Collection<? extends Artifact> artsOfClass =
-            clazz != null ? Collections.castMatching(clazz, artifacts) : artifacts;
+         clazz != null ? Collections.castMatching(clazz, artifacts) : artifacts;
       for (Artifact art : artsOfClass) {
          if (active == Active.Both) {
             results.add((A) art);
@@ -469,9 +470,8 @@ public final class AtsUtil {
    public static ArtifactTypeEventFilter getAtsObjectArtifactTypeEventFilter() {
       if (atsObjectArtifactTypesFilter == null) {
          atsObjectArtifactTypesFilter =
-               new ArtifactTypeEventFilter(AtsArtifactTypes.TeamWorkflow, AtsArtifactTypes.Action,
-                     AtsArtifactTypes.Task, AtsArtifactTypes.Goal, AtsArtifactTypes.PeerToPeerReview,
-                     AtsArtifactTypes.DecisionReview);
+            new ArtifactTypeEventFilter(AtsArtifactTypes.TeamWorkflow, AtsArtifactTypes.Action, AtsArtifactTypes.Task,
+               AtsArtifactTypes.Goal, AtsArtifactTypes.PeerToPeerReview, AtsArtifactTypes.DecisionReview);
       }
       return atsObjectArtifactTypesFilter;
    }
@@ -486,7 +486,7 @@ public final class AtsUtil {
    public static ArtifactTypeEventFilter getReviewArtifactTypeEventFilter() {
       if (reviewArtifactTypesFilter == null) {
          reviewArtifactTypesFilter =
-               new ArtifactTypeEventFilter(AtsArtifactTypes.PeerToPeerReview, AtsArtifactTypes.DecisionReview);
+            new ArtifactTypeEventFilter(AtsArtifactTypes.PeerToPeerReview, AtsArtifactTypes.DecisionReview);
       }
       return reviewArtifactTypesFilter;
    }

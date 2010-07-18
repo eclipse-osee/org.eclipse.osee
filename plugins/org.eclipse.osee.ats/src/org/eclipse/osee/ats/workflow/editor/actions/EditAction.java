@@ -23,7 +23,8 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
+import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
@@ -47,7 +48,7 @@ public class EditAction extends Action {
    @Override
    public void run() {
       ISelectionProvider selectionProvider =
-            AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
+         AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
 
       if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
          IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
@@ -65,7 +66,7 @@ public class EditAction extends Action {
                         artifact = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(def.getId());
                      }
                      if (artifact != null) {
-                        ArtifactEditor.editArtifact(artifact);
+                        RendererManager.open(artifact, PresentationType.GENERALIZED_EDIT);
                         return;
                      }
                   }
@@ -80,11 +81,11 @@ public class EditAction extends Action {
                      } else {
                         String id = shape.getId();
                         artifact = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(id);
-                        ArtifactEditor.editArtifact(artifact);
+                        RendererManager.open(artifact, PresentationType.GENERALIZED_EDIT);
                         return;
                      }
                      if (artifact != null) {
-                        ArtifactEditor.editArtifact(artifact);
+                        RendererManager.open(artifact, PresentationType.GENERALIZED_EDIT);
                         return;
                      }
                   }

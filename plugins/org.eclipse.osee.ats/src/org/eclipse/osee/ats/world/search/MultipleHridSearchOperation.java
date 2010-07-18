@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world.search;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -46,7 +47,8 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLo
 import org.eclipse.osee.framework.ui.skynet.ArtifactDecoratorPreferences;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.ArtifactViewerSorter;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
+import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.filteredTree.SimpleCheckFilteredTreeDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.dialogs.ListDialog;
@@ -83,7 +85,7 @@ public class MultipleHridSearchOperation extends AbstractOperation implements IW
          return;
       }
       if (resultNonAtsArts.size() > 0) {
-         ArtifactEditor.editArtifacts(resultNonAtsArts);
+         RendererManager.openInJob(new ArrayList<Artifact>(resultNonAtsArts), PresentationType.GENERALIZED_EDIT);
       }
       if (resultAtsArts.size() > 0) {
          // If requested world editor and it's already been opened there, don't process other arts in editors
@@ -137,10 +139,9 @@ public class MultipleHridSearchOperation extends AbstractOperation implements IW
                   artDecorator.setShowArtBranch(true);
                   artDecorator.setShowArtType(true);
                   SimpleCheckFilteredTreeDialog dialog =
-                           new SimpleCheckFilteredTreeDialog("Select Available Change Reports",
-                                    "Select available Change Reports to run.", new ArrayTreeContentProvider(),
-                                    new ArtifactLabelProvider(artDecorator), new ArtifactViewerSorter(), 0,
-                                    Integer.MAX_VALUE);
+                     new SimpleCheckFilteredTreeDialog("Select Available Change Reports",
+                        "Select available Change Reports to run.", new ArrayTreeContentProvider(),
+                        new ArtifactLabelProvider(artDecorator), new ArtifactViewerSorter(), 0, Integer.MAX_VALUE);
                   dialog.setInput(addedArts);
                   if (dialog.open() == 0) {
                      if (dialog.getResult().length == 0) {
@@ -157,7 +158,7 @@ public class MultipleHridSearchOperation extends AbstractOperation implements IW
                @Override
                public void run() {
                   MessageDialog.openInformation(Display.getCurrent().getActiveShell(), "Open Change Reports",
-                           "No change report exists for " + enteredIds);
+                     "No change report exists for " + enteredIds);
                }
             });
          }
@@ -188,7 +189,11 @@ public class MultipleHridSearchOperation extends AbstractOperation implements IW
             if (artifact instanceof ActionArtifact) {
                AtsUtil.openATSAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
             } else {
-               SMAEditor.editArtifact(artifact);
+               try {
+                  SMAEditor.editArtifact(artifact);
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+               }
             }
          }
       });
@@ -196,12 +201,12 @@ public class MultipleHridSearchOperation extends AbstractOperation implements IW
 
    private void searchAndSplitResults() throws OseeCoreException {
       resultAtsArts.addAll(LegacyPCRActions.getTeamsTeamWorkflowArtifacts(data.getIds(),
-               (Collection<TeamDefinitionArtifact>) null));
+         (Collection<TeamDefinitionArtifact>) null));
 
       // This does artId search
       if (data.isIncludeArtIds() && data.getBranchForIncludeArtIds() != null) {
          for (Artifact art : ArtifactQuery.getArtifactListFromIds(Lib.stringToIntegerList(data.getEnteredIds()),
-                  data.getBranchForIncludeArtIds())) {
+            data.getBranchForIncludeArtIds())) {
             artifacts.add(art);
          }
       }

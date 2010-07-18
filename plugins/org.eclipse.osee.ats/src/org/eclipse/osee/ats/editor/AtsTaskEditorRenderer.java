@@ -29,16 +29,6 @@ public class AtsTaskEditorRenderer extends DefaultArtifactRenderer {
    private static final String COMMAND_ID = "org.eclipse.osee.framework.ui.skynet.atstaskeditor.command";
 
    @Override
-   public void open(List<Artifact> artifacts) throws OseeCoreException {
-      AtsUtil.openInAtsTaskEditor("Tasks", artifacts);
-   }
-
-   @Override
-   public void preview(List<Artifact> artifacts) throws OseeCoreException {
-      open(artifacts);
-   }
-
-   @Override
    public Image getImage(Artifact artifact) throws OseeCoreException {
       return ImageManager.getImage(AtsImage.TASK);
    }
@@ -72,4 +62,8 @@ public class AtsTaskEditorRenderer extends DefaultArtifactRenderer {
       return new AtsTaskEditorRenderer();
    }
 
+   @Override
+   public void open(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
+      AtsUtil.openInAtsTaskEditor("Tasks", artifacts);
+   }
 }

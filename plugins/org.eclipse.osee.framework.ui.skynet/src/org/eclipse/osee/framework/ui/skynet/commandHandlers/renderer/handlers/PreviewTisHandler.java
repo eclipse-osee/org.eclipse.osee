@@ -12,9 +12,9 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers;
 
 import java.util.logging.Level;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.TisRenderer;
 
 /**
@@ -23,11 +23,11 @@ import org.eclipse.osee.framework.ui.skynet.render.TisRenderer;
 public class PreviewTisHandler extends AbstractEditorHandler {
 
    @Override
-   public Object execute(ExecutionEvent event) throws ExecutionException {
+   public Object execute(ExecutionEvent event) {
       if (!artifacts.isEmpty()) {
          try {
             TisRenderer renderer = new TisRenderer();
-            renderer.preview(artifacts);
+            renderer.open(artifacts, PresentationType.PREVIEW);
             dispose();
 
          } catch (OseeCoreException ex) {

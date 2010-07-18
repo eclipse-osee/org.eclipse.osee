@@ -26,11 +26,12 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
+import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.swt.widgets.Display;
 
@@ -47,7 +48,7 @@ public class CreateNewVersionItem extends XNavigateItemAction {
     */
    public CreateNewVersionItem(XNavigateItem parent, TeamDefinitionArtifact teamDefHoldingVersions) {
       super(parent, "Create New " + (teamDefHoldingVersions != null ? teamDefHoldingVersions + " " : "") + "Version",
-            FrameworkImage.VERSION);
+         FrameworkImage.VERSION);
       this.teamDefHoldingVersions = teamDefHoldingVersions;
    }
 
@@ -63,8 +64,8 @@ public class CreateNewVersionItem extends XNavigateItemAction {
          return;
       }
       EntryDialog ed =
-            new EntryDialog(Display.getCurrent().getActiveShell(), "Create New Version", null, "Enter Version Name",
-                  MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
+         new EntryDialog(Display.getCurrent().getActiveShell(), "Create New Version", null, "Enter Version Name",
+            MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
       if (ed.open() == 0) {
          String newVer = ed.getEntry();
          if (newVer.equals("")) {
@@ -103,10 +104,10 @@ public class CreateNewVersionItem extends XNavigateItemAction {
 
    private void createNewVersionItemTx(SkynetTransaction transaction, TeamDefinitionArtifact teamDefHoldingVersions, String newVer) throws OseeCoreException {
       VersionArtifact ver =
-            (VersionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtil.getAtsBranch(), newVer);
+         (VersionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtil.getAtsBranch(), newVer);
       teamDefHoldingVersions.addRelation(AtsRelationTypes.TeamDefinitionToVersion_Version, ver);
       ver.persist(transaction);
-      ArtifactEditor.editArtifact(ver);
+      RendererManager.open(ver, PresentationType.GENERALIZED_EDIT);
    }
 
 }

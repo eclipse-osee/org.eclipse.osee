@@ -42,6 +42,7 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 
@@ -90,7 +91,7 @@ public class PublishRequirements extends AbstractBlam {
          linkType = LinkType.INTERNAL_DOC_REFERENCE_USE_NAME;
       }
       RelationManager.getRelatedArtifacts(artifacts, 999, INCLUDE_DELETED,
-            CoreRelationTypes.Default_Hierarchical__Child);
+         CoreRelationTypes.Default_Hierarchical__Child);
 
       SkynetTransaction transaction = new SkynetTransaction(artifacts.get(0).getBranch(), getName());
       String templateOption;
@@ -98,18 +99,18 @@ public class PublishRequirements extends AbstractBlam {
          templateOption = includeAttributes ? ITemplateRenderer.DIFF_VALUE : ITemplateRenderer.DIFF_NO_ATTRIBUTES_VALUE;
       } else {
          templateOption =
-               includeAttributes ? ITemplateRenderer.PREVIEW_WITH_RECURSE_VALUE : ITemplateRenderer.PREVIEW_WITH_RECURSE_NO_ATTRIBUTES_VALUE;
+            includeAttributes ? ITemplateRenderer.PREVIEW_WITH_RECURSE_VALUE : ITemplateRenderer.PREVIEW_WITH_RECURSE_NO_ATTRIBUTES_VALUE;
       }
 
       VariableMap options =
-            new VariableMap(WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION, updateParagraphNumber,
-                  ITemplateRenderer.TEMPLATE_OPTION, templateOption, ITemplateRenderer.TRANSACTION_OPTION, transaction,
-                  "linkType", linkType, "inPublishMode", true);
+         new VariableMap(WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION, updateParagraphNumber,
+            ITemplateRenderer.TEMPLATE_OPTION, templateOption, ITemplateRenderer.TRANSACTION_OPTION, transaction,
+            "linkType", linkType, "inPublishMode", true);
 
       if (publishAsDiff) {
          if (branch == null || (date == null && !useBaselineTransaction)) {
             throw new OseeCoreException(
-                  "Must Select a " + branch == null ? "Branch" : "Date" + " to diff against when publishing as Diff");
+               "Must Select a " + branch == null ? "Branch" : "Date" + " to diff against when publishing as Diff");
          }
       }
       TransactionDelta txDelta = createTransactionDelta(branch);
@@ -155,7 +156,7 @@ public class PublishRequirements extends AbstractBlam {
       if (publishAsDiff) {
          nonFolderChildren = artifact.getDescendants();
          ArrayList<Artifact> olderArtifacts =
-               getOlderArtifacts(nonFolderChildren, txDelta.getStartTx().getId(), branch.getId());
+            getOlderArtifacts(nonFolderChildren, txDelta.getStartTx().getId(), branch.getId());
 
          Collection<ArtifactDelta> compareItems = new ArrayList<ArtifactDelta>();
          for (int index = 0; index < olderArtifacts.size() && index < nonFolderChildren.size(); index++) {
@@ -171,7 +172,7 @@ public class PublishRequirements extends AbstractBlam {
          }
          RendererManager.diffInJob(compareItems, options);
       } else {
-         RendererManager.preview(nonFolderChildren, monitor, options);
+         RendererManager.open(nonFolderChildren, PresentationType.PREVIEW, options, monitor);
       }
    }
 
@@ -212,7 +213,7 @@ public class PublishRequirements extends AbstractBlam {
 
       @SuppressWarnings("unused")
       Collection<Artifact> bulkLoadedArtifacts =
-            ArtifactQuery.getHistoricalArtifactListFromIds(Artifacts.toGuids(artifacts), txRecord, INCLUDE_DELETED);
+         ArtifactQuery.getHistoricalArtifactListFromIds(Artifacts.toGuids(artifacts), txRecord, INCLUDE_DELETED);
 
       for (Artifact artifact : artifacts) {
          historicArtifacts.add(ArtifactCache.getHistorical(artifact.getArtId(), transactionId));

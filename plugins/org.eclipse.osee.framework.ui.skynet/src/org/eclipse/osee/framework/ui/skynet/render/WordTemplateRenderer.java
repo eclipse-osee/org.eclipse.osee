@@ -11,6 +11,8 @@
 
 package org.eclipse.osee.framework.ui.skynet.render;
 
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERALIZED_EDIT;
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.SPECIALIZED_EDIT;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -91,7 +93,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
 
    public void publish(VariableMap variableMap, Artifact masterTemplateArtifact, Artifact slaveTemplateArtifact, List<Artifact> artifacts) throws OseeCoreException {
       templateProcessor.publishWithExtensionTemplates(variableMap, masterTemplateArtifact, slaveTemplateArtifact,
-            artifacts);
+         artifacts);
    }
 
    /**
@@ -136,11 +138,11 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
 
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
-      if (presentationType != PresentationType.GENERALIZED_EDIT) {
+      if (presentationType != GENERALIZED_EDIT) {
          if (artifact.isAttributeTypeValid(CoreAttributeTypes.WORD_TEMPLATE_CONTENT)) {
             return PRESENTATION_SUBTYPE_MATCH;
          }
-         if (!artifact.isAttributeTypeValid(CoreAttributeTypes.NATIVE_CONTENT) && !artifact.isAttributeTypeValid(CoreAttributeTypes.WHOLE_WORD_CONTENT)) {
+         if (presentationType != SPECIALIZED_EDIT && !artifact.isAttributeTypeValid(CoreAttributeTypes.NATIVE_CONTENT) && !artifact.isAttributeTypeValid(CoreAttributeTypes.WHOLE_WORD_CONTENT)) {
             return PRESENTATION_TYPE;
          }
       }
@@ -172,10 +174,10 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
          if (presentationType == PresentationType.SPECIALIZED_EDIT) {
             OseeLinkBuilder linkBuilder = new OseeLinkBuilder();
             wordMl.addParagraphNoEscape(linkBuilder.getEditArtifactLink(artifact.getGuid(), artifact.getBranch(),
-                  "OSEE_EDIT_START"));
+               "OSEE_EDIT_START"));
             wordMl.addWordMl(value);
             wordMl.addParagraphNoEscape(linkBuilder.getEditArtifactLink(artifact.getGuid(), artifact.getBranch(),
-                  "OSEE_EDIT_END"));
+               "OSEE_EDIT_END"));
          } else {
             wordMl.addWordMl(value);
          }
@@ -183,7 +185,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
 
       } else {
          super.renderAttribute(attributeTypeName, artifact, PresentationType.SPECIALIZED_EDIT, wordMl, map,
-               attributeElement);
+            attributeElement);
       }
    }
 
@@ -207,27 +209,28 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
                }
             }
             displayNotMultiEditArtifacts(notMultiEditableArtifacts,
-                  "Do not support editing of multiple artifacts with OLE data");
+               "Do not support editing of multiple artifacts with OLE data");
             artifacts.removeAll(notMultiEditableArtifacts);
          } else { // support OLE data when appropriate
             if (!firstArtifact.getSoleAttributeValue(CoreAttributeTypes.WORD_OLE_DATA, "").equals("")) {
                template = template.replaceAll(EMBEDDED_OBJECT_NO, EMBEDDED_OBJECT_YES);
                template =
-                     template.replaceAll(STYLES_END, STYLES_END + OLE_START + firstArtifact.getSoleAttributeValue(
-                           CoreAttributeTypes.WORD_OLE_DATA, "") + OLE_END);
+                  template.replaceAll(
+                     STYLES_END,
+                     STYLES_END + OLE_START + firstArtifact.getSoleAttributeValue(CoreAttributeTypes.WORD_OLE_DATA, "") + OLE_END);
             }
          }
       }
 
       template = WordUtil.removeGUIDFromTemplate(template);
       return templateProcessor.applyTemplate(getOptions(), artifacts, template, null,
-            getOptions() != null ? getOptions().getString("paragraphNumber") : null,
-            getOptions() != null ? getOptions().getString("outlineType") : null, presentationType);
+         getOptions() != null ? getOptions().getString("paragraphNumber") : null,
+         getOptions() != null ? getOptions().getString("outlineType") : null, presentationType);
    }
 
    protected String getTemplate(Artifact artifact, PresentationType presentationType) throws OseeCoreException {
       Artifact templateArtifact =
-            TemplateManager.getTemplate(this, artifact, presentationType.name(), getStringOption(TEMPLATE_OPTION));
+         TemplateManager.getTemplate(this, artifact, presentationType.name(), getStringOption(TEMPLATE_OPTION));
       return templateArtifact.getSoleAttributeValue(CoreAttributeTypes.WHOLE_WORD_CONTENT);
    }
 

@@ -16,7 +16,8 @@ import java.util.Date;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.windows.OutlookCalendarEvent;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
+import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.OseeEmail;
 import org.eclipse.osee.framework.ui.skynet.util.OseeEmail.BodyType;
 import org.junit.Before;
@@ -29,7 +30,7 @@ public class OseeEmailTest {
    public static String emailAddress = null;
    public static final StringBuffer results = new StringBuffer();
    private static String infoStr =
-         "\n\nOseeEmailTest: This test will send 3 emails. If you do not receive 3, the test failed.";
+      "\n\nOseeEmailTest: This test will send 3 emails. If you do not receive 3, the test failed.";
 
    /**
     * @throws java.lang.Exception
@@ -37,10 +38,10 @@ public class OseeEmailTest {
    @Before
    public void setUp() throws Exception {
       if (emailAddress == null) {
-         ArtifactEditor.editArtifact(UserManager.getUser());
+         RendererManager.open(UserManager.getUser(), PresentationType.GENERALIZED_EDIT);
          emailAddress = UserManager.getUser().getEmail();
          assertFalse("Invalid email address " + emailAddress + " for user " + UserManager.getUser(),
-               emailAddress.contains("\\@"));
+            emailAddress.contains("\\@"));
       }
    }
 
@@ -48,7 +49,7 @@ public class OseeEmailTest {
    public void testTextEmail() throws Exception {
       final String TEST_NAME = "Email Test 1/3 - Text Body";
       OseeEmail emailMessage =
-            new OseeEmail(emailAddress, TEST_NAME, "Hello World - this is text only" + infoStr, BodyType.Text);
+         new OseeEmail(emailAddress, TEST_NAME, "Hello World - this is text only" + infoStr, BodyType.Text);
       emailMessage.send();
       System.out.println(TEST_NAME + " sent to \"" + emailAddress + "\"");
    }
@@ -57,8 +58,8 @@ public class OseeEmailTest {
    public void testHtmlEmail() throws Exception {
       final String TEST_NAME = "Email Test 2/3 - Html Body";
       OseeEmail emailMessage =
-            new OseeEmail(emailAddress, TEST_NAME,
-                  AHTML.simplePage(AHTML.bold("Hello World - this should be bold" + infoStr)), BodyType.Html);
+         new OseeEmail(emailAddress, TEST_NAME,
+            AHTML.simplePage(AHTML.bold("Hello World - this should be bold" + infoStr)), BodyType.Html);
       emailMessage.send();
       System.out.println(TEST_NAME + " sent to \"" + emailAddress + "\"");
    }

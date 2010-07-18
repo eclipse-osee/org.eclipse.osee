@@ -20,7 +20,8 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
+import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.ote.define.artifacts.TestRunOperator;
 import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
 import org.eclipse.osee.ote.ui.define.utilities.SelectionHelper;
@@ -45,7 +46,7 @@ public class OpenInArtifactEditor extends AbstractActionHandler {
          if (isValidSelection(operator)) {
             Artifact artifact = operator.getTestRunArtifact();
             checkPermissions(artifact);
-            ArtifactEditor.editArtifact(artifact);
+            RendererManager.open(artifact, PresentationType.GENERALIZED_EDIT);
          }
       } catch (Exception ex) {
          OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, "Unable to open artifact.", ex);
@@ -65,7 +66,7 @@ public class OpenInArtifactEditor extends AbstractActionHandler {
    private void checkPermissions(Artifact artifact) throws OseeCoreException {
       if (true != AccessControlManager.hasPermission(artifact, PermissionEnum.READ)) {
          throw new OseeArgumentException(String.format("The user %s does not have read access to %s",
-               UserManager.getUser(), artifact));
+            UserManager.getUser(), artifact));
       }
    }
 }

@@ -72,8 +72,9 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
+import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
@@ -139,7 +140,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
 
       if (sma == null) {
          MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Open Error",
-               "Can't Find Action in DB");
+            "Can't Find Action in DB");
          return;
       }
       try {
@@ -195,10 +196,10 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
       try {
          if (sma.isHistoricalVersion()) {
             AWorkbench.popup("Historical Error",
-                  "You can not change a historical version of " + sma.getArtifactTypeName() + ":\n\n" + sma);
+               "You can not change a historical version of " + sma.getArtifactTypeName() + ":\n\n" + sma);
          } else if (!sma.isAccessControlWrite()) {
             AWorkbench.popup("Authentication Error",
-                  "You do not have permissions to save " + sma.getArtifactTypeName() + ":" + sma);
+               "You do not have permissions to save " + sma.getArtifactTypeName() + ":" + sma);
          } else {
             try {
                SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Workflow Editor - Save");
@@ -402,7 +403,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
       }
    }
 
-   public static void editArtifact(Artifact artifact) {
+   public static void editArtifact(Artifact artifact) throws OseeCoreException {
       if (artifact == null) {
          return;
       }
@@ -413,7 +414,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
       if (artifact instanceof StateMachineArtifact) {
          editArtifact((StateMachineArtifact) artifact);
       } else {
-         ArtifactEditor.editArtifact(artifact);
+         RendererManager.open(artifact, PresentationType.GENERALIZED_EDIT);
       }
    }
 

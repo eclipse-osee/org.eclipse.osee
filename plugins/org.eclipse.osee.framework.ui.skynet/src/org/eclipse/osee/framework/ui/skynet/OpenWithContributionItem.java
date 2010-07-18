@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.NativeRenderer;
@@ -117,9 +116,9 @@ public class OpenWithContributionItem extends CompoundContributionItem {
 
       for (String commandId : renderer.getCommandId(presentationType)) {
          contributionItem =
-               new CommandContributionItem(new CommandContributionItemParameter(
-                     PlatformUI.getWorkbench().getActiveWorkbenchWindow(), commandId, commandId,
-                     Collections.emptyMap(), imageDescriptor, null, null, null, null, null, SWT.NONE, null, false));
+            new CommandContributionItem(new CommandContributionItemParameter(
+               PlatformUI.getWorkbench().getActiveWorkbenchWindow(), commandId, commandId, Collections.emptyMap(),
+               imageDescriptor, null, null, null, null, null, SWT.NONE, null, false));
 
          Command command = commandService.getCommand(contributionItem.getId());
          if (command != null && command.isEnabled()) {
@@ -237,20 +236,12 @@ public class OpenWithContributionItem extends CompoundContributionItem {
             }
 
             if (event.detail == 0) {
-               try {
-                  List<Artifact> artifacts = getSelectedArtifacts();
-                  if (artifacts != null && !artifacts.isEmpty()) {
-                     Artifact artifact = artifacts.iterator().next();
-                     if (isPreviewEnabled && artifact != null) {
-                        //                        if (true) {
-                        RendererManager.previewInJob(artifact);
-                        //                        } else {
-                        //                           RendererManager.openInJob(artifact, PresentationType.SPECIALIZED_EDIT);
-                        //                        }
-                     }
+               List<Artifact> artifacts = getSelectedArtifacts();
+               if (artifacts != null && !artifacts.isEmpty()) {
+                  Artifact artifact = artifacts.iterator().next();
+                  if (isPreviewEnabled && artifact != null) {
+                     RendererManager.openInJob(artifacts, PresentationType.DEFAULT_OPEN);
                   }
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(ArtifactEditor.class, Level.SEVERE, ex.getMessage());
                }
             }
          }

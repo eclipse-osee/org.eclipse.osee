@@ -11,19 +11,15 @@
 
 package org.eclipse.osee.framework.ui.skynet.artifact.editor;
 
-import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.osee.framework.access.AccessControlManager;
-import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -247,46 +243,5 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
          }
          return Status.OK_STATUS;
       }
-   }
-
-   public static void editArtifacts(final Collection<Artifact> artifacts) {
-      Displays.ensureInDisplayThread(new Runnable() {
-         public void run() {
-            try {
-               for (Artifact artifact : artifacts) {
-                  if (!AccessControlManager.hasPermission(artifact, PermissionEnum.READ)) {
-                     OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP,
-                           "The user " + UserManager.getUser() + " does not have read access to " + artifact);
-                  } else {
-                     AWorkbench.getActivePage().openEditor(new ArtifactEditorInput(artifact), EDITOR_ID);
-                  }
-               }
-            } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-      });
-   }
-
-   public static void editArtifact(final Artifact artifact) {
-      Displays.ensureInDisplayThread(new Runnable() {
-         public void run() {
-            try {
-               if (!AccessControlManager.hasPermission(artifact, PermissionEnum.READ)) {
-                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP,
-                        "The user " + UserManager.getUser() + " does not have read access to " + artifact);
-               } else if (artifact != null) {
-                  AWorkbench.getActivePage().openEditor(new ArtifactEditorInput(artifact), EDITOR_ID);
-               }
-            } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-      });
-   }
-
-   @Override
-   public boolean isDisposed() {
-      return formPage == null || formPage.getPartControl() == null || formPage.getPartControl().isDisposed();
    }
 }

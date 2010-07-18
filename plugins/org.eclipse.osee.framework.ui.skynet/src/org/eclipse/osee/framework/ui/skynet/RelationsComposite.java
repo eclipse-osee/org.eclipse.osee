@@ -48,7 +48,6 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.relation.explorer.RelationExplorerWindow;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
@@ -394,7 +393,7 @@ public class RelationsComposite extends Composite implements IFrameworkTransacti
          @Override
          public void widgetSelected(SelectionEvent e) {
             TreeViewerReport report =
-                  new TreeViewerReport("Relation View Report for " + artifact.getName(), treeViewer);
+               new TreeViewerReport("Relation View Report for " + artifact.getName(), treeViewer);
             ArrayList<Integer> ignoreCols = new ArrayList<Integer>();
             ignoreCols.add(COLUMN_ORDER);
             report.setIgnoreColumns(ignoreCols);
@@ -419,7 +418,11 @@ public class RelationsComposite extends Composite implements IFrameworkTransacti
       for (Object object : selection.toArray()) {
          if (object instanceof WrapperForRelationLink) {
             WrapperForRelationLink link = (WrapperForRelationLink) object;
-            ArtifactEditor.editArtifact(link.getOther());
+            try {
+               RendererManager.open(link.getOther(), PresentationType.GENERALIZED_EDIT);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
          }
       }
    }
@@ -445,10 +448,7 @@ public class RelationsComposite extends Composite implements IFrameworkTransacti
             artifacts.add(link.getOther());
          }
       }
-      try {
-         RendererManager.previewInJob(artifacts);
-      } catch (OseeCoreException ex) {
-      }
+      RendererManager.openInJob(artifacts, PresentationType.PREVIEW);
    }
 
    private void performMassEdit(IStructuredSelection selection) {
@@ -482,7 +482,7 @@ public class RelationsComposite extends Composite implements IFrameworkTransacti
 
             if (object instanceof WrapperForRelationLink) {
                RendererManager.openInJob(((WrapperForRelationLink) object).getOther(),
-                     PresentationType.SPECIALIZED_EDIT);
+                  PresentationType.SPECIALIZED_EDIT);
             }
          }
       });
@@ -565,6 +565,11 @@ public class RelationsComposite extends Composite implements IFrameworkTransacti
       this.packColumnData();
    }
 
+   /**
+    * Performs the deletion functionality
+    *
+    * @param selection
+    */
    private void performDeleteArtifact(IStructuredSelection selection) {
       try {
          Set<Artifact> artifactsToBeDeleted = getSelectedArtifacts(selection);
@@ -572,9 +577,9 @@ public class RelationsComposite extends Composite implements IFrameworkTransacti
          //Ask if they are sure they want all artifacts to be deleted
          if (!artifactsToBeDeleted.isEmpty()) {
             if (MessageDialog.openConfirm(
-                  Display.getCurrent().getActiveShell(),
-                  "Delete Artifact (s)",
-                  "Delete Artifact (s)?\n\n\"" + Collections.toString(",", artifactsToBeDeleted) + "\"\n\nNOTE: This will delete the artifact from the system.  Use \"Delete Relation\" to remove this artifact from the relation.")) {
+               Display.getCurrent().getActiveShell(),
+               "Delete Artifact (s)",
+               "Delete Artifact (s)?\n\n\"" + Collections.toString(",", artifactsToBeDeleted) + "\"\n\nNOTE: This will delete the artifact from the system.  Use \"Delete Relation\" to remove this artifact from the relation.")) {
 
                for (Artifact artifact : artifactsToBeDeleted) {
                   artifact.deleteAndPersist();
@@ -588,12 +593,18 @@ public class RelationsComposite extends Composite implements IFrameworkTransacti
       refresh();
    }
 
+   /**
+    * Performs the deletion functionality
+    *
+    * @param selection
+    * @throws ArtifactDoesNotExist
+    */
    private void performDeleteRelation(IStructuredSelection selection) throws ArtifactDoesNotExist {
       if (artifact.isReadOnly()) {
          MessageDialog.openError(
-               Display.getCurrent().getActiveShell(),
-               "Delete Relation Error",
-               "Access control has restricted this action. The current user does not have sufficient permission to delete objects on this artifact.");
+            Display.getCurrent().getActiveShell(),
+            "Delete Relation Error",
+            "Access control has restricted this action. The current user does not have sufficient permission to delete objects on this artifact.");
          return;
       }
 
@@ -603,7 +614,7 @@ public class RelationsComposite extends Composite implements IFrameworkTransacti
             WrapperForRelationLink wrapper = (WrapperForRelationLink) object;
             try {
                wrapper.getArtifactA().deleteRelation(
-                     new RelationTypeSide(wrapper.getRelationType(), RelationSide.SIDE_B), wrapper.getArtifactB());
+                  new RelationTypeSide(wrapper.getRelationType(), RelationSide.SIDE_B), wrapper.getArtifactB());
                Object parent = ((ITreeContentProvider) treeViewer.getContentProvider()).getParent(object);
                if (parent != null) {
                   treeViewer.refresh(parent);
@@ -702,9 +713,9 @@ public class RelationsComposite extends Composite implements IFrameworkTransacti
                event.detail = DND.DROP_NONE;
 
                MessageDialog.openError(
-                     Display.getCurrent().getActiveShell(),
-                     "Create Relation Error",
-                     "Access control has restricted this action. The current user does not have sufficient permission to create relations on this artifact.");
+                  Display.getCurrent().getActiveShell(),
+                  "Create Relation Error",
+                  "Access control has restricted this action. The current user does not have sufficient permission to create relations on this artifact.");
                return;
             } else {
                event.detail = DND.DROP_COPY;
@@ -720,9 +731,9 @@ public class RelationsComposite extends Composite implements IFrameworkTransacti
                if (artifact.isReadOnly()) {
                   event.detail = DND.DROP_NONE;
                   MessageDialog.openError(
-                        Display.getCurrent().getActiveShell(),
-                        "Create Relation Error",
-                        "Access control has restricted this action. The current user does not have sufficient permission to create relations on this artifact.");
+                     Display.getCurrent().getActiveShell(),
+                     "Create Relation Error",
+                     "Access control has restricted this action. The current user does not have sufficient permission to create relations on this artifact.");
                   return;
                }
                // the links must be in the same group
@@ -772,7 +783,7 @@ public class RelationsComposite extends Composite implements IFrameworkTransacti
                Artifact[] artifactsToMove = ((ArtifactData) event.data).getArtifacts();
                for (Artifact artifactToMove : artifactsToMove) {
                   IRelationEnumeration typeSide =
-                        new RelationTypeSide(targetLink.getRelationType(), targetLink.getRelationSide());
+                     new RelationTypeSide(targetLink.getRelationType(), targetLink.getRelationSide());
                   artifact.setRelationOrder(typeSide, targetLink.getOther(), isFeedbackAfter, artifactToMove);
                }
                treeViewer.refresh();
@@ -783,7 +794,7 @@ public class RelationsComposite extends Composite implements IFrameworkTransacti
                RelationExplorerWindow window = new RelationExplorerWindow(treeViewer, group);
 
                ArtifactDragDropSupport.performDragDrop(event, window,
-                     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
+                  PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
                window.createArtifactInformationBox();
                treeViewer.refresh();
                editor.onDirtied();
@@ -798,7 +809,7 @@ public class RelationsComposite extends Composite implements IFrameworkTransacti
 
    private void setHelpContexts() {
       SkynetGuiPlugin.getInstance().setHelp(treeViewer.getControl(), "relation_page_tree_viewer",
-            "org.eclipse.osee.framework.help.ui");
+         "org.eclipse.osee.framework.help.ui");
    }
 
    public ToolBar getToolBar() {

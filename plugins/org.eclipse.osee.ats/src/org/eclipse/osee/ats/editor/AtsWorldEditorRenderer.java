@@ -78,13 +78,7 @@ public class AtsWorldEditorRenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public void open(List<Artifact> artifacts) throws OseeCoreException {
+   public void open(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
       AtsUtil.openInAtsWorldEditor("ATS", artifacts);
    }
-
-   @Override
-   public void preview(List<Artifact> artifacts) throws OseeCoreException {
-      open(artifacts);
-   }
-
 }

@@ -10,6 +10,24 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.render;
 
+
 public enum PresentationType {
-   GENERALIZED_EDIT, SPECIALIZED_EDIT, DIFF, PREVIEW, PREVIEW_IN_COMPOSITE, MERGE, MERGE_EDIT
+   GENERALIZED_EDIT,
+   SPECIALIZED_EDIT,
+   DIFF,
+   PREVIEW,
+   PREVIEW_IN_COMPOSITE,
+   MERGE,
+   MERGE_EDIT,
+   DEFAULT_OPEN,
+   PRINT;
+
+   public boolean matches(PresentationType... presentationTypes) {
+      for (PresentationType presentationType : presentationTypes) {
+         if (this == presentationType) {
+            return true;
+         }
+      }
+      return false;
+   }
 }

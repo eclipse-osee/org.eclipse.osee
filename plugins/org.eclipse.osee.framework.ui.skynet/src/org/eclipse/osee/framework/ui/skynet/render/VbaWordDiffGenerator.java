@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;

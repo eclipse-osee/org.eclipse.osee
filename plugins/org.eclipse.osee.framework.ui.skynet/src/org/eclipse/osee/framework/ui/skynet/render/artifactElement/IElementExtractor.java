@@ -13,9 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.render.artifactElement;
 
 import java.io.IOException;
 import java.util.Collection;
-
 import javax.xml.parsers.ParserConfigurationException;
-
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;

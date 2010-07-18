@@ -37,52 +37,6 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
 
    private static final ArtifactFileMonitor FILE_MONITOR = new ArtifactFileMonitor();
 
-   @Override
-   public void open(List<Artifact> artifacts) throws OseeCoreException {
-      internalOpen(artifacts, PresentationType.SPECIALIZED_EDIT);
-   }
-
-   @Override
-   public void openMergeEdit(List<Artifact> artifacts) throws OseeCoreException {
-      internalOpen(artifacts, PresentationType.MERGE_EDIT);
-   }
-
-   @Override
-   public void preview(List<Artifact> artifacts) throws OseeCoreException {
-      internalOpen(artifacts, PresentationType.PREVIEW);
-   }
-
-   private void internalOpen(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
-      if (presentationType != PresentationType.SPECIALIZED_EDIT || ArtifactGuis.checkOtherEdit(artifacts)) {
-         IFile file = getRenderedFile(artifacts, presentationType);
-         if (file != null) {
-            String dummyName = file.getName();
-            if (!artifacts.isEmpty()) {
-               Artifact firstArtifact = artifacts.iterator().next();
-               try {
-                  FileUiUtil.ensureFilenameLimit(file);
-                  Program program = getAssociatedProgram(firstArtifact);
-                  if (RenderingUtil.arePopupsAllowed()) {
-                     program.execute(file.getLocation().toFile().getAbsolutePath());
-                  }
-               } catch (Exception ex) {
-                  IWorkbench workbench = PlatformUI.getWorkbench();
-                  IEditorDescriptor editorDescriptor = workbench.getEditorRegistry().getDefaultEditor(dummyName);
-                  if (editorDescriptor != null) {
-                     try {
-                        IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
-                        page.openEditor(new FileEditorInput(file), editorDescriptor.getId());
-                     } catch (PartInitException ex1) {
-                        throw new OseeArgumentException(
-                              "No program associated with the extension " + file.getFileExtension() + " found on your local machine.");
-                     }
-                  }
-               }
-            }
-         }
-      }
-   }
-
    public IFile getRenderedFileForOpen(List<Artifact> artifacts) throws OseeCoreException {
       return getRenderedFile(artifacts, PresentationType.SPECIALIZED_EDIT);
    }
@@ -167,4 +121,33 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
       FILE_MONITOR.setWorkbenchSavePopUpDisabled(workbenchSavePopUpDisabled);
    }
 
+   @Override
+   public void open(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
+      IFile file = getRenderedFile(artifacts, presentationType);
+      if (file != null) {
+         String dummyName = file.getName();
+         if (!artifacts.isEmpty()) {
+            Artifact firstArtifact = artifacts.iterator().next();
+            try {
+               FileUiUtil.ensureFilenameLimit(file);
+               Program program = getAssociatedProgram(firstArtifact);
+               if (RenderingUtil.arePopupsAllowed()) {
+                  program.execute(file.getLocation().toFile().getAbsolutePath());
+               }
+            } catch (Exception ex) {
+               IWorkbench workbench = PlatformUI.getWorkbench();
+               IEditorDescriptor editorDescriptor = workbench.getEditorRegistry().getDefaultEditor(dummyName);
+               if (editorDescriptor != null) {
+                  try {
+                     IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
+                     page.openEditor(new FileEditorInput(file), editorDescriptor.getId());
+                  } catch (PartInitException ex1) {
+                     throw new OseeArgumentException(
+                        "No program associated with the extension " + file.getFileExtension() + " found on your local machine.");
+                  }
+               }
+            }
+         }
+      }
+   }
 }

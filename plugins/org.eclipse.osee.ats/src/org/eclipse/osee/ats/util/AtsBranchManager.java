@@ -244,8 +244,8 @@ public class AtsBranchManager {
             message.append(branch);
 
             isExecutionAllowed =
-                  MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                        "Delete Working Branch", message.toString());
+               MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                  "Delete Working Branch", message.toString());
          }
 
          if (isExecutionAllowed) {
@@ -254,7 +254,7 @@ public class AtsBranchManager {
             IStatus status = job.getResult();
             if (promptUser) {
                AWorkbench.popup("Delete Complete",
-                     status.isOK() ? "Branch delete was successful." : "Branch delete failed.\n" + status.getMessage());
+                  status.isOK() ? "Branch delete was successful." : "Branch delete failed.\n" + status.getMessage());
             } else {
                if (!status.isOK()) {
                   OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, status.getMessage(), status.getException());
@@ -268,7 +268,7 @@ public class AtsBranchManager {
 
    public Collection<TransactionRecord> getFirstCommitTransaction() throws OseeCoreException {
       Collection<TransactionRecord> committedTransactions =
-            TransactionManager.getCommittedArtifactTransactionIds(teamArt);
+         TransactionManager.getCommittedArtifactTransactionIds(teamArt);
 
       Collection<TransactionRecord> transactionIds = new ArrayList<TransactionRecord>();
       for (TransactionRecord transactionId : committedTransactions) {
@@ -350,8 +350,8 @@ public class AtsBranchManager {
          }
       };
       SimpleCheckFilteredTreeDialog ld =
-            new SimpleCheckFilteredTreeDialog(title, "Select Commit Branch", new ArrayTreeContentProvider(),
-                  new TransactionIdLabelProvider(), sorter, 0, Integer.MAX_VALUE);
+         new SimpleCheckFilteredTreeDialog(title, "Select Commit Branch", new ArrayTreeContentProvider(),
+            new TransactionIdLabelProvider(), sorter, 0, Integer.MAX_VALUE);
       ld.setInput(transactionIds);
 
       if (ld.open() == 0) {
@@ -376,7 +376,7 @@ public class AtsBranchManager {
 
          if (teamArt.getTargetedForVersion().getParentBranch() == null) {
             return new Result(false,
-                  "Parent Branch not configured for Version [" + teamArt.getTargetedForVersion() + "]");
+               "Parent Branch not configured for Version [" + teamArt.getTargetedForVersion() + "]");
          }
          if (!teamArt.getTargetedForVersion().getParentBranch().getBranchType().isBaselineBranch()) {
             return new Result(false, "Parent Branch must be of Baseline branch type.  See Admin for configuration.");
@@ -391,7 +391,7 @@ public class AtsBranchManager {
 
          if (teamArt.getTeamDefinition().getParentBranch() == null) {
             return new Result(false,
-                  "Parent Branch not configured for Team Definition [" + teamArt.getTeamDefinition() + "]");
+               "Parent Branch not configured for Team Definition [" + teamArt.getTeamDefinition() + "]");
          }
          if (!teamArt.getTeamDefinition().getParentBranch().getBranchType().isBaselineBranch()) {
             return new Result(false, "Parent Branch must be of Baseline branch type.  See Admin for configuration.");
@@ -415,7 +415,7 @@ public class AtsBranchManager {
 
          if (teamArt.getTargetedForVersion().getParentBranch() == null) {
             return new Result(false,
-                  "Parent Branch not configured for Version [" + teamArt.getTargetedForVersion() + "]");
+               "Parent Branch not configured for Version [" + teamArt.getTargetedForVersion() + "]");
          }
          return Result.TrueResult;
 
@@ -427,7 +427,7 @@ public class AtsBranchManager {
 
          if (teamArt.getTeamDefinition().getParentBranch() == null) {
             return new Result(false,
-                  "Parent Branch not configured for Team Definition [" + teamArt.getTeamDefinition() + "]");
+               "Parent Branch not configured for Team Definition [" + teamArt.getTeamDefinition() + "]");
          }
          return Result.TrueResult;
       }
@@ -504,7 +504,7 @@ public class AtsBranchManager {
          return null;
       } else if (branches.size() > 1) {
          throw new MultipleBranchesExist(
-               "Unexpected multiple associated un-deleted working branches found for workflow " + teamArt.getHumanReadableId());
+            "Unexpected multiple associated un-deleted working branches found for workflow " + teamArt.getHumanReadableId());
       } else {
          return branches.get(0);
       }
@@ -637,7 +637,7 @@ public class AtsBranchManager {
          Branch parentBranch = getConfiguredBranchForWorkflow();
          if (parentBranch == null) {
             String errorStr =
-                  "Parent Branch can not be determined.\n\nPlease specify " + "parent branch through Version Artifact or Team Definition Artifact.\n\n" + "Contact your team lead to configure this.";
+               "Parent Branch can not be determined.\n\nPlease specify " + "parent branch through Version Artifact or Team Definition Artifact.\n\n" + "Contact your team lead to configure this.";
             if (popup) {
                AWorkbench.popup("ERROR", errorStr);
             }
@@ -652,9 +652,9 @@ public class AtsBranchManager {
          }
          // Retrieve parent branch to create working branch from
          if (popup && !MessageDialog.openConfirm(
-               Display.getCurrent().getActiveShell(),
-               "Create Working Branch",
-               "Create a working branch from parent branch\n\n\"" + parentBranch.getName() + "\"?\n\n" + "NOTE: Working branches are necessary when OSEE Artifact changes " + "are made during implementation.")) {
+            Display.getCurrent().getActiveShell(),
+            "Create Working Branch",
+            "Create a working branch from parent branch\n\n\"" + parentBranch.getName() + "\"?\n\n" + "NOTE: Working branches are necessary when OSEE Artifact changes " + "are made during implementation.")) {
             return Result.FalseResult;
          }
          createWorkingBranch(pageId, parentBranch);
@@ -676,14 +676,14 @@ public class AtsBranchManager {
             if (eventType != null && eventType == stateEventType) {
                if (ruleId.equals(AtsAddDecisionReviewRule.ID)) {
                   DecisionReviewArtifact decArt =
-                        AtsAddDecisionReviewRule.createNewDecisionReview(workRuleDef, transaction, teamArt,
-                              DecisionRuleOption.TransitionToDecision);
+                     AtsAddDecisionReviewRule.createNewDecisionReview(workRuleDef, transaction, teamArt,
+                        DecisionRuleOption.TransitionToDecision);
                   if (decArt != null) {
                      decArt.persist(transaction);
                   }
                } else if (ruleId.equals(AtsAddPeerToPeerReviewRule.ID)) {
                   PeerToPeerReviewArtifact peerArt =
-                        AtsAddPeerToPeerReviewRule.createNewPeerToPeerReview(workRuleDef, teamArt, transaction);
+                     AtsAddPeerToPeerReviewRule.createNewPeerToPeerReview(workRuleDef, teamArt, transaction);
                   if (peerArt != null) {
                      peerArt.persist(transaction);
                   }
@@ -728,7 +728,7 @@ public class AtsBranchManager {
             BranchManager.createWorkingBranch(parentBranch, branchName, teamArt);
             // Create reviews as necessary
             SkynetTransaction transaction =
-                  new SkynetTransaction(AtsUtil.getAtsBranch(), "Create Reviews upon Transition");
+               new SkynetTransaction(AtsUtil.getAtsBranch(), "Create Reviews upon Transition");
             createNecessaryBranchEventReviews(StateEventType.CreateBranch, teamArt, transaction);
             transaction.execute();
             return Status.OK_STATUS;
@@ -748,15 +748,14 @@ public class AtsBranchManager {
    /**
     * @param commitPopup if true, pop-up errors associated with results
     * @param overrideStateValidation if true, don't do checks to see if commit can be performed. This should only be
-    *           used for developmental testing or automation
+    * used for developmental testing or automation
     */
    public Job commitWorkingBranch(final boolean commitPopup, final boolean overrideStateValidation, Branch destinationBranch, boolean archiveWorkingBranch) throws OseeCoreException {
       if (isBranchInCommit()) {
          throw new OseeCoreException("Branch is currently being committed.");
       }
       Job job =
-            new AtsBranchCommitJob(teamArt, commitPopup, overrideStateValidation, destinationBranch,
-                  archiveWorkingBranch);
+         new AtsBranchCommitJob(teamArt, commitPopup, overrideStateValidation, destinationBranch, archiveWorkingBranch);
       Operations.scheduleJob(job, true, Job.LONG, null);
       return job;
    }

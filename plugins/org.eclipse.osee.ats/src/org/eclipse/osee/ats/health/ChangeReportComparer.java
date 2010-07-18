@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.health;
 
 import java.util.ArrayList;
 import java.util.logging.Level;
-
 import org.eclipse.osee.ats.health.change.DataChangeReportComparer;
 import org.eclipse.osee.ats.health.change.ValidateChangeReportParser;
 import org.eclipse.osee.ats.internal.AtsPlugin;

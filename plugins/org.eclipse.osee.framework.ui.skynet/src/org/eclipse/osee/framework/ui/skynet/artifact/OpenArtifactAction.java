@@ -15,13 +15,15 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.WorkspaceURL;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDragDropSupport;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
+import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
@@ -34,35 +36,35 @@ public class OpenArtifactAction implements IObjectActionDelegate {
    private IWorkbenchPart targetPart;
    private Shell shell;
 
+   @Override
    public void setActivePart(IAction action, IWorkbenchPart targetPart) {
       this.targetPart = targetPart;
       this.shell = targetPart.getSite().getShell();
    }
 
+   @Override
    public void run(IAction action) {
       IStructuredSelection sel = (IStructuredSelection) targetPart.getSite().getSelectionProvider().getSelection();
       for (Object object : sel.toList()) {
          if (object instanceof IResource) {
             String path = WorkspaceURL.getURL((IResource) object);
-            Artifact artifact = null;
-
             try {
-               artifact = ArtifactDragDropSupport.getArtifactFromWorkspaceFile(path, shell);
-            } catch (Exception ex) {
+               Artifact artifact = ArtifactDragDropSupport.getArtifactFromWorkspaceFile(path, shell);
+               if (artifact != null) {
+                  RendererManager.open(artifact, PresentationType.GENERALIZED_EDIT);
+               }
+            } catch (OseeCoreException ex) {
                OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-
-            if (artifact != null) {
-               ArtifactEditor.editArtifact(artifact);
             }
          } else {
             MessageDialog.openInformation(targetPart.getSite().getShell(), "Open Associated Artifact",
-                  "Type " + object.getClass() + " not handeled.");
+               "Type " + object.getClass() + " not handeled.");
             return;
          }
       }
    }
 
+   @Override
    public void selectionChanged(IAction action, ISelection selection) {
    }
 }

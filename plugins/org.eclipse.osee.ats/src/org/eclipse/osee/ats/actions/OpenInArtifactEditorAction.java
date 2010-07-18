@@ -18,7 +18,8 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
+import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
@@ -38,7 +39,7 @@ public class OpenInArtifactEditorAction extends Action {
    public void run() {
       try {
          for (Artifact art : selectedAtsArtifacts.getSelectedSMAArtifacts()) {
-            ArtifactEditor.editArtifact(art);
+            RendererManager.open(art, PresentationType.GENERALIZED_EDIT);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);

@@ -21,7 +21,8 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
+import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 
 /**
  * @author Paul K. Waldfogel
@@ -33,17 +34,17 @@ public class ShowPreviewHandler extends AbstractHandler {
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
       ISelectionProvider selectionProvider =
-            AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
+         AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
 
       if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
          IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
 
          List<Change> mySelectedArtifactChangeList =
-               Handlers.getArtifactChangesFromStructuredSelection(structuredSelection);
+            Handlers.getArtifactChangesFromStructuredSelection(structuredSelection);
          for (Change mySelectedArtifactChange : mySelectedArtifactChangeList) {
             try {
                Artifact selectedArtifact = mySelectedArtifactChange.getChangeArtifact();
-               ArtifactEditor.editArtifact(selectedArtifact);
+               RendererManager.open(selectedArtifact, PresentationType.GENERALIZED_EDIT);
             } catch (Exception ex) {
                OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
             }

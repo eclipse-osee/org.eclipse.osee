@@ -15,7 +15,8 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
+import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultsComposite;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -60,7 +61,9 @@ public class SMAHistorySection extends SectionPart {
    }
 
    private synchronized void createSection() {
-      if (sectionCreated) return;
+      if (sectionCreated) {
+         return;
+      }
 
       StateMachineArtifact sma = editor.getSma();
       final FormToolkit toolkit = getManagedForm().getToolkit();
@@ -85,7 +88,11 @@ public class SMAHistorySection extends SectionPart {
       button.addListener(SWT.MouseDoubleClick, new Listener() {
          @Override
          public void handleEvent(Event event) {
-            ArtifactEditor.editArtifact(fSma);
+            try {
+               RendererManager.open(fSma, PresentationType.GENERALIZED_EDIT);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+            }
          }
       });
 

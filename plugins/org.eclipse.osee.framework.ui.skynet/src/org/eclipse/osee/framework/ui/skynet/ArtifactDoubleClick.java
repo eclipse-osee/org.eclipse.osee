@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.ui.skynet;
 
-import java.util.ArrayList;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -24,7 +23,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.preferences.EditorsPreferencePage;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.search.ui.text.Match;
@@ -56,18 +54,10 @@ public class ArtifactDoubleClick implements IDoubleClickListener {
       } else {
          try {
             if (AccessControlManager.hasPermission(artifact, PermissionEnum.READ)) {
-               ArrayList<Artifact> artifacts = new ArrayList<Artifact>(1);
-               artifacts.add(artifact);
-
-               if (EditorsPreferencePage.isPreviewOnDoubleClickForWordArtifacts()) {
-                  RendererManager.previewInJob(artifact);
-               } else {
-                  RendererManager.openInJob(artifact, PresentationType.GENERALIZED_EDIT);
-               }
-
+               RendererManager.openInJob(artifact, PresentationType.DEFAULT_OPEN);
             } else {
                OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP,
-                     "The user " + UserManager.getUser() + " does not have read access to " + artifact);
+                  "The user " + UserManager.getUser() + " does not have read access to " + artifact);
             }
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);

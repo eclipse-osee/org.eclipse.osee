@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers;
 
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
+import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 
 /**
  * Opens an artifact editor as long as the user has Read permission
@@ -21,8 +21,8 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
  */
 public class ArtifactEditorHandler extends AbstractEditorHandler {
    @Override
-   public Object execute(ExecutionEvent myExecutionEvent) throws ExecutionException {
-      ArtifactEditor.editArtifacts(artifacts);
+   public Object execute(ExecutionEvent myExecutionEvent) {
+      RendererManager.openInJob(artifacts, PresentationType.GENERALIZED_EDIT);
       return null;
    }
 }

@@ -18,7 +18,8 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
+import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
@@ -38,7 +39,7 @@ public class OpenVersionArtifactAction extends Action {
    private void performOpen() {
       try {
          if (sma.getWorldViewTargetedVersion() != null) {
-            ArtifactEditor.editArtifact(sma.getWorldViewTargetedVersion());
+            RendererManager.open(sma.getWorldViewTargetedVersion(), PresentationType.GENERALIZED_EDIT);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);

@@ -27,9 +27,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
+import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.email.EmailUserGroups;
 import org.eclipse.osee.framework.ui.skynet.widgets.XList.XListItem;
 
@@ -38,9 +39,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XList.XListItem;
  */
 public class CreateNewUser extends AbstractBlam {
 
-   private final static List<String> attrNames =
-         Arrays.asList("Company", "Company Title", "Street", "City", "State", "Zip", "Phone", "Mobile Phone",
-               "Fax Phone", "Website", "Notes");
+   private final static List<String> attrNames = Arrays.asList("Company", "Company Title", "Street", "City", "State",
+      "Zip", "Phone", "Mobile Phone", "Fax Phone", "Website", "Notes");
    private Set<Artifact> groupArts;
 
    @Override
@@ -53,7 +53,7 @@ public class CreateNewUser extends AbstractBlam {
       monitor.beginTask("Create New User", IProgressMonitor.UNKNOWN);
 
       User user =
-            (User) ArtifactTypeManager.addArtifact(CoreArtifactTypes.User.getName(), BranchManager.getCommonBranch());
+         (User) ArtifactTypeManager.addArtifact(CoreArtifactTypes.User.getName(), BranchManager.getCommonBranch());
 
       String name = variableMap.getString("Name (Last, First)");
       if (name.equals("")) {
@@ -113,7 +113,7 @@ public class CreateNewUser extends AbstractBlam {
       }
 
       user.persist();
-      ArtifactEditor.editArtifact(user);
+      RendererManager.open(user, PresentationType.GENERALIZED_EDIT);
       monitor.done();
    }
 
@@ -142,7 +142,7 @@ public class CreateNewUser extends AbstractBlam {
          }
          groupStr = groupStr.replaceFirst(",$", "");
          widgetXml +=
-               "<XWidget xwidgetType=\"XList(" + groupStr + ")\" displayName=\"Groups\" defaultValue=\"Everyone\"/>";
+            "<XWidget xwidgetType=\"XList(" + groupStr + ")\" displayName=\"Groups\" defaultValue=\"Everyone\"/>";
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }

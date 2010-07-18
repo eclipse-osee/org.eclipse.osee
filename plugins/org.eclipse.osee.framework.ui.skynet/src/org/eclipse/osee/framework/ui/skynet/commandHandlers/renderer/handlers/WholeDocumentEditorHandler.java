@@ -10,51 +10,24 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers;
 
-import java.util.logging.Level;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
-import org.eclipse.osee.framework.ui.skynet.render.WholeDocumentRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
+import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 
 /**
  * @author Jeff C. Phillips
  */
 public class WholeDocumentEditorHandler extends AbstractEditorHandler {
    @Override
-   public Object execute(ExecutionEvent event) throws ExecutionException {
-      if (!artifacts.isEmpty()) {
-         try {
-            WholeDocumentRenderer renderer = new WholeDocumentRenderer();
-            renderer.open(artifacts);
-            dispose();
-
-         } catch (OseeCoreException ex) {
-            OseeLog.log(WholeDocumentEditorHandler.class, Level.SEVERE, ex);
-         }
-      }
+   public Object execute(ExecutionEvent event) {
+      RendererManager.openInJob(artifacts, PresentationType.SPECIALIZED_EDIT);
+      dispose();
       return null;
    }
 
    @Override
    protected PermissionEnum getPermissionLevel() {
       return PermissionEnum.WRITE;
-   }
-
-   @Override
-   public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
-      artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
-      boolean isEnabled = AccessControlManager.checkObjectListPermission(artifacts, getPermissionLevel());
-
-      for (Artifact artifact : artifacts) {
-         isEnabled &= !artifact.isReadOnly();
-      }
-
-      return isEnabled;
    }
 }

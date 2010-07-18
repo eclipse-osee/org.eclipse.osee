@@ -59,40 +59,39 @@ import org.eclipse.ui.PlatformUI;
  */
 public class MergeUtility {
    /*
-    * This has all of the GUI prompts that help a user know what's going on
-    * when they set a merge.
+    * This has all of the GUI prompts that help a user know what's going on when they set a merge.
     */
    public static final String CLEAR_PROMPT =
-         "This attribute has had Merge changes made are you sure you want to overwrite them? All changes will be lost.";
+      "This attribute has had Merge changes made are you sure you want to overwrite them? All changes will be lost.";
    public static final String COMMITED_PROMPT =
-         "You can not change the value for a conflict that has been marked resolved or has already been commited.  Change the conflict status if the source branch has not been commited and you wish to modify the value.";
+      "You can not change the value for a conflict that has been marked resolved or has already been commited.  Change the conflict status if the source branch has not been commited and you wish to modify the value.";
    public static final String ARTIFACT_DELETED_PROMPT =
-         "This Artifact has been changed on the source branch, but has been deleted on the destination branch.  In order to commit this branch and resolve this conflict the Artifact will need to be reverted on the source branch.  \n\nReverting the artifact is irreversible and you will need to restart OSEE after reverting to see changes.";
+      "This Artifact has been changed on the source branch, but has been deleted on the destination branch.  In order to commit this branch and resolve this conflict the Artifact will need to be reverted on the source branch.  \n\nReverting the artifact is irreversible and you will need to restart OSEE after reverting to see changes.";
    public static final String ATTRIBUTE_DELETED_PROMPT =
-         "This Attribute has been changed on the source branch, but has been deleted on the destination branch.  In order to commit this branch and resolve this conflict the Attribute will need to be reverted on the source branch.  \n\nReverting the attribute is irreversible and you will need to restart OSEE after reverting to see changes.";
+      "This Attribute has been changed on the source branch, but has been deleted on the destination branch.  In order to commit this branch and resolve this conflict the Attribute will need to be reverted on the source branch.  \n\nReverting the attribute is irreversible and you will need to restart OSEE after reverting to see changes.";
    public static final String INFORMATIONAL_CONFLICT =
-         "This Item has been deleted on the Source Branch, but has been changed on the destination branch.  This conflict is informational only and will not prevent your from commiting, however when you commit it will delete the item on the destination branch.";
+      "This Item has been deleted on the Source Branch, but has been changed on the destination branch.  This conflict is informational only and will not prevent your from commiting, however when you commit it will delete the item on the destination branch.";
    public static final String OPEN_MERGE_DIALOG =
-         "This will open a window that will allow in-document merging in Word.  You will need to right click on every difference and either accept or reject the change.  If you begin an in-document merge you will not be able to finalize the conflict until you resolve every change in the document.\n Computing a Merge will wipe out any merge changes you have made and start with a fresh diff of the two files.  If you want to only view the changes use the difference options.\n Change that touch the entire file are better handled using copy and paste. \n\nWARNING:  Word will occasionaly show incorrect changes especially when users have both modified the same block of text.  Check your final version.";
+      "This will open a window that will allow in-document merging in Word.  You will need to right click on every difference and either accept or reject the change.  If you begin an in-document merge you will not be able to finalize the conflict until you resolve every change in the document.\n Computing a Merge will wipe out any merge changes you have made and start with a fresh diff of the two files.  If you want to only view the changes use the difference options.\n Change that touch the entire file are better handled using copy and paste. \n\nWARNING:  Word will occasionaly show incorrect changes especially when users have both modified the same block of text.  Check your final version.";
 
-   private static final Pattern authorPattern =
-         Pattern.compile("aml:author=\".*?\"", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-   private static final Pattern rsidRootPattern =
-         Pattern.compile("\\</wsp:rsids\\>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-   private static final Pattern findSetRsids =
-         Pattern.compile("wsp:rsidR=\".*?\"", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-   private static final Pattern findSetRsidRPR =
-         Pattern.compile("wsp:rsidRPr=\".*?\"", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-   private static final Pattern findSetRsidP =
-         Pattern.compile("wsp:rsidP=\".*?\"", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-   private static final Pattern findSetRsidRDefault =
-         Pattern.compile("wsp:rsidRDefault=\".*?\"", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-   private static final Pattern annotationTag =
-         Pattern.compile("(<aml:annotation[^\\>]*?[^/]\\>)|(</aml:annotation\\>)",
-               Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern authorPattern = Pattern.compile("aml:author=\".*?\"",
+      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern rsidRootPattern = Pattern.compile("\\</wsp:rsids\\>",
+      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern findSetRsids = Pattern.compile("wsp:rsidR=\".*?\"",
+      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern findSetRsidRPR = Pattern.compile("wsp:rsidRPr=\".*?\"",
+      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern findSetRsidP = Pattern.compile("wsp:rsidP=\".*?\"",
+      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern findSetRsidRDefault = Pattern.compile("wsp:rsidRDefault=\".*?\"",
+      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern annotationTag = Pattern.compile(
+      "(<aml:annotation[^\\>]*?[^/]\\>)|(</aml:annotation\\>)",
+      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 
-   private static final Pattern rsidPattern =
-         Pattern.compile("wsp:rsid(RPr|P|R)=\"(.*?)\"", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern rsidPattern = Pattern.compile("wsp:rsid(RPr|P|R)=\"(.*?)\"",
+      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 
    public static void clearValue(Conflict conflict, Shell shell, boolean prompt) throws MultipleArtifactsExist, ArtifactDoesNotExist, Exception {
       if (conflict == null) {
@@ -134,8 +133,7 @@ public class MergeUtility {
    }
 
    /*
-    * This is not in the AttributeConflict because it relies on the renderer
-    * that is in not in the skynet core package.
+    * This is not in the AttributeConflict because it relies on the renderer that is in not in the skynet core package.
     */
    public static String showCompareFile(Artifact art1, Artifact art2, String fileName) throws Exception {
       if (art1 == null || art2 == null) {
@@ -145,8 +143,7 @@ public class MergeUtility {
    }
 
    /*
-    * This is not in the AttributeConflict because it relies on the renderer
-    * that is in not in the skynet core package.
+    * This is not in the AttributeConflict because it relies on the renderer that is in not in the skynet core package.
     */
    public static String CreateMergeDiffFile(Artifact art1, Artifact art2, String fileName) throws Exception {
       if (art1 == null || art2 == null) {
@@ -156,15 +153,14 @@ public class MergeUtility {
    }
 
    /*
-    * This is not in the AttributeConflict because it relies on the renderer
-    * that is in not in the skynet core package.
+    * This is not in the AttributeConflict because it relies on the renderer that is in not in the skynet core package.
     */
    public static void mergeEditableDiffFiles(Artifact art1, String art1FileName, String art2FileName, String fileName, boolean show, boolean editable) throws Exception {
       if (art1 == null) {
          return;
       }
       RendererManager.merge(art1, null, AIFile.constructIFile(art1FileName), AIFile.constructIFile(art2FileName),
-            fileName.substring(fileName.lastIndexOf('\\') + 1), show);
+         fileName.substring(fileName.lastIndexOf('\\') + 1), show);
    }
 
    public static Artifact getStartArtifact(Conflict conflict) {
@@ -174,7 +170,7 @@ public class MergeUtility {
          }
          TransactionRecord baseTransaction = conflict.getSourceBranch().getBaseTransaction();
          return ArtifactQuery.getHistoricalArtifactFromId(conflict.getArtifact().getGuid(), baseTransaction,
-               INCLUDE_DELETED);
+            INCLUDE_DELETED);
       } catch (OseeCoreException ex) {
          OseeLog.log(MergeUtility.class, Level.SEVERE, ex);
       }
@@ -193,8 +189,8 @@ public class MergeUtility {
    public static boolean showArtifactDeletedConflict(Conflict conflict, Shell shell) {
       if (conflict.getConflictType().equals(ConflictType.ARTIFACT)) {
          MessageDialog dialog =
-               new MessageDialog(shell, "Unresovable Conflict", null, ARTIFACT_DELETED_PROMPT, 1, new String[] {
-                     "Revert Source Artifact", "Handle Later"}, 1);
+            new MessageDialog(shell, "Unresovable Conflict", null, ARTIFACT_DELETED_PROMPT, 1, new String[] {
+               "Revert Source Artifact", "Handle Later"}, 1);
          if (dialog.open() == 0) {
             try {
                List<List<Artifact>> artifacts = new LinkedList<List<Artifact>>();
@@ -221,8 +217,8 @@ public class MergeUtility {
    public static boolean showAttributeDeletedConflict(Conflict conflict, Shell shell) {
       if (conflict.getConflictType().equals(ConflictType.ATTRIBUTE)) {
          MessageDialog dialog =
-               new MessageDialog(shell, "Unresovable Conflict", null, ATTRIBUTE_DELETED_PROMPT, 1, new String[] {
-                     "Revert Source Attribute", "Handle Later"}, 1);
+            new MessageDialog(shell, "Unresovable Conflict", null, ATTRIBUTE_DELETED_PROMPT, 1, new String[] {
+               "Revert Source Attribute", "Handle Later"}, 1);
          if (dialog.open() == 0) {
             try {
                ((AttributeConflict) conflict).revertSourceAttribute();
@@ -237,7 +233,7 @@ public class MergeUtility {
 
    public static boolean showInformationalConflict(Shell shell) {
       MessageDialog dialog =
-            new MessageDialog(shell, "Informational Conflict", null, INFORMATIONAL_CONFLICT, 2, new String[] {"OK"}, 1);
+         new MessageDialog(shell, "Informational Conflict", null, INFORMATIONAL_CONFLICT, 2, new String[] {"OK"}, 1);
       dialog.open();
       return false;
    }
@@ -258,15 +254,15 @@ public class MergeUtility {
             }
 
             MessageDialog dialog =
-                  new MessageDialog(Display.getCurrent().getActiveShell().getShell(), "Merge Word Artifacts", null,
-                        OPEN_MERGE_DIALOG, 4, buttons, 2);
+               new MessageDialog(Display.getCurrent().getActiveShell().getShell(), "Merge Word Artifacts", null,
+                  OPEN_MERGE_DIALOG, 4, buttons, 2);
             int response = dialog.open();
             if (buttons.length == 3) {
                response++;
             }
             if (response == 2) {
                PlatformUI.getWorkbench().getHelpSystem().displayHelpResource(
-                     "/org.eclipse.osee.framework.ui.skynet/reference/Merge_Manager.html");
+                  "/org.eclipse.osee.framework.ui.skynet/reference/Merge_Manager.html");
             } else if (response == 1) {
 
                Job job = new Job("Generate 3 Way Merge") {
@@ -280,22 +276,22 @@ public class MergeUtility {
                         generator.initialize(false, false);
                         monitor.worked(5);
                         String sourceChangeFile =
-                              MergeUtility.CreateMergeDiffFile(getStartArtifact(attributeConflict),
-                                    attributeConflict.getSourceArtifact(), null);
+                           MergeUtility.CreateMergeDiffFile(getStartArtifact(attributeConflict),
+                              attributeConflict.getSourceArtifact(), null);
                         monitor.worked(15);
                         String destChangeFile =
-                              MergeUtility.CreateMergeDiffFile(getStartArtifact(attributeConflict),
-                                    attributeConflict.getDestArtifact(), null);
+                           MergeUtility.CreateMergeDiffFile(getStartArtifact(attributeConflict),
+                              attributeConflict.getDestArtifact(), null);
                         monitor.worked(15);
                         changeAuthorinWord("Source", sourceChangeFile, 2, "12345678", "55555555");
                         changeAuthorinWord("Destination", destChangeFile, 2, "56781234", "55555555");
                         monitor.worked(15);
                         MergeUtility.mergeEditableDiffFiles(
-                              attributeConflict.getArtifact(),
-                              sourceChangeFile,
-                              destChangeFile,
-                              "Source_Dest_Merge_" + attributeConflict.getArtifact().getSafeName() + "(" + attributeConflict.getArtifact().getGuid() + ")" + new Date().toString().replaceAll(
-                                    ":", ";") + ".xml", false, true);
+                           attributeConflict.getArtifact(),
+                           sourceChangeFile,
+                           destChangeFile,
+                           "Source_Dest_Merge_" + attributeConflict.getArtifact().getSafeName() + "(" + attributeConflict.getArtifact().getGuid() + ")" + new Date().toString().replaceAll(
+                              ":", ";") + ".xml", false, true);
 
                         monitor.worked(40);
                         attributeConflict.markStatusToReflectEdit();
@@ -306,7 +302,7 @@ public class MergeUtility {
                            Thread.sleep(500);
                         }
                         monitor.done();
-                        RendererManager.openMergeEditJob(attributeConflict.getArtifact());
+                        RendererManager.openInJob(attributeConflict.getArtifact(), PresentationType.MERGE_EDIT);
 
                      } catch (Exception ex) {
                         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);

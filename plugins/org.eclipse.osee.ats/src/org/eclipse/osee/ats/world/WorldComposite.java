@@ -35,7 +35,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionHandler;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
+import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -80,8 +81,8 @@ public class WorldComposite extends ScrolledComposite implements IWorldViewerEve
       }
 
       worldXViewer =
-            new WorldXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION,
-                  xViewerFactory != null ? xViewerFactory : new WorldXViewerFactory());
+         new WorldXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION,
+            xViewerFactory != null ? xViewerFactory : new WorldXViewerFactory());
       worldXViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
       worldXViewer.setContentProvider(new WorldContentProvider(worldXViewer));
@@ -133,7 +134,7 @@ public class WorldComposite extends ScrolledComposite implements IWorldViewerEve
                }
             }
             if (customizeData != null && !worldXViewer.getCustomizeMgr().generateCustDataFromTable().equals(
-                  customizeData)) {
+               customizeData)) {
                setCustomizeData(customizeData);
             }
             if (arts.isEmpty()) {
@@ -144,11 +145,9 @@ public class WorldComposite extends ScrolledComposite implements IWorldViewerEve
             worldXViewer.setInput(worldArts);
             worldXViewer.updateStatusLabel();
             if (otherArts.size() > 0) {
-               if (MessageDialog.openConfirm(
-                     Display.getCurrent().getActiveShell(),
-                     "Open in Artifact Editor?",
-                     otherArts.size() + " Non-WorldView Artifacts were returned from request.\n\nOpen in Artifact Editor?")) {
-                  ArtifactEditor.editArtifacts(otherArts);
+               if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Open in Artifact Editor?",
+                  otherArts.size() + " Non-WorldView Artifacts were returned from request.\n\nOpen in Artifact Editor?")) {
+                  RendererManager.openInJob(otherArts, PresentationType.GENERALIZED_EDIT);
                }
             }
             worldXViewer.getTree().setFocus();

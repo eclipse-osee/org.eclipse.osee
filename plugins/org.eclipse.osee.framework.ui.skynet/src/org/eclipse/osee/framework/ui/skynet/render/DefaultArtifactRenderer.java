@@ -14,19 +14,24 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.linking.OseeLinkBuilder;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorInput;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.compare.DefaultArtifactCompare;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
@@ -44,18 +49,9 @@ public class DefaultArtifactRenderer implements IRenderer {
 
    private VariableMap options;
 
+   @Override
    public String getName() {
       return "Artifact Editor";
-   }
-
-   public void print(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException {
-      throw new OseeCoreException("The default renderer does not support the print operation");
-   }
-
-   public void print(List<Artifact> artifacts, IProgressMonitor monitor) throws OseeCoreException {
-      for (Artifact artifact : artifacts) {
-         print(artifact, monitor);
-      }
    }
 
    public boolean supportsCompare() {
@@ -63,7 +59,7 @@ public class DefaultArtifactRenderer implements IRenderer {
    }
 
    @Override
-   public void setOptions(VariableMap options) throws OseeArgumentException {
+   public void setOptions(VariableMap options) {
       this.options = options;
    }
 
@@ -90,26 +86,12 @@ public class DefaultArtifactRenderer implements IRenderer {
       return new DefaultArtifactRenderer();
    }
 
+   @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
       if (presentationType == PresentationType.GENERALIZED_EDIT) {
          return PRESENTATION_TYPE;
       }
       return DEFAULT_MATCH;
-   }
-
-   @Override
-   public void preview(List<Artifact> artifacts) throws OseeCoreException {
-      open(artifacts);
-   }
-
-   @Override
-   public void open(List<Artifact> artifacts) throws OseeCoreException {
-      ArtifactEditor.editArtifacts(artifacts);
-   }
-
-   @Override
-   public void openMergeEdit(List<Artifact> artifacts) throws OseeCoreException {
-      ArtifactEditor.editArtifacts(artifacts);
    }
 
    @Override
@@ -151,8 +133,8 @@ public class DefaultArtifactRenderer implements IRenderer {
       StringBuilder builder = new StringBuilder();
       ArtifactGuidToWordML guidResolver = new ArtifactGuidToWordML(new OseeLinkBuilder());
       RelationOrderRenderer renderer =
-            new RelationOrderRenderer(SkynetGuiPlugin.getInstance().getOseeCacheService().getRelationTypeCache(),
-                  guidResolver, RelationManager.getSorterProvider());
+         new RelationOrderRenderer(SkynetGuiPlugin.getInstance().getOseeCacheService().getRelationTypeCache(),
+            guidResolver, RelationManager.getSorterProvider());
 
       WordMLProducer producer = new WordMLProducer(builder);
       RelationOrderData relationOrderData = RelationManager.createRelationOrderData(artifact);
@@ -181,6 +163,7 @@ public class DefaultArtifactRenderer implements IRenderer {
       return DEFAULT_COMPARATOR;
    }
 
+   @Override
    public List<AttributeType> orderAttributeNames(Artifact artifact, Collection<AttributeType> attributeTypes) {
       ArrayList<AttributeType> orderedAttributeTypes = new ArrayList<AttributeType>(attributeTypes.size());
       AttributeType contentType = null;
@@ -198,5 +181,21 @@ public class DefaultArtifactRenderer implements IRenderer {
          orderedAttributeTypes.add(contentType);
       }
       return orderedAttributeTypes;
+   }
+
+   @Override
+   public void open(final List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            try {
+               for (Artifact artifact : artifacts) {
+                  AWorkbench.getActivePage().openEditor(new ArtifactEditorInput(artifact), ArtifactEditor.EDITOR_ID);
+               }
+            } catch (CoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+         }
+      });
    }
 }

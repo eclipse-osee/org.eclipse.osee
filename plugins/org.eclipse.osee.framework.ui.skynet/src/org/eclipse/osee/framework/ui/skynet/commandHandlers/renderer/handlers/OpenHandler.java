@@ -10,13 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers;
 
-import java.util.logging.Level;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.preferences.EditorsPreferencePage;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 
@@ -25,21 +19,9 @@ import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
  */
 public class OpenHandler extends AbstractEditorHandler {
    @Override
-   public Object execute(ExecutionEvent event) throws ExecutionException {
-      if (!artifacts.isEmpty()) {
-         try {
-            if (EditorsPreferencePage.isPreviewOnDoubleClickForWordArtifacts()) {
-               RendererManager.previewInJob(artifacts);
-            } else {
-               RendererManager.openInJob(artifacts, PresentationType.GENERALIZED_EDIT);
-            }
-
-            dispose();
-
-         } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-         }
-      }
+   public Object execute(ExecutionEvent event) {
+      RendererManager.openInJob(artifacts, PresentationType.DEFAULT_OPEN);
+      dispose();
       return null;
    }
 }

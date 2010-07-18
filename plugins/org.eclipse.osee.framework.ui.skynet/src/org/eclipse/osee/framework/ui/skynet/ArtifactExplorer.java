@@ -94,7 +94,6 @@ import org.eclipse.osee.framework.ui.skynet.menu.ArtifactTreeViewerGlobalMenuHel
 import org.eclipse.osee.framework.ui.skynet.menu.GlobalMenu;
 import org.eclipse.osee.framework.ui.skynet.menu.GlobalMenuPermissions;
 import org.eclipse.osee.framework.ui.skynet.menu.IGlobalMenuHelper;
-import org.eclipse.osee.framework.ui.skynet.preferences.EditorsPreferencePage;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.search.QuickSearchView;
@@ -196,7 +195,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
    private Control branchUnreadableWarning;
    private StackLayout stackLayout;
    private final ArtifactDecorator artifactDecorator = new ArtifactDecorator(
-         SkynetGuiPlugin.ARTIFACT_EXPLORER_ATTRIBUTES_PREF);
+      SkynetGuiPlugin.ARTIFACT_EXPLORER_ATTRIBUTES_PREF);
 
    public ArtifactExplorer() {
    }
@@ -226,7 +225,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
             if (view.getView(false) != null && inputBranch.equals(((ArtifactExplorer) view.getView(false)).branch)) {
                try {
                   return (ArtifactExplorer) page.showView(view.getId(), view.getSecondaryId(),
-                        IWorkbenchPage.VIEW_ACTIVATE);
+                     IWorkbenchPage.VIEW_ACTIVATE);
                } catch (Exception ex) {
                   throw new RuntimeException(ex);
                }
@@ -235,7 +234,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
       }
       try {
          ArtifactExplorer explorer =
-               (ArtifactExplorer) page.showView(ArtifactExplorer.VIEW_ID, GUID.create(), IWorkbenchPage.VIEW_ACTIVATE);
+            (ArtifactExplorer) page.showView(ArtifactExplorer.VIEW_ID, GUID.create(), IWorkbenchPage.VIEW_ACTIVATE);
          explorer.explore(OseeSystemArtifacts.getDefaultHierarchyRootArtifact(inputBranch));
          return explorer;
       } catch (Exception ex) {
@@ -438,34 +437,33 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
 
    private void addOpenQuickSearchAction(IToolBarManager toolbarManager) {
       Action openQuickSearch =
-            new Action("Quick Search", ImageManager.getImageDescriptor(FrameworkImage.ARTIFACT_SEARCH)) {
-               @Override
-               public void run() {
-                  Job job = new UIJob("Open Quick Search") {
+         new Action("Quick Search", ImageManager.getImageDescriptor(FrameworkImage.ARTIFACT_SEARCH)) {
+            @Override
+            public void run() {
+               Job job = new UIJob("Open Quick Search") {
 
-                     @Override
-                     public IStatus runInUIThread(IProgressMonitor monitor) {
-                        IStatus status = Status.OK_STATUS;
-                        try {
-                           IViewPart viewPart =
-                                 PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
-                                       QuickSearchView.VIEW_ID);
-                           if (viewPart != null) {
-                              Branch branch = getBranch(monitor);
-                              if (branch != null) {
-                                 ((QuickSearchView) viewPart).setBranch(branch);
-                              }
+                  @Override
+                  public IStatus runInUIThread(IProgressMonitor monitor) {
+                     IStatus status = Status.OK_STATUS;
+                     try {
+                        IViewPart viewPart =
+                           PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
+                              QuickSearchView.VIEW_ID);
+                        if (viewPart != null) {
+                           Branch branch = getBranch(monitor);
+                           if (branch != null) {
+                              ((QuickSearchView) viewPart).setBranch(branch);
                            }
-                        } catch (Exception ex) {
-                           status =
-                                 new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "Error opening quick search", ex);
                         }
-                        return status;
+                     } catch (Exception ex) {
+                        status = new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "Error opening quick search", ex);
                      }
-                  };
-                  Jobs.startJob(job);
-               }
-            };
+                     return status;
+                  }
+               };
+               Jobs.startJob(job);
+            }
+         };
       openQuickSearch.setToolTipText("Open Quick Search View");
       toolbarManager.add(openQuickSearch);
    }
@@ -512,8 +510,8 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
             ArtifactExplorer artifactExplorer;
             try {
                artifactExplorer =
-                     (ArtifactExplorer) page.showView(ArtifactExplorer.VIEW_ID, GUID.create(),
-                           IWorkbenchPage.VIEW_ACTIVATE);
+                  (ArtifactExplorer) page.showView(ArtifactExplorer.VIEW_ID, GUID.create(),
+                     IWorkbenchPage.VIEW_ACTIVATE);
                artifactExplorer.explore(OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch));
                artifactExplorer.setExpandedArtifacts(treeViewer.getExpandedElements());
             } catch (Exception ex) {
@@ -581,8 +579,8 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
                   String name = dialog.getEntryValue();
 
                   SkynetTransaction transaction =
-                        new SkynetTransaction(branch, String.format("Created new %s \"%s\" in artifact explorer",
-                              type.getName(), name));
+                     new SkynetTransaction(branch, String.format("Created new %s \"%s\" in artifact explorer",
+                        type.getName(), name));
                   parent.addNewChild(null, type, name);
                   parent.persist(transaction);
                   transaction.execute();
@@ -597,13 +595,13 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
 
          private ArtifactTypeFilteredTreeEntryDialog getDialog() throws OseeCoreException {
             Collection<ArtifactType> artifactTypes =
-                  ArtifactTypeManager.getConcreteArtifactTypes(branchSelect.getData());
+               ArtifactTypeManager.getConcreteArtifactTypes(branchSelect.getData());
             ArtifactType rootArtifactType = ArtifactTypeManager.getType(RootArtifact);
             artifactTypes.remove(rootArtifactType);
 
             ArtifactTypeFilteredTreeEntryDialog dialog =
-                  new ArtifactTypeFilteredTreeEntryDialog("New Child", "Enter name and select Artifact type to create",
-                        "Artifact Name");
+               new ArtifactTypeFilteredTreeEntryDialog("New Child", "Enter name and select Artifact type to create",
+                  "Artifact Name");
             dialog.setInput(artifactTypes);
             return dialog;
          }
@@ -668,15 +666,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
          public void widgetSelected(SelectionEvent ev) {
             LinkedList<Artifact> selectedItems = new LinkedList<Artifact>();
             TreeViewerUtility.getPreorderSelection(treeViewer, selectedItems);
-            try {
-               if (EditorsPreferencePage.isPreviewOnDoubleClickForWordArtifacts()) {
-                  RendererManager.previewInJob(selectedItems);
-               } else {
-                  RendererManager.openInJob(selectedItems, PresentationType.GENERALIZED_EDIT);
-               }
-            } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-            }
+            RendererManager.openInJob(selectedItems, PresentationType.DEFAULT_OPEN);
          }
       });
    }
@@ -701,10 +691,10 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
                      ArtifactExplorer.revealArtifact(ArtifactQuery.getArtifactFromId(artifact.getArtId(), branch));
                   } catch (OseeCoreException ex) {
                      OseeLog.log(
-                           SkynetGuiPlugin.class,
-                           OseeLevel.SEVERE_POPUP,
-                           String.format("Could not find Artifact \'%s\' on Branch \'%s\'", artifact.getName(),
-                                 branch.getName()));
+                        SkynetGuiPlugin.class,
+                        OseeLevel.SEVERE_POPUP,
+                        String.format("Could not find Artifact \'%s\' on Branch \'%s\'", artifact.getName(),
+                           branch.getName()));
                   }
                }
 
@@ -1004,14 +994,14 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
          Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
          List<Artifact> copiedArtifacts = artifactClipboard.getCopiedContents();
          ArtifactPasteSpecialDialog dialog =
-               new ArtifactPasteSpecialDialog(shell, config, destinationArtifact, copiedArtifacts);
+            new ArtifactPasteSpecialDialog(shell, config, destinationArtifact, copiedArtifacts);
          performPaste = dialog.open() == Window.OK;
       }
 
       if (performPaste) {
          Operations.executeAsJob(
-               new ArtifactPasteOperation(config, destinationArtifact, artifactClipboard.getCopiedContents(),
-                     new ArtifactNameConflictHandler()), true);
+            new ArtifactPasteOperation(config, destinationArtifact, artifactClipboard.getCopiedContents(),
+               new ArtifactNameConflictHandler()), true);
       }
    }
 
@@ -1218,10 +1208,8 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
                } else {
                   /*
                    * simply means that the previous artifact that was used as the root for the artiactExplorer does not
-                   * exist
-                   * because it was deleted or this workspace was last used with a different branch or database, so let
-                   * the logic
-                   * below get the default hierarchy root artifact
+                   * exist because it was deleted or this workspace was last used with a different branch or database,
+                   * so let the logic below get the default hierarchy root artifact
                    */
                }
                return;
@@ -1270,7 +1258,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
 
    private void setHelpContexts() {
       SkynetGuiPlugin.getInstance().setHelp(treeViewer.getControl(), "artifact_explorer_tree_viewer",
-            "org.eclipse.osee.framework.help.ui");
+         "org.eclipse.osee.framework.help.ui");
    }
    public class MenuEnablingListener implements MenuListener {
 
@@ -1360,15 +1348,15 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
                }
                try {
                   treeViewer.update(
-                        transData.getArtifactsInRelations(ChangeType.Changed,
-                              CoreRelationTypes.Default_Hierarchical__Child).toArray(), null);
+                     transData.getArtifactsInRelations(ChangeType.Changed,
+                        CoreRelationTypes.Default_Hierarchical__Child).toArray(), null);
                } catch (Exception ex) {
                   OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                }
                try {
                   Set<Artifact> parents = new HashSet<Artifact>();
                   for (Artifact art : transData.getArtifactsInRelations(ChangeType.Added,
-                        CoreRelationTypes.Default_Hierarchical__Child)) {
+                     CoreRelationTypes.Default_Hierarchical__Child)) {
                      if (!art.isDeleted() && art.getParent() != null) {
                         parents.add(art.getParent());
                      }
@@ -1507,7 +1495,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
          } else {
             if (artifact.isHistorical()) {
                artifactData.setArtifact(ArtifactQuery.getArtifactFromId(artifact.getArtId(), artifact.getBranch(),
-                     EXCLUDE_DELETED));
+                  EXCLUDE_DELETED));
             }
 
             Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(artifact.getBranch());
@@ -1516,7 +1504,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
             if (!root.equals(artifactRoot)) {
                String artifactRootName = artifactRoot != null ? artifactRoot.getName() : artifact.getName();
                throw new OseeStateException(
-                     "The artifact " + artifact.getName() + " is rooted on an orphan tree at " + artifactRootName);
+                  "The artifact " + artifact.getName() + " is rooted on an orphan tree at " + artifactRootName);
             }
          }
       }
@@ -1525,7 +1513,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
    @Override
    public void handleBranchEvent(Sender sender, final BranchEvent branchEvent) {
       if (branchEvent.getEventType() == BranchEventType.Committed && branch != null && branch.getGuid().equals(
-            branchEvent.getBranchGuid())) {
+         branchEvent.getBranchGuid())) {
          SkynetViews.closeView(VIEW_ID, getViewSite().getSecondaryId());
       }
    }

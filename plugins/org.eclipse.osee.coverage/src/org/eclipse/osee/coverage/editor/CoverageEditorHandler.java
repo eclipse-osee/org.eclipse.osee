@@ -12,10 +12,10 @@ package org.eclipse.osee.coverage.editor;
 
 import java.util.logging.Level;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.AbstractEditorHandler;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 
 /**
  * @author Donald G. Dunne
@@ -23,11 +23,11 @@ import org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.Ab
 public class CoverageEditorHandler extends AbstractEditorHandler {
 
    @Override
-   public Object execute(ExecutionEvent event) throws ExecutionException {
+   public Object execute(ExecutionEvent event) {
       if (!artifacts.isEmpty()) {
          CoverageRenderer renderer = new CoverageRenderer();
          try {
-            renderer.open(artifacts);
+            renderer.open(artifacts, PresentationType.SPECIALIZED_EDIT);
          } catch (OseeCoreException ex) {
             OseeLog.log(CoverageEditorHandler.class, Level.SEVERE, ex);
          }

@@ -52,13 +52,6 @@ public class AtsWorkflowRenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public void open(List<Artifact> artifacts) throws OseeCoreException {
-      for (Artifact artifact : artifacts) {
-         AtsUtil.openATSAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
-      }
-   }
-
-   @Override
    public AtsWorkflowRenderer newInstance() throws OseeCoreException {
       return new AtsWorkflowRenderer();
    }
@@ -72,16 +65,18 @@ public class AtsWorkflowRenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public void preview(List<Artifact> artifacts) throws OseeCoreException {
-      open(artifacts);
-   }
-
-   @Override
    public int minimumRanking() throws OseeCoreException {
       if (AccessControlManager.isOseeAdmin()) {
          return NO_MATCH;
       } else {
          return PRESENTATION_TYPE;
+      }
+   }
+
+   @Override
+   public void open(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
+      for (Artifact artifact : artifacts) {
+         AtsUtil.openATSAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
       }
    }
 }

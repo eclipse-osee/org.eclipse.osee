@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.config.AtsConfigManager;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.workflow.editor.AtsWorkflowConfigEditor;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions.RuleWorkItemId;
 import org.eclipse.osee.ats.workflow.page.AtsCancelledWorkPageDefinition;
@@ -32,11 +31,13 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
+import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition.TransitionType;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.WriteType;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 
@@ -84,8 +85,7 @@ public class AtsWorkflowConfigCreationWizard extends Wizard implements INewWizar
          }
          transaction.execute();
 
-         AtsWorkflowConfigEditor.editWorkflow(workflow);
-
+         RendererManager.open(workflow.getArtifact(), PresentationType.SPECIALIZED_EDIT);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -119,7 +119,7 @@ public class AtsWorkflowConfigCreationWizard extends Wizard implements INewWizar
    public static WorkflowData generateSimpleWorkflow(String namespace, SkynetTransaction transaction, TeamDefinitionArtifact teamDef) throws OseeCoreException {
       WorkFlowDefinition workflow = new WorkFlowDefinition(namespace, namespace, null);
       WorkPageDefinition endorsePage =
-            new WorkPageDefinition("Endorse", namespace + ".Endorse", AtsEndorseWorkPageDefinition.ID);
+         new WorkPageDefinition("Endorse", namespace + ".Endorse", AtsEndorseWorkPageDefinition.ID);
 
       workflow.setStartPageId(endorsePage.getPageName());
 
@@ -129,16 +129,16 @@ public class AtsWorkflowConfigCreationWizard extends Wizard implements INewWizar
       implementPage.addWorkItem(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName());
 
       WorkPageDefinition completedPage =
-            new WorkPageDefinition("Completed", namespace + ".Completed", AtsCompletedWorkPageDefinition.ID);
+         new WorkPageDefinition("Completed", namespace + ".Completed", AtsCompletedWorkPageDefinition.ID);
 
       WorkPageDefinition cancelledPage =
-            new WorkPageDefinition("Cancelled", namespace + ".Cancelled", AtsCancelledWorkPageDefinition.ID);
+         new WorkPageDefinition("Cancelled", namespace + ".Cancelled", AtsCancelledWorkPageDefinition.ID);
 
       workflow.addPageTransition(endorsePage.getPageName(), implementPage.getPageName(), TransitionType.ToPageAsDefault);
       workflow.addPageTransition(implementPage.getPageName(), endorsePage.getPageName(), TransitionType.ToPageAsReturn);
       workflow.addPageTransition(cancelledPage.getPageName(), endorsePage.getPageName(), TransitionType.ToPageAsReturn);
       workflow.addPageTransition(implementPage.getPageName(), completedPage.getPageName(),
-            TransitionType.ToPageAsDefault);
+         TransitionType.ToPageAsDefault);
       workflow.addPageTransition(endorsePage.getPageName(), cancelledPage.getPageName(), TransitionType.ToPage);
 
       List<Artifact> artifacts = new ArrayList<Artifact>();

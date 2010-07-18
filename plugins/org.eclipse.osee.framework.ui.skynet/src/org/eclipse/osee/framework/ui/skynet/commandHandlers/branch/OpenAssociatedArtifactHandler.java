@@ -27,9 +27,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
+import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 
 /**
  * @author Jeff C. Phillips
@@ -39,7 +40,7 @@ public class OpenAssociatedArtifactHandler extends CommandHandler {
    @Override
    public Object execute(ExecutionEvent arg0) throws ExecutionException {
       IStructuredSelection selection =
-            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+         (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
       Branch selectedBranch = Handlers.getBranchesFromStructuredSelection(selection).iterator().next();
 
       try {
@@ -52,13 +53,13 @@ public class OpenAssociatedArtifactHandler extends CommandHandler {
             if (associatedArtifact instanceof IATSArtifact) {
                OseeAts.getInstance().openArtifact(associatedArtifact);
             } else {
-               ArtifactEditor.editArtifact(associatedArtifact);
+               RendererManager.open(associatedArtifact, PresentationType.GENERALIZED_EDIT);
             }
          } else {
             OseeLog.log(
-                  SkynetGuiPlugin.class,
-                  OseeLevel.SEVERE_POPUP,
-                  "The user " + UserManager.getUser() + " does not have read access to " + selectedBranch.getAssociatedArtifactId());
+               SkynetGuiPlugin.class,
+               OseeLevel.SEVERE_POPUP,
+               "The user " + UserManager.getUser() + " does not have read access to " + selectedBranch.getAssociatedArtifactId());
          }
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);

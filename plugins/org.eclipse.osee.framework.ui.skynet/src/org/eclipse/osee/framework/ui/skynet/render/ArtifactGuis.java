@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.render;
 
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
@@ -20,9 +20,11 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
+import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.swt.widgets.Display;
 
 public final class ArtifactGuis {
@@ -32,12 +34,12 @@ public final class ArtifactGuis {
    }
 
    private static final String OTHER_EDIT_SQL =
-            "select br.branch_id, att.gamma_id, att.attr_id from osee_attribute att, osee_txs txs, osee_branch br where att.art_id = ? and att.gamma_id = txs.gamma_id and txs.branch_id = br.branch_id and txs.transaction_id <> br.baseline_transaction_id and br.branch_id <> ? and br.parent_branch_id = ? and br.archived = ?";
+      "select br.branch_id, att.gamma_id, att.attr_id from osee_attribute att, osee_txs txs, osee_branch br where att.art_id = ? and att.gamma_id = txs.gamma_id and txs.branch_id = br.branch_id and txs.transaction_id <> br.baseline_transaction_id and br.branch_id <> ? and br.parent_branch_id = ? and br.archived = ?";
 
    private static final String EDIT_MESSAGE =
-            "%d of the %d artifacts about to be edited have already been modified on the following branches:%s\n\nDo you still wish to proceed?";
+      "%d of the %d artifacts about to be edited have already been modified on the following branches:%s\n\nDo you still wish to proceed?";
 
-   public static boolean checkOtherEdit(List<Artifact> artifacts) throws OseeCoreException {
+   public static boolean checkOtherEdit(Collection<Artifact> artifacts) throws OseeCoreException {
       Conditions.checkNotNull(artifacts, "artifacts to check");
       Conditions.checkExpressionFailOnTrue(artifacts.isEmpty(), "Must have at least one artifact for checking");
 
@@ -56,10 +58,23 @@ public final class ArtifactGuis {
             branchMessage.append("\n\t");
             branchMessage.append(branchName);
          }
+
          String message = String.format(EDIT_MESSAGE, modifiedCount, artifacts.size(), branchMessage);
-         return MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Confirm Edit", message);
+         return confirmEdit(message);
       }
       return true;
+   }
+
+   private static boolean confirmEdit(final String message) {
+      final MutableBoolean editAllowed = new MutableBoolean(false);
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            editAllowed.setValue(MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Confirm Edit",
+               message));
+         }
+      }, true);
+      return editAllowed.getValue();
    }
 
    /**
@@ -76,7 +91,7 @@ public final class ArtifactGuis {
          try {
             Branch branch = artifact.getBranch();
             chStmt.runPreparedQuery(OTHER_EDIT_SQL, artifact.getArtId(), branch.getId(),
-                     branch.getParentBranch().getId(), BranchArchivedState.UNARCHIVED.getValue());
+               branch.getParentBranch().getId(), BranchArchivedState.UNARCHIVED.getValue());
 
             while (chStmt.next()) {
                int modifiedAttrId = chStmt.getInt("attr_id");

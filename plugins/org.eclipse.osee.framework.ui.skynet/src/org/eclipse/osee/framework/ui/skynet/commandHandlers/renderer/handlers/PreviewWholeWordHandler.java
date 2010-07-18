@@ -11,12 +11,10 @@
 package org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers;
 
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.WholeDocumentRenderer;
 
 /**
@@ -25,26 +23,17 @@ import org.eclipse.osee.framework.ui.skynet.render.WholeDocumentRenderer;
 public class PreviewWholeWordHandler extends AbstractEditorHandler {
 
    @Override
-   public Object execute(ExecutionEvent event) throws ExecutionException {
+   public Object execute(ExecutionEvent event) {
       if (!artifacts.isEmpty()) {
          try {
             WholeDocumentRenderer renderer = new WholeDocumentRenderer();
-            renderer.preview(artifacts);
+            renderer.open(artifacts, PresentationType.PREVIEW);
             dispose();
 
          } catch (OseeCoreException ex) {
             OseeLog.log(PreviewWholeWordHandler.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
-      return null;
-   }
-
-   /**
-    * A subclass may override this method if they would like options to be set on the renderer
-    * 
-    * @return
-    */
-   protected VariableMap getOptions() throws OseeArgumentException {
       return null;
    }
 }

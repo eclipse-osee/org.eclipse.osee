@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.render;
 
 import java.io.File;
-
 import org.eclipse.core.runtime.jobs.Job;
 
 /**

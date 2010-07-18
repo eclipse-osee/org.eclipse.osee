@@ -12,9 +12,9 @@ package org.eclipse.osee.ats.navigate;
 
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osee.ats.util.Import.ActionImportWizard;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.ui.PlatformUI;
 

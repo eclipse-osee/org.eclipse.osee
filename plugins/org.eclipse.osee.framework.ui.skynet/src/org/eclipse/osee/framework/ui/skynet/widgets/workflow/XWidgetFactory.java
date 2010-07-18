@@ -45,6 +45,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDateDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XFileTextWithSelectionDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.XFileTextWithSelectionDialog.Type;
 import org.eclipse.osee.framework.ui.skynet.widgets.XFlatDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XFloat;
 import org.eclipse.osee.framework.ui.skynet.widgets.XFloatDam;
@@ -66,7 +67,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextResourceDropDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.XFileTextWithSelectionDialog.Type;
 import org.osgi.framework.Bundle;
 
 /**

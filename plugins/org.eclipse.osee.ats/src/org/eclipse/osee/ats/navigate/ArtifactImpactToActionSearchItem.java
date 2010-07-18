@@ -59,7 +59,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
       EntryDialogWithBranchSelect ed =
-            new EntryDialogWithBranchSelect(getName(), "Enter Artifact Name (or string) to search (no wildcards)");
+         new EntryDialogWithBranchSelect(getName(), "Enter Artifact Name (or string) to search (no wildcards)");
       if (ed.open() == 0) {
          ActionToArtifactImpactJob job = new ActionToArtifactImpactJob(ed.getEntry(), ed.getBranch());
          job.setUser(true);
@@ -95,7 +95,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
 
       private void getMatrixItems() throws OseeCoreException {
          final Collection<Artifact> srchArts =
-               ArtifactQuery.getArtifactListFromName("%" + artifactName + "%", branch, INCLUDE_DELETED);
+            ArtifactQuery.getArtifactListFromName("%" + artifactName + "%", branch, INCLUDE_DELETED);
          final Set<Artifact> processArts = new HashSet<Artifact>();
          if (srchArts.isEmpty()) {
             return;
@@ -120,7 +120,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
          rd.log("Artifact Impact to Action for artifact(s) on branch \"" + branch.getShortName() + "\"");
 
          HashCollection<Artifact, TransactionRecord> transactionMap =
-               ChangeManager.getModifingTransactions(processArts);
+            ChangeManager.getModifingTransactions(processArts);
          HashCollection<Artifact, Branch> branchMap = ChangeManager.getModifingBranches(processArts);
          for (Artifact srchArt : processArts) {
             String str = String.format("Processing %d/%d - %s ", x++, processArts.size(), srchArt.getName());
@@ -140,7 +140,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
                   Artifact assocArt = BranchManager.getAssociatedArtifact(branch);
                   if (assocArt != null && !assocArt.equals(UserManager.getUser(SystemUser.OseeSystem))) {
                      rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {assocArt.getArtifactTypeName(), "Working",
-                           XResultData.getHyperlink(assocArt), assocArt.getName()}));
+                        XResultData.getHyperlink(assocArt), assocArt.getName()}));
                   } else {
                      rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {"Branch", "", branch.getName()}));
                   }
@@ -160,10 +160,10 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
                   monitor.subTask(transStr);
                   if (transactionId.getCommit() > 0) {
                      Artifact assocArt =
-                           ArtifactQuery.getArtifactFromId(transactionId.getCommit(), BranchManager.getCommonBranch());
+                        ArtifactQuery.getArtifactFromId(transactionId.getCommit(), BranchManager.getCommonBranch());
                      if (assocArt instanceof TeamWorkFlowArtifact) {
                         rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {assocArt.getArtifactTypeName(),
-                              "Committed", assocArt.getHumanReadableId(), assocArt.getName()}));
+                           "Committed", assocArt.getHumanReadableId(), assocArt.getName()}));
                         committedChanges = true;
                      }
                   }

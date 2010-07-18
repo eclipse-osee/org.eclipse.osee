@@ -55,9 +55,10 @@ import org.eclipse.osee.framework.ui.plugin.util.ListSelectionDialogNoSave;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
+import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
@@ -236,11 +237,11 @@ public class MergeXWidget extends XWidget implements IAdaptable {
                   Conflict[] artifactChanges = new Conflict[0];
                   if (conflicts[0].getToTransactionId() != null) {
                      setConflicts(ConflictManagerInternal.getConflictsPerBranch(conflicts[0].getSourceBranch(),
-                           conflicts[0].getDestBranch(), conflicts[0].getToTransactionId(), monitor).toArray(
-                           artifactChanges));
+                        conflicts[0].getDestBranch(), conflicts[0].getToTransactionId(), monitor).toArray(
+                        artifactChanges));
                   } else {
                      setConflicts(ConflictManagerInternal.getConflictsPerBranch(conflicts[0].getCommitTransactionId(),
-                           monitor).toArray(artifactChanges));
+                        monitor).toArray(artifactChanges));
                   }
                }
             } catch (Exception ex) {
@@ -399,11 +400,11 @@ public class MergeXWidget extends XWidget implements IAdaptable {
                if (showConflicts) {
                   if (commitTrans == null) {
                      conflicts =
-                           ConflictManagerInternal.getConflictsPerBranch(sourceBranch, destBranch, tranId, monitor).toArray(
-                                 new Conflict[0]);
+                        ConflictManagerInternal.getConflictsPerBranch(sourceBranch, destBranch, tranId, monitor).toArray(
+                           new Conflict[0]);
                   } else {
                      conflicts =
-                           ConflictManagerInternal.getConflictsPerBranch(commitTrans, monitor).toArray(new Conflict[0]);
+                        ConflictManagerInternal.getConflictsPerBranch(commitTrans, monitor).toArray(new Conflict[0]);
                   }
                }
 
@@ -464,7 +465,7 @@ public class MergeXWidget extends XWidget implements IAdaptable {
       if (conflicts != null && conflicts.length != 0) {
          if (sourceBranch != null) {
             displayLabelText =
-                  "Source Branch :  " + sourceBranch.getName() + "\nDestination Branch :  " + destBranch.getName();
+               "Source Branch :  " + sourceBranch.getName() + "\nDestination Branch :  " + destBranch.getName();
          } else {
             displayLabelText = "Commit Transaction ID :  " + commitTrans + " " + commitTrans.getComment();
          }
@@ -580,7 +581,7 @@ public class MergeXWidget extends XWidget implements IAdaptable {
             if (branchAssociatedArtifact instanceof IATSArtifact) {
                OseeAts.getInstance().openArtifact(branchAssociatedArtifact);
             } else if (!branchAssociatedArtifact.equals(UserManager.getUser(SystemUser.OseeSystem))) {
-               ArtifactEditor.editArtifact(branchAssociatedArtifact);
+               RendererManager.open(branchAssociatedArtifact, PresentationType.GENERALIZED_EDIT);
             } else {
                AWorkbench.popup("ERROR", "Unknown branch association");
             }
@@ -669,7 +670,7 @@ public class MergeXWidget extends XWidget implements IAdaptable {
                ArrayList<Integer> branchIds = new ArrayList<Integer>();
                try {
                   Collection<Integer> destBranches =
-                        ConflictManagerInternal.getDestinationBranchesMerged(sourceBranch.getId());
+                     ConflictManagerInternal.getDestinationBranchesMerged(sourceBranch.getId());
                   for (Integer integer : destBranches) {
                      if (integer.intValue() != destBranch.getId()) {
                         selections.add(BranchManager.getBranch(integer).getName());
@@ -678,10 +679,10 @@ public class MergeXWidget extends XWidget implements IAdaptable {
                   }
                   if (selections.size() > 0) {
                      ListSelectionDialogNoSave dialog =
-                           new ListSelectionDialogNoSave(selections.toArray(),
-                                 Display.getCurrent().getActiveShell().getShell(), "Apply Prior Merge Resolution",
-                                 null, "Select the destination branch that the previous commit was appplied to", 2,
-                                 new String[] {"Apply", "Cancel"}, 1);
+                        new ListSelectionDialogNoSave(selections.toArray(),
+                           Display.getCurrent().getActiveShell().getShell(), "Apply Prior Merge Resolution", null,
+                           "Select the destination branch that the previous commit was appplied to", 2, new String[] {
+                              "Apply", "Cancel"}, 1);
                      if (dialog.open() == 0) {
                         System.out.print("Applying the merge found for Branch " + branchIds.toArray()[dialog.getSelection()]);
                         applyPreviousMerge(branchIds.get(dialog.getSelection()));
@@ -689,8 +690,8 @@ public class MergeXWidget extends XWidget implements IAdaptable {
                   }
                   if (selections.isEmpty()) {
                      new MessageDialog(Display.getCurrent().getActiveShell().getShell(),
-                           "Apply Prior Merge Resolution", null, "This Source Branch has had No Prior Merges", 2,
-                           new String[] {"OK"}, 1).open();
+                        "Apply Prior Merge Resolution", null, "This Source Branch has had No Prior Merges", 2,
+                        new String[] {"OK"}, 1).open();
                   }
                } catch (OseeCoreException ex) {
                   OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);

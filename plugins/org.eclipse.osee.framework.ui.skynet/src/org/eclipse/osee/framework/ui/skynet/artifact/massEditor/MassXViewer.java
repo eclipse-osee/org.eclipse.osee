@@ -98,7 +98,9 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler, IFr
 
    @Override
    public boolean isColumnMultiEditable(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
-      if (EXTRA_COLUMNS.contains(treeColumn.getText())) return false;
+      if (EXTRA_COLUMNS.contains(treeColumn.getText())) {
+         return false;
+      }
       return super.isColumnMultiEditable(treeColumn, treeItems);
    }
 
@@ -164,7 +166,7 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler, IFr
       // Do not allow drop if default branch is not same as artifacts that reside in this table
       DropTarget target = new DropTarget(getTree(), DND.DROP_COPY);
       target.setTransfer(new Transfer[] {FileTransfer.getInstance(), TextTransfer.getInstance(),
-            ArtifactTransfer.getInstance()});
+         ArtifactTransfer.getInstance()});
       target.addDropListener(new DropTargetAdapter() {
 
          @Override
@@ -199,16 +201,20 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler, IFr
 
    @Override
    public void handleDoubleClick() {
-      if (getSelectedArtifacts().isEmpty()) return;
-      Artifact art = getSelectedArtifacts().iterator().next();
-      RendererManager.openInJob(art, PresentationType.GENERALIZED_EDIT);
+      if (getSelectedArtifacts().isEmpty()) {
+         return;
+      }
+      RendererManager.openInJob(getSelectedArtifacts(), PresentationType.GENERALIZED_EDIT);
    }
 
    public ArrayList<Artifact> getLoadedArtifacts() {
       ArrayList<Artifact> arts = new ArrayList<Artifact>();
       TreeItem items[] = getTree().getItems();
-      if (items.length > 0) for (TreeItem item : items)
-         arts.add((Artifact) item.getData());
+      if (items.length > 0) {
+         for (TreeItem item : items) {
+            arts.add((Artifact) item.getData());
+         }
+      }
       return arts;
    }
 
@@ -223,8 +229,11 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler, IFr
    public ArrayList<Artifact> getSelectedArtifacts() {
       ArrayList<Artifact> arts = new ArrayList<Artifact>();
       TreeItem items[] = getTree().getSelection();
-      if (items.length > 0) for (TreeItem item : items)
-         arts.add((Artifact) item.getData());
+      if (items.length > 0) {
+         for (TreeItem item : items) {
+            arts.add((Artifact) item.getData());
+         }
+      }
       return arts;
    }
 

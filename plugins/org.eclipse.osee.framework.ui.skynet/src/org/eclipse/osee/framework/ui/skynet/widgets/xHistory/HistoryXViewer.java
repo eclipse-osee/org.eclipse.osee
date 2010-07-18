@@ -17,12 +17,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.preferences.EditorsPreferencePage;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.swt.widgets.Composite;
@@ -41,25 +36,14 @@ public class HistoryXViewer extends XViewer {
 
    @Override
    public void handleDoubleClick() {
-      try {
-         if (getSelectedChanges().isEmpty()) {
-            return;
-         }
+      if (getSelectedChanges().isEmpty()) {
+         return;
+      }
 
-         Artifact artifact = getSelectedChanges().iterator().next();
+      Artifact artifact = getSelectedChanges().iterator().next();
 
-         if (artifact != null) {
-            ArrayList<Artifact> artifacts = new ArrayList<Artifact>(1);
-            artifacts.add(artifact);
-
-            if (EditorsPreferencePage.isPreviewOnDoubleClickForWordArtifacts()) {
-               RendererManager.previewInJob(artifacts);
-            } else {
-               RendererManager.openInJob(artifacts, PresentationType.GENERALIZED_EDIT);
-            }
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      if (artifact != null) {
+         RendererManager.openInJob(artifact, PresentationType.DEFAULT_OPEN);
       }
    }
 

@@ -68,7 +68,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 import org.eclipse.swt.widgets.Composite;
@@ -98,19 +97,6 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
    public AtsWorkflowConfigEditor() {
       setEditDomain(new DefaultEditDomain(this));
       OseeEventManager.addListener(this);
-   }
-
-   public static void editWorkflow(final WorkFlowDefinition workflow) {
-      Displays.ensureInDisplayThread(new Runnable() {
-         public void run() {
-            try {
-               AWorkbench.getActivePage().openEditor(new AtsWorkflowConfigEditorInput(workflow),
-                     AtsWorkflowConfigEditor.EDITOR_ID);
-            } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-      });
    }
 
    /**
@@ -200,10 +186,11 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
       AWorkbench.popup("ERROR", "Not implemented yet");
    }
 
-   @SuppressWarnings("unchecked")
    @Override
    public Object getAdapter(Class type) {
-      if (type == IContentOutlinePage.class) return new ShapesOutlinePage(new TreeViewer());
+      if (type == IContentOutlinePage.class) {
+         return new ShapesOutlinePage(new TreeViewer());
+      }
       return super.getAdapter(type);
    }
 
@@ -213,7 +200,9 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
 
    @Override
    protected PaletteRoot getPaletteRoot() {
-      if (PALETTE_MODEL == null) PALETTE_MODEL = AtsWorkflowConfigEditorPaletteFactory.createPalette(this);
+      if (PALETTE_MODEL == null) {
+         PALETTE_MODEL = AtsWorkflowConfigEditorPaletteFactory.createPalette(this);
+      }
       return PALETTE_MODEL;
    }
 
@@ -284,7 +273,7 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
                   pageShape.setLocation(new Point(50, yLoc += 90));
                }
                pageShape.setStartPage(startPage.getId().equals(pageShape.getId()) || pageShape.getId().endsWith(
-                     startPage.getId()));
+                  startPage.getId()));
                diagram.addChild(pageShape);
             }
 
@@ -292,7 +281,7 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
             for (WorkPageDefinition workPageDefinition : workflowDef.getPagesOrdered()) {
                WorkPageShape pageShape = getWorkPageShape(workPageDefinition);
                AtsWorkPage atsWorkPage =
-                     new AtsWorkPage(workflowDef, workPageDefinition, null, ATSXWidgetOptionResolver.getInstance());
+                  new AtsWorkPage(workflowDef, workPageDefinition, null, ATSXWidgetOptionResolver.getInstance());
                // Handle to pages
                Set<WorkPageDefinition> toPages = new HashSet<WorkPageDefinition>();
                toPages.addAll(atsWorkPage.getToPages());
@@ -332,7 +321,7 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
       for (Object object : getModel().getChildren()) {
          if (object instanceof WorkPageShape) {
             if (((WorkPageShape) object).getId().equals(page.getId()) || (page.getParentId() != null && ((WorkPageShape) object).getId().equals(
-                  page.getParentId()))) {
+               page.getParentId()))) {
                return (WorkPageShape) object;
             }
          }
@@ -362,10 +351,10 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
          getViewer().setEditPartFactory(new ShapesTreeEditPartFactory());
          // configure & add context menu to viewer
          ContextMenuProvider cmProvider =
-               new AtsWorkflowConfigEditorContextMenuProvider(getViewer(), getActionRegistry());
+            new AtsWorkflowConfigEditorContextMenuProvider(getViewer(), getActionRegistry());
          getViewer().setContextMenu(cmProvider);
          getSite().registerContextMenu("org.eclipse.osee.ats.config.editor.contextmenu", cmProvider,
-               getSite().getSelectionProvider());
+            getSite().getSelectionProvider());
          // hook outline viewer
          getSelectionSynchronizer().addViewer(getViewer());
          // initialize outline viewer with model
@@ -417,7 +406,9 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
 
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
-      if (transData.branchId != AtsUtil.getAtsBranch().getId()) return;
+      if (transData.branchId != AtsUtil.getAtsBranch().getId()) {
+         return;
+      }
       for (Artifact delArt : transData.cacheDeletedArtifacts) {
          if (delArt.isOfType(CoreArtifactTypes.WorkFlowDefinition)) {
             if (delArt.getName().equals(getPartName())) {
