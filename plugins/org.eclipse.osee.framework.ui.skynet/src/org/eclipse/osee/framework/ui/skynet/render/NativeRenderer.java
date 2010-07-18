@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.render;
 
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PREVIEW;
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.SPECIALIZED_EDIT;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,10 +58,8 @@ public class NativeRenderer extends FileSystemRenderer {
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
       if (artifact.isAttributeTypeValid(CoreAttributeTypes.NATIVE_CONTENT)) {
-         switch (presentationType) {
-            case SPECIALIZED_EDIT:
-            case PREVIEW:
-               return PRESENTATION_SUBTYPE_MATCH;
+         if (presentationType.matches(SPECIALIZED_EDIT, PREVIEW)) {
+            return PRESENTATION_SUBTYPE_MATCH;
          }
       }
       return NO_MATCH;
@@ -76,7 +76,7 @@ public class NativeRenderer extends FileSystemRenderer {
       Program program = Program.findProgram(extension);
       if (program == null) {
          throw new OseeArgumentException(
-               "No program associated with the extension " + extension + " found on your local machine.");
+            "No program associated with the extension " + extension + " found on your local machine.");
       }
       return program;
    }
