@@ -189,7 +189,7 @@ public abstract class Rule {
       this.subdirectoryName = subdirectoryName;
    }
 
-   public void setFileNamePattern(Pattern fileNamePattern) {
-      this.fileNamePattern = fileNamePattern;
+   public void setFileNamePattern(String fileNamePattern) {
+      this.fileNamePattern = Pattern.compile(fileNamePattern);
    }
 }

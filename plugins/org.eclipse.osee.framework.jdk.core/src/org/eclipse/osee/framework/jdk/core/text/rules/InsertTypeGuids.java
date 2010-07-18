@@ -27,7 +27,7 @@ public class InsertTypeGuids extends Rule {
    public InsertTypeGuids() {
       super(null);
       //      super("oseetemp");
-      setFileNamePattern(Pattern.compile(".*\\.osee"));
+      setFileNamePattern(".*\\.osee");
       typeGuids.put("Phone", "AAMFEbUkVSwKu4LSpWAA");
       typeGuids.put("Mobile Phone", "AAMFEbWi7AIC1z82PxQA");
    }
