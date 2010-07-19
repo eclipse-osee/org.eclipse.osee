@@ -146,7 +146,6 @@ public class InternalEventManager2 {
    }
 
    public static void processEventArtifactsAndRelations(Sender sender, ArtifactEvent artifactEvent) {
-      OseeEventManager.eventLog(String.format("IEM2: processArtsAndRels [%s]", artifactEvent));
       for (IEventListener listener : priorityListeners) {
          try {
             processEventArtifactsAndRelationsListener(listener, artifactEvent, sender);
@@ -166,8 +165,8 @@ public class InternalEventManager2 {
    }
 
    private static void processEventArtifactsAndRelationsListener(IEventListener listener, ArtifactEvent artifactEvent, Sender sender) {
-      System.out.println("FEM Processing " + listener);
       if (listener != null && !(listener instanceof IArtifactEventListener)) return;
+      OseeEventManager.eventLog(String.format("IEM2: processArtsAndRels [%s]", artifactEvent));
       // If true, listener will be called
       boolean match = false;
       if (listener instanceof IEventFilteredListener) {
