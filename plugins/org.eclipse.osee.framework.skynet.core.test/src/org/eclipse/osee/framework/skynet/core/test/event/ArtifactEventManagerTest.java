@@ -35,12 +35,12 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ChangeArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.event.InternalEventManager2;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.RemoteEventManager2;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event.msgs.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
-import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventManager;
 import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventUtil;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidRelation;
@@ -98,14 +98,14 @@ public class ArtifactEventManagerTest {
    public void testRegistration() throws Exception {
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
 
-      FrameworkEventManager.internalRemoveAllListeners();
-      Assert.assertEquals(0, FrameworkEventManager.getNumberOfListeners());
+      InternalEventManager2.internalRemoveAllListeners();
+      Assert.assertEquals(0, InternalEventManager2.getNumberOfListeners());
 
-      FrameworkEventManager.addListener(artifactEventListener);
-      Assert.assertEquals(1, FrameworkEventManager.getNumberOfListeners());
+      OseeEventManager.addListener(artifactEventListener);
+      Assert.assertEquals(1, InternalEventManager2.getNumberOfListeners());
 
-      FrameworkEventManager.removeListener(artifactEventListener);
-      Assert.assertEquals(0, FrameworkEventManager.getNumberOfListeners());
+      OseeEventManager.removeListener(artifactEventListener);
+      Assert.assertEquals(0, InternalEventManager2.getNumberOfListeners());
 
       TestUtil.severeLoggingEnd(monitorLog);
    }
@@ -123,11 +123,11 @@ public class ArtifactEventManagerTest {
       }
 
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
-      FrameworkEventManager.internalRemoveAllListeners();
-      Assert.assertEquals(0, FrameworkEventManager.getNumberOfListeners());
+      InternalEventManager2.internalRemoveAllListeners();
+      Assert.assertEquals(0, InternalEventManager2.getNumberOfListeners());
 
-      FrameworkEventManager.addListener(artifactEventListener);
-      Assert.assertEquals(1, FrameworkEventManager.getNumberOfListeners());
+      OseeEventManager.addListener(artifactEventListener);
+      Assert.assertEquals(1, InternalEventManager2.getNumberOfListeners());
 
       // Test attribute injection
       Artifact injectArt = remoteInjection_attributes_modifyName();
@@ -150,11 +150,11 @@ public class ArtifactEventManagerTest {
    public void testArtifactRelationEvents() throws Exception {
 
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
-      FrameworkEventManager.internalRemoveAllListeners();
-      Assert.assertEquals(0, FrameworkEventManager.getNumberOfListeners());
+      InternalEventManager2.internalRemoveAllListeners();
+      Assert.assertEquals(0, InternalEventManager2.getNumberOfListeners());
 
-      FrameworkEventManager.addListener(artifactEventListener);
-      Assert.assertEquals(1, FrameworkEventManager.getNumberOfListeners());
+      OseeEventManager.addListener(artifactEventListener);
+      Assert.assertEquals(1, InternalEventManager2.getNumberOfListeners());
 
       Artifact newArt = testArtifactRelationEvents__addArtifact();
       testArtifactRelationEvents__addRelation(newArt);
@@ -656,8 +656,8 @@ public class ArtifactEventManagerTest {
    public void testPurgeArtifactEvents() throws Exception {
 
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
-      FrameworkEventManager.internalRemoveAllListeners();
-      Assert.assertEquals(0, FrameworkEventManager.getNumberOfListeners());
+      InternalEventManager2.internalRemoveAllListeners();
+      Assert.assertEquals(0, InternalEventManager2.getNumberOfListeners());
 
       // Add new Artifact Test
       Artifact newArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, BranchManager.getCommonBranch());
@@ -666,8 +666,8 @@ public class ArtifactEventManagerTest {
 
       Thread.sleep(3000);
 
-      FrameworkEventManager.addListener(artifactEventListener);
-      Assert.assertEquals(1, FrameworkEventManager.getNumberOfListeners());
+      InternalEventManager2.addListener(artifactEventListener);
+      Assert.assertEquals(1, InternalEventManager2.getNumberOfListeners());
 
       // Purge Artifact
       newArt.purgeFromBranch();
@@ -696,8 +696,8 @@ public class ArtifactEventManagerTest {
    @org.junit.Test
    public void testReloadArtifactEvents() throws Exception {
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
-      FrameworkEventManager.internalRemoveAllListeners();
-      Assert.assertEquals(0, FrameworkEventManager.getNumberOfListeners());
+      InternalEventManager2.internalRemoveAllListeners();
+      Assert.assertEquals(0, InternalEventManager2.getNumberOfListeners());
 
       // Add new Artifact Test
       Artifact newArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, BranchManager.getCommonBranch());
@@ -706,8 +706,8 @@ public class ArtifactEventManagerTest {
 
       Thread.sleep(3000);
 
-      FrameworkEventManager.addListener(artifactEventListener);
-      Assert.assertEquals(1, FrameworkEventManager.getNumberOfListeners());
+      OseeEventManager.addListener(artifactEventListener);
+      Assert.assertEquals(1, InternalEventManager2.getNumberOfListeners());
 
       // reload Artifact
       StaticIdManager.setSingletonAttributeValue(newArt, "this");
@@ -736,8 +736,8 @@ public class ArtifactEventManagerTest {
    public void testChangeTypeArtifactEvents() throws Exception {
 
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
-      FrameworkEventManager.internalRemoveAllListeners();
-      Assert.assertEquals(0, FrameworkEventManager.getNumberOfListeners());
+      InternalEventManager2.internalRemoveAllListeners();
+      Assert.assertEquals(0, InternalEventManager2.getNumberOfListeners());
 
       // Add new Artifact for Test
       Artifact newArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, BranchManager.getCommonBranch());
@@ -746,8 +746,8 @@ public class ArtifactEventManagerTest {
 
       Thread.sleep(3000);
 
-      FrameworkEventManager.addListener(artifactEventListener);
-      Assert.assertEquals(1, FrameworkEventManager.getNumberOfListeners());
+      OseeEventManager.addListener(artifactEventListener);
+      Assert.assertEquals(1, InternalEventManager2.getNumberOfListeners());
 
       // reload Artifact
       Assert.assertTrue(newArt.isOfType(CoreArtifactTypes.GeneralData));

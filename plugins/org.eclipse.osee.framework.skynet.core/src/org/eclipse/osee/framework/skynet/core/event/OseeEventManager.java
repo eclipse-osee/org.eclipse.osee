@@ -10,12 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.event;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -28,12 +31,13 @@ import org.eclipse.osee.framework.skynet.core.event2.AccessControlEvent;
 import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event2.BroadcastEvent;
-import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventManager;
 import org.eclipse.osee.framework.skynet.core.event2.TransactionChange;
 import org.eclipse.osee.framework.skynet.core.event2.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event2.TransactionEventType;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
+import org.eclipse.osee.framework.skynet.core.event2.filter.BranchGuidEventFilter;
+import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
@@ -48,6 +52,8 @@ import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 public class OseeEventManager {
 
    private static IBranchEventListener testBranchEventListener;
+   private static List<IEventFilter> commonBranchEventFilter;
+   private static BranchGuidEventFilter commonBranchGuidEvenFilter;
 
    private static Sender getSender(Object sourceObject) throws OseeAuthenticationRequiredException {
       // Sender came from Remote Event Manager if source == sender
@@ -208,17 +214,17 @@ public class OseeEventManager {
     */
    public static void addPriorityListener(IEventListener listener) {
       if (OseeEventManager.isOldEvents()) InternalEventManager.addPriorityListener(listener);
-      if (OseeEventManager.isNewEvents()) FrameworkEventManager.addPriorityListener(listener);
+      if (OseeEventManager.isNewEvents()) InternalEventManager2.addPriorityListener(listener);
    }
 
    public static void addListener(IEventListener listener) {
       if (OseeEventManager.isOldEvents()) InternalEventManager.addListener(listener);
-      if (OseeEventManager.isNewEvents()) FrameworkEventManager.addListener(listener);
+      if (OseeEventManager.isNewEvents()) InternalEventManager2.addListener(listener);
    }
 
    public static void removeListener(IEventListener listener) {
       if (OseeEventManager.isOldEvents()) InternalEventManager.removeListeners(listener);
-      if (OseeEventManager.isNewEvents()) FrameworkEventManager.removeListeners(listener);
+      if (OseeEventManager.isNewEvents()) InternalEventManager2.removeListeners(listener);
    }
 
    public static boolean isDisableEvents() {
@@ -234,7 +240,7 @@ public class OseeEventManager {
    // Return report showing all listeners registered
    public static String getListenerReport() {
       if (OseeEventManager.isOldEvents()) return InternalEventManager.getListenerReport();
-      if (OseeEventManager.isNewEvents()) return FrameworkEventManager.getListenerReport();
+      if (OseeEventManager.isNewEvents()) return InternalEventManager2.getListenerReport();
       return "Neither event system is active";
    }
 
@@ -294,6 +300,36 @@ public class OseeEventManager {
       } catch (Exception ex1) {
          OseeLog.log(Activator.class, Level.SEVERE, ex1);
       }
+   }
+
+   public static List<IEventFilter> getEventFiltersForBranch(Branch branch) {
+      try {
+         List<IEventFilter> eventFilters = new ArrayList<IEventFilter>(2);
+         eventFilters.add(new BranchGuidEventFilter(branch));
+         return eventFilters;
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+      return null;
+   }
+
+   public static List<IEventFilter> getCommonBranchEventFilters() {
+      try {
+         if (commonBranchEventFilter == null) {
+            commonBranchEventFilter = new ArrayList<IEventFilter>(2);
+            commonBranchEventFilter.add(getCommonBranchFilter());
+         }
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+      return commonBranchEventFilter;
+   }
+
+   public static BranchGuidEventFilter getCommonBranchFilter() {
+      if (commonBranchGuidEvenFilter == null) {
+         commonBranchGuidEvenFilter = new BranchGuidEventFilter(CoreBranches.COMMON);
+      }
+      return commonBranchGuidEvenFilter;
    }
 
 }

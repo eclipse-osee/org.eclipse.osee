@@ -23,9 +23,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeTransactionOperation;
+import org.eclipse.osee.framework.skynet.core.event.InternalEventManager2;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventManager;
 import org.eclipse.osee.framework.skynet.core.event2.ITransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event2.TransactionChange;
 import org.eclipse.osee.framework.skynet.core.event2.TransactionEvent;
@@ -47,14 +47,14 @@ public class TransactionEventTest {
    public void testRegistration() throws Exception {
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
 
-      FrameworkEventManager.internalRemoveAllListeners();
-      Assert.assertEquals(0, FrameworkEventManager.getNumberOfListeners());
+      InternalEventManager2.internalRemoveAllListeners();
+      Assert.assertEquals(0, InternalEventManager2.getNumberOfListeners());
 
-      FrameworkEventManager.addListener(transEventListener);
-      Assert.assertEquals(1, FrameworkEventManager.getNumberOfListeners());
+      OseeEventManager.addListener(transEventListener);
+      Assert.assertEquals(1, InternalEventManager2.getNumberOfListeners());
 
-      FrameworkEventManager.removeListener(transEventListener);
-      Assert.assertEquals(0, FrameworkEventManager.getNumberOfListeners());
+      OseeEventManager.removeListener(transEventListener);
+      Assert.assertEquals(0, InternalEventManager2.getNumberOfListeners());
 
       TestUtil.severeLoggingEnd(monitorLog);
    }
@@ -86,9 +86,9 @@ public class TransactionEventTest {
       Thread.sleep(3000);
 
       // Add listener for delete transaction event
-      FrameworkEventManager.internalRemoveAllListeners();
-      FrameworkEventManager.addListener(transEventListener);
-      Assert.assertEquals(1, FrameworkEventManager.getNumberOfListeners());
+      InternalEventManager2.internalRemoveAllListeners();
+      OseeEventManager.addListener(transEventListener);
+      Assert.assertEquals(1, InternalEventManager2.getNumberOfListeners());
 
       // Delete it
       IOperation operation = new PurgeTransactionOperation(Activator.getInstance(), false, transIdToDelete);

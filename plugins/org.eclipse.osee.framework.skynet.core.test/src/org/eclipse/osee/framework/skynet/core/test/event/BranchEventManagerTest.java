@@ -32,10 +32,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
+import org.eclipse.osee.framework.skynet.core.event.InternalEventManager2;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
-import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventManager;
 import org.eclipse.osee.support.test.util.TestUtil;
 
 /**
@@ -52,14 +52,14 @@ public class BranchEventManagerTest {
    public void testRegistration() throws Exception {
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
 
-      FrameworkEventManager.internalRemoveAllListeners();
-      Assert.assertEquals(0, FrameworkEventManager.getNumberOfListeners());
+      InternalEventManager2.internalRemoveAllListeners();
+      Assert.assertEquals(0, InternalEventManager2.getNumberOfListeners());
 
-      FrameworkEventManager.addListener(branchEventListener);
-      Assert.assertEquals(1, FrameworkEventManager.getNumberOfListeners());
+      InternalEventManager2.addListener(branchEventListener);
+      Assert.assertEquals(1, InternalEventManager2.getNumberOfListeners());
 
-      FrameworkEventManager.removeListener(branchEventListener);
-      Assert.assertEquals(0, FrameworkEventManager.getNumberOfListeners());
+      InternalEventManager2.removeListener(branchEventListener);
+      Assert.assertEquals(0, InternalEventManager2.getNumberOfListeners());
 
       TestUtil.severeLoggingEnd(monitorLog);
    }
@@ -67,9 +67,9 @@ public class BranchEventManagerTest {
    @org.junit.Test
    public void testEvents() throws Exception {
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
-      FrameworkEventManager.internalRemoveAllListeners();
-      FrameworkEventManager.addListener(branchEventListener);
-      Assert.assertEquals(1, FrameworkEventManager.getNumberOfListeners());
+      InternalEventManager2.internalRemoveAllListeners();
+      InternalEventManager2.addListener(branchEventListener);
+      Assert.assertEquals(1, InternalEventManager2.getNumberOfListeners());
 
       Branch topLevel = testEvents__topLevelAdded();
       Branch workingBranch = testEvents__workingAdded(topLevel);

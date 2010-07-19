@@ -61,7 +61,6 @@ import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventLi
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
-import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventManager;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
@@ -423,7 +422,7 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
 
    @Override
    public List<? extends IEventFilter> getEventFilters() {
-      return Arrays.asList(FrameworkEventManager.getCommonBranchFilter(), AtsUtil.getWorkItemArtifactTypeEventFilter());
+      return Arrays.asList(OseeEventManager.getCommonBranchFilter(), AtsUtil.getWorkItemArtifactTypeEventFilter());
    }
 
    @Override

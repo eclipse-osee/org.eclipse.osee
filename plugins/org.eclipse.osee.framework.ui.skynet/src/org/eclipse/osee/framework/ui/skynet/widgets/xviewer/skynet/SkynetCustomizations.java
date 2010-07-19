@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventLi
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
-import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventManager;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
@@ -235,7 +234,7 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
 
    @Override
    public List<? extends IEventFilter> getEventFilters() {
-      return FrameworkEventManager.getCommonBranchEventFilters();
+      return OseeEventManager.getCommonBranchEventFilters();
    }
 
    @Override

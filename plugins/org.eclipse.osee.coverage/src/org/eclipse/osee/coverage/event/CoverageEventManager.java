@@ -26,9 +26,9 @@ import org.eclipse.osee.framework.messaging.ConnectionNode;
 import org.eclipse.osee.framework.messaging.OseeMessagingListener;
 import org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback;
 import org.eclipse.osee.framework.messaging.ReplyConnection;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
-import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventManager;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactEventListener;
@@ -68,11 +68,11 @@ public class CoverageEventManager implements IArtifactEventListener, OseeMessagi
    }
 
    private void stopListeneingForFrameworkEvents() {
-      FrameworkEventManager.removeListener(this);
+      OseeEventManager.removeListener(this);
    }
 
    private void startListeningForFrameworkEvents() {
-      FrameworkEventManager.addListener(this);
+      OseeEventManager.addListener(this);
    }
 
    private ArtifactTypeEventFilter createArtifactTypeEventFilter() {

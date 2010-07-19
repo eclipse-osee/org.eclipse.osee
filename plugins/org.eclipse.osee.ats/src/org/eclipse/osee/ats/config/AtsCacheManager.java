@@ -42,7 +42,6 @@ import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventLi
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
-import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventManager;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidRelation;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
@@ -317,6 +316,6 @@ public class AtsCacheManager implements IArtifactEventListener, IArtifactsPurged
 
    @Override
    public List<? extends IEventFilter> getEventFilters() {
-      return Arrays.asList(FrameworkEventManager.getCommonBranchFilter());
+      return Arrays.asList(OseeEventManager.getCommonBranchFilter());
    }
 }

@@ -55,7 +55,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventManager;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event2.filter.ArtifactTypeEventFilter;
 import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
@@ -255,17 +255,17 @@ public final class AtsUtil {
       }
 
       try {
-      if (view == OseeEditor.ActionEditor) {
-         if (artifact instanceof StateMachineArtifact || artifact instanceof ActionArtifact) {
-            openATSAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
-         } else {
+         if (view == OseeEditor.ActionEditor) {
+            if (artifact instanceof StateMachineArtifact || artifact instanceof ActionArtifact) {
+               openATSAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
+            } else {
                RendererManager.open(artifact, PresentationType.GENERALIZED_EDIT);
-         }
-      } else if (view == OseeEditor.ArtifactEditor) {
+            }
+         } else if (view == OseeEditor.ArtifactEditor) {
             RendererManager.open(artifact, PresentationType.GENERALIZED_EDIT);
-      } else if (view == OseeEditor.ArtifactHyperViewer) {
-         AWorkbench.popup("ERROR", "Unimplemented");
-      }
+         } else if (view == OseeEditor.ArtifactHyperViewer) {
+            AWorkbench.popup("ERROR", "Unimplemented");
+         }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -422,7 +422,8 @@ public final class AtsUtil {
     * @param active state to validate against; Both will return all artifacts matching type
     * @param clazz type of artifacts to consider; null for all
     * @return set of Artifacts of type clazz that match the given active state of the "Active" or "ats.Active" attribute
-    * value. If no attribute exists, Active == true; If does exist then attribute value "yes" == true, "no" == false.
+    *         value. If no attribute exists, Active == true; If does exist then attribute value "yes" == true, "no" ==
+    *         false.
     */
    @SuppressWarnings("unchecked")
    public static <A extends Artifact> List<A> getActive(Collection<A> artifacts, Active active, Class<? extends Artifact> clazz) throws OseeCoreException {
@@ -449,7 +450,7 @@ public final class AtsUtil {
       try {
          if (atsObjectEventFilter == null) {
             atsObjectEventFilter = new ArrayList<IEventFilter>(2);
-            atsObjectEventFilter.add(FrameworkEventManager.getCommonBranchFilter());
+            atsObjectEventFilter.add(OseeEventManager.getCommonBranchFilter());
             atsObjectEventFilter.add(getAtsObjectArtifactTypeEventFilter());
          }
       } catch (Exception ex) {
@@ -461,8 +462,9 @@ public final class AtsUtil {
    public static ArtifactTypeEventFilter getAtsObjectArtifactTypeEventFilter() {
       if (atsObjectArtifactTypesFilter == null) {
          atsObjectArtifactTypesFilter =
-            new ArtifactTypeEventFilter(AtsArtifactTypes.TeamWorkflow, AtsArtifactTypes.Action, AtsArtifactTypes.Task,
-               AtsArtifactTypes.Goal, AtsArtifactTypes.PeerToPeerReview, AtsArtifactTypes.DecisionReview);
+               new ArtifactTypeEventFilter(AtsArtifactTypes.TeamWorkflow, AtsArtifactTypes.Action,
+                     AtsArtifactTypes.Task, AtsArtifactTypes.Goal, AtsArtifactTypes.PeerToPeerReview,
+                     AtsArtifactTypes.DecisionReview);
       }
       return atsObjectArtifactTypesFilter;
    }

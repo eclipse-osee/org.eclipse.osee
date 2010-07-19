@@ -50,7 +50,6 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
-import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventManager;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactEventListener;
@@ -152,7 +151,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
    @Override
    public void dispose() {
       OseeEventManager.removeListener(this);
-      FrameworkEventManager.removeListener(this);
+      OseeEventManager.removeListener(this);
       super.dispose();
    }
 
@@ -235,7 +234,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       SkynetGuiPlugin.getInstance().setHelp(parent, HELP_CONTEXT_ID, "org.eclipse.osee.framework.help.ui");
 
       OseeEventManager.addListener(this);
-      FrameworkEventManager.addListener(this);
+      OseeEventManager.addListener(this);
    }
 
    private void addPreviewMenuItem(MenuManager menuManager) {
@@ -291,8 +290,8 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
 
    private String addDiffItems(MenuManager subMenuManager, String command) {
       CommandContributionItem diffCommand =
-         Commands.getLocalCommandContribution(getSite(), subMenuManager.getId() + command, command, null, null, null,
-            null, null, null);
+            Commands.getLocalCommandContribution(getSite(), subMenuManager.getId() + command, command, null, null,
+                  null, null, null, null);
       subMenuManager.add(diffCommand);
       return diffCommand.getId();
    }
@@ -316,7 +315,8 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       sourecResourceCommand =
             Commands.getLocalCommandContribution(getSite(), "sourceResourceHistory",
                   "Show Source Artifact Resource History", null, null,
-            ImageManager.getImageDescriptor(FrameworkImage.DB_ICON_BLUE_EDIT), null, null, "source_Resource_History");
+                  ImageManager.getImageDescriptor(FrameworkImage.DB_ICON_BLUE_EDIT), null, null,
+                  "source_Resource_History");
       menuManager.add(sourecResourceCommand);
       return sourecResourceCommand.getId();
    }
@@ -324,8 +324,9 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
    private String addDestResourceHistoryMenuItem(MenuManager menuManager) {
       CommandContributionItem sourecResourceCommand;
       sourecResourceCommand =
-         Commands.getLocalCommandContribution(getSite(), "destResourceHistory", "Show Dest Artifact Resource History",
-            null, null, ImageManager.getImageDescriptor(FrameworkImage.DB_ICON_BLUE_EDIT), null, null,
+            Commands.getLocalCommandContribution(getSite(), "destResourceHistory",
+                  "Show Dest Artifact Resource History", null, null,
+                  ImageManager.getImageDescriptor(FrameworkImage.DB_ICON_BLUE_EDIT), null, null,
                   "dest_Resource_History");
       menuManager.add(sourecResourceCommand);
       return sourecResourceCommand.getId();
@@ -896,7 +897,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
    @Override
    public void handleArtifactEvent(ArtifactEvent artifactEvent, final Sender sender) {
       if (mergeXWidget.getXViewer() == null || mergeXWidget.getXViewer().getTree() == null || mergeXWidget.getXViewer().getTree().isDisposed()) {
-         FrameworkEventManager.removeListener(this);
+         OseeEventManager.removeListener(this);
          return;
       }
       if (!isApplicableEvent(artifactEvent.getBranchGuid())) {
