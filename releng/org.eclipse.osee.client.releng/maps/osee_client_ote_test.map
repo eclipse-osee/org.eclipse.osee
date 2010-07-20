@@ -1,3 +1,3 @@
 feature@org.eclipse.osee.client.ote.feature.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,features/org.eclipse.osee.client.ote.feature.test
 
-plugin@org.eclipse.osee.ote.message.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.ote.message.test
+fragment@org.eclipse.osee.ote.message.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.ote.message.test
