@@ -35,13 +35,13 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.ui.part.ViewPart;
@@ -142,12 +142,12 @@ public class AdminView extends ViewPart implements IActionable {
 
    public void handleBroadcastMessage() {
       EntryDialog ed =
-            new EntryDialog(Display.getCurrent().getActiveShell(), "Broadcast Message to OSEE Instantiations", null,
+            new EntryDialog(Displays.getActiveShell(), "Broadcast Message to OSEE Instantiations", null,
                   "Enter Message", MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
       if (ed.open() == 0) {
          String message = ed.getEntry();
          if (!message.equals("")) {
-            if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Broadcast Message",
+            if (MessageDialog.openConfirm(Displays.getActiveShell(), "Broadcast Message",
                   "Broadcast message\n\n\"" + message + "\"\n\nAre you sure?")) {
                try {
                   OseeEventManager.kickBroadcastEvent(this, new BroadcastEvent(BroadcastEventType.Message, null,
@@ -162,7 +162,7 @@ public class AdminView extends ViewPart implements IActionable {
    }
 
    public void handlePing() {
-      if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Ping OSEE Instantiations?",
+      if (MessageDialog.openConfirm(Displays.getActiveShell(), "Ping OSEE Instantiations?",
             "Ping OSEE Instantiations?")) {
          try {
             OseeEventManager.kickBroadcastEvent(this, new BroadcastEvent(BroadcastEventType.Ping, null,

@@ -81,7 +81,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.IMessage;
@@ -361,7 +360,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       gd.widthHint = 100;
       headerComp.setLayoutData(gd);
       headerComp.setLayout(ALayout.getZeroMarginLayout(1, false));
-      // mainComp.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+      // mainComp.setBackground(Displays.getSystemColor(SWT.COLOR_RED));
 
       // Display relations
       try {
@@ -413,7 +412,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       // Create Privileged Edit label
       if (sma.getEditor().isPriviledgedEditModeEnabled()) {
          Label label = toolkit.createLabel(comp, PRIVILEGED_EDIT);
-         label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+         label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
          label.setToolTipText("Priviledged Edit Mode is Enabled.  Editing any field in any state is authorized.  Select icon to disable");
       }
 
@@ -641,7 +640,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
                toolkit.createLabel(
                      comp,
                      "This is a historical version of this " + sma.getArtifactTypeName() + " and can not be edited; Select \"Open Latest\" to view/edit latest version.");
-         label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+         label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
       }
    }
 

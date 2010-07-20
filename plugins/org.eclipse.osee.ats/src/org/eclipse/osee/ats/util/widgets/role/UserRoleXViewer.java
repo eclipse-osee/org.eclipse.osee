@@ -31,10 +31,10 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserListDialog;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
@@ -223,7 +223,7 @@ public class UserRoleXViewer extends XViewer {
          } else if (xCol.equals(UserRoleXViewerFactory.Completed_Col)) {
             modified = setCompleted(userRoles);
          } else if (xCol.equals(UserRoleXViewerFactory.User_Col)) {
-            UserListDialog ld = new UserListDialog(Display.getCurrent().getActiveShell(), "Select New User");
+            UserListDialog ld = new UserListDialog(Displays.getActiveShell(), "Select New User");
             int result = ld.open();
             if (result == 0) {
                modified = setUser(userRoles, ld.getSelection());

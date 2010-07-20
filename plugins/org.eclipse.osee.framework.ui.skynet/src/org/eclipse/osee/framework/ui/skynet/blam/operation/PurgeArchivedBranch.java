@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Megumi Telles
@@ -97,7 +96,7 @@ public class PurgeArchivedBranch extends AbstractBlam {
    }
 
    private void confirmPurgeArchivedBranch(List<BranchInfo> branches) throws OseeCoreException {
-      if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Purge Confirmation",
+      if (MessageDialog.openConfirm(Displays.getActiveShell(), "Purge Confirmation",
             "Do you wish to purge the archived branches: " + "?")) {
          //only delete archived branches that are not changed managed, rebaselined and deleted 
          for (BranchInfo purgeBranch : branches) {

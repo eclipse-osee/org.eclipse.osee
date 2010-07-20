@@ -40,7 +40,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.IManagedForm;
@@ -277,7 +276,7 @@ public class DynamicXWidgetLayout {
 				DynamicXWidgetLayoutData layoutData = getLayoutData(aName);
 				Label label = layoutData.getXWidget().getLabelWidget();
 				if (label != null && !label.isDisposed()) {
-					label.setForeground(isComplete ? null : Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+					label.setForeground(isComplete ? null : Displays.getSystemColor(SWT.COLOR_RED));
 				}
 			}
 		}
@@ -289,7 +288,7 @@ public class DynamicXWidgetLayout {
 				DynamicXWidgetLayoutData layoutData = getLayoutData(aName);
 				Label label = layoutData.getXWidget().getLabelWidget();
 				if (label != null && !label.isDisposed()) {
-					label.setForeground(isComplete ? null : Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+					label.setForeground(isComplete ? null : Displays.getSystemColor(SWT.COLOR_RED));
 				}
 			}
 		}

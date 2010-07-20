@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -28,7 +29,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
 
 /**
@@ -40,7 +40,7 @@ public class AtsNotificationCheckTreeDialog extends CheckedTreeSelectionDialog {
    private boolean sendNotifications;
 
    public AtsNotificationCheckTreeDialog() {
-      super(Display.getCurrent().getActiveShell(), labelProvider, treeContentProvider);
+      super(Displays.getActiveShell(), labelProvider, treeContentProvider);
       setTitle("Select ATS Notifications");
       setMessage("Select Desired ATS Notifications");
       try {

@@ -15,8 +15,8 @@ import java.util.List;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.ote.ui.test.manager.core.TestManagerEditor;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.dialogs.ListSelectionDialog;
 
 /**
@@ -39,7 +39,7 @@ public class TestManagerSelectDialog {
       };
       TestManagerEditor[] input = PluginUtil.getTestManagers();
       this.listSelectionDialog =
-            new ListSelectionDialog(Display.getCurrent().getActiveShell(), input, new ArrayContentProvider(),
+            new ListSelectionDialog(Displays.getActiveShell(), input, new ArrayContentProvider(),
                   labelProvider, MESSAGE);
       this.listSelectionDialog.setTitle(MESSAGE);
       if (input.length > 0) {

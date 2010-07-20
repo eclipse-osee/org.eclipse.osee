@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
  * @author Donald G. Dunne
@@ -42,7 +42,7 @@ public class CreateTestCoverageUnits extends XNavigateItemAction {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
-      if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(),
+      if (!MessageDialog.openConfirm(Displays.getActiveShell(), getName(),
             getName() + "\n\nThis will create test CoverageUnits to an existing Coverage Package.")) {
          return;
       }

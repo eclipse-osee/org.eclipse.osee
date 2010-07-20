@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactDescriptiveLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactNameSorter;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -29,7 +30,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
 
 /**
@@ -46,7 +46,7 @@ public class TeamDefinitionTreeWithChildrenDialog extends CheckedTreeSelectionDi
    }
 
    public TeamDefinitionTreeWithChildrenDialog(Active active, Collection<TeamDefinitionArtifact> teamDefinitionArtifacts) throws OseeCoreException {
-      super(Display.getCurrent().getActiveShell(), new ArtifactDescriptiveLabelProvider(),
+      super(Displays.getActiveShell(), new ArtifactDescriptiveLabelProvider(),
             new TeamDefinitionTreeContentProvider(active));
       setTitle("Select Team Definition");
       setMessage("Select Team Definition");

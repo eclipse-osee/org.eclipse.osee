@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.GroupListDialog;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
  * @author Donald G. Dunne
@@ -97,7 +97,7 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
       if (groupName != null) return;
       if (group != null) return;
       if (searchType == SearchType.ReSearch && selectedGroup != null) return;
-      GroupListDialog gld = new GroupListDialog(Display.getCurrent().getActiveShell());
+      GroupListDialog gld = new GroupListDialog(Displays.getActiveShell());
       int result = gld.open();
       if (result == 0) {
          selectedGroup = gld.getSelection();

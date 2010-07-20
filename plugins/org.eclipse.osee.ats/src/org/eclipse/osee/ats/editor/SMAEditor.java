@@ -83,7 +83,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
@@ -359,7 +358,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
 
          Label label = new Label(composite, SWT.NONE);
          label.setText("  NOTE: Changes made on this page MUST be saved through save icon on this page");
-         label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+         label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
 
          attributesComposite = new AttributesComposite(this, composite, SWT.NONE, sma);
          attributesPageIndex = addPage(composite);

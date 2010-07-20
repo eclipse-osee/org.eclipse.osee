@@ -25,11 +25,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Display;
 
 public class WorldLabelProvider extends XViewerLabelProvider {
 
@@ -83,7 +83,7 @@ public class WorldLabelProvider extends XViewerLabelProvider {
             TaskArtifact taskArt = (TaskArtifact) element;
             TaskResOptionDefinition def = taskArt.getTaskResolutionOptionDefinition(taskArt.getWorldViewResolution());
             if (def != null) {
-               return Display.getCurrent().getSystemColor(def.getColorInt());
+               return Displays.getSystemColor(def.getColorInt());
             }
          }
          for (IAtsWorldEditorItem item : AtsWorldEditorItems.getItems()) {

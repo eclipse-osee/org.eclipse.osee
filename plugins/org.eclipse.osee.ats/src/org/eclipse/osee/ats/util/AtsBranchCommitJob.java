@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.commit.CommitHandler;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.swt.widgets.Display;
 
 public class AtsBranchCommitJob extends Job {
 	private final boolean commitPopup;
@@ -85,7 +84,7 @@ public class AtsBranchCommitJob extends Job {
 							Displays.pendInDisplayThread(new Runnable() {
 								@Override
 								public void run() {
-									if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(),
+									if (MessageDialog.openConfirm(Displays.getActiveShell(),
 												"Override State Validation",
 												tempResult.getText() + "\n\nYou are set as Admin, OVERRIDE this?")) {
 										adminOverride = true;

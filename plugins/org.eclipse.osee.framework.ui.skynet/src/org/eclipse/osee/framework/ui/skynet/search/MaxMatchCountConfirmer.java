@@ -14,7 +14,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.skynet.core.artifact.ISearchConfirmer;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Ryan D. Brooks
@@ -30,7 +29,7 @@ public class MaxMatchCountConfirmer implements ISearchConfirmer {
 			Displays.pendInDisplayThread(new Runnable() {
 				@Override
 				public void run() {
-					result.setValue(MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Confirm Search",
+					result.setValue(MessageDialog.openConfirm(Displays.getActiveShell(), "Confirm Search",
 								"The search returned " + count + " results and may take a long time to load, continue?"));
 				}
 			});

@@ -68,7 +68,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
@@ -309,7 +308,7 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
 
    private void handleNewGroup() {
       EntryDialog ed =
-            new EntryDialog(Display.getCurrent().getActiveShell(), "Create New Group", null, "Enter Group Name",
+            new EntryDialog(Displays.getActiveShell(), "Create New Group", null, "Enter Group Name",
                   MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
       if (ed.open() == 0) {
          try {
@@ -331,7 +330,7 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
          AWorkbench.popup("ERROR", "No Items Selected");
          return;
       }
-      if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Remove From Group",
+      if (MessageDialog.openConfirm(Displays.getActiveShell(), "Remove From Group",
             "Remove From Group - (Artifacts will not be deleted)\n\nAre you sure?")) {
          try {
             SkynetTransaction transaction = new SkynetTransaction(branch, "Artifacts removed from group");
@@ -365,7 +364,7 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
                names += String.format("%s\n", item.getArtifact().getName());
             }
          }
-         if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Delete Groups",
+         if (MessageDialog.openConfirm(Displays.getActiveShell(), "Delete Groups",
                "Delete Groups - (Contained Artifacts will not be deleted)\n\n" + names + "\nAre you sure?")) {
 
             SkynetTransaction transaction = new SkynetTransaction(branch, "Delete Groups: " + names);

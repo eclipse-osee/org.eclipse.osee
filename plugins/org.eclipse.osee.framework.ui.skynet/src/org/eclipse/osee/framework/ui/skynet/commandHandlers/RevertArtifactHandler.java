@@ -27,8 +27,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.revert.RevertWizard;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.NonmodalWizardDialog;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 
 /**
@@ -60,7 +60,7 @@ public class RevertArtifactHandler extends AbstractHandler {
 
       }
       RevertWizard wizard = new RevertWizard(artifacts);
-      NonmodalWizardDialog dialog = new NonmodalWizardDialog(Display.getCurrent().getActiveShell(), wizard);
+      NonmodalWizardDialog dialog = new NonmodalWizardDialog(Displays.getActiveShell(), wizard);
       dialog.create();
       dialog.open();
       return null;

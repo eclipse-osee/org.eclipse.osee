@@ -20,8 +20,8 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Donald G. Dunne
@@ -44,7 +44,7 @@ public class EmailActionAction extends Action {
       ArtifactEmailWizard ew =
             new ArtifactEmailWizard(
                   ((StateMachineArtifact) selectedAtsArtifacts.getSelectedSMAArtifacts().iterator().next()));
-      WizardDialog dialog = new WizardDialog(Display.getCurrent().getActiveShell(), ew);
+      WizardDialog dialog = new WizardDialog(Displays.getActiveShell(), ew);
       dialog.create();
       dialog.open();
    }

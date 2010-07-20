@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.events.IHyperlinkListener;
@@ -95,7 +94,7 @@ public class SMAActionableItemHeader extends Composite implements IFrameworkTran
       if (!sma.isCancelled() && !sma.isCompleted()) {
          if (teamWf.getParentActionArtifact().getActionableItems().isEmpty()) {
             label.setText(" " + "Error: No Actionable Items identified.");
-            label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+            label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
          } else {
             StringBuffer sb = new StringBuffer(teamWf.getActionableItemsDam().getActionableItemsStr());
             if (teamWf.getParentActionArtifact().getTeamWorkFlowArtifacts().size() > 1) {
@@ -107,18 +106,18 @@ public class SMAActionableItemHeader extends Composite implements IFrameworkTran
                }
             }
             label.setText(sb.toString().replaceFirst(", $", ""));
-            label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLACK));
+            label.setForeground(Displays.getSystemColor(SWT.COLOR_BLACK));
          }
          label.update();
          layout();
       } else {
          if (teamWf.getParentActionArtifact().getActionableItems().isEmpty()) {
             label.setText(" " + "Error: No Actionable Items identified.");
-            label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+            label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
          } else {
             label.setText(" " + teamWf.getParentActionArtifact().getWorldViewActionableItems());
             label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-            label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLACK));
+            label.setForeground(Displays.getSystemColor(SWT.COLOR_BLACK));
          }
          label.update();
          layout();

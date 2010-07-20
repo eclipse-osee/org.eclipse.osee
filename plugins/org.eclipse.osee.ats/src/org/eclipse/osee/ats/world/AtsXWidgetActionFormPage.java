@@ -168,7 +168,7 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
          saveButton.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-               if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Save Default Parameters",
+               if (MessageDialog.openConfirm(Displays.getActiveShell(), "Save Default Parameters",
                      "Save current parameters as default?")) {
                   handleSaveButtonPressed();
                }

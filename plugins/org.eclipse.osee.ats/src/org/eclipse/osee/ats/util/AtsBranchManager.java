@@ -73,7 +73,7 @@ import org.eclipse.osee.framework.ui.skynet.util.filteredTree.SimpleCheckFiltere
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ui.PlatformUI;
 
 /**
@@ -652,7 +652,7 @@ public class AtsBranchManager {
          }
          // Retrieve parent branch to create working branch from
          if (popup && !MessageDialog.openConfirm(
-            Display.getCurrent().getActiveShell(),
+            Displays.getActiveShell(),
             "Create Working Branch",
             "Create a working branch from parent branch\n\n\"" + parentBranch.getName() + "\"?\n\n" + "NOTE: Working branches are necessary when OSEE Artifact changes " + "are made during implementation.")) {
             return Result.FalseResult;

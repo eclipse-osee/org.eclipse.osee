@@ -25,8 +25,8 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Donald G. Dunne
@@ -52,7 +52,7 @@ public class PrivilegedEditAction extends Action {
             new ReadOnlyHyperlinkListener(sma).linkActivated(null);
          }
          if (sma.getEditor().isPriviledgedEditModeEnabled()) {
-            if (MessageDialog.openQuestion(Display.getCurrent().getActiveShell(), "Diable Privileged Edit",
+            if (MessageDialog.openQuestion(Displays.getActiveShell(), "Diable Privileged Edit",
                   "Privileged Edit Mode Enabled.\n\nDisable?\n\nNote: (changes will be saved)")) {
                sma.getEditor().setPriviledgedEditMode(false);
             }
@@ -74,7 +74,7 @@ public class PrivilegedEditAction extends Action {
             }
             MessageDialog ed =
                   new MessageDialog(
-                        Display.getCurrent().getActiveShell(),
+                        Displays.getActiveShell(),
                         "Privileged Edit",
                         null,
                         "The following users have the ability to edit this " + sma.getArtifactTypeName() + " in case of emergency.\n\n" + sb.toString(),

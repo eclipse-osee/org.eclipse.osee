@@ -15,7 +15,7 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.coverage.model.ICoverage;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
  * @author Donald G. Dunne
@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.Display;
 public class CoverageListDialog extends org.eclipse.ui.dialogs.ListDialog {
 
    public CoverageListDialog(String title, String message) {
-      super(Display.getCurrent().getActiveShell());
+      super(Displays.getActiveShell());
       setTitle(title);
       setMessage(message);
       setContentProvider(new IStructuredContentProvider() {

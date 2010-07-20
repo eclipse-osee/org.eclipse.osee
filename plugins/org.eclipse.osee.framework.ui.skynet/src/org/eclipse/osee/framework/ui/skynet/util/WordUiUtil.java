@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Megumi Telles
@@ -34,7 +33,7 @@ public final class WordUiUtil {
 		Displays.pendInDisplayThread(new Runnable() {
 			@Override
 			public void run() {
-				MessageDialog.openError(Display.getCurrent().getActiveShell(), title, message);
+				MessageDialog.openError(Displays.getActiveShell(), title, message);
 			}
 		});
 	}
@@ -43,7 +42,7 @@ public final class WordUiUtil {
 		Displays.pendInDisplayThread(new Runnable() {
 			@Override
 			public void run() {
-				MessageDialog.openWarning(Display.getCurrent().getActiveShell(), title, message);
+				MessageDialog.openWarning(Displays.getActiveShell(), title, message);
 			}
 		});
 	}

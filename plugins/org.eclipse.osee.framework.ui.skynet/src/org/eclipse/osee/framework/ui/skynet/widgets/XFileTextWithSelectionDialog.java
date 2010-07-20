@@ -13,13 +13,13 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.io.File;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 
 /**
@@ -71,7 +71,7 @@ public class XFileTextWithSelectionDialog extends XText {
 
          public void widgetSelected(SelectionEvent e) {
             if (type == Type.File) {
-               FileDialog dialog = new FileDialog(Display.getCurrent().getActiveShell(), SWT.OPEN);
+               FileDialog dialog = new FileDialog(Displays.getActiveShell(), SWT.OPEN);
                dialog.setFilterExtensions(new String[] {"*.*"});
                File dir = new File(defaultFileSelection != null ? defaultFileSelection : "");
                if (dir.isFile() || dir.isDirectory())
@@ -84,7 +84,7 @@ public class XFileTextWithSelectionDialog extends XText {
                   setText(dialog.getFilterPath() + File.separatorChar + dialog.getFileName());
                }
             } else if (type == Type.Directory) {
-               DirectoryDialog dialog = new DirectoryDialog(Display.getCurrent().getActiveShell(), SWT.OPEN);
+               DirectoryDialog dialog = new DirectoryDialog(Displays.getActiveShell(), SWT.OPEN);
                File dir = new File(defaultFileSelection != null ? defaultFileSelection : "");
                if (dir.isFile() || dir.isDirectory())
                   dialog.setFilterPath(defaultFileSelection);

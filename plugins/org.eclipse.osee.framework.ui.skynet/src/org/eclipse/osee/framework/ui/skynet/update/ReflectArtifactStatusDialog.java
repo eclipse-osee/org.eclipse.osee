@@ -13,10 +13,10 @@ package org.eclipse.osee.framework.ui.skynet.update;
 import java.util.List;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Jeff C. Phillips
@@ -29,7 +29,7 @@ public class ReflectArtifactStatusDialog extends MessageDialog{
    private List<TransferObject> transferObjects;
    
    public ReflectArtifactStatusDialog(List<TransferObject> transferObjects) {
-      super(Display.getCurrent().getActiveShell(), TITLE, null, null, MessageDialog.NONE,
+      super(Displays.getActiveShell(), TITLE, null, null, MessageDialog.NONE,
             new String[] {OK, CANCEL}, 0);
       this.transferObjects = transferObjects;
    }

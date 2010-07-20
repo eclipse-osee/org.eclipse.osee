@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLo
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
  * @author Donald G. Dunne
@@ -80,7 +80,7 @@ public class ReleaseVersionItem extends XNavigateItemAction {
             if (errorStr != null) AWorkbench.popup("ERROR", errorStr);
             if (errorStr != null && !AtsUtil.isAtsAdmin())
                return;
-            else if (errorStr != null && !MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Override",
+            else if (errorStr != null && !MessageDialog.openConfirm(Displays.getActiveShell(), "Override",
                   "ATS Admin Enabled - Override completed condition and release anyway?")) {
                return;
             }
@@ -90,7 +90,7 @@ public class ReleaseVersionItem extends XNavigateItemAction {
             verArt.setNextVersion(false);
             verArt.persist();
 
-            if (MessageDialog.openQuestion(Display.getCurrent().getActiveShell(), "Select NEW Next Release Version",
+            if (MessageDialog.openQuestion(Displays.getActiveShell(), "Select NEW Next Release Version",
                   "Release Complete.\n\nSelect NEW Next Release Version?")) {
                ld =
                      new VersionListDialog("Select Next Release Version", "Select New Next Release Version",

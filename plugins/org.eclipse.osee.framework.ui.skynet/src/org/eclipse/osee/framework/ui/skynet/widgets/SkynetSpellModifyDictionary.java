@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.IOseeDictionary;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
  * @author Donald G. Dunne
@@ -53,7 +53,7 @@ public class SkynetSpellModifyDictionary implements XTextSpellModifyDictionary, 
    }
 
    private boolean updateArtifact(String type, String word, Artifact art) {
-      if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Add to " + type + " Dictionary",
+      if (MessageDialog.openConfirm(Displays.getActiveShell(), "Add to " + type + " Dictionary",
             "Add \"" + word + "\" to " + type + " Dictionary")) {
          try {
             Set<String> words = new HashSet<String>();

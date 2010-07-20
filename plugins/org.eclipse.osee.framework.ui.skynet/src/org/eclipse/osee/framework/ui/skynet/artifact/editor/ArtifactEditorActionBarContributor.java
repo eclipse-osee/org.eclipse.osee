@@ -36,11 +36,11 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
@@ -132,7 +132,7 @@ public class ArtifactEditorActionBarContributor implements IActionContributor {
 			try {
 				MessageDialog dialog =
 							new MessageDialog(
-										Display.getCurrent().getActiveShell(),
+										Displays.getActiveShell(),
 										"Confirm Artifact Deletion",
 										null,
 										" Are you sure you want to delete this artifact and all of the default hierarchy children?",
@@ -193,7 +193,7 @@ public class ArtifactEditorActionBarContributor implements IActionContributor {
 		@Override
 		public void run() {
 			try {
-				PolicyDialog pd = new PolicyDialog(Display.getCurrent().getActiveShell(), getSelectedArtifact());
+				PolicyDialog pd = new PolicyDialog(Displays.getActiveShell(), getSelectedArtifact());
 				pd.open();
 			} catch (Exception ex) {
 				OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);

@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManage
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ui.PlatformUI;
 
 /**
@@ -50,7 +50,7 @@ public class RevertAttributeHandler extends AbstractHandler {
    public Object execute(ExecutionEvent event) throws ExecutionException {
       // This is serious stuff, make sure the user understands the impact.
       if (MessageDialog.openConfirm(
-            Display.getCurrent().getActiveShell(),
+            Displays.getActiveShell(),
             "Confirm Revert of " + attributes.size() + " attributes.",
             "All attribute changes selected will be reverted." + "\n\nTHIS IS IRREVERSIBLE" + "\n\nOSEE must be restarted after all reverting is finished to see the results")) {
 

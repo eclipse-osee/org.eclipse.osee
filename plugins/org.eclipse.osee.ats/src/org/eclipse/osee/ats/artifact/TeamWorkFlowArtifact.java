@@ -52,7 +52,7 @@ import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
  * @author Donald G. Dunne
@@ -426,7 +426,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
 				sb.append("\nTeam: " + getTeamDefinition().getName());
 				sb.append("\nto\nActionable Item(s): " + selectedAia);
 				sb.append("\nTeam: " + newTeamDef.getName());
-				if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Confirm Convert", sb.toString())) {
+				if (MessageDialog.openConfirm(Displays.getActiveShell(), "Confirm Convert", sb.toString())) {
 					Set<ActionableItemArtifact> toProcess = new HashSet<ActionableItemArtifact>();
 					toProcess.add(selectedAia);
 					toReturn = actionableItemsTx(AtsUtil.getAtsBranch(), toProcess, newTeamDef);

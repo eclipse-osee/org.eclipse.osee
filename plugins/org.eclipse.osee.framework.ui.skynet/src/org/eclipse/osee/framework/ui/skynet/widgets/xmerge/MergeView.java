@@ -73,7 +73,6 @@ import org.eclipse.osee.framework.ui.swt.NonmodalWizardDialog;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewSite;
@@ -373,7 +372,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
             if (attributeConflict != null) {
                try {
                   if (MergeUtility.okToOverwriteEditedValue(attributeConflict,
-                        Display.getCurrent().getActiveShell().getShell(), false)) {
+                        Displays.getActiveShell().getShell(), false)) {
                      RendererManager.openInJob(attributeConflict.getArtifact(), PresentationType.MERGE_EDIT);
 
                      attributeConflict.markStatusToReflectEdit();
@@ -537,7 +536,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
                public Object execute(ExecutionEvent event) throws ExecutionException {
                   RevertWizard wizard = new RevertWizard(revertList);
                   NonmodalWizardDialog wizardDialog =
-                        new NonmodalWizardDialog(Display.getCurrent().getActiveShell(), wizard);
+                        new NonmodalWizardDialog(Displays.getActiveShell(), wizard);
                   wizardDialog.create();
                   wizardDialog.open();
                   return null;
@@ -594,7 +593,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
          @Override
          public Object execute(ExecutionEvent event) throws ExecutionException {
             if (attributeConflict != null) {
-               MergeUtility.launchMerge(attributeConflict, Display.getCurrent().getActiveShell().getShell());
+               MergeUtility.launchMerge(attributeConflict, Displays.getActiveShell().getShell());
             }
             return null;
          }

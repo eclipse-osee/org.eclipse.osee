@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.HtmlDialog;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
  * @author Donald G. Dunne
@@ -68,7 +68,7 @@ public class AtsDeleteManager {
       if (deleteOptions.contains(DeleteOption.Prompt)) {
          MessageDialogWithToggle md =
                MessageDialogWithToggle.openOkCancelConfirm(
-                     Display.getCurrent().getActiveShell(),
+                     Displays.getActiveShell(),
                      "Delete/Purge ATS Object",
                      "Prepare to Delete/Purge ATS Object\n\n" + artBuilder.toString().replaceFirst("\n$", "") + "\n\nAnd ALL its ATS children.\n(Artifacts will be retrieved for confirmation)\nAre You Sure?",
                      "Purge", false, null, null);

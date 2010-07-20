@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Megumi Telles
@@ -107,7 +106,7 @@ public class PurgeUser extends AbstractBlam {
    }
 
    private void confirmDeletionOfArtifact(final User fromUser) throws OseeCoreException {
-      if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Persist Confirmation",
+      if (MessageDialog.openConfirm(Displays.getActiveShell(), "Persist Confirmation",
             "Do you wish to delete the duplicate User: " + fromUser.getName() + "?")) {
          deleteArtifact(fromUser);
       }

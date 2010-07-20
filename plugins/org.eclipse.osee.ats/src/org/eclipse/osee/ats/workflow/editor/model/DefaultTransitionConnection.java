@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.workflow.editor.model;
 
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Donald G. Dunne
@@ -29,7 +29,7 @@ public class DefaultTransitionConnection extends TransitionConnection {
 
    @Override
    public Color getForegroundColor() {
-      return Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GREEN);
+      return Displays.getSystemColor(SWT.COLOR_DARK_GREEN);
    }
 
    @Override

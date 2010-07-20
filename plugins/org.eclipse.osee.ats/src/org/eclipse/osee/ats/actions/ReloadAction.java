@@ -26,8 +26,8 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Donald G. Dunne
@@ -55,7 +55,7 @@ public class ReloadAction extends Action {
             relatedArts.addAll(((TaskableStateMachineArtifact) sma).getTaskArtifacts());
          }
          if (!MessageDialog.openConfirm(
-               Display.getCurrent().getActiveShell(),
+               Displays.getActiveShell(),
                "Reload Action (Experimental)",
                "Experimental Only...Use at own risk!\n\nThis operation will remove artifacts from cache and reload.\nUnsaved changes will be lost.\n\nReload [" + relatedArts.size() + "] artifacts?")) {
             return;

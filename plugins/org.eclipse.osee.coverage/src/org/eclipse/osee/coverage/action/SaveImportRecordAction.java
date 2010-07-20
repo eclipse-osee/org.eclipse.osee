@@ -22,8 +22,8 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Donald G. Dunne
@@ -50,7 +50,7 @@ public class SaveImportRecordAction extends Action {
          result.popup();
          return;
       }
-      if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Save Coverage Import Record",
+      if (MessageDialog.openConfirm(Displays.getActiveShell(), "Save Coverage Import Record",
             "Overwrite coverage import record with current import information?")) {
          try {
             SkynetTransaction transaction =

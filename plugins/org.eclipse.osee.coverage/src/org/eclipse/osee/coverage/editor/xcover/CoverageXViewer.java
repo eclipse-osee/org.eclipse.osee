@@ -44,8 +44,8 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.ElapsedTime;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
@@ -248,7 +248,7 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
          //         ICoverage coverageItem = (ICoverage) coverageItems.toArray()[0];
 
          if (isEditable(coverageItems).isFalse()) {
-            MessageDialog.openInformation(Display.getCurrent().getActiveShell(), "Coverage Item",
+            MessageDialog.openInformation(Displays.getActiveShell(), "Coverage Item",
                   "Read-Only Field - One or more selected Coverage Items is Read-Only");
          }
       }

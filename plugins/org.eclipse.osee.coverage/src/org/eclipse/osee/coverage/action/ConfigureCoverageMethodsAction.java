@@ -32,9 +32,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Donald G. Dunne
@@ -74,7 +74,7 @@ public class ConfigureCoverageMethodsAction extends Action {
             StoreLocation storeLocation = optionsStore.getStoreLocation();
             if (storeLocation == StoreLocation.None) {
                MessageDialog localGlobalDialog =
-                     new MessageDialog(Display.getCurrent().getActiveShell(), "Question", null,
+                     new MessageDialog(Displays.getActiveShell(), "Question", null,
                            "No Custom Coverage Methods Configured, Configure Now?", MessageDialog.WARNING,
                            new String[] {"Save local to Coverage Pacakge", "Save globally for Branch", "Cancel"}, 0);
 

@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.util;
 
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ImageDialog;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
@@ -39,7 +40,7 @@ public class ImageCapture {
    }
 
    public void popupDialog() {
-      ImageDialog diag = new ImageDialog(image, Display.getCurrent().getActiveShell());
+      ImageDialog diag = new ImageDialog(image, Displays.getActiveShell());
       diag.open();
    }
 }

@@ -37,7 +37,6 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
@@ -108,9 +107,9 @@ public class CoverageNavigateView extends ViewPart implements IActionable {
 		}
 		if (!str.equals("")) {
 			if (CoverageUtil.isAdmin()) {
-				label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+				label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
 			} else {
-				label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLUE));
+				label.setForeground(Displays.getSystemColor(SWT.COLOR_BLUE));
 			}
 		}
 		label.setText(str);

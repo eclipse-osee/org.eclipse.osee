@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -20,7 +21,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 public class CheckBoxDialog extends MessageDialog {
@@ -40,7 +40,7 @@ public class CheckBoxDialog extends MessageDialog {
    }
 
    public CheckBoxDialog(String dialogTitle, String dialogMessage, String checkBoxMessage) {
-      this(Display.getCurrent().getActiveShell(), dialogTitle, null, dialogMessage, checkBoxMessage,
+      this(Displays.getActiveShell(), dialogTitle, null, dialogMessage, checkBoxMessage,
             MessageDialog.QUESTION, 0);
    }
 

@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
  * @author Jeff C. Phillips
@@ -52,7 +52,7 @@ public class SetAssociatedBranchArtifactHandler extends CommandHandler {
             Artifact associatedArtifact =
                   ArtifactQuery.getArtifactFromId(Integer.parseInt(artId), BranchManager.getCommonBranch());
             if (MessageDialog.openConfirm(
-                  Display.getCurrent().getActiveShell(),
+                  Displays.getActiveShell(),
                   "Set Associated Artifact",
                   "Set Associated Artifact for Branch\n\n\"" + selectedBranch.getName() + "\"\nto\nArtifact: " + associatedArtifact)) {
                selectedBranch.setAssociatedArtifactId(Integer.parseInt(artId));

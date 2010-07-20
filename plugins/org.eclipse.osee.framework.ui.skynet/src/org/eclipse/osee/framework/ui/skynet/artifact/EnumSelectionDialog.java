@@ -20,13 +20,13 @@ import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
 import org.eclipse.osee.framework.ui.plugin.util.StringViewerSorter;
 import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButton;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
 
 /**
@@ -48,7 +48,7 @@ public class EnumSelectionDialog extends CheckedTreeSelectionDialog {
     * @param artifacts
     */
    public EnumSelectionDialog(String attributeName, Collection<? extends Artifact> artifacts) {
-      super(Display.getCurrent().getActiveShell(), new StringLabelProvider(), new ArrayTreeContentProvider());
+      super(Displays.getActiveShell(), new StringLabelProvider(), new ArrayTreeContentProvider());
       setTitle("Select Options");
       setMessage("Select option(s) to add, delete or replace.");
       Set<String> options;

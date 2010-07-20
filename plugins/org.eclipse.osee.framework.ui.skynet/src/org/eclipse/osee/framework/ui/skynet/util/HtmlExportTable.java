@@ -23,9 +23,9 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.program.Program;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 
 /**
@@ -68,7 +68,7 @@ public class HtmlExportTable {
    }
 
    public Result export(String speratorChar, String fileExtension) {
-      if (!popupConfirm || (popupConfirm && MessageDialog.openConfirm(Display.getCurrent().getActiveShell(),
+      if (!popupConfirm || (popupConfirm && MessageDialog.openConfirm(Displays.getActiveShell(),
             "Export Table", "Export Table to CSV?"))) {
          StringBuilder sb = new StringBuilder();
          sb.append(title + "\n");
@@ -101,7 +101,7 @@ public class HtmlExportTable {
             }
             String path = "";
             if (popupConfirm) {
-               FileDialog dialog = new FileDialog(Display.getCurrent().getActiveShell(), SWT.SAVE | SWT.SINGLE);
+               FileDialog dialog = new FileDialog(Displays.getActiveShell(), SWT.SAVE | SWT.SINGLE);
                dialog.setFilterExtensions(new String[] {"*." + fileExtension});
                dialog.setFilterPath(System.getProperty("user.home"));
                dialog.setFileName("table.csv");

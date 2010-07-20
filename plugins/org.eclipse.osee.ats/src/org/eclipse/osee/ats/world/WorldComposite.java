@@ -47,7 +47,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Donald G. Dunne
@@ -147,7 +146,7 @@ public class WorldComposite extends ScrolledComposite implements IWorldViewerEve
 				worldXViewer.updateStatusLabel();
 				if (otherArts.size() > 0) {
 					if (MessageDialog.openConfirm(
-								Display.getCurrent().getActiveShell(),
+								Displays.getActiveShell(),
 								"Open in Artifact Editor?",
 								otherArts.size() + " Non-WorldView Artifacts were returned from request.\n\nOpen in Artifact Editor?")) {
 						RendererManager.openInJob(otherArts, PresentationType.GENERALIZED_EDIT);

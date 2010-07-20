@@ -84,7 +84,6 @@ import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
@@ -620,7 +619,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
       }
       if (art != null) {
          ArtifactEmailWizard ew = new ArtifactEmailWizard((StateMachineArtifact) art);
-         WizardDialog dialog = new WizardDialog(Display.getCurrent().getActiveShell(), ew);
+         WizardDialog dialog = new WizardDialog(Displays.getActiveShell(), ew);
          dialog.create();
          dialog.open();
       }

@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Jeff C. Phillips
@@ -44,7 +43,7 @@ public class PurgeTransactionHandler extends CommandHandler {
 		List<TransactionRecord> transactions = Handlers.getTransactionsFromStructuredSelection(selection);
 		TransactionRecord selectedTransaction = transactions.iterator().next();
 
-		if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Purge Transaction",
+		if (MessageDialog.openConfirm(Displays.getActiveShell(), "Purge Transaction",
 					"Are you sure you want to purge the transaction: " + selectedTransaction.getId())) {
 			BranchManager.purgeTransactions(new JobChangeAdapter() {
 

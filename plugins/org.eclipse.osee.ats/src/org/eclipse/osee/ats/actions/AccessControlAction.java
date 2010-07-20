@@ -15,8 +15,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Donald G. Dunne
@@ -33,7 +33,7 @@ public class AccessControlAction extends Action {
 
    @Override
    public void run() {
-      PolicyDialog pd = new PolicyDialog(Display.getCurrent().getActiveShell(), sma);
+      PolicyDialog pd = new PolicyDialog(Displays.getActiveShell(), sma);
       pd.open();
    }
 

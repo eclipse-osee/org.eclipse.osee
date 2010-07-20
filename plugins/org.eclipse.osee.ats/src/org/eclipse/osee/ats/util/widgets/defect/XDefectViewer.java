@@ -66,7 +66,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
@@ -145,7 +144,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IArtifact
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
       gd.heightHint = 3;
       sash.setLayoutData(gd);
-      sash.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_GRAY));
+      sash.setBackground(Displays.getSystemColor(SWT.COLOR_GRAY));
       sash.addListener(SWT.MouseUp, new Listener() {
          public void handleEvent(Event e) {
             Rectangle treeRect = xViewer.getTree().getClientArea();
@@ -268,7 +267,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IArtifact
       extraInfoLabel = new Label(labelComp, SWT.NONE);
       extraInfoLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       extraInfoLabel.setText("");
-      extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+      extraInfoLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
 
       refreshActionEnablement();
    }
@@ -348,7 +347,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IArtifact
    public void handleImportDefectsViaList() {
       try {
          EntryDialog ed =
-               new EntryDialog(Display.getCurrent().getActiveShell(), "Create Defects", null,
+               new EntryDialog(Displays.getActiveShell(), "Create Defects", null,
                      "Enter task titles, one per line.", MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
          ed.setFillVertically(true);
          if (ed.open() == 0) {
@@ -408,7 +407,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IArtifact
 
    public void handleNewDefect() {
       EntryDialog ed =
-            new EntryDialog(Display.getCurrent().getActiveShell(), "Create New Defect", null,
+            new EntryDialog(Displays.getActiveShell(), "Create New Defect", null,
                   "Enter Defect Description", MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
       if (ed.open() == 0) {
          try {
@@ -471,21 +470,21 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IArtifact
       try {
          if (isRequiredEntry() && xViewer.getTree().getItemCount() == 0) {
             extraInfoLabel.setText("At least one defect entry is required.  Select \"New Defect\" to add.");
-            extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+            extraInfoLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
             return new Status(IStatus.ERROR, getClass().getSimpleName(), "At least one defect entry is required");
          }
          if (reviewArt != null) {
             for (DefectItem item : reviewArt.getDefectManager().getDefectItems()) {
                if (item.isClosed() == false || item.getDisposition() == Disposition.None || item.getSeverity() == Severity.None && item.getDisposition() != Disposition.Duplicate && item.getDisposition() != Disposition.Reject) {
                   extraInfoLabel.setText("All items must be marked for severity, disposition and closed.  Select icon in cell or right-click to update field.");
-                  extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+                  extraInfoLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
                   return new Status(IStatus.ERROR, getClass().getSimpleName(),
                         "Review not complete until all items are marked for severity, disposition and closed");
                }
             }
          }
          extraInfoLabel.setText("Select \"New Defect\" to add.  Select icon in cell or right-click to update field.");
-         extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLACK));
+         extraInfoLabel.setForeground(Displays.getSystemColor(SWT.COLOR_BLACK));
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          return new Status(IStatus.ERROR, getClass().getSimpleName(),

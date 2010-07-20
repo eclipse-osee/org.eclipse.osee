@@ -22,8 +22,8 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactNameSorter;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
 
 /**
@@ -36,7 +36,7 @@ public class CoverageMethodListDialog extends CheckedTreeSelectionDialog {
    }
 
    public CoverageMethodListDialog(Collection<CoverageOption> values, Collection<CoverageOption> selected) {
-      super(Display.getCurrent().getActiveShell(), labelProvider, new ArrayTreeContentProvider());
+      super(Displays.getActiveShell(), labelProvider, new ArrayTreeContentProvider());
       setTitle("Select Coverage Method(s)");
       setMessage("Select Coverage Method(s)");
       setComparator(new ArtifactNameSorter());

@@ -37,7 +37,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactListDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
  * @author Donald G. Dunne
@@ -197,7 +197,7 @@ public class GoalArtifact extends StateMachineArtifact {
       if (goals.size() == 1) {
          goal = (GoalArtifact) goals.iterator().next();
       } else if (goals.size() > 1) {
-         ArtifactListDialog dialog = new ArtifactListDialog(Display.getCurrent().getActiveShell());
+         ArtifactListDialog dialog = new ArtifactListDialog(Displays.getActiveShell());
          dialog.setTitle("Select Goal");
          dialog.setMessage("Artifact has multiple Goals\n\nSelect Goal to change order");
          dialog.setArtifacts(goals);

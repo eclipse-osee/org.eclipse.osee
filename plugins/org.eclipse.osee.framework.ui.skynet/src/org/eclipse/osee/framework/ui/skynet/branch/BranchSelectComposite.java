@@ -21,11 +21,11 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
@@ -34,136 +34,136 @@ import org.eclipse.swt.widgets.Text;
  * @author Roberto E. Escobar
  */
 public class BranchSelectComposite extends Composite implements Listener {
-   protected static final int SIZING_TEXT_FIELD_WIDTH = 250;
+	protected static final int SIZING_TEXT_FIELD_WIDTH = 250;
 
-   private Button branchSelectButton;
-   private Text branchSelectTextWidget;
-   private Branch selectedBranch;
-   private final Set<Listener> listeners;
-   private final boolean allowOnlyWorkingBranches;
+	private Button branchSelectButton;
+	private Text branchSelectTextWidget;
+	private Branch selectedBranch;
+	private final Set<Listener> listeners;
+	private final boolean allowOnlyWorkingBranches;
 
-   public BranchSelectComposite(Composite parent, int style, boolean allowOnlyWorkingBranches) {
-      super(parent, style);
-      this.allowOnlyWorkingBranches = allowOnlyWorkingBranches;
-      this.listeners = Collections.synchronizedSet(new HashSet<Listener>());
-      createControl(this);
-   }
+	public BranchSelectComposite(Composite parent, int style, boolean allowOnlyWorkingBranches) {
+		super(parent, style);
+		this.allowOnlyWorkingBranches = allowOnlyWorkingBranches;
+		this.listeners = Collections.synchronizedSet(new HashSet<Listener>());
+		createControl(this);
+	}
 
-   public static BranchSelectComposite createWorkingBranchSelectComposite(Composite parent, int style) {
-      return new BranchSelectComposite(parent, style, true);
-   }
+	public static BranchSelectComposite createWorkingBranchSelectComposite(Composite parent, int style) {
+		return new BranchSelectComposite(parent, style, true);
+	}
 
-   public static BranchSelectComposite createBranchSelectComposite(Composite parent, int style) {
-      return new BranchSelectComposite(parent, style, false);
-   }
+	public static BranchSelectComposite createBranchSelectComposite(Composite parent, int style) {
+		return new BranchSelectComposite(parent, style, false);
+	}
 
-   private void createControl(Composite parent) {
-      parent.setLayout(ALayout.getZeroMarginLayout(2, false));
-      parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+	private void createControl(Composite parent) {
+		parent.setLayout(ALayout.getZeroMarginLayout(2, false));
+		parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
-      branchSelectTextWidget = new Text(parent, SWT.BORDER | SWT.READ_ONLY);
-      GridData data = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL);
-      data.widthHint = SIZING_TEXT_FIELD_WIDTH;
-      branchSelectTextWidget.setLayoutData(data);
-      branchSelectTextWidget.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
-      branchSelectTextWidget.setText(" -- Select A Branch -- ");
-      branchSelectTextWidget.setDoubleClickEnabled(false);
-      branchSelectTextWidget.addListener(SWT.MouseDoubleClick, new Listener() {
-         @Override
-         public void handleEvent(Event event) {
-            handleSelectedBranch(event);
-            notifyListener(event);
-         }
-      });
+		branchSelectTextWidget = new Text(parent, SWT.BORDER | SWT.READ_ONLY);
+		GridData data = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL);
+		data.widthHint = SIZING_TEXT_FIELD_WIDTH;
+		branchSelectTextWidget.setLayoutData(data);
+		branchSelectTextWidget.setBackground(Displays.getSystemColor(SWT.COLOR_WHITE));
+		branchSelectTextWidget.setText(" -- Select A Branch -- ");
+		branchSelectTextWidget.setDoubleClickEnabled(false);
+		branchSelectTextWidget.addListener(SWT.MouseDoubleClick, new Listener() {
+			@Override
+			public void handleEvent(Event event) {
+				handleSelectedBranch(event);
+				notifyListener(event);
+			}
+		});
 
-      branchSelectButton = new Button(parent, SWT.PUSH);
-      branchSelectButton.setText("Select Branch...");
-      branchSelectButton.addListener(SWT.Selection, this);
-      branchSelectButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
-      branchSelectButton.addListener(SWT.MouseUp, new Listener() {
-         @Override
-         public void handleEvent(Event event) {
-            if (event.button == 3) {
-               try {
-                  setSelected(BranchManager.getCommonBranch());
-                  notifyListener(event);
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-               }
-            }
-         }
-      });
-   }
+		branchSelectButton = new Button(parent, SWT.PUSH);
+		branchSelectButton.setText("Select Branch...");
+		branchSelectButton.addListener(SWT.Selection, this);
+		branchSelectButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
+		branchSelectButton.addListener(SWT.MouseUp, new Listener() {
+			@Override
+			public void handleEvent(Event event) {
+				if (event.button == 3) {
+					try {
+						setSelected(BranchManager.getCommonBranch());
+						notifyListener(event);
+					} catch (OseeCoreException ex) {
+						OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+					}
+				}
+			}
+		});
+	}
 
-   public Branch getSelectedBranch() {
-      return selectedBranch;
-   }
+	public Branch getSelectedBranch() {
+		return selectedBranch;
+	}
 
-   private boolean areOnlyWorkingBranchesAllowed() {
-      return allowOnlyWorkingBranches;
-   }
+	private boolean areOnlyWorkingBranchesAllowed() {
+		return allowOnlyWorkingBranches;
+	}
 
-   public void handleEvent(Event event) {
-      handleSelectedBranch(event);
-      notifyListener(event);
-   }
+	public void handleEvent(Event event) {
+		handleSelectedBranch(event);
+		notifyListener(event);
+	}
 
-   private void handleSelectedBranch(Event event) {
-      if (event.widget == branchSelectButton || (event.widget == branchSelectTextWidget && branchSelectTextWidget.getDoubleClickEnabled())) {
-         if (areOnlyWorkingBranchesAllowed()) {
-            Branch newBranch = BranchSelectionDialog.getWorkingBranchFromUser();
-            if (newBranch != null) {
-               setSelected(newBranch);
-            }
-         } else {
-            Branch newBranch = BranchSelectionDialog.getBranchFromUser();
-            if (newBranch != null) {
-               setSelected(newBranch);
-            }
-         }
-      }
-   }
+	private void handleSelectedBranch(Event event) {
+		if (event.widget == branchSelectButton || (event.widget == branchSelectTextWidget && branchSelectTextWidget.getDoubleClickEnabled())) {
+			if (areOnlyWorkingBranchesAllowed()) {
+				Branch newBranch = BranchSelectionDialog.getWorkingBranchFromUser();
+				if (newBranch != null) {
+					setSelected(newBranch);
+				}
+			} else {
+				Branch newBranch = BranchSelectionDialog.getBranchFromUser();
+				if (newBranch != null) {
+					setSelected(newBranch);
+				}
+			}
+		}
+	}
 
-   public void setSelected(Branch branch) {
-      if (branch != null) {
-         selectedBranch = branch;
-         branchSelectTextWidget.setText(selectedBranch.getName());
-      } else {
-         branchSelectTextWidget.setText(" -- Select A Branch -- ");
-      }
-   }
+	public void setSelected(Branch branch) {
+		if (branch != null) {
+			selectedBranch = branch;
+			branchSelectTextWidget.setText(selectedBranch.getName());
+		} else {
+			branchSelectTextWidget.setText(" -- Select A Branch -- ");
+		}
+	}
 
-   private void notifyListener(Event event) {
-      synchronized (listeners) {
-         for (Listener listener : listeners) {
-            listener.handleEvent(event);
-         }
-      }
-   }
+	private void notifyListener(Event event) {
+		synchronized (listeners) {
+			for (Listener listener : listeners) {
+				listener.handleEvent(event);
+			}
+		}
+	}
 
-   public void addListener(Listener listener) {
-      synchronized (listeners) {
-         listeners.add(listener);
-      }
-   }
+	public void addListener(Listener listener) {
+		synchronized (listeners) {
+			listeners.add(listener);
+		}
+	}
 
-   public void removeListener(Listener listener) {
-      synchronized (listeners) {
-         listeners.remove(listener);
-      }
-   }
+	public void removeListener(Listener listener) {
+		synchronized (listeners) {
+			listeners.remove(listener);
+		}
+	}
 
-   /**
-    * @param defaultSelectedBranch the defaultSelectedBranch to set
-    */
-   public void setDefaultSelectedBranch(Branch defaultSelectedBranch) {
-      setSelected(defaultSelectedBranch);
-   }
+	/**
+	 * @param defaultSelectedBranch the defaultSelectedBranch to set
+	 */
+	public void setDefaultSelectedBranch(Branch defaultSelectedBranch) {
+		setSelected(defaultSelectedBranch);
+	}
 
-   /**
-    * @return the branchSelectLabel
-    */
-   public Text getBranchSelectText() {
-      return branchSelectTextWidget;
-   }
+	/**
+	 * @return the branchSelectLabel
+	 */
+	public Text getBranchSelectText() {
+		return branchSelectTextWidget;
+	}
 }

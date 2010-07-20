@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.forms.IManagedForm;
@@ -130,7 +129,7 @@ public class TaskInfoXWidget extends XLabelValueBase implements IFrameworkTransa
                @Override
                public void handleEvent(Event event) {
                   if (event.button == 3) {
-                     if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Auto Complete Tasks",
+                     if (!MessageDialog.openConfirm(Displays.getActiveShell(), "Auto Complete Tasks",
                            "ATS Admin\n\nAuto Complete Tasks?")) {
                         return;
                      }

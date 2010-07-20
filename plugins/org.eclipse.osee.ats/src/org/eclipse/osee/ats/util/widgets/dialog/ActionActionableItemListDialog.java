@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactDescriptiveLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactNameSorter;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -26,7 +27,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
 
 /**
@@ -42,7 +42,7 @@ public class ActionActionableItemListDialog extends CheckedTreeSelectionDialog {
    boolean showAction = false;
 
    public ActionActionableItemListDialog(Active active) {
-      super(Display.getCurrent().getActiveShell(), new ArtifactDescriptiveLabelProvider(), new AITreeContentProvider(
+      super(Displays.getActiveShell(), new ArtifactDescriptiveLabelProvider(), new AITreeContentProvider(
             active));
       setTitle("Select Actionable Items");
       setMessage("Select Actionable Items");

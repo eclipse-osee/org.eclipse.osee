@@ -33,7 +33,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 
 /**
@@ -167,7 +166,7 @@ public abstract class XSelectFromDialog<T> extends XText {
 	protected boolean openSelectionDialog() {
 		boolean selectedChanged = false;
 		if (getSelectableItems().isEmpty()) {
-			MessageDialog.openInformation(Display.getCurrent().getActiveShell(), getLabel(),
+			MessageDialog.openInformation(Displays.getActiveShell(), getLabel(),
 						"Could not find items available to select from.");
 		} else {
 			try {

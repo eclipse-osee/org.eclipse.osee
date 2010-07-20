@@ -37,9 +37,9 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.program.Program;
-import org.eclipse.swt.widgets.Display;
 import com.lowagie.text.Table;
 
 /**
@@ -64,7 +64,7 @@ public class GenerateDetailedCoverageReportAction extends Action {
 
    @Override
    public void run() {
-      if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getText(), getText())) {
+      if (!MessageDialog.openConfirm(Displays.getActiveShell(), getText(), getText())) {
          return;
       }
       try {

@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactListDialog;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -26,7 +27,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Donald G. Dunne
@@ -41,7 +41,7 @@ public class ActionTeamListDialog extends ArtifactListDialog {
    boolean showAction = false;
 
    public ActionTeamListDialog(Active active) {
-      super(Display.getCurrent().getActiveShell());
+      super(Displays.getActiveShell());
       setTitle("Select Team(s)");
       setMessage("Select Team(s)");
       ArrayList<Artifact> arts = new ArrayList<Artifact>();

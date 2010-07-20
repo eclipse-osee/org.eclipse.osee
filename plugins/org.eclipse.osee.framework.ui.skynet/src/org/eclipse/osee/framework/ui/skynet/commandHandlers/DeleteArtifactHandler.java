@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManage
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
  * @author Jeff C. Phillips
@@ -39,7 +39,7 @@ public class DeleteArtifactHandler extends CommandHandler {
       if (!artifacts.isEmpty()) {
          try {
             MessageDialog dialog =
-                  new MessageDialog(Display.getCurrent().getActiveShell(), "Confirm Artifact Deletion", null,
+                  new MessageDialog(Displays.getActiveShell(), "Confirm Artifact Deletion", null,
                         " Are you sure you want to delete this artifact and all of the default hierarchy children?",
                         MessageDialog.QUESTION, new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 1);
             if (dialog.open() == 0) {

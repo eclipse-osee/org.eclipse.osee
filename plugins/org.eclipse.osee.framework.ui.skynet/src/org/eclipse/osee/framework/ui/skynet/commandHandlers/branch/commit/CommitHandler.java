@@ -36,7 +36,6 @@ import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchViewPresentationPreferences;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Jeff C. Phillips
@@ -73,7 +72,7 @@ public abstract class CommitHandler extends CommandHandler {
 				@Override
 				public void run() {
 					MessageDialog dialog =
-								new MessageDialog(Display.getCurrent().getActiveShell(), "Unresolved Conflicts", null,
+								new MessageDialog(Displays.getActiveShell(), "Unresolved Conflicts", null,
 											fMessage, MessageDialog.QUESTION, choices, 0);
 					dialogResult.setValue(dialog.open());
 					if (dialogResult.getValue() == 1) {
@@ -105,12 +104,12 @@ public abstract class CommitHandler extends CommandHandler {
 					try {
 						if (conflictManager.getOriginalConflicts().isEmpty()) {
 							MessageDialog dialog =
-										new MessageDialog(Display.getCurrent().getActiveShell(), "Commit Branch", null,
+										new MessageDialog(Displays.getActiveShell(), "Commit Branch", null,
 													message.toString(), MessageDialog.QUESTION, new String[] {"Ok", "Cancel"}, 0);
 							dialogResult.setValue(dialog.open());
 						} else {
 							MessageDialog dialog =
-										new MessageDialog(Display.getCurrent().getActiveShell(), "Commit Branch", null,
+										new MessageDialog(Displays.getActiveShell(), "Commit Branch", null,
 													message.toString(), MessageDialog.QUESTION, new String[] {"Ok",
 																"Launch Merge Manager", "Cancel"}, 0);
 							dialogResult.setValue(dialog.open());

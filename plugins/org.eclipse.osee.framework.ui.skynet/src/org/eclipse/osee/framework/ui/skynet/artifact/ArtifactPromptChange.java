@@ -39,7 +39,7 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.EnumSelectionDialog.Selection;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.DateSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
  * @author Donald G. Dunne
@@ -262,7 +262,7 @@ public class ArtifactPromptChange {
          set = smas.iterator().next().getSoleAttributeValue(attributeName, false);
       }
       MessageDialogWithToggle md =
-            new MessageDialogWithToggle(Display.getCurrent().getActiveShell(), displayName, null, displayName,
+            new MessageDialogWithToggle(Displays.getActiveShell(), displayName, null, displayName,
                   MessageDialog.QUESTION, new String[] {"Ok", "Cancel"}, MessageDialog.OK,
                   toggleMessage != null ? toggleMessage : displayName, set);
 

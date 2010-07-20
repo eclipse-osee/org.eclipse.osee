@@ -22,8 +22,8 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TreeItem;
 
 /**
@@ -104,7 +104,7 @@ public class CommitXManager extends XViewer {
          } else if (commitStatus == CommitStatus.Committed_With_Merge) {
             destBranch = configArt.getParentBranch();
             MessageDialog dialog =
-                  new MessageDialog(Display.getCurrent().getActiveShell(), "Select Report", null,
+                  new MessageDialog(Displays.getActiveShell(), "Select Report", null,
                         "Both Change Report and Merge Manager exist.\n\nSelect to open.", MessageDialog.QUESTION,
                         new String[] {"Show Change Report", "Show Merge Manager", "Cancel"}, 0);
             int result = dialog.open();

@@ -184,14 +184,14 @@ public class XNavigateComposite extends Composite {
 						if (tip != null && !tip.isDisposed()) {
 							tip.dispose();
 						}
-						tip = new Shell(Display.getCurrent().getActiveShell(), SWT.ON_TOP | SWT.NO_FOCUS | SWT.TOOL);
-						tip.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_INFO_BACKGROUND));
+						tip = new Shell(Displays.getActiveShell(), SWT.ON_TOP | SWT.NO_FOCUS | SWT.TOOL);
+						tip.setBackground(Displays.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
 						FillLayout layout = new FillLayout();
 						layout.marginWidth = 2;
 						tip.setLayout(layout);
 						label = new Label(tip, SWT.NONE);
-						label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_INFO_FOREGROUND));
-						label.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_INFO_BACKGROUND));
+						label.setForeground(Displays.getSystemColor(SWT.COLOR_INFO_FOREGROUND));
+						label.setBackground(Displays.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
 						label.setData("_TABLEITEM", item);
 						label.setText(item.getText() + "\n\n" + ((XNavigateItem) item.getData()).getDescription());
 						label.addListener(SWT.MouseExit, labelListener);

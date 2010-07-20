@@ -128,7 +128,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
@@ -246,20 +245,20 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
       Composite composite = new Composite(parent, SWT.BORDER);
       composite.setLayout(new GridLayout(2, false));
       composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-      composite.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_INFO_BACKGROUND));
+      composite.setBackground(Displays.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
 
       Label image = new Label(composite, SWT.NONE);
       image.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
       image.setImage(ImageManager.getImage(FrameworkImage.LOCKED_NO_ACCESS));
-      image.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_INFO_BACKGROUND));
+      image.setBackground(Displays.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
 
       Label label = new Label(composite, SWT.NONE);
       Font font = new Font(PlatformUI.getWorkbench().getDisplay(), "Courier New", 10, SWT.BOLD);
       label.setFont(font);
-      label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_RED));
+      label.setForeground(Displays.getSystemColor(SWT.COLOR_DARK_RED));
       label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
       label.setText("Branch Read Access Denied.\nContact your administrator.");
-      label.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_INFO_BACKGROUND));
+      label.setBackground(Displays.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
 
       return composite;
    }
@@ -870,7 +869,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
             Artifact selectedArtifact = (Artifact) selection.getFirstElement();
             try {
                if (selectedArtifact != null) {
-                  PolicyDialog pd = new PolicyDialog(Display.getCurrent().getActiveShell(), selectedArtifact);
+                  PolicyDialog pd = new PolicyDialog(Displays.getActiveShell(), selectedArtifact);
                   pd.open();
                   checkBranchReadable();
                }

@@ -43,7 +43,7 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
  * @author Donald G. Dunne
@@ -93,7 +93,7 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
             useTeamDef = (TeamDefinitionArtifact) ld.getResult()[0];
          } else
             return;
-      } else if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) return;
+      } else if (!MessageDialog.openConfirm(Displays.getActiveShell(), getName(), getName())) return;
 
       ReportJob job = new ReportJob(getName(), useTeamDef);
       job.setUser(true);

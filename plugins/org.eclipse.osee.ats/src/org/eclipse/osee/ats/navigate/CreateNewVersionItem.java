@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
  * @author Donald G. Dunne
@@ -64,7 +64,7 @@ public class CreateNewVersionItem extends XNavigateItemAction {
          return;
       }
       EntryDialog ed =
-         new EntryDialog(Display.getCurrent().getActiveShell(), "Create New Version", null, "Enter Version Name",
+         new EntryDialog(Displays.getActiveShell(), "Create New Version", null, "Enter Version Name",
             MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
       if (ed.open() == 0) {
          String newVer = ed.getEntry();

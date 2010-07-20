@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.LocationListener;
@@ -27,7 +28,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 
@@ -37,7 +37,7 @@ public class HtmlDialog extends MessageDialog {
    private final String html;
 
    public HtmlDialog(String title, String message, String html) {
-      super(Display.getCurrent().getActiveShell(), title, null, message, SWT.NONE, new String[] {"OK", "Cancel"}, 0);
+      super(Displays.getActiveShell(), title, null, message, SWT.NONE, new String[] {"OK", "Cancel"}, 0);
       this.html = html;
    }
 

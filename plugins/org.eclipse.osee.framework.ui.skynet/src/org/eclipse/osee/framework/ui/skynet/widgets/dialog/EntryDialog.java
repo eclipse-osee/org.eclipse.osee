@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.ui.plugin.util.IShellCloseEvent;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.osee.framework.ui.swt.HyperLinkLabel;
 import org.eclipse.swt.SWT;
@@ -40,7 +41,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
@@ -64,7 +64,7 @@ public class EntryDialog extends MessageDialog {
    private final String dialogTitle;
 
    public EntryDialog(String dialogTitle, String dialogMessage) {
-      super(Display.getCurrent().getActiveShell(), dialogTitle, null, dialogMessage, MessageDialog.QUESTION,
+      super(Displays.getActiveShell(), dialogTitle, null, dialogMessage, MessageDialog.QUESTION,
             new String[] {"OK", "Cancel"}, 0);
       this.dialogTitle = dialogTitle;
    }

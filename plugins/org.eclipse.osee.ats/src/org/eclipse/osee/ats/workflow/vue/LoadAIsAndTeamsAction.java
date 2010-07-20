@@ -51,7 +51,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.osgi.framework.Bundle;
 
 /**
@@ -94,7 +94,7 @@ public class LoadAIsAndTeamsAction {
    }
 
    private void run() throws OseeCoreException {
-      if (prompt && !MessageDialog.openQuestion(Display.getCurrent().getActiveShell(), "Import ATS Config?",
+      if (prompt && !MessageDialog.openQuestion(Displays.getActiveShell(), "Import ATS Config?",
             "Importing ATS Config from ActionableItems.vue.\n\nAre you sure?")) {
          return;
       }

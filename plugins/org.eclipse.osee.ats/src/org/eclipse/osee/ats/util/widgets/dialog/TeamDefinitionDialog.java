@@ -16,10 +16,10 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactNameSorter;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Donald G. Dunne
@@ -27,7 +27,7 @@ import org.eclipse.swt.widgets.Display;
 public class TeamDefinitionDialog extends org.eclipse.ui.dialogs.ListDialog {
 
    public TeamDefinitionDialog(String title, String message) {
-      super(Display.getCurrent().getActiveShell());
+      super(Displays.getActiveShell());
       this.setTitle(title);
       this.setMessage(message);
       this.setContentProvider(new ArrayContentProvider() {

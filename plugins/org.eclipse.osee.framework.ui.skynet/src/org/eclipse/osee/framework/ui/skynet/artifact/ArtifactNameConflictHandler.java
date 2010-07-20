@@ -15,7 +15,6 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Roberto E. Escobar
@@ -34,7 +33,7 @@ public class ArtifactNameConflictHandler {
 			public void run() {
 				String startingName = beforeAfterNames.getFirst();
 				InputDialog dialog =
-							new InputDialog(Display.getCurrent().getActiveShell(), "Name Artifact", "Enter artifact name",
+							new InputDialog(Displays.getActiveShell(), "Name Artifact", "Enter artifact name",
 										startingName, new NonBlankAndNotSameAsStartingValidator(startingName));
 				int result = dialog.open();
 				if (result == Window.OK) {

@@ -170,7 +170,7 @@ public class XRadioButtons extends XWidget {
       GridData gd = new GridData();
       gd.horizontalSpan = horizontalSpan;
       comp.setLayoutData(gd);
-      // comp.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_GREEN));
+      // comp.setBackground(Displays.getSystemColor(SWT.COLOR_GREEN));
 
       // Create Text Widgets
       if (isDisplayLabel()) {
@@ -195,7 +195,7 @@ public class XRadioButtons extends XWidget {
          // System.out.println("verticalColumns *" + verticalColumns + "*");
          c = new Composite(comp, SWT.NONE);
          c.setLayout(ALayout.getZeroMarginLayout(verticalColumns, false));
-         // c.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+         // c.setBackground(Displays.getSystemColor(SWT.COLOR_RED));
       }
 
       Composite inComp = null;
@@ -205,7 +205,7 @@ public class XRadioButtons extends XWidget {
             inComp = new Composite(c, SWT.NONE);
             inComp.setLayout(new GridLayout(2, false));
             inComp.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
-            // inComp.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_CYAN+i));
+            // inComp.setBackground(Displays.getSystemColor(SWT.COLOR_CYAN+i));
          }
          XRadioButton button = nameToButton.get(names[i]);
          if (multiSelect) button.setButtonType(ButtonType.Check);

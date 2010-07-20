@@ -46,7 +46,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.DateSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserCheckTreeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserGroupsCheckTreeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserListDialog;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
  * @author Donald G. Dunne
@@ -155,7 +155,7 @@ public class PromptChangeUtil {
    }
 
    public static boolean promptChangeOriginator(final Collection<? extends StateMachineArtifact> smas) throws OseeCoreException {
-      UserListDialog ld = new UserListDialog(Display.getCurrent().getActiveShell(), "Select New Originator");
+      UserListDialog ld = new UserListDialog(Displays.getActiveShell(), "Select New Originator");
       int result = ld.open();
       if (result == 0) {
          User selectedUser = ld.getSelection();
@@ -185,7 +185,7 @@ public class PromptChangeUtil {
          if (teamArt.isReleased() || teamArt.isVersionLocked()) {
             String error =
                   "Team Workflow\n \"" + teamArt.getName() + "\"\n targeted version is locked or already released.";
-            if (AtsUtil.isAtsAdmin() && !MessageDialog.openConfirm(Display.getCurrent().getActiveShell(),
+            if (AtsUtil.isAtsAdmin() && !MessageDialog.openConfirm(Displays.getActiveShell(),
                   "Change Version", error + "\n\nOverride?")) {
                return false;
             } else if (!AtsUtil.isAtsAdmin()) {
@@ -223,7 +223,7 @@ public class PromptChangeUtil {
       //now check selected version
       if (newVersion.isVersionLocked()) {
          String error = "Version \"" + newVersion.getFullDisplayName() + "\" is locked or already released.";
-         if (AtsUtil.isAtsAdmin() && !MessageDialog.openConfirm(Display.getCurrent().getActiveShell(),
+         if (AtsUtil.isAtsAdmin() && !MessageDialog.openConfirm(Displays.getActiveShell(),
                "Change Version", error + "\n\nOverride?")) {
             return false;
          } else if (!AtsUtil.isAtsAdmin()) {
@@ -261,7 +261,7 @@ public class PromptChangeUtil {
             return false;
          }
       }
-      final ChangeTypeDialog dialog = new ChangeTypeDialog(Display.getCurrent().getActiveShell());
+      final ChangeTypeDialog dialog = new ChangeTypeDialog(Displays.getActiveShell());
       try {
          if (teams.size() == 1) {
             dialog.setSelected(teams.iterator().next().getChangeType());
@@ -294,7 +294,7 @@ public class PromptChangeUtil {
 
    public static boolean promptChangePoints(final Collection<? extends TeamWorkFlowArtifact> teams, boolean persist) throws OseeStateException {
 
-      final ChangePointDialog dialog = new ChangePointDialog(Display.getCurrent().getActiveShell());
+      final ChangePointDialog dialog = new ChangePointDialog(Displays.getActiveShell());
       try {
          if (teams.size() == 1) {
             dialog.setSelected(teams.iterator().next().getWorldViewPoint());
@@ -339,7 +339,7 @@ public class PromptChangeUtil {
             return false;
          }
       }
-      final AtsPriorityDialog ald = new AtsPriorityDialog(Display.getCurrent().getActiveShell());
+      final AtsPriorityDialog ald = new AtsPriorityDialog(Displays.getActiveShell());
       try {
          if (teams.size() == 1) {
             ald.setSelected(teams.iterator().next().getPriority());

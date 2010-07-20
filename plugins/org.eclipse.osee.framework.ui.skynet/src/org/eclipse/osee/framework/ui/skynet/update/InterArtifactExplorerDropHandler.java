@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
  * @author Jeff C. Phillips
@@ -51,7 +51,7 @@ public class InterArtifactExplorerDropHandler {
       Branch destinationBranch = destinationParentArtifact.getBranch();
 
       if (isUpdateFromParent(sourceBranch, destinationBranch)) {
-         MessageDialog.openError(Display.getCurrent().getActiveShell(), ACCESS_ERROR_MSG_TITLE,
+         MessageDialog.openError(Displays.getActiveShell(), ACCESS_ERROR_MSG_TITLE,
                UPDATE_FROM_PARENT_ERROR_MSG);
       } else if (isAccessAllowed(sourceBranch, destinationBranch)) {
          List<TransferObject> transferObjects = createTransferObjects(destinationParentArtifact, sourceArtifacts);
@@ -63,7 +63,7 @@ public class InterArtifactExplorerDropHandler {
          }
          addArtifactsToNewTransaction(destinationParentArtifact, transferObjects, sourceBranch);
       } else {
-         MessageDialog.openError(Display.getCurrent().getActiveShell(), ACCESS_ERROR_MSG_TITLE, ACCESS_ERROR_MSG);
+         MessageDialog.openError(Displays.getActiveShell(), ACCESS_ERROR_MSG_TITLE, ACCESS_ERROR_MSG);
       }
    }
 

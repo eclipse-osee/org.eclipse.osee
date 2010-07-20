@@ -60,7 +60,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
@@ -134,7 +133,7 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IArtifa
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
       gd.heightHint = 3;
       sash.setLayoutData(gd);
-      sash.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_GRAY));
+      sash.setBackground(Displays.getSystemColor(SWT.COLOR_GRAY));
       sash.addListener(SWT.MouseUp, new Listener() {
          public void handleEvent(Event e) {
             Rectangle treeRect = xViewer.getTree().getClientArea();
@@ -244,7 +243,7 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IArtifa
       extraInfoLabel = new Label(labelComp, SWT.NONE);
       extraInfoLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       extraInfoLabel.setText("");
-      extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+      extraInfoLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
 
       refreshActionEnablement();
    }
@@ -364,17 +363,17 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IArtifa
       try {
          if (isRequiredEntry() && xViewer.getTree().getItemCount() == 0) {
             extraInfoLabel.setText("At least one role entry is required. Select \"New Role\" to add.");
-            extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+            extraInfoLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
             return new Status(IStatus.ERROR, getClass().getSimpleName(), "At least one role entry is required");
          }
          IStatus result = reviewArt.isUserRoleValid(getClass().getSimpleName());
          if (!result.isOK()) {
             extraInfoLabel.setText(result.getMessage() + " - Select \"New Role\" to add.  Select icon in cell to update value.");
-            extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+            extraInfoLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
             return result;
          }
          extraInfoLabel.setText("Select \"New Role\" to add.  Select icon in cell to update value.");
-         extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLACK));
+         extraInfoLabel.setForeground(Displays.getSystemColor(SWT.COLOR_BLACK));
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          return new Status(IStatus.ERROR, getClass().getSimpleName(),

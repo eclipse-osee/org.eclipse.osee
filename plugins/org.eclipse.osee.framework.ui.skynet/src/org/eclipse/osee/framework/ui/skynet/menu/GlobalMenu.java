@@ -32,13 +32,13 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MenuEvent;
 import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.ISharedImages;
@@ -135,7 +135,7 @@ public class GlobalMenu {
          try {
             final Collection<Artifact> artifactsToBeDeleted = globalMenuHelper.getArtifacts();
             MessageDialog dialog =
-                  new MessageDialog(Display.getCurrent().getActiveShell(), "Confirm Artifact Deletion", null,
+                  new MessageDialog(Displays.getActiveShell(), "Confirm Artifact Deletion", null,
                         " Are you sure you want to delete this artifact and all of the default hierarchy children?",
                         MessageDialog.QUESTION, new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 1);
             if (dialog.open() == 0) {

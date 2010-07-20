@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLo
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
  * @author Donald G. Dunne
@@ -50,7 +50,7 @@ public class CreateGoalTestArtifacts extends XNavigateItemAction {
          AWorkbench.popup("Can't be run on production");
          return;
       }
-      if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) return;
+      if (!MessageDialog.openConfirm(Displays.getActiveShell(), getName(), getName())) return;
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), getName());
       GoalArtifact oteGoal = GoalArtifact.createGoal("OTE");
       GoalArtifact atsGoal = GoalArtifact.createGoal("ATS");

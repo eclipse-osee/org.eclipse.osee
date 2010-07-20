@@ -50,7 +50,6 @@ import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.filteredTree.SimpleCheckFilteredTreeDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.dialogs.ListDialog;
 
 /**
@@ -157,7 +156,7 @@ public class MultipleHridSearchOperation extends AbstractOperation implements IW
             Displays.ensureInDisplayThread(new Runnable() {
                @Override
                public void run() {
-                  MessageDialog.openInformation(Display.getCurrent().getActiveShell(), "Open Change Reports",
+                  MessageDialog.openInformation(Displays.getActiveShell(), "Open Change Reports",
                      "No change report exists for " + enteredIds);
                }
             });
@@ -176,7 +175,7 @@ public class MultipleHridSearchOperation extends AbstractOperation implements IW
             if (resultAtsArts.size() == 1) {
                artifact = resultAtsArts.iterator().next();
             } else {
-               ListDialog ld = new ListDialog(Display.getCurrent().getActiveShell());
+               ListDialog ld = new ListDialog(Displays.getActiveShell());
                ld.setContentProvider(new ArrayContentProvider());
                ld.setLabelProvider(new SmaWorkflowLabelProvider());
                ld.setTitle("Select Workflow");

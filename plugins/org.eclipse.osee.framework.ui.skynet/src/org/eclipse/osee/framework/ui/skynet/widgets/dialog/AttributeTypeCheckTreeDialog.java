@@ -17,9 +17,9 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
 
 /**
@@ -32,7 +32,7 @@ public class AttributeTypeCheckTreeDialog extends CheckedTreeSelectionDialog {
    }
 
    public AttributeTypeCheckTreeDialog(Collection<? extends AttributeType> attributeTypes, ILabelProvider iLabelProvider) {
-      super(Display.getCurrent().getActiveShell(), iLabelProvider, new ArrayTreeContentProvider());
+      super(Displays.getActiveShell(), iLabelProvider, new ArrayTreeContentProvider());
       if (attributeTypes != null) setInput(attributeTypes);
    }
 

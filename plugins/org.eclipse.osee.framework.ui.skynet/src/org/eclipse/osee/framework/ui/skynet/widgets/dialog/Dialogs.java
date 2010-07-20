@@ -21,9 +21,9 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.HtmlExportTable;
 import org.eclipse.osee.framework.ui.skynet.util.email.EmailWizard;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.program.Program;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 
 /**
@@ -43,7 +43,7 @@ public class Dialogs {
          AWorkbench.popup("ERROR", "Save data is empty.  Nothing to save.");
          return Result.FalseResult;
       }
-      final FileDialog dialog = new FileDialog(Display.getCurrent().getActiveShell().getShell(), SWT.SAVE);
+      final FileDialog dialog = new FileDialog(Displays.getActiveShell().getShell(), SWT.SAVE);
       dialog.setFilterExtensions(new String[] {"*.html"});
       String filename = dialog.open();
       if (filename == null || filename.equals("")) {
@@ -65,7 +65,7 @@ public class Dialogs {
          return Result.FalseResult;
       }
       EmailWizard ew = new EmailWizard(text, title, null, null);
-      WizardDialog dialog = new WizardDialog(Display.getCurrent().getActiveShell(), ew);
+      WizardDialog dialog = new WizardDialog(Displays.getActiveShell(), ew);
       dialog.create();
       if (dialog.open() == 0) {
          return Result.TrueResult;

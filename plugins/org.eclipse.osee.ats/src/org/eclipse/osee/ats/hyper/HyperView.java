@@ -50,6 +50,7 @@ import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -58,7 +59,6 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
@@ -621,7 +621,7 @@ public class HyperView extends ViewPart implements IPartListener {
       PolylineConnection c = new PolylineConnection();
       c.setLineWidth(2);
       if (hvi.isRelationDirty()) {
-         c.setForegroundColor(Display.getCurrent().getSystemColor(SWT.COLOR_BLUE));
+         c.setForegroundColor(Displays.getSystemColor(SWT.COLOR_BLUE));
       }
       c.setSourceAnchor(source);
       c.setTargetAnchor(target);
@@ -656,7 +656,7 @@ public class HyperView extends ViewPart implements IPartListener {
                @Override
                public void widgetSelected(SelectionEvent e) {
                   try {
-                     if (MessageDialog.openQuestion(Display.getCurrent().getActiveShell(), "Delete Link",
+                     if (MessageDialog.openQuestion(Displays.getActiveShell(), "Delete Link",
                         "Delete Link\n\n" + hvi.getLink().toString() + "\n\nAre you sure?")) {
                         Artifact artA = hvi.getLink().getArtifactA();
                         hvi.getLink().delete(true);

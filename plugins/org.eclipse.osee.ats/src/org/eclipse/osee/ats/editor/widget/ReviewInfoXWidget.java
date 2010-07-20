@@ -48,7 +48,6 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
@@ -298,7 +297,7 @@ public class ReviewInfoXWidget extends XLabelValueBase implements IFrameworkTran
             @Override
             public void handleEvent(Event event) {
                if (event.button == 3) {
-                  if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Auto Complete Reviews",
+                  if (!MessageDialog.openConfirm(Displays.getActiveShell(), "Auto Complete Reviews",
                         "ATS Admin\n\nAuto Complete Reviews?")) {
                      return;
                   }

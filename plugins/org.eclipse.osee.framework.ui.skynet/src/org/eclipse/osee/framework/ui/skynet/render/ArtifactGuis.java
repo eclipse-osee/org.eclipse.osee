@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.swt.widgets.Display;
 
 public final class ArtifactGuis {
 
@@ -70,7 +69,7 @@ public final class ArtifactGuis {
 		Displays.pendInDisplayThread(new Runnable() {
 			@Override
 			public void run() {
-				editAllowed.setValue(MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Confirm Edit",
+				editAllowed.setValue(MessageDialog.openConfirm(Displays.getActiveShell(), "Confirm Edit",
 							message));
 			}
 		});

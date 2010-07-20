@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.ArtifactViewerSorter;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactDescriptiveLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -30,7 +31,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.dialogs.SelectionDialog;
 
 /**
@@ -46,7 +46,7 @@ public class TeamVersionListDialog extends SelectionDialog {
    private final TeamDefinitionArtifact teamDef;
 
    public TeamVersionListDialog(Active active) {
-      super(Display.getCurrent().getActiveShell());
+      super(Displays.getActiveShell());
       this.active = active;
       this.teamDef = null;
       setTitle("Select Version");
@@ -54,7 +54,7 @@ public class TeamVersionListDialog extends SelectionDialog {
    }
 
    public TeamVersionListDialog(TeamDefinitionArtifact teamDef, Active active) {
-      super(Display.getCurrent().getActiveShell());
+      super(Displays.getActiveShell());
       this.teamDef = teamDef;
       this.active = active;
       setTitle("Select Version");

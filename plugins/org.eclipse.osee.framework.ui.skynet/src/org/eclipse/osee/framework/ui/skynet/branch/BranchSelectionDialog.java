@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchOptions;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.XBranchWidget;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
@@ -29,7 +30,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TreeItem;
@@ -45,7 +45,7 @@ public class BranchSelectionDialog extends MessageDialog {
    private final Collection<Branch> branches;
 
    public BranchSelectionDialog(String title, Collection<Branch> branches) {
-      super(Display.getCurrent().getActiveShell(), title, null, null, MessageDialog.NONE,
+      super(Displays.getActiveShell(), title, null, null, MessageDialog.NONE,
             new String[] {"Ok", "Cancel"}, 0);
       this.allowOnlyWorkingBranches = false;
       this.selected = null;

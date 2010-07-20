@@ -43,7 +43,7 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
  * @author Donald G. Dunne
@@ -67,7 +67,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
          return;
       }
       MessageDialog dialog =
-            new MessageDialog(Display.getCurrent().getActiveShell(), getName(), null,
+            new MessageDialog(Displays.getActiveShell(), getName(), null,
                   getName() + "\n\nSelect Source or Destination Client", MessageDialog.QUESTION, new String[] {
                         "Source Client", "Destination Client - Start", "Destination Client - End", "Cancel"}, 2);
       int result = dialog.open();
@@ -115,7 +115,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
 
       // Wait for destination client to start
       if (!MessageDialog.openConfirm(
-            Display.getCurrent().getActiveShell(),
+            Displays.getActiveShell(),
             getName(),
             "Launch \"Destination Client - Start\" test, enter \"" + actionArt.getName().replaceFirst("tt ", "") + "\" and press Ok")) {
          return;
@@ -179,7 +179,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
 
       // Wait for destination client to end
       if (!MessageDialog.openConfirm(
-            Display.getCurrent().getActiveShell(),
+            Displays.getActiveShell(),
             getName(),
             "Launch \"Destination Client - End\" test, enter \"" + actionArt.getName().replaceFirst("tt ", "") + "\" and press Ok")) {
          return;

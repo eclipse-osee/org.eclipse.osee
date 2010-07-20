@@ -28,8 +28,8 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Donald G. Dunne
@@ -68,7 +68,7 @@ public class DeleteCoverUnitAction extends Action {
          result.popup();
          return;
       }
-      if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Delete Coverage Unit",
+      if (MessageDialog.openConfirm(Displays.getActiveShell(), "Delete Coverage Unit",
             "Delete Coverage Units")) {
          try {
             SkynetTransaction transaction =

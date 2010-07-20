@@ -39,7 +39,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewe
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerArtifactTypeColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerGuidColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerHridColumn;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
  * Donald G. Dunne
@@ -54,7 +54,7 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
-      UserListDialog ld = new UserListDialog(Display.getCurrent().getActiveShell());
+      UserListDialog ld = new UserListDialog(Displays.getActiveShell());
       int result = ld.open();
       if (result == 0) {
          if (ld.getResult().length == 0) {

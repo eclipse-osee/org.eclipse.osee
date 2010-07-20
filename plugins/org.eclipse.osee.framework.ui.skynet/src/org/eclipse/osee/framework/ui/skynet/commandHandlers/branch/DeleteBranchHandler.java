@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
  * @author Roberto E. Escobar
@@ -37,7 +37,7 @@ public class DeleteBranchHandler extends CommandHandler {
       Branch selectedBranch = Handlers.getBranchesFromStructuredSelection(selection).iterator().next();
 
       MessageDialog dialog =
-            new MessageDialog(Display.getCurrent().getActiveShell(), "Delete Branch", null,
+            new MessageDialog(Displays.getActiveShell(), "Delete Branch", null,
                   "Are you sure you want to delete the branch: " + selectedBranch.getName(),
                   MessageDialog.QUESTION, new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 1);
 

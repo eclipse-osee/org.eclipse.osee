@@ -49,8 +49,8 @@ import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.VbaWordDiffGenerator;
 import org.eclipse.osee.framework.ui.skynet.revert.RevertWizard;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.NonmodalWizardDialog;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 
@@ -199,7 +199,7 @@ public class MergeUtility {
                artifactList.add(((ArtifactConflict) conflict).getSourceArtifact());
                artifacts.add(artifactList);
                RevertWizard wizard = new RevertWizard(artifacts);
-               NonmodalWizardDialog dialog2 = new NonmodalWizardDialog(Display.getCurrent().getActiveShell(), wizard);
+               NonmodalWizardDialog dialog2 = new NonmodalWizardDialog(Displays.getActiveShell(), wizard);
                dialog2.create();
                dialog2.open();
                return true;
@@ -254,7 +254,7 @@ public class MergeUtility {
             }
 
             MessageDialog dialog =
-               new MessageDialog(Display.getCurrent().getActiveShell().getShell(), "Merge Word Artifacts", null,
+               new MessageDialog(Displays.getActiveShell().getShell(), "Merge Word Artifacts", null,
                   OPEN_MERGE_DIALOG, 4, buttons, 2);
             int response = dialog.open();
             if (buttons.length == 3) {

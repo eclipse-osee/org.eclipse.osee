@@ -16,9 +16,9 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.UserCommunity;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Donald G. Dunne
@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.Display;
 public class UserCommunityListDialog extends org.eclipse.ui.dialogs.ListDialog {
 
    public UserCommunityListDialog() {
-      super(Display.getCurrent().getActiveShell());
+      super(Displays.getActiveShell());
       this.setTitle("Select User Community");
       this.setMessage("Select User Community");
       this.setContentProvider(new ArrayContentProvider() {

@@ -61,9 +61,10 @@ public class TestServerConsoleServiceRenderer implements IServiceRenderer {
 		this.inputManager = new InputManager<TreeParent>();
 	}
 
+	@Override
 	public void refresh() {
-		Display.getCurrent().asyncExec(new Runnable() {
-
+		Displays.ensureInDisplayThread(new Runnable() {
+			@Override
 			public void run() {
 				if (composite != null && !composite.isDisposed() && testService != null) {
 					cleanupService();

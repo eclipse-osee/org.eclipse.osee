@@ -42,7 +42,6 @@ import org.eclipse.osee.framework.ui.skynet.mergeWizard.ConflictResolutionWizard
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
@@ -172,7 +171,7 @@ public class MergeXViewer extends XViewer {
    }
 
    private void respondToIconClick(Conflict conflict, TreeColumn treeColumn) {
-      Shell shell = Display.getCurrent().getActiveShell().getShell();
+      Shell shell = Displays.getActiveShell().getShell();
 
       try {
          if (conflict.statusNotResolvable()) {

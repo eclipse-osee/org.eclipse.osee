@@ -75,15 +75,15 @@ public class PreviewPanel extends Composite {
 		defaultComposite = new Composite(parent, SWT.BORDER);
 		defaultComposite.setLayout(new GridLayout());
 		defaultComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		defaultComposite.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_INFO_BACKGROUND));
+		defaultComposite.setBackground(Displays.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
 
 		Label label = new Label(defaultComposite, SWT.NONE);
 		Font font = new Font(PlatformUI.getWorkbench().getDisplay(), "Courier New", 10, SWT.BOLD);
 		label.setFont(font);
-		label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_RED));
+		label.setForeground(Displays.getSystemColor(SWT.COLOR_DARK_RED));
 		label.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, true));
 		label.setText(PREVIEW_DEFAULT_TITLE);
-		label.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_INFO_BACKGROUND));
+		label.setBackground(Displays.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
 	}
 
 	private Control getControl(PanelEnum panelId) {

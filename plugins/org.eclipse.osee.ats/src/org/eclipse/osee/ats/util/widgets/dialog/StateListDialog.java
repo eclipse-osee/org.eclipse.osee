@@ -15,9 +15,9 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.dialogs.ListDialog;
 
 /**
@@ -26,7 +26,7 @@ import org.eclipse.ui.dialogs.ListDialog;
 public class StateListDialog extends ListDialog {
 
    public StateListDialog(String title, String message, Collection<String> values) {
-      super(Display.getCurrent().getActiveShell());
+      super(Displays.getActiveShell());
       setInput(values);
       setTitle(title);
       setMessage(message);

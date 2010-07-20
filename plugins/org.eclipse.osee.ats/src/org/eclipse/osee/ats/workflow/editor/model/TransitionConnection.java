@@ -13,9 +13,9 @@ package org.eclipse.osee.ats.workflow.editor.model;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
@@ -40,7 +40,7 @@ public class TransitionConnection extends Connection {
 
    @Override
    public Color getForegroundColor() {
-      return Display.getCurrent().getSystemColor(SWT.COLOR_BLACK);
+      return Displays.getSystemColor(SWT.COLOR_BLACK);
    }
 
    @Override

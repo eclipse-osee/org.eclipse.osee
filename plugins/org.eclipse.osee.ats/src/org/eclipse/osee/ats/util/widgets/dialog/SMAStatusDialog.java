@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XFloat;
 import org.eclipse.osee.framework.ui.skynet.widgets.XPercent;
 import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButton;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
@@ -29,7 +30,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
@@ -67,7 +67,7 @@ public class SMAStatusDialog extends MessageDialog {
          if (sma instanceof TaskArtifact) hasTask = true;
 
       statusLabel = new Label(parent, SWT.NONE);
-      statusLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+      statusLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
       updateStatusLabel();
 
       if (smas.size() > 1) {

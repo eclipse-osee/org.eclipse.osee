@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLo
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.WriteType;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
  * @author Donald G. Dunne
@@ -41,9 +41,9 @@ public class ConfigureDBForAts extends XNavigateItemAction {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
-      if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Configure DB for ATS",
+      if (!MessageDialog.openConfirm(Displays.getActiveShell(), "Configure DB for ATS",
             "Configure DB for ATS " + pluginId)) return;
-      if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Configure DB for ATS",
+      if (!MessageDialog.openConfirm(Displays.getActiveShell(), "Configure DB for ATS",
             "This will break things really bad if ATS is alread configured for this item.  Are you sure?")) return;
 
       Jobs.startJob(new Report(getName()), true);

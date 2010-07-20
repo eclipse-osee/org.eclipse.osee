@@ -78,7 +78,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolBar;
@@ -346,7 +345,7 @@ public final class AtsUtil {
    }
 
    public static TeamWorkFlowArtifact promptSelectTeamWorkflow(ActionArtifact actArt) throws OseeCoreException {
-      ListDialog ld = new ListDialog(Display.getCurrent().getActiveShell());
+      ListDialog ld = new ListDialog(Displays.getActiveShell());
       ld.setContentProvider(new ArrayContentProvider());
       ld.setLabelProvider(new TeamWorkflowLabelProvider());
       ld.setTitle("Select Team Workflow");

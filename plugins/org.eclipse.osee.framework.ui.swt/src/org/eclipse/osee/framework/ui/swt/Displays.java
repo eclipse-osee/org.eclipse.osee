@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.swt;
 
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
@@ -53,14 +54,18 @@ public final class Displays {
 	}
 
 	public static Shell getActiveShell() {
-		return Displays.getActiveShell();
+		return Display.getDefault().getActiveShell();
 	}
 
 	public static Color getSystemColor(int colorId) {
-		return Displays.getSystemColor(colorId);
+		return Display.getDefault().getSystemColor(colorId);
 	}
 
 	public static Color getColor(int red, int green, int blue) {
 		return new Color(Display.getDefault(), red, green, blue);
+	}
+
+	public static Image getSystemImage(int id) {
+		return Display.getDefault().getSystemImage(id);
 	}
 }

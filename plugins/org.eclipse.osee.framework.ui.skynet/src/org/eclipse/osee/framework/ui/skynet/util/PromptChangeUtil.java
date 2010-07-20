@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ChangeBranchArchivedStateDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ChangeBranchStateDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ChangeBranchTypeDialog;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.widgets.TreeItem;
 
 /**
@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.TreeItem;
 public class PromptChangeUtil {
 
    public static boolean promptChangeBranchType(final Collection<TreeItem> branches) throws OseeCoreException {
-      ChangeBranchTypeDialog ld = new ChangeBranchTypeDialog(Display.getCurrent().getActiveShell());
+      ChangeBranchTypeDialog ld = new ChangeBranchTypeDialog(Displays.getActiveShell());
       int result = ld.open();
       if (result == 0) {
          BranchType type = ld.getSelection();
@@ -43,7 +43,7 @@ public class PromptChangeUtil {
    }
 
    public static boolean promptChangeBranchState(final Collection<TreeItem> branches) throws OseeCoreException {
-      ChangeBranchStateDialog ld = new ChangeBranchStateDialog(Display.getCurrent().getActiveShell());
+      ChangeBranchStateDialog ld = new ChangeBranchStateDialog(Displays.getActiveShell());
       int result = ld.open();
       if (result == 0) {
          BranchState state = ld.getSelection();
@@ -57,7 +57,7 @@ public class PromptChangeUtil {
    }
 
    public static boolean promptChangeBranchArchivedState(final Collection<TreeItem> branches) throws OseeCoreException {
-      ChangeBranchArchivedStateDialog ld = new ChangeBranchArchivedStateDialog(Display.getCurrent().getActiveShell());
+      ChangeBranchArchivedStateDialog ld = new ChangeBranchArchivedStateDialog(Displays.getActiveShell());
       int result = ld.open();
       if (result == 0) {
          BranchArchivedState state = ld.getSelection();

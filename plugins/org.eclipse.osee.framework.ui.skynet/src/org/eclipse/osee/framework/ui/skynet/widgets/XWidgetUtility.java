@@ -19,45 +19,45 @@ import org.eclipse.swt.widgets.Widget;
 /**
  * @author Roberto E. Escobar
  */
-public class XWidgetUtility {
+public final class XWidgetUtility {
 
-   private XWidgetUtility() {
-   }
+	private XWidgetUtility() {
+	}
 
-   public static boolean isWidgetAccesible(Widget widget) {
-      return widget != null && !widget.isDisposed();
-   }
+	public static boolean isWidgetAccesible(Widget widget) {
+		return widget != null && !widget.isDisposed();
+	}
 
-   public static List<XWidget> findXWidgetsInControl(Widget parent) {
-      List<XWidget> xWidgets = new ArrayList<XWidget>();
-      XWidget xWidget = asXWidget(parent);
-      if (xWidget != null) {
-         xWidgets.add(xWidget);
-      }
-      if (parent instanceof Composite) {
-         Composite container = (Composite) parent;
-         for (Control child : container.getChildren()) {
-            xWidgets.addAll(findXWidgetsInControl(child));
-         }
-      }
-      return xWidgets;
-   }
+	public static List<XWidget> findXWidgetsInControl(Widget parent) {
+		List<XWidget> xWidgets = new ArrayList<XWidget>();
+		XWidget xWidget = asXWidget(parent);
+		if (xWidget != null) {
+			xWidgets.add(xWidget);
+		}
+		if (parent instanceof Composite) {
+			Composite container = (Composite) parent;
+			for (Control child : container.getChildren()) {
+				xWidgets.addAll(findXWidgetsInControl(child));
+			}
+		}
+		return xWidgets;
+	}
 
-   public static XWidget asXWidget(Widget widget) {
-      XWidget toReturn = null;
-      if (widget != null) {
-         Object object = widget.getData(XWidget.XWIDGET_DATA_KEY);
-         toReturn = object instanceof XWidget ? (XWidget) object : null;
-      }
-      return toReturn;
-   }
+	public static XWidget asXWidget(Widget widget) {
+		XWidget toReturn = null;
+		if (widget != null) {
+			Object object = widget.getData(XWidget.XWIDGET_DATA_KEY);
+			toReturn = object instanceof XWidget ? (XWidget) object : null;
+		}
+		return toReturn;
+	}
 
-   public static boolean hasXWidget(Widget widget) {
-      boolean result = false;
-      if (widget != null) {
-         Object object = widget.getData(XWidget.XWIDGET_DATA_KEY);
-         result = object instanceof XWidget;
-      }
-      return result;
-   }
+	public static boolean hasXWidget(Widget widget) {
+		boolean result = false;
+		if (widget != null) {
+			Object object = widget.getData(XWidget.XWIDGET_DATA_KEY);
+			result = object instanceof XWidget;
+		}
+		return result;
+	}
 }

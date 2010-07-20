@@ -68,7 +68,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
 
@@ -680,7 +679,7 @@ public class MergeXWidget extends XWidget implements IAdaptable {
                   if (selections.size() > 0) {
                      ListSelectionDialogNoSave dialog =
                         new ListSelectionDialogNoSave(selections.toArray(),
-                           Display.getCurrent().getActiveShell().getShell(), "Apply Prior Merge Resolution", null,
+                           Displays.getActiveShell().getShell(), "Apply Prior Merge Resolution", null,
                            "Select the destination branch that the previous commit was appplied to", 2, new String[] {
                               "Apply", "Cancel"}, 1);
                      if (dialog.open() == 0) {
@@ -689,7 +688,7 @@ public class MergeXWidget extends XWidget implements IAdaptable {
                      }
                   }
                   if (selections.isEmpty()) {
-                     new MessageDialog(Display.getCurrent().getActiveShell().getShell(),
+                     new MessageDialog(Displays.getActiveShell().getShell(),
                         "Apply Prior Merge Resolution", null, "This Source Branch has had No Prior Merges", 2,
                         new String[] {"OK"}, 1).open();
                   }

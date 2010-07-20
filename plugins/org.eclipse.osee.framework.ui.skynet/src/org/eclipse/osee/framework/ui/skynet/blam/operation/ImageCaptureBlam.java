@@ -70,7 +70,7 @@ public class ImageCaptureBlam extends AbstractBlam {
 					gc.copyArea(image, topLeftPoint.x, topLeftPoint.y);
 					gc.dispose();
 					Display.getDefault().removeFilter(SWT.MouseUp, displayKeysListener);
-					ImageDialog diag = new ImageDialog(image, Display.getCurrent().getActiveShell());
+					ImageDialog diag = new ImageDialog(image, Displays.getActiveShell());
 					diag.open();
 				}
 			}

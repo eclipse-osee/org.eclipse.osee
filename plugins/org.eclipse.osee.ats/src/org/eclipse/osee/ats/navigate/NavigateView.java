@@ -56,11 +56,11 @@ import org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.LoadingComposite;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IMemento;
@@ -160,9 +160,9 @@ public class NavigateView extends ViewPart implements IActionable {
                }
                if (!str.equals("")) {
                   if (AtsUtil.isAtsAdmin()) {
-                     label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+                     label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
                   } else {
-                     label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLUE));
+                     label.setForeground(Displays.getSystemColor(SWT.COLOR_BLUE));
                   }
                }
                label.setText(str);

@@ -14,9 +14,9 @@ import java.util.Collection;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactNameReverseSorter;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Donald G. Dunne
@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Display;
 public class VersionListDialog extends org.eclipse.ui.dialogs.ListDialog {
 
    public VersionListDialog(String title, String message, Collection<VersionArtifact> verArts) {
-      super(Display.getCurrent().getActiveShell());
+      super(Displays.getActiveShell());
       this.setTitle(title);
       this.setMessage(message);
       this.setContentProvider(new ArrayContentProvider() {

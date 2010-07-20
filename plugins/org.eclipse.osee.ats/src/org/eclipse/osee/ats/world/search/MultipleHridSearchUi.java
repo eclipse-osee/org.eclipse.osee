@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryCheckDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Donald G. Dunne
@@ -73,7 +72,7 @@ public class MultipleHridSearchUi {
 										"Include ArtIds");
 			} else {
 				ed =
-							new EntryDialog(Display.getCurrent().getActiveShell(), data.getName(), null,
+							new EntryDialog(Displays.getActiveShell(), data.getName(), null,
 										"Enter Legacy ID, Guid or HRID (comma separated)", MessageDialog.QUESTION, new String[] {
 													"OK", "Cancel"}, 0);
 			}

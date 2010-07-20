@@ -53,7 +53,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
@@ -112,7 +111,7 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
                   @Override
                   public void handleEvent(Event event) {
                      if (event.button == 3) {
-                        if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Auto Commit Branches",
+                        if (!MessageDialog.openConfirm(Displays.getActiveShell(), "Auto Commit Branches",
                               "ATS Admin\n\nAuto Commit Branches?")) {
                            return;
                         }
@@ -180,7 +179,7 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
       extraInfoLabel = new Label(leftComp, SWT.NONE);
       extraInfoLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       extraInfoLabel.setText("");
-      extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+      extraInfoLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
 
       Composite rightComp = new Composite(bComp, SWT.NONE);
       rightComp.setLayout(new GridLayout());
@@ -275,7 +274,7 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
                if (infoStr == null && currentString != null || infoStr != null && currentString == null || !infoStr.equals(currentString)) {
                   extraInfoLabel.setText("Double-click item to perform Action");
                }
-               extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(color));
+               extraInfoLabel.setForeground(Displays.getSystemColor(color));
             }
          }
       });

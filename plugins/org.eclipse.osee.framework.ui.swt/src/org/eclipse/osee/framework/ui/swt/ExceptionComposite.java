@@ -39,18 +39,18 @@ public class ExceptionComposite extends Composite {
       Composite composite = new Composite(parent, SWT.BORDER);
       composite.setLayout(new GridLayout(2, false));
       composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-      composite.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_LIST_BACKGROUND));
+      composite.setBackground(Displays.getSystemColor(SWT.COLOR_LIST_BACKGROUND));
 
       Label imageLabel = new Label(composite, SWT.NONE);
       imageLabel.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, false, true));
       Image image = PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_ERROR_TSK);
       imageLabel.setImage(image);
-      imageLabel.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_LIST_BACKGROUND));
+      imageLabel.setBackground(Displays.getSystemColor(SWT.COLOR_LIST_BACKGROUND));
 
       Text text = new Text(composite, SWT.WRAP);
       text.setFont(parent.getFont());
-      text.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_RED));
-      text.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_LIST_BACKGROUND));
+      text.setForeground(Displays.getSystemColor(SWT.COLOR_DARK_RED));
+      text.setBackground(Displays.getSystemColor(SWT.COLOR_LIST_BACKGROUND));
       text.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, true));
       text.setText(ex.toString());
       return composite;

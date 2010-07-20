@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
  * @author Jeff C. Phillips
@@ -67,7 +67,7 @@ public class BranchCreationHandler extends CommandHandler {
          return null;
       }
       final EntryDialog dialog =
-            new EntryDialog(Display.getCurrent().getActiveShell(), "Branch", null, "Enter the name of the new Branch:",
+            new EntryDialog(Displays.getActiveShell(), "Branch", null, "Enter the name of the new Branch:",
                   MessageDialog.INFORMATION, new String[] {"OK", "Cancel"}, 0);
       int result = dialog.open();
 

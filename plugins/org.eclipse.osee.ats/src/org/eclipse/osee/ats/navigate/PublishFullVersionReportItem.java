@@ -31,9 +31,9 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.program.Program;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 
 /**
@@ -67,7 +67,7 @@ public class PublishFullVersionReportItem extends XNavigateItemAction {
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
       String usePublishToFilename = publishToFilename;
       if (usePublishToFilename == null) {
-         final FileDialog dialog = new FileDialog(Display.getCurrent().getActiveShell().getShell(), SWT.SAVE);
+         final FileDialog dialog = new FileDialog(Displays.getActiveShell().getShell(), SWT.SAVE);
          dialog.setFilterExtensions(new String[] {"*.html"});
          usePublishToFilename = dialog.open();
          if (usePublishToFilename == null) return;
@@ -90,7 +90,7 @@ public class PublishFullVersionReportItem extends XNavigateItemAction {
             useTeamDef = (TeamDefinitionArtifact) ld.getResult()[0];
          } else
             return;
-      } else if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) return;
+      } else if (!MessageDialog.openConfirm(Displays.getActiveShell(), getName(), getName())) return;
 
       String title = useTeamDef.getName() + " Version Report";
       PublishReportJob job = new PublishReportJob(title, teamDef, usePublishToFilename);
