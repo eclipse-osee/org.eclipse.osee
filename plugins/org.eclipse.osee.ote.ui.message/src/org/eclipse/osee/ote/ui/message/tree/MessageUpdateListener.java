@@ -12,16 +12,15 @@ package org.eclipse.osee.ote.ui.message.tree;
 
 import java.util.LinkedList;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.ote.client.msg.core.AbstractMessageListener;
 import org.eclipse.osee.ote.client.msg.core.IMessageSubscription;
 import org.eclipse.osee.ote.message.MessageSystemException;
 import org.eclipse.osee.ote.message.data.MessageData;
 import org.eclipse.osee.ote.message.enums.DataType;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Ken J. Aguilar
- *
  */
 public class MessageUpdateListener extends AbstractMessageListener {
 
@@ -98,13 +97,11 @@ public class MessageUpdateListener extends AbstractMessageListener {
 	}
 
 	private void update(AbstractTreeNode[] nodes) {
-		Display.getDefault().asyncExec(new NodeUpdate(nodes));
+		Displays.ensureInDisplayThread(new NodeUpdate(nodes));
 	}
 
 	private void update(AbstractTreeNode node) {
-		Display.getDefault().asyncExec(new NodeUpdate(new AbstractTreeNode[] { node }));
+		Displays.ensureInDisplayThread(new NodeUpdate(new AbstractTreeNode[] {node}));
 	}
-
-
 
 }

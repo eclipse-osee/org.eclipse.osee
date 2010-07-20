@@ -13,6 +13,7 @@ package org.eclipse.osee.ote.ui.message.watch.recording;
 import java.io.File;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.osee.ote.ui.message.internal.Activator;
 import org.eclipse.swt.SWT;
@@ -20,7 +21,6 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -28,7 +28,7 @@ import org.eclipse.swt.widgets.Text;
 public class RecordingFilePage extends WizardPage {
 	private static final String SECTION = "ote.ui.message.settings.section";
 	private static final String PATH_KEY = "ote.ui.message.settings.rec_file_path";
-	
+
 	private String selectedFile;
 	private Text filePathTxt;
 
@@ -52,10 +52,8 @@ public class RecordingFilePage extends WizardPage {
 
 		Widgets.attachToParent(fileLbl, SWT.LEFT, 0, 10);
 
-		Widgets.attachToControl(filePathTxt, filePickBtn, SWT.RIGHT, SWT.LEFT,
-				-5);
-		Widgets.attachToControl(filePathTxt, filePickBtn, SWT.TOP, SWT.CENTER,
-				0);
+		Widgets.attachToControl(filePathTxt, filePickBtn, SWT.RIGHT, SWT.LEFT, -5);
+		Widgets.attachToControl(filePathTxt, filePickBtn, SWT.TOP, SWT.CENTER, 0);
 		Widgets.attachToControl(filePathTxt, fileLbl, SWT.LEFT, SWT.RIGHT, 5);
 
 		Widgets.attachToControl(fileLbl, filePathTxt, SWT.TOP, SWT.CENTER, 0);
@@ -70,9 +68,8 @@ public class RecordingFilePage extends WizardPage {
 				if (section == null) {
 					section = settings.addNewSection(SECTION);
 				}
-				
-				FileDialog dialog = new FileDialog(Display.getDefault()
-						.getActiveShell(), SWT.SAVE);
+
+				FileDialog dialog = new FileDialog(Displays.getActiveShell(), SWT.SAVE);
 				String path = section.get(PATH_KEY);
 				if (path != null) {
 					File file = new File(path);
@@ -80,16 +77,16 @@ public class RecordingFilePage extends WizardPage {
 						dialog.setFilterPath(path);
 					}
 				}
-				dialog.setFilterExtensions(new String[]{"*.csv"});
+				dialog.setFilterExtensions(new String[] {"*.csv"});
 				String result = dialog.open();
 				if (result != null) {
 					File file = new File(result);
 					section.put(PATH_KEY, file.getParent());
-					
+
 					int filterIndex = dialog.getFilterIndex();
 					String[] extensions = dialog.getFilterExtensions();
-					if(filterIndex >= 0 && filterIndex < extensions.length){
-						if(!result.endsWith(extensions[filterIndex].substring(1))){
+					if (filterIndex >= 0 && filterIndex < extensions.length) {
+						if (!result.endsWith(extensions[filterIndex].substring(1))) {
 							result = result + extensions[filterIndex].substring(1);
 						}
 					}
@@ -112,7 +109,7 @@ public class RecordingFilePage extends WizardPage {
 		setPageComplete(true);
 	}
 
-	public String getFileName(){
+	public String getFileName() {
 		return filePathTxt.getText();
 	}
 

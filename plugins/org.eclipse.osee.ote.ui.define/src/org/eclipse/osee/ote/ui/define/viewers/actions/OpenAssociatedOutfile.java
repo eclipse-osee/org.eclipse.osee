@@ -17,10 +17,10 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.ote.define.artifacts.TestRunOperator;
 import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
 import org.eclipse.osee.ote.ui.define.utilities.SelectionHelper;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
@@ -31,47 +31,48 @@ import org.eclipse.ui.ide.IDE;
  */
 public class OpenAssociatedOutfile extends AbstractActionHandler {
 
-   public OpenAssociatedOutfile(StructuredViewer viewer, String text) throws Exception {
-      super(viewer, text);
-   }
+	public OpenAssociatedOutfile(StructuredViewer viewer, String text) throws Exception {
+		super(viewer, text);
+	}
 
-   public OpenAssociatedOutfile(StructuredViewer viewer, String text, ImageDescriptor image) throws Exception {
-      super(viewer, text, image);
-   }
+	public OpenAssociatedOutfile(StructuredViewer viewer, String text, ImageDescriptor image) throws Exception {
+		super(viewer, text, image);
+	}
 
-   @Override
-   public void updateState() {
-      TestRunOperator artifact = SelectionHelper.getInstance().getSelection(getViewer());
-      setEnabled(artifact != null);
-   }
+	@Override
+	public void updateState() {
+		TestRunOperator artifact = SelectionHelper.getInstance().getSelection(getViewer());
+		setEnabled(artifact != null);
+	}
 
-   @Override
-   public void run() {
-      TestRunOperator operator = SelectionHelper.getInstance().getSelection(getViewer());
-      try {
-         String targetFile = operator.getOutfileUrl();
-         openEditorUtility(new URI(targetFile));
-      } catch (Exception ex) {
-         handleException(ex);
-      }
-   }
+	@Override
+	public void run() {
+		TestRunOperator operator = SelectionHelper.getInstance().getSelection(getViewer());
+		try {
+			String targetFile = operator.getOutfileUrl();
+			openEditorUtility(new URI(targetFile));
+		} catch (Exception ex) {
+			handleException(ex);
+		}
+	}
 
-   private void openEditorUtility(final URI resource) {
-      Display.getDefault().asyncExec(new Runnable() {
-         public void run() {
-            try {
-               IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-               IDE.openEditorOnFileStore(page, EFS.getStore(resource));
-            } catch (Exception ex) {
-               handleException(ex);
-            }
-         }
-      });
-   }
+	private void openEditorUtility(final URI resource) {
+		Displays.ensureInDisplayThread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+					IDE.openEditorOnFileStore(page, EFS.getStore(resource));
+				} catch (Exception ex) {
+					handleException(ex);
+				}
+			}
+		});
+	}
 
-   private void handleException(Exception ex) {
-      OseeLog.log(OteUiDefinePlugin.class, Level.WARNING, "Unable to open outfile.", ex);
-      Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
-      MessageDialog.openError(shell, "Open Outfile", "Unable to open outfile.");
-   }
+	private void handleException(Exception ex) {
+		OseeLog.log(OteUiDefinePlugin.class, Level.WARNING, "Unable to open outfile.", ex);
+		Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
+		MessageDialog.openError(shell, "Open Outfile", "Unable to open outfile.");
+	}
 }

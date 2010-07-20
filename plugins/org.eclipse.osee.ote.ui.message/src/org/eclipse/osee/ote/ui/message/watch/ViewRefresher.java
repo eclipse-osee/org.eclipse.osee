@@ -19,11 +19,11 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.framework.jdk.core.util.benchmark.Benchmark;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.ote.ui.message.tree.AbstractTreeNode;
 import org.eclipse.osee.ote.ui.message.tree.MessageNode;
 import org.eclipse.osee.ote.ui.message.tree.WatchList;
 import org.eclipse.osee.ote.ui.message.tree.WatchedMessageNode;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -91,10 +91,10 @@ public class ViewRefresher implements Runnable {
 			for (MessageNode node : list.getMessages()) {
 				((WatchedMessageNode) node).determineDeltas(deltas);
 			}
-			Display.getDefault().syncExec(task);
+			Displays.pendInDisplayThread(task);
 			benchMark.endSample();
 
-		 } catch (Throwable th) {
+		} catch (Throwable th) {
 			th.printStackTrace();
 		}
 	}

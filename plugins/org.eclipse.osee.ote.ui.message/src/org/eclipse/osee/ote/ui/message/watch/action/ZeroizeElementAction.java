@@ -15,14 +15,13 @@ import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.ote.message.tool.MessageMode;
 import org.eclipse.osee.ote.ui.message.tree.ElementNode;
 import org.eclipse.osee.ote.ui.message.tree.WatchedMessageNode;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Ken J. Aguilar
- *
  */
 public class ZeroizeElementAction extends Action {
 
@@ -35,7 +34,7 @@ public class ZeroizeElementAction extends Action {
 		setEnabled(node.isEnabled() && msgNode.getSubscription().getMessageMode() == MessageMode.WRITER);
 		path = node.getElementPath().getElementPath();
 	}
-	
+
 	@Override
 	public void run() {
 		try {
@@ -43,9 +42,8 @@ public class ZeroizeElementAction extends Action {
 		} catch (Exception e) {
 			String message = "could not zeroize the message " + msgNode.getMessageClassName();
 			OseeLog.log(ZeroizeElementAction.class, Level.SEVERE, message, e);
-			MessageDialog.openError(Display.getDefault().getActiveShell(), "Zeroize Error", message + ". See error log for trace");
+			MessageDialog.openError(Displays.getActiveShell(), "Zeroize Error", message + ". See error log for trace");
 		}
 	}
 
-	
 }

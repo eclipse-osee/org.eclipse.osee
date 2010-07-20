@@ -17,12 +17,12 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.ISharedImages;
@@ -34,68 +34,70 @@ import org.eclipse.ui.progress.UIJob;
  */
 public class ReportErrorsJob extends UIJob {
 
-   private Object[] objectsWithErrors;
-   private String message;
+	private final Object[] objectsWithErrors;
+	private final String message;
 
-   private ReportErrorsJob(String title, String message, Object... objectsWithErrors) {
-      super(title);
-      setUser(false);
-      setPriority(LONG);
-      this.objectsWithErrors = objectsWithErrors;
-      this.message = message;
-   }
+	private ReportErrorsJob(String title, String message, Object... objectsWithErrors) {
+		super(title);
+		setUser(false);
+		setPriority(LONG);
+		this.objectsWithErrors = objectsWithErrors;
+		this.message = message;
+	}
 
-   public IStatus runInUIThread(IProgressMonitor monitor) {
-      final String errorMessage = Arrays.deepToString(objectsWithErrors).replaceAll(",", ",\n");
-      Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
-      ResourceErrorDialog dialog = new ResourceErrorDialog(shell, getName(), message, errorMessage);
-      dialog.open();
-      return Status.OK_STATUS;
-   }
+	@Override
+	public IStatus runInUIThread(IProgressMonitor monitor) {
+		final String errorMessage = Arrays.deepToString(objectsWithErrors).replaceAll(",", ",\n");
+		Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
+		ResourceErrorDialog dialog = new ResourceErrorDialog(shell, getName(), message, errorMessage);
+		dialog.open();
+		return Status.OK_STATUS;
+	}
 
-   public static void openError(final String title, final String message, final Object... objectsWithErrors) {
-      openError(title, message, null, objectsWithErrors);
-   }
+	public static void openError(final String title, final String message, final Object... objectsWithErrors) {
+		openError(title, message, null, objectsWithErrors);
+	}
 
-   public static void openError(final String title, final String message, final IJobChangeListener listener, final Object... objectsWithErrors) {
-      Display.getDefault().asyncExec(new Runnable() {
-         public void run() {
-            ReportErrorsJob errorDialog = new ReportErrorsJob(title, message, objectsWithErrors);
-            if (listener != null) {
-               errorDialog.addJobChangeListener(listener);
-            }
-            errorDialog.schedule();
-         }
-      });
-   }
-   private final class ResourceErrorDialog extends MessageDialog {
+	public static void openError(final String title, final String message, final IJobChangeListener listener, final Object... objectsWithErrors) {
+		Displays.ensureInDisplayThread(new Runnable() {
+			@Override
+			public void run() {
+				ReportErrorsJob errorDialog = new ReportErrorsJob(title, message, objectsWithErrors);
+				if (listener != null) {
+					errorDialog.addJobChangeListener(listener);
+				}
+				errorDialog.schedule();
+			}
+		});
+	}
+	private final class ResourceErrorDialog extends MessageDialog {
 
-      private String errorMessage;
+		private final String errorMessage;
 
-      public ResourceErrorDialog(Shell parentShell, String dialogTitle, String dialogMessage, String errorMessage) {
-         super(parentShell, dialogTitle, PlatformUI.getWorkbench().getSharedImages().getImage(
-               ISharedImages.IMG_OBJS_ERROR_TSK), dialogMessage, MessageDialog.ERROR,
-               new String[] {IDialogConstants.OK_LABEL}, 0);
-         this.errorMessage = errorMessage;
-      }
+		public ResourceErrorDialog(Shell parentShell, String dialogTitle, String dialogMessage, String errorMessage) {
+			super(parentShell, dialogTitle, PlatformUI.getWorkbench().getSharedImages().getImage(
+						ISharedImages.IMG_OBJS_ERROR_TSK), dialogMessage, MessageDialog.ERROR,
+						new String[] {IDialogConstants.OK_LABEL}, 0);
+			this.errorMessage = errorMessage;
+		}
 
-      @Override
-      protected Control createCustomArea(Composite parent) {
-         Composite composite = new Composite(parent, SWT.NONE);
-         composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-         composite.setLayout(new GridLayout());
+		@Override
+		protected Control createCustomArea(Composite parent) {
+			Composite composite = new Composite(parent, SWT.NONE);
+			composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+			composite.setLayout(new GridLayout());
 
-         Text text = new Text(composite, SWT.MULTI | SWT.BORDER | SWT.WRAP | SWT.V_SCROLL | SWT.H_SCROLL);
-         GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
-         data.heightHint = 300;
-         data.widthHint = 300;
-         data.minimumWidth = 300;
-         data.minimumHeight = 300;
-         text.setLayoutData(data);
-         text.setEditable(false);
-         text.setText(errorMessage);
-         text.setBackground(PlatformUI.getWorkbench().getDisplay().getSystemColor(SWT.COLOR_WHITE));
-         return composite;
-      }
-   }
+			Text text = new Text(composite, SWT.MULTI | SWT.BORDER | SWT.WRAP | SWT.V_SCROLL | SWT.H_SCROLL);
+			GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
+			data.heightHint = 300;
+			data.widthHint = 300;
+			data.minimumWidth = 300;
+			data.minimumHeight = 300;
+			text.setLayoutData(data);
+			text.setEditable(false);
+			text.setText(errorMessage);
+			text.setBackground(PlatformUI.getWorkbench().getDisplay().getSystemColor(SWT.COLOR_WHITE));
+			return composite;
+		}
+	}
 }

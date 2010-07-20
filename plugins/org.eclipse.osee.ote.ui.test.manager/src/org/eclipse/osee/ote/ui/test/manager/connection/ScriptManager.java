@@ -24,6 +24,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.ote.core.environment.UserTestSessionKey;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironment;
 import org.eclipse.osee.ote.core.environment.status.IServiceStatusListener;
@@ -35,7 +36,6 @@ import org.eclipse.osee.ote.ui.test.manager.jobs.StoreOutfileJob;
 import org.eclipse.osee.ote.ui.test.manager.models.OutputModelJob;
 import org.eclipse.osee.ote.ui.test.manager.pages.scriptTable.ScriptTask;
 import org.eclipse.osee.ote.ui.test.manager.pages.scriptTable.ScriptTask.ScriptStatusEnum;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -80,8 +80,7 @@ public abstract class ScriptManager implements Runnable {
 	}
 
 	/**
-	 * This should be called after the environment is received in order to
-	 * configure necessary items.
+	 * This should be called after the environment is received in order to configure necessary items.
 	 * 
 	 * @return null if successful, otherwise a string describing the error
 	 * @throws RemoteException
@@ -105,8 +104,7 @@ public abstract class ScriptManager implements Runnable {
 	}
 
 	/**
-	 * This should NOT be called directly, users should call the HostDataStore's
-	 * disconnect.
+	 * This should NOT be called directly, users should call the HostDataStore's disconnect.
 	 */
 	public boolean disconnect(ConnectionEvent event) {
 		connectedEnv = null;
@@ -114,7 +112,8 @@ public abstract class ScriptManager implements Runnable {
 		guidToScriptTask.clear();
 		try {
 
-			event.getEnvironment().removeStatusListener((IServiceStatusListener) event.getConnector().findExport(statusListenerImpl));
+			event.getEnvironment().removeStatusListener(
+						(IServiceStatusListener) event.getConnector().findExport(statusListenerImpl));
 			return false;
 		} catch (RemoteException e) {
 			TestManagerPlugin.log(Level.INFO, "problems removing listener", e);
@@ -136,7 +135,8 @@ public abstract class ScriptManager implements Runnable {
 	public void notifyScriptQueued(GUID theGUID, final ScriptTask script) {
 		guidToScriptTask.put(script.getScriptModel().getTestClass(), script);
 		script.setStatus(ScriptStatusEnum.IN_QUEUE);
-		Display.getDefault().asyncExec(new Runnable() {
+		Displays.ensureInDisplayThread(new Runnable() {
+			@Override
 			public void run() {
 				if (stv.getControl().isDisposed()) {
 					return;
@@ -147,7 +147,8 @@ public abstract class ScriptManager implements Runnable {
 	}
 
 	public void updateScriptTableViewer(final ScriptTask task) {
-		Display.getDefault().asyncExec(new Runnable() {
+		Displays.ensureInDisplayThread(new Runnable() {
+			@Override
 			public void run() {
 				if (stv.getControl().isDisposed()) {
 					return;
@@ -164,10 +165,12 @@ public abstract class ScriptManager implements Runnable {
 		}
 	}
 
+	@Override
 	public void run() {
 		if (updateScriptTable) {
 			updateScriptTable = false;
-			Display.getDefault().asyncExec(new Runnable() {
+			Displays.ensureInDisplayThread(new Runnable() {
+				@Override
 				public void run() {
 					synchronized (tasksToUpdate) {
 						if (stv.getControl().isDisposed()) {
@@ -194,22 +197,24 @@ public abstract class ScriptManager implements Runnable {
 	 */
 	public void notifyScriptStart(final ScriptTask task) {
 		task.setStatus(ScriptStatusEnum.RUNNING);
-		Display.getDefault().asyncExec(new Runnable() {
+		Displays.ensureInDisplayThread(new Runnable() {
+			@Override
 			public void run() {
 				stv.refresh(task);
 			}
 		});
 	}
 
-	 public void storeOutFile(ScriptTask task, TestComplete testComplete, boolean isValidRun) {
+	public void storeOutFile(ScriptTask task, TestComplete testComplete, boolean isValidRun) {
 		if (task.getScriptModel() != null) {
-			Job job = new StoreOutfileJob(connectedEnv, testManager, this, task, testComplete.getClientOutfilePath(), testComplete.getServerOutfilePath(),
-					isValidRun);
+			Job job =
+						new StoreOutfileJob(connectedEnv, testManager, this, task, testComplete.getClientOutfilePath(),
+									testComplete.getServerOutfilePath(), isValidRun);
 			StoreOutfileJob.scheduleJob(job);
 		}
 	}
 
-	 protected UserTestSessionKey getSessionKey() {
+	protected UserTestSessionKey getSessionKey() {
 		return sessionKey;
 	}
 }

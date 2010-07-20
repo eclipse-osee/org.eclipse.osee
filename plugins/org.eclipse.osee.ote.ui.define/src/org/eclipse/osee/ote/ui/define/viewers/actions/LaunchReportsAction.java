@@ -13,10 +13,10 @@ package org.eclipse.osee.ote.ui.define.viewers.actions;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.ote.ui.define.dialogs.ReportsDialog;
 import org.eclipse.osee.ote.ui.define.utilities.EditorUtility;
 import org.eclipse.osee.ote.ui.define.utilities.SelectionHelper;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 
 /**
@@ -24,33 +24,34 @@ import org.eclipse.ui.PlatformUI;
  */
 public class LaunchReportsAction extends AbstractActionHandler {
 
-   public LaunchReportsAction(StructuredViewer viewer, String text) throws Exception {
-      super(viewer, text);
-   }
+	public LaunchReportsAction(StructuredViewer viewer, String text) throws Exception {
+		super(viewer, text);
+	}
 
-   public LaunchReportsAction(StructuredViewer viewer, String text, ImageDescriptor image) throws Exception {
-      super(viewer, text, image);
-   }
+	public LaunchReportsAction(StructuredViewer viewer, String text, ImageDescriptor image) throws Exception {
+		super(viewer, text, image);
+	}
 
-   @Override
-   public void run() {
-      Display.getDefault().asyncExec(new Runnable() {
-         public void run() {
-            ReportsDialog dialog = new ReportsDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell());
-            int result = dialog.open();
-            if (result == Window.OK) {
-               String reportId = dialog.getReportSelected();
-               String format = dialog.getReportFormat();
-               EditorUtility.openEditor(reportId, format);
-            }
-         }
-      });
-   }
+	@Override
+	public void run() {
+		Displays.ensureInDisplayThread(new Runnable() {
+			@Override
+			public void run() {
+				ReportsDialog dialog = new ReportsDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell());
+				int result = dialog.open();
+				if (result == Window.OK) {
+					String reportId = dialog.getReportSelected();
+					String format = dialog.getReportFormat();
+					EditorUtility.openEditor(reportId, format);
+				}
+			}
+		});
+	}
 
-   @Override
-   public void updateState() {
-      if (getViewer() != null) {
-         setEnabled(SelectionHelper.getInstance().getSelections(getViewer()).size() > 0);
-      }
-   }
+	@Override
+	public void updateState() {
+		if (getViewer() != null) {
+			setEnabled(SelectionHelper.getInstance().getSelections(getViewer()).size() > 0);
+		}
+	}
 }

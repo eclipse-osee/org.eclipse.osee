@@ -20,108 +20,105 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.jdk.core.type.TreeObject;
 import org.eclipse.osee.framework.jdk.core.type.TreeParent;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.ote.ui.test.manager.util.EnvVariableDetailsDialogHelper;
 import org.eclipse.osee.ote.ui.test.manager.util.EnvVariableDialogHelper;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-
 
 /**
  * @author Roberto E. Escobar
  */
 public class EnvironmentPageEventHandler {
 
-   private EnvironmentPreferenceNode currentSelection;
-   private EnvironmentPageDataViewer environmentPageDataViewer;
-   private ArrayList<EnvironmentPreferenceNode> treeInputList;
-   private CheckboxTreeViewer treeViewer;
+	private EnvironmentPreferenceNode currentSelection;
+	private final EnvironmentPageDataViewer environmentPageDataViewer;
+	private final ArrayList<EnvironmentPreferenceNode> treeInputList;
+	private final CheckboxTreeViewer treeViewer;
 
-   public EnvironmentPageEventHandler(Composite parent, CheckboxTreeViewer treeViewer,
-         ArrayList<EnvironmentPreferenceNode> treeInputList) {
-      this.treeViewer = treeViewer;
-      this.treeInputList = treeInputList;
-      this.environmentPageDataViewer = new EnvironmentPageDataViewer(parent);
-   }
+	public EnvironmentPageEventHandler(Composite parent, CheckboxTreeViewer treeViewer, ArrayList<EnvironmentPreferenceNode> treeInputList) {
+		this.treeViewer = treeViewer;
+		this.treeInputList = treeInputList;
+		this.environmentPageDataViewer = new EnvironmentPageDataViewer(parent);
+	}
 
-   public void editEnvVariable(EnvironmentPreferenceNode node) {
-      EnvVariableDetailsDialogHelper selection = new EnvVariableDetailsDialogHelper(node.getEnvName(), node.getValue());
-      Display.getDefault().syncExec(selection);
-      if (selection.getResult() != Window.CANCEL) {
-         node.setValue(selection.getSelection());
-         environmentPageDataViewer.update();
-      }
-   }
+	public void editEnvVariable(EnvironmentPreferenceNode node) {
+		EnvVariableDetailsDialogHelper selection = new EnvVariableDetailsDialogHelper(node.getEnvName(), node.getValue());
+		Displays.pendInDisplayThread(selection);
+		if (selection.getResult() != Window.CANCEL) {
+			node.setValue(selection.getSelection());
+			environmentPageDataViewer.update();
+		}
+	}
 
-   public void handleAddEnvironmentVariableEvent() {
-      EnvVariableDialogHelper selection = new EnvVariableDialogHelper();
-      Display.getDefault().syncExec(selection);
-      if (selection.getResult() != Window.CANCEL) {
-         this.addEnvironmentVariable(selection.getSelection());
-         treeViewer.refresh();
-      }
-   }
+	public void handleAddEnvironmentVariableEvent() {
+		EnvVariableDialogHelper selection = new EnvVariableDialogHelper();
+		Displays.pendInDisplayThread(selection);
+		if (selection.getResult() != Window.CANCEL) {
+			this.addEnvironmentVariable(selection.getSelection());
+			treeViewer.refresh();
+		}
+	}
 
-   public void handleCheckStateChangeEvent(CheckStateChangedEvent event) {
-      Object obj = event.getElement();
-      if (obj != null) {
-         EnvironmentPreferenceNode tempSelection = null;
+	public void handleCheckStateChangeEvent(CheckStateChangedEvent event) {
+		Object obj = event.getElement();
+		if (obj != null) {
+			EnvironmentPreferenceNode tempSelection = null;
 
-         if (obj instanceof EnvironmentPreferenceNode) {
-            tempSelection = (EnvironmentPreferenceNode) obj;
-            tempSelection.setChecked(event.getChecked());
-            currentSelection = tempSelection;
-            environmentPageDataViewer.setNodeToDisplay(currentSelection);
-         }
-      }
-   }
+			if (obj instanceof EnvironmentPreferenceNode) {
+				tempSelection = (EnvironmentPreferenceNode) obj;
+				tempSelection.setChecked(event.getChecked());
+				currentSelection = tempSelection;
+				environmentPageDataViewer.setNodeToDisplay(currentSelection);
+			}
+		}
+	}
 
-   public void handleEditVariableEvent() {
-      ISelection sel = this.treeViewer.getSelection();
-      if (!sel.isEmpty()) {
-         TreeObject selectedItem = (TreeObject) ((StructuredSelection) sel).getFirstElement();
-         if (selectedItem instanceof EnvironmentPreferenceNode) {
-            editEnvVariable((EnvironmentPreferenceNode) selectedItem);
-         }
-      }
-   }
+	public void handleEditVariableEvent() {
+		ISelection sel = this.treeViewer.getSelection();
+		if (!sel.isEmpty()) {
+			TreeObject selectedItem = (TreeObject) ((StructuredSelection) sel).getFirstElement();
+			if (selectedItem instanceof EnvironmentPreferenceNode) {
+				editEnvVariable((EnvironmentPreferenceNode) selectedItem);
+			}
+		}
+	}
 
-   public void handleRemoveSelectedViewEvent() {
-      StructuredSelection sel = (StructuredSelection) treeViewer.getSelection();
-      if (!sel.isEmpty()) {
-         Iterator<?> it = sel.iterator();
-         while (it.hasNext()) {
-            TreeObject leaf = (TreeObject) it.next();
-            if (leaf instanceof TreeParent) {
-               treeInputList.remove(leaf);
-               environmentPageDataViewer.setNodeToDisplay(null);
-            }
-            else {
-               leaf.getParent().removeChild(leaf);
-               environmentPageDataViewer.update();
-            }
-         }
-         treeViewer.refresh();
-      }
-   }
+	public void handleRemoveSelectedViewEvent() {
+		StructuredSelection sel = (StructuredSelection) treeViewer.getSelection();
+		if (!sel.isEmpty()) {
+			Iterator<?> it = sel.iterator();
+			while (it.hasNext()) {
+				TreeObject leaf = (TreeObject) it.next();
+				if (leaf instanceof TreeParent) {
+					treeInputList.remove(leaf);
+					environmentPageDataViewer.setNodeToDisplay(null);
+				} else {
+					leaf.getParent().removeChild(leaf);
+					environmentPageDataViewer.update();
+				}
+			}
+			treeViewer.refresh();
+		}
+	}
 
-   public void handleTreeSelectionEvent(SelectionChangedEvent event) {
-      ISelection sel = event.getSelection();
-      if (!sel.isEmpty()) {
-         TreeObject selectedItem = (TreeObject) ((StructuredSelection) sel).getFirstElement();
+	public void handleTreeSelectionEvent(SelectionChangedEvent event) {
+		ISelection sel = event.getSelection();
+		if (!sel.isEmpty()) {
+			TreeObject selectedItem = (TreeObject) ((StructuredSelection) sel).getFirstElement();
 
-         EnvironmentPreferenceNode tempSelection = null;
+			EnvironmentPreferenceNode tempSelection = null;
 
-         if (selectedItem instanceof EnvironmentPreferenceNode) {
-            tempSelection = (EnvironmentPreferenceNode) selectedItem;
-            currentSelection = tempSelection;
-            environmentPageDataViewer.setNodeToDisplay(currentSelection);
-         }
-         treeViewer.refresh();
-      }
-   }
+			if (selectedItem instanceof EnvironmentPreferenceNode) {
+				tempSelection = (EnvironmentPreferenceNode) selectedItem;
+				currentSelection = tempSelection;
+				environmentPageDataViewer.setNodeToDisplay(currentSelection);
+			}
+			treeViewer.refresh();
+		}
+	}
 
-   private void addEnvironmentVariable(String name) {
-      EnvironmentPreferenceNode node = new EnvironmentPreferenceNode(name);
-      treeInputList.add(node);
-   }
+	private void addEnvironmentVariable(String name) {
+		EnvironmentPreferenceNode node = new EnvironmentPreferenceNode(name);
+		treeInputList.add(node);
+	}
 }

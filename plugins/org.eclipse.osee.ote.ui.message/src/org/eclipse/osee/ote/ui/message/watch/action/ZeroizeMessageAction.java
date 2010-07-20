@@ -14,24 +14,23 @@ import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.ote.message.tool.MessageMode;
 import org.eclipse.osee.ote.ui.message.tree.WatchedMessageNode;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Ken J. Aguilar
- *
  */
 public class ZeroizeMessageAction extends Action {
 
 	private final WatchedMessageNode msgNode;
-	
+
 	public ZeroizeMessageAction(WatchedMessageNode msgNode) {
 		super("Zeroize " + msgNode.getName());
 		this.msgNode = msgNode;
 		setEnabled(msgNode.isEnabled() && msgNode.getSubscription().getMessageMode() == MessageMode.WRITER && msgNode.getSubscription().isActive());
 	}
-	
+
 	@Override
 	public void run() {
 		try {
@@ -39,9 +38,8 @@ public class ZeroizeMessageAction extends Action {
 		} catch (Exception e) {
 			String message = "could not zeroize the message " + msgNode.getMessageClassName();
 			OseeLog.log(ZeroizeMessageAction.class, Level.SEVERE, message, e);
-			MessageDialog.openError(Display.getDefault().getActiveShell(), "Zeroize Error", message + ". See error log for trace");
+			MessageDialog.openError(Displays.getActiveShell(), "Zeroize Error", message + ". See error log for trace");
 		}
 	}
 
-	
 }
