@@ -39,4 +39,7 @@
          fragment="true"
          unpack="false"/>
 
+  <includes
+         id="org.eclipse.osee.client.ote.feature.test.source"
+         version="0.0.0"/>
 </feature>

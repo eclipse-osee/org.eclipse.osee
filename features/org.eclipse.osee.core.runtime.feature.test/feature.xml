@@ -21,6 +21,10 @@
          id="org.eclipse.osee.core.feature.test"
          version="0.0.0"/>
 
+   <includes
+         id="org.eclipse.osee.core.runtime.feature.test.source"
+         version="0.0.0"/>
+         
    <plugin
          id="org.eclipse.test"
          download-size="0"

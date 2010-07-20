@@ -141,5 +141,9 @@
          version="0.0.0"
          fragment="true"
          unpack="false"/>
+         
+  <includes
+         id="org.eclipse.osee.server.feature.test.source"
+         version="0.0.0"/>
 
 </feature>

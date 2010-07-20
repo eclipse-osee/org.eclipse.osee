@@ -17,6 +17,10 @@
       %license
    </license>
 
+   <includes
+         id="org.eclipse.osee.client.feature.test.source"
+         version="0.0.0"/>
+
    <plugin
          id="org.eclipse.test"
          download-size="0"
@@ -87,6 +91,21 @@
 
    <plugin
          id="org.eclipse.osee.framework.core.test"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.client.integration.tests"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.framework.messaging.event.res.test"
          download-size="0"
          install-size="0"
          version="0.0.0"
