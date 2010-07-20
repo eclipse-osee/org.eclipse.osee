@@ -41,31 +41,29 @@ import org.eclipse.osee.framework.skynet.core.test.event.TransactionEventLoopbac
 import org.eclipse.osee.framework.skynet.core.test.event.TransactionEventTest;
 import org.eclipse.osee.framework.skynet.core.test.importing.ReqNumberingTest;
 import org.eclipse.osee.framework.skynet.core.test.relation.RelationTestSuite;
-import org.eclipse.osee.framework.skynet.core.test.types.OseeCacheTestSuite;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {BranchEventManagerTest.class, BranchEventManagerLoopbackTest.class, ArtifactLoaderTest.class,
-      ArtifactEventManagerTest.class, ArtifactEventManagerLoopbackTest.class, TransactionEventTest.class,
-      TransactionEventLoopbackTest.class, ArtifactQueryTestDemo.class, TransactionManagerTest.class,
-      BranchTestSuite.class, BranchManagerTest.class, RelationTestSuite.class, OseeCacheTestSuite.class,
-      ArtifactTypeInheritanceTest.class, ArtifactPurgeTest.class, BranchPurgeTest.class, PurgeTransactionTest.class,
-      Artifact_setAttributeValues.class, Artifact_getLastModified.class, CsvArtifactTest.class,
-      NativeArtifactTest.class, ConflictTest.class, ChangeManagerTest.class, SevereLogMonitorTest.class,
-      RelationDeletionTest.class, StaticIdManagerTest.class, BranchStateTest.class, DuplicateHridTest.class,
-      RelationOrderingTest.class, ReqNumberingTest.class})
+@Suite.SuiteClasses({BranchEventManagerTest.class, BranchEventManagerLoopbackTest.class, ArtifactLoaderTest.class,
+			ArtifactEventManagerTest.class, ArtifactEventManagerLoopbackTest.class, TransactionEventTest.class,
+			TransactionEventLoopbackTest.class, ArtifactQueryTestDemo.class, TransactionManagerTest.class,
+			BranchTestSuite.class, BranchManagerTest.class, RelationTestSuite.class, ArtifactTypeInheritanceTest.class,
+			ArtifactPurgeTest.class, BranchPurgeTest.class, PurgeTransactionTest.class, Artifact_setAttributeValues.class,
+			Artifact_getLastModified.class, CsvArtifactTest.class, NativeArtifactTest.class, ConflictTest.class,
+			ChangeManagerTest.class, SevereLogMonitorTest.class, RelationDeletionTest.class, StaticIdManagerTest.class,
+			BranchStateTest.class, DuplicateHridTest.class, RelationOrderingTest.class, ReqNumberingTest.class})
 /**
  * @author Donald G. Dunne
  */
 public class FrameworkCore_Demo_Suite {
-   @BeforeClass
-   public static void setUp() throws Exception {
-      assertTrue("Demo Application Server must be running.",
-            ClientSessionManager.getAuthenticationProtocols().contains("demo"));
-      assertTrue("Client must authenticate using demo protocol",
-            ClientSessionManager.getSession().getAuthenticationProtocol().equals("demo"));
-   }
+	@BeforeClass
+	public static void setUp() throws Exception {
+		assertTrue("Demo Application Server must be running.",
+					ClientSessionManager.getAuthenticationProtocols().contains("demo"));
+		assertTrue("Client must authenticate using demo protocol",
+					ClientSessionManager.getSession().getAuthenticationProtocol().equals("demo"));
+	}
 
 }
