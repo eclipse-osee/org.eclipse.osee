@@ -143,6 +143,7 @@
 
 		<copy flatten="true" toDir="${snapshotFolder}" failonerror="true" includeemptydirs="false">
 			<fileset dir="${buildFolder}" includes="athena/*-Update-*.zip" />
+			<fileset dir="${buildFolder}" includes="athena/*-osgi-runtime-*.zip" />
 		</copy>
 
 		<available file="${snapshotFolder}" property="containsFile" />
@@ -153,6 +154,9 @@
 		<echo>Renaming file to ${zipPrefix}${incubation}-${BUILDTYPE}-Snapshot.zip</echo>
 		<move includeemptydirs="false" tofile="${snapshotFolder}/${zipPrefix}${incubation}-update-${BUILDTYPE}-Snapshot.zip" filtering="true">
 			<fileset dir="${snapshotFolder}" includes="*-Update-*.zip" />
+		</move>
+		<move includeemptydirs="false" tofile="${snapshotFolder}/${zipPrefix}${incubation}-osgi-runtime-${BUILDTYPE}-Snapshot.zip" filtering="true">
+			<fileset dir="${snapshotFolder}" includes="*-osgi-runtime-*.zip" />
 		</move>
 	</target>
 </project>
