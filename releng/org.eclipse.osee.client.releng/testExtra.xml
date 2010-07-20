@@ -6,7 +6,7 @@
 	</target>
 
 	<target name="getTestDependencies">
-		<properties name="oseeServerRuntimeDir" value="${workingDirectory}/testing/oseeServerRuntime" />
+		<property name="oseeServerRuntimeDir" value="${workingDirectory}/testing/oseeServerRuntime" />
 		
 		<echo message="Osee Application Server Snapshot: [${oseeAppServerURL}]" />
 		<echo message="Osee Application Server Runtime Dir: [${oseeServerRuntimeDir}]" />
