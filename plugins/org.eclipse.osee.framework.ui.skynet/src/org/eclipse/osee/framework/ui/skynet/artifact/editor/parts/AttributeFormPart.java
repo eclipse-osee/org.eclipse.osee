@@ -11,10 +11,15 @@
 package org.eclipse.osee.framework.ui.skynet.artifact.editor.parts;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import org.eclipse.jface.dialogs.IMessageProvider;
+import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.AccessData;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -57,224 +62,224 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  */
 public class AttributeFormPart extends AbstractFormPart {
 
-	private final ArtifactEditor editor;
-	private Composite composite;
+   private final ArtifactEditor editor;
+   private Composite composite;
 
-	public AttributeFormPart(ArtifactEditor editor) {
-		this.editor = editor;
-	}
+   public AttributeFormPart(ArtifactEditor editor) {
+      this.editor = editor;
+   }
 
-	public void createContents(Composite parent) {
-		final FormToolkit toolkit = getManagedForm().getToolkit();
-		composite = toolkit.createComposite(parent, SWT.WRAP);
-		composite.setLayout(ALayout.getZeroMarginLayout(1, false));
-		composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-		composite.setVisible(false);
+   public void createContents(Composite parent) {
+      final FormToolkit toolkit = getManagedForm().getToolkit();
+      composite = toolkit.createComposite(parent, SWT.WRAP);
+      composite.setLayout(ALayout.getZeroMarginLayout(1, false));
+      composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+      composite.setVisible(false);
 
-		try {
-			Artifact artifact = editor.getEditorInput().getArtifact();
-			boolean isEditable = !artifact.isReadOnly();
+      try {
+         Artifact artifact = editor.getEditorInput().getArtifact();
+         boolean isEditable = true;//!artifact.isReadOnly();
 
-			List<AttributeType> types = Arrays.asList(AttributeTypeUtil.getTypesWithData(artifact));
-			boolean willHaveASection = hasWordAttribute(types);
-			for (AttributeType attributeType : types) {
-				if (AttributeTypeManager.isBaseTypeCompatible(WordAttribute.class, attributeType) || attributeType.equals(CoreAttributeTypes.RELATION_ORDER)) {
-					createAttributeTypeControlsInSection(parent, toolkit, attributeType, willHaveASection, false);
-				} else {
-					createAttributeTypeControls(composite, toolkit, artifact, attributeType, willHaveASection, isEditable,
-								false);
-				}
-			}
-			setLabelFonts(composite, FontManager.getDefaultLabelFont());
-			layoutControls(composite);
+         List<AttributeType> types = Arrays.asList(AttributeTypeUtil.getTypesWithData(artifact));
+         boolean willHaveASection = hasWordAttribute(types);
+         for (AttributeType attributeType : types) {
+            if (AttributeTypeManager.isBaseTypeCompatible(WordAttribute.class, attributeType) || attributeType.equals(CoreAttributeTypes.RELATION_ORDER)) {
+               createAttributeTypeControlsInSection(parent, toolkit, attributeType, willHaveASection, false);
+            } else {
+               createAttributeTypeControls(composite, toolkit, artifact, attributeType, willHaveASection, isEditable,
+                  false);
+            }
+         }
+         setLabelFonts(composite, FontManager.getDefaultLabelFont());
+         layoutControls(composite);
 
-			for (XWidget xWidget : XWidgetUtility.findXWidgetsInControl(composite)) {
-				xWidget.addXModifiedListener(new XWidgetValidationListener());
-			}
-			composite.setVisible(true);
+         for (XWidget xWidget : XWidgetUtility.findXWidgetsInControl(composite)) {
+            xWidget.addXModifiedListener(new XWidgetValidationListener());
+         }
+         composite.setVisible(true);
 
-		} catch (OseeCoreException ex) {
-			OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, "Unable to access attribute types", ex);
-		}
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, "Unable to access attribute types", ex);
+      }
 
-	}
+   }
 
-	private boolean hasWordAttribute(List<AttributeType> types) throws OseeCoreException {
-		for (AttributeType attributeType : types) {
-			if (AttributeTypeManager.isBaseTypeCompatible(WordAttribute.class, attributeType)) {
-				return true;
-			}
-		}
-		return false;
-	}
+   //   private void setPermissions(Composite parent) {
+   //      for (XWidget widget : XWidgetUtility.findXWidgetsInControl(parent)) {
+   //         IAttributeXWidgetProvider xWidgetProvider = AttributeXWidgetManager.getAttributeXWidgetProvider(attributeType);
+   //         List<DynamicXWidgetLayoutData> concreteWidgets = xWidgetProvider.getDynamicXWidgetLayoutData(attributeType);
+   //         setPermissions(artifact, attributeType, concreteWidgets);
+   //      }
+   //   }
 
-	@Override
-	public void dispose() {
-		Widgets.disposeWidget(composite);
-		super.dispose();
-	}
+   private boolean hasWordAttribute(List<AttributeType> types) throws OseeCoreException {
+      for (AttributeType attributeType : types) {
+         if (AttributeTypeManager.isBaseTypeCompatible(WordAttribute.class, attributeType)) {
+            return true;
+         }
+      }
+      return false;
+   }
 
-	private void setLabelFonts(Control parent, Font font) {
-		if (parent instanceof Label) {
-			Label label = (Label) parent;
-			label.setFont(font);
-		}
-		if (parent instanceof Composite) {
-			Composite container = (Composite) parent;
-			for (Control child : container.getChildren()) {
-				setLabelFonts(child, font);
-			}
-			container.layout();
-		}
-	}
+   @Override
+   public void dispose() {
+      Widgets.disposeWidget(composite);
+      super.dispose();
+   }
 
-	private void layoutControls(Control control) {
-		if (control instanceof Label || control instanceof Button) {
-			control.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
-		}
+   private void setLabelFonts(Control parent, Font font) {
+      if (parent instanceof Label) {
+         Label label = (Label) parent;
+         label.setFont(font);
+      }
+      if (parent instanceof Composite) {
+         Composite container = (Composite) parent;
+         for (Control child : container.getChildren()) {
+            setLabelFonts(child, font);
+         }
+         container.layout();
+      }
+   }
 
-		if (control instanceof Composite) {
-			Composite container = (Composite) control;
-			for (Control child : container.getChildren()) {
-				layoutControls(child);
-			}
-		}
-	}
+   private void layoutControls(Control control) {
+      if (control instanceof Label || control instanceof Button) {
+         control.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
+      }
 
-	private Composite createAttributeTypeControls(Composite parent, FormToolkit toolkit, Artifact artifact, AttributeType attributeType, boolean willHaveASection, boolean isEditable, boolean isExpandable) {
-		Composite internalComposite = toolkit.createComposite(parent, SWT.WRAP);
-		GridLayout layout = ALayout.getZeroMarginLayout(1, false);
-		if (willHaveASection) {
-			layout.marginLeft = 18;
-		}
-		internalComposite.setLayout(layout);
+      if (control instanceof Composite) {
+         Composite container = (Composite) control;
+         for (Control child : container.getChildren()) {
+            layoutControls(child);
+         }
+      }
+   }
 
-		internalComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+   private Composite createAttributeTypeControls(Composite parent, FormToolkit toolkit, Artifact artifact, AttributeType attributeType, boolean willHaveASection, boolean isEditable, boolean isExpandable) {
+      Composite internalComposite = toolkit.createComposite(parent, SWT.WRAP);
+      GridLayout layout = ALayout.getZeroMarginLayout(1, false);
+      if (willHaveASection) {
+         layout.marginLeft = 18;
+      }
+      internalComposite.setLayout(layout);
 
-		try {
-			IAttributeXWidgetProvider xWidgetProvider = AttributeXWidgetManager.getAttributeXWidgetProvider(attributeType);
-			List<DynamicXWidgetLayoutData> concreteWidgets = xWidgetProvider.getDynamicXWidgetLayoutData(attributeType);
-			if (isExpandable) {
-				for (DynamicXWidgetLayoutData data : concreteWidgets) {
-					data.getXOptionHandler().add(XOption.NO_LABEL);
-				}
-			}
-			WorkPage workPage = new WorkPage(concreteWidgets, new DefaultXWidgetOptionResolver());
-			workPage.createBody(getManagedForm(), internalComposite, artifact, null, isEditable);
+      internalComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-		} catch (OseeCoreException ex) {
-			toolkit.createLabel(parent, String.format("Error creating controls for: [%s]", attributeType.getName()));
-		}
-		return internalComposite;
-	}
+      try {
+         IAttributeXWidgetProvider xWidgetProvider = AttributeXWidgetManager.getAttributeXWidgetProvider(attributeType);
+         List<DynamicXWidgetLayoutData> concreteWidgets = xWidgetProvider.getDynamicXWidgetLayoutData(attributeType);
+         if (isExpandable) {
+            for (DynamicXWidgetLayoutData data : concreteWidgets) {
+               data.getXOptionHandler().add(XOption.NO_LABEL);
+            }
+         }
+         WorkPage workPage = new WorkPage(concreteWidgets, new DefaultXWidgetOptionResolver());
+         workPage.createBody(getManagedForm(), internalComposite, artifact, null, isEditable);
 
-	//	private void setPermissions(Artifact artifact, AttributeType attributeType, List<DynamicXWidgetLayoutData> concreteWidgets) throws OseeCoreException, OseeArgumentException {
-	//		for (DynamicXWidgetLayoutData data : concreteWidgets) {
-	//			if (data.getXWidget() != null && data.getXWidget().getControl() != null && !data.getXWidget().getControl().isDisposed()) {
-	//				AccessData accessData = AccessControlManager.getAccessData(Collections.singletonList(artifact));
-	//				data.getXWidget().setEditable(
-	//							!accessData.getAttributeTypeMatches(artifact, attributeType, PermissionEnum.WRITE).isEmpty());
-	//
-	//				XWidgetValidateUtility.setStatus(new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, ""), data.getXWidget());
-	//				//            data.getXWidget().setControlCausedMessage("1111", "No premission", 1);
-	//			}
-	//		}
-	//	}
+         setPermissions(artifact, attributeType, concreteWidgets);
+      } catch (OseeCoreException ex) {
+         toolkit.createLabel(parent, String.format("Error creating controls for: [%s]", attributeType.getName()));
+      }
+      return internalComposite;
+   }
 
-	//   private void setPermissions(Composite parent) {
-	//      for (XWidget widget : XWidgetUtility.findXWidgetsInControl(parent)) {
-	//         IAttributeXWidgetProvider xWidgetProvider = AttributeXWidgetManager.getAttributeXWidgetProvider(attributeType);
-	//         List<DynamicXWidgetLayoutData> concreteWidgets = xWidgetProvider.getDynamicXWidgetLayoutData(attributeType);
-	//         setPermissions(artifact, attributeType, concreteWidgets);
-	//      }
-	//   }
+   private void setPermissions(Artifact artifact, AttributeType attributeType, List<DynamicXWidgetLayoutData> concreteWidgets) throws OseeCoreException, OseeArgumentException {
+      for (DynamicXWidgetLayoutData data : concreteWidgets) {
+         if (data.getXWidget() != null && data.getXWidget().getControl() != null && !data.getXWidget().getControl().isDisposed()) {
+            AccessData accessData = AccessControlManager.getAccessData(Collections.singletonList(artifact));
+            data.getXWidget().setEditable(
+               !accessData.getAttributeTypeMatches(artifact, attributeType, PermissionEnum.WRITE).isEmpty());
 
-	private void createAttributeTypeControlsInSection(Composite parent, FormToolkit toolkit, AttributeType attributeType, boolean willHaveASection, boolean isEditable) {
-		int style = ExpandableComposite.COMPACT | ExpandableComposite.TREE_NODE;
+            //            XWidgetValidateUtility.setStatus(new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, ""), data.getXWidget());
+            //            data.getXWidget().setControlCausedMessage("1111", "No premission", 1);
+         }
+      }
+   }
 
-		Composite internalComposite = toolkit.createComposite(parent, SWT.WRAP);
-		internalComposite.setLayout(new GridLayout());
-		internalComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
+   private void createAttributeTypeControlsInSection(Composite parent, FormToolkit toolkit, AttributeType attributeType, boolean willHaveASection, boolean isEditable) {
+      int style = ExpandableComposite.COMPACT | ExpandableComposite.TREE_NODE;
 
-		ExpandableComposite expandable = toolkit.createExpandableComposite(internalComposite, style);
-		expandable.setText(attributeType.getName());
-		expandable.setLayout(new GridLayout());
-		expandable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+      Composite internalComposite = toolkit.createComposite(parent, SWT.WRAP);
+      internalComposite.setLayout(new GridLayout());
+      internalComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
 
-		Artifact artifact = editor.getEditorInput().getArtifact();
+      ExpandableComposite expandable = toolkit.createExpandableComposite(internalComposite, style);
+      expandable.setText(attributeType.getName());
+      expandable.setLayout(new GridLayout());
+      expandable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
-		Composite composite =
-					createAttributeTypeControls(expandable, toolkit, artifact, attributeType, willHaveASection, isEditable,
-								true);
-		expandable.setClient(composite);
+      Artifact artifact = editor.getEditorInput().getArtifact();
 
-		expandable.addExpansionListener(new IExpansionListener() {
+      Composite composite =
+         createAttributeTypeControls(expandable, toolkit, artifact, attributeType, willHaveASection, isEditable, true);
+      expandable.setClient(composite);
 
-			@Override
-			public void expansionStateChanged(ExpansionEvent e) {
-				getManagedForm().getForm().reflow(true);
-			}
+      expandable.addExpansionListener(new IExpansionListener() {
 
-			@Override
-			public void expansionStateChanging(ExpansionEvent e) {
-				getManagedForm().getForm().reflow(false);
-			}
+         @Override
+         public void expansionStateChanged(ExpansionEvent e) {
+            getManagedForm().getForm().reflow(true);
+         }
 
-		});
-		toolkit.paintBordersFor(expandable);
-	}
+         @Override
+         public void expansionStateChanging(ExpansionEvent e) {
+            getManagedForm().getForm().reflow(false);
+         }
 
-	@Override
-	public void commit(boolean onSave) {
-		int saveCount = 0;
-		List<XWidget> widgets = XWidgetUtility.findXWidgetsInControl(composite);
-		for (XWidget xWidget : widgets) {
-			if (xWidget.isEditable()) {
-				if (xWidget instanceof IArtifactWidget) {
-					IArtifactWidget aWidget = (IArtifactWidget) xWidget;
-					try {
-						if (aWidget.isDirty().isTrue()) {
-							aWidget.saveToArtifact();
-							xWidget.removeControlCausedMessage("attribute.dirty");
-							saveCount++;
-						} else {
-							saveCount++;
-						}
-					} catch (OseeCoreException ex) {
-						ex.printStackTrace();
-					}
-				}
-			} else {
-				saveCount++;
-			}
-		}
+      });
+      toolkit.paintBordersFor(expandable);
+   }
 
-		// Ensure all changes saved
-		if (saveCount == widgets.size()) {
-			super.commit(onSave);
-		}
-	}
+   @Override
+   public void commit(boolean onSave) {
+      int saveCount = 0;
+      List<XWidget> widgets = XWidgetUtility.findXWidgetsInControl(composite);
+      for (XWidget xWidget : widgets) {
+         if (xWidget.isEditable()) {
+            if (xWidget instanceof IArtifactWidget) {
+               IArtifactWidget aWidget = (IArtifactWidget) xWidget;
+               try {
+                  if (aWidget.isDirty().isTrue()) {
+                     aWidget.saveToArtifact();
+                     xWidget.removeControlCausedMessage("attribute.dirty");
+                     saveCount++;
+                  } else {
+                     saveCount++;
+                  }
+               } catch (OseeCoreException ex) {
+                  ex.printStackTrace();
+               }
+            }
+         } else {
+            saveCount++;
+         }
+      }
 
-	private final class XWidgetValidationListener implements XModifiedListener {
+      // Ensure all changes saved
+      if (saveCount == widgets.size()) {
+         super.commit(onSave);
+      }
+   }
 
-		@Override
-		public void widgetModified(XWidget xWidget) {
-			if (xWidget != null && xWidget instanceof IArtifactWidget) {
-				IArtifactWidget aWidget = (IArtifactWidget) xWidget;
-				try {
-					Result result = aWidget.isDirty();
-					if (result.isTrue()) {
-						xWidget.setControlCausedMessage("attribute.dirty", "Dirty", IMessageProvider.WARNING);
-						if (!isDirty()) {
-							markDirty();
-						}
-					} else {
-						xWidget.removeControlCausedMessage("attribute.dirty");
-					}
-				} catch (Exception ex) {
-					xWidget.setControlCausedMessage("attribute.dirty", "Unable to compute isDirty", IMessageProvider.ERROR);
-				}
-			}
-		}
-	}
+   private final class XWidgetValidationListener implements XModifiedListener {
+
+      @Override
+      public void widgetModified(XWidget xWidget) {
+         if (xWidget != null && xWidget instanceof IArtifactWidget) {
+            IArtifactWidget aWidget = (IArtifactWidget) xWidget;
+            try {
+               Result result = aWidget.isDirty();
+               if (result.isTrue()) {
+                  xWidget.setControlCausedMessage("attribute.dirty", "Dirty", IMessageProvider.WARNING);
+                  if (!isDirty()) {
+                     markDirty();
+                  }
+               } else {
+                  xWidget.removeControlCausedMessage("attribute.dirty");
+               }
+            } catch (Exception ex) {
+               xWidget.setControlCausedMessage("attribute.dirty", "Unable to compute isDirty", IMessageProvider.ERROR);
+            }
+         }
+      }
+   }
 }

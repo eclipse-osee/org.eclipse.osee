@@ -42,7 +42,12 @@ public class ObjectAccessProvider implements IAccessProvider {
             Artifact artifact = (Artifact) object;
             keyArtifact = artifact;
             branch = artifact.getBranch();
+
             userPermission = accessService.getArtifactPermission(userArtifact, (Artifact) object);
+
+            if (artifact.isHistorical() && (userPermission == null || userPermission.matches(PermissionEnum.READ))) {
+               userPermission = PermissionEnum.READ;
+            }
          } else if (object instanceof Branch) {
             branch = (Branch) object;
          } else {
