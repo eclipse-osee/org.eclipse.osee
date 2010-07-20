@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.skynet.core.event.InternalEventManager2;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
+import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
 import org.eclipse.osee.support.test.util.TestUtil;
 
 /**
@@ -325,6 +326,11 @@ public class BranchEventManagerTest {
       @Override
       public void handleBranchEventREM1(Sender sender, BranchEventType branchModType, int branchId) throws OseeCoreException {
          // do nothing, this is legacy branch handler call
+      }
+
+      @Override
+      public List<? extends IEventFilter> getEventFilters() {
+         return null;
       }
    }
 

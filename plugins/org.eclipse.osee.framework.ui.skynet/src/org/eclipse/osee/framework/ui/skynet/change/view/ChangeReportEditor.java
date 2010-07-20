@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.change.view;
 
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -27,6 +28,7 @@ import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event2.ITransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event2.TransactionChange;
 import org.eclipse.osee.framework.skynet.core.event2.TransactionEvent;
+import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeReportActionBarContributor;
@@ -237,6 +239,11 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
 
       @Override
       public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
+      }
+
+      @Override
+      public List<? extends IEventFilter> getEventFilters() {
+         return null;
       }
    }
 }

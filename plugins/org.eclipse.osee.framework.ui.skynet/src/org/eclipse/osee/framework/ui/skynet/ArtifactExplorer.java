@@ -75,6 +75,7 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.AccessControlEvent;
 import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
+import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
@@ -455,7 +456,8 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
                               }
                            }
                         } catch (Exception ex) {
-                        status = new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "Error opening quick search", ex);
+                           status =
+                                 new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "Error opening quick search", ex);
                         }
                         return status;
                      }
@@ -666,7 +668,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
             LinkedList<Artifact> selectedItems = new LinkedList<Artifact>();
             TreeViewerUtility.getPreorderSelection(treeViewer, selectedItems);
             RendererManager.openInJob(selectedItems, PresentationType.DEFAULT_OPEN);
-               }
+         }
       });
    }
 
@@ -1537,6 +1539,14 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
    @Override
    public boolean isDisposed() {
       return treeViewer.getTree() == null || treeViewer.getTree().isDisposed();
+   }
+
+   @Override
+   public List<? extends IEventFilter> getEventFilters() {
+      if (branch != null) {
+         return OseeEventManager.getEventFiltersForBranch(branch);
+      }
+      return null;
    }
 
 }

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
+import java.util.List;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -18,6 +19,7 @@ import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
+import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
 
 /**
  * @author Robert A. Fisher
@@ -69,6 +71,14 @@ public class DefaultBranchContentProvider implements ITreeContentProvider, IBran
 
    @Override
    public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
+   }
+
+   @Override
+   public List<? extends IEventFilter> getEventFilters() {
+      if (branch != null) {
+         return OseeEventManager.getEventFiltersForBranch(branch);
+      }
+      return null;
    }
 
 }

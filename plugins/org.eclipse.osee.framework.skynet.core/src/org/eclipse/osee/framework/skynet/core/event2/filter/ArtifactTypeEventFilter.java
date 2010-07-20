@@ -61,4 +61,9 @@ public class ArtifactTypeEventFilter implements IEventFilter {
 
    }
 
+   @Override
+   public boolean isMatch(String branchGuid) {
+      return true;
+   }
+
 }

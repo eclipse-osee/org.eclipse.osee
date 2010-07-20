@@ -12,6 +12,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.xBranch;
 
+import java.util.List;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -36,6 +37,7 @@ import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event2.ITransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event2.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event2.TransactionEventType;
+import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -268,6 +270,11 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
 
    protected void setShowArchivedBranches(boolean showArchivedBranches) {
       xBranchWidget.setShowArchivedBranches(showArchivedBranches);
+   }
+
+   @Override
+   public List<? extends IEventFilter> getEventFilters() {
+      return null;
    }
 
 }

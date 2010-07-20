@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.skynet.core.event2.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidRelation;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactEventListener;
-import org.eclipse.osee.framework.skynet.core.event2.filter.BranchGuidEventFilter;
 import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.ui.plugin.event.UnloadedArtifact;
@@ -110,11 +109,16 @@ public class InternalEventManager2 {
       return listeners.size();
    }
 
+   /**
+    * For all IBranchEventListener, process priorityListeners, then normal listeners
+    */
    public static void processBranchEvent(Sender sender, BranchEvent branchEvent) {
       OseeEventManager.eventLog(String.format("IEM2: processBranchEvent [%s]", branchEvent));
       for (IEventListener listener : priorityListeners) {
          try {
-            processBranchEventListener(listener, sender, branchEvent);
+            if (listener instanceof IBranchEventListener) {
+               processBranchEventListener((IBranchEventListener) listener, sender, branchEvent);
+            }
          } catch (Exception ex) {
             OseeEventManager.eventLog(
                   String.format("IEM2: processBranchEvent [%s] error processing priorityListeners", branchEvent), ex);
@@ -122,7 +126,9 @@ public class InternalEventManager2 {
       }
       for (IEventListener listener : listeners) {
          try {
-            processBranchEventListener(listener, sender, branchEvent);
+            if (listener instanceof IBranchEventListener) {
+               processBranchEventListener((IBranchEventListener) listener, sender, branchEvent);
+            }
          } catch (Exception ex) {
             OseeEventManager.eventLog(
                   String.format("IEM2: processBranchEvent [%s] error processing listeners", branchEvent), ex);
@@ -130,25 +136,29 @@ public class InternalEventManager2 {
       }
    }
 
-   private static void processBranchEventListener(IEventListener listener, Sender sender, BranchEvent branchEvent) {
-      // If true, listener will be called
-      boolean match = true;
-      if (listener instanceof BranchGuidEventFilter) {
-         // If this branch doesn't match, don't pass events through
-         if (!((BranchGuidEventFilter) listener).isMatch(branchEvent.getBranchGuid())) {
-            match = false;
+   private static void processBranchEventListener(IBranchEventListener listener, Sender sender, BranchEvent branchEvent) {
+      // If any filter doesn't match, don't call listener
+      if (listener instanceof IEventFilteredListener && ((IEventFilteredListener) listener).getEventFilters() != null) {
+         for (IEventFilter eventFilter : ((IEventFilteredListener) listener).getEventFilters()) {
+            // If this branch doesn't match, don't pass events through
+            if (!eventFilter.isMatch(branchEvent.getBranchGuid())) {
+               return;
+            }
          }
       }
-      // Call listener if we matched any of the filters
-      if (listener instanceof IBranchEventListener && match) {
-         ((IBranchEventListener) listener).handleBranchEvent(sender, branchEvent);
-      }
+      // Call listener if we matched all of the filters
+      ((IBranchEventListener) listener).handleBranchEvent(sender, branchEvent);
    }
 
+   /**
+    * For all IBranchEventListener, process priorityListeners, then normal listeners
+    */
    public static void processEventArtifactsAndRelations(Sender sender, ArtifactEvent artifactEvent) {
       for (IEventListener listener : priorityListeners) {
          try {
-            processEventArtifactsAndRelationsListener(listener, artifactEvent, sender);
+            if (listener instanceof IArtifactEventListener) {
+               processEventArtifactsAndRelationsListener((IArtifactEventListener) listener, artifactEvent, sender);
+            }
          } catch (Exception ex) {
             OseeEventManager.eventLog(
                   String.format("IEM2: processArtsAndRels [%s] error processing priorityListeners", artifactEvent), ex);
@@ -156,7 +166,9 @@ public class InternalEventManager2 {
       }
       for (IEventListener listener : listeners) {
          try {
-            processEventArtifactsAndRelationsListener(listener, artifactEvent, sender);
+            if (listener instanceof IArtifactEventListener) {
+               processEventArtifactsAndRelationsListener((IArtifactEventListener) listener, artifactEvent, sender);
+            }
          } catch (Exception ex) {
             OseeEventManager.eventLog(
                   String.format("IEM2: processArtsAndRels [%s] error processing listeners", artifactEvent), ex);
@@ -164,39 +176,29 @@ public class InternalEventManager2 {
       }
    }
 
-   private static void processEventArtifactsAndRelationsListener(IEventListener listener, ArtifactEvent artifactEvent, Sender sender) {
-      if (listener != null && !(listener instanceof IArtifactEventListener)) return;
+   private static void processEventArtifactsAndRelationsListener(IArtifactEventListener listener, ArtifactEvent artifactEvent, Sender sender) {
       OseeEventManager.eventLog(String.format("IEM2: processArtsAndRels [%s]", artifactEvent));
-      // If true, listener will be called
-      boolean match = false;
-      if (listener instanceof IEventFilteredListener) {
-         // If no filters, this is a match
-         if (((IEventFilteredListener) listener).getEventFilters() == null || ((IEventFilteredListener) listener).getEventFilters().isEmpty()) {
-            match = true;
-         } else {
-            // Loop through filters and see if anything matches what's desired
-            for (IEventFilter filter : ((IEventFilteredListener) listener).getEventFilters()) {
-               for (EventBasicGuidArtifact guidArt : artifactEvent.getArtifacts()) {
-                  if (filter.isMatch(guidArt)) match = true;
-                  break;
+      // If any filter doesn't match, don't call listener
+      if (listener instanceof IEventFilteredListener && ((IEventFilteredListener) listener).getEventFilters() != null) {
+         for (IEventFilter eventFilter : ((IEventFilteredListener) listener).getEventFilters()) {
+            // If this branch doesn't match, don't pass events through
+            if (!eventFilter.isMatch(artifactEvent.getBranchGuid())) {
+               return;
+            }
+            for (EventBasicGuidArtifact guidArt : artifactEvent.getArtifacts()) {
+               if (!eventFilter.isMatch(guidArt)) {
+                  return;
                }
-               if (match) break;
-               for (EventBasicGuidRelation guidRel : artifactEvent.getRelations()) {
-                  if (filter.isMatch(guidRel)) match = true;
-                  break;
+            }
+            for (EventBasicGuidRelation guidRel : artifactEvent.getRelations()) {
+               if (!eventFilter.isMatch(guidRel)) {
+                  return;
                }
-               if (match) break;
             }
          }
       }
-      // If no filters, this is a match
-      else {
-         match = true;
-      }
-      // Call listener if we matched any of the filters
-      if (match) {
-         ((IArtifactEventListener) listener).handleArtifactEvent(artifactEvent, sender);
-      }
+      // Call listener if we matched all of the filters
+      ((IArtifactEventListener) listener).handleArtifactEvent(artifactEvent, sender);
    }
 
    public static void processAccessControlEvent(Sender sender, AccessControlEvent accessControlEvent) {

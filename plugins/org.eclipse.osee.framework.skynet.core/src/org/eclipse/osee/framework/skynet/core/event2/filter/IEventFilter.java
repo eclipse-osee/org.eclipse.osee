@@ -19,6 +19,11 @@ import org.eclipse.osee.framework.core.model.event.IBasicGuidRelation;
 public interface IEventFilter {
 
    /**
+    * return true if events for this branch should be passed through to listeners
+    */
+   public boolean isMatch(String branchGuid);
+
+   /**
     * return true if events for this this guid artifact should be passed through to listeners
     */
    public boolean isMatch(IBasicGuidArtifact guidArt);

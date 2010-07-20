@@ -14,6 +14,7 @@ package org.eclipse.osee.ats.util.widgets.commit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -36,6 +37,7 @@ import org.eclipse.osee.framework.skynet.core.event.MergeBranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
+import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -427,6 +429,11 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
 
    @Override
    public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
+   }
+
+   @Override
+   public List<? extends IEventFilter> getEventFilters() {
+      return null;
    }
 
 }

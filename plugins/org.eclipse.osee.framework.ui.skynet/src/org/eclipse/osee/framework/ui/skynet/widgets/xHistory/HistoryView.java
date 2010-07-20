@@ -37,8 +37,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
+import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.OpenWithMenuListener;
@@ -331,4 +333,13 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
    @Override
    public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
    }
+
+   @Override
+   public List<? extends IEventFilter> getEventFilters() {
+      if (artifact != null) {
+         return OseeEventManager.getEventFiltersForBranch(artifact.getBranch());
+      }
+      return null;
+   }
+
 }
