@@ -1,0 +1,21 @@
+<project name="Contribute Test Extra Build Steps" default="noDefault">
+
+	<!-- Dummy Default -->
+	<target name="noDefault">
+		<echo message="You must specify a target when invoking this file" />
+	</target>
+
+	<target name="getTestDependencies">
+		<properties name="oseeServerRuntimeDir" value="${workingDirectory}/testing/oseeServerRuntime" />
+		
+		<echo message="Osee Application Server Snapshot: [${oseeAppServerURL}]" />
+		<echo message="Osee Application Server Runtime Dir: [${oseeServerRuntimeDir}]" />
+		
+		<get src="${oseeAppServerURL}" dest="${downloadsDir}/osee_app_server.zip" usetimestamp="true" />
+		<touch file="${downloadsDir}/osee_app_server.zip" />
+		<mkdir dir="${oseeServerRuntimeDir}" />
+		<unzip src="${downloadsDir}/osee_app_server.zip" dest="${oseeServerRuntimeDir}" overwrite="true">
+			<patternset excludes="*.sh,*.pl" />
+		</unzip>
+	</target>
+</project>
