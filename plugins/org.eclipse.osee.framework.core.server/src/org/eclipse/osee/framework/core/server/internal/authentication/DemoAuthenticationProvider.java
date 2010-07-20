@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.core.server.internal.authentication;
 
 import org.eclipse.osee.framework.core.data.IOseeUserInfo;
 import org.eclipse.osee.framework.core.data.OseeCredential;
-import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
 import org.eclipse.osee.framework.core.server.IAuthenticationProvider;
 import org.eclipse.osee.framework.core.server.UserDataStore;
 
@@ -21,23 +20,23 @@ import org.eclipse.osee.framework.core.server.UserDataStore;
  */
 public class DemoAuthenticationProvider implements IAuthenticationProvider {
 
-   private final boolean autoAuthenticate = true;
-   private final String DEMO_USER = "Joe Smith";
+	private final boolean autoAuthenticate = true;
+	private final String DEMO_USER = "Joe Smith";
 
-   @Override
-   public IOseeUserInfo asOseeUserId(OseeCredential credential) throws OseeAuthenticationException {
-      IOseeUserInfo oseeUserInfo = UserDataStore.getOseeUserFromOseeDb(DEMO_USER);
-      return oseeUserInfo != null ? oseeUserInfo : UserDataStore.createUser(true, DEMO_USER, DEMO_USER, "", true);
-   }
+	@Override
+	public IOseeUserInfo asOseeUserId(OseeCredential credential) {
+		IOseeUserInfo oseeUserInfo = UserDataStore.getOseeUserFromOseeDb(DEMO_USER);
+		return oseeUserInfo != null ? oseeUserInfo : UserDataStore.createUser(true, DEMO_USER, DEMO_USER, "", true);
+	}
 
-   @Override
-   public boolean authenticate(OseeCredential credential) throws OseeAuthenticationException {
-      return autoAuthenticate;
-   }
+	@Override
+	public boolean authenticate(OseeCredential credential) {
+		return autoAuthenticate;
+	}
 
-   @Override
-   public String getProtocol() {
-      return "demo";
-   }
+	@Override
+	public String getProtocol() {
+		return "demo";
+	}
 
 }

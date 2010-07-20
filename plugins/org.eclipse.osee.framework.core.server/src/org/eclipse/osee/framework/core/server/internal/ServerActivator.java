@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.core.server.internal;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
-import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.internal.session.SessionManagerTrackingHandler;
 import org.eclipse.osee.framework.core.util.ServiceDependencyTracker;
@@ -27,10 +26,7 @@ import org.osgi.util.tracker.ServiceTracker;
 public class ServerActivator implements BundleActivator {
 
 	private ServiceTracker applicationManagerTracker;
-	//	private ServiceTracker applicationLookupTracker;
-	private ServiceTracker authenticationServiceTracker;
 	private ServiceTracker sessionServiceTracker;
-	//	private ServiceTracker scheduledServerTracker;
 
 	private static List<ServiceRegistration> services;
 	private static ServerActivator instance;
@@ -54,18 +50,10 @@ public class ServerActivator implements BundleActivator {
 
 		applicationManagerTracker = new ServiceTracker(context, IApplicationServerManager.class.getName(), null);
 		applicationManagerTracker.open();
-		//
-		//		applicationLookupTracker = new ServiceTracker(context, IApplicationServerLookup.class.getName(), null);
-		//		applicationLookupTracker.open();
-		//
-		authenticationServiceTracker = new ServiceTracker(context, IAuthenticationManager.class.getName(), null);
-		authenticationServiceTracker.open();
-		//
+
 		sessionServiceTracker = new ServiceTracker(context, ISessionManager.class.getName(), null);
 		sessionServiceTracker.open();
-		//
-		//		scheduledServerTracker = new ServiceTracker(context, IServerTaskScheduler.class.getName(), null);
-		//		scheduledServerTracker.open();
+
 	}
 
 	@Override
@@ -90,38 +78,16 @@ public class ServerActivator implements BundleActivator {
 			applicationManagerTracker = null;
 		}
 
-		//		if (applicationLookupTracker != null) {
-		//			applicationLookupTracker.close();
-		//			applicationLookupTracker = null;
-		//		}
-
-		if (authenticationServiceTracker != null) {
-			authenticationServiceTracker.close();
-			authenticationServiceTracker = null;
-		}
-
 		if (sessionServiceTracker != null) {
 			sessionServiceTracker.close();
 			sessionServiceTracker = null;
 		}
-
-		//		if (scheduledServerTracker != null) {
-		//			scheduledServerTracker.close();
-		//			scheduledServerTracker = null;
-		//		}
 
 		for (ServiceRegistration service : services) {
 			service.unregister();
 		}
 		services.clear();
 		instance = null;
-	}
-
-	public static IAuthenticationManager getAuthenticationManager() {
-		if (instance.authenticationServiceTracker != null) {
-			return (IAuthenticationManager) instance.authenticationServiceTracker.getService();
-		}
-		return null;
 	}
 
 	public static ISessionManager getSessionManager() {
