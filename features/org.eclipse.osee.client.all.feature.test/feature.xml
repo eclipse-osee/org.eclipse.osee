@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.eclipse.osee.client.all.feature.test"
+      label="%featureName"
+      version="0.9.5.qualifier"
+      provider-name="%providerName">
+
+   <description>
+      %description
+   </description>
+
+   <copyright>
+      %copyright
+   </copyright>
+
+   <license url="%licenseURL">
+      %license
+   </license>
+
+   <includes
+         id="org.eclipse.osee.client.feature.test"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.osee.client.ote.feature.test"
+         version="0.0.0"/>
+
+   <requires>
+      <import feature="org.eclipse.osee.client.all.feature" version="0.9.5.qualifier" match="greaterOrEqual"/>
+   </requires>
+
+   <plugin
+         id="org.eclipse.test"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.eclipse.ant.optional.junit"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+</feature>
