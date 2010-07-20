@@ -84,7 +84,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.annotation.AttributeAnnot
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.IArtifactAnnotation;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.event.msgs.AttributeChange;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;

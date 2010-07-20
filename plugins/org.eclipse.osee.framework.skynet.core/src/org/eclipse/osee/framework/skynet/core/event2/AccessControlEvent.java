@@ -15,8 +15,8 @@ import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
+import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkSender;
 import org.eclipse.osee.framework.skynet.core.event.AccessControlEventType;
-import org.eclipse.osee.framework.skynet.core.event.msgs.NetworkSender;
 
 public class AccessControlEvent extends FrameworkEvent {
 

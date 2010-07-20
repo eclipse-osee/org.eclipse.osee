@@ -30,13 +30,13 @@ import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteNetworkSender1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemotePersistEvent1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteTransactionChange1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteTransactionEvent1;
+import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkSender;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.event.AccessControlEventType;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.BroadcastEventType;
-import org.eclipse.osee.framework.skynet.core.event.msgs.AttributeChange;
-import org.eclipse.osee.framework.skynet.core.event.msgs.NetworkSender;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidRelation;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventChangeTypeBasicGuidArtifact;
@@ -335,27 +335,21 @@ public class FrameworkEventUtil {
    }
 
    public static NetworkSender getNetworkSender(RemoteNetworkSender1 remSender) {
-      NetworkSender networkSender = new NetworkSender();
-      networkSender.setSourceObject(remSender.getSourceObject());
-      networkSender.setSessionId(remSender.getSessionId());
-      networkSender.setMachineName(remSender.getMachineName());
-      networkSender.setUserId(remSender.getUserId());
-      networkSender.setMachineIp(remSender.getMachineIp());
-      networkSender.setPort(remSender.getPort());
-      networkSender.setClientVersion(remSender.getClientVersion());
+      NetworkSender networkSender =
+            new NetworkSender(remSender.getSourceObject(), remSender.getSessionId(), remSender.getMachineName(),
+                  remSender.getUserId(), remSender.getMachineIp(), remSender.getPort(), remSender.getClientVersion());
       return networkSender;
    }
 
    public static RemoteNetworkSender1 getRemoteNetworkSender(NetworkSender localSender) {
       RemoteNetworkSender1 networkSender = new RemoteNetworkSender1();
-      networkSender.setSourceObject(localSender.getSourceObject());
-      networkSender.setSessionId(localSender.getSessionId());
-      networkSender.setMachineName(localSender.getMachineName());
-      networkSender.setUserId(localSender.getUserId());
-      networkSender.setMachineIp(localSender.getMachineIp());
-      networkSender.setPort(localSender.getPort());
-      networkSender.setClientVersion(localSender.getClientVersion());
+      networkSender.setSourceObject(String.valueOf(localSender.sourceObject));
+      networkSender.setSessionId(localSender.sessionId);
+      networkSender.setMachineName(localSender.machineName);
+      networkSender.setUserId(localSender.userId);
+      networkSender.setMachineIp(localSender.machineIp);
+      networkSender.setPort(localSender.port);
+      networkSender.setClientVersion(localSender.clientVersion);
       return networkSender;
    }
-
 }

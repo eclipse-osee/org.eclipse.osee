@@ -166,17 +166,8 @@ public class ArtifactEventFiltersTest {
 
    }
 
-   private org.eclipse.osee.framework.skynet.core.event.msgs.NetworkSender getDummyRemoteNetworkSender() {
-      org.eclipse.osee.framework.skynet.core.event.msgs.NetworkSender netSender =
-            new org.eclipse.osee.framework.skynet.core.event.msgs.NetworkSender();
-      netSender.setSourceObject(this.getClass().getSimpleName());
-      netSender.setSessionId(GUID.create());
-      netSender.setMachineName("PC");
-      netSender.setUserId("12345");
-      netSender.setMachineIp("123.234.345.456");
-      netSender.setPort(34);
-      netSender.setClientVersion("1.0.0");
-      return netSender;
+   private NetworkSender getDummyRemoteNetworkSender() {
+      return new NetworkSender(this.getClass(), GUID.create(), "PC", "12345", "123.234.345.456", 34, "1.0.0");
    }
    private class ArtifactEventListener implements IArtifactEventListener {
 

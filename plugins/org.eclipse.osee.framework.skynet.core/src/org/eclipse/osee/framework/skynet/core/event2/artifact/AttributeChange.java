@@ -5,7 +5,7 @@
 // Generated on: 2010.05.13 at 02:25:18 PM MST 
 //
 
-package org.eclipse.osee.framework.skynet.core.event.msgs;
+package org.eclipse.osee.framework.skynet.core.event2.artifact;
 
 import java.util.ArrayList;
 import java.util.List;

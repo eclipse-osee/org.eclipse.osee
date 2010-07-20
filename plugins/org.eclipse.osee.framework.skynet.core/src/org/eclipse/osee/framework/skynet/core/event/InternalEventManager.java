@@ -283,7 +283,7 @@ public class InternalEventManager {
 
    // Kick LOCAL artifact modified event; This event does NOT go external
    static void kickArtifactModifiedEvent(final Sender sender, final ArtifactModType artifactModType, final Artifact artifact) throws OseeCoreException {
-      OseeEventManager.eventLog("IEM1: kickArtifactModifiedEvent - " + artifactModType + " - " + artifact.getGuid() + " - " + sender + " - " + artifact.getDirtySkynetAttributeChanges());
+      //      OseeEventManager.eventLog("IEM1: kickArtifactModifiedEvent - " + artifactModType + " - " + artifact.getGuid() + " - " + sender + " - " + artifact.getDirtySkynetAttributeChanges());
       Runnable runnable = new Runnable() {
          public void run() {
             // Kick LOCAL
@@ -296,7 +296,7 @@ public class InternalEventManager {
 
    // Kick LOCAL relation modified event; This event does NOT go external
    static void kickRelationModifiedEvent(final Sender sender, final RelationEventType relationEventType, final RelationLink link, final Branch branch, final String relationType) throws OseeCoreException {
-      OseeEventManager.eventLog("IEM1: kickRelationModifiedEvent - " + relationEventType + " - " + link + " - " + sender);
+      //      OseeEventManager.eventLog("IEM1: kickRelationModifiedEvent - " + relationEventType + " - " + link + " - " + sender);
       Runnable runnable = new Runnable() {
          public void run() {
             // Kick LOCAL

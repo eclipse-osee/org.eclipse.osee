@@ -40,7 +40,7 @@ public class Sender {
    public Sender(RemoteNetworkSender1 networkSender) {
       this(networkSender.getSourceObject(), new OseeClientSession(networkSender.getSessionId(),
             networkSender.getMachineName(), networkSender.getUserId(), networkSender.getMachineIp(),
-                  networkSender.getPort(), networkSender.getClientVersion(), "n/a"));
+            networkSender.getPort(), networkSender.getClientVersion(), "n/a"));
    }
 
    public Sender(Object sourceObject) throws OseeAuthenticationRequiredException {
@@ -86,19 +86,6 @@ public class Sender {
    public NetworkSender getNetworkSender() {
       return new NetworkSender(sourceObject, oseeSession.getId(), oseeSession.getMachineName(),
             oseeSession.getUserId(), oseeSession.getMachineIp(), oseeSession.getPort(), oseeSession.getVersion());
-   }
-
-   public org.eclipse.osee.framework.skynet.core.event.msgs.NetworkSender getNetworkSender2() {
-      org.eclipse.osee.framework.skynet.core.event.msgs.NetworkSender sender =
-            new org.eclipse.osee.framework.skynet.core.event.msgs.NetworkSender();
-      sender.setSourceObject(sourceObject);
-      sender.setSessionId(oseeSession.getId());
-      sender.setMachineName(oseeSession.getMachineName());
-      sender.setUserId(oseeSession.getUserId());
-      sender.setMachineIp(oseeSession.getMachineIp());
-      sender.setPort(oseeSession.getPort());
-      sender.setClientVersion(oseeSession.getVersion());
-      return sender;
    }
 
    public RemoteNetworkSender1 getNetworkSenderRes() {

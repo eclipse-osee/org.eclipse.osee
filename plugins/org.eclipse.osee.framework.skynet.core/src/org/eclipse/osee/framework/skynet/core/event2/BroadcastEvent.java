@@ -12,9 +12,9 @@ package org.eclipse.osee.framework.skynet.core.event2;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkSender;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.event.BroadcastEventType;
-import org.eclipse.osee.framework.skynet.core.event.msgs.NetworkSender;
 
 /**
  * @author Donald G. Dunne

@@ -99,7 +99,7 @@ public class OseeEventManager {
       }
       if (OseeEventManager.isOldEvents()) InternalEventManager.kickBranchEvent(getSender(source),
             branchEvent.getEventType(), branchId);
-      branchEvent.setNetworkSender(getSender(source).getNetworkSender2());
+      branchEvent.setNetworkSender(getSender(source).getNetworkSender());
       if (OseeEventManager.isNewEvents()) InternalEventManager2.kickBranchEvent(getSender(source), branchEvent);
    }
 
@@ -118,7 +118,7 @@ public class OseeEventManager {
       if (isDisableEvents()) {
          return;
       }
-      accessControlEvent.setNetworkSender(getSender(source).getNetworkSender2());
+      accessControlEvent.setNetworkSender(getSender(source).getNetworkSender());
       if (OseeEventManager.isOldEvents()) InternalEventManager.kickAccessControlArtifactsEvent(getSender(source),
             accessControlEvent, loadedArtifacts);
       if (OseeEventManager.isNewEvents()) InternalEventManager2.kickAccessControlArtifactsEvent(getSender(source),
@@ -180,7 +180,7 @@ public class OseeEventManager {
       if (transactionEvent.getEventType() == TransactionEventType.Purged && OseeEventManager.isOldEvents()) {
          InternalEventManager.kickTransactionsPurgedEvent(getSender(source), transIds);
       }
-      transactionEvent.setNetworkSender(getSender(source).getNetworkSender2());
+      transactionEvent.setNetworkSender(getSender(source).getNetworkSender());
       if (OseeEventManager.isNewEvents()) InternalEventManager2.kickTransactionEvent(getSender(source),
             transactionEvent);
    }
@@ -193,7 +193,7 @@ public class OseeEventManager {
       if (artifactEvent.getSkynetTransactionDetails() != null && OseeEventManager.isOldEvents()) {
          InternalEventManager.kickPersistEvent(getSender(source), artifactEvent.getSkynetTransactionDetails());
       }
-      artifactEvent.setNetworkSender(getSender(source).getNetworkSender2());
+      artifactEvent.setNetworkSender(getSender(source).getNetworkSender());
       if (OseeEventManager.isNewEvents()) InternalEventManager2.kickPersistEvent(getSender(source), artifactEvent);
    }
 
