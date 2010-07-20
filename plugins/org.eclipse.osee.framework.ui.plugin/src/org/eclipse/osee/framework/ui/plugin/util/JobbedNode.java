@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.plugin.util;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.IContentProviderRunnable;
 import org.eclipse.osee.framework.ui.swt.ITreeNode;
 import org.eclipse.osee.framework.ui.swt.TreeNode;

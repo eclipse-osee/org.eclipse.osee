@@ -23,79 +23,70 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.part.MultiPageEditorActionBarContributor;
 import org.eclipse.ui.texteditor.StatusLineContributionItem;
 
-/**
- * Manages the installation/deinstallation of global actions for multi-page editors. Responsible for the redirection of
- * global actions to the active editor. Multi-page contributor replaces the contributors for the individual editors in
- * the multi-page editor.
- */
 public class ArtifactEditorContributor extends MultiPageEditorActionBarContributor {
 
-   private StatusLineContributionItem typeStatusItem;
-   private ShowInExplorerAction showInExplorerAction;
+	private StatusLineContributionItem typeStatusItem;
+	private ShowInExplorerAction showInExplorerAction;
 
-   /**
-    * Creates a multi-page contributor.
-    */
-   public ArtifactEditorContributor() {
-      super();
+	public ArtifactEditorContributor() {
+		super();
+		createActions();
+	}
 
-      createActions();
-   }
+	@Override
+	public void setActiveEditor(IEditorPart part) {
+		super.setActiveEditor(part);
+		Artifact artifact = (Artifact) part.getAdapter(Artifact.class);
+		if (artifact != null) {
+			typeStatusItem.setText(artifact.getArtifactType().getName());
+			typeStatusItem.setImage(ArtifactImageManager.getImage(artifact));
+			showInExplorerAction.setArtifact(artifact);
 
-   @Override
-   public void setActiveEditor(IEditorPart part) {
-      super.setActiveEditor(part);
-      Artifact artifact = (Artifact) part.getAdapter(Artifact.class);
-      if (artifact != null) {
-         typeStatusItem.setText(artifact.getArtifactType().getName());
-         typeStatusItem.setImage(ArtifactImageManager.getImage(artifact));
-         showInExplorerAction.setArtifact(artifact);
+			RelationsComposite composite = (RelationsComposite) part.getAdapter(RelationsComposite.class);
+			if (composite != null) {
+				composite.getTreeViewer().addSelectionChangedListener(
+							new SelectionCountChangeListener(this.getActionBars().getStatusLineManager()));
+			}
+		}
+	}
 
-         RelationsComposite composite = (RelationsComposite) part.getAdapter(RelationsComposite.class);
-         if (composite != null) {
-            composite.getTreeViewer().addSelectionChangedListener(
-                  new SelectionCountChangeListener(this.getActionBars().getStatusLineManager()));
-         }
-      }
-   }
+	@Override
+	public void setActivePage(IEditorPart part) {
+	}
 
-   @Override
-   public void setActivePage(IEditorPart part) {
-   }
+	private void createActions() {
+		typeStatusItem = new StatusLineContributionItem("skynet.artifactType", true, 25);
+		typeStatusItem.setToolTipText("The type of the artifact being edited.");
 
-   private void createActions() {
-      typeStatusItem = new StatusLineContributionItem("skynet.artifactType", true, 25);
-      typeStatusItem.setToolTipText("The type of the artifact being edited.");
+		showInExplorerAction = new ShowInExplorerAction();
+	}
 
-      showInExplorerAction = new ShowInExplorerAction();
-   }
+	@Override
+	public void contributeToStatusLine(IStatusLineManager statusLineManager) {
+		statusLineManager.add(typeStatusItem);
+		OseeContributionItem.addTo(statusLineManager);
+	}
 
-   @Override
-   public void contributeToStatusLine(IStatusLineManager statusLineManager) {
-      statusLineManager.add(typeStatusItem);
-      OseeContributionItem.addTo(statusLineManager);
-   }
+	@Override
+	public void contributeToCoolBar(ICoolBarManager coolBarManager) {
+		coolBarManager.add(showInExplorerAction);
+	}
 
-   @Override
-   public void contributeToCoolBar(ICoolBarManager coolBarManager) {
-      coolBarManager.add(showInExplorerAction);
-   }
+	private static class ShowInExplorerAction extends Action {
+		private Artifact artifact;
 
-   private static class ShowInExplorerAction extends Action {
-      private Artifact artifact;
+		public ShowInExplorerAction() {
+			setText("Show in Artifact Explorer");
+			setToolTipText("Show the Artifact being edited in the Artifact Explorer");
+		}
 
-      public ShowInExplorerAction() {
-         setText("Show in Artifact Explorer");
-         setToolTipText("Show the Artifact being edited in the Artifact Explorer");
-      }
+		public void setArtifact(Artifact artifact) {
+			this.artifact = artifact;
+		}
 
-      public void setArtifact(Artifact artifact) {
-         this.artifact = artifact;
-      }
-
-      @Override
-      public void run() {
-         ArtifactExplorer.revealArtifact(artifact);
-      }
-   }
+		@Override
+		public void run() {
+			ArtifactExplorer.revealArtifact(artifact);
+		}
+	}
 }

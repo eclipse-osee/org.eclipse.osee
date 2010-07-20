@@ -17,19 +17,20 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  * @author Roberto E. Escobar
  */
 public final class NonBlankAndNotSameAsStartingValidator implements IInputValidator {
-   private final String startingName;
+	private final String startingName;
 
-   public NonBlankAndNotSameAsStartingValidator(String startingName) {
-      this.startingName = startingName;
-   }
+	public NonBlankAndNotSameAsStartingValidator(String startingName) {
+		this.startingName = startingName;
+	}
 
-   public String isValid(String newText) {
-      String errorMessage = null;
-      if (!Strings.isValid(newText)) {
-         errorMessage = "The new name cannot be blank";
-      } else if (Strings.isValid(startingName) && startingName.equals(newText)) {
-         errorMessage = "The new name must be different";
-      }
-      return errorMessage;
-   }
+	@Override
+	public String isValid(String newText) {
+		String errorMessage = null;
+		if (!Strings.isValid(newText)) {
+			errorMessage = "The new name cannot be blank";
+		} else if (Strings.isValid(startingName) && startingName.equals(newText)) {
+			errorMessage = "The new name must be different";
+		}
+		return errorMessage;
+	}
 }

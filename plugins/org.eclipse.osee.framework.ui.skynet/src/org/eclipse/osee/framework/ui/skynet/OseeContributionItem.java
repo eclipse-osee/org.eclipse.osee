@@ -13,8 +13,8 @@ package org.eclipse.osee.framework.ui.skynet;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.osee.framework.ui.skynet.ats.IOseeAtsService;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.part.ViewPart;
@@ -25,71 +25,72 @@ import org.eclipse.ui.texteditor.StatusLineContributionItem;
  */
 public abstract class OseeContributionItem extends StatusLineContributionItem {
 
-   protected OseeContributionItem(String id) {
-      this(id, 4);
-   }
+	protected OseeContributionItem(String id) {
+		this(id, 4);
+	}
 
-   protected OseeContributionItem(String id, int width) {
-      super(id, true, width);
-   }
+	protected OseeContributionItem(String id, int width) {
+		super(id, true, width);
+	}
 
-   protected abstract String getEnabledToolTip();
+	protected abstract String getEnabledToolTip();
 
-   protected abstract String getDisabledToolTip();
+	protected abstract String getDisabledToolTip();
 
-   protected abstract Image getEnabledImage();
+	protected abstract Image getEnabledImage();
 
-   protected abstract Image getDisabledImage();
+	protected abstract Image getDisabledImage();
 
-   protected void updateStatus(final boolean isActive) {
-      Display.getDefault().asyncExec(new Runnable() {
-         public void run() {
-            Image image = isActive ? getEnabledImage() : getDisabledImage();
-            String toolTip = isActive ? getEnabledToolTip() : getDisabledToolTip();
+	protected void updateStatus(final boolean isActive) {
+		Displays.ensureInDisplayThread(new Runnable() {
+			@Override
+			public void run() {
+				Image image = isActive ? getEnabledImage() : getDisabledImage();
+				String toolTip = isActive ? getEnabledToolTip() : getDisabledToolTip();
 
-            if (image != null) {
-               setImage(image);
-            }
-            if (toolTip != null) {
-               setToolTipText(toolTip);
-            }
-         }
-      });
-   }
+				if (image != null) {
+					setImage(image);
+				}
+				if (toolTip != null) {
+					setToolTipText(toolTip);
+				}
+			}
+		});
+	}
 
-   public static void addTo(IStatusLineManager manager) {
-      OseeBuildTypeContributionItem.addTo(manager);
-      ResServiceContributionItem.addTo(manager);
-      IOseeAtsService atsService = OseeAts.getInstance();
-      if (atsService != null && atsService.isAtsAdmin()) {
-         AdminContributionItem.addTo(manager);
-      }
-      SkynetServiceContributionItem.addTo(manager);
-      OseeServicesStatusContributionItem.addTo(manager);
-      SessionContributionItem.addTo(manager);
-   }
+	public static void addTo(IStatusLineManager manager) {
+		OseeBuildTypeContributionItem.addTo(manager);
+		ResServiceContributionItem.addTo(manager);
+		IOseeAtsService atsService = OseeAts.getInstance();
+		if (atsService != null && atsService.isAtsAdmin()) {
+			AdminContributionItem.addTo(manager);
+		}
+		SkynetServiceContributionItem.addTo(manager);
+		OseeServicesStatusContributionItem.addTo(manager);
+		SessionContributionItem.addTo(manager);
+	}
 
-   public static void addTo(IPageSite pageSite, boolean update) {
-      addTo(pageSite.getActionBars().getStatusLineManager());
+	public static void addTo(IPageSite pageSite, boolean update) {
+		addTo(pageSite.getActionBars().getStatusLineManager());
 
-      if (update) {
-         pageSite.getActionBars().updateActionBars();
-      }
-   }
+		if (update) {
+			pageSite.getActionBars().updateActionBars();
+		}
+	}
 
-   public static void addTo(ViewPart view, boolean update) {
-      addTo(view.getViewSite().getActionBars().getStatusLineManager());
+	public static void addTo(ViewPart view, boolean update) {
+		addTo(view.getViewSite().getActionBars().getStatusLineManager());
 
-      if (update) {
-         view.getViewSite().getActionBars().updateActionBars();
-      }
-   }
+		if (update) {
+			view.getViewSite().getActionBars().updateActionBars();
+		}
+	}
 
-   public static void addTo(MultiPageEditorPart editorPart, boolean update) {
-      addTo(editorPart.getEditorSite().getActionBars().getStatusLineManager());
-      if (update) {
-         editorPart.getEditorSite().getActionBars().updateActionBars();
-      }
-   }
+	public static void addTo(MultiPageEditorPart editorPart, boolean update) {
+		addTo(editorPart.getEditorSite().getActionBars().getStatusLineManager());
+		if (update) {
+			editorPart.getEditorSite().getActionBars().updateActionBars();
+		}
+	}
 
 }

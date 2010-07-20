@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArti
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
-import org.eclipse.osee.framework.ui.plugin.util.Displays;
+import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
  * Common location for event handling for mass editor in order to keep number of registrations and processing to a

@@ -12,8 +12,8 @@ package org.eclipse.osee.framework.ui.plugin.xnavigate;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 import org.eclipse.swt.widgets.Display;
 

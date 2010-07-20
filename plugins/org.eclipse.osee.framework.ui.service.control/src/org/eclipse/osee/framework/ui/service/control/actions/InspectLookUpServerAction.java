@@ -17,27 +17,28 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osee.framework.ui.service.control.dialogs.InspectReggieDialogHelper;
 import org.eclipse.osee.framework.ui.service.control.widgets.ManagerMain;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
  * @author Roberto E. Escobar
  */
 public class InspectLookUpServerAction implements IDoubleClickListener {
-   private ManagerMain mainWindow;
+	private final ManagerMain mainWindow;
 
-   public InspectLookUpServerAction(ManagerMain mainWindow) {
-      super();
-      this.mainWindow = mainWindow;
-      this.mainWindow.getLookupViewer().getViewer().addDoubleClickListener(this);
-   }
+	public InspectLookUpServerAction(ManagerMain mainWindow) {
+		super();
+		this.mainWindow = mainWindow;
+		this.mainWindow.getLookupViewer().getViewer().addDoubleClickListener(this);
+	}
 
-   public void doubleClick(DoubleClickEvent event) {
-      ISelection sel = event.getSelection();
-      if (!sel.isEmpty()) {
-         Object object = ((StructuredSelection) sel).getFirstElement();
-         if (object instanceof ServiceRegistrar) {
-            Display.getDefault().asyncExec(new InspectReggieDialogHelper(mainWindow, (ServiceRegistrar) object));
-         }
-      }
-   }
+	@Override
+	public void doubleClick(DoubleClickEvent event) {
+		ISelection sel = event.getSelection();
+		if (!sel.isEmpty()) {
+			Object object = ((StructuredSelection) sel).getFirstElement();
+			if (object instanceof ServiceRegistrar) {
+				Displays.ensureInDisplayThread(new InspectReggieDialogHelper(mainWindow, (ServiceRegistrar) object));
+			}
+		}
+	}
 }

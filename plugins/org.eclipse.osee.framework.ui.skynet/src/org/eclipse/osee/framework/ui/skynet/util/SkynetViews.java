@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
@@ -28,53 +28,54 @@ import org.eclipse.ui.PlatformUI;
  */
 public class SkynetViews {
 
-   private static final String MEMENTO_SOURCE_GUID = "sourceDbGuid";
+	private static final String MEMENTO_SOURCE_GUID = "sourceDbGuid";
 
-   public static boolean isSourceValid(IMemento memento) {
-      boolean result = false;
-      if (memento != null) {
-         String dbId = memento.getString(MEMENTO_SOURCE_GUID);
-         if (Strings.isValid(dbId)) {
-            String currentDbId = null;
-            try {
-               currentDbId = OseeInfo.getDatabaseGuid();
-            } catch (OseeDataStoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, "Unable to set memento source db guid");
-            }
-            if (dbId.equals(currentDbId)) {
-               result = true;
-            }
-         }
-      }
-      return result;
-   }
+	public static boolean isSourceValid(IMemento memento) {
+		boolean result = false;
+		if (memento != null) {
+			String dbId = memento.getString(MEMENTO_SOURCE_GUID);
+			if (Strings.isValid(dbId)) {
+				String currentDbId = null;
+				try {
+					currentDbId = OseeInfo.getDatabaseGuid();
+				} catch (OseeDataStoreException ex) {
+					OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, "Unable to set memento source db guid");
+				}
+				if (dbId.equals(currentDbId)) {
+					result = true;
+				}
+			}
+		}
+		return result;
+	}
 
-   public static void addDatabaseSourceId(IMemento memento) {
-      if (memento != null) {
-         try {
-            memento.putString(MEMENTO_SOURCE_GUID, OseeInfo.getDatabaseGuid());
-         } catch (OseeDataStoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, "Unable to set memento source db guid");
-         }
-      }
-   }
+	public static void addDatabaseSourceId(IMemento memento) {
+		if (memento != null) {
+			try {
+				memento.putString(MEMENTO_SOURCE_GUID, OseeInfo.getDatabaseGuid());
+			} catch (OseeDataStoreException ex) {
+				OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, "Unable to set memento source db guid");
+			}
+		}
+	}
 
-   public static void closeView(final String viewId, final String secondaryId) {
-      if (Strings.isValid(viewId)) {
-         Display.getDefault().asyncExec(new Runnable() {
-            public void run() {
-               IWorkbench workbench = PlatformUI.getWorkbench();
-               if (workbench != null) {
-                  IWorkbenchWindow workbenchWindow = workbench.getActiveWorkbenchWindow();
-                  if (workbenchWindow != null) {
-                     IWorkbenchPage workbenchPage = workbenchWindow.getActivePage();
-                     if (workbenchPage != null) {
-                        workbenchPage.hideView(workbenchPage.findViewReference(viewId, secondaryId));
-                     }
-                  }
-               }
-            }
-         });
-      }
-   }
+	public static void closeView(final String viewId, final String secondaryId) {
+		if (Strings.isValid(viewId)) {
+			Displays.ensureInDisplayThread(new Runnable() {
+				@Override
+				public void run() {
+					IWorkbench workbench = PlatformUI.getWorkbench();
+					if (workbench != null) {
+						IWorkbenchWindow workbenchWindow = workbench.getActiveWorkbenchWindow();
+						if (workbenchWindow != null) {
+							IWorkbenchPage workbenchPage = workbenchWindow.getActivePage();
+							if (workbenchPage != null) {
+								workbenchPage.hideView(workbenchPage.findViewReference(viewId, secondaryId));
+							}
+						}
+					}
+				}
+			});
+		}
+	}
 }

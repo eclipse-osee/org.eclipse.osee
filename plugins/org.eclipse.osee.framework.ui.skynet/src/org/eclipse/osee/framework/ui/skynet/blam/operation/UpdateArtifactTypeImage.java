@@ -23,11 +23,11 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -59,7 +59,7 @@ public class UpdateArtifactTypeImage extends AbstractBlam {
             @Override
             public void run() {
                try {
-                  if (MessageDialog.openConfirm(Display.getDefault().getActiveShell(), "Clear Database Image?",
+                  if (MessageDialog.openConfirm(Displays.getActiveShell(), "Clear Database Image?",
                         "No Image File Selected.\n\nSelect \"Ok\" to clear image from database (default image will be used).")) {
                      ArtifactImageManager.setArtifactTypeImageInDb(artifactSubtypeDescriptor, null);
                   }

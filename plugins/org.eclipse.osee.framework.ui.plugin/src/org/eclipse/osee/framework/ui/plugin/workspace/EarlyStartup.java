@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.plugin.workspace;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.ui.plugin.internal.OseePluginUiActivator;
 import org.eclipse.osee.framework.ui.plugin.workspace.internal.SafeWorkspaceAccessImpl;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ui.IStartup;
 import org.osgi.framework.Bundle;
 
@@ -22,20 +22,20 @@ import org.osgi.framework.Bundle;
  */
 public class EarlyStartup implements IStartup {
 
-   @Override
-   public void earlyStartup() {
-      Display.getDefault().asyncExec(new Runnable() {
-         @Override
-         public void run() {
-            registerWorkspaceAccessService();
-         }
-      });
-   }
+	@Override
+	public void earlyStartup() {
+		Displays.ensureInDisplayThread(new Runnable() {
+			@Override
+			public void run() {
+				registerWorkspaceAccessService();
+			}
+		});
+	}
 
-   private void registerWorkspaceAccessService() {
-      Bundle bundle = Platform.getBundle(OseePluginUiActivator.PLUGIN_ID);
-      bundle.getBundleContext().registerService(SafeWorkspaceAccess.class.getName(), new SafeWorkspaceAccessImpl(),
-            null);
-   }
+	private void registerWorkspaceAccessService() {
+		Bundle bundle = Platform.getBundle(OseePluginUiActivator.PLUGIN_ID);
+		bundle.getBundleContext().registerService(SafeWorkspaceAccess.class.getName(), new SafeWorkspaceAccessImpl(),
+					null);
+	}
 
 }

@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.framework.ui.plugin.util.Displays;
+import org.eclipse.osee.framework.ui.swt.Displays;
 
 public class UserRoleContentProvider implements ITreeContentProvider {
 

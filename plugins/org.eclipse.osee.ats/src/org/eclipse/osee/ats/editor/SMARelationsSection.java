@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.BaseArtifactEditorInput;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.RelationsFormSection;
@@ -33,55 +32,55 @@ import org.eclipse.ui.forms.widgets.Section;
  */
 public class SMARelationsSection extends RelationsFormSection {
 
-   public SMARelationsSection(SMAEditor editor, Composite parent, FormToolkit toolkit, int style) {
-      super(editor, parent, toolkit, style | Section.TWISTIE | Section.TITLE_BAR);
-   }
+	public SMARelationsSection(SMAEditor editor, Composite parent, FormToolkit toolkit, int style) {
+		super(editor, parent, toolkit, style | Section.TWISTIE | Section.TITLE_BAR);
+	}
 
-   @Override
-   public SMAEditor getEditor() {
-      return (SMAEditor) super.getEditor();
-   }
+	@Override
+	public SMAEditor getEditor() {
+		return (SMAEditor) super.getEditor();
+	}
 
-   @Override
-   public BaseArtifactEditorInput getEditorInput() {
-      return super.getEditorInput();
-   }
+	@Override
+	public BaseArtifactEditorInput getEditorInput() {
+		return super.getEditorInput();
+	}
 
-   @Override
-   protected synchronized void createSection(Section section, FormToolkit toolkit) throws OseeCoreException {
-      super.createSection(section, toolkit);
-      // Don't allow users to see all relations
-      if (!AtsUtil.isAtsAdmin()) {
-         getRelationComposite().getTreeViewer().addFilter(userRelationsFilter);
-      }
-   }
+	@Override
+	protected synchronized void createSection(Section section, FormToolkit toolkit) {
+		super.createSection(section, toolkit);
+		// Don't allow users to see all relations
+		if (!AtsUtil.isAtsAdmin()) {
+			getRelationComposite().getTreeViewer().addFilter(userRelationsFilter);
+		}
+	}
 
-   @Override
-   protected void handleExpandAndCollapse() {
-      ((SMAWorkFlowTab) getEditor().getSelectedPage()).getManagedForm().getForm().layout();
-   }
+	@Override
+	protected void handleExpandAndCollapse() {
+		((SMAWorkFlowTab) getEditor().getSelectedPage()).getManagedForm().getForm().layout();
+	}
 
-   @Override
-   protected void addDragAndDrop(Control dropArea) {
-      new SMADragAndDrop(dropArea, (StateMachineArtifact) getEditorInput().getArtifact(), SMAEditor.EDITOR_ID);
-   }
+	@Override
+	protected void addDragAndDrop(Control dropArea) {
+		new SMADragAndDrop(dropArea, (StateMachineArtifact) getEditorInput().getArtifact(), SMAEditor.EDITOR_ID);
+	}
 
-   private static ViewerFilter userRelationsFilter = new ViewerFilter() {
-      @Override
-      public boolean select(Viewer viewer, Object parentElement, Object element) {
-         if (element instanceof RelationType) {
-            return !filteredRelationTypeNames.contains(((RelationType) element).getName());
-         }
-         return true;
-      }
-   };
+	private static ViewerFilter userRelationsFilter = new ViewerFilter() {
+		@Override
+		public boolean select(Viewer viewer, Object parentElement, Object element) {
+			if (element instanceof RelationType) {
+				return !filteredRelationTypeNames.contains(((RelationType) element).getName());
+			}
+			return true;
+		}
+	};
 
-   private static List<String> filteredRelationTypeNames =
-         Arrays.asList(AtsRelationTypes.ActionToWorkflow_Action.getName(), AtsRelationTypes.SmaToTask_Sma.getName(),
-               AtsRelationTypes.TeamActionableItem_ActionableItem.getName(),
-               AtsRelationTypes.TeamWorkflowTargetedForVersion_Version.getName(),
-               AtsRelationTypes.TeamLead_Lead.getName(), AtsRelationTypes.TeamMember_Member.getName(),
-               AtsRelationTypes.TeamWorkflowToReview_Review.getName(), CoreRelationTypes.WorkItem__Child.getName(),
-               CoreRelationTypes.Default_Hierarchical__Child.getName(), CoreRelationTypes.Users_Artifact.getName());
+	private static List<String> filteredRelationTypeNames = Arrays.asList(
+				AtsRelationTypes.ActionToWorkflow_Action.getName(), AtsRelationTypes.SmaToTask_Sma.getName(),
+				AtsRelationTypes.TeamActionableItem_ActionableItem.getName(),
+				AtsRelationTypes.TeamWorkflowTargetedForVersion_Version.getName(),
+				AtsRelationTypes.TeamLead_Lead.getName(), AtsRelationTypes.TeamMember_Member.getName(),
+				AtsRelationTypes.TeamWorkflowToReview_Review.getName(), CoreRelationTypes.WorkItem__Child.getName(),
+				CoreRelationTypes.Default_Hierarchical__Child.getName(), CoreRelationTypes.Users_Artifact.getName());
 
 }

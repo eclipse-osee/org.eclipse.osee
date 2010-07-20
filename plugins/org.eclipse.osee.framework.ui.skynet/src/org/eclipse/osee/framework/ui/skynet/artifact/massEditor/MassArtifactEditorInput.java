@@ -22,47 +22,53 @@ import org.eclipse.ui.IPersistableElement;
  */
 public class MassArtifactEditorInput implements IEditorInput {
 
-   private final Collection<? extends Artifact> artifacts;
-   private final String name;
-   private final SkynetXViewerFactory skynetXViewerFactory;
+	private final Collection<? extends Artifact> artifacts;
+	private final String name;
+	private final SkynetXViewerFactory skynetXViewerFactory;
 
-   public SkynetXViewerFactory getXViewerFactory() {
-      return skynetXViewerFactory;
-   }
+	public SkynetXViewerFactory getXViewerFactory() {
+		return skynetXViewerFactory;
+	}
 
-   public MassArtifactEditorInput(String name, Collection<? extends Artifact> artifacts, SkynetXViewerFactory skynetXViewerFactory) {
-      this.name = name;
-      this.artifacts = artifacts;
-      this.skynetXViewerFactory = skynetXViewerFactory;
-   }
+	public MassArtifactEditorInput(String name, Collection<? extends Artifact> artifacts, SkynetXViewerFactory skynetXViewerFactory) {
+		this.name = name;
+		this.artifacts = artifacts;
+		this.skynetXViewerFactory = skynetXViewerFactory;
+	}
 
-   public Collection<? extends Artifact> getArtifacts() {
-      return artifacts;
-   }
+	public Collection<? extends Artifact> getArtifacts() {
+		return artifacts;
+	}
 
-   public String getName() {
-      return name;
-   }
+	@Override
+	public String getName() {
+		return name;
+	}
 
-   public boolean exists() {
-      return false;
-   }
+	@Override
+	public boolean exists() {
+		return false;
+	}
 
-   public ImageDescriptor getImageDescriptor() {
-      return null;
-   }
+	@Override
+	public ImageDescriptor getImageDescriptor() {
+		return null;
+	}
 
-   public IPersistableElement getPersistable() {
-      return null;
-   }
+	@Override
+	public IPersistableElement getPersistable() {
+		return null;
+	}
 
-   public String getToolTipText() {
-      return "";
-   }
+	@Override
+	public String getToolTipText() {
+		return "";
+	}
 
-   @SuppressWarnings("unchecked")
-   public Object getAdapter(Class adapter) {
-      return null;
-   }
+	@SuppressWarnings("rawtypes")
+	@Override
+	public Object getAdapter(Class adapter) {
+		return null;
+	}
 
 }

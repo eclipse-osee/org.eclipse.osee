@@ -23,67 +23,69 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.httpRequests.BaseArtifactLoopbackCmd;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
  * @author Roberto E. Escobar
  */
 public class OpenInAtsLoopbackCmd extends BaseArtifactLoopbackCmd {
 
-   @Override
-   public boolean isApplicable(String cmd) {
-      return cmd != null && cmd.equalsIgnoreCase("open.ats");
-   }
+	@Override
+	public boolean isApplicable(String cmd) {
+		return cmd != null && cmd.equalsIgnoreCase("open.ats");
+	}
 
-   @Override
-   public void process(final Artifact artifact, final Map<String, String> parameters, final HttpResponse httpResponse) {
-      if (artifact != null) {
-         try {
-            boolean hasPermissionToRead = false;
-            try {
-               hasPermissionToRead = AccessControlManager.hasPermission(artifact, PermissionEnum.READ);
-            } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-            }
+	@Override
+	public void process(final Artifact artifact, final Map<String, String> parameters, final HttpResponse httpResponse) {
+		if (artifact != null) {
+			try {
+				boolean hasPermissionToRead = false;
+				try {
+					hasPermissionToRead = AccessControlManager.hasPermission(artifact, PermissionEnum.READ);
+				} catch (Exception ex) {
+					OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+				}
 
-            if (!hasPermissionToRead) {
-               httpResponse.outputStandardError(HttpURLConnection.HTTP_UNAUTHORIZED, String.format(
-                     "Access denied - User does not have read access to [%s]", artifact));
-            } else {
-               final MutableBoolean isDone = new MutableBoolean(false);
-               Display.getDefault().asyncExec(new Runnable() {
-                  public void run() {
-                     try {
-                        AtsUtil.openATSAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
-                        String html =
-                              AHTML.simplePage("Action [" + artifact.getName() + "]has been opened in OSEE ATS<br><br>" + "<form><input type=button onClick='window.opener=self;window.close()' value='Close'></form>");
-                        httpResponse.getPrintStream().println(html);
-                     } catch (Exception ex) {
-                        OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-                        httpResponse.outputStandardError(HttpURLConnection.HTTP_INTERNAL_ERROR, String.format(
-                              "Unable to open: [%s]", artifact.getName()), ex);
-                     } finally {
-                        isDone.setValue(true);
-                     }
-                  }
-               });
-               int count = 1;
-               while (!isDone.getValue() && count < 30) {
-                  try {
-                     Thread.sleep(350);
-                  } catch (InterruptedException ex) {
-                  }
-                  count++;
-               }
-            }
-         } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-            httpResponse.outputStandardError(HttpURLConnection.HTTP_INTERNAL_ERROR, String.format(
-                  "Unable to open: [%s]", artifact.getName()), ex);
-         }
-      } else {
-         httpResponse.outputStandardError(HttpURLConnection.HTTP_BAD_REQUEST, "Unable to open null artifact");
-      }
-   }
+				if (!hasPermissionToRead) {
+					httpResponse.outputStandardError(HttpURLConnection.HTTP_UNAUTHORIZED,
+								String.format("Access denied - User does not have read access to [%s]", artifact));
+				} else {
+					final MutableBoolean isDone = new MutableBoolean(false);
+					Displays.ensureInDisplayThread(new Runnable() {
+
+						@Override
+						public void run() {
+							try {
+								AtsUtil.openATSAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
+								String html =
+											AHTML.simplePage("Action [" + artifact.getName() + "]has been opened in OSEE ATS<br><br>" + "<form><input type=button onClick='window.opener=self;window.close()' value='Close'></form>");
+								httpResponse.getPrintStream().println(html);
+							} catch (Exception ex) {
+								OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+								httpResponse.outputStandardError(HttpURLConnection.HTTP_INTERNAL_ERROR,
+											String.format("Unable to open: [%s]", artifact.getName()), ex);
+							} finally {
+								isDone.setValue(true);
+							}
+						}
+					});
+					int count = 1;
+					while (!isDone.getValue() && count < 30) {
+						try {
+							Thread.sleep(350);
+						} catch (InterruptedException ex) {
+						}
+						count++;
+					}
+				}
+			} catch (Exception ex) {
+				OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+				httpResponse.outputStandardError(HttpURLConnection.HTTP_INTERNAL_ERROR,
+							String.format("Unable to open: [%s]", artifact.getName()), ex);
+			}
+		} else {
+			httpResponse.outputStandardError(HttpURLConnection.HTTP_BAD_REQUEST, "Unable to open null artifact");
+		}
+	}
 
 }

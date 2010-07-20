@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.ui.branch.graph.core.BranchGraphEditorInput;
 import org.eclipse.osee.framework.ui.branch.graph.model.GraphCache;
 import org.eclipse.osee.framework.ui.branch.graph.model.GraphLoader;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -35,99 +35,101 @@ import org.eclipse.ui.IWorkbenchWindow;
  */
 public class LoadGraphOperation implements IExceptionableRunnable {
 
-   private Branch resource;
-   private GraphicalViewer viewer;
-   private BranchGraphEditor editor;
-   private GraphCache graph;
+	private Branch resource;
+	private final GraphicalViewer viewer;
+	private final BranchGraphEditor editor;
+	private GraphCache graph;
 
-   private static final int TOTAL_STEPS = Integer.MAX_VALUE;
-   private static final int SHORT_TASK_STEPS = TOTAL_STEPS / 50;
-   private static final int VERY_LONG_TASK = TOTAL_STEPS / 2;
-   private static final int TASK_STEPS = (TOTAL_STEPS - SHORT_TASK_STEPS * 3 - VERY_LONG_TASK) / 2;
+	private static final int TOTAL_STEPS = Integer.MAX_VALUE;
+	private static final int SHORT_TASK_STEPS = TOTAL_STEPS / 50;
+	private static final int VERY_LONG_TASK = TOTAL_STEPS / 2;
+	private static final int TASK_STEPS = (TOTAL_STEPS - SHORT_TASK_STEPS * 3 - VERY_LONG_TASK) / 2;
 
-   protected LoadGraphOperation(IWorkbenchPart part, GraphicalViewer viewer, BranchGraphEditor editor) {
-      super();
-      this.viewer = viewer;
-      this.editor = editor;
-   }
+	protected LoadGraphOperation(IWorkbenchPart part, GraphicalViewer viewer, BranchGraphEditor editor) {
+		super();
+		this.viewer = viewer;
+		this.editor = editor;
+	}
 
-   public LoadGraphOperation(IWorkbenchPart part, GraphicalViewer viewer, BranchGraphEditor editor, Branch resource) {
-      this(part, viewer, editor);
-      this.resource = resource;
-   }
+	public LoadGraphOperation(IWorkbenchPart part, GraphicalViewer viewer, BranchGraphEditor editor, Branch resource) {
+		this(part, viewer, editor);
+		this.resource = resource;
+	}
 
-   public String getName() {
-      return "Loading graph information";
-   }
+	public String getName() {
+		return "Loading graph information";
+	}
 
-   @Override
-   public IStatus run(IProgressMonitor monitor) throws Exception {
-      boolean error = false;
-      monitor.beginTask(getName(), TOTAL_STEPS);
-      monitor.worked(SHORT_TASK_STEPS);
-      try {
-         TransactionRecord transaction = TransactionManager.getHeadTransaction(resource);
-         if (editor != null) {
-            ((BranchGraphEditorInput) editor.getEditorInput()).setTransactionId(transaction);
-         }
-         Branch path = transaction.getBranch();
+	@Override
+	public IStatus run(IProgressMonitor monitor) throws Exception {
+		boolean error = false;
+		monitor.beginTask(getName(), TOTAL_STEPS);
+		monitor.worked(SHORT_TASK_STEPS);
+		try {
+			TransactionRecord transaction = TransactionManager.getHeadTransaction(resource);
+			if (editor != null) {
+				((BranchGraphEditorInput) editor.getEditorInput()).setTransactionId(transaction);
+			}
+			Branch path = transaction.getBranch();
 
-         monitor.setTaskName("Initializating cache");
+			monitor.setTaskName("Initializating cache");
 
-         monitor.worked(SHORT_TASK_STEPS);
+			monitor.worked(SHORT_TASK_STEPS);
 
-         if (editor != null) {
-            if (error == true || monitor.isCanceled()) {
-               Display.getDefault().syncExec(new Runnable() {
-                  public void run() {
-                     IWorkbenchWindow window = editor.getEditorSite().getWorkbenchWindow();
-                     IWorkbenchPage page = window.getActivePage();
-                     page.activate(editor);
-                     page.closeEditor(editor, false);
-                  }
-               });
-            } else {
-               updateView(monitor, path, transaction);
-            }
-         }
-      } catch (Exception ex) {
-         AWorkbench.popup("Error Calculating Revision Graph Information", Lib.exceptionToString(ex));
-      } finally {
-         monitor.done();
-      }
-      return Status.OK_STATUS;
-   }
+			if (editor != null) {
+				if (error == true || monitor.isCanceled()) {
+					Displays.pendInDisplayThread(new Runnable() {
+						@Override
+						public void run() {
+							IWorkbenchWindow window = editor.getEditorSite().getWorkbenchWindow();
+							IWorkbenchPage page = window.getActivePage();
+							page.activate(editor);
+							page.closeEditor(editor, false);
+						}
+					});
+				} else {
+					updateView(monitor, path, transaction);
+				}
+			}
+		} catch (Exception ex) {
+			AWorkbench.popup("Error Calculating Revision Graph Information", Lib.exceptionToString(ex));
+		} finally {
+			monitor.done();
+		}
+		return Status.OK_STATUS;
+	}
 
-   private void updateView(IProgressMonitor monitor, Branch branch, TransactionRecord revision) throws OseeCoreException {
-      monitor.setTaskName("Finding root node");
-      int unitWork = TASK_STEPS / (int) (revision.getId());
-      if (unitWork < 1) {
-         unitWork = 1;
-      }
-      monitor.setTaskName("Calculating graph");
-      graph = new GraphCache(branch);
-      GraphLoader.load(graph, new InternalTaskProgressListener(monitor, unitWork));
-      monitor.setTaskName("Drawing graph");
+	private void updateView(IProgressMonitor monitor, Branch branch, TransactionRecord revision) throws OseeCoreException {
+		monitor.setTaskName("Finding root node");
+		int unitWork = TASK_STEPS / (revision.getId());
+		if (unitWork < 1) {
+			unitWork = 1;
+		}
+		monitor.setTaskName("Calculating graph");
+		graph = new GraphCache(branch);
+		GraphLoader.load(graph, new InternalTaskProgressListener(monitor, unitWork));
+		monitor.setTaskName("Drawing graph");
 
-      Display.getDefault().syncExec(new Runnable() {
-         public void run() {
-            viewer.setContents(graph);
-            editor.setOutlineContent(graph);
-         }
-      });
-   }
-   private final class InternalTaskProgressListener implements IProgressListener {
+		Displays.pendInDisplayThread(new Runnable() {
+			@Override
+			public void run() {
+				viewer.setContents(graph);
+				editor.setOutlineContent(graph);
+			}
+		});
+	}
+	private final class InternalTaskProgressListener implements IProgressListener {
 
-      private IProgressMonitor monitor;
-      private int unitWork;
+		private final IProgressMonitor monitor;
+		private final int unitWork;
 
-      public InternalTaskProgressListener(IProgressMonitor monitor, int unitWork) {
-         this.monitor = monitor;
-         this.unitWork = unitWork;
-      }
+		public InternalTaskProgressListener(IProgressMonitor monitor, int unitWork) {
+			this.monitor = monitor;
+			this.unitWork = unitWork;
+		}
 
-      public void worked() {
-         monitor.worked(unitWork);
-      }
-   }
+		public void worked() {
+			monitor.worked(unitWork);
+		}
+	}
 }

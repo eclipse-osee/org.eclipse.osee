@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.search;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.skynet.core.artifact.ISearchConfirmer;
-import org.eclipse.osee.framework.ui.plugin.util.Displays;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.widgets.Display;
 
 /**

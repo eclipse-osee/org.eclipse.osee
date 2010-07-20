@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.plugin.util;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ui.PlatformUI;
 
 /**

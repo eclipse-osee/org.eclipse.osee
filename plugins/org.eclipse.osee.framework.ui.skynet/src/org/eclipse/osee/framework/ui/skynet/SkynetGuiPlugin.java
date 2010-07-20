@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.framework.ui.plugin.OseeFormActivator;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactSaveNotificationHandler;
 import org.eclipse.osee.framework.ui.skynet.ats.IOseeAtsService;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchListener;
 import org.eclipse.ui.PlatformUI;
@@ -39,159 +39,161 @@ import org.osgi.service.packageadmin.PackageAdmin;
 import org.osgi.util.tracker.ServiceTracker;
 
 public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEventListener, IOseeDatabaseServiceProvider {
-   private static SkynetGuiPlugin pluginInstance; // The shared instance.
-   public static final String PLUGIN_ID = "org.eclipse.osee.framework.ui.skynet";
-   public static final String CHANGE_REPORT_ATTRIBUTES_PREF =
-         "org.eclipse.osee.framework.ui.skynet.changeReportAttributes";
-   public static final String ARTIFACT_EXPLORER_ATTRIBUTES_PREF =
-         "org.eclipse.osee.framework.ui.skynet.artifactExplorerAttributes";
+	private static SkynetGuiPlugin pluginInstance; // The shared instance.
+	public static final String PLUGIN_ID = "org.eclipse.osee.framework.ui.skynet";
+	public static final String CHANGE_REPORT_ATTRIBUTES_PREF =
+				"org.eclipse.osee.framework.ui.skynet.changeReportAttributes";
+	public static final String ARTIFACT_EXPLORER_ATTRIBUTES_PREF =
+				"org.eclipse.osee.framework.ui.skynet.artifactExplorerAttributes";
 
-   public static final String ARTIFACT_SEARCH_RESULTS_ATTRIBUTES_PREF =
-         "org.eclipse.osee.framework.ui.skynet.artifactSearchResultsAttributes";
-   private ServiceTracker packageAdminTracker;
-   private ServiceTracker cacheServiceTracker;
-   private ServiceTracker databaseServiceTracker;
-   private ServiceTracker atsServiceTracker;
+	public static final String ARTIFACT_SEARCH_RESULTS_ATTRIBUTES_PREF =
+				"org.eclipse.osee.framework.ui.skynet.artifactSearchResultsAttributes";
+	private ServiceTracker packageAdminTracker;
+	private ServiceTracker cacheServiceTracker;
+	private ServiceTracker databaseServiceTracker;
+	private ServiceTracker atsServiceTracker;
 
-   public SkynetGuiPlugin() {
-      super();
-      pluginInstance = this;
-   }
+	public SkynetGuiPlugin() {
+		super();
+		pluginInstance = this;
+	}
 
-   @Override
-   public void stop(BundleContext context) throws Exception {
-      super.stop(context);
-      packageAdminTracker.close();
-      cacheServiceTracker.close();
-      databaseServiceTracker.close();
-      atsServiceTracker.close();
-   }
+	@Override
+	public void stop(BundleContext context) throws Exception {
+		super.stop(context);
+		packageAdminTracker.close();
+		cacheServiceTracker.close();
+		databaseServiceTracker.close();
+		atsServiceTracker.close();
+	}
 
-   @Override
-   public void start(BundleContext context) throws Exception {
-      super.start(context);
-      packageAdminTracker = new ServiceTracker(context, PackageAdmin.class.getName(), null);
-      packageAdminTracker.open();
+	@Override
+	public void start(BundleContext context) throws Exception {
+		super.start(context);
+		packageAdminTracker = new ServiceTracker(context, PackageAdmin.class.getName(), null);
+		packageAdminTracker.open();
 
-      cacheServiceTracker = new ServiceTracker(context, IOseeCachingService.class.getName(), null);
-      cacheServiceTracker.open();
+		cacheServiceTracker = new ServiceTracker(context, IOseeCachingService.class.getName(), null);
+		cacheServiceTracker.open();
 
-      databaseServiceTracker = new ServiceTracker(context, IOseeDatabaseService.class.getName(), null);
-      databaseServiceTracker.open();
+		databaseServiceTracker = new ServiceTracker(context, IOseeDatabaseService.class.getName(), null);
+		databaseServiceTracker.open();
 
-      atsServiceTracker = new ServiceTracker(context, IOseeAtsService.class.getName(), null);
-      atsServiceTracker.open();
+		atsServiceTracker = new ServiceTracker(context, IOseeAtsService.class.getName(), null);
+		atsServiceTracker.open();
 
-      OseeEventManager.addListener(this);
+		OseeEventManager.addListener(this);
 
-      if (PlatformUI.isWorkbenchRunning()) {
+		if (PlatformUI.isWorkbenchRunning()) {
 
-         OseeLog.registerLoggerListener(new DialogPopupLoggerListener());
+			OseeLog.registerLoggerListener(new DialogPopupLoggerListener());
 
-         IWorkbench workbench = PlatformUI.getWorkbench();
-         workbench.addWorkbenchListener(new IWorkbenchListener() {
+			IWorkbench workbench = PlatformUI.getWorkbench();
+			workbench.addWorkbenchListener(new IWorkbenchListener() {
 
-            @Override
-            public void postShutdown(IWorkbench workbench) {
-            }
+				@Override
+				public void postShutdown(IWorkbench workbench) {
+				}
 
-            @Override
-            public boolean preShutdown(IWorkbench workbench, boolean forced) {
-               if (!DbUtil.isDbInit()) {
-                  try {
-                     UserManager.getUser().saveSettings();
-                  } catch (Throwable th) {
-                     th.printStackTrace();
-                  }
-               }
-               return true;
-            }
-         });
+				@Override
+				public boolean preShutdown(IWorkbench workbench, boolean forced) {
+					if (!DbUtil.isDbInit()) {
+						try {
+							UserManager.getUser().saveSettings();
+						} catch (Throwable th) {
+							th.printStackTrace();
+						}
+					}
+					return true;
+				}
+			});
 
-         PlatformUI.getWorkbench().addWorkbenchListener(new ArtifactSaveNotificationHandler());
-      }
-   }
+			PlatformUI.getWorkbench().addWorkbenchListener(new ArtifactSaveNotificationHandler());
+		}
+	}
 
-   public static SkynetGuiPlugin getInstance() {
-      return pluginInstance;
-   }
+	public static SkynetGuiPlugin getInstance() {
+		return pluginInstance;
+	}
 
-   @Override
-   protected String getPluginName() {
-      return PLUGIN_ID;
-   }
+	@Override
+	protected String getPluginName() {
+		return PLUGIN_ID;
+	}
 
-   public PackageAdmin getPackageAdmin() {
-      return (PackageAdmin) this.packageAdminTracker.getService();
-   }
+	public PackageAdmin getPackageAdmin() {
+		return (PackageAdmin) this.packageAdminTracker.getService();
+	}
 
-   public IOseeCachingService getOseeCacheService() {
-      return (IOseeCachingService) cacheServiceTracker.getService();
-   }
+	public IOseeCachingService getOseeCacheService() {
+		return (IOseeCachingService) cacheServiceTracker.getService();
+	}
 
-   public IOseeDatabaseService getOseeDatabaseService() {
-      return (IOseeDatabaseService) databaseServiceTracker.getService();
-   }
+	public IOseeDatabaseService getOseeDatabaseService() {
+		return (IOseeDatabaseService) databaseServiceTracker.getService();
+	}
 
-   public IOseeAtsService getOseeAtsService() {
-      return (IOseeAtsService) atsServiceTracker.getService();
-   }
+	public IOseeAtsService getOseeAtsService() {
+		return (IOseeAtsService) atsServiceTracker.getService();
+	}
 
-   @Override
-   public void handleBroadcastEvent(Sender sender, final BroadcastEvent broadcastEvent) {
+	@Override
+	public void handleBroadcastEvent(Sender sender, final BroadcastEvent broadcastEvent) {
 
-      // Determine whether this is a shutdown event
-      // Prevent shutting down users without a valid message
-      if (broadcastEvent.getBroadcastEventType() == BroadcastEventType.Force_Shutdown) {
-         if (broadcastEvent.getMessage() == null || broadcastEvent.getMessage().length() == 0) {
-            return;
-         }
-         Display.getDefault().asyncExec(new Runnable() {
-            public void run() {
-               boolean isShutdownRequest = false;
-               try {
-                  isShutdownRequest = broadcastEvent.getUsers().contains(UserManager.getUser());
-               } catch (OseeCoreException ex) {
-                  // do nothing
-               }
-               if (isShutdownRequest) {
-                  MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                        "Shutdown Requested", broadcastEvent.getMessage());
-                  // Shutdown the bench when this event is received
-                  PlatformUI.getWorkbench().close();
-               }
-            }
-         });
-      } else if (broadcastEvent.getBroadcastEventType() == BroadcastEventType.Message) {
-         if (broadcastEvent.getMessage() == null || broadcastEvent.getMessage().length() == 0) {
-            return;
-         }
-         Display.getDefault().asyncExec(new Runnable() {
-            public void run() {
-               MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                     "Remote Message", broadcastEvent.getMessage());
-            }
-         });
-      } else if (broadcastEvent.getBroadcastEventType() == BroadcastEventType.Ping) {
-         // Another client ping'd this client for session information; Pong back with
-         // original client's session id so it can be identified as the correct pong
-         try {
-            OseeEventManager.kickBroadcastEvent(this, new BroadcastEvent(BroadcastEventType.Pong, null,
-                  sender.getOseeSession().toString()));
-         } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-         }
-      } else if (broadcastEvent.getBroadcastEventType() == BroadcastEventType.Pong) {
-         // Got pong from another client; If message == this client's sessionId, then it's
-         // the response from this client's ping
-         try {
-            if (broadcastEvent.getMessage() != null && broadcastEvent.getMessage().equals(
-                  ClientSessionManager.getSession().toString())) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.INFO, "Pong: " + sender.toString());
-            }
-         } catch (OseeAuthenticationRequiredException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, "Pong: " + sender.toString(), ex);
-         }
-      }
-   }
+		// Determine whether this is a shutdown event
+		// Prevent shutting down users without a valid message
+		if (broadcastEvent.getBroadcastEventType() == BroadcastEventType.Force_Shutdown) {
+			if (broadcastEvent.getMessage() == null || broadcastEvent.getMessage().length() == 0) {
+				return;
+			}
+			Displays.ensureInDisplayThread(new Runnable() {
+				@Override
+				public void run() {
+					boolean isShutdownRequest = false;
+					try {
+						isShutdownRequest = broadcastEvent.getUsers().contains(UserManager.getUser());
+					} catch (OseeCoreException ex) {
+						// do nothing
+					}
+					if (isShutdownRequest) {
+						MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+									"Shutdown Requested", broadcastEvent.getMessage());
+						// Shutdown the bench when this event is received
+						PlatformUI.getWorkbench().close();
+					}
+				}
+			});
+		} else if (broadcastEvent.getBroadcastEventType() == BroadcastEventType.Message) {
+			if (broadcastEvent.getMessage() == null || broadcastEvent.getMessage().length() == 0) {
+				return;
+			}
+			Displays.ensureInDisplayThread(new Runnable() {
+				@Override
+				public void run() {
+					MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+								"Remote Message", broadcastEvent.getMessage());
+				}
+			});
+		} else if (broadcastEvent.getBroadcastEventType() == BroadcastEventType.Ping) {
+			// Another client ping'd this client for session information; Pong back with
+			// original client's session id so it can be identified as the correct pong
+			try {
+				OseeEventManager.kickBroadcastEvent(this, new BroadcastEvent(BroadcastEventType.Pong, null,
+							sender.getOseeSession().toString()));
+			} catch (Exception ex) {
+				OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+			}
+		} else if (broadcastEvent.getBroadcastEventType() == BroadcastEventType.Pong) {
+			// Got pong from another client; If message == this client's sessionId, then it's
+			// the response from this client's ping
+			try {
+				if (broadcastEvent.getMessage() != null && broadcastEvent.getMessage().equals(
+							ClientSessionManager.getSession().toString())) {
+					OseeLog.log(SkynetGuiPlugin.class, Level.INFO, "Pong: " + sender.toString());
+				}
+			} catch (OseeAuthenticationRequiredException ex) {
+				OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, "Pong: " + sender.toString(), ex);
+			}
+		}
+	}
 }

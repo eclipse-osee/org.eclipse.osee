@@ -23,7 +23,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.plugin.core.util.ExportClassLoader;
 import org.eclipse.osee.framework.ui.service.control.ControlPlugin;
 import org.eclipse.osee.framework.ui.service.control.managers.ServiceTreeBuilder;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ui.PlatformUI;
 
 /**
@@ -31,67 +31,71 @@ import org.eclipse.ui.PlatformUI;
  */
 public class PopulateInspectReggieDialog extends Job {
 
-   private ServiceRegistrar reggie;
-   private ServiceTreeBuilder serviceTreeBuilder;
+	private final ServiceRegistrar reggie;
+	private final ServiceTreeBuilder serviceTreeBuilder;
 
-   public PopulateInspectReggieDialog(String title, ServiceTreeBuilder serviceTreeBuilder, ServiceRegistrar reggie) {
-      super(title);
-      this.serviceTreeBuilder = serviceTreeBuilder;
-      this.reggie = reggie;
+	public PopulateInspectReggieDialog(String title, ServiceTreeBuilder serviceTreeBuilder, ServiceRegistrar reggie) {
+		super(title);
+		this.serviceTreeBuilder = serviceTreeBuilder;
+		this.reggie = reggie;
 
-   }
+	}
 
-   public static void scheduleJob(Job job) {
-      job.setUser(true);
-      job.setPriority(Job.SHORT);
-      job.schedule();
-   }
+	public static void scheduleJob(Job job) {
+		job.setUser(true);
+		job.setPriority(Job.SHORT);
+		job.schedule();
+	}
 
-   @Override
-   protected IStatus run(IProgressMonitor monitor) {
-      IStatus status = Status.CANCEL_STATUS;
-      ClassLoader loader = this.getThread().getContextClassLoader();
-      try {
-         this.getThread().setContextClassLoader(ExportClassLoader.getInstance());
-         ServiceMatches serviceMatches = reggie.lookup(new ServiceTemplate(null, null, null), Integer.MAX_VALUE);
-         final ServiceItem[] serviceItemArray = serviceMatches.items;
-         Display.getDefault().asyncExec(new Runnable() {
-            public void run() {
-               for (ServiceItem item : serviceItemArray) {
-                  serviceTreeBuilder.serviceAdded(item);
-               }
-            }
-         });
-         status = Status.OK_STATUS;
-      } catch (RemoteException ex) {
-         try {
-            displayMessage("Reggie Lookup Error", String.format("Error searching for services in [%s:%s] reggie.\n%s",
-                  reggie.getLocator().getHost(), reggie.getLocator().getPort(), ControlPlugin.getStackMessages(ex)));
-         } catch (RemoteException ex1) {
-            displayMessage("Reggie Lookup Error", String.format("Unable to access selected the selected reggie.\n%s",
-                  ControlPlugin.getStackMessages(ex)));
-         }
-      } finally {
-         this.getThread().setContextClassLoader(loader);
-      }
-      return status;
-   }
+	@Override
+	protected IStatus run(IProgressMonitor monitor) {
+		IStatus status = Status.CANCEL_STATUS;
+		ClassLoader loader = this.getThread().getContextClassLoader();
+		try {
+			this.getThread().setContextClassLoader(ExportClassLoader.getInstance());
+			ServiceMatches serviceMatches = reggie.lookup(new ServiceTemplate(null, null, null), Integer.MAX_VALUE);
+			final ServiceItem[] serviceItemArray = serviceMatches.items;
+			Displays.ensureInDisplayThread(new Runnable() {
+				@Override
+				public void run() {
+					for (ServiceItem item : serviceItemArray) {
+						serviceTreeBuilder.serviceAdded(item);
+					}
+				}
+			});
+			status = Status.OK_STATUS;
+		} catch (RemoteException ex) {
+			try {
+				displayMessage("Reggie Lookup Error", String.format("Error searching for services in [%s:%s] reggie.\n%s",
+							reggie.getLocator().getHost(), reggie.getLocator().getPort(), ControlPlugin.getStackMessages(ex)));
+			} catch (RemoteException ex1) {
+				displayMessage(
+							"Reggie Lookup Error",
+							String.format("Unable to access selected the selected reggie.\n%s",
+										ControlPlugin.getStackMessages(ex)));
+			}
+		} finally {
+			this.getThread().setContextClassLoader(loader);
+		}
+		return status;
+	}
 
-   private void displayMessage(final String title, final String message) {
-      displayMessage(title, message, true);
-   }
+	private void displayMessage(final String title, final String message) {
+		displayMessage(title, message, true);
+	}
 
-   private void displayMessage(final String title, final String message, final boolean isError) {
-      Display.getDefault().syncExec(new Runnable() {
-         public void run() {
-            if (isError) {
-               MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), title, message);
-            } else {
-               MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), title,
-                     message);
-            }
-         }
-      });
-   }
+	private void displayMessage(final String title, final String message, final boolean isError) {
+		Displays.pendInDisplayThread(new Runnable() {
+			@Override
+			public void run() {
+				if (isError) {
+					MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), title, message);
+				} else {
+					MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), title,
+								message);
+				}
+			}
+		});
+	}
 
 }

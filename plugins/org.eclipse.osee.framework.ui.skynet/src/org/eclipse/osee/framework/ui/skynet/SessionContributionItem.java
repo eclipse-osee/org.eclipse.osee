@@ -25,8 +25,8 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.AccessControlEvent;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
-import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.dialogs.AuthenticationDialog;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.OverlayImage;
 import org.eclipse.swt.graphics.Image;
@@ -76,8 +76,9 @@ public final class SessionContributionItem extends OseeContributionItem implemen
                   //                  oseeAuthentication.authenticate("", "", "", false);
                   //               }
                   if (ClientSessionManager.isSessionValid()) {
-                     Display.getDefault().asyncExec(new Runnable() {
-                        public void run() {
+            			Displays.ensureInDisplayThread(new Runnable() {
+            				@Override
+            				public void run() {
                            try {
                               AccessControlEvent event = new AccessControlEvent();
                               event.setEventType(AccessControlEventType.UserAuthenticated);

@@ -58,7 +58,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.AbstractSelectionEnabledHandler;
 import org.eclipse.osee.framework.ui.plugin.util.Commands;
-import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
@@ -68,6 +67,7 @@ import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.revert.RevertWizard;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
 import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.NonmodalWizardDialog;
 import org.eclipse.swt.layout.GridData;
@@ -813,7 +813,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
                                  "Source Artifact Changed", showConflicts);
                            if (artifact.equals(conflict.getSourceArtifact()) && sender.isLocal()) {
                               new MessageDialog(
-                                    Display.getDefault().getActiveShell().getShell(),
+                                    Displays.getActiveShell().getShell(),
                                     "Modifying Source artifact while merging",
                                     null,
                                     "Typically changes done while merging should be done on the merge branch.  You should not normally merge on the source branch.",
@@ -934,7 +934,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
                                  "Source Artifact Changed", showConflicts);
                            if (artifact.equals(conflict.getSourceArtifact()) && sender.isLocal()) {
                               new MessageDialog(
-                                    Display.getDefault().getActiveShell().getShell(),
+                                    Displays.getActiveShell().getShell(),
                                     "Modifying Source artifact while merging",
                                     null,
                                     "Typically changes done while merging should be done on the merge branch.  You should not normally merge on the source branch.",

@@ -43,160 +43,161 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
  */
 public class ODMPaletteFactory {
 
-   private final static String DATA_TYPE_TIP_FORMAT = "Add [%s] %s type to %s";
-   private final ODMEditor editor;
-   private PaletteRoot paletteRoot;
+	private final static String DATA_TYPE_TIP_FORMAT = "Add [%s] %s type to %s";
+	private final ODMEditor editor;
+	private PaletteRoot paletteRoot;
 
-   private enum DrawerEnum {
-      Artifact_Types,
-      Attribute_Types,
-      Relation_Types;
+	private enum DrawerEnum {
+		Artifact_Types,
+		Attribute_Types,
+		Relation_Types;
 
-      public String asLabel() {
-         return this.name().replaceAll("_", " ");
-      }
-   }
+		public String asLabel() {
+			return this.name().replaceAll("_", " ");
+		}
+	}
 
-   private final Map<DrawerEnum, PaletteContainer> containers;
+	private final Map<DrawerEnum, PaletteContainer> containers;
 
-   public ODMPaletteFactory(ODMEditor editor) {
-      this.containers = new LinkedHashMap<DrawerEnum, PaletteContainer>();
-      this.editor = editor;
-   }
+	public ODMPaletteFactory(ODMEditor editor) {
+		this.containers = new LinkedHashMap<DrawerEnum, PaletteContainer>();
+		this.editor = editor;
+	}
 
-   private void updateDrawers() {
-      if (editor.getEditorInput() == null) {
-         return;
-      }
-      DataTypeCache dataTypeCache = editor.getEditorInput().getDataTypeCache();
+	private void updateDrawers() {
+		if (editor.getEditorInput() == null) {
+			return;
+		}
+		DataTypeCache dataTypeCache = editor.getEditorInput().getDataTypeCache();
 
-      for (DrawerEnum drawerType : DrawerEnum.values()) {
-         PaletteContainer container = containers.get(drawerType);
-         if (container == null) {
-            container = new PaletteDrawer(drawerType.asLabel());
-            containers.put(drawerType, container);
-            getPaletteRoot().add(container);
-         } else {
-            for (Object child : container.getChildren()) {
-               container.remove((PaletteEntry) child);
-            }
-         }
-         container.addAll(getToolEntries(drawerType, dataTypeCache));
-      }
-   }
+		for (DrawerEnum drawerType : DrawerEnum.values()) {
+			PaletteContainer container = containers.get(drawerType);
+			if (container == null) {
+				container = new PaletteDrawer(drawerType.asLabel());
+				containers.put(drawerType, container);
+				getPaletteRoot().add(container);
+			} else {
+				for (Object child : container.getChildren()) {
+					container.remove((PaletteEntry) child);
+				}
+			}
+			container.addAll(getToolEntries(drawerType, dataTypeCache));
+		}
+	}
 
-   private List<CombinedTemplateCreationEntry> getToolEntries(DrawerEnum drawerType, DataTypeCache dataTypeCache) {
-      List<CombinedTemplateCreationEntry> toReturn = new ArrayList<CombinedTemplateCreationEntry>();
-      ImageDescriptor image = null;
-      String message = null;
-      for (String sourceId : dataTypeCache.getDataTypeSourceIds()) {
-         DataTypeSource dataTypeSource = dataTypeCache.getDataTypeSourceById(sourceId);
-         switch (drawerType) {
-            case Artifact_Types:
-               for (ArtifactDataType dataType : dataTypeSource.getArtifactTypeManager().getAllSorted()) {
-                  image = ImageDescriptor.createFromImage(dataType.getImage());
-                  message = String.format(DATA_TYPE_TIP_FORMAT, dataType.getName(), "artifact", "the diagram");
-                  toReturn.add(createDataTypeToolEntry(dataType, image, message));
-               }
-               break;
-            case Attribute_Types:
-               image = ImageManager.getImageDescriptor(ODMImage.LOCAL_ATTRIBUTE);
-               for (AttributeDataType dataType : dataTypeSource.getAttributeTypeManager().getAllSorted()) {
-                  message = String.format(DATA_TYPE_TIP_FORMAT, dataType.getName(), "attribute", "an artifact type");
-                  toReturn.add(createDataTypeToolEntry(dataType, image, message));
-               }
-               break;
-            case Relation_Types:
-               image = ImageManager.getImageDescriptor(ODMImage.LOCAL_RELATION);
-               for (RelationDataType dataType : dataTypeSource.getRelationTypeManager().getAllSorted()) {
-                  message = String.format(DATA_TYPE_TIP_FORMAT, dataType.getName(), "relation", "an artifact type");
-                  toReturn.add(createDataTypeToolEntry(dataType, image, message));
-               }
-               break;
-            default:
-               break;
-         }
-      }
-      return toReturn;
-   }
+	private List<CombinedTemplateCreationEntry> getToolEntries(DrawerEnum drawerType, DataTypeCache dataTypeCache) {
+		List<CombinedTemplateCreationEntry> toReturn = new ArrayList<CombinedTemplateCreationEntry>();
+		ImageDescriptor image = null;
+		String message = null;
+		for (String sourceId : dataTypeCache.getDataTypeSourceIds()) {
+			DataTypeSource dataTypeSource = dataTypeCache.getDataTypeSourceById(sourceId);
+			switch (drawerType) {
+				case Artifact_Types:
+					for (ArtifactDataType dataType : dataTypeSource.getArtifactTypeManager().getAllSorted()) {
+						image = ImageDescriptor.createFromImage(dataType.getImage());
+						message = String.format(DATA_TYPE_TIP_FORMAT, dataType.getName(), "artifact", "the diagram");
+						toReturn.add(createDataTypeToolEntry(dataType, image, message));
+					}
+					break;
+				case Attribute_Types:
+					image = ImageManager.getImageDescriptor(ODMImage.LOCAL_ATTRIBUTE);
+					for (AttributeDataType dataType : dataTypeSource.getAttributeTypeManager().getAllSorted()) {
+						message = String.format(DATA_TYPE_TIP_FORMAT, dataType.getName(), "attribute", "an artifact type");
+						toReturn.add(createDataTypeToolEntry(dataType, image, message));
+					}
+					break;
+				case Relation_Types:
+					image = ImageManager.getImageDescriptor(ODMImage.LOCAL_RELATION);
+					for (RelationDataType dataType : dataTypeSource.getRelationTypeManager().getAllSorted()) {
+						message = String.format(DATA_TYPE_TIP_FORMAT, dataType.getName(), "relation", "an artifact type");
+						toReturn.add(createDataTypeToolEntry(dataType, image, message));
+					}
+					break;
+				default:
+					break;
+			}
+		}
+		return toReturn;
+	}
 
-   private CombinedTemplateCreationEntry createDataTypeToolEntry(final DataType dataType, ImageDescriptor imageDescriptor, String message) {
-      CreationFactory factory = new CreationFactory() {
+	private CombinedTemplateCreationEntry createDataTypeToolEntry(final DataType dataType, ImageDescriptor imageDescriptor, String message) {
+		CreationFactory factory = new CreationFactory() {
 
-         @Override
-         public Object getNewObject() {
-            return dataType;
-         }
+			@Override
+			public Object getNewObject() {
+				return dataType;
+			}
 
-         @Override
-         public Object getObjectType() {
-            return null;
-         }
+			@Override
+			public Object getObjectType() {
+				return null;
+			}
 
-      };
-      return new CombinedTemplateCreationEntry(dataType.getName(), message, factory, factory, imageDescriptor,
-            imageDescriptor);
-   }
+		};
+		return new CombinedTemplateCreationEntry(dataType.getName(), message, factory, factory, imageDescriptor,
+					imageDescriptor);
+	}
 
-   private PaletteContainer createToolsGroup(PaletteRoot palette) {
-      PaletteToolbar toolbar = new PaletteToolbar("Tools");
+	private PaletteContainer createToolsGroup(PaletteRoot palette) {
+		PaletteToolbar toolbar = new PaletteToolbar("Tools");
 
-      ToolEntry tool = new PanningSelectionToolEntry();
-      toolbar.add(tool);
-      palette.setDefaultEntry(tool);
+		ToolEntry tool = new PanningSelectionToolEntry();
+		toolbar.add(tool);
+		palette.setDefaultEntry(tool);
 
-      toolbar.add(new MarqueeToolEntry());
-      toolbar.add(new PaletteSeparator());
+		toolbar.add(new MarqueeToolEntry());
+		toolbar.add(new PaletteSeparator());
 
-      ImageDescriptor img = ImageManager.getImageDescriptor(ODMImage.INHERITANCE);
-      toolbar.add(new ConnectionCreationToolEntry("Inheritance", "Inherit from an artifact", new SimpleFactory(
-            InheritanceLinkModel.class), img, img));
+		ImageDescriptor img = ImageManager.getImageDescriptor(ODMImage.INHERITANCE);
+		toolbar.add(new ConnectionCreationToolEntry("Inheritance", "Inherit from an artifact", new SimpleFactory(
+					InheritanceLinkModel.class), img, img));
 
-      //      final Action action =
-      //            OseeAts.createBugAction(ODMEditorActivator.getInstance(), editor, "OSEE Data Model Editor",
-      //                  ODMEditor.EDITOR_ID);
-      //      img = action.getImageDescriptor();
-      //
-      //      toolbar.add(new ToolEntry("", action.getText(), img, img, null) {
-      //
-      //         @Override
-      //         public Tool createTool() {
-      //            return new AbstractTool() {
-      //
-      //               @Override
-      //               protected String getCommandName() {
-      //                  return action.getText();
-      //               }
-      //
-      //               @Override
-      //               public void activate() {
-      //                  super.activate();
-      //                  Display.getDefault().asyncExec(new Runnable() {
-      //                     public void run() {
-      //                        deactivate();
-      //                        action.run();
-      //                     }
-      //                  });
-      //
-      //               }
-      //            };
-      //         }
-      //
-      //      });
-      return toolbar;
-   }
+		//      final Action action =
+		//            OseeAts.createBugAction(ODMEditorActivator.getInstance(), editor, "OSEE Data Model Editor",
+		//                  ODMEditor.EDITOR_ID);
+		//      img = action.getImageDescriptor();
+		//
+		//      toolbar.add(new ToolEntry("", action.getText(), img, img, null) {
+		//
+		//         @Override
+		//         public Tool createTool() {
+		//            return new AbstractTool() {
+		//
+		//               @Override
+		//               protected String getCommandName() {
+		//                  return action.getText();
+		//               }
+		//
+		//               @Override
+		//               public void activate() {
+		//                  super.activate();
+		//						  Displays.ensureInDisplayThread(new Runnable() {
+		//								@Override
+		//								public void run() {
+		//                        deactivate();
+		//                        action.run();
+		//                     }
+		//                  });
+		//
+		//               }
+		//            };
+		//         }
+		//
+		//      });
+		return toolbar;
+	}
 
-   public void updatePaletteRoot() {
-      updateDrawers();
-   }
+	public void updatePaletteRoot() {
+		updateDrawers();
+	}
 
-   public PaletteRoot getPaletteRoot() {
-      if (paletteRoot == null) {
-         paletteRoot = new PaletteRoot();
-         paletteRoot.add(createToolsGroup(paletteRoot));
-         updateDrawers();
-      }
-      return paletteRoot;
-   }
+	public PaletteRoot getPaletteRoot() {
+		if (paletteRoot == null) {
+			paletteRoot = new PaletteRoot();
+			paletteRoot.add(createToolsGroup(paletteRoot));
+			updateDrawers();
+		}
+		return paletteRoot;
+	}
 
 }

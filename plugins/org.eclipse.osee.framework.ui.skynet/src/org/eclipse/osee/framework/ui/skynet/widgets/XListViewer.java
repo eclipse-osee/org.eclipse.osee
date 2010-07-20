@@ -165,7 +165,7 @@ public class XListViewer extends XWidget {
 
       if (isDisplayLabel() && verticalLabel) {
          composite = new Composite(parent, SWT.NONE);
-         // composite.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_CYAN));
+         // composite.setBackground(Displays.getSystemColor(SWT.COLOR_CYAN));
          composite.setLayout(new GridLayout(1, false));
          GridData gd = new GridData(GridData.FILL_BOTH);
          gd.horizontalSpan = 2;

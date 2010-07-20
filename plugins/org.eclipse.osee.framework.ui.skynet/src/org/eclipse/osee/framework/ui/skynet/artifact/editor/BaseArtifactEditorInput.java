@@ -22,67 +22,73 @@ import org.eclipse.ui.IPersistableElement;
  * @author Roberto E. Escobar
  */
 public abstract class BaseArtifactEditorInput implements IEditorInput {
-   private final Artifact artifact;
+	private final Artifact artifact;
 
-   public BaseArtifactEditorInput(Artifact artifact) {
-      this.artifact = artifact;
-   }
+	public BaseArtifactEditorInput(Artifact artifact) {
+		this.artifact = artifact;
+	}
 
-   @Override
-   public boolean equals(Object obj) {
-      boolean equals = false;
-      if (obj instanceof BaseArtifactEditorInput) {
-         BaseArtifactEditorInput otherEdInput = (BaseArtifactEditorInput) obj;
-         equals = artifact == otherEdInput.artifact;
-      }
-      return equals;
-   }
+	@Override
+	public boolean equals(Object obj) {
+		boolean equals = false;
+		if (obj instanceof BaseArtifactEditorInput) {
+			BaseArtifactEditorInput otherEdInput = (BaseArtifactEditorInput) obj;
+			equals = artifact == otherEdInput.artifact;
+		}
+		return equals;
+	}
 
-   public boolean exists() {
-      return true;
-   }
+	@Override
+	public boolean exists() {
+		return true;
+	}
 
-   public ImageDescriptor getImageDescriptor() {
-      return ArtifactImageManager.getImageDescriptor(artifact);
-   }
+	@Override
+	public ImageDescriptor getImageDescriptor() {
+		return ArtifactImageManager.getImageDescriptor(artifact);
+	}
 
-   public Image getImage() {
-      return ArtifactImageManager.getImage(artifact);
-   }
+	public Image getImage() {
+		return ArtifactImageManager.getImage(artifact);
+	}
 
-   public String getName() {
-      if (artifact == null) {
-         return "No Artifact Input Provided";
-      }
-      return String.format("%s%s", artifact.getVersionedName(), artifact.isReadOnly() ? " (Read-Only)" : "");
-   }
+	@Override
+	public String getName() {
+		if (artifact == null) {
+			return "No Artifact Input Provided";
+		}
+		return String.format("%s%s", artifact.getVersionedName(), artifact.isReadOnly() ? " (Read-Only)" : "");
+	}
 
-   public IPersistableElement getPersistable() {
-      return null;
-   }
+	@Override
+	public IPersistableElement getPersistable() {
+		return null;
+	}
 
-   public String getToolTipText() {
-      return getName();
-   }
+	@Override
+	public String getToolTipText() {
+		return getName();
+	}
 
-   @SuppressWarnings("unchecked")
-   public Object getAdapter(Class adapter) {
-      if (Artifact.class.equals(adapter)) {
-         return getArtifact();
-      }
-      return null;
-   }
+	@SuppressWarnings("rawtypes")
+	@Override
+	public Object getAdapter(Class adapter) {
+		if (Artifact.class.equals(adapter)) {
+			return getArtifact();
+		}
+		return null;
+	}
 
-   public Artifact getArtifact() {
-      return artifact;
-   }
+	public Artifact getArtifact() {
+		return artifact;
+	}
 
-   public boolean isReadOnly() {
-      return artifact == null || artifact.isReadOnly();
-   }
+	public boolean isReadOnly() {
+		return artifact == null || artifact.isReadOnly();
+	}
 
-   @Override
-   public int hashCode() {
-      return this.artifact.hashCode();
-   }
+	@Override
+	public int hashCode() {
+		return this.artifact.hashCode();
+	}
 }

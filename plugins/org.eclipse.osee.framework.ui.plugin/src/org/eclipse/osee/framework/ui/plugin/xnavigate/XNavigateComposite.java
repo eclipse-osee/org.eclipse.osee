@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.internal.OseePluginUiActivator;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.OSEEFilteredTree;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
@@ -45,217 +46,218 @@ import org.eclipse.ui.dialogs.PatternFilter;
  */
 public class XNavigateComposite extends Composite {
 
-   protected Browser browser;
-   protected OSEEFilteredTree filteredTree;
-   private static PatternFilter patternFilter = new PatternFilter();
-   protected final XNavigateViewItems navigateViewItems;
-   private List<XNavigateItem> items;
-   public static enum TableLoadOption {
-      None,
-      // Wait for table to be loaded before returning; for test only
-      ForcePend,
-      //
-      ClearLastSearchItem,
-      // Don't perform UI check, just search
-      NoUI,
-      // Don't create fresh copy of search item; for test only
-      DontCopySearchItem
-   };
+	protected Browser browser;
+	protected OSEEFilteredTree filteredTree;
+	private static PatternFilter patternFilter = new PatternFilter();
+	protected final XNavigateViewItems navigateViewItems;
+	private List<XNavigateItem> items;
+	public static enum TableLoadOption {
+		None,
+		// Wait for table to be loaded before returning; for test only
+		ForcePend,
+		//
+		ClearLastSearchItem,
+		// Don't perform UI check, just search
+		NoUI,
+		// Don't create fresh copy of search item; for test only
+		DontCopySearchItem
+	};
 
-   /**
-    * @param parent
-    * @param style
-    */
-   public XNavigateComposite(XNavigateViewItems navigateViewItems, Composite parent, int style) {
-      super(parent, style);
-      this.navigateViewItems = navigateViewItems;
+	/**
+	 * @param parent
+	 * @param style
+	 */
+	public XNavigateComposite(XNavigateViewItems navigateViewItems, Composite parent, int style) {
+		super(parent, style);
+		this.navigateViewItems = navigateViewItems;
 
-      setLayout(new GridLayout(1, false));
-      setLayoutData(new GridData(GridData.FILL_BOTH));
+		setLayout(new GridLayout(1, false));
+		setLayoutData(new GridData(GridData.FILL_BOTH));
 
-      /*
-       * Create a grid layout object so the text and treeviewer are layed out the way I want.
-       */
-      GridLayout layout = new GridLayout();
-      layout.numColumns = 1;
-      layout.verticalSpacing = 0;
-      layout.marginWidth = 0;
-      layout.marginHeight = 0;
-      parent.setLayout(layout);
-      parent.setLayoutData(new GridData(GridData.FILL_BOTH));
-      // parent.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+		/*
+		 * Create a grid layout object so the text and treeviewer are layed out the way I want.
+		 */
+		GridLayout layout = new GridLayout();
+		layout.numColumns = 1;
+		layout.verticalSpacing = 0;
+		layout.marginWidth = 0;
+		layout.marginHeight = 0;
+		parent.setLayout(layout);
+		parent.setLayoutData(new GridData(GridData.FILL_BOTH));
+		// parent.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_WHITE));
 
-      // if (!ConnectionHandler.isConnected()) {
-      // (new Label(parent, SWT.NONE)).setText("DB Connection Unavailable");
-      // return;
-      // }
+		// if (!ConnectionHandler.isConnected()) {
+		// (new Label(parent, SWT.NONE)).setText("DB Connection Unavailable");
+		// return;
+		// }
 
-      filteredTree = new OSEEFilteredTree(this, SWT.SINGLE | SWT.BORDER, patternFilter);
-      filteredTree.getViewer().setContentProvider(new XNavigateContentProvider());
-      filteredTree.setInitialText("");
-      filteredTree.getViewer().setLabelProvider(new XNavigateLabelProvider());
-      GridData gd = new GridData(GridData.FILL_BOTH);
-      filteredTree.getViewer().getTree().setLayoutData(gd);
-      filteredTree.getViewer().addDoubleClickListener(new IDoubleClickListener() {
-         @Override
-         public void doubleClick(DoubleClickEvent event) {
-            try {
-               handleDoubleClick();
-            } catch (OseeCoreException ex) {
-               OseeLog.log(OseePluginUiActivator.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-      });
-      filteredTree.getViewer().getTree().addKeyListener(new KeyListener() {
-         public void keyPressed(KeyEvent e) {
-         }
+		filteredTree = new OSEEFilteredTree(this, SWT.SINGLE | SWT.BORDER, patternFilter);
+		filteredTree.getViewer().setContentProvider(new XNavigateContentProvider());
+		filteredTree.setInitialText("");
+		filteredTree.getViewer().setLabelProvider(new XNavigateLabelProvider());
+		GridData gd = new GridData(GridData.FILL_BOTH);
+		filteredTree.getViewer().getTree().setLayoutData(gd);
+		filteredTree.getViewer().addDoubleClickListener(new IDoubleClickListener() {
+			@Override
+			public void doubleClick(DoubleClickEvent event) {
+				try {
+					handleDoubleClick();
+				} catch (OseeCoreException ex) {
+					OseeLog.log(OseePluginUiActivator.class, OseeLevel.SEVERE_POPUP, ex);
+				}
+			}
+		});
+		filteredTree.getViewer().getTree().addKeyListener(new KeyListener() {
+			public void keyPressed(KeyEvent e) {
+			}
 
-         public void keyReleased(KeyEvent e) {
-            if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR) {
-               try {
-                  handleDoubleClick();
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(OseePluginUiActivator.class, OseeLevel.SEVERE_POPUP, ex);
-               }
-            }
-         }
-      });
-      // Disable native tree tooltip
-      filteredTree.getViewer().getTree().setToolTipText("");
-      filteredTree.getViewer().getTree().addListener(SWT.Dispose, tableListener);
-      filteredTree.getViewer().getTree().addListener(SWT.KeyDown, tableListener);
-      filteredTree.getViewer().getTree().addListener(SWT.MouseMove, tableListener);
-      filteredTree.getViewer().getTree().addListener(SWT.MouseHover, tableListener);
+			public void keyReleased(KeyEvent e) {
+				if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR) {
+					try {
+						handleDoubleClick();
+					} catch (OseeCoreException ex) {
+						OseeLog.log(OseePluginUiActivator.class, OseeLevel.SEVERE_POPUP, ex);
+					}
+				}
+			}
+		});
+		// Disable native tree tooltip
+		filteredTree.getViewer().getTree().setToolTipText("");
+		filteredTree.getViewer().getTree().addListener(SWT.Dispose, tableListener);
+		filteredTree.getViewer().getTree().addListener(SWT.KeyDown, tableListener);
+		filteredTree.getViewer().getTree().addListener(SWT.MouseMove, tableListener);
+		filteredTree.getViewer().getTree().addListener(SWT.MouseHover, tableListener);
 
-   }
+	}
 
-   // Implement a "fake" tooltip
-   final Listener labelListener = new Listener() {
-      public void handleEvent(Event event) {
-         Label label = (Label) event.widget;
-         Shell shell = label.getShell();
-         switch (event.type) {
-            case SWT.MouseDown:
-               Event e = new Event();
-               e.item = (TableItem) label.getData("_TABLEITEM");
-               // Assuming table is single select, set the selection as if
-               // the mouse down event went through to the table
-               //               filteredTree.getViewer().getTree().setSelection(new TableItem[] {(TableItem) e.item});
-               filteredTree.getViewer().getTree().notifyListeners(SWT.Selection, e);
-               shell.dispose();
-               filteredTree.getViewer().getTree().setFocus();
-               break;
-            case SWT.MouseExit:
-               shell.dispose();
-               break;
-         }
-      }
-   };
+	// Implement a "fake" tooltip
+	final Listener labelListener = new Listener() {
+		public void handleEvent(Event event) {
+			Label label = (Label) event.widget;
+			Shell shell = label.getShell();
+			switch (event.type) {
+				case SWT.MouseDown:
+					Event e = new Event();
+					e.item = (TableItem) label.getData("_TABLEITEM");
+					// Assuming table is single select, set the selection as if
+					// the mouse down event went through to the table
+					//               filteredTree.getViewer().getTree().setSelection(new TableItem[] {(TableItem) e.item});
+					filteredTree.getViewer().getTree().notifyListeners(SWT.Selection, e);
+					shell.dispose();
+					filteredTree.getViewer().getTree().setFocus();
+					break;
+				case SWT.MouseExit:
+					shell.dispose();
+					break;
+			}
+		}
+	};
 
-   Shell tip = null;
-   Label label = null;
+	Shell tip = null;
+	Label label = null;
 
-   protected void disposeTooltip() {
-      if (tip == null) {
-         return;
-      }
-      tip.dispose();
-      tip = null;
-      label = null;
-   }
-   Listener tableListener = new Listener() {
+	protected void disposeTooltip() {
+		if (tip == null) {
+			return;
+		}
+		tip.dispose();
+		tip = null;
+		label = null;
+	}
+	Listener tableListener = new Listener() {
 
-      public void handleEvent(Event event) {
-         switch (event.type) {
-            case SWT.Dispose:
-            case SWT.KeyDown:
-            case SWT.MouseMove: {
-               if (tip == null) {
-                  break;
-               }
-               disposeTooltip();
-               break;
-            }
-            case SWT.MouseHover: {
-               TreeItem item = filteredTree.getViewer().getTree().getItem(new Point(event.x, event.y));
-               if (item != null && item.getData() instanceof XNavigateItem && ((XNavigateItem) item.getData()).getDescription() != null && !((XNavigateItem) item.getData()).getDescription().equals(
-                     "")) {
-                  if (tip != null && !tip.isDisposed()) {
-                     tip.dispose();
-                  }
-                  tip = new Shell(Display.getCurrent().getActiveShell(), SWT.ON_TOP | SWT.NO_FOCUS | SWT.TOOL);
-                  tip.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_INFO_BACKGROUND));
-                  FillLayout layout = new FillLayout();
-                  layout.marginWidth = 2;
-                  tip.setLayout(layout);
-                  label = new Label(tip, SWT.NONE);
-                  label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_INFO_FOREGROUND));
-                  label.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_INFO_BACKGROUND));
-                  label.setData("_TABLEITEM", item);
-                  label.setText(item.getText() + "\n\n" + ((XNavigateItem) item.getData()).getDescription());
-                  label.addListener(SWT.MouseExit, labelListener);
-                  label.addListener(SWT.MouseDown, labelListener);
-                  Point size = tip.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-                  Rectangle rect = item.getBounds(0);
-                  Point pt = filteredTree.getViewer().getTree().toDisplay(rect.x, rect.y);
-                  tip.setBounds(pt.x, pt.y + 15, size.x, size.y);
-                  tip.setVisible(true);
-               }
-            }
-         }
-      }
-   };
+		public void handleEvent(Event event) {
+			switch (event.type) {
+				case SWT.Dispose:
+				case SWT.KeyDown:
+				case SWT.MouseMove: {
+					if (tip == null) {
+						break;
+					}
+					disposeTooltip();
+					break;
+				}
+				case SWT.MouseHover: {
+					TreeItem item = filteredTree.getViewer().getTree().getItem(new Point(event.x, event.y));
+					if (item != null && item.getData() instanceof XNavigateItem && ((XNavigateItem) item.getData()).getDescription() != null && !((XNavigateItem) item.getData()).getDescription().equals(
+								"")) {
+						if (tip != null && !tip.isDisposed()) {
+							tip.dispose();
+						}
+						tip = new Shell(Display.getCurrent().getActiveShell(), SWT.ON_TOP | SWT.NO_FOCUS | SWT.TOOL);
+						tip.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_INFO_BACKGROUND));
+						FillLayout layout = new FillLayout();
+						layout.marginWidth = 2;
+						tip.setLayout(layout);
+						label = new Label(tip, SWT.NONE);
+						label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_INFO_FOREGROUND));
+						label.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_INFO_BACKGROUND));
+						label.setData("_TABLEITEM", item);
+						label.setText(item.getText() + "\n\n" + ((XNavigateItem) item.getData()).getDescription());
+						label.addListener(SWT.MouseExit, labelListener);
+						label.addListener(SWT.MouseDown, labelListener);
+						Point size = tip.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+						Rectangle rect = item.getBounds(0);
+						Point pt = filteredTree.getViewer().getTree().toDisplay(rect.x, rect.y);
+						tip.setBounds(pt.x, pt.y + 15, size.x, size.y);
+						tip.setVisible(true);
+					}
+				}
+			}
+		}
+	};
 
-   protected void handleDoubleClick() throws OseeCoreException {
-      IStructuredSelection sel = (IStructuredSelection) filteredTree.getViewer().getSelection();
-      if (!sel.iterator().hasNext()) {
-         return;
-      }
-      XNavigateItem item = (XNavigateItem) sel.iterator().next();
-      handleDoubleClick(item);
-   }
+	protected void handleDoubleClick() throws OseeCoreException {
+		IStructuredSelection sel = (IStructuredSelection) filteredTree.getViewer().getSelection();
+		if (!sel.iterator().hasNext()) {
+			return;
+		}
+		XNavigateItem item = (XNavigateItem) sel.iterator().next();
+		handleDoubleClick(item);
+	}
 
-   protected void handleDoubleClick(XNavigateItem item, TableLoadOption... tableLoadOptions) throws OseeCoreException {
-      disposeTooltip();
+	protected void handleDoubleClick(XNavigateItem item, TableLoadOption... tableLoadOptions) throws OseeCoreException {
+		disposeTooltip();
 
-      if (item.getChildren().size() > 0) {
-         filteredTree.getViewer().setExpandedState(item, true);
-      } else {
-         try {
-            item.run(tableLoadOptions);
-         } catch (Exception ex) {
-            OseeLog.log(OseePluginUiActivator.class, OseeLevel.SEVERE_POPUP, ex);
-         }
-      }
-   }
+		if (item.getChildren().size() > 0) {
+			filteredTree.getViewer().setExpandedState(item, true);
+		} else {
+			try {
+				item.run(tableLoadOptions);
+			} catch (Exception ex) {
+				OseeLog.log(OseePluginUiActivator.class, OseeLevel.SEVERE_POPUP, ex);
+			}
+		}
+	}
 
-   public void refresh() {
-      items = navigateViewItems.getSearchNavigateItems();
-      Display.getDefault().asyncExec(new Runnable() {
-         public void run() {
-            filteredTree.getViewer().setInput(items);
-         }
-      });
-   }
+	public void refresh() {
+		items = navigateViewItems.getSearchNavigateItems();
+		Displays.ensureInDisplayThread(new Runnable() {
+			@Override
+			public void run() {
+				filteredTree.getViewer().setInput(items);
+			}
+		});
+	}
 
-   /**
-    * @return the listViewer
-    */
-   public FilteredTree getFilteredTree() {
-      return filteredTree;
-   }
+	/**
+	 * @return the listViewer
+	 */
+	public FilteredTree getFilteredTree() {
+		return filteredTree;
+	}
 
-   /**
-    * @return the patternFilter
-    */
-   public PatternFilter getPatternFilter() {
-      return patternFilter;
-   }
+	/**
+	 * @return the patternFilter
+	 */
+	public PatternFilter getPatternFilter() {
+		return patternFilter;
+	}
 
-   /**
-    * @return the items
-    */
-   public List<XNavigateItem> getItems() {
-      return items;
-   }
+	/**
+	 * @return the items
+	 */
+	public List<XNavigateItem> getItems() {
+		return items;
+	}
 }

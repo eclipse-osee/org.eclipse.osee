@@ -17,22 +17,20 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.jdk.core.util.ChecksumUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public class FileChangeDetector {
 
-	private ConcurrentHashMap<URL, byte[]> bundleNameToMd5Map;
+	private final ConcurrentHashMap<URL, byte[]> bundleNameToMd5Map;
 
-	public FileChangeDetector(){
+	public FileChangeDetector() {
 		bundleNameToMd5Map = new ConcurrentHashMap<URL, byte[]>();
 	}
-	
+
 	public boolean isChanged(URL url) {
 		byte[] digest = getMd5Checksum(url);
 		if (bundleNameToMd5Map.containsKey(url)) {
@@ -71,18 +69,11 @@ public class FileChangeDetector {
 		return digest;
 	}
 
-	/**
-	 * @param url
-	 * @return
-	 */
 	public boolean remove(URL url) {
 		bundleNameToMd5Map.remove(url);
 		return true;
 	}
 
-	/**
-	 * 
-	 */
 	public void clear() {
 		bundleNameToMd5Map.clear();
 	}

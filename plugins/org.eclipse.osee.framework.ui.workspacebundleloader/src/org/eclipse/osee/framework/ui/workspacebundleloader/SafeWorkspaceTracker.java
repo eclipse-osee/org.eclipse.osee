@@ -17,7 +17,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.logging.Level;
-
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -36,17 +35,16 @@ import org.osgi.util.tracker.ServiceTracker;
 /**
  * @author Andrew M. Finkbeiner
  */
-public class SafeWorkspaceTracker extends ServiceTracker implements
-		IJarChangeListener<WorkspaceStarterNature>, WorkspaceLoader {
+public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeListener<WorkspaceStarterNature>, WorkspaceLoader {
 
 	private final Map<String, Bundle> installedBundles;
 	private final Map<String, Bundle> runningBundles;
 	private final Collection<Bundle> stoppedBundles;
-	private JarChangeResourceListener workspaceListener;
+	private JarChangeResourceListener<WorkspaceStarterNature> workspaceListener;
 	private SafeWorkspaceAccess service;
-	private ServiceTracker packageAdminTracker;
+	private final ServiceTracker packageAdminTracker;
 
-	private FileChangeDetector detector = new FileChangeDetector();
+	private final FileChangeDetector detector = new FileChangeDetector();
 
 	/**
 	 * @param context
@@ -56,8 +54,7 @@ public class SafeWorkspaceTracker extends ServiceTracker implements
 	public SafeWorkspaceTracker(BundleContext context) {
 		super(context, SafeWorkspaceAccess.class.getName(), null);
 
-		packageAdminTracker = new ServiceTracker(context, PackageAdmin.class
-				.getName(), null);
+		packageAdminTracker = new ServiceTracker(context, PackageAdmin.class.getName(), null);
 		packageAdminTracker.open(true);
 
 		this.installedBundles = new HashMap<String, Bundle>();
@@ -75,8 +72,7 @@ public class SafeWorkspaceTracker extends ServiceTracker implements
 	}
 
 	void setupWorkspaceBundleLoadingAfterBenchStartup() {
-		Jobs.runInJob(new PrecompileStartup("Loading Precompiled Libraries",
-				Activator.BUNDLE_ID), false);
+		Jobs.runInJob(new PrecompileStartup("Loading Precompiled Libraries", Activator.BUNDLE_ID), false);
 	}
 
 	private class PrecompileStartup extends AbstractOperation {
@@ -91,13 +87,12 @@ public class SafeWorkspaceTracker extends ServiceTracker implements
 		@Override
 		protected void doWork(IProgressMonitor monitor) throws Exception {
 			IWorkspace workspace = service.getWorkspace();
-			workspaceListener = new JarChangeResourceListener<WorkspaceStarterNature>(
-					WorkspaceStarterNature.NATURE_ID, SafeWorkspaceTracker.this);
+			workspaceListener =
+						new JarChangeResourceListener<WorkspaceStarterNature>(WorkspaceStarterNature.NATURE_ID,
+									SafeWorkspaceTracker.this);
 			try {
 				installWorkspacePlugins();
 			} catch (CoreException ex) {
-				OseeLog.log(Activator.class, Level.SEVERE, ex);
-			} catch (BundleException ex) {
 				OseeLog.log(Activator.class, Level.SEVERE, ex);
 			}
 			workspace.addResourceChangeListener(workspaceListener);
@@ -154,9 +149,7 @@ public class SafeWorkspaceTracker extends ServiceTracker implements
 	 * @throws BundleException
 	 * @throws BundleException
 	 */
-	private void installWorkspacePlugins() throws CoreException,
-			BundleException {
-
+	private void installWorkspacePlugins() throws CoreException {
 		loadBundles();
 	}
 
@@ -191,8 +184,7 @@ public class SafeWorkspaceTracker extends ServiceTracker implements
 				// Check to see if this is the first we've seen this
 				if (runningBundles.containsKey(urlString)) {
 					Bundle bundle = runningBundles.get(urlString);
-					System.out.println("\tUpdating plugin "
-							+ bundle.getSymbolicName());
+					System.out.println("\tUpdating plugin " + bundle.getSymbolicName());
 
 					bundle.update();
 				} else {
@@ -215,8 +207,7 @@ public class SafeWorkspaceTracker extends ServiceTracker implements
 			String urlString = url.toString();
 			if (runningBundles.containsKey(urlString)) {
 				Bundle bundle = runningBundles.get(urlString);
-				System.out.println("\tStopping plugin "
-						+ bundle.getSymbolicName());
+				System.out.println("\tStopping plugin " + bundle.getSymbolicName());
 
 				bundle.stop();
 				runningBundles.remove(urlString);
@@ -229,7 +220,7 @@ public class SafeWorkspaceTracker extends ServiceTracker implements
 	/**
 	 * @throws BundleException
 	 */
-	private void transitionInstalledPlugins() throws BundleException {
+	private void transitionInstalledPlugins() {
 		Iterator<String> iter = installedBundles.keySet().iterator();
 		while (iter.hasNext()) {
 			String urlString = iter.next();
@@ -249,8 +240,7 @@ public class SafeWorkspaceTracker extends ServiceTracker implements
 	 * 
 	 */
 	private void refreshPackages() {
-		PackageAdmin packageAdmin = (PackageAdmin) packageAdminTracker
-				.getService();
+		PackageAdmin packageAdmin = (PackageAdmin) packageAdminTracker.getService();
 		packageAdmin.refreshPackages(null);
 		// try {
 		// Thread.sleep(10000);
@@ -261,7 +251,7 @@ public class SafeWorkspaceTracker extends ServiceTracker implements
 	/**
 	 * @throws BundleException
 	 */
-	private void transitionStoppedBundles() throws BundleException {
+	private void transitionStoppedBundles() {
 		Iterator<Bundle> iter = stoppedBundles.iterator();
 		while (iter.hasNext()) {
 			Bundle bundle = iter.next();
@@ -278,11 +268,8 @@ public class SafeWorkspaceTracker extends ServiceTracker implements
 
 	@Override
 	public void handlePostChange() {
-		try {
-			transitionInstalledPlugins();
-			transitionStoppedBundles();
-		} catch (BundleException ex) {
-		}
+		transitionInstalledPlugins();
+		transitionStoppedBundles();
 	}
 
 	@Override
@@ -300,15 +287,12 @@ public class SafeWorkspaceTracker extends ServiceTracker implements
 			handleBundleRemoved(url);
 		}
 
-		try {
-			transitionStoppedBundles();
-		} catch (BundleException ex) {
-		}
+		transitionStoppedBundles();
 	}
 
-	public void loadBundles() throws CoreException, BundleException {
-		for (WorkspaceStarterNature starterNature : WorkspaceStarterNature
-				.getWorkspaceProjects()) {
+	@Override
+	public void loadBundles() throws CoreException {
+		for (WorkspaceStarterNature starterNature : WorkspaceStarterNature.getWorkspaceProjects()) {
 			for (URL url : starterNature.getBundles()) {
 				try {
 					handleBundleAdded(url);
@@ -321,6 +305,7 @@ public class SafeWorkspaceTracker extends ServiceTracker implements
 		transitionInstalledPlugins();
 	}
 
+	@Override
 	public void unloadBundles() {
 		cleanupHandledBundles();
 	}

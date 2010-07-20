@@ -13,8 +13,8 @@ package org.eclipse.osee.framework.ui.workspacebundleloader;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.workspacebundleloader.internal.Activator;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IStartup;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
@@ -24,23 +24,23 @@ import org.osgi.framework.BundleException;
  */
 public class EarlyStartup implements IStartup {
 
-   private SafeWorkspaceTracker workspaceTracker;
+	private SafeWorkspaceTracker workspaceTracker;
 
-   @Override
-   public void earlyStartup() {
-      Display.getDefault().asyncExec(new Runnable() {
-         @Override
-         public void run() {
-            try {
-               Bundle bundle = Platform.getBundle("org.eclipse.osee.framework.ui.workspacebundleloader");
-               bundle.start();
-               workspaceTracker = new SafeWorkspaceTracker(bundle.getBundleContext());
-               workspaceTracker.open(true);
-            } catch (BundleException ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex);
-            }
-         }
-      });
+	@Override
+	public void earlyStartup() {
+		Displays.ensureInDisplayThread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					Bundle bundle = Platform.getBundle("org.eclipse.osee.framework.ui.workspacebundleloader");
+					bundle.start();
+					workspaceTracker = new SafeWorkspaceTracker(bundle.getBundleContext());
+					workspaceTracker.open(true);
+				} catch (BundleException ex) {
+					OseeLog.log(Activator.class, Level.SEVERE, ex);
+				}
+			}
+		});
 
-   }
+	}
 }
