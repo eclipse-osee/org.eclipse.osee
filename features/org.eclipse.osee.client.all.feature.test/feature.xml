@@ -25,6 +25,10 @@
          id="org.eclipse.osee.client.ote.feature.test"
          version="0.0.0"/>
 
+   <includes
+         id="org.eclipse.osee.core.runtime.feature.test"
+         version="0.0.0"/>
+
    <requires>
       <import feature="org.eclipse.osee.client.all.feature" version="0.9.5.qualifier" match="greaterOrEqual"/>
    </requires>
