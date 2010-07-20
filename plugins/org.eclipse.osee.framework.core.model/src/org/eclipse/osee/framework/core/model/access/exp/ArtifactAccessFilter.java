@@ -11,10 +11,10 @@ import org.eclipse.osee.framework.core.model.IBasicArtifact;
 
 public class ArtifactAccessFilter extends AbstractAccessFilter {
 
-   private PermissionEnum artifactPermission;
+   private final PermissionEnum artifactPermission;
    private final IBasicArtifact<?> artifact;
 
-   public ArtifactAccessFilter(PermissionEnum artifactPermission, IBasicArtifact<?> artifact) {
+   public ArtifactAccessFilter(IBasicArtifact<?> artifact, PermissionEnum artifactPermission) {
       super();
       this.artifactPermission = artifactPermission;
       this.artifact = artifact;
@@ -26,15 +26,21 @@ public class ArtifactAccessFilter extends AbstractAccessFilter {
    }
 
    @Override
-   public PermissionEnum filter(Object object, PermissionEnum toPermission, PermissionEnum agrPermission, AccessFilterChain filterChain) {
-      if (agrPermission == PermissionEnum.DENY || artifactPermission == null) {
-         artifactPermission = agrPermission;
+   public PermissionEnum filter(IBasicArtifact<?> artifact, Object object, PermissionEnum toPermission, PermissionEnum agrPermission, AccessFilterChain filterChain) {
+      PermissionEnum toReturn = null;
+
+      if (this.artifact.equals(artifact)) {
+         if (agrPermission != PermissionEnum.DENY && artifactPermission != null) {
+            agrPermission = artifactPermission;
+         }
+         toReturn = agrPermission;
       }
-      return artifactPermission;
+      return toReturn;
    }
 
    @Override
    public boolean acceptToObject(Object object) {
+      //Return false if the object to be checked is a branch.
       return !(object instanceof IOseeBranch);
    }
 }

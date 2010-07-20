@@ -5,10 +5,12 @@
  */
 package org.eclipse.osee.framework.core.model.access.exp;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
+import org.eclipse.osee.framework.core.model.IBasicArtifact;
 
 public class AccessFilterChain {
    private final List<IAccessFilter> filters;
@@ -27,16 +29,25 @@ public class AccessFilterChain {
       filters.add(filter);
    }
 
-   public boolean doFilter(Object object, PermissionEnum toPermission, PermissionEnum agrPermission) {
+   public boolean doFilter(IBasicArtifact<?> artifact, Object object, PermissionEnum toPermission, PermissionEnum agrPermission) {
+      boolean toReturn = false;
       Collections.sort(filters);
 
       for (IAccessFilter filter : filters) {
          if (filter.acceptToObject(object)) {
-            agrPermission = filter.filter(object, toPermission, agrPermission, this);
+            agrPermission = filter.filter(artifact, object, toPermission, agrPermission, this);
          } else {
             break;
          }
       }
-      return agrPermission.matches(toPermission);
+
+      if (agrPermission != null) {
+         toReturn = agrPermission.matches(toPermission);
+      }
+      return toReturn;
+   }
+
+   public void addAll(Collection<IAccessFilter> filtersToAdd) {
+      filters.addAll(filtersToAdd);
    }
 }

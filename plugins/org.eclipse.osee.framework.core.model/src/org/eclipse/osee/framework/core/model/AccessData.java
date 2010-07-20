@@ -13,9 +13,7 @@ package org.eclipse.osee.framework.core.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
@@ -23,7 +21,6 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.access.ArtifactTypeFilter;
 import org.eclipse.osee.framework.core.model.access.AttributeTypeFilter;
 import org.eclipse.osee.framework.core.model.access.IAcceptFilter;
-import org.eclipse.osee.framework.core.model.access.IAccessControllable;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 
@@ -34,18 +31,10 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 public class AccessData {
 
    private final DoubleKeyHashMap<IBasicArtifact<?>, Object, PermissionEnum> artifactPermissions;
-   private final Map<IAccessControllable, PermissionEnum> objectPermissions;
 
    public AccessData() {
       this.artifactPermissions = new DoubleKeyHashMap<IBasicArtifact<?>, Object, PermissionEnum>();
-      this.objectPermissions = new HashMap<IAccessControllable, PermissionEnum>();
    }
-
-   public void add(IAccessControllable accessObject, PermissionEnum permission) {
-      objectPermissions.put(accessObject, permission);
-   }
-
-   //////--------------------------------------------------------------------
 
    public void add(Object object, PermissionEnum permission) {
       artifactPermissions.put(null, object, permission);

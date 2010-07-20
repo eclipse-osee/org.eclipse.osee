@@ -30,23 +30,44 @@ import org.junit.Test;
 public class AccessFilterChainTest {
 
    @Test
-   public void testUseCase1() {
+   public void testUseCase() {
       //Can we edit this attribute on an artifact
       AccessFilterChain chain = new AccessFilterChain();
       IBasicArtifact<?> basicArtifact = new DefaultBasicArtifact(1, "1", "123");
-      IAttributeType wordAttribute = CoreAttributeTypes.WORD_TEMPLATE_CONTENT;
+      IAttributeType attributeType = CoreAttributeTypes.WORD_TEMPLATE_CONTENT;
 
-      BranchAccessFilter branchAccessFilter = new BranchAccessFilter(PermissionEnum.READ);
-      ArtifactAccessFilter artifactAccessFilter = new ArtifactAccessFilter(PermissionEnum.WRITE, basicArtifact);
+      BranchAccessFilter branchAccessFilter = new BranchAccessFilter(basicArtifact, PermissionEnum.READ);
+      ArtifactAccessFilter artifactAccessFilter = new ArtifactAccessFilter(basicArtifact, PermissionEnum.WRITE);
       AttributeTypeAccessFilter attributeTypeAccessFilter =
-         new AttributeTypeAccessFilter(PermissionEnum.WRITE, basicArtifact);
+         new AttributeTypeAccessFilter(PermissionEnum.DENY, basicArtifact, attributeType);
 
       chain.add(artifactAccessFilter);
       chain.add(branchAccessFilter);
+      chain.add(attributeTypeAccessFilter);
 
       PermissionEnum agrPermission = null;
-      Assert.assertTrue(chain.doFilter(basicArtifact, PermissionEnum.READ, agrPermission));
-      Assert.assertTrue(chain.doFilter(basicArtifact, PermissionEnum.WRITE, agrPermission));
+      Assert.assertFalse(chain.doFilter(basicArtifact, attributeTypeAccessFilter, PermissionEnum.WRITE, agrPermission));
+      Assert.assertTrue(chain.doFilter(basicArtifact, basicArtifact, PermissionEnum.WRITE, agrPermission));
+   }
+
+   @Test
+   public void testWrongArtifactUseCase() {
+      AccessFilterChain chain = new AccessFilterChain();
+      IBasicArtifact<?> basicArtifact = new DefaultBasicArtifact(1, "1", "123");
+      IBasicArtifact<?> basicArtifact2 = new DefaultBasicArtifact(2, "2", "456");
+      IAttributeType attributeType = CoreAttributeTypes.WORD_TEMPLATE_CONTENT;
+
+      BranchAccessFilter branchAccessFilter = new BranchAccessFilter(basicArtifact, PermissionEnum.READ);
+      ArtifactAccessFilter artifactAccessFilter = new ArtifactAccessFilter(basicArtifact, PermissionEnum.WRITE);
+      AttributeTypeAccessFilter attributeTypeAccessFilter =
+         new AttributeTypeAccessFilter(PermissionEnum.DENY, basicArtifact, attributeType);
+
+      chain.add(artifactAccessFilter);
+      chain.add(branchAccessFilter);
+      chain.add(attributeTypeAccessFilter);
+
+      PermissionEnum agrPermission = null;
+      Assert.assertFalse(chain.doFilter(basicArtifact2, attributeTypeAccessFilter, PermissionEnum.WRITE, agrPermission));
    }
 
    @Test
@@ -54,31 +75,29 @@ public class AccessFilterChainTest {
       AccessFilterChain chain = new AccessFilterChain();
       IBasicArtifact<?> basicArtifact = new DefaultBasicArtifact(1, "1", "123");
 
-      BranchAccessFilter branchAccessFilter = new BranchAccessFilter(PermissionEnum.READ);
-      ArtifactAccessFilter artifactAccessFilter = new ArtifactAccessFilter(PermissionEnum.WRITE);
-      AttributeTypeAccessFilter attributeTypeAccessFilter =
-         new AttributeTypeAccessFilter(PermissionEnum.WRITE, basicArtifact);
+      BranchAccessFilter branchAccessFilter = new BranchAccessFilter(basicArtifact, PermissionEnum.READ);
+      ArtifactAccessFilter artifactAccessFilter = new ArtifactAccessFilter(basicArtifact, PermissionEnum.WRITE);
 
       chain.add(artifactAccessFilter);
       chain.add(branchAccessFilter);
 
       PermissionEnum agrPermission = null;
-      Assert.assertTrue(chain.doFilter(basicArtifact, PermissionEnum.READ, agrPermission));
-      Assert.assertTrue(chain.doFilter(basicArtifact, PermissionEnum.WRITE, agrPermission));
+      Assert.assertTrue(chain.doFilter(basicArtifact, basicArtifact, PermissionEnum.READ, agrPermission));
+      Assert.assertTrue(chain.doFilter(basicArtifact, basicArtifact, PermissionEnum.WRITE, agrPermission));
    }
 
    @Test
    public void testChainDeny() {
       AccessFilterChain chain = new AccessFilterChain();
-      BranchAccessFilter branchAccessFilter = new BranchAccessFilter(PermissionEnum.DENY);
-      ArtifactAccessFilter artifactAccessFilter = new ArtifactAccessFilter(PermissionEnum.WRITE);
+      IBasicArtifact<?> basicArtifact = new DefaultBasicArtifact(1, "1", "123");
+      BranchAccessFilter branchAccessFilter = new BranchAccessFilter(basicArtifact, PermissionEnum.DENY);
+      ArtifactAccessFilter artifactAccessFilter = new ArtifactAccessFilter(basicArtifact, PermissionEnum.WRITE);
 
       chain.add(artifactAccessFilter);
       chain.add(branchAccessFilter);
 
-      IBasicArtifact<?> basicArtifact = new DefaultBasicArtifact(1, "1", "123");
       PermissionEnum agrPermission = null;
-      Assert.assertFalse(chain.doFilter(basicArtifact, PermissionEnum.READ, agrPermission));
-      Assert.assertFalse(chain.doFilter(basicArtifact, PermissionEnum.WRITE, agrPermission));
+      Assert.assertFalse(chain.doFilter(basicArtifact, basicArtifact, PermissionEnum.READ, agrPermission));
+      Assert.assertFalse(chain.doFilter(basicArtifact, basicArtifact, PermissionEnum.WRITE, agrPermission));
    }
 }
