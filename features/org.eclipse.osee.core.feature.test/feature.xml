@@ -38,7 +38,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.osee.framework.jdk.core.test"
+         id="org.eclipse.osee.framework.core.test"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -46,11 +46,35 @@
          unpack="false"/>
 
    <plugin
+         id="org.eclipse.osee.framework.jdk.core.test"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"         
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.framework.core.model.test"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"         
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.framework.core.message.test"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"         
+         unpack="false"/>
+
+   <plugin
          id="org.eclipse.osee.framework.lifecycle.test"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         fragment="true"
+         fragment="true"         
          unpack="false"/>
 
 </feature>

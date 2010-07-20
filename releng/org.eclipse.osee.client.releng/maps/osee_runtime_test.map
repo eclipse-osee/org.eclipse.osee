@@ -6,3 +6,6 @@ feature@org.eclipse.osee.core.runtime.feature.test=SVN,,http://dev.eclipse.org/s
 feature@org.eclipse.osee.core.feature.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,features/org.eclipse.osee.core.feature.test
 fragment@org.eclipse.osee.framework.core.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.core.test
 fragment@org.eclipse.osee.framework.jdk.core.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.jdk.core.test
+fragment@org.eclipse.osee.framework.core.model.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.core.model.test
+fragment@org.eclipse.osee.framework.core.message.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.core.message.test
+fragment@org.eclipse.osee.framework.lifecycle.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.lifecycle.test
