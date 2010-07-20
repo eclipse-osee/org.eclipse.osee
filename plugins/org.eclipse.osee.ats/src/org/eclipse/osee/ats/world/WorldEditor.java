@@ -47,235 +47,236 @@ import org.eclipse.ui.part.MultiPageEditorPart;
  * @author Donald G. Dunne
  */
 public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableEditor, IAtsMetricsProvider, IActionable {
-   public static final String EDITOR_ID = "org.eclipse.osee.ats.world.WorldEditor";
-   private int mainPageIndex, metricsPageIndex;
-   private WorldXWidgetActionPage worldXWidgetActionPage;
-   private AtsMetricsComposite metricsComposite;
-   public static final String HELP_CONTEXT_ID = "atsWorldView";
-   public static int TITLE_MAX_LENGTH = 80;
+	public static final String EDITOR_ID = "org.eclipse.osee.ats.world.WorldEditor";
+	private int mainPageIndex, metricsPageIndex;
+	private WorldXWidgetActionPage worldXWidgetActionPage;
+	private AtsMetricsComposite metricsComposite;
+	public static final String HELP_CONTEXT_ID = "atsWorldView";
+	public static int TITLE_MAX_LENGTH = 80;
 
-   @Override
-   public void doSave(IProgressMonitor monitor) {
-   }
+	@Override
+	public void doSave(IProgressMonitor monitor) {
+	}
 
-   public static void open(final IWorldEditorProvider provider) throws OseeCoreException {
-      open(provider, false);
-   }
+	public static void open(final IWorldEditorProvider provider) {
+		Displays.ensureInDisplayThread(new Runnable() {
+			@Override
+			public void run() {
+				IWorkbenchPage page = AWorkbench.getActivePage();
+				try {
+					page.openEditor(new WorldEditorInput(provider), EDITOR_ID);
+				} catch (PartInitException ex) {
+					OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+				}
+			}
+		});
+	}
 
-   public static void open(final IWorldEditorProvider provider, boolean forcePend) throws OseeCoreException {
-      Displays.ensureInDisplayThread(new Runnable() {
-         public void run() {
-            IWorkbenchPage page = AWorkbench.getActivePage();
-            try {
-               page.openEditor(new WorldEditorInput(provider), EDITOR_ID);
-            } catch (PartInitException ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-      }, forcePend);
-   }
+	public void closeEditor() {
+		final MultiPageEditorPart editor = this;
+		Displays.ensureInDisplayThread(new Runnable() {
+			@Override
+			public void run() {
+				AWorkbench.getActivePage().closeEditor(editor, false);
+			}
+		});
+	}
 
-   public void closeEditor() {
-      final MultiPageEditorPart editor = this;
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            AWorkbench.getActivePage().closeEditor(editor, false);
-         }
-      });
-   }
+	public static Collection<WorldEditor> getEditors() {
+		final List<WorldEditor> editors = new ArrayList<WorldEditor>();
+		Displays.pendInDisplayThread(new Runnable() {
+			@Override
+			public void run() {
+				for (IEditorReference editor : AWorkbench.getEditors(EDITOR_ID)) {
+					editors.add((WorldEditor) editor.getEditor(false));
+				}
+			}
+		});
+		return editors;
+	}
 
-   public static Collection<WorldEditor> getEditors() {
-      final List<WorldEditor> editors = new ArrayList<WorldEditor>();
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            for (IEditorReference editor : AWorkbench.getEditors(EDITOR_ID)) {
-               editors.add((WorldEditor) editor.getEditor(false));
-            }
-         }
-      }, true);
-      return editors;
-   }
+	public static void closeAll() {
+		Displays.ensureInDisplayThread(new Runnable() {
+			@Override
+			public void run() {
+				for (IEditorReference editor : AWorkbench.getEditors(EDITOR_ID)) {
+					AWorkbench.getActivePage().closeEditor((editor.getEditor(false)), false);
+				}
+			}
+		});
+	}
 
-   public static void closeAll() {
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            for (IEditorReference editor : AWorkbench.getEditors(EDITOR_ID)) {
-               AWorkbench.getActivePage().closeEditor((editor.getEditor(false)), false);
-            }
-         }
-      });
-   }
+	@Override
+	public boolean isSaveOnCloseNeeded() {
+		return isDirty();
+	}
 
-   @Override
-   public boolean isSaveOnCloseNeeded() {
-      return isDirty();
-   }
+	public void refreshTitle() {
+		firePropertyChange(IWorkbenchPart.PROP_TITLE);
+	}
 
-   public void refreshTitle() {
-      firePropertyChange(IWorkbenchPart.PROP_TITLE);
-   }
+	@Override
+	public void dispose() {
+		if (worldXWidgetActionPage != null && worldXWidgetActionPage.getWorldComposite() != null) {
+			worldXWidgetActionPage.getWorldComposite().disposeComposite();
+		}
+		if (metricsComposite != null) {
+			metricsComposite.disposeComposite();
+		}
+		super.dispose();
+	}
 
-   @Override
-   public void dispose() {
-      if (worldXWidgetActionPage != null && worldXWidgetActionPage.getWorldComposite() != null) {
-         worldXWidgetActionPage.getWorldComposite().disposeComposite();
-      }
-      if (metricsComposite != null) metricsComposite.disposeComposite();
-      super.dispose();
-   }
+	public String getCurrentTitleLabel() {
+		return worldXWidgetActionPage.getCurrentTitleLabel();
+	}
 
-   public String getCurrentTitleLabel() {
-      return worldXWidgetActionPage.getCurrentTitleLabel();
-   }
+	public void setTableTitle(final String title, final boolean warning) {
+		worldXWidgetActionPage.setTableTitle(title, warning);
+	}
 
-   public void setTableTitle(final String title, final boolean warning) {
-      worldXWidgetActionPage.setTableTitle(title, warning);
-   }
+	@Override
+	public boolean isDirty() {
+		return false;
+	}
 
-   @Override
-   public boolean isDirty() {
-      return false;
-   }
+	@Override
+	protected void addPages() {
 
-   @Override
-   protected void addPages() {
+		try {
+			OseeContributionItem.addTo(this, true);
 
-      try {
-         OseeContributionItem.addTo(this, true);
+			IWorldEditorProvider provider = getWorldEditorProvider();
+			if (provider instanceof IWorldEditorConsumer) {
+				((IWorldEditorConsumer) provider).setWorldEditor(this);
+			}
 
-         IWorldEditorProvider provider = getWorldEditorProvider();
-         if (provider instanceof IWorldEditorConsumer) {
-            ((IWorldEditorConsumer) provider).setWorldEditor(this);
-         }
+			createMainTab();
+			createMetricsTab();
 
-         createMainTab();
-         createMetricsTab();
+			setPartName(provider.getSelectedName(SearchType.Search));
+			setActivePage(mainPageIndex);
 
-         setPartName(provider.getSelectedName(SearchType.Search));
-         setActivePage(mainPageIndex);
+			// Until WorldEditor has different help, just use WorldView's help
+			AtsPlugin.getInstance().setHelp(worldXWidgetActionPage.getWorldComposite().getControl(), HELP_CONTEXT_ID,
+						"org.eclipse.osee.ats.help.ui");
+		} catch (Exception ex) {
+			OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+		}
+	}
 
-         // Until WorldEditor has different help, just use WorldView's help
-         AtsPlugin.getInstance().setHelp(worldXWidgetActionPage.getWorldComposite().getControl(), HELP_CONTEXT_ID,
-               "org.eclipse.osee.ats.help.ui");
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-      }
-   }
+	public WorldComposite getWorldComposite() {
+		return worldXWidgetActionPage.getWorldComposite();
+	}
 
-   public WorldComposite getWorldComposite() {
-      return worldXWidgetActionPage.getWorldComposite();
-   }
+	public WorldXWidgetActionPage getWorldXWidgetActionPage() {
+		return worldXWidgetActionPage;
+	}
 
-   public WorldXWidgetActionPage getWorldXWidgetActionPage() {
-      return worldXWidgetActionPage;
-   }
+	public void setEditorTitle(final String str) {
+		Displays.ensureInDisplayThread(new Runnable() {
+			@Override
+			public void run() {
+				setPartName(str);
+				firePropertyChange(IWorkbenchPart.PROP_TITLE);
+			}
+		});
+	}
 
-   public void setEditorTitle(final String str) {
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            setPartName(str);
-            firePropertyChange(IWorkbenchPart.PROP_TITLE);
-         }
-      });
-   }
+	public IWorldEditorProvider getWorldEditorProvider() throws OseeArgumentException {
+		IEditorInput editorInput = getEditorInput();
+		if (!(editorInput instanceof WorldEditorInput)) {
+			throw new OseeArgumentException("Editor Input not WorldEditorInput");
+		}
+		WorldEditorInput worldEditorInput = (WorldEditorInput) editorInput;
+		return worldEditorInput.getIWorldEditorProvider();
+	}
 
-   public IWorldEditorProvider getWorldEditorProvider() throws OseeArgumentException {
-      IEditorInput editorInput = getEditorInput();
-      if (!(editorInput instanceof WorldEditorInput)) {
-         throw new OseeArgumentException("Editor Input not WorldEditorInput");
-      }
-      WorldEditorInput worldEditorInput = (WorldEditorInput) editorInput;
-      return worldEditorInput.getIWorldEditorProvider();
-   }
+	public void reSearch() throws OseeCoreException {
+		worldXWidgetActionPage.reSearch();
+	}
 
-   public void reSearch() throws OseeCoreException {
-      worldXWidgetActionPage.reSearch();
-   }
+	private void createMainTab() throws OseeCoreException, PartInitException {
+		worldXWidgetActionPage = new WorldXWidgetActionPage(this);
+		mainPageIndex = addPage(worldXWidgetActionPage);
+	}
 
-   private void createMainTab() throws OseeCoreException, PartInitException {
-      worldXWidgetActionPage = new WorldXWidgetActionPage(this);
-      mainPageIndex = addPage(worldXWidgetActionPage);
-   }
+	private void createMetricsTab() throws OseeCoreException {
+		Composite comp = AtsUtil.createCommonPageComposite(getContainer());
+		AtsUtil.createCommonToolBar(comp);
+		metricsComposite = new AtsMetricsComposite(this, comp, SWT.NONE);
+		metricsPageIndex = addPage(comp);
+		setPageText(metricsPageIndex, "Metrics");
+	}
 
-   private void createMetricsTab() throws OseeCoreException {
-      Composite comp = AtsUtil.createCommonPageComposite(getContainer());
-      AtsUtil.createCommonToolBar(comp);
-      metricsComposite = new AtsMetricsComposite(this, comp, SWT.NONE);
-      metricsPageIndex = addPage(comp);
-      setPageText(metricsPageIndex, "Metrics");
-   }
+	public ArrayList<Artifact> getLoadedArtifacts() {
+		return worldXWidgetActionPage.getWorldComposite().getLoadedArtifacts();
+	}
 
-   public ArrayList<Artifact> getLoadedArtifacts() {
-      return worldXWidgetActionPage.getWorldComposite().getLoadedArtifacts();
-   }
+	@Override
+	public Collection<? extends Artifact> getMetricsArtifacts() throws OseeCoreException {
+		return getLoadedArtifacts();
+	}
 
-   @Override
-   public Collection<? extends Artifact> getMetricsArtifacts() throws OseeCoreException {
-      return getLoadedArtifacts();
-   }
+	@Override
+	public VersionArtifact getMetricsVersionArtifact() throws OseeCoreException {
+		VersionArtifact verArt = getWorldEditorProvider().getTargetedVersionArtifact();
+		if (verArt != null) {
+			return verArt;
+		}
+		for (Artifact artifact : getLoadedArtifacts()) {
+			if (artifact instanceof StateMachineArtifact) {
+				if (((StateMachineArtifact) artifact).getWorldViewTargetedVersion() != null) {
+					return ((StateMachineArtifact) artifact).getWorldViewTargetedVersion();
+				}
+			}
+		}
+		return null;
+	}
 
-   @Override
-   public VersionArtifact getMetricsVersionArtifact() throws OseeCoreException {
-      VersionArtifact verArt = getWorldEditorProvider().getTargetedVersionArtifact();
-      if (verArt != null) return verArt;
-      for (Artifact artifact : getLoadedArtifacts()) {
-         if (artifact instanceof StateMachineArtifact) {
-            if (((StateMachineArtifact) artifact).getWorldViewTargetedVersion() != null) {
-               return ((StateMachineArtifact) artifact).getWorldViewTargetedVersion();
-            }
-         }
-      }
-      return null;
-   }
+	@Override
+	public String getActionDescription() {
+		return null;
+	}
 
-   @Override
-   public String getActionDescription() {
-      return null;
-   }
+	@Override
+	public double getManHoursPerDayPreference() throws OseeCoreException {
+		return worldXWidgetActionPage.getWorldComposite().getManHoursPerDayPreference();
+	}
 
-   @Override
-   public double getManHoursPerDayPreference() throws OseeCoreException {
-      return worldXWidgetActionPage.getWorldComposite().getManHoursPerDayPreference();
-   }
+	@Override
+	public void reflow() {
+		getWorldXWidgetActionPage().reflow();
+	}
 
-   @Override
-   public void reflow() {
-      getWorldXWidgetActionPage().reflow();
-   }
+	@Override
+	public void createToolBarPulldown(Menu menu) {
+		new MenuItem(menu, SWT.SEPARATOR);
+		try {
+			for (IAtsWorldEditorItem item : AtsWorldEditorItems.getItems()) {
+				for (final Action action : item.getWorldEditorMenuActions(getWorldEditorProvider(), this)) {
+					AtsUtil.actionToMenuItem(menu, action, SWT.PUSH);
+				}
+			}
+		} catch (Exception ex) {
+			OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+		}
+	}
 
-   @Override
-   public void createToolBarPulldown(Menu menu) {
-      new MenuItem(menu, SWT.SEPARATOR);
-      try {
-         for (IAtsWorldEditorItem item : AtsWorldEditorItems.getItems()) {
-            for (final Action action : item.getWorldEditorMenuActions(getWorldEditorProvider(), this)) {
-               AtsUtil.actionToMenuItem(menu, action, SWT.PUSH);
-            }
-         }
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-      }
-   }
+	@Override
+	public IActionable getIActionable() {
+		return null;
+	}
 
-   @Override
-   public IActionable getIActionable() {
-      return null;
-   }
+	@Override
+	public void doSaveAs() {
+	}
 
-   @Override
-   public void doSaveAs() {
-   }
+	@Override
+	public boolean isSaveAsAllowed() {
+		return false;
+	}
 
-   @Override
-   public boolean isSaveAsAllowed() {
-      return false;
-   }
-
-   @Override
-   public void onDirtied() {
-   }
+	@Override
+	public void onDirtied() {
+	}
 }

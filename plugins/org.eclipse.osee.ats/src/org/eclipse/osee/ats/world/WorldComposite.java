@@ -54,206 +54,209 @@ import org.eclipse.swt.widgets.Display;
  */
 public class WorldComposite extends ScrolledComposite implements IWorldViewerEventHandler, IOpenNewAtsWorldEditorHandler, IOpenNewAtsWorldEditorSelectedHandler, IRefreshActionHandler {
 
-   private final WorldXViewer worldXViewer;
-   private final Set<Artifact> worldArts = new HashSet<Artifact>(200);
-   private final Set<Artifact> otherArts = new HashSet<Artifact>(200);
-   private final IWorldEditor iWorldEditor;
-   private final Composite mainComp;
+	private final WorldXViewer worldXViewer;
+	private final Set<Artifact> worldArts = new HashSet<Artifact>(200);
+	private final Set<Artifact> otherArts = new HashSet<Artifact>(200);
+	private final IWorldEditor iWorldEditor;
+	private final Composite mainComp;
 
-   public WorldComposite(IWorldEditor worldEditor, Composite parent, int style) {
-      this(worldEditor, null, parent, style);
-   }
+	public WorldComposite(IWorldEditor worldEditor, Composite parent, int style) {
+		this(worldEditor, null, parent, style);
+	}
 
-   public WorldComposite(IWorldEditor worldEditor, IXViewerFactory xViewerFactory, Composite parent, int style) {
-      super(parent, style);
-      this.iWorldEditor = worldEditor;
+	public WorldComposite(IWorldEditor worldEditor, IXViewerFactory xViewerFactory, Composite parent, int style) {
+		super(parent, style);
+		this.iWorldEditor = worldEditor;
 
-      setLayout(new GridLayout(1, true));
-      setLayoutData(new GridData(GridData.FILL_BOTH));
+		setLayout(new GridLayout(1, true));
+		setLayoutData(new GridData(GridData.FILL_BOTH));
 
-      mainComp = new Composite(this, SWT.NONE);
-      mainComp.setLayout(ALayout.getZeroMarginLayout());
-      mainComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		mainComp = new Composite(this, SWT.NONE);
+		mainComp.setLayout(ALayout.getZeroMarginLayout());
+		mainComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      if (!DbConnectionExceptionComposite.dbConnectionIsOk(this)) {
-         worldXViewer = null;
-         return;
-      }
+		if (!DbConnectionExceptionComposite.dbConnectionIsOk(this)) {
+			worldXViewer = null;
+			return;
+		}
 
-      worldXViewer =
-            new WorldXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION,
-                  xViewerFactory != null ? xViewerFactory : new WorldXViewerFactory());
-      worldXViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
+		worldXViewer =
+					new WorldXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION,
+								xViewerFactory != null ? xViewerFactory : new WorldXViewerFactory());
+		worldXViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
-      worldXViewer.setContentProvider(new WorldContentProvider(worldXViewer));
-      worldXViewer.setLabelProvider(new WorldLabelProvider(worldXViewer));
+		worldXViewer.setContentProvider(new WorldContentProvider(worldXViewer));
+		worldXViewer.setLabelProvider(new WorldLabelProvider(worldXViewer));
 
-      new WorldViewDragAndDrop(this, WorldEditor.EDITOR_ID);
+		new WorldViewDragAndDrop(this, WorldEditor.EDITOR_ID);
 
-      setContent(mainComp);
-      setExpandHorizontal(true);
-      setExpandVertical(true);
-      layout();
+		setContent(mainComp);
+		setExpandHorizontal(true);
+		setExpandVertical(true);
+		layout();
 
-      WorldXViewerEventManager.add(this);
-   }
+		WorldXViewerEventManager.add(this);
+	}
 
-   public double getManHoursPerDayPreference() throws OseeCoreException {
-      if (worldArts.size() > 0) {
-         Artifact artifact = worldArts.iterator().next();
-         if (artifact instanceof ActionArtifact) {
-            artifact = ((ActionArtifact) artifact).getTeamWorkFlowArtifacts().iterator().next();
-         }
-         return ((StateMachineArtifact) artifact).getManHrsPerDayPreference();
-      }
-      return StateMachineArtifact.DEFAULT_HOURS_PER_WORK_DAY;
-   }
+	public double getManHoursPerDayPreference() throws OseeCoreException {
+		if (worldArts.size() > 0) {
+			Artifact artifact = worldArts.iterator().next();
+			if (artifact instanceof ActionArtifact) {
+				artifact = ((ActionArtifact) artifact).getTeamWorkFlowArtifacts().iterator().next();
+			}
+			return ((StateMachineArtifact) artifact).getManHrsPerDayPreference();
+		}
+		return StateMachineArtifact.DEFAULT_HOURS_PER_WORK_DAY;
+	}
 
-   public void setCustomizeData(CustomizeData customizeData) {
-      worldXViewer.getCustomizeMgr().loadCustomization(customizeData);
-   }
+	public void setCustomizeData(CustomizeData customizeData) {
+		worldXViewer.getCustomizeMgr().loadCustomization(customizeData);
+	}
 
-   public Control getControl() {
-      return worldXViewer.getControl();
-   }
+	public Control getControl() {
+		return worldXViewer.getControl();
+	}
 
-   public void load(final String name, final Collection<? extends Artifact> arts, TableLoadOption... tableLoadOption) {
-      load(name, arts, null, tableLoadOption);
-   }
+	public void load(final String name, final Collection<? extends Artifact> arts, TableLoadOption... tableLoadOption) {
+		load(name, arts, null, tableLoadOption);
+	}
 
-   public void load(final String name, final Collection<? extends Artifact> arts, final CustomizeData customizeData, TableLoadOption... tableLoadOption) {
-      Displays.ensureInDisplayThread(new Runnable() {
-         public void run() {
-            worldArts.clear();
-            otherArts.clear();
-            for (Artifact art : arts) {
-               if (art instanceof IWorldViewArtifact) {
-                  worldArts.add(art);
-               } else {
-                  otherArts.add(art);
-               }
-            }
-            if (customizeData != null && !worldXViewer.getCustomizeMgr().generateCustDataFromTable().equals(
-                  customizeData)) {
-               setCustomizeData(customizeData);
-            }
-            if (arts.isEmpty()) {
-               setTableTitle("No Results Found - " + name, true);
-            } else {
-               setTableTitle(name, false);
-            }
-            worldXViewer.setInput(worldArts);
-            worldXViewer.updateStatusLabel();
-            if (otherArts.size() > 0) {
-               if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Open in Artifact Editor?",
-                     otherArts.size() + " Non-WorldView Artifacts were returned from request.\n\nOpen in Artifact Editor?")) {
-                  RendererManager.openInJob(otherArts, PresentationType.GENERALIZED_EDIT);
-               }
-            }
-            worldXViewer.getTree().setFocus();
-         }
-      }, true);
-      // Need to reflow the managed page based on the results.  Don't put this in the above thread.
-      iWorldEditor.reflow();
-   }
+	public void load(final String name, final Collection<? extends Artifact> arts, final CustomizeData customizeData, TableLoadOption... tableLoadOption) {
+		Displays.pendInDisplayThread(new Runnable() {
+			@Override
+			public void run() {
+				worldArts.clear();
+				otherArts.clear();
+				for (Artifact art : arts) {
+					if (art instanceof IWorldViewArtifact) {
+						worldArts.add(art);
+					} else {
+						otherArts.add(art);
+					}
+				}
+				if (customizeData != null && !worldXViewer.getCustomizeMgr().generateCustDataFromTable().equals(
+							customizeData)) {
+					setCustomizeData(customizeData);
+				}
+				if (arts.isEmpty()) {
+					setTableTitle("No Results Found - " + name, true);
+				} else {
+					setTableTitle(name, false);
+				}
+				worldXViewer.setInput(worldArts);
+				worldXViewer.updateStatusLabel();
+				if (otherArts.size() > 0) {
+					if (MessageDialog.openConfirm(
+								Display.getCurrent().getActiveShell(),
+								"Open in Artifact Editor?",
+								otherArts.size() + " Non-WorldView Artifacts were returned from request.\n\nOpen in Artifact Editor?")) {
+						RendererManager.openInJob(otherArts, PresentationType.GENERALIZED_EDIT);
+					}
+				}
+				worldXViewer.getTree().setFocus();
+			}
+		});
+		// Need to reflow the managed page based on the results.  Don't put this in the above thread.
+		iWorldEditor.reflow();
+	}
 
-   public static class FilterLabelProvider implements ILabelProvider {
+	public static class FilterLabelProvider implements ILabelProvider {
 
-      public Image getImage(Object arg0) {
-         return null;
-      }
+		public Image getImage(Object arg0) {
+			return null;
+		}
 
-      public String getText(Object arg0) {
-         try {
-            return ((WorldSearchItem) arg0).getSelectedName(SearchType.Search);
-         } catch (OseeCoreException ex) {
-            return ex.getLocalizedMessage();
-         }
-      }
+		public String getText(Object arg0) {
+			try {
+				return ((WorldSearchItem) arg0).getSelectedName(SearchType.Search);
+			} catch (OseeCoreException ex) {
+				return ex.getLocalizedMessage();
+			}
+		}
 
-      public void addListener(ILabelProviderListener arg0) {
-      }
+		public void addListener(ILabelProviderListener arg0) {
+		}
 
-      public void dispose() {
-      }
+		public void dispose() {
+		}
 
-      public boolean isLabelProperty(Object arg0, String arg1) {
-         return false;
-      }
+		public boolean isLabelProperty(Object arg0, String arg1) {
+			return false;
+		}
 
-      public void removeListener(ILabelProviderListener arg0) {
-      }
-   }
+		public void removeListener(ILabelProviderListener arg0) {
+		}
+	}
 
-   public static class FilterContentProvider implements IStructuredContentProvider {
-      public Object[] getElements(Object arg0) {
-         return ((ArrayList<?>) arg0).toArray();
-      }
+	public static class FilterContentProvider implements IStructuredContentProvider {
+		public Object[] getElements(Object arg0) {
+			return ((ArrayList<?>) arg0).toArray();
+		}
 
-      public void dispose() {
-      }
+		public void dispose() {
+		}
 
-      public void inputChanged(Viewer arg0, Object arg1, Object arg2) {
-      }
-   }
+		public void inputChanged(Viewer arg0, Object arg1, Object arg2) {
+		}
+	}
 
-   public void setTableTitle(final String title, final boolean warning) {
-      Displays.ensureInDisplayThread(new Runnable() {
-         public void run() {
-            iWorldEditor.setTableTitle(title, warning);
-            worldXViewer.setReportingTitle(title + " - " + XDate.getDateNow());
-         };
-      });
-   }
+	public void setTableTitle(final String title, final boolean warning) {
+		Displays.ensureInDisplayThread(new Runnable() {
+			public void run() {
+				iWorldEditor.setTableTitle(title, warning);
+				worldXViewer.setReportingTitle(title + " - " + XDate.getDateNow());
+			};
+		});
+	}
 
-   public ArrayList<Artifact> getLoadedArtifacts() {
-      return getXViewer().getLoadedArtifacts();
-   }
+	public ArrayList<Artifact> getLoadedArtifacts() {
+		return getXViewer().getLoadedArtifacts();
+	}
 
-   public void disposeComposite() {
-      if (worldXViewer != null && !worldXViewer.getTree().isDisposed()) {
-         worldXViewer.dispose();
-      }
-      WorldXViewerEventManager.remove(this);
-   }
+	public void disposeComposite() {
+		if (worldXViewer != null && !worldXViewer.getTree().isDisposed()) {
+			worldXViewer.dispose();
+		}
+		WorldXViewerEventManager.remove(this);
+	}
 
-   public WorldXViewer getXViewer() {
-      return worldXViewer;
-   }
+	public WorldXViewer getXViewer() {
+		return worldXViewer;
+	}
 
-   @Override
-   public void refreshActionHandler() {
-      try {
-         iWorldEditor.reSearch();
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-   }
+	@Override
+	public void refreshActionHandler() {
+		try {
+			iWorldEditor.reSearch();
+		} catch (Exception ex) {
+			OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+		}
+	}
 
-   @Override
-   public CustomizeData getCustomizeDataCopy() throws OseeCoreException {
-      return worldXViewer.getCustomizeMgr().generateCustDataFromTable();
-   }
+	@Override
+	public CustomizeData getCustomizeDataCopy() throws OseeCoreException {
+		return worldXViewer.getCustomizeMgr().generateCustDataFromTable();
+	}
 
-   @Override
-   public IWorldEditorProvider getWorldEditorProviderCopy() throws OseeCoreException {
-      return iWorldEditor.getWorldEditorProvider().copyProvider();
-   }
+	@Override
+	public IWorldEditorProvider getWorldEditorProviderCopy() throws OseeCoreException {
+		return iWorldEditor.getWorldEditorProvider().copyProvider();
+	}
 
-   @Override
-   public ArrayList<Artifact> getSelectedArtifacts() throws OseeCoreException {
-      return worldXViewer.getSelectedArtifacts();
-   }
+	@Override
+	public ArrayList<Artifact> getSelectedArtifacts() throws OseeCoreException {
+		return worldXViewer.getSelectedArtifacts();
+	}
 
-   @Override
-   public void removeItems(Collection<? extends Object> objects) {
-      // remove from model
-      worldArts.removeAll(objects);
-   }
+	@Override
+	public void removeItems(Collection<? extends Object> objects) {
+		// remove from model
+		worldArts.removeAll(objects);
+	}
 
-   @Override
-   public WorldXViewer getWorldXViewer() {
-      return worldXViewer;
-   }
+	@Override
+	public WorldXViewer getWorldXViewer() {
+		return worldXViewer;
+	}
 
 }

@@ -24,79 +24,80 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
  */
 public abstract class WorldUISearchItem extends WorldSearchItem {
 
-   public WorldUISearchItem(String name) {
-      this(name, LoadView.WorldEditor, null);
-   }
+	public WorldUISearchItem(String name) {
+		this(name, LoadView.WorldEditor, null);
+	}
 
-   public WorldUISearchItem(String name, KeyedImage oseeImage) {
-      this(name, LoadView.WorldEditor, oseeImage);
-   }
+	public WorldUISearchItem(String name, KeyedImage oseeImage) {
+		this(name, LoadView.WorldEditor, oseeImage);
+	}
 
-   public WorldUISearchItem(String name, LoadView loadView) {
-      this(name, loadView, null);
-   }
+	public WorldUISearchItem(String name, LoadView loadView) {
+		this(name, loadView, null);
+	}
 
-   public WorldUISearchItem(String name, LoadView loadView, KeyedImage oseeImage) {
-      super(name, loadView, oseeImage);
-   }
+	public WorldUISearchItem(String name, LoadView loadView, KeyedImage oseeImage) {
+		super(name, loadView, oseeImage);
+	}
 
-   public WorldUISearchItem(WorldUISearchItem worldUISearchItem) {
-      this(worldUISearchItem, null);
-   }
+	public WorldUISearchItem(WorldUISearchItem worldUISearchItem) {
+		this(worldUISearchItem, null);
+	}
 
-   public WorldUISearchItem(WorldUISearchItem worldUISearchItem, KeyedImage oseeImage) {
-      super(worldUISearchItem, oseeImage);
-   }
+	public WorldUISearchItem(WorldUISearchItem worldUISearchItem, KeyedImage oseeImage) {
+		super(worldUISearchItem, oseeImage);
+	}
 
-   /**
-    * Method called to display the current search in the view. Override to provide more information about selected
-    * values (eg MyWorld)
-    */
-   @Override
-   public String getSelectedName(SearchType searchType) throws OseeCoreException {
-      return getName();
-   }
+	/**
+	 * Method called to display the current search in the view. Override to provide more information about selected
+	 * values (eg MyWorld)
+	 */
+	@Override
+	public String getSelectedName(SearchType searchType) throws OseeCoreException {
+		return getName();
+	}
 
-   public abstract Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException;
+	public abstract Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException;
 
-   public Collection<Artifact> performReSearch() {
-      return EMPTY_SET;
-   }
+	public Collection<Artifact> performReSearch() {
+		return EMPTY_SET;
+	}
 
-   public Collection<Artifact> performSearchGetResults() throws OseeCoreException {
-      return performSearchGetResults(false, SearchType.Search);
-   }
+	public Collection<Artifact> performSearchGetResults() throws OseeCoreException {
+		return performSearchGetResults(false, SearchType.Search);
+	}
 
-   public Collection<Artifact> performSearchGetResults(SearchType searchType) throws OseeCoreException {
-      return performSearchGetResults(false, searchType);
-   }
+	public Collection<Artifact> performSearchGetResults(SearchType searchType) throws OseeCoreException {
+		return performSearchGetResults(false, searchType);
+	}
 
-   public Collection<Artifact> performSearchGetResults(boolean performUi) throws OseeCoreException {
-      return performSearchGetResults(performUi, SearchType.Search);
-   }
+	public Collection<Artifact> performSearchGetResults(boolean performUi) throws OseeCoreException {
+		return performSearchGetResults(performUi, SearchType.Search);
+	}
 
-   public Collection<Artifact> performSearchGetResults(boolean performUi, final SearchType searchType) throws OseeCoreException {
-      cancelled = false;
-      if (performUi) {
-         Displays.ensureInDisplayThread(new Runnable() {
-            public void run() {
-               try {
-                  performUI(searchType);
-               } catch (Exception ex) {
-                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-               }
-            }
-         }, true);
+	public Collection<Artifact> performSearchGetResults(boolean performUi, final SearchType searchType) throws OseeCoreException {
+		cancelled = false;
+		if (performUi) {
+			Displays.pendInDisplayThread(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						performUI(searchType);
+					} catch (Exception ex) {
+						OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+					}
+				}
+			});
 
-      }
-      if (cancelled) {
-         return EMPTY_SET;
-      }
-      return performSearch(searchType);
-   }
+		}
+		if (cancelled) {
+			return EMPTY_SET;
+		}
+		return performSearch(searchType);
+	}
 
-   public void performUI(SearchType searchType) throws OseeCoreException {
-      cancelled = false;
-   }
+	public void performUI(SearchType searchType) throws OseeCoreException {
+		cancelled = false;
+	}
 
 }

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.handler;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.debug.core.IStatusHandler;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -22,23 +21,20 @@ import org.eclipse.ui.PlatformUI;
  * @author Jeff C. Phillips
  */
 public class RemoveTrackChangesHandler implements IStatusHandler {
-   @Override
-   public Object handleStatus(IStatus status, Object source) throws CoreException {
-      final MutableInteger result = new MutableInteger(0);
-      final String message = (String) source;
+	@Override
+	public Object handleStatus(IStatus status, Object source) {
+		final MutableInteger result = new MutableInteger(0);
+		final String message = (String) source;
 
-      Runnable runnable = new Runnable() {
-         @Override
-         public void run() {
-            if (MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                  "Confirm Removal Of Track Changes ", message)) {
-               result.setValue(1);
-            }
-         }
-
-      };
-
-      Displays.ensureInDisplayThread(runnable, true);
-      return result.getValue() == 1;
-   }
+		Displays.pendInDisplayThread(new Runnable() {
+			@Override
+			public void run() {
+				if (MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+							"Confirm Removal Of Track Changes ", message)) {
+					result.setValue(1);
+				}
+			}
+		});
+		return result.getValue() == 1;
+	}
 }
