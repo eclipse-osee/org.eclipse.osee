@@ -127,7 +127,7 @@ public class NavigateView extends ViewPart implements IActionable {
       @Override
       public void done(IJobChangeEvent event) {
          super.done(event);
-         Job job = new UIJob("Draw ATS Navigator") {
+         Job job = new UIJob("Load ATS Navigator") {
 
             @Override
             public IStatus runInUIThread(IProgressMonitor monitor) {
