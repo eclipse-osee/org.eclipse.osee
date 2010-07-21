@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -68,37 +69,30 @@ public class WordTemplateProcessor {
    private static final String EXTENSION_PROCESSOR = "Extension_Processor";
    private static final String KEY = "Key";
 
-   private static final Pattern outlineTypePattern =
-         Pattern.compile("<((\\w+:)?(OutlineType))>(.*?)</\\1>",
-               Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-   private static final Pattern outlineNumberPattern =
-         Pattern.compile("<((\\w+:)?(Number))>(.*?)</\\1>",
-               Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-   private static final Pattern argumentElementsPattern =
-         Pattern.compile("<((\\w+:)?(Argument))>(.*?)</\\1>",
-               Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-   private static final Pattern keyValueElementsPattern =
-         Pattern.compile("<((\\w+:)?(Key|Value))>(.*?)</\\1>",
-               Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-   private static final Pattern subDocElementsPattern =
-         Pattern.compile("<((\\w+:)?(SubDoc))>(.*?)</\\1>",
-               Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern outlineTypePattern = Pattern.compile("<((\\w+:)?(OutlineType))>(.*?)</\\1>",
+      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern outlineNumberPattern = Pattern.compile("<((\\w+:)?(Number))>(.*?)</\\1>",
+      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern argumentElementsPattern = Pattern.compile("<((\\w+:)?(Argument))>(.*?)</\\1>",
+      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern keyValueElementsPattern = Pattern.compile("<((\\w+:)?(Key|Value))>(.*?)</\\1>",
+      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern subDocElementsPattern = Pattern.compile("<((\\w+:)?(SubDoc))>(.*?)</\\1>",
+      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 
-   private static final Pattern setNamePattern =
-         Pattern.compile("<(\\w+:)?Set_Name>(.*?)</(\\w+:)?Set_Name>", Pattern.DOTALL | Pattern.MULTILINE);
-   private static final Pattern headElementsPattern =
-         Pattern.compile("<((\\w+:)?(" + ARTIFACT + "|" + EXTENSION_PROCESSOR + "))>(.*?)</\\1>",
-               Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-   private static final Pattern attributeElementsPattern =
-         Pattern.compile("<((\\w+:)?(Attribute))>(.*?)</\\3>",
-               Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern setNamePattern = Pattern.compile("<(\\w+:)?Set_Name>(.*?)</(\\w+:)?Set_Name>",
+      Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern headElementsPattern = Pattern.compile(
+      "<((\\w+:)?(" + ARTIFACT + "|" + EXTENSION_PROCESSOR + "))>(.*?)</\\1>",
+      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern attributeElementsPattern = Pattern.compile("<((\\w+:)?(Attribute))>(.*?)</\\3>",
+      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 
-   private static final Pattern outlineElementsPattern =
-         Pattern.compile("<((\\w+:)?(Outline))>(.*?)</\\1>",
-               Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-   private static final Pattern internalOutlineElementsPattern =
-         Pattern.compile("<((\\w+:)?(HeadingAttribute|RecurseChildren|Number))>(.*?)</\\1>",
-               Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern outlineElementsPattern = Pattern.compile("<((\\w+:)?(Outline))>(.*?)</\\1>",
+      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern internalOutlineElementsPattern = Pattern.compile(
+      "<((\\w+:)?(HeadingAttribute|RecurseChildren|Number))>(.*?)</\\1>",
+      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 
    private String slaveTemplate;
    private String slaveTemplateName;
@@ -140,8 +134,8 @@ public class WordTemplateProcessor {
 
       IFolder folder = RenderingUtil.ensureRenderFolderExists(PresentationType.PREVIEW);
       String fileName = String.format("%s_%s.xml", masterTemplateArtifact.getSafeName(), Lib.getDateTimeString());
-      AIFile.writeToFile(folder.getFile(fileName), applyTemplate(variableMap, artifacts, masterTemplate, folder, null,
-            null, PresentationType.PREVIEW));
+      AIFile.writeToFile(folder.getFile(fileName),
+         applyTemplate(variableMap, artifacts, masterTemplate, folder, null, null, PresentationType.PREVIEW));
    }
 
    /**
@@ -168,7 +162,7 @@ public class WordTemplateProcessor {
       }
 
       this.outlineNumber =
-            outlineNumber == null ? peekAtFirstArtifactToGetParagraphNumber(template, null, artifacts) : outlineNumber;
+         outlineNumber == null ? peekAtFirstArtifactToGetParagraphNumber(template, null, artifacts) : outlineNumber;
       template = wordMl.setHeadingNumbers(this.outlineNumber, template, outlineType);
       template = WordUtil.stripSpellCheck(template);
 
@@ -208,7 +202,7 @@ public class WordTemplateProcessor {
       // Write out the last of the template
       wordMl.addWordMl(template.substring(lastEndIndex));
       displayNonTemplateArtifacts(nonTemplateArtifacts,
-            "Only artifacts of type Word Template Content are supported in this case.");
+         "Only artifacts of type Word Template Content are supported in this case.");
       return charBak;
    }
 
@@ -225,7 +219,7 @@ public class WordTemplateProcessor {
                   Artifact artifact = artifacts.iterator().next();
                   if (artifact.isAttributeTypeValid(CoreAttributeTypes.PARAGRAPH_NUMBER)) {
                      String paragraphNum = artifact.getSoleAttributeValue(CoreAttributeTypes.PARAGRAPH_NUMBER, "");
-                     if (paragraphNum != null && !paragraphNum.equals("")) {
+                     if (Strings.isValid(paragraphNum)) {
                         startParagraphNumber = paragraphNum;
                      }
                   }
@@ -311,8 +305,10 @@ public class WordTemplateProcessor {
          if (diff) {
             generateDocumentDiff(newVariableMap, variableMap, subDocFileName, nextParagraphNumber, outlineType);
          } else {
-            AIFile.writeToFile(folder.getFile(subDocFileName), applyTemplate(newVariableMap, null, slaveTemplate,
-                  folder, nextParagraphNumber, outlineType, presentationType));
+            AIFile.writeToFile(
+               folder.getFile(subDocFileName),
+               applyTemplate(newVariableMap, null, slaveTemplate, folder, nextParagraphNumber, outlineType,
+                  presentationType));
          }
          wordMl.createHyperLinkDoc(subDocFileName);
 
@@ -377,7 +373,7 @@ public class WordTemplateProcessor {
             if (outlining) {
                String headingText = artifact.getSoleAttributeValue(headingAttributeType, "");
                CharSequence paragraphNumber =
-                     wordMl.startOutlineSubSection("Times New Roman", headingText, outlineType);
+                  wordMl.startOutlineSubSection("Times New Roman", headingText, outlineType);
 
                VariableMap options = renderer.getOptions();
                if (renderer.getBooleanOption(WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION)) {
@@ -391,7 +387,7 @@ public class WordTemplateProcessor {
             if (recurseChildren) {
                for (Artifact childArtifact : artifact.getChildren()) {
                   processObjectArtifact(variableMap, childArtifact, wordMl, outlineType, presentationType,
-                        multipleArtifacts);
+                     multipleArtifacts);
                }
             }
             if (outlining) {
@@ -412,7 +408,7 @@ public class WordTemplateProcessor {
             for (AttributeType attributeType : RendererManager.getAttributeTypeOrderList(artifact)) {
                if (!outlining || !attributeType.equals(headingAttributeType)) {
                   processAttribute(variableMap, artifact, wordMl, attributeElement, attributeType, true,
-                        presentationType, multipleArtifacts);
+                     presentationType, multipleArtifacts);
                }
             }
          } else {
@@ -420,7 +416,7 @@ public class WordTemplateProcessor {
             if (artifact.isAttributeTypeValid(attributeName)) {
                AttributeType attributeType = AttributeTypeManager.getType(attributeName);
                processAttribute(variableMap, artifact, wordMl, attributeElement, attributeType, false,
-                     presentationType, multipleArtifacts);
+                  presentationType, multipleArtifacts);
             }
 
          }
@@ -455,7 +451,7 @@ public class WordTemplateProcessor {
          variableMap = ensureMapIsSetForDocLinks(variableMap, allAttrs);
 
          Boolean isInPublishMode =
-               variableMap != null ? Boolean.TRUE.equals(variableMap.getBoolean("inPublishMode")) : false;
+            variableMap != null ? Boolean.TRUE.equals(variableMap.getBoolean("inPublishMode")) : false;
          if (variableMap != null && isInPublishMode) {
             // Do not publish relation order during publishing
             if (CoreAttributeTypes.RELATION_ORDER.equals(attributeType)) {
@@ -464,7 +460,7 @@ public class WordTemplateProcessor {
          }
 
          RendererManager.renderAttribute(attributeType.getName(), presentationType, artifact, variableMap, wordMl,
-               attributeElement);
+            attributeElement);
       }
    }
 
@@ -504,7 +500,7 @@ public class WordTemplateProcessor {
       IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
       if (extensionRegistry != null) {
          IExtensionPoint point =
-               extensionRegistry.getExtensionPoint("org.eclipse.osee.framework.ui.skynet.IgnorePublishAttribute");
+            extensionRegistry.getExtensionPoint("org.eclipse.osee.framework.ui.skynet.IgnorePublishAttribute");
          if (point != null) {
             IExtension[] extensions = point.getExtensions();
             for (IExtension extension : extensions) {
@@ -521,6 +517,7 @@ public class WordTemplateProcessor {
       if (!artifacts.isEmpty()) {
          Displays.ensureInDisplayThread(new Runnable() {
 
+            @Override
             public void run() {
                ArrayList<Artifact> nonTempArtifacts = new ArrayList<Artifact>(artifacts.size());
                nonTempArtifacts.addAll(artifacts);
