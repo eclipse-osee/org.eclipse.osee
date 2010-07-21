@@ -45,14 +45,14 @@ public class AccessCollectorTest {
       filters.add(phoneTypeFilter);
       filters.add(wordTypeFilter);
 
-      AccessCollector collector = new AccessCollector(filters);
-      Assert.assertTrue(collector.getAttributeTypes(basicArtifact, Arrays.asList(wordAttrType, phoneType),
+      AccessCollector<IAttributeType> collector = new AccessCollector<IAttributeType>(filters);
+      Assert.assertTrue(collector.getAttributeTypesToMatch(basicArtifact, Arrays.asList(wordAttrType, phoneType),
          PermissionEnum.WRITE).size() == 1);
-      Assert.assertTrue(collector.getAttributeTypes(basicArtifact, Arrays.asList(wordAttrType, phoneType),
+      Assert.assertTrue(collector.getAttributeTypesToMatch(basicArtifact, Arrays.asList(wordAttrType, phoneType),
          PermissionEnum.READ).size() == 2);
-      Assert.assertTrue(collector.getAttributeTypes(basicArtifact, Arrays.asList(wordAttrType, phoneType),
+      Assert.assertTrue(collector.getAttributeTypesToMatch(basicArtifact, Arrays.asList(wordAttrType, phoneType),
          PermissionEnum.DENY).isEmpty());
-      Assert.assertTrue(collector.getAttributeTypes(basicArtifact, Arrays.asList(wordAttrType, phoneType),
+      Assert.assertTrue(collector.getAttributeTypesToMatch(basicArtifact, Arrays.asList(wordAttrType, phoneType),
          PermissionEnum.FULLACCESS).isEmpty());
    }
 
@@ -71,14 +71,14 @@ public class AccessCollectorTest {
       filters.add(phoneTypeFilter);
       filters.add(wordTypeFilter);
 
-      AccessCollector collector = new AccessCollector(filters);
-      Assert.assertTrue(collector.getAttributeTypes(basicArtifact, Arrays.asList(wordAttrType, phoneType),
+      AccessCollector<IAttributeType> collector = new AccessCollector<IAttributeType>(filters);
+      Assert.assertTrue(collector.getAttributeTypesToMatch(basicArtifact, Arrays.asList(wordAttrType, phoneType),
          PermissionEnum.WRITE).size() == 1);
-      Assert.assertTrue(collector.getAttributeTypes(basicArtifact, Arrays.asList(wordAttrType, phoneType),
+      Assert.assertTrue(collector.getAttributeTypesToMatch(basicArtifact, Arrays.asList(wordAttrType, phoneType),
          PermissionEnum.READ).size() == 2);
-      Assert.assertTrue(collector.getAttributeTypes(basicArtifact, Arrays.asList(wordAttrType, phoneType),
+      Assert.assertTrue(collector.getAttributeTypesToMatch(basicArtifact, Arrays.asList(wordAttrType, phoneType),
          PermissionEnum.DENY).isEmpty());
-      Assert.assertTrue(collector.getAttributeTypes(basicArtifact, Arrays.asList(wordAttrType, phoneType),
+      Assert.assertTrue(collector.getAttributeTypesToMatch(basicArtifact, Arrays.asList(wordAttrType, phoneType),
          PermissionEnum.FULLACCESS).isEmpty());
    }
 
@@ -96,13 +96,13 @@ public class AccessCollectorTest {
       filters.add(branchAccessFilter);
 
       AccessCollector collector = new AccessCollector(filters);
-      Assert.assertTrue(collector.getAttributeTypes(basicArtifact, Arrays.asList(wordAttrType, phoneType),
+      Assert.assertTrue(collector.getAttributeTypesToMatch(basicArtifact, Arrays.asList(wordAttrType, phoneType),
          PermissionEnum.WRITE).size() == 2);
-      Assert.assertTrue(collector.getAttributeTypes(basicArtifact, Arrays.asList(wordAttrType, phoneType),
+      Assert.assertTrue(collector.getAttributeTypesToMatch(basicArtifact, Arrays.asList(wordAttrType, phoneType),
          PermissionEnum.READ).size() == 2);
-      Assert.assertTrue(collector.getAttributeTypes(basicArtifact, Arrays.asList(wordAttrType, phoneType),
+      Assert.assertTrue(collector.getAttributeTypesToMatch(basicArtifact, Arrays.asList(wordAttrType, phoneType),
          PermissionEnum.DENY).isEmpty());
-      Assert.assertTrue(collector.getAttributeTypes(basicArtifact, Arrays.asList(wordAttrType, phoneType),
+      Assert.assertTrue(collector.getAttributeTypesToMatch(basicArtifact, Arrays.asList(wordAttrType, phoneType),
          PermissionEnum.FULLACCESS).isEmpty());
    }
 }

@@ -8,14 +8,14 @@ package org.eclipse.osee.framework.core.model.access.exp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 
 /**
  * @author Jeff C. Phillips
+ * @param <T>
  */
-public class AccessCollector {
+public class AccessCollector<T> {
 
    private final Collection<IAccessFilter> filters;
 
@@ -23,16 +23,16 @@ public class AccessCollector {
       this.filters = filters;
    }
 
-   public List<IAttributeType> getAttributeTypes(IBasicArtifact<?> artifact, Collection<IAttributeType> attrs, PermissionEnum permission) {
-      List<IAttributeType> validAttrs = new ArrayList<IAttributeType>();
+   public List<T> getAttributeTypesToMatch(IBasicArtifact<?> artifact, Collection<T> toCheck, PermissionEnum permission) {
+      List<T> validObjects = new ArrayList<T>();
       AccessFilterChain chain = new AccessFilterChain();
       chain.addAll(filters);
 
-      for (IAttributeType type : attrs) {
-         if (chain.doFilter(artifact, type, permission, null)) {
-            validAttrs.add(type);
+      for (T object : toCheck) {
+         if (chain.doFilter(artifact, object, permission, null)) {
+            validObjects.add(object);
          }
       }
-      return validAttrs;
+      return validObjects;
    }
 }
