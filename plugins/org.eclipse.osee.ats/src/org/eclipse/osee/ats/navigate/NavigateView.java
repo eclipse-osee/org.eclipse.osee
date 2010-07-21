@@ -131,51 +131,55 @@ public class NavigateView extends ViewPart implements IActionable {
 
             @Override
             public IStatus runInUIThread(IProgressMonitor monitor) {
-               showBusy(false);
-               if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
-                  return Status.OK_STATUS;
-               }
-
-               if (Widgets.isAccessible(loadingComposite)) {
-                  loadingComposite.dispose();
-               }
-               xNavComp = new AtsNavigateComposite(AtsNavigateViewItems.getInstance(), parent, SWT.NONE);
-
-               AtsPlugin.getInstance().setHelp(xNavComp, HELP_CONTEXT_ID, "org.eclipse.osee.ats.help.ui");
-               createToolBar();
-
-               // add search text box      
-               new AtsQuickSearchComposite(xNavComp, SWT.NONE);
-
-               if (savedFilterStr != null) {
-                  xNavComp.getFilteredTree().getFilterControl().setText(savedFilterStr);
-               }
-               xNavComp.refresh();
-               xNavComp.getFilteredTree().getFilterControl().setFocus();
-
-               Label label = new Label(xNavComp, SWT.None);
-               String str = getWhoAmI();
-               if (AtsUtil.isAtsAdmin()) {
-                  str += " - Admin";
-               }
-               if (!str.equals("")) {
-                  if (AtsUtil.isAtsAdmin()) {
-                     label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
-                  } else {
-                     label.setForeground(Displays.getSystemColor(SWT.COLOR_BLUE));
+               try {
+                  showBusy(false);
+                  if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
+                     return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, "Navigate View - !dbConnectionIsOk");
                   }
+
+                  if (Widgets.isAccessible(loadingComposite)) {
+                     loadingComposite.dispose();
+                  }
+                  xNavComp = new AtsNavigateComposite(AtsNavigateViewItems.getInstance(), parent, SWT.NONE);
+
+                  AtsPlugin.getInstance().setHelp(xNavComp, HELP_CONTEXT_ID, "org.eclipse.osee.ats.help.ui");
+                  createToolBar();
+
+                  // add search text box      
+                  new AtsQuickSearchComposite(xNavComp, SWT.NONE);
+
+                  if (savedFilterStr != null) {
+                     xNavComp.getFilteredTree().getFilterControl().setText(savedFilterStr);
+                  }
+                  xNavComp.refresh();
+                  xNavComp.getFilteredTree().getFilterControl().setFocus();
+
+                  Label label = new Label(xNavComp, SWT.None);
+                  String str = getWhoAmI();
+                  if (AtsUtil.isAtsAdmin()) {
+                     str += " - Admin";
+                  }
+                  if (!str.equals("")) {
+                     if (AtsUtil.isAtsAdmin()) {
+                        label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
+                     } else {
+                        label.setForeground(Displays.getSystemColor(SWT.COLOR_BLUE));
+                     }
+                  }
+                  label.setText(str);
+                  label.setToolTipText(str);
+                  GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_CENTER | GridData.VERTICAL_ALIGN_CENTER);
+                  gridData.heightHint = 15;
+                  label.setLayoutData(gridData);
+
+                  OseeContributionItem.addTo(navView, false);
+                  xNavComp.layout();
+
+                  addExtensionPointListenerBecauseOfWorkspaceLoading();
+
+               } catch (Exception ex) {
+                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
                }
-               label.setText(str);
-               label.setToolTipText(str);
-               GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_CENTER | GridData.VERTICAL_ALIGN_CENTER);
-               gridData.heightHint = 15;
-               label.setLayoutData(gridData);
-
-               OseeContributionItem.addTo(navView, false);
-               xNavComp.layout();
-
-               addExtensionPointListenerBecauseOfWorkspaceLoading();
-
                return Status.OK_STATUS;
             }
          };
