@@ -95,7 +95,7 @@ public class AccessCollectorTest {
       filters.add(artifactAccessFilter);
       filters.add(branchAccessFilter);
 
-      AccessCollector collector = new AccessCollector(filters);
+      AccessCollector<IAttributeType> collector = new AccessCollector<IAttributeType>(filters);
       Assert.assertTrue(collector.getAttributeTypesToMatch(basicArtifact, Arrays.asList(wordAttrType, phoneType),
          PermissionEnum.WRITE).size() == 2);
       Assert.assertTrue(collector.getAttributeTypesToMatch(basicArtifact, Arrays.asList(wordAttrType, phoneType),
