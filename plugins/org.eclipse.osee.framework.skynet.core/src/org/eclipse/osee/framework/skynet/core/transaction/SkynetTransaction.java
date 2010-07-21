@@ -60,6 +60,7 @@ import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModifiedBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTransactionData;
 
@@ -277,27 +278,33 @@ public class SkynetTransaction extends AbstractOperation {
       link.setNotDirty();
 
       ModificationType modificationType;
+      RelationEventType relationEventType; // needed until persist undeleted modtypes and modified == rational only change
 
       Artifact aArtifact = ArtifactCache.getActive(link.getAArtifactId(), link.getABranch());
       Artifact bArtifact = ArtifactCache.getActive(link.getBArtifactId(), link.getBBranch());
       if (link.isInDb()) {
-         if (link.isDeleted()) {
-
+         if (link.isUnDeleted()) {
+            modificationType = ModificationType.MODIFIED; // Temporary until UNDELETED persisted to DB
+            relationEventType = RelationEventType.Undeleted;
+         } else if (link.isDeleted()) {
             if (aArtifact != null && aArtifact.isDeleted() || bArtifact != null && bArtifact.isDeleted()) {
                modificationType = ModificationType.ARTIFACT_DELETED;
+               relationEventType = RelationEventType.Deleted;
             } else {
                modificationType = ModificationType.DELETED;
+               relationEventType = RelationEventType.Deleted;
             }
          } else {
             modificationType = ModificationType.MODIFIED;
+            relationEventType = RelationEventType.ModifiedRationale;
          }
       } else {
          if (link.isDeleted()) {
             return;
          }
-
          link.internalSetRelationId(ConnectionHandler.getSequence().getNextRelationId());
          modificationType = ModificationType.NEW;
+         relationEventType = RelationEventType.Added;
       }
 
       persitRelatedArtifact(aArtifact);
@@ -305,7 +312,7 @@ public class SkynetTransaction extends AbstractOperation {
 
       BaseTransactionData txItem = transactionDataItems.get(RelationTransactionData.class, link.getId());
       if (txItem == null) {
-         txItem = new RelationTransactionData(link, modificationType);
+         txItem = new RelationTransactionData(link, modificationType, relationEventType);
          transactionDataItems.put(RelationTransactionData.class, link.getId(), txItem);
       } else {
          updateTxItem(txItem, modificationType);

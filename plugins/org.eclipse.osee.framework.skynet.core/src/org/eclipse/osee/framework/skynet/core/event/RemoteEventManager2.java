@@ -234,6 +234,7 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
                               guidArt.getArtBId(), branch, branch);
                   if (relation != null) {
                      relation.internalSetRationale(guidArt.getRationale());
+                     relation.setNotDirty();
                   }
                } else if (eventType == RelationEventType.Undeleted) {
                   RelationLink relation =
@@ -241,6 +242,7 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
                               guidArt.getArtBId(), branch, branch);
                   if (relation != null) {
                      relation.undelete();
+                     relation.setNotDirty();
                   }
                } else if (eventType == RelationEventType.ReOrdered) {
                   // TODO Handle this

@@ -71,6 +71,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ExceptionComposite;
+import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -181,15 +182,17 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       List<IOperation> ops = new ArrayList<IOperation>();
       ops.add(AtsBulkLoad.getConfigLoadingOperation());
       IOperation operation = new CompositeOperation("Load SMA Workflow Tab", AtsPlugin.PLUGIN_ID, ops);
-      Operations.executeAsJob(operation, true, Job.LONG, new ReloadJobChangeAdapter());
+      Operations.executeAsJob(operation, true, Job.LONG, new ReloadJobChangeAdapter(sma.getEditor()));
 
       // Don't put in operation cause doesn't have to be loaded before editor displays
       OseeDictionary.load();
    }
-
    private final class ReloadJobChangeAdapter extends JobChangeAdapter {
 
-      private ReloadJobChangeAdapter() {
+      private final IDirtiableEditor editor;
+
+      private ReloadJobChangeAdapter(IDirtiableEditor editor) {
+         this.editor = editor;
          showBusy(true);
       }
 
@@ -217,6 +220,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
                   createAtsBody();
                   addMessageDecoration(scrolledForm);
                   FormsUtil.addHeadingGradient(toolkit, scrolledForm, true);
+                  editor.onDirtied();
                } catch (OseeCoreException ex) {
                   handleException(ex);
                } finally {
@@ -669,15 +673,12 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
    public void refresh() throws OseeCoreException {
       if (sma.getEditor() != null && !sma.isInTransition()) {
-         System.out.println("refreshing...");
          // remove all pages
          for (SMAWorkFlowSection section : sections) {
             section.dispose();
          }
          // add pages back
          refreshData();
-      } else {
-         System.out.println("not refreshing...");
       }
    }
 

@@ -26,7 +26,8 @@ public enum ModificationType implements Serializable {
 
    // Artifact if any Attribute was changed (not Relation)
    // Attribute if its value was modified
-   // Relation if rationale or ordering change
+   // Relation if rationale changes
+   // Relation temporarily set to this value in database UnDeleted in memory; this way until UNDELETED persisted to DB
    MODIFIED("Modified", 2),
 
    // Artifact, Attribute or Relation was deleted
@@ -45,6 +46,7 @@ public enum ModificationType implements Serializable {
    INTRODUCED("Introduced", 6),
 
    // Previously deleted artifact, attribute, or relation has been reinstated
+   // Relation can be in this state in memory, but this mod type is persisted as MODIFIED
    UNDELETED("Undeleted", 7);
 
    private final static Set<ModificationType> ALL_NONE_HARD_DELETED = new HashSet<ModificationType>();
@@ -98,6 +100,10 @@ public enum ModificationType implements Serializable {
 
    public boolean isDeleted() {
       return this == DELETED || this == ARTIFACT_DELETED;
+   }
+
+   public boolean isUnDeleted() {
+      return this == UNDELETED;
    }
 
    public static Set<ModificationType> getCurrentModTypes() {

@@ -139,6 +139,10 @@ public class RelationLink {
       return modificationType.isDeleted();
    }
 
+   public boolean isUnDeleted() {
+      return modificationType.isUnDeleted();
+   }
+
    public boolean isDirty() {
       return dirty;
    }
@@ -404,12 +408,12 @@ public class RelationLink {
       if (obj instanceof RelationLink) {
          RelationLink other = (RelationLink) obj;
          boolean result = aArtifactId == other.aArtifactId && aBranch.equals(other.aBranch) &&
-               //
-               bArtifactId == other.bArtifactId && bBranch.equals(other.bBranch) &&
-               //
-               other.modificationType == modificationType &&
-               //
-               relationType.equals(other.relationType);
+         //
+         bArtifactId == other.bArtifactId && bBranch.equals(other.bBranch) &&
+         //
+         other.modificationType == modificationType &&
+         //
+         relationType.equals(other.relationType);
 
          // This should eventually be removed once DB cleanup occurs
          return result && relationId == other.relationId;
@@ -425,12 +429,12 @@ public class RelationLink {
       if (obj instanceof RelationLink) {
          RelationLink other = (RelationLink) obj;
          boolean result = aArtifactId == other.aArtifactId && aBranch.equals(other.aBranch) &&
-               //
-               bArtifactId == other.bArtifactId && bBranch.equals(other.bBranch) &&
-               //
-               other.modificationType == modificationType &&
-               //
-               relationType.equals(other.relationType);
+         //
+         bArtifactId == other.bArtifactId && bBranch.equals(other.bBranch) &&
+         //
+         other.modificationType == modificationType &&
+         //
+         relationType.equals(other.relationType);
 
          return result;
       }

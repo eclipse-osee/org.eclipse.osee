@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.relation;
 
-import java.util.logging.Level;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -18,12 +17,10 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidRelation;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.OseeSql;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event.RelationModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidRelation;
-import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
@@ -36,10 +33,12 @@ public class RelationTransactionData extends BaseTransactionData {
          "INSERT INTO osee_relation_link (rel_link_id, rel_link_type_id, a_art_id, b_art_id, rationale, gamma_id) VALUES (?,?,?,?,?,?)";
 
    private final RelationLink relation;
+   private final RelationEventType relationEventType;
 
-   public RelationTransactionData(RelationLink relation, ModificationType modificationType) throws OseeDataStoreException {
+   public RelationTransactionData(RelationLink relation, ModificationType modificationType, RelationEventType relationEventType) throws OseeDataStoreException {
       super(relation.getId(), modificationType);
       this.relation = relation;
+      this.relationEventType = relationEventType;
    }
 
    @Override
@@ -84,31 +83,22 @@ public class RelationTransactionData extends BaseTransactionData {
 
    @Override
    protected void internalAddToEvents(ArtifactEvent artifactEvent) throws OseeCoreException {
-      RelationEventType relationEventType =
-            getModificationType().isDeleted() ? RelationEventType.Deleted : RelationEventType.Added;
-      artifactEvent.getSkynetTransactionDetails().add(
-            new RelationModifiedEvent(new Sender(this.getClass().getName()), relationEventType, relation,
-                  relation.getBranch(), relation.getRelationType().getName()));
       DefaultBasicGuidRelation defaultBasicGuidRelation =
             new DefaultBasicGuidRelation(relation.getBranch().getGuid(), relation.getRelationType().getGuid(),
                   relation.getId(), relation.getGammaId(), relation.getArtifactA().getBasicGuidArtifact(),
                   relation.getArtifactB().getBasicGuidArtifact());
-      if (getModificationType() == ModificationType.ARTIFACT_DELETED || getModificationType() == ModificationType.DELETED) {
-         artifactEvent.getRelations().add(
-               new EventBasicGuidRelation(RelationEventType.Deleted, relation.getAArtifactId(),
-                     relation.getBArtifactId(), defaultBasicGuidRelation));
-      } else if (getModificationType() == ModificationType.MODIFIED) {
-         EventBasicGuidRelation event =
-               new EventBasicGuidRelation(RelationEventType.ModifiedRationale, relation.getAArtifactId(),
-                     relation.getBArtifactId(), defaultBasicGuidRelation);
+      artifactEvent.setBranchGuid(relation.getBranch().getGuid());
+      EventBasicGuidRelation event =
+            new EventBasicGuidRelation(relationEventType, relation.getAArtifactId(), relation.getBArtifactId(),
+                  defaultBasicGuidRelation);
+      if (relationEventType == RelationEventType.ModifiedRationale) {
          event.setRationale(relation.getRationale());
-         artifactEvent.getRelations().add(event);
-      } else if (getModificationType() == ModificationType.INTRODUCED || getModificationType() == ModificationType.NEW || getModificationType() == ModificationType.UNDELETED) {
-         artifactEvent.getRelations().add(
-               new EventBasicGuidRelation(RelationEventType.Added, relation.getAArtifactId(),
-                     relation.getBArtifactId(), defaultBasicGuidRelation));
-      } else {
-         OseeLog.log(Activator.class, Level.SEVERE, "Unhandled relation modified type " + relationEventType);
       }
+      artifactEvent.getRelations().add(event);
+
+      artifactEvent.getSkynetTransactionDetails().add(
+            new RelationModifiedEvent(new Sender(this.getClass().getName()), relationEventType, relation,
+                  relation.getBranch(), relation.getRelationType().getName()));
+
    }
 }
