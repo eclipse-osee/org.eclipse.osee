@@ -34,10 +34,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
-import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -62,7 +58,7 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
  * 
  * @author Donald G. Dunne
  */
-public class ReviewInfoXWidget extends XLabelValueBase implements IFrameworkTransactionEventListener {
+public class ReviewInfoXWidget extends XLabelValueBase {
 
    private final String forStateName;
    private final ArrayList<Label> labelWidgets = new ArrayList<Label>();
@@ -81,8 +77,6 @@ public class ReviewInfoXWidget extends XLabelValueBase implements IFrameworkTran
       this.forStateName = forStateName;
       this.composite = composite;
       this.horizontalSpan = horizontalSpan;
-      OseeEventManager.addListener(this);
-
       reDisplay();
    }
 
@@ -263,31 +257,6 @@ public class ReviewInfoXWidget extends XLabelValueBase implements IFrameworkTran
             SMAEditor.editArtifact(revArt);
          }
       });
-   }
-
-   @Override
-   public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) throws OseeCoreException {
-      if (teamArt.isInTransition()) {
-         return;
-      }
-      if (transData.branchId != AtsUtil.getAtsBranch().getId()) {
-         return;
-      }
-      for (ReviewSMArtifact reviewArt : ReviewManager.getReviews(teamArt, forStateName)) {
-         if (transData.isHasEvent(reviewArt)) {
-            Displays.ensureInDisplayThread(new Runnable() {
-               @Override
-               public void run() {
-                  reDisplay();
-               }
-            });
-         }
-      }
-   }
-
-   @Override
-   public void dispose() {
-      OseeEventManager.removeListener(this);
    }
 
    public void addAdminRightClickOption() throws OseeCoreException {

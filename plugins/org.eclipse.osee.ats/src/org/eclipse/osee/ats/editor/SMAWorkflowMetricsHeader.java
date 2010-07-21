@@ -16,17 +16,11 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
-import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.swt.ALayout;
-import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -37,7 +31,7 @@ import org.eclipse.swt.widgets.Label;
  * 
  * @author Donald G. Dunne
  */
-public class SMAWorkflowMetricsHeader extends Composite implements IFrameworkTransactionEventListener {
+public class SMAWorkflowMetricsHeader extends Composite {
 
    private final StateMachineArtifact sma;
    private Label percentLabel, estHoursLabel, hoursSpentLabel, remainHoursLabel;
@@ -65,8 +59,6 @@ public class SMAWorkflowMetricsHeader extends Composite implements IFrameworkTra
                      WorldXViewerFactory.Remaining_Hours_Col.getDescription());
 
          refresh();
-
-         OseeEventManager.addListener(this);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
@@ -74,7 +66,6 @@ public class SMAWorkflowMetricsHeader extends Composite implements IFrameworkTra
 
    private void refresh() throws OseeCoreException {
       if (percentLabel.isDisposed()) {
-         OseeEventManager.removeListener(this);
          return;
       }
       try {
@@ -94,32 +85,6 @@ public class SMAWorkflowMetricsHeader extends Composite implements IFrameworkTra
 
       percentLabel.update();
       layout();
-   }
-
-   @Override
-   public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
-      if (sma.isInTransition()) return;
-      if (transData.branchId != AtsUtil.getAtsBranch().getId()) return;
-      if (sma.isDeleted()) {
-         OseeEventManager.removeListener(this);
-         return;
-      }
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            try {
-               refresh();
-            } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-      });
-   }
-
-   @Override
-   public void dispose() {
-      OseeEventManager.removeListener(this);
-      super.dispose();
    }
 
 }

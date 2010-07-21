@@ -21,10 +21,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
-import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.XLabelValueBase;
@@ -42,7 +38,7 @@ import org.eclipse.ui.forms.IMessageManager;
  * 
  * @author Donald G. Dunne
  */
-public class TaskInfoXWidget extends XLabelValueBase implements IFrameworkTransactionEventListener {
+public class TaskInfoXWidget extends XLabelValueBase {
 
    private final String forStateName;
    private final IManagedForm managedForm;
@@ -55,7 +51,6 @@ public class TaskInfoXWidget extends XLabelValueBase implements IFrameworkTransa
       this.forStateName = forStateName;
       setToolTip("Tasks must be completed before transtion.  Select \"Task\" tab to view tasks");
       setFillHorizontally(true);
-      OseeEventManager.addListener(this);
       createWidgets(managedForm, composite, horizontalSpan);
       addAdminRightClickOption();
    }
@@ -94,31 +89,6 @@ public class TaskInfoXWidget extends XLabelValueBase implements IFrameworkTransa
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
       }
-   }
-
-   @Override
-   public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) throws OseeCoreException {
-      if (taskableArt.isInTransition()) {
-         return;
-      }
-      if (transData.branchId != AtsUtil.getAtsBranch().getId()) {
-         return;
-      }
-      for (TaskArtifact taskArt : taskableArt.getTaskArtifacts(forStateName)) {
-         if (transData.isHasEvent(taskArt)) {
-            Displays.ensureInDisplayThread(new Runnable() {
-               @Override
-               public void run() {
-                  refresh();
-               }
-            });
-         }
-      }
-   }
-
-   @Override
-   public void dispose() {
-      OseeEventManager.removeListener(this);
    }
 
    public void addAdminRightClickOption() {

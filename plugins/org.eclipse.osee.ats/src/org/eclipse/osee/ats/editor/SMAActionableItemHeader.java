@@ -18,10 +18,6 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
-import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -38,7 +34,7 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
  * 
  * @author Donald G. Dunne
  */
-public class SMAActionableItemHeader extends Composite implements IFrameworkTransactionEventListener {
+public class SMAActionableItemHeader extends Composite {
 
    private static String ACTION_ACTIONABLE_ITEMS = "Actionable Items: ";
    private Hyperlink link;
@@ -79,7 +75,6 @@ public class SMAActionableItemHeader extends Composite implements IFrameworkTran
          label = toolkit.createLabel(this, " ");
          refresh();
 
-         OseeEventManager.addListener(this);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
@@ -87,7 +82,6 @@ public class SMAActionableItemHeader extends Composite implements IFrameworkTran
 
    private void refresh() throws OseeCoreException {
       if (label.isDisposed()) {
-         OseeEventManager.removeListener(this);
          return;
       }
       final TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) sma;
@@ -122,40 +116,6 @@ public class SMAActionableItemHeader extends Composite implements IFrameworkTran
          label.update();
          layout();
       }
-   }
-
-   @Override
-   public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
-      if (sma.isInTransition()) return;
-      if (transData.branchId != AtsUtil.getAtsBranch().getId()) return;
-      if (sma.isDeleted()) {
-         OseeEventManager.removeListener(this);
-         return;
-      }
-      // Since SMAEditor is refreshed when a sibling workflow is changed, need to refresh this
-      // list of actionable items when a sibling changes
-      for (TeamWorkFlowArtifact teamWf : sma.getParentActionArtifact().getTeamWorkFlowArtifacts()) {
-         if (!sma.equals(teamWf) && (transData.isChanged(teamWf) || transData.isRelAdded(teamWf.getParentActionArtifact()) || transData.isRelDeleted(teamWf.getParentActionArtifact()))) {
-            Displays.ensureInDisplayThread(new Runnable() {
-               @Override
-               public void run() {
-                  try {
-                     refresh();
-                  } catch (OseeCoreException ex) {
-                     OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-                  }
-               }
-            });
-            // Only need to refresh once
-            return;
-         }
-      }
-   }
-
-   @Override
-   public void dispose() {
-      OseeEventManager.removeListener(this);
-      super.dispose();
    }
 
 }
