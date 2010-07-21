@@ -24,7 +24,8 @@ public enum BranchEventType {
    TypeUpdated(EventType.LocalAndRemote, "AAn_QHLW4DKKbUkEZggA"),
    StateUpdated(EventType.LocalAndRemote, "AAn_QHQdKhxNLtWPchAA"),
    ArchiveStateUpdated(EventType.LocalAndRemote, "AAn_QHS7Zhr6OLhKl3gA"),
-   MergeConflictResolved(EventType.LocalAndRemote, "AAn_QHiJ53W5W_k8W7AA");
+   MergeConflictResolved(EventType.LocalAndRemote, "AAn_QHiJ53W5W_k8W7AA"),
+   FavoritesUpdated(EventType.LocalOnly, "AFRkIheIUn3Jpz4kNBgA");
 
    private final EventType eventType;
    private final String guid;
