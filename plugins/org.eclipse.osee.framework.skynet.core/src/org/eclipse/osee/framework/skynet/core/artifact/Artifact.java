@@ -33,8 +33,6 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
-import org.eclipse.osee.framework.core.data.Identity;
-import org.eclipse.osee.framework.core.data.Named;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -72,7 +70,6 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.res.AttributeEventModificationType;
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetAttributeChange;
@@ -96,14 +93,14 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.osgi.framework.Bundle;
 
-public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Named, Identity, IBasicGuidArtifact {
+public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IBasicGuidArtifact {
    public static final String UNNAMED = "Unnamed";
    public static final String BEFORE_GUID_STRING = "/BeforeGUID/PrePend";
    public static final String AFTER_GUID_STRING = "/AfterGUID";
    public static final int TRANSACTION_SENTINEL = -1;
 
    private final HashCollection<String, Attribute<?>> attributes = new HashCollection<String, Attribute<?>>(false,
-         LinkedList.class, 12);
+      LinkedList.class, 12);
    private final Branch branch;
    private final String guid;
    private String humanReadableId;
@@ -188,6 +185,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
       return RelationManager.getRelatedArtifacts(this, new RelationTypeSide(relationType, RelationSide.SIDE_B));
    }
 
+   @Override
    public List<? extends IArtifact> getRelatedArtifacts(RelationTypeSide relationTypeSide) throws OseeCoreException {
       return RelationManager.getRelatedArtifacts(this, relationTypeSide);
    }
@@ -207,13 +205,13 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
    public String getRelationRationale(Artifact artifact, IRelationEnumeration relationTypeSide) throws OseeCoreException {
       Pair<Artifact, Artifact> sides = determineArtifactSides(artifact, relationTypeSide);
       return RelationManager.getRelationRationale(sides.getFirst(), sides.getSecond(),
-            RelationTypeManager.getType(relationTypeSide));
+         RelationTypeManager.getType(relationTypeSide));
    }
 
    public void setRelationRationale(Artifact artifact, IRelationEnumeration relationTypeSide, String rationale) throws OseeCoreException {
       Pair<Artifact, Artifact> sides = determineArtifactSides(artifact, relationTypeSide);
       RelationManager.setRelationRationale(sides.getFirst(), sides.getSecond(),
-            RelationTypeManager.getType(relationTypeSide), rationale);
+         RelationTypeManager.getType(relationTypeSide), rationale);
    }
 
    private Pair<Artifact, Artifact> determineArtifactSides(Artifact artifact, IRelationEnumeration relationSide) {
@@ -252,12 +250,12 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
 
    public int getRelatedArtifactsCount(IRelationEnumeration relationEnum) throws OseeCoreException {
       return RelationManager.getRelatedArtifactsCount(this, RelationTypeManager.getType(relationEnum),
-            relationEnum.getSide());
+         relationEnum.getSide());
    }
 
    public int getRelatedArtifactsCount(RelationTypeSideSorter relationSorter) throws OseeCoreException {
       return RelationManager.getRelatedArtifactsCount(relationSorter.getArtifact(), relationSorter.getRelationType(),
-            relationSorter.getSide());
+         relationSorter.getSide());
    }
 
    public <A extends Artifact> List<A> getRelatedArtifactsUnSorted(IRelationEnumeration side, Class<A> clazz) throws OseeCoreException {
@@ -301,6 +299,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
    /**
     * @return Returns the art_id.
     */
+   @Override
    public int getArtId() {
       return artId;
    }
@@ -315,10 +314,12 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
    /**
     * @return Returns the branch.
     */
+   @Override
    public Branch getBranch() {
       return branch;
    }
 
+   @Override
    public String getGuid() {
       return guid;
    }
@@ -489,7 +490,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
    @SuppressWarnings("unchecked")
    private <T> Attribute<T> createAttribute(IAttributeType attributeType) throws OseeCoreException {
       Class<? extends Attribute<T>> attributeClass =
-            (Class<? extends Attribute<T>>) AttributeTypeManager.getAttributeBaseClass(attributeType);
+         (Class<? extends Attribute<T>>) AttributeTypeManager.getAttributeBaseClass(attributeType);
       Attribute<T> attribute = null;
       try {
          attribute = attributeClass.newInstance();
@@ -602,12 +603,12 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
     */
    public <T> List<Attribute<T>> getAttributes(String attributeTypeName) throws OseeCoreException {
       return Collections.castAll(getAttributesByModificationType(attributeTypeName,
-            ModificationType.getCurrentModTypes()));
+         ModificationType.getCurrentModTypes()));
    }
 
    public <T> List<Attribute<T>> getAttributes(IAttributeType attributeType) throws OseeCoreException {
       return Collections.castAll(getAttributesByModificationType(attributeType.getName(),
-            ModificationType.getCurrentModTypes()));
+         ModificationType.getCurrentModTypes()));
    }
 
    private List<Attribute<?>> getAttributesByModificationType(Set<ModificationType> allowedModTypes) throws OseeCoreException {
@@ -688,8 +689,8 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
          return null;
       } else if (soleAttributes.size() > 1) {
          throw new MultipleAttributesExist(String.format(
-               "The attribute \'%s\' can have no more than one instance for sole attribute operations; guid \'%s\'",
-               attributeTypeName, getGuid()));
+            "The attribute \'%s\' can have no more than one instance for sole attribute operations; guid \'%s\'",
+            attributeTypeName, getGuid()));
       }
       return soleAttributes.iterator().next();
    }
@@ -698,7 +699,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
       Attribute<T> attribute = getSoleAttribute(attributeTypeName);
       if (attribute == null) {
          attribute =
-               initializeAttribute(AttributeTypeManager.getType(attributeTypeName), ModificationType.NEW, true, true);
+            initializeAttribute(AttributeTypeManager.getType(attributeTypeName), ModificationType.NEW, true, true);
       }
       return attribute;
    }
@@ -707,7 +708,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
     * @param <T>
     * @param attributeTypeName
     * @return the existing attribute value or the default value from a newly initialized attribute if none previously
-    *         existed
+    * existed
     * @throws OseeCoreException
     */
    public <T> T getOrInitializeSoleAttributeValue(String attributeTypeName) throws OseeCoreException {
@@ -735,14 +736,14 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
       if (soleAttributes.isEmpty()) {
          if (!isAttributeTypeValid(attributeTypeName)) {
             throw new OseeArgumentException(String.format(
-                  "The attribute type %s is not valid for artifacts of type [%s]", attributeTypeName,
-                  getArtifactTypeName()));
+               "The attribute type %s is not valid for artifacts of type [%s]", attributeTypeName,
+               getArtifactTypeName()));
          }
          throw new AttributeDoesNotExist(
-               "Attribute \"" + attributeTypeName + "\" does not exist for artifact " + getGuid());
+            "Attribute \"" + attributeTypeName + "\" does not exist for artifact " + getGuid());
       } else if (soleAttributes.size() > 1) {
          throw new MultipleAttributesExist(
-               "Attribute \"" + attributeTypeName + "\" must have exactly one instance.  It currently has " + soleAttributes.size() + " for artifact " + getGuid());
+            "Attribute \"" + attributeTypeName + "\" must have exactly one instance.  It currently has " + soleAttributes.size() + " for artifact " + getGuid());
       }
       return soleAttributes.iterator().next().getValue();
    }
@@ -809,15 +810,15 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
          T value = soleAttributes.iterator().next().getValue();
          if (value == null) {
             OseeLog.log(
-                  Activator.class,
-                  Level.SEVERE,
-                  "Attribute \"" + attributeTypeName + "\" has null value for Artifact " + getGuid() + " \"" + getName() + "\"");
+               Activator.class,
+               Level.SEVERE,
+               "Attribute \"" + attributeTypeName + "\" has null value for Artifact " + getGuid() + " \"" + getName() + "\"");
             return defaultReturnValue;
          }
          return value;
       } else if (soleAttributes.size() > 1) {
          throw new MultipleAttributesExist(
-               "Attribute \"" + attributeTypeName + "\" must have exactly one instance.  It currently has " + soleAttributes.size() + " for artifact " + getGuid());
+            "Attribute \"" + attributeTypeName + "\" must have exactly one instance.  It currently has " + soleAttributes.size() + " for artifact " + getGuid());
       } else {
          return defaultReturnValue;
       }
@@ -1050,7 +1051,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
     */
    public void addAttributeFromString(String attributeTypeName, String value) throws OseeCoreException {
       initializeAttribute(AttributeTypeManager.getType(attributeTypeName), ModificationType.NEW, true, false).setFromString(
-            value);
+         value);
    }
 
    /**
@@ -1096,6 +1097,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
       return getAttributesToStringList(attributeType.getName());
    }
 
+   @Override
    public String getName() {
       String name = null;
       try {
@@ -1201,7 +1203,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
    public boolean isReadOnly() {
       try {
          return isDeleted() || isHistorical() || !getBranch().isEditable() || !getAccessControlService().hasPermission(
-               this, PermissionEnum.WRITE);
+            this, PermissionEnum.WRITE);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          return true;
@@ -1241,13 +1243,13 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
 
    private final void persistAttributes(SkynetTransaction transaction) throws OseeCoreException {
       if (!UserManager.duringMainUserCreation() && !getAccessControlService().hasPermission(getBranch(),
-            PermissionEnum.WRITE)) {
+         PermissionEnum.WRITE)) {
          throw new OseeArgumentException(
-               "No write permissions for the branch that this artifact belongs to:" + getBranch());
+            "No write permissions for the branch that this artifact belongs to:" + getBranch());
       }
       if (isHistorical()) {
          throw new OseeArgumentException(
-               "The artifact " + getGuid() + " must be at the head of the branch to be edited.");
+            "The artifact " + getGuid() + " must be at the head of the branch to be edited.");
       }
 
       if (hasDirtyAttributes() || hasDirtyArtifactType()) {
@@ -1293,7 +1295,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
 
       for (Artifact child : getChildren()) {
          if (caseSensitive && child.getName().equals(humanReadableId) || !caseSensitive && child.getName().equalsIgnoreCase(
-               humanReadableId)) {
+            humanReadableId)) {
             descendants.add(child);
          }
          descendants.addAll(child.getDescendants(humanReadableId, caseSensitive));
@@ -1366,7 +1368,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
    public void addRelation(IRelationSorterId sorterId, IRelationEnumeration relationTypeSide, Artifact artifact, String rationale) throws OseeCoreException {
       Pair<Artifact, Artifact> sides = determineArtifactSides(artifact, relationTypeSide);
       RelationManager.addRelation(sorterId, RelationTypeManager.getType(relationTypeSide), sides.getFirst(),
-            sides.getSecond(), rationale);
+         sides.getSecond(), rationale);
    }
 
    public void addRelation(IRelationEnumeration relationSide, Artifact artifact) throws OseeCoreException {
@@ -1383,13 +1385,13 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
       Artifact artifactB = sideA ? this : itemToAdd;
 
       RelationManager.addRelation(sorterId, RelationTypeManager.getType(relationEnumeration), artifactA, artifactB,
-            rationale);
+         rationale);
       setRelationOrder(relationEnumeration, targetArtifact, insertAfterTarget, itemToAdd);
    }
 
    public void setRelationOrder(IRelationEnumeration relationSide, List<Artifact> artifactsInNewOrder) throws OseeCoreException {
       RelationManager.setRelationOrder(this, RelationTypeManager.getType(relationSide), relationSide.getSide(),
-            RelationOrderBaseTypes.USER_DEFINED, artifactsInNewOrder);
+         RelationOrderBaseTypes.USER_DEFINED, artifactsInNewOrder);
    }
 
    public void setRelationOrder(IRelationEnumeration relationEnumeration, IRelationSorterId orderId) throws OseeCoreException {
@@ -1398,7 +1400,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
       } else {
          List<Artifact> empty = java.util.Collections.emptyList();
          RelationManager.setRelationOrder(this, RelationTypeManager.getType(relationEnumeration),
-               relationEnumeration.getSide(), orderId, empty);
+            relationEnumeration.getSide(), orderId, empty);
       }
    }
 
@@ -1417,7 +1419,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
       }
 
       RelationManager.setRelationOrder(this, RelationTypeManager.getType(relationEnumeration),
-            relationEnumeration.getSide(), RelationOrderBaseTypes.USER_DEFINED, currentOrder);
+         relationEnumeration.getSide(), RelationOrderBaseTypes.USER_DEFINED, currentOrder);
    }
 
    public void deleteRelation(IRelationEnumeration relationTypeSide, Artifact artifact) throws OseeCoreException {
@@ -1466,8 +1468,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
     */
    public void setRelationsOfTypeUseCurrentOrder(IRelationEnumeration relationSide, Collection<? extends Artifact> artifacts, Class<?> clazz) throws OseeCoreException {
       RelationTypeSideSorter sorter =
-            RelationManager.createTypeSideSorter(this, RelationTypeManager.getType(relationSide),
-                  relationSide.getSide());
+         RelationManager.createTypeSideSorter(this, RelationTypeManager.getType(relationSide), relationSide.getSide());
       Collection<Artifact> currentlyRelated = getRelatedArtifacts(relationSide, Artifact.class);
       // Add new relations if don't exist
       for (Artifact artifact : artifacts) {
@@ -1498,13 +1499,14 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
 
    public static boolean isUniqueHRID(String id) throws OseeDataStoreException {
       String DUPLICATE_HRID_SEARCH =
-            "select count(1) from (select DISTINCT(art_id) from osee_artifact where human_readable_id = ?) t1";
+         "select count(1) from (select DISTINCT(art_id) from osee_artifact where human_readable_id = ?) t1";
       return ConnectionHandler.runPreparedQueryFetchLong(0L, DUPLICATE_HRID_SEARCH, id) <= 0;
    }
 
    /**
     * @return Returns the descriptor.
     */
+   @Override
    public ArtifactType getArtifactType() {
       return artifactType;
    }
@@ -1600,16 +1602,16 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
 
    private Artifact reflectHelper(IOseeBranch branch) throws OseeCoreException {
       Artifact reflectedArtifact =
-            ArtifactTypeManager.getFactory(artifactType).reflectExisitingArtifact(artId, guid, humanReadableId,
-                  artifactType, gammaId, branch, ModificationType.INTRODUCED);
+         ArtifactTypeManager.getFactory(artifactType).reflectExisitingArtifact(artId, guid, humanReadableId,
+            artifactType, gammaId, branch, ModificationType.INTRODUCED);
 
       for (Attribute<?> sourceAttribute : attributes.getValues()) {
          // In order to reflect attributes they must exist in the data store
          // and be valid for the destination branch as well
          if (sourceAttribute.isInDb() && reflectedArtifact.isAttributeTypeValid(sourceAttribute.getAttributeType())) {
             reflectedArtifact.internalInitializeAttribute(sourceAttribute.getAttributeType(), sourceAttribute.getId(),
-                  sourceAttribute.getGammaId(), ModificationType.INTRODUCED, true,
-                  sourceAttribute.getAttributeDataProvider().getData());
+               sourceAttribute.getGammaId(), ModificationType.INTRODUCED, true,
+               sourceAttribute.getAttributeDataProvider().getData());
          }
       }
       return reflectedArtifact;
@@ -1667,8 +1669,8 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
       for (Attribute<?> attribute : internalGetAttributes()) {
          if (attribute.isDirty()) {
             dirtyAttributes.add(new SkynetAttributeChange(attribute.getAttributeType().getId(),
-                  attribute.getAttributeDataProvider().getData(), attribute.getModificationType(), attribute.getId(),
-                  attribute.getGammaId()));
+               attribute.getAttributeDataProvider().getData(), attribute.getModificationType(), attribute.getId(),
+               attribute.getGammaId()));
          }
       }
       return dirtyAttributes;
@@ -1690,8 +1692,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
                } else if (obj instanceof String) {
                   change.getData().add((String) obj);
                } else {
-                  OseeLog.log(Activator.class, OseeLevel.SEVERE,
-                        "Unhandled data type " + obj.getClass().getSimpleName());
+                  OseeLog.log(Activator.class, Level.SEVERE, "Unhandled data type " + obj.getClass().getSimpleName());
                }
             }
             dirtyAttributes.add(change);
@@ -1724,7 +1725,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
 
    private static final Pattern safeNamePattern = Pattern.compile("[^A-Za-z0-9 ]");
    private static final String[] NUMBER = new String[] {"Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven",
-         "Eight", "Nine"};
+      "Eight", "Nine"};
 
    /**
     * Since artifact names are free text it is important to reformat the name to ensure it is suitable as an element
@@ -1756,8 +1757,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
       }
       artifactAnnotationExtensions = new HashSet<IArtifactAnnotation>();
       IExtensionPoint point =
-            Platform.getExtensionRegistry().getExtensionPoint(
-                  "org.eclipse.osee.framework.skynet.core.ArtifactAnnotation");
+         Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.framework.skynet.core.ArtifactAnnotation");
       if (point == null) {
          System.err.println("Can't access ArtifactAnnotation extension point");
          return artifactAnnotationExtensions;
@@ -1798,6 +1798,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
       return annotationMgr;
    }
 
+   @Override
    @SuppressWarnings("unchecked")
    public Object getAdapter(Class adapter) {
       if (adapter == null) {
@@ -1810,6 +1811,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
       return null;
    }
 
+   @Override
    public final int compareTo(Artifact otherArtifact) {
       if (otherArtifact == null || otherArtifact.isDeleted()) {
          return -1;
