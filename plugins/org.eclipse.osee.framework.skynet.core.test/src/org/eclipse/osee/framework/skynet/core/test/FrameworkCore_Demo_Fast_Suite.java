@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.skynet.core.test.cases.SevereLogMonitorTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.StaticIdManagerTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.TransactionManagerTest;
 import org.eclipse.osee.framework.skynet.core.test.event.EventBasicGuidArtifactTest;
+import org.eclipse.osee.framework.skynet.core.test.event.EventBasicGuidRelationTest;
 import org.eclipse.osee.framework.skynet.core.test.event.EventChangeTypeBasicGuidArtifactTest;
 import org.eclipse.osee.framework.skynet.core.test.relation.RelationTestSuite;
 import org.junit.BeforeClass;
@@ -32,21 +33,22 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({EventBasicGuidArtifactTest.class, EventChangeTypeBasicGuidArtifactTest.class,
-			ArtifactQueryTestDemo.class, TransactionManagerTest.class, BranchTestSuite.class, RelationTestSuite.class,
-			ArtifactTypeInheritanceTest.class, Artifact_setAttributeValues.class, Artifact_getLastModified.class,
-			CsvArtifactTest.class, SevereLogMonitorTest.class, RelationDeletionTest.class, StaticIdManagerTest.class,
-			DuplicateHridTest.class, RelationOrderingTest.class})
+@Suite.SuiteClasses({EventBasicGuidArtifactTest.class, EventBasicGuidRelationTest.class,
+      EventChangeTypeBasicGuidArtifactTest.class, ArtifactQueryTestDemo.class, TransactionManagerTest.class,
+      BranchTestSuite.class, RelationTestSuite.class, ArtifactTypeInheritanceTest.class,
+      Artifact_setAttributeValues.class, Artifact_getLastModified.class, CsvArtifactTest.class,
+      SevereLogMonitorTest.class, RelationDeletionTest.class, StaticIdManagerTest.class, DuplicateHridTest.class,
+      RelationOrderingTest.class})
 /**
  * @author Donald G. Dunne
  */
 public class FrameworkCore_Demo_Fast_Suite {
-	@BeforeClass
-	public static void setUp() throws Exception {
-		assertTrue("Demo Application Server must be running.",
-					ClientSessionManager.getAuthenticationProtocols().contains("demo"));
-		assertTrue("Client must authenticate using demo protocol",
-					ClientSessionManager.getSession().getAuthenticationProtocol().equals("demo"));
-	}
+   @BeforeClass
+   public static void setUp() throws Exception {
+      assertTrue("Demo Application Server must be running.",
+            ClientSessionManager.getAuthenticationProtocols().contains("demo"));
+      assertTrue("Client must authenticate using demo protocol",
+            ClientSessionManager.getSession().getAuthenticationProtocol().equals("demo"));
+   }
 
 }

@@ -124,4 +124,15 @@ public class EventBasicGuidArtifactTest {
       Assert.assertEquals(2, toAdd.size());
 
    }
+
+   @Test
+   public void testEventBasicGuidArtifactIs() throws OseeCoreException {
+      EventBasicGuidArtifact eventArt1 =
+            new EventBasicGuidArtifact(EventModType.Added, GUID.create(), GUID.create(), GUID.create());
+      Assert.assertTrue(eventArt1.is(EventModType.Added));
+      Assert.assertTrue(eventArt1.is(EventModType.Added, EventModType.ChangeType));
+      Assert.assertFalse(eventArt1.is(EventModType.ChangeType));
+      Assert.assertFalse(eventArt1.is(EventModType.Deleted, EventModType.ChangeType));
+   }
+
 }
