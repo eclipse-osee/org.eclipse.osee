@@ -350,7 +350,7 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
       }
    }
 
-   public boolean isConnected() {
+   public static boolean isConnected() {
       return OseeEventManager.isNewEvents() && ResEventManager.getInstance().isConnected();
    }
 

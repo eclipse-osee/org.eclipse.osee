@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.event.RemoteEventManager;
+import org.eclipse.osee.framework.skynet.core.event.RemoteEventManager2;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
@@ -52,10 +52,6 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
 
    XResultData resultData;
 
-   /**
-    * @param parent
-    * @throws OseeArgumentException
-    */
    public AtsRemoteEventTestItem(XNavigateItem parent) throws OseeArgumentException {
       super(parent, "ATS Remote Event Test");
    }
@@ -206,7 +202,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
    private void validateActionAtStart(ActionArtifact actionArt) throws OseeCoreException {
       resultData.log("\nValidating Start...");
       // Ensure event service is connected
-      if (!RemoteEventManager.isConnected()) {
+      if (!RemoteEventManager2.isConnected()) {
          resultData.logError("Remote Event Service is not connected");
          return;
       }
@@ -214,18 +210,18 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
 
       // Validate values
       TeamWorkFlowArtifact teamArt = actionArt.getTeamWorkFlowArtifacts().iterator().next();
-      testEquals("Description", "description", teamArt.getSoleAttributeValue(
-            ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), null));
-      testEquals("Change Type", ChangeType.Improvement.name(), teamArt.getSoleAttributeValue(
-            ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), null));
-      testEquals("Priority", PriorityType.Priority_1.getShortName(), teamArt.getSoleAttributeValue(
-            ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(), null));
+      testEquals("Description", "description",
+            teamArt.getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), null));
+      testEquals("Change Type", ChangeType.Improvement.name(),
+            teamArt.getSoleAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), null));
+      testEquals("Priority", PriorityType.Priority_1.getShortName(),
+            teamArt.getSoleAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(), null));
    }
 
    private void validateActionAtEnd(ActionArtifact actionArt) throws OseeCoreException {
       resultData.log("\nValidating End...");
       // Ensure event service is connected
-      if (!RemoteEventManager.isConnected()) {
+      if (!RemoteEventManager2.isConnected()) {
          resultData.logError("Remote Event Service is not connected");
          return;
       }
@@ -233,12 +229,12 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
 
       // Validate values
       TeamWorkFlowArtifact teamArt = actionArt.getTeamWorkFlowArtifacts().iterator().next();
-      testEquals("Description", "description 4", teamArt.getSoleAttributeValue(
-            ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), null));
-      testEquals("Change Type", ChangeType.Support.name(), teamArt.getSoleAttributeValue(
-            ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), null));
-      testEquals("Priority", PriorityType.Priority_3.getShortName(), teamArt.getSoleAttributeValue(
-            ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(), null));
+      testEquals("Description", "description 4",
+            teamArt.getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), null));
+      testEquals("Change Type", ChangeType.Support.name(),
+            teamArt.getSoleAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), null));
+      testEquals("Priority", PriorityType.Priority_3.getShortName(),
+            teamArt.getSoleAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(), null));
       testEquals("Validation Required", "false", String.valueOf(teamArt.getSoleAttributeValue(
             ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), null)));
       testEquals("Targeted Version",
