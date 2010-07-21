@@ -104,14 +104,14 @@ public class OseeGroup {
       Artifact usersGroupFolder = ArtifactCache.getByTextId(cacheKey, branch);
       if (usersGroupFolder == null) {
          usersGroupFolder =
-               ArtifactQuery.checkArtifactFromTypeAndName(CoreArtifactTypes.Folder, USERS_GROUP_FOLDER_NAME, branch);
+            ArtifactQuery.checkArtifactFromTypeAndName(CoreArtifactTypes.Folder, USERS_GROUP_FOLDER_NAME, branch);
          if (usersGroupFolder == null) {
             Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch);
             if (root.hasChild(USERS_GROUP_FOLDER_NAME)) {
                usersGroupFolder = root.getChild(USERS_GROUP_FOLDER_NAME);
             } else {
                usersGroupFolder =
-                     ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, branch, USERS_GROUP_FOLDER_NAME);
+                  ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, branch, USERS_GROUP_FOLDER_NAME);
                root.addChild(usersGroupFolder);
             }
          }
@@ -119,5 +119,10 @@ public class OseeGroup {
          ArtifactCache.cacheByTextId(cacheKey, usersGroupFolder);
       }
       return usersGroupFolder;
+   }
+
+   @Override
+   public String toString() {
+      return "OseeGroup [groupName=" + groupName + "]";
    }
 }
