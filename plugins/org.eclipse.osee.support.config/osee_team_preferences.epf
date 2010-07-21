@@ -185,6 +185,7 @@
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_opening_brace_in_type_declaration=insert
 /instance/org.eclipse.jdt.ui/sp_cleanup.use_blocks=true
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_closing_paren_in_enum_constant=do not insert
+/instance/org.eclipse.core.runtime/line.separator=\n
 /instance/org.eclipse.jdt.ui/sp_cleanup.remove_private_constructors=true
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.alignment_for_throws_clause_in_constructor_declaration=0
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_opening_brace_in_array_initializer=insert
@@ -361,7 +362,7 @@
 /instance/org.eclipse.jdt.ui/sp_cleanup.qualify_static_member_accesses_through_subtypes_with_declaring_class=true
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_closing_angle_bracket_in_type_parameters=insert
 /instance/org.eclipse.jdt.ui/org.eclipse.jdt.ui.text.custom_code_templates=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?><templates><template autoinsert\="false" context\="overridecomment_context" deleted\="false" description\="Comment for overriding methods" enabled\="true" id\="org.eclipse.jdt.ui.text.codetemplates.overridecomment" name\="overridecomment"/><template autoinsert\="false" context\="newtype_context" deleted\="false" description\="Newly created files" enabled\="true" id\="org.eclipse.jdt.ui.text.codetemplates.newtype" name\="newtype">/*\r\n * Created on ${date}\r\n *\r\n * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE\r\n */\r\n${package_declaration}\r\n\r\n${typecomment}\r\n${type_declaration}</template><template autoinsert\="false" context\="catchblock_context" deleted\="false" description\="Code in new catch blocks" enabled\="true" id\="org.eclipse.jdt.ui.text.codetemplates.catchblock" name\="catchblock">logger.log(Level.SEVERE, ${exception_var}.toString(), ${exception_var});</template><template autoinsert\="false" context\="methodbody_context" deleted\="false" description\="Code in created method stubs" enabled\="true" id\="org.eclipse.jdt.ui.text.codetemplates.methodbody" name\="methodbody">${body_statement}</template><template autoinsert\="false" context\="constructorbody_context" deleted\="false" description\="Code in created constructor stubs" enabled\="true" id\="org.eclipse.jdt.ui.text.codetemplates.constructorbody" name\="constructorbody">${body_statement}</template></templates>
-/instance/org.eclipse.jdt.ui/sp_cleanup.qualify_static_member_accesses_with_declaring_class=false
+/instance/org.eclipse.jdt.ui/sp_cleanup.qualify_static_member_accesses_with_declaring_class=true
 /instance/org.eclipse.jdt.ui/sp_cleanup.remove_trailing_whitespaces=true
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_comma_in_superinterfaces=insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_opening_angle_bracket_in_parameterized_type_reference=do not insert
@@ -463,6 +464,7 @@ file_export_version=3.0
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.format_line_comment_starting_on_first_column=true
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.comment.indent_root_tags=false
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.problem.emptyStatement=ignore
+/instance/org.eclipse.jdt.ui/sp_cleanup.add_missing_override_annotations_interface_methods=true
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_opening_brace_in_method_declaration=insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_semicolon_in_for=do not insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.disabling_tag=@formatter\:off
