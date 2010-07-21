@@ -22,9 +22,12 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
@@ -267,15 +270,24 @@ public class OseeEventManager {
     * If old event kicks and listens should be used
     */
    public static boolean isOldEvents() {
-      if (!Strings.isValid(System.getProperty("eventSystem"))) return true;
-      return System.getProperty("eventSystem").equals("old");
+      return !isNewEvents();
    }
 
    /**
     * If new event kicks and listens should be used
     */
    public static boolean isNewEvents() {
-      if (!Strings.isValid(System.getProperty("eventSystem"))) return false;
+      try {
+         String dbProperty = OseeInfo.getCachedValue("eventSystem");
+         if (Strings.isValid(dbProperty)) {
+            return dbProperty.equals("new");
+         }
+      } catch (OseeDataStoreException ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
+      }
+      if (!Strings.isValid(System.getProperty("eventSystem"))) {
+         return false;
+      }
       return System.getProperty("eventSystem").equals("new");
    }
 
