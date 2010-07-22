@@ -17,6 +17,7 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.ReservedCharacters;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -161,7 +162,8 @@ public class ArtifactFormPage extends FormPage {
 			description =
 						String.format("<form><p>%s<b>Branch:</b> %s <b>Type:</b> %s <b>GUID:</b> %s</p></form>",
 									!artifact.isDeleted() ? "" : "<b>ARTIFACT DELETED - </b> ",
-									artifact.getBranch().getShortName(), artifact.getArtifactTypeName(), artifact.getGuid());
+									ReservedCharacters.encodeXmlEntities(artifact.getBranch().getShortName()),
+									artifact.getArtifactTypeName(), artifact.getGuid());
 		} catch (Exception ex) {
 			description = Lib.exceptionToString(ex);
 		}

@@ -15,7 +15,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import org.eclipse.osee.framework.jdk.core.util.HtmlReservedCharacters;
+import org.eclipse.osee.framework.jdk.core.util.ReservedCharacters;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
@@ -66,7 +66,7 @@ public class XmlTextInputStream extends BufferedInputStream {
                readCount++;
             }
 
-            Character reserved = HtmlReservedCharacters.toCharacter(specialCharBuffer.toString());
+            Character reserved = ReservedCharacters.toCharacter(specialCharBuffer.toString());
             if (reserved != null) {
                needsReset = false;
                value = reserved;

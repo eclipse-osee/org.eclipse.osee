@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.jdk.core.util.HtmlReservedCharacters;
+import org.eclipse.osee.framework.jdk.core.util.ReservedCharacters;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.search.engine.internal.Activator;
 
@@ -36,9 +36,9 @@ public class WordsUtil {
    public static final String EMPTY_STRING = "";
    private static final String[] SPECIAL_ES_ENDING_CASES = new String[] {"ss", "sh", "ch", "x"};
 
-   private static Character[] DEFAULT_PUNCTUACTION =
-         new Character[] {'\n', '\r', ' ', '!', '"', '#', '$', '%', '(', ')', '*', '+', ',', '-', '.', '/', ':', ';',
-               '<', '>', '?', '@', '[', '\\', ']', '^', '{', '|', '}', '~', '_', '`', '\\', '=', '&'};
+   private static Character[] DEFAULT_PUNCTUACTION = new Character[] {'\n', '\r', ' ', '!', '"', '#', '$', '%', '(',
+      ')', '*', '+', ',', '-', '.', '/', ':', ';', '<', '>', '?', '@', '[', '\\', ']', '^', '{', '|', '}', '~', '_',
+      '`', '\\', '=', '&'};
 
    private static char[] PUNCTUATION = null;
 
@@ -46,7 +46,7 @@ public class WordsUtil {
    static {
       Set<Character> combined = new HashSet<Character>();
       combined.addAll(Arrays.asList(DEFAULT_PUNCTUACTION));
-      combined.addAll(HtmlReservedCharacters.getChars());
+      combined.addAll(ReservedCharacters.getChars());
       combined.remove('\'');
       PUNCTUATION = new char[combined.size()];
       int index = 0;

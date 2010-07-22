@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2004, 2010 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,15 +17,15 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses( { //
+@Suite.SuiteClasses({ //
 CollectionsTest.class, //
-      CompareTest.class, //
-      GuidObject.class, //
-      GUIDTest.class, //
-      HashCollectionTest.class, //
-      HumanReadableIdTest.class, //
-      StringsTest.class, //
-})
+			CompareTest.class, //
+			GuidObject.class, //
+			GUIDTest.class, //
+			HashCollectionTest.class, //
+			HumanReadableIdTest.class, //
+			StringsTest.class, //
+			ReservedCharactersTest.class})
 public class JdkCoreUtilTestSuite {
 
 }
