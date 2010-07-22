@@ -79,6 +79,24 @@ public enum PermissionEnum {
 		return hasPermission;
 	}
 
+	public static PermissionEnum getMostRestrictive(PermissionEnum perm1, PermissionEnum perm2) {
+		PermissionEnum net = null;
+		if (perm1 == PermissionEnum.DENY || perm2 == PermissionEnum.DENY) {
+			net = PermissionEnum.DENY;
+		} else if (perm1 == PermissionEnum.LOCK || perm2 == PermissionEnum.LOCK) {
+			net = PermissionEnum.LOCK;
+		} else {
+			PermissionEnum object1 = perm1 == null ? PermissionEnum.NONE : perm1;
+			PermissionEnum object2 = perm2 == null ? PermissionEnum.NONE : perm2;
+			if (object1.matches(object2)) {
+				net = object2;
+			} else {
+				net = object1;
+			}
+		}
+		return net;
+	}
+
 	public static String[] getPermissionNames() {
 		return NAME_ARRAY;
 	}
