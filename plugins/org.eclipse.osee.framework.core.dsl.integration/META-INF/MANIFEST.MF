@@ -1,0 +1,30 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Osee DSL Integration
+Bundle-SymbolicName: org.eclipse.osee.framework.core.dsl.integration; singleton:=true
+Bundle-Version: 0.9.5.qualifier
+Bundle-Vendor: Eclipse.org
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Import-Package: org.eclipse.core.runtime,
+ org.eclipse.emf.compare.diff.metamodel,
+ org.eclipse.emf.compare.diff.service,
+ org.eclipse.emf.compare.match.metamodel,
+ org.eclipse.emf.compare.match.service,
+ org.eclipse.osee.framework.core.data,
+ org.eclipse.osee.framework.core.enums,
+ org.eclipse.osee.framework.core.exception,
+ org.eclipse.osee.framework.core.message,
+ org.eclipse.osee.framework.core.model,
+ org.eclipse.osee.framework.core.model.cache,
+ org.eclipse.osee.framework.core.model.type,
+ org.eclipse.osee.framework.core.operation,
+ org.eclipse.osee.framework.core.services,
+ org.eclipse.osee.framework.core.util,
+ org.eclipse.osee.framework.jdk.core.util
+Require-Bundle: org.eclipse.osee.framework.core.dsl,
+ org.eclipse.emf.ecore,
+ org.eclipse.emf.common,
+ org.eclipse.xtext
+Bundle-Activator: org.eclipse.osee.framework.core.dsl.integration.internal.Activator
+Export-Package: org.eclipse.osee.framework.core.dsl.integration
