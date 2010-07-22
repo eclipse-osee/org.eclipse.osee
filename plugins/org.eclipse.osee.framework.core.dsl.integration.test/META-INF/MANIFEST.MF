@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Osee Core DSL Integration Test
+Bundle-SymbolicName: org.eclipse.osee.framework.core.dsl.integration.test;singleton:=true
+Bundle-Version: 0.9.5.qualifier
+Bundle-Vendor: Eclipse.org
+Fragment-Host: org.eclipse.osee.framework.core.dsl.integration;bundle-version="0.9.5"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.junit4;bundle-version="4.8.1"
+Import-Package: org.eclipse.osee.framework.core.dsl.integration
+Export-Package: org.eclipse.osee.framework.core.dsl.integration.test
