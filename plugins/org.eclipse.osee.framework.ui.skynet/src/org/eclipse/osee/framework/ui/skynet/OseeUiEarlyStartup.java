@@ -97,14 +97,14 @@ public class OseeUiEarlyStartup implements IStartup {
 					});
 				}
 			});
-			startOseeTypes();
+			startOseeDsl();
 		}
 		WorkspaceContributionItem.addToAllViews();
 	}
 
-	private void startOseeTypes() {
+	private void startOseeDsl() {
 		try {
-			Bundle bundle = Platform.getBundle("org.eclipse.osee.framework.types.bridge");
+			Bundle bundle = Platform.getBundle("org.eclipse.osee.framework.core.dsl.ui.integration");
 			if (bundle.getState() != Bundle.ACTIVE) {
 				bundle.start();
 			}
