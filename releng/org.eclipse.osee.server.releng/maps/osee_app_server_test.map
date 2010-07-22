@@ -17,6 +17,6 @@ fragment@org.eclipse.osee.framework.resource.management.test=SVN,,http://dev.ecl
 fragment@org.eclipse.osee.framework.resource.provider.attribute.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.resource.provider.attribute.test
 fragment@org.eclipse.osee.framework.search.engine.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.search.engine.test
 fragment@org.eclipse.osee.framework.manager.servlet.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.manager.servlet.test
-fragment@org.eclipse.osee.framework.types.tests=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.types.tests 
+fragment@org.eclipse.osee.framework.core.dsl.integration.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.core.dsl.integration.test 
 
 plugin@org.eclipse.osee.framework.server.tests=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.server.tests

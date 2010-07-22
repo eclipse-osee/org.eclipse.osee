@@ -58,7 +58,8 @@
       <import plugin="org.junit4"/>
       <import plugin="org.eclipse.gef"/>
       <import plugin="org.eclipse.core.filesystem"/>
-      <import plugin="org.eclipse.osee.framework.types"/>
+      <import plugin="org.eclipse.osee.framework.core.dsl"/>
+      <import plugin="org.eclipse.osee.framework.core.dsl.integration"/>
       <import plugin="org.eclipse.ui.editors" version="3.5.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.ide" version="3.5.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.osee.framework.skynet.core" version="0.4.0" match="greaterOrEqual"/>
@@ -133,20 +134,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.osee.framework.types.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.osee.framework.types.generator"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.osee.ote.ui.define"
          download-size="0"
          install-size="0"
@@ -154,7 +141,14 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.osee.framework.types.bridge"
+         id="org.eclipse.osee.framework.core.dsl.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
+   <plugin
+         id="org.eclipse.osee.framework.core.dsl.ui.integration"
          download-size="0"
          install-size="0"
          version="0.0.0"

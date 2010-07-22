@@ -13,7 +13,8 @@ plugin@org.eclipse.osee.framework.resource.management=SVN,,http://dev.eclipse.or
 plugin@org.eclipse.osee.framework.resource.provider.attribute=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.resource.provider.attribute
 plugin@org.eclipse.osee.framework.search.engine=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.search.engine
 plugin@org.eclipse.osee.framework.server.admin=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.server.admin
-plugin@org.eclipse.osee.framework.types=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.types 
+plugin@org.eclipse.osee.framework.core.dsl=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.core.dsl 
+plugin@org.eclipse.osee.framework.core.dsl.integration=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.core.dsl.integration 
 
 feature@org.eclipse.osee.core.feature=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,features/org.eclipse.osee.core.feature
 plugin@org.eclipse.osee.framework.core=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.core

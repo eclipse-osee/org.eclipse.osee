@@ -111,7 +111,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.osee.framework.types.tests"
+         id="org.eclipse.osee.framework.core.dsl.integration.test"
          download-size="0"
          install-size="0"
          version="0.0.0"

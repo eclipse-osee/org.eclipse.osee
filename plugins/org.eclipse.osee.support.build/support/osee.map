@@ -42,8 +42,9 @@ plugin@org.eclipse.osee.framework.svn=SVN,url=https://dev.eclipse.org/svnroot/te
 plugin@org.eclipse.osee.framework.templates=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=plugins/org.eclipse.osee.framework.templates
 plugin@org.eclipse.osee.framework.updater=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=plugins/org.eclipse.osee.framework.updater
 plugin@org.eclipse.osee.framework.database.init=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=plugins/org.eclipse.osee.framework.database.init
-plugin@org.eclipse.osee.framework.types=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=plugins/org.eclipse.osee.framework.types
-plugin@org.eclipse.osee.framework.types.edit=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=plugins/org.eclipse.osee.framework.types.edit
+plugin@org.eclipse.osee.framework.core.dsl=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=plugins/org.eclipse.osee.framework.core.dsl
+plugin@org.eclipse.osee.framework.core.dsl.edit=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=plugins/org.eclipse.osee.framework.core.dsl.edit
+plugin@org.eclipse.osee.framework.core.dsl.integration=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=plugins/org.eclipse.osee.framework.core.dsl.integration
 
 feature@org.eclipse.osee.framework.ui.feature=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=features/org.eclipse.osee.framework.ui.feature
 plugin@org.eclipse.nebula.widgets.xviewer=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=plugins/org.eclipse.nebula.widgets.xviewer
@@ -59,9 +60,8 @@ plugin@org.eclipse.osee.framework.ui.swt=SVN,url=https://dev.eclipse.org/svnroot
 plugin@org.eclipse.osee.framework.ui.workspacebundleloader=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=plugins/org.eclipse.osee.framework.ui.workspacebundleloader
 plugin@org.eclipse.osee.framework.help.ui=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=plugins/org.eclipse.osee.framework.help.ui
 plugin@org.eclipse.osee.framework.dev.help.ui=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=plugins/org.eclipse.osee.framework.dev.help.ui
-plugin@org.eclipse.osee.framework.types.bridge=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=plugins/org.eclipse.osee.framework.types.bridge
-plugin@org.eclipse.osee.framework.types.generator=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=plugins/org.eclipse.osee.framework.types.generator
-plugin@org.eclipse.osee.framework.types.ui=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=plugins/org.eclipse.osee.framework.types.ui
+plugin@org.eclipse.osee.framework.core.dsl.ui=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=plugins/org.eclipse.osee.framework.core.dsl.ui
+plugin@org.eclipse.osee.framework.core.dsl.ui.integration=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=plugins/org.eclipse.osee.framework.core.dsl.ui.integration
 plugin@org.eclipse.osee.framework.ui.ws=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=plugins/org.eclipse.osee.framework.ui.ws
 
 feature@org.eclipse.osee.define.feature=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=features/org.eclipse.osee.define.feature
