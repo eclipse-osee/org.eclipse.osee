@@ -1,0 +1,167 @@
+grammar org.eclipse.osee.framework.core.dsl.OseeDsl with org.eclipse.xtext.common.Terminals
+
+generate oseeDsl "http://www.eclipse.org/osee/framework/core/dsl/OseeDsl"
+
+OseeDsl:
+	(imports+=Import)*
+	(artifactTypes+=XArtifactType | relationTypes+=XRelationType | attributeTypes+=XAttributeType |
+	enumTypes+=XOseeEnumType | enumOverrides+=XOseeEnumOverride)*
+	(branchRefs+=XBranchRef | artifactRefs+=XArtifactRef)*
+	(accessDeclarations+=AccessContext)*;
+
+Import:
+	'import' importURI=STRING;
+
+terminal WHOLE_NUM_STR:
+	('0'..'9')+;
+
+NAME_REFERENCE:
+	STRING;
+
+ATTRIBUTE_TYPE_REFERENCE:
+	STRING;
+
+ARTIFACT_TYPE_REFERENCE:
+	STRING;
+
+RELATION_TYPE_REFERENCE:
+	STRING;
+
+ENUM_TYPE_REFERENCE:
+	STRING;
+
+ENUM_ENTRY_TYPE_REFERENCE:
+	STRING;
+
+QUALIFIED_NAME:
+	ID ('.' ID)*;
+
+	///////////////////////////////////////
+//  OSEE TYPE MODEL                  //
+///////////////////////////////////////
+OseeElement:
+	XOseeEnumOverride | OseeType;
+
+OseeType:
+	XArtifactType | XRelationType | XAttributeType | XOseeEnumType;
+
+XArtifactType:
+	(abstract?='abstract')? 'artifactType' name=ARTIFACT_TYPE_REFERENCE ('extends'
+	superArtifactTypes+=[XArtifactType|ARTIFACT_TYPE_REFERENCE] (','
+	superArtifactTypes+=[XArtifactType|ARTIFACT_TYPE_REFERENCE])*)? '{' 'guid' typeGuid=STRING
+	(validAttributeTypes+=XAttributeTypeRef)* '}';
+
+XAttributeTypeRef:
+	'attribute' validAttributeType=[XAttributeType|ATTRIBUTE_TYPE_REFERENCE] ('branchGuid' branchGuid=STRING)?;
+
+XAttributeType:
+	'attributeType' name=ATTRIBUTE_TYPE_REFERENCE ('extends' baseAttributeType=AttributeBaseType) ('overrides'
+	override=[XAttributeType|ATTRIBUTE_TYPE_REFERENCE])? '{' 'guid' typeGuid=STRING 'dataProvider'
+	dataProvider=('DefaultAttributeDataProvider' | 'UriAttributeDataProvider' | QUALIFIED_NAME) 'min' min=WHOLE_NUM_STR
+	'max' max=(WHOLE_NUM_STR | 'unlimited') ('taggerId' taggerId=('DefaultAttributeTaggerProvider' | QUALIFIED_NAME))?
+	('enumType' enumType=[XOseeEnumType|ENUM_TYPE_REFERENCE])? ('description' description=STRING)? ('defaultValue'
+	defaultValue=STRING)? ('fileExtension' fileExtension=STRING)? '}';
+
+AttributeBaseType:
+	'BooleanAttribute' | 'CompressedContentAttribute' | 'DateAttribute' | 'EnumeratedAttribute' |
+	'FloatingPointAttribute' | 'IntegerAttribute' | 'JavaObjectAttribute' | 'StringAttribute' | 'WordAttribute' |
+	QUALIFIED_NAME;
+
+XOseeEnumType:
+	'oseeEnumType' name=ENUM_TYPE_REFERENCE '{' 'guid' typeGuid=STRING (enumEntries+=XOseeEnumEntry)* '}';
+
+XOseeEnumEntry:
+	'entry' name=ENUM_ENTRY_TYPE_REFERENCE (ordinal=WHOLE_NUM_STR)? ('entryGuid' entryGuid=STRING)?;
+
+XOseeEnumOverride:
+	'overrides enum' overridenEnumType=[XOseeEnumType|ENUM_TYPE_REFERENCE] '{' (inheritAll?='inheritAll')?
+	(overrideOptions+=OverrideOption)* '}';
+
+OverrideOption:
+	AddEnum | RemoveEnum;
+
+AddEnum:
+	'add' enumEntry=ENUM_ENTRY_TYPE_REFERENCE (ordinal=WHOLE_NUM_STR)? ('entryGuid' entryGuid=STRING)?;
+
+RemoveEnum:
+	'remove' enumEntry=[XOseeEnumEntry|ENUM_ENTRY_TYPE_REFERENCE];
+
+XRelationType:
+	'relationType' name=RELATION_TYPE_REFERENCE '{' 'guid' typeGuid=STRING 'sideAName' sideAName=STRING
+	'sideAArtifactType' sideAArtifactType=[XArtifactType|ARTIFACT_TYPE_REFERENCE] 'sideBName' sideBName=STRING
+	'sideBArtifactType' sideBArtifactType=[XArtifactType|ARTIFACT_TYPE_REFERENCE] 'defaultOrderType'
+	defaultOrderType=RelationOrderType 'multiplicity' multiplicity=RelationMultiplicityEnum '}';
+
+enum RelationMultiplicityEnum:
+	ONE_TO_ONE | ONE_TO_MANY | MANY_TO_ONE | MANY_TO_MANY;
+
+RelationOrderType:
+	'Lexicographical_Ascending' | 'Lexicographical_Descending' | 'Unordered' | ID;
+
+	///////////////////////////////////////
+//  OSEE ARTIFACT INSTANCE REFERENCE //
+///////////////////////////////////////
+ARTIFACT_INSTANCE_REFERENCE:
+	STRING;
+
+XArtifactRef:
+	'artifact' name=ARTIFACT_INSTANCE_REFERENCE
+	'artGuid' guid=STRING ';';
+
+BRANCH_INSTANCE_REFERENCE:
+	STRING;
+
+XBranchRef:
+	'branch' name=BRANCH_INSTANCE_REFERENCE
+	'branchGuid' guid=STRING ';';
+
+	///////////////////////////////////////
+//  OSEE ACCESS MODEL                //
+///////////////////////////////////////
+ACCESS_CONTEXT_TYPE_REFRENCE:
+	STRING;
+
+AccessContext:
+	'accessContext' name=ACCESS_CONTEXT_TYPE_REFRENCE ('extends'
+	superAccessContexts+=[AccessContext|ACCESS_CONTEXT_TYPE_REFRENCE] (','
+	superAccessContexts+=[AccessContext|ACCESS_CONTEXT_TYPE_REFRENCE])*)? '{'
+	'guid' typeGuid=STRING ';'
+	//(branchRestrictions+=BranchRestriction)*
+	(accessRules+=PermissionRule)*
+	(hierarchyRestrictions+=HierarchyRestriction)*
+	'}';
+
+HierarchyRestriction:
+	'childrenOf' artifact=[XArtifactRef|ARTIFACT_INSTANCE_REFERENCE] '{' accessRules+=PermissionRule '}';
+
+//BranchRestriction:
+//	'onBranch' branch=[XBranchRef|BRANCH_INSTANCE_REFERENCE] '{' accessRule+=PermissionRule '}';
+
+PermissionRule:
+	permission=AccessPermissionEnum 'edit' objectRestriction=ObjectRestriction;
+
+enum AccessPermissionEnum:
+	ALLOW | DENY;
+
+ObjectRestriction:
+	ArtifactTypeRestriction | RelationTypeRestriction | AttributeTypeRestriction | AttributeTypeOfArtifactTypeRestriction
+	| ArtifactInstanceRestriction;
+
+ArtifactInstanceRestriction:
+	'artifact' artifactName=[XArtifactRef|ARTIFACT_INSTANCE_REFERENCE] ';';
+
+ArtifactTypeRestriction:
+	'artifactType' artifactType=[XArtifactType|ARTIFACT_TYPE_REFERENCE] ';';
+
+RelationTypeRestriction:
+	'relationType' relationType=[XRelationType|RELATION_TYPE_REFERENCE] (restrictedTo+=RelationTypeSideRestriction)? ';';
+
+enum RelationTypeSideRestriction:
+	SIDE_A | SIDE_B;
+
+AttributeTypeRestriction:
+	'attributeType' attributeType=[XAttributeType|ATTRIBUTE_TYPE_REFERENCE] ';';
+
+AttributeTypeOfArtifactTypeRestriction:
+	'attributeType' attributeType=[XAttributeType|ATTRIBUTE_TYPE_REFERENCE] 'of' 'artifactType'
+	artifactType=[XArtifactType|ARTIFACT_TYPE_REFERENCE] ';';
