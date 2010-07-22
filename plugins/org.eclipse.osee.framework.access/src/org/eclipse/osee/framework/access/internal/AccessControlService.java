@@ -36,9 +36,10 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.core.model.AccessData;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
+import org.eclipse.osee.framework.core.model.access.AccessData;
+import org.eclipse.osee.framework.core.model.access.AccessDataQuery;
 import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
@@ -274,7 +275,7 @@ public class AccessControlService implements IAccessControlService {
 	}
 
 	@Override
-	public AccessData getAccessData(IBasicArtifact<?> userArtifact, Collection<?> objectsToCheck) throws OseeCoreException {
+	public AccessDataQuery getAccessData(IBasicArtifact<?> userArtifact, Collection<?> objectsToCheck) throws OseeCoreException {
 		ILifecycleService service = getLifecycleService();
 		AccessData accessData = new AccessData();
 		AbstractLifecycleVisitor<?> visitor = new AccessProviderVisitor(userArtifact, objectsToCheck, accessData);
@@ -284,11 +285,11 @@ public class AccessControlService implements IAccessControlService {
 		} catch (Exception ex) {
 			OseeExceptions.wrapAndThrow(ex);
 		}
-		return accessData;
+		return new AccessDataQuery(accessData);
 	}
 
 	private boolean hasPermission(IBasicArtifact<?> subject, Object object, PermissionEnum permission) throws OseeCoreException {
-		AccessData accessData = getAccessData(subject, Collections.singletonList(object));
+		AccessDataQuery accessData = getAccessData(subject, Collections.singletonList(object));
 		return accessData.matchesAll(permission);
 	}
 

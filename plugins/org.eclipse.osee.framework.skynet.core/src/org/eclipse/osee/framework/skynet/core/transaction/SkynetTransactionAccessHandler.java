@@ -15,7 +15,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.AccessData;
+import org.eclipse.osee.framework.core.model.access.AccessDataQuery;
 import org.eclipse.osee.framework.core.services.IAccessControlService;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
@@ -24,31 +24,31 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
  */
 public class SkynetTransactionAccessHandler extends SkynetTransactionHandler {
 
-   public final IAccessControlService service;
+	public final IAccessControlService service;
 
-   public SkynetTransactionAccessHandler(IAccessControlService service) {
-      super();
-      this.service = service;
-   }
+	public SkynetTransactionAccessHandler(IAccessControlService service) {
+		super();
+		this.service = service;
+	}
 
-   @Override
-   public IStatus onCheck(IProgressMonitor monitor) {
-      IStatus status = Status.OK_STATUS;
-      try {
-         AccessData accessData = service.getAccessData(getUserArtifact(), getItemsToPersist());
-         if (!accessData.matchesAll(PermissionEnum.WRITE)) {
-            //TODO Make access denied message more descriptive
-            status =
-                  new Status(
-                        IStatus.ERROR,
-                        Activator.PLUGIN_ID,
-                        String.format(
-                              "Access Denied - does not have valid permission to edit this artifact\n objects:[%s]\naccessData:[%s]",
-                              getItemsToPersist(), accessData));
-         }
-      } catch (OseeCoreException ex) {
-         status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error during access check", ex);
-      }
-      return status;
-   }
+	@Override
+	public IStatus onCheck(IProgressMonitor monitor) {
+		IStatus status = Status.OK_STATUS;
+		try {
+			AccessDataQuery accessData = service.getAccessData(getUserArtifact(), getItemsToPersist());
+			if (!accessData.matchesAll(PermissionEnum.WRITE)) {
+				//TODO Make access denied message more descriptive
+				status =
+							new Status(
+										IStatus.ERROR,
+										Activator.PLUGIN_ID,
+										String.format(
+													"Access Denied - does not have valid permission to edit this artifact\n objects:[%s]\naccessData:[%s]",
+													getItemsToPersist(), accessData));
+			}
+		} catch (OseeCoreException ex) {
+			status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error during access check", ex);
+		}
+		return status;
+	}
 }

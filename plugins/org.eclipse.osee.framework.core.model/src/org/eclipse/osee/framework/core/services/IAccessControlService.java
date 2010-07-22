@@ -14,14 +14,14 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.AccessData;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
+import org.eclipse.osee.framework.core.model.access.AccessDataQuery;
 
 public interface IAccessControlService {
 
-   boolean hasPermission(Object object, PermissionEnum permission) throws OseeCoreException;
+	boolean hasPermission(Object object, PermissionEnum permission) throws OseeCoreException;
 
-   void removePermissions(IOseeBranch branch) throws OseeCoreException;
+	void removePermissions(IOseeBranch branch) throws OseeCoreException;
 
-   AccessData getAccessData(IBasicArtifact<?> userArtifact, Collection<?> itemsToCheck) throws OseeCoreException;
+	AccessDataQuery getAccessData(IBasicArtifact<?> userArtifact, Collection<?> itemsToCheck) throws OseeCoreException;
 }
