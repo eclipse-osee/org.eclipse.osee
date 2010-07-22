@@ -26,7 +26,8 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.dialogs.WizardDataTransferPage;
 
 public class NewOseeTypesFilePage extends WizardDataTransferPage {
-	private static final String PAGE_NAME = "org.eclipse.osee.framework.types.bridge.wizards.NewOseeTypeFilePage";
+	private static final String PAGE_NAME =
+				"org.eclipse.osee.framework.core.dsl.ui.integration.wizards.NewOseeTypeFilePage";
 
 	private DirectoryOrFileSelector sourceFileSelector;
 	private DirectoryOrFileSelector destinationFileSelector;

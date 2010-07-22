@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.xtext.resource.SaveOptions;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.resource.XtextResourceSet;
 import com.google.inject.Injector;
@@ -131,8 +132,9 @@ public final class ModelUtil {
 		resource.getContents().add(model);
 
 		Map<String, Boolean> options = new HashMap<String, Boolean>();
-		options.put(XtextResource.OPTION_FORMAT, Boolean.TRUE);
-		resource.save(options);
+		//		options.put(XtextResource.OPTION_FORMAT, Boolean.TRUE);
+		SaveOptions saveOptions = SaveOptions.getOptions(options);
+		resource.save(saveOptions.toOptionsMap());
 	}
 
 	public static void saveModel(OseeDsl model, String uri, OutputStream outputStream, boolean isZipped) throws IOException {
@@ -143,11 +145,12 @@ public final class ModelUtil {
 		resource.getContents().add(model);
 
 		Map<String, Boolean> options = new HashMap<String, Boolean>();
-		options.put(XtextResource.OPTION_FORMAT, Boolean.TRUE);
+		//		options.put(XtextResource.OPTION_FORMAT, Boolean.TRUE);
 		if (isZipped) {
 			options.put(XtextResource.OPTION_ZIP, Boolean.TRUE);
 		}
-		resource.save(outputStream, options);
+		SaveOptions saveOptions = SaveOptions.getOptions(options);
+		resource.save(outputStream, saveOptions.toOptionsMap());
 	}
 
 	private static void storeModel(OutputStream outputStream, EObject object, String uri, Map<String, Boolean> options) throws OseeCoreException {

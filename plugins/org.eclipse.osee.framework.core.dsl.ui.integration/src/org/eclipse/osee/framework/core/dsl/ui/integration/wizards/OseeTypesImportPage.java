@@ -50,7 +50,8 @@ import org.eclipse.xtext.resource.ClassloaderClasspathUriResolver;
  * @author Roberto E. Escobar
  */
 public class OseeTypesImportPage extends WizardDataTransferPage {
-	private static final String PAGE_NAME = "org.eclipse.osee.framework.types.bridge.wizards.OseeTypesImportPage";
+	private static final String PAGE_NAME =
+				"org.eclipse.osee.framework.core.dsl.ui.integration.wizards.OseeTypesImportPage";
 
 	private final OseeTypesSetup oseeTypesSetup;
 	private File compositeFile;
