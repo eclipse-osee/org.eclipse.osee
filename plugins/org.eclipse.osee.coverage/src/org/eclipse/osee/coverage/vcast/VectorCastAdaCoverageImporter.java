@@ -111,13 +111,21 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
       for (VcpSourceFile vcpSourceFile : vCastVcp.sourceFiles) {
          String str =
                String.format("Processing VcpSourceFile %d/%d [%s]...", x++, vcpSourceFiles.size(), vcpSourceFile);
-         //         System.out.println(str);
+         System.out.println(str);
          if (progressMonitor != null) {
             progressMonitor.worked(1);
             progressMonitor.subTask(str);
          }
          try {
-            CoverageDataFile coverageDataFile = vcpSourceFile.getCoverageDataFile();
+            CoverageDataFile coverageDataFile = null;
+            try {
+               coverageDataFile = vcpSourceFile.getCoverageDataFile();
+            } catch (Exception ex) {
+               coverageImport.getLog().logError(
+                     String.format("Can't find .xml file for source file [%s] exception [%s]",
+                           vcpSourceFile.getValue(SourceValue.SOURCE_FILENAME), ex));
+               continue;
+            }
             try {
                coverageImport.addImportRecordFile(coverageDataFile.getFile());
             } catch (Exception ex) {

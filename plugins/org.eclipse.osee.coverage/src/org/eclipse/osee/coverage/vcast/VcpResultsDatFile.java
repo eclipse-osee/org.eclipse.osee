@@ -37,7 +37,7 @@ public class VcpResultsDatFile {
 
    private final CompositeKeyHashMap<String, String, HashSet<String>> resultsValues =
          new CompositeKeyHashMap<String, String, HashSet<String>>(1000, true);
-   Pattern valuePattern = Pattern.compile("\\s+([0-9]+)\\s+([0-9]+)\\s+([0-9]+)");
+   Pattern valuePattern = Pattern.compile("\\s*([0-9]+)\\s+([0-9]+)\\s+([0-9]+)");
    String resultFilename = null;
 
    public VcpResultsDatFile(String vcastDirectory, VcpResultsFile vcpResultsFile) throws OseeCoreException {
