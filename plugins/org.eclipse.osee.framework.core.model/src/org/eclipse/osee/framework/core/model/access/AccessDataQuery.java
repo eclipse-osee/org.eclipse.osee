@@ -93,7 +93,7 @@ public class AccessDataQuery {
 	}
 
 	public boolean matchesAll(PermissionEnum permissionEnum) {
-		return false;
+		return true;
 	}
 
 	private <T> void checkAccess(Collection<AccessDetail<?>> accessList, T itemToMatch, PermissionEnum permissionToMatch, PermissionStatus status) {
