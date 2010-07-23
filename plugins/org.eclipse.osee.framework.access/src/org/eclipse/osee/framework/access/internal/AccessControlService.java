@@ -70,7 +70,7 @@ import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * Provides access control for OSEE. <REM2>
- *
+ * 
  * @author Jeff C. Phillips
  */
 
@@ -377,6 +377,10 @@ public class AccessControlService implements IAccessControlService {
                if (groupPermission.getRank() > userPermission.getRank()) {
                   userPermission = groupPermission;
                }
+            }
+
+            if (userPermission == null) {
+               userPermission = PermissionEnum.DENY;
             }
          }
       }
