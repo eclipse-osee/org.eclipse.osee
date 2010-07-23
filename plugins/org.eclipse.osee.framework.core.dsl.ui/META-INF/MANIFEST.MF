@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: org.eclipse.osee.framework.core.dsl.ui
-Bundle-Vendor: My Company
-Bundle-Version: 1.0.0
+Bundle-Vendor: Eclipse.org
+Bundle-Version: 0.9.5.qualifier
 Bundle-SymbolicName: org.eclipse.osee.framework.core.dsl.ui; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.osee.framework.core.dsl;visibility:=reexport,
