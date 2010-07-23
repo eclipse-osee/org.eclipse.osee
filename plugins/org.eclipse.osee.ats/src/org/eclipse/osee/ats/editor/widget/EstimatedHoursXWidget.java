@@ -25,18 +25,18 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class EstimatedHoursXWidget extends XFloatDam {
 
-   public EstimatedHoursXWidget(StateMachineArtifact sma, Composite composite, int horizontalSpan, XModifiedListener xModListener) {
-      super(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getDisplayName());
-      try {
-         if (xModListener != null) {
-            addXModifiedListener(xModListener);
-         }
-         setArtifact(sma, ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName());
-         setFillHorizontally(true);
-         createWidgets(composite, horizontalSpan);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
-      }
-   }
+	public EstimatedHoursXWidget(StateMachineArtifact sma, Composite composite, int horizontalSpan, XModifiedListener xModListener) {
+		super(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getDisplayName());
+		try {
+			if (xModListener != null) {
+				addXModifiedListener(xModListener);
+			}
+			setAttributeType(sma, ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName());
+			setFillHorizontally(true);
+			createWidgets(composite, horizontalSpan);
+		} catch (OseeCoreException ex) {
+			OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+		}
+	}
 
 }

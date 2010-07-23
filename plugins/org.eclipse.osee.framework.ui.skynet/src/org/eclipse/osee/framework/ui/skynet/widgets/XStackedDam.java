@@ -42,7 +42,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.progress.UIJob;
 
-public class XStackedDam extends XStackedWidget<String> implements IArtifactWidget {
+public class XStackedDam extends XStackedWidget<String> implements IAttributeWidget {
 	private Artifact artifact;
 	private String attributeTypeName;
 	private final Map<String, XWidget> xWidgets;
@@ -53,13 +53,20 @@ public class XStackedDam extends XStackedWidget<String> implements IArtifactWidg
 		this.xWidgets = new LinkedHashMap<String, XWidget>();
 		this.artifact = null;
 		this.xModifiedListener = new XModifiedListener() {
+			@Override
 			public void widgetModified(XWidget widget) {
 				notifyXModifiedListeners();
 			};
 		};
 	}
 
-	public void setArtifact(Artifact artifact, String attributeTypeName) throws OseeCoreException {
+	@Override
+	public String getAttributeType() {
+		return attributeTypeName;
+	}
+
+	@Override
+	public void setAttributeType(Artifact artifact, String attributeTypeName) throws OseeCoreException {
 		this.artifact = artifact;
 		this.attributeTypeName = attributeTypeName;
 		AttributeType attributeType = AttributeTypeManager.getType(attributeTypeName);
@@ -143,7 +150,7 @@ public class XStackedDam extends XStackedWidget<String> implements IArtifactWidg
 
 	@Override
 	public void revert() throws OseeCoreException {
-		setArtifact(artifact, attributeTypeName);
+		setAttributeType(artifact, attributeTypeName);
 	}
 
 	@Override

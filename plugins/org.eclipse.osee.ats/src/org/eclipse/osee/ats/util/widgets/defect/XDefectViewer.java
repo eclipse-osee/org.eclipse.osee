@@ -85,552 +85,555 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
  */
 public class XDefectViewer extends XWidget implements IArtifactWidget, IArtifactEventListener, IFrameworkTransactionEventListener {
 
-   private DefectXViewer xViewer;
-   private IDirtiableEditor editor;
-   private IReviewArtifact reviewArt;
-   public final static String normalColor = "#EEEEEE";
-   private static ToolItem newDefectItem, deleteDefectItem;
-   private Label extraInfoLabel;
-   private Composite parentComposite;
-   private static ToolItem expandDefectItem, collapseDefectItem;
-   private static Map<IReviewArtifact, Boolean> mapOfReviewArtifacts = new LinkedHashMap<IReviewArtifact, Boolean>();
-   private ToolBar toolBar;
-   private static Map<IReviewArtifact, Integer> tableHeight = new HashMap<IReviewArtifact, Integer>();
+	private DefectXViewer xViewer;
+	private IDirtiableEditor editor;
+	private IReviewArtifact reviewArt;
+	public final static String normalColor = "#EEEEEE";
+	private static ToolItem newDefectItem, deleteDefectItem;
+	private Label extraInfoLabel;
+	private Composite parentComposite;
+	private static ToolItem expandDefectItem, collapseDefectItem;
+	private static Map<IReviewArtifact, Boolean> mapOfReviewArtifacts = new LinkedHashMap<IReviewArtifact, Boolean>();
+	private ToolBar toolBar;
+	private static Map<IReviewArtifact, Integer> tableHeight = new HashMap<IReviewArtifact, Integer>();
 
-   public XDefectViewer() {
-      super("Defects");
-      OseeEventManager.addListener(this);
-   }
+	public XDefectViewer() {
+		super("Defects");
+		OseeEventManager.addListener(this);
+	}
 
-   @Override
-   protected void createControls(Composite parent, int horizontalSpan) {
+	@Override
+	protected void createControls(Composite parent, int horizontalSpan) {
 
-      parentComposite = parent;
-      // Create Text Widgets
-      if (isDisplayLabel() && !getLabel().equals("")) {
-         labelWidget = new Label(parent, SWT.NONE);
-         labelWidget.setText(getLabel() + ":");
-         if (getToolTip() != null) {
-            labelWidget.setToolTipText(getToolTip());
-         }
-      }
+		parentComposite = parent;
+		// Create Text Widgets
+		if (isDisplayLabel() && !getLabel().equals("")) {
+			labelWidget = new Label(parent, SWT.NONE);
+			labelWidget.setText(getLabel() + ":");
+			if (getToolTip() != null) {
+				labelWidget.setToolTipText(getToolTip());
+			}
+		}
 
-      final Composite mainComp = new Composite(parent, SWT.BORDER);
-      mainComp.setLayoutData(new GridData(GridData.FILL_BOTH));
-      mainComp.setLayout(ALayout.getZeroMarginLayout());
-      if (toolkit != null) {
-         toolkit.paintBordersFor(mainComp);
-      }
+		final Composite mainComp = new Composite(parent, SWT.BORDER);
+		mainComp.setLayoutData(new GridData(GridData.FILL_BOTH));
+		mainComp.setLayout(ALayout.getZeroMarginLayout());
+		if (toolkit != null) {
+			toolkit.paintBordersFor(mainComp);
+		}
 
-      createTaskActionBar(mainComp);
+		createTaskActionBar(mainComp);
 
-      xViewer = new DefectXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this);
-      xViewer.setContentProvider(new DefectContentProvider(xViewer));
-      xViewer.setLabelProvider(new DefectLabelProvider(xViewer));
-      xViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-         public void selectionChanged(SelectionChangedEvent event) {
-            refreshActionEnablement();
-         }
-      });
-      new ActionContributionItem(xViewer.getCustomizeAction()).fill(toolBar, -1);
-      if (toolkit != null) {
-         toolkit.adapt(xViewer.getStatusLabel(), false, false);
-      }
+		xViewer = new DefectXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this);
+		xViewer.setContentProvider(new DefectContentProvider(xViewer));
+		xViewer.setLabelProvider(new DefectLabelProvider(xViewer));
+		xViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			public void selectionChanged(SelectionChangedEvent event) {
+				refreshActionEnablement();
+			}
+		});
+		new ActionContributionItem(xViewer.getCustomizeAction()).fill(toolBar, -1);
+		if (toolkit != null) {
+			toolkit.adapt(xViewer.getStatusLabel(), false, false);
+		}
 
-      refreshTableSize();
-      // NOTE: Don't adapt the tree using xToolkit cause will loose xViewer's context menu
+		refreshTableSize();
+		// NOTE: Don't adapt the tree using xToolkit cause will loose xViewer's context menu
 
-      final Sash sash = new Sash(parent, SWT.HORIZONTAL);
-      GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-      gd.heightHint = 3;
-      sash.setLayoutData(gd);
-      sash.setBackground(Displays.getSystemColor(SWT.COLOR_GRAY));
-      sash.addListener(SWT.MouseUp, new Listener() {
-         public void handleEvent(Event e) {
-            Rectangle treeRect = xViewer.getTree().getClientArea();
-            int newHeight = treeRect.height + e.y;
-            setTableHeight(newHeight);
-            refreshTableSize();
-            mainComp.layout();
-            xViewer.refresh();
-            if (getForm(mainComp) != null) {
-               getForm(mainComp).reflow(true);
-            }
-         }
-      });
+		final Sash sash = new Sash(parent, SWT.HORIZONTAL);
+		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+		gd.heightHint = 3;
+		sash.setLayoutData(gd);
+		sash.setBackground(Displays.getSystemColor(SWT.COLOR_GRAY));
+		sash.addListener(SWT.MouseUp, new Listener() {
+			public void handleEvent(Event e) {
+				Rectangle treeRect = xViewer.getTree().getClientArea();
+				int newHeight = treeRect.height + e.y;
+				setTableHeight(newHeight);
+				refreshTableSize();
+				mainComp.layout();
+				xViewer.refresh();
+				if (getForm(mainComp) != null) {
+					getForm(mainComp).reflow(true);
+				}
+			}
+		});
 
-      loadTable();
-   }
+		loadTable();
+	}
 
-   private void refreshTableSize() {
-      Tree tree = xViewer.getTree();
-      GridData gridData = new GridData(GridData.FILL_BOTH);
-      gridData.heightHint = getTableHeight();
-      tree.setLayout(ALayout.getZeroMarginLayout());
-      tree.setLayoutData(gridData);
-      tree.setHeaderVisible(true);
-      tree.setLinesVisible(true);
-   }
+	private void refreshTableSize() {
+		Tree tree = xViewer.getTree();
+		GridData gridData = new GridData(GridData.FILL_BOTH);
+		gridData.heightHint = getTableHeight();
+		tree.setLayout(ALayout.getZeroMarginLayout());
+		tree.setLayoutData(gridData);
+		tree.setHeaderVisible(true);
+		tree.setLinesVisible(true);
+	}
 
-   public void setXviewerTree(boolean expand) {
-   }
+	public void setXviewerTree(boolean expand) {
+	}
 
-   private int getTableHeight() {
-      if (reviewArt != null && tableHeight.containsKey(reviewArt)) {
-         return tableHeight.get(reviewArt);
-      }
-      return 100;
-   }
+	private int getTableHeight() {
+		if (reviewArt != null && tableHeight.containsKey(reviewArt)) {
+			return tableHeight.get(reviewArt);
+		}
+		return 100;
+	}
 
-   private void setTableHeight(int newHeight) {
-      if (reviewArt != null) {
-         if (newHeight < 100) newHeight = 100;
-         tableHeight.put(reviewArt, newHeight);
-      }
-   }
+	private void setTableHeight(int newHeight) {
+		if (reviewArt != null) {
+			if (newHeight < 100) {
+				newHeight = 100;
+			}
+			tableHeight.put(reviewArt, newHeight);
+		}
+	}
 
-   public void createTaskActionBar(Composite parent) {
+	public void createTaskActionBar(Composite parent) {
 
-      // Button composite for state transitions, etc
-      Composite bComp = new Composite(parent, SWT.NONE);
-      // bComp.setBackground(mainSComp.getDisplay().getSystemColor(SWT.COLOR_CYAN));
-      bComp.setLayout(new GridLayout(2, false));
-      bComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		// Button composite for state transitions, etc
+		Composite bComp = new Composite(parent, SWT.NONE);
+		// bComp.setBackground(mainSComp.getDisplay().getSystemColor(SWT.COLOR_CYAN));
+		bComp.setLayout(new GridLayout(2, false));
+		bComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-      Composite actionComp = new Composite(bComp, SWT.NONE);
-      actionComp.setLayout(new GridLayout());
-      actionComp.setLayoutData(new GridData(GridData.END));
+		Composite actionComp = new Composite(bComp, SWT.NONE);
+		actionComp.setLayout(new GridLayout());
+		actionComp.setLayoutData(new GridData(GridData.END));
 
-      toolBar = new ToolBar(actionComp, SWT.FLAT | SWT.RIGHT);
-      GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-      toolBar.setLayoutData(gd);
-      ToolItem item = null;
+		toolBar = new ToolBar(actionComp, SWT.FLAT | SWT.RIGHT);
+		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+		toolBar.setLayoutData(gd);
+		ToolItem item = null;
 
-      expandDefectItem = new ToolItem(toolBar, SWT.PUSH);
-      expandDefectItem.setImage(ImageManager.getImage(FrameworkImage.EXPAND_ALL));
-      expandDefectItem.setToolTipText("Expand Defect List");
-      expandDefectItem.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            mapOfReviewArtifacts.put(reviewArt, true);
-            handleExpandCollapseDefectTableList();
-         }
-      });
+		expandDefectItem = new ToolItem(toolBar, SWT.PUSH);
+		expandDefectItem.setImage(ImageManager.getImage(FrameworkImage.EXPAND_ALL));
+		expandDefectItem.setToolTipText("Expand Defect List");
+		expandDefectItem.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				mapOfReviewArtifacts.put(reviewArt, true);
+				handleExpandCollapseDefectTableList();
+			}
+		});
 
-      collapseDefectItem = new ToolItem(toolBar, SWT.PUSH);
-      collapseDefectItem.setImage(ImageManager.getImage(FrameworkImage.COLLAPSE_ALL));
-      collapseDefectItem.setToolTipText("Collapse Defect List");
-      collapseDefectItem.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            mapOfReviewArtifacts.put(reviewArt, false);
-            handleExpandCollapseDefectTableList();
-         }
-      });
+		collapseDefectItem = new ToolItem(toolBar, SWT.PUSH);
+		collapseDefectItem.setImage(ImageManager.getImage(FrameworkImage.COLLAPSE_ALL));
+		collapseDefectItem.setToolTipText("Collapse Defect List");
+		collapseDefectItem.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				mapOfReviewArtifacts.put(reviewArt, false);
+				handleExpandCollapseDefectTableList();
+			}
+		});
 
-      newDefectItem = new ToolItem(toolBar, SWT.PUSH);
-      newDefectItem.setImage(ImageManager.getImage(FrameworkImage.GREEN_PLUS));
-      newDefectItem.setToolTipText("New Defect");
-      newDefectItem.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            handleNewDefect();
-         }
-      });
+		newDefectItem = new ToolItem(toolBar, SWT.PUSH);
+		newDefectItem.setImage(ImageManager.getImage(FrameworkImage.GREEN_PLUS));
+		newDefectItem.setToolTipText("New Defect");
+		newDefectItem.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				handleNewDefect();
+			}
+		});
 
-      deleteDefectItem = new ToolItem(toolBar, SWT.PUSH);
-      deleteDefectItem.setImage(ImageManager.getImage(FrameworkImage.X_RED));
-      deleteDefectItem.setToolTipText("Delete Defect");
-      deleteDefectItem.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            handleDeleteDefect(false);
-         }
-      });
+		deleteDefectItem = new ToolItem(toolBar, SWT.PUSH);
+		deleteDefectItem.setImage(ImageManager.getImage(FrameworkImage.X_RED));
+		deleteDefectItem.setToolTipText("Delete Defect");
+		deleteDefectItem.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				handleDeleteDefect(false);
+			}
+		});
 
-      item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(ImageManager.getImage(PluginUiImage.REFRESH));
-      item.setToolTipText("Refresh Defects");
-      item.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            loadTable();
-         }
-      });
+		item = new ToolItem(toolBar, SWT.PUSH);
+		item.setImage(ImageManager.getImage(PluginUiImage.REFRESH));
+		item.setToolTipText("Refresh Defects");
+		item.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				loadTable();
+			}
+		});
 
-      createTaskActionBarPulldown(toolBar, actionComp);
+		createTaskActionBarPulldown(toolBar, actionComp);
 
-      Composite labelComp = new Composite(bComp, SWT.NONE);
-      labelComp.setLayout(new GridLayout());
-      labelComp.setLayoutData(new GridData(GridData.BEGINNING | GridData.FILL_HORIZONTAL));
+		Composite labelComp = new Composite(bComp, SWT.NONE);
+		labelComp.setLayout(new GridLayout());
+		labelComp.setLayoutData(new GridData(GridData.BEGINNING | GridData.FILL_HORIZONTAL));
 
-      extraInfoLabel = new Label(labelComp, SWT.NONE);
-      extraInfoLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-      extraInfoLabel.setText("");
-      extraInfoLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
+		extraInfoLabel = new Label(labelComp, SWT.NONE);
+		extraInfoLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		extraInfoLabel.setText("");
+		extraInfoLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
 
-      refreshActionEnablement();
-   }
+		refreshActionEnablement();
+	}
 
-   public void refreshActionEnablement() {
-      deleteDefectItem.setEnabled(isEditable() && getSelectedDefectItems().size() > 0);
-      newDefectItem.setEnabled(isEditable());
-   }
+	public void refreshActionEnablement() {
+		deleteDefectItem.setEnabled(isEditable() && getSelectedDefectItems().size() > 0);
+		newDefectItem.setEnabled(isEditable());
+	}
 
-   public void createTaskActionBarPulldown(final ToolBar toolBar, Composite composite) {
-      final ToolItem dropDown = new ToolItem(toolBar, SWT.DROP_DOWN);
-      dropDown.setImage(ImageManager.getImage(FrameworkImage.GEAR));
-      final Menu menu = new Menu(composite);
+	public void createTaskActionBarPulldown(final ToolBar toolBar, Composite composite) {
+		final ToolItem dropDown = new ToolItem(toolBar, SWT.DROP_DOWN);
+		dropDown.setImage(ImageManager.getImage(FrameworkImage.GEAR));
+		final Menu menu = new Menu(composite);
 
-      dropDown.addListener(SWT.Selection, new Listener() {
-         public void handleEvent(org.eclipse.swt.widgets.Event event) {
-            if (event.detail == SWT.ARROW) {
-               Rectangle rect = dropDown.getBounds();
-               Point pt = new Point(rect.x, rect.y + rect.height);
-               pt = toolBar.toDisplay(pt);
-               menu.setLocation(pt.x, pt.y);
-               menu.setVisible(true);
-            }
-         }
-      });
+		dropDown.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(org.eclipse.swt.widgets.Event event) {
+				if (event.detail == SWT.ARROW) {
+					Rectangle rect = dropDown.getBounds();
+					Point pt = new Point(rect.x, rect.y + rect.height);
+					pt = toolBar.toDisplay(pt);
+					menu.setLocation(pt.x, pt.y);
+					menu.setVisible(true);
+				}
+			}
+		});
 
-      MenuItem item = new MenuItem(menu, SWT.PUSH);
-      item.setText("Create Defects via simple list");
-      item.setEnabled(isEditable());
-      item.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            handleImportDefectsViaList();
-         }
-      });
+		MenuItem item = new MenuItem(menu, SWT.PUSH);
+		item.setText("Create Defects via simple list");
+		item.setEnabled(isEditable());
+		item.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				handleImportDefectsViaList();
+			}
+		});
 
-   }
+	}
 
-   private void handleExpandCollapseDefectTableList() {
-      if (mapOfReviewArtifacts != null && mapOfReviewArtifacts.containsKey(reviewArt) && mapOfReviewArtifacts.get(reviewArt)) {
-         setXviewerTree(true);
-      } else {
-         setXviewerTree(false);
-      }
-      xViewer.refresh();
-      if (getForm(parentComposite) != null) {
-         getForm(parentComposite).reflow(true);
-      }
-   }
+	private void handleExpandCollapseDefectTableList() {
+		if (mapOfReviewArtifacts != null && mapOfReviewArtifacts.containsKey(reviewArt) && mapOfReviewArtifacts.get(reviewArt)) {
+			setXviewerTree(true);
+		} else {
+			setXviewerTree(false);
+		}
+		xViewer.refresh();
+		if (getForm(parentComposite) != null) {
+			getForm(parentComposite).reflow(true);
+		}
+	}
 
-   public ScrolledForm getForm(Composite composite) {
-      ScrolledForm form = null;
-      if (composite == null) {
-         return null;
-      }
-      if (composite instanceof ScrolledForm) {
-         return (ScrolledForm) composite;
-      }
-      if (!(composite instanceof ScrolledForm)) {
-         form = getForm(composite.getParent());
-      }
-      return form;
-   }
+	public ScrolledForm getForm(Composite composite) {
+		ScrolledForm form = null;
+		if (composite == null) {
+			return null;
+		}
+		if (composite instanceof ScrolledForm) {
+			return (ScrolledForm) composite;
+		}
+		if (!(composite instanceof ScrolledForm)) {
+			form = getForm(composite.getParent());
+		}
+		return form;
+	}
 
-   public void loadTable() {
-      try {
-         if (reviewArt != null && xViewer != null) {
-            xViewer.set(reviewArt.getDefectManager().getDefectItems());
-         }
-      } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-      handleExpandCollapseDefectTableList();
-      refresh();
-   }
+	public void loadTable() {
+		try {
+			if (reviewArt != null && xViewer != null) {
+				xViewer.set(reviewArt.getDefectManager().getDefectItems());
+			}
+		} catch (Exception ex) {
+			OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+		}
+		handleExpandCollapseDefectTableList();
+		refresh();
+	}
 
-   public void handleImportDefectsViaList() {
-      try {
-         EntryDialog ed =
-               new EntryDialog(Displays.getActiveShell(), "Create Defects", null,
-                     "Enter task titles, one per line.", MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
-         ed.setFillVertically(true);
-         if (ed.open() == 0) {
-            SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Import Review Defects");
-            for (String str : ed.getEntry().split("\n")) {
-               str = str.replaceAll("\r", "");
-               if (!str.equals("")) {
-                  reviewArt.getDefectManager().addDefectItem(str, false, transaction);
-               }
-            }
-            transaction.execute();
-            loadTable();
-            notifyXModifiedListeners();
-         }
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-   }
+	public void handleImportDefectsViaList() {
+		try {
+			EntryDialog ed =
+						new EntryDialog(Displays.getActiveShell(), "Create Defects", null,
+									"Enter task titles, one per line.", MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
+			ed.setFillVertically(true);
+			if (ed.open() == 0) {
+				SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Import Review Defects");
+				for (String str : ed.getEntry().split("\n")) {
+					str = str.replaceAll("\r", "");
+					if (!str.equals("")) {
+						reviewArt.getDefectManager().addDefectItem(str, false, transaction);
+					}
+				}
+				transaction.execute();
+				loadTable();
+				notifyXModifiedListeners();
+			}
+		} catch (Exception ex) {
+			OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+		}
+	}
 
-   public void handleDeleteDefect(boolean persist) {
-      final List<DefectItem> items = getSelectedDefectItems();
-      if (items.isEmpty()) {
-         AWorkbench.popup("ERROR", "No Defects Selected");
-         return;
-      }
-      StringBuilder builder = new StringBuilder();
-      for (DefectItem defectItem : items) {
-         builder.append("\"" + defectItem.getDescription() + "\"\n");
-      }
+	public void handleDeleteDefect(boolean persist) {
+		final List<DefectItem> items = getSelectedDefectItems();
+		if (items.isEmpty()) {
+			AWorkbench.popup("ERROR", "No Defects Selected");
+			return;
+		}
+		StringBuilder builder = new StringBuilder();
+		for (DefectItem defectItem : items) {
+			builder.append("\"" + defectItem.getDescription() + "\"\n");
+		}
 
-      boolean delete =
-            MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                  "Delete Defects", "Are You Sure You Wish to Delete the Defects(s):\n\n" + builder.toString());
-      if (delete) {
-         try {
-            SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Delete Review Defects");
-            deleteDefectHelper(items, persist, transaction);
-            transaction.execute();
-         } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-         }
-      }
-   }
+		boolean delete =
+					MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+								"Delete Defects", "Are You Sure You Wish to Delete the Defects(s):\n\n" + builder.toString());
+		if (delete) {
+			try {
+				SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Delete Review Defects");
+				deleteDefectHelper(items, persist, transaction);
+				transaction.execute();
+			} catch (Exception ex) {
+				OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+			}
+		}
+	}
 
-   private void deleteDefectHelper(List<DefectItem> items, boolean persist, SkynetTransaction transaction) {
-      try {
-         for (DefectItem defectItem : items) {
-            reviewArt.getDefectManager().removeDefectItem(defectItem, persist, transaction);
-            xViewer.remove(defectItem);
-         }
-         loadTable();
-         notifyXModifiedListeners();
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-   }
+	private void deleteDefectHelper(List<DefectItem> items, boolean persist, SkynetTransaction transaction) {
+		try {
+			for (DefectItem defectItem : items) {
+				reviewArt.getDefectManager().removeDefectItem(defectItem, persist, transaction);
+				xViewer.remove(defectItem);
+			}
+			loadTable();
+			notifyXModifiedListeners();
+		} catch (Exception ex) {
+			OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+		}
+	}
 
-   public void handleNewDefect() {
-      EntryDialog ed =
-            new EntryDialog(Displays.getActiveShell(), "Create New Defect", null,
-                  "Enter Defect Description", MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
-      if (ed.open() == 0) {
-         try {
-            SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Add Review Defect");
-            reviewArt.getDefectManager().addDefectItem(ed.getEntry(), false, transaction);
-            transaction.execute();
-            notifyXModifiedListeners();
-            loadTable();
-         } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-         }
-      }
-   }
+	public void handleNewDefect() {
+		EntryDialog ed =
+					new EntryDialog(Displays.getActiveShell(), "Create New Defect", null, "Enter Defect Description",
+								MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
+		if (ed.open() == 0) {
+			try {
+				SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Add Review Defect");
+				reviewArt.getDefectManager().addDefectItem(ed.getEntry(), false, transaction);
+				transaction.execute();
+				notifyXModifiedListeners();
+				loadTable();
+			} catch (Exception ex) {
+				OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+			}
+		}
+	}
 
-   @SuppressWarnings("rawtypes")
-   public ArrayList<DefectItem> getSelectedDefectItems() {
-      ArrayList<DefectItem> items = new ArrayList<DefectItem>();
-      if (xViewer == null) {
-         return items;
-      }
-      if (xViewer.getSelection().isEmpty()) {
-         return items;
-      }
-      Iterator i = ((IStructuredSelection) xViewer.getSelection()).iterator();
-      while (i.hasNext()) {
-         Object obj = i.next();
-         items.add((DefectItem) obj);
-      }
-      return items;
-   }
+	@SuppressWarnings("rawtypes")
+	public ArrayList<DefectItem> getSelectedDefectItems() {
+		ArrayList<DefectItem> items = new ArrayList<DefectItem>();
+		if (xViewer == null) {
+			return items;
+		}
+		if (xViewer.getSelection().isEmpty()) {
+			return items;
+		}
+		Iterator i = ((IStructuredSelection) xViewer.getSelection()).iterator();
+		while (i.hasNext()) {
+			Object obj = i.next();
+			items.add((DefectItem) obj);
+		}
+		return items;
+	}
 
-   @Override
-   public Control getControl() {
-      return xViewer.getTree();
-   }
+	@Override
+	public Control getControl() {
+		return xViewer.getTree();
+	}
 
-   @Override
-   public void dispose() {
-      OseeEventManager.removeListener(this);
-      xViewer.dispose();
-   }
+	@Override
+	public void dispose() {
+		OseeEventManager.removeListener(this);
+		xViewer.dispose();
+	}
 
-   @Override
-   public void setFocus() {
-      xViewer.getTree().setFocus();
-   }
+	@Override
+	public void setFocus() {
+		xViewer.getTree().setFocus();
+	}
 
-   @Override
-   public void refresh() {
-      if (xViewer == null || xViewer.getTree() == null || xViewer.getTree().isDisposed()) {
-         return;
-      }
-      xViewer.refresh();
-      validate();
-      refreshActionEnablement();
-   }
+	@Override
+	public void refresh() {
+		if (xViewer == null || xViewer.getTree() == null || xViewer.getTree().isDisposed()) {
+			return;
+		}
+		xViewer.refresh();
+		validate();
+		refreshActionEnablement();
+	}
 
-   @Override
-   public IStatus isValid() {
-      try {
-         if (isRequiredEntry() && xViewer.getTree().getItemCount() == 0) {
-            extraInfoLabel.setText("At least one defect entry is required.  Select \"New Defect\" to add.");
-            extraInfoLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
-            return new Status(IStatus.ERROR, getClass().getSimpleName(), "At least one defect entry is required");
-         }
-         if (reviewArt != null) {
-            for (DefectItem item : reviewArt.getDefectManager().getDefectItems()) {
-               if (item.isClosed() == false || item.getDisposition() == Disposition.None || item.getSeverity() == Severity.None && item.getDisposition() != Disposition.Duplicate && item.getDisposition() != Disposition.Reject) {
-                  extraInfoLabel.setText("All items must be marked for severity, disposition and closed.  Select icon in cell or right-click to update field.");
-                  extraInfoLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
-                  return new Status(IStatus.ERROR, getClass().getSimpleName(),
-                        "Review not complete until all items are marked for severity, disposition and closed");
-               }
-            }
-         }
-         extraInfoLabel.setText("Select \"New Defect\" to add.  Select icon in cell or right-click to update field.");
-         extraInfoLabel.setForeground(Displays.getSystemColor(SWT.COLOR_BLACK));
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-         return new Status(IStatus.ERROR, getClass().getSimpleName(),
-               "Exception validating defects. See log for details. " + ex);
-      }
-      // Need this cause it removes all error items of this namespace
-      return new Status(IStatus.OK, getClass().getSimpleName(), "");
-   }
+	@Override
+	public IStatus isValid() {
+		try {
+			if (isRequiredEntry() && xViewer.getTree().getItemCount() == 0) {
+				extraInfoLabel.setText("At least one defect entry is required.  Select \"New Defect\" to add.");
+				extraInfoLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
+				return new Status(IStatus.ERROR, getClass().getSimpleName(), "At least one defect entry is required");
+			}
+			if (reviewArt != null) {
+				for (DefectItem item : reviewArt.getDefectManager().getDefectItems()) {
+					if (item.isClosed() == false || item.getDisposition() == Disposition.None || item.getSeverity() == Severity.None && item.getDisposition() != Disposition.Duplicate && item.getDisposition() != Disposition.Reject) {
+						extraInfoLabel.setText("All items must be marked for severity, disposition and closed.  Select icon in cell or right-click to update field.");
+						extraInfoLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
+						return new Status(IStatus.ERROR, getClass().getSimpleName(),
+									"Review not complete until all items are marked for severity, disposition and closed");
+					}
+				}
+			}
+			extraInfoLabel.setText("Select \"New Defect\" to add.  Select icon in cell or right-click to update field.");
+			extraInfoLabel.setForeground(Displays.getSystemColor(SWT.COLOR_BLACK));
+		} catch (Exception ex) {
+			OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+			return new Status(IStatus.ERROR, getClass().getSimpleName(),
+						"Exception validating defects. See log for details. " + ex);
+		}
+		// Need this cause it removes all error items of this namespace
+		return new Status(IStatus.OK, getClass().getSimpleName(), "");
+	}
 
-   @Override
-   public void setXmlData(String str) {
-   }
+	@Override
+	public void setXmlData(String str) {
+	}
 
-   @Override
-   public String getXmlData() {
-      return null;
-   }
+	@Override
+	public String getXmlData() {
+		return null;
+	}
 
-   @Override
-   public String toHTML(String labelFont) {
-      if (getXViewer().getTree().getItemCount() == 0) {
-         return "";
-      }
-      StringBuffer html = new StringBuffer();
-      try {
-         html.append(AHTML.addSpace(1) + AHTML.getLabelStr(AHTML.LABEL_FONT, "Tasks"));
-         html.append(AHTML.startBorderTable(100, normalColor, ""));
-         html.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Date", "User", "Location", "Description",
-               "Severity", "Disposition", "Injection Activity", "Resolution", "Location", "Closted"}));
-         for (DefectItem item : reviewArt.getDefectManager().getDefectItems()) {
-            html.append(AHTML.addRowMultiColumnTable(new String[] {item.getCreatedDate(XDate.MMDDYY),
-                  item.getUser().getName(), item.getLocation(), item.getDescription(), item.getSeverity().name(),
-                  item.getDisposition().name(), item.getInjectionActivity().name(), item.getResolution(),
-                  item.isClosed() + ""}));
-         }
-         html.append(AHTML.endBorderTable());
-      } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-         return "Defect Item Exception - " + ex.getLocalizedMessage();
-      }
-      return html.toString();
-   }
+	@Override
+	public String toHTML(String labelFont) {
+		if (getXViewer().getTree().getItemCount() == 0) {
+			return "";
+		}
+		StringBuffer html = new StringBuffer();
+		try {
+			html.append(AHTML.addSpace(1) + AHTML.getLabelStr(AHTML.LABEL_FONT, "Tasks"));
+			html.append(AHTML.startBorderTable(100, normalColor, ""));
+			html.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Date", "User", "Location", "Description",
+						"Severity", "Disposition", "Injection Activity", "Resolution", "Location", "Closted"}));
+			for (DefectItem item : reviewArt.getDefectManager().getDefectItems()) {
+				html.append(AHTML.addRowMultiColumnTable(new String[] {item.getCreatedDate(XDate.MMDDYY),
+							item.getUser().getName(), item.getLocation(), item.getDescription(), item.getSeverity().name(),
+							item.getDisposition().name(), item.getInjectionActivity().name(), item.getResolution(),
+							item.isClosed() + ""}));
+			}
+			html.append(AHTML.endBorderTable());
+		} catch (Exception ex) {
+			OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+			return "Defect Item Exception - " + ex.getLocalizedMessage();
+		}
+		return html.toString();
+	}
 
-   @Override
-   public String getReportData() {
-      return null;
-   }
+	@Override
+	public String getReportData() {
+		return null;
+	}
 
-   /**
-    * @return Returns the xViewer.
-    */
-   public DefectXViewer getXViewer() {
-      return xViewer;
-   }
+	/**
+	 * @return Returns the xViewer.
+	 */
+	public DefectXViewer getXViewer() {
+		return xViewer;
+	}
 
-   @Override
-   public Object getData() {
-      return xViewer.getInput();
-   }
+	@Override
+	public Object getData() {
+		return xViewer.getInput();
+	}
 
-   public IDirtiableEditor getEditor() {
-      return editor;
-   }
+	public IDirtiableEditor getEditor() {
+		return editor;
+	}
 
-   public void setEditor(IDirtiableEditor editor) {
-      this.editor = editor;
-   }
+	public void setEditor(IDirtiableEditor editor) {
+		this.editor = editor;
+	}
 
-   public IReviewArtifact getReviewArt() {
-      return reviewArt;
-   }
+	public IReviewArtifact getReviewArt() {
+		return reviewArt;
+	}
 
-   public void setReviewArt(IReviewArtifact reviewArt) {
-      this.reviewArt = reviewArt;
-      if (xViewer != null) {
-         loadTable();
-      }
-   }
+	public void setReviewArt(IReviewArtifact reviewArt) {
+		this.reviewArt = reviewArt;
+		if (xViewer != null) {
+			loadTable();
+		}
+	}
 
-   public void setArtifact(Artifact artifact, String attrName) {
-      setReviewArt((IReviewArtifact) artifact);
-   }
+	@Override
+	public void setArtifact(Artifact artifact) {
+		setReviewArt((IReviewArtifact) artifact);
+	}
 
-   @Override
-   public void saveToArtifact() throws OseeCoreException {
-      // DefectViewer uses artifact as storage mechanism; nothing to do here
-   }
+	@Override
+	public void saveToArtifact() {
+		// DefectViewer uses artifact as storage mechanism; nothing to do here
+	}
 
-   @Override
-   public Result isDirty() throws OseeCoreException {
-      // DefectViewer uses artifact as storage mechanism which already determines dirty
-      return Result.FalseResult;
-   }
+	@Override
+	public Result isDirty() {
+		// DefectViewer uses artifact as storage mechanism which already determines dirty
+		return Result.FalseResult;
+	}
 
-   @Override
-   public void revert() throws OseeCoreException {
-      // Nothing to revert cause artifact will be reverted
-   }
+	@Override
+	public void revert() {
+		// Nothing to revert cause artifact will be reverted
+	}
 
-   @Override
-   public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) throws OseeCoreException {
-      if (transData.getBranchId() != AtsUtil.getAtsBranch().getId()) {
-         return;
-      }
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            if (xViewer == null || xViewer.getTree() == null || xViewer.getTree().isDisposed()) {
-               return;
-            }
-            if (transData.isRelAddedChangedDeleted(reviewArt.getArtifact())) {
-               loadTable();
-            } else {
-               refresh();
-            }
-         }
-      });
-   }
+	@Override
+	public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) throws OseeCoreException {
+		if (transData.getBranchId() != AtsUtil.getAtsBranch().getId()) {
+			return;
+		}
+		Displays.ensureInDisplayThread(new Runnable() {
+			@Override
+			public void run() {
+				if (xViewer == null || xViewer.getTree() == null || xViewer.getTree().isDisposed()) {
+					return;
+				}
+				if (transData.isRelAddedChangedDeleted(reviewArt.getArtifact())) {
+					loadTable();
+				} else {
+					refresh();
+				}
+			}
+		});
+	}
 
-   @Override
-   public Control getErrorMessageControl() {
-      return labelWidget;
-   }
+	@Override
+	public Control getErrorMessageControl() {
+		return labelWidget;
+	}
 
-   @Override
-   public List<? extends IEventFilter> getEventFilters() {
-      return Arrays.asList(OseeEventManager.getCommonBranchFilter(), AtsUtil.getReviewArtifactTypeEventFilter());
-   }
+	@Override
+	public List<? extends IEventFilter> getEventFilters() {
+		return Arrays.asList(OseeEventManager.getCommonBranchFilter(), AtsUtil.getReviewArtifactTypeEventFilter());
+	}
 
-   @Override
-   public void handleArtifactEvent(final ArtifactEvent artifactEvent, Sender sender) {
-      if (!artifactEvent.isHasEvent(reviewArt.getArtifact())) {
-         return;
-      }
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            if (xViewer == null || xViewer.getTree() == null || xViewer.getTree().isDisposed()) {
-               return;
-            }
-            if (artifactEvent.isRelAddedChangedDeleted(reviewArt.getArtifact())) {
-               loadTable();
-            } else {
-               refresh();
-            }
-         }
-      });
-   }
+	@Override
+	public void handleArtifactEvent(final ArtifactEvent artifactEvent, Sender sender) {
+		if (!artifactEvent.isHasEvent(reviewArt.getArtifact())) {
+			return;
+		}
+		Displays.ensureInDisplayThread(new Runnable() {
+			@Override
+			public void run() {
+				if (xViewer == null || xViewer.getTree() == null || xViewer.getTree().isDisposed()) {
+					return;
+				}
+				if (artifactEvent.isRelAddedChangedDeleted(reviewArt.getArtifact())) {
+					loadTable();
+				} else {
+					refresh();
+				}
+			}
+		});
+	}
 }

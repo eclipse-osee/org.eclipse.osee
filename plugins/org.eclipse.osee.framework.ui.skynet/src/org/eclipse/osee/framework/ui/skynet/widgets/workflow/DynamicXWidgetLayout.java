@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.XWidgetParser;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.IAttributeWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
@@ -166,11 +167,19 @@ public class DynamicXWidgetLayout {
 				dynamicWidgetLayoutListener.widgetCreating(xWidget, toolkit, artifact, this, xModListener, isEditable);
 			}
 
-			if (artifact != null && xWidget instanceof IArtifactWidget) {
-				try {
-					((IArtifactWidget) xWidget).setArtifact(artifact, xWidgetLayoutData.getStorageName());
-				} catch (Exception ex) {
-					OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+			if (artifact != null) {
+				if (xWidget instanceof IAttributeWidget) {
+					try {
+						((IAttributeWidget) xWidget).setAttributeType(artifact, xWidgetLayoutData.getStorageName());
+					} catch (Exception ex) {
+						OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+					}
+				} else if (xWidget instanceof IArtifactWidget) {
+					try {
+						((IArtifactWidget) xWidget).setArtifact(artifact);
+					} catch (Exception ex) {
+						OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+					}
 				}
 			}
 

@@ -12,20 +12,24 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 /**
  * Used by XWidgets that perform external data storage
  * 
- * @author Donald G. Dunne
+ * @author Roberto E. Escobar
  */
-public interface IArtifactWidget extends IArtifactStoredWidget {
+public interface IAttributeWidget extends IArtifactStoredWidget {
 
 	/**
-	 * Set artifact used as storage for this widget
+	 * Set attributeType used as storage for this widget
 	 * 
-	 * @throws Exception
+	 * @throws OseeCoreException
 	 */
-	public void setArtifact(Artifact artifact) throws OseeCoreException;
+	public void setAttributeType(Artifact artifact, String attributeTypeName) throws OseeCoreException;
+
+	/**
+	 * Get attributeType used as storage for this widget
+	 */
+	public String getAttributeType();
 
 }

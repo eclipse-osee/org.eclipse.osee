@@ -10,19 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
-public class XTextDescriptiveName extends XTextDam implements IArtifactWidget {
+public class XTextDescriptiveName extends XTextDam {
 
-   public Artifact artifact;
+	public Artifact artifact;
 
-   public XTextDescriptiveName(String displayLabel) {
-      super(displayLabel);
-   }
+	public XTextDescriptiveName(String displayLabel) {
+		super(displayLabel);
+	}
 
-   public void setArtifact(Artifact artifact) throws Exception {
-      this.artifact = artifact;
-      super.setArtifact(artifact, "Name");
-   }
+	@Override
+	public void setArtifact(Artifact artifact) throws OseeCoreException {
+		super.setAttributeType(artifact, "Name");
+	}
 
 }

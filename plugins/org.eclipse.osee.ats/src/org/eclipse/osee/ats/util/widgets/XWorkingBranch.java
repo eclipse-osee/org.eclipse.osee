@@ -58,256 +58,264 @@ import org.eclipse.swt.widgets.Listener;
  */
 public class XWorkingBranch extends XWidget implements IArtifactWidget, IArtifactEventListener, IFrameworkTransactionEventListener, IBranchEventListener {
 
-   private TeamWorkFlowArtifact teamArt;
-   private Button createBranchButton;
-   private Button showArtifactExplorer;
-   private Button showChangeReport;
-   private Button deleteBranchButton;
-   private XWorkingBranchEnablement enablement;
+	private TeamWorkFlowArtifact teamArt;
+	private Button createBranchButton;
+	private Button showArtifactExplorer;
+	private Button showChangeReport;
+	private Button deleteBranchButton;
+	private XWorkingBranchEnablement enablement;
 
-   public static enum BranchStatus {
-      Not_Started, Changes_InProgress, Changes_NotPermitted
-   }
-   public final static String WIDGET_ID = ATSAttributes.WORKING_BRANCH_WIDGET.getStoreName();
+	public static enum BranchStatus {
+		Not_Started,
+		Changes_InProgress,
+		Changes_NotPermitted
+	}
+	public final static String WIDGET_ID = ATSAttributes.WORKING_BRANCH_WIDGET.getStoreName();
 
-   public XWorkingBranch() {
-      super("Working Branch", "");
-      OseeEventManager.addListener(this);
-   }
+	public XWorkingBranch() {
+		super("Working Branch", "");
+		OseeEventManager.addListener(this);
+	}
 
-   @Override
-   protected void createControls(Composite parent, int horizontalSpan) {
-      if (horizontalSpan < 2) {
-         horizontalSpan = 2;
-      }
-      if (!getLabel().equals("")) {
-         labelWidget = new Label(parent, SWT.NONE);
-      }
+	@Override
+	protected void createControls(Composite parent, int horizontalSpan) {
+		if (horizontalSpan < 2) {
+			horizontalSpan = 2;
+		}
+		if (!getLabel().equals("")) {
+			labelWidget = new Label(parent, SWT.NONE);
+		}
 
-      Composite bComp = new Composite(parent, SWT.NONE);
-      bComp.setLayout(new GridLayout(4, false));
-      bComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-      if (toolkit != null) {
-         toolkit.adapt(bComp);
-      }
+		Composite bComp = new Composite(parent, SWT.NONE);
+		bComp.setLayout(new GridLayout(4, false));
+		bComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		if (toolkit != null) {
+			toolkit.adapt(bComp);
+		}
 
-      createBranchButton = createNewButton(bComp);
-      createBranchButton.setToolTipText("Create Working Branch");
-      createBranchButton.addListener(SWT.Selection, new Listener() {
-         public void handleEvent(Event e) {
-            teamArt.getBranchMgr().createWorkingBranch(null, true);
-         }
-      });
+		createBranchButton = createNewButton(bComp);
+		createBranchButton.setToolTipText("Create Working Branch");
+		createBranchButton.addListener(SWT.Selection, new Listener() {
+			@Override
+			public void handleEvent(Event e) {
+				teamArt.getBranchMgr().createWorkingBranch(null, true);
+			}
+		});
 
-      showArtifactExplorer = createNewButton(bComp);
-      showArtifactExplorer.setToolTipText("Show Artifact Explorer");
-      showArtifactExplorer.addListener(SWT.Selection, new Listener() {
-         public void handleEvent(Event e) {
-            try {
-               ArtifactExplorer.exploreBranch(teamArt.getWorkingBranch());
-            } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-      });
+		showArtifactExplorer = createNewButton(bComp);
+		showArtifactExplorer.setToolTipText("Show Artifact Explorer");
+		showArtifactExplorer.addListener(SWT.Selection, new Listener() {
+			@Override
+			public void handleEvent(Event e) {
+				try {
+					ArtifactExplorer.exploreBranch(teamArt.getWorkingBranch());
+				} catch (OseeCoreException ex) {
+					OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+				}
+			}
+		});
 
-      showChangeReport = createNewButton(bComp);
-      showChangeReport.setToolTipText("Show Change Report");
-      showChangeReport.addListener(SWT.Selection, new Listener() {
-         public void handleEvent(Event e) {
-            teamArt.getBranchMgr().showChangeReport();
-         }
-      });
+		showChangeReport = createNewButton(bComp);
+		showChangeReport.setToolTipText("Show Change Report");
+		showChangeReport.addListener(SWT.Selection, new Listener() {
+			@Override
+			public void handleEvent(Event e) {
+				teamArt.getBranchMgr().showChangeReport();
+			}
+		});
 
-      deleteBranchButton = createNewButton(bComp);
-      deleteBranchButton.setToolTipText("Delete Working Branch");
-      deleteBranchButton.addListener(SWT.Selection, new Listener() {
-         public void handleEvent(Event e) {
-            teamArt.getBranchMgr().deleteWorkingBranch(true);
-            refresh();
-         }
-      });
+		deleteBranchButton = createNewButton(bComp);
+		deleteBranchButton.setToolTipText("Delete Working Branch");
+		deleteBranchButton.addListener(SWT.Selection, new Listener() {
+			@Override
+			public void handleEvent(Event e) {
+				teamArt.getBranchMgr().deleteWorkingBranch(true);
+				refresh();
+			}
+		});
 
-      if (AtsPlugin.getInstance() != null) {
-         createBranchButton.setImage(ImageManager.getImage(FrameworkImage.BRANCH));
-         deleteBranchButton.setImage(ImageManager.getImage(FrameworkImage.TRASH));
-      }
-      if (SkynetGuiPlugin.getInstance() != null) {
-         showArtifactExplorer.setImage(ImageManager.getImage(FrameworkImage.ARTIFACT_EXPLORER));
-         showChangeReport.setImage(ImageManager.getImage(FrameworkImage.BRANCH_CHANGE));
-      }
-      refreshLabel();
-      refreshEnablement();
-   }
+		if (AtsPlugin.getInstance() != null) {
+			createBranchButton.setImage(ImageManager.getImage(FrameworkImage.BRANCH));
+			deleteBranchButton.setImage(ImageManager.getImage(FrameworkImage.TRASH));
+		}
+		if (SkynetGuiPlugin.getInstance() != null) {
+			showArtifactExplorer.setImage(ImageManager.getImage(FrameworkImage.ARTIFACT_EXPLORER));
+			showChangeReport.setImage(ImageManager.getImage(FrameworkImage.BRANCH_CHANGE));
+		}
+		refreshLabel();
+		refreshEnablement();
+	}
 
-   public Button createNewButton(Composite comp) {
-      if (toolkit != null) {
-         return toolkit.createButton(comp, null, SWT.PUSH);
-      }
-      return new Button(comp, SWT.PUSH);
-   }
+	public Button createNewButton(Composite comp) {
+		if (toolkit != null) {
+			return toolkit.createButton(comp, null, SWT.PUSH);
+		}
+		return new Button(comp, SWT.PUSH);
+	}
 
-   public void refreshLabel() {
-      if (!getLabel().equals("")) {
-         try {
-            labelWidget.setText(getLabel() + ": " + (enablement.getWorkingBranch() != null ? enablement.getWorkingBranch().getShortName() : "") + " " + enablement.getStatus().name());
-         } catch (OseeCoreException ex) {
-            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
-         }
-         if (getToolTip() != null) {
-            labelWidget.setToolTipText(getToolTip());
-         }
-      }
-   }
+	public void refreshLabel() {
+		if (!getLabel().equals("")) {
+			try {
+				labelWidget.setText(getLabel() + ": " + (enablement.getWorkingBranch() != null ? enablement.getWorkingBranch().getShortName() : "") + " " + enablement.getStatus().name());
+			} catch (OseeCoreException ex) {
+				OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+			}
+			if (getToolTip() != null) {
+				labelWidget.setToolTipText(getToolTip());
+			}
+		}
+	}
 
-   public void refreshEnablement() {
-      createBranchButton.setEnabled(enablement.isCreateBranchButtonEnabled());
-      showArtifactExplorer.setEnabled(enablement.isShowArtifactExplorerButtonEnabled());
-      showChangeReport.setEnabled(enablement.isShowChangeReportButtonEnabled());
-      deleteBranchButton.setEnabled(enablement.isDeleteBranchButtonEnabled());
-   }
+	public void refreshEnablement() {
+		createBranchButton.setEnabled(enablement.isCreateBranchButtonEnabled());
+		showArtifactExplorer.setEnabled(enablement.isShowArtifactExplorerButtonEnabled());
+		showChangeReport.setEnabled(enablement.isShowChangeReportButtonEnabled());
+		deleteBranchButton.setEnabled(enablement.isDeleteBranchButtonEnabled());
+	}
 
-   public static boolean isPurgeBranchButtonEnabled(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
-      return teamArt.getBranchMgr().isWorkingBranchInWork();
-   }
+	public static boolean isPurgeBranchButtonEnabled(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+		return teamArt.getBranchMgr().isWorkingBranchInWork();
+	}
 
-   @Override
-   public void setFocus() {
-   }
+	@Override
+	public void setFocus() {
+	}
 
-   @Override
-   public void dispose() {
-      OseeEventManager.removeListener(this);
-   }
+	@Override
+	public void dispose() {
+		OseeEventManager.removeListener(this);
+	}
 
-   @Override
-   public Control getControl() {
-      return labelWidget;
-   }
+	@Override
+	public Control getControl() {
+		return labelWidget;
+	}
 
-   @Override
-   public Object getData() {
-      return null;
-   }
+	@Override
+	public Object getData() {
+		return null;
+	}
 
-   @Override
-   public String getReportData() {
-      return null;
-   }
+	@Override
+	public String getReportData() {
+		return null;
+	}
 
-   @Override
-   public String getXmlData() {
-      return null;
-   }
+	@Override
+	public String getXmlData() {
+		return null;
+	}
 
-   @Override
-   public IStatus isValid() {
-      // Need this cause it removes all error items of this namespace
-      return new Status(IStatus.OK, getClass().getSimpleName(), "");
-   }
+	@Override
+	public IStatus isValid() {
+		// Need this cause it removes all error items of this namespace
+		return new Status(IStatus.OK, getClass().getSimpleName(), "");
+	}
 
-   @Override
-   public void refresh() {
-      // don't do anything here cause to expensive to check for branch conditions during every refresh
-   }
+	@Override
+	public void refresh() {
+		// don't do anything here cause to expensive to check for branch conditions during every refresh
+	}
 
-   public void refreshOnBranchEvent() {
-      if (teamArt == null || teamArt.getBranchMgr() == null || labelWidget == null || labelWidget.isDisposed()) {
-         return;
-      }
-      Runnable runnable = new Runnable() {
-         @Override
-         public void run() {
-            enablement.refresh();
-            Displays.ensureInDisplayThread(new Runnable() {
-               public void run() {
-                  if (Widgets.isAccessible(createBranchButton)) {
-                     refreshLabel();
-                     refreshEnablement();
-                  }
-               }
-            });
-         }
-      };
-      Thread thread = new Thread(runnable);
-      thread.start();
-   }
+	public void refreshOnBranchEvent() {
+		if (teamArt == null || teamArt.getBranchMgr() == null || labelWidget == null || labelWidget.isDisposed()) {
+			return;
+		}
+		Runnable runnable = new Runnable() {
+			@Override
+			public void run() {
+				enablement.refresh();
+				Displays.ensureInDisplayThread(new Runnable() {
+					@Override
+					public void run() {
+						if (Widgets.isAccessible(createBranchButton)) {
+							refreshLabel();
+							refreshEnablement();
+						}
+					}
+				});
+			}
+		};
+		Thread thread = new Thread(runnable);
+		thread.start();
+	}
 
-   @Override
-   public void setXmlData(String str) {
-   }
+	@Override
+	public void setXmlData(String str) {
+	}
 
-   @Override
-   public String toHTML(String labelFont) {
-      return "";
-   }
+	@Override
+	public String toHTML(String labelFont) {
+		return "";
+	}
 
-   @Override
-   public Result isDirty() throws OseeCoreException {
-      return Result.FalseResult;
-   }
+	@Override
+	public Result isDirty() {
+		return Result.FalseResult;
+	}
 
-   @Override
-   public void revert() throws OseeCoreException {
-   }
+	@Override
+	public void revert() {
+	}
 
-   @Override
-   public void saveToArtifact() throws OseeCoreException {
-   }
+	@Override
+	public void saveToArtifact() {
+	}
 
-   @Override
-   public void setArtifact(Artifact artifact, String attrName) throws OseeCoreException {
-      this.teamArt = (TeamWorkFlowArtifact) artifact;
-      enablement = new XWorkingBranchEnablement(teamArt);
-   }
+	@Override
+	public void setArtifact(Artifact artifact) {
+		this.teamArt = (TeamWorkFlowArtifact) artifact;
+		enablement = new XWorkingBranchEnablement(teamArt);
+	}
 
-   @Override
-   public void handleBranchEventREM1(Sender sender, BranchEventType branchModType, int branchId) throws OseeCoreException {
-      refreshOnBranchEvent();
-   }
+	@Override
+	public void handleBranchEventREM1(Sender sender, BranchEventType branchModType, int branchId) {
+		refreshOnBranchEvent();
+	}
 
-   @Override
-   public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
-      refreshOnBranchEvent();
-   }
+	@Override
+	public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) {
+		refreshOnBranchEvent();
+	}
 
-   public Button getCreateBranchButton() {
-      return createBranchButton;
-   }
+	public Button getCreateBranchButton() {
+		return createBranchButton;
+	}
 
-   public Button getShowArtifactExplorerButton() {
-      return showArtifactExplorer;
-   }
+	public Button getShowArtifactExplorerButton() {
+		return showArtifactExplorer;
+	}
 
-   public Button getShowChangeReportButton() {
-      return showChangeReport;
-   }
+	public Button getShowChangeReportButton() {
+		return showChangeReport;
+	}
 
-   public Button getDeleteBranchButton() {
-      return deleteBranchButton;
-   }
+	public Button getDeleteBranchButton() {
+		return deleteBranchButton;
+	}
 
-   public String toString() {
-      return String.format("%s", getLabel());
-   }
+	@Override
+	public String toString() {
+		return String.format("%s", getLabel());
+	}
 
-   @Override
-   public List<? extends IEventFilter> getEventFilters() {
-      return AtsUtil.getAtsObjectEventFilters();
-   }
+	@Override
+	public List<? extends IEventFilter> getEventFilters() {
+		return AtsUtil.getAtsObjectEventFilters();
+	}
 
-   @Override
-   public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
-      refreshOnBranchEvent();
-   }
+	@Override
+	public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
+		refreshOnBranchEvent();
+	}
 
-   @Override
-   public void handleBranchEvent(Sender sender, BranchEvent branchEvent) {
-      refreshOnBranchEvent();
-   }
+	@Override
+	public void handleBranchEvent(Sender sender, BranchEvent branchEvent) {
+		refreshOnBranchEvent();
+	}
 
-   @Override
-   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
-   }
+	@Override
+	public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
+	}
 
 }

@@ -21,54 +21,60 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 /**
  * @author Donald G. Dunne
  */
-public class XFloatDam extends XFloat implements IArtifactWidget {
+public class XFloatDam extends XFloat implements IAttributeWidget {
 
-   private Artifact artifact;
-   private String attributeTypeName;
+	private Artifact artifact;
+	private String attributeTypeName;
 
-   public XFloatDam(String displayLabel) {
-      super(displayLabel);
-   }
+	public XFloatDam(String displayLabel) {
+		super(displayLabel);
+	}
 
-   public XFloatDam(String displayLabel, String xmlRoot) {
-      super(displayLabel, xmlRoot);
-   }
+	public XFloatDam(String displayLabel, String xmlRoot) {
+		super(displayLabel, xmlRoot);
+	}
 
-   public void setArtifact(Artifact artifact, String attrName) throws OseeCoreException {
-      this.artifact = artifact;
-      this.attributeTypeName = attrName;
-      Double value = artifact.getSoleAttributeValue(attributeTypeName, null);
-      super.set(value == null ? "" : NumberFormat.getInstance().format(value));
-   }
+	@Override
+	public String getAttributeType() {
+		return attributeTypeName;
+	}
 
-   @Override
-   public void saveToArtifact() throws OseeCoreException {
-      try {
-         if (text == null || text.equals("")) {
-            artifact.deleteSoleAttribute(attributeTypeName);
-         } else {
-            Double enteredValue = getFloat();
-            artifact.setSoleAttributeValue(attributeTypeName, enteredValue);
-         }
-      } catch (NumberFormatException ex) {
-         // do nothing
-      } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-   }
+	@Override
+	public void setAttributeType(Artifact artifact, String attrName) throws OseeCoreException {
+		this.artifact = artifact;
+		this.attributeTypeName = attrName;
+		Double value = artifact.getSoleAttributeValue(attributeTypeName, null);
+		super.set(value == null ? "" : NumberFormat.getInstance().format(value));
+	}
 
-   @Override
-   public Result isDirty() throws OseeCoreException {
-      Double enteredValue = getFloat();
-      Double storedValue = artifact.getSoleAttributeValue(attributeTypeName, 0.0);
-      if (enteredValue.doubleValue() != storedValue.doubleValue()) {
-         return new Result(true, attributeTypeName + " is dirty");
-      }
-      return Result.FalseResult;
-   }
+	@Override
+	public void saveToArtifact() {
+		try {
+			if (text == null || text.equals("")) {
+				artifact.deleteSoleAttribute(attributeTypeName);
+			} else {
+				Double enteredValue = getFloat();
+				artifact.setSoleAttributeValue(attributeTypeName, enteredValue);
+			}
+		} catch (NumberFormatException ex) {
+			// do nothing
+		} catch (Exception ex) {
+			OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+		}
+	}
 
-   @Override
-   public void revert() throws OseeCoreException {
-      setArtifact(artifact, attributeTypeName);
-   }
+	@Override
+	public Result isDirty() throws OseeCoreException {
+		Double enteredValue = getFloat();
+		Double storedValue = artifact.getSoleAttributeValue(attributeTypeName, 0.0);
+		if (enteredValue.doubleValue() != storedValue.doubleValue()) {
+			return new Result(true, attributeTypeName + " is dirty");
+		}
+		return Result.FalseResult;
+	}
+
+	@Override
+	public void revert() throws OseeCoreException {
+		setAttributeType(artifact, attributeTypeName);
+	}
 }

@@ -17,52 +17,63 @@ import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
 import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
-public class XTextDam extends XText implements IArtifactWidget {
+public class XTextDam extends XText implements IArtifactWidget, IAttributeWidget {
 
-   private Artifact artifact;
-   private String attributeTypeName;
+	private Artifact artifact;
+	private String attributeTypeName;
 
-   public XTextDam(String displayLabel) {
-      super(displayLabel);
-   }
+	public XTextDam(String displayLabel) {
+		super(displayLabel);
+	}
 
-   public void setArtifact(Artifact artifact, String attributeTypeName) throws OseeCoreException {
-      this.artifact = artifact;
-      this.attributeTypeName = attributeTypeName;
-      super.set(artifact.getSoleAttributeValue(attributeTypeName, ""));
-   }
+	@Override
+	public void setArtifact(Artifact artifact) throws OseeCoreException {
+		this.artifact = artifact;
+	}
 
-   @Override
-   public void saveToArtifact() throws OseeCoreException {
-      String value = get();
-      if (value == null || value.equals("")) {
-         artifact.deleteSoleAttribute(attributeTypeName);
-      } else if (!value.equals(artifact.getSoleAttributeValue(attributeTypeName, ""))) {
-         artifact.setSoleAttributeValue(attributeTypeName, value);
-      }
-   }
+	@Override
+	public String getAttributeType() {
+		return attributeTypeName;
+	}
 
-   @Override
-   public Result isDirty() throws OseeCoreException {
-      String enteredValue = get();
-      String storedValue = artifact.getSoleAttributeValue(attributeTypeName, "");
-      if (!enteredValue.equals(storedValue)) {
-         return new Result(true, attributeTypeName + " is dirty");
-      }
-      return Result.FalseResult;
-   }
+	@Override
+	public void setAttributeType(Artifact artifact, String attributeTypeName) throws OseeCoreException {
+		this.artifact = artifact;
+		this.attributeTypeName = attributeTypeName;
+		super.set(artifact.getSoleAttributeValue(attributeTypeName, ""));
+	}
 
-   @Override
-   public IStatus isValid() {
-      IStatus status = super.isValid();
-      if (status.isOK()) {
-         status = OseeValidator.getInstance().validate(IOseeValidator.SHORT, artifact, attributeTypeName, get());
-      }
-      return status;
-   }
+	@Override
+	public void saveToArtifact() throws OseeCoreException {
+		String value = get();
+		if (value == null || value.equals("")) {
+			artifact.deleteSoleAttribute(attributeTypeName);
+		} else if (!value.equals(artifact.getSoleAttributeValue(attributeTypeName, ""))) {
+			artifact.setSoleAttributeValue(attributeTypeName, value);
+		}
+	}
 
-   @Override
-   public void revert() throws OseeCoreException {
-      setArtifact(artifact, attributeTypeName);
-   }
+	@Override
+	public Result isDirty() throws OseeCoreException {
+		String enteredValue = get();
+		String storedValue = artifact.getSoleAttributeValue(attributeTypeName, "");
+		if (!enteredValue.equals(storedValue)) {
+			return new Result(true, attributeTypeName + " is dirty");
+		}
+		return Result.FalseResult;
+	}
+
+	@Override
+	public IStatus isValid() {
+		IStatus status = super.isValid();
+		if (status.isOK()) {
+			status = OseeValidator.getInstance().validate(IOseeValidator.SHORT, artifact, attributeTypeName, get());
+		}
+		return status;
+	}
+
+	@Override
+	public void revert() throws OseeCoreException {
+		setAttributeType(artifact, attributeTypeName);
+	}
 }
