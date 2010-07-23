@@ -1,0 +1,44 @@
+<w:wordDocument abcded="12345">
+	<w:body>
+    <wx:sub-section>
+      <w:p wsp:rsidR="00000000" wsp:rsidRDefault="00002144">
+        <w:pPr>
+          <w:pStyle w:val="lvl2on"/>
+          <w:spacing w:before="48" w:line="273" w:line-rule="at-least"/>
+        </w:pPr>
+        <w:r>
+          <w:rPr>
+            <w:b/>
+            <w:b-cs/>
+          </w:rPr>
+          <w:t>1.1  </w:t>
+        </w:r>
+        <w:r>
+          <w:rPr>
+            <w:b/>
+            <w:b-cs/>
+            <w:u w:val="single"/>
+          </w:rPr>
+          <w:t>Test </w:t>
+        </w:r>
+        <w:r>
+          <w:rPr>
+            <w:b/>
+            <w:b-cs/>
+            <w:u w:val="single"/>
+          </w:rPr>
+          <w:t>of the new line maker.</w:t>
+        </w:r>
+        <w:r>
+          <w:t>. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc in ante nulla. Sed rhoncus lacinia nunc id vehicula. In eu metus at erat suscipit elementum. Aliquam posuere ante vel tellus tincidunt nec consequat ante ultrices. Proin luctus luctus convallis. Suspendisse potenti.</w:t>
+        </w:r>
+        <w:r>
+          <w:t> Nunc pulvinar arcu id libero ullamcorper in bibendum dolor elementum. Etiam euismod felis a felis pharetra sed eleifend mi interdum. Vivamus nisl elit, porta sed sagittis nec, lacinia quis dolor. Nam rhoncus nisl sed libero varius non aliquam purus faucibus. Curabitur non ante dui, pretium condimentum purus. Aliquam</w:t>
+        </w:r>
+        <w:r>
+          <w:t> congue, diam vel egestas consectetur, magna metus porta turpis, id tincidunt odio felis a justo. Maecenas sagittis pretium diam, at aliquam nisi convallis ut. Maecenas commodo egestas porttitor. In libero mauris, sollicitudin sit amet semper sit amet, posuere vel erat. Vestibulum sed sapien at nisi suscipit volutpat auctor suscipit odio.</w:t>
+        </w:r>
+      </w:p>
+    </wx:sub-section>
+  </w:body>
+</w:wordDocument>

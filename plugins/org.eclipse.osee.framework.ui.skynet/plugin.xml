@@ -1682,6 +1682,12 @@
              id="org.eclipse.osee.framework.ui.skynet.ArtifactChangeHandler"
              plugin="org.eclipse.osee.framework.skynet.core">
        </statusHandler>
+       <statusHandler
+             class="org.eclipse.osee.framework.ui.skynet.handler.UIOutlineResolutionHandler"
+             code="258"
+             id="org.eclipse.osee.framework.ui.skynet.handler.UIOutlineResolutionHandler"
+             plugin="org.eclipse.osee.framework.skynet.core">
+       </statusHandler>
     </extension>
         <extension
               point="org.eclipse.osee.framework.ui.skynet.DatabaseHealthOperation">
