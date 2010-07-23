@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.database.init.internal;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.core.translation.IDataTranslationServiceProvider;
 import org.osgi.framework.BundleActivator;
@@ -18,29 +17,31 @@ import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
 
 public class DatabaseInitActivator implements BundleActivator, IDataTranslationServiceProvider {
-   public static final String PLUGIN_ID = "org.eclipse.osee.framework.database.init";
+	public static final String PLUGIN_ID = "org.eclipse.osee.framework.database.init";
 
-   private static DatabaseInitActivator instance;
-   private ServiceTracker serviceTracker;
+	private static DatabaseInitActivator instance;
+	private ServiceTracker serviceTracker;
 
-   public void start(BundleContext context) throws Exception {
-      DatabaseInitActivator.instance = this;
-      serviceTracker = new ServiceTracker(context, IDataTranslationService.class.getName(), null);
-      serviceTracker.open(true);
-   }
+	@Override
+	public void start(BundleContext context) throws Exception {
+		DatabaseInitActivator.instance = this;
+		serviceTracker = new ServiceTracker(context, IDataTranslationService.class.getName(), null);
+		serviceTracker.open(true);
+	}
 
-   public void stop(BundleContext context) throws Exception {
-      if (serviceTracker != null) {
-         serviceTracker.close();
-      }
-   }
+	@Override
+	public void stop(BundleContext context) throws Exception {
+		if (serviceTracker != null) {
+			serviceTracker.close();
+		}
+	}
 
-   public static DatabaseInitActivator getInstance() {
-      return instance;
-   }
+	public static DatabaseInitActivator getInstance() {
+		return instance;
+	}
 
-   @Override
-   public IDataTranslationService getTranslationService() throws OseeCoreException {
-      return (IDataTranslationService) serviceTracker.getService();
-   }
+	@Override
+	public IDataTranslationService getTranslationService() {
+		return (IDataTranslationService) serviceTracker.getService();
+	}
 }
