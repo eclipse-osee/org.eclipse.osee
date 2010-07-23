@@ -251,6 +251,7 @@ public class DynamicXWidgetLayout {
 		});
 	}
 	private final XModifiedListener refreshRequiredModListener = new XModifiedListener() {
+		@Override
 		public void widgetModified(XWidget widget) {
 			try {
 				refreshOrAndXOrRequiredFlags();
@@ -341,11 +342,11 @@ public class DynamicXWidgetLayout {
 	}
 
 	public boolean isOrRequired(String attrName) {
-		return getOrRequiredGroup(attrName).size() > 0;
+		return !getOrRequiredGroup(attrName).isEmpty();
 	}
 
 	public boolean isXOrRequired(String attrName) {
-		return getXOrRequiredGroup(attrName).size() > 0;
+		return !getXOrRequiredGroup(attrName).isEmpty();
 	}
 
 	public ArrayList<String> getOrRequiredGroup(String attrName) {
