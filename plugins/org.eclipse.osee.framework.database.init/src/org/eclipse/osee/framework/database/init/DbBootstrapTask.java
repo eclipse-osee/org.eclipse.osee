@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.message.DatastoreInitRequest;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.core.util.HttpMessage;
@@ -49,7 +50,8 @@ public class DbBootstrapTask implements IDbInitializationTask {
 		DbUtil.setDbInit(true);
 
 		createOseeDatastore();
-		BranchManager.getSystemRootBranch();
+		Branch systemRoot = BranchManager.getSystemRootBranch();
+		Conditions.checkNotNull(systemRoot, "System root was not created - ");
 
 		ClientSessionManager.authenticate(new BaseCredentialProvider() {
 
