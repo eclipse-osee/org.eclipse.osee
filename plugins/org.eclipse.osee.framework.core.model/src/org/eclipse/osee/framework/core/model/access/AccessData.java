@@ -22,43 +22,39 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
  * @author Jeff C. Phillips
  * @author Roberto E. Escobar
  */
-public class AccessData {
+public final class AccessData {
 
-	private final CompositeKeyHashMap<Object, Object, AccessDetail<?>> accessMap =
-				new CompositeKeyHashMap<Object, Object, AccessDetail<?>>();
+   private final CompositeKeyHashMap<Object, Object, AccessDetail<?>> accessMap =
+      new CompositeKeyHashMap<Object, Object, AccessDetail<?>>();
 
-	public AccessData() {
-	}
+   public void add(Object key, AccessDetail<?> data) throws OseeCoreException {
+      Conditions.checkNotNull(key, "access key");
+      Conditions.checkNotNull(data, "access data");
 
-	public void add(Object key, AccessDetail<?> data) throws OseeCoreException {
-		Conditions.checkNotNull(key, "access key");
-		Conditions.checkNotNull(data, "access data");
+      AccessDetail<?> access = accessMap.get(key, data.getAccessObject());
+      if (access == null) {
+         accessMap.put(key, data.getAccessObject(), data);
+      } else {
+         PermissionEnum original = access.getPermission();
+         PermissionEnum newPermission = data.getPermission();
+         PermissionEnum netPermission = PermissionEnum.getMostRestrictive(original, newPermission);
+         access.setPermission(netPermission);
+      }
+   }
 
-		AccessDetail<?> access = accessMap.get(key, data.getAccessObject());
-		if (access == null) {
-			accessMap.put(key, data.getAccessObject(), data);
-		} else {
-			PermissionEnum original = access.getPermission();
-			PermissionEnum newPermission = data.getPermission();
-			PermissionEnum netPermission = PermissionEnum.getMostRestrictive(original, newPermission);
-			access.setPermission(netPermission);
-		}
-	}
+   Collection<AccessDetail<?>> getAccess(Object key) throws OseeCoreException {
+      Conditions.checkNotNull(key, "access key");
+      return accessMap.getValues(key);
+   }
 
-	public Collection<AccessDetail<?>> getAccess(Object key) throws OseeCoreException {
-		Conditions.checkNotNull(key, "access key");
-		// TODO clone each access data object? or Hide Method
-		return accessMap.getValues(key);
-	}
-
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		for (Entry<Pair<Object, Object>, AccessDetail<?>> entry : accessMap.entrySet()) {
-			builder.append(entry.getKey().getFirst());
-			builder.append(entry.getValue());
-			builder.append(",\n");
-		}
-		return builder.toString();
-	}
+   @Override
+   public String toString() {
+      StringBuilder builder = new StringBuilder();
+      for (Entry<Pair<Object, Object>, AccessDetail<?>> entry : accessMap.entrySet()) {
+         builder.append(entry.getKey().getFirst());
+         builder.append(entry.getValue());
+         builder.append(",\n");
+      }
+      return builder.toString();
+   }
 }

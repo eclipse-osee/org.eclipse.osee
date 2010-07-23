@@ -29,4 +29,5 @@ Import-Package: org.eclipse.core.runtime,
 Bundle-ActivationPolicy: lazy
 Eclipse-ExtensibleAPI: true
 Export-Package: org.eclipse.osee.framework.access
-Require-Bundle: org.eclipse.osee.framework.skynet.core;bundle-version="0.9.5"
+Require-Bundle: org.eclipse.osee.framework.skynet.core;bundle-version="0.9.5",
+ org.eclipse.osee.framework.core.model

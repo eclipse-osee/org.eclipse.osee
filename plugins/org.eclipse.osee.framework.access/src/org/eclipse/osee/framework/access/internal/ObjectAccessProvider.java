@@ -24,40 +24,40 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 public class ObjectAccessProvider implements IAccessProvider {
 
-	private final AccessControlService accessService;
+   private final AccessControlService accessService;
 
-	public ObjectAccessProvider(AccessControlService accessService) {
-		this.accessService = accessService;
-	}
+   public ObjectAccessProvider(AccessControlService accessService) {
+      this.accessService = accessService;
+   }
 
-	@Override
-	public void computeAccess(IBasicArtifact<?> userArtifact, Collection<?> objToCheck, AccessData accessData) throws OseeCoreException {
-		for (Object object : objToCheck) {
-			if (object instanceof Artifact) {
-				setArtifactAccessData(userArtifact, (Artifact) object, accessData);
-			} else if (object instanceof Branch) {
-				setBranchAccessData(userArtifact, (Branch) object, accessData);
-			} else {
-				throw new OseeStateException("Unhandled object type for access control - " + object);
-			}
-		}
-	}
+   @Override
+   public void computeAccess(IBasicArtifact<?> userArtifact, Collection<?> objToCheck, AccessData accessData) throws OseeCoreException {
+      for (Object object : objToCheck) {
+         if (object instanceof Artifact) {
+            setArtifactAccessData(userArtifact, (Artifact) object, accessData);
+         } else if (object instanceof Branch) {
+            setBranchAccessData(userArtifact, (Branch) object, accessData);
+         } else {
+            throw new OseeStateException("Unhandled object type for access control - " + object);
+         }
+      }
+   }
 
-	private void setArtifactAccessData(IBasicArtifact<?> userArtifact, Artifact artifact, AccessData accessData) throws OseeCoreException {
-		PermissionEnum userPermission = accessService.getArtifactPermission(userArtifact, artifact);
+   private void setArtifactAccessData(IBasicArtifact<?> userArtifact, Artifact artifact, AccessData accessData) throws OseeCoreException {
+      PermissionEnum userPermission = accessService.getArtifactPermission(userArtifact, artifact);
 
-		if (userPermission == null || isArtifactReadOnly(artifact)) {
-			userPermission = PermissionEnum.READ;
-		}
-		accessData.add(artifact, new AccessDetail<IBasicArtifact<Artifact>>(artifact, userPermission));
-	}
+      if (userPermission == null || isArtifactReadOnly(artifact)) {
+         userPermission = PermissionEnum.READ;
+      }
+      accessData.add(artifact, new AccessDetail<IBasicArtifact<Artifact>>(artifact, userPermission));
+   }
 
-	public boolean isArtifactReadOnly(Artifact artifact) {
-		return artifact.isDeleted() || artifact.isHistorical() || !artifact.getBranch().isEditable();
-	}
+   public boolean isArtifactReadOnly(Artifact artifact) {
+      return artifact.isDeleted() || artifact.isHistorical() || !artifact.getBranch().isEditable();
+   }
 
-	private void setBranchAccessData(IBasicArtifact<?> userArtifact, Branch branch, AccessData accessData) throws OseeCoreException {
-		PermissionEnum userPermission = accessService.getBranchPermission(userArtifact, branch);
-		accessData.add(branch, new AccessDetail<IOseeBranch>(branch, userPermission));
-	}
+   private void setBranchAccessData(IBasicArtifact<?> userArtifact, Branch branch, AccessData accessData) throws OseeCoreException {
+      PermissionEnum userPermission = accessService.getBranchPermission(userArtifact, branch);
+      accessData.add(branch, new AccessDetail<IOseeBranch>(branch, userPermission));
+   }
 }
