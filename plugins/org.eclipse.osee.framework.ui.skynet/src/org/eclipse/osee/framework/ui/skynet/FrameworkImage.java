@@ -109,6 +109,7 @@ public enum FrameworkImage implements KeyedImage {
 	LINE_MATCH("line_match.gif"),
 	LOAD("load.gif"),
 	LOCKED("lock.gif"),
+	LOCK_OVERLAY("lock_overlay.gif"),
 	LOCKED_KEY("lockkey.gif"),
 	LOCKED_NO_ACCESS("red_lock.gif"),
 	LOCKED_WITH_ACCESS("green_lock.gif"),
