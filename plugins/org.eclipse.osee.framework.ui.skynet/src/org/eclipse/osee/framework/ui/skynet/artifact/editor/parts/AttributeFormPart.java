@@ -264,7 +264,7 @@ public class AttributeFormPart extends AbstractFormPart {
 				try {
 					Result result = aWidget.isDirty();
 					if (result.isTrue()) {
-						xWidget.setControlCausedMessage("attribute.dirty", "Dirty", IMessageProvider.WARNING);
+						xWidget.setControlCausedMessage("attribute.dirty", "Dirty", IMessageProvider.INFORMATION);
 						if (!isDirty()) {
 							markDirty();
 						}
