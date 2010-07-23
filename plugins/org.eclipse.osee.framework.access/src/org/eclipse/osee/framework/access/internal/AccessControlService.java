@@ -63,6 +63,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.AccessControlEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event2.AccessControlEvent;
+import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.osgi.framework.Bundle;
 import org.osgi.util.tracker.ServiceTracker;
@@ -260,7 +261,7 @@ public class AccessControlService implements IAccessControlService {
 
 	@Override
 	public boolean hasPermission(Object object, PermissionEnum permission) throws OseeCoreException {
-		return hasPermission(UserManager.getUser(), object, permission);
+		return DbUtil.isDbInit() || hasPermission(UserManager.getUser(), object, permission);
 	}
 
 	public PermissionEnum getObjectPermission(Artifact subject, Object object) throws OseeCoreException {
