@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
  */
 public class AttributeTransactionData extends BaseTransactionData {
    private static final String INSERT_ATTRIBUTE =
-         "INSERT INTO osee_attribute (art_id, attr_id, attr_type_id, value, gamma_id, uri) VALUES (?, ?, ?, ?, ?, ?)";
+      "INSERT INTO osee_attribute (art_id, attr_id, attr_type_id, value, gamma_id, uri) VALUES (?, ?, ?, ?, ?, ?)";
 
    private final Attribute<?> attribute;
    private final DAOToSQL daoToSql;
@@ -55,7 +55,7 @@ public class AttributeTransactionData extends BaseTransactionData {
          attribute.getAttributeDataProvider().persist(getGammaId());
          daoToSql.setData(attribute.getAttributeDataProvider().getData());
          internalAddInsertToBatch(transaction, 3, INSERT_ATTRIBUTE, attribute.getArtifact().getArtId(), getItemId(),
-               attribute.getAttributeType().getId(), daoToSql.getValue(), getGammaId(), daoToSql.getUri());
+            attribute.getAttributeType().getId(), daoToSql.getValue(), getGammaId(), daoToSql.getUri());
       }
    }
 
@@ -136,6 +136,7 @@ public class AttributeTransactionData extends BaseTransactionData {
    }
 
    @Override
-   protected void internalAddToEvents(ArtifactEvent artifactEvent) throws OseeCoreException {
+   protected void internalAddToEvents(ArtifactEvent artifactEvent) {
+      return;
    }
 }

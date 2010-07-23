@@ -102,7 +102,8 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    private static final AtsStateItems stateItems = new AtsStateItems();
    private boolean inTransition = false;
    public static enum TransitionOption {
-      None, Persist,
+      None,
+      Persist,
       // Override check whether workflow allows transition to state
       OverrideTransitionValidityCheck,
       // Allows transition to occur with UnAssigned, OseeSystem or Guest
@@ -226,7 +227,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    @Override
-   public void onAttributePersist(SkynetTransaction transaction) throws OseeCoreException {
+   public void onAttributePersist(SkynetTransaction transaction) {
       // Since multiple ways exist to change the assignees, notification is performed on the persist
       if (isDeleted()) {
          return;
@@ -360,6 +361,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return getWorldViewType() + ": " + getName();
    }
 
+   @Override
    public String getWorldViewActionableItems() throws OseeCoreException {
       return "";
    }
@@ -371,6 +373,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       atsWorldRelations.add(side);
    }
 
+   @Override
    public Image getAssigneeImage() throws OseeCoreException {
       if (isDeleted()) {
          return null;
@@ -389,6 +392,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return workFlowDefinition;
    }
 
+   @Override
    public void addSubscribed(User user, SkynetTransaction transaction) throws OseeCoreException {
       if (!getRelatedArtifacts(AtsRelationTypes.SubscribedUser_User).contains(user)) {
          addRelation(AtsRelationTypes.SubscribedUser_User, user);
@@ -397,15 +401,18 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    }
 
+   @Override
    public void removeSubscribed(User user, SkynetTransaction transaction) throws OseeCoreException {
       deleteRelation(AtsRelationTypes.SubscribedUser_User, user);
       persist(transaction);
    }
 
+   @Override
    public boolean isSubscribed(User user) throws OseeCoreException {
       return getRelatedArtifacts(AtsRelationTypes.SubscribedUser_User).contains(user);
    }
 
+   @Override
    public ArrayList<User> getSubscribed() throws OseeCoreException {
       ArrayList<User> arts = new ArrayList<User>();
       for (Artifact art : getRelatedArtifacts(AtsRelationTypes.SubscribedUser_User)) {
@@ -414,6 +421,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return arts;
    }
 
+   @Override
    public void addFavorite(User user, SkynetTransaction transaction) throws OseeCoreException {
       if (!getRelatedArtifacts(AtsRelationTypes.FavoriteUser_User).contains(user)) {
          addRelation(AtsRelationTypes.FavoriteUser_User, user);
@@ -421,15 +429,18 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       }
    }
 
+   @Override
    public void removeFavorite(User user, SkynetTransaction transaction) throws OseeCoreException {
       deleteRelation(AtsRelationTypes.FavoriteUser_User, user);
       persist(transaction);
    }
 
+   @Override
    public boolean isFavorite(User user) throws OseeCoreException {
       return getRelatedArtifacts(AtsRelationTypes.FavoriteUser_User).contains(user);
    }
 
+   @Override
    public ArrayList<User> getFavorites() throws OseeCoreException {
       ArrayList<User> arts = new ArrayList<User>();
       for (Artifact art : getRelatedArtifacts(AtsRelationTypes.FavoriteUser_User)) {
@@ -438,6 +449,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return arts;
    }
 
+   @Override
    public boolean amISubscribed() {
       try {
          return isSubscribed(UserManager.getUser());
@@ -446,6 +458,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       }
    }
 
+   @Override
    public boolean amIFavorite() {
       try {
          return isFavorite(UserManager.getUser());
@@ -460,20 +473,24 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       super.atsDelete(deleteArts, allRelated);
    }
 
+   @Override
    public String getWorldViewType() throws OseeCoreException {
       return getArtifactTypeName();
    }
 
+   @Override
    public String getWorldViewTitle() throws OseeCoreException {
       return getName();
    }
 
+   @Override
    public String getWorldViewState() throws OseeCoreException {
       return getStateMgr().getCurrentStateName();
    }
 
    public String implementersStr = null;
 
+   @Override
    public String getWorldViewActivePoc() throws OseeCoreException {
       if (isCancelledOrCompleted()) {
          if (implementersStr == null) {
@@ -486,6 +503,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return Artifacts.toString("; ", getStateMgr().getAssignees());
    }
 
+   @Override
    public String getWorldViewCreatedDateStr() throws OseeCoreException {
       if (getWorldViewCreatedDate() == null) {
          return XViewerCells.getCellExceptionString("No creation date");
@@ -493,6 +511,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return new XDate(getWorldViewCreatedDate()).getMMDDYYHHMM();
    }
 
+   @Override
    public String getWorldViewCompletedDateStr() throws OseeCoreException {
       if (isCompleted()) {
          if (getWorldViewCompletedDate() == null) {
@@ -504,6 +523,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return "";
    }
 
+   @Override
    public String getWorldViewCancelledDateStr() throws OseeCoreException {
       if (isCancelled()) {
          if (getWorldViewCancelledDate() == null) {
@@ -515,18 +535,22 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return "";
    }
 
+   @Override
    public Date getWorldViewCreatedDate() throws OseeCoreException {
       return getLog().getCreationDate();
    }
 
+   @Override
    public String getWorldViewOriginator() throws OseeCoreException {
       return getOriginator().getName();
    }
 
+   @Override
    public String getWorldViewID() throws OseeCoreException {
       return getHumanReadableId();
    }
 
+   @Override
    public String getWorldViewLegacyPCR() throws OseeCoreException {
       if (isAttributeTypeValid(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName())) {
          return getSoleAttributeValue(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName(), "");
@@ -534,6 +558,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return "";
    }
 
+   @Override
    public Date getWorldViewCompletedDate() throws OseeCoreException {
       LogItem item = getLog().getCompletedLogItem();
       if (item != null) {
@@ -542,6 +567,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return null;
    }
 
+   @Override
    public Date getWorldViewCancelledDate() throws OseeCoreException {
       LogItem item = getLog().getCancelledLogItem();
       if (item != null) {
@@ -550,12 +576,15 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return null;
    }
 
+   @Override
    public abstract VersionArtifact getWorldViewTargetedVersion() throws OseeCoreException;
 
+   @Override
    public ChangeType getWorldViewChangeType() throws OseeCoreException {
       return ChangeType.None;
    }
 
+   @Override
    public String getWorldViewChangeTypeStr() throws OseeCoreException {
       if (getWorldViewChangeType() == null || getWorldViewChangeType() == ChangeType.None) {
          return "";
@@ -607,18 +636,22 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return getEstimatedHoursFromArtifact() + getEstimatedHoursFromTasks() + getEstimatedHoursFromReviews();
    }
 
+   @Override
    public double getWorldViewEstimatedHours() throws OseeCoreException {
       return getEstimatedHoursTotal();
    }
 
+   @Override
    public String getWorldViewUserCommunity() throws OseeCoreException {
       return "";
    }
 
+   @Override
    public String getWorldViewPriority() throws OseeCoreException {
       return "";
    }
 
+   @Override
    public String getWorldViewResolution() throws OseeCoreException {
       return getAttributesToString(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName());
    }
@@ -658,6 +691,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return getRemainHoursTotal();
    }
 
+   @Override
    public Result isWorldViewRemainHoursValid() throws OseeCoreException {
       if (!isAttributeTypeValid(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName())) {
          return Result.TrueResult;
@@ -673,10 +707,11 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
          return Result.TrueResult;
       } catch (Exception ex) {
          return new Result(
-               ex.getClass().getName() + ": " + ex.getLocalizedMessage() + "\n\n" + Lib.exceptionToString(ex));
+            ex.getClass().getName() + ": " + ex.getLocalizedMessage() + "\n\n" + Lib.exceptionToString(ex));
       }
    }
 
+   @Override
    public Result isWorldViewManDaysNeededValid() throws OseeCoreException {
       Result result = isWorldViewRemainHoursValid();
       if (result.isFalse()) {
@@ -689,6 +724,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return Result.TrueResult;
    }
 
+   @Override
    public double getWorldViewManDaysNeeded() throws OseeCoreException {
       double hrsRemain = getWorldViewRemainHours();
       double manDaysNeeded = 0;
@@ -702,10 +738,12 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return DEFAULT_HOURS_PER_WORK_DAY;
    }
 
+   @Override
    public double getWorldViewAnnualCostAvoidance() throws OseeCoreException {
       return 0;
    }
 
+   @Override
    public Result isWorldViewAnnualCostAvoidanceValid() throws OseeCoreException {
       if (isAttributeTypeValid(ATSAttributes.WEEKLY_BENEFIT_ATTRIBUTE.getStoreName())) {
          return Result.TrueResult;
@@ -734,6 +772,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return Result.TrueResult;
    }
 
+   @Override
    public String getWorldViewNotes() throws OseeCoreException {
       return getSoleAttributeValue(ATSAttributes.SMA_NOTE_ATTRIBUTE.getStoreName(), "");
    }
@@ -743,32 +782,39 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return getSoleAttributeValue(ATSAttributes.WORK_PACKAGE_ATTRIBUTE.getStoreName(), "");
    }
 
+   @Override
    public String getWorldViewPoint() throws OseeCoreException {
       return getSoleAttributeValue(ATSAttributes.POINTS_ATTRIBUTE.getStoreName(), "");
    }
 
+   @Override
    public String getWorldViewNumeric1() throws OseeCoreException {
       return AtsUtil.doubleToI18nString(getSoleAttributeValue(ATSAttributes.NUMERIC1_ATTRIBUTE.getStoreName(), 0.0),
-            true);
+         true);
    }
 
+   @Override
    public String getWorldViewNumeric2() throws OseeCoreException {
       return AtsUtil.doubleToI18nString(getSoleAttributeValue(ATSAttributes.NUMERIC2_ATTRIBUTE.getStoreName(), 0.0),
-            true);
+         true);
    }
 
+   @Override
    public String getWorldViewGoalOrderVote() throws OseeCoreException {
       return getSoleAttributeValue(ATSAttributes.GOAL_ORDER_VOTE_ATTRIBUTE.getStoreName(), "");
    }
 
+   @Override
    public String getWorldViewCategory() throws OseeCoreException {
       return getSoleAttributeValue(ATSAttributes.CATEGORY_ATTRIBUTE.getStoreName(), "");
    }
 
+   @Override
    public String getWorldViewCategory2() throws OseeCoreException {
       return getSoleAttributeValue(ATSAttributes.CATEGORY2_ATTRIBUTE.getStoreName(), "");
    }
 
+   @Override
    public String getWorldViewCategory3() throws OseeCoreException {
       return getSoleAttributeValue(ATSAttributes.CATEGORY3_ATTRIBUTE.getStoreName(), "");
    }
@@ -777,6 +823,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return getPercentCompleteSMAStateTotal(getStateMgr().getCurrentStateName());
    }
 
+   @Override
    public String getWorldViewNumberOfTasks() throws OseeCoreException {
       if (!(this instanceof TaskableStateMachineArtifact)) {
          return "";
@@ -788,6 +835,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return String.valueOf(num);
    }
 
+   @Override
    public String getWorldViewRelatedToState() throws OseeCoreException {
       return "";
    }
@@ -812,7 +860,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
          for (Artifact artifact : artifacts) {
             if (artifact.isDirty()) {
                return new Result(true, String.format("Artifact [%s][%s] is dirty", artifact.getHumanReadableId(),
-                     artifact));
+                  artifact));
             }
          }
       } catch (Exception ex) {
@@ -881,6 +929,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return null;
    }
 
+   @Override
    public String getWorldViewEstimatedReleaseDateStr() throws OseeCoreException {
       if (getWorldViewEstimatedReleaseDate() == null) {
          return "";
@@ -888,6 +937,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return new XDate(getWorldViewEstimatedReleaseDate()).getMMDDYYHHMM();
    }
 
+   @Override
    public String getWorldViewEstimatedCompletionDateStr() throws OseeCoreException {
       if (getWorldViewEstimatedCompletionDate() == null) {
          return "";
@@ -895,8 +945,10 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return new XDate(getWorldViewEstimatedCompletionDate()).getMMDDYYHHMM();
    }
 
+   @Override
    public abstract Date getWorldViewReleaseDate() throws OseeCoreException;
 
+   @Override
    public String getWorldViewReleaseDateStr() throws OseeCoreException {
       if (getWorldViewReleaseDate() == null) {
          return "";
@@ -913,10 +965,12 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    public void transitioned(WorkPageDefinition fromPage, WorkPageDefinition toPage, Collection<User> toAssignees, boolean persist, SkynetTransaction transaction) throws OseeCoreException {
    }
 
+   @Override
    public String getHyperName() {
       return getName();
    }
 
+   @Override
    public String getHyperType() {
       try {
          return getArtifactTypeName();
@@ -925,6 +979,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       }
    }
 
+   @Override
    public String getHyperState() {
       try {
          return getStateMgr().getCurrentStateName();
@@ -934,6 +989,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return "";
    }
 
+   @Override
    public String getHyperAssignee() {
       try {
          return Artifacts.toString("; ", getStateMgr().getAssignees());
@@ -943,22 +999,27 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return "";
    }
 
+   @Override
    public Image getHyperAssigneeImage() throws OseeCoreException {
       return getAssigneeImage();
    }
 
+   @Override
    public Artifact getHyperArtifact() {
       return this;
    }
 
+   @Override
    public String getWorldViewDecision() throws OseeCoreException {
       return "";
    }
 
+   @Override
    public Artifact getParentAtsArtifact() throws OseeCoreException {
       return getParentSMA();
    }
 
+   @Override
    public String getWorldViewValidationRequiredStr() throws OseeCoreException {
       if (isAttributeTypeValid(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName())) {
          return String.valueOf(getSoleAttributeValue(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), false));
@@ -966,14 +1027,17 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return "";
    }
 
+   @Override
    public Result isWorldViewDeadlineAlerting() throws OseeCoreException {
       return Result.FalseResult;
    }
 
+   @Override
    public int getWorldViewPercentRework() throws OseeCoreException {
       return 0;
    }
 
+   @Override
    public String getWorldViewPercentReworkStr() throws OseeCoreException {
       int reWork = getWorldViewPercentRework();
       if (reWork == 0) {
@@ -1002,29 +1066,34 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       List<TeamWorkFlowArtifact> result = new ArrayList<TeamWorkFlowArtifact>();
       for (IArtifactType artType : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactTypes()) {
          List<TeamWorkFlowArtifact> teamArts =
-               org.eclipse.osee.framework.jdk.core.util.Collections.castAll(ArtifactQuery.getArtifactListFromType(
-                     artType, AtsUtil.getAtsBranch()));
+            org.eclipse.osee.framework.jdk.core.util.Collections.castAll(ArtifactQuery.getArtifactListFromType(artType,
+               AtsUtil.getAtsBranch()));
          result.addAll(teamArts);
       }
       return result;
    }
 
+   @Override
    public String getWorldViewBranchStatus() throws OseeCoreException {
       return "";
    }
 
+   @Override
    public String getWorldViewReviewAuthor() throws OseeCoreException {
       return "";
    }
 
+   @Override
    public String getWorldViewReviewDecider() throws OseeCoreException {
       return "";
    }
 
+   @Override
    public String getWorldViewReviewModerator() throws OseeCoreException {
       return "";
    }
 
+   @Override
    public String getWorldViewReviewReviewer() throws OseeCoreException {
       return "";
    }
@@ -1163,9 +1232,9 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
          // Log error if multiple of same rule found, but keep going
          if (workRuleDefs.size() > 1) {
             OseeLog.log(
-                  AtsPlugin.class,
-                  Level.SEVERE,
-                  "Team Definition has multiple rules of type " + AtsStatePercentCompleteWeightRule.ID + ".  Only 1 allowed.  Defaulting to first found.");
+               AtsPlugin.class,
+               Level.SEVERE,
+               "Team Definition has multiple rules of type " + AtsStatePercentCompleteWeightRule.ID + ".  Only 1 allowed.  Defaulting to first found.");
          }
          if (workRuleDefs.size() == 1) {
             stateToWeight = AtsStatePercentCompleteWeightRule.getStateWeightMap(workRuleDefs.iterator().next());
@@ -1267,6 +1336,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return XDate.getDateStr(getLastModified(), XDate.MMDDYYHHMM);
    }
 
+   @Override
    public String getWorldViewLastStatused() throws OseeCoreException {
       return XDate.getDateStr(getLog().getLastStatusedDate(), XDate.MMDDYYHHMM);
    }
@@ -1275,18 +1345,22 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return "";
    }
 
+   @Override
    public String getWorldViewNumberOfReviewIssueDefects() throws OseeCoreException {
       return "";
    }
 
+   @Override
    public String getWorldViewNumberOfReviewMajorDefects() throws OseeCoreException {
       return "";
    }
 
+   @Override
    public String getWorldViewNumberOfReviewMinorDefects() throws OseeCoreException {
       return "";
    }
 
+   @Override
    public String getWorldViewActionsIntiatingWorkflow() throws OseeCoreException {
       return getParentActionArtifact().getWorldViewActionsIntiatingWorkflow();
    }
@@ -1308,6 +1382,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return "";
    }
 
+   @Override
    public String getGroupExplorerName() throws OseeCoreException {
       return String.format("[%s] %s", getStateMgr().getCurrentStateName(), getName());
    }
@@ -1322,6 +1397,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return getParentActionArtifact().getWorldViewOriginatingWorkflows();
    }
 
+   @Override
    public String getWorldViewNumberOfTasksRemaining() throws OseeCoreException {
       return "";
    }
@@ -1396,7 +1472,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       try {
          return ((TeamWorkFlowArtifact) this).getTeamDefinition().isTeamUsesVersions();
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          return false;
       }
    }
@@ -1413,7 +1489,9 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       if (this instanceof ReviewSMArtifact) {
          teamArt = ((ReviewSMArtifact) this).getParentTeamWorkflow();
       }
-      if (teamArt == null) return false;
+      if (teamArt == null) {
+         return false;
+      }
       try {
          return teamArt.getTeamDefinition().hasWorkRule(ruleId);
       } catch (Exception ex) {
@@ -1533,29 +1611,29 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    public Result transitionToCancelled(String reason, SkynetTransaction transaction, TransitionOption... transitionOption) {
       Result result =
-            transition(DefaultTeamState.Cancelled.name(), Arrays.asList(new User[] {}), reason, transaction,
-                  transitionOption);
+         transition(DefaultTeamState.Cancelled.name(), Arrays.asList(new User[] {}), reason, transaction,
+            transitionOption);
       return result;
    }
 
    public Result transitionToCompleted(String reason, SkynetTransaction transaction, TransitionOption... transitionOption) {
       Result result =
-            transition(DefaultTeamState.Completed.name(), Arrays.asList(new User[] {}), reason, transaction,
-                  transitionOption);
+         transition(DefaultTeamState.Completed.name(), Arrays.asList(new User[] {}), reason, transaction,
+            transitionOption);
       return result;
    }
 
    public Result isTransitionValid(final String toStateName, final Collection<User> toAssignees, TransitionOption... transitionOption) throws OseeCoreException {
       boolean overrideTransitionCheck =
-            org.eclipse.osee.framework.jdk.core.util.Collections.getAggregate(transitionOption).contains(
-                  TransitionOption.OverrideTransitionValidityCheck);
+         org.eclipse.osee.framework.jdk.core.util.Collections.getAggregate(transitionOption).contains(
+            TransitionOption.OverrideTransitionValidityCheck);
       boolean overrideAssigneeCheck =
-            org.eclipse.osee.framework.jdk.core.util.Collections.getAggregate(transitionOption).contains(
-                  TransitionOption.OverrideAssigneeCheck);
+         org.eclipse.osee.framework.jdk.core.util.Collections.getAggregate(transitionOption).contains(
+            TransitionOption.OverrideAssigneeCheck);
       // Validate assignees
       if (!overrideAssigneeCheck && (getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.OseeSystem)) || getStateMgr().getAssignees().contains(
-            UserManager.getUser(SystemUser.Guest)) || getStateMgr().getAssignees().contains(
-            UserManager.getUser(SystemUser.UnAssigned)))) {
+         UserManager.getUser(SystemUser.Guest)) || getStateMgr().getAssignees().contains(
+         UserManager.getUser(SystemUser.UnAssigned)))) {
          return new Result("Can not transition with \"Guest\", \"UnAssigned\" or \"OseeSystem\" user as assignee.");
       }
 
@@ -1568,9 +1646,9 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
       // Validate transition from fromPage to toPage
       if (!overrideTransitionCheck && !getWorkFlowDefinition().getToPages(fromWorkPageDefinition).contains(
-            toWorkPageDefinition)) {
+         toWorkPageDefinition)) {
          String errStr =
-               "Not configured to transition to \"" + toStateName + "\" from \"" + fromWorkPageDefinition.getPageName() + "\"";
+            "Not configured to transition to \"" + toStateName + "\" from \"" + fromWorkPageDefinition.getPageName() + "\"";
          OseeLog.log(AtsPlugin.class, Level.SEVERE, errStr);
          return new Result(errStr);
       }
@@ -1623,8 +1701,8 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    private Result transition(final String toStateName, final Collection<User> toAssignees, final String completeOrCancelReason, SkynetTransaction transaction, TransitionOption... transitionOption) {
       try {
          final boolean persist =
-               org.eclipse.osee.framework.jdk.core.util.Collections.getAggregate(transitionOption).contains(
-                     TransitionOption.Persist);
+            org.eclipse.osee.framework.jdk.core.util.Collections.getAggregate(transitionOption).contains(
+               TransitionOption.Persist);
 
          Result result = isTransitionValid(toStateName, toAssignees, transitionOption);
          if (result.isFalse()) {
@@ -1635,7 +1713,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
          final WorkPageDefinition toWorkPageDefinition = getWorkPageDefinitionByName(toStateName);
 
          transitionHelper(toAssignees, persist, fromWorkPageDefinition, toWorkPageDefinition, toStateName,
-               completeOrCancelReason, transaction);
+            completeOrCancelReason, transaction);
          if (persist) {
             OseeNotificationManager.getInstance().sendNotifications();
          }
@@ -1652,7 +1730,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
          atsLog.addLog(LogType.StateCancelled, stateMgr.getCurrentStateName(), completeOrCancelReason);
       } else {
          atsLog.addLog(LogType.StateComplete, stateMgr.getCurrentStateName(),
-               (completeOrCancelReason != null ? completeOrCancelReason : ""));
+            (completeOrCancelReason != null ? completeOrCancelReason : ""));
       }
       atsLog.addLog(LogType.StateEntered, toStateName, "");
 
@@ -1663,7 +1741,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       }
 
       AtsNotifyUsers.getInstance().notify(this, AtsNotifyUsers.NotifyType.Subscribed,
-            AtsNotifyUsers.NotifyType.Completed, AtsNotifyUsers.NotifyType.Completed);
+         AtsNotifyUsers.NotifyType.Completed, AtsNotifyUsers.NotifyType.Completed);
 
       // Persist
       if (persist) {
@@ -1717,6 +1795,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return this instanceof TaskArtifact;
    }
 
+   @Override
    public String getWorldViewGoalOrder() throws OseeCoreException {
       return GoalArtifact.getGoalOrder(this);
    }
@@ -1735,11 +1814,11 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       for (WorkPageDefinition workPageDefinition : getWorkFlowDefinition().getPagesOrdered()) {
          try {
             AtsWorkPage atsWorkPage =
-                  new AtsWorkPage(getWorkFlowDefinition(), workPageDefinition, null,
-                        ATSXWidgetOptionResolver.getInstance());
+               new AtsWorkPage(getWorkFlowDefinition(), workPageDefinition, null,
+                  ATSXWidgetOptionResolver.getInstance());
             atsWorkPages.add(atsWorkPage);
          } catch (Exception ex) {
-            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          }
       }
       return atsWorkPages;

@@ -13,14 +13,15 @@ package org.eclipse.osee.framework.skynet.core.test.relation.order;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 import java.util.Map.Entry;
+import java.util.Random;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
+import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidRelationReorder;
 import org.eclipse.osee.framework.core.model.test.mocks.MockOseeDataAccessor;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
@@ -313,7 +314,7 @@ public class RelationOrderDataTest {
       }
 
       @Override
-      public void store(IArtifact artifact, RelationOrderData orderData) throws OseeCoreException {
+      public void store(IArtifact artifact, RelationOrderData orderData, DefaultBasicGuidRelationReorder reorderRecord) throws OseeCoreException {
          wasStoreCalled = true;
       }
 

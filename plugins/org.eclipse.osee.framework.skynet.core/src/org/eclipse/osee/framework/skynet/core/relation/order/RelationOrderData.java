@@ -22,6 +22,9 @@ import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
+import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidRelationReorder;
+import org.eclipse.osee.framework.core.model.event.RelationOrderModType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -121,12 +124,20 @@ public class RelationOrderData {
       boolean isDifferentSorterId = isDifferentSorterId(type, side, requestedSorterId);
       boolean changingRelatives = isRelativeOrderChange(type, side, requestedSorterId, relativeSequence);
       if (isDifferentSorterId || changingRelatives) {
+         RelationOrderModType relationOrderModType = null;
          if (isRevertingToDefaultTypeOrder(type, side, requestedSorterId)) {
             removeOrderList(type, side);
+            relationOrderModType = RelationOrderModType.Default;
          } else {
             addOrderList(type, side, requestedSorterId, relativeSequence);
+            relationOrderModType = RelationOrderModType.Absolute;
          }
-         accessor.store(getIArtifact(), this);
+         DefaultBasicGuidRelationReorder reorder =
+               new DefaultBasicGuidRelationReorder(relationOrderModType, getIArtifact().getBranch().getGuid(),
+                     type.getGuid(), new DefaultBasicGuidArtifact(getIArtifact().getBranch().getGuid(),
+                           getIArtifact().getArtifactType().getGuid(), getIArtifact().getGuid()));
+
+         accessor.store(getIArtifact(), this, reorder);
       }
    }
 

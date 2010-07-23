@@ -5,7 +5,6 @@
 // Generated on: 2010.06.04 at 10:11:33 AM MST 
 //
 
-
 package org.eclipse.osee.framework.messaging.event.res.msgs;
 
 import java.util.ArrayList;
@@ -16,11 +15,11 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
 
-
 /**
- * <p>Java class for RemoteAccessControlEvent1 complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for RemoteAccessControlEvent1 complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="RemoteAccessControlEvent1">
@@ -35,101 +34,75 @@ import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "RemoteAccessControlEvent1", propOrder = {
-    "eventTypeGuid",
-    "artifacts",
-    "networkSender"
-})
-public class RemoteAccessControlEvent1
-    extends RemoteEvent
-{
+@XmlType(name = "RemoteAccessControlEvent1", propOrder = {"eventTypeGuid", "artifacts", "networkSender"})
+public class RemoteAccessControlEvent1 extends RemoteEvent {
 
-    @XmlElement(required = true)
-    protected String eventTypeGuid;
-    @XmlElement(required = true)
-    protected List<RemoteBasicGuidArtifact1> artifacts;
-    @XmlElement(required = true)
-    protected RemoteNetworkSender1 networkSender;
+   @XmlElement(required = true)
+   protected String eventTypeGuid;
+   @XmlElement(required = true)
+   protected List<RemoteBasicGuidArtifact1> artifacts;
+   @XmlElement(required = true)
+   protected RemoteNetworkSender1 networkSender;
 
-    /**
-     * Gets the value of the eventTypeGuid property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getEventTypeGuid() {
-        return eventTypeGuid;
-    }
+   /**
+    * Gets the value of the eventTypeGuid property.
+    * 
+    * @return possible object is {@link String }
+    */
+   public String getEventTypeGuid() {
+      return eventTypeGuid;
+   }
 
-    /**
-     * Sets the value of the eventTypeGuid property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setEventTypeGuid(String value) {
-        this.eventTypeGuid = value;
-    }
+   /**
+    * Sets the value of the eventTypeGuid property.
+    * 
+    * @param value allowed object is {@link String }
+    */
+   public void setEventTypeGuid(String value) {
+      this.eventTypeGuid = value;
+   }
 
-    /**
-     * Gets the value of the artifacts property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the artifacts property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getArtifacts().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link RemoteBasicGuidArtifact1 }
-     * 
-     * 
-     */
-    public List<RemoteBasicGuidArtifact1> getArtifacts() {
-        if (artifacts == null) {
-            artifacts = new ArrayList<RemoteBasicGuidArtifact1>();
-        }
-        return this.artifacts;
-    }
+   /**
+    * Gets the value of the artifacts property.
+    * <p>
+    * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to
+    * the returned list will be present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for
+    * the artifacts property.
+    * <p>
+    * For example, to add a new item, do as follows:
+    * 
+    * <pre>
+    * getArtifacts().add(newItem);
+    * </pre>
+    * <p>
+    * Objects of the following type(s) are allowed in the list {@link RemoteBasicGuidArtifact1 }
+    */
+   public List<RemoteBasicGuidArtifact1> getArtifacts() {
+      if (artifacts == null) {
+         artifacts = new ArrayList<RemoteBasicGuidArtifact1>();
+      }
+      return this.artifacts;
+   }
 
-    /**
-     * Gets the value of the networkSender property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link RemoteNetworkSender1 }
-     *     
-     */
-    public RemoteNetworkSender1 getNetworkSender() {
-        return networkSender;
-    }
+   /**
+    * Gets the value of the networkSender property.
+    * 
+    * @return possible object is {@link RemoteNetworkSender1 }
+    */
+   @Override
+   public RemoteNetworkSender1 getNetworkSender() {
+      return networkSender;
+   }
 
-    /**
-     * Sets the value of the networkSender property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link RemoteNetworkSender1 }
-     *     
-     */
-    public void setNetworkSender(RemoteNetworkSender1 value) {
-        this.networkSender = value;
-    }
+   /**
+    * Sets the value of the networkSender property.
+    * 
+    * @param value allowed object is {@link RemoteNetworkSender1 }
+    */
+   public void setNetworkSender(RemoteNetworkSender1 value) {
+      this.networkSender = value;
+   }
 
 }

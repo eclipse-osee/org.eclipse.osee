@@ -10,8 +10,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
@@ -59,12 +61,13 @@ public class ArtifactExplorerEventManager implements IArtifactEventListener {
             handlers.remove(handler);
          }
       }
-      System.out.println("ArtifacExplorer: handleArtifactEvent called [" + artifactEvent + "] - sender " + sender + "");
+      OseeEventManager.eventLog("ArtifacExplorer: handleArtifactEvent called [" + artifactEvent + "] - sender " + sender + "");
       final Collection<Artifact> modifiedArts =
-            artifactEvent.getCacheArtifacts(EventModType.Modified, EventModType.Reloaded);
+         artifactEvent.getCacheArtifacts(EventModType.Modified, EventModType.Reloaded);
       final Collection<Artifact> relModifiedArts = artifactEvent.getRelCacheArtifacts();
       final Collection<EventBasicGuidArtifact> deletedPurgedArts =
-            artifactEvent.get(EventModType.Deleted, EventModType.Purged);
+         artifactEvent.get(EventModType.Deleted, EventModType.Purged);
+      final Collection<DefaultBasicGuidArtifact> relOrderChangedArtifacts = artifactEvent.getRelOrderChangedArtifacts();
 
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
@@ -73,7 +76,7 @@ public class ArtifactExplorerEventManager implements IArtifactEventListener {
                for (IArtifactExplorerEventHandler handler : handlers) {
                   if (!handler.isDisposed()) {
                      handler.getArtifactExplorer().getTreeViewer().remove(
-                           deletedPurgedArts.toArray(new Object[deletedPurgedArts.size()]));
+                        deletedPurgedArts.toArray(new Object[deletedPurgedArts.size()]));
                   }
                }
             }
@@ -93,11 +96,20 @@ public class ArtifactExplorerEventManager implements IArtifactEventListener {
                         if (art.isDeleted()) {
                            continue;
                         }
-                        if (!art.isDeleted()) {
-                           handler.getArtifactExplorer().getTreeViewer().refresh(art);
-                           if (art.getParent() != null) {
-                              handler.getArtifactExplorer().getTreeViewer().refresh(art.getParent());
-                           }
+                        handler.getArtifactExplorer().getTreeViewer().refresh(art);
+                        if (art.getParent() != null) {
+                           handler.getArtifactExplorer().getTreeViewer().refresh(art.getParent());
+                        }
+                     } catch (Exception ex) {
+                        OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+                     }
+                  }
+
+                  for (DefaultBasicGuidArtifact guidArt : relOrderChangedArtifacts) {
+                     try {
+                        Artifact artifact = ArtifactCache.getActive(guidArt);
+                        if (artifact != null) {
+                           handler.getArtifactExplorer().getTreeViewer().refresh(artifact);
                         }
                      } catch (Exception ex) {
                         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
@@ -108,5 +120,4 @@ public class ArtifactExplorerEventManager implements IArtifactEventListener {
          }
       });
    }
-
 }

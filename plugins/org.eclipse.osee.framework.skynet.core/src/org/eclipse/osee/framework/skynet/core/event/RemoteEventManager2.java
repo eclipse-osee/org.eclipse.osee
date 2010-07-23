@@ -244,8 +244,6 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
                      relation.undelete();
                      relation.setNotDirty();
                   }
-               } else if (eventType == RelationEventType.ReOrdered) {
-                  // TODO Handle this
                } else {
                   OseeEventManager.eventLog(String.format("REM2: updateRelations - Unhandled mod type [%s]", eventType));
                }

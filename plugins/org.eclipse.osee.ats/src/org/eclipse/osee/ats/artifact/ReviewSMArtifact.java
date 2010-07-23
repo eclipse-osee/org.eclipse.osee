@@ -49,7 +49,9 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
    private Collection<UserRole> preSaveReviewRoleComplete;
    Boolean standAlone = null;
    public static enum ReviewBlockType {
-      None, Transition, Commit
+      None,
+      Transition,
+      Commit
    };
 
    public ReviewSMArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
@@ -65,7 +67,9 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
    @Override
    public Set<User> getPrivilegedUsers() throws OseeCoreException {
       Set<User> users = new HashSet<User>();
-      if (getParentTeamWorkflow() != null) users.addAll(getParentTeamWorkflow().getPrivilegedUsers());
+      if (getParentTeamWorkflow() != null) {
+         users.addAll(getParentTeamWorkflow().getPrivilegedUsers());
+      }
       for (ActionableItemArtifact aia : getActionableItemsDam().getActionableItems()) {
          for (TeamDefinitionArtifact teamDef : aia.getImpactedTeamDefs()) {
             addPriviledgedUsersUpTeamDefinitionTree(teamDef, users);
@@ -78,7 +82,7 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
    }
 
    @Override
-   public void onAttributePersist(SkynetTransaction transaction) throws OseeCoreException {
+   public void onAttributePersist(SkynetTransaction transaction) {
       super.onAttributePersist(transaction);
       // Since multiple ways exist to change the assignees, notification is performed on the persist
       if (isDeleted()) {
@@ -197,16 +201,24 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
 
    @Override
    public StateMachineArtifact getParentSMA() throws OseeCoreException {
-      if (isStandAloneReview()) return null;
-      if (parentSma != null) return parentSma;
+      if (isStandAloneReview()) {
+         return null;
+      }
+      if (parentSma != null) {
+         return parentSma;
+      }
       parentSma = getParentTeamWorkflow();
       return parentSma;
    }
 
    @Override
    public ActionArtifact getParentActionArtifact() throws OseeCoreException {
-      if (isStandAloneReview()) return null;
-      if (parentAction != null) return parentAction;
+      if (isStandAloneReview()) {
+         return null;
+      }
+      if (parentAction != null) {
+         return parentAction;
+      }
       parentTeamArt = getParentTeamWorkflow();
       if (parentTeamArt != null) {
          parentAction = parentTeamArt.getParentActionArtifact();
@@ -216,16 +228,20 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
 
    @Override
    public TeamWorkFlowArtifact getParentTeamWorkflow() throws OseeCoreException {
-      if (isStandAloneReview()) return null;
-      if (parentTeamArt != null) return parentTeamArt;
+      if (isStandAloneReview()) {
+         return null;
+      }
+      if (parentTeamArt != null) {
+         return parentTeamArt;
+      }
       List<TeamWorkFlowArtifact> teams =
-            getRelatedArtifacts(AtsRelationTypes.TeamWorkflowToReview_Team, TeamWorkFlowArtifact.class);
+         getRelatedArtifacts(AtsRelationTypes.TeamWorkflowToReview_Team, TeamWorkFlowArtifact.class);
       if (teams.size() > 1) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE,
-               getArtifactTypeName() + " " + getHumanReadableId() + " has multiple parent workflows");
+            getArtifactTypeName() + " " + getHumanReadableId() + " has multiple parent workflows");
       } else if (!isStandAloneReview() && teams.isEmpty()) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE,
-               getArtifactTypeName() + " " + getHumanReadableId() + " has no parent workflow");
+            getArtifactTypeName() + " " + getHumanReadableId() + " has no parent workflow");
       }
       if (teams.size() > 0) {
          parentTeamArt = teams.iterator().next();

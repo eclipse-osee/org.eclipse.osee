@@ -21,7 +21,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event2.AccessControlEvent;
 import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
@@ -49,7 +48,7 @@ public class InternalEventManager2 {
    private static boolean disableEvents = false;
    private static final ThreadFactory threadFactory = new OseeEventThreadFactory("Osee Events2");
    private static final ExecutorService executorService = Executors.newFixedThreadPool(
-         Runtime.getRuntime().availableProcessors(), threadFactory);
+      Runtime.getRuntime().availableProcessors(), threadFactory);
    private static final List<IEventListener> priorityListeners = new CopyOnWriteArrayList<IEventListener>();
    private static final List<IEventListener> listeners = new CopyOnWriteArrayList<IEventListener>();
 
@@ -121,7 +120,7 @@ public class InternalEventManager2 {
             }
          } catch (Exception ex) {
             OseeEventManager.eventLog(
-                  String.format("IEM2: processBranchEvent [%s] error processing priorityListeners", branchEvent), ex);
+               String.format("IEM2: processBranchEvent [%s] error processing priorityListeners", branchEvent), ex);
          }
       }
       for (IEventListener listener : listeners) {
@@ -131,14 +130,14 @@ public class InternalEventManager2 {
             }
          } catch (Exception ex) {
             OseeEventManager.eventLog(
-                  String.format("IEM2: processBranchEvent [%s] error processing listeners", branchEvent), ex);
+               String.format("IEM2: processBranchEvent [%s] error processing listeners", branchEvent), ex);
          }
       }
    }
 
    private static void processBranchEventListener(IBranchEventListener listener, Sender sender, BranchEvent branchEvent) {
       // If any filter doesn't match, don't call listener
-      if (listener instanceof IEventFilteredListener && ((IEventFilteredListener) listener).getEventFilters() != null) {
+      if (((IEventFilteredListener) listener).getEventFilters() != null) {
          for (IEventFilter eventFilter : ((IEventFilteredListener) listener).getEventFilters()) {
             // If this branch doesn't match, don't pass events through
             if (!eventFilter.isMatch(branchEvent.getBranchGuid())) {
@@ -147,7 +146,7 @@ public class InternalEventManager2 {
          }
       }
       // Call listener if we matched all of the filters
-      ((IBranchEventListener) listener).handleBranchEvent(sender, branchEvent);
+      listener.handleBranchEvent(sender, branchEvent);
    }
 
    /**
@@ -161,7 +160,7 @@ public class InternalEventManager2 {
             }
          } catch (Exception ex) {
             OseeEventManager.eventLog(
-                  String.format("IEM2: processArtsAndRels [%s] error processing priorityListeners", artifactEvent), ex);
+               String.format("IEM2: processArtsAndRels [%s] error processing priorityListeners", artifactEvent), ex);
          }
       }
       for (IEventListener listener : listeners) {
@@ -171,7 +170,7 @@ public class InternalEventManager2 {
             }
          } catch (Exception ex) {
             OseeEventManager.eventLog(
-                  String.format("IEM2: processArtsAndRels [%s] error processing listeners", artifactEvent), ex);
+               String.format("IEM2: processArtsAndRels [%s] error processing listeners", artifactEvent), ex);
          }
       }
    }
@@ -179,7 +178,7 @@ public class InternalEventManager2 {
    private static void processEventArtifactsAndRelationsListener(IArtifactEventListener listener, ArtifactEvent artifactEvent, Sender sender) {
       OseeEventManager.eventLog(String.format("IEM2: processArtsAndRels [%s]", artifactEvent));
       // If any filter doesn't match, don't call listener
-      if (listener instanceof IEventFilteredListener && ((IEventFilteredListener) listener).getEventFilters() != null) {
+      if (((IEventFilteredListener) listener).getEventFilters() != null) {
          for (IEventFilter eventFilter : ((IEventFilteredListener) listener).getEventFilters()) {
             // If this branch doesn't match, don't pass events through
             if (!eventFilter.isMatch(artifactEvent.getBranchGuid())) {
@@ -198,7 +197,7 @@ public class InternalEventManager2 {
          }
       }
       // Call listener if we matched all of the filters
-      ((IArtifactEventListener) listener).handleArtifactEvent(artifactEvent, sender);
+      listener.handleArtifactEvent(artifactEvent, sender);
    }
 
    public static void processAccessControlEvent(Sender sender, AccessControlEvent accessControlEvent) {
@@ -210,7 +209,7 @@ public class InternalEventManager2 {
             }
          } catch (Exception ex) {
             OseeEventManager.eventLog(String.format(
-                  "IEM2: processAccessControlEvent [%s] error processing priorityListeners", accessControlEvent), ex);
+               "IEM2: processAccessControlEvent [%s] error processing priorityListeners", accessControlEvent), ex);
          }
       }
       for (IEventListener listener : listeners) {
@@ -220,23 +219,25 @@ public class InternalEventManager2 {
             }
          } catch (Exception ex) {
             OseeEventManager.eventLog(
-                  String.format("IEM2: processAccessControlEvent [%s] error processing listeners", accessControlEvent),
-                  ex);
+               String.format("IEM2: processAccessControlEvent [%s] error processing listeners", accessControlEvent), ex);
          }
       }
    }
 
    public static void processEventBroadcastEvent(Sender sender, BroadcastEvent broadcastEvent) {
       OseeEventManager.eventLog(String.format("IEM2: processEventBroadcastEvent [%s]", broadcastEvent));
-      if (broadcastEvent.getUsers().size() == 0) return;
+      if (broadcastEvent.getUsers().size() == 0) {
+         return;
+      }
       for (IEventListener listener : priorityListeners) {
          try {
             if (listener instanceof IBroadcastEventListener) {
                ((IBroadcastEventListener) listener).handleBroadcastEvent(sender, broadcastEvent);
             }
          } catch (Exception ex) {
-            OseeEventManager.eventLog(String.format(
-                  "IEM2: processEventBroadcastEvent [%s] error processing priorityListeners", broadcastEvent), ex);
+            OseeEventManager.eventLog(
+               String.format("IEM2: processEventBroadcastEvent [%s] error processing priorityListeners", broadcastEvent),
+               ex);
          }
       }
       for (IEventListener listener : listeners) {
@@ -246,7 +247,7 @@ public class InternalEventManager2 {
             }
          } catch (Exception ex) {
             OseeEventManager.eventLog(
-                  String.format("IEM2: processEventBroadcastEvent [%s] error processing listeners", broadcastEvent), ex);
+               String.format("IEM2: processEventBroadcastEvent [%s] error processing listeners", broadcastEvent), ex);
          }
       }
    }
@@ -257,11 +258,11 @@ public class InternalEventManager2 {
          try {
             if (listener instanceof IRemoteEventManagerEventListener) {
                ((IRemoteEventManagerEventListener) listener).handleRemoteEventManagerEvent(sender,
-                     remoteEventServiceEvent);
+                  remoteEventServiceEvent);
             }
          } catch (Exception ex) {
-            OseeEventManager.eventLog(String.format(
-                  "IEM2: processRemoteEventManagerEvent [%s] error processing priorityListeners",
+            OseeEventManager.eventLog(
+               String.format("IEM2: processRemoteEventManagerEvent [%s] error processing priorityListeners",
                   remoteEventServiceEvent), ex);
          }
       }
@@ -269,11 +270,11 @@ public class InternalEventManager2 {
          try {
             if (listener instanceof IRemoteEventManagerEventListener) {
                ((IRemoteEventManagerEventListener) listener).handleRemoteEventManagerEvent(sender,
-                     remoteEventServiceEvent);
+                  remoteEventServiceEvent);
             }
          } catch (Exception ex) {
             OseeEventManager.eventLog(String.format(
-                  "IEM2: processRemoteEventManagerEvent [%s] error processing listeners", remoteEventServiceEvent), ex);
+               "IEM2: processRemoteEventManagerEvent [%s] error processing listeners", remoteEventServiceEvent), ex);
          }
       }
    }
@@ -286,8 +287,9 @@ public class InternalEventManager2 {
                ((ITransactionEventListener) listener).handleTransactionEvent(sender, transactionEvent);
             }
          } catch (Exception ex) {
-            OseeEventManager.eventLog(String.format(
-                  "IEM2: processTransactionEvent [%s] error processing priorityListeners", transactionEvent), ex);
+            OseeEventManager.eventLog(
+               String.format("IEM2: processTransactionEvent [%s] error processing priorityListeners", transactionEvent),
+               ex);
          }
       }
       for (IEventListener listener : listeners) {
@@ -297,7 +299,7 @@ public class InternalEventManager2 {
             }
          } catch (Exception ex) {
             OseeEventManager.eventLog(
-                  String.format("IEM2: processTransactionEvent [%s] error processing listeners", transactionEvent), ex);
+               String.format("IEM2: processTransactionEvent [%s] error processing listeners", transactionEvent), ex);
          }
       }
    }
@@ -338,6 +340,7 @@ public class InternalEventManager2 {
       }
       OseeEventManager.eventLog("IEM2: kickAccessControlEvent - type: " + accessControlEvent + sender + " artifacts: " + accessControlEvent.getArtifacts());
       Runnable runnable = new Runnable() {
+         @Override
          public void run() {
             try {
                // Kick LOCAL
@@ -349,7 +352,7 @@ public class InternalEventManager2 {
                // Kick REMOTE
                if (sender.isLocal() && accessControlEvent.getEventType().isRemoteEventType()) {
                   RemoteEventManager2.getInstance().kick(
-                        FrameworkEventUtil.getRemoteAccessControlEvent(accessControlEvent));
+                     FrameworkEventUtil.getRemoteAccessControlEvent(accessControlEvent));
                }
             } catch (Exception ex) {
                OseeEventManager.eventLog("IEM2 kickAccessControlEvent", ex);
@@ -360,12 +363,13 @@ public class InternalEventManager2 {
    }
 
    // Kick LOCAL "remote event manager" event
-   static void kickLocalRemEvent(final Sender sender, final RemoteEventServiceEventType remoteEventServiceEventType) throws OseeCoreException {
+   static void kickLocalRemEvent(final Sender sender, final RemoteEventServiceEventType remoteEventServiceEventType) {
       if (isDisableEvents()) {
          return;
       }
       OseeEventManager.eventLog("IEM2: kickLocalRemEvent: type: " + remoteEventServiceEventType + " - " + sender);
       Runnable runnable = new Runnable() {
+         @Override
          public void run() {
             // Kick LOCAL
             try {
@@ -387,6 +391,7 @@ public class InternalEventManager2 {
       }
       OseeEventManager.eventLog("IEM2: kickArtifactReloadEvent [" + artifactEvent + "] - " + sender);
       Runnable runnable = new Runnable() {
+         @Override
          public void run() {
             try {
                // Kick LOCAL
@@ -418,6 +423,7 @@ public class InternalEventManager2 {
       }
       OseeEventManager.eventLog("IEM2: kickBranchEvent: type: " + branchEvent.getEventType() + " guid: " + branchEvent.getBranchGuid() + " - " + sender);
       Runnable runnable = new Runnable() {
+         @Override
          public void run() {
             try {
                // Log if this is a loopback and what is happening
@@ -456,6 +462,7 @@ public class InternalEventManager2 {
       }
       OseeEventManager.eventLog("IEM2: kickPersistEvent [" + artifactEvent + "] - " + sender);
       Runnable runnable = new Runnable() {
+         @Override
          public void run() {
             // Roll-up change information
             try {
@@ -494,6 +501,7 @@ public class InternalEventManager2 {
       }
       OseeEventManager.eventLog("IEM2: kickTransactionEvent [" + transEvent + "] - " + sender);
       Runnable runnable = new Runnable() {
+         @Override
          public void run() {
             // Roll-up change information
             try {
@@ -525,7 +533,7 @@ public class InternalEventManager2 {
    /*
     * Kick LOCAL and REMOTE broadcast event
     */
-   static void kickBroadcastEvent(final Sender sender, final BroadcastEvent broadcastEvent) throws OseeCoreException {
+   static void kickBroadcastEvent(final Sender sender, final BroadcastEvent broadcastEvent) {
       if (isDisableEvents()) {
          return;
       }
@@ -534,6 +542,7 @@ public class InternalEventManager2 {
          OseeEventManager.eventLog("IEM2: kickBroadcastEvent: type: " + broadcastEvent.getBroadcastEventType().name() + " message: " + broadcastEvent.getMessage() + " - " + sender);
       }
       Runnable runnable = new Runnable() {
+         @Override
          public void run() {
             try {
                // Kick from REMOTE

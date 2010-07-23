@@ -5,7 +5,6 @@
 // Generated on: 2010.05.28 at 02:08:30 PM MST 
 //
 
-
 package org.eclipse.osee.framework.messaging.event.res.msgs;
 
 import java.util.ArrayList;
@@ -16,11 +15,11 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
 
-
 /**
- * <p>Java class for RemoteTransactionEvent1 complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for RemoteTransactionEvent1 complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="RemoteTransactionEvent1">
@@ -35,101 +34,75 @@ import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "RemoteTransactionEvent1", propOrder = {
-    "eventTypeGuid",
-    "transactions",
-    "networkSender"
-})
-public class RemoteTransactionEvent1
-    extends RemoteEvent
-{
+@XmlType(name = "RemoteTransactionEvent1", propOrder = {"eventTypeGuid", "transactions", "networkSender"})
+public class RemoteTransactionEvent1 extends RemoteEvent {
 
-    @XmlElement(required = true)
-    protected String eventTypeGuid;
-    @XmlElement(required = true)
-    protected List<RemoteTransactionChange1> transactions;
-    @XmlElement(required = true)
-    protected RemoteNetworkSender1 networkSender;
+   @XmlElement(required = true)
+   protected String eventTypeGuid;
+   @XmlElement(required = true)
+   protected List<RemoteTransactionChange1> transactions;
+   @XmlElement(required = true)
+   protected RemoteNetworkSender1 networkSender;
 
-    /**
-     * Gets the value of the eventTypeGuid property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getEventTypeGuid() {
-        return eventTypeGuid;
-    }
+   /**
+    * Gets the value of the eventTypeGuid property.
+    * 
+    * @return possible object is {@link String }
+    */
+   public String getEventTypeGuid() {
+      return eventTypeGuid;
+   }
 
-    /**
-     * Sets the value of the eventTypeGuid property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setEventTypeGuid(String value) {
-        this.eventTypeGuid = value;
-    }
+   /**
+    * Sets the value of the eventTypeGuid property.
+    * 
+    * @param value allowed object is {@link String }
+    */
+   public void setEventTypeGuid(String value) {
+      this.eventTypeGuid = value;
+   }
 
-    /**
-     * Gets the value of the transactions property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the transactions property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getTransactions().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link RemoteTransactionChange1 }
-     * 
-     * 
-     */
-    public List<RemoteTransactionChange1> getTransactions() {
-        if (transactions == null) {
-            transactions = new ArrayList<RemoteTransactionChange1>();
-        }
-        return this.transactions;
-    }
+   /**
+    * Gets the value of the transactions property.
+    * <p>
+    * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to
+    * the returned list will be present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for
+    * the transactions property.
+    * <p>
+    * For example, to add a new item, do as follows:
+    * 
+    * <pre>
+    * getTransactions().add(newItem);
+    * </pre>
+    * <p>
+    * Objects of the following type(s) are allowed in the list {@link RemoteTransactionChange1 }
+    */
+   public List<RemoteTransactionChange1> getTransactions() {
+      if (transactions == null) {
+         transactions = new ArrayList<RemoteTransactionChange1>();
+      }
+      return this.transactions;
+   }
 
-    /**
-     * Gets the value of the networkSender property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link RemoteNetworkSender1 }
-     *     
-     */
-    public RemoteNetworkSender1 getNetworkSender() {
-        return networkSender;
-    }
+   /**
+    * Gets the value of the networkSender property.
+    * 
+    * @return possible object is {@link RemoteNetworkSender1 }
+    */
+   @Override
+   public RemoteNetworkSender1 getNetworkSender() {
+      return networkSender;
+   }
 
-    /**
-     * Sets the value of the networkSender property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link RemoteNetworkSender1 }
-     *     
-     */
-    public void setNetworkSender(RemoteNetworkSender1 value) {
-        this.networkSender = value;
-    }
+   /**
+    * Sets the value of the networkSender property.
+    * 
+    * @param value allowed object is {@link RemoteNetworkSender1 }
+    */
+   public void setNetworkSender(RemoteNetworkSender1 value) {
+      this.networkSender = value;
+   }
 
 }

@@ -73,14 +73,14 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationTransactionData;
 public class SkynetTransaction extends AbstractOperation {
 
    private static final String UPDATE_TXS_NOT_CURRENT =
-         "UPDATE osee_txs txs1 SET tx_current = " + TxChange.NOT_CURRENT.getValue() + " WHERE txs1.transaction_id = ? AND txs1.gamma_id = ?";
+      "UPDATE osee_txs txs1 SET tx_current = " + TxChange.NOT_CURRENT.getValue() + " WHERE txs1.transaction_id = ? AND txs1.gamma_id = ?";
    private static final String GET_EXISTING_ATTRIBUTE_IDS =
-         "SELECT att1.attr_id FROM osee_attribute att1, osee_artifact art1, osee_txs txs1 WHERE att1.attr_type_id = ? AND att1.art_id = ? AND att1.art_id = art1.art_id AND art1.gamma_id = txs1.gamma_id AND txs1.branch_id <> ?";
+      "SELECT att1.attr_id FROM osee_attribute att1, osee_artifact art1, osee_txs txs1 WHERE att1.attr_type_id = ? AND att1.art_id = ? AND att1.art_id = art1.art_id AND art1.gamma_id = txs1.gamma_id AND txs1.branch_id <> ?";
 
    private TransactionRecord transactionId, lastTransactionId;
 
    private final CompositeKeyHashMap<Class<? extends BaseTransactionData>, Integer, BaseTransactionData> transactionDataItems =
-         new CompositeKeyHashMap<Class<? extends BaseTransactionData>, Integer, BaseTransactionData>();
+      new CompositeKeyHashMap<Class<? extends BaseTransactionData>, Integer, BaseTransactionData>();
 
    private final HashCollection<String, Object[]> dataItemInserts = new HashCollection<String, Object[]>();
    private final Map<Integer, String> dataInsertOrder = new HashMap<Integer, String>();
@@ -143,8 +143,8 @@ public class SkynetTransaction extends AbstractOperation {
    private void ensureCorrectBranch(RelationLink link) throws OseeStateException {
       if (!link.getBranch().equals(branch)) {
          String msg =
-               String.format("The relation link [%s] is on branch [%s] but this transaction is for branch [%s]",
-                     link.getId(), link.getBranch(), branch);
+            String.format("The relation link [%s] is on branch [%s] but this transaction is for branch [%s]",
+               link.getId(), link.getBranch(), branch);
          throw new OseeStateException(msg);
       }
    }
@@ -152,8 +152,8 @@ public class SkynetTransaction extends AbstractOperation {
    private void ensureCorrectBranch(Artifact artifact) throws OseeStateException {
       if (!artifact.getBranch().equals(branch)) {
          String msg =
-               String.format("The artifact [%s] is on branch [%s] but this transaction is for branch [%s]",
-                     artifact.getGuid(), artifact.getBranch(), branch);
+            String.format("The artifact [%s] is on branch [%s] but this transaction is for branch [%s]",
+               artifact.getGuid(), artifact.getBranch(), branch);
          throw new OseeStateException(msg);
       }
    }
@@ -161,7 +161,7 @@ public class SkynetTransaction extends AbstractOperation {
    private void ensureBranchIsEditable(RelationLink link) throws OseeStateException {
       if (!link.getBranch().isEditable()) {
          String msg =
-               String.format("The relation link [%s] is on a non-editable branch [%s]", link.getId(), link.getBranch());
+            String.format("The relation link [%s] is on a non-editable branch [%s]", link.getId(), link.getBranch());
          throw new OseeStateException(msg);
       }
    }
@@ -169,8 +169,8 @@ public class SkynetTransaction extends AbstractOperation {
    private void ensureBranchIsEditable(Artifact artifact) throws OseeStateException {
       if (!artifact.getBranch().isEditable()) {
          String msg =
-               String.format("The artifact [%s] is on a non-editable branch [%s]", artifact.getGuid(),
-                     artifact.getBranch());
+            String.format("The artifact [%s] is on a non-editable branch [%s]", artifact.getGuid(),
+               artifact.getBranch());
          throw new OseeStateException(msg);
       }
    }
@@ -186,7 +186,6 @@ public class SkynetTransaction extends AbstractOperation {
     * IF transaction has not been executed, this is the transactionId that will be used.<br>
     * ELSE this is next transaction to be used upon execute
     * 
-    * @return
     * @throws OseeCoreException
     */
    public int getTransactionNumber() throws OseeCoreException {
@@ -257,7 +256,7 @@ public class SkynetTransaction extends AbstractOperation {
       if (attributeType.getMaxOccurrences() == 1) {
          try {
             chStmt.runPreparedQuery(GET_EXISTING_ATTRIBUTE_IDS, attributeType.getId(), artifact.getArtId(),
-                  artifact.getBranch().getId());
+               artifact.getBranch().getId());
 
             if (chStmt.next()) {
                attrId = chStmt.getInt("attr_id");
@@ -322,8 +321,6 @@ public class SkynetTransaction extends AbstractOperation {
    /**
     * Always want to persist artifacts on other side of dirty relation. This is necessary for ordering attribute to be
     * persisted and desired for other cases.
-    * 
-    * @throws OseeCoreException
     */
    private void persitRelatedArtifact(Artifact artifact) throws OseeCoreException {
       if (artifact != null) {
@@ -472,24 +469,35 @@ public class SkynetTransaction extends AbstractOperation {
          transactionData.internalAddToEvents(artifactEvent);
       }
 
+      // Collect attribute events
       for (Artifact artifact : artifactReferences) {
          if (artifact.hasDirtyAttributes()) {
             artifactEvent.getSkynetTransactionDetails().add(
-                  new ArtifactModifiedEvent(new Sender(this.getClass().getName()), ArtifactModType.Changed, artifact,
-                        artifact.getTransactionNumber(), artifact.getDirtySkynetAttributeChanges()));
+               new ArtifactModifiedEvent(new Sender(this.getClass().getName()), ArtifactModType.Changed, artifact,
+                  artifact.getTransactionNumber(), artifact.getDirtySkynetAttributeChanges()));
             EventModifiedBasicGuidArtifact guidArt =
-                  new EventModifiedBasicGuidArtifact(artifact.getBranch().getGuid(),
-                        artifact.getArtifactType().getGuid(), artifact.getGuid(),
-                        artifact.getDirtyFrameworkAttributeChanges());
+               new EventModifiedBasicGuidArtifact(artifact.getBranch().getGuid(), artifact.getArtifactType().getGuid(),
+                  artifact.getGuid(), artifact.getDirtyFrameworkAttributeChanges());
             artifactEvent.getArtifacts().add(guidArt);
             if (artifactEvent.getBranchGuid() == null) {
                artifactEvent.setBranchGuid(artifact.getBranchGuid());
             }
+
+            // Collection relation reorder records for events
+            if (!artifact.getRelationOrderRecords().isEmpty()) {
+               artifactEvent.getRelationOrderRecords().addAll(artifact.getRelationOrderRecords());
+            }
          }
       }
+
       // Clear all dirty flags
       for (BaseTransactionData transactionData : transactionDataItems.values()) {
          transactionData.internalClearDirtyState();
+      }
+
+      // Clear all relation order records
+      for (Artifact artifact : artifactReferences) {
+         artifact.getRelationOrderRecords().clear();
       }
 
       if (artifactEvent.getSkynetTransactionDetails().size() > 0) {

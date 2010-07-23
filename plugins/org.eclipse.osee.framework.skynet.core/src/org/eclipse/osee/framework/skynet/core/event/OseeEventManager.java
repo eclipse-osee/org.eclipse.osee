@@ -307,7 +307,7 @@ public class OseeEventManager {
             if (ex != null) {
                OseeLog.log(Activator.class, Level.SEVERE, output, ex);
             } else {
-               OseeLog.log(Activator.class, Level.INFO, output);
+               OseeLog.log(Activator.class, Level.FINE, output);
             }
          }
       } catch (Exception ex1) {

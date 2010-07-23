@@ -19,6 +19,8 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
+import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidRelationReorder;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -39,14 +41,19 @@ public class ArtifactEvent extends FrameworkEvent {
 
    private String branchGuid;
    private int transactionId;
-   private List<EventBasicGuidArtifact> artifacts;
-   private List<EventBasicGuidRelation> relations;
    private NetworkSender networkSender;
-   private Collection<ArtifactTransactionModifiedEvent> skynetTransactionDetails =
-         new ArrayList<ArtifactTransactionModifiedEvent>();
+   private final List<EventBasicGuidArtifact> artifacts = new ArrayList<EventBasicGuidArtifact>();
+   private final List<EventBasicGuidRelation> relations = new ArrayList<EventBasicGuidRelation>();
+   private final Set<DefaultBasicGuidRelationReorder> relationReorderRecords = new HashSet<DefaultBasicGuidRelationReorder>();
+   private final Collection<ArtifactTransactionModifiedEvent> skynetTransactionDetails =
+      new ArrayList<ArtifactTransactionModifiedEvent>();
 
    public String getBranchGuid() {
       return branchGuid;
+   }
+
+   public Set<DefaultBasicGuidRelationReorder> getRelationOrderRecords() {
+      return relationReorderRecords;
    }
 
    public void setBranchGuid(String value) {
@@ -66,16 +73,10 @@ public class ArtifactEvent extends FrameworkEvent {
    }
 
    public List<EventBasicGuidArtifact> getArtifacts() {
-      if (artifacts == null) {
-         artifacts = new ArrayList<EventBasicGuidArtifact>();
-      }
       return this.artifacts;
    }
 
    public List<EventBasicGuidRelation> getRelations() {
-      if (relations == null) {
-         relations = new ArrayList<EventBasicGuidRelation>();
-      }
       return this.relations;
    }
 
@@ -118,8 +119,7 @@ public class ArtifactEvent extends FrameworkEvent {
 
    public Collection<Artifact> getRelModifiedCacheArtifacts() {
       try {
-         return ArtifactCache.getActive(getRelationsArts(RelationEventType.ModifiedRationale,
-               RelationEventType.ReOrdered));
+         return ArtifactCache.getActive(getRelationsArts(RelationEventType.ModifiedRationale));
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
@@ -128,9 +128,8 @@ public class ArtifactEvent extends FrameworkEvent {
 
    public Collection<Artifact> getRelCacheArtifacts() {
       try {
-         return ArtifactCache.getActive(getRelationsArts(RelationEventType.ModifiedRationale,
-               RelationEventType.ReOrdered, RelationEventType.Added, RelationEventType.Deleted,
-               RelationEventType.Purged, RelationEventType.Undeleted));
+         return ArtifactCache.getActive(getRelationsArts(RelationEventType.ModifiedRationale, RelationEventType.Added,
+            RelationEventType.Deleted, RelationEventType.Purged, RelationEventType.Undeleted));
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
@@ -144,6 +143,26 @@ public class ArtifactEvent extends FrameworkEvent {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return java.util.Collections.emptyList();
+   }
+
+   public Collection<DefaultBasicGuidArtifact> getRelOrderChangedArtifacts() {
+      return getRelOrderChangedArtifacts((IRelationType[]) null);
+   }
+
+   public Collection<DefaultBasicGuidArtifact> getRelOrderChangedArtifacts(IRelationType... relationTypes) {
+      Set<DefaultBasicGuidArtifact> guidArts = new HashSet<DefaultBasicGuidArtifact>();
+      for (DefaultBasicGuidRelationReorder record : relationReorderRecords) {
+         if (relationTypes == null) {
+            guidArts.add(record.getParentArt());
+         } else {
+            for (IRelationType type : relationTypes) {
+               if (record.getRelTypeGuid().equals(type.getGuid())) {
+                  guidArts.add(record.getParentArt());
+               }
+            }
+         }
+      }
+      return guidArts;
    }
 
    public Collection<EventBasicGuidArtifact> get(EventModType... eventModTypes) {
@@ -204,18 +223,17 @@ public class ArtifactEvent extends FrameworkEvent {
    }
 
    /**
-    * Relation rationale or order changed
+    * Relation rationale changed
     */
    public boolean isRelChange(Artifact artifact) {
       return isRelChange(artifact.getBasicGuidArtifact());
    }
 
    /**
-    * Relation rationale or order changed
+    * Relation rationale changed
     */
    public boolean isRelChange(IBasicGuidArtifact guidArt) {
-      for (EventBasicGuidRelation guidRel : getRelations(RelationEventType.ModifiedRationale,
-            RelationEventType.ReOrdered)) {
+      for (EventBasicGuidRelation guidRel : getRelations(RelationEventType.ModifiedRationale)) {
          if (guidRel.getArtA().equals(guidArt) || guidRel.getArtB().equals(guidArt)) {
             return true;
          }
@@ -249,10 +267,11 @@ public class ArtifactEvent extends FrameworkEvent {
       return false;
    }
 
+   @Override
    public String toString() {
       try {
          return String.format("ArtifactEvent: BG[%s] TrId[%d] ARTS[%s] RELS[%s] Sender[%s]", branchGuid, transactionId,
-               artifacts, relations, networkSender);
+            artifacts, relations, networkSender);
       } catch (Exception ex) {
          return String.format("ArtifactEvent exception: " + ex.getLocalizedMessage());
       }

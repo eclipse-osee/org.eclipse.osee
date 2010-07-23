@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.skynet.core.relation.order;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidRelationReorder;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 
 /**
@@ -19,7 +20,7 @@ import org.eclipse.osee.framework.skynet.core.types.IArtifact;
  */
 public interface IRelationOrderAccessor {
 
-   public void store(IArtifact artifact, RelationOrderData orderData) throws OseeCoreException;
+   public void store(IArtifact artifact, RelationOrderData orderData, DefaultBasicGuidRelationReorder reorderRecord) throws OseeCoreException;
 
    public void load(IArtifact artifact, RelationOrderData orderData) throws OseeCoreException;
 }
