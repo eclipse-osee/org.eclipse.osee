@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.server.tests;
 
 import org.eclipse.osee.framework.branch.management.test.BranchManagementTestSuite;
 import org.eclipse.osee.framework.core.datastore.test.AllCoreDatastoreTestSuite;
-import org.eclipse.osee.framework.core.dsl.integration.test.OseeTypesTestSuite;
 import org.eclipse.osee.framework.core.message.test.AllCoreMessageTestSuite;
 import org.eclipse.osee.framework.core.model.test.AllCoreModelTestSuite;
 import org.eclipse.osee.framework.core.server.test.CoreServerTestSuite;
@@ -32,18 +31,18 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ //
 JdkCoreTestSuite.class, //
-			FrameworkCoreTestSuite.class, //
-			AllCoreModelTestSuite.class, //
-			AllCoreDatastoreTestSuite.class, //
-			AllCoreMessageTestSuite.class, //
-			CoreServerTestSuite.class, //
-			BranchManagementTestSuite.class, //
-			AllLifecycleTestSuite.class,//
-			ResourceManagementTestSuite.class, //
-			AttributeLocatorProviderTestSuite.class, //
-			AttributeProviderTestSuite.class, //
-			AllSearchEngineTestSuite.class, //
-			OseeTypesTestSuite.class, //
+   FrameworkCoreTestSuite.class, //
+   AllCoreModelTestSuite.class, //
+   AllCoreDatastoreTestSuite.class, //
+   AllCoreMessageTestSuite.class, //
+   CoreServerTestSuite.class, //
+   BranchManagementTestSuite.class, //
+   AllLifecycleTestSuite.class,//
+   ResourceManagementTestSuite.class, //
+   AttributeLocatorProviderTestSuite.class, //
+   AttributeProviderTestSuite.class, //
+   AllSearchEngineTestSuite.class, //
+   OseeTypesTestSuite.class, //
 })
 public class AllServerTestsSuite {
 
