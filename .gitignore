@@ -118,3 +118,8 @@ _Retired/org.eclipse.osee.framework.resource.provider.common/bin/
 _Retired/org.eclipse.osee.framework.resource.provider.snapshot/bin/
 _Retired/org.eclipse.osee.framework.session.management.servlet.test/bin/
 _Retired/org.eclipse.osee.framework.skynet.core.test/bin/
+plugins/org.eclipse.osee.framework.core.dsl.edit/bin/
+plugins/org.eclipse.osee.framework.core.dsl.integration/bin/
+plugins/org.eclipse.osee.framework.core.dsl.ui.integration/bin/
+plugins/org.eclipse.osee.framework.core.dsl.ui/bin/
+plugins/org.eclipse.osee.framework.core.dsl/bin/
