@@ -29,11 +29,14 @@ public final class MenuItems {
     * @throws IllegalArgumentException if the action is null.
     */
    public static final MenuItem createMenuItem(Menu parent, int style, final Action action) {
-      if (action == null) throw new IllegalArgumentException("action can not be null");
+      if (action == null) {
+         throw new IllegalArgumentException("action can not be null");
+      }
 
       MenuItem menuItem = new MenuItem(parent, style);
       menuItem.setText(action.getText());
       menuItem.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             action.run();
          }

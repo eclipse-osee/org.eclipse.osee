@@ -169,7 +169,7 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
             branches[1] = changeUiData.getTxDelta().getEndTx().getBranch();
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, "Error obtaining change report branches for branch event",
-                  ex);
+               ex);
          }
          for (Branch branch : branches) {
             if (branch != null && branch.getId() == branchId) {
@@ -223,7 +223,7 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
             branches[1] = changeUiData.getTxDelta().getEndTx().getBranch();
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, "Error obtaining change report branches for branch event",
-                  ex);
+               ex);
          }
          for (Branch branch : branches) {
             if (branch != null && branch.getGuid().equals(branchEvent.getBranchGuid())) {

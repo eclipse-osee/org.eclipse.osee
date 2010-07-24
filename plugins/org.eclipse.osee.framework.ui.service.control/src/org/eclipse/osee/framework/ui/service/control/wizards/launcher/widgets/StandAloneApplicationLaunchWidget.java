@@ -65,6 +65,7 @@ public class StandAloneApplicationLaunchWidget implements ILaunchWidget {
       this.javaCompiler = "";
    }
 
+   @Override
    public void create(Composite parent) {
       shell = parent.getShell();
       SashForm composite = new SashForm(parent, SWT.NONE);
@@ -96,6 +97,7 @@ public class StandAloneApplicationLaunchWidget implements ILaunchWidget {
       displayHelper = new TextDisplayHelper(cmdText);
    }
 
+   @Override
    public Control getControl() {
       return control;
    }
@@ -147,17 +149,18 @@ public class StandAloneApplicationLaunchWidget implements ILaunchWidget {
          @Override
          public void widgetSelected(SelectionEvent e) {
             PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+               @Override
                public void run() {
                   File localLocation =
-                        new File(
-                              localUnzipLocation + File.separator + serviceInfo.getServiceItem().getPlugin() + File.separator);
+                     new File(
+                        localUnzipLocation + File.separator + serviceInfo.getServiceItem().getPlugin() + File.separator);
                   javaCompiler = javaCompilerText.getText();
                   if (null != groupSelector) {
                      serviceInfo.getServiceItem().setJiniGroup(groupSelector.getJiniGroupVmArg());
                   }
                   Job job =
-                        new StandAloneApplicationLaunchJob("Launch Stand Alone Application", javaCompiler,
-                              localLocation, serviceInfo, displayHelper, progress);
+                     new StandAloneApplicationLaunchJob("Launch Stand Alone Application", javaCompiler, localLocation,
+                        serviceInfo, displayHelper, progress);
                   job.setUser(true);
                   job.setPriority(Job.LONG);
                   job.schedule();
@@ -181,6 +184,7 @@ public class StandAloneApplicationLaunchWidget implements ILaunchWidget {
       scriptOutputText.setText(homedir);
 
       scriptOutputText.addModifyListener(new ModifyListener() {
+         @Override
          public void modifyText(ModifyEvent e) {
             localUnzipLocation = scriptOutputText.getText();
          }
@@ -224,6 +228,7 @@ public class StandAloneApplicationLaunchWidget implements ILaunchWidget {
       javaCompilerText.setText(javaHome);
 
       javaCompilerText.addModifyListener(new ModifyListener() {
+         @Override
          public void modifyText(ModifyEvent e) {
             javaCompiler = javaCompilerText.getText();
          }
@@ -259,6 +264,7 @@ public class StandAloneApplicationLaunchWidget implements ILaunchWidget {
       });
    }
 
+   @Override
    public void dispose() {
       if (scriptOutputText != null && !scriptOutputText.isDisposed()) {
          scriptOutputText.dispose();
@@ -272,6 +278,7 @@ public class StandAloneApplicationLaunchWidget implements ILaunchWidget {
       displayHelper.disposeProcessHandling();
    }
 
+   @Override
    public void refresh() {
    }
 }

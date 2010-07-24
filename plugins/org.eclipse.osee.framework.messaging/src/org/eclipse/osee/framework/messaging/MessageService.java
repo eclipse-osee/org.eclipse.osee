@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.messaging;
 
 import java.util.Collection;
-
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
@@ -19,12 +18,12 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  */
 public interface MessageService {
 
-   ConnectionNode getDefault() throws OseeCoreException;	
-	
+   ConnectionNode getDefault() throws OseeCoreException;
+
    ConnectionNode get(NodeInfo nodeInfo) throws OseeCoreException;
 
    Collection<NodeInfo> getAvailableConnections();
-   
+
    int size();
 
    boolean isEmpty();

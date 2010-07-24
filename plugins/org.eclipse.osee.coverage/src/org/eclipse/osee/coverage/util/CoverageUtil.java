@@ -68,7 +68,7 @@ public class CoverageUtil {
    public static CoverageItem getCoverageItemMatchingOrder(Collection<? extends ICoverage> items, CoverageItem coverageItem) {
       for (ICoverage coverage : items) {
          if (coverage instanceof CoverageItem && ((CoverageItem) coverage).getOrderNumber().equals(
-               coverageItem.getOrderNumber())) {
+            coverageItem.getOrderNumber())) {
             return (CoverageItem) coverage;
          }
       }
@@ -196,7 +196,7 @@ public class CoverageUtil {
          MatchItem item = MergeManager.getPackageCoverageItem(coveragePackage, importItem);
          if (!item.isMatch()) {
             System.out.println(String.format("No Match for item [%s] path [%s]", importItem,
-                  CoverageUtil.getFullPath(importItem)));
+               CoverageUtil.getFullPath(importItem)));
          }
       }
    }

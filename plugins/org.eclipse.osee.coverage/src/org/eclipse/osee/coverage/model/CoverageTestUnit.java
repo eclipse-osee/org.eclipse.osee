@@ -32,6 +32,7 @@ public class CoverageTestUnit implements ICoverage {
       this.name = name;
    }
 
+   @Override
    public String getName() {
       return name;
    }
@@ -40,6 +41,7 @@ public class CoverageTestUnit implements ICoverage {
       this.name = name;
    }
 
+   @Override
    public String getGuid() {
       return guid;
    }

@@ -27,6 +27,7 @@ import org.eclipse.ui.PlatformUI;
 
 public class FindTraceUnitEditorAction implements IEditorActionDelegate {
 
+   @Override
    public void run(IAction action) {
       IEditorPart editorPart = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
       IEditorInput editorInput = editorPart.getEditorInput();
@@ -44,9 +45,11 @@ public class FindTraceUnitEditorAction implements IEditorActionDelegate {
       Jobs.startJob(new FindTraceUnitJob("Resource To Trace Unit Artifact", iFile), true);
    }
 
+   @Override
    public void selectionChanged(IAction action, ISelection selection) {
    }
 
+   @Override
    public void setActiveEditor(IAction action, IEditorPart targetEditor) {
    }
 }

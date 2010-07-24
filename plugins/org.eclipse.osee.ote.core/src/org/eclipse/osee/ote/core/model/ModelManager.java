@@ -32,12 +32,12 @@ import org.eclipse.osee.ote.core.framework.DestroyableService;
  */
 public class ModelManager implements IModelManager, DestroyableService {
 
-   private List<IModelListener> modelListeners;
-   private Map<ModelKey, List<IModelListener>> modelListenerMap;
-   private Map<ModelKey, IModel> models;
-   private List<ModelKey> registeredModels;
-   private Map<ModelKey, Integer> referenceCountOfModels;
-   private WeakReference<TestEnvironment> testEnvironment;
+   private final List<IModelListener> modelListeners;
+   private final Map<ModelKey, List<IModelListener>> modelListenerMap;
+   private final Map<ModelKey, IModel> models;
+   private final List<ModelKey> registeredModels;
+   private final Map<ModelKey, Integer> referenceCountOfModels;
+   private final WeakReference<TestEnvironment> testEnvironment;
 
    private boolean isDestroyed = false;
    private final class ModelInfoCmd extends ConsoleCommand {
@@ -69,6 +69,7 @@ public class ModelManager implements IModelManager, DestroyableService {
       modelListenerMap = new HashMap<ModelKey, List<IModelListener>>();
    }
 
+   @Override
    public <CLASSTYPE extends IModel> CLASSTYPE getModel(ModelKey<CLASSTYPE> key) {
       if (models.containsKey(key)) {
          referenceCountOfModels.put(key, referenceCountOfModels.get(key).intValue() + 1);
@@ -79,8 +80,7 @@ public class ModelManager implements IModelManager, DestroyableService {
             model = createModel(key);
          } catch (Exception e) {
             this.testEnvironment.get().getLogger().severe("COULD NOT CREATE MODEL:\n" + e);
-            OseeLog.log(TestEnvironment.class,
-                  Level.SEVERE, e.getMessage(), e);
+            OseeLog.log(TestEnvironment.class, Level.SEVERE, e.getMessage(), e);
          }
 
          return model;
@@ -93,7 +93,9 @@ public class ModelManager implements IModelManager, DestroyableService {
 
    private ModelKey findModelKey(Collection<ModelKey> list, ModelKey key) {
       for (ModelKey current : list) {
-         if (current.equals(key)) return current;
+         if (current.equals(key)) {
+            return current;
+         }
       }
       return null;
    }
@@ -130,7 +132,7 @@ public class ModelManager implements IModelManager, DestroyableService {
          throw new IllegalArgumentException("key cannot be null");
       }
       notifyModelPreCreate(key);
-      CLASSTYPE model = (CLASSTYPE) key.getModelClass().newInstance();
+      CLASSTYPE model = key.getModelClass().newInstance();
       ClassLoader loader = Thread.currentThread().getContextClassLoader();
       try {
          Thread.currentThread().setContextClassLoader(key.getModelClass().getClassLoader());
@@ -145,8 +147,9 @@ public class ModelManager implements IModelManager, DestroyableService {
       }
    }
 
+   @Override
    public void addModelActivityListener(IModelListener listener) {
-      if(listener  == null){
+      if (listener == null) {
          OseeLog.log(ModelManager.class, Level.SEVERE, "null listener was being added to model managerl");
       } else {
          if (!collectionContainsListener(modelListeners, listener)) {
@@ -164,20 +167,21 @@ public class ModelManager implements IModelManager, DestroyableService {
    private boolean collectionContainsListener(List<IModelListener> collection, IModelListener listener) {
       try {
          for (IModelListener current : collection) {
-            if (current.getHashCode() == listener.getHashCode()) return true;
+            if (current.getHashCode() == listener.getHashCode()) {
+               return true;
+            }
          }
       } catch (RemoteException e) {
-         OseeLog.log(TestEnvironment.class, Level.SEVERE,
-               e.getMessage(), e);
+         OseeLog.log(TestEnvironment.class, Level.SEVERE, e.getMessage(), e);
       }
       return false;
    }
 
+   @Override
    public void addModelActivityListener(IModelListener listener, ModelKey key) {
       if (listener == null) {
          Exception e = new NullPointerException();
-         OseeLog.log(TestEnvironment.class, Level.SEVERE,
-               e.getMessage(), e);
+         OseeLog.log(TestEnvironment.class, Level.SEVERE, e.getMessage(), e);
          return;
       }
       if (modelListenerMap.containsKey(key)) {
@@ -191,33 +195,38 @@ public class ModelManager implements IModelManager, DestroyableService {
       }
    }
 
+   @Override
    public void removeModelActivityListener(IModelListener listener) {
       try {
          Iterator<IModelListener> iter = modelListeners.iterator();
          while (iter.hasNext()) {
-            if (iter.next().getHashCode() == listener.getHashCode()) iter.remove();
+            if (iter.next().getHashCode() == listener.getHashCode()) {
+               iter.remove();
+            }
          }
       } catch (RemoteException e) {
-         OseeLog.log(TestEnvironment.class, Level.SEVERE,
-               e.getMessage(), e);
+         OseeLog.log(TestEnvironment.class, Level.SEVERE, e.getMessage(), e);
       }
    }
 
+   @Override
    public void removeModelActivityListener(IModelListener listener, ModelKey key) {
       try {
          if (modelListenerMap.containsKey(key)) {
             List<IModelListener> list = modelListenerMap.get(key);
             Iterator<IModelListener> iter = list.iterator();
             while (iter.hasNext()) {
-               if (iter.next().getHashCode() == listener.getHashCode()) iter.remove();
+               if (iter.next().getHashCode() == listener.getHashCode()) {
+                  iter.remove();
+               }
             }
          }
       } catch (RemoteException e) {
-         OseeLog.log(TestEnvironment.class, Level.SEVERE,
-               e.getMessage(), e);
+         OseeLog.log(TestEnvironment.class, Level.SEVERE, e.getMessage(), e);
       }
    }
 
+   @Override
    public <CLASSTYPE extends IModel> void disposeModel(ModelKey key) {
       IModel localModel = findModel(key);
       //      referenceCountOfModels.remove(findModelKey(referenceCountOfModels.keySet(),key));
@@ -232,10 +241,12 @@ public class ModelManager implements IModelManager, DestroyableService {
       }
    }
 
+   @Override
    public List<ModelKey> getRegisteredModels() {
       return registeredModels;
    }
 
+   @Override
    public void releaseReference(IModel model) {
       try {
          if (models.containsKey(model.getKey())) {
@@ -250,18 +261,25 @@ public class ModelManager implements IModelManager, DestroyableService {
       }
    }
 
+   @Override
    public void releaseAllReferences(ModelKey key) {
-      if (!models.containsKey(key)) return;
+      if (!models.containsKey(key)) {
+         return;
+      }
 
       referenceCountOfModels.remove(key);
       disposeModel(key);
 
    }
 
+   @Override
    public void releaseReference(ModelKey key) {
-      if (models.containsKey(key)) this.releaseReference(models.get(key));
+      if (models.containsKey(key)) {
+         this.releaseReference(models.get(key));
+      }
    }
 
+   @Override
    public <CLASSTYPE extends IModel> void registerModel(ModelKey key) {
       ModelKey cleanKey = new ModelKey(key);
       if (!registeredModels.contains(cleanKey)) {
@@ -275,12 +293,13 @@ public class ModelManager implements IModelManager, DestroyableService {
    private <CLASSTYPE extends IModel> void notifyModelPreCreate(ModelKey key) throws RemoteException {
       ModelKey cleanKey = new ModelKey(key);
       for (IModelListener listener : modelListeners) {
-            listener.onModelPreCreate(cleanKey);
+         listener.onModelPreCreate(cleanKey);
       }
 
       if (modelListenerMap.containsKey(cleanKey)) {
-         for (IModelListener listener : modelListenerMap.get(cleanKey))
+         for (IModelListener listener : modelListenerMap.get(cleanKey)) {
             listener.onModelPreCreate(cleanKey);
+         }
       }
    }
 
@@ -291,11 +310,13 @@ public class ModelManager implements IModelManager, DestroyableService {
       }
 
       if (modelListenerMap.containsKey(cleanKey)) {
-         for (IModelListener listener : modelListenerMap.get(cleanKey))
+         for (IModelListener listener : modelListenerMap.get(cleanKey)) {
             listener.onModelPostCreate(cleanKey);
+         }
       }
    }
 
+   @Override
    public void notifyModeStateListener(ModelKey key, ModelState state) throws RemoteException {
       ModelKey cleanKey = new ModelKey(key);
       for (IModelListener listener : modelListeners) {
@@ -303,8 +324,9 @@ public class ModelManager implements IModelManager, DestroyableService {
       }
 
       if (modelListenerMap.containsKey(cleanKey)) {
-         for (IModelListener listener : modelListenerMap.get(cleanKey))
+         for (IModelListener listener : modelListenerMap.get(cleanKey)) {
             listener.onModelStateChange(cleanKey, state);
+         }
       }
    }
 
@@ -315,37 +337,44 @@ public class ModelManager implements IModelManager, DestroyableService {
       }
 
       if (modelListenerMap.containsKey(cleanKey)) {
-         for (IModelListener listener : modelListenerMap.get(cleanKey))
+         for (IModelListener listener : modelListenerMap.get(cleanKey)) {
             listener.onModelDispose(cleanKey);
+         }
       }
    }
 
+   @Override
    public void changeModelState(ModelKey key, ModelState state) {
       try {
          if (state == ModelState.PAUSED) {
-            if (models.containsKey(key)) getModel(key).turnModelOff();
+            if (models.containsKey(key)) {
+               getModel(key).turnModelOff();
+            }
          } else if (state == ModelState.RUNNING) {
             getModel(key).turnModelOn();
-         } else
+         } else {
             this.releaseAllReferences(key);
+         }
       } catch (RemoteException e) {
-         OseeLog.log(TestEnvironment.class, Level.SEVERE,
-               e.getMessage(), e);
+         OseeLog.log(TestEnvironment.class, Level.SEVERE, e.getMessage(), e);
       }
    }
 
+   @Override
    public ModelState getModelState(ModelKey key) throws RemoteException {
-      if (models.containsKey(key))
+      if (models.containsKey(key)) {
          return models.get(key).getState();
-      else
+      } else {
          return ModelState.DISPOSED;
+      }
    }
-   
-   public synchronized void destroy(){
+
+   @Override
+   public synchronized void destroy() {
       if (isDestroyed) {
          return;
       }
-      for(ModelKey modelKey :registeredModels){
+      for (ModelKey modelKey : registeredModels) {
          releaseAllReferences(modelKey);
       }
       modelListeners.clear();

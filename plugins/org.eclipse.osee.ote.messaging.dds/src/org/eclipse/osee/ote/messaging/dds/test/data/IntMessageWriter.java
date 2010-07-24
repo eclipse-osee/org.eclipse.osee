@@ -9,6 +9,7 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 package org.eclipse.osee.ote.messaging.dds.test.data;
+
 import org.eclipse.osee.ote.messaging.dds.ReturnCode;
 import org.eclipse.osee.ote.messaging.dds.entity.DataWriter;
 import org.eclipse.osee.ote.messaging.dds.entity.EntityFactory;
@@ -21,7 +22,8 @@ import org.eclipse.osee.ote.messaging.dds.listener.DataWriterListener;
  * @author David Diepenbrock
  */
 public class IntMessageWriter extends DataWriter {
-   private IntegerData buffer;
+   private final IntegerData buffer;
+
    /**
     * @param topic
     * @param publisher

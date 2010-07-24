@@ -35,16 +35,19 @@ public class PathResourceFinder extends ResourceFinder {
    private final HashSet<JarFile> jars = new HashSet<JarFile>(128);
    private final HashSet<String> dirs = new HashSet<String>(128);
    private final HashMap<String, JarFile[]> map = new HashMap<String, JarFile[]>(128);
-   private boolean trees;
-   private ClassServerPermissions perm;
+   private final boolean trees;
+   private final ClassServerPermissions perm;
    private static final int NUMBER_OF_FILE_READ_ATTEMPTS = 20;
 
    public PathResourceFinder(String[] dirsToAdd, boolean trees) {
       this.trees = trees;
       perm = new ClassServerPermissions();
-      if (dirsToAdd != null) addPaths(dirsToAdd);
+      if (dirsToAdd != null) {
+         addPaths(dirsToAdd);
+      }
    }
 
+   @Override
    public byte[] find(String path) throws IOException {
 
       int i = path.indexOf('/');
@@ -54,7 +57,9 @@ public class PathResourceFinder extends ResourceFinder {
             String jpath = path.substring(i + 1);
             for (i = 0; i < jfs.length; i++) {
                JarEntry je = jfs[i].getJarEntry(jpath);
-               if (je != null) return getBytes(jfs[i].getInputStream(je), je.getSize());
+               if (je != null) {
+                  return getBytes(jfs[i].getInputStream(je), je.getSize());
+               }
             }
          }
       }
@@ -112,7 +117,9 @@ public class PathResourceFinder extends ResourceFinder {
       for (int i = 0; i < paths.length; i++) {
          String path = paths[i];
 
-         if (path.startsWith("file:\\")) path = path.substring(6);
+         if (path.startsWith("file:\\")) {
+            path = path.substring(6);
+         }
 
          if (path.endsWith(".jar")) {
             try {
@@ -124,7 +131,9 @@ public class PathResourceFinder extends ResourceFinder {
                continue;
             }
          } else {
-            if (dirs.add(path)) perm.add(new FilePermission(path + File.separator + '-', "read"));
+            if (dirs.add(path)) {
+               perm.add(new FilePermission(path + File.separator + '-', "read"));
+            }
          }
 
          if (trees) {
@@ -158,18 +167,26 @@ public class PathResourceFinder extends ResourceFinder {
       base = new URL(base, jar);
       jar = base.getFile().replace('/', File.separatorChar);
       for (int i = jfs.size(); --i >= 0;) {
-         if (jar.equals(jfs.get(i).getName())) return;
+         if (jar.equals(jfs.get(i).getName())) {
+            return;
+         }
       }
 
       JarFile jf = new JarFile(jar);
       jfs.add(jf);
       try {
          Manifest man = jf.getManifest();
-         if (man == null) return;
+         if (man == null) {
+            return;
+         }
          Attributes attrs = man.getMainAttributes();
-         if (attrs == null) return;
+         if (attrs == null) {
+            return;
+         }
          String val = attrs.getValue(Attributes.Name.CLASS_PATH);
-         if (val == null) return;
+         if (val == null) {
+            return;
+         }
          for (StringTokenizer st = new StringTokenizer(val); st.hasMoreTokens();) {
             addJar(st.nextToken(), jfs, base);
          }
@@ -193,7 +210,7 @@ public class PathResourceFinder extends ResourceFinder {
          while (it.hasNext()) {
             JarFile jarFile = it.next();
             if (jarFile.getName().endsWith(File.separator + name)) {
-               jarFileReturn = (new File(jarFile.getName()));
+               jarFileReturn = new File(jarFile.getName());
                break;
             }
          }
@@ -220,6 +237,7 @@ public class PathResourceFinder extends ResourceFinder {
       }
    }
 
+   @Override
    public void dispose() {
       synchronized (jars) {
          OseeLog.log(PluginCoreActivator.class, Level.INFO, "disposing path resource finder's cached JAR files");

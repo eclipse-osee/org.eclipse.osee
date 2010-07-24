@@ -58,24 +58,30 @@ public enum ChangeType {
    }
    public static class ChangeTypeLabelProvider implements ILabelProvider {
 
+      @Override
       public Image getImage(Object arg0) {
          return ((ChangeType) arg0).getImage();
       }
 
+      @Override
       public String getText(Object arg0) {
          return ((ChangeType) arg0).name();
       }
 
+      @Override
       public void addListener(ILabelProviderListener arg0) {
       }
 
+      @Override
       public void dispose() {
       }
 
+      @Override
       public boolean isLabelProperty(Object arg0, String arg1) {
          return false;
       }
 
+      @Override
       public void removeListener(ILabelProviderListener arg0) {
       }
 

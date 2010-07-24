@@ -19,8 +19,8 @@ import org.eclipse.osee.framework.ui.data.model.editor.model.AttributeDataType;
  */
 public class CreateAttributeCommand extends Command {
 
-   private AttributeDataType attribute;
-   private ArtifactDataType parent;
+   private final AttributeDataType attribute;
+   private final ArtifactDataType parent;
 
    public CreateAttributeCommand(AttributeDataType attribute, ArtifactDataType parent) {
       super("Create Attribute");
@@ -28,18 +28,22 @@ public class CreateAttributeCommand extends Command {
       this.parent = parent;
    }
 
+   @Override
    public boolean canExecute() {
       return attribute != null && parent != null;
    }
 
+   @Override
    public void execute() {
       redo();
    }
 
+   @Override
    public void redo() {
       parent.add(attribute);
    }
 
+   @Override
    public void undo() {
       parent.remove(attribute);
    }

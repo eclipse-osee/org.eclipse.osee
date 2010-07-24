@@ -23,8 +23,8 @@ import org.eclipse.ui.PlatformUI;
  */
 public class WindowLocal<T> {
    private static final Object NON_WINDOW = new Object();
-   private Map<Object, T> valueMap;
-   private WindowKey windowKey;
+   private final Map<Object, T> valueMap;
+   private final WindowKey windowKey;
 
    public WindowLocal() {
       this.valueMap = new HashMap<Object, T>();
@@ -33,8 +33,9 @@ public class WindowLocal<T> {
 
    /**
     * Provide the initial value to be used when accessed from a scope for the first time. This should be overriden by
-    * the application in most cases. The default implementation returns a null.<br/><br/> This method is not called
-    * when the first access to the variable in a scope is a set call.
+    * the application in most cases. The default implementation returns a null.<br/>
+    * <br/>
+    * This method is not called when the first access to the variable in a scope is a set call.
     */
    protected T initialValue() {
       return null;
@@ -86,6 +87,7 @@ public class WindowLocal<T> {
    private class WindowKey implements Runnable {
       private Object key;
 
+      @Override
       public void run() {
          key = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
       }

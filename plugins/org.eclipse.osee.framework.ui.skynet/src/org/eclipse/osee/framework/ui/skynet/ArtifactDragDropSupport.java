@@ -185,11 +185,11 @@ public class ArtifactDragDropSupport {
          } catch (ArtifactDoesNotExist ex) {
             AttributeType attributeType = AttributeTypeManager.getType("Content URL");
             Collection<ArtifactType> artifactTypes =
-                  ArtifactTypeManager.getArtifactTypesFromAttributeType(attributeType, branch);
+               ArtifactTypeManager.getArtifactTypesFromAttributeType(attributeType, branch);
             ArtifactTypeDialog dialog =
-                  new ArtifactTypeDialog(shell, "Artifact Types", null,
-                        "No Artifact could be found for this file. To create one, please select an artfact type.",
-                        MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0, artifactTypes);
+               new ArtifactTypeDialog(shell, "Artifact Types", null,
+                  "No Artifact could be found for this file. To create one, please select an artfact type.",
+                  MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0, artifactTypes);
 
             if (dialog.open() == Window.OK) {
                artifact = ArtifactTypeManager.makeNewArtifact(dialog.getArtifactType(), branch);

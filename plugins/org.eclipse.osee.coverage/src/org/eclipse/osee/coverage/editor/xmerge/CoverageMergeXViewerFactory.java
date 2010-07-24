@@ -26,8 +26,8 @@ public abstract class CoverageMergeXViewerFactory extends CoverageXViewerFactory
       registerColumns();
       for (XViewerColumn xCol : getColumns()) {
          overrideShowDefault(
-               xCol.getId(),
-               xCol.equals(CoverageXViewerFactory.Name) || xCol.equals(CoverageXViewerFactory.Notes_Col) || xCol.equals(CoverageXViewerFactory.Namespace) || xCol.equals(CoverageXViewerFactory.Coverage_Method));
+            xCol.getId(),
+            xCol.equals(CoverageXViewerFactory.Name) || xCol.equals(CoverageXViewerFactory.Notes_Col) || xCol.equals(CoverageXViewerFactory.Namespace) || xCol.equals(CoverageXViewerFactory.Coverage_Method));
       }
    }
 

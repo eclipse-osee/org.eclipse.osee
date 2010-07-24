@@ -21,20 +21,20 @@ import org.eclipse.ui.PlatformUI;
  * @author Jeff C. Phillips
  */
 public class RemoveTrackChangesHandler implements IStatusHandler {
-	@Override
-	public Object handleStatus(IStatus status, Object source) {
-		final MutableInteger result = new MutableInteger(0);
-		final String message = (String) source;
+   @Override
+   public Object handleStatus(IStatus status, Object source) {
+      final MutableInteger result = new MutableInteger(0);
+      final String message = (String) source;
 
-		Displays.pendInDisplayThread(new Runnable() {
-			@Override
-			public void run() {
-				if (MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-							"Confirm Removal Of Track Changes ", message)) {
-					result.setValue(1);
-				}
-			}
-		});
-		return result.getValue() == 1;
-	}
+      Displays.pendInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            if (MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+               "Confirm Removal Of Track Changes ", message)) {
+               result.setValue(1);
+            }
+         }
+      });
+      return result.getValue() == 1;
+   }
 }

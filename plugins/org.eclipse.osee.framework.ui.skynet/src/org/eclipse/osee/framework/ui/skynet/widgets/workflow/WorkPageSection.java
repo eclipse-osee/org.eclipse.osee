@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.SectionPart;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.Section;
 
 /**
@@ -29,7 +30,7 @@ public class WorkPageSection extends SectionPart {
    }
 
    private Section createPage(Composite comp, WorkPage page, XFormToolkit toolkit) throws Exception {
-      Section section = toolkit.createSection(comp, Section.TWISTIE | Section.TITLE_BAR);
+      Section section = toolkit.createSection(comp, ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR);
       section.setText(page.getName());
       section.setExpanded(true);
       section.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -49,6 +50,7 @@ public class WorkPageSection extends SectionPart {
    }
 
    final XModifiedListener xModListener = new XModifiedListener() {
+      @Override
       public void widgetModified(XWidget widget) {
          System.out.println("Widget changed");
       }

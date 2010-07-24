@@ -46,6 +46,7 @@ public class Activator implements BundleActivator, IOseeCachingServiceProvider, 
       mappedTrackers = new HashMap<OseeServiceTrackerId, ServiceTracker>();
    }
 
+   @Override
    public void start(BundleContext context) throws Exception {
       instance = this;
       instance.bundleContext = context;
@@ -62,9 +63,10 @@ public class Activator implements BundleActivator, IOseeCachingServiceProvider, 
 
    private IOseeModelFactoryService createFactoryService() {
       return new OseeModelFactoryService(new BranchFactory(), new TransactionRecordFactory(),
-            new ArtifactTypeFactory(), new AttributeTypeFactory(), new RelationTypeFactory(), new OseeEnumTypeFactory());
+         new ArtifactTypeFactory(), new AttributeTypeFactory(), new RelationTypeFactory(), new OseeEnumTypeFactory());
    }
 
+   @Override
    public void stop(BundleContext context) throws Exception {
       for (ServiceRegistration service : services) {
          service.unregister();

@@ -5,7 +5,6 @@
  */
 package org.eclipse.osee.framework.ui.skynet;
 
-
 /**
  * @author Donald G. Dunne
  */

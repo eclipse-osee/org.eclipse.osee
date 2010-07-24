@@ -43,10 +43,10 @@ public class DemoDbUtil {
       if (codeArts == null) {
          codeArts = new ArrayList<DemoCodeTeamWorkflowArtifact>();
          for (String actionName : new String[] {"SAW (committed) Reqt Changes for Diagram View",
-               "SAW (uncommitted) More Reqt Changes for Diagram View"}) {
+            "SAW (uncommitted) More Reqt Changes for Diagram View"}) {
             DemoCodeTeamWorkflowArtifact codeArt = null;
             for (Artifact art : ArtifactQuery.getArtifactListFromName(actionName, AtsUtil.getAtsBranch(),
-                  EXCLUDE_DELETED)) {
+               EXCLUDE_DELETED)) {
                if (art instanceof DemoCodeTeamWorkflowArtifact) {
                   codeArt = (DemoCodeTeamWorkflowArtifact) art;
                   codeArts.add(codeArt);
@@ -70,7 +70,7 @@ public class DemoDbUtil {
    public static Result isDbPopulatedWithDemoData(Branch branch) throws OseeCoreException {
       if (DemoDbUtil.getSoftwareRequirements(SoftwareRequirementStrs.Robot, branch).size() != 6) {
          return new Result(
-               "Expected at least 6 Software Requirements with word \"Robot\".  Database is not be populated with demo data.");
+            "Expected at least 6 Software Requirements with word \"Robot\".  Database is not be populated with demo data.");
       }
       return Result.TrueResult;
    }
@@ -81,23 +81,28 @@ public class DemoDbUtil {
 
    public static Collection<Artifact> getArtTypeRequirements(IArtifactType artifactType, String artifactNameStr, Branch branch) throws OseeCoreException {
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
-            "Getting \"" + artifactNameStr + "\" requirement(s) from Branch " + branch.getName());
+         "Getting \"" + artifactNameStr + "\" requirement(s) from Branch " + branch.getName());
       Collection<Artifact> arts =
-            ArtifactQuery.getArtifactListFromTypeAndName(artifactType, "%" + artifactNameStr + "%", branch);
+         ArtifactQuery.getArtifactListFromTypeAndName(artifactType, "%" + artifactNameStr + "%", branch);
 
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Found " + arts.size() + " Artifacts");
       return arts;
    }
    public static enum SoftwareRequirementStrs {
-      Robot, CISST, daVinci, Functional, Event, Haptic
+      Robot,
+      CISST,
+      daVinci,
+      Functional,
+      Event,
+      Haptic
    };
    public static String HAPTIC_CONSTRAINTS_REQ = "Haptic Constraints";
 
    public static Artifact getInterfaceInitializationSoftwareRequirement(Branch branch) throws OseeCoreException {
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
-            "Getting \"" + INTERFACE_INITIALIZATION + "\" requirement.");
+         "Getting \"" + INTERFACE_INITIALIZATION + "\" requirement.");
       return ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirement, INTERFACE_INITIALIZATION,
-            branch);
+         branch);
    }
 
    public static User getDemoUser(DemoUsers demoUser) throws OseeCoreException {

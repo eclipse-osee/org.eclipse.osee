@@ -71,7 +71,7 @@ public class DefaultAttributeDataProvider extends AbstractAttributeDataProvider 
    @Override
    public boolean setValue(String value) throws OseeCoreException {
       boolean response = false;
-      if (getValueAsString() == value || (getValueAsString() != null && getValueAsString().equals(value))) {
+      if (getValueAsString() == value || getValueAsString() != null && getValueAsString().equals(value)) {
          response = false;
       } else {
          storeValue(value);
@@ -88,7 +88,7 @@ public class DefaultAttributeDataProvider extends AbstractAttributeDataProvider 
       if (value != null && value.length() > MAX_VARCHAR_LENGTH) {
          try {
             byte[] compressed =
-                  Lib.compressStream(new ByteArrayInputStream(value.getBytes("UTF-8")), getInternalFileName());
+               Lib.compressStream(new ByteArrayInputStream(value.getBytes("UTF-8")), getInternalFileName());
             dataStore.setContent(compressed, "zip", "application/zip", "ISO-8859-1");
          } catch (IOException ex) {
             OseeExceptions.wrapAndThrow(ex);

@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * @author Roberto E. Escobar
  */
 public abstract class BaseOutfileParser {
-   private Set<IDataListener> listeners;
+   private final Set<IDataListener> listeners;
 
    public BaseOutfileParser() {
       this.listeners = new HashSet<IDataListener>();

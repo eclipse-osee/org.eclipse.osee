@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.task;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
@@ -33,6 +34,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
+import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -51,6 +53,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.Section;
 
 /**
@@ -72,7 +75,7 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage implem
 
    @Override
    public Section createResultsSection(Composite body) throws OseeCoreException {
-      resultsSection = toolkit.createSection(body, Section.NO_TITLE);
+      resultsSection = toolkit.createSection(body, ExpandableComposite.NO_TITLE);
       resultsSection.setText("Results");
       resultsSection.setLayoutData(new GridData(GridData.FILL_BOTH));
 
@@ -91,7 +94,7 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage implem
       super.createPartControl(parent);
       scrolledForm.setImage(ImageManager.getImage(AtsImage.TASK));
 
-      Result result = AtsPlugin.areOSEEServicesAvailable();
+      Result result = OseeUiActivator.areOSEEServicesAvailable();
       if (result.isFalse()) {
          AWorkbench.popup("ERROR", "DB Connection Unavailable");
          return;
@@ -155,7 +158,7 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage implem
       toolBarManager.add(new Separator());
       toolBarManager.add(new NewAction());
       OseeUiActions.addButtonToEditorToolBar(taskEditor, taskEditor, AtsPlugin.getInstance(), toolBarManager,
-            TaskEditor.EDITOR_ID, "ATS Task Tab");
+         TaskEditor.EDITOR_ID, "ATS Task Tab");
       toolBarManager.add(new Separator());
       createDropDownMenuActions();
       toolBarManager.add(new DropDownAction());
@@ -171,6 +174,7 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage implem
          addSelectionListener();
       }
 
+      @Override
       public Menu getMenu(Control parent) {
          if (fMenu != null) {
             fMenu.dispose();
@@ -185,27 +189,27 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage implem
          try {
             if (taskComposite.getIXTaskViewer().isTaskable()) {
                addActionToMenu(fMenu, new ImportTasksViaSpreadsheet(
-                     (TaskableStateMachineArtifact) taskComposite.getIXTaskViewer().getSma(), new Listener() {
-                        @Override
-                        public void handleEvent(Event event) {
-                           try {
-                              taskComposite.loadTable();
-                           } catch (OseeCoreException ex) {
-                              OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-                           }
+                  (TaskableStateMachineArtifact) taskComposite.getIXTaskViewer().getSma(), new Listener() {
+                     @Override
+                     public void handleEvent(Event event) {
+                        try {
+                           taskComposite.loadTable();
+                        } catch (OseeCoreException ex) {
+                           OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                         }
-                     }));
+                     }
+                  }));
                addActionToMenu(fMenu, new ImportTasksViaSimpleList(
-                     (TaskableStateMachineArtifact) taskComposite.getIXTaskViewer().getSma(), new Listener() {
-                        @Override
-                        public void handleEvent(Event event) {
-                           try {
-                              taskComposite.loadTable();
-                           } catch (OseeCoreException ex) {
-                              OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-                           }
+                  (TaskableStateMachineArtifact) taskComposite.getIXTaskViewer().getSma(), new Listener() {
+                     @Override
+                     public void handleEvent(Event event) {
+                        try {
+                           taskComposite.loadTable();
+                        } catch (OseeCoreException ex) {
+                           OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                         }
-                     }));
+                     }
+                  }));
 
             }
          } catch (OseeCoreException ex) {
@@ -215,6 +219,7 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage implem
          return fMenu;
       }
 
+      @Override
       public void dispose() {
          if (fMenu != null) {
             fMenu.dispose();
@@ -222,6 +227,7 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage implem
          }
       }
 
+      @Override
       public Menu getMenu(Menu parent) {
          return null;
       }
@@ -242,14 +248,16 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage implem
 
       private void addKeyListener() {
          taskComposite.getTaskXViewer().getTree().addKeyListener(new KeyListener() {
+            @Override
             public void keyPressed(KeyEvent event) {
             }
 
+            @Override
             public void keyReleased(KeyEvent event) {
                if ((event.stateMask & SWT.MODIFIER_MASK) == SWT.CTRL) {
                   if (event.keyCode == 'a') {
                      taskComposite.getTaskXViewer().getTree().setSelection(
-                           taskComposite.getTaskXViewer().getTree().getItems());
+                        taskComposite.getTaskXViewer().getTree().getItems());
                   } else if (event.keyCode == 'x') {
                      selectionMetricsAction.setChecked(!selectionMetricsAction.isChecked());
                      selectionMetricsAction.run();
@@ -296,10 +304,9 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage implem
       if (selectionMetricsAction != null && selectionMetricsAction.isChecked()) {
          if (taskComposite.getTaskXViewer() != null && taskComposite.getTaskXViewer().getSelectedSMAArtifacts() != null && !taskComposite.getTaskXViewer().getSelectedSMAArtifacts().isEmpty()) {
             taskComposite.showReleaseMetricsLabel.setText(SMAMetrics.getEstRemainMetrics(
-                  taskComposite.getTaskXViewer().getSelectedSMAArtifacts(),
-                  null,
-                  taskComposite.getTaskXViewer().getSelectedSMAArtifacts().iterator().next().getManHrsPerDayPreference(),
-                  null));
+               taskComposite.getTaskXViewer().getSelectedSMAArtifacts(), null,
+               taskComposite.getTaskXViewer().getSelectedSMAArtifacts().iterator().next().getManHrsPerDayPreference(),
+               null));
          } else {
             taskComposite.showReleaseMetricsLabel.setText("");
          }
@@ -310,9 +317,9 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage implem
    public void updateExtendedStatusString() {
       taskComposite.getTaskXViewer().setExtendedStatusString(
       //
-            (filterCompletedAction.isChecked() ? "[Complete/Cancel Filter]" : "") +
-            //
-            (filterMyAssigneeAction.isChecked() ? "[My Assignee Filter]" : ""));
+         (filterCompletedAction.isChecked() ? "[Complete/Cancel Filter]" : "") +
+         //
+         (filterMyAssigneeAction.isChecked() ? "[My Assignee Filter]" : ""));
    }
 
    protected void createDropDownMenuActions() {
@@ -322,7 +329,7 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage implem
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
 
-      selectionMetricsAction = new Action("Show Release Metrics by Selection - Ctrl-X", Action.AS_CHECK_BOX) {
+      selectionMetricsAction = new Action("Show Release Metrics by Selection - Ctrl-X", IAction.AS_CHECK_BOX) {
          @Override
          public void run() {
             try {
@@ -335,7 +342,7 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage implem
       selectionMetricsAction.setToolTipText("Show Release Metrics by Selection - Ctrl-X");
       selectionMetricsAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.PAGE));
 
-      filterCompletedAction = new Action("Filter Out Completed/Cancelled - Ctrl-F", Action.AS_CHECK_BOX) {
+      filterCompletedAction = new Action("Filter Out Completed/Cancelled - Ctrl-F", IAction.AS_CHECK_BOX) {
          @Override
          public void run() {
             if (filterCompletedAction.isChecked()) {
@@ -350,7 +357,7 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage implem
       filterCompletedAction.setToolTipText("Filter Out Completed/Cancelled - Ctrl-F");
       filterCompletedAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.GREEN_PLUS));
 
-      filterMyAssigneeAction = new Action("Filter My Assignee - Ctrl-G", Action.AS_CHECK_BOX) {
+      filterMyAssigneeAction = new Action("Filter My Assignee - Ctrl-G", IAction.AS_CHECK_BOX) {
 
          @Override
          public void run() {

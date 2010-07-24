@@ -35,13 +35,12 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
  */
 public class DefectManager {
 
-   private WeakReference<Artifact> artifactRef;
+   private final WeakReference<Artifact> artifactRef;
    private boolean enabled = true;
    private static String DEFECT_ITEM_TAG = "Item";
    private static String REVIEW_DEFECT_ATTRIBUTE_NAME = "ats.Review Defect";
-   private final Matcher defectMatcher =
-         java.util.regex.Pattern.compile("<" + DEFECT_ITEM_TAG + ">(.*?)</" + DEFECT_ITEM_TAG + ">",
-               Pattern.DOTALL | Pattern.MULTILINE).matcher("");
+   private final Matcher defectMatcher = java.util.regex.Pattern.compile(
+      "<" + DEFECT_ITEM_TAG + ">(.*?)</" + DEFECT_ITEM_TAG + ">", Pattern.DOTALL | Pattern.MULTILINE).matcher("");
 
    public DefectManager(Artifact artifact) {
       this.artifactRef = new WeakReference<Artifact>(artifact);
@@ -120,7 +119,7 @@ public class DefectManager {
          Set<DefectItem> dbPromoteItems = getDefectItems();
          // Remove deleted ones; items in dbPromoteItems that are not in promoteItems
          for (DefectItem delPromoteItem : org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(
-               dbPromoteItems, defectItems)) {
+            dbPromoteItems, defectItems)) {
             for (Attribute<?> attr : getArtifact().getAttributes(REVIEW_DEFECT_ATTRIBUTE_NAME)) {
                DefectItem dbPromoteItem = new DefectItem((String) attr.getValue());
                if (dbPromoteItem.equals(delPromoteItem)) {
@@ -130,9 +129,9 @@ public class DefectManager {
          }
          // Add new ones: items in promoteItems that are not in dbPromoteItems
          for (DefectItem newPromoteItem : org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(
-               defectItems, dbPromoteItems)) {
+            defectItems, dbPromoteItems)) {
             getArtifact().addAttributeFromString(REVIEW_DEFECT_ATTRIBUTE_NAME,
-                  AXml.addTagData(DEFECT_ITEM_TAG, newPromoteItem.toXml()));
+               AXml.addTagData(DEFECT_ITEM_TAG, newPromoteItem.toXml()));
          }
          if (persist) {
             getArtifact().persist(transaction);

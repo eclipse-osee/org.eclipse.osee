@@ -92,7 +92,7 @@ public class ArtifactTypeCacheUpdateResponse {
 
       public String[] toArray() {
          return new String[] {String.valueOf(getId()), getGuid(), getName(), String.valueOf(isAbstract()),
-               getStorageState().name()};
+            getStorageState().name()};
       }
 
       public static ArtifactTypeRow fromArray(String[] data) {
@@ -116,7 +116,7 @@ public class ArtifactTypeCacheUpdateResponse {
       List<Triplet<Integer, Integer, Integer>> artAttrs = new ArrayList<Triplet<Integer, Integer, Integer>>();
       for (ArtifactType art : types) {
          rows.add(new ArtifactTypeRow(art.getId(), art.getGuid(), art.getName(), art.isAbstract(),
-               art.getStorageState()));
+            art.getStorageState()));
 
          Integer artId = art.getId();
          Collection<ArtifactType> superTypes = art.getSuperArtifactTypes();

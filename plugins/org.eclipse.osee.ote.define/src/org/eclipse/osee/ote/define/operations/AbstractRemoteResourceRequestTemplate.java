@@ -35,8 +35,8 @@ public abstract class AbstractRemoteResourceRequestTemplate {
    private static final int CONNECTION_TIMEOUT = 120000;
    private static final int CONNECTION_READ_TIMEOUT = 10000;
    private IFile remoteFile;
-   private String tempFolderName;
-   private String remoteRequestUrl;
+   private final String tempFolderName;
+   private final String remoteRequestUrl;
 
    public AbstractRemoteResourceRequestTemplate(String tempFolderName, String remoteRequestUrl) {
       super();

@@ -68,7 +68,7 @@ public class CsvArtifactTest {
 
    private void cleanup() throws Exception {
       Collection<Artifact> arts =
-            ArtifactQuery.getArtifactListFromName(id, BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1), EXCLUDE_DELETED);
+         ArtifactQuery.getArtifactListFromName(id, BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1), EXCLUDE_DELETED);
       new PurgeArtifacts(arts).execute();
    }
 }

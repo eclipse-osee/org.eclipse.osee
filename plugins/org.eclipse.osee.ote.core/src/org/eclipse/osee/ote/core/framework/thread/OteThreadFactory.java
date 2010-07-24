@@ -21,14 +21,15 @@ import java.util.concurrent.ThreadFactory;
  */
 public class OteThreadFactory implements ThreadFactory {
 
-   private List<WeakReference<OteThread>> threads;
-   private String threadName;
+   private final List<WeakReference<OteThread>> threads;
+   private final String threadName;
 
    protected OteThreadFactory(String threadName) {
       this.threadName = threadName;
       this.threads = new CopyOnWriteArrayList<WeakReference<OteThread>>();
    }
 
+   @Override
    public Thread newThread(Runnable runnable) {
       OteThread thread = new OteThread(runnable, threadName + ":" + threads.size());
       this.threads.add(new WeakReference<OteThread>(thread));

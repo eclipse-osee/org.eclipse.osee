@@ -32,12 +32,12 @@ import org.xml.sax.helpers.XMLReaderFactory;
  */
 public class GenericParser extends AbstractSaxHandler {
 
-   private String toFind;
+   private final String toFind;
    private boolean startCollecting;
    private Tree<XmlNode> collectedTree;
    private TreeNode<XmlNode> currentNode;
-   private Set<IXmlNodeListener> listeners;
-   private Set<IProcessingInstructionsListener> instructionListeners;
+   private final Set<IXmlNodeListener> listeners;
+   private final Set<IProcessingInstructionsListener> instructionListeners;
    private static XMLReader xmlReader;
 
    public GenericParser(String startTag) {
@@ -89,6 +89,7 @@ public class GenericParser extends AbstractSaxHandler {
       }
    }
 
+   @Override
    public void processingInstruction(String target, String data) throws SAXException {
       super.processingInstruction(target, data);
       notifyProcessingInstructionChanged(target, data);
@@ -144,14 +145,17 @@ public class GenericParser extends AbstractSaxHandler {
       xmlReader.setContentHandler(this);
       xmlReader.setErrorHandler(new ErrorHandler() {
 
+         @Override
          public void warning(SAXParseException exception) throws SAXException {
             exception.printStackTrace();
          }
 
+         @Override
          public void fatalError(SAXParseException exception) throws SAXException {
             exception.printStackTrace();
          }
 
+         @Override
          public void error(SAXParseException exception) throws SAXException {
             exception.printStackTrace();
          }

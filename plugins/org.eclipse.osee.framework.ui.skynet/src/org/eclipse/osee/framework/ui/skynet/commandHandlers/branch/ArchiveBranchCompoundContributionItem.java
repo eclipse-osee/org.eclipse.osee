@@ -52,7 +52,7 @@ public class ArchiveBranchCompoundContributionItem extends CompoundContributionI
    @Override
    protected IContributionItem[] getContributionItems() {
       ISelectionProvider selectionProvider =
-            AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
+         AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
       ArrayList<IContributionItem> contributionItems = new ArrayList<IContributionItem>(40);
 
       if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
@@ -69,7 +69,7 @@ public class ArchiveBranchCompoundContributionItem extends CompoundContributionI
                   BranchArchivedState archivedState = selectedBranch.getArchiveState();
                   String label = (archivedState.isArchived() ? "Unarchive" : "Archive") + " Branch(s)";
                   ImageDescriptor descriptor =
-                        archivedState.isArchived() ? ImageManager.getImageDescriptor(FrameworkImage.UN_ARCHIVE) : ImageManager.getImageDescriptor(FrameworkImage.ARCHIVE);
+                     archivedState.isArchived() ? ImageManager.getImageDescriptor(FrameworkImage.UN_ARCHIVE) : ImageManager.getImageDescriptor(FrameworkImage.ARCHIVE);
                   contributionItem = createCommand(label, selectedBranch, commandId, descriptor);
 
                   if (command != null && command.isEnabled()) {
@@ -88,9 +88,9 @@ public class ArchiveBranchCompoundContributionItem extends CompoundContributionI
       CommandContributionItem contributionItem;
 
       contributionItem =
-            new CommandContributionItem(new CommandContributionItemParameter(
-                  PlatformUI.getWorkbench().getActiveWorkbenchWindow(), label, commandId, Collections.EMPTY_MAP,
-                  descriptor, null, null, label, null, null, SWT.NONE, null, false));
+         new CommandContributionItem(new CommandContributionItemParameter(
+            PlatformUI.getWorkbench().getActiveWorkbenchWindow(), label, commandId, Collections.EMPTY_MAP, descriptor,
+            null, null, label, null, null, SWT.NONE, null, false));
 
       return contributionItem;
    }

@@ -26,6 +26,7 @@ public class ArtifactNameReverseSorter extends ViewerSorter {
       super();
    }
 
+   @Override
    @SuppressWarnings("unchecked")
    public int compare(Viewer viewer, Object o1, Object o2) {
 

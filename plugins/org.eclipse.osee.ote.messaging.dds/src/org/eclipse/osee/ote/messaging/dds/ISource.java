@@ -12,7 +12,6 @@ package org.eclipse.osee.ote.messaging.dds;
 
 /**
  * @author Ken J. Aguilar
- *
  */
 public interface ISource {
 

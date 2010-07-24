@@ -32,6 +32,7 @@ public class DataTypeElementPropertySource extends ModelPropertySource {
       idName = new PropertyId(categoryName, "Name");
    }
 
+   @Override
    protected void addPropertyDescriptors(List<IPropertyDescriptor> list) {
       list.add(new ReadOnlyPropertyDescriptor(idUniqueId));
       list.add(new StringPropertyDescriptor(idName));
@@ -41,38 +42,51 @@ public class DataTypeElementPropertySource extends ModelPropertySource {
       return (DataType) getModel();
    }
 
+   @Override
    public Object getPropertyValue(Object id) {
-      if (id == idUniqueId)
+      if (id == idUniqueId) {
          return ReadOnlyPropertyDescriptor.fromModel(getDataTypeElement().getUniqueId());
-      if (id == idName)
+      }
+      if (id == idName) {
          return StringPropertyDescriptor.fromModel(getDataTypeElement().getName());
+      }
       return null;
    }
 
+   @Override
    public boolean isPropertyResettable(Object id) {
       return id == idName;
    }
 
+   @Override
    public boolean isPropertySet(Object id) {
-      if (id == idUniqueId)
+      if (id == idUniqueId) {
          return true;
-      if (id == idName)
+      }
+      if (id == idName) {
          return getDataTypeElement().getName() != null;
+      }
       return false;
    }
 
+   @Override
    public void resetPropertyValue(Object id) {
-      if (id == idUniqueId)
+      if (id == idUniqueId) {
          return;
-      if (id == idName)
+      }
+      if (id == idName) {
          getDataTypeElement().setName(null);
+      }
    }
 
+   @Override
    public void setPropertyValue(Object id, Object value) {
-      if (id == idUniqueId)
+      if (id == idUniqueId) {
          return;
-      if (id == idName)
+      }
+      if (id == idName) {
          getDataTypeElement().setName(StringPropertyDescriptor.toModel(value));
+      }
    }
 
 }

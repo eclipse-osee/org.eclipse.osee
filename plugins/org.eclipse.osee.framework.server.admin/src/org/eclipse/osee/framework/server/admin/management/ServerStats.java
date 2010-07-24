@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.server.admin.management;
 
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -33,75 +32,75 @@ import org.eclipse.osgi.framework.console.CommandInterpreter;
  */
 class ServerStats extends BaseServerCommand {
 
-	protected ServerStats(CommandInterpreter ci) {
-		super("Server Stats", ci);
-	}
+   protected ServerStats(CommandInterpreter ci) {
+      super("Server Stats", ci);
+   }
 
-	@Override
-	protected void doCommandWork(IProgressMonitor monitor) throws Exception {
-		IApplicationServerManager manager = Activator.getInstance().getApplicationServerManager();
-		ISessionManager sessionManager = Activator.getInstance().getSessionManager();
+   @Override
+   protected void doCommandWork(IProgressMonitor monitor) throws Exception {
+      IApplicationServerManager manager = Activator.getInstance().getApplicationServerManager();
+      ISessionManager sessionManager = Activator.getInstance().getSessionManager();
 
-		StringBuffer buffer = new StringBuffer();
-		buffer.append("\n----------------------------------------------\n");
-		buffer.append("                  Server Stats                \n");
-		buffer.append("----------------------------------------------\n");
+      StringBuffer buffer = new StringBuffer();
+      buffer.append("\n----------------------------------------------\n");
+      buffer.append("                  Server Stats                \n");
+      buffer.append("----------------------------------------------\n");
 
-		buffer.append(String.format("Server:[%s:%s]\n", manager.getServerAddress(), manager.getPort()));
-		buffer.append(String.format("Id: [%s]\n", manager.getId()));
-		buffer.append(String.format("Running Since: [%s]\n\n",
-					SimpleDateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG).format(manager.getDateStarted())));
+      buffer.append(String.format("Server:[%s:%s]\n", manager.getServerAddress(), manager.getPort()));
+      buffer.append(String.format("Id: [%s]\n", manager.getId()));
+      buffer.append(String.format("Running Since: [%s]\n\n",
+         DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG).format(manager.getDateStarted())));
 
-		buffer.append(String.format("Code Base Location: [%s]\n", System.getProperty("user.dir")));
-		buffer.append(String.format("Datastore: [%s]\n", DatabaseInfoManager.getDefault().toString()));
-		buffer.append(String.format("Binary Data Path: [%s]\n\n", OseeServerProperties.getOseeApplicationServerData()));
+      buffer.append(String.format("Code Base Location: [%s]\n", System.getProperty("user.dir")));
+      buffer.append(String.format("Datastore: [%s]\n", DatabaseInfoManager.getDefault().toString()));
+      buffer.append(String.format("Binary Data Path: [%s]\n\n", OseeServerProperties.getOseeApplicationServerData()));
 
-		buffer.append(String.format("Supported Versions: %s\n", Arrays.deepToString(manager.getSupportedVersions())));
-		buffer.append(String.format("Accepting Requests: [%s]\n", manager.isAcceptingRequests()));
-		buffer.append(Lib.getMemoryInfo());
+      buffer.append(String.format("Supported Versions: %s\n", Arrays.deepToString(manager.getSupportedVersions())));
+      buffer.append(String.format("Accepting Requests: [%s]\n", manager.isAcceptingRequests()));
+      buffer.append(Lib.getMemoryInfo());
 
-		buffer.append("Servlets:");
-		List<String> contexts = new ArrayList<String>(manager.getRegisteredServlets());
-		Collections.sort(contexts);
-		int indexCnt = 0;
-		for (String context : contexts) {
-			if (indexCnt % 3 == 0) {
-				if (indexCnt != 0) {
-					buffer.append("\n\t");
-				} else {
-					buffer.append(" ");
-				}
-			} else {
-				buffer.append("\t\t");
-			}
-			buffer.append(context);
-			indexCnt++;
-		}
+      buffer.append("Servlets:");
+      List<String> contexts = new ArrayList<String>(manager.getRegisteredServlets());
+      Collections.sort(contexts);
+      int indexCnt = 0;
+      for (String context : contexts) {
+         if (indexCnt % 3 == 0) {
+            if (indexCnt != 0) {
+               buffer.append("\n\t");
+            } else {
+               buffer.append(" ");
+            }
+         } else {
+            buffer.append("\t\t");
+         }
+         buffer.append(context);
+         indexCnt++;
+      }
 
-		buffer.append(String.format("\nSessionsManaged: [%s]\n", sessionManager.getAllSessions(false).size()));
-		buffer.append(String.format("\nServer State: [%s]\n", manager.isSystemIdle() ? "IDLE" : "BUSY"));
-		buffer.append(String.format("Active Threads: [%s]\n", manager.getNumberOfActiveThreads()));
+      buffer.append(String.format("\nSessionsManaged: [%s]\n", sessionManager.getAllSessions(false).size()));
+      buffer.append(String.format("\nServer State: [%s]\n", manager.isSystemIdle() ? "IDLE" : "BUSY"));
+      buffer.append(String.format("Active Threads: [%s]\n", manager.getNumberOfActiveThreads()));
 
-		IJobManager jobManager = Job.getJobManager();
-		buffer.append(String.format("Job Manager: [%s]\n", jobManager.isIdle() ? "IDLE" : "BUSY"));
-		buffer.append(String.format("Current Job: [%s]\n", jobManager.currentJob().getName()));
+      IJobManager jobManager = Job.getJobManager();
+      buffer.append(String.format("Job Manager: [%s]\n", jobManager.isIdle() ? "IDLE" : "BUSY"));
+      buffer.append(String.format("Current Job: [%s]\n", jobManager.currentJob().getName()));
 
-		buffer.append("Current Tasks: ");
-		List<String> entries = manager.getCurrentProcesses();
-		if (entries.isEmpty()) {
-			buffer.append("[NONE]");
-		} else {
-			buffer.append("\n");
-			for (int index = 0; index < entries.size(); index++) {
-				buffer.append(String.format("[%s] ", index));
-				buffer.append(entries.get(index));
-				if (index + 1 < entries.size()) {
-					buffer.append("\n");
-				}
-			}
-		}
+      buffer.append("Current Tasks: ");
+      List<String> entries = manager.getCurrentProcesses();
+      if (entries.isEmpty()) {
+         buffer.append("[NONE]");
+      } else {
+         buffer.append("\n");
+         for (int index = 0; index < entries.size(); index++) {
+            buffer.append(String.format("[%s] ", index));
+            buffer.append(entries.get(index));
+            if (index + 1 < entries.size()) {
+               buffer.append("\n");
+            }
+         }
+      }
 
-		buffer.append("\n");
-		println(buffer.toString());
-	}
+      buffer.append("\n");
+      println(buffer.toString());
+   }
 }

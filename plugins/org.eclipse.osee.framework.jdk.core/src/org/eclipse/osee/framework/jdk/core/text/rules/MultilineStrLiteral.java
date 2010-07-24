@@ -26,6 +26,7 @@ public class MultilineStrLiteral extends Rule {
       super(null); // don't change extension on resulting file (i.e. overwrite the original file)
    }
 
+   @Override
    public ChangeSet computeChanges(CharSequence seq) {
       Matcher signleLineM = signleLineP.matcher("");
       Matcher wrappedStrLiteralM = wrappedStrLiteralP.matcher(seq);

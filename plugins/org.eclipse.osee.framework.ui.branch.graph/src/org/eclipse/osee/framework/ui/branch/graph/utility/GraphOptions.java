@@ -19,11 +19,15 @@ public class GraphOptions {
    public final static String TRANSACTION_FILTER = "revision.graph.show.all.transactions";
 
    public static enum ConnectionFilter {
-      NO_FILTER, FILTER_ALL_CONNECTIONS, FILTER_CHILD_BRANCH_CONNECTIONS, FILTER_MERGE_CONNECTIONS;
+      NO_FILTER,
+      FILTER_ALL_CONNECTIONS,
+      FILTER_CHILD_BRANCH_CONNECTIONS,
+      FILTER_MERGE_CONNECTIONS;
    }
 
    public static enum TxFilter {
-      NO_FILTER, HIDE_ALL;
+      NO_FILTER,
+      HIDE_ALL;
    }
 
    private GraphOptions() {

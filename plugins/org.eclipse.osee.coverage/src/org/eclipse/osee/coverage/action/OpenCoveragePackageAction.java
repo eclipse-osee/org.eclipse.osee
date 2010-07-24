@@ -51,12 +51,12 @@ public class OpenCoveragePackageAction extends Action {
          }
          Branch branch = CoverageUtil.getBranch();
          CoveragePackageArtifactListDialog dialog =
-               new CoveragePackageArtifactListDialog("Open Coverage Package", "Select Coverage Package");
+            new CoveragePackageArtifactListDialog("Open Coverage Package", "Select Coverage Package");
          dialog.setInput(OseeCoveragePackageStore.getCoveragePackageArtifacts(branch));
          if (dialog.open() == 0) {
             Artifact coveragePackageArtifact = (Artifact) dialog.getResult()[0];
             CoverageEditor.open(new CoverageEditorInput(coveragePackageArtifact.getName(), coveragePackageArtifact,
-                  null, false));
+               null, false));
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

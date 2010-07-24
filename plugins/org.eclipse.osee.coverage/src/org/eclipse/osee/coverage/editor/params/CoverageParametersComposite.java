@@ -155,7 +155,7 @@ public class CoverageParametersComposite extends Composite {
             }
          });
          getCoverageMethodHyperlinkSelection().setCoverageOptionManager(
-               coverageEditor.getCoveragePackageBase().getCoverageOptionManager());
+            coverageEditor.getCoveragePackageBase().getCoverageOptionManager());
          getCoverageMethodHyperlinkSelection().addXModifiedListener(new XModifiedListener() {
 
             @Override

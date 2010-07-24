@@ -64,8 +64,8 @@ public class DomainParticipant extends Entity implements EntityFactory {
     * @param listener The listener attached to this.
     * @param parentFactory A reference to the factory that is creating this.
     * @param threadedPublishing <code>True</code> if we should create a separate thread for processing published data.
-    *           If <code>False</code>, the published data will be processed within the thread which makes the call to
-    *           write data into the system (or resume publications).
+    * If <code>False</code>, the published data will be processed within the thread which makes the call to write data
+    * into the system (or resume publications).
     * @param typeCapacity The initial capacity to use when creating the <code>Map</code> for the {@link TypeRegistry}.
     * @param typeFactor The load factor to use when creating the <code>Map</code> for the {@link TypeRegistry}.
     */
@@ -86,7 +86,7 @@ public class DomainParticipant extends Entity implements EntityFactory {
     * Creates the DomainParticipant with default settings for typeCapacity and typeFactor.
     * 
     * @see DomainParticipant#DomainParticipant(DomainId, Collection, boolean, DomainParticipantListener, EntityFactory,
-    *      boolean, int, float)
+    * boolean, int, float)
     */
    DomainParticipant(DomainId domainId, Collection<DomainParticipant> domain, boolean enabled, DomainParticipantListener listener, EntityFactory parentFactory, boolean threadedPublishing) {
       this(domainId, domain, enabled, listener, parentFactory, threadedPublishing, 256, .75f);
@@ -150,9 +150,9 @@ public class DomainParticipant extends Entity implements EntityFactory {
     * to inject data into this system.
     * 
     * @param publisherListener The listener to attach to the newly created <code>Publisher</code>. Note that this can be
-    *           null.
+    * null.
     * @return A <code>Publisher</code> with the passed in listener assigned to it, or null if an error occurred in
-    *         creation.
+    * creation.
     */
    public Publisher getMiddlewarePublisherInstance(PublisherListener publisherListener) {
       if (middlewarePublisher == null) {
@@ -183,7 +183,7 @@ public class DomainParticipant extends Entity implements EntityFactory {
     * 
     * @param publisher The publisher to be removed.
     * @return {@link ReturnCode#OK}if the publisher was successfully removed, {@link ReturnCode#PRECONDITION_NOT_MET}if
-    *         the publisher had writers or was not created by this DomainParticipant, or {@link ReturnCode#ERROR}.
+    * the publisher had writers or was not created by this DomainParticipant, or {@link ReturnCode#ERROR}.
     */
    public ReturnCode deletePublisher(Publisher publisher) {
 
@@ -235,7 +235,7 @@ public class DomainParticipant extends Entity implements EntityFactory {
     * 
     * @param subscriber The subscriber to be removed.
     * @return {@link ReturnCode#OK}if the subscriber was successfully removed, {@link ReturnCode#PRECONDITION_NOT_MET}if
-    *         the subscriber had readers or was not created by this DomainParticipant, or {@link ReturnCode#ERROR}.
+    * the subscriber had readers or was not created by this DomainParticipant, or {@link ReturnCode#ERROR}.
     */
    public ReturnCode deleteSubscriber(Subscriber subscriber) {
 
@@ -271,9 +271,9 @@ public class DomainParticipant extends Entity implements EntityFactory {
     * @param name The name of the topic to create.
     * @param typeName The name of the type associated with the topic.
     * @param topicListener The listener to be attached to the created topic if it is newly created. If the topic already
-    *           exists, the provided listener is ignored.
+    * exists, the provided listener is ignored.
     * @return A new <code>Topic</code> if one does not already exist, or an existing topic with the same
-    *         <code>name</code> and <code>typeName</code>, otherwise <b>null </b>
+    * <code>name</code> and <code>typeName</code>, otherwise <b>null </b>
     */
    public Topic createTopic(String name, String namespace, String typeName, TopicListener topicListener) {
 
@@ -299,9 +299,9 @@ public class DomainParticipant extends Entity implements EntityFactory {
                // There is a violation, and no topic will be returned since a topic
                // with this name already exists, but the types do not match
                throw new RuntimeException(
-                     String.format(
-                           "found topic name:[%s] namespace:[%s] but there was a type incompatibility between [%s] (from topic [%s]) and [%s].",
-                           name, namespace, topic.getTypeName(), topic.getName(), typeName));
+                  String.format(
+                     "found topic name:[%s] namespace:[%s] but there was a type incompatibility between [%s] (from topic [%s]) and [%s].",
+                     name, namespace, topic.getTypeName(), topic.getName(), typeName));
             }
          } else { // Otherwise, the topic did not already exist
             topic = new Topic(this, typeSignature, name, namespace, this.isEnabled(), topicListener, this);
@@ -318,8 +318,8 @@ public class DomainParticipant extends Entity implements EntityFactory {
     * 
     * @param topic The topic to delete.
     * @return {@link ReturnCode#OK}if the topic was successfully removed, {@link ReturnCode#PRECONDITION_NOT_MET}if the
-    *         topic has readers/writers or was not created by this DomainParticipant, {@link ReturnCode#NOT_ENABLED}if
-    *         this DomainParticipant is not enabled, or {@link ReturnCode#ERROR}.
+    * topic has readers/writers or was not created by this DomainParticipant, {@link ReturnCode#NOT_ENABLED}if this
+    * DomainParticipant is not enabled, or {@link ReturnCode#ERROR}.
     */
    public ReturnCode deleteTopic(Topic topic) {
 
@@ -388,7 +388,7 @@ public class DomainParticipant extends Entity implements EntityFactory {
     * implemented or used.
     * 
     * @return {@link ReturnCode#OK}if the participant was successfully set to be ignored, {@link ReturnCode#NOT_ENABLED}
-    *         if this DomainParticipant is not enabled, or {@link ReturnCode#ERROR}.
+    * if this DomainParticipant is not enabled, or {@link ReturnCode#ERROR}.
     */
    public ReturnCode ignoreParticipant() {
       // UNSURE this is stubbed for now, until we determine it's necessity
@@ -406,7 +406,7 @@ public class DomainParticipant extends Entity implements EntityFactory {
     * implemented or used.
     * 
     * @return {@link ReturnCode#OK}if the topic was successfully set to be ignored, {@link ReturnCode#NOT_ENABLED}if
-    *         this DomainParticipant is not enabled, or {@link ReturnCode#ERROR}.
+    * this DomainParticipant is not enabled, or {@link ReturnCode#ERROR}.
     */
    public ReturnCode ignoreTopic() {
       // UNSURE This method has not been implemented, but is called out in the spec
@@ -427,7 +427,7 @@ public class DomainParticipant extends Entity implements EntityFactory {
     * implemented or used.
     * 
     * @return {@link ReturnCode#OK}if the publication was successfully set to be ignored, {@link ReturnCode#NOT_ENABLED}
-    *         if this DomainParticipant is not enabled, or {@link ReturnCode#ERROR}.
+    * if this DomainParticipant is not enabled, or {@link ReturnCode#ERROR}.
     */
    public ReturnCode ignorePublication() {
       // UNSURE This method has not been implemented, but is called out in the spec
@@ -448,7 +448,7 @@ public class DomainParticipant extends Entity implements EntityFactory {
     * implemented or used.
     * 
     * @return {@link ReturnCode#OK}if the subscription was successfully set to be ignored,
-    *         {@link ReturnCode#NOT_ENABLED}if this DomainParticipant is not enabled, or {@link ReturnCode#ERROR}.
+    * {@link ReturnCode#NOT_ENABLED}if this DomainParticipant is not enabled, or {@link ReturnCode#ERROR}.
     */
    public ReturnCode ignoreSubscription() {
       // UNSURE This method has not been implemented, but is called out in the spec
@@ -479,7 +479,7 @@ public class DomainParticipant extends Entity implements EntityFactory {
     * the <code>DomainParticipant</code> is enabled.
     * 
     * @return {@link ReturnCode#OK}if the all entities were successfully deleted, or {@link ReturnCode#NOT_ENABLED}if
-    *         this DomainParticipant is not enabled.
+    * this DomainParticipant is not enabled.
     */
    public ReturnCode deleteContainedEntities() {
 

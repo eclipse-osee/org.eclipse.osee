@@ -35,17 +35,17 @@ public class ChangeItemUtil {
             toReturn = item.getCurrentVersion();
             if (!toReturn.isValid()) {
                throw new OseeStateException(String.format("Cannot find a valid starting point for change item: %s",
-                     item));
+                  item));
             }
          }
       }
       return toReturn;
    }
-   
-   public static void copy(ChangeVersion source, ChangeVersion dest) throws OseeCoreException{
+
+   public static void copy(ChangeVersion source, ChangeVersion dest) throws OseeCoreException {
       Conditions.checkNotNull(source, "source");
       Conditions.checkNotNull(dest, "Dest");
-      
+
       dest.setGammaId(source.getGammaId());
       dest.setModType(source.getModType());
       dest.setValue(source.getValue());

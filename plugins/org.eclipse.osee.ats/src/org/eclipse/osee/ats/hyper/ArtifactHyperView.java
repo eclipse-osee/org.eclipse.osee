@@ -87,7 +87,7 @@ public class ArtifactHyperView extends HyperView implements IArtifactEventListen
          return (ArtifactHyperView) page.showView(ArtifactHyperView.VIEW_ID);
       } catch (PartInitException e1) {
          MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Launch Error",
-               "Couldn't Get OSEE Artifact Hyper View " + e1.getMessage());
+            "Couldn't Get OSEE Artifact Hyper View " + e1.getMessage());
       }
       return null;
    }
@@ -249,7 +249,7 @@ public class ArtifactHyperView extends HyperView implements IArtifactEventListen
    protected void createActions() {
       super.createActions();
 
-      pinAction = new Action("Pin Viewer", Action.AS_CHECK_BOX) {
+      pinAction = new Action("Pin Viewer", IAction.AS_CHECK_BOX) {
 
          @Override
          public void run() {
@@ -273,11 +273,13 @@ public class ArtifactHyperView extends HyperView implements IArtifactEventListen
          @Override
          public void run() {
             EntryDialog ed = new EntryDialog("Open by Id", "Enter HRID/Guid for Artifact");
-            if (ed.open() != 0) return;
+            if (ed.open() != 0) {
+               return;
+            }
             String hridGuid = ed.getEntry().trim();
             try {
                Collection<Artifact> arts =
-                     ArtifactQuery.getArtifactListFromIds(Arrays.asList(hridGuid), BranchManager.getCommonBranch());
+                  ArtifactQuery.getArtifactListFromIds(Arrays.asList(hridGuid), BranchManager.getCommonBranch());
                if (arts.isEmpty()) {
                   AWorkbench.popup("ERROR", "No Artifacts Found");
                   return;
@@ -303,13 +305,14 @@ public class ArtifactHyperView extends HyperView implements IArtifactEventListen
 
       ArtifactSelectWizard selWizard = new ArtifactSelectWizard();
       WizardDialog dialog =
-            new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), selWizard);
+         new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), selWizard);
       dialog.create();
       if (dialog.open() == 0) {
          load(selWizard.getSelectedArtifact());
       }
    }
 
+   @Override
    public String getActionDescription() {
       if (currentArtifact != null && currentArtifact.isDeleted()) {
          return String.format("Current Artifact - %s - %s", currentArtifact.getGuid(), currentArtifact.getName());
@@ -317,14 +320,17 @@ public class ArtifactHyperView extends HyperView implements IArtifactEventListen
       return "";
    }
 
+   @Override
    public void perspectiveActivated(IWorkbenchPage page, IPerspectiveDescriptor perspective) {
       handleWindowChange();
    }
 
+   @Override
    public void perspectiveChanged(IWorkbenchPage page, IPerspectiveDescriptor perspective, String changeId) {
       handleWindowChange();
    }
 
+   @Override
    public void perspectiveChanged(IWorkbenchPage page, IPerspectiveDescriptor perspective, IWorkbenchPartReference partRef, String changeId) {
       handleWindowChange();
    }

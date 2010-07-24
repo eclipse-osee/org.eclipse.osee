@@ -9,9 +9,9 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 
 public interface IAccessFilter {
-	int getPriority();
+   int getPriority();
 
-	boolean acceptToObject(Object object);
+   boolean acceptToObject(Object object);
 
-	PermissionEnum filter(IBasicArtifact<?> artifact, Object object, PermissionEnum toPermission, PermissionEnum agrPermission, AccessFilterChain filterChain);
+   PermissionEnum filter(IBasicArtifact<?> artifact, Object object, PermissionEnum toPermission, PermissionEnum agrPermission, AccessFilterChain filterChain);
 }

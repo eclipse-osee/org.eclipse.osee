@@ -14,30 +14,30 @@ import java.io.Serializable;
 import java.util.List;
 
 public class BundleConfigurationReport implements Serializable {
-	private static final long serialVersionUID = 2948282371713776849L;
-	private List<BundleDescription> missing;
-	private List<BundleDescription> versionMismatch;
-	private List<BundleDescription> partOfInstallation; 
-	
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
+   private static final long serialVersionUID = 2948282371713776849L;
+   private final List<BundleDescription> missing;
+   private final List<BundleDescription> versionMismatch;
+   private final List<BundleDescription> partOfInstallation;
 
-	public List<BundleDescription> getMissing() {
-		return missing;
-	}
+   public static long getSerialversionuid() {
+      return serialVersionUID;
+   }
 
-	public List<BundleDescription> getVersionMismatch() {
-		return versionMismatch;
-	}
+   public List<BundleDescription> getMissing() {
+      return missing;
+   }
 
-	public List<BundleDescription> getPartOfInstallation() {
-		return partOfInstallation;
-	}
+   public List<BundleDescription> getVersionMismatch() {
+      return versionMismatch;
+   }
 
-	public BundleConfigurationReport(List<BundleDescription> missing, List<BundleDescription> versionMismatch, List<BundleDescription> partOfInstallation){
-		this.missing = missing;
-		this.partOfInstallation = partOfInstallation;
-		this.versionMismatch = versionMismatch;
-	}
+   public List<BundleDescription> getPartOfInstallation() {
+      return partOfInstallation;
+   }
+
+   public BundleConfigurationReport(List<BundleDescription> missing, List<BundleDescription> versionMismatch, List<BundleDescription> partOfInstallation) {
+      this.missing = missing;
+      this.partOfInstallation = partOfInstallation;
+      this.versionMismatch = versionMismatch;
+   }
 }

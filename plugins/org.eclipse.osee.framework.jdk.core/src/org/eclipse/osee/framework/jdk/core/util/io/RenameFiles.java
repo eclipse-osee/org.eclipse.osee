@@ -36,7 +36,7 @@ public class RenameFiles {
       int renamedFileCount = 0;
 
       for (int i = 0; i < size; i++) {
-         File file = (File) files.get(i);
+         File file = files.get(i);
          ChangeSet newName = rule.computeChanges(file.getPath());
          if (rule.ruleWasApplicable()) {
             File newFile = new File(newName.toString());

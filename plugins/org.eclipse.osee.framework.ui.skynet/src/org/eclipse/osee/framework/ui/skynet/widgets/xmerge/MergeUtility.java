@@ -254,8 +254,8 @@ public class MergeUtility {
             }
 
             MessageDialog dialog =
-               new MessageDialog(Displays.getActiveShell().getShell(), "Merge Word Artifacts", null,
-                  OPEN_MERGE_DIALOG, 4, buttons, 2);
+               new MessageDialog(Displays.getActiveShell().getShell(), "Merge Word Artifacts", null, OPEN_MERGE_DIALOG,
+                  4, buttons, 2);
             int response = dialog.open();
             if (buttons.length == 3) {
                response++;

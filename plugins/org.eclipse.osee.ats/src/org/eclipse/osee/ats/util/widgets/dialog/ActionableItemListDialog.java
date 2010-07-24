@@ -28,8 +28,7 @@ import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
 public class ActionableItemListDialog extends CheckedTreeSelectionDialog {
 
    public ActionableItemListDialog(Active active) {
-      super(Displays.getActiveShell(), new ArtifactDescriptiveLabelProvider(), new AITreeContentProvider(
-            active));
+      super(Displays.getActiveShell(), new ArtifactDescriptiveLabelProvider(), new AITreeContentProvider(active));
       setTitle("Select Actionable Item(s)");
       setMessage("Select Actionable Item(s)");
       setComparator(new ArtifactNameSorter());
@@ -42,8 +41,9 @@ public class ActionableItemListDialog extends CheckedTreeSelectionDialog {
 
    public Set<ActionableItemArtifact> getSelected() {
       Set<ActionableItemArtifact> selectedactionItems = new HashSet<ActionableItemArtifact>();
-      for (Object obj : getResult())
+      for (Object obj : getResult()) {
          selectedactionItems.add((ActionableItemArtifact) obj);
+      }
       return selectedactionItems;
    }
 

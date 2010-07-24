@@ -136,7 +136,7 @@ public class WordsUtilTest {
       for (String key : testMap.keySet()) {
          String[] results = WordsUtil.splitOnPunctuation(key);
          Assert.assertEquals(String.format("Original: [%s] ", key), Arrays.deepToString(testMap.get(key)),
-               Arrays.deepToString(results));
+            Arrays.deepToString(results));
       }
    }
 

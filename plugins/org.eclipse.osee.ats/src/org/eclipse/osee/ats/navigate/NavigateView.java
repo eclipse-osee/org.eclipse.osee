@@ -43,7 +43,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -79,7 +78,7 @@ public class NavigateView extends ViewPart implements IActionable {
    public static final String VIEW_ID = "org.eclipse.osee.ats.navigate.NavigateView";
    public static final String HELP_CONTEXT_ID = "atsNavigator";
    private AtsNavigateComposite xNavComp;
-   private boolean includeCompleteCancelled = false;
+   private final boolean includeCompleteCancelled = false;
    private Composite parent;
    private LoadingComposite loadingComposite;
 
@@ -94,7 +93,7 @@ public class NavigateView extends ViewPart implements IActionable {
       try {
          refreshData();
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
    }
 
@@ -134,7 +133,7 @@ public class NavigateView extends ViewPart implements IActionable {
                try {
                   showBusy(false);
                   if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
-                     return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, "Navigate View - !dbConnectionIsOk");
+                     return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, "Navigate View - !dbConnectionIsOk");
                   }
 
                   if (Widgets.isAccessible(loadingComposite)) {
@@ -178,7 +177,7 @@ public class NavigateView extends ViewPart implements IActionable {
                   addExtensionPointListenerBecauseOfWorkspaceLoading();
 
                } catch (Exception ex) {
-                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+                  OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
                }
                return Status.OK_STATUS;
             }
@@ -220,7 +219,7 @@ public class NavigateView extends ViewPart implements IActionable {
       try {
          String userName = UserManager.getUser().getName();
          return String.format("%s - %s:%s", userName, ClientSessionManager.getDataStoreName(),
-               ClientSessionManager.getDataStoreLoginName());
+            ClientSessionManager.getDataStoreLoginName());
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          return "Exception: " + ex.getLocalizedMessage();
@@ -254,11 +253,12 @@ public class NavigateView extends ViewPart implements IActionable {
          return (NavigateView) page.showView(NavigateView.VIEW_ID);
       } catch (PartInitException e1) {
          MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Launch Error",
-               "Couldn't Launch OSEE ATS NavigateView " + e1.getMessage());
+            "Couldn't Launch OSEE ATS NavigateView " + e1.getMessage());
       }
       return null;
    }
 
+   @Override
    public String getActionDescription() {
       IStructuredSelection sel = (IStructuredSelection) xNavComp.getFilteredTree().getViewer().getSelection();
       if (sel.iterator().hasNext()) {
@@ -306,7 +306,7 @@ public class NavigateView extends ViewPart implements IActionable {
       try {
          OseeNotificationManager.getInstance().sendNotifications();
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
       super.dispose();
    }

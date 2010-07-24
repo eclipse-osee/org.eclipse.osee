@@ -55,7 +55,7 @@ public class BranchCreationRequestTranslator implements ITranslator<BranchCreati
       int destinationBranchId = store.getInt(Fields.DESTINATION_BRANCH_ID.name());
 
       return new BranchCreationRequest(branchType, sourceTransactionId, parentBranchId, branchGuid, branchName,
-            associatedArtifactId, authorId, creationComment, populateBaseTxFromAddressingQueryId, destinationBranchId);
+         associatedArtifactId, authorId, creationComment, populateBaseTxFromAddressingQueryId, destinationBranchId);
    }
 
    @Override

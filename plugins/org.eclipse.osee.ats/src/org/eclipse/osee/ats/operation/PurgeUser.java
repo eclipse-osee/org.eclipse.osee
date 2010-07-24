@@ -64,6 +64,7 @@ public class PurgeUser extends AbstractBlam {
    public void runOperation(final VariableMap variableMap, IProgressMonitor monitor) throws OseeCoreException {
       final IProgressMonitor mon = monitor;
       Displays.ensureInDisplayThread(new Runnable() {
+         @Override
          public void run() {
             try {
                //TODO Allow for multiple users to be selected at one time.
@@ -107,18 +108,18 @@ public class PurgeUser extends AbstractBlam {
 
    private void confirmDeletionOfArtifact(final User fromUser) throws OseeCoreException {
       if (MessageDialog.openConfirm(Displays.getActiveShell(), "Persist Confirmation",
-            "Do you wish to delete the duplicate User: " + fromUser.getName() + "?")) {
+         "Do you wish to delete the duplicate User: " + fromUser.getName() + "?")) {
          deleteArtifact(fromUser);
       }
    }
 
    private void findAndUpdateAuthoredTransactions(OseeConnection connection, final User fromUser, final User toUser) throws OseeDataStoreException {
       numOfAuthoredTransactions =
-            ConnectionHandler.runPreparedQueryFetchInt(defaultUpdateValue, GET_AUTHORED_TRANSACTIONS,
-                  new Object[] {fromUser.getArtId()});
+         ConnectionHandler.runPreparedQueryFetchInt(defaultUpdateValue, GET_AUTHORED_TRANSACTIONS,
+            new Object[] {fromUser.getArtId()});
       numOfUpdatedAuthoredTransactions =
-            ConnectionHandler.runPreparedUpdate(connection, UPDATE_AUTHORED_TRANSACTIONS, new Object[] {
-                  toUser.getArtId(), fromUser.getArtId()});
+         ConnectionHandler.runPreparedUpdate(connection, UPDATE_AUTHORED_TRANSACTIONS, new Object[] {toUser.getArtId(),
+            fromUser.getArtId()});
    }
 
    private void findAndUpdateRelations(OseeConnection connection, final User fromUser, final User toUser) throws OseeDataStoreException {
@@ -128,20 +129,20 @@ public class PurgeUser extends AbstractBlam {
 
    private void updateRelationA(OseeConnection connection, final User fromUser, final User toUser) throws OseeDataStoreException {
       numOfASideRelations =
-            ConnectionHandler.runPreparedQueryFetchInt(defaultUpdateValue, GET_RELATIONS_ASIDE,
-                  new Object[] {fromUser.getArtId()});
+         ConnectionHandler.runPreparedQueryFetchInt(defaultUpdateValue, GET_RELATIONS_ASIDE,
+            new Object[] {fromUser.getArtId()});
       numOfUpdatedASideRelations =
-            ConnectionHandler.runPreparedUpdate(connection, UPDATE_RELATIONS_ASIDE, new Object[] {toUser.getArtId(),
-                  fromUser.getArtId()});
+         ConnectionHandler.runPreparedUpdate(connection, UPDATE_RELATIONS_ASIDE, new Object[] {toUser.getArtId(),
+            fromUser.getArtId()});
    }
 
    private void updateRelationB(OseeConnection connection, final User fromUser, final User toUser) throws OseeDataStoreException {
       numOfBSideRelations =
-            ConnectionHandler.runPreparedQueryFetchInt(defaultUpdateValue, GET_RELATIONS_BSIDE,
-                  new Object[] {fromUser.getArtId()});
+         ConnectionHandler.runPreparedQueryFetchInt(defaultUpdateValue, GET_RELATIONS_BSIDE,
+            new Object[] {fromUser.getArtId()});
       numOfUpdatedBSideRelations =
-            ConnectionHandler.runPreparedUpdate(connection, UPDATE_RELATIONS_BSIDE, new Object[] {toUser.getArtId(),
-                  fromUser.getArtId()});
+         ConnectionHandler.runPreparedUpdate(connection, UPDATE_RELATIONS_BSIDE, new Object[] {toUser.getArtId(),
+            fromUser.getArtId()});
    }
 
    private void deleteArtifact(final User fromUser) throws OseeCoreException {
@@ -153,16 +154,16 @@ public class PurgeUser extends AbstractBlam {
       XResultData rd = new XResultData();
       try {
          String[] columnHeaders =
-               new String[] {"FromUser", "FromUser ArtId", "ToUser", "ToUser ArtId", "Authored Transaction Hits",
-                     "Relation ASide Hits", "Relation BSide Hits", "Authored Transaction Updated",
-                     "Relation ASide Update", "Relation BSide Updated"};
+            new String[] {"FromUser", "FromUser ArtId", "ToUser", "ToUser ArtId", "Authored Transaction Hits",
+               "Relation ASide Hits", "Relation BSide Hits", "Authored Transaction Updated", "Relation ASide Update",
+               "Relation BSide Updated"};
          rd.addRaw(AHTML.beginMultiColumnTable(100, 1));
          rd.addRaw(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
          rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {fromUser.getName(),
-               Integer.toString(fromUser.getArtId()), toUser.getName(), Integer.toString(toUser.getArtId()),
-               Integer.toString(numOfAuthoredTransactions), Integer.toString(numOfASideRelations),
-               Integer.toString(numOfBSideRelations), Integer.toString(numOfUpdatedAuthoredTransactions),
-               Integer.toString(numOfUpdatedASideRelations), Integer.toString(numOfUpdatedBSideRelations)}));
+            Integer.toString(fromUser.getArtId()), toUser.getName(), Integer.toString(toUser.getArtId()),
+            Integer.toString(numOfAuthoredTransactions), Integer.toString(numOfASideRelations),
+            Integer.toString(numOfBSideRelations), Integer.toString(numOfUpdatedAuthoredTransactions),
+            Integer.toString(numOfUpdatedASideRelations), Integer.toString(numOfUpdatedBSideRelations)}));
          rd.addRaw(AHTML.endMultiColumnTable());
       } finally {
          rd.report(getName());

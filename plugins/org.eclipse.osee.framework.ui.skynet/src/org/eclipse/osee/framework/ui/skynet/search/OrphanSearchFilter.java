@@ -27,7 +27,7 @@ import org.eclipse.swt.widgets.Control;
  * @author Jeff C. Phillips
  */
 public class OrphanSearchFilter extends SearchFilter {
-   private ListViewer searchTypeList;
+   private final ListViewer searchTypeList;
 
    public OrphanSearchFilter(String filterName, Control optionsControl, ListViewer searchTypeList) {
       super(filterName, optionsControl);

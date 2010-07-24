@@ -37,7 +37,7 @@ public class BranchFigure extends RoundedRectangle {
 
       add(new ImageFigure(branchImage), BorderLayout.LEFT);
       add(FigureFactory.createLabel(branchName, getFont(), PositionConstants.CENTER, GraphColorConstants.FONT_COLOR),
-            BorderLayout.CENTER);
+         BorderLayout.CENTER);
       setToolTip(toolTip);
       setCursor(Cursors.HAND);
    }

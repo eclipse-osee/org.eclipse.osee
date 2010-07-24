@@ -21,7 +21,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
-
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.framework.logging.ILoggerFilter;
@@ -132,10 +131,8 @@ import org.eclipse.osee.ote.core.testPoint.CheckPoint;
  * <li>		public OipCase(TestScript parent) {
  * 			<ul style="list-style: none">
  * <li>			</code><i>Use <b>one</b> of the following constructors based on if this TestCase is standalone</i><code>
- * <li>			super(parent);</code>
- * <i>Standalone defaulted to <b>false</b></i><code>
- * <li>			super(parent, true);</code><i>Standalone explicitly set to
- * <b>true</b></i><code>
+ * <li>			super(parent);</code> <i>Standalone defaulted to <b>false</b></i><code>
+ * <li>			super(parent, true);</code><i>Standalone explicitly set to <b>true</b></i><code>
  * <li>			
  * <li>			</code><i>All requirements tested in the test case should be noted here with the </i>
  * <code>{@link org.eclipse.osee.ote.core.TestCase#addTracability(String) addTracability}</code><i> method.</i> <code>
@@ -163,7 +160,7 @@ import org.eclipse.osee.ote.core.testPoint.CheckPoint;
  */
 public abstract class TestScript implements ITimeout {
    private static final Set<Class<? extends TestScript>> instances =
-         Collections.synchronizedSet(new HashSet<Class<? extends TestScript>>());
+      Collections.synchronizedSet(new HashSet<Class<? extends TestScript>>());
    private static final AtomicLong constructed = new AtomicLong(0);
    private static final AtomicLong finalized = new AtomicLong(0);
    private final IUserSession userSession;
@@ -185,7 +182,7 @@ public abstract class TestScript implements ITimeout {
    private volatile boolean timedOut;
    private volatile boolean aborted = false;
    private final ArrayList<IScriptCompleteListener> scriptCompleteListeners =
-         new ArrayList<IScriptCompleteListener>(32);
+      new ArrayList<IScriptCompleteListener>(32);
 
    private final ScriptResultRecord sciprtResultRecord;
    private int pass;
@@ -295,6 +292,7 @@ public abstract class TestScript implements ITimeout {
 
       if (environment.isInBatchMode()) {
          promptInitWorker.execute(new Runnable() {
+            @Override
             public void run() {
                try {
                   userSession.initiateInformationalPrompt(prompt.toString());
@@ -305,8 +303,8 @@ public abstract class TestScript implements ITimeout {
          });
          if (prompt.getType() == PromptResponseType.PASS_FAIL) {
             getLogger().log(
-                  new TestPointRecord(environment, new CheckPoint(prompt.toString(), "PROMPT DURING BATCH", "N/A",
-                        false), true));
+               new TestPointRecord(environment, new CheckPoint(prompt.toString(), "PROMPT DURING BATCH", "N/A", false),
+                  true));
          } else {
             getLogger().log(new AttentionRecord(environment, prompt.getType().name() + " : " + prompt.toString(), true));
          }
@@ -332,43 +330,45 @@ public abstract class TestScript implements ITimeout {
                   returnValue = result.getText();
                   passFailPrompt.close();
                   testRecord =
-                        new TestPointRecord(getTestEnvironment(), new CheckPoint("Pass/Fail Prompt", prompt.toString(),
-                              returnValue, result.isPass()), true);
+                     new TestPointRecord(getTestEnvironment(), new CheckPoint("Pass/Fail Prompt", prompt.toString(),
+                        returnValue, result.isPass()), true);
                   break;
                case SCRIPT_PAUSE:
                   ScriptPausePromptImpl scriptPausePrompt =
-                        new ScriptPausePromptImpl(connector, this, "", prompt.toString());
+                     new ScriptPausePromptImpl(connector, this, "", prompt.toString());
                   returnValue = scriptPausePrompt.open(promptInitWorker);
                   scriptPausePrompt.close();
-                  if(returnValue != null && returnValue.length() > 0){
-                	  logOutput = String.format("PROMPT [%s]\n{%s}\n\tRETURN VALUE : %s", PromptResponseType.SCRIPT_PAUSE.name(), prompt.toString(), returnValue);
+                  if (returnValue != null && returnValue.length() > 0) {
+                     logOutput =
+                        String.format("PROMPT [%s]\n{%s}\n\tRETURN VALUE : %s", PromptResponseType.SCRIPT_PAUSE.name(),
+                           prompt.toString(), returnValue);
                   } else {
-                	  logOutput = String.format("PROMPT [%s]\n{%s}\n", PromptResponseType.SCRIPT_PAUSE.name(), prompt.toString());
+                     logOutput =
+                        String.format("PROMPT [%s]\n{%s}\n", PromptResponseType.SCRIPT_PAUSE.name(), prompt.toString());
                   }
-                  
-                  testRecord =
-                        new AttentionRecord(getTestEnvironment(),
-                        		logOutput, true);
+
+                  testRecord = new AttentionRecord(getTestEnvironment(), logOutput, true);
                   ;
                   break;
                case USER_INPUT:
                   UserInputPromptImpl userInputPrompt = new UserInputPromptImpl(connector, this, "", prompt.toString());
                   returnValue = userInputPrompt.open(promptInitWorker);
                   userInputPrompt.close();
-                  if(returnValue != null && returnValue.length() > 0){
-                	  logOutput = String.format("PROMPT [%s]\n{%s}\n\tRETURN VALUE : %s", PromptResponseType.USER_INPUT.name(), prompt.toString(), returnValue);
+                  if (returnValue != null && returnValue.length() > 0) {
+                     logOutput =
+                        String.format("PROMPT [%s]\n{%s}\n\tRETURN VALUE : %s", PromptResponseType.USER_INPUT.name(),
+                           prompt.toString(), returnValue);
                   } else {
-                	  logOutput = String.format("PROMPT [%s]\n{%s}\n", PromptResponseType.USER_INPUT.name(), prompt.toString());
+                     logOutput =
+                        String.format("PROMPT [%s]\n{%s}\n", PromptResponseType.USER_INPUT.name(), prompt.toString());
                   }
-                  testRecord =
-                        new AttentionRecord(getTestEnvironment(),
-                        		logOutput, true);
+                  testRecord = new AttentionRecord(getTestEnvironment(), logOutput, true);
                   break;
                case SCRIPT_STEP:
                   returnValue = "";
                   testRecord =
-                        new AttentionRecord(getTestEnvironment(),
-                              PromptResponseType.SCRIPT_STEP.name() + " : " + prompt.toString(), true);
+                     new AttentionRecord(getTestEnvironment(),
+                        PromptResponseType.SCRIPT_STEP.name() + " : " + prompt.toString(), true);
                   break;
                case OFP_DEBUG_RESPONSE:
                   returnValue = "";
@@ -575,13 +575,15 @@ public abstract class TestScript implements ITimeout {
 
    public void logTestPoint(boolean isPassed, String testPointName, String expected, String actual) {
       this.getLogger().testpoint(this.getTestEnvironment(), this, this.getTestCase(), isPassed, testPointName,
-            expected, actual);
+         expected, actual);
    }
 
+   @Override
    public boolean isTimedOut() {
       return this.timedOut;
    }
 
+   @Override
    public void setTimeout(boolean timeout) {
       this.timedOut = timeout;
    }
@@ -620,6 +622,7 @@ public abstract class TestScript implements ITimeout {
          return filter;
       }
 
+      @Override
       public void log(String loggerName, Level level, String message, Throwable th) {
          if (environment.getLogger() != null) {
             environment.getLogger().log(level, message, th);
@@ -665,7 +668,7 @@ public abstract class TestScript implements ITimeout {
             listener.onScriptComplete();
          } catch (Throwable t) {
             OseeLog.log(TestEnvironment.class, Level.SEVERE,
-                  "exception while notifying script complete listener " + listener.getClass().getName(), t);
+               "exception while notifying script complete listener " + listener.getClass().getName(), t);
          }
       }
    }

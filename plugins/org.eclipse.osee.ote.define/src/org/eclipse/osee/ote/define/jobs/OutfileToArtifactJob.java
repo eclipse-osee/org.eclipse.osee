@@ -27,10 +27,10 @@ import org.eclipse.osee.ote.define.operations.OutfileToArtifactOperation;
 public class OutfileToArtifactJob extends Job {
 
    private static final String JOB_NAME = "Convert Outfile to Artifact";
-   private URI[] filesToImport;
+   private final URI[] filesToImport;
    private Artifact[] results;
    private URI[] filesWithErrors;
-   private Branch branch;
+   private final Branch branch;
 
    public OutfileToArtifactJob(Branch branch, URI... filesToImport) {
       super(JOB_NAME);
@@ -57,7 +57,7 @@ public class OutfileToArtifactJob extends Job {
          }
 
       } catch (Exception ex) {
-         toReturn = new Status(Status.ERROR, OteDefinePlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
+         toReturn = new Status(IStatus.ERROR, OteDefinePlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
       } finally {
          monitor.subTask("Done");
          monitor.done();

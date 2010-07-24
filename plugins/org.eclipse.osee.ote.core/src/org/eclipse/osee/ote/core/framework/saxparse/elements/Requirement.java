@@ -15,9 +15,8 @@ import org.xml.sax.Attributes;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
-public class Requirement extends ElementHandlers{
+public class Requirement extends ElementHandlers {
 
    /**
     * @param name

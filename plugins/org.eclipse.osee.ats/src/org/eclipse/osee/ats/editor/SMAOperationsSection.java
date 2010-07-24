@@ -48,6 +48,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.SectionPart;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
@@ -61,7 +62,7 @@ public class SMAOperationsSection extends SectionPart {
    private boolean sectionCreated = false;
 
    public SMAOperationsSection(SMAEditor editor, Composite parent, FormToolkit toolkit, int style) {
-      super(parent, toolkit, style | Section.TWISTIE | Section.TITLE_BAR);
+      super(parent, toolkit, style | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR);
       this.editor = editor;
       registerAdvancedSectionsFromExtensionPoints();
    }
@@ -69,8 +70,8 @@ public class SMAOperationsSection extends SectionPart {
    private void registerAdvancedSectionsFromExtensionPoints() {
 
       ExtensionDefinedObjects<ISMAOperationsSection> extensions =
-            new ExtensionDefinedObjects<ISMAOperationsSection>(AtsPlugin.PLUGIN_ID + ".AtsAdvancedOperationAction",
-                  "AtsAdvancedOperationAction", "classname");
+         new ExtensionDefinedObjects<ISMAOperationsSection>(AtsPlugin.PLUGIN_ID + ".AtsAdvancedOperationAction",
+            "AtsAdvancedOperationAction", "classname");
       for (ISMAOperationsSection item : extensions.getObjects()) {
          try {
             advOperation = item;
@@ -94,18 +95,21 @@ public class SMAOperationsSection extends SectionPart {
       // Only load when users selects section
       section.addListener(SWT.Activate, new Listener() {
 
+         @Override
          public void handleEvent(Event e) {
             try {
                createSection(section, toolkit);
             } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
             }
          }
       });
    }
 
    private synchronized void createSection(Section section, FormToolkit toolkit) throws OseeCoreException {
-      if (sectionCreated) return;
+      if (sectionCreated) {
+         return;
+      }
 
       final Composite sectionBody = toolkit.createComposite(section, SWT.NONE);
       sectionBody.setLayout(ALayout.getZeroMarginLayout(3, false));
@@ -133,7 +137,7 @@ public class SMAOperationsSection extends SectionPart {
       if (!editor.getSma().isTeamWorkflow()) {
          return;
       }
-      Section section = toolkit.createSection(parent, Section.TITLE_BAR);
+      Section section = toolkit.createSection(parent, ExpandableComposite.TITLE_BAR);
       section.setText("Impacts and Workflows");
 
       section.setLayout(new GridLayout());
@@ -145,10 +149,10 @@ public class SMAOperationsSection extends SectionPart {
 
       if (editor.getSma().isTeamWorkflow()) {
          new XButtonViaAction(new EditActionableItemsAction((TeamWorkFlowArtifact) editor.getSma())).createWidgets(
-               sectionBody, 2);
+            sectionBody, 2);
          new XButtonViaAction(
-               new DuplicateWorkflowAction(Collections.singleton((TeamWorkFlowArtifact) editor.getSma()))).createWidgets(
-               sectionBody, 2);
+            new DuplicateWorkflowAction(Collections.singleton((TeamWorkFlowArtifact) editor.getSma()))).createWidgets(
+            sectionBody, 2);
          new XButtonViaAction(new AccessControlAction(editor.getSma())).createWidgets(sectionBody, 2);
       }
       section.setClient(sectionBody);
@@ -159,7 +163,7 @@ public class SMAOperationsSection extends SectionPart {
          return;
       }
 
-      Section section = toolkit.createSection(parent, Section.TITLE_BAR);
+      Section section = toolkit.createSection(parent, ExpandableComposite.TITLE_BAR);
       section.setText("Advanced");
 
       section.setLayout(new GridLayout());
@@ -181,7 +185,7 @@ public class SMAOperationsSection extends SectionPart {
       if (!AtsUtil.isAtsAdmin()) {
          return;
       }
-      Section section = toolkit.createSection(parent, Section.TITLE_BAR);
+      Section section = toolkit.createSection(parent, ExpandableComposite.TITLE_BAR);
       section.setText("Admin");
 
       section.setLayout(new GridLayout());
@@ -202,7 +206,7 @@ public class SMAOperationsSection extends SectionPart {
    }
 
    private void createViewsEditorsSection(Composite parent, FormToolkit toolkit) {
-      Section section = toolkit.createSection(parent, Section.TITLE_BAR);
+      Section section = toolkit.createSection(parent, ExpandableComposite.TITLE_BAR);
       section.setText("Views and Editors");
 
       section.setLayout(new GridLayout());
@@ -230,7 +234,7 @@ public class SMAOperationsSection extends SectionPart {
    }
 
    private void createNotificationsSection(Composite parent, FormToolkit toolkit) {
-      Section section = toolkit.createSection(parent, Section.TITLE_BAR);
+      Section section = toolkit.createSection(parent, ExpandableComposite.TITLE_BAR);
       section.setText("Notifications and Favorites");
 
       section.setLayout(new GridLayout());

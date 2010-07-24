@@ -60,6 +60,7 @@ public class RelationImporter implements RowProcessor {
       xmlReader.parse(new InputSource(importStream));
    }
 
+   @Override
    public void processRow(String[] row) {
       if (done) {
          return;
@@ -67,8 +68,8 @@ public class RelationImporter implements RowProcessor {
       try {
          monitor.worked(1);
          Collection<Artifact> artifacts =
-               ArtifactQuery.getArtifactListFromTypeAndAttribute(CoreArtifactTypes.SubsystemRequirement,
-                     CoreAttributeTypes.PARAGRAPH_NUMBER, row[1], branch);
+            ArtifactQuery.getArtifactListFromTypeAndAttribute(CoreArtifactTypes.SubsystemRequirement,
+               CoreAttributeTypes.PARAGRAPH_NUMBER, row[1], branch);
 
          Artifact rowArtifact;
          try {
@@ -92,7 +93,7 @@ public class RelationImporter implements RowProcessor {
                      rationale = "";
                   }
                   columnArtifacts[i].addRelation(RelationOrderBaseTypes.USER_DEFINED,
-                        CoreRelationTypes.Allocation__Requirement, rowArtifact, rationale);
+                     CoreRelationTypes.Allocation__Requirement, rowArtifact, rationale);
                   columnArtifacts[i].persist();
                }
             }
@@ -116,6 +117,7 @@ public class RelationImporter implements RowProcessor {
       return artifactResult;
    }
 
+   @Override
    public void processHeaderRow(String[] row) {
       monitor.setTaskName("Aquire Column Artifacts");
       columnArtifacts = new Artifact[row.length - leadingColumnCount];
@@ -123,8 +125,8 @@ public class RelationImporter implements RowProcessor {
          monitor.worked(1);
          try {
             Collection<Artifact> artifacts =
-                  ArtifactQuery.getArtifactListFromTypeAndName(CoreArtifactTypes.Component,
-                        row[i + leadingColumnCount], branch);
+               ArtifactQuery.getArtifactListFromTypeAndName(CoreArtifactTypes.Component, row[i + leadingColumnCount],
+                  branch);
 
             columnArtifacts[i] = getSoleArtifact(artifacts);
             monitor.subTask(columnArtifacts[i].getName());
@@ -136,21 +138,26 @@ public class RelationImporter implements RowProcessor {
       monitor.setTaskName("Relate Row Artifacts");
    }
 
+   @Override
    public void processEmptyRow() {
    }
 
+   @Override
    public void processCommentRow(String[] row) {
    }
 
+   @Override
    public void reachedEndOfWorksheet() {
       monitor.done();
       done = true;
    }
 
+   @Override
    public void detectedRowAndColumnCounts(int rowCount, int columnCount) {
       monitor.beginTask("Importing Relations", rowCount + columnCount - leadingColumnCount);
    }
 
+   @Override
    public void foundStartOfWorksheet(String sheetName) {
    }
 }

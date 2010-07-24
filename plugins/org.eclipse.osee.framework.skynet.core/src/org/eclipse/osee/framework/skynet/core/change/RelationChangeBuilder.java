@@ -47,8 +47,8 @@ public class RelationChangeBuilder extends ChangeBuilder {
          bArtifact = ArtifactCache.getActive(bArtId, branch);
       }
       return new RelationChange(branch, getSourceGamma(), getArtId(), getTxDelta(), getModType(), bArtId, relLinkId,
-            rationale, relationType, isHistorical(), loadArtifact(), new ArtifactDelta(getTxDelta(), loadArtifact(),
-                  null), bArtifact);
+         rationale, relationType, isHistorical(), loadArtifact(),
+         new ArtifactDelta(getTxDelta(), loadArtifact(), null), bArtifact);
    }
 
 }

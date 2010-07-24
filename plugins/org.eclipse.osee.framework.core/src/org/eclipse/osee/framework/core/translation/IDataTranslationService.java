@@ -22,7 +22,7 @@ public interface IDataTranslationService {
 
    /**
     * Converts an input stream into the specified object
-    *
+    * 
     * @param inputStream containing object
     * @param toMatch class to convert object into
     * @return transformed object
@@ -32,7 +32,7 @@ public interface IDataTranslationService {
 
    /**
     * Converts a property store into a specified object
-    *
+    * 
     * @param propertyStore representing object
     * @param toMatch class to convert object into
     * @return transformed object
@@ -42,7 +42,7 @@ public interface IDataTranslationService {
 
    /**
     * Converts an object into a property store
-    *
+    * 
     * @param object to transform
     * @return property store representation of the source object
     * @throws OseeCoreException if there are problems during conversion
@@ -51,7 +51,7 @@ public interface IDataTranslationService {
 
    /**
     * Converts an object into an input stream
-    *
+    * 
     * @param object to transform
     * @return input stream representation of the source object
     * @throws OseeCoreException if there are problems during conversion
@@ -60,17 +60,17 @@ public interface IDataTranslationService {
 
    /**
     * Gets the translator matching the class
-    *
+    * 
     * @param toMatch key to obtain translator
     * @return translator associated with that class
     * @throws OseeCoreException if there are problems getting the translator or class does not have a registered
-    *            translator
+    * translator
     */
    public abstract ITranslator<?> getTranslator(ITranslatorId toMatch) throws OseeCoreException;
 
    /**
     * registers a translator for the specified class
-    *
+    * 
     * @param clazz to register translator for
     * @param translator to register
     * @return <b>true</b> if translator was added successfully
@@ -79,7 +79,7 @@ public interface IDataTranslationService {
 
    /**
     * removes a translator for the specified class
-    *
+    * 
     * @param clazz associated with the translator to remove
     * @return <b>true</b> if the translator associated with the class was removed
     */
@@ -87,7 +87,7 @@ public interface IDataTranslationService {
 
    /**
     * Get all translator identifiers registered
-    *
+    * 
     * @return translator identifiers with registered translators
     */
    public abstract Collection<ITranslatorId> getSupportedClasses();

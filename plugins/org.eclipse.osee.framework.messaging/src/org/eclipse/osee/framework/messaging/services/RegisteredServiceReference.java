@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.messaging.services;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public interface RegisteredServiceReference {
    void update();

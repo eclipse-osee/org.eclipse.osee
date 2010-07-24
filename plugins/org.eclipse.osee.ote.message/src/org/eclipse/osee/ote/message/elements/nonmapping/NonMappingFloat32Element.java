@@ -25,14 +25,14 @@ public class NonMappingFloat32Element extends Float32Element {
     * 
     * @param element
     */
-    public NonMappingFloat32Element(Float32Element element) {
-       super(element.getMessage(), element.getElementName(), element.getMsgData(), 
-             element.getByteOffset(), element.getMsb(), element.getLsb());
-       for(Object obj:element.getElementPath()){
-          this.getElementPath().add(obj);
-       }
-    }
-    
+   public NonMappingFloat32Element(Float32Element element) {
+      super(element.getMessage(), element.getElementName(), element.getMsgData(), element.getByteOffset(),
+         element.getMsb(), element.getLsb());
+      for (Object obj : element.getElementPath()) {
+         this.getElementPath().add(obj);
+      }
+   }
+
    /**
     * @param message
     * @param elementName
@@ -41,7 +41,7 @@ public class NonMappingFloat32Element extends Float32Element {
     * @param msb
     * @param lsb
     */
-   public NonMappingFloat32Element(Message<?,?,?> message, String elementName, MessageData messageData, int byteOffset, int msb, int lsb) {
+   public NonMappingFloat32Element(Message<?, ?, ?> message, String elementName, MessageData messageData, int byteOffset, int msb, int lsb) {
       super(message, elementName, messageData, byteOffset, msb, lsb);
    }
 
@@ -55,7 +55,7 @@ public class NonMappingFloat32Element extends Float32Element {
     * @param originalLsb
     * @param originalMsb
     */
-   public NonMappingFloat32Element(Message<?,?,?> message, String elementName, MessageData messageData, int byteOffset, int msb, int lsb, int originalLsb, int originalMsb) {
+   public NonMappingFloat32Element(Message<?, ?, ?> message, String elementName, MessageData messageData, int byteOffset, int msb, int lsb, int originalLsb, int originalMsb) {
       super(message, elementName, messageData, byteOffset, msb, lsb, originalLsb, originalMsb);
    }
 
@@ -66,14 +66,15 @@ public class NonMappingFloat32Element extends Float32Element {
     * @param bitOffset
     * @param bitLength
     */
-   public NonMappingFloat32Element(Message<?,?,?> message, String elementName, MessageData messageData, int bitOffset, int bitLength) {
+   public NonMappingFloat32Element(Message<?, ?, ?> message, String elementName, MessageData messageData, int bitOffset, int bitLength) {
       super(message, elementName, messageData, bitOffset, bitLength);
    }
 
+   @Override
    public void checkForwarding(ITestAccessor accessor, Float32Element cause, double value) throws InterruptedException {
       throwNoMappingElementException();
    }
-   
+
    @Override
    public boolean isNonMappingElement() {
       return true;

@@ -33,43 +33,41 @@ public class TestPointRecord extends TestRecord {
    /**
 	 * 
 	 */
-	private static final long serialVersionUID = 921875066237859323L;
-private int testPointNumber;
+   private static final long serialVersionUID = 921875066237859323L;
+   private int testPointNumber;
    protected ITestPoint testPoint;
-   
-   public TestPointRecord(ITestEnvironmentAccessor source,  ITestPoint testPoint, boolean timeStamp) {
-	      this(source, source.getTestScript(), source.getTestScript().getTestCase(), testPoint, timeStamp);
-	   }
-   
+
+   public TestPointRecord(ITestEnvironmentAccessor source, ITestPoint testPoint, boolean timeStamp) {
+      this(source, source.getTestScript(), source.getTestScript().getTestCase(), testPoint, timeStamp);
+   }
+
    /**
     * TestPointRecord Constructor. Sets up a test point record of the result of the test point.
     * 
-    * @param source 		The object requesting the logging.
-    * @param accessor 		The test case the test point is in.
-    * @param testPoint	 	The TestSubPoint object for the test point.
-    * @param timeStamp 		<b>True </b> if a timestamp should be recorded, <b>False </b> if not.
+    * @param source The object requesting the logging.
+    * @param accessor The test case the test point is in.
+    * @param testPoint The TestSubPoint object for the test point.
+    * @param timeStamp <b>True </b> if a timestamp should be recorded, <b>False </b> if not.
     */
    public TestPointRecord(ITestEnvironmentAccessor source, TestScript script, TestCase accessor, ITestPoint testPoint, boolean timeStamp) {
       super(source, TestLevel.TEST_POINT, "", timeStamp);
       this.testPoint = testPoint;
       script.addTestPoint(testPoint.isPass());
       //this.testCase = accessor.getTestCase();
-      if(accessor == null){
-//         OseeLog.log(Activator.class, Level.INFO, "test case null");
-      } else if(accessor.getTestScript() == null){
-    	  OseeLog.log(TestEnvironment.class,		Level.INFO,
-   				"test script null");
+      if (accessor == null) {
+         //         OseeLog.log(Activator.class, Level.INFO, "test case null");
+      } else if (accessor.getTestScript() == null) {
+         OseeLog.log(TestEnvironment.class, Level.INFO, "test script null");
       }
-      if(testPoint == null){
-         OseeLog.log(TestEnvironment.class,		Level.INFO,
-   				"test point null");
+      if (testPoint == null) {
+         OseeLog.log(TestEnvironment.class, Level.INFO, "test point null");
       }
-      this.testPointNumber = script.recordTestPoint(testPoint.isPass());      
+      this.testPointNumber = script.recordTestPoint(testPoint.isPass());
    }
-   
+
    /**
     * TestPointRecord Constructor. Sets up a test point record of the result of the test point
-    *
+    * 
     * @param source The object requesting the logging.
     * @param script
     * @param testCase
@@ -92,25 +90,25 @@ private int testPointNumber;
     * @param timeStamp <b>True </b> if a timestamp should be recorded, <b>False </b> if not.
     */
    public TestPointRecord(ITestEnvironmentAccessor source, TestScript script, TestCase testCase, String testPointName, String expected, String actual, boolean passed, boolean timeStamp) {
-      this(source, script, testCase, new CheckPoint(testPointName, expected, actual, passed), timeStamp);      
+      this(source, script, testCase, new CheckPoint(testPointName, expected, actual, passed), timeStamp);
    }
 
    /**
     * TestPointRecord Constructor. Sets up a test point record of the result of the test point.
     * 
-    * @param source 		The object requesting the logging.
-    * @param accessor 		The test case the test point is in.
-    * @param testPointName 	The name of the item being tested.
-    * @param expected 		The expected value for the test point.
-    * @param actual 		The actual value for the test point.
-    * @param passed 		<b>True </b> if the test point passed, <b>False </b> if not.
+    * @param source The object requesting the logging.
+    * @param accessor The test case the test point is in.
+    * @param testPointName The name of the item being tested.
+    * @param expected The expected value for the test point.
+    * @param actual The actual value for the test point.
+    * @param passed <b>True </b> if the test point passed, <b>False </b> if not.
     */
    public TestPointRecord(ITestEnvironmentAccessor source, TestScript script, TestCase accessor, String testPointName, String expected, String actual, boolean passed) {
       this(source, script, accessor, testPointName, expected, actual, passed, true);
    }
 
    /**
-    * @return 	Returns the testPoint.
+    * @return Returns the testPoint.
     */
    public int getTestPointNumber() {
       return testPointNumber;
@@ -126,15 +124,15 @@ private int testPointNumber;
    /**
     * Converts element to XML formating.
     * 
-    * @return Element	XML formated element.
+    * @return Element XML formated element.
     */
+   @Override
    public Element toXml(Document doc) {
       Element tpElement = doc.createElement("TestPoint");
       tpElement.appendChild(Jaxp.createElement(doc, "Number", String.valueOf(testPointNumber)));
       if (testPoint.isPass()) {
          tpElement.appendChild(Jaxp.createElement(doc, "Result", "PASSED"));
-      }
-      else {
+      } else {
          tpElement.appendChild(Jaxp.createElement(doc, "Result", "FAILED"));
       }
       tpElement.appendChild(this.getLocation(doc));

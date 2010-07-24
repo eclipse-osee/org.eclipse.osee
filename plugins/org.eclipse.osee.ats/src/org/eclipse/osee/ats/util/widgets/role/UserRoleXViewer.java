@@ -58,6 +58,7 @@ public class UserRoleXViewer extends XViewer {
    protected void createSupportWidgets(Composite parent) {
       super.createSupportWidgets(parent);
       parent.addDisposeListener(new DisposeListener() {
+         @Override
          public void widgetDisposed(DisposeEvent e) {
             ((UserRoleContentProvider) getContentProvider()).clear();
          }
@@ -70,6 +71,7 @@ public class UserRoleXViewer extends XViewer {
       MenuManager mm = getMenuManager();
       mm.createContextMenu(getControl());
       mm.addMenuListener(new IMenuListener() {
+         @Override
          public void menuAboutToShow(IMenuManager manager) {
             updateMenuActionsForTable();
          }
@@ -81,6 +83,7 @@ public class UserRoleXViewer extends XViewer {
       // EDIT MENU BLOCK
    }
 
+   @Override
    public void updateMenuActionsForTable() {
       MenuManager mm = getMenuManager();
       updateEditMenuActions();
@@ -96,7 +99,9 @@ public class UserRoleXViewer extends XViewer {
    }
 
    public void set(Collection<? extends UserRole> userRoles) {
-      if (((UserRoleContentProvider) getContentProvider()) != null) ((UserRoleContentProvider) getContentProvider()).set(userRoles);
+      if ((UserRoleContentProvider) getContentProvider() != null) {
+         ((UserRoleContentProvider) getContentProvider()).set(userRoles);
+      }
    }
 
    public void clear() {
@@ -116,11 +121,15 @@ public class UserRoleXViewer extends XViewer {
    public ArrayList<UserRole> getSelectedUserRoleItems() {
       ArrayList<UserRole> arts = new ArrayList<UserRole>();
       TreeItem items[] = getTree().getSelection();
-      if (items.length > 0) for (TreeItem item : items)
-         arts.add((UserRole) item.getData());
+      if (items.length > 0) {
+         for (TreeItem item : items) {
+            arts.add((UserRole) item.getData());
+         }
+      }
       return arts;
    }
 
+   @Override
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
       if (!xUserRoleViewer.isEditable()) {
          return;
@@ -156,8 +165,9 @@ public class UserRoleXViewer extends XViewer {
 
          if (aCol.equals(UserRoleXViewerFactory.Completed_Col) || aCol.equals(UserRoleXViewerFactory.Hours_Spent_Col) || aCol.equals(UserRoleXViewerFactory.Num_Minor_Col) || aCol.equals(UserRoleXViewerFactory.Num_Major_Col) || aCol.equals(UserRoleXViewerFactory.Num_Issues_Col) || aCol.equals(UserRoleXViewerFactory.User_Col) || aCol.equals(UserRoleXViewerFactory.Role_Col)) {
             promptChangeDate(aCol, userRoles, false);
-         } else
+         } else {
             throw new OseeStateException("Unhandled user role column");
+         }
 
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -168,8 +178,10 @@ public class UserRoleXViewer extends XViewer {
    private boolean setHoursSpent(Collection<UserRole> userRoles, String hours) {
       boolean modified = false;
       for (UserRole userRole : userRoles) {
-         userRole.setHoursSpent(hours.equals("") ? 0 : (new Double(hours)).doubleValue());
-         if (!modified) modified = true;
+         userRole.setHoursSpent(hours.equals("") ? 0 : new Double(hours).doubleValue());
+         if (!modified) {
+            modified = true;
+         }
       }
       return modified;
    }
@@ -182,7 +194,9 @@ public class UserRoleXViewer extends XViewer {
             return false;
          }
          userRole.setCompleted(!userRole.isCompleted());
-         if (!modified) modified = true;
+         if (!modified) {
+            modified = true;
+         }
       }
       return modified;
    }
@@ -192,7 +206,9 @@ public class UserRoleXViewer extends XViewer {
       for (UserRole userRole : userRoles) {
          if (user != null && userRole.getUser() != user) {
             userRole.setUser(user);
-            if (!modified) modified = true;
+            if (!modified) {
+               modified = true;
+            }
          }
       }
       return modified;
@@ -201,8 +217,10 @@ public class UserRoleXViewer extends XViewer {
    private boolean setRole(Collection<UserRole> userRoles, String role) {
       boolean modified = false;
       for (UserRole userRole : userRoles) {
-         userRole.setRole(Role.valueOf((String) role));
-         if (!modified) modified = true;
+         userRole.setRole(Role.valueOf(role));
+         if (!modified) {
+            modified = true;
+         }
       }
       return modified;
    }
@@ -213,8 +231,8 @@ public class UserRoleXViewer extends XViewer {
          UserRole userRole = (UserRole) userRoles.toArray()[0];
          if (xCol.equals(UserRoleXViewerFactory.Hours_Spent_Col)) {
             String hours =
-                  XPromptChange.promptChangeFloat(xCol.getName(),
-                        (columnMultiEdit ? 0 : (userRole.getHoursSpent() == null ? 0 : userRole.getHoursSpent())));
+               XPromptChange.promptChangeFloat(xCol.getName(),
+                  (columnMultiEdit ? 0 : userRole.getHoursSpent() == null ? 0 : userRole.getHoursSpent()));
             if (hours != null) {
                modified = setHoursSpent(userRoles, hours);
             }
@@ -230,8 +248,8 @@ public class UserRoleXViewer extends XViewer {
             }
          } else if (xCol.equals(UserRoleXViewerFactory.Role_Col)) {
             EnumStringSingleSelectionDialog enumDialog =
-                  XPromptChange.promptChangeSingleSelectEnumeration(xCol.getName(), Role.strValues(),
-                        (columnMultiEdit ? null : userRole.getRole().name()));
+               XPromptChange.promptChangeSingleSelectEnumeration(xCol.getName(), Role.strValues(),
+                  (columnMultiEdit ? null : userRole.getRole().name()));
             if (enumDialog != null) {
                if (enumDialog.getResult()[0] != null) {
                   modified = setRole(userRoles, (String) enumDialog.getResult()[0]);
@@ -247,7 +265,7 @@ public class UserRoleXViewer extends XViewer {
 
    public boolean executeTransaction(Collection<UserRole> userRoles) throws OseeCoreException {
       SkynetTransaction transaction =
-            new SkynetTransaction(xUserRoleViewer.getReviewArt().getArtifact().getBranch(), "Modify Review Roles");
+         new SkynetTransaction(xUserRoleViewer.getReviewArt().getArtifact().getBranch(), "Modify Review Roles");
       for (UserRole userRole : userRoles) {
          xUserRoleViewer.getReviewArt().getUserRoleManager().addOrUpdateUserRole(userRole, false, transaction);
          update(userRole, null);

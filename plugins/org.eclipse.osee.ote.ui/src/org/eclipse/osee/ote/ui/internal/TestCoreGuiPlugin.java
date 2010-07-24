@@ -11,7 +11,6 @@
 package org.eclipse.osee.ote.ui.internal;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -43,6 +42,7 @@ public class TestCoreGuiPlugin extends OseeFormActivator {
    private OteConsoleServiceImpl oteConsoleService;
 
    private RemoteConsoleLauncher tracker;
+
    public TestCoreGuiPlugin() {
       super();
       pluginInstance = this;
@@ -52,41 +52,40 @@ public class TestCoreGuiPlugin extends OseeFormActivator {
    public void start(final BundleContext context) throws Exception {
       super.start(context);
 
+      workspaceStartTracker =
+         new ServiceTracker(context, SafeWorkspaceAccess.class.getName(), new ServiceTrackerCustomizer() {
 
-      
-      workspaceStartTracker = new ServiceTracker(context, SafeWorkspaceAccess.class.getName(), new ServiceTrackerCustomizer() {
-		
-		@Override
-		public void removedService(ServiceReference reference, Object service) {
-			if (oteConsoleService != null) {
-			oteConsoleServiceRegistration.unregister();
-			oteConsoleService.close();
-			oteConsoleService = null;
-			}
-		}
-		
-		@Override
-		public void modifiedService(ServiceReference reference, Object service) {
-			// TODO Auto-generated method stub
-			
-		}
-		
-		@Override
-		public Object addingService(ServiceReference reference) {
-	      oteConsoleService = new OteConsoleServiceImpl();
-	      oteConsoleServiceRegistration =
-	            context.registerService(IOteConsoleService.class.getName(), oteConsoleService, null);
-	      return context.getService(reference);
-		}
-	});
+            @Override
+            public void removedService(ServiceReference reference, Object service) {
+               if (oteConsoleService != null) {
+                  oteConsoleServiceRegistration.unregister();
+                  oteConsoleService.close();
+                  oteConsoleService = null;
+               }
+            }
+
+            @Override
+            public void modifiedService(ServiceReference reference, Object service) {
+               // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public Object addingService(ServiceReference reference) {
+               oteConsoleService = new OteConsoleServiceImpl();
+               oteConsoleServiceRegistration =
+                  context.registerService(IOteConsoleService.class.getName(), oteConsoleService, null);
+               return context.getService(reference);
+            }
+         });
       workspaceStartTracker.open(true);
-      
+
       workbenchUserServiceTracker = new ServiceTracker(context, IWorkbenchUserService.class.getName(), null);
       workbenchUserServiceTracker.open();
 
       if (System.getProperty("NO_OTE_REMOTE_CONSOLE") == null) {
-    	  tracker = new RemoteConsoleLauncher();
-    	  tracker.open(true);
+         tracker = new RemoteConsoleLauncher();
+         tracker.open(true);
       }
 
       if (System.getProperty("NO_OTE_ARTIFACT_BULK_LOAD") == null) {
@@ -107,7 +106,7 @@ public class TestCoreGuiPlugin extends OseeFormActivator {
       workspaceStartTracker.close();
       pluginInstance = null;
       if (tracker != null) {
-    	  tracker.close();
+         tracker.close();
       }
       super.stop(context);
    }

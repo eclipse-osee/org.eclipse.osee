@@ -37,7 +37,9 @@ public class UserRole {
    private Boolean completed = false;
 
    public static enum Role {
-      Moderator, Reviewer, Author;
+      Moderator,
+      Reviewer,
+      Author;
       public static Collection<String> strValues() {
          Set<String> values = new HashSet<String>();
          for (Enum<Role> e : values()) {

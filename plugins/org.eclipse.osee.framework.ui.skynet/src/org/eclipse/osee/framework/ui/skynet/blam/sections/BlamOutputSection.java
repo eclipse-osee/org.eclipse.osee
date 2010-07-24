@@ -79,6 +79,7 @@ public class BlamOutputSection extends BaseBlamSection {
 
    public void appendText(final String text) {
       Displays.ensureInDisplayThread(new Runnable() {
+         @Override
          public void run() {
             if (Widgets.isAccessible(formText)) {
                formText.append(text);
@@ -90,6 +91,7 @@ public class BlamOutputSection extends BaseBlamSection {
 
    public void setText(final String text) {
       Displays.ensureInDisplayThread(new Runnable() {
+         @Override
          public void run() {
             if (Widgets.isAccessible(formText)) {
                formText.setText(text);

@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.change.presenter;
 
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -49,11 +48,13 @@ public class ChangeReportInfoPresenter implements EditorSection.IWidget {
       this.changeData = changeData;
    }
 
+   @Override
    public void onLoading() {
       display.setImage(FrameworkImage.DELTAS);
       display.setText(LOADING);
    }
 
+   @Override
    public void onUpdate() {
       display.setImage(getKeyedImage());
       display.setText(createInfoPage());
@@ -128,7 +129,7 @@ public class ChangeReportInfoPresenter implements EditorSection.IWidget {
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
-      DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG);
+      DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG);
       sb.append(String.format("               <b>On: </b> %s<br/>", dateFormat.format(transaction.getTimeStamp())));
       sb.append(String.format("               <b>By: </b> %s<br/>", AXml.textToXml(author)));
       sb.append(String.format("               <b>Comment: </b> %s", AXml.textToXml(transaction.getComment())));

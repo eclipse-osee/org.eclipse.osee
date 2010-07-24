@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.jdk.core.reportdata.ReportDataListener;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -55,9 +54,10 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
    private final IServiceConnector serviceConnector;
    private RemoteModelManager modelManager;
    private final MessageToolServiceTracker messageToolServiceTracker;
-   private final HashMap<IRemoteCommandConsole, RemoteShell> exportedConsoles = new HashMap<IRemoteCommandConsole, RemoteShell>(32);
-private boolean keepEnvAliveWithNoUsers;
-   
+   private final HashMap<IRemoteCommandConsole, RemoteShell> exportedConsoles =
+      new HashMap<IRemoteCommandConsole, RemoteShell>(32);
+   private final boolean keepEnvAliveWithNoUsers;
+
    public RemoteTestEnvironment(MessageSystemTestEnvironment currentEnvironment, IServiceConnector serviceConnector, boolean keepEnvAliveWithNoUsers) {
       this.env = currentEnvironment;
       this.serviceConnector = serviceConnector;
@@ -74,13 +74,14 @@ private boolean keepEnvAliveWithNoUsers;
             controlInterface = (Remote) serviceConnector.export(controlInterface);
          } catch (Exception ex) {
             OseeLog.log(RemoteTestEnvironment.class, Level.SEVERE,
-                  "exception exporting control interface " + controlInterfaceID, ex);
+               "exception exporting control interface " + controlInterfaceID, ex);
             throw new RemoteException("exception exporting control interface " + controlInterfaceID, ex);
          }
       }
       return controlInterface;
    }
 
+   @Override
    public IOInstrumentation getIOInstrumentation(String name) throws RemoteException {
       IOInstrumentation io = env.getIOInstrumentation(name);
       if (io != null) {
@@ -91,8 +92,7 @@ private boolean keepEnvAliveWithNoUsers;
             }
             return (IOInstrumentation) exported;
          } catch (Exception ex) {
-            OseeLog.log(RemoteTestEnvironment.class, Level.SEVERE,
-                  ex.toString(), ex);
+            OseeLog.log(RemoteTestEnvironment.class, Level.SEVERE, ex.toString(), ex);
             throw new RemoteException("Unable to export the remote IOInstrumentation for " + name, ex);
          }
       }
@@ -101,14 +101,15 @@ private boolean keepEnvAliveWithNoUsers;
 
    @Override
    public void addInstrumentationRegistrationListener(IInstrumentationRegistrationListener listener) throws RemoteException {
-      env.addInstrumentationRegistrationListener(listener);  
+      env.addInstrumentationRegistrationListener(listener);
    }
 
    @Override
    public void removeInstrumentationRegistrationListener(IInstrumentationRegistrationListener listener) throws RemoteException {
-      env.removeInstrumentationRegistrationListener(listener);  
+      env.removeInstrumentationRegistrationListener(listener);
    }
 
+   @Override
    public IRemoteMessageService getMessageToolServiceProxy() throws RemoteException {
       try {
          return messageToolServiceTracker.waitForService(10000);
@@ -125,19 +126,23 @@ private boolean keepEnvAliveWithNoUsers;
       return env.getRuntimeManager().isRunningJarVersions(jarVersions);
    }
 
+   @Override
    public ICommandHandle addCommand(ITestServerCommand cmd) throws RemoteException {
       return env.addCommand(cmd);
    }
 
+   @Override
    @Deprecated
    public boolean isMessageJarAvailable(String version) throws RemoteException {
       return env.isMessageJarAvailable(version);
    }
 
+   @Override
    @Deprecated
    public void sendRuntimeJar(byte[] messageJar) throws RemoteException {
    }
 
+   @Override
    public void addEnvironmentListener(ITestEnvironmentListener listener) throws RemoteException {
       env.addEnvironmentListener(listener);
    }
@@ -150,9 +155,9 @@ private boolean keepEnvAliveWithNoUsers;
    public void setupClassLoaderAndJar(String[] jarVersion, String[] classPaths) throws RemoteException {
    }
 
+   @Override
    public IRemoteCommandConsole getCommandConsole() throws RemoteException {
-      OseeLog.log(RemoteTestEnvironment.class, Level.FINE,
-      "Remote command onsole requested");
+      OseeLog.log(RemoteTestEnvironment.class, Level.FINE, "Remote command onsole requested");
       RemoteShell shell = new RemoteShell(Activator.getDefault().getCommandManager());
 
       IRemoteCommandConsole exportedConsole;
@@ -165,6 +170,7 @@ private boolean keepEnvAliveWithNoUsers;
       return exportedConsole;
    }
 
+   @Override
    public void closeCommandConsole(IRemoteCommandConsole console) throws RemoteException {
       RemoteShell shell = exportedConsoles.remove(console);
       if (shell != null) {
@@ -174,20 +180,20 @@ private boolean keepEnvAliveWithNoUsers;
             throw new RemoteException("failed to unexport remote shell", ex);
          }
 
-         OseeLog.log(RemoteTestEnvironment.class, Level.FINE,
-         "closed command console");
+         OseeLog.log(RemoteTestEnvironment.class, Level.FINE, "closed command console");
       } else {
-         OseeLog.log(RemoteTestEnvironment.class, Level.FINE,
-         "trying to remove non existing console");
+         OseeLog.log(RemoteTestEnvironment.class, Level.FINE, "trying to remove non existing console");
       }
    }
 
+   @Override
    public void addStatusListener(IServiceStatusListener listener) throws RemoteException {
-      if(Activator.getDefault().getOteStatusBoard() != null){
+      if (Activator.getDefault().getOteStatusBoard() != null) {
          Activator.getDefault().getOteStatusBoard().addStatusListener(listener);
       }
    }
 
+   @Override
    public UserTestSessionKey addUser(IUserSession user) throws RemoteException {
       try {
          return env.addUser(user);
@@ -195,67 +201,78 @@ private boolean keepEnvAliveWithNoUsers;
          throw new RemoteException("could not add user sessoion", ex);
       }
    }
+
    //TODO
+   @Override
    public boolean disconnect(UserTestSessionKey user) throws RemoteException {
-       env.disconnect(user);
-       if (!keepEnvAliveWithNoUsers && env.getSessionKeys().isEmpty()) {
-          try {
-             messageToolServiceTracker.close();
-             for (IRemoteCommandConsole console : exportedConsoles.keySet()) {
-                closeCommandConsole(console);
-             }
-          } catch (Exception ex) {
-             throw new RemoteException("failed to unexport test environment", ex);
-          }
-          env.shutdown();
-          return true;
-       }
-       return false;
+      env.disconnect(user);
+      if (!keepEnvAliveWithNoUsers && env.getSessionKeys().isEmpty()) {
+         try {
+            messageToolServiceTracker.close();
+            for (IRemoteCommandConsole console : exportedConsoles.keySet()) {
+               closeCommandConsole(console);
+            }
+         } catch (Exception ex) {
+            throw new RemoteException("failed to unexport test environment", ex);
+         }
+         env.shutdown();
+         return true;
+      }
+      return false;
    }
 
-   public void disconnectAll() throws RemoteException{
-	   for (Serializable session : env.getSessionKeys()) {
-		   env.disconnect((UserTestSessionKey) session);
-	   }
-	   if(!keepEnvAliveWithNoUsers){
-	       messageToolServiceTracker.close();
-	       for (IRemoteCommandConsole console : exportedConsoles.keySet()) {
-	          closeCommandConsole(console);
-	       }
-	       env.shutdown();
-	   }
+   @Override
+   public void disconnectAll() throws RemoteException {
+      for (Serializable session : env.getSessionKeys()) {
+         env.disconnect((UserTestSessionKey) session);
+      }
+      if (!keepEnvAliveWithNoUsers) {
+         messageToolServiceTracker.close();
+         for (IRemoteCommandConsole console : exportedConsoles.keySet()) {
+            closeCommandConsole(console);
+         }
+         env.shutdown();
+      }
    }
-   
+
+   @Override
    public boolean equals(ITestEnvironment testEnvironment) throws RemoteException {
       return env.getUniqueId() == testEnvironment.getUniqueId();
    }
 
+   @Override
    public List<String> getQueueLabels() throws RemoteException {
       return env.getQueueLabels();
    }
 
+   @Override
    public Remote getRemoteModel(String modelClassName) throws RemoteException {
-      return (Remote) getRemoteModel(modelClassName, new Class[0], new Object[0]);
+      return getRemoteModel(modelClassName, new Class[0], new Object[0]);
    }
 
+   @Override
    public IModelManagerRemote getModelManager() throws RemoteException {
-      if (modelManager == null) modelManager = new RemoteModelManager();
+      if (modelManager == null) {
+         modelManager = new RemoteModelManager();
+      }
       try {
          return (IModelManagerRemote) serviceConnector.export(modelManager);
       } catch (Throwable t) {
-         throw new RemoteException(
-               "Could not load get model manager" + t.getMessage());
+         throw new RemoteException("Could not load get model manager" + t.getMessage());
       }
    }
 
+   @Override
    public byte[] getScriptOutfile(String outfilePath) throws RemoteException {
       return env.getScriptOutfile(outfilePath);
    }
 
+   @Override
    public int getUniqueId() throws RemoteException {
       return env.getUniqueId();
    }
 
+   @Override
    public Collection<OSEEPerson1_4> getUserList() throws RemoteException {
       Collection<OSEEPerson1_4> users = new ArrayList<OSEEPerson1_4>(env.getSessionKeys().size());
       try {
@@ -265,33 +282,35 @@ private boolean keepEnvAliveWithNoUsers;
                try {
                   users.add(((UserTestSessionKey) serializable).getUser());
                } catch (Exception ex) {
-                  OseeLog.log(RemoteTestEnvironment.class, Level.SEVERE,
-                        "exception while getting user list", ex);
+                  OseeLog.log(RemoteTestEnvironment.class, Level.SEVERE, "exception while getting user list", ex);
                }
             }
          }
          return users;
       } catch (Exception ex) {
-         OseeLog.log(RemoteTestEnvironment.class, Level.SEVERE,
-               "exception while generating user list", ex);
+         OseeLog.log(RemoteTestEnvironment.class, Level.SEVERE, "exception while generating user list", ex);
          throw new RemoteException("exception while generating user list", ex);
       }
    }
-   
+
    //TODO
+   @Override
    public void onHostKilled() throws RemoteException {
    }
 
+   @Override
    public void removeQueueListener(ReportDataListener listener) throws RemoteException {
       env.removeQueueListener(listener);
    }
 
+   @Override
    public void removeStatusListener(IServiceStatusListener listener) throws RemoteException {
-      if(Activator.getDefault().getOteStatusBoard() != null){
+      if (Activator.getDefault().getOteStatusBoard() != null) {
          Activator.getDefault().getOteStatusBoard().removeStatusListener(listener);
       }
    }
 
+   @Override
    public URL setBatchLibJar(byte[] messageJar) throws RemoteException {
       try {
          return env.setBatchLibJar(messageJar);
@@ -300,10 +319,12 @@ private boolean keepEnvAliveWithNoUsers;
       }
    }
 
+   @Override
    public void setClientClasses(URL[] urls) throws RemoteException {
       env.setClientClasses(urls);
    }
 
+   @Override
    public void startup(String outfileDir) throws RemoteException {
       try {
          env.startup(outfileDir);
@@ -318,29 +339,35 @@ private boolean keepEnvAliveWithNoUsers;
 
    private class RemoteModelManager implements IModelManagerRemote {
 
+      @Override
       public void addModelActivityListener(IModelListener listener) throws RemoteException {
          env.getModelManager().addModelActivityListener(listener);
       }
 
+      @Override
       public void removeModelActivityListener(IModelListener listener) throws RemoteException {
          env.getModelManager().removeModelActivityListener(listener);
       }
 
+      @Override
       @SuppressWarnings("unchecked")
       public void addModelActivityListener(IModelListener listener, ModelKey key) throws RemoteException {
          env.getModelManager().addModelActivityListener(listener, key);
       }
 
+      @Override
       @SuppressWarnings("unchecked")
       public void removeModelActivityListener(IModelListener listener, ModelKey key) throws RemoteException {
          env.getModelManager().removeModelActivityListener(listener, key);
       }
 
+      @Override
       @SuppressWarnings("unchecked")
       public List<ModelKey> getRegisteredModels() throws RemoteException {
          return env.getModelManager().getRegisteredModels();
       }
 
+      @Override
       @SuppressWarnings("unchecked")
       public Remote getRemoteModel(ModelKey key) throws RemoteException {
          try {
@@ -359,11 +386,13 @@ private boolean keepEnvAliveWithNoUsers;
          }
       }
 
+      @Override
       @SuppressWarnings("unchecked")
       public void releaseReference(ModelKey key) throws RemoteException {
          env.getModelManager().releaseReference(key);
       }
 
+      @Override
       @SuppressWarnings("unchecked")
       public void changeModelState(ModelKey key, ModelState state) throws RemoteException {
          Class modelClass;
@@ -376,11 +405,13 @@ private boolean keepEnvAliveWithNoUsers;
          env.getModelManager().changeModelState(key, state);
       }
 
+      @Override
       @SuppressWarnings("unchecked")
       public ModelState getModelState(ModelKey key) throws RemoteException {
          return env.getModelManager().getModelState(key);
       }
 
+      @Override
       @SuppressWarnings("unchecked")
       public void releaseAllReferences(ModelKey key) throws RemoteException {
          env.getModelManager().releaseAllReferences(key);

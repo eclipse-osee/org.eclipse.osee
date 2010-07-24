@@ -37,9 +37,15 @@ public class GetChildrenJob extends Job {
     */
    public GetChildrenJob(String name, Viewer viewer, JobbedNode parent, IContentProviderRunnable runnable) {
       super("Fetching children" + (name == null ? "" : " for " + name));
-      if (viewer == null) throw new IllegalArgumentException("view can not be null");
-      if (parent == null) throw new IllegalArgumentException("parent can not be null.");
-      if (runnable == null) throw new IllegalArgumentException("runnable can not be null.");
+      if (viewer == null) {
+         throw new IllegalArgumentException("view can not be null");
+      }
+      if (parent == null) {
+         throw new IllegalArgumentException("parent can not be null.");
+      }
+      if (runnable == null) {
+         throw new IllegalArgumentException("runnable can not be null.");
+      }
 
       this.viewer = viewer;
       this.parent = parent;
@@ -57,6 +63,7 @@ public class GetChildrenJob extends Job {
             parent.setChildren(children);
 
             Displays.ensureInDisplayThread(new Runnable() {
+               @Override
                public void run() {
                   viewer.refresh();
                }

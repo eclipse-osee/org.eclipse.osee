@@ -22,7 +22,7 @@ public interface IAttributeTaggerProvider {
 
    /**
     * Creates tags for attribute content
-    *
+    * 
     * @param attributeData attribute to content to tag
     * @param collector object collecting tags
     * @throws Exception
@@ -31,7 +31,7 @@ public interface IAttributeTaggerProvider {
 
    /**
     * Searches attribute content for value match
-    *
+    * 
     * @param attributeData attribute to search in
     * @param value to search in attribute content
     * @param options

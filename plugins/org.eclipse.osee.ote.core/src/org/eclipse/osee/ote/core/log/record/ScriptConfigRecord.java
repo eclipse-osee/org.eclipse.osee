@@ -46,8 +46,7 @@ public class ScriptConfigRecord extends TestRecord {
    private static final long serialVersionUID = 6919229589873467398L;
 
    /**
-    * ScriptConfigRecord Constructor. Constructs test script configuration log message with
-    * timestamp.
+    * ScriptConfigRecord Constructor. Constructs test script configuration log message with timestamp.
     * 
     * @param script The test script who's configuration is to be recorded.
     * @param timeStamp <b>True </b> if a timestamp should be recorded, <b>False </b> if not.
@@ -70,17 +69,16 @@ public class ScriptConfigRecord extends TestRecord {
     * 
     * @return XML formated config element.
     */
+   @Override
    public Element toXml(Document doc) {
       Element configElement = doc.createElement(BaseTestTags.CONFIG_ENTRY);
 
       try {
          configElement.setAttribute("machineName", InetAddress.getLocalHost().getHostName());
 
-      }
-      catch (DOMException e) {
+      } catch (DOMException e) {
          OseeLog.log(TestEnvironment.class, Level.SEVERE, e);
-      }
-      catch (UnknownHostException e) {
+      } catch (UnknownHostException e) {
          OseeLog.log(TestEnvironment.class, Level.SEVERE, e);
       }
 
@@ -99,14 +97,14 @@ public class ScriptConfigRecord extends TestRecord {
       // }
 
       DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG);
-      configElement.appendChild(Jaxp.createElement(doc, BaseTestTags.EXECUTION_DATE, dateFormat.format(new Date()).toString()));
+      configElement.appendChild(Jaxp.createElement(doc, BaseTestTags.EXECUTION_DATE,
+         dateFormat.format(new Date()).toString()));
 
       TestScript script = ((TestEnvironment) this.getSource()).getTestScript();
       if (script != null) {
          configElement.appendChild(Jaxp.createElement(doc, BaseTestTags.ENVIRONMENT_FIELD, script.getType().toString()));
-      }
-      else {
-    	  // script is null
+      } else {
+         // script is null
          configElement.appendChild(Jaxp.createElement(doc, BaseTestTags.ENVIRONMENT_FIELD, "Null Script"));
       }
 

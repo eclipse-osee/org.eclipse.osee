@@ -15,9 +15,8 @@ import org.xml.sax.Attributes;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
-public class Location extends ElementHandlers{
+public class Location extends ElementHandlers {
 
    /**
     * @param name
@@ -25,7 +24,6 @@ public class Location extends ElementHandlers{
    public Location() {
       super("Location");
    }
-
 
    @Override
    public Object createStartElementFoundObject(String uri, String localName, String name, Attributes attributes) {

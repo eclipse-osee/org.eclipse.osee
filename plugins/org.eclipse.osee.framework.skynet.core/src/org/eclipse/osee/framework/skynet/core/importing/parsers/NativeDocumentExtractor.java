@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifact
 
 public class NativeDocumentExtractor extends AbstractArtifactExtractor {
 
+   @Override
    public String getDescription() {
       return "Extract the content of each native document as one artifact.";
    }
@@ -36,8 +37,10 @@ public class NativeDocumentExtractor extends AbstractArtifactExtractor {
       roughArtifact.addURIAttribute(CoreAttributeTypes.NATIVE_CONTENT.getName(), source);
    }
 
+   @Override
    public FileFilter getFileFilter() {
       return new FileFilter() {
+         @Override
          public boolean accept(File file) {
             return true;
          }

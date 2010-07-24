@@ -23,11 +23,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( { //
+@Suite.SuiteClasses({ //
 FrameworkUi_Production_Suite.class, //
-      AtsTest_Config_Suite.class, //
-      FrameworkCore_Production_Suite.class, //
-      DatabaseIntegrityTest.class, //
+   AtsTest_Config_Suite.class, //
+   FrameworkCore_Production_Suite.class, //
+   DatabaseIntegrityTest.class, //
 })
 /**
  * This suite should contain any test that can be run against a deployed OSEE database.<br>
@@ -40,8 +40,8 @@ public class MasterTestSuite_ProductionDbTests {
    @BeforeClass
    public static void setUp() throws Exception {
       assertTrue("Should be run on production datbase.", TestUtil.isProductionDb());
-      assertTrue("Application Server must be running.", ClientSessionManager.getAuthenticationProtocols().contains(
-            "lba"));
+      assertTrue("Application Server must be running.",
+         ClientSessionManager.getAuthenticationProtocols().contains("lba"));
       TestUtil.setIsInTest(true);
    }
 

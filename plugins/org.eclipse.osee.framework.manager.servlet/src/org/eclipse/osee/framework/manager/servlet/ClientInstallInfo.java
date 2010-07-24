@@ -63,7 +63,7 @@ class ClientInstallInfo {
    @Override
    public String toString() {
       return String.format("name:[%s] os:[%s] isActive:[%s] comment:[%s] location:[%s]", name, os, isActive, comment,
-            execPath);
+         execPath);
    }
 
    public static ClientInstallInfo createFromXml(String name, String data) throws OseeCoreException {

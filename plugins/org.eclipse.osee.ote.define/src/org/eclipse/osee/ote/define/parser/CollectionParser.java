@@ -18,7 +18,7 @@ import org.xml.sax.SAXException;
 
 public class CollectionParser extends AbstractSaxHandler implements ICollectionSource {
 
-   private List<SaxChunkCollector> collectors;
+   private final List<SaxChunkCollector> collectors;
 
    public CollectionParser(ArrayList<SaxChunkCollector> collectors) {
       this.collectors = collectors;

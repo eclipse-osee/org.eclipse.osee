@@ -41,8 +41,8 @@ public class CopyActionDetailsAction extends Action {
          this.clipboard = new Clipboard(null);
       }
       clipboard.setContents(
-            new Object[] {"\"" + sma.getArtifactTypeName() + "\" - " + sma.getHumanReadableId() + " - \"" + sma.getName() + "\""},
-            new Transfer[] {TextTransfer.getInstance()});
+         new Object[] {"\"" + sma.getArtifactTypeName() + "\" - " + sma.getHumanReadableId() + " - \"" + sma.getName() + "\""},
+         new Transfer[] {TextTransfer.getInstance()});
    }
 
    @Override

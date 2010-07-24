@@ -53,17 +53,17 @@ public class RelationChangeAcquirer extends ChangeAcquirer {
             fromTransactionId = getSourceBranch().getBaseTransaction();
             toTransactionId = TransactionManager.getHeadTransaction(getSourceBranch());
             chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_BRANCH_RELATION),
-                  getSourceBranch().getId(), fromTransactionId.getId());
+               getSourceBranch().getId(), fromTransactionId.getId());
          } else {//Changes per a transaction
             toTransactionId = getTransaction();
 
             if (getSpecificArtifact() != null) {
                chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_TX_RELATION_FOR_SPECIFIC_ARTIFACT),
-                     getTransaction().getId(), getSpecificArtifact().getArtId(), getSpecificArtifact().getArtId());
+                  getTransaction().getId(), getSpecificArtifact().getArtId(), getSpecificArtifact().getArtId());
                fromTransactionId = getTransaction();
             } else {
                chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_TX_RELATION),
-                     getTransaction().getId());
+                  getTransaction().getId());
                fromTransactionId = TransactionManager.getPriorTransaction(toTransactionId);
             }
          }
@@ -80,10 +80,10 @@ public class RelationChangeAcquirer extends ChangeAcquirer {
                getArtIds().add(bArtId);
 
                getChangeBuilders().add(
-                     new RelationChangeBuilder(getSourceBranch(),
-                           ArtifactTypeManager.getType(chStmt.getInt("art_type_id")), chStmt.getInt("gamma_id"),
-                           aArtId, txDelta, modificationType, bArtId, relLinkId, rationale,
-                           RelationTypeManager.getType(chStmt.getInt("rel_link_type_id")), !hasBranch));
+                  new RelationChangeBuilder(getSourceBranch(),
+                     ArtifactTypeManager.getType(chStmt.getInt("art_type_id")), chStmt.getInt("gamma_id"), aArtId,
+                     txDelta, modificationType, bArtId, relLinkId, rationale,
+                     RelationTypeManager.getType(chStmt.getInt("rel_link_type_id")), !hasBranch));
             }
          }
          getMonitor().worked(25);

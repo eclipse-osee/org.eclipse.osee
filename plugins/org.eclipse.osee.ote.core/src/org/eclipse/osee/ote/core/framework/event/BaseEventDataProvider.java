@@ -15,6 +15,7 @@ import org.eclipse.osee.ote.core.TestScript;
 
 public class BaseEventDataProvider implements IEventDataProvider {
 
+   @Override
    public IEventData getEventData(IPropertyStore propertyStore, TestScript script) {
       return new BaseEvent(propertyStore, script);
    }

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor;
 
+import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.PromptChangeUtil;
@@ -36,77 +37,80 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
  */
 public class SMAAssigneesHeader extends Composite {
 
-	private static String TARGET_VERSION = "Assignee(s):";
-	Label valueLabel;
+   private static String TARGET_VERSION = "Assignee(s):";
+   Label valueLabel;
 
-	public SMAAssigneesHeader(Composite parent, int style, final StateMachineArtifact sma, XFormToolkit toolkit, final boolean isEditable) {
-		super(parent, style);
-		setLayoutData(new GridData());
-		setLayout(ALayout.getZeroMarginLayout(2, false));
-		toolkit.adapt(this);
+   public SMAAssigneesHeader(Composite parent, int style, final StateMachineArtifact sma, XFormToolkit toolkit, final boolean isEditable) {
+      super(parent, style);
+      setLayoutData(new GridData());
+      setLayout(ALayout.getZeroMarginLayout(2, false));
+      toolkit.adapt(this);
 
-		try {
-			if (!sma.isCancelled() && !sma.isCompleted()) {
-				Hyperlink link = toolkit.createHyperlink(this, TARGET_VERSION, SWT.NONE);
-				link.addHyperlinkListener(new IHyperlinkListener() {
+      try {
+         if (!sma.isCancelled() && !sma.isCompleted()) {
+            Hyperlink link = toolkit.createHyperlink(this, TARGET_VERSION, SWT.NONE);
+            link.addHyperlinkListener(new IHyperlinkListener() {
 
-					public void linkEntered(HyperlinkEvent e) {
-					}
+               @Override
+               public void linkEntered(HyperlinkEvent e) {
+               }
 
-					public void linkExited(HyperlinkEvent e) {
-					}
+               @Override
+               public void linkExited(HyperlinkEvent e) {
+               }
 
-					public void linkActivated(HyperlinkEvent e) {
-						try {
-							if (!isEditable && !sma.getStateMgr().getAssignees().contains(
-										UserManager.getUser(SystemUser.UnAssigned)) && !sma.getStateMgr().getAssignees().contains(
-										UserManager.getUser())) {
-								AWorkbench.popup(
-											"ERROR",
-											"You must be assigned to modify assignees.\nContact current Assignee or Select Priviledged Edit for Authorized Overriders.");
-								return;
-							}
-							if (PromptChangeUtil.promptChangeAssignees(sma, false)) {
-								sma.getEditor().doSave(null);
-							}
-						} catch (Exception ex) {
-							OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-						}
-					}
-				});
-			} else {
-				Label origLabel = toolkit.createLabel(this, TARGET_VERSION);
-				origLabel.setLayoutData(new GridData());
-			}
+               @Override
+               public void linkActivated(HyperlinkEvent e) {
+                  try {
+                     if (!isEditable && !sma.getStateMgr().getAssignees().contains(
+                        UserManager.getUser(SystemUser.UnAssigned)) && !sma.getStateMgr().getAssignees().contains(
+                        UserManager.getUser())) {
+                        AWorkbench.popup(
+                           "ERROR",
+                           "You must be assigned to modify assignees.\nContact current Assignee or Select Priviledged Edit for Authorized Overriders.");
+                        return;
+                     }
+                     if (PromptChangeUtil.promptChangeAssignees(sma, false)) {
+                        sma.getEditor().doSave(null);
+                     }
+                  } catch (Exception ex) {
+                     OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                  }
+               }
+            });
+         } else {
+            Label origLabel = toolkit.createLabel(this, TARGET_VERSION);
+            origLabel.setLayoutData(new GridData());
+         }
 
-			valueLabel = toolkit.createLabel(this, "Not Set");
-			valueLabel.setLayoutData(new GridData());
-			updateLabel(sma);
+         valueLabel = toolkit.createLabel(this, "Not Set");
+         valueLabel.setLayoutData(new GridData());
+         updateLabel(sma);
 
-		} catch (OseeCoreException ex) {
-			Label errorLabel = toolkit.createLabel(this, "Error: " + ex.getLocalizedMessage());
-			errorLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
-			OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
-		}
+      } catch (OseeCoreException ex) {
+         Label errorLabel = toolkit.createLabel(this, "Error: " + ex.getLocalizedMessage());
+         errorLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
 
-	}
+   }
 
-	private void updateLabel(StateMachineArtifact sma) throws OseeCoreException {
-		String value = "";
-		try {
-			if (sma.getStateMgr().getAssignees().isEmpty()) {
-				value = "Error: State has no assignees";
-			} else {
-				valueLabel.setToolTipText(sma.getStateMgr().getAssigneesStr());
-				value = sma.getStateMgr().getAssigneesStr();
-			}
-		} catch (OseeCoreException ex) {
-			OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-			value = ex.getLocalizedMessage();
-			valueLabel.setToolTipText(value);
-		}
-		valueLabel.setText(Strings.truncate(value, 150, true));
-		valueLabel.getParent().layout();
-	}
+   private void updateLabel(StateMachineArtifact sma) throws OseeCoreException {
+      String value = "";
+      try {
+         if (sma.getStateMgr().getAssignees().isEmpty()) {
+            value = "Error: State has no assignees";
+         } else {
+            valueLabel.setToolTipText(sma.getStateMgr().getAssigneesStr());
+            value = sma.getStateMgr().getAssigneesStr();
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         value = ex.getLocalizedMessage();
+         valueLabel.setToolTipText(value);
+      }
+      valueLabel.setText(Strings.truncate(value, 150, true));
+      valueLabel.getParent().layout();
+   }
 
 }

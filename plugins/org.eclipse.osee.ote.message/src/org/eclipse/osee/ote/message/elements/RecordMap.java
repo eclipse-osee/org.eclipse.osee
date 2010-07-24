@@ -19,60 +19,62 @@ import org.eclipse.osee.ote.message.data.MessageData;
  * @author Ryan D. Brooks
  * @author Andrew M. Finkbeiner
  */
-public class RecordMap<T extends RecordElement> extends RecordElement{
+public class RecordMap<T extends RecordElement> extends RecordElement {
 
    private final int NUMBER_OF_RECORDS;
-   
 
    private final HashMap<Integer, T> records;
    private IRecordFactory factory;
 
-   public RecordMap(Message<?,?,?> message, MessageData messageData, String elementName, int numberOfRecords, IRecordFactory factory) {
+   public RecordMap(Message<?, ?, ?> message, MessageData messageData, String elementName, int numberOfRecords, IRecordFactory factory) {
       super(message, elementName, 1, messageData, 0, factory.getBitLength());
       NUMBER_OF_RECORDS = numberOfRecords;
       records = new HashMap<Integer, T>(numberOfRecords);
       this.factory = factory;
    }
-   
-   public RecordMap(Message<?,?,?> message, MessageData messageData, int firstRecordByteOffset, int recordByteSize,
-         int numberOfRecords) {
+
+   public RecordMap(Message<?, ?, ?> message, MessageData messageData, int firstRecordByteOffset, int recordByteSize, int numberOfRecords) {
       super(message, "", 1, messageData, 0, 0);
-     NUMBER_OF_RECORDS = numberOfRecords;
+      NUMBER_OF_RECORDS = numberOfRecords;
       records = new HashMap<Integer, T>(numberOfRecords);
    }
-   
+
+   @Override
    public T get(int index) {
-      T val =  records.get(index);
-      if(val == null){
-         val = (T)factory.create(index);
-         for(Object obj: getElementPath()){
-        	 val.getElementPath().add(obj);
+      T val = records.get(index);
+      if (val == null) {
+         val = (T) factory.create(index);
+         for (Object obj : getElementPath()) {
+            val.getElementPath().add(obj);
          }
          records.put(index, val);
       }
       return val;
    }
 
-   public void addPath(Object... objs){
-	   for(Object obj: objs){
-		   getElementPath().add(obj);
-	   }
-	   getElementPath().add(this.getName());	  
-   }
-   
-   public void put(int index, RecordElement newRecord) {
-      records.put(index, (T)newRecord);
+   @Override
+   public void addPath(Object... objs) {
+      for (Object obj : objs) {
+         getElementPath().add(obj);
+      }
+      getElementPath().add(this.getName());
    }
 
-   public int length(){
+   @Override
+   public void put(int index, RecordElement newRecord) {
+      records.put(index, (T) newRecord);
+   }
+
+   @Override
+   public int length() {
       return this.NUMBER_OF_RECORDS;
    }
-   
+
    public MessageData getMessageData() {
       return messageData;
    }
 
-   public RecordMap<T> switchRecordMapMessages(Collection<? extends Message<?,?,?>> messages) {
+   public RecordMap<T> switchRecordMapMessages(Collection<? extends Message<?, ?, ?>> messages) {
       for (RecordElement element : this.records.values()) {
          element.switchMessages(messages);
       }
@@ -80,40 +82,42 @@ public class RecordMap<T extends RecordElement> extends RecordElement{
       return this;
    }
 
-//   public <U extends Message<? extends ITestEnvironmentMessageSystemAccessor, ? extends MessageData, U>> RecordMap<T> switchMessages(Collection<U> messages) {
-//	      for (RecordElement element : this.records.values()) {
-//	         element.switchMessages(messages);
-//	      }
-//
-//	      return this;
-//   }
-   
-   public  RecordMap<T> switchMessages(Collection<? extends Message<?,?,?>> messages) {
-	   for (RecordElement element : this.records.values()) {
-	         element.switchMessages(messages);
-	      }
-	   return this;
-  }
-   
+   //   public <U extends Message<? extends ITestEnvironmentMessageSystemAccessor, ? extends MessageData, U>> RecordMap<T> switchMessages(Collection<U> messages) {
+   //	      for (RecordElement element : this.records.values()) {
+   //	         element.switchMessages(messages);
+   //	      }
+   //
+   //	      return this;
+   //   }
+
+   @Override
+   public RecordMap<T> switchMessages(Collection<? extends Message<?, ?, ?>> messages) {
+      for (RecordElement element : this.records.values()) {
+         element.switchMessages(messages);
+      }
+      return this;
+   }
+
    @Override
    public void visit(IElementVisitor visitor) {
       visitor.asRecordMap(this);
    }
 
    public int compareTo(RecordElement o) {
-	   return 0;
+      return 0;
    }
 
    @Override
    public void zeroize() {
-	   super.zeroize();
-	   for(int i = 0; i < length(); i++){
-	      get(i).zeroize();
-	   }
+      super.zeroize();
+      for (int i = 0; i < length(); i++) {
+         get(i).zeroize();
+      }
    }
-   
-   public String getDescriptiveName(){
-      return String.format("%s[0...%d]", getName(), length()-1);
+
+   @Override
+   public String getDescriptiveName() {
+      return String.format("%s[0...%d]", getName(), length() - 1);
    }
-   
+
 }

@@ -46,7 +46,7 @@ public class BranchAliasesFieldTest {
 
       // Add
       FieldTestUtil.assertSetGet(field, Arrays.asList("C", "WhaT!21", "AgAin"), Arrays.asList("c", "what!21", "again"),
-            true);
+         true);
       field.clearDirty();
 
       // Add Empty

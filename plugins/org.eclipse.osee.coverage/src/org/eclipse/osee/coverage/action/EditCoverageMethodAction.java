@@ -66,7 +66,7 @@ public class EditCoverageMethodAction extends Action {
          CoverageItem item = (CoverageItem) coverage;
          if (!item.getCoverageMethod().isEnabled()) {
             AWorkbench.popup(String.format("Invalid to change locked Coverage Method [%s] for Coveage Item:\n\n[%s]",
-                  item.getCoverageMethod().getName(), item));
+               item.getCoverageMethod().getName(), item));
             return;
          }
       }
@@ -78,7 +78,7 @@ public class EditCoverageMethodAction extends Action {
       }
 
       CoverageMethodListDialog dialog =
-            new CoverageMethodListDialog(coverageXViewer.getCoverageOptionManager().getEnabled());
+         new CoverageMethodListDialog(coverageXViewer.getCoverageOptionManager().getEnabled());
       if (dialog.open() == 0) {
          Set<ICoverage> coveragesToSave = new HashSet<ICoverage>();
          for (ICoverage coverageItem : selectedCoverageEditorItem.getSelectedCoverageEditorItems()) {

@@ -26,7 +26,7 @@ import org.eclipse.ui.PlatformUI;
 
 public class AddToTestManagerEditorAction implements IEditorActionDelegate {
 
-
+   @Override
    public void run(IAction action) {
       // Get IFile of current editor
       IEditorPart editorPart = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
@@ -45,9 +45,11 @@ public class AddToTestManagerEditorAction implements IEditorActionDelegate {
       AddIFileToTestManager.getOperation().addIFileToScriptsPage(iFile.getLocation().toOSString());
    }
 
+   @Override
    public void selectionChanged(IAction action, ISelection selection) {
    }
 
+   @Override
    public void setActiveEditor(IAction action, IEditorPart targetEditor) {
    }
 

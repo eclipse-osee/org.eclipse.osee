@@ -37,6 +37,7 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
    /*
     * @see IContentProvider#dispose()
     */
+   @Override
    public void dispose() {
    }
 
@@ -53,6 +54,7 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
     * @param newInput the new input element, or <code>null</code> if the viewer does not have an input
     * @see IContentProvider#inputChanged(Viewer, Object, Object)
     */
+   @Override
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
    }
 
@@ -63,6 +65,7 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
     * 
     * @see ITreeContentProvider#getChildren(Object)
     */
+   @Override
    @SuppressWarnings("unchecked")
    public Object[] getChildren(Object parentElement) {
       if (parentElement instanceof Artifact) {
@@ -86,6 +89,7 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
    /*
     * @see ITreeContentProvider#getParent(Object)
     */
+   @Override
    public Object getParent(Object element) {
       if (element instanceof Artifact) {
          try {
@@ -104,10 +108,11 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
     * 
     * @see ITreeContentProvider#hasChildren(Object)
     */
+   @Override
    public boolean hasChildren(Object element) {
       /*
-       * If the item is an artifact, then use it's optimized check. If it is not an artifact, then
-       * resort to asking the general children
+       * If the item is an artifact, then use it's optimized check. If it is not an artifact, then resort to asking the
+       * general children
        */
       if (element instanceof Artifact) {
          Artifact artifact = (Artifact) element;
@@ -140,6 +145,7 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
     * 
     * @see IStructuredContentProvider#getElements(Object)
     */
+   @Override
    public Object[] getElements(Object element) {
       return getChildren(element);
    }

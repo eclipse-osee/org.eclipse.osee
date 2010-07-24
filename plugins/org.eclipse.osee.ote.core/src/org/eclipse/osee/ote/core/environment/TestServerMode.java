@@ -13,8 +13,6 @@ package org.eclipse.osee.ote.core.environment;
 import javax.print.attribute.EnumSyntax;
 import org.eclipse.osee.framework.jdk.core.util.EnumBase;
 
-
-
 /**
  * @author Robert A. Fisher
  */
@@ -22,8 +20,8 @@ public class TestServerMode extends EnumBase {
    /**
 	 * 
 	 */
-	private static final long serialVersionUID = 6600576749632500352L;
-	public static final TestServerMode MULTI = new TestServerMode(0);
+   private static final long serialVersionUID = 6600576749632500352L;
+   public static final TestServerMode MULTI = new TestServerMode(0);
    public static final TestServerMode SINGLE = new TestServerMode(1);
    private static final String[] stringTable = new String[] {"multi", "single"};
    private static final TestServerMode[] enumValueTable = new TestServerMode[] {MULTI, SINGLE};
@@ -40,10 +38,12 @@ public class TestServerMode extends EnumBase {
       return (TestServerMode) getEnum(value, enumValueTable);
    }
 
+   @Override
    protected String[] getStringTable() {
       return stringTable;
    }
 
+   @Override
    protected EnumSyntax[] getEnumValueTable() {
       return enumValueTable;
    }

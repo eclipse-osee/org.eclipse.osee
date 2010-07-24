@@ -16,7 +16,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateContributionManager;
@@ -47,9 +46,9 @@ public class OteNavigateViewItems extends XNavigateViewItems {
 
    private void addExtensionPointItems(List<XNavigateItem> items) {
       Collection<XNavigateExtensionPointData> oteNavigateItemExtensions =
-            XNavigateContributionManager.getNavigateItems(OteNavigateView.VIEW_ID);
+         XNavigateContributionManager.getNavigateItems(OteNavigateView.VIEW_ID);
       Map<String, XNavigateItem> categoryToNavigateItem =
-            createCategoriesAndAddToItems(items, oteNavigateItemExtensions);
+         createCategoriesAndAddToItems(items, oteNavigateItemExtensions);
       for (XNavigateExtensionPointData data : oteNavigateItemExtensions) {
          XNavigateItem item = categoryToNavigateItem.get(data.getCategory());
          try {

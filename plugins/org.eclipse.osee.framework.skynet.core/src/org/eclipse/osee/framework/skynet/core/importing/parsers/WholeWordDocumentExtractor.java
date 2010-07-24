@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 
 public class WholeWordDocumentExtractor extends AbstractArtifactExtractor {
+   @Override
    public String getDescription() {
       return "Extract all the content of each Word XML document as one artifact.";
    }
@@ -31,13 +32,15 @@ public class WholeWordDocumentExtractor extends AbstractArtifactExtractor {
          throw new OseeArgumentException("importFile can not be null");
       }
       RoughArtifact roughArtifact =
-            new RoughArtifact(RoughArtifactKind.PRIMARY, Lib.removeExtension(new File(source).getName()));
+         new RoughArtifact(RoughArtifactKind.PRIMARY, Lib.removeExtension(new File(source).getName()));
       collector.addRoughArtifact(roughArtifact);
       roughArtifact.addURIAttribute(CoreAttributeTypes.WHOLE_WORD_CONTENT, source);
    }
 
+   @Override
    public FileFilter getFileFilter() {
       return new FileFilter() {
+         @Override
          public boolean accept(File file) {
             return file.isDirectory() || file.isFile() && file.getName().endsWith(".xml");
          }

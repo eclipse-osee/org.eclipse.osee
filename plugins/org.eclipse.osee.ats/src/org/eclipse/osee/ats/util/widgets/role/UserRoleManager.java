@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
  */
 public class UserRoleManager {
 
-   private WeakReference<ReviewSMArtifact> artifactRef;
+   private final WeakReference<ReviewSMArtifact> artifactRef;
    private boolean enabled = true;
    private static String ATS_DEFECT_TAG = "AtsRole";
    private static String DEFECT_ITEM_TAG = "Role";
@@ -47,7 +47,9 @@ public class UserRoleManager {
    }
 
    public String getHtml() throws OseeCoreException {
-      if (getUserRoles().isEmpty()) return "";
+      if (getUserRoles().isEmpty()) {
+         return "";
+      }
       StringBuffer sb = new StringBuffer();
       sb.append(AHTML.addSpace(1) + AHTML.getLabelStr(AHTML.LABEL_FONT, "Defects"));
       sb.append(getTable());
@@ -65,7 +67,7 @@ public class UserRoleManager {
       Set<UserRole> uRoles = new HashSet<UserRole>();
       String xml = getArtifact().getSoleAttributeValue(REVIEW_DEFECT_ATTRIBUTE_NAME, "");
       Matcher m =
-            java.util.regex.Pattern.compile("<" + DEFECT_ITEM_TAG + ">(.*?)</" + DEFECT_ITEM_TAG + ">").matcher(xml);
+         java.util.regex.Pattern.compile("<" + DEFECT_ITEM_TAG + ">(.*?)</" + DEFECT_ITEM_TAG + ">").matcher(xml);
       while (m.find()) {
          UserRole item = new UserRole(m.group());
          uRoles.add(item);
@@ -95,23 +97,30 @@ public class UserRoleManager {
 
    public Set<UserRole> getUserRoles(Role role) throws OseeCoreException {
       Set<UserRole> roles = new HashSet<UserRole>();
-      for (UserRole uRole : getUserRoles())
-         if (uRole.getRole() == role) roles.add(uRole);
+      for (UserRole uRole : getUserRoles()) {
+         if (uRole.getRole() == role) {
+            roles.add(uRole);
+         }
+      }
       return roles;
    }
 
    public Set<User> getRoleUsers(Role role) throws OseeCoreException {
       Set<User> users = new HashSet<User>();
-      for (UserRole uRole : getUserRoles())
-         if (uRole.getRole() == role) users.add(uRole.getUser());
+      for (UserRole uRole : getUserRoles()) {
+         if (uRole.getRole() == role) {
+            users.add(uRole.getUser());
+         }
+      }
       return users;
    }
 
    private void saveRoleItems(Set<UserRole> defectItems, boolean persist, SkynetTransaction transaction) {
       try {
          StringBuffer sb = new StringBuffer("<" + ATS_DEFECT_TAG + ">");
-         for (UserRole item : defectItems)
+         for (UserRole item : defectItems) {
             sb.append(AXml.addTagData(DEFECT_ITEM_TAG, item.toXml()));
+         }
          sb.append("</" + ATS_DEFECT_TAG + ">");
          getArtifact().setSoleAttributeValue(REVIEW_DEFECT_ATTRIBUTE_NAME, sb.toString());
          updateAssignees();
@@ -133,7 +142,9 @@ public class UserRoleManager {
             found = true;
          }
       }
-      if (!found) roleItems.add(userRole);
+      if (!found) {
+         roleItems.add(userRole);
+      }
       saveRoleItems(roleItems, persist, transaction);
    }
 
@@ -141,18 +152,23 @@ public class UserRoleManager {
       // Set assignees based on roles that are not set as completed
       Set<User> assignees = new HashSet<User>();
       for (UserRole uRole : getUserRoles()) {
-         if (!uRole.isCompleted() && uRole.getUser() != null) assignees.add(uRole.getUser());
+         if (!uRole.isCompleted() && uRole.getUser() != null) {
+            assignees.add(uRole.getUser());
+         }
       }
       // If roles are all completed, then still need to select a user to assign to SMA
       if (assignees.isEmpty()) {
-         if (getUserRoles(Role.Author).size() > 0)
-            for (UserRole role : getUserRoles(Role.Author))
+         if (getUserRoles(Role.Author).size() > 0) {
+            for (UserRole role : getUserRoles(Role.Author)) {
                assignees.add(role.getUser());
-         else if (getUserRoles(Role.Moderator).size() > 0)
-            for (UserRole role : getUserRoles(Role.Moderator))
+            }
+         } else if (getUserRoles(Role.Moderator).size() > 0) {
+            for (UserRole role : getUserRoles(Role.Moderator)) {
                assignees.add(role.getUser());
-         else
+            }
+         } else {
             assignees.add(UserManager.getUser());
+         }
       }
       // Set assignees based on roles
       getArtifact().getStateMgr().setAssignees(assignees);
@@ -191,22 +207,31 @@ public class UserRoleManager {
 
    public int getNumMajor(User user) throws OseeCoreException {
       int x = 0;
-      for (DefectItem dItem : ((IReviewArtifact) getArtifact()).getDefectManager().getDefectItems())
-         if (dItem.getSeverity() == Severity.Major && dItem.getUser() == user) x++;
+      for (DefectItem dItem : ((IReviewArtifact) getArtifact()).getDefectManager().getDefectItems()) {
+         if (dItem.getSeverity() == Severity.Major && dItem.getUser() == user) {
+            x++;
+         }
+      }
       return x;
    }
 
    public int getNumMinor(User user) throws OseeCoreException {
       int x = 0;
-      for (DefectItem dItem : ((IReviewArtifact) getArtifact()).getDefectManager().getDefectItems())
-         if (dItem.getSeverity() == Severity.Minor && dItem.getUser() == user) x++;
+      for (DefectItem dItem : ((IReviewArtifact) getArtifact()).getDefectManager().getDefectItems()) {
+         if (dItem.getSeverity() == Severity.Minor && dItem.getUser() == user) {
+            x++;
+         }
+      }
       return x;
    }
 
    public int getNumIssues(User user) throws OseeCoreException {
       int x = 0;
-      for (DefectItem dItem : ((IReviewArtifact) getArtifact()).getDefectManager().getDefectItems())
-         if (dItem.getSeverity() == Severity.Issue && dItem.getUser() == user) x++;
+      for (DefectItem dItem : ((IReviewArtifact) getArtifact()).getDefectManager().getDefectItems()) {
+         if (dItem.getSeverity() == Severity.Issue && dItem.getUser() == user) {
+            x++;
+         }
+      }
       return x;
    }
 
@@ -220,10 +245,13 @@ public class UserRoleManager {
 
    public void rollupHoursSpentToReviewState(boolean persist, SkynetTransaction transaction) throws OseeCoreException {
       double hoursSpent = 0.0;
-      for (UserRole role : getUserRoles())
+      for (UserRole role : getUserRoles()) {
          hoursSpent += role.getHoursSpent() == null ? 0 : role.getHoursSpent();
-      StateMachineArtifact sma = (StateMachineArtifact) getArtifact();
+      }
+      StateMachineArtifact sma = getArtifact();
       sma.getStateMgr().setMetrics(hoursSpent, sma.getStateMgr().getPercentComplete(), true);
-      if (persist) getArtifact().persist(transaction);
+      if (persist) {
+         getArtifact().persist(transaction);
+      }
    }
 }

@@ -15,9 +15,8 @@ import org.xml.sax.Attributes;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
-public class Support extends ElementHandlers{
+public class Support extends ElementHandlers {
 
    /**
     * @param name

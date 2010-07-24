@@ -14,5 +14,7 @@ package org.eclipse.osee.framework.skynet.core.utility;
  * @author Ken J. Aguilar
  */
 public enum FileChangeType {
-   CREATED, MODIFIED, DELETED
+   CREATED,
+   MODIFIED,
+   DELETED
 }

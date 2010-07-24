@@ -25,7 +25,7 @@ public class XViewerSmaStateColumn extends XViewerValueColumn {
 
    public XViewerSmaStateColumn() {
       super(WorldXViewerFactory.COLUMN_NAMESPACE + "smaState", "State", 75, SWT.LEFT, true, SortDataType.String, false,
-            null);
+         null);
    }
 
    public XViewerSmaStateColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
@@ -41,7 +41,7 @@ public class XViewerSmaStateColumn extends XViewerValueColumn {
    @Override
    public XViewerSmaStateColumn copy() {
       return new XViewerSmaStateColumn(getId(), getName(), getWidth(), getAlign(), isShow(), getSortDataType(),
-            isMultiColumnEditable(), getDescription());
+         isMultiColumnEditable(), getDescription());
    }
 
    @Override

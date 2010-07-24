@@ -25,32 +25,32 @@ import org.eclipse.osee.framework.manager.servlet.internal.Activator;
  * @author Megumi Telles
  */
 public class ChangeBranchArchiveStateFunction extends AbstractOperation {
-	private final HttpServletRequest req;
-	private final HttpServletResponse resp;
-	private final IOseeBranchService branchService;
-	private final IDataTranslationService translationService;
+   private final HttpServletRequest req;
+   private final HttpServletResponse resp;
+   private final IOseeBranchService branchService;
+   private final IDataTranslationService translationService;
 
-	public ChangeBranchArchiveStateFunction(HttpServletRequest req, HttpServletResponse resp, IOseeBranchService branchService, IDataTranslationService translationService) {
-		super("Update Branch Archived State", Activator.PLUGIN_ID);
-		this.req = req;
-		this.resp = resp;
-		this.branchService = branchService;
-		this.translationService = translationService;
-	}
+   public ChangeBranchArchiveStateFunction(HttpServletRequest req, HttpServletResponse resp, IOseeBranchService branchService, IDataTranslationService translationService) {
+      super("Update Branch Archived State", Activator.PLUGIN_ID);
+      this.req = req;
+      this.resp = resp;
+      this.branchService = branchService;
+      this.translationService = translationService;
+   }
 
-	@Override
-	protected void doWork(IProgressMonitor monitor) throws Exception {
-		ChangeBranchArchiveStateRequest request =
-					translationService.convert(req.getInputStream(), CoreTranslatorId.CHANGE_BRANCH_ARCHIVE_STATE);
+   @Override
+   protected void doWork(IProgressMonitor monitor) throws Exception {
+      ChangeBranchArchiveStateRequest request =
+         translationService.convert(req.getInputStream(), CoreTranslatorId.CHANGE_BRANCH_ARCHIVE_STATE);
 
-		IOperation subOp = branchService.updateBranchArchiveState(monitor, request);
-		doSubWork(subOp, monitor, 0.90);
+      IOperation subOp = branchService.updateBranchArchiveState(monitor, request);
+      doSubWork(subOp, monitor, 0.90);
 
-		resp.setStatus(HttpServletResponse.SC_ACCEPTED);
-		resp.setContentType("text/plain");
-		resp.setCharacterEncoding("UTF-8");
-		resp.getWriter().write("Purge was successful");
-		resp.getWriter().flush();
-		monitor.worked(calculateWork(0.10));
-	}
+      resp.setStatus(HttpServletResponse.SC_ACCEPTED);
+      resp.setContentType("text/plain");
+      resp.setCharacterEncoding("UTF-8");
+      resp.getWriter().write("Purge was successful");
+      resp.getWriter().flush();
+      monitor.worked(calculateWork(0.10));
+   }
 }

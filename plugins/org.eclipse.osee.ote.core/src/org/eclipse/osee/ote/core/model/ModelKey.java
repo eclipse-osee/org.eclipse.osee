@@ -20,7 +20,7 @@ import java.io.Serializable;
  * @author Andrew M. Finkbeiner
  * @param <M> 
  */
-public class ModelKey<M extends IModel> implements Serializable, Comparable{
+public class ModelKey<M extends IModel> implements Serializable, Comparable {
    /**
     * 
     */
@@ -35,28 +35,26 @@ public class ModelKey<M extends IModel> implements Serializable, Comparable{
    public ModelKey(String className) {
       this(className, null, null);
    }
-   
-   public ModelKey(ModelKey key)
-   {
-      this( key.className, key.name, null);
+
+   public ModelKey(ModelKey key) {
+      this(key.className, key.name, null);
    }
-   
+
    /**
     * @param className
     * @param name
     */
    public ModelKey(Class<M> clazz) {
-      this(clazz.getCanonicalName(),null, clazz);
+      this(clazz.getCanonicalName(), null, clazz);
    }
-   
+
    /**
     * @param className
     * @param name
     */
    public ModelKey(Class<M> clazz, String name) {
-      this(clazz.getCanonicalName(),name, clazz);
+      this(clazz.getCanonicalName(), name, clazz);
    }
-
 
    /**
     * @param className
@@ -69,64 +67,68 @@ public class ModelKey<M extends IModel> implements Serializable, Comparable{
       this.modelClass = modelClass;
    }
 
-
    /**
-    * return the instance class for the model specified by this key.  This class MUST match for 
-    * all keys specifying this particular model.
-    * @return The class for the model described by this key. This may be null if no class name is available but in this case
-    * {@link #getClassName()} must NOT return null.
+    * return the instance class for the model specified by this key. This class MUST match for all keys specifying this
+    * particular model.
+    * 
+    * @return The class for the model described by this key. This may be null if no class name is available but in this
+    * case {@link #getClassName()} must NOT return null.
     */
-   public Class<M> getModelClass()
-   {
+   public Class<M> getModelClass() {
       return this.modelClass;
    }
-   public void setModelClass( Class<M> modelClass)
-   {
+
+   public void setModelClass(Class<M> modelClass) {
       this.modelClass = modelClass;
    }
-   
+
    /**
-    * return the name of the model specified by this key.  
+    * return the name of the model specified by this key.
+    * 
     * @return The name for the model described by this key
     */
-   public String getName()
-   {
-      if( this.name == null )
+   public String getName() {
+      if (this.name == null) {
          this.name = this.getClassName().substring(this.getClassName().lastIndexOf(".") + 1);
+      }
       return this.name;
    }
+
    /**
-    * return the fully qualified class name for the model specified by this key.  This class name MUST match for 
-    * all keys specifying this particular model.  
-    * @return The class name for the model described by this key. This may be null if no class name is available but in this case
-    * {@link #getModelClass()} must NOT return null.  
+    * return the fully qualified class name for the model specified by this key. This class name MUST match for all keys
+    * specifying this particular model.
+    * 
+    * @return The class name for the model described by this key. This may be null if no class name is available but in
+    * this case {@link #getModelClass()} must NOT return null.
     */
-   public String getClassName()
-   {
-      if( className != null )
+   public String getClassName() {
+      if (className != null) {
          return this.className;
-      else if( modelClass != null )
+      } else if (modelClass != null) {
          return modelClass.getCanonicalName();
-      else
+      } else {
          return null;
+      }
    }
-   
-   public boolean equals(Object obj)
-   {
-      return getClassName().equals(((ModelKey)obj).getClassName());
+
+   @Override
+   public boolean equals(Object obj) {
+      return getClassName().equals(((ModelKey) obj).getClassName());
    }
-   
-   public int hashCode()
-   {
+
+   @Override
+   public int hashCode() {
       return getClassName().hashCode();
    }
-   
-   public int compareTo(Object o ) {
-      if( !(o instanceof ModelKey))
+
+   @Override
+   public int compareTo(Object o) {
+      if (!(o instanceof ModelKey)) {
          return -1;
-      
-      ModelKey otherKey = (ModelKey)o;
+      }
+
+      ModelKey otherKey = (ModelKey) o;
       return this.getName().compareTo(otherKey.getName());
    }
-   
+
 }

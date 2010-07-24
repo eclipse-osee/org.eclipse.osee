@@ -26,12 +26,12 @@ import org.eclipse.swt.widgets.TableColumn;
 
 public class FilterTableViewer {
 
-   private Table table;
+   private final Table table;
    private TableViewer tableViewer;
 
    private FilterModelList filterList;
 
-   private String[] columnNames = new String[] {"Remove", "Filter", "Type", "Value"};
+   private final String[] columnNames = new String[] {"Remove", "Filter", "Type", "Value"};
    private static int[] columnWidths = new int[] {75, 100, 100, 100, 200};
 
    public static final int DELETE_NUM = 0;
@@ -138,28 +138,38 @@ public class FilterTableViewer {
     */
    class FilterContentProvider implements IStructuredContentProvider, IFilterListViewer {
 
+      @Override
       public void inputChanged(Viewer v, Object oldInput, Object newInput) {
-         if (newInput != null) filterList.addChangeListener(this);
-         if (oldInput != null) filterList.removeChangeListener(this);
+         if (newInput != null) {
+            filterList.addChangeListener(this);
+         }
+         if (oldInput != null) {
+            filterList.removeChangeListener(this);
+         }
       }
 
+      @Override
       public void dispose() {
          filterList.removeChangeListener(this);
       }
 
       // Return the tasks as an array of Objects
+      @Override
       public Object[] getElements(Object parent) {
          return filterList.getFilters().toArray();
       }
 
+      @Override
       public void addFilter(FilterModel filter) {
          tableViewer.add(filter);
       }
 
+      @Override
       public void removeFilter(FilterModel filter) {
          tableViewer.remove(filter);
       }
 
+      @Override
       public void updateFilter(FilterModel filter) {
          tableViewer.update(filter, null);
       }

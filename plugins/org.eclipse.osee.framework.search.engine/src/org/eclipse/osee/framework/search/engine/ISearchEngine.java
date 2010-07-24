@@ -21,7 +21,7 @@ public interface ISearchEngine {
    /**
     * Searches tagged items for matches meeting criteria specified. If branchId is less than 0, search will include all
     * branches in the system.
-    *
+    * 
     * @param searchString
     * @param branchId
     * @param options
@@ -33,7 +33,7 @@ public interface ISearchEngine {
 
    /**
     * Get statistics
-    *
+    * 
     * @return search statistics
     */
    SearchStatistics getStatistics();

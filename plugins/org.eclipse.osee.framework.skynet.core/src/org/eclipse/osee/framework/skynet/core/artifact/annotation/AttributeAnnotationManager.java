@@ -37,7 +37,7 @@ public class AttributeAnnotationManager {
 
    /**
     * @return annotations stored in "Annotation" attribute of given artifact. NOTE: This is not a full list of
-    *         annotation for this artifact as annotations can be added via extension point.
+    * annotation for this artifact as annotations can be added via extension point.
     */
    public List<ArtifactAnnotation> getAnnotations() throws OseeCoreException {
       List<ArtifactAnnotation> annotations = new ArrayList<ArtifactAnnotation>();

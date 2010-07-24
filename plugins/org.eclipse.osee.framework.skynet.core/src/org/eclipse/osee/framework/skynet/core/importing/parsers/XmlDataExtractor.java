@@ -38,6 +38,7 @@ public class XmlDataExtractor extends AbstractArtifactExtractor {
    @Override
    public FileFilter getFileFilter() {
       return new FileFilter() {
+         @Override
          public boolean accept(File file) {
             return file.isDirectory() || file.isFile() && file.getName().endsWith(".xml");
          }

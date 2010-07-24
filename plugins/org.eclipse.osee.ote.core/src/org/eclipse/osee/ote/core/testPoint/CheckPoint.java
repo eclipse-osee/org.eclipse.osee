@@ -15,7 +15,6 @@ import org.eclipse.osee.ote.core.environment.interfaces.ITestPoint;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-
 /**
  * @author Robert A. Fisher
  */
@@ -28,13 +27,14 @@ public class CheckPoint implements ITestPoint {
    private final int numTransmissions;
 
    /**
-    * CheckPoint objects are used for describing the result of a check and can be logged directly to a the logger as a testPoint or can be added to a CheckGroup
-    * if it is just a part of a larger series of checks being performed that all constitute one overall check.
+    * CheckPoint objects are used for describing the result of a check and can be logged directly to a the logger as a
+    * testPoint or can be added to a CheckGroup if it is just a part of a larger series of checks being performed that
+    * all constitute one overall check.
     * 
-    * @param testPointName 	The item being tested. (i.e. TSD Button).
-    * @param expected 		The expected condition for a pass point.
-    * @param actual 		The actual condition during the check.
-    * @param pass 			The result of the check.
+    * @param testPointName The item being tested. (i.e. TSD Button).
+    * @param expected The expected condition for a pass point.
+    * @param actual The actual condition during the check.
+    * @param pass The result of the check.
     */
    public CheckPoint(String testPointName, String expected, String actual, boolean pass, long elapsedTime) {
       this(testPointName, expected, actual, pass, 0, elapsedTime);
@@ -49,17 +49,18 @@ public class CheckPoint implements ITestPoint {
       this.numTransmissions = numTransmissions;
    }
 
-   public CheckPoint(String testPointName, Object expected, Object actual, boolean pass, long elapsedTime){
+   public CheckPoint(String testPointName, Object expected, Object actual, boolean pass, long elapsedTime) {
       this(testPointName, expected.toString(), actual.toString(), pass, elapsedTime);
    }
 
-   public CheckPoint(String testPointName, Object expected, Object actual, boolean pass){
+   public CheckPoint(String testPointName, Object expected, Object actual, boolean pass) {
       this(testPointName, expected.toString(), actual.toString(), pass, 0);
    }
 
    public CheckPoint(String testPointName, String expected, String actual, boolean pass) {
-      this(testPointName, expected, actual, pass, 0);      
+      this(testPointName, expected, actual, pass, 0);
    }
+
    /**
     * @return Returns the actual.
     */
@@ -77,15 +78,16 @@ public class CheckPoint implements ITestPoint {
    /**
     * @return Returns the pass.
     */
+   @Override
    public boolean isPass() {
       return pass;
    }
-
 
    public void setExpected(String expected) {
       this.expected = expected;
    }
 
+   @Override
    public Element toXml(Document doc) {
       Element checkPointElement = doc.createElement("CheckPoint");
 
@@ -93,14 +95,15 @@ public class CheckPoint implements ITestPoint {
       checkPointElement.appendChild(Jaxp.createElement(doc, "Expected", expected));
       checkPointElement.appendChild(Jaxp.createElement(doc, "Actual", actual));
       checkPointElement.appendChild(Jaxp.createElement(doc, "Result", pass ? "PASSED" : "FAILED"));
-      checkPointElement.appendChild(Jaxp.createElement(doc, "ElapsedTime", Long.toString(this.elpasedTime)));   
-      checkPointElement.appendChild(Jaxp.createElement(doc, "NumberOfTransmissions", Integer.toString(this.numTransmissions)));  
+      checkPointElement.appendChild(Jaxp.createElement(doc, "ElapsedTime", Long.toString(this.elpasedTime)));
+      checkPointElement.appendChild(Jaxp.createElement(doc, "NumberOfTransmissions",
+         Integer.toString(this.numTransmissions)));
 
       return checkPointElement;
    }
-   
+
    public String getTestPointName() {
-	   return testPointName;
+      return testPointName;
    }
 
    /**
@@ -117,25 +120,22 @@ public class CheckPoint implements ITestPoint {
       return numTransmissions;
    }
 
-   private String convertNonPrintableCharacers( String message)
-   {
+   private String convertNonPrintableCharacers(String message) {
       StringBuffer buff = new StringBuffer();
       char currentChar;
-      for( int i = 0 ; i < message.length() ; i++ )
-      {
+      for (int i = 0; i < message.length(); i++) {
          currentChar = message.charAt(i);
-         if( currentChar < 32 || currentChar > 126 )
-         {
-            buff.append(" ASCII=" + (int)currentChar + " ");
-         } else if (currentChar == '<'){
+         if (currentChar < 32 || currentChar > 126) {
+            buff.append(" ASCII=" + (int) currentChar + " ");
+         } else if (currentChar == '<') {
             buff.append(" less-than ");
-         } else if (currentChar == '>'){
+         } else if (currentChar == '>') {
             buff.append(" greater-than ");
-         } else if (currentChar == '&'){
+         } else if (currentChar == '&') {
             buff.append(" ampersand ");
-         }
-         else
+         } else {
             buff.append(currentChar);
+         }
       }
 
       return buff.toString();

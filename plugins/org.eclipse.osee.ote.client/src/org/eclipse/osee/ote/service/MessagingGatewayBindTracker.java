@@ -22,13 +22,12 @@ import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public class MessagingGatewayBindTracker extends ServiceTracker {
 
-   private EndpointSend send;
-   private EndpointReceive receive;
-   
+   private final EndpointSend send;
+   private final EndpointReceive receive;
+
    public MessagingGatewayBindTracker(BundleContext context, EndpointSend send, EndpointReceive receive) {
       super(context, MessagingGateway.class.getName(), null);
       this.send = send;
@@ -38,15 +37,19 @@ public class MessagingGatewayBindTracker extends ServiceTracker {
    @Override
    public Object addingService(ServiceReference reference) {
       Object obj = context.getService(reference);
-      MessagingGateway messagingGateway = (MessagingGateway)obj;
-      if(!messagingGateway.bind(send)){
-         OseeLog.log(Activator.class, Level.SEVERE, String.format("Unable to bind %s to the MessagingGateway.", send.toString()));
+      MessagingGateway messagingGateway = (MessagingGateway) obj;
+      if (!messagingGateway.bind(send)) {
+         OseeLog.log(Activator.class, Level.SEVERE,
+            String.format("Unable to bind %s to the MessagingGateway.", send.toString()));
       }
-      if(!messagingGateway.bind(receive)){
-         OseeLog.log(Activator.class, Level.SEVERE, String.format("Unable to bind %s to the MessagingGateway.", receive.toString()));
+      if (!messagingGateway.bind(receive)) {
+         OseeLog.log(Activator.class, Level.SEVERE,
+            String.format("Unable to bind %s to the MessagingGateway.", receive.toString()));
       }
-      if(!messagingGateway.bindSendProtocol(OteClientEndpointSend.OTE_CLIENT_SEND_PROTOCOL, send)){
-         OseeLog.log(Activator.class, Level.SEVERE, String.format("Unable to bind %s to %s through the MessagingGateway.", OteClientEndpointSend.OTE_CLIENT_SEND_PROTOCOL.toString(), send.toString()));
+      if (!messagingGateway.bindSendProtocol(OteClientEndpointSend.OTE_CLIENT_SEND_PROTOCOL, send)) {
+         OseeLog.log(Activator.class, Level.SEVERE, String.format(
+            "Unable to bind %s to %s through the MessagingGateway.",
+            OteClientEndpointSend.OTE_CLIENT_SEND_PROTOCOL.toString(), send.toString()));
       }
       return super.addingService(reference);
    }
@@ -54,21 +57,21 @@ public class MessagingGatewayBindTracker extends ServiceTracker {
    @Override
    public void removedService(ServiceReference reference, Object service) {
       Object obj = context.getService(reference);
-      MessagingGateway messagingGateway = (MessagingGateway)obj;
-      if(!messagingGateway.unbindSendProtocol(OteClientEndpointSend.OTE_CLIENT_SEND_PROTOCOL, send)){
-         OseeLog.log(Activator.class, Level.SEVERE, String.format("Unable to bind %s to %s through the MessagingGateway.", OteClientEndpointSend.OTE_CLIENT_SEND_PROTOCOL.toString(), send.toString()));
-      }    
-      if(!messagingGateway.unbind(send)){
-         OseeLog.log(Activator.class, Level.SEVERE, String.format("Unable to unbind %s to the MessagingGateway.", send.toString()));
+      MessagingGateway messagingGateway = (MessagingGateway) obj;
+      if (!messagingGateway.unbindSendProtocol(OteClientEndpointSend.OTE_CLIENT_SEND_PROTOCOL, send)) {
+         OseeLog.log(Activator.class, Level.SEVERE, String.format(
+            "Unable to bind %s to %s through the MessagingGateway.",
+            OteClientEndpointSend.OTE_CLIENT_SEND_PROTOCOL.toString(), send.toString()));
       }
-      if(!messagingGateway.unbind(receive)){
-         OseeLog.log(Activator.class, Level.SEVERE, String.format("Unable to bind %s to the MessagingGateway.", receive.toString()));
+      if (!messagingGateway.unbind(send)) {
+         OseeLog.log(Activator.class, Level.SEVERE,
+            String.format("Unable to unbind %s to the MessagingGateway.", send.toString()));
+      }
+      if (!messagingGateway.unbind(receive)) {
+         OseeLog.log(Activator.class, Level.SEVERE,
+            String.format("Unable to bind %s to the MessagingGateway.", receive.toString()));
       }
       super.removedService(reference, service);
    }
-   
-   
 
-   
-   
 }

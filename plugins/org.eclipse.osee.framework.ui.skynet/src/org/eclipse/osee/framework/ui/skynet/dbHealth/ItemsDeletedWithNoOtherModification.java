@@ -49,17 +49,17 @@ public class ItemsDeletedWithNoOtherModification extends DatabaseHealthOperation
       }
    }
    private static final String COMMITTED_NEW_AND_DELETED_ARTIFACTS =
-         "SELECT txs1.gamma_id, txs1.transaction_id, txs1.branch_id, art1.art_id, 0 as attr_id, 0 as rel_link_id FROM osee_txs txs1, osee_artifact art1 WHERE txs1.tx_current = ? AND txs1.mod_type = ? AND txs1.gamma_id = art1.gamma_id AND NOT EXISTS (SELECT ('x') FROM osee_txs txs2, osee_artifact art2 WHERE txs2.mod_type != ? AND txs1.branch_id = txs2.branch_id AND txs2.gamma_id = art2.gamma_id AND art2.art_id = art1.art_id)";
+      "SELECT txs1.gamma_id, txs1.transaction_id, txs1.branch_id, art1.art_id, 0 as attr_id, 0 as rel_link_id FROM osee_txs txs1, osee_artifact art1 WHERE txs1.tx_current = ? AND txs1.mod_type = ? AND txs1.gamma_id = art1.gamma_id AND NOT EXISTS (SELECT ('x') FROM osee_txs txs2, osee_artifact art2 WHERE txs2.mod_type != ? AND txs1.branch_id = txs2.branch_id AND txs2.gamma_id = art2.gamma_id AND art2.art_id = art1.art_id)";
    private static final String COMMITTED_NEW_AND_DELETED_ATTRIBUTES =
-         "SELECT txs1.gamma_id, txs1.transaction_id, txs1.branch_id, 0 as art_id, att1.attr_id, 0 as rel_link_id FROM osee_txs txs1, osee_attribute att1, osee_branch brn WHERE txs1.tx_current = ? AND txs1.mod_type = ? AND txs1.gamma_id = att1.gamma_id AND txs1.branch_id = brn.branch_id AND brn.branch_type != " + BranchType.MERGE.getValue() + " AND NOT EXISTS (SELECT ('x') FROM osee_txs txs2, osee_attribute att2 WHERE txs2.mod_type != ? AND txs1.branch_id = txs2.branch_id AND txs2.gamma_id = att2.gamma_id AND att2.attr_id = att1.attr_id)";
+      "SELECT txs1.gamma_id, txs1.transaction_id, txs1.branch_id, 0 as art_id, att1.attr_id, 0 as rel_link_id FROM osee_txs txs1, osee_attribute att1, osee_branch brn WHERE txs1.tx_current = ? AND txs1.mod_type = ? AND txs1.gamma_id = att1.gamma_id AND txs1.branch_id = brn.branch_id AND brn.branch_type != " + BranchType.MERGE.getValue() + " AND NOT EXISTS (SELECT ('x') FROM osee_txs txs2, osee_attribute att2 WHERE txs2.mod_type != ? AND txs1.branch_id = txs2.branch_id AND txs2.gamma_id = att2.gamma_id AND att2.attr_id = att1.attr_id)";
    private static final String COMMITTED_NEW_AND_DELETED_RELATIONS =
-         "SELECT txs1.gamma_id, txs1.transaction_id, txs1.branch_id, 0 as art_id, 0 as attr_id, rel1.rel_link_id FROM osee_txs txs1, osee_relation_link rel1 WHERE txs1.tx_current = ? AND txs1.mod_type = ? AND txs1.gamma_id = rel1.gamma_id AND NOT EXISTS (SELECT ('x') FROM osee_txs txs2, osee_relation_link rel2 WHERE txs2.mod_type != ? AND txs1.branch_id = txs2.branch_id AND txs2.gamma_id = rel2.gamma_id AND rel2.rel_link_id = rel1.rel_link_id)";
+      "SELECT txs1.gamma_id, txs1.transaction_id, txs1.branch_id, 0 as art_id, 0 as attr_id, rel1.rel_link_id FROM osee_txs txs1, osee_relation_link rel1 WHERE txs1.tx_current = ? AND txs1.mod_type = ? AND txs1.gamma_id = rel1.gamma_id AND NOT EXISTS (SELECT ('x') FROM osee_txs txs2, osee_relation_link rel2 WHERE txs2.mod_type != ? AND txs1.branch_id = txs2.branch_id AND txs2.gamma_id = rel2.gamma_id AND rel2.rel_link_id = rel1.rel_link_id)";
 
    private static final String REMOVE_NOT_ADDRESSED_GAMMAS =
-         "DELETE FROM osee_txs WHERE gamma_id = ? AND transaction_id = ?";
+      "DELETE FROM osee_txs WHERE gamma_id = ? AND transaction_id = ?";
 
-   private static final String[] COLUMN_HEADER =
-         {"Gamma Id", "Transaction Id", "Branch Id", "Art id", "Attribute Id", "Rel Link Id"};
+   private static final String[] COLUMN_HEADER = {"Gamma Id", "Transaction Id", "Branch Id", "Art id", "Attribute Id",
+      "Rel Link Id"};
 
    private Set<LocalValues> addressing = null;
 
@@ -73,8 +73,8 @@ public class ItemsDeletedWithNoOtherModification extends DatabaseHealthOperation
          chStmt.runPreparedQuery(sql, txChange.getValue(), modificationType.getValue(), modificationType.getValue());
          while (chStmt.next()) {
             addressing.add(new LocalValues(chStmt.getInt("art_id"), chStmt.getInt("attr_id"),
-                  chStmt.getInt("branch_id"), chStmt.getInt("gamma_id"), chStmt.getInt("rel_link_id"),
-                  chStmt.getInt("transaction_id")));
+               chStmt.getInt("branch_id"), chStmt.getInt("gamma_id"), chStmt.getInt("rel_link_id"),
+               chStmt.getInt("transaction_id")));
          }
       } finally {
          chStmt.close();
@@ -153,8 +153,8 @@ public class ItemsDeletedWithNoOtherModification extends DatabaseHealthOperation
             relLinkCount++;
          }
          sbFull.append(AHTML.addRowMultiColumnTable(new String[] {String.valueOf(value.gammaId),
-               String.valueOf(value.transactionId), String.valueOf(value.branchId), String.valueOf(value.artId),
-               String.valueOf(value.attributeId), String.valueOf(value.relLinkId)}));
+            String.valueOf(value.transactionId), String.valueOf(value.branchId), String.valueOf(value.artId),
+            String.valueOf(value.attributeId), String.valueOf(value.relLinkId)}));
       }
       builder.append(verify ? "Found " : "Fixed ");
       builder.append(String.valueOf(artifactCount));

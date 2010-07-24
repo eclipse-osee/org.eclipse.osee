@@ -12,7 +12,6 @@ package org.eclipse.osee.ote.core.framework.saxparse;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.Actual;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.AdditionalInfo;
@@ -78,13 +77,8 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 /**
- * @author Andrew M. Finkbeiner
- *
- *XMLReader xmlReader = XMLReaderFactory.createXMLReader();
-      CollectionParser handler = new CollectionParser(collectors);
-      xmlReader.setContentHandler(handler);
-      xmlReader.parse(new InputSource(inputStream));
- *
+ * @author Andrew M. Finkbeiner XMLReader xmlReader = XMLReaderFactory.createXMLReader(); CollectionParser handler = new
+ * CollectionParser(collectors); xmlReader.setContentHandler(handler); xmlReader.parse(new InputSource(inputStream));
  */
 public class OteSaxHandler extends AbstractSaxHandler {
 
@@ -160,50 +154,50 @@ public class OteSaxHandler extends AbstractSaxHandler {
       ElementHandlers handler;
 
       handler = handlers.get("*");
-      if(handler != null){
+      if (handler != null) {
          handler.endElementFound(uri, localName, name, stripCData(getContents().trim()));
       }
-      
+
       handler = handlers.get(name);
-      if(handler != null){
+      if (handler != null) {
          handler.endElementFound(uri, localName, name, stripCData(getContents().trim()));
       }
    }
 
-   private String stripCData(String content){
-      if(content.startsWith("<![CDATA[")){
-         return content.subSequence(9, content.length()-3).toString();
+   private String stripCData(String content) {
+      if (content.startsWith("<![CDATA[")) {
+         return content.subSequence(9, content.length() - 3).toString();
       } else {
          return content;
       }
-         
+
    }
-   
+
    @Override
    public void startElementFound(String uri, String localName, String name, Attributes attributes) throws SAXException {
       ElementHandlers handler;
-      
+
       handler = handlers.get("*");
-      if(handler != null){
+      if (handler != null) {
          handler.startElementFound(uri, localName, name, attributes);
       }
-      
+
       handler = handlers.get(name);
-      if(handler != null){
+      if (handler != null) {
          handler.startElementFound(uri, localName, name, attributes);
       } else {
          System.out.println(name);
       }
    }
-   
-   public void addHandlers(ElementHandlers handler) throws Exception{
+
+   public void addHandlers(ElementHandlers handler) throws Exception {
       Object obj = handlers.put(handler.getElementName(), handler);
-      if(obj != null){
+      if (obj != null) {
          throw new Exception("Duplicate handler.");
       }
    }
-   
-   public ElementHandlers getHandler(String elementName){
+
+   public ElementHandlers getHandler(String elementName) {
       return handlers.get(elementName);
    }
 }

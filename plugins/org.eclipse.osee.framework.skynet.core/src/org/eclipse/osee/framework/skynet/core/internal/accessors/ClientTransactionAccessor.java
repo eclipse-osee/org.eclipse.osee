@@ -72,12 +72,12 @@ public class ClientTransactionAccessor implements ITransactionDataAccessor {
       parameters.put("function", CacheOperation.UPDATE.name());
 
       TransactionCacheUpdateResponse response =
-            HttpClientMessage.send(OseeServerContext.CACHE_CONTEXT, parameters,
-                  CoreTranslatorId.OSEE_CACHE_UPDATE_REQUEST, updateRequest, CoreTranslatorId.TX_CACHE_UPDATE_RESPONSE);
+         HttpClientMessage.send(OseeServerContext.CACHE_CONTEXT, parameters,
+            CoreTranslatorId.OSEE_CACHE_UPDATE_REQUEST, updateRequest, CoreTranslatorId.TX_CACHE_UPDATE_RESPONSE);
       for (TransactionRecord row : response.getTxRows()) {
          TransactionRecord record =
-               factory.createOrUpdate(cache, row.getId(), row.getBranchId(), row.getComment(), row.getTimeStamp(),
-                     row.getAuthor(), row.getCommit(), row.getTxType());
+            factory.createOrUpdate(cache, row.getId(), row.getBranchId(), row.getComment(), row.getTimeStamp(),
+               row.getAuthor(), row.getCommit(), row.getTxType());
          record.setBranchCache(branchCache);
          record.clearDirty();
       }

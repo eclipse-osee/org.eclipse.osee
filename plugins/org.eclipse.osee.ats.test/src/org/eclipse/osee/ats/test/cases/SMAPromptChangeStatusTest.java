@@ -15,10 +15,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import java.util.Collection;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
-import org.eclipse.osee.ats.artifact.TaskArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact.TransitionOption;
+import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact.TaskStates;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.test.util.DemoTestUtil;
@@ -63,7 +63,7 @@ public class SMAPromptChangeStatusTest {
 
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
       Collection<TaskArtifact> tasks =
-            DemoTestUtil.createSimpleTasks(teamArt, getClass().getSimpleName() + "_NoRes", 4, transaction);
+         DemoTestUtil.createSimpleTasks(teamArt, getClass().getSimpleName() + "_NoRes", 4, transaction);
       transaction.execute();
 
       assertTrue(tasks.size() == 4);
@@ -98,7 +98,7 @@ public class SMAPromptChangeStatusTest {
 
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
       Collection<TaskArtifact> tasks =
-            DemoTestUtil.createSimpleTasks(teamArt, getClass().getSimpleName() + "_Res", 4, transaction);
+         DemoTestUtil.createSimpleTasks(teamArt, getClass().getSimpleName() + "_Res", 4, transaction);
       transaction.execute();
 
       assertTrue(tasks.size() == 4);
@@ -109,26 +109,26 @@ public class SMAPromptChangeStatusTest {
 
       // Change two to 100, 1 hr split
       promptChangeStatus.performChangeStatus(optionsRule.getOptions(),
-            SimpleTaskResolutionOptionsRule.States.Complete.name(), 1, 100, true, true);
+         SimpleTaskResolutionOptionsRule.States.Complete.name(), 1, 100, true, true);
       SMATestUtil.validateSMAs(tasks, TaskStates.Completed.name(), 100, 0.25);
 
       // Change two to 100, 1 hr split
       // hours should be added to inwork state; make sure completed state isn't statused
       promptChangeStatus.performChangeStatus(optionsRule.getOptions(),
-            SimpleTaskResolutionOptionsRule.States.Complete.name(), 1, 100, true, true);
+         SimpleTaskResolutionOptionsRule.States.Complete.name(), 1, 100, true, true);
       SMATestUtil.validateSMAs(tasks, TaskStates.Completed.name(), 100, 0.50);
 
       // Change two to 99, 1 hr split
       // transitions to InWork and adds hours
       // make sure hours not added to completed state
       promptChangeStatus.performChangeStatus(optionsRule.getOptions(),
-            SimpleTaskResolutionOptionsRule.States.In_Work.name(), 1, 99, true, true);
+         SimpleTaskResolutionOptionsRule.States.In_Work.name(), 1, 99, true, true);
       SMATestUtil.validateSMAs(tasks, TaskStates.InWork.name(), 99, 0.75);
 
       // Change two to 55, 0
       // no transition, no hours spent
       promptChangeStatus.performChangeStatus(optionsRule.getOptions(),
-            SimpleTaskResolutionOptionsRule.States.In_Work.name(), 0, 55, true, true);
+         SimpleTaskResolutionOptionsRule.States.In_Work.name(), 0, 55, true, true);
       SMATestUtil.validateSMAs(tasks, TaskStates.InWork.name(), 55, 0.75);
    }
 
@@ -136,7 +136,7 @@ public class SMAPromptChangeStatusTest {
    public void testChangeStatusFailsIfTaskCancelled() throws Exception {
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
       Collection<TaskArtifact> tasks =
-            DemoTestUtil.createSimpleTasks(teamArt, getClass().getSimpleName() + "_Cancel", 2, transaction);
+         DemoTestUtil.createSimpleTasks(teamArt, getClass().getSimpleName() + "_Cancel", 2, transaction);
       transaction.execute();
 
       assertTrue(tasks.size() == 2);
@@ -157,7 +157,7 @@ public class SMAPromptChangeStatusTest {
    public void testChangeStatusFailsIfTaskWrongRelatedToState() throws Exception {
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
       Collection<TaskArtifact> tasks =
-            DemoTestUtil.createSimpleTasks(teamArt, getClass().getSimpleName() + "_RelState", 2, transaction);
+         DemoTestUtil.createSimpleTasks(teamArt, getClass().getSimpleName() + "_RelState", 2, transaction);
       transaction.execute();
 
       assertTrue(tasks.size() == 2);
@@ -166,7 +166,7 @@ public class SMAPromptChangeStatusTest {
       // test that if task not in related-to state of workflows's current status, can't change status
       transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
       taskArt.setSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(),
-            DefaultTeamState.Analyze.name());
+         DefaultTeamState.Analyze.name());
       transaction.execute();
       SMAPromptChangeStatus promptChangeStatus = new SMAPromptChangeStatus(tasks);
       Result result = promptChangeStatus.isValidToChangeStatus();

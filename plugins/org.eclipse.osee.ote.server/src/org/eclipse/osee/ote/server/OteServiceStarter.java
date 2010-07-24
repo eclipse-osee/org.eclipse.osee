@@ -17,9 +17,9 @@ import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentServiceC
 public interface OteServiceStarter {
 
    public IHostTestEnvironment start(IServiceConnector serviceSideConnector, ITestEnvironmentServiceConfig config, PropertyParamter propertyParameter, String environmentFactoryClass) throws Exception;
-   
+
    public IHostTestEnvironment start(IServiceConnector serviceSideConnector, ITestEnvironmentServiceConfig config, PropertyParamter propertyParameter, TestEnvironmentFactory factory) throws Exception;
-  
+
    public void stop() throws Exception;
-   
+
 }

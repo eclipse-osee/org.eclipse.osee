@@ -14,7 +14,6 @@ import org.osgi.framework.BundleContext;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public interface RuntimeConfigurationInitilizer {
 
@@ -22,5 +21,6 @@ public interface RuntimeConfigurationInitilizer {
     * @param bundleContext
     */
    void startRuntimeOsgiServices(BundleContext bundleContext);
+
    void stopRuntimeOsgiServices();
 }

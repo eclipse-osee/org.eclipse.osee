@@ -25,7 +25,7 @@ import org.eclipse.ui.IPersistableElement;
 public class TestManagerEditorInput implements IFileEditorInput, IPersistableElement {
 
    private static final String FACTORY_ID = TestManagerEditorInputFactory.class.getCanonicalName();
-   private IFile iFile;
+   private final IFile iFile;
 
    public TestManagerEditorInput(File file) {
       this(AWorkspace.fileToIFile(file));
@@ -39,9 +39,11 @@ public class TestManagerEditorInput implements IFileEditorInput, IPersistableEle
    /*
     * @see java.lang.Object#equals(java.lang.Object)
     */
+   @Override
    public boolean equals(Object o) {
-      if (o == this)
+      if (o == this) {
          return true;
+      }
 
       if (iFile != null && o instanceof TestManagerEditorInput) {
          TestManagerEditorInput input = (TestManagerEditorInput) o;
@@ -53,6 +55,7 @@ public class TestManagerEditorInput implements IFileEditorInput, IPersistableEle
    /*
     * @see org.eclipse.ui.IEditorInput#exists()
     */
+   @Override
    public boolean exists() {
       return true;
    }
@@ -60,15 +63,18 @@ public class TestManagerEditorInput implements IFileEditorInput, IPersistableEle
    /*
     * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
     */
+   @Override
    @SuppressWarnings("unchecked")
    public Object getAdapter(Class adapter) {
       return iFile.getAdapter(adapter);
    }
 
+   @Override
    public String getFactoryId() {
       return FACTORY_ID;
    }
 
+   @Override
    public IFile getFile() {
       return iFile;
    }
@@ -76,6 +82,7 @@ public class TestManagerEditorInput implements IFileEditorInput, IPersistableEle
    /*
     * @see org.eclipse.ui.IEditorInput#getImageDescriptor()
     */
+   @Override
    public ImageDescriptor getImageDescriptor() {
       return null;
    }
@@ -94,6 +101,7 @@ public class TestManagerEditorInput implements IFileEditorInput, IPersistableEle
    /*
     * @see org.eclipse.ui.IEditorInput#getName()
     */
+   @Override
    public String getName() {
       return iFile.getName();
    }
@@ -101,30 +109,37 @@ public class TestManagerEditorInput implements IFileEditorInput, IPersistableEle
    /*
     * @see org.eclipse.ui.IEditorInput#getPersistable()
     */
+   @Override
    public IPersistableElement getPersistable() {
       return this;
    }
 
+   @Override
    public IStorage getStorage() throws CoreException {
       return new IStorage() {
 
+         @Override
          @SuppressWarnings("unchecked")
          public Object getAdapter(Class adapter) {
             return iFile.getAdapter(adapter);
          }
 
+         @Override
          public InputStream getContents() throws CoreException {
             return iFile.getContents();
          }
 
+         @Override
          public IPath getFullPath() {
             return iFile.getFullPath();
          }
 
+         @Override
          public String getName() {
             return iFile.getName();
          }
 
+         @Override
          public boolean isReadOnly() {
             return false;
          }
@@ -135,6 +150,7 @@ public class TestManagerEditorInput implements IFileEditorInput, IPersistableEle
    /*
     * @see org.eclipse.ui.IEditorInput#getToolTipText()
     */
+   @Override
    public String getToolTipText() {
       return iFile.getName();
    }
@@ -142,10 +158,12 @@ public class TestManagerEditorInput implements IFileEditorInput, IPersistableEle
    /*
     * @see java.lang.Object#hashCode()
     */
+   @Override
    public int hashCode() {
       return iFile.hashCode();
    }
 
+   @Override
    public void saveState(IMemento memento) {
       if (iFile != null && iFile.getLocation().toFile().exists()) {
          memento.putString("path", iFile.getLocation().toFile().getAbsolutePath());

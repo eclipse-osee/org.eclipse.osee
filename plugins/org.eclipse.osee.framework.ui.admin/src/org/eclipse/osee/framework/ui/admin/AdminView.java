@@ -48,7 +48,7 @@ import org.eclipse.ui.part.ViewPart;
 
 /**
  * Allows administration of access for OSEE environment <li>Database tables <li>OSEE user permissions
- *
+ * 
  * @author Jeff C. Phillips
  */
 
@@ -142,16 +142,16 @@ public class AdminView extends ViewPart implements IActionable {
 
    public void handleBroadcastMessage() {
       EntryDialog ed =
-            new EntryDialog(Displays.getActiveShell(), "Broadcast Message to OSEE Instantiations", null,
-                  "Enter Message", MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
+         new EntryDialog(Displays.getActiveShell(), "Broadcast Message to OSEE Instantiations", null, "Enter Message",
+            MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
       if (ed.open() == 0) {
          String message = ed.getEntry();
          if (!message.equals("")) {
             if (MessageDialog.openConfirm(Displays.getActiveShell(), "Broadcast Message",
-                  "Broadcast message\n\n\"" + message + "\"\n\nAre you sure?")) {
+               "Broadcast message\n\n\"" + message + "\"\n\nAre you sure?")) {
                try {
                   OseeEventManager.kickBroadcastEvent(this, new BroadcastEvent(BroadcastEventType.Message, null,
-                        message));
+                     message));
                   AWorkbench.popup("Success", "Message sent.");
                } catch (Exception ex) {
                   OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -162,11 +162,10 @@ public class AdminView extends ViewPart implements IActionable {
    }
 
    public void handlePing() {
-      if (MessageDialog.openConfirm(Displays.getActiveShell(), "Ping OSEE Instantiations?",
-            "Ping OSEE Instantiations?")) {
+      if (MessageDialog.openConfirm(Displays.getActiveShell(), "Ping OSEE Instantiations?", "Ping OSEE Instantiations?")) {
          try {
             OseeEventManager.kickBroadcastEvent(this, new BroadcastEvent(BroadcastEventType.Ping, null,
-                  ClientSessionManager.getSession().toString()));
+               ClientSessionManager.getSession().toString()));
             AWorkbench.popup("Success", "Ping Sent");
          } catch (Exception ex) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -231,6 +230,7 @@ public class AdminView extends ViewPart implements IActionable {
       }
    }
 
+   @Override
    public String getActionDescription() {
       String desc = "";
       TabItem items[] = tabFolder.getSelection();

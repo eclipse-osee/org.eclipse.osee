@@ -65,10 +65,10 @@ public class WholeWordCompare implements IComparator {
       Pair<IFile, IFile> compareFiles = converter.convertToFile(presentationType, delta);
 
       WordImageChecker.restoreOriginalValue(baseContent,
-            oldAnnotationValue != null ? oldAnnotationValue : originalValue);
+         oldAnnotationValue != null ? oldAnnotationValue : originalValue);
       WordImageChecker.restoreOriginalValue(newerContent, newAnnotationValue);
       return compare(baseArtifact, newerArtifact, compareFiles.getFirst(), compareFiles.getSecond(), presentationType,
-            show);
+         show);
    }
 
    @Override
@@ -79,20 +79,20 @@ public class WholeWordCompare implements IComparator {
          if (baseVersion != null) {
             String baseFileStr = baseFile.getLocation().toOSString();
             diffPath =
-                  baseFileStr.substring(0, baseFileStr.lastIndexOf(')') + 1) + " to " + (newerVersion != null ? newerVersion.getTransactionNumber() : " deleted") + baseFileStr.substring(baseFileStr.lastIndexOf(')') + 1);
+               baseFileStr.substring(0, baseFileStr.lastIndexOf(')') + 1) + " to " + (newerVersion != null ? newerVersion.getTransactionNumber() : " deleted") + baseFileStr.substring(baseFileStr.lastIndexOf(')') + 1);
          } else {
             String baseFileStr = newerFile.getLocation().toOSString();
             diffPath =
-                  baseFileStr.substring(0, baseFileStr.lastIndexOf('(') + 1) + "new " + baseFileStr.substring(baseFileStr.lastIndexOf('(') + 1);
+               baseFileStr.substring(0, baseFileStr.lastIndexOf('(') + 1) + "new " + baseFileStr.substring(baseFileStr.lastIndexOf('(') + 1);
          }
       } else {
          diffPath =
-               RenderingUtil.getRenderFolder(baseVersion.getBranch(), PresentationType.SPECIALIZED_EDIT).getLocation().toOSString() + '\\' + fileName;
+            RenderingUtil.getRenderFolder(baseVersion.getBranch(), PresentationType.SPECIALIZED_EDIT).getLocation().toOSString() + '\\' + fileName;
       }
 
       VbaWordDiffGenerator diffGenerator = new VbaWordDiffGenerator();
       diffGenerator.initialize(presentationType == PresentationType.DIFF,
-            presentationType == PresentationType.MERGE_EDIT);
+         presentationType == PresentationType.MERGE_EDIT);
       if (presentationType == PresentationType.MERGE_EDIT && baseVersion != null) {
          IFolder folder = RenderingUtil.getRenderFolder(baseVersion.getBranch(), PresentationType.MERGE_EDIT);
          converter.getRenderer().addFileToWatcher(folder, diffPath.substring(diffPath.lastIndexOf('\\') + 1));

@@ -10,18 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.messaging;
 
-
 import org.eclipse.osee.framework.messaging.internal.Activator;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public class MessagingTracker extends ServiceTracker {
 
-	public MessagingTracker() {
-		super(Activator.getInstance().getContext(), OseeMessaging.class.getName(), null);
-	}
+   public MessagingTracker() {
+      super(Activator.getInstance().getContext(), OseeMessaging.class.getName(), null);
+   }
 
 }

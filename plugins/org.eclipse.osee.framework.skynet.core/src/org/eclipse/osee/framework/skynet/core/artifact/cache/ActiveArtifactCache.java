@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -170,7 +170,7 @@ public class ActiveArtifactCache extends AbstractArtifactCache {
 
    /**
     * @returns the previous value associated with keys, or null if there was no mapping for key. (A null return can also
-    *          indicate that the map previously associated null with key, if the implementation supports null values.)
+    * indicate that the map previously associated null with key, if the implementation supports null values.)
     */
    public Artifact cacheByText(String key, Artifact artifact) throws OseeCoreException {
       Object object = cache(artifact);
@@ -179,7 +179,7 @@ public class ActiveArtifactCache extends AbstractArtifactCache {
 
    /**
     * @returns the previous value associated with keys, or null if there was no mapping for key. (A null return can also
-    *          indicate that the map previously associated null with key, if the implementation supports null values.)
+    * indicate that the map previously associated null with key, if the implementation supports null values.)
     */
    public Artifact cacheByStaticId(String staticId, Artifact artifact) throws OseeCoreException {
       Object object = cache(artifact);

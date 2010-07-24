@@ -44,7 +44,7 @@ public class AtsPlugin extends OseeUiActivator {
    public void start(BundleContext context) throws Exception {
       super.start(context);
       service1 =
-            context.registerService(IActionReportingService.class.getName(), new AtsActionReportingServiceImpl(), null);
+         context.registerService(IActionReportingService.class.getName(), new AtsActionReportingServiceImpl(), null);
       service2 = context.registerService(IOseeAtsService.class.getName(), new OseeAtsServiceImpl(), null);
    }
 

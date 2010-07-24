@@ -87,16 +87,15 @@ public class ATSNote {
                try {
                   User user = UserManager.getUserByUserId(element.getAttribute("userId"));
                   NoteItem item =
-                        new NoteItem(element.getAttribute("type"), element.getAttribute("state"),
-                              element.getAttribute("date"), user, element.getAttribute("msg"));
+                     new NoteItem(element.getAttribute("type"), element.getAttribute("state"),
+                        element.getAttribute("date"), user, element.getAttribute("msg"));
                   logItems.add(item);
                } catch (UserNotInDatabase ex) {
-                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, String.format("Error parsing notes for [%s]", hrid),
-                        ex);
+                  OseeLog.log(AtsPlugin.class, Level.SEVERE, String.format("Error parsing notes for [%s]", hrid), ex);
                   NoteItem item =
-                        new NoteItem(element.getAttribute("type"), element.getAttribute("state"),
-                              element.getAttribute("date"), UserManager.getUser(SystemUser.Guest),
-                              element.getAttribute("msg"));
+                     new NoteItem(element.getAttribute("type"), element.getAttribute("state"),
+                        element.getAttribute("date"), UserManager.getUser(SystemUser.Guest),
+                        element.getAttribute("msg"));
                   logItems.add(item);
                }
             }
@@ -134,7 +133,7 @@ public class ATSNote {
             rootElement.appendChild(element);
          }
          getArtifact().setSoleAttributeValue(ATSAttributes.STATE_NOTES_ATTRIBUTE.getStoreName(),
-               Jaxp.getDocumentXml(doc));
+            Jaxp.getDocumentXml(doc));
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't create ats note document", ex);
       }

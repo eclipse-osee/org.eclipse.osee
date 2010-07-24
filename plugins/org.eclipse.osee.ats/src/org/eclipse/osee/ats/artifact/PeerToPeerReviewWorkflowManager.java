@@ -43,41 +43,55 @@ public class PeerToPeerReviewWorkflowManager {
    public static Result transitionTo(PeerToPeerReviewArtifact reviewArt, PeerToPeerReviewArtifact.PeerToPeerReviewState toState, Collection<UserRole> roles, Collection<DefectItem> defects, User user, boolean popup, SkynetTransaction transaction) throws OseeCoreException {
       Result result = setPrepareStateData(reviewArt, roles, "DoThis.java", 100, .2, transaction);
       if (result.isFalse()) {
-         if (popup) result.popup();
+         if (popup) {
+            result.popup();
+         }
          return result;
       }
       result =
-            reviewArt.transition(PeerToPeerReviewArtifact.PeerToPeerReviewState.Review.name(),
-                  (user != null ? user : reviewArt.getStateMgr().getAssignees().iterator().next()),
-                  transaction, TransitionOption.None);
+         reviewArt.transition(PeerToPeerReviewArtifact.PeerToPeerReviewState.Review.name(),
+            (user != null ? user : reviewArt.getStateMgr().getAssignees().iterator().next()), transaction,
+            TransitionOption.None);
       if (result.isFalse()) {
-         if (popup) result.popup();
+         if (popup) {
+            result.popup();
+         }
          return result;
       }
-      if (toState == PeerToPeerReviewArtifact.PeerToPeerReviewState.Review) return Result.TrueResult;
+      if (toState == PeerToPeerReviewArtifact.PeerToPeerReviewState.Review) {
+         return Result.TrueResult;
+      }
 
       result = setReviewStateData(reviewArt, roles, defects, 100, .2, transaction);
       if (result.isFalse()) {
-         if (popup) result.popup();
+         if (popup) {
+            result.popup();
+         }
          return result;
       }
 
       result =
-            reviewArt.transition(DefaultTeamState.Completed.name(),
-                  (user != null ? user : reviewArt.getStateMgr().getAssignees().iterator().next()),
-                  transaction, TransitionOption.None);
+         reviewArt.transition(DefaultTeamState.Completed.name(),
+            (user != null ? user : reviewArt.getStateMgr().getAssignees().iterator().next()), transaction,
+            TransitionOption.None);
       if (result.isFalse()) {
-         if (popup) result.popup();
+         if (popup) {
+            result.popup();
+         }
          return result;
       }
       return Result.TrueResult;
    }
 
    public static Result setPrepareStateData(PeerToPeerReviewArtifact reviewArt, Collection<UserRole> roles, String reviewMaterials, int statePercentComplete, double stateHoursSpent, SkynetTransaction transaction) throws OseeCoreException {
-      if (!reviewArt.getStateMgr().getCurrentStateName().equals("Prepare")) return new Result(
-            "Action not in Prepare state");
-      if (roles != null) for (UserRole role : roles)
-         reviewArt.getUserRoleManager().addOrUpdateUserRole(role, false, transaction);
+      if (!reviewArt.getStateMgr().getCurrentStateName().equals("Prepare")) {
+         return new Result("Action not in Prepare state");
+      }
+      if (roles != null) {
+         for (UserRole role : roles) {
+            reviewArt.getUserRoleManager().addOrUpdateUserRole(role, false, transaction);
+         }
+      }
       reviewArt.setSoleAttributeValue(ATSAttributes.LOCATION_ATTRIBUTE.getStoreName(), reviewMaterials);
       reviewArt.getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
       return Result.TrueResult;

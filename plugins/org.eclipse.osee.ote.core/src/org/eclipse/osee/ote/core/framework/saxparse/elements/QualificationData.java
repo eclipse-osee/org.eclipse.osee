@@ -12,12 +12,11 @@ package org.eclipse.osee.ote.core.framework.saxparse.elements;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public class QualificationData {
 
-   private String buildId;
-   private String level;
+   private final String buildId;
+   private final String level;
 
    /**
     * @param value

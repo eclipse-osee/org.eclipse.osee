@@ -59,7 +59,7 @@ public class SkyWalkerLayoutTabItem {
       levelComp.setLayout(ALayout.getZeroMarginLayout(2, false));
       levelComp.setLayoutData(new GridData());
 
-      (new Label(levelComp, SWT.NONE)).setText("Level:  ");
+      new Label(levelComp, SWT.NONE).setText("Level:  ");
       levelSpinner = new Spinner(levelComp, SWT.BORDER);
       levelSpinner.setMinimum(0);
       levelSpinner.setMaximum(4);
@@ -67,6 +67,7 @@ public class SkyWalkerLayoutTabItem {
       levelSpinner.setPageIncrement(1);
       levelSpinner.pack();
       levelSpinner.addModifyListener(new ModifyListener() {
+         @Override
          public void modifyText(ModifyEvent e) {
             options.setLevels(levelSpinner.getSelection());
          }
@@ -81,20 +82,27 @@ public class SkyWalkerLayoutTabItem {
       treeViewer.setContentProvider(new ArrayTreeContentProvider());
       treeViewer.setLabelProvider(new LabelProvider() {
 
+         @Override
          public Image getImage(Object obj) {
             return null;
          }
 
+         @Override
          public String getText(Object obj) {
             return options.getLayoutName((AbstractLayoutAlgorithm) obj);
          }
       });
       treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+         @Override
          public void selectionChanged(SelectionChangedEvent event) {
-            if (treeViewer.getSelection().isEmpty()) return;
+            if (treeViewer.getSelection().isEmpty()) {
+               return;
+            }
             AbstractLayoutAlgorithm layout =
-                  (AbstractLayoutAlgorithm) ((IStructuredSelection) treeViewer.getSelection()).getFirstElement();
-            if (layout != null) options.setLayout(layout);
+               (AbstractLayoutAlgorithm) ((IStructuredSelection) treeViewer.getSelection()).getFirstElement();
+            if (layout != null) {
+               options.setLayout(layout);
+            }
          }
       });
       treeViewer.setInput(options.getLayouts());
@@ -102,18 +110,24 @@ public class SkyWalkerLayoutTabItem {
       radioButtons = new XRadioButtons("Link Naming", "");
       radioButtons.setVertical(true, 1);
       radioButtons.setVerticalLabel(true);
-      for (LinkName linkName : LinkName.values())
+      for (LinkName linkName : LinkName.values()) {
          radioButtons.addButton(linkName.name());
+      }
       radioButtons.createWidgets(comp, 1);
       radioButtons.setSelected(options.getLinkName().name());
       radioButtons.addXModifiedListener(new XModifiedListener() {
+         @Override
          public void widgetModified(org.eclipse.osee.framework.ui.skynet.widgets.XWidget widget) {
-            if (radioButtons.getSelectedNames().size() > 0) if (!options.getLinkName().equals(
-                  radioButtons.getSelectedNames().iterator().next())) options.setLinkName(LinkName.valueOf(radioButtons.getSelectedNames().iterator().next()));
+            if (radioButtons.getSelectedNames().size() > 0) {
+               if (!options.getLinkName().equals(radioButtons.getSelectedNames().iterator().next())) {
+                  options.setLinkName(LinkName.valueOf(radioButtons.getSelectedNames().iterator().next()));
+               }
+            }
          };
       });
 
       options.addSkyWalkerOptionsChangeListener(new ISkyWalkerOptionsChangeListener() {
+         @Override
          public void modified(ModType... modTypes) {
             handleOptionModified(modTypes);
          }
@@ -135,23 +149,32 @@ public class SkyWalkerLayoutTabItem {
       List<ModType> modList = Arrays.asList(modTypes);
       if (modList.contains(ModType.Level)) {
          if (levelSpinner != null) {
-            if (levelSpinner.getSelection() != options.getLevels()) levelSpinner.setSelection(options.getLevels());
+            if (levelSpinner.getSelection() != options.getLevels()) {
+               levelSpinner.setSelection(options.getLevels());
+            }
          }
       }
       if (modList.contains(ModType.Link_Name)) {
          if (radioButtons != null) {
-            if (options.getLinkName().equals(radioButtons.getSelectedNames().iterator().next())) radioButtons.setSelected(options.getLinkName().name());
+            if (options.getLinkName().equals(radioButtons.getSelectedNames().iterator().next())) {
+               radioButtons.setSelected(options.getLinkName().name());
+            }
          }
       }
       if (modList.contains(ModType.Layout)) {
          if (treeViewer != null) {
-            if (treeViewer.getSelection() != options.getLayout()) treeViewer.setSelection(new StructuredSelection(
-                  new Object[] {options.getLayout()}));
+            if (treeViewer.getSelection() != options.getLayout()) {
+               treeViewer.setSelection(new StructuredSelection(new Object[] {options.getLayout()}));
+            }
          }
       }
       if (modList.contains(ModType.FilterEnabled)) {
-         if (levelSpinner != null) levelSpinner.setEnabled(options.isFilterEnabled());
-         if (treeViewer != null) treeViewer.getTree().setEnabled(options.isFilterEnabled());
+         if (levelSpinner != null) {
+            levelSpinner.setEnabled(options.isFilterEnabled());
+         }
+         if (treeViewer != null) {
+            treeViewer.getTree().setEnabled(options.isFilterEnabled());
+         }
       }
    }
 

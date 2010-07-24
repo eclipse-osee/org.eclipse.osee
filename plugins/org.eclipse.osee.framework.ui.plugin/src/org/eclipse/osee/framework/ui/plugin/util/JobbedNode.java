@@ -67,6 +67,7 @@ public class JobbedNode extends TreeNode {
    private void cancelled(Object[] children) {
       this.children = children;
       Displays.ensureInDisplayThread(new Runnable() {
+         @Override
          public void run() {
             viewer.refresh();
          }
@@ -83,6 +84,7 @@ public class JobbedNode extends TreeNode {
 
             Displays.ensureInDisplayThread(new Runnable() {
 
+               @Override
                public void run() {
                   treeViewer.refresh();
                   treeViewer.expandToLevel(2);
@@ -99,8 +101,13 @@ public class JobbedNode extends TreeNode {
    public void refresh(boolean expand) {
       this.expand = expand;
 
-      if (children != null) for (Object obj : children)
-         if (obj instanceof JobbedNode) ((JobbedNode) obj).refresh(true);
+      if (children != null) {
+         for (Object obj : children) {
+            if (obj instanceof JobbedNode) {
+               ((JobbedNode) obj).refresh(true);
+            }
+         }
+      }
 
       children = null;
    }

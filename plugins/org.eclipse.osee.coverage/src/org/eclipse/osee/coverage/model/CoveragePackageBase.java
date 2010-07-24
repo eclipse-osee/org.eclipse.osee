@@ -44,6 +44,7 @@ public abstract class CoveragePackageBase implements ICoverage, ICoverageUnitPro
 
    public abstract Date getDate();
 
+   @Override
    public void addCoverageUnit(CoverageUnit coverageUnit) {
       coverageUnit.setParent(this);
       if (!coverageUnits.contains(coverageUnit)) {
@@ -51,6 +52,7 @@ public abstract class CoveragePackageBase implements ICoverage, ICoverageUnitPro
       }
    }
 
+   @Override
    public List<CoverageUnit> getCoverageUnits() {
       return coverageUnits;
    }
@@ -70,6 +72,7 @@ public abstract class CoveragePackageBase implements ICoverage, ICoverageUnitPro
       return CoverageUtil.getPercent(getCoverageItemsCovered().size(), getCoverageItems().size(), true).getSecond();
    }
 
+   @Override
    public Double getCoveragePercent() {
       return CoverageUtil.getPercent(getCoverageItemsCovered().size(), getCoverageItems().size(), true).getFirst();
    }
@@ -103,7 +106,9 @@ public abstract class CoveragePackageBase implements ICoverage, ICoverageUnitPro
    public CoverageUnit getOrCreateParent(String namespace) {
       // Look for already existing CU
       for (ICoverage item : new CopyOnWriteArrayList<ICoverage>(getChildren(true))) {
-         if (!(item instanceof CoverageUnit)) continue;
+         if (!(item instanceof CoverageUnit)) {
+            continue;
+         }
          CoverageUnit coverageUnit = (CoverageUnit) item;
          if (coverageUnit.getName().equals(namespace)) {
             return coverageUnit;
@@ -123,20 +128,26 @@ public abstract class CoveragePackageBase implements ICoverage, ICoverageUnitPro
             newCoverageUnit.setFolder(true);
             newCoverageUnit.setNamespace(nameStr);
             addCoverageUnit(newCoverageUnit);
-            if (nameStr.equals(namespace)) return newCoverageUnit;
+            if (nameStr.equals(namespace)) {
+               return newCoverageUnit;
+            }
             continue;
          }
 
          // Look for already existing CU
          boolean found = false;
          for (ICoverage item : new CopyOnWriteArrayList<ICoverage>(getChildren(true))) {
-            if (!(item instanceof CoverageUnit)) continue;
+            if (!(item instanceof CoverageUnit)) {
+               continue;
+            }
             if (item.getName().equals(nameStr)) {
                found = true;
                break;
             }
          }
-         if (found) continue;
+         if (found) {
+            continue;
+         }
 
          // Create one if not exists
 
@@ -155,11 +166,14 @@ public abstract class CoveragePackageBase implements ICoverage, ICoverageUnitPro
          // Add to parent
          ((ICoverageUnitProvider) parent).addCoverageUnit(newCoverageUnit);
          // Return if this is our coverage unit
-         if (nameStr.equals(namespace)) return newCoverageUnit;
+         if (nameStr.equals(namespace)) {
+            return newCoverageUnit;
+         }
       }
       return null;
    }
 
+   @Override
    public String getGuid() {
       return guid;
    }
@@ -168,6 +182,7 @@ public abstract class CoveragePackageBase implements ICoverage, ICoverageUnitPro
       this.coverageUnits = coverageUnits;
    }
 
+   @Override
    public String getName() {
       return name;
    }
@@ -201,14 +216,18 @@ public abstract class CoveragePackageBase implements ICoverage, ICoverageUnitPro
    @Override
    public boolean isCovered() {
       for (CoverageUnit coverageUnit : coverageUnits) {
-         if (!coverageUnit.isCovered()) return false;
+         if (!coverageUnit.isCovered()) {
+            return false;
+         }
       }
       return true;
    }
 
    @Override
    public Result isEditable() {
-      if (!editable) return new Result("CoveragePackage locked for edits.");
+      if (!editable) {
+         return new Result("CoveragePackage locked for edits.");
+      }
       return Result.TrueResult;
    }
 
@@ -216,6 +235,7 @@ public abstract class CoveragePackageBase implements ICoverage, ICoverageUnitPro
       this.editable = editable;
    }
 
+   @Override
    public void removeCoverageUnit(CoverageUnit coverageUnit) {
       coverageUnits.remove(coverageUnit);
    }
@@ -263,19 +283,29 @@ public abstract class CoveragePackageBase implements ICoverage, ICoverageUnitPro
    public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + ((getGuid() == null) ? 0 : getGuid().hashCode());
+      result = prime * result + (getGuid() == null ? 0 : getGuid().hashCode());
       return result;
    }
 
    @Override
    public boolean equals(Object obj) {
-      if (this == obj) return true;
-      if (obj == null) return false;
-      if (getClass() != obj.getClass()) return false;
+      if (this == obj) {
+         return true;
+      }
+      if (obj == null) {
+         return false;
+      }
+      if (getClass() != obj.getClass()) {
+         return false;
+      }
       CoveragePackageBase other = (CoveragePackageBase) obj;
       if (getGuid() == null) {
-         if (other.getGuid() != null) return false;
-      } else if (!getGuid().equals(other.getGuid())) return false;
+         if (other.getGuid() != null) {
+            return false;
+         }
+      } else if (!getGuid().equals(other.getGuid())) {
+         return false;
+      }
       return true;
    }
 

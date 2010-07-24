@@ -22,12 +22,14 @@ public class JdbcOdbcConnection implements IConnectionFactory {
 
    private static final String driver = "sun.jdbc.odbc.JdbcOdbcDriver";
 
+   @Override
    public Connection getConnection(Properties properties, String connectionURL) throws Exception {
       Class.forName(driver);
       Connection connection = DriverManager.getConnection(connectionURL, properties);
       return connection;
    }
 
+   @Override
    public String getDriver() {
       return driver;
    }

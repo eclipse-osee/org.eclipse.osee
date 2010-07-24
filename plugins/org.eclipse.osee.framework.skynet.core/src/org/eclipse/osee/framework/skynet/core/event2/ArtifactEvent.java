@@ -44,7 +44,8 @@ public class ArtifactEvent extends FrameworkEvent {
    private NetworkSender networkSender;
    private final List<EventBasicGuidArtifact> artifacts = new ArrayList<EventBasicGuidArtifact>();
    private final List<EventBasicGuidRelation> relations = new ArrayList<EventBasicGuidRelation>();
-   private final Set<DefaultBasicGuidRelationReorder> relationReorderRecords = new HashSet<DefaultBasicGuidRelationReorder>();
+   private final Set<DefaultBasicGuidRelationReorder> relationReorderRecords =
+      new HashSet<DefaultBasicGuidRelationReorder>();
    private final Collection<ArtifactTransactionModifiedEvent> skynetTransactionDetails =
       new ArrayList<ArtifactTransactionModifiedEvent>();
 

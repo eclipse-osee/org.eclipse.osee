@@ -11,11 +11,9 @@
 package org.eclipse.osee.ote.message;
 
 import org.eclipse.osee.ote.message.interfaces.IMessageScheduleChangeListener;
-import org.eclipse.osee.ote.message.listener.IOSEEMessageListener;
 
 /**
  * @author Ken J. Aguilar
- *
  */
 public interface UniversalMessageListener extends IMemSourceChangeListener, IMessageDisposeListener, IMessageScheduleChangeListener {
 

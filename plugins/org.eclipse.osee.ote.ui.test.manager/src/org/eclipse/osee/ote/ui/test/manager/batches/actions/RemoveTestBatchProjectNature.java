@@ -41,6 +41,7 @@ public class RemoveTestBatchProjectNature implements IObjectActionDelegate {
    private IJavaProject currentJavaProject;
    private IProject currentProject;
 
+   @Override
    public void setActivePart(IAction action, IWorkbenchPart targetPart) {
       // Do Nothing
    }
@@ -49,17 +50,18 @@ public class RemoveTestBatchProjectNature implements IObjectActionDelegate {
       List<String> list = new ArrayList<String>();
 
       for (int i = 0; i < natures.length; i++) {
-         if (!(natures[i].equalsIgnoreCase(TestBatchProjectNature.NATURE_ID))) {
+         if (!natures[i].equalsIgnoreCase(TestBatchProjectNature.NATURE_ID)) {
             list.add(natures[i]);
          }
       }
       String[] newNatures = new String[list.size()];
       for (int i = 0; i < list.size(); i++) {
-         newNatures[i] = (String) list.get(i);
+         newNatures[i] = list.get(i);
       }
       return newNatures;
    }
 
+   @Override
    public void run(IAction action) {
       IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
       try {
@@ -96,14 +98,15 @@ public class RemoveTestBatchProjectNature implements IObjectActionDelegate {
          currentJavaProject.getProject().refreshLocal(IResource.DEPTH_INFINITE, null);
          ((ApplicationWindow) window).setStatus(NATURE_REMOVED);
       } catch (Exception ex) {
-         OseeLog.log(TestManagerPlugin.class, Level.SEVERE, String.format("Error removing test batch nature on [%s]",
-               currentJavaProject.getProject().getName()), ex);
+         OseeLog.log(TestManagerPlugin.class, Level.SEVERE,
+            String.format("Error removing test batch nature on [%s]", currentJavaProject.getProject().getName()), ex);
          Shell shell = new Shell();
          MessageDialog.openInformation(shell, TestManagerPlugin.PLUGIN_ID,
-               "Error removing test batch nature:\n" + SelectionUtil.getStatusMessages(ex));
+            "Error removing test batch nature:\n" + SelectionUtil.getStatusMessages(ex));
       }
    }
 
+   @Override
    public void selectionChanged(IAction action, ISelection selection) {
       currentJavaProject = SelectionUtil.findSelectedJavaProject(selection);
       if (currentJavaProject == null) {

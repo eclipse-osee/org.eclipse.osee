@@ -39,25 +39,24 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
    private static final String COUNT_CHILD_BRANCHES = "select count(1) from osee_branch WHERE parent_branch_id = ?";
 
    private static final String SELECT_DELETABLE_GAMMAS =
-         "select txs1.gamma_id from %s txs1 where txs1.branch_id = ? AND txs1.transaction_id <> ? AND NOT EXISTS (SELECT 1 FROM osee_txs txs2 WHERE txs1.gamma_id = txs2.gamma_id AND txs1.branch_id <> txs2.branch_id) AND NOT EXISTS (SELECT 1 FROM osee_txs_archived txs3 WHERE txs1.gamma_id = txs3.gamma_id AND txs1.branch_id <> txs3.branch_id)";
+      "select txs1.gamma_id from %s txs1 where txs1.branch_id = ? AND txs1.transaction_id <> ? AND NOT EXISTS (SELECT 1 FROM osee_txs txs2 WHERE txs1.gamma_id = txs2.gamma_id AND txs1.branch_id <> txs2.branch_id) AND NOT EXISTS (SELECT 1 FROM osee_txs_archived txs3 WHERE txs1.gamma_id = txs3.gamma_id AND txs1.branch_id <> txs3.branch_id)";
 
    private static final String SELECT_DELETABLE_TXS_REMOVED_GAMMAS =
-         "select txs1.rem_gamma_id from osee_removed_txs txs1, osee_tx_details txd1 where txd1.branch_id = ? AND txs1.transaction_id <> ? AND txs1.transaction_id = txd1.transaction_id AND NOT EXISTS (SELECT 1 FROM osee_txs txs2 WHERE txs1.rem_gamma_id = txs2.gamma_id AND txd1.branch_id <> txs2.branch_id) AND NOT EXISTS (SELECT 1 FROM osee_txs_archived txs3 WHERE txs1.rem_gamma_id = txs3.gamma_id AND txd1.branch_id <> txs3.branch_id)";
+      "select txs1.rem_gamma_id from osee_removed_txs txs1, osee_tx_details txd1 where txd1.branch_id = ? AND txs1.transaction_id <> ? AND txs1.transaction_id = txd1.transaction_id AND NOT EXISTS (SELECT 1 FROM osee_txs txs2 WHERE txs1.rem_gamma_id = txs2.gamma_id AND txd1.branch_id <> txs2.branch_id) AND NOT EXISTS (SELECT 1 FROM osee_txs_archived txs3 WHERE txs1.rem_gamma_id = txs3.gamma_id AND txd1.branch_id <> txs3.branch_id)";
 
-   public static final String TEST_TXS =
-         "select count(1) from osee_txs where transaction_id = ?";
+   public static final String TEST_TXS = "select count(1) from osee_txs where transaction_id = ?";
    public static final String TEST_MERGE =
-         "select count(1) from osee_merge where merge_branch_id = ? and source_branch_id=?";
+      "select count(1) from osee_merge where merge_branch_id = ? and source_branch_id=?";
    private static final String PURGE_GAMMAS = "delete from %s where gamma_id = ?";
 
    private static final String DELETE_FROM_BRANCH_TABLE = "delete from osee_branch where branch_id = ?";
    private static final String DELETE_FROM_MERGE =
-         "delete from osee_merge where merge_branch_id = ? and source_branch_id=?";
+      "delete from osee_merge where merge_branch_id = ? and source_branch_id=?";
    private static final String DELETE_FROM_CONFLICT = "delete from osee_conflict where merge_branch_id = ?";
    private static final String DELETE_FROM_TX_DETAILS = "delete from osee_tx_details where branch_id = ?";
 
    public static final String SELECT_ADDRESSING_BY_BRANCH =
-         "select transaction_id, gamma_id from %s where branch_id = ?";
+      "select transaction_id, gamma_id from %s where branch_id = ?";
 
    private final Branch branch;
    private final List<Object[]> deleteableGammas = new ArrayList<Object[]>();
@@ -69,7 +68,7 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
 
    public PurgeBranchOperation(Branch branch, IOseeCachingServiceProvider cachingService, IOseeDatabaseServiceProvider oseeDatabaseProvider) {
       super(oseeDatabaseProvider, String.format("Purge Branch: [(%s)-%s]", branch.getId(), branch.getShortName()),
-            Activator.PLUGIN_ID);
+         Activator.PLUGIN_ID);
       this.branch = branch;
       this.sourceTableName = branch.getArchiveState().isArchived() ? "osee_txs_archived" : "osee_txs";
       this.cachingService = cachingService;
@@ -81,14 +80,16 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
       this.connection = connection;
       this.monitor = monitor;
       int numberOfChildren =
-            oseeDatabaseProvider.getOseeDatabaseService().runPreparedQueryFetchObject(0, COUNT_CHILD_BRANCHES,
-                  branch.getId());
+         oseeDatabaseProvider.getOseeDatabaseService().runPreparedQueryFetchObject(0, COUNT_CHILD_BRANCHES,
+            branch.getId());
       if (numberOfChildren > 0) {
          throw new OseeArgumentException(String.format("Unable to purge a branch containing children: branchId[%s]",
-               branch.getId()));
+            branch.getId()));
       }
 
-      boolean isAddressingArchived = oseeDatabaseProvider.getOseeDatabaseService().runPreparedQueryFetchObject(0, TEST_TXS, branch.getBaseTransaction().getId()) == 0;
+      boolean isAddressingArchived =
+         oseeDatabaseProvider.getOseeDatabaseService().runPreparedQueryFetchObject(0, TEST_TXS,
+            branch.getBaseTransaction().getId()) == 0;
       if (isAddressingArchived) {
          sourceTableName = "osee_txs_archived";
       } else {

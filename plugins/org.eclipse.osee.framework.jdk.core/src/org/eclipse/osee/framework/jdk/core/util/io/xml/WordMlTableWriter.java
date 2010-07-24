@@ -18,7 +18,7 @@ import java.nio.charset.CharacterCodingException;
  */
 public class WordMlTableWriter extends AbstractSheetWriter {
    private static final String TABLE_START =
-         "<w:tbl><w:tblPr><w:tblBorders><w:top w:val=\"single\" w:sz=\"1\" /><w:left w:val=\"single\" w:sz=\"1\" /><w:bottom w:val=\"single\" w:sz=\"1\" /><w:right w:val=\"single\" w:sz=\"1\" /><w:insideH w:val=\"single\" w:sz=\"1\" /><w:insideV w:val=\"single\" w:sz=\"1\" /></w:tblBorders></w:tblPr>";
+      "<w:tbl><w:tblPr><w:tblBorders><w:top w:val=\"single\" w:sz=\"1\" /><w:left w:val=\"single\" w:sz=\"1\" /><w:bottom w:val=\"single\" w:sz=\"1\" /><w:right w:val=\"single\" w:sz=\"1\" /><w:insideH w:val=\"single\" w:sz=\"1\" /><w:insideV w:val=\"single\" w:sz=\"1\" /></w:tblBorders></w:tblPr>";
    private static final String TABLE_END = "</w:tbl>";
    private static final String START_TABLE_GRID = "<w:tblGrid>";
    private static final String END_TABLE_GRID = "</w:tblGrid>";
@@ -35,12 +35,14 @@ public class WordMlTableWriter extends AbstractSheetWriter {
       this.str = str;
    }
 
+   @Override
    public void startSheet(String worksheetName, int columnCount) throws IOException {
       str.append(TABLE_START);
       columnSize = columnCount;
       startTable = true;
    }
 
+   @Override
    public void endSheet() throws IOException {
       str.append(TABLE_END);
    }
@@ -78,6 +80,7 @@ public class WordMlTableWriter extends AbstractSheetWriter {
       str.append(CELL_END);
    }
 
+   @Override
    public void endWorkbook() throws IOException {
    }
 }

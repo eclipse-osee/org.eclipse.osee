@@ -14,7 +14,6 @@ import org.eclipse.osee.framework.jdk.core.type.TreeObject;
 import org.eclipse.osee.ote.core.OSEEPerson1_4;
 import org.eclipse.osee.ote.core.environment.interfaces.IRemoteCommandConsole;
 
-
 /**
  * @author Ken J. Aguilar
  */
@@ -22,7 +21,7 @@ public class ConsoleNode extends TreeObject {
 
    private final IRemoteCommandConsole console;
    private String users;
-   
+
    public ConsoleNode(IRemoteCommandConsole console, OSEEPerson1_4[] users) {
       super("Console");
       this.console = console;
@@ -34,13 +33,13 @@ public class ConsoleNode extends TreeObject {
             sb.append(users[i].getName());
             sb.append(", ");
          }
-         sb.append(users[users.length -1]);
+         sb.append(users[users.length - 1]);
          this.users = sb.toString();
       } else {
          this.users = users.length == 0 ? "<none>" : users[0].getName();
       }
    }
-   
+
    public IRemoteCommandConsole getConsole() {
       return console;
    }

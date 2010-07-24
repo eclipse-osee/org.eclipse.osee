@@ -15,18 +15,23 @@ import java.rmi.RemoteException;
 import org.eclipse.osee.ote.core.environment.EnvironmentTask;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
 
-
 /**
  * @author Andrew M. Finkbeiner
  */
-public interface IModel extends Remote{
+public interface IModel extends Remote {
    void turnModelOn() throws RemoteException;
+
    void turnModelOff() throws RemoteException;
+
    @SuppressWarnings("unchecked")
-   void init(TestEnvironment testEnvironment, ModelKey key) throws RemoteException;   
+   void init(TestEnvironment testEnvironment, ModelKey key) throws RemoteException;
+
    ModelState getState() throws RemoteException;
+
    @SuppressWarnings("unchecked")
    <CLASSTYPE extends IModel> ModelKey getKey() throws RemoteException;
+
    void dispose() throws RemoteException;
+
    EnvironmentTask getEnvironmentTask() throws RemoteException;
 }

@@ -12,9 +12,9 @@ package org.eclipse.osee.ote.core.cmd;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public interface Command {
    Source getSource();
+
    CommandId getId();
 }

@@ -42,10 +42,11 @@ public class StateWorldSearchItem extends WorldUISearchItem {
    }
 
    public String getStateSearchName() {
-      if (stateClass != null)
+      if (stateClass != null) {
          return stateClass;
-      else
+      } else {
          return selectedStateClass;
+      }
    }
 
    @Override
@@ -59,24 +60,32 @@ public class StateWorldSearchItem extends WorldUISearchItem {
    }
 
    private String getSearchStateClass() {
-      if (stateClass != null) return stateClass;
+      if (stateClass != null) {
+         return stateClass;
+      }
       return selectedStateClass;
    }
 
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
       Collection<Artifact> arts =
-            ArtifactQuery.getArtifactListFromAttribute(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
-                  getSearchStateClass() + ";%", AtsUtil.getAtsBranch());
-      if (isCancelled()) return EMPTY_SET;
+         ArtifactQuery.getArtifactListFromAttribute(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
+            getSearchStateClass() + ";%", AtsUtil.getAtsBranch());
+      if (isCancelled()) {
+         return EMPTY_SET;
+      }
       return arts;
 
    }
 
    @Override
    public void performUI(SearchType searchType) throws OseeCoreException {
-      if (stateClass != null) return;
-      if (searchType == SearchType.ReSearch && selectedStateClass != null) return;
+      if (stateClass != null) {
+         return;
+      }
+      if (searchType == SearchType.ReSearch && selectedStateClass != null) {
+         return;
+      }
       EntryDialog ed = new EntryDialog("Enter State", "Enter state name.");
       if (ed.open() == 0) {
          selectedStateClass = ed.getEntry();

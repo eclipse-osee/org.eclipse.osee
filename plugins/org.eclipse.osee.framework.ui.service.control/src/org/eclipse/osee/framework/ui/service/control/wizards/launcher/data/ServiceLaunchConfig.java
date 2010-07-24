@@ -29,7 +29,8 @@ public class ServiceLaunchConfig {
    private final String APPLICATION_ELEMENT = "Application";
 
    private enum ExecutionTypesEnum {
-      EclipseApplication("EclipseApplicationName"), StandAloneApplication("ExecutionCommand");
+      EclipseApplication("EclipseApplicationName"),
+      StandAloneApplication("ExecutionCommand");
 
       String entryTag;
 
@@ -43,7 +44,8 @@ public class ServiceLaunchConfig {
    }
 
    private enum ArgumentTypesEnum {
-      VmArgs, AppArgs;
+      VmArgs,
+      AppArgs;
    }
 
    private Collection<ServiceItem> localServiceItems;
@@ -92,7 +94,7 @@ public class ServiceLaunchConfig {
    private List<ServiceItem> getServicesToLaunch() {
       List<ServiceItem> toReturn = new ArrayList<ServiceItem>();
       List<IConfigurationElement> elements =
-            ExtensionPoints.getExtensionElements(EXTENSION_POINT_NAME, APPLICATION_ELEMENT);
+         ExtensionPoints.getExtensionElements(EXTENSION_POINT_NAME, APPLICATION_ELEMENT);
       for (IConfigurationElement element : elements) {
          String serviceName = element.getAttribute("ServiceName");
          if (false != Strings.isValid(serviceName)) {
@@ -105,8 +107,8 @@ public class ServiceLaunchConfig {
                getApplicationConfig(ExecutionTypesEnum.StandAloneApplication, element, serviceItem);
                toReturn.add(serviceItem);
             } catch (Throwable ex) {
-               OseeLog.log(ControlPlugin.class, Level.WARNING, String.format("Error while loading service launch extension for: [%s]",
-                     serviceName), ex);
+               OseeLog.log(ControlPlugin.class, Level.WARNING,
+                  String.format("Error while loading service launch extension for: [%s]", serviceName), ex);
             }
          }
       }

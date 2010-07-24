@@ -31,7 +31,9 @@ public class EnumeratedValue extends UniversalCellEditorValue {
    public Control prepareControl(UniversalCellEditor universalEditor) {
       Combo comboBox = universalEditor.getEnumeratedControl();
       comboBox.setItems(choices);
-      if (value != null) comboBox.setText(value);
+      if (value != null) {
+         comboBox.setText(value);
+      }
 
       comboBox.setVisibleItemCount(15);
       return comboBox;

@@ -28,11 +28,11 @@ import org.eclipse.osee.framework.database.internal.Activator;
  */
 public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
    private static final String SELECT_ADDRESSES =
-         "select %s, txs.branch_id, txs.transaction_id, txs.gamma_id, txs.mod_type, txs.tx_current, txd.tx_type from %s t1, osee_txs%s txs, osee_tx_details txd where t1.gamma_id = txs.gamma_id and txd.transaction_id = txs.transaction_id and txs.branch_id = txd.branch_id order by txs.branch_id, %s, txs.transaction_id desc, txs.gamma_id desc";
+      "select %s, txs.branch_id, txs.transaction_id, txs.gamma_id, txs.mod_type, txs.tx_current, txd.tx_type from %s t1, osee_txs%s txs, osee_tx_details txd where t1.gamma_id = txs.gamma_id and txd.transaction_id = txs.transaction_id and txs.branch_id = txd.branch_id order by txs.branch_id, %s, txs.transaction_id desc, txs.gamma_id desc";
 
    private static final String DELETE_ADDRESS = "delete from osee_txs%s where transaction_id = ? and gamma_id = ?";
    private static final String UPDATE_ADDRESS =
-         "update osee_txs%s set tx_current = ? where transaction_id = ? and gamma_id = ?";
+      "update osee_txs%s set tx_current = ? where transaction_id = ? and gamma_id = ?";
 
    private final List<Address> addresses = new ArrayList<Address>();
    private final OperationReporter reporter;
@@ -64,8 +64,8 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
 
    private void logIssue(String issue, Address address) {
       reporter.report(issue, String.valueOf(address.getBranchId()), String.valueOf(address.getItemId()),
-            String.valueOf(address.getTransactionId()), String.valueOf(address.getGammaId()),
-            address.getModType().toString(), address.getTxCurrent().toString());
+         String.valueOf(address.getTransactionId()), String.valueOf(address.getGammaId()),
+         address.getModType().toString(), address.getTxCurrent().toString());
    }
 
    private void consolidateAddressing() {
@@ -82,7 +82,7 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
             } else if (address.getCorrectedTxCurrent() != null) {
                logIssue("corrected txCurrent: " + address.getCorrectedTxCurrent(), address);
                currentData.add(new Object[] {address.getCorrectedTxCurrent().getValue(), address.getTransactionId(),
-                     address.getGammaId()});
+                  address.getGammaId()});
             } else {
                System.out.println("would have fixed merge here");
             }
@@ -171,8 +171,8 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
             TxChange txCurrent = TxChange.getChangeType(chStmt.getInt("tx_current"));
             TransactionDetailsType type = TransactionDetailsType.toEnum(chStmt.getInt("tx_type"));
             Address address =
-                  new Address(type.isBaseline(), chStmt.getInt("branch_id"), chStmt.getInt(columnName),
-                        chStmt.getInt("transaction_id"), chStmt.getLong("gamma_id"), modType, txCurrent);
+               new Address(type.isBaseline(), chStmt.getInt("branch_id"), chStmt.getInt(columnName),
+                  chStmt.getInt("transaction_id"), chStmt.getLong("gamma_id"), modType, txCurrent);
 
             if (!address.isSimilar(previousAddress)) {
                if (!addresses.isEmpty()) {

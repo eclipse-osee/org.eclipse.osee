@@ -21,7 +21,8 @@ public class ChangeBoundsCommand extends Command {
 
    private NodeModel node;
    private Point newLocation, oldLocation;
-   private int newWidth, oldWidth;
+   private final int newWidth;
+   private int oldWidth;
 
    public ChangeBoundsCommand(NodeModel node, Point newLocation, int newWidth) {
       super("Change Bounds");
@@ -30,16 +31,19 @@ public class ChangeBoundsCommand extends Command {
       this.newWidth = newWidth;
    }
 
+   @Override
    public boolean canExecute() {
       return node != null && newLocation != null && (newWidth == -1 || newWidth > 0);
    }
 
+   @Override
    public void execute() {
       oldLocation = node.getLocation();
       oldWidth = node.getWidth();
       redo();
    }
 
+   @Override
    public void redo() {
       node.setLocation(newLocation);
       node.setWidth(newWidth);
@@ -53,6 +57,7 @@ public class ChangeBoundsCommand extends Command {
       newLocation = loc;
    }
 
+   @Override
    public void undo() {
       node.setWidth(oldWidth);
       node.setLocation(oldLocation);

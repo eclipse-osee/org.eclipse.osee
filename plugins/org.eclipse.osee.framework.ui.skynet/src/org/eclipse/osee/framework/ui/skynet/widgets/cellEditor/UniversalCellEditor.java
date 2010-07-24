@@ -78,7 +78,7 @@ public class UniversalCellEditor extends CellEditor {
     * Returns whether this cell editor is activated.
     * 
     * @return <code>true</code> if this cell editor's control is currently visible, and <code>false</code> if not
-    *         visible
+    * visible
     */
    @Override
    public boolean isActivated() {
@@ -118,7 +118,7 @@ public class UniversalCellEditor extends CellEditor {
 
    @Override
    protected Object doGetValue() {
-      if ((control instanceof Combo) && personCombo) {
+      if (control instanceof Combo && personCombo) {
          return comboBox.getText();
       }
       if (control instanceof Combo) {

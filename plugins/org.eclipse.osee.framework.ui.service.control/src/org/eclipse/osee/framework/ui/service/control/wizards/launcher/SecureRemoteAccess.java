@@ -103,10 +103,12 @@ public class SecureRemoteAccess {
          levelMap.put(com.jcraft.jsch.Logger.ERROR, Level.SEVERE);
       }
 
+      @Override
       public boolean isEnabled(int level) {
          return true;
       }
 
+      @Override
       public void log(int level, String message) {
          Level logLevel = levelMap.get(level);
          if (logLevel == null) {
@@ -119,31 +121,36 @@ public class SecureRemoteAccess {
    private final class PromptUserInfo implements UserInfo, UIKeyboardInteractive {
       private String password;
 
+      @Override
       public String getPassword() {
          return password;
       }
 
+      @Override
       public boolean promptYesNo(String message) {
          Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
          MessageDialog dialog =
-               new MessageDialog(shell, "Warning", null, message, MessageDialog.WARNING, new String[] {
-                     IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 0);
+            new MessageDialog(shell, "Warning", null, message, MessageDialog.WARNING, new String[] {
+               IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 0);
          return dialog.open() == 0;
       }
 
+      @Override
       public String getPassphrase() {
          return null;
       }
 
+      @Override
       public boolean promptPassphrase(String message) {
          return true;
       }
 
+      @Override
       public boolean promptPassword(String message) {
          Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
          MultiTextDialog inputDialog =
-               new MultiTextDialog(shell, "Password", "Enter password: ", new String[] {"password:"},
-                     new boolean[] {false});
+            new MultiTextDialog(shell, "Password", "Enter password: ", new String[] {"password:"},
+               new boolean[] {false});
          inputDialog.setBlockOnOpen(true);
          int result = inputDialog.getReturnCode();
          if (result == Window.OK) {
@@ -156,15 +163,17 @@ public class SecureRemoteAccess {
          return false;
       }
 
+      @Override
       public void showMessage(String message) {
          Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
          MessageDialog.openInformation(shell, "Log-in Message", message);
       }
 
+      @Override
       public String[] promptKeyboardInteractive(String destination, String name, String instruction, String[] prompt, boolean[] echo) {
          Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
          MultiTextDialog inputDialog =
-               new MultiTextDialog(shell, destination + ": " + name, "Enter Password: ", prompt, echo);
+            new MultiTextDialog(shell, destination + ": " + name, "Enter Password: ", prompt, echo);
          inputDialog.setBlockOnOpen(true);
          int result = inputDialog.open();
          if (result == Window.OK) {

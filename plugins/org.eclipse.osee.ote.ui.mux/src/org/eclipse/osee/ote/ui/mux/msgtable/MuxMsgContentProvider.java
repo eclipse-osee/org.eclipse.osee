@@ -16,7 +16,6 @@ import org.eclipse.osee.ote.ui.mux.model.MessageModel;
 
 /**
  * @author Ky Komadino
- * 
  */
 public class MuxMsgContentProvider implements IStructuredContentProvider {
    private final static Object[] EMPTY_ARRAY = new Object[0];
@@ -25,19 +24,21 @@ public class MuxMsgContentProvider implements IStructuredContentProvider {
    public void refresh() {
       viewer.refresh();
    }
-   
+
+   @Override
    public void inputChanged(Viewer v, Object oldInput, Object newInput) {
       viewer = v;
    }
 
+   @Override
    public void dispose() {
    }
 
+   @Override
    public Object[] getElements(Object parent) {
       if (parent instanceof MessageModel) {
-         return ((MessageModel)parent).getChildren().toArray();
-      }
-      else {
+         return ((MessageModel) parent).getChildren().toArray();
+      } else {
          return EMPTY_ARRAY;
       }
    }

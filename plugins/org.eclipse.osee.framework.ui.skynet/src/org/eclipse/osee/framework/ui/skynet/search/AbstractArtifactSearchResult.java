@@ -68,10 +68,12 @@ public abstract class AbstractArtifactSearchResult extends AbstractTextSearchRes
       return true; //!attributes.isEmpty();
    }
 
+   @Override
    public IEditorMatchAdapter getEditorMatchAdapter() {
       return this;
    }
 
+   @Override
    public boolean isShownInEditor(Match match, IEditorPart editor) {
       IEditorInput ei = editor.getEditorInput();
       if (ei instanceof ArtifactEditorInput) {
@@ -81,6 +83,7 @@ public abstract class AbstractArtifactSearchResult extends AbstractTextSearchRes
       return false;
    }
 
+   @Override
    public Match[] computeContainedMatches(AbstractTextSearchResult result, IEditorPart editor) {
       IEditorInput ei = editor.getEditorInput();
       if (ei instanceof ArtifactEditorInput) {

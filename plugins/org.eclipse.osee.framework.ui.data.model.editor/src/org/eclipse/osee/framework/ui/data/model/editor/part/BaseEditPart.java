@@ -63,6 +63,7 @@ public abstract class BaseEditPart extends AbstractGraphicalEditPart {
 
    protected abstract void handleModelEvent(Object object);
 
+   @Override
    public void activate() {
       super.activate();
       ((NodeModel) getModel()).addListener(modelListener);
@@ -74,23 +75,25 @@ public abstract class BaseEditPart extends AbstractGraphicalEditPart {
       return false;
    }
 
+   @Override
    protected void createEditPolicies() {
       installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, createDirectEditPolicy());
       installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, new LabelSelectionEditPolicy());
       installEditPolicy(EditPolicy.COMPONENT_ROLE, new ComponentEditPolicy() {
+         @Override
          protected Command createDeleteCommand(GroupRequest deleteRequest) {
             Command toReturn = UnexecutableCommand.INSTANCE;
 
             Object model = ((AbstractGraphicalEditPart) getParent()).getModel();
             if (model != null) {
                Boolean booleanObject =
-                     (Boolean) deleteRequest.getExtendedData().get(DeleteCommand.DELETE_FROM_ODM_DIAGRAM);
+                  (Boolean) deleteRequest.getExtendedData().get(DeleteCommand.DELETE_FROM_ODM_DIAGRAM);
                boolean isDeleteFromDiagram = booleanObject == null ? false : booleanObject.booleanValue();
 
                if (model instanceof ContainerModel) {
                   DeleteCommand cmd = new DeleteCommand();
                   cmd.setPartToBeDeleted(getHost().getModel(), ((ContainerModel) model).getArtifact(),
-                        isDeleteFromDiagram);
+                     isDeleteFromDiagram);
                   toReturn = cmd;
                } else if (model instanceof ODMDiagram && getHost().getModel() instanceof ArtifactDataType) {
                   DeleteCommand cmd = new DeleteCommand();
@@ -103,17 +106,20 @@ public abstract class BaseEditPart extends AbstractGraphicalEditPart {
       });
    }
 
+   @Override
    protected IFigure createFigure() {
       IFigure fig = new SelectableLabel();
       fig.setBorder(new MarginBorder(0, 1, 0, 0));
       return fig;
    }
 
+   @Override
    public void deactivate() {
       ((NodeModel) getModel()).removeListener(modelListener);
       super.deactivate();
    }
 
+   @Override
    @SuppressWarnings("unchecked")
    public Object getAdapter(Class key) {
       if (IPropertySource.class == key) {
@@ -136,6 +142,7 @@ public abstract class BaseEditPart extends AbstractGraphicalEditPart {
       return "";
    }
 
+   @Override
    public DragTracker getDragTracker(Request request) {
       return new SelectEditPartTracker(this);
    }
@@ -147,6 +154,7 @@ public abstract class BaseEditPart extends AbstractGraphicalEditPart {
       manager.show();
    }
 
+   @Override
    public void performRequest(Request request) {
       if (request.getType() == RequestConstants.REQ_DIRECT_EDIT) {
          performDirectEdit();
@@ -163,6 +171,7 @@ public abstract class BaseEditPart extends AbstractGraphicalEditPart {
          fig = figure;
       }
 
+      @Override
       public void relocate(CellEditor celleditor) {
          Text text = (Text) celleditor.getControl();
 

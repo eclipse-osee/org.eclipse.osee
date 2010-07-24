@@ -27,6 +27,7 @@ public class ArtifactDecoratorPreferences implements IArtifactDecoratorPreferenc
 
    }
 
+   @Override
    public String getSelectedAttributeData(Artifact artifact) throws OseeCoreException {
       return "";
    }
@@ -47,18 +48,22 @@ public class ArtifactDecoratorPreferences implements IArtifactDecoratorPreferenc
       this.isShowArtVersionAllowed = isShowArtVersionAllowed;
    }
 
+   @Override
    public boolean showArtIds() {
       return isShowArtIdsAllowed;
    }
 
+   @Override
    public boolean showArtType() {
       return isShowArtTypeAllowed;
    }
 
+   @Override
    public boolean showArtBranch() {
       return isShowBranchAllowed;
    }
 
+   @Override
    public boolean showArtVersion() {
       return isShowArtVersionAllowed;
    }

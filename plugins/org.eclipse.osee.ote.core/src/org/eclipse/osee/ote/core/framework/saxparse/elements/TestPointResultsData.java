@@ -12,11 +12,11 @@ package org.eclipse.osee.ote.core.framework.saxparse.elements;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public class TestPointResultsData {
 
-   private String aborted;
+   private final String aborted;
+
    /**
     * @return the aborted
     */
@@ -45,10 +45,10 @@ public class TestPointResultsData {
       return total;
    }
 
-   private String fail;
-   private String pass;
-   private String total;
-   
+   private final String fail;
+   private final String pass;
+   private final String total;
+
    /**
     * @param value
     * @param value2

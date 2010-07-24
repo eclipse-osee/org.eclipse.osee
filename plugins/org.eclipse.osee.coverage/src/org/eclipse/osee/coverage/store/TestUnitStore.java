@@ -76,7 +76,9 @@ public class TestUnitStore {
    }
 
    public static Integer getTestUnitId(String name, boolean add) throws OseeCoreException {
-      if (instance.nameToId.containsKey(name)) return instance.nameToId.get(name);
+      if (instance.nameToId.containsKey(name)) {
+         return instance.nameToId.get(name);
+      }
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(TEST_UNIT_ID_QUERY, name);
@@ -98,7 +100,9 @@ public class TestUnitStore {
    }
 
    public static String getTestUnitName(Integer nameId) throws OseeCoreException {
-      if (instance.idToName.containsKey(nameId)) return instance.idToName.get(nameId);
+      if (instance.idToName.containsKey(nameId)) {
+         return instance.idToName.get(nameId);
+      }
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(TEST_UNIT_NAME_QUERY, nameId);

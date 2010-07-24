@@ -38,15 +38,17 @@ public class DecisionOption {
    public DecisionOption(String name, Collection<User> assignees, boolean followup) {
       this.name = name;
       this.followupRequired = followup;
-      if (assignees != null)
+      if (assignees != null) {
          this.assignees = assignees;
+      }
    }
 
    public DecisionOption(String name, User assignee, boolean followup) {
       this.name = name;
       this.followupRequired = followup;
-      if (assignee != null)
+      if (assignee != null) {
          this.assignees.add(assignee);
+      }
    }
 
    public DecisionOption(String name) {
@@ -66,8 +68,9 @@ public class DecisionOption {
    public boolean equals(Object obj) {
       if (obj instanceof DecisionOption) {
          DecisionOption state = (DecisionOption) obj;
-         if (!state.name.equals(name))
+         if (!state.name.equals(name)) {
             return false;
+         }
          return true;
       }
       return super.equals(obj);
@@ -84,8 +87,9 @@ public class DecisionOption {
     */
    public void setAssignees(Collection<User> assignees) {
       this.assignees.clear();
-      if (assignees != null)
+      if (assignees != null) {
          this.assignees.addAll(assignees);
+      }
    }
 
    /**
@@ -95,16 +99,18 @@ public class DecisionOption {
     */
    public void setAssignee(User assignee) {
       this.assignees.clear();
-      if (assignee != null)
+      if (assignee != null) {
          this.assignees.add(assignee);
+      }
    }
 
    /**
     * @param assignee
     */
    public void addAssignee(User assignee) {
-      if (assignee != null)
+      if (assignee != null) {
          this.assignees.add(assignee);
+      }
    }
 
    /**
@@ -124,8 +130,9 @@ public class DecisionOption {
    public String toXml() throws OseeCoreException {
       StringBuffer sb = new StringBuffer(name);
       sb.append(";");
-      for (User u : assignees)
+      for (User u : assignees) {
          sb.append("<" + u.getUserId() + ">");
+      }
       sb.append(";");
       sb.append(followupRequired);
       return sb.toString();
@@ -135,14 +142,16 @@ public class DecisionOption {
       Matcher m = Pattern.compile("^(.*?);(.*?);(.*)$").matcher(xml);
       if (m.find()) {
          name = m.group(1);
-         if (name.equals(""))
+         if (name.equals("")) {
             return new Result("Invalid name");
-         if (m.group(2).toLowerCase().equals("followup"))
+         }
+         if (m.group(2).toLowerCase().equals("followup")) {
             followupRequired = true;
-         else if (m.group(2).toLowerCase().equals("completed"))
+         } else if (m.group(2).toLowerCase().equals("completed")) {
             followupRequired = false;
-         else
+         } else {
             return new Result("Invalid followup string \"" + m.group(2) + "\"\nShould be followup or completed");
+         }
          m = Pattern.compile("<(.*?)>").matcher(m.group(3));
          while (m.find()) {
             try {
@@ -151,13 +160,15 @@ public class DecisionOption {
                OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
             }
          }
-         if (followupRequired && assignees.isEmpty())
+         if (followupRequired && assignees.isEmpty()) {
             return new Result("If followup is specified, must set assignees.\nShould be: <userid><userid>");
-         else if (!followupRequired && assignees.size() > 0)
+         } else if (!followupRequired && assignees.size() > 0) {
             return new Result("If completed is specified, don't specify assigness.  Leave blank.\n");
-      } else
+         }
+      } else {
          return new Result(
-               "Can't unpack decision option data => " + xml + "\n\n" + "must be in format: \"Name;(followup|completed);<userid1><userid2>\"" + "where true if followup is required; false if not.  If followup required, assignees will be userid1, userid2.");
+            "Can't unpack decision option data => " + xml + "\n\n" + "must be in format: \"Name;(followup|completed);<userid1><userid2>\"" + "where true if followup is required; false if not.  If followup required, assignees will be userid1, userid2.");
+      }
       return Result.TrueResult;
    }
 

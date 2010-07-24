@@ -20,19 +20,20 @@ import org.eclipse.osee.ote.core.environment.console.ConsoleShell;
  */
 public class HostCmd extends ConsoleCommand {
 
-    private static final String NAME = "host";
-    private static final String DESCRIPTION = "displays the local host";
+   private static final String NAME = "host";
+   private static final String DESCRIPTION = "displays the local host";
 
-    public HostCmd() {
-        super(NAME, DESCRIPTION);
-    }
+   public HostCmd() {
+      super(NAME, DESCRIPTION);
+   }
 
-    protected void doCmd(ConsoleShell shell, String[] switches, String[] args) {
-        try {
-            println(InetAddress.getLocalHost().toString());
-        } catch (UnknownHostException e) {
-            println("problems getting local host");
-        }
-    }
+   @Override
+   protected void doCmd(ConsoleShell shell, String[] switches, String[] args) {
+      try {
+         println(InetAddress.getLocalHost().toString());
+      } catch (UnknownHostException e) {
+         println("problems getting local host");
+      }
+   }
 
 }

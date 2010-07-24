@@ -92,8 +92,8 @@ public class AttributeBasedArtifactResolver extends NewArtifactImportResolver {
             roughArtifact.translateAttributes(realArtifact);
          } else {
             String output =
-                  String.format("Found %s candidates during reuse import for \"%s\"", candidates.size(),
-                        roughArtifact.getName());
+               String.format("Found %s candidates during reuse import for \"%s\"", candidates.size(),
+                  roughArtifact.getName());
             OseeLog.log(Activator.class, Level.INFO, output);
             if (createNewIfNotExist) {
                realArtifact = super.resolve(roughArtifact, branch, null, root);

@@ -34,14 +34,14 @@ public class DateSelectionDialog extends MessageDialog {
 
    public DateSelectionDialog(Shell parentShell, String dialogTitle, Image dialogTitleImage, String dialogMessage, int dialogImageType, String[] dialogButtonLabels, int defaultIndex, Date selectedDate) {
       super(parentShell, dialogTitle, dialogTitleImage, dialogMessage, dialogImageType, dialogButtonLabels,
-            defaultIndex);
+         defaultIndex);
       this.initialDate = selectedDate;
       this.dialogMessage = dialogMessage;
    }
 
    public DateSelectionDialog(String dialogTitle, String dialogMessage, Date selectedDate) {
-      this(Displays.getActiveShell(), dialogTitle, null, dialogMessage, MessageDialog.NONE, new String[] {
-            "Ok", "Cancel"}, 0, selectedDate);
+      this(Displays.getActiveShell(), dialogTitle, null, dialogMessage, MessageDialog.NONE, new String[] {"Ok",
+         "Cancel"}, 0, selectedDate);
    }
 
    @Override
@@ -52,11 +52,14 @@ public class DateSelectionDialog extends MessageDialog {
       filterComp.setLayout(new GridLayout(1, false));
       filterComp.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-      (new Label(filterComp, SWT.None)).setText(dialogMessage);
+      new Label(filterComp, SWT.None).setText(dialogMessage);
 
       final CalendarCombo dp = new CalendarCombo(filterComp, SWT.SINGLE | SWT.FLAT);
-      if (initialDate != null) dp.setDate(initialDate);
+      if (initialDate != null) {
+         dp.setDate(initialDate);
+      }
       dp.addCalendarListener(new CalendarListenerAdapter() {
+         @Override
          public void dateChanged(Calendar date) {
             if (date != null) {
                selectedDate = dp.getDate().getTime();

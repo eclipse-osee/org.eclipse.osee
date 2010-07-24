@@ -17,26 +17,29 @@ import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Ky Komadino
- *
  */
 public class DatawordLabelProvider extends LabelProvider implements ITableLabelProvider {
+   @Override
    public String getColumnText(Object obj, int index) {
       if (obj != null && obj instanceof RowNode) {
-         if (index >= 0 && index <= 7)
-            return String.valueOf(((RowNode)obj).getDataword(index));
-         else
+         if (index >= 0 && index <= 7) {
+            return String.valueOf(((RowNode) obj).getDataword(index));
+         } else {
             return "";
-      }
-      else
+         }
+      } else {
          return "";
+      }
    }
 
+   @Override
    public Image getColumnImage(Object obj, int index) {
       return getImage(obj);
    }
 
+   @Override
    public String getText(Object obj) {
-      return ((MessageNode)obj).getName();
+      return ((MessageNode) obj).getName();
    }
 
 }

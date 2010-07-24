@@ -15,9 +15,8 @@ import org.xml.sax.Attributes;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
-public class ScriptResult extends ElementHandlers{
+public class ScriptResult extends ElementHandlers {
 
    /**
     * @param name

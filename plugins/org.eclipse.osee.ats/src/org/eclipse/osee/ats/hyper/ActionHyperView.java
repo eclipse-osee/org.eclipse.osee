@@ -103,7 +103,7 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
          }
       } catch (PartInitException e1) {
          MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Launch Error",
-               "Couldn't Get OSEE Hyper View " + e1.getMessage());
+            "Couldn't Get OSEE Hyper View " + e1.getMessage());
       }
       return null;
    }
@@ -290,6 +290,7 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
       processWindowActivated();
    }
 
+   @Override
    public String getActionDescription() {
       if (currentArtifact != null && currentArtifact.isDeleted()) {
          return String.format("Current Artifact - %s - %s", currentArtifact.getGuid(), currentArtifact.getName());
@@ -302,14 +303,17 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
       super.clear();
    }
 
+   @Override
    public void perspectiveActivated(IWorkbenchPage page, IPerspectiveDescriptor perspective) {
       processWindowActivated();
    }
 
+   @Override
    public void perspectiveChanged(IWorkbenchPage page, IPerspectiveDescriptor perspective, String changeId) {
       processWindowActivated();
    }
 
+   @Override
    public void perspectiveChanged(IWorkbenchPage page, IPerspectiveDescriptor perspective, IWorkbenchPartReference partRef, String changeId) {
       processWindowActivated();
    }

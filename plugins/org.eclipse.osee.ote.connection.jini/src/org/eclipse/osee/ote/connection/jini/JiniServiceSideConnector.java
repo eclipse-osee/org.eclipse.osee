@@ -37,136 +37,139 @@ import org.eclipse.osee.ote.connection.jini.util.LeaseRenewTask;
 /**
  * @author Ken J. Aguilar
  */
-public class JiniServiceSideConnector extends JiniConnector implements
- IJiniConnectorLink {
-	public static final String TYPE = "jini.service-end";
-	private final HashMap<ServiceRegistration, LeaseRenewTask> registrations = new HashMap<ServiceRegistration, LeaseRenewTask>();
-	private Remote service;
-	private Remote serviceProxy;
-	private BasicJeriExporter serviceExporter;
-	private ServiceID serviceId;
-	private final Timer timer = new Timer();
-	private ServiceItem serviceItem;
-	private BasicJeriExporter linkExporter;
-	private IJiniConnectorLink exportedThis;
-	private boolean stopped = false;
-	
-	
-	public JiniServiceSideConnector() {
+public class JiniServiceSideConnector extends JiniConnector implements IJiniConnectorLink {
+   public static final String TYPE = "jini.service-end";
+   private final HashMap<ServiceRegistration, LeaseRenewTask> registrations =
+      new HashMap<ServiceRegistration, LeaseRenewTask>();
+   private Remote service;
+   private Remote serviceProxy;
+   private BasicJeriExporter serviceExporter;
+   private ServiceID serviceId;
+   private final Timer timer = new Timer();
+   private ServiceItem serviceItem;
+   private BasicJeriExporter linkExporter;
+   private IJiniConnectorLink exportedThis;
+   private boolean stopped = false;
+
+   public JiniServiceSideConnector() {
       super();
    }
-   
-   public void init(Object service) throws UnknownHostException, ExportException{
 
-      this.service = (Remote)service;
+   @Override
+   public void init(Object service) throws UnknownHostException, ExportException {
+
+      this.service = (Remote) service;
       serviceId = generateServiceId();
-      serviceExporter = new BasicJeriExporter(TcpServerEndpoint.getInstance(Network.getValidIP().getHostAddress(), 0), new BasicILFactory(null, null,
-            Activator.getDefault().getExportClassLoader()), false, false);
-      linkExporter = new BasicJeriExporter(TcpServerEndpoint.getInstance(Network.getValidIP().getHostAddress(), 0), new BasicILFactory(null, null, Activator
-            .getDefault().getExportClassLoader()), false, false);
-      serviceProxy = (Remote) serviceExporter.export(this.service);
+      serviceExporter =
+         new BasicJeriExporter(TcpServerEndpoint.getInstance(Network.getValidIP().getHostAddress(), 0),
+            new BasicILFactory(null, null, Activator.getDefault().getExportClassLoader()), false, false);
+      linkExporter =
+         new BasicJeriExporter(TcpServerEndpoint.getInstance(Network.getValidIP().getHostAddress(), 0),
+            new BasicILFactory(null, null, Activator.getDefault().getExportClassLoader()), false, false);
+      serviceProxy = serviceExporter.export(this.service);
       exportedThis = (IJiniConnectorLink) linkExporter.export(this);
       setProperty(LINK_PROPERTY, (Serializable) exportedThis);
       serviceItem = new ServiceItem(serviceId, serviceProxy, createEntries());
    }
-	
-	public JiniServiceSideConnector(Remote service, EnhancedProperties props) throws UnknownHostException, ExportException {
-		super(props);
-		this.service = service;
-		serviceId = generateServiceId();
-		serviceExporter = new BasicJeriExporter(TcpServerEndpoint.getInstance(Network.getValidIP().getHostAddress(), 0), new BasicILFactory(null, null,
-				Activator.getDefault().getExportClassLoader()), false, false);
-		linkExporter = new BasicJeriExporter(TcpServerEndpoint.getInstance(Network.getValidIP().getHostAddress(), 0), new BasicILFactory(null, null, Activator
-				.getDefault().getExportClassLoader()), false, false);
-		serviceProxy = (Remote) serviceExporter.export(service);
-		exportedThis = (IJiniConnectorLink) linkExporter.export(this);
-		props.setProperty(LINK_PROPERTY, (Serializable) exportedThis);
-		serviceItem = new ServiceItem(serviceId, serviceProxy, createEntries());
-	}
 
-	@Override
-	public Remote getService() {
-		return serviceProxy;
-	}
+   public JiniServiceSideConnector(Remote service, EnhancedProperties props) throws UnknownHostException, ExportException {
+      super(props);
+      this.service = service;
+      serviceId = generateServiceId();
+      serviceExporter =
+         new BasicJeriExporter(TcpServerEndpoint.getInstance(Network.getValidIP().getHostAddress(), 0),
+            new BasicILFactory(null, null, Activator.getDefault().getExportClassLoader()), false, false);
+      linkExporter =
+         new BasicJeriExporter(TcpServerEndpoint.getInstance(Network.getValidIP().getHostAddress(), 0),
+            new BasicILFactory(null, null, Activator.getDefault().getExportClassLoader()), false, false);
+      serviceProxy = serviceExporter.export(service);
+      exportedThis = (IJiniConnectorLink) linkExporter.export(this);
+      props.setProperty(LINK_PROPERTY, (Serializable) exportedThis);
+      serviceItem = new ServiceItem(serviceId, serviceProxy, createEntries());
+   }
 
-	@Override
-	public synchronized void stop() throws Exception {
-		if (stopped) {
-			return;
-		}
-		stopped = true;
-		super.stop();
-		removeAllRegistrations();
-		serviceExporter.unexport(true);
-		linkExporter.unexport(true);
-	}
+   @Override
+   public Remote getService() {
+      return serviceProxy;
+   }
 
-	/**
-	 * this method will cancel all current registrations of this connector
-	 */
-	synchronized void removeAllRegistrations() {
-		for (ServiceRegistration registration : registrations.keySet()) {
-			try {
-				LeaseRenewTask task = registrations.get(registration);
-				if (task != null) {
-					task.cancel();
-				}
-			} catch (Exception e) {
-				Activator.log(Level.SEVERE, "exception removing registration", e);
-			}
-		}
-		registrations.clear();
-	}
+   @Override
+   public synchronized void stop() throws Exception {
+      if (stopped) {
+         return;
+      }
+      stopped = true;
+      super.stop();
+      removeAllRegistrations();
+      serviceExporter.unexport(true);
+      linkExporter.unexport(true);
+   }
 
-	private ServiceID generateServiceId() {
-		Uuid uuid = UuidFactory.generate();
-		Long lsb = new Long(uuid.getLeastSignificantBits());
-		Long msb = new Long(uuid.getMostSignificantBits());
-		return new ServiceID(msb.longValue(), lsb.longValue());
-	}
+   /**
+    * this method will cancel all current registrations of this connector
+    */
+   synchronized void removeAllRegistrations() {
+      for (ServiceRegistration registration : registrations.keySet()) {
+         try {
+            LeaseRenewTask task = registrations.get(registration);
+            if (task != null) {
+               task.cancel();
+            }
+         } catch (Exception e) {
+            Activator.log(Level.SEVERE, "exception removing registration", e);
+         }
+      }
+      registrations.clear();
+   }
 
-	synchronized void addRegistration(ServiceRegistration registration, ServiceRegistrar registrar) {
-		registrations
-		.put(registration, new LeaseRenewTask(timer, registration, registrar));
-	}
+   private ServiceID generateServiceId() {
+      Uuid uuid = UuidFactory.generate();
+      Long lsb = new Long(uuid.getLeastSignificantBits());
+      Long msb = new Long(uuid.getMostSignificantBits());
+      return new ServiceID(msb.longValue(), lsb.longValue());
+   }
 
-	ServiceItem getServiceItem() {
-		return serviceItem;
-	}
+   synchronized void addRegistration(ServiceRegistration registration, ServiceRegistrar registrar) {
+      registrations.put(registration, new LeaseRenewTask(timer, registration, registrar));
+   }
 
-	private synchronized void setAttributes(Entry[] entry) {
-		Iterator<ServiceRegistration> iter = registrations.keySet().iterator();
-		while (iter.hasNext()) {
-			ServiceRegistration registration = iter.next();
-			try {
-				registration.setAttributes(entry);
-			} catch (Exception ex) {
-				Activator.log(Level.SEVERE, "exception setting attributes", ex);
-				registrations.remove(registration);
-			}
-		}
-	}
+   ServiceItem getServiceItem() {
+      return serviceItem;
+   }
 
-	@Override
-	public String getConnectorType() {
-		return TYPE;
-	}
+   private synchronized void setAttributes(Entry[] entry) {
+      Iterator<ServiceRegistration> iter = registrations.keySet().iterator();
+      while (iter.hasNext()) {
+         ServiceRegistration registration = iter.next();
+         try {
+            registration.setAttributes(entry);
+         } catch (Exception ex) {
+            Activator.log(Level.SEVERE, "exception setting attributes", ex);
+            registrations.remove(registration);
+         }
+      }
+   }
 
-	@Override
-	public void setProperty(String key, Serializable value) {
-		super.setProperty(key, value);
-		setAttributes(createEntries());
-	}
+   @Override
+   public String getConnectorType() {
+      return TYPE;
+   }
 
-	@Override
-	public URI upload(File file) throws Exception {
-		return null;
-	}
+   @Override
+   public void setProperty(String key, Serializable value) {
+      super.setProperty(key, value);
+      setAttributes(createEntries());
+   }
 
-	@Override
-	public boolean ping() {
-		return true;
-	}
+   @Override
+   public URI upload(File file) throws Exception {
+      return null;
+   }
+
+   @Override
+   public boolean ping() {
+      return true;
+   }
 
    @Override
    public String getUniqueServerId() {

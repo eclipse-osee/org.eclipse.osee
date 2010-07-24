@@ -14,24 +14,25 @@ import java.nio.ByteBuffer;
 import org.eclipse.osee.ote.message.data.MemoryResource;
 import org.eclipse.osee.ote.message.elements.StringElement;
 
-
 public class StringElementEntry implements IElementEntry {
 
-	private final StringElement element;
-	private final byte[] nameAsBytes;
+   private final StringElement element;
+   private final byte[] nameAsBytes;
 
-	public StringElementEntry(final StringElement element) {
-		this.element = element;
-		nameAsBytes = element.getName().getBytes();
-	}
+   public StringElementEntry(final StringElement element) {
+      this.element = element;
+      nameAsBytes = element.getName().getBytes();
+   }
 
-	public StringElement getElement() {
-		return element;
-	}
+   @Override
+   public StringElement getElement() {
+      return element;
+   }
 
-	public void write(ByteBuffer buffer, MemoryResource mem, int limit) {
-		mem.setOffset(element.getMsgData().getMem().getOffset());
-		buffer.put(nameAsBytes).put(COMMA).put(TICK).put(element.valueOf(mem).getBytes()).put(TICK).put(COMMA);
-	}
+   @Override
+   public void write(ByteBuffer buffer, MemoryResource mem, int limit) {
+      mem.setOffset(element.getMsgData().getMem().getOffset());
+      buffer.put(nameAsBytes).put(COMMA).put(TICK).put(element.valueOf(mem).getBytes()).put(TICK).put(COMMA);
+   }
 
 }

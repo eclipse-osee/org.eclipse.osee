@@ -14,11 +14,13 @@ import org.eclipse.osee.framework.core.data.Named;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public interface MessageID extends Named {
-	Class<?> getSerializationClass();
-	boolean isReplyRequired();
-	boolean isTopic();
-	String getId();
+   Class<?> getSerializationClass();
+
+   boolean isReplyRequired();
+
+   boolean isTopic();
+
+   String getId();
 }

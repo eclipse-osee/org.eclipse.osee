@@ -34,13 +34,12 @@ import org.junit.Test;
 
 /**
  * Test Case for {@link AttributeTypeEditPresenter}
- *
+ * 
  * @author Roberto E. Escobar
  */
 public class AttributeTypeEditPresenterTest {
-   private static final IAttributeType[] selectableTypes =
-         new IAttributeType[] {CoreAttributeTypes.RELATION_ORDER, CoreAttributeTypes.Annotation,
-               CoreAttributeTypes.STATIC_ID};
+   private static final IAttributeType[] selectableTypes = new IAttributeType[] {CoreAttributeTypes.RELATION_ORDER,
+      CoreAttributeTypes.Annotation, CoreAttributeTypes.STATIC_ID};
 
    private static AttributeTypeEditPresenter controller;
    private static MockDisplay display;
@@ -145,8 +144,9 @@ public class AttributeTypeEditPresenterTest {
    private static void checkDisplay(MockDisplay display, OperationType expectedType, String title, String message, List<IAttributeType> expectedSelectable) {
       List<? extends IAttributeType> selectableItems = display.getInput();
 
-      Assert.assertFalse(String.format("Selectable Types - expected:[%s] actual:[%s]", expectedSelectable,
-            selectableItems), Compare.isDifferent(expectedSelectable, selectableItems));
+      Assert.assertFalse(
+         String.format("Selectable Types - expected:[%s] actual:[%s]", expectedSelectable, selectableItems),
+         Compare.isDifferent(expectedSelectable, selectableItems));
       Assert.assertEquals(expectedType, display.getOperationType());
 
       Pair<String, String> selectionInfo = display.getSelectionInfo();

@@ -33,8 +33,8 @@ final class StartUpRunnable extends TimerTask {
       try {
          if (OseeServerProperties.isCheckTagQueueOnStartupAllowed()) {
             List<Integer> queries = JoinUtility.getAllTagQueueQueryIds();
-            OseeLog.log(SearchEngineTagger.class, Level.INFO, String.format(
-                  "On Start-Up Tagging - [%d] tag queue items.", queries.size()));
+            OseeLog.log(SearchEngineTagger.class, Level.INFO,
+               String.format("On Start-Up Tagging - [%d] tag queue items.", queries.size()));
             for (Integer queryId : queries) {
                tagger.tagByQueueQueryId(queryId);
             }

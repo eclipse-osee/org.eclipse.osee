@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 public class OseeDatabaseServiceImpl implements IOseeDatabaseService {
    private static final Timer timer = new Timer();
    private static final Map<String, OseeConnectionPoolImpl> dbInfoToPools =
-         new HashMap<String, OseeConnectionPoolImpl>();
+      new HashMap<String, OseeConnectionPoolImpl>();
 
    private final IOseeSequence oseeSequence;
    private final ConnectionFactoryProvider dbConnectionFactory;
@@ -72,8 +72,8 @@ public class OseeDatabaseServiceImpl implements IOseeDatabaseService {
       OseeConnectionPoolImpl pool = dbInfoToPools.get(databaseInfo.getId());
       if (pool == null) {
          pool =
-               new OseeConnectionPoolImpl(dbConnectionFactory, databaseInfo.getDriver(),
-                     databaseInfo.getConnectionUrl(), databaseInfo.getConnectionProperties());
+            new OseeConnectionPoolImpl(dbConnectionFactory, databaseInfo.getDriver(), databaseInfo.getConnectionUrl(),
+               databaseInfo.getConnectionProperties());
          dbInfoToPools.put(databaseInfo.getId(), pool);
          timer.schedule(new StaleConnectionCloser(pool), 900000, 900000);
       }
@@ -159,7 +159,7 @@ public class OseeDatabaseServiceImpl implements IOseeDatabaseService {
             OseeLog.log(Activator.class, Level.SEVERE, "This is the nested exception", exlist);
          }
          throw new OseeDataStoreException(
-               "sql update failed: \n" + query + "\n" + StatementUtil.getBatchErrorMessage(dataList), ex);
+            "sql update failed: \n" + query + "\n" + StatementUtil.getBatchErrorMessage(dataList), ex);
       } finally {
          StatementUtil.close(preparedStatement);
       }

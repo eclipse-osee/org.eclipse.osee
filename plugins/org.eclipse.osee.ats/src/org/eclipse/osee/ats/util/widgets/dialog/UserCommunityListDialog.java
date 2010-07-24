@@ -35,7 +35,7 @@ public class UserCommunityListDialog extends org.eclipse.ui.dialogs.ListDialog {
          public Object[] getElements(Object inputElement) {
             if (inputElement instanceof Collection) {
                Collection list = (Collection) inputElement;
-               return (list.toArray(new String[list.size()]));
+               return list.toArray(new String[list.size()]);
             }
             return super.getElements(inputElement);
          }
@@ -44,7 +44,7 @@ public class UserCommunityListDialog extends org.eclipse.ui.dialogs.ListDialog {
          @Override
          public String getText(Object element) {
             if (element instanceof String) {
-               return ((String) element);
+               return (String) element;
             }
             return "Unknown element type";
          }
@@ -57,9 +57,10 @@ public class UserCommunityListDialog extends org.eclipse.ui.dialogs.ListDialog {
    protected Control createDialogArea(Composite container) {
       Control c = super.createDialogArea(container);
       getTableViewer().setSorter(new ViewerSorter() {
+         @Override
          @SuppressWarnings("unchecked")
          public int compare(Viewer viewer, Object o1, Object o2) {
-            return getComparator().compare((String) o1, (String) o2);
+            return getComparator().compare(o1, o2);
          }
       });
       return c;

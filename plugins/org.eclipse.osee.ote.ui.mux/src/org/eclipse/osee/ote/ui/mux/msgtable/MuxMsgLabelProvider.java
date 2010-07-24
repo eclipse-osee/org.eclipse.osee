@@ -16,43 +16,45 @@ import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Ky Komadino
- * 
  */
 public class MuxMsgLabelProvider extends LabelProvider implements ITableLabelProvider {
+   @Override
    public String getColumnText(Object obj, int index) {
       if (obj != null && obj instanceof MessageNode) {
          switch (index) {
             case 0:
-               return ((MessageNode)obj).getName();
+               return ((MessageNode) obj).getName();
             case 1:
-               return ((MessageNode)obj).getRtRt();
+               return ((MessageNode) obj).getRtRt();
             case 2:
-               return String.valueOf(((MessageNode)obj).getWordCount());
+               return String.valueOf(((MessageNode) obj).getWordCount());
             case 3:
-               return ((MessageNode)obj).getStatusWord();
+               return ((MessageNode) obj).getStatusWord();
             case 4:
-               return ((MessageNode)obj).getEmulation();
+               return ((MessageNode) obj).getEmulation();
             case 5:
-               return ((MessageNode)obj).getBus();
+               return ((MessageNode) obj).getBus();
             case 6:
-               return String.valueOf(((MessageNode)obj).getActivity());
+               return String.valueOf(((MessageNode) obj).getActivity());
             case 7:
-               return String.valueOf(((MessageNode)obj).getErrCount());
+               return String.valueOf(((MessageNode) obj).getErrCount());
             case 8:
-               return ((MessageNode)obj).getErrType();
+               return ((MessageNode) obj).getErrType();
             default:
                return "";
          }
-      }
-      else
+      } else {
          return "";
+      }
    }
 
+   @Override
    public Image getColumnImage(Object obj, int index) {
       return getImage(obj);
    }
 
+   @Override
    public String getText(Object obj) {
-      return ((MessageNode)obj).getName();
+      return ((MessageNode) obj).getName();
    }
 }

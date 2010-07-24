@@ -38,23 +38,23 @@ public class SetAssociatedBranchArtifactHandler extends CommandHandler {
    @Override
    public Object execute(ExecutionEvent arg0) throws ExecutionException {
       IStructuredSelection selection =
-            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+         (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
       Branch selectedBranch = Handlers.getBranchesFromStructuredSelection(selection).iterator().next();
 
       try {
          EntryDialog ed =
-               new EntryDialog(
-                     "Set Associated Artifact",
-                     "Set Associated Artifact for Branch\n\n\"" + selectedBranch.getName() + "\"" + (selectedBranch.getAssociatedArtifactId() != null ? "\n\nCurrently: " + selectedBranch.getAssociatedArtifactId() : "") + "\n\nEnter new Artifact Id to associate:");
+            new EntryDialog(
+               "Set Associated Artifact",
+               "Set Associated Artifact for Branch\n\n\"" + selectedBranch.getName() + "\"" + (selectedBranch.getAssociatedArtifactId() != null ? "\n\nCurrently: " + selectedBranch.getAssociatedArtifactId() : "") + "\n\nEnter new Artifact Id to associate:");
          ed.setEntry(String.valueOf(selectedBranch.getAssociatedArtifactId()));
          if (ed.open() == 0) {
             String artId = ed.getEntry();
             Artifact associatedArtifact =
-                  ArtifactQuery.getArtifactFromId(Integer.parseInt(artId), BranchManager.getCommonBranch());
+               ArtifactQuery.getArtifactFromId(Integer.parseInt(artId), BranchManager.getCommonBranch());
             if (MessageDialog.openConfirm(
-                  Displays.getActiveShell(),
-                  "Set Associated Artifact",
-                  "Set Associated Artifact for Branch\n\n\"" + selectedBranch.getName() + "\"\nto\nArtifact: " + associatedArtifact)) {
+               Displays.getActiveShell(),
+               "Set Associated Artifact",
+               "Set Associated Artifact for Branch\n\n\"" + selectedBranch.getName() + "\"\nto\nArtifact: " + associatedArtifact)) {
                selectedBranch.setAssociatedArtifactId(Integer.parseInt(artId));
                BranchManager.persist(selectedBranch);
             }

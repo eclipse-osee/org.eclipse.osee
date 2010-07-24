@@ -66,15 +66,15 @@ public final class CurrentsAgainstOtherHandler implements IChangeReportUiHandler
       String data;
       if (changeUiData.isMergeBranchValid()) {
          data =
-               String.format(
-                     "Shows all changes made to [<b>%s</b>], including changes found in the merge branch compared to branch [<b>%s</b>].",
-                     AXml.textToXml(txDelta.getStartTx().getBranch().getName()),
-                     AXml.textToXml(txDelta.getEndTx().getBranch().getName()));
+            String.format(
+               "Shows all changes made to [<b>%s</b>], including changes found in the merge branch compared to branch [<b>%s</b>].",
+               AXml.textToXml(txDelta.getStartTx().getBranch().getName()),
+               AXml.textToXml(txDelta.getEndTx().getBranch().getName()));
       } else {
          data =
-               String.format("Shows all changes made to [<b>%s</b>] compared to branch [<b>%s</b>].",
-                     AXml.textToXml(txDelta.getStartTx().getBranch().getName()),
-                     AXml.textToXml(txDelta.getEndTx().getBranch().getName()));
+            String.format("Shows all changes made to [<b>%s</b>] compared to branch [<b>%s</b>].",
+               AXml.textToXml(txDelta.getStartTx().getBranch().getName()),
+               AXml.textToXml(txDelta.getEndTx().getBranch().getName()));
       }
       return data;
    }

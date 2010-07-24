@@ -108,7 +108,7 @@ public class PublishRequirements extends AbstractBlam {
             "linkType", linkType, "inPublishMode", true);
 
       if (publishAsDiff) {
-         if (branch == null || (date == null && !useBaselineTransaction)) {
+         if (branch == null || date == null && !useBaselineTransaction) {
             throw new OseeCoreException(
                "Must Select a " + branch == null ? "Branch" : "Date" + " to diff against when publishing as Diff");
          }

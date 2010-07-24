@@ -22,9 +22,9 @@ import org.eclipse.osee.ote.define.artifacts.TestRunOperator;
  */
 public class LinkTestRunToTestScriptOperation {
    private static final String OPERATION_NAME = "Link Test Run to Test Script";
-   private Artifact[] artifacts;
-   private List<Artifact> unlinked;
-   private List<Artifact> linked;
+   private final Artifact[] artifacts;
+   private final List<Artifact> unlinked;
+   private final List<Artifact> linked;
 
    public LinkTestRunToTestScriptOperation(Artifact... artifacts) {
       this.artifacts = artifacts;
@@ -37,8 +37,7 @@ public class LinkTestRunToTestScriptOperation {
       monitor.setTaskName(OPERATION_NAME);
       for (Artifact testRun : artifacts) {
 
-         monitor.subTask(String.format("Linking [%s] [%s of %s] ", testRun.getName(), ++count,
-               artifacts.length));
+         monitor.subTask(String.format("Linking [%s] [%s of %s] ", testRun.getName(), ++count, artifacts.length));
          TestRunOperator operator = new TestRunOperator(testRun);
          try {
             operator.createTestScriptSoftLink();

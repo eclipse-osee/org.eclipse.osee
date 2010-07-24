@@ -67,7 +67,7 @@ public class TransactionEventTest {
 
       // Create and persist new artifact
       Artifact newArt =
-            ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, BranchManager.getCommonBranch(), START_NAME);
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, BranchManager.getCommonBranch(), START_NAME);
       newArt.persist();
       Assert.assertEquals(START_NAME, newArt.getName());
       Assert.assertFalse(newArt.isDirty());
@@ -136,7 +136,7 @@ public class TransactionEventTest {
    }
 
    // artifact listener create for use by all tests to just capture result eventArtifacts for query
-   private TransactionEventListener transEventListener = new TransactionEventListener();
+   private final TransactionEventListener transEventListener = new TransactionEventListener();
 
    public void clearEventCollections() {
       resultTransEvent = null;

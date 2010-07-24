@@ -19,13 +19,13 @@ public class OseeClientSession implements Serializable {
 
    private static final long serialVersionUID = 6322394150666846304L;
 
-   private String id;
-   private String machineName;
-   private String userId;
-   private String machineIp;
-   private String clientVersion;
-   private String authenticationProtocol;
-   private int port;
+   private final String id;
+   private final String machineName;
+   private final String userId;
+   private final String machineIp;
+   private final String clientVersion;
+   private final String authenticationProtocol;
+   private final int port;
 
    public OseeClientSession(String id, String machineName, String userId, String machineIp, int port, String clientVersion, String authenticationProtocol) {
       this.id = id;
@@ -40,8 +40,8 @@ public class OseeClientSession implements Serializable {
    @Override
    public String toString() {
       return String.format(
-            "Session:[%s] User Id:[%s] Version:[%s] Machine Name:[%s] Ip:[%s] Port:[%s] AuthenticationProtocol:[%s]",
-            id, userId, clientVersion, machineName, machineIp, port, authenticationProtocol);
+         "Session:[%s] User Id:[%s] Version:[%s] Machine Name:[%s] Ip:[%s] Port:[%s] AuthenticationProtocol:[%s]", id,
+         userId, clientVersion, machineName, machineIp, port, authenticationProtocol);
    }
 
    public String getAuthenticationProtocol() {

@@ -41,180 +41,181 @@ import org.eclipse.osee.ote.ui.test.manager.pages.scriptTable.ScriptTask.ScriptS
  * @author Andrew M. Finkbeiner
  */
 public abstract class ScriptManager implements Runnable {
-	private final Map<String, ScriptTask> guidToScriptTask = new HashMap<String, ScriptTask>();
-	private TestManagerStatusListener statusListenerImpl;
-	private final TestManagerEditor testManager;
+   private final Map<String, ScriptTask> guidToScriptTask = new HashMap<String, ScriptTask>();
+   private TestManagerStatusListener statusListenerImpl;
+   private final TestManagerEditor testManager;
 
-	private volatile boolean updateScriptTable;
-	private StructuredViewer stv;
-	private ScheduledExecutorService updater;
-	private Set<ScriptTask> tasksToUpdate;
-	private ITestEnvironment connectedEnv;
-	private UserTestSessionKey sessionKey;
+   private volatile boolean updateScriptTable;
+   private StructuredViewer stv;
+   private ScheduledExecutorService updater;
+   private Set<ScriptTask> tasksToUpdate;
+   private ITestEnvironment connectedEnv;
+   private UserTestSessionKey sessionKey;
 
-	public ScriptManager(TestManagerEditor testManager, StructuredViewer stv) {
-		this.testManager = testManager;
-		this.stv = stv;
+   public ScriptManager(TestManagerEditor testManager, StructuredViewer stv) {
+      this.testManager = testManager;
+      this.stv = stv;
 
-		tasksToUpdate = new HashSet<ScriptTask>();
-		updater = Executors.newScheduledThreadPool(1, new ThreadFactory() {
+      tasksToUpdate = new HashSet<ScriptTask>();
+      updater = Executors.newScheduledThreadPool(1, new ThreadFactory() {
 
-			public Thread newThread(Runnable r) {
-				Thread th = new Thread(r, "TM Table updater");
-				th.setDaemon(true);
-				return th;
-			}
+         @Override
+         public Thread newThread(Runnable r) {
+            Thread th = new Thread(r, "TM Table updater");
+            th.setDaemon(true);
+            return th;
+         }
 
-		});
-		updater.scheduleAtFixedRate(this, 0, 2000, TimeUnit.MILLISECONDS);
-		OutputModelJob.createSingleton(this);
-	}
+      });
+      updater.scheduleAtFixedRate(this, 0, 2000, TimeUnit.MILLISECONDS);
+      OutputModelJob.createSingleton(this);
+   }
 
-	public abstract void abortScript(boolean isBatchAbort) throws RemoteException;
+   public abstract void abortScript(boolean isBatchAbort) throws RemoteException;
 
-	public void notifyScriptDequeued(String className) {
-		ScriptTask task = guidToScriptTask.get(className);
-		if (task != null) {
-			guidToScriptTask.remove(task);
-		}
-	}
+   public void notifyScriptDequeued(String className) {
+      ScriptTask task = guidToScriptTask.get(className);
+      if (task != null) {
+         guidToScriptTask.remove(task);
+      }
+   }
 
-	/**
-	 * This should be called after the environment is received in order to configure necessary items.
-	 * 
-	 * @return null if successful, otherwise a string describing the error
-	 * @throws RemoteException
-	 */
-	public boolean connect(ConnectionEvent event) {
+   /**
+    * This should be called after the environment is received in order to configure necessary items.
+    * 
+    * @return null if successful, otherwise a string describing the error
+    * @throws RemoteException
+    */
+   public boolean connect(ConnectionEvent event) {
 
-		connectedEnv = event.getEnvironment();
-		sessionKey = event.getSessionKey();
-		try {
-			/*
-			 * Setup the status listener for commands
-			 */
-			statusListenerImpl = new TestManagerStatusListener(testManager, this);
+      connectedEnv = event.getEnvironment();
+      sessionKey = event.getSessionKey();
+      try {
+         /*
+          * Setup the status listener for commands
+          */
+         statusListenerImpl = new TestManagerStatusListener(testManager, this);
 
-			connectedEnv.addStatusListener((IServiceStatusListener) event.getConnector().export(statusListenerImpl));
-			return false;
-		} catch (Exception e) {
-			TestManagerPlugin.log(Level.SEVERE, "failed to connect script manager", e);
-			return true;
-		}
-	}
+         connectedEnv.addStatusListener((IServiceStatusListener) event.getConnector().export(statusListenerImpl));
+         return false;
+      } catch (Exception e) {
+         TestManagerPlugin.log(Level.SEVERE, "failed to connect script manager", e);
+         return true;
+      }
+   }
 
-	/**
-	 * This should NOT be called directly, users should call the HostDataStore's disconnect.
-	 */
-	public boolean disconnect(ConnectionEvent event) {
-		connectedEnv = null;
-		sessionKey = null;
-		guidToScriptTask.clear();
-		try {
+   /**
+    * This should NOT be called directly, users should call the HostDataStore's disconnect.
+    */
+   public boolean disconnect(ConnectionEvent event) {
+      connectedEnv = null;
+      sessionKey = null;
+      guidToScriptTask.clear();
+      try {
 
-			event.getEnvironment().removeStatusListener(
-						(IServiceStatusListener) event.getConnector().findExport(statusListenerImpl));
-			return false;
-		} catch (RemoteException e) {
-			TestManagerPlugin.log(Level.INFO, "problems removing listener", e);
-			return true;
-		}
-	}
+         event.getEnvironment().removeStatusListener(
+            (IServiceStatusListener) event.getConnector().findExport(statusListenerImpl));
+         return false;
+      } catch (RemoteException e) {
+         TestManagerPlugin.log(Level.INFO, "problems removing listener", e);
+         return true;
+      }
+   }
 
-	public boolean onConnectionLost() {
-		connectedEnv = null;
-		sessionKey = null;
-		guidToScriptTask.clear();
-		return false;
-	}
+   public boolean onConnectionLost() {
+      connectedEnv = null;
+      sessionKey = null;
+      guidToScriptTask.clear();
+      return false;
+   }
 
-	public ScriptTask getScriptTask(String name) {
-		return guidToScriptTask.get(name);
-	}
+   public ScriptTask getScriptTask(String name) {
+      return guidToScriptTask.get(name);
+   }
 
-	public void notifyScriptQueued(GUID theGUID, final ScriptTask script) {
-		guidToScriptTask.put(script.getScriptModel().getTestClass(), script);
-		script.setStatus(ScriptStatusEnum.IN_QUEUE);
-		Displays.ensureInDisplayThread(new Runnable() {
-			@Override
-			public void run() {
-				if (stv.getControl().isDisposed()) {
-					return;
-				}
-				stv.refresh(script);
-			}
-		});
-	}
+   public void notifyScriptQueued(GUID theGUID, final ScriptTask script) {
+      guidToScriptTask.put(script.getScriptModel().getTestClass(), script);
+      script.setStatus(ScriptStatusEnum.IN_QUEUE);
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            if (stv.getControl().isDisposed()) {
+               return;
+            }
+            stv.refresh(script);
+         }
+      });
+   }
 
-	public void updateScriptTableViewer(final ScriptTask task) {
-		Displays.ensureInDisplayThread(new Runnable() {
-			@Override
-			public void run() {
-				if (stv.getControl().isDisposed()) {
-					return;
-				}
-				stv.refresh(task);
-			}
-		});
-	}
+   public void updateScriptTableViewer(final ScriptTask task) {
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            if (stv.getControl().isDisposed()) {
+               return;
+            }
+            stv.refresh(task);
+         }
+      });
+   }
 
-	public void updateScriptTableViewerTimed(ScriptTask task) {
-		updateScriptTable = true;
-		synchronized (tasksToUpdate) {
-			tasksToUpdate.add(task);
-		}
-	}
+   public void updateScriptTableViewerTimed(ScriptTask task) {
+      updateScriptTable = true;
+      synchronized (tasksToUpdate) {
+         tasksToUpdate.add(task);
+      }
+   }
 
-	@Override
-	public void run() {
-		if (updateScriptTable) {
-			updateScriptTable = false;
-			Displays.ensureInDisplayThread(new Runnable() {
-				@Override
-				public void run() {
-					synchronized (tasksToUpdate) {
-						if (stv.getControl().isDisposed()) {
-							return;
-						}
-						for (ScriptTask task : tasksToUpdate) {
-							stv.refresh(task);
-						}
-						tasksToUpdate.clear();
-					}
-				}
-			});
-		}
-	}
+   @Override
+   public void run() {
+      if (updateScriptTable) {
+         updateScriptTable = false;
+         Displays.ensureInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               synchronized (tasksToUpdate) {
+                  if (stv.getControl().isDisposed()) {
+                     return;
+                  }
+                  for (ScriptTask task : tasksToUpdate) {
+                     stv.refresh(task);
+                  }
+                  tasksToUpdate.clear();
+               }
+            }
+         });
+      }
+   }
 
-	protected TestManagerEditor getTestManagerEditor() {
-		return testManager;
-	}
+   protected TestManagerEditor getTestManagerEditor() {
+      return testManager;
+   }
 
-	public abstract void addTestsToQueue(List<ScriptTask> scripts);
+   public abstract void addTestsToQueue(List<ScriptTask> scripts);
 
-	/**
-	 * @param task
-	 */
-	public void notifyScriptStart(final ScriptTask task) {
-		task.setStatus(ScriptStatusEnum.RUNNING);
-		Displays.ensureInDisplayThread(new Runnable() {
-			@Override
-			public void run() {
-				stv.refresh(task);
-			}
-		});
-	}
+   /**
+    * @param task
+    */
+   public void notifyScriptStart(final ScriptTask task) {
+      task.setStatus(ScriptStatusEnum.RUNNING);
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            stv.refresh(task);
+         }
+      });
+   }
 
-	public void storeOutFile(ScriptTask task, TestComplete testComplete, boolean isValidRun) {
-		if (task.getScriptModel() != null) {
-			Job job =
-						new StoreOutfileJob(connectedEnv, testManager, this, task, testComplete.getClientOutfilePath(),
-									testComplete.getServerOutfilePath(), isValidRun);
-			StoreOutfileJob.scheduleJob(job);
-		}
-	}
+   public void storeOutFile(ScriptTask task, TestComplete testComplete, boolean isValidRun) {
+      if (task.getScriptModel() != null) {
+         Job job =
+            new StoreOutfileJob(connectedEnv, testManager, this, task, testComplete.getClientOutfilePath(),
+               testComplete.getServerOutfilePath(), isValidRun);
+         StoreOutfileJob.scheduleJob(job);
+      }
+   }
 
-	protected UserTestSessionKey getSessionKey() {
-		return sessionKey;
-	}
+   protected UserTestSessionKey getSessionKey() {
+      return sessionKey;
+   }
 }

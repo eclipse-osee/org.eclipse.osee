@@ -49,7 +49,7 @@ public abstract class ArtifactFactory {
    public Artifact makeNewArtifact(IOseeBranch branch, ArtifactType artifactType, String guid, String humandReadableId, ArtifactProcessor earlyArtifactInitialization) throws OseeCoreException {
       if (artifactType.isAbstract()) {
          throw new OseeArgumentException(String.format("Cannot create an instance of abstract type [%s]",
-               artifactType.getName()));
+            artifactType.getName()));
       }
       Artifact artifact = getArtifactInstance(guid, humandReadableId, BranchManager.getBranch(branch), artifactType);
 
@@ -68,7 +68,7 @@ public abstract class ArtifactFactory {
 
    public synchronized Artifact reflectExisitingArtifact(int artId, String guid, String humandReadableId, ArtifactType artifactType, int gammaId, IOseeBranch branch, ModificationType modificationType) throws OseeCoreException {
       return internalExistingArtifact(artId, guid, humandReadableId, artifactType, gammaId, branch, modificationType,
-            false, Artifact.TRANSACTION_SENTINEL);
+         false, Artifact.TRANSACTION_SENTINEL);
    }
 
    private Artifact internalExistingArtifact(int artId, String guid, String humandReadableId, ArtifactType artifactType, int gammaId, IOseeBranch branch, ModificationType modType, boolean historical, int transactionId) throws OseeCoreException {
@@ -82,8 +82,8 @@ public abstract class ArtifactFactory {
    }
 
    public synchronized Artifact loadExisitingArtifact(int artId, String guid, String humandReadableId, ArtifactType artifactType, int gammaId, Branch branch, int transactionId, ModificationType modType, boolean historical) throws OseeCoreException {
-      return internalExistingArtifact(artId, guid, humandReadableId, artifactType, gammaId, branch,
-            modType, historical, transactionId);
+      return internalExistingArtifact(artId, guid, humandReadableId, artifactType, gammaId, branch, modType,
+         historical, transactionId);
    }
 
    /**

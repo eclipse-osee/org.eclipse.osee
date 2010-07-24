@@ -45,6 +45,6 @@ final class IdArtifactSearch extends AbstractLegacyArtifactSearchQuery {
    @Override
    public String getCriteriaLabel() {
       return String.format("%s%s", idsToSearch.toString(),
-            allowDeleted == INCLUDE_DELETED ? " - Options:[Include Deleted]" : "");
+         allowDeleted == INCLUDE_DELETED ? " - Options:[Include Deleted]" : "");
    }
 }

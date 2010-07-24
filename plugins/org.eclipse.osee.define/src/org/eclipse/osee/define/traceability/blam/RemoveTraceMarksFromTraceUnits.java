@@ -152,7 +152,7 @@ public class RemoveTraceMarksFromTraceUnits extends AbstractBlam {
             @Override
             public IStatus runInUIThread(IProgressMonitor monitor) {
                isProcessingAllowed.setValue(isInPlaceStorageAllowed ? MessageDialog.openConfirm(new Shell(),
-                     super.getName(), "Are you sure you want to remove trace marks from files?") : true);
+                  super.getName(), "Are you sure you want to remove trace marks from files?") : true);
                return Status.OK_STATUS;
             }
          };
@@ -165,9 +165,9 @@ public class RemoveTraceMarksFromTraceUnits extends AbstractBlam {
 
             ReportCreator reportCreator = new ReportCreator(monitor);
             UriResourceContentFinder resourceFinder =
-                  new UriResourceContentFinder(source, isRecursionAllowed, isFileWithMultiplePaths);
+               new UriResourceContentFinder(source, isRecursionAllowed, isFileWithMultiplePaths);
             resourceFinder.addLocator(locator,
-                  new TraceRemover(isInPlaceStorageAllowed, locator, parser, reportCreator));
+               new TraceRemover(isInPlaceStorageAllowed, locator, parser, reportCreator));
 
             SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, TOTAL_WORK);
             resourceFinder.execute(subMonitor);
@@ -329,11 +329,11 @@ public class RemoveTraceMarksFromTraceUnits extends AbstractBlam {
                      List<IResultsEditorTab> resultsTabs = new ArrayList<IResultsEditorTab>();
                      if (modifiedRows != null && !modifiedRows.isEmpty()) {
                         resultsTabs.add(new ResultsEditorTableTab("Modified Trace Units", getModifiedHeaders(),
-                              modifiedRows));
+                           modifiedRows));
                      }
                      if (noChangeRows != null && !noChangeRows.isEmpty()) {
                         resultsTabs.add(new ResultsEditorTableTab("Unmodified Items", getNoChangeHeaders(),
-                              noChangeRows));
+                           noChangeRows));
                      }
                      if (resultsTabs.isEmpty()) {
                         resultsTabs.add(new ResultsEditorHtmlTab(getName(), getName(), "No changes Reported"));

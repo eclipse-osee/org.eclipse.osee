@@ -47,17 +47,17 @@ public class StaticIdManagerTest {
    private static final String STATIC_ID_DDD = "ddd";
    private static final String STATIC_ID_EEE = "eee";
 
-   private static final List<String> ALL_STATIC_IDS =
-         Arrays.asList(STATIC_ID_AAA, STATIC_ID_BBB, STATIC_ID_CCC, STATIC_ID_DDD, STATIC_ID_EEE);
+   private static final List<String> ALL_STATIC_IDS = Arrays.asList(STATIC_ID_AAA, STATIC_ID_BBB, STATIC_ID_CCC,
+      STATIC_ID_DDD, STATIC_ID_EEE);
 
    @BeforeClass
    @AfterClass
    public static void testCleanupForReRun() throws OseeCoreException {
       SkynetTransaction transaction =
-            new SkynetTransaction(BranchManager.getCommonBranch(), "Static ID Manager test cleanup for re-run");
+         new SkynetTransaction(BranchManager.getCommonBranch(), "Static ID Manager test cleanup for re-run");
       for (String staticIdValue : ALL_STATIC_IDS) {
          for (Artifact artifact : ArtifactQuery.getArtifactListFromAttribute(CoreAttributeTypes.STATIC_ID,
-               staticIdValue, BranchManager.getCommonBranch())) {
+            staticIdValue, BranchManager.getCommonBranch())) {
             artifact.deleteAndPersist(transaction);
             System.out.println("Deleting " + artifact.getGuid());
          }
@@ -66,8 +66,8 @@ public class StaticIdManagerTest {
 
       for (String staticIdValue : ALL_STATIC_IDS) {
          Collection<Artifact> artifacts =
-               StaticIdManager.getArtifactsFromArtifactQuery(CoreArtifactTypes.GeneralData, staticIdValue,
-                     BranchManager.getCommonBranch());
+            StaticIdManager.getArtifactsFromArtifactQuery(CoreArtifactTypes.GeneralData, staticIdValue,
+               BranchManager.getCommonBranch());
          for (Artifact artifact : artifacts) {
             System.err.println("Search returned non-deleted " + artifact.getGuid());
          }
@@ -105,13 +105,13 @@ public class StaticIdManagerTest {
    @org.junit.Test
    public void testGetSingletonArtifact() throws OseeCoreException {
       Artifact artifact =
-            StaticIdManager.getSingletonArtifact(CoreArtifactTypes.GeneralData, STATIC_ID_AAA,
-                  BranchManager.getCommonBranch(), true);
+         StaticIdManager.getSingletonArtifact(CoreArtifactTypes.GeneralData, STATIC_ID_AAA,
+            BranchManager.getCommonBranch(), true);
       assertNull(artifact);
 
       artifact =
-            StaticIdManager.getOrCreateSingletonArtifact(CoreArtifactTypes.GeneralData, STATIC_ID_AAA,
-                  BranchManager.getCommonBranch());
+         StaticIdManager.getOrCreateSingletonArtifact(CoreArtifactTypes.GeneralData, STATIC_ID_AAA,
+            BranchManager.getCommonBranch());
       assertNotNull(artifact);
 
       deleteArtifacts(Arrays.asList(artifact), STATIC_ID_AAA);
@@ -127,15 +127,15 @@ public class StaticIdManagerTest {
    public void testSetSingletonAttributeValue() throws OseeCoreException {
       // create artifact with two of same static id values
       Artifact artifact =
-            ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, BranchManager.getCommonBranch());
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, BranchManager.getCommonBranch());
       artifact.addAttribute(CoreAttributeTypes.STATIC_ID, STATIC_ID_BBB);
       artifact.addAttribute(CoreAttributeTypes.STATIC_ID, STATIC_ID_BBB);
       artifact.persist();
 
       // call to search for artifact with STATIC_ID_BBB
       Artifact artifactWithDoubleBbb =
-            StaticIdManager.getSingletonArtifact(CoreArtifactTypes.GeneralData, STATIC_ID_BBB,
-                  BranchManager.getCommonBranch(), false);
+         StaticIdManager.getSingletonArtifact(CoreArtifactTypes.GeneralData, STATIC_ID_BBB,
+            BranchManager.getCommonBranch(), false);
       assertNotNull(artifactWithDoubleBbb);
 
       // should be two static id attributes
@@ -165,12 +165,12 @@ public class StaticIdManagerTest {
    @org.junit.Test
    public void testGetArtifacts() throws OseeCoreException, InterruptedException {
       SkynetTransaction transaction =
-            new SkynetTransaction(BranchManager.getCommonBranch(), "Static Id Manager: create test artifacts");
+         new SkynetTransaction(BranchManager.getCommonBranch(), "Static Id Manager: create test artifacts");
       // Create three artifacts with ccc staticId
 
       for (int index = 0; index < 3; index++) {
          Artifact artifact =
-               ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, BranchManager.getCommonBranch());
+            ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, BranchManager.getCommonBranch());
          StaticIdManager.setSingletonAttributeValue(artifact, STATIC_ID_CCC);
          artifact.persist(transaction);
          assertNotNull(artifact);
@@ -179,8 +179,8 @@ public class StaticIdManagerTest {
 
       // search for static attributes
       Collection<Artifact> artifacts =
-            StaticIdManager.getArtifactsFromArtifactQuery(CoreArtifactTypes.GeneralData, STATIC_ID_CCC,
-                  BranchManager.getCommonBranch());
+         StaticIdManager.getArtifactsFromArtifactQuery(CoreArtifactTypes.GeneralData, STATIC_ID_CCC,
+            BranchManager.getCommonBranch());
       assertTrue("Expected 3 artifacts; Returned " + artifacts.size(), artifacts.size() == 3);
 
       deleteArtifacts(artifacts, STATIC_ID_CCC);
@@ -195,19 +195,19 @@ public class StaticIdManagerTest {
    public void testGetSingletonArtifactOrException() throws OseeCoreException {
       try {
          StaticIdManager.getSingletonArtifactOrException(CoreArtifactTypes.GeneralData, STATIC_ID_DDD,
-               BranchManager.getCommonBranch());
+            BranchManager.getCommonBranch());
          fail("ArtifactDoesNotExist should have been thrown.");
       } catch (Exception ex) {
          assertTrue("Was not ArtifactDoesNotExist was: " + ex.getClass().getSimpleName(),
-               ex instanceof ArtifactDoesNotExist);
+            ex instanceof ArtifactDoesNotExist);
       }
 
       Collection<Artifact> artifacts = new ArrayList<Artifact>();
       SkynetTransaction transaction =
-            new SkynetTransaction(BranchManager.getCommonBranch(), "testGetSingletonArtifactOrException");
+         new SkynetTransaction(BranchManager.getCommonBranch(), "testGetSingletonArtifactOrException");
       for (int index = 0; index < 2; index++) {
          Artifact artifact =
-               ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, BranchManager.getCommonBranch());
+            ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, BranchManager.getCommonBranch());
          StaticIdManager.setSingletonAttributeValue(artifact, STATIC_ID_DDD);
          artifact.persist(transaction);
          assertNotNull(artifact);
@@ -217,11 +217,11 @@ public class StaticIdManagerTest {
 
       try {
          StaticIdManager.getSingletonArtifactOrException(CoreArtifactTypes.GeneralData, STATIC_ID_DDD,
-               BranchManager.getCommonBranch());
+            BranchManager.getCommonBranch());
          fail("MultipleArtifactsExist should have been thrown");
       } catch (Exception ex) {
          assertTrue("Was not MultipleArtifactsExist was: " + ex.getClass().getSimpleName(),
-               ex instanceof MultipleArtifactsExist);
+            ex instanceof MultipleArtifactsExist);
       }
 
       deleteArtifacts(artifacts, STATIC_ID_DDD);
@@ -233,7 +233,7 @@ public class StaticIdManagerTest {
             toDelete.iterator().next().deleteAndPersist();
          } else {
             SkynetTransaction transaction =
-                  new SkynetTransaction(BranchManager.getCommonBranch(), "Delete collection of artifacts");
+               new SkynetTransaction(BranchManager.getCommonBranch(), "Delete collection of artifacts");
             for (Artifact artifact : toDelete) {
                artifact.delete();
             }
@@ -261,10 +261,10 @@ public class StaticIdManagerTest {
 
       // create single artifact with eee staticId
       SkynetTransaction transaction =
-            new SkynetTransaction(BranchManager.getCommonBranch(), "create single artifact with eee staticId");
+         new SkynetTransaction(BranchManager.getCommonBranch(), "create single artifact with eee staticId");
       Artifact artifact =
-            StaticIdManager.getOrCreateSingletonArtifact(CoreArtifactTypes.GeneralData, STATIC_ID_EEE,
-                  BranchManager.getCommonBranch());
+         StaticIdManager.getOrCreateSingletonArtifact(CoreArtifactTypes.GeneralData, STATIC_ID_EEE,
+            BranchManager.getCommonBranch());
       artifact.persist(transaction);
       assertNotNull(artifact);
       transaction.execute();
@@ -273,8 +273,8 @@ public class StaticIdManagerTest {
 
       // test that singleton comes back
       artifact =
-            StaticIdManager.getSingletonArtifact(CoreArtifactTypes.GeneralData, STATIC_ID_EEE,
-                  BranchManager.getCommonBranch(), false);
+         StaticIdManager.getSingletonArtifact(CoreArtifactTypes.GeneralData, STATIC_ID_EEE,
+            BranchManager.getCommonBranch(), false);
       assertNotNull(artifact);
 
       // create another artifact with eee staticId
@@ -288,15 +288,15 @@ public class StaticIdManagerTest {
 
       // test that there are now two artifacts with eee
       Collection<Artifact> artifacts =
-            StaticIdManager.getArtifactsFromArtifactQuery(CoreArtifactTypes.GeneralData, STATIC_ID_EEE,
-                  BranchManager.getCommonBranch());
+         StaticIdManager.getArtifactsFromArtifactQuery(CoreArtifactTypes.GeneralData, STATIC_ID_EEE,
+            BranchManager.getCommonBranch());
       assertTrue("Expected 2 artifacts; Returned " + artifacts.size(), artifacts.size() == 2);
 
       // test that call to get singleton does NOT exception
       try {
          artifact =
-               StaticIdManager.getSingletonArtifact(CoreArtifactTypes.GeneralData, STATIC_ID_EEE,
-                     BranchManager.getCommonBranch(), false);
+            StaticIdManager.getSingletonArtifact(CoreArtifactTypes.GeneralData, STATIC_ID_EEE,
+               BranchManager.getCommonBranch(), false);
          assertNotNull(artifact);
       } catch (Exception ex) {
          fail("Exception should not have occurred " + ex.getLocalizedMessage());

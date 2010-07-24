@@ -28,9 +28,9 @@ public class ChangeReportComparer {
    /**
     * Compares two change report strings by parsing them and comparing each artifact change, attribute change and
     * relation change.
-    * @param currentData 
-    * @param storedData 
     * 
+    * @param currentData
+    * @param storedData
     * @return Returns true if the change reports matches else false.
     * @throws OseeArgumentException
     */
@@ -41,7 +41,7 @@ public class ChangeReportComparer {
       ArrayList<ArrayList<DataChangeReportComparer>> storedList = parser.parse(storedData);
 
       if (currentList.size() != storedList.size() || currentList.get(0).size() != storedList.get(0).size() || currentList.get(
-            1).size() != storedList.get(1).size() || currentList.get(2).size() != storedList.get(2).size()) {
+         1).size() != storedList.get(1).size() || currentList.get(2).size() != storedList.get(2).size()) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, "The change reports must have the same number of items");
          return false;
       }

@@ -10,12 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.core.cmd;
 
-
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public interface CommandHandler {
    void handle(Command cmd);
+
    boolean canHandle(CommandId id);
 }

@@ -83,7 +83,7 @@ public class DatabaseInfoProvider {
          tracker.close();
       }
       throw new OseeDatabaseConnectionInfoNotFoundException(String.format(
-            "DB connection information was not found for: [%s]\n Available connection ids are: [%s]\n", serverIdToFind,
-            infoKeys));
+         "DB connection information was not found for: [%s]\n Available connection ids are: [%s]\n", serverIdToFind,
+         infoKeys));
    }
 }

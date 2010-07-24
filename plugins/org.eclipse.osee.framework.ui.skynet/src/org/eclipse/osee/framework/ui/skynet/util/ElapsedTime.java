@@ -36,8 +36,8 @@ public class ElapsedTime {
       endDate = new Date();
       long diff = endDate.getTime() - startDate.getTime();
       String str =
-            String.format("%s - elapsed %d sec - start %s - end %s", name, (diff / 1000), XDate.getDateStr(startDate,
-                  XDate.HHMMSSSS), XDate.getDateStr(endDate, XDate.HHMMSSSS));
+         String.format("%s - elapsed %d sec - start %s - end %s", name, (diff / 1000),
+            XDate.getDateStr(startDate, XDate.HHMMSSSS), XDate.getDateStr(endDate, XDate.HHMMSSSS));
       System.out.println(str);
    }
 }

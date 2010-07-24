@@ -17,28 +17,28 @@ import org.osgi.framework.BundleContext;
  * @author Robert A. Fisher
  */
 public class RuntimeManager implements BundleActivator {
-	public static final String BUNDLE_ID = "org.eclipse.osee.ote.runtimeManager";
-	private static RuntimeManager instance;
-	private BundleContext context;
+   public static final String BUNDLE_ID = "org.eclipse.osee.ote.runtimeManager";
+   private static RuntimeManager instance;
+   private BundleContext context;
 
-	public static RuntimeManager getDefault() {
-		return instance;
-	}
+   public static RuntimeManager getDefault() {
+      return instance;
+   }
 
-	@Override
-	public void start(BundleContext context) throws Exception {
-		instance = this;
-		this.context = context;
-	}
+   @Override
+   public void start(BundleContext context) throws Exception {
+      instance = this;
+      this.context = context;
+   }
 
-	@Override
-	public void stop(BundleContext context) throws Exception {
-		instance = null;
-		this.context = null;
-	}
+   @Override
+   public void stop(BundleContext context) throws Exception {
+      instance = null;
+      this.context = null;
+   }
 
-	public BundleContext getContext() {
-		return context;
-	}
+   public BundleContext getContext() {
+      return context;
+   }
 
 }

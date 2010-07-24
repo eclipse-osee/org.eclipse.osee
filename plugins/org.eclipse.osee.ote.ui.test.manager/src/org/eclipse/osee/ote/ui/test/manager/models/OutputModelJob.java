@@ -20,25 +20,23 @@ import org.eclipse.osee.ote.ui.test.manager.pages.scriptTable.ScriptTask;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public class OutputModelJob extends Job {
 
    private static OutputModelJob singleton = null;
-   private ScriptManager scriptManager;
-   private ConcurrentLinkedQueue<ScriptTask> outputModels = new ConcurrentLinkedQueue<ScriptTask>(); 
-   
-   
-   public static void createSingleton(ScriptManager scriptManager){
-      if(singleton == null){
+   private final ScriptManager scriptManager;
+   private final ConcurrentLinkedQueue<ScriptTask> outputModels = new ConcurrentLinkedQueue<ScriptTask>();
+
+   public static void createSingleton(ScriptManager scriptManager) {
+      if (singleton == null) {
          singleton = new OutputModelJob(scriptManager);
       }
    }
-   
-   public static OutputModelJob getSingleton(){
+
+   public static OutputModelJob getSingleton() {
       return singleton;
    }
-   
+
    /**
     * @param name
     */
@@ -50,7 +48,7 @@ public class OutputModelJob extends Job {
 
    @Override
    protected IStatus run(IProgressMonitor monitor) {
-      while(!outputModels.isEmpty()){
+      while (!outputModels.isEmpty()) {
          ScriptTask task = outputModels.remove();
          task.getScriptModel().getOutputModel().updateTestPointsFromOutfile();
          task.getPassFail();
@@ -58,10 +56,10 @@ public class OutputModelJob extends Job {
       }
       return Status.OK_STATUS;
    }
-   
-   public void addTask(ScriptTask task){
+
+   public void addTask(ScriptTask task) {
       outputModels.add(task);
       schedule();
    }
-   
+
 }

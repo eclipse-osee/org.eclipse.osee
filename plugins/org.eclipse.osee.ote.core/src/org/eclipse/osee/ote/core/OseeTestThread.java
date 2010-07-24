@@ -70,7 +70,7 @@ public abstract class OseeTestThread {
                }
             } catch (TestException e) {
                OseeLog.log(Activator.class, e.getLevel(),
-                     "TestException in " + e.getThreadName() + ": " + e.getMessage(), e);
+                  "TestException in " + e.getThreadName() + ": " + e.getMessage(), e);
                cleanupAfterException(e);
             } catch (Throwable t) {
                OseeLog.log(Activator.class, Level.SEVERE, "Unhandled exception in " + thread.getName(), t);
@@ -102,8 +102,7 @@ public abstract class OseeTestThread {
    }
 
    public void interrupt() {
-      OseeLog.log(TestEnvironment.class, Level.INFO,
-            "Calling interrupt() on " + thread.getName(), new Trace());
+      OseeLog.log(TestEnvironment.class, Level.INFO, "Calling interrupt() on " + thread.getName(), new Trace());
       thread.interrupt();
    }
 
@@ -129,7 +128,7 @@ public abstract class OseeTestThread {
    }
 
    public TestEnvironment getEnvironment() {
-      return (OseeTestThread.this.env.get());
+      return OseeTestThread.this.env.get();
    }
 
    public static Collection<OseeTestThread> getThreads() {
@@ -139,7 +138,7 @@ public abstract class OseeTestThread {
    private synchronized void cleanupAfterException(Throwable t) {
       causeOfDeath = t;
       timeOfDeath = Calendar.getInstance().getTime();
-      (this.env.get()).handleException(t, Level.OFF);
+      this.env.get().handleException(t, Level.OFF);
    }
 
    public Throwable getCauseOfDeath() {

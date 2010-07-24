@@ -97,7 +97,7 @@ public final class WordChangeReportOperation extends AbstractOperation {
                if (!artifacts.isEmpty()) {
                   if (RenderingUtil.arePopupsAllowed()) {
                      WordUiUtil.displayWarningMessageDialog("Diff Artifacts Warning",
-                           "Detected tracked changes for some artifacts. Please refer to the results HTML report.");
+                        "Detected tracked changes for some artifacts. Please refer to the results HTML report.");
                      WordUiUtil.displayTrackedChangesOnArtifacts(artifacts);
                   }
                   continue;
@@ -146,7 +146,7 @@ public final class WordChangeReportOperation extends AbstractOperation {
          // Also, list these artifacts in an artifact explorer
          if (!artifacts.isEmpty() && RenderingUtil.arePopupsAllowed()) {
             WordUiUtil.displayWarningMessageDialog("Diff Artifacts Warning",
-                  "Detected tracked changes for some artifacts. Please refer to the results HTML report.");
+               "Detected tracked changes for some artifacts. Please refer to the results HTML report.");
             WordUiUtil.displayTrackedChangesOnArtifacts(artifacts);
          }
          monitor.worked(calculateWork(0.10));

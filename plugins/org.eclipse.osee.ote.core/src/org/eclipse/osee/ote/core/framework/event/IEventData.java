@@ -15,7 +15,9 @@ import org.eclipse.osee.ote.core.TestCase;
 import org.eclipse.osee.ote.core.TestScript;
 
 public interface IEventData {
-	public TestScript getTest();
-	public TestCase getTestCase();
-	public IPropertyStore getProperties();
+   public TestScript getTest();
+
+   public TestCase getTestCase();
+
+   public IPropertyStore getProperties();
 }

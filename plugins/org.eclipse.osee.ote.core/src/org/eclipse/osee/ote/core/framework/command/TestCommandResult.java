@@ -34,10 +34,12 @@ public class TestCommandResult implements ITestCommandResult {
       this.th = th;
    }
 
+   @Override
    public TestCommandStatus getStatus() {
       return status;
    }
 
+   @Override
    public Throwable getThrowable() {
       return th;
    }

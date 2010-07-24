@@ -62,23 +62,25 @@ public class ReviewManager {
       // If validate review already created for this state, return
       if (!force && getReviewsFromCurrentState(teamArt).size() > 0) {
          for (ReviewSMArtifact rev : getReviewsFromCurrentState(teamArt)) {
-            if (rev.getName().equals(VALIDATE_REVIEW_TITLE)) return null;
+            if (rev.getName().equals(VALIDATE_REVIEW_TITLE)) {
+               return null;
+            }
          }
       }
       // Create validate review
       try {
 
          DecisionReviewArtifact decRev =
-               ReviewManager.createNewDecisionReview(
-                     teamArt,
-                     AtsWorkDefinitions.isValidateReviewBlocking(teamArt.getWorkPageDefinition()) ? ReviewBlockType.Transition : ReviewBlockType.None,
-                     true);
+            ReviewManager.createNewDecisionReview(
+               teamArt,
+               AtsWorkDefinitions.isValidateReviewBlocking(teamArt.getWorkPageDefinition()) ? ReviewBlockType.Transition : ReviewBlockType.None,
+               true);
          decRev.setName(VALIDATE_REVIEW_TITLE);
          decRev.setSoleAttributeValue(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName(),
-               "No;Followup;" + getValidateReviewFollowupUsersStr(teamArt) + "\n" + "Yes;Completed;");
+            "No;Followup;" + getValidateReviewFollowupUsersStr(teamArt) + "\n" + "Yes;Completed;");
 
          decRev.transition(DecisionReviewArtifact.DecisionReviewState.Decision.name(), teamArt.getOriginator(),
-               transaction, TransitionOption.Persist);
+            transaction, TransitionOption.Persist);
 
          return decRev;
 
@@ -90,46 +92,47 @@ public class ReviewManager {
 
    public static DecisionReviewArtifact createNewDecisionReview(TeamWorkFlowArtifact teamArt, String reviewTitle, String description, String againstState, ReviewBlockType reviewBlockType, String options, Collection<User> assignees, SkynetTransaction transaction) throws OseeCoreException {
       DecisionReviewArtifact decRev =
-            ReviewManager.createNewDecisionReview(teamArt, reviewBlockType, reviewTitle, againstState, description,
-                  options, assignees);
+         ReviewManager.createNewDecisionReview(teamArt, reviewBlockType, reviewTitle, againstState, description,
+            options, assignees);
       return decRev;
    }
 
    public static DecisionReviewArtifact createNewDecisionReviewAndTransitionToDecision(TeamWorkFlowArtifact teamArt, String reviewTitle, String description, String againstState, ReviewBlockType reviewBlockType, String options, Collection<User> assignees, SkynetTransaction transaction) throws OseeCoreException {
       DecisionReviewArtifact decRev =
-            ReviewManager.createNewDecisionReview(teamArt, reviewBlockType, reviewTitle, againstState, description,
-                  options, assignees);
+         ReviewManager.createNewDecisionReview(teamArt, reviewBlockType, reviewTitle, againstState, description,
+            options, assignees);
       decRev.persist(transaction);
 
       decRev.transition(DecisionReviewArtifact.DecisionReviewState.Decision.name(), assignees, transaction,
-            TransitionOption.Persist, TransitionOption.OverrideAssigneeCheck);
+         TransitionOption.Persist, TransitionOption.OverrideAssigneeCheck);
       return decRev;
    }
 
    public static PeerToPeerReviewArtifact createNewPeerToPeerReview(TeamWorkFlowArtifact teamArt, String reviewTitle, String againstState, SkynetTransaction transaction) throws OseeCoreException {
       return createNewPeerToPeerReview(teamArt, reviewTitle, againstState, UserManager.getUser(), new Date(),
-            transaction);
+         transaction);
    }
 
    public static PeerToPeerReviewArtifact createNewPeerToPeerReview(TeamWorkFlowArtifact teamArt, String reviewTitle, String againstState, User origUser, Date origDate, SkynetTransaction transaction) throws OseeCoreException {
       PeerToPeerReviewArtifact peerToPeerRev =
-            (PeerToPeerReviewArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.PeerToPeerReview.getName(),
-                  AtsUtil.getAtsBranch(), reviewTitle == null ? "Peer to Peer Review" : reviewTitle);
+         (PeerToPeerReviewArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.PeerToPeerReview.getName(),
+            AtsUtil.getAtsBranch(), reviewTitle == null ? "Peer to Peer Review" : reviewTitle);
 
       if (teamArt != null) {
          teamArt.addRelation(AtsRelationTypes.TeamWorkflowToReview_Review, peerToPeerRev);
-         if (againstState != null) peerToPeerRev.setSoleAttributeValue(
-               ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), againstState);
+         if (againstState != null) {
+            peerToPeerRev.setSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), againstState);
+         }
       }
 
       peerToPeerRev.getLog().addLog(LogType.Originated, "", "", origDate, origUser);
       peerToPeerRev.setSoleAttributeValue(ATSAttributes.REVIEW_BLOCKS_ATTRIBUTE.getStoreName(),
-            ReviewBlockType.None.name());
+         ReviewBlockType.None.name());
 
       // Initialize state machine
       peerToPeerRev.getStateMgr().initializeStateMachine(DecisionReviewArtifact.DecisionReviewState.Prepare.name());
       peerToPeerRev.getLog().addLog(LogType.StateEntered, DecisionReviewArtifact.DecisionReviewState.Prepare.name(),
-            "", origDate, origUser);
+         "", origDate, origUser);
       peerToPeerRev.persist(transaction);
       return peerToPeerRev;
    }
@@ -142,8 +145,9 @@ public class ReviewManager {
     */
    public static double getRemainHours(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       double hours = 0;
-      for (ReviewSMArtifact reviewArt : getReviews(teamArt))
+      for (ReviewSMArtifact reviewArt : getReviews(teamArt)) {
          hours += reviewArt.getRemainHoursFromArtifact();
+      }
       return hours;
 
    }
@@ -156,8 +160,9 @@ public class ReviewManager {
     */
    public static double getEstimatedHours(TeamWorkFlowArtifact teamArt, String relatedToStateName) throws OseeCoreException {
       double hours = 0;
-      for (ReviewSMArtifact revArt : getReviews(teamArt, relatedToStateName))
+      for (ReviewSMArtifact revArt : getReviews(teamArt, relatedToStateName)) {
          hours += revArt.getEstimatedHoursTotal();
+      }
       return hours;
    }
 
@@ -169,8 +174,9 @@ public class ReviewManager {
     */
    public static double getEstimatedHours(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       double hours = 0;
-      for (ReviewSMArtifact revArt : getReviews(teamArt))
+      for (ReviewSMArtifact revArt : getReviews(teamArt)) {
          hours += revArt.getEstimatedHoursTotal();
+      }
       return hours;
 
    }
@@ -186,7 +192,9 @@ public class ReviewManager {
 
    public static Collection<User> getValidateReviewFollowupUsers(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       Collection<User> users = teamArt.getStateMgr().getAssignees("Implement");
-      if (users.size() > 0) return users;
+      if (users.size() > 0) {
+         return users;
+      }
 
       // Else if Team Workflow , return it to the leads of this team
       return teamArt.getTeamDefinition().getLeads();
@@ -204,7 +212,9 @@ public class ReviewManager {
    public static Collection<ReviewSMArtifact> getReviews(TeamWorkFlowArtifact teamArt, String stateName) throws OseeCoreException {
       Set<ReviewSMArtifact> arts = new HashSet<ReviewSMArtifact>();
       for (ReviewSMArtifact revArt : getReviews(teamArt)) {
-         if (revArt.getSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), "").equals(stateName)) arts.add(revArt);
+         if (revArt.getSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), "").equals(stateName)) {
+            arts.add(revArt);
+         }
       }
       return arts;
    }
@@ -225,7 +235,9 @@ public class ReviewManager {
    public static Result areReviewsComplete(TeamWorkFlowArtifact teamArt, boolean popup) {
       try {
          for (ReviewSMArtifact reviewArt : getReviews(teamArt)) {
-            if (!reviewArt.isCompleted() && reviewArt.isCancelled()) return new Result("Not Complete");
+            if (!reviewArt.isCompleted() && reviewArt.isCancelled()) {
+               return new Result("Not Complete");
+            }
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -241,8 +253,9 @@ public class ReviewManager {
     */
    public static double getHoursSpent(TeamWorkFlowArtifact teamArt, String relatedToStateName) throws OseeCoreException {
       double spent = 0;
-      for (ReviewSMArtifact reviewArt : getReviews(teamArt, relatedToStateName))
+      for (ReviewSMArtifact reviewArt : getReviews(teamArt, relatedToStateName)) {
          spent += reviewArt.getHoursSpentSMATotal();
+      }
       return spent;
    }
 
@@ -255,17 +268,20 @@ public class ReviewManager {
    public static int getPercentComplete(TeamWorkFlowArtifact teamArt, String relatedToStateName) throws OseeCoreException {
       int spent = 0;
       Collection<ReviewSMArtifact> reviewArts = getReviews(teamArt, relatedToStateName);
-      for (ReviewSMArtifact reviewArt : reviewArts)
+      for (ReviewSMArtifact reviewArt : reviewArts) {
          spent += reviewArt.getPercentCompleteSMATotal();
-      if (spent == 0) return 0;
+      }
+      if (spent == 0) {
+         return 0;
+      }
       return spent / reviewArts.size();
    }
 
    public static DecisionReviewArtifact createNewDecisionReview(TeamWorkFlowArtifact teamArt, ReviewBlockType reviewBlockType, boolean againstCurrentState) throws OseeCoreException {
       return createNewDecisionReview(teamArt, reviewBlockType,
-            "Should we do this?  Yes will require followup, No will not",
-            againstCurrentState ? teamArt.getStateMgr().getCurrentStateName() : null,
-            "Enter description of the decision, if any", getDefaultDecisionReviewOptions(), null);
+         "Should we do this?  Yes will require followup, No will not",
+         againstCurrentState ? teamArt.getStateMgr().getCurrentStateName() : null,
+         "Enter description of the decision, if any", getDefaultDecisionReviewOptions(), null);
    }
 
    public static String getDefaultDecisionReviewOptions() throws OseeCoreException {
@@ -274,8 +290,8 @@ public class ReviewManager {
 
    public static DecisionReviewArtifact createNewDecisionReview(TeamWorkFlowArtifact teamArt, ReviewBlockType reviewBlockType, String title, String relatedToState, String description, String options, Collection<User> assignees) throws OseeCoreException {
       DecisionReviewArtifact decRev =
-            (DecisionReviewArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.DecisionReview.getName(),
-                  AtsUtil.getAtsBranch(), title);
+         (DecisionReviewArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.DecisionReview.getName(),
+            AtsUtil.getAtsBranch(), title);
 
       if (teamArt != null) {
          teamArt.addRelation(AtsRelationTypes.TeamWorkflowToReview_Review, decRev);

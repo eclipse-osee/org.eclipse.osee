@@ -117,7 +117,7 @@ public class OseeBuildTypeContributionItem extends OseeContributionItem {
                public IStatus runInUIThread(IProgressMonitor monitor) {
                   Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
                   WorkbenchPreferenceDialog dialog =
-                        WorkbenchPreferenceDialog.createDialogOn(shell, ConfigurationDetails.PAGE_ID);
+                     WorkbenchPreferenceDialog.createDialogOn(shell, ConfigurationDetails.PAGE_ID);
                   isSelectionAllowed.setValue(false);
                   dialog.open();
                   isSelectionAllowed.setValue(true);

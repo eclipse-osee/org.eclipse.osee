@@ -30,13 +30,14 @@ public class ScriptExecutionContribution implements IPropertyStoreBasedControl {
    private static final String LOGGING_GROUP = "Select a logging level";
    private static final String EXECUTION_OPTIONS_GROUP = "Execution Options";
    private static final String SCRIPT_OUTPUT_TOOLTIP =
-         "If the path in the text box is an existing directory all files will be written there.\n" + "If the path is empty the files will be written to the same location as the script.\n" + "In all other cases the path will be relative to the parent project of the file.\n";
+      "If the path in the text box is an existing directory all files will be written there.\n" + "If the path is empty the files will be written to the same location as the script.\n" + "In all other cases the path will be relative to the parent project of the file.\n";
    private static final String SCRIPT_OUTPUT_LABEL = "Script Output Directory: ";
 
    private FileOrDirectorySelectionPanel scriptDirectoryPanel;
    private LoggingPanel loggingPanel;
    private ScriptExecutionOptionsPanel optionsPanel;
 
+   @Override
    public Control createControl(Composite parent) {
       Group group = new Group(parent, SWT.NONE);
       group.setLayout(new GridLayout());
@@ -44,7 +45,7 @@ public class ScriptExecutionContribution implements IPropertyStoreBasedControl {
       group.setText(GROUP_TITLE);
 
       this.scriptDirectoryPanel =
-            new FileOrDirectorySelectionPanel(group, SWT.NONE, SCRIPT_OUTPUT_LABEL, SCRIPT_OUTPUT_TOOLTIP, true);
+         new FileOrDirectorySelectionPanel(group, SWT.NONE, SCRIPT_OUTPUT_LABEL, SCRIPT_OUTPUT_TOOLTIP, true);
 
       Composite composite = new Composite(group, SWT.NONE);
       GridLayout gl = new GridLayout(2, false);
@@ -69,6 +70,7 @@ public class ScriptExecutionContribution implements IPropertyStoreBasedControl {
       return group;
    }
 
+   @Override
    public void load(IPropertyStore propertyStore) {
       this.scriptDirectoryPanel.setSelected(propertyStore.get(TestManagerStorageKeys.SCRIPT_OUTPUT_DIRECTORY_KEY));
 
@@ -78,13 +80,14 @@ public class ScriptExecutionContribution implements IPropertyStoreBasedControl {
       this.loggingPanel.setSelected(propertyStore.get(TestManagerStorageKeys.LOGGING_LEVEL_KEY));
    }
 
+   @Override
    public void save(IPropertyStore propertyStore) {
       propertyStore.put(TestManagerStorageKeys.SCRIPT_OUTPUT_DIRECTORY_KEY, this.scriptDirectoryPanel.getSelected());
 
       propertyStore.put(TestManagerStorageKeys.LOGGING_LEVEL_KEY, this.loggingPanel.getSelected());
 
       propertyStore.put(TestManagerStorageKeys.KEEP_OLD_OUTFILE_COPIES_ENABLED_KEY,
-            this.optionsPanel.isKeepOldCopiesEnabled());
+         this.optionsPanel.isKeepOldCopiesEnabled());
       propertyStore.put(TestManagerStorageKeys.BATCH_MODE_ENABLED_KEY, this.optionsPanel.isBatchModeEnabled());
    }
 
@@ -103,6 +106,7 @@ public class ScriptExecutionContribution implements IPropertyStoreBasedControl {
       return builder.toString();
    }
 
+   @Override
    public int getPriority() {
       return 0;
    }

@@ -62,6 +62,7 @@ public abstract class AbstractArtifactExtractor implements IArtifactExtractor {
       }
    }
 
+   @Override
    public final void process(URI source, RoughArtifactCollector collector) throws Exception {
       checkDelegate();
       if (hasDelegate()) {

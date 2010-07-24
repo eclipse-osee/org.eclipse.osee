@@ -14,7 +14,6 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 
-
 /**
  * @author Donald G. Dunne
  */
@@ -30,8 +29,8 @@ public class OteNavigateViewerSorter extends ViewerSorter {
    @SuppressWarnings("unchecked")
    @Override
    public int compare(Viewer viewer, Object e1, Object e2) {
-      XNavigateItem item1 = (XNavigateItem)e1;
-      XNavigateItem item2 = (XNavigateItem)e2;
+      XNavigateItem item1 = (XNavigateItem) e1;
+      XNavigateItem item2 = (XNavigateItem) e2;
       return getComparator().compare(item1.getName(), item2.getName());
    }
 

@@ -51,7 +51,7 @@ public class ChangeTypeDialog extends ListDialog {
    @Override
    protected Control createDialogArea(Composite container) {
 
-      (new Label(container, SWT.NONE)).setText("     Select Change Type:");
+      new Label(container, SWT.NONE).setText("     Select Change Type:");
 
       Control c = super.createDialogArea(container);
       GridData gd = new GridData(GridData.FILL_BOTH);
@@ -81,26 +81,32 @@ public class ChangeTypeDialog extends ListDialog {
 
    public class ChangeLabelProvider implements ILabelProvider {
 
+      @Override
       public Image getImage(Object arg0) {
          ChangeType type = (ChangeType) arg0;
          return type.getImage();
       }
 
+      @Override
       public String getText(Object arg0) {
          ChangeType type = (ChangeType) arg0;
          return type.name();
       }
 
+      @Override
       public void addListener(ILabelProviderListener arg0) {
       }
 
+      @Override
       public void dispose() {
       }
 
+      @Override
       public boolean isLabelProperty(Object arg0, String arg1) {
          return false;
       }
 
+      @Override
       public void removeListener(ILabelProviderListener arg0) {
       }
 

@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.ui.branch.graph.utility.GraphFigureConstants;
  */
 public class TxEditPart extends AbstractGraphicalEditPart {
 
+   @Override
    protected IFigure createFigure() {
       IFigure figure = new Panel();
       figure.setLayoutManager(new BorderLayout());
@@ -37,14 +38,15 @@ public class TxEditPart extends AbstractGraphicalEditPart {
       figure.add(txFigure, BorderLayout.CENTER);
 
       Rectangle rect =
-            new Rectangle(GraphFigureConstants.TX_X_OFFSET + GraphFigureConstants.PLUS_MINUS_PADDING * 2,
-                  10 + GraphFigureConstants.BRANCH_HEIGHT + txModel.getIndex() * GraphFigureConstants.TX_Y_OFFSET,
-                  GraphFigureConstants.TX_WIDTH, GraphFigureConstants.TX_HEIGHT);
+         new Rectangle(GraphFigureConstants.TX_X_OFFSET + GraphFigureConstants.PLUS_MINUS_PADDING * 2,
+            10 + GraphFigureConstants.BRANCH_HEIGHT + txModel.getIndex() * GraphFigureConstants.TX_Y_OFFSET,
+            GraphFigureConstants.TX_WIDTH, GraphFigureConstants.TX_HEIGHT);
       ((AbstractGraphicalEditPart) getParent()).getFigure().getLayoutManager().setConstraint(txFigure, rect);
 
       return txFigure;
    }
 
+   @Override
    protected void refreshVisuals() {
       getFigure().setSize(GraphFigureConstants.TX_WIDTH, GraphFigureConstants.TX_HEIGHT);
       TxModel txModel = (TxModel) getModel();
@@ -54,12 +56,15 @@ public class TxEditPart extends AbstractGraphicalEditPart {
       graphEditPart.setConnectionVisibility();
    }
 
+   @Override
    protected void createEditPolicies() {
       installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, new SelectionEditPolicy() {
+         @Override
          protected void hideSelection() {
             refreshVisuals();
          }
 
+         @Override
          protected void showSelection() {
             refreshVisuals();
          }

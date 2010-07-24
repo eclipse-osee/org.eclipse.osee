@@ -15,8 +15,8 @@ import java.util.Set;
 
 public class ErrorHandler {
 
-   private Set<Resolver> set;
-   private StateValue value;
+   private final Set<Resolver> set;
+   private final StateValue value;
 
    /**
     * Error handler.

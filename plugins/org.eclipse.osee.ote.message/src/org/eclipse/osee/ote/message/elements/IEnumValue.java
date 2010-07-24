@@ -11,6 +11,7 @@
 package org.eclipse.osee.ote.message.elements;
 
 public interface IEnumValue<T> {
-	public int getIntValue();
-	T getEnum(int value);
+   public int getIntValue();
+
+   T getEnum(int value);
 }

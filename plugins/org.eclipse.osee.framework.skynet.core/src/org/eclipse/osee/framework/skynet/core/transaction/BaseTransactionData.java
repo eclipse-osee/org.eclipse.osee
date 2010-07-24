@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
  */
 public abstract class BaseTransactionData {
    private static final String INSERT_INTO_TRANSACTION_TABLE =
-         "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current, branch_id) VALUES (?, ?, ?, ?, ?)";
+      "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current, branch_id) VALUES (?, ?, ?, ?, ?)";
 
    private static final int PRIME_NUMBER = 37;
    private final int itemId;
@@ -61,8 +61,8 @@ public abstract class BaseTransactionData {
 
    protected void addInsertToBatch(SkynetTransaction transaction) throws OseeCoreException {
       internalAddInsertToBatch(transaction, Integer.MAX_VALUE, INSERT_INTO_TRANSACTION_TABLE,
-            transaction.getTransactionNumber(), getGammaId(), getModificationType().getValue(), TxChange.getCurrent(
-                  getModificationType()).getValue(), transaction.getBranch().getId());
+         transaction.getTransactionNumber(), getGammaId(), getModificationType().getValue(),
+         TxChange.getCurrent(getModificationType()).getValue(), transaction.getBranch().getId());
    }
 
    protected final int getItemId() {
@@ -116,6 +116,7 @@ public abstract class BaseTransactionData {
 
    /**
     * Should not be called by application. This should only be called once after the transaction has been committed.
+    * 
     * @param artifactEvent TODO
     */
    protected abstract void internalAddToEvents(ArtifactEvent artifactEvent) throws OseeCoreException;

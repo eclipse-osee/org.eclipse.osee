@@ -110,11 +110,11 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
                children = destinationArtifact.getDescendants();
             } catch (OseeCoreException ex) {
                reportError("Unable to get artifact children: artifact:[%s] branch:[%s]", destinationArtifact.getGuid(),
-                     destinationArtifact.getBranch().getGuid(), ex);
+                  destinationArtifact.getBranch().getGuid(), ex);
             }
             List<IOperation> subOps = new ArrayList<IOperation>();
             subOps.add(new RoughToRealArtifactOperation(transaction, destinationArtifact, roughItems, resolver,
-                  isDeleteUnmatchedSelected));
+               isDeleteUnmatchedSelected));
             subOps.add(new ArtifactValidationCheckOperation(children, false));
             subOps.add(new CompleteArtifactImportOperation(transaction, destinationArtifact));
             IOperation ret = new CompositeOperation(opName, SkynetGuiPlugin.PLUGIN_ID, subOps);
@@ -135,13 +135,12 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
       MatchingStrategy strategy = mainPage.getMatchingStrategy();
       try {
          IArtifactImportResolver resolver =
-               strategy.getResolver(primaryArtifactType, nonChangingAttributes, true,
-                     mainPage.isDeleteUnmatchedSelected());
+            strategy.getResolver(primaryArtifactType, nonChangingAttributes, true, mainPage.isDeleteUnmatchedSelected());
          return resolver;
       } catch (OseeCoreException ex) {
          String msg = "getResolver() could not retrieve artifact type \"Heading\"";
          ErrorDialog.openError(getContainer().getShell(), "Artifact Import", null, new Status(IStatus.ERROR,
-               SkynetGuiPlugin.PLUGIN_ID, msg, ex));
+            SkynetGuiPlugin.PLUGIN_ID, msg, ex));
          return null;
       }
    }

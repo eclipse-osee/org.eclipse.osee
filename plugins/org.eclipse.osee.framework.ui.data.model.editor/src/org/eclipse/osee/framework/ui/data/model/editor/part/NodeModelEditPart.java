@@ -39,32 +39,39 @@ public abstract class NodeModelEditPart extends BaseEditPart implements NodeEdit
       super(model);
    }
 
+   @Override
    public boolean canDeleteFromDiagram() {
       return true;
    }
 
+   @Override
    protected void createEditPolicies() {
       super.createEditPolicies();
       installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, null);
       installEditPolicy(EditPolicy.LAYOUT_ROLE, new LayoutEditPolicy() {
+         @Override
          protected EditPolicy createChildEditPolicy(EditPart child) {
             return null;
          }
 
+         @Override
          protected Command getCreateCommand(CreateRequest request) {
             return null;
          }
 
+         @Override
          protected Command getDeleteDependantCommand(Request request) {
             return null;
          }
 
+         @Override
          protected Command getMoveChildrenCommand(Request request) {
             return null;
          }
       });
    }
 
+   @Override
    public DragTracker getDragTracker(Request request) {
       return new DragEditPartsTracker(this);
    }
@@ -73,33 +80,47 @@ public abstract class NodeModelEditPart extends BaseEditPart implements NodeEdit
       return (NodeModel) getModel();
    }
 
+   @Override
    @SuppressWarnings("unchecked")
    protected List<ConnectionModel> getModelSourceConnections() {
       return getNodeModel().getSourceConnections();
    }
 
+   @Override
    @SuppressWarnings("unchecked")
    protected List<ConnectionModel> getModelTargetConnections() {
       return getNodeModel().getTargetConnections();
    }
 
+   @Override
    public ConnectionAnchor getSourceConnectionAnchor(ConnectionEditPart connection) {
-      if (anchor == null) anchor = new ChopboxAnchor(getFigure());
+      if (anchor == null) {
+         anchor = new ChopboxAnchor(getFigure());
+      }
       return anchor;
    }
 
+   @Override
    public ConnectionAnchor getSourceConnectionAnchor(Request request) {
-      if (anchor == null) anchor = new ChopboxAnchor(getFigure());
+      if (anchor == null) {
+         anchor = new ChopboxAnchor(getFigure());
+      }
       return anchor;
    }
 
+   @Override
    public ConnectionAnchor getTargetConnectionAnchor(ConnectionEditPart connection) {
-      if (anchor == null) anchor = new ChopboxAnchor(getFigure());
+      if (anchor == null) {
+         anchor = new ChopboxAnchor(getFigure());
+      }
       return anchor;
    }
 
+   @Override
    public ConnectionAnchor getTargetConnectionAnchor(Request request) {
-      if (anchor == null) anchor = new ChopboxAnchor(getFigure());
+      if (anchor == null) {
+         anchor = new ChopboxAnchor(getFigure());
+      }
       return anchor;
    }
 
@@ -108,6 +129,7 @@ public abstract class NodeModelEditPart extends BaseEditPart implements NodeEdit
       refreshVisuals();
    }
 
+   @Override
    protected void refreshVisuals() {
       super.refreshVisuals();
       Rectangle constraint = new Rectangle(0, 0, -1, -1);

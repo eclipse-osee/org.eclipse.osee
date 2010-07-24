@@ -16,32 +16,33 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public class PropertyStoreCommand implements Command, Serializable {
 
    private static final long serialVersionUID = 7685494212621558501L;
 
-   private CommandId commandId;
-   private Source source;
-   private IPropertyStore store;
-   
-   public PropertyStoreCommand(CommandId commandId, Source source){
+   private final CommandId commandId;
+   private final Source source;
+   private final IPropertyStore store;
+
+   public PropertyStoreCommand(CommandId commandId, Source source) {
       this.commandId = commandId;
       this.source = source;
       store = new PropertyStore("org.eclipse.osee.ote.core.cmd.PropertyStoreCommand");
    }
-   
+
+   @Override
    public CommandId getId() {
       return commandId;
    }
 
+   @Override
    public Source getSource() {
       return source;
    }
 
-   public IPropertyStore getPropertyStore(){
+   public IPropertyStore getPropertyStore() {
       return store;
    }
-   
+
 }

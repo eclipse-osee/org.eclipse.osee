@@ -31,18 +31,21 @@ public class ArtifactTypeSearch implements ISearchPrimitive {
       this.operation = operation;
    }
 
+   @Override
    public String getArtIdColName() {
       return "art_id";
    }
 
+   @Override
    public String getCriteriaSql(List<Object> dataList, Branch branch) {
       String sql =
-            "osee_artifact_type.name" + operation + " ? AND osee_artifact_type.art_type_id = osee_artifact.art_type_id";
+         "osee_artifact_type.name" + operation + " ? AND osee_artifact_type.art_type_id = osee_artifact.art_type_id";
       dataList.add(typeName);
 
       return sql;
    }
 
+   @Override
    public String getTableSql(List<Object> dataList, Branch branch) {
       return tables;
    }
@@ -52,6 +55,7 @@ public class ArtifactTypeSearch implements ISearchPrimitive {
       return "Artifact type: " + typeName;
    }
 
+   @Override
    public String getStorageString() {
       return typeName + TOKEN + operation.name();
    }

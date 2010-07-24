@@ -74,7 +74,9 @@ public class AccessControlEvent extends FrameworkEvent {
 
    public boolean isForBranch(Branch branch) throws OseeCoreException {
       for (DefaultBasicGuidArtifact guidArt : getArtifacts()) {
-         if (branch.getGuid().equals(guidArt.getBranchGuid())) return true;
+         if (branch.getGuid().equals(guidArt.getBranchGuid())) {
+            return true;
+         }
       }
       return false;
    }

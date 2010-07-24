@@ -32,7 +32,7 @@ import org.eclipse.swt.widgets.Shell;
 public class EnvVariableDialog extends MessageDialog {
 
    private Button cancelButton;
-   private String dialogMessage;
+   private final String dialogMessage;
 
    private Button okButton;
 
@@ -40,8 +40,7 @@ public class EnvVariableDialog extends MessageDialog {
    private boolean selectionOk;
    private StyledText textArea;
 
-   public EnvVariableDialog(Shell parentShell, String dialogTitle, Image dialogTitleImage, String dialogMessage,
-         int dialogImageType, String[] dialogButtonLabels, int defaultIndex) {
+   public EnvVariableDialog(Shell parentShell, String dialogTitle, Image dialogTitleImage, String dialogMessage, int dialogImageType, String[] dialogButtonLabels, int defaultIndex) {
       super(parentShell, dialogTitle, dialogTitleImage, null, dialogImageType, dialogButtonLabels, defaultIndex);
       this.dialogMessage = dialogMessage;
       this.selectionOk = false;
@@ -63,10 +62,12 @@ public class EnvVariableDialog extends MessageDialog {
 
       okButton.addSelectionListener(new SelectionListener() {
 
+         @Override
          public void widgetDefaultSelected(SelectionEvent e) {
             widgetSelected(e);
          }
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             selectionOk = true;
 
@@ -75,10 +76,12 @@ public class EnvVariableDialog extends MessageDialog {
 
       cancelButton.addSelectionListener(new SelectionListener() {
 
+         @Override
          public void widgetDefaultSelected(SelectionEvent e) {
             widgetSelected(e);
          }
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             selectionOk = false;
          }
@@ -100,7 +103,7 @@ public class EnvVariableDialog extends MessageDialog {
       addView.setLayout(gridLayout);
       addView.setLayoutData(gd);
 
-      (new Label(addView, SWT.NONE)).setText(dialogMessage);
+      new Label(addView, SWT.NONE).setText(dialogMessage);
 
       GridData gd1 = new GridData(SWT.FILL);
       gd1.minimumWidth = 200;
@@ -110,6 +113,7 @@ public class EnvVariableDialog extends MessageDialog {
       textArea.setLayoutData(gd1);
       textArea.addModifyListener(new ModifyListener() {
 
+         @Override
          public void modifyText(ModifyEvent e) {
             selection = textArea.getText();
          }

@@ -20,14 +20,13 @@ import org.eclipse.osee.ote.message.elements.RecordElement;
 public class NonMappingRecordElement extends RecordElement {
 
    public NonMappingRecordElement(RecordElement element) {
-      super(element.getMessage(), element.getElementName(), element.getMsgData(), 
-            element.getByteOffset(), element.getBitLength());
-      for(Object obj:element.getElementPath()){
+      super(element.getMessage(), element.getElementName(), element.getMsgData(), element.getByteOffset(),
+         element.getBitLength());
+      for (Object obj : element.getElementPath()) {
          this.getElementPath().add(obj);
       }
    }
 
-   
    /**
     * @param message
     * @param elementName
@@ -36,8 +35,7 @@ public class NonMappingRecordElement extends RecordElement {
     * @param firstRecordBitOffset
     * @param recordBitSize
     */
-   public NonMappingRecordElement(Message<?,?,?> message, String elementName, int index, MessageData messageData,
-         int firstRecordBitOffset, int recordBitSize) {
+   public NonMappingRecordElement(Message<?, ?, ?> message, String elementName, int index, MessageData messageData, int firstRecordBitOffset, int recordBitSize) {
       super(message, elementName, index, messageData, firstRecordBitOffset, recordBitSize);
    }
 
@@ -49,8 +47,7 @@ public class NonMappingRecordElement extends RecordElement {
     * @param firstRecordByteOffset
     * @param recordByteSize
     */
-   public NonMappingRecordElement(RecordElement message, String elementName, int offset, MessageData messageData,
-         int firstRecordByteOffset, int recordByteSize) {
+   public NonMappingRecordElement(RecordElement message, String elementName, int offset, MessageData messageData, int firstRecordByteOffset, int recordByteSize) {
       super(message, elementName, offset, messageData, firstRecordByteOffset, recordByteSize);
    }
 
@@ -61,21 +58,18 @@ public class NonMappingRecordElement extends RecordElement {
     * @param firstRecordByteOffset
     * @param recordByteSize
     */
-   public NonMappingRecordElement(Message<?,?,?> message, String elementName, MessageData messageData,
-         int firstRecordByteOffset, int recordByteSize) {
+   public NonMappingRecordElement(Message<?, ?, ?> message, String elementName, MessageData messageData, int firstRecordByteOffset, int recordByteSize) {
       super(message, elementName, messageData, firstRecordByteOffset, recordByteSize);
    }
 
-   
    @Override
    public boolean isNonMappingElement() {
       return true;
    }
 
-
-public int compareTo(RecordElement o) {
-    throwNoMappingElementException();
-    return 0;
-}
+   public int compareTo(RecordElement o) {
+      throwNoMappingElementException();
+      return 0;
+   }
 
 }

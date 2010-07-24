@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.TabFolder;
  */
 public class SkyWalkerTabOptions {
 
-   private TabFolder tabFolder;
+   private final TabFolder tabFolder;
 
    /**
     * @param parent

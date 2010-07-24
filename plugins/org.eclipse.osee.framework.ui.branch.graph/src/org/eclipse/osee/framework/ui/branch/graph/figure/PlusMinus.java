@@ -23,6 +23,7 @@ public class PlusMinus extends Toggle {
       setPreferredSize(9, 9);
    }
 
+   @Override
    protected void paintFigure(Graphics g) {
       super.paintFigure(g);
       Rectangle r = Rectangle.SINGLETON;
@@ -31,7 +32,9 @@ public class PlusMinus extends Toggle {
       int xMid = r.x + r.width / 2;
       int yMid = r.y + r.height / 2;
       g.drawLine(r.x + 2, yMid, r.right() - 2, yMid);
-      if (!isSelected()) g.drawLine(xMid, r.y + 2, xMid, r.bottom() - 2);
+      if (!isSelected()) {
+         g.drawLine(xMid, r.y + 2, xMid, r.bottom() - 2);
+      }
    }
 
 }

@@ -87,8 +87,8 @@ public class PropertyStoreTest {
       store1.put("key4", new String[] {"entry4", "entry5"});
 
       Assert.assertEquals(
-            "Id:[ID] Data:{key2=543, key1=12.3} Arrays:{key3=[entry1, entry2, entry3], key4=[entry4, entry5]}",
-            store1.toString());
+         "Id:[ID] Data:{key2=543, key1=12.3} Arrays:{key3=[entry1, entry2, entry3], key4=[entry4, entry5]}",
+         store1.toString());
    }
 
    @org.junit.Test
@@ -158,7 +158,7 @@ public class PropertyStoreTest {
 
       Set<String> set1 = new TreeSet<String>(store1.keySet());
       PropertyStoreTestUtil.checkArrays(new String[] {"key1", "key2", "key3", "key4", "key5", "key6", "key6.5"},
-            set1.toArray(new String[set1.size()]));
+         set1.toArray(new String[set1.size()]));
       Set<String> set2 = new TreeSet<String>(store1.arrayKeySet());
       PropertyStoreTestUtil.checkArrays(new String[] {"key7", "key8"}, set2.toArray(new String[set2.size()]));
 

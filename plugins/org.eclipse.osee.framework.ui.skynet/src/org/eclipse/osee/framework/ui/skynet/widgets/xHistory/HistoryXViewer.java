@@ -76,6 +76,7 @@ public class HistoryXViewer extends XViewer {
       MenuManager mm = getMenuManager();
       mm.createContextMenu(getControl());
       mm.addMenuListener(new IMenuListener() {
+         @Override
          public void menuAboutToShow(IMenuManager manager) {
             updateMenuActionsForTable();
          }

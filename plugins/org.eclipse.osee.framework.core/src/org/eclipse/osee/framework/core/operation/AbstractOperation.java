@@ -34,10 +34,12 @@ public abstract class AbstractOperation implements IOperation {
       this.name = name;
    }
 
+   @Override
    public String getName() {
       return name;
    }
 
+   @Override
    public IStatus getStatus() {
       return status;
    }
@@ -48,10 +50,12 @@ public abstract class AbstractOperation implements IOperation {
       }
    }
 
+   @Override
    public boolean wasExecuted() {
       return wasExecuted;
    }
 
+   @Override
    public final IOperation run(IProgressMonitor monitor) {
       wasExecuted = true;
       try {
@@ -91,7 +95,7 @@ public abstract class AbstractOperation implements IOperation {
          return Status.CANCEL_STATUS;
       } else {
          return new Status(IStatus.ERROR, status.getPlugin(), String.format("%s: %s", status.getMessage(),
-               error.toString()), error);
+            error.toString()), error);
       }
    }
 

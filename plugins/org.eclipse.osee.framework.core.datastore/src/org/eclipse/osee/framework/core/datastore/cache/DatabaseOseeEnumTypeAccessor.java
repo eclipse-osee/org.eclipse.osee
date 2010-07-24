@@ -38,15 +38,15 @@ public class DatabaseOseeEnumTypeAccessor extends AbstractDatabaseAccessor<OseeE
 
    private static final String SELECT_OSEE_ENUM_TYPES = "select * from osee_enum_type oet";
    private static final String SELECT_OSEE_ENUM_ENTRIES =
-         "select * from osee_enum_type_def order by enum_type_id, ordinal";
+      "select * from osee_enum_type_def order by enum_type_id, ordinal";
 
    private static final String INSERT_ENUM_TYPE =
-         "insert into osee_enum_type (enum_type_id, enum_type_guid, enum_type_name) values (?,?,?)";
+      "insert into osee_enum_type (enum_type_id, enum_type_guid, enum_type_name) values (?,?,?)";
    private static final String UPDATE_ENUM_TYPE = "update osee_enum_type set enum_type_name=? where enum_type_id=?";
    private static final String DELETE_ENUM_TYPE = "delete from osee_enum_type oet where enum_type_id = ?";
 
    private static final String INSERT_ENUM_TYPE_DEF =
-         "insert into osee_enum_type_def (enum_type_id, enum_entry_guid, name, ordinal) values (?,?,?,?)";
+      "insert into osee_enum_type_def (enum_type_id, enum_entry_guid, name, ordinal) values (?,?,?,?)";
    private static final String DELETE_ENUM_TYPE_DEF = "delete from osee_enum_type_def where enum_type_id = ?";
 
    public DatabaseOseeEnumTypeAccessor(IOseeDatabaseServiceProvider databaseProvider, IOseeModelFactoryServiceProvider factoryProvider) {
@@ -95,7 +95,7 @@ public class DatabaseOseeEnumTypeAccessor extends AbstractDatabaseAccessor<OseeE
                String enumTypeName = chStmt.getString("enum_type_name");
 
                OseeEnumType oseeEnumType =
-                     factory.createOrUpdate(cache, enumTypeId, StorageState.LOADED, enumTypeGuid, enumTypeName);
+                  factory.createOrUpdate(cache, enumTypeId, StorageState.LOADED, enumTypeGuid, enumTypeName);
 
                List<OseeEnumEntry> oseeEnumEntries = (List<OseeEnumEntry>) entryTypes.getValues(enumTypeId);
                if (oseeEnumEntries != null) {

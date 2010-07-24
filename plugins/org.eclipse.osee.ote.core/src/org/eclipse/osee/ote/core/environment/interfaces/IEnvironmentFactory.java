@@ -14,19 +14,24 @@ import org.eclipse.osee.ote.core.framework.ICommandContextFactory;
 import org.eclipse.osee.ote.core.framework.IRunManager;
 import org.eclipse.osee.ote.core.framework.command.ICommandManager;
 
-
-
 public interface IEnvironmentFactory {
 
    ITimerControl getTimerControl();
+
    IScriptControl getScriptControl();
+
    IReportData getReportDataControl();
+
    ITestLogger getTestLogger();
-   
+
    ICommandManager getCommandManager();
+
    IRunManager getRunManager();
+
    ICommandContextFactory getCommandContextFactory();
+
    IRuntimeLibraryManager getRuntimeManager();
+
    ITestStation getTestStation();
 
 }

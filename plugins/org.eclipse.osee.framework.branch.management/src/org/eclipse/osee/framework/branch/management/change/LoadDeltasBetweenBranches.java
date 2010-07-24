@@ -37,7 +37,7 @@ import org.eclipse.osee.framework.database.core.JoinUtility.TransactionJoinQuery
  */
 public class LoadDeltasBetweenBranches extends AbstractOperation {
    private static final String SELECT_SOURCE_BRANCH_CHANGES =
-         "select gamma_id, mod_type from osee_txs where branch_id = ? and tx_current <> ? and transaction_id <> ?";
+      "select gamma_id, mod_type from osee_txs where branch_id = ? and tx_current <> ? and transaction_id <> ?";
 
    private final HashMap<Long, ModificationType> changeByGammaId = new HashMap<Long, ModificationType>();
 
@@ -75,7 +75,7 @@ public class LoadDeltasBetweenBranches extends AbstractOperation {
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       Conditions.checkExpressionFailOnTrue(txDelta.areOnTheSameBranch(),
-            "Unable to compute deltas between transactions on the same branch [%s]", txDelta);
+         "Unable to compute deltas between transactions on the same branch [%s]", txDelta);
 
       TransactionJoinQuery txJoin = JoinUtility.createTransactionJoinQuery();
 
@@ -94,7 +94,7 @@ public class LoadDeltasBetweenBranches extends AbstractOperation {
       IOseeStatement chStmt = oseeDatabaseProvider.getOseeDatabaseService().getStatement();
       try {
          chStmt.runPreparedQuery(10000, SELECT_SOURCE_BRANCH_CHANGES, getSourceBranchId(),
-               TxChange.NOT_CURRENT.getValue(), getSourceBaselineTransactionId());
+            TxChange.NOT_CURRENT.getValue(), getSourceBaselineTransactionId());
          while (chStmt.next()) {
             checkForCancelledStatus(monitor);
             Long gammaId = chStmt.getLong("gamma_id");
@@ -120,14 +120,14 @@ public class LoadDeltasBetweenBranches extends AbstractOperation {
 
       if (hasMergeBranch()) {
          loadCurrentData(monitor, factory.getItemTableName(), factory.getItemIdColumnName(), idJoin, changesByItemId,
-               mergeTransaction);
+            mergeTransaction);
       }
 
       loadCurrentData(monitor, factory.getItemTableName(), factory.getItemIdColumnName(), idJoin, changesByItemId,
-            getCompareBranchHeadTx());
+         getCompareBranchHeadTx());
 
       loadNonCurrentSourceData(monitor, factory.getItemTableName(), factory.getItemIdColumnName(), idJoin,
-            changesByItemId, factory.getItemValueColumnName());
+         changesByItemId, factory.getItemValueColumnName());
 
       idJoin.delete();
 
@@ -138,11 +138,11 @@ public class LoadDeltasBetweenBranches extends AbstractOperation {
       IOseeStatement chStmt = oseeDatabaseProvider.getOseeDatabaseService().getStatement();
       try {
          String query = "select txs.gamma_id, txs.mod_type, item." + columnName + " from osee_join_id idj, " //
-               + tableName + " item, osee_txs txs where idj.query_id = ? and idj.id = item." + columnName + //
-               " and item.gamma_id = txs.gamma_id and txs.tx_current <> ? and txs.branch_id = ? and txs.transaction_id <= ?";
+            + tableName + " item, osee_txs txs where idj.query_id = ? and idj.id = item." + columnName + //
+            " and item.gamma_id = txs.gamma_id and txs.tx_current <> ? and txs.branch_id = ? and txs.transaction_id <= ?";
 
          chStmt.runPreparedQuery(10000, query, idJoin.getQueryId(), TxChange.NOT_CURRENT.getValue(),
-               transactionLimit.getBranchId(), transactionLimit.getId());
+            transactionLimit.getBranchId(), transactionLimit.getId());
 
          while (chStmt.next()) {
             checkForCancelledStatus(monitor);
@@ -171,12 +171,12 @@ public class LoadDeltasBetweenBranches extends AbstractOperation {
       try {
          String valueColumnName = columnValueName != null ? "item." + columnValueName + "," : "";
          query =
-               "select " + valueColumnName + "item." + idColumnName + ", txs.gamma_id, txs.mod_type, txs.transaction_id from osee_join_id idj, " //
-                     + tableName + " item, osee_txs txs where idj.query_id = ? and idj.id = item." + idColumnName + //
-                     " and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.branch_id = ? order by idj.id, txs.transaction_id asc";
+            "select " + valueColumnName + "item." + idColumnName + ", txs.gamma_id, txs.mod_type, txs.transaction_id from osee_join_id idj, " //
+               + tableName + " item, osee_txs txs where idj.query_id = ? and idj.id = item." + idColumnName + //
+               " and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.branch_id = ? order by idj.id, txs.transaction_id asc";
 
          chStmt.runPreparedQuery(10000, query, idJoin.getQueryId(), TxChange.NOT_CURRENT.getValue(),
-               getSourceBranchId());
+            getSourceBranchId());
 
          int baselineTransactionId = getSourceBaselineTransactionId();
          int previousItemId = -1;

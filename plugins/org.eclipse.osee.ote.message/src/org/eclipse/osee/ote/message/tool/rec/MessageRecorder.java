@@ -22,7 +22,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.environment.TestEnvironmentInterface;
 import org.eclipse.osee.ote.message.MessageSystemTestEnvironment;
@@ -31,97 +30,91 @@ import org.eclipse.osee.ote.message.tool.rec.entry.IMessageEntry;
 
 public class MessageRecorder {
    private static final int NUM_BUFFERS = 3;
-	private WritableByteChannel channel;
+   private WritableByteChannel channel;
 
-	private final ArrayList<IMessageEntry> msgsToRecord = new ArrayList<IMessageEntry>(64);
-	private final Lock recLock = new ReentrantLock();
-	private volatile boolean isRecording = false;
-	private final IMessageEntryFactory factory;
-	
-	private final ExecutorService taskHandler = Executors.newFixedThreadPool(2);
-	private final TestEnvironmentInterface env;
-	private final ArrayBlockingQueue<ByteBuffer> bufferQueue = new ArrayBlockingQueue<ByteBuffer>(NUM_BUFFERS);
-	
-	public MessageRecorder(IMessageEntryFactory factory) {
-		this.factory = factory;
-		this.env = Activator.getTestEnvironment();
-		try {
+   private final ArrayList<IMessageEntry> msgsToRecord = new ArrayList<IMessageEntry>(64);
+   private final Lock recLock = new ReentrantLock();
+   private volatile boolean isRecording = false;
+   private final IMessageEntryFactory factory;
+
+   private final ExecutorService taskHandler = Executors.newFixedThreadPool(2);
+   private final TestEnvironmentInterface env;
+   private final ArrayBlockingQueue<ByteBuffer> bufferQueue = new ArrayBlockingQueue<ByteBuffer>(NUM_BUFFERS);
+
+   public MessageRecorder(IMessageEntryFactory factory) {
+      this.factory = factory;
+      this.env = Activator.getTestEnvironment();
+      try {
          for (int i = 0; i < NUM_BUFFERS; i++) {
             bufferQueue.put(ByteBuffer.allocateDirect(256000));
-	}
+         }
       } catch (InterruptedException e) {
          // this should be absolutely impossible
          throw new Error("What on Earth has happened here!", e);
       }
-	}
+   }
 
-	public void startRecording(Collection<MessageRecordConfig> list, WritableByteChannel channel) throws InterruptedException{
-		if (list == null) {
-			throw new IllegalArgumentException("list cannot be null");
-		}
-		if (channel == null) {
-			throw new IllegalArgumentException("channel cannot be null");
-		}
-		recLock.lock();
-		try {			
-	        this.channel = channel;
-			for (MessageRecordConfig config : list) {
-				IMessageEntry handler = factory.createMessageEntry(config, this);
-				msgsToRecord.add(handler);
-				handler.enable(true);
-			}
-			 OseeLog.log(MessageSystemTestEnvironment.class,
-	     			 Level.INFO,  
-	     			"recording " + list.size() + "messages");
-			isRecording = true;
-		} finally {
-			recLock.unlock();
-		}
-	}
-	
-	public ByteBuffer acquireOutputBuffer() throws InterruptedException {
+   public void startRecording(Collection<MessageRecordConfig> list, WritableByteChannel channel) throws InterruptedException {
+      if (list == null) {
+         throw new IllegalArgumentException("list cannot be null");
+      }
+      if (channel == null) {
+         throw new IllegalArgumentException("channel cannot be null");
+      }
+      recLock.lock();
+      try {
+         this.channel = channel;
+         for (MessageRecordConfig config : list) {
+            IMessageEntry handler = factory.createMessageEntry(config, this);
+            msgsToRecord.add(handler);
+            handler.enable(true);
+         }
+         OseeLog.log(MessageSystemTestEnvironment.class, Level.INFO, "recording " + list.size() + "messages");
+         isRecording = true;
+      } finally {
+         recLock.unlock();
+      }
+   }
+
+   public ByteBuffer acquireOutputBuffer() throws InterruptedException {
       return bufferQueue.take();
    }
 
    public void releaseOutputBuffer(ByteBuffer buffer) throws InterruptedException {
       bufferQueue.put(buffer);
    }
-	
-	public WritableByteChannel getChannel() {
-		return channel;
-	}
 
-	public Future<?> submitTask(Runnable task) {
-		return taskHandler.submit(task);
-	}
-	
-	public boolean isRecording() {
-		return isRecording;
-	}
+   public WritableByteChannel getChannel() {
+      return channel;
+   }
 
-	public long getTimeStamp() {
-		return env.getEnvTime();
-	}
-	
-	public void stopRecording(boolean closeOutputChannel) throws IOException, InterruptedException {
-		 OseeLog.log(MessageSystemTestEnvironment.class,
-     			 Level.INFO,  
-     			"stopping message recorder...");
-		isRecording = false;
-		recLock.lock();
-		try {
-			for (IMessageEntry handler : msgsToRecord) {
-				handler.enable(false);
-			}
-			msgsToRecord.clear();
-			if (closeOutputChannel) {
-				channel.close();
-			}
-		} finally {
-			recLock.unlock();
-			 OseeLog.log(MessageSystemTestEnvironment.class,
-	     			 Level.INFO,  
-	     			"message recorder stopped");
-		}
-	}
+   public Future<?> submitTask(Runnable task) {
+      return taskHandler.submit(task);
+   }
+
+   public boolean isRecording() {
+      return isRecording;
+   }
+
+   public long getTimeStamp() {
+      return env.getEnvTime();
+   }
+
+   public void stopRecording(boolean closeOutputChannel) throws IOException, InterruptedException {
+      OseeLog.log(MessageSystemTestEnvironment.class, Level.INFO, "stopping message recorder...");
+      isRecording = false;
+      recLock.lock();
+      try {
+         for (IMessageEntry handler : msgsToRecord) {
+            handler.enable(false);
+         }
+         msgsToRecord.clear();
+         if (closeOutputChannel) {
+            channel.close();
+         }
+      } finally {
+         recLock.unlock();
+         OseeLog.log(MessageSystemTestEnvironment.class, Level.INFO, "message recorder stopped");
+      }
+   }
 }

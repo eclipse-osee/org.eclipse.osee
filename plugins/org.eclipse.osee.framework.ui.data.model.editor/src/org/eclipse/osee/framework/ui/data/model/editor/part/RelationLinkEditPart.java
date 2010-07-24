@@ -32,9 +32,10 @@ public class RelationLinkEditPart extends ConnectionEditPart {
    //   private EReference opposite;
 
    public RelationLinkEditPart(Object model) {
-      super((RelationLinkModel) model);
+      super(model);
    }
 
+   @Override
    public void activate() {
       super.activate();
       getRelationLink().addListener(modelListener);
@@ -48,6 +49,7 @@ public class RelationLinkEditPart extends ConnectionEditPart {
    //      return lower + ".." + (upper == -1 ? "n" : "" + upper); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
    //   }
 
+   @Override
    protected IFigure createFigure() {
       PolylineConnection conn = new PolylineConnection();
 
@@ -81,6 +83,7 @@ public class RelationLinkEditPart extends ConnectionEditPart {
    /**
     * Upon deactivation, detach from the model element as a property change listener.
     */
+   @Override
    public void deactivate() {
       //      updateEOpposite(null);
       getRelationLink().removeListener(modelListener);
@@ -99,12 +102,14 @@ public class RelationLinkEditPart extends ConnectionEditPart {
       return (RelationLinkModel) getModel();
    }
 
+   @Override
    protected void handleModelEvent(Object object) {
       //      updateEOpposite(getEReference().getEOpposite());
       refreshVisuals();
       super.handleModelEvent(object);
    }
 
+   @Override
    protected void refreshVisuals() {
       super.refreshVisuals();
       updateSourceDecoration();

@@ -15,6 +15,7 @@ import java.util.Iterator;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -32,7 +33,7 @@ public class ExpandTreeHandler extends AbstractHandler {
    public Object execute(ExecutionEvent arg0) throws ExecutionException {
       Iterator<?> iter = structuredSelection.iterator();
       while (iter.hasNext()) {
-         treeViewer.expandToLevel(iter.next(), TreeViewer.ALL_LEVELS);
+         treeViewer.expandToLevel(iter.next(), AbstractTreeViewer.ALL_LEVELS);
       }
       return null;
    }
@@ -44,7 +45,7 @@ public class ExpandTreeHandler extends AbstractHandler {
       }
       structuredSelection = null;
       ISelectionProvider selectionProvider =
-            AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
+         AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
       treeViewer = selectionProvider instanceof TreeViewer ? (TreeViewer) selectionProvider : null;
 
       if (treeViewer != null && treeViewer.getSelection() instanceof IStructuredSelection) {

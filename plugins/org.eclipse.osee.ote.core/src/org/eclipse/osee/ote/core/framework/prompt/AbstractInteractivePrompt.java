@@ -39,12 +39,12 @@ public abstract class AbstractInteractivePrompt<T> extends AbstractRemotePrompt 
          // run the prompt in the background
          executor.execute(new Runnable() {
 
+            @Override
             public void run() {
                try {
                   doPrompt();
                } catch (Exception e) {
-                  OseeLog.log(TestEnvironment.class,
-                        Level.SEVERE, "exception while performing prompt", e);
+                  OseeLog.log(TestEnvironment.class, Level.SEVERE, "exception while performing prompt", e);
                   // the thread that activated the prompt will be waiting on the script object's notifyAll() to
                   // be called. If an exception occurs this may not happen so we should do it here
                   endPrompt(null, new Exception("exception while performing prompt", e));

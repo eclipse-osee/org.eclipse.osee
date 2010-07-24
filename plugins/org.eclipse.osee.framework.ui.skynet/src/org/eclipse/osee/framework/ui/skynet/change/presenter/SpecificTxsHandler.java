@@ -66,9 +66,9 @@ public final class SpecificTxsHandler implements IChangeReportUiHandler {
       TransactionDelta txDelta = changeUiData.getTxDelta();
       NumberFormat formatter = NumberFormat.getInstance();
       return String.format("Shows changes made to [<b>%s</b>] between transactions [<b>%s</b>] and [<b>%s</b>].",
-            AXml.textToXml(txDelta.getStartTx().getBranch().getName()),
-            AXml.textToXml(formatter.format(txDelta.getStartTx().getId())),
-            AXml.textToXml(formatter.format(txDelta.getEndTx().getId())));
+         AXml.textToXml(txDelta.getStartTx().getBranch().getName()),
+         AXml.textToXml(formatter.format(txDelta.getStartTx().getId())),
+         AXml.textToXml(formatter.format(txDelta.getEndTx().getId())));
    }
 
    @Override

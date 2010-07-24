@@ -19,10 +19,10 @@ import java.rmi.RemoteException;
 
 public class RemotePrintStream extends PrintStream {
 
-   private IRemotePrintTarget target;
-   private PipedInputStream pis;
-   private StringWriter writer;
-   private byte[] buffer;
+   private final IRemotePrintTarget target;
+   private final PipedInputStream pis;
+   private final StringWriter writer;
+   private final byte[] buffer;
 
    public RemotePrintStream(PipedOutputStream os, IRemotePrintTarget target) throws IOException {
       super(os, true);
@@ -39,7 +39,9 @@ public class RemotePrintStream extends PrintStream {
       try {
          read = pis.available();
          do {
-            if (read > 2048) read = 2048;
+            if (read > 2048) {
+               read = 2048;
+            }
             int readbytes = pis.read(buffer, 0, read);
             writer.append(new String(buffer, 0, readbytes));
             read = pis.available();

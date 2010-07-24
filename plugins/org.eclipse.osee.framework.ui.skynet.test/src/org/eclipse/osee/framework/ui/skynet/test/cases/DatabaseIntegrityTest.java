@@ -50,11 +50,11 @@ public class DatabaseIntegrityTest {
          operation.setFixOperationEnabled(false);
          Operations.executeWork(operation, new NullProgressMonitor(), -1);
          assertEquals(String.format("Error [%s]: [%s]", operation.getName(), operation.getStatus().getMessage()),
-               IStatus.OK, operation.getStatus().getSeverity());
+            IStatus.OK, operation.getStatus().getSeverity());
 
          int totalItemsToFix = operation.getItemsToFixCount();
          assertEquals(String.format("Error [%s]: found [%s] items", operation.getName(), totalItemsToFix), 0,
-               totalItemsToFix);
+            totalItemsToFix);
       } catch (Exception ex) {
          assertFalse(ex.getLocalizedMessage(), false);
       }

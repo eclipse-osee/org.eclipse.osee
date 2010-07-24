@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.jface.window.Window;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
@@ -45,7 +46,9 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 public class GoalArtifact extends StateMachineArtifact {
 
    public static enum GoalState {
-      InWork, Completed, Cancelled
+      InWork,
+      Completed,
+      Cancelled
    };
 
    public GoalArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
@@ -136,7 +139,9 @@ public class GoalArtifact extends StateMachineArtifact {
       if (artifact instanceof GoalArtifact) {
          return "";
       }
-      if (!isHasGoal(artifact)) return "";
+      if (!isHasGoal(artifact)) {
+         return "";
+      }
       Collection<Artifact> goals = GoalArtifact.getGoals(artifact, false);
       if (goals.size() > 1) {
          List<Artifact> goalsSorted = new ArrayList<Artifact>(goals);
@@ -153,7 +158,9 @@ public class GoalArtifact extends StateMachineArtifact {
 
    public static String getGoalOrder(GoalArtifact goalArtifact, Artifact member) throws OseeCoreException {
       List<Artifact> members = goalArtifact.getMembers();
-      if (!members.contains(member)) return "";
+      if (!members.contains(member)) {
+         return "";
+      }
       try {
          return String.valueOf(members.indexOf(member) + 1);
       } catch (Exception ex) {
@@ -163,13 +170,13 @@ public class GoalArtifact extends StateMachineArtifact {
 
    public static GoalArtifact createGoal(String title) throws OseeCoreException {
       GoalArtifact goalArt =
-            (GoalArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Goal, AtsUtil.getAtsBranch());
+         (GoalArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Goal, AtsUtil.getAtsBranch());
       goalArt.setName(title);
       goalArt.getLog().addLog(LogType.Originated, "", "");
 
       // Initialize state machine
       goalArt.getStateMgr().initializeStateMachine(GoalState.InWork.name(),
-            Collections.singleton(UserManager.getUser()));
+         Collections.singleton(UserManager.getUser()));
       goalArt.getLog().addLog(LogType.StateEntered, GoalState.InWork.name(), "");
       return goalArt;
    }
@@ -222,15 +229,15 @@ public class GoalArtifact extends StateMachineArtifact {
       List<Artifact> members = goalArtifact.getMembers();
       String currIndexStr = getGoalOrder(goalArtifact, artifact);
       EntryDialog ed =
-            new EntryDialog(
-                  "Change Goal Order",
-                  String.format(
-                        "Goal: %s\n\nCurrent Order: %s\n\nEnter New Order Number from 1..%d or %d for last\n\nNote: Goal will be placed before number entered.",
-                        goalArtifact, currIndexStr, members.size(), members.size() + 1));
+         new EntryDialog(
+            "Change Goal Order",
+            String.format(
+               "Goal: %s\n\nCurrent Order: %s\n\nEnter New Order Number from 1..%d or %d for last\n\nNote: Goal will be placed before number entered.",
+               goalArtifact, currIndexStr, members.size(), members.size() + 1));
       ed.setNumberFormat(NumberFormat.getIntegerInstance());
 
       int result = ed.open();
-      if (result == EntryDialog.OK) {
+      if (result == Window.OK) {
          String newIndexStr = ed.getEntry();
          Integer enteredIndex = new Integer(newIndexStr);
          boolean insertLast = enteredIndex == members.size() + 1;

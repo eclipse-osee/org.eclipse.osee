@@ -23,14 +23,17 @@ public abstract class SimpleEnum {
       this.name = name;
    }
 
+   @Override
    public final String toString() {
       return name;
    }
 
+   @Override
    public final boolean equals(Object obj) {
       return super.equals(obj);
    }
 
+   @Override
    public final int hashCode() {
       return value;
    }

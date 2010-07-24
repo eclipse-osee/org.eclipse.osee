@@ -15,9 +15,8 @@ import org.xml.sax.Attributes;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
-public class OfpLoggingInfo extends ElementHandlers{
+public class OfpLoggingInfo extends ElementHandlers {
 
    /**
     * @param name

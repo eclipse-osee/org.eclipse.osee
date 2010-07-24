@@ -34,7 +34,7 @@ public class GlobalMenuPermissions {
    /**
     * Return permission set. This is a one-shot deal at the time of instantiation. Permissions are not kept up to date
     * with changes to getSelectedArtifacts in given globalMenuHelper. Must be called again to get refreshed permissions.
-    *
+    * 
     * @param globalMenuHelper
     */
    public GlobalMenuPermissions(IGlobalMenuHelper globalMenuHelper) throws OseeCoreException {
@@ -43,7 +43,7 @@ public class GlobalMenuPermissions {
 
    /**
     * Return permission set for given artifact.
-    *
+    * 
     * @param artifact
     */
    public GlobalMenuPermissions(Artifact artifact) throws OseeCoreException {
@@ -52,7 +52,7 @@ public class GlobalMenuPermissions {
 
    /**
     * Return permission set for given artifacts.
-    *
+    * 
     * @param artifacts
     */
    public GlobalMenuPermissions(Collection<Artifact> artifacts) throws OseeCoreException {
@@ -67,7 +67,7 @@ public class GlobalMenuPermissions {
       for (Artifact objectArtifact : artifacts) {
 
          writePermission &=
-               AccessControlManager.hasPermission(objectArtifact, PermissionEnum.WRITE) && objectArtifact.getBranch().isEditable();
+            AccessControlManager.hasPermission(objectArtifact, PermissionEnum.WRITE) && objectArtifact.getBranch().isEditable();
          readPermission &= AccessControlManager.hasPermission(objectArtifact, PermissionEnum.READ);
          fullAccess &= AccessControlManager.hasPermission(objectArtifact, PermissionEnum.FULLACCESS);
          isLocked |= AccessControlManager.hasLock(objectArtifact);

@@ -28,6 +28,6 @@ public class WorkFlowDefinitionFactory {
          }
       }
       throw new OseeArgumentException(
-            "No WorkFlowDefinition found for artifact " + artifact.getArtifactTypeName() + " - " + artifact.getGuid());
+         "No WorkFlowDefinition found for artifact " + artifact.getArtifactTypeName() + " - " + artifact.getGuid());
    }
 }

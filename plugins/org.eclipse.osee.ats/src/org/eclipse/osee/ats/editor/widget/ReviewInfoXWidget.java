@@ -103,18 +103,21 @@ public class ReviewInfoXWidget extends XLabelValueBase {
          Hyperlink link = toolkit.createHyperlink(destroyableComposite, "[Add Decision Review]", SWT.NONE);
          link.addHyperlinkListener(new IHyperlinkListener() {
 
+            @Override
             public void linkEntered(HyperlinkEvent e) {
             }
 
+            @Override
             public void linkExited(HyperlinkEvent e) {
             }
 
+            @Override
             public void linkActivated(HyperlinkEvent e) {
                try {
                   StateListAndTitleDialog dialog =
-                        new StateListAndTitleDialog("Create Decision Review",
-                              "Select state to that review will be associated with.",
-                              teamArt.getWorkFlowDefinition().getPageNames());
+                     new StateListAndTitleDialog("Create Decision Review",
+                        "Select state to that review will be associated with.",
+                        teamArt.getWorkFlowDefinition().getPageNames());
                   dialog.setInitialSelections(new Object[] {forStateName});
                   if (dialog.open() == 0) {
                      if (dialog.getReviewTitle() == null || dialog.getReviewTitle().equals("")) {
@@ -122,8 +125,8 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                         return;
                      }
                      NewDecisionReviewJob job =
-                           new NewDecisionReviewJob(teamArt, null, dialog.getReviewTitle(), dialog.getSelectedState(),
-                                 null, ReviewManager.getDefaultDecisionReviewOptions(), null);
+                        new NewDecisionReviewJob(teamArt, null, dialog.getReviewTitle(), dialog.getSelectedState(),
+                           null, ReviewManager.getDefaultDecisionReviewOptions(), null);
                      job.setUser(true);
                      job.setPriority(Job.LONG);
                      job.schedule();
@@ -137,18 +140,21 @@ public class ReviewInfoXWidget extends XLabelValueBase {
          link = toolkit.createHyperlink(destroyableComposite, "[Add Peer to Peer Review]", SWT.NONE);
          link.addHyperlinkListener(new IHyperlinkListener() {
 
+            @Override
             public void linkEntered(HyperlinkEvent e) {
             }
 
+            @Override
             public void linkExited(HyperlinkEvent e) {
             }
 
+            @Override
             public void linkActivated(HyperlinkEvent e) {
                try {
                   StateListAndTitleDialog dialog =
-                        new StateListAndTitleDialog("Add Peer to Peer Review",
-                              "Select state to that review will be associated with.",
-                              teamArt.getWorkFlowDefinition().getPageNames());
+                     new StateListAndTitleDialog("Add Peer to Peer Review",
+                        "Select state to that review will be associated with.",
+                        teamArt.getWorkFlowDefinition().getPageNames());
                   dialog.setInitialSelections(new Object[] {forStateName});
                   dialog.setReviewTitle(PeerToPeerReviewArtifact.getDefaultReviewTitle(teamArt));
                   if (dialog.open() == 0) {
@@ -157,7 +163,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                         return;
                      }
                      NewPeerToPeerReviewJob job =
-                           new NewPeerToPeerReviewJob(teamArt, dialog.getReviewTitle(), dialog.getSelectedState());
+                        new NewPeerToPeerReviewJob(teamArt, dialog.getReviewTitle(), dialog.getSelectedState());
                      job.setUser(true);
                      job.setPriority(Job.LONG);
                      job.schedule();
@@ -205,7 +211,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
          html.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Review Type", "Title", "ID"}));
          for (ReviewSMArtifact art : ReviewManager.getReviews(teamArt, forStateName)) {
             html.append(AHTML.addRowMultiColumnTable(new String[] {art.getArtifactTypeName(), art.getName(),
-                  art.getHumanReadableId()}));
+               art.getHumanReadableId()}));
          }
          html.append(AHTML.endBorderTable());
       } catch (Exception ex) {
@@ -232,17 +238,17 @@ public class ReviewInfoXWidget extends XLabelValueBase {
          IMessageManager messageManager = managedForm.getMessageManager();
          if (messageManager != null) {
             messageManager.addMessage(
-                  "validation.error",
-                  "\"" + forStateName + "\" State has a blocking [" + revArt.getArtifactTypeName() + "] that must be completed.",
-                  null, IMessageProvider.ERROR, strLabel);
+               "validation.error",
+               "\"" + forStateName + "\" State has a blocking [" + revArt.getArtifactTypeName() + "] that must be completed.",
+               null, IMessageProvider.ERROR, strLabel);
          }
       } else if (!revArt.isCancelledOrCompleted()) {
          strLabel.setText("Open [" + revArt.getArtifactTypeName() + "] exists: ");
          IMessageManager messageManager = managedForm.getMessageManager();
          if (messageManager != null) {
             messageManager.addMessage("validation.error",
-                  "\"" + forStateName + "\" State has an open [" + revArt.getArtifactTypeName() + "].", null,
-                  IMessageProvider.WARNING, strLabel);
+               "\"" + forStateName + "\" State has an open [" + revArt.getArtifactTypeName() + "].", null,
+               IMessageProvider.WARNING, strLabel);
          }
       } else {
          strLabel.setText(revArt.getStateMgr().getCurrentStateName() + " [" + revArt.getArtifactTypeName() + "] exists: ");
@@ -250,9 +256,10 @@ public class ReviewInfoXWidget extends XLabelValueBase {
 
       String str = "[" + revArt.getName() + "]";
       Hyperlink hyperLabel =
-            toolkit.createHyperlink(workComp, (str.length() > 300 ? Strings.truncate(str, 300) + "..." : str), SWT.NONE);
+         toolkit.createHyperlink(workComp, (str.length() > 300 ? Strings.truncate(str, 300) + "..." : str), SWT.NONE);
       hyperLabel.setToolTipText("Select to open review");
       hyperLabel.addListener(SWT.MouseUp, new Listener() {
+         @Override
          public void handleEvent(Event event) {
             SMAEditor.editArtifact(revArt);
          }
@@ -267,20 +274,20 @@ public class ReviewInfoXWidget extends XLabelValueBase {
             public void handleEvent(Event event) {
                if (event.button == 3) {
                   if (!MessageDialog.openConfirm(Displays.getActiveShell(), "Auto Complete Reviews",
-                        "ATS Admin\n\nAuto Complete Reviews?")) {
+                     "ATS Admin\n\nAuto Complete Reviews?")) {
                      return;
                   }
                   try {
                      SkynetTransaction transaction =
-                           new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Auto Complete Reviews");
+                        new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Auto Complete Reviews");
                      for (ReviewSMArtifact revArt : ReviewManager.getReviewsFromCurrentState(teamArt)) {
                         if (!revArt.isCancelledOrCompleted()) {
                            if (revArt.getStateMgr().isUnAssigned()) {
                               revArt.getStateMgr().setAssignee(UserManager.getUser());
                            }
                            Result result =
-                                 revArt.transitionToCompleted("", transaction,
-                                       TransitionOption.OverrideTransitionValidityCheck, TransitionOption.Persist);
+                              revArt.transitionToCompleted("", transaction,
+                                 TransitionOption.OverrideTransitionValidityCheck, TransitionOption.Persist);
                            if (result.isFalse()) {
                               result.popup();
                               return;

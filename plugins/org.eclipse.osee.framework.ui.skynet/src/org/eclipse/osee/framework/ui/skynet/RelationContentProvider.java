@@ -43,6 +43,7 @@ public class RelationContentProvider implements ITreeContentProvider {
    /*
     * @see IContentProvider#dispose()
     */
+   @Override
    public void dispose() {
    }
 
@@ -59,6 +60,7 @@ public class RelationContentProvider implements ITreeContentProvider {
     * @param newInput the new input element, or <code>null</code> if the viewer does not have an input
     * @see IContentProvider#inputChanged(Viewer, Object, Object)
     */
+   @Override
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
       this.artifact = (ArtifactRoot) newInput;
    }
@@ -70,12 +72,13 @@ public class RelationContentProvider implements ITreeContentProvider {
     * 
     * @see ITreeContentProvider#getChildren(Object)
     */
+   @Override
    public Object[] getChildren(Object parentElement) {
       try {
          if (parentElement instanceof ArtifactRoot) {
             Artifact artifact = ((ArtifactRoot) parentElement).getArtifact();
             List<RelationType> relationTypes =
-                  RelationTypeManager.getValidTypes(artifact.getArtifactType(), artifact.getBranch());
+               RelationTypeManager.getValidTypes(artifact.getArtifactType(), artifact.getBranch());
             for (RelationType type : relationTypes) {
                childToParentMap.put(type, parentElement);
             }
@@ -85,16 +88,16 @@ public class RelationContentProvider implements ITreeContentProvider {
          } else if (parentElement instanceof RelationType) {
             RelationType relationType = (RelationType) parentElement;
             int sideAMax =
-                  RelationTypeManager.getRelationSideMax(relationType, artifact.getArtifact().getArtifactType(),
-                        RelationSide.SIDE_A);
+               RelationTypeManager.getRelationSideMax(relationType, artifact.getArtifact().getArtifactType(),
+                  RelationSide.SIDE_A);
             int sideBMax =
-                  RelationTypeManager.getRelationSideMax(relationType, artifact.getArtifact().getArtifactType(),
-                        RelationSide.SIDE_B);
+               RelationTypeManager.getRelationSideMax(relationType, artifact.getArtifact().getArtifactType(),
+                  RelationSide.SIDE_B);
 
             RelationTypeSideSorter sideA =
-                  RelationManager.createTypeSideSorter(artifact.getArtifact(), relationType, RelationSide.SIDE_A);
+               RelationManager.createTypeSideSorter(artifact.getArtifact(), relationType, RelationSide.SIDE_A);
             RelationTypeSideSorter sideB =
-                  RelationManager.createTypeSideSorter(artifact.getArtifact(), relationType, RelationSide.SIDE_B);
+               RelationManager.createTypeSideSorter(artifact.getArtifact(), relationType, RelationSide.SIDE_B);
             boolean onSideA = sideBMax > 0;
             boolean onSideB = sideAMax > 0;
 
@@ -116,12 +119,12 @@ public class RelationContentProvider implements ITreeContentProvider {
                Artifact sideArtifact = artifacts.get(i).getFullArtifact();
                if (relationSorter.getSide().isSideA()) {
                   wrapper[i] =
-                        new WrapperForRelationLink(relationSorter.getRelationType(), sideArtifact, sideArtifact,
-                              relationSorter.getArtifact());
+                     new WrapperForRelationLink(relationSorter.getRelationType(), sideArtifact, sideArtifact,
+                        relationSorter.getArtifact());
                } else {
                   wrapper[i] =
-                        new WrapperForRelationLink(relationSorter.getRelationType(), sideArtifact,
-                              relationSorter.getArtifact(), sideArtifact);
+                     new WrapperForRelationLink(relationSorter.getRelationType(), sideArtifact,
+                        relationSorter.getArtifact(), sideArtifact);
                }
                childToParentMap.put(wrapper[i], parentElement);
             }
@@ -134,6 +137,7 @@ public class RelationContentProvider implements ITreeContentProvider {
       return EMPTY_ARRAY;
    }
 
+   @Override
    public Object getParent(Object element) {
       return childToParentMap.get(element);
    }
@@ -145,6 +149,7 @@ public class RelationContentProvider implements ITreeContentProvider {
     * 
     * @see ITreeContentProvider#hasChildren(Object)
     */
+   @Override
    public boolean hasChildren(Object element) {
       if (element instanceof RelationTypeSideSorter) {
          try {
@@ -170,6 +175,7 @@ public class RelationContentProvider implements ITreeContentProvider {
     * 
     * @see IStructuredContentProvider#getElements(Object)
     */
+   @Override
    public Object[] getElements(Object inputElement) {
       return getChildren(inputElement);
    }

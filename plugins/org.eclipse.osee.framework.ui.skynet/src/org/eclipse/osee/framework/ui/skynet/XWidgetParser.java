@@ -71,61 +71,62 @@ public class XWidgetParser {
       element.setAttribute("xwidgetType", data.getXWidgetName());
       element.setAttribute("defaultValue", data.getDefaultValue());
       for (XOption xOption : data.getXOptionHandler().getXOptions()) {
-         if (xOption == XOption.ALIGN_CENTER)
+         if (xOption == XOption.ALIGN_CENTER) {
             element.setAttribute("align", "Center");
-         else if (xOption == XOption.ALIGN_LEFT)
+         } else if (xOption == XOption.ALIGN_LEFT) {
             element.setAttribute("align", "Left");
-         else if (xOption == XOption.ALIGN_RIGHT)
+         } else if (xOption == XOption.ALIGN_RIGHT) {
             element.setAttribute("align", "Right");
-         else if (xOption == XOption.EDITABLE)
+         } else if (xOption == XOption.EDITABLE) {
             element.setAttribute("editable", "true");
-         else if (xOption == XOption.BEGIN_COMPOSITE_4)
+         } else if (xOption == XOption.BEGIN_COMPOSITE_4) {
             element.setAttribute("beginComposite", "4");
-         else if (xOption == XOption.BEGIN_COMPOSITE_6)
+         } else if (xOption == XOption.BEGIN_COMPOSITE_6) {
             element.setAttribute("beginComposite", "6");
-         else if (xOption == XOption.BEGIN_COMPOSITE_8)
+         } else if (xOption == XOption.BEGIN_COMPOSITE_8) {
             element.setAttribute("beginComposite", "8");
-         else if (xOption == XOption.BEGIN_COMPOSITE_10)
+         } else if (xOption == XOption.BEGIN_COMPOSITE_10) {
             element.setAttribute("beginComposite", "10");
-         else if (xOption == XOption.BEGIN_GROUP_COMPOSITE_4)
+         } else if (xOption == XOption.BEGIN_GROUP_COMPOSITE_4) {
             element.setAttribute("beginGroupComposite", "4");
-         else if (xOption == XOption.BEGIN_GROUP_COMPOSITE_6)
+         } else if (xOption == XOption.BEGIN_GROUP_COMPOSITE_6) {
             element.setAttribute("beginGroupComposite", "6");
-         else if (xOption == XOption.BEGIN_GROUP_COMPOSITE_8)
+         } else if (xOption == XOption.BEGIN_GROUP_COMPOSITE_8) {
             element.setAttribute("beginGroupComposite", "8");
-         else if (xOption == XOption.BEGIN_GROUP_COMPOSITE_10)
+         } else if (xOption == XOption.BEGIN_GROUP_COMPOSITE_10) {
             element.setAttribute("beginGroupComposite", "10");
-         else if (xOption == XOption.END_COMPOSITE)
+         } else if (xOption == XOption.END_COMPOSITE) {
             element.setAttribute("endComposite", "true");
-         else if (xOption == XOption.NOT_EDITABLE)
+         } else if (xOption == XOption.NOT_EDITABLE) {
             element.setAttribute("editable", "false");
-         else if (xOption == XOption.ENABLED)
+         } else if (xOption == XOption.ENABLED) {
             element.setAttribute("enabled", "true");
-         else if (xOption == XOption.NOT_ENABLED)
+         } else if (xOption == XOption.NOT_ENABLED) {
             element.setAttribute("enabled", "false");
-         else if (xOption == XOption.REQUIRED)
+         } else if (xOption == XOption.REQUIRED) {
             element.setAttribute("required", "true");
-         else if (xOption == XOption.NOT_REQUIRED)
+         } else if (xOption == XOption.NOT_REQUIRED) {
             element.setAttribute("required", "false");
-         else if (xOption == XOption.FILL_HORIZONTALLY)
+         } else if (xOption == XOption.FILL_HORIZONTALLY) {
             element.setAttribute("fill", "Horizontally");
-         else if (xOption == XOption.FILL_VERTICALLY)
+         } else if (xOption == XOption.FILL_VERTICALLY) {
             element.setAttribute("fill", "Vertically");
-         else if (xOption == XOption.HORIZONTAL_LABEL)
+         } else if (xOption == XOption.HORIZONTAL_LABEL) {
             element.setAttribute("horizontalLabel", "true");
-         else if (xOption == XOption.VERTICAL_LABEL)
+         } else if (xOption == XOption.VERTICAL_LABEL) {
             element.setAttribute("horizontalLabel", "false");
-         else if (xOption == XOption.LABEL_AFTER)
+         } else if (xOption == XOption.LABEL_AFTER) {
             element.setAttribute("labelAfter", "true");
-         else if (xOption == XOption.LABEL_BEFORE)
+         } else if (xOption == XOption.LABEL_BEFORE) {
             element.setAttribute("labelAfter", "false");
-         else if (xOption == XOption.MULTI_SELECT)
+         } else if (xOption == XOption.MULTI_SELECT) {
             element.setAttribute("multiSelect", "true");
-         else if (xOption == XOption.NONE)
+         } else if (xOption == XOption.NONE) {
             // do nothing
             ;
-         else
+         } else {
             throw new OseeArgumentException("Unhandled xOption \"" + xOption + "\"");
+         }
       }
       doc.appendChild(element);
       return Jaxp.getDocumentXml(doc);
@@ -141,71 +142,77 @@ public class XWidgetParser {
          String nodeName = node.getNodeName();
          if (nodeName.equals("displayName")) {
             dynamicXWidgetLayoutData.setName(node.getNodeValue());
-            if (dynamicXWidgetLayoutData.getStorageName().equals("")) dynamicXWidgetLayoutData.setStorageName(node.getNodeValue());
+            if (dynamicXWidgetLayoutData.getStorageName().equals("")) {
+               dynamicXWidgetLayoutData.setStorageName(node.getNodeValue());
+            }
          } else if (nodeName.equals("storageName")) {
             dynamicXWidgetLayoutData.setStorageName(node.getNodeValue());
-            if (dynamicXWidgetLayoutData.getName().equals("")) dynamicXWidgetLayoutData.setName(node.getNodeValue());
-         } else if (nodeName.equals("toolTip"))
+            if (dynamicXWidgetLayoutData.getName().equals("")) {
+               dynamicXWidgetLayoutData.setName(node.getNodeValue());
+            }
+         } else if (nodeName.equals("toolTip")) {
             dynamicXWidgetLayoutData.setToolTip(node.getNodeValue());
-         else if (nodeName.equals("id"))
+         } else if (nodeName.equals("id")) {
             dynamicXWidgetLayoutData.setId(node.getNodeValue());
-         else if (nodeName.equals("horizontalLabel"))
+         } else if (nodeName.equals("horizontalLabel")) {
             dynamicXWidgetLayoutData.getXOptionHandler().add(
-                  Boolean.parseBoolean((node.getNodeValue())) ? XOption.HORIZONTAL_LABEL : XOption.NONE);
-         else if (nodeName.equals("labelAfter"))
+               Boolean.parseBoolean(node.getNodeValue()) ? XOption.HORIZONTAL_LABEL : XOption.NONE);
+         } else if (nodeName.equals("labelAfter")) {
             dynamicXWidgetLayoutData.getXOptionHandler().add(
-                  Boolean.parseBoolean((node.getNodeValue())) ? XOption.LABEL_AFTER : XOption.NONE);
-         else if (nodeName.equals("required"))
+               Boolean.parseBoolean(node.getNodeValue()) ? XOption.LABEL_AFTER : XOption.NONE);
+         } else if (nodeName.equals("required")) {
             dynamicXWidgetLayoutData.getXOptionHandler().add(
-                  Boolean.parseBoolean(node.getNodeValue()) ? XOption.REQUIRED : XOption.NONE);
-         else if (nodeName.equals("sorted"))
+               Boolean.parseBoolean(node.getNodeValue()) ? XOption.REQUIRED : XOption.NONE);
+         } else if (nodeName.equals("sorted")) {
             dynamicXWidgetLayoutData.getXOptionHandler().add(
-                  Boolean.parseBoolean(node.getNodeValue()) ? XOption.SORTED : XOption.NONE);
-         else if (nodeName.equals("beginComposite"))
+               Boolean.parseBoolean(node.getNodeValue()) ? XOption.SORTED : XOption.NONE);
+         } else if (nodeName.equals("beginComposite")) {
             dynamicXWidgetLayoutData.setBeginComposite(Integer.parseInt(node.getNodeValue()));
-         else if (nodeName.equals("beginGroupComposite"))
+         } else if (nodeName.equals("beginGroupComposite")) {
             dynamicXWidgetLayoutData.setBeginGroupComposite(Integer.parseInt(node.getNodeValue()));
-         else if (nodeName.equals("endGroupComposite"))
-            dynamicXWidgetLayoutData.setEndGroupComposite(Boolean.parseBoolean((node.getNodeValue())));
-         else if (nodeName.equals("endComposite"))
-            dynamicXWidgetLayoutData.setEndComposite(Boolean.parseBoolean((node.getNodeValue())));
-         else if (nodeName.equals("editable"))
+         } else if (nodeName.equals("endGroupComposite")) {
+            dynamicXWidgetLayoutData.setEndGroupComposite(Boolean.parseBoolean(node.getNodeValue()));
+         } else if (nodeName.equals("endComposite")) {
+            dynamicXWidgetLayoutData.setEndComposite(Boolean.parseBoolean(node.getNodeValue()));
+         } else if (nodeName.equals("editable")) {
             dynamicXWidgetLayoutData.getXOptionHandler().add(
-                  Boolean.parseBoolean(node.getNodeValue()) ? XOption.EDITABLE : XOption.NONE);
-         else if (nodeName.equals("xwidgetType")) {
+               Boolean.parseBoolean(node.getNodeValue()) ? XOption.EDITABLE : XOption.NONE);
+         } else if (nodeName.equals("xwidgetType")) {
             dynamicXWidgetLayoutData.setXWidgetName(node.getNodeValue());
          } else if (nodeName.equals("multiSelect")) {
             dynamicXWidgetLayoutData.getXOptionHandler().add(
-                  Boolean.parseBoolean(node.getNodeValue()) ? XOption.MULTI_SELECT : XOption.NONE);
+               Boolean.parseBoolean(node.getNodeValue()) ? XOption.MULTI_SELECT : XOption.NONE);
          } else if (nodeName.equals("fill")) {
             String value = node.getNodeValue();
-            if (value.equalsIgnoreCase("Horizontally"))
+            if (value.equalsIgnoreCase("Horizontally")) {
                dynamicXWidgetLayoutData.getXOptionHandler().add(XOption.FILL_HORIZONTALLY);
-            else if (value.equalsIgnoreCase("Vertically"))
+            } else if (value.equalsIgnoreCase("Vertically")) {
                dynamicXWidgetLayoutData.getXOptionHandler().add(XOption.FILL_VERTICALLY);
-            else
+            } else {
                OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, new IllegalArgumentException(
-                     "Unknown Fill Value \"" + value + "\""));
-         } else if (nodeName.equals("height"))
+                  "Unknown Fill Value \"" + value + "\""));
+            }
+         } else if (nodeName.equals("height")) {
             dynamicXWidgetLayoutData.setHeight(Integer.parseInt(node.getNodeValue()));
-         else if (nodeName.equals("align")) {
+         } else if (nodeName.equals("align")) {
             String value = node.getNodeValue();
-            if (value.equalsIgnoreCase("Left"))
+            if (value.equalsIgnoreCase("Left")) {
                dynamicXWidgetLayoutData.getXOptionHandler().add(XOption.ALIGN_LEFT);
-            else if (value.equalsIgnoreCase("Right"))
+            } else if (value.equalsIgnoreCase("Right")) {
                dynamicXWidgetLayoutData.getXOptionHandler().add(XOption.ALIGN_RIGHT);
-            else if (value.equalsIgnoreCase("Center"))
+            } else if (value.equalsIgnoreCase("Center")) {
                dynamicXWidgetLayoutData.getXOptionHandler().add(XOption.ALIGN_CENTER);
-            else
+            } else {
                OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, new IllegalArgumentException(
-                     "Unknown Align Value \"" + value + "\""));
-         } else if (nodeName.equals("defaultValue"))
+                  "Unknown Align Value \"" + value + "\""));
+            }
+         } else if (nodeName.equals("defaultValue")) {
             dynamicXWidgetLayoutData.setDefaultValue(node.getNodeValue());
-         else if (nodeName.equals("keyedBranch"))
+         } else if (nodeName.equals("keyedBranch")) {
             dynamicXWidgetLayoutData.setKeyedBranchName(node.getNodeValue());
-         else {
+         } else {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, new OseeArgumentException(
-                  "Unsupported XWidget attribute \"" + nodeName + "\""));
+               "Unsupported XWidget attribute \"" + nodeName + "\""));
          }
       }
 

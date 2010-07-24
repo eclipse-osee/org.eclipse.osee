@@ -31,14 +31,14 @@ public class Topic extends DomainEntity implements TopicDescription {
 
    private int count; // Keeps track of the number of times this Topic was "created"
    private InconsistentTopicStatus inconsistentTopicStatus;
-   private Collection<DataReader> dataReaders;
-   private Collection<DataWriter> dataWriters;
+   private final Collection<DataReader> dataReaders;
+   private final Collection<DataWriter> dataWriters;
 
    // Local variables to implement the TopicDescription interface
-   private DomainParticipant participant;
-   private TypeSignature typeSignature;
-   private String name;
-   private String namespace;
+   private final DomainParticipant participant;
+   private final TypeSignature typeSignature;
+   private final String name;
+   private final String namespace;
 
    /**
     * Creates a topic with all of the necessary information. This constructor is only visible to the DDS system,
@@ -64,6 +64,7 @@ public class Topic extends DomainEntity implements TopicDescription {
    /**
     * @return Returns the name.
     */
+   @Override
    public String getName() {
       return name;
    }
@@ -71,6 +72,7 @@ public class Topic extends DomainEntity implements TopicDescription {
    /**
     * @return Returns the participant.
     */
+   @Override
    public DomainParticipant getParticipant() {
       return participant;
    }
@@ -78,6 +80,7 @@ public class Topic extends DomainEntity implements TopicDescription {
    /**
     * @return Returns the typeName.
     */
+   @Override
    public String getTypeName() {
       return typeSignature.getTypeName();
    }
@@ -150,14 +153,14 @@ public class Topic extends DomainEntity implements TopicDescription {
     * @return true if this Topic is being used by a DataReader
     */
    boolean hasDataReaders() {
-      return (!dataReaders.isEmpty());
+      return !dataReaders.isEmpty();
    }
 
    /**
     * @return true if this Topic is being used by a DataWriter
     */
    boolean hasDataWriters() {
-      return (!dataWriters.isEmpty());
+      return !dataWriters.isEmpty();
    }
 
    /**
@@ -198,6 +201,7 @@ public class Topic extends DomainEntity implements TopicDescription {
       dataWriters.remove(writer);
    }
 
+   @Override
    public boolean equals(Object obj) {
       if (obj instanceof Topic) {
          Topic topic = (Topic) obj;
@@ -211,6 +215,7 @@ public class Topic extends DomainEntity implements TopicDescription {
       return name.hashCode() ^ namespace.hashCode();
    }
 
+   @Override
    public String getNamespace() {
       return this.namespace;
    }

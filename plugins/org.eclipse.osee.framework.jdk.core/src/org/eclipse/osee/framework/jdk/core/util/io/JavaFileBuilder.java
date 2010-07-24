@@ -31,11 +31,11 @@ public class JavaFileBuilder {
    protected String className;
    protected String classJavaDoc;
    protected String extendsClass;
-   private ArrayList<String> interfaces;
-   private List<Field> fields;
-   private List<String> imports;
-   private List<String> methods;
-   private List<EnumRecord> enumFields;
+   private final ArrayList<String> interfaces;
+   private final List<Field> fields;
+   private final List<String> imports;
+   private final List<String> methods;
+   private final List<EnumRecord> enumFields;
 
    /**
     * Create a JavaFileBuilder for a class.
@@ -116,7 +116,9 @@ public class JavaFileBuilder {
     * @throws FileNotFoundException
     */
    public void write(File directory) throws FileNotFoundException {
-      if (!directory.isDirectory()) throw new IllegalArgumentException("Supplied file is not a directory");
+      if (!directory.isDirectory()) {
+         throw new IllegalArgumentException("Supplied file is not a directory");
+      }
 
       PrintWriter out = new PrintWriter(new File(directory, className + ".java"));
 
@@ -126,12 +128,12 @@ public class JavaFileBuilder {
    }
 
    public static class Field {
-      private boolean isPublic;
-      private boolean isFinal;
-      private boolean isStatic;
-      private String type;
-      private String name;
-      private String initialValue;
+      private final boolean isPublic;
+      private final boolean isFinal;
+      private final boolean isStatic;
+      private final String type;
+      private final String name;
+      private final String initialValue;
 
       public Field(String type, String name, boolean isFinal) {
          this(type, name, false, false, isFinal);
@@ -161,9 +163,11 @@ public class JavaFileBuilder {
       @Override
       public String toString() {
          String declaration =
-               "\t" + ((isPublic) ? "public " : "private ") + ((isStatic) ? "static " : "") + ((isFinal) ? "final " : "") + type + " " + name;
+            "\t" + (isPublic ? "public " : "private ") + (isStatic ? "static " : "") + (isFinal ? "final " : "") + type + " " + name;
 
-         if (initialValue != null) declaration += " = " + initialValue;
+         if (initialValue != null) {
+            declaration += " = " + initialValue;
+         }
          return declaration + ";";
       }
 
@@ -233,12 +237,13 @@ public class JavaFileBuilder {
          string.append(" {\n");
          getEnumFields(string);
       } else {
-         string.append("public class " + className + ((extendsClass == null) ? "" : " extends " + extendsClass.trim()));
+         string.append("public class " + className + (extendsClass == null ? "" : " extends " + extendsClass.trim()));
          for (int i = 0; i < interfaces.size(); i++) {
-            if (i == 0)
+            if (i == 0) {
                string.append(" implements " + interfaces.get(i));
-            else
+            } else {
                string.append(", " + interfaces.get(i));
+            }
          }
          string.append(" {\n");
          getFields(string);
@@ -253,8 +258,9 @@ public class JavaFileBuilder {
    }
 
    protected void getFields(StringBuilder string) {
-      for (Field field : fields)
+      for (Field field : fields) {
          string.append(field.toString() + "\n");
+      }
    }
 
    protected void getEnumFields(StringBuilder string) {
@@ -262,17 +268,19 @@ public class JavaFileBuilder {
       while (enumFieldsIter.hasNext()) {
          EnumRecord eField = enumFieldsIter.next();
          string.append("\t" + eField);
-         if (!enumFieldsIter.hasNext())
+         if (!enumFieldsIter.hasNext()) {
             string.append(";\n\n");
-         else
+         } else {
             string.append(",\n");
+         }
       }
 
    }
 
    protected void getMethods(StringBuilder string) {
-      for (String method : methods)
+      for (String method : methods) {
          string.append(method + "\n");
+      }
    }
 
    private String stringToJavadoc(String string) {

@@ -60,14 +60,20 @@ public class MassEditTeamVersionItem extends XNavigateItemAction {
    }
 
    private TeamDefinitionArtifact getTeamDefinition() throws OseeCoreException {
-      if (selectedTeamDef != null) return selectedTeamDef;
-      if (teamDef != null) return teamDef;
+      if (selectedTeamDef != null) {
+         return selectedTeamDef;
+      }
+      if (teamDef != null) {
+         return teamDef;
+      }
       if (teamDefName != null && !teamDefName.equals("")) {
          try {
             TeamDefinitionArtifact teamDef =
-                  (TeamDefinitionArtifact) AtsCacheManager.getSoleArtifactByName(
-                        ArtifactTypeManager.getType(AtsArtifactTypes.TeamDefinition), teamDefName);
-            if (teamDef != null) return teamDef;
+               (TeamDefinitionArtifact) AtsCacheManager.getSoleArtifactByName(
+                  ArtifactTypeManager.getType(AtsArtifactTypes.TeamDefinition), teamDefName);
+            if (teamDef != null) {
+               return teamDef;
+            }
          } catch (ArtifactDoesNotExist ex) {
             // do nothing, going to get team below
          }
@@ -89,7 +95,9 @@ public class MassEditTeamVersionItem extends XNavigateItemAction {
    public void run(TableLoadOption... tableLoadOptions) {
       try {
          TeamDefinitionArtifact teamDef = getTeamDefinition();
-         if (teamDef == null) return;
+         if (teamDef == null) {
+            return;
+         }
          if (teamDef.getTeamDefinitionHoldingVersions() == null) {
             AWorkbench.popup("ERROR", "Team is not configured to use versions.");
             return;

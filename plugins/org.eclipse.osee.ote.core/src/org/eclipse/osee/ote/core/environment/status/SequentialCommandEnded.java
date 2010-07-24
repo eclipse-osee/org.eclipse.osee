@@ -27,6 +27,7 @@ public class SequentialCommandEnded implements IServiceStatusDataCommand, Serial
    public SequentialCommandEnded() {
    }
 
+   @Override
    public CommandDescription getDescription() {
       return description;
    }
@@ -40,6 +41,7 @@ public class SequentialCommandEnded implements IServiceStatusDataCommand, Serial
       this.status = status;
    }
 
+   @Override
    public void accept(IServiceStatusDataVisitor visitor) {
       if (visitor != null) {
          visitor.asSequentialCommandEnded(this);

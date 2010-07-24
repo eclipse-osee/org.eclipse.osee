@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.util;
 
+import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.swt.ExceptionComposite;
 import org.eclipse.swt.widgets.Composite;
 
@@ -40,10 +40,10 @@ public class DbConnectionExceptionComposite extends ExceptionComposite {
       //      } catch (Exception ex) {
       //         if (parent != null) new DbConnectionExceptionComposite(parent, ex);
       //      }
-      Result result = SkynetGuiPlugin.areOSEEServicesAvailable();
+      Result result = OseeUiActivator.areOSEEServicesAvailable();
       if (result.isFalse()) {
          new DbConnectionExceptionComposite(parent, new IllegalStateException(
-               "OSEE Service(s) Unavailable:\n\t" + result.getText().replaceAll("\n", "\n\t")));
+            "OSEE Service(s) Unavailable:\n\t" + result.getText().replaceAll("\n", "\n\t")));
       }
       return result.isTrue();
    }

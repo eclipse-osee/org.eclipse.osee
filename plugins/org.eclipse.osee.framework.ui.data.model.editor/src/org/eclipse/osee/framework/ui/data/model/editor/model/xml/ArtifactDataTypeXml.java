@@ -69,7 +69,9 @@ public class ArtifactDataTypeXml extends BaseXmlDataType<ArtifactDataType> {
    @Override
    protected void populateFromCDataElement(ArtifactDataType dataType, String tag, String text) throws XMLStreamException {
       super.populateFromCDataElement(dataType, tag, text);
-      if (IMAGE_DATA.equals(tag)) dataType.setImage(stringToImage(text));
+      if (IMAGE_DATA.equals(tag)) {
+         dataType.setImage(stringToImage(text));
+      }
    }
 
    @Override

@@ -15,9 +15,8 @@ import org.xml.sax.Attributes;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
-public class Expected extends ElementHandlers{
+public class Expected extends ElementHandlers {
 
    /**
     * @param name

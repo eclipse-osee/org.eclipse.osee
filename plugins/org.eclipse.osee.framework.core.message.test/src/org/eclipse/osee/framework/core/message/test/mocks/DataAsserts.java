@@ -187,7 +187,7 @@ public final class DataAsserts {
          Assert.assertEquals(expected.getDestinationBranchId(), actual.getDestinationBranchId());
          Assert.assertEquals(expected.getParentBranchId(), actual.getParentBranchId());
          Assert.assertEquals(expected.getPopulateBaseTxFromAddressingQueryId(),
-               actual.getPopulateBaseTxFromAddressingQueryId());
+            actual.getPopulateBaseTxFromAddressingQueryId());
          Assert.assertEquals(expected.getSourceTransactionId(), actual.getSourceTransactionId());
          Assert.assertEquals(expected.getBranchType(), actual.getBranchType());
       }

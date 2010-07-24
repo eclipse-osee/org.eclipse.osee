@@ -20,18 +20,24 @@ public abstract class AbstractRemoteSession implements IRemoteUserSession {
       this.user = user;
    }
 
+   @Override
    public OSEEPerson1_4 getUser() {
       return user;
    }
 
+   @Override
    public abstract String getAddress() throws RemoteException;
 
+   @Override
    public abstract byte[] getFile(String workspacePath) throws RemoteException;
 
+   @Override
    public abstract long getFileDate(String workspacePath) throws RemoteException;
 
+   @Override
    public abstract String getFileVersion(String workspacePath) throws RemoteException;
 
+   @Override
    public abstract boolean isAlive() throws RemoteException;
 
 }

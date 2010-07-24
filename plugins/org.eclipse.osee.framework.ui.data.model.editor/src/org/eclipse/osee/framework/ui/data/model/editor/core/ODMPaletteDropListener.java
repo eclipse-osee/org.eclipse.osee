@@ -23,6 +23,7 @@ public class ODMPaletteDropListener extends TemplateTransferDropTargetListener {
       super(viewer);
    }
 
+   @Override
    protected CreationFactory getFactory(Object template) {
       return (CreationFactory) template;
    }

@@ -29,11 +29,11 @@ import org.eclipse.osee.framework.database.core.IOseeStatement;
 public class DatabaseOseeConflictAccessor {
 
    private static final String INSERT_CONFLICT =
-         "INSERT INTO osee_conflict (conflict_id, merge_branch_id, source_gamma_id, dest_gamma_id, status, conflict_type) VALUES (?,?,?,?,?,?)";
+      "INSERT INTO osee_conflict (conflict_id, merge_branch_id, source_gamma_id, dest_gamma_id, status, conflict_type) VALUES (?,?,?,?,?,?)";
    private static final String UPDATE_CONFLICT =
-         "UPDATE osee_conflict SET source_gamma_id = ?, dest_gamma_id = ?, status = ? WHERE merge_branch_id = ? AND conflict_id = ? AND conflict_type = ?";
+      "UPDATE osee_conflict SET source_gamma_id = ?, dest_gamma_id = ?, status = ? WHERE merge_branch_id = ? AND conflict_id = ? AND conflict_type = ?";
    private static final String DELETE_CONFLICT =
-         "DELETE FROM osee_conflict WHERE merge_branch_id = ? AND conflict_id = ? AND conflict_type = ?";
+      "DELETE FROM osee_conflict WHERE merge_branch_id = ? AND conflict_id = ? AND conflict_type = ?";
 
    private static final String SELECT_CONFLICTS = "SELECT * FROM osee_conflict WHERE merge_branch_id = ?";
 
@@ -58,7 +58,7 @@ public class DatabaseOseeConflictAccessor {
             ConflictType conflictType = ConflictType.valueOf(statement.getInt("conflict_type"));
             ConflictStatus status = ConflictStatus.valueOf(statement.getInt("status"));
             conflicts.add(new Conflict(StorageState.LOADED, uniqueId, conflictType, mergeBranch, status, sourceGammaId,
-                  destGammaId));
+               destGammaId));
          }
       } finally {
          statement.close();
@@ -96,13 +96,13 @@ public class DatabaseOseeConflictAccessor {
 
    private Object[] toInsertValues(Conflict conflict) {
       return new Object[] {conflict.getId(), conflict.getMergeBranch().getId(), conflict.getSourceGammaId(),
-            conflict.getDestinationGammaId(), conflict.getStatus().getValue(), conflict.getType().getValue()};
+         conflict.getDestinationGammaId(), conflict.getStatus().getValue(), conflict.getType().getValue()};
    }
 
    private Object[] toUpdateValues(Conflict conflict) {
       return new Object[] {conflict.getSourceGammaId(), conflict.getDestinationGammaId(),
-            conflict.getStatus().getValue(), conflict.getMergeBranch().getId(), conflict.getId(),
-            conflict.getType().getValue()};
+         conflict.getStatus().getValue(), conflict.getMergeBranch().getId(), conflict.getId(),
+         conflict.getType().getValue()};
    }
 
    private Object[] toDeleteValues(Conflict conflict) {

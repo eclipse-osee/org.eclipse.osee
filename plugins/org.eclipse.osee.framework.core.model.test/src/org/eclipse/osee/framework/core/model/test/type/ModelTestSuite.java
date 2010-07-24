@@ -14,13 +14,13 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {//
+@Suite.SuiteClasses({//
 ArtifactTypeTest.class, //
-      AttributeTypeTest.class, //
-      BaseOseeTypeTest.class, //
-      BranchTest.class, //
-      OseeEnumTypeTest.class, //
-      RelationTypeTest.class, //
+   AttributeTypeTest.class, //
+   BaseOseeTypeTest.class, //
+   BranchTest.class, //
+   OseeEnumTypeTest.class, //
+   RelationTypeTest.class, //
 })
 /**
  * @author Roberto E. Escobar

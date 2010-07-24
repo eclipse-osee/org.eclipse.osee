@@ -35,12 +35,11 @@ import org.eclipse.swt.graphics.Image;
 public class WatchedMessageNode extends MessageNode {
 
    private static final Image readerImg =
-         new OverlayImage(MessageNode.normalImg,
-               ImageDescriptor.createFromImage(ImageManager.getImage(OteMessageImage.MSG_READ_IMG)), Location.BOT_RIGHT).createImage();
+      new OverlayImage(MessageNode.normalImg,
+         ImageDescriptor.createFromImage(ImageManager.getImage(OteMessageImage.MSG_READ_IMG)), Location.BOT_RIGHT).createImage();
    private static final Image writerImg =
-         new OverlayImage(MessageNode.normalImg,
-               ImageDescriptor.createFromImage(ImageManager.getImage(OteMessageImage.MSG_WRITE_IMG)),
-               Location.BOT_RIGHT).createImage();
+      new OverlayImage(MessageNode.normalImg,
+         ImageDescriptor.createFromImage(ImageManager.getImage(OteMessageImage.MSG_WRITE_IMG)), Location.BOT_RIGHT).createImage();
    private final RecordingState recordingState = new RecordingState();
    private final IMessageSubscription subscription;
    private final AtomicLong numUpdates = new AtomicLong(0);

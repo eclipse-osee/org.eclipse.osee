@@ -26,7 +26,7 @@ public class DemoAddDecisionReviewRule extends AtsAddDecisionReviewRule {
 
    public DemoAddDecisionReviewRule(String forState, ReviewBlockType reviewBlockType, StateEventType stateEventType) {
       super(ID + "." + forState + "." + reviewBlockType.name() + "." + stateEventType,
-            ID + "." + forState + "." + reviewBlockType.name() + "." + stateEventType);
+         ID + "." + forState + "." + reviewBlockType.name() + "." + stateEventType);
       setDescription("This is a rule created to test the Review rules.");
       setDecisionParameterValue(this, DecisionParameter.title, "Auto-created Decision Review from ruleId: " + getId());
       setDecisionParameterValue(this, DecisionParameter.reviewBlockingType, reviewBlockType.name());

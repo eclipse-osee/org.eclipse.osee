@@ -23,10 +23,8 @@ import org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback;
 import org.eclipse.osee.framework.messaging.ReplyConnection;
 import org.eclipse.osee.framework.messaging.internal.Activator;
 
-
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 class ReplyConnectionActiveMqImpl implements ReplyConnection {
 
@@ -36,7 +34,7 @@ class ReplyConnectionActiveMqImpl implements ReplyConnection {
    private String correlationId;
    private Session session;
    private ActiveMqUtil activeMqUtil;
-   
+
    ReplyConnectionActiveMqImpl(ActiveMqUtil activeMqUtil, Session session, MessageProducer producer, Destination destReply, String correlationId) {
       isReplyRequested = true;
       this.producer = producer;

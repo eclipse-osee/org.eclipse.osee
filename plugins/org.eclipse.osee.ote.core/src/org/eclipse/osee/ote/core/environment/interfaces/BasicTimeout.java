@@ -12,14 +12,16 @@ package org.eclipse.osee.ote.core.environment.interfaces;
 
 public class BasicTimeout implements ITimeout {
 
-	private volatile boolean timeout;
-	
-	public boolean isTimedOut() {
-		return timeout;
-	}
+   private volatile boolean timeout;
 
-	public void setTimeout(boolean timeout) {
-		this.timeout = timeout;
-	}
+   @Override
+   public boolean isTimedOut() {
+      return timeout;
+   }
+
+   @Override
+   public void setTimeout(boolean timeout) {
+      this.timeout = timeout;
+   }
 
 }

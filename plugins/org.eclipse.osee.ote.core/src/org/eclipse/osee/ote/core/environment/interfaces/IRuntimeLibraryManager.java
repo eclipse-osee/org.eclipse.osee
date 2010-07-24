@@ -12,7 +12,6 @@ package org.eclipse.osee.ote.core.environment.interfaces;
 
 import java.io.IOException;
 import java.util.Collection;
-
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.ote.core.ReturnStatus;
 import org.eclipse.osee.ote.core.environment.BundleConfigurationReport;
@@ -31,7 +30,6 @@ public interface IRuntimeLibraryManager extends Xmlizable {
 
    ReturnStatus isRunningJarVersions(String[] versions);
 
-
    void addRuntimeLibraryListener(RuntimeLibraryListener listener);
 
    void removeRuntimeLibraryListener(RuntimeLibraryListener listener);
@@ -45,7 +43,7 @@ public interface IRuntimeLibraryManager extends Xmlizable {
    void addJarToClassLoader(byte[] jarData) throws IOException;
 
    void loadBundles(Collection<BundleDescription> bundles) throws Exception;
-   
+
    BundleConfigurationReport checkBundleConfiguration(Collection<BundleDescription> bundles) throws Exception;
 
    void updateBundles(Collection<BundleDescription> bundles) throws Exception;
@@ -55,7 +53,7 @@ public interface IRuntimeLibraryManager extends Xmlizable {
    Class<?> loadFromScriptClassLoader(String path) throws ClassNotFoundException;
 
    Class<?> loadClass(String name, Version version) throws ClassNotFoundException;
-   
+
    Class<?> loadFromRuntimeLibraryLoader(String path) throws ClassNotFoundException;
 
    void cleanup();

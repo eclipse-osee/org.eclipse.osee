@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 public class Diagram {
 
    protected List<DiagramNode> nodes = new ArrayList<DiagramNode>();
-   private Set<String> nodeNames = new HashSet<String>();
+   private final Set<String> nodeNames = new HashSet<String>();
    private String id;
    private String inheritData;
 
@@ -35,8 +35,9 @@ public class Diagram {
 
    public Set<String> getPageNames() {
       if (nodeNames.isEmpty()) {
-         for (DiagramNode page : nodes)
+         for (DiagramNode page : nodes) {
             nodeNames.add(page.getName());
+         }
       }
       return nodeNames;
    }
@@ -47,23 +48,32 @@ public class Diagram {
 
    public DiagramNode getPage(String pageName) throws OseeCoreException {
       List<DiagramNode> pages = getPages(pageName);
-      if (pages.size() > 1) throw new OseeArgumentException(
+      if (pages.size() > 1) {
+         throw new OseeArgumentException(
             "Multiple node of same name found in workflow => " + getId() + " Use getPages.");
+      }
       return pages.iterator().next();
    }
 
    public List<DiagramNode> getPages(String pageName) throws OseeCoreException {
       List<DiagramNode> foundPages = new ArrayList<DiagramNode>();
-      for (DiagramNode page : nodes)
-         if (page.getName().equals(pageName)) foundPages.add(page);
-      if (foundPages.isEmpty()) throw new OseeArgumentException(
-            "Invalid node Name \"" + pageName + "\" from workflow => " + getId());
+      for (DiagramNode page : nodes) {
+         if (page.getName().equals(pageName)) {
+            foundPages.add(page);
+         }
+      }
+      if (foundPages.isEmpty()) {
+         throw new OseeArgumentException("Invalid node Name \"" + pageName + "\" from workflow => " + getId());
+      }
       return foundPages;
    }
 
    public DiagramNode getPageFromId(String id) {
-      for (DiagramNode page : nodes)
-         if (page.getId().equals(id)) return page;
+      for (DiagramNode page : nodes) {
+         if (page.getId().equals(id)) {
+            return page;
+         }
+      }
       return null;
    }
 

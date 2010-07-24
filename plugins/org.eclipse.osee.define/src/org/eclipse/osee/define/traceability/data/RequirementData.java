@@ -48,8 +48,8 @@ public class RequirementData extends BaseTraceDataCache {
    @Override
    protected void doBulkLoad(IProgressMonitor monitor) throws Exception {
       List<Artifact> allSwRequirements =
-            ArtifactQuery.getArtifactListFromTypeWithInheritence(CoreArtifactTypes.AbstractSoftwareRequirement,
-                  getBranch(), EXCLUDE_DELETED);
+         ArtifactQuery.getArtifactListFromTypeWithInheritence(CoreArtifactTypes.AbstractSoftwareRequirement,
+            getBranch(), EXCLUDE_DELETED);
       populateTraceMap(monitor, allSwRequirements, allSwRequirementsMap);
 
       for (Artifact requirement : getAllSwRequirements()) {

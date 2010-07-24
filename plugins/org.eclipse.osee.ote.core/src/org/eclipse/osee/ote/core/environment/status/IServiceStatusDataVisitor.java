@@ -10,32 +10,30 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.core.environment.status;
 
-
 /**
  * @author Roberto E. Escobar
  */
 public interface IServiceStatusDataVisitor {
 
    public void asCommandAdded(CommandAdded commandAdded);
-   
+
    public void asCommandRemoved(CommandRemoved commandRemoved);
-   
+
    public void asEnvironmentError(EnvironmentError environmentError);
-   
+
    public void asSequentialCommandBegan(SequentialCommandBegan sequentialCommandBegan);
-   
+
    public void asSequentialCommandEnded(SequentialCommandEnded sequentialCommandEnded);
-   
+
    public void asTestPointUpdate(TestPointUpdate testPointUpdate);
-   
-   
+
    public void asTestServerCommandComplete(TestServerCommandComplete end);
-   
+
    public void asTestComplete(TestComplete testComplete);
 
-/**
- * @param testStart
- */
-public void asTestStart(TestStart testStart);
-   
+   /**
+    * @param testStart
+    */
+   public void asTestStart(TestStart testStart);
+
 }

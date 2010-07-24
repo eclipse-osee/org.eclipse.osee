@@ -14,8 +14,7 @@ import org.eclipse.osee.ote.ui.message.watch.ElementPath;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public interface IElementPath {
-	ElementPath getElementPath();
+   ElementPath getElementPath();
 }

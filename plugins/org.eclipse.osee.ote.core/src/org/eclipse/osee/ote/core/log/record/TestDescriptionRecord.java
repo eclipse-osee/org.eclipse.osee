@@ -17,37 +17,38 @@ import org.eclipse.osee.ote.core.test.tags.BaseTestTags;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class TestDescriptionRecord extends BaseTestRecord{
-   
+public class TestDescriptionRecord extends BaseTestRecord {
+
    private static final long serialVersionUID = -2188431468814850228L;
    private String purpose;
    private String preCondition;
    private String postCondition;
-   
+
    public TestDescriptionRecord(ITestEnvironmentAccessor testEnvironment) {
       super(testEnvironment, TestLevel.TEST_POINT, "Description Record", false);
       this.purpose = " ";
       this.preCondition = " ";
       this.postCondition = " ";
    }
-     
-   public void setPurpose(String purpose){
+
+   public void setPurpose(String purpose) {
       this.purpose = purpose;
    }
-   
-   public void setPreCondition(String preCondition){
+
+   public void setPreCondition(String preCondition) {
       this.preCondition = preCondition;
    }
-   
-   public void setPostCondition(String postCondition){
+
+   public void setPostCondition(String postCondition) {
       this.postCondition = postCondition;
    }
-   
-   public Element toXml(Document doc){
+
+   @Override
+   public Element toXml(Document doc) {
       Element root = doc.createElement(BaseTestTags.DESCRIPTION_FIELD);
-      root.appendChild(Jaxp.createElement(doc,BaseTestTags.PURPOSE_FIELD,purpose));
-      root.appendChild(Jaxp.createElement(doc,BaseTestTags.PRECONDITION_FIELD,preCondition));
-      root.appendChild(Jaxp.createElement(doc,BaseTestTags.POSTCONDITION_FIELD,postCondition));
+      root.appendChild(Jaxp.createElement(doc, BaseTestTags.PURPOSE_FIELD, purpose));
+      root.appendChild(Jaxp.createElement(doc, BaseTestTags.PRECONDITION_FIELD, preCondition));
+      root.appendChild(Jaxp.createElement(doc, BaseTestTags.POSTCONDITION_FIELD, postCondition));
       return root;
    }
 }

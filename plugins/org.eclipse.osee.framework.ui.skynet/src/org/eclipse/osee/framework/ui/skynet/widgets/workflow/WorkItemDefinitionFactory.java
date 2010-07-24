@@ -83,7 +83,7 @@ public class WorkItemDefinitionFactory {
 
          // This load is faster than loading each by artifact type
          for (Artifact art : ArtifactQuery.getArtifactListFromTypeWithInheritence(CoreArtifactTypes.WorkItemDefinition,
-               BranchManager.getCommonBranch(), EXCLUDE_DELETED)) {
+            BranchManager.getCommonBranch(), EXCLUDE_DELETED)) {
             if (art.isOfType(CoreArtifactTypes.WorkRuleDefinition)) {
                addItemDefinition(WriteType.New, new WorkRuleDefinition(art), art);
             } else if (art.isOfType(CoreArtifactTypes.WorkWidgetDefinition)) {
@@ -110,15 +110,15 @@ public class WorkItemDefinitionFactory {
 
    public static void relateWorkItemDefinitions(String parentWorkflowId, String childWorkflowId) throws OseeCoreException {
       List<Artifact> parentArts =
-            ArtifactQuery.getArtifactListFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(),
-                  parentWorkflowId, BranchManager.getCommonBranch());
+         ArtifactQuery.getArtifactListFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(),
+            parentWorkflowId, BranchManager.getCommonBranch());
       if (parentArts == null || parentArts.isEmpty()) {
          throw new IllegalArgumentException("Can't access parentWorkflowId " + parentWorkflowId);
       }
       Artifact parentArt = parentArts.iterator().next();
       List<Artifact> childArts =
-            ArtifactQuery.getArtifactListFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(),
-                  childWorkflowId, BranchManager.getCommonBranch());
+         ArtifactQuery.getArtifactListFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(), childWorkflowId,
+            BranchManager.getCommonBranch());
       if (childArts == null || childArts.isEmpty()) {
          throw new IllegalArgumentException("Can't access childWorkflowId " + childWorkflowId);
       }
@@ -135,7 +135,7 @@ public class WorkItemDefinitionFactory {
       }
       if (writeType == WriteType.New && itemIdToDefinition.containsKey(workItemDefinition.getId())) {
          throw new OseeArgumentException(
-               "Item Id must be unique.  Already work item with id \"" + workItemDefinition.getId() + "\"");
+            "Item Id must be unique.  Already work item with id \"" + workItemDefinition.getId() + "\"");
       }
       itemIdToDefinition.put(workItemDefinition.getId(), workItemDefinition);
    }
@@ -183,7 +183,7 @@ public class WorkItemDefinitionFactory {
       if (wid == null) {
          // Attempt to get from DB
          loadDefinitions(ArtifactQuery.getArtifactListFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(),
-               id, BranchManager.getCommonBranch()));
+            id, BranchManager.getCommonBranch()));
       }
       return itemIdToDefinition.get(id);
    }
@@ -197,7 +197,7 @@ public class WorkItemDefinitionFactory {
       if (art == null) {
          // Attempt to get from DB
          loadDefinitions(ArtifactQuery.getArtifactListFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(),
-               id, BranchManager.getCommonBranch()));
+            id, BranchManager.getCommonBranch()));
       }
       return itemIdToWidArtifact.get(id);
    }

@@ -14,5 +14,5 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public interface IJiniConnectorLink extends Remote {
-    boolean ping() throws RemoteException;
+   boolean ping() throws RemoteException;
 }

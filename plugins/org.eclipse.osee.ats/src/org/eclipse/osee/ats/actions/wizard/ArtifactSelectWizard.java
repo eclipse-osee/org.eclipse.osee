@@ -23,11 +23,13 @@ public class ArtifactSelectWizard extends Wizard {
    public ArtifactSelectWizard() {
    }
 
+   @Override
    public void addPages() {
       wizardPage = new ArtifactSelectWizardPage();
       addPage(wizardPage);
    }
 
+   @Override
    public boolean performFinish() {
       return true;
    }

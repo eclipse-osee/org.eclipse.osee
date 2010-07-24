@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.workspacebundleloader;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.resources.IResource;
@@ -93,7 +92,7 @@ public class JarChangeResourceListener<T extends JarCollectionNature> implements
                      IResourceDelta pluginDelta = child.findMember(path);
                      if (pluginDelta != null && isModifyingChange(pluginDelta)) {
                         handlePluginChanges(project.getLocation().removeLastSegments(1),
-                              pluginDelta.getAffectedChildren());
+                           pluginDelta.getAffectedChildren());
                         triggered = true;
                      }
                   }
@@ -107,29 +106,28 @@ public class JarChangeResourceListener<T extends JarCollectionNature> implements
       }
    }
 
-	/**
-	 * @param pluginDelta
-	 * @return
-	 */
-	private boolean isModifyingChange(IResourceDelta pluginDelta) {
-		boolean synch = (pluginDelta.getFlags() & IResourceDelta.SYNC) != 0;
-//		boolean content = (pluginDelta.getFlags() & IResourceDelta.CONTENT) != 0;
-//		boolean REPLACED = (pluginDelta.getFlags() & IResourceDelta.REPLACED) != 0;
-//		boolean MARKERS = (pluginDelta.getFlags() & IResourceDelta.MARKERS) != 0;
-//		boolean TYPE = (pluginDelta.getFlags() & IResourceDelta.TYPE) != 0;
-//		boolean MOVED_FROM = (pluginDelta.getFlags() & IResourceDelta.MOVED_FROM) != 0;
-//		boolean MOVED_TO = (pluginDelta.getFlags() & IResourceDelta.MOVED_TO) != 0;
-//		boolean OPEN = (pluginDelta.getFlags() & IResourceDelta.OPEN) != 0;
-//		boolean ENCODING = (pluginDelta.getFlags() & IResourceDelta.ENCODING) != 0;
-//		boolean DESCRIPTION = (pluginDelta.getFlags() & IResourceDelta.DESCRIPTION) != 0;
-		
-		
-//		boolean ADDED = (pluginDelta.getKind() & IResourceDelta.ADDED) != 0;
-//		boolean CHANGED = (pluginDelta.getKind() & IResourceDelta.CHANGED) != 0;
-//		boolean ADDED_PHANTOM = (pluginDelta.getKind() & IResourceDelta.ADDED_PHANTOM) != 0;
-//		boolean REMOVED_PHANTOM = (pluginDelta.getKind() & IResourceDelta.REMOVED_PHANTOM) != 0;
-		return !synch;
-	}
+   /**
+    * @param pluginDelta
+    * @return
+    */
+   private boolean isModifyingChange(IResourceDelta pluginDelta) {
+      boolean synch = (pluginDelta.getFlags() & IResourceDelta.SYNC) != 0;
+      //		boolean content = (pluginDelta.getFlags() & IResourceDelta.CONTENT) != 0;
+      //		boolean REPLACED = (pluginDelta.getFlags() & IResourceDelta.REPLACED) != 0;
+      //		boolean MARKERS = (pluginDelta.getFlags() & IResourceDelta.MARKERS) != 0;
+      //		boolean TYPE = (pluginDelta.getFlags() & IResourceDelta.TYPE) != 0;
+      //		boolean MOVED_FROM = (pluginDelta.getFlags() & IResourceDelta.MOVED_FROM) != 0;
+      //		boolean MOVED_TO = (pluginDelta.getFlags() & IResourceDelta.MOVED_TO) != 0;
+      //		boolean OPEN = (pluginDelta.getFlags() & IResourceDelta.OPEN) != 0;
+      //		boolean ENCODING = (pluginDelta.getFlags() & IResourceDelta.ENCODING) != 0;
+      //		boolean DESCRIPTION = (pluginDelta.getFlags() & IResourceDelta.DESCRIPTION) != 0;
+
+      //		boolean ADDED = (pluginDelta.getKind() & IResourceDelta.ADDED) != 0;
+      //		boolean CHANGED = (pluginDelta.getKind() & IResourceDelta.CHANGED) != 0;
+      //		boolean ADDED_PHANTOM = (pluginDelta.getKind() & IResourceDelta.ADDED_PHANTOM) != 0;
+      //		boolean REMOVED_PHANTOM = (pluginDelta.getKind() & IResourceDelta.REMOVED_PHANTOM) != 0;
+      return !synch;
+   }
 
    /**
     * @param projectPath

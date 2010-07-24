@@ -69,7 +69,6 @@ public class HttpSearchInfo {
       options.put(SearchOptionsEnum.case_sensitive.asStringOption(), propertyStore.get("case sensitive"));
 
       String[] attributeTypeStrs = propertyStore.getArray("attributeType");
-      return new HttpSearchInfo(propertyStore.get("branchId"), options, propertyStore.get("query"),attributeTypeStrs
-            );
+      return new HttpSearchInfo(propertyStore.get("branchId"), options, propertyStore.get("query"), attributeTypeStrs);
    }
 }

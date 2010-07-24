@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -33,7 +34,7 @@ public final class CompareAction extends Action {
    private final CompareType compareType;
 
    public CompareAction(CompareType compareType, ChangeUiData uiData) {
-      super(compareType.getHandler().getActionName(), Action.AS_PUSH_BUTTON);
+      super(compareType.getHandler().getActionName(), IAction.AS_PUSH_BUTTON);
       this.compareType = compareType;
       this.uiData = uiData;
       setToolTipText(compareType.getHandler().getActionDescription());

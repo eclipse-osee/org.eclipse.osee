@@ -47,11 +47,13 @@ public class SubscribeManager {
       try {
          if (((ISubscribableArtifact) smas.iterator().next()).amISubscribed()) {
             boolean result = true;
-            if (prompt) result =
+            if (prompt) {
+               result =
                   MessageDialog.openQuestion(
-                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                        "Un-Subscribe",
-                        "You are currently subscribed to receive emails when this artifact transitions." + "\n\nAre You sure you wish to Un-Subscribe?");
+                     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                     "Un-Subscribe",
+                     "You are currently subscribed to receive emails when this artifact transitions." + "\n\nAre You sure you wish to Un-Subscribe?");
+            }
             if (result) {
                SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Toggle Subscribed");
                for (StateMachineArtifact sma : smas) {
@@ -61,10 +63,12 @@ public class SubscribeManager {
             }
          } else {
             boolean result = true;
-            if (prompt) result =
+            if (prompt) {
+               result =
                   MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                        "Subscribe",
-                        "Are you sure you wish to subscribe to receive emails when this artifact transitions?");
+                     "Subscribe",
+                     "Are you sure you wish to subscribe to receive emails when this artifact transitions?");
+            }
             if (result) {
                SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Toggle Subscribed");
                for (StateMachineArtifact sma : smas) {

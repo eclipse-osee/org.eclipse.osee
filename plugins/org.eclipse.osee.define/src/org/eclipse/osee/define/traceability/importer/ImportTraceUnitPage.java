@@ -68,15 +68,15 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
    private static final String OPTIONS_GROUP = "Processing Options";
    private static final String PERSIST_CHANGES = "Persist Changes";
    private static final String PERSIST_TOOLTIP =
-         "When not selected, will report all trace marks found per trace unit file.";
+      "When not selected, will report all trace marks found per trace unit file.";
 
    private static final String RECURSION_BUTTON = "Traverse sub-folders";
    private static final String RECURSION_TOOLTIP =
-         "When selected, processing will include folders and their sub-folders.";
+      "When selected, processing will include folders and their sub-folders.";
 
    private static final String FILE_WITH_PATHS_BUTTON = "Is File With Embedded Paths";
    private static final String FILE_WITH_PATHS_TOOLTIP =
-         "Select when using a source file with multiple paths separated with newlines.";
+      "Select when using a source file with multiple paths separated with newlines.";
 
    private static final String SELECTED_TRACE_HANDLERS_KEY = "trace.handlers";
    private static final String BRANCH_KEY = "branch.selected";
@@ -163,6 +163,7 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
     * 
     * @param event Event
     */
+   @Override
    public void handleEvent(Event event) {
       setPageComplete(determinePageCompletion());
    }
@@ -239,11 +240,11 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
       composite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
       createOptionButton(composite, IS_ART_PERSIST_ALLOWED_KEY, PERSIST_CHANGES, PERSIST_TOOLTIP,
-            isArtifactPersistanceAllowed);
+         isArtifactPersistanceAllowed);
       createOptionButton(composite, IS_FOLDER_RECURSION_KEY, RECURSION_BUTTON, RECURSION_TOOLTIP,
-            isFolderRecursionAllowed);
+         isFolderRecursionAllowed);
       createOptionButton(composite, IS_FILE_WITH_MULTI_PATHS_KEY, FILE_WITH_PATHS_BUTTON, FILE_WITH_PATHS_TOOLTIP,
-            isFileContainingMultiplePaths);
+         isFileContainingMultiplePaths);
    }
 
    private void createOptionButton(Composite parent, String buttonId, String buttonText, String buttonToolTip, final MutableBoolean toModify) {

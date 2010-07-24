@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.validation;
 
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -34,7 +34,7 @@ public class OseeValidator {
 
    private OseeValidator() {
       loadedObjects =
-            new ExtensionDefinedObjects<IOseeValidator>(EXTENSION_ID, EXTENSION_ELEMENT, CLASS_NAME_ATTRIBUTE);
+         new ExtensionDefinedObjects<IOseeValidator>(EXTENSION_ID, EXTENSION_ELEMENT, CLASS_NAME_ATTRIBUTE);
    }
 
    public static OseeValidator getInstance() {
@@ -67,7 +67,7 @@ public class OseeValidator {
                   }
                }
             } catch (Exception ex) {
-               OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
       }

@@ -24,6 +24,7 @@ import org.eclipse.osee.ote.ui.message.watch.MessageWatchAction;
  */
 public class MessageNavigateViewItems implements IXNavigateContainer {
 
+   @Override
    public List<XNavigateItem> getNavigateItems() {
       List<XNavigateItem> items = new ArrayList<XNavigateItem>();
       items.add(new XNavigateItemAction(null, new MessageViewAction(), OteMessageImage.GLASSES, false));

@@ -31,62 +31,62 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
  */
 public class SelectOseeTypesPanel extends AbstractItemSelectPanel<List<IFile>> {
 
-	public SelectOseeTypesPanel() {
-		super(new WorkbenchLabelProvider(), new ArrayContentProvider());
-	}
+   public SelectOseeTypesPanel() {
+      super(new WorkbenchLabelProvider(), new ArrayContentProvider());
+   }
 
-	@Override
-	protected Dialog createSelectDialog(Shell shell, List<IFile> lastSelected) {
-		CheckedTreeSelectionDialog dialog =
-					new CheckedTreeSelectionDialog(shell, new WorkbenchLabelProvider(), new WorkbenchContentProvider());
-		dialog.addFilter(new OseeTypesViewerFilter());
-		dialog.setTitle("Select OseeTypes to import");
-		dialog.setValidator(new Validator());
-		dialog.setInput(ResourcesPlugin.getWorkspace().getRoot());
-		if (lastSelected != null) {
-			dialog.setInitialElementSelections(lastSelected);
-		}
-		return dialog;
-	}
+   @Override
+   protected Dialog createSelectDialog(Shell shell, List<IFile> lastSelected) {
+      CheckedTreeSelectionDialog dialog =
+         new CheckedTreeSelectionDialog(shell, new WorkbenchLabelProvider(), new WorkbenchContentProvider());
+      dialog.addFilter(new OseeTypesViewerFilter());
+      dialog.setTitle("Select OseeTypes to import");
+      dialog.setValidator(new Validator());
+      dialog.setInput(ResourcesPlugin.getWorkspace().getRoot());
+      if (lastSelected != null) {
+         dialog.setInitialElementSelections(lastSelected);
+      }
+      return dialog;
+   }
 
-	@Override
-	protected boolean updateFromDialogResult(Dialog dialog) {
-		boolean updateRequired = false;
-		if (dialog instanceof CheckedTreeSelectionDialog) {
-			Object[] results = ((CheckedTreeSelectionDialog) dialog).getResult();
-			if (results != null && results.length > 0) {
-				List<IFile> selected = new ArrayList<IFile>();
-				for (Object object : results) {
-					if (object instanceof IFile) {
-						selected.add((IFile) object);
-					}
-				}
-				if (!selected.isEmpty()) {
-					setSelected(selected);
-					updateRequired = true;
-				}
-			}
-		}
-		return updateRequired;
-	}
+   @Override
+   protected boolean updateFromDialogResult(Dialog dialog) {
+      boolean updateRequired = false;
+      if (dialog instanceof CheckedTreeSelectionDialog) {
+         Object[] results = ((CheckedTreeSelectionDialog) dialog).getResult();
+         if (results != null && results.length > 0) {
+            List<IFile> selected = new ArrayList<IFile>();
+            for (Object object : results) {
+               if (object instanceof IFile) {
+                  selected.add((IFile) object);
+               }
+            }
+            if (!selected.isEmpty()) {
+               setSelected(selected);
+               updateRequired = true;
+            }
+         }
+      }
+      return updateRequired;
+   }
 
-	private final class Validator implements ISelectionStatusValidator {
-		@Override
-		public IStatus validate(Object[] selection) {
-			IStatus status = Status.OK_STATUS;
-			boolean found = false;
-			if (selection != null) {
-				for (Object object : selection) {
-					if (object instanceof IFile) {
-						found = true;
-						break;
-					}
-				}
-			}
-			if (!found) {
-				status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "At least (1) must be selected");
-			}
-			return status;
-		}
-	}
+   private final class Validator implements ISelectionStatusValidator {
+      @Override
+      public IStatus validate(Object[] selection) {
+         IStatus status = Status.OK_STATUS;
+         boolean found = false;
+         if (selection != null) {
+            for (Object object : selection) {
+               if (object instanceof IFile) {
+                  found = true;
+                  break;
+               }
+            }
+         }
+         if (!found) {
+            status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "At least (1) must be selected");
+         }
+         return status;
+      }
+   }
 }

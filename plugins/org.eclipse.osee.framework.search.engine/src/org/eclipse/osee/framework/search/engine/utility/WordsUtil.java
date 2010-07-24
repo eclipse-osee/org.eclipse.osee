@@ -89,7 +89,7 @@ public class WordsUtil {
    public static String stripPossesive(String original) {
       String toReturn = original;
       if (original != null && original.length() > 0) {
-         if (original.lastIndexOf('\'') == (original.length() - 1)) {
+         if (original.lastIndexOf('\'') == original.length() - 1) {
             toReturn = replaceEndingWith(original, "'", "");
          } else if (original.endsWith("'s")) {
             toReturn = replaceEndingWith(original, "'s", "");

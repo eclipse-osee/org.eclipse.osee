@@ -31,6 +31,7 @@ public class HashCollectionPlusMap<K, V, P, S> extends HashCollectionPlus<K, V, 
     */
    public HashCollectionPlusMap(boolean isSynchronized, Class<? extends Collection<?>> collectionType) {
       super(isSynchronized, collectionType, new IPlusProvider<Map<P, S>>() {
+         @Override
          public Map<P, S> newObject() {
             return Collections.synchronizedMap(new HashMap<P, S>());
          }

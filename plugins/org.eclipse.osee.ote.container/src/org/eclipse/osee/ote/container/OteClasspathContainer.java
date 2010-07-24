@@ -31,7 +31,6 @@ import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public class OteClasspathContainer implements IClasspathContainer, IUserLibListener {
    public final static Path ID = new Path("OTE Classpath Container from the extension point");
@@ -44,7 +43,7 @@ public class OteClasspathContainer implements IClasspathContainer, IUserLibListe
 
    private OteBundleLocator locator;
 
-   private JavaProject javaProject;
+   private final JavaProject javaProject;
 
    private LibraryChangeProvider<OteUserLibsNature> userLibListener;
 
@@ -58,11 +57,10 @@ public class OteClasspathContainer implements IClasspathContainer, IUserLibListe
          tracker = new ServiceTracker(context, OteBundleLocator.class.getName(), null);
          tracker.open(true);
          Object obj = tracker.waitForService(10000);
-         locator = (OteBundleLocator)obj;
-         
+         locator = (OteBundleLocator) obj;
+
          OteContainerActivator.getDefault().getLibraryChangeProvider().addListener(this);
-      }
-      catch (Exception ex) {
+      } catch (Exception ex) {
          ex.printStackTrace();
       }
 
@@ -84,10 +82,11 @@ public class OteClasspathContainer implements IClasspathContainer, IUserLibListe
     */
    private File recursivelyFindProjectFile(File file) {
 
-      if( file == null )
+      if (file == null) {
          return file;
+      }
 
-      if(fileIsDirectoryWithBin(file)) {
+      if (fileIsDirectoryWithBin(file)) {
          return file;
       } else {
          return recursivelyFindProjectFile(file.getParentFile());
@@ -99,11 +98,11 @@ public class OteClasspathContainer implements IClasspathContainer, IUserLibListe
     * @return
     */
    private boolean fileIsDirectoryWithBin(File file) {
-      if( file.isDirectory() )
-      {
-         File binChildFile = new File( file.getAbsoluteFile() + "/bin");
-         if( binChildFile.exists())
+      if (file.isDirectory()) {
+         File binChildFile = new File(file.getAbsoluteFile() + "/bin");
+         if (binChildFile.exists()) {
             return true;
+         }
       }
       return false;
    }
@@ -124,24 +123,21 @@ public class OteClasspathContainer implements IClasspathContainer, IUserLibListe
          runtimeLibUrls = locator.getRuntimeLibs();
          classPaths = new ArrayList<ClassPathDescription>();
          betterPaths = new ArrayList<BundleInfo>();
-         for( BundleInfo info : runtimeLibUrls )
-         {
+         for (BundleInfo info : runtimeLibUrls) {
 
             String binaryFilePath = info.getSystemLocation().getFile();
 
-            if(info.isSystemLibrary())
-            {
-               entries.add(JavaCore.newLibraryEntry(new Path(binaryFilePath),new Path(binaryFilePath), new Path("/")));
+            if (info.isSystemLibrary()) {
+               entries.add(JavaCore.newLibraryEntry(new Path(binaryFilePath), new Path(binaryFilePath), new Path("/")));
             } else {
                File projectFilePath = recursivelyFindProjectFile(new File(binaryFilePath));
                binaryFilePath = "/" + projectFilePath.getName();
 
-               entries.add(JavaCore.newProjectEntry( new Path(binaryFilePath)));
+               entries.add(JavaCore.newProjectEntry(new Path(binaryFilePath)));
             }
          }
 
-      }
-      catch (Exception ex) {
+      } catch (Exception ex) {
          ex.printStackTrace();
       }
 
@@ -165,7 +161,7 @@ public class OteClasspathContainer implements IClasspathContainer, IUserLibListe
    }
 
    private class ClassPathDescription {
-      private String sourcePath, binaryPath;
+      private final String sourcePath, binaryPath;
 
       /**
        * @param sourcePath
@@ -190,7 +186,6 @@ public class OteClasspathContainer implements IClasspathContainer, IUserLibListe
       public String getBinaryPath() {
          return binaryPath;
       }
-
 
    }
 

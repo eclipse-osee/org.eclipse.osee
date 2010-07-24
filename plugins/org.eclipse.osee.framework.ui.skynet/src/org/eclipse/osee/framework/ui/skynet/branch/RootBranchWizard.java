@@ -25,6 +25,7 @@ public class RootBranchWizard extends Wizard implements INewWizard {
       return false;
    }
 
+   @Override
    public void init(IWorkbench workbench, IStructuredSelection selection) {
    }
 

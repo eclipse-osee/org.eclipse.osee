@@ -38,29 +38,36 @@ public class CoverageEditorInput implements IEditorInput {
       return coveragePackageBase.hashCode();
    }
 
+   @Override
    public boolean equals(Object obj) {
-      if (!(obj instanceof CoverageEditorInput)) return false;
+      if (!(obj instanceof CoverageEditorInput)) {
+         return false;
+      }
       CoverageEditorInput castObj = (CoverageEditorInput) obj;
-      if (castObj.getCoveragePackageBase() != null)
+      if (castObj.getCoveragePackageBase() != null) {
          return castObj.getCoveragePackageBase().equals(this.coveragePackageBase);
-      else if (castObj.getCoveragePackageArtifact() != null) {
+      } else if (castObj.getCoveragePackageArtifact() != null) {
          return castObj.getCoveragePackageArtifact().equals(this.coveragePackageArtifact);
       }
       return false;
    }
 
+   @Override
    public boolean exists() {
       return false;
    }
 
+   @Override
    public ImageDescriptor getImageDescriptor() {
       return null;
    }
 
+   @Override
    public IPersistableElement getPersistable() {
       return null;
    }
 
+   @Override
    public String getToolTipText() {
       return "";
    }

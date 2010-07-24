@@ -14,15 +14,15 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {//
+@Suite.SuiteClasses({//
 ArtifactSuperTypeFieldTest.class, //
-      ArtifactTypeAttributesFieldTest.class, //
-      AssociatedArtifactFieldTest.class, //
-      BranchAliasesFieldTest.class, //
-      CollectionFieldTest.class, //
-      EnumEntryFieldTest.class, //
-      OseeFieldMainTest.class, // 
-      UniqueIdFieldTest.class, //
+   ArtifactTypeAttributesFieldTest.class, //
+   AssociatedArtifactFieldTest.class, //
+   BranchAliasesFieldTest.class, //
+   CollectionFieldTest.class, //
+   EnumEntryFieldTest.class, //
+   OseeFieldMainTest.class, // 
+   UniqueIdFieldTest.class, //
 })
 /**
  * @author Roberto E. Escobar

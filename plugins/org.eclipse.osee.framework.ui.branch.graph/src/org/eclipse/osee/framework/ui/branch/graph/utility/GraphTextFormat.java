@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.branch.graph.utility;
 
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -26,7 +25,7 @@ public class GraphTextFormat {
 
    public static String formatDate(Date date) {
       if (dateFormat == null) {
-         dateFormat = SimpleDateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
+         dateFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
       }
       return dateFormat.format(date);
    }

@@ -48,18 +48,20 @@ public class ReleaseVersionItem extends XNavigateItemAction {
     */
    public ReleaseVersionItem(XNavigateItem parent, TeamDefinitionArtifact teamDefHoldingVersions) {
       super(parent, "Release " + (teamDefHoldingVersions != null ? teamDefHoldingVersions + " " : "") + "Version",
-            FrameworkImage.VERSION);
+         FrameworkImage.VERSION);
       this.teamDefHoldingVersions = teamDefHoldingVersions;
    }
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
       TeamDefinitionArtifact teamDefHoldingVersions = getReleaseableTeamDefinitionArtifact();
-      if (teamDefHoldingVersions == null) return;
+      if (teamDefHoldingVersions == null) {
+         return;
+      }
       try {
          VersionListDialog ld =
-               new VersionListDialog("Select Version", "Select Version to Release",
-                     teamDefHoldingVersions.getVersionsArtifacts());
+            new VersionListDialog("Select Version", "Select Version to Release",
+               teamDefHoldingVersions.getVersionsArtifacts());
          int result = ld.open();
          if (result == 0) {
             VersionArtifact verArt = (VersionArtifact) ld.getResult()[0];
@@ -74,14 +76,16 @@ public class ReleaseVersionItem extends XNavigateItemAction {
             for (TeamWorkFlowArtifact team : verArt.getTargetedForTeamArtifacts()) {
                if (!team.isCancelled() && !team.isCompleted()) {
                   errorStr =
-                        "All Team Workflows must be either Completed or " + "Cancelled before releasing a version.\n\n" + team.getHumanReadableId() + " - is in the\"" + team.getStateMgr().getCurrentStateName() + "\" state.";
+                     "All Team Workflows must be either Completed or " + "Cancelled before releasing a version.\n\n" + team.getHumanReadableId() + " - is in the\"" + team.getStateMgr().getCurrentStateName() + "\" state.";
                }
             }
-            if (errorStr != null) AWorkbench.popup("ERROR", errorStr);
-            if (errorStr != null && !AtsUtil.isAtsAdmin())
+            if (errorStr != null) {
+               AWorkbench.popup("ERROR", errorStr);
+            }
+            if (errorStr != null && !AtsUtil.isAtsAdmin()) {
                return;
-            else if (errorStr != null && !MessageDialog.openConfirm(Displays.getActiveShell(), "Override",
-                  "ATS Admin Enabled - Override completed condition and release anyway?")) {
+            } else if (errorStr != null && !MessageDialog.openConfirm(Displays.getActiveShell(), "Override",
+               "ATS Admin Enabled - Override completed condition and release anyway?")) {
                return;
             }
 
@@ -91,10 +95,10 @@ public class ReleaseVersionItem extends XNavigateItemAction {
             verArt.persist();
 
             if (MessageDialog.openQuestion(Displays.getActiveShell(), "Select NEW Next Release Version",
-                  "Release Complete.\n\nSelect NEW Next Release Version?")) {
+               "Release Complete.\n\nSelect NEW Next Release Version?")) {
                ld =
-                     new VersionListDialog("Select Next Release Version", "Select New Next Release Version",
-                           teamDefHoldingVersions.getVersionsArtifacts());
+                  new VersionListDialog("Select Next Release Version", "Select New Next Release Version",
+                     teamDefHoldingVersions.getVersionsArtifacts());
                result = ld.open();
                if (result == 0) {
                   verArt = (VersionArtifact) ld.getResult()[0];
@@ -109,7 +113,9 @@ public class ReleaseVersionItem extends XNavigateItemAction {
    }
 
    public TeamDefinitionArtifact getReleaseableTeamDefinitionArtifact() throws OseeCoreException {
-      if (teamDefHoldingVersions != null) return teamDefHoldingVersions;
+      if (teamDefHoldingVersions != null) {
+         return teamDefHoldingVersions;
+      }
       TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");
       try {
          ld.setInput(TeamDefinitionArtifact.getTeamReleaseableDefinitions(Active.Active));

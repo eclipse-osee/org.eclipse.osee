@@ -28,24 +28,24 @@ import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
  */
 public final class OperationFactory {
 
-	private OperationFactory() {
-	}
+   private OperationFactory() {
+   }
 
-	public static IOperation createDbSchema(final IOseeDatabaseService databaseService, IOseeSchemaProvider schemaProvider, SchemaCreationOptions options) {
-		Map<String, SchemaData> userSpecifiedConfig = new HashMap<String, SchemaData>();
-		Map<String, SchemaData> currentDatabaseConfig = new HashMap<String, SchemaData>();
+   public static IOperation createDbSchema(final IOseeDatabaseService databaseService, IOseeSchemaProvider schemaProvider, SchemaCreationOptions options) {
+      Map<String, SchemaData> userSpecifiedConfig = new HashMap<String, SchemaData>();
+      Map<String, SchemaData> currentDatabaseConfig = new HashMap<String, SchemaData>();
 
-		Collection<IOperation> ops = new ArrayList<IOperation>();
-		ops.add(new LoadUserSchemasOperation(userSpecifiedConfig, schemaProvider, options));
-		ops.add(new ExtractDatabaseSchemaOperation(databaseService, userSpecifiedConfig.keySet(), currentDatabaseConfig));
-		ops.add(new CreateSchemaOperation(new IOseeDatabaseServiceProvider() {
+      Collection<IOperation> ops = new ArrayList<IOperation>();
+      ops.add(new LoadUserSchemasOperation(userSpecifiedConfig, schemaProvider, options));
+      ops.add(new ExtractDatabaseSchemaOperation(databaseService, userSpecifiedConfig.keySet(), currentDatabaseConfig));
+      ops.add(new CreateSchemaOperation(new IOseeDatabaseServiceProvider() {
 
-			@Override
-			public IOseeDatabaseService getOseeDatabaseService() {
-				return databaseService;
-			}
-		}, userSpecifiedConfig, currentDatabaseConfig));
+         @Override
+         public IOseeDatabaseService getOseeDatabaseService() {
+            return databaseService;
+         }
+      }, userSpecifiedConfig, currentDatabaseConfig));
 
-		return new CompositeOperation("Create OSEE Schema", Activator.PLUGIN_ID, ops);
-	}
+      return new CompositeOperation("Create OSEE Schema", Activator.PLUGIN_ID, ops);
+   }
 }

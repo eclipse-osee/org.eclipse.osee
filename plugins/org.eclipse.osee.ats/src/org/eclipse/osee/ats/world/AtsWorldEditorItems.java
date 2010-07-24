@@ -30,9 +30,11 @@ public class AtsWorldEditorItems {
    private static List<IAtsWorldEditorItem> items = new ArrayList<IAtsWorldEditorItem>();
 
    private static void loadAllStateItems() {
-      if (items.size() > 0) return;
+      if (items.size() > 0) {
+         return;
+      }
       IExtensionPoint point =
-            Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.ats.AtsWorldEditorItem");
+         Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.ats.AtsWorldEditorItem");
       if (point == null) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't access AtsWorldEditorItem extension point");
          return;
@@ -54,13 +56,13 @@ public class AtsWorldEditorItems {
                      Object obj = taskClass.newInstance();
                      if (obj == null) {
                         OseeLog.log(AtsPlugin.class, Level.SEVERE,
-                              "Error Instantiating AtsWorldEditorItem extension \"" + classname + "\"", null);
+                           "Error Instantiating AtsWorldEditorItem extension \"" + classname + "\"", null);
                      } else {
                         items.add((IAtsWorldEditorItem) obj);
                      }
                   } catch (Exception ex) {
                      OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Error loading AtsWorldEditorItem extension",
-                           ex);
+                        ex);
                   }
                }
             }

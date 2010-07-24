@@ -22,10 +22,12 @@ public class OteDefinePlugin extends OseeUiActivator {
    public OteDefinePlugin() {
    }
 
+   @Override
    public void start(BundleContext context) throws Exception {
       super.start(context);
    }
 
+   @Override
    public void stop(BundleContext context) throws Exception {
       super.stop(context);
    }

@@ -36,7 +36,8 @@ import org.eclipse.ui.PlatformUI;
 public class FileOrFolderSelectPanel extends Composite {
 
    public static enum ButtonType {
-      CHECK_BOX, RADIO;
+      CHECK_BOX,
+      RADIO;
    }
 
    private final boolean isFolderSelect;
@@ -91,9 +92,10 @@ public class FileOrFolderSelectPanel extends Composite {
 
       final Button fileDialogButton = new Button(composite, SWT.PUSH);
       fileDialogButton.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(
-            isFolderSelect ? ISharedImages.IMG_OBJ_FOLDER : ISharedImages.IMG_OBJ_FILE));
+         isFolderSelect ? ISharedImages.IMG_OBJ_FOLDER : ISharedImages.IMG_OBJ_FILE));
       fileDialogButton.addSelectionListener(new SelectionAdapter() {
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             String result = null;
             if (isFolderSelect) {
@@ -133,6 +135,7 @@ public class FileOrFolderSelectPanel extends Composite {
       });
 
       button.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             isSelected = button.getSelection();
             text.setEnabled(isSelected);

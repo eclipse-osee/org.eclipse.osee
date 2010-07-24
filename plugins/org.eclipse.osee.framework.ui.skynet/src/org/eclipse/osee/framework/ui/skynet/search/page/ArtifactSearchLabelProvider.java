@@ -55,6 +55,7 @@ public class ArtifactSearchLabelProvider extends LabelProvider implements IStyle
       this.disabledImageMap = new HashMap<Image, Image>();
       fPage = page;
       fMatchComparator = new Comparator() {
+         @Override
          public int compare(Object o1, Object o2) {
             return ((AttributeMatch) o1).getOriginalOffset() - ((AttributeMatch) o2).getOriginalOffset();
          }
@@ -66,6 +67,7 @@ public class ArtifactSearchLabelProvider extends LabelProvider implements IStyle
       return getStyledText(object).getString();
    }
 
+   @Override
    public StyledString getStyledText(Object element) {
       if (element instanceof AttributeLineElement) {
          return getLineElementLabel((AttributeLineElement) element);
@@ -102,7 +104,7 @@ public class ArtifactSearchLabelProvider extends LabelProvider implements IStyle
 
          if (decoration.showArtIds() && decoration.showArtVersion()) {
             coloredName.append(' ').append("[" + artifact.getArtId() + " rev." + artifact.getGammaId() + "]",
-                  StyledString.DECORATIONS_STYLER);
+               StyledString.DECORATIONS_STYLER);
          } else if (decoration.showArtIds() && !decoration.showArtVersion()) {
             coloredName.append(' ').append("[id " + artifact.getArtId() + "]", StyledString.DECORATIONS_STYLER);
          } else if (!decoration.showArtIds() && decoration.showArtVersion()) {
@@ -115,7 +117,7 @@ public class ArtifactSearchLabelProvider extends LabelProvider implements IStyle
 
          if (decoration.showArtBranch()) {
             coloredName.append(' ').append("[" + artifact.getBranch().getShortName() + "]",
-                  StyledString.DECORATIONS_STYLER);
+               StyledString.DECORATIONS_STYLER);
          }
 
          try {
@@ -159,8 +161,8 @@ public class ArtifactSearchLabelProvider extends LabelProvider implements IStyle
          }
          // append match
          int end =
-               Math.min(match.getOriginalOffset() + match.getOriginalLength() - lineElement.getOffset(),
-                     lineElement.getLength());
+            Math.min(match.getOriginalOffset() + match.getOriginalLength() - lineElement.getOffset(),
+               lineElement.getLength());
          str.append(content.substring(start, end), HIGHLIGHT_STYLE);
          pos = end;
       }

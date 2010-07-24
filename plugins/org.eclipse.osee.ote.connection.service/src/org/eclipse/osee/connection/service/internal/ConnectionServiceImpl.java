@@ -16,17 +16,16 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
-
 import org.eclipse.osee.connection.service.IConnectionService;
 import org.eclipse.osee.connection.service.IConnectorFilter;
 import org.eclipse.osee.connection.service.IConnectorListener;
 import org.eclipse.osee.connection.service.IServiceConnector;
 
 class ConnectionServiceImpl implements IConnectionService {
-	
+
    private final HashSet<IServiceConnector> connectors = new HashSet<IServiceConnector>();
    private final EventNotifier eventNotifier = new EventNotifier();
-   
+
    private boolean isStopped = false;
 
    @Override
@@ -96,8 +95,7 @@ class ConnectionServiceImpl implements IConnectionService {
          try {
             connector.stop();
          } catch (Exception ex) {
-            Activator.log(Level.SEVERE,
-			"Exception notifying listener of service stop", ex);
+            Activator.log(Level.SEVERE, "Exception notifying listener of service stop", ex);
          }
       }
       connectors.clear();

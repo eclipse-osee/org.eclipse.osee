@@ -73,12 +73,12 @@ public class EnumEntryField extends CollectionField<OseeEnumEntry> {
          for (OseeEnumEntry existingEntry : oseeEnumEntries) {
             if (!entry.equals(existingEntry)) {
                Conditions.checkExpressionFailOnTrue(entry.getName().equals(existingEntry.getName()),
-                     "Unique enumEntry name violation - %s already exists.", entry);
+                  "Unique enumEntry name violation - %s already exists.", entry);
 
                Conditions.checkExpressionFailOnTrue(
-                     entry.ordinal() == existingEntry.ordinal(),
-                     "Unique enumEntry ordinal violation - ordinal [%d] is used by existing entry:[%s] and new entry:[%s]",
-                     entry.ordinal(), existingEntry, entry);
+                  entry.ordinal() == existingEntry.ordinal(),
+                  "Unique enumEntry ordinal violation - ordinal [%d] is used by existing entry:[%s] and new entry:[%s]",
+                  entry.ordinal(), existingEntry, entry);
             }
          }
       }

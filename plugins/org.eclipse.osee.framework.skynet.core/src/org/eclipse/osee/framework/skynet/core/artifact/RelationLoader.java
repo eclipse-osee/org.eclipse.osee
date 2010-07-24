@@ -51,7 +51,7 @@ class RelationLoader {
             String rationale = chStmt.getString("rationale");
 
             RelationLink.getOrCreate(aArtifactId, bArtifactId, aBranch, bBranch, relationType, relationId, gammaId,
-                  rationale, ModificationType.getMod(chStmt.getInt("mod_type")));
+               rationale, ModificationType.getMod(chStmt.getInt("mod_type")));
          }
       } finally {
          chStmt.close();

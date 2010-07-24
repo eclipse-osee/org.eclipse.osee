@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.messaging.dds.status;
 
-
 /**
- * Maintains counts of the samples lost across all instances of data published for the {@link org.eclipse.osee.ote.messaging.dds.entity.Topic}. 
+ * Maintains counts of the samples lost across all instances of data published for the
+ * {@link org.eclipse.osee.ote.messaging.dds.entity.Topic}.
  * 
  * @author Robert A. Fisher
  * @author David Diepenbrock

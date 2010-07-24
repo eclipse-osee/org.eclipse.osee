@@ -15,12 +15,13 @@ import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 
-public abstract class OseeConnection implements Closeable{
+public abstract class OseeConnection implements Closeable {
 
    protected OseeConnection() {
 
    }
 
+   @Override
    public abstract void close();
 
    public abstract boolean isClosed() throws OseeDataStoreException;

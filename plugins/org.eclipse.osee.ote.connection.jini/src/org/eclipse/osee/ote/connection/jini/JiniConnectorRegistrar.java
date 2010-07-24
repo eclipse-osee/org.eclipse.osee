@@ -22,7 +22,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
-
 import net.jini.config.Configuration;
 import net.jini.config.ConfigurationException;
 import net.jini.core.discovery.LookupLocator;
@@ -38,7 +37,6 @@ import net.jini.lookup.LookupCache;
 import net.jini.lookup.ServiceDiscoveryEvent;
 import net.jini.lookup.ServiceDiscoveryListener;
 import net.jini.lookup.ServiceDiscoveryManager;
-
 import org.eclipse.osee.connection.service.IConnectionService;
 import org.eclipse.osee.connection.service.IConnectorListener;
 import org.eclipse.osee.connection.service.IServiceConnector;
@@ -48,21 +46,21 @@ import org.eclipse.osee.framework.plugin.core.config.JiniLookupGroupConfig;
 /**
  * @author Ken J. Aguilar
  */
-public class JiniConnectorRegistrar implements IJiniConnectorRegistrar, IConnectorListener,
-      ServiceDiscoveryListener, DiscoveryListener {
+public class JiniConnectorRegistrar implements IJiniConnectorRegistrar, IConnectorListener, ServiceDiscoveryListener, DiscoveryListener {
 
-   private final HashMap<JiniServiceSideConnector, HashSet<ServiceRegistrar>> serverSideConnectors = new HashMap<JiniServiceSideConnector, HashSet<ServiceRegistrar>>();
+   private final HashMap<JiniServiceSideConnector, HashSet<ServiceRegistrar>> serverSideConnectors =
+      new HashMap<JiniServiceSideConnector, HashSet<ServiceRegistrar>>();
    private final HashSet<ServiceRegistrar> serviceRegistrars = new HashSet<ServiceRegistrar>();
    private final IConnectionService connectionService;
-   private final HashMap<ServiceID, JiniClientSideConnector> clientSideConnectors = new HashMap<ServiceID, JiniClientSideConnector>();
+   private final HashMap<ServiceID, JiniClientSideConnector> clientSideConnectors =
+      new HashMap<ServiceID, JiniClientSideConnector>();
 
    private LookupDiscoveryManager lookupDiscoveryManager;
    private ServiceDiscoveryManager serviceDiscoveryManager;
    private LookupCache lookupCache;
    private boolean isShutdown = false;
 
-   public JiniConnectorRegistrar(ClassLoader loader, IConnectionService connectionService)
-         throws Exception, ConfigurationException {
+   public JiniConnectorRegistrar(ClassLoader loader, IConnectionService connectionService) throws Exception, ConfigurationException {
       this.connectionService = connectionService;
       connectionService.addListener(this);
       String[] groups = JiniLookupGroupConfig.getOseeJiniServiceGroups();
@@ -76,11 +74,9 @@ public class JiniConnectorRegistrar implements IJiniConnectorRegistrar, IConnect
          lookupDiscoveryManager = new LookupDiscoveryManager(groups, null, this, config);
          serviceDiscoveryManager = new ServiceDiscoveryManager(lookupDiscoveryManager, null, config);
 
-         lookupCache = serviceDiscoveryManager.createLookupCache(new ServiceTemplate(null,new Class[] {},null),
-                                                                 null,
-                                                                 this);
-      }
-      finally {
+         lookupCache =
+            serviceDiscoveryManager.createLookupCache(new ServiceTemplate(null, new Class[] {}, null), null, this);
+      } finally {
          Thread.currentThread().setContextClassLoader(previousLoader);
       }
    }
@@ -91,35 +87,26 @@ public class JiniConnectorRegistrar implements IJiniConnectorRegistrar, IConnect
    }
 
    @Override
-	public synchronized void onConnectorsAdded(
-			Collection<IServiceConnector> connectors) {
-		for (IServiceConnector connector : connectors) {
-			if (connector.getConnectorType().equals(
-					JiniServiceSideConnector.TYPE)) {
-				System.out.println("found jini server side connector");
-				HashSet<ServiceRegistrar> list = new HashSet<ServiceRegistrar>(
-						serviceRegistrars);
-				if (connector instanceof JiniServiceSideConnector) {
-					serverSideConnectors.put(
-							(JiniServiceSideConnector) connector, list);
-					for (ServiceRegistrar registrar : list) {
-						try {
-							final ServiceRegistration registration = registrar
-									.register(
-											((JiniServiceSideConnector) connector)
-													.getServiceItem(),
-											Long.MAX_VALUE);
-							((JiniServiceSideConnector) connector)
-									.addRegistration(registration, registrar);
-						} catch (RemoteException ex) {
-							Activator.log(Level.WARNING,
-									"Error registering service", ex);
-						}
-					}
-				}
-			}
-		}
-	}
+   public synchronized void onConnectorsAdded(Collection<IServiceConnector> connectors) {
+      for (IServiceConnector connector : connectors) {
+         if (connector.getConnectorType().equals(JiniServiceSideConnector.TYPE)) {
+            System.out.println("found jini server side connector");
+            HashSet<ServiceRegistrar> list = new HashSet<ServiceRegistrar>(serviceRegistrars);
+            if (connector instanceof JiniServiceSideConnector) {
+               serverSideConnectors.put((JiniServiceSideConnector) connector, list);
+               for (ServiceRegistrar registrar : list) {
+                  try {
+                     final ServiceRegistration registration =
+                        registrar.register(((JiniServiceSideConnector) connector).getServiceItem(), Long.MAX_VALUE);
+                     ((JiniServiceSideConnector) connector).addRegistration(registration, registrar);
+                  } catch (RemoteException ex) {
+                     Activator.log(Level.WARNING, "Error registering service", ex);
+                  }
+               }
+            }
+         }
+      }
+   }
 
    public synchronized void shutdown() {
       if (!isShutdown) {
@@ -131,8 +118,7 @@ public class JiniConnectorRegistrar implements IJiniConnectorRegistrar, IConnect
          for (JiniServiceSideConnector connector : serverSideConnectors.keySet()) {
             try {
                connector.removeAllRegistrations();
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                Activator.log(Level.WARNING, "Error removing registrations on shutdown", ex);
             }
          }
@@ -140,17 +126,15 @@ public class JiniConnectorRegistrar implements IJiniConnectorRegistrar, IConnect
             for (JiniServiceSideConnector connector : serverSideConnectors.keySet()) {
                try {
                   connectionService.removeConnector(connector);
-               }
-               catch (Exception ex) {
+               } catch (Exception ex) {
                   Activator.log(Level.WARNING, "Error removing connectors on shutdown", ex);
                }
             }
             for (JiniClientSideConnector connector : new ArrayList<JiniClientSideConnector>(
-                                                                                            clientSideConnectors.values())) {
+               clientSideConnectors.values())) {
                try {
                   connectionService.removeConnector(connector);
-               }
-               catch (Exception ex) {
+               } catch (Exception ex) {
                   Activator.log(Level.WARNING, "Error removing connectors on shutdown", ex);
                }
             }
@@ -170,8 +154,7 @@ public class JiniConnectorRegistrar implements IJiniConnectorRegistrar, IConnect
       if (connector.getConnectorType().equals(JiniServiceSideConnector.TYPE)) {
          JiniServiceSideConnector jiniConnector = (JiniServiceSideConnector) connector;
          serverSideConnectors.remove(jiniConnector);
-      }
-      else if (connector.getConnectorType().equals(JiniClientSideConnector.TYPE)) {
+      } else if (connector.getConnectorType().equals(JiniClientSideConnector.TYPE)) {
          Iterator<Entry<ServiceID, JiniClientSideConnector>> iter = clientSideConnectors.entrySet().iterator();
          while (iter.hasNext()) {
             final Entry<ServiceID, JiniClientSideConnector> entry = iter.next();
@@ -191,21 +174,18 @@ public class JiniConnectorRegistrar implements IJiniConnectorRegistrar, IConnect
                for (String group : registrar.getGroups()) {
                   Activator.log(Level.INFO, "found JINI registrar group: " + group);
                }
-            }
-            catch (RemoteException ex) {
+            } catch (RemoteException ex) {
                ex.printStackTrace();
             }
             serviceRegistrars.add(registrar);
             for (Map.Entry<JiniServiceSideConnector, HashSet<ServiceRegistrar>> entry : serverSideConnectors.entrySet()) {
-               final ServiceRegistration registration = registrar.register(
-                                                                           entry.getKey().getServiceItem(),
-                                                                           Long.MAX_VALUE);
+               final ServiceRegistration registration =
+                  registrar.register(entry.getKey().getServiceItem(), Long.MAX_VALUE);
                entry.getKey().addRegistration(registration, registrar);
                entry.getValue().addAll(serviceRegistrars);
             }
          }
-      }
-      catch (Exception ex) {
+      } catch (Exception ex) {
          Activator.log(Level.SEVERE, "Error processing service discovery", ex);
       }
    }
@@ -216,6 +196,7 @@ public class JiniConnectorRegistrar implements IJiniConnectorRegistrar, IConnect
 
    }
 
+   @Override
    public synchronized void serviceAdded(ServiceDiscoveryEvent event) {
       ServiceItem serviceItem = event.getPostEventServiceItem();
       JiniClientSideConnector connector = new JiniClientSideConnector(serviceItem);
@@ -230,13 +211,13 @@ public class JiniConnectorRegistrar implements IJiniConnectorRegistrar, IConnect
       if (connector != null) {
          try {
             connectionService.removeConnector(connector);
-         }
-         catch (Exception e) {
+         } catch (Exception e) {
             Activator.log(Level.SEVERE, "error processing removed service event", e);
          }
       }
    }
 
+   @Override
    public synchronized void serviceChanged(ServiceDiscoveryEvent event) {
       ServiceItem item = event.getPostEventServiceItem();
       JiniClientSideConnector connector = clientSideConnectors.get(item.serviceID);

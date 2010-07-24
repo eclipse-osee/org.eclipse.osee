@@ -11,7 +11,8 @@
 package org.eclipse.osee.ote.messaging.dds.status;
 
 /**
- * Maintains counts of the number of times the {@link org.eclipse.osee.ote.messaging.dds.entity.DataWriter} failed to signal its liveliness within the liveliness period.
+ * Maintains counts of the number of times the {@link org.eclipse.osee.ote.messaging.dds.entity.DataWriter} failed to
+ * signal its liveliness within the liveliness period.
  * 
  * @author Robert A. Fisher
  * @author David Diepenbrock

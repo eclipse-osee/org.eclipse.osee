@@ -20,7 +20,7 @@ public class CoveragePackage1Import7 extends CpSelectAndImportItem {
 
    public CoveragePackage1Import7(XNavigateItem parent) {
       super(parent, "Open CP 1 - Import 7 - Change items AuxPowerUnit1.clear line 2 and 3",
-            CoverageImport7TestBlam.NAME);
+         CoverageImport7TestBlam.NAME);
    }
 
 }

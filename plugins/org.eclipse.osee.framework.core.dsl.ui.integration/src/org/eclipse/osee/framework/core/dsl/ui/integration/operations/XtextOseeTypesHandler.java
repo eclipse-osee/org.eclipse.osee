@@ -26,20 +26,20 @@ import org.eclipse.osee.framework.skynet.core.importing.IOseeTypesHandler;
  */
 public class XtextOseeTypesHandler implements IOseeTypesHandler {
 
-	@Override
-	public void execute(IProgressMonitor monitor, URI uri) throws OseeCoreException {
-		try {
-			IOseeCachingService cacheService = Activator.getOseeCacheService();
-			IOperation operation = new OseeTypesImportOperation(cacheService, uri, false, false, true);
-			Operations.executeWorkAndCheckStatus(operation, monitor, -1);
-		} catch (Exception ex) {
-			OseeExceptions.wrapAndThrow(ex);
-		}
-	}
+   @Override
+   public void execute(IProgressMonitor monitor, URI uri) throws OseeCoreException {
+      try {
+         IOseeCachingService cacheService = Activator.getOseeCacheService();
+         IOperation operation = new OseeTypesImportOperation(cacheService, uri, false, false, true);
+         Operations.executeWorkAndCheckStatus(operation, monitor, -1);
+      } catch (Exception ex) {
+         OseeExceptions.wrapAndThrow(ex);
+      }
+   }
 
-	@Override
-	public boolean isApplicable(String resource) {
-		return Strings.isValid(resource) && resource.endsWith(".osee");
-	}
+   @Override
+   public boolean isApplicable(String resource) {
+      return Strings.isValid(resource) && resource.endsWith(".osee");
+   }
 
 }

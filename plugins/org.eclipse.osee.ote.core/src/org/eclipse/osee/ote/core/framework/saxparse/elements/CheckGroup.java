@@ -15,9 +15,8 @@ import org.xml.sax.Attributes;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
-public class CheckGroup extends ElementHandlers{
+public class CheckGroup extends ElementHandlers {
 
    /**
     * @param name
@@ -25,8 +24,6 @@ public class CheckGroup extends ElementHandlers{
    public CheckGroup() {
       super("CheckGroup");
    }
-
-
 
    @Override
    public Object createStartElementFoundObject(String uri, String localName, String name, Attributes attributes) {

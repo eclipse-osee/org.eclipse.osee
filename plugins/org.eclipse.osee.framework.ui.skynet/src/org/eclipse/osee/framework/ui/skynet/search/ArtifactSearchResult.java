@@ -13,24 +13,28 @@ package org.eclipse.osee.framework.ui.skynet.search;
 import org.eclipse.jface.resource.ImageDescriptor;
 
 public class ArtifactSearchResult extends AbstractArtifactSearchResult {
-   private AbstractArtifactSearchQuery aQuery;
+   private final AbstractArtifactSearchQuery aQuery;
 
    public ArtifactSearchResult(AbstractArtifactSearchQuery job) {
       aQuery = job;
    }
 
+   @Override
    public ImageDescriptor getImageDescriptor() {
       return null;
    }
 
+   @Override
    public String getLabel() {
       return aQuery.getResultLabel();
    }
 
+   @Override
    public String getTooltip() {
       return getLabel();
    }
 
+   @Override
    public AbstractArtifactSearchQuery getQuery() {
       return aQuery;
    }

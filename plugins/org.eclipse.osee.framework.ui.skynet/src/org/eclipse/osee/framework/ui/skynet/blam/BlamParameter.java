@@ -19,7 +19,7 @@ public class BlamParameter {
    @SuppressWarnings("unused")
    private final Class<?> clazz;
    @SuppressWarnings("unused")
-   private String binding;
+   private final String binding;
 
    /**
     * @param name

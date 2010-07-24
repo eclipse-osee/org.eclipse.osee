@@ -161,7 +161,7 @@ public class ODMEditor extends GraphicalEditorWithFlyoutPalette {
       getSite().getKeyBindingService().registerAction(zoomIn);
       getSite().getKeyBindingService().registerAction(zoomOut);
       List<String> zoomContributions =
-            Arrays.asList(new String[] {ZoomManager.FIT_ALL, ZoomManager.FIT_HEIGHT, ZoomManager.FIT_WIDTH});
+         Arrays.asList(new String[] {ZoomManager.FIT_ALL, ZoomManager.FIT_HEIGHT, ZoomManager.FIT_WIDTH});
       zoomManager.setZoomLevelContributions(zoomContributions);
 
       //      viewer.addDropTargetListener((TransferDropTargetListener) new DiagramDropTargetListener(viewer));
@@ -171,6 +171,7 @@ public class ODMEditor extends GraphicalEditorWithFlyoutPalette {
    private KeyHandler getCommonKeyHandler() {
       if (shareKeyHandler == null) {
          shareKeyHandler = new GraphicalViewerKeyHandler(getViewer()) {
+            @Override
             @SuppressWarnings("unchecked")
             public boolean keyPressed(KeyEvent event) {
                if (event.keyCode == SWT.DEL) {
@@ -194,8 +195,8 @@ public class ODMEditor extends GraphicalEditorWithFlyoutPalette {
                return super.keyPressed(event);
             }
          };
-         shareKeyHandler.put(KeyStroke.getPressed(SWT.F2, 0), getActionRegistry().getAction(
-               GEFActionConstants.DIRECT_EDIT));
+         shareKeyHandler.put(KeyStroke.getPressed(SWT.F2, 0),
+            getActionRegistry().getAction(GEFActionConstants.DIRECT_EDIT));
       }
       return shareKeyHandler;
    }
@@ -220,6 +221,7 @@ public class ODMEditor extends GraphicalEditorWithFlyoutPalette {
       return overviewOutlinePage;
    }
 
+   @Override
    public ActionRegistry getActionRegistry() {
       if (actionRegistry == null) {
          actionRegistry = new ActionRegistry();
@@ -242,12 +244,15 @@ public class ODMEditor extends GraphicalEditorWithFlyoutPalette {
    @Override
    protected PaletteViewerProvider createPaletteViewerProvider() {
       return new PaletteViewerProvider(getEditDomain()) {
+         @Override
          protected void configurePaletteViewer(PaletteViewer viewer) {
             super.configurePaletteViewer(viewer);
             viewer.setCustomizer(new PaletteCustomizer() {
+               @Override
                public void revertToSaved() {
                }
 
+               @Override
                public void save() {
                }
             });

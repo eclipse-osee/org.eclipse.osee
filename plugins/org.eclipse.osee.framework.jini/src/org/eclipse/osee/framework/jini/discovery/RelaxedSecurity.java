@@ -25,10 +25,12 @@ public class RelaxedSecurity extends SecurityManager {
       super();
    }
 
+   @Override
    public void checkPermission(Permission perm) {
       return;
    }
 
+   @Override
    public void checkPermission(Permission perm, Object context) {
       return;
    }

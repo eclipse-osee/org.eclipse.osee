@@ -12,17 +12,17 @@ package org.eclipse.osee.ote.ui.mux.view;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-
 import org.eclipse.osee.ote.message.IInstrumentationRegistrationListener;
 import org.eclipse.osee.ote.message.instrumentation.IOInstrumentation;
 
 /**
  * @author Ken J. Aguilar
- *
  */
 public interface IRegistrationListener extends Remote, IInstrumentationRegistrationListener {
 
-	void onRegistered(String name, IOInstrumentation instrumentation) throws RemoteException;
+   @Override
+   void onRegistered(String name, IOInstrumentation instrumentation) throws RemoteException;
 
-	void onDeregistered(String name) throws RemoteException;
+   @Override
+   void onDeregistered(String name) throws RemoteException;
 }

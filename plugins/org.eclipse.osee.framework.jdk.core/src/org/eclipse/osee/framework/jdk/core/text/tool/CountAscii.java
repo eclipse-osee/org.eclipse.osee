@@ -47,9 +47,7 @@ public class CountAscii {
          System.out.println((char) i + ": " + letterCount[i]);
       }
       /*
-      int total = 0;
-      for(int i=0; i<letterCount.length; i++) {
-      	total += letterCount[i];
-      }*/
+       * int total = 0; for(int i=0; i<letterCount.length; i++) { total += letterCount[i]; }
+       */
    }
 }

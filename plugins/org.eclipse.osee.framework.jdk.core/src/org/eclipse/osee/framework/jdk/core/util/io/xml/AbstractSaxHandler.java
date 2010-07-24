@@ -17,11 +17,9 @@ import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
- * @author Ryan D. Brooks
- *         If you want to preserve CDATA sections you need to follow this pattern:
- *         XMLReader xmlReader = XMLReaderFactory.createXMLReader();
- *         xmlReader.setContentHandler(this);
- *         xmlReader.setProperty("http://xml.org/sax/properties/lexical-handler", this); //This is the important part
+ * @author Ryan D. Brooks If you want to preserve CDATA sections you need to follow this pattern: XMLReader xmlReader =
+ * XMLReaderFactory.createXMLReader(); xmlReader.setContentHandler(this);
+ * xmlReader.setProperty("http://xml.org/sax/properties/lexical-handler", this); //This is the important part
  */
 public abstract class AbstractSaxHandler extends DefaultHandler implements LexicalHandler {
    // Buffer for collecting data from the "characters" SAX event.
@@ -77,26 +75,33 @@ public abstract class AbstractSaxHandler extends DefaultHandler implements Lexic
       appendable.append(contents);
    }
 
+   @Override
    public void comment(char[] ch, int start, int length) throws SAXException {
    }
 
+   @Override
    public void endCDATA() throws SAXException {
       contents.append("]]>");
    }
 
+   @Override
    public void endDTD() throws SAXException {
    }
 
+   @Override
    public void endEntity(String name) throws SAXException {
    }
 
+   @Override
    public void startCDATA() throws SAXException {
       contents.append("<![CDATA[");
    }
 
+   @Override
    public void startDTD(String name, String publicId, String systemId) throws SAXException {
    }
 
+   @Override
    public void startEntity(String name) throws SAXException {
    }
 }

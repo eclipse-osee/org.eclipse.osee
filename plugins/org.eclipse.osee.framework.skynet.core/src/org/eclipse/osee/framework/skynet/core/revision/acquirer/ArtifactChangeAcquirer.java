@@ -55,13 +55,13 @@ public class ArtifactChangeAcquirer extends ChangeAcquirer {
             toTransactionId = TransactionManager.getHeadTransaction(getSourceBranch());
 
             chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_BRANCH_ARTIFACT),
-                  getSourceBranch().getId(), fromTransactionId.getId());
+               getSourceBranch().getId(), fromTransactionId.getId());
          } else { //Changes per a transaction
             toTransactionId = getTransaction();
 
             if (getSpecificArtifact() != null) {
                chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_TX_ARTIFACT_FOR_SPECIFIC_ARTIFACT),
-                     toTransactionId.getId(), getSpecificArtifact().getArtId());
+                  toTransactionId.getId(), getSpecificArtifact().getArtId());
                fromTransactionId = toTransactionId;
             } else {
                chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_TX_ARTIFACT), toTransactionId.getId());
@@ -78,9 +78,8 @@ public class ArtifactChangeAcquirer extends ChangeAcquirer {
             ModificationType modificationType = ModificationType.getMod(chStmt.getInt("mod_type"));
 
             ArtifactChangeBuilder artifactChangeBuilder =
-                  new ArtifactChangeBuilder(getSourceBranch(),
-                        ArtifactTypeManager.getType(chStmt.getInt("art_type_id")), chStmt.getInt("gamma_id"), artId,
-                        txDelta, modificationType, !hasBranch);
+               new ArtifactChangeBuilder(getSourceBranch(), ArtifactTypeManager.getType(chStmt.getInt("art_type_id")),
+                  chStmt.getInt("gamma_id"), artId, txDelta, modificationType, !hasBranch);
 
             getArtIds().add(artId);
             getChangeBuilders().add(artifactChangeBuilder);

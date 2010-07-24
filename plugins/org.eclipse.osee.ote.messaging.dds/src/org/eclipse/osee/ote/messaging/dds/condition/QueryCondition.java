@@ -13,20 +13,18 @@ package org.eclipse.osee.ote.messaging.dds.condition;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-
 import org.eclipse.osee.ote.messaging.dds.NotImplementedException;
 import org.eclipse.osee.ote.messaging.dds.ReturnCode;
 
-
 /**
- * This class is here for future functionality that is described in the DDS specification
- * but has not been implemented or used.
+ * This class is here for future functionality that is described in the DDS specification but has not been implemented
+ * or used.
  * 
  * @author Robert A. Fisher
  * @author David Diepenbrock
  */
 public class QueryCondition {
-   private String queryExpression;
+   private final String queryExpression;
    private Collection<String> queryArguments;
 
    /**
@@ -37,7 +35,7 @@ public class QueryCondition {
       super();
       this.queryExpression = queryExpression;
       this.queryArguments = Collections.synchronizedList(new ArrayList<String>(queryArguments));
-      
+
       // This class, and the use of it has not been implemented
       throw new NotImplementedException();
    }

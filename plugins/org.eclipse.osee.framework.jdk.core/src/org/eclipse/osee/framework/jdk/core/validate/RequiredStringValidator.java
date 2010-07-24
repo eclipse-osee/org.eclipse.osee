@@ -16,11 +16,12 @@ public class RequiredStringValidator extends FieldValidator {
       super(fieldName);
    }
 
+   @Override
    public boolean isValid() {
       Object object = paramMap.get(fieldName);
       if (object != null && object instanceof String) {
          String value = (String) object;
-         return (value != null && !value.equals(""));
+         return value != null && !value.equals("");
       }
       return false;
    }

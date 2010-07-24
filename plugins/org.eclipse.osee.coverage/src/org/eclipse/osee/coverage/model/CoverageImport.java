@@ -32,7 +32,7 @@ public class CoverageImport extends CoveragePackageBase implements ICoverage {
    private Date runDate;
    private String location = "";
    private String blamName = "";
-   private List<File> importRecordFiles = new ArrayList<File>();
+   private final List<File> importRecordFiles = new ArrayList<File>();
    private String importDirectory = null;
 
    public CoverageImport(String name) {
@@ -48,6 +48,7 @@ public class CoverageImport extends CoveragePackageBase implements ICoverage {
       return runDate;
    }
 
+   @Override
    public String getName() {
       return super.getName() + " - " + XDate.getDateStr(runDate, XDate.MMDDYYHHMM) + " - " + getCoverageItems().size() + " Coverage Items";
    }
@@ -62,6 +63,7 @@ public class CoverageImport extends CoveragePackageBase implements ICoverage {
       xResultData.log(AHTML.getLabelValueStr("Run Date", XDate.getDateStr(getRunDate(), XDate.MMDDYYHHMM)));
    }
 
+   @Override
    public String getLocation() {
       return location;
    }
@@ -104,7 +106,9 @@ public class CoverageImport extends CoveragePackageBase implements ICoverage {
    }
 
    public void addImportRecordFile(File file) throws OseeArgumentException {
-      if (!file.exists()) throw new OseeArgumentException(String.format("Import Record file [%s] doesn't exist.", file));
+      if (!file.exists()) {
+         throw new OseeArgumentException(String.format("Import Record file [%s] doesn't exist.", file));
+      }
       importRecordFiles.add(file);
    }
 

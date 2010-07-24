@@ -18,7 +18,7 @@ import org.eclipse.jface.window.Window;
  */
 public class EnvVariableDetailsDialogHelper implements Runnable {
 
-   private String nameOfVariableToSet;
+   private final String nameOfVariableToSet;
    private int result;
    private String selection;
 
@@ -35,9 +35,11 @@ public class EnvVariableDetailsDialogHelper implements Runnable {
       return selection;
    }
 
+   @Override
    public void run() {
-      EnvVariableDetailsDialog dlg = new EnvVariableDetailsDialog(null, "Edit " + nameOfVariableToSet, null,
-            nameOfVariableToSet + " Value:", MessageDialog.NONE, new String[] {"OK", "Cancel"}, 0, selection);
+      EnvVariableDetailsDialog dlg =
+         new EnvVariableDetailsDialog(null, "Edit " + nameOfVariableToSet, null, nameOfVariableToSet + " Value:",
+            MessageDialog.NONE, new String[] {"OK", "Cancel"}, 0, selection);
 
       result = dlg.open();
 
@@ -46,8 +48,7 @@ public class EnvVariableDetailsDialogHelper implements Runnable {
             String info = dlg.getSelection();
             if (info != null) {
                selection = info;
-            }
-            else {
+            } else {
                selection = "";
             }
          }

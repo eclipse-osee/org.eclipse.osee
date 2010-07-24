@@ -26,10 +26,13 @@ public class ExtensionFilter implements FileFilter {
     * @throws IllegalArgumentException if <code>extension</code> is null.
     */
    public ExtensionFilter(String extension) {
-      if (extension == null) throw new IllegalArgumentException("extension must not be null");
+      if (extension == null) {
+         throw new IllegalArgumentException("extension must not be null");
+      }
       this.extension = extension;
    }
 
+   @Override
    public boolean accept(File file) {
       return file.isFile() && file.getName().endsWith(extension);
    }

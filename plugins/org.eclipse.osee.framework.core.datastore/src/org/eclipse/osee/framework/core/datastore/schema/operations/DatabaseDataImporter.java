@@ -182,7 +182,7 @@ public class DatabaseDataImporter {
                      String nodeValue = node.getTextContent();
                      if (nodeName != null && !nodeName.equals("")) {
                         columnMetaData.addColumnField(ColumnFields.valueOf(nodeName),
-                              (nodeValue != null ? nodeValue : ""));
+                           (nodeValue != null ? nodeValue : ""));
                      }
                   }
                   tableData.addColumn(columnMetaData);

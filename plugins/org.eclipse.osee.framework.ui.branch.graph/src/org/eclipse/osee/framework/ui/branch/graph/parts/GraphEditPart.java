@@ -71,7 +71,9 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
    private final IPreferenceStore preferenceStore;
 
    private enum ConnectionType {
-      BRANCH_INTERNAL, PARENT_CHILD, MERGE;
+      BRANCH_INTERNAL,
+      PARENT_CHILD,
+      MERGE;
    }
 
    public GraphEditPart(GraphicalViewer viewer) {
@@ -173,8 +175,8 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
             txNumberToTxModelMap.put(txNumber, model);
             txNumberToTxFigureMap.put(txNumber, FigureFactory.createTxFigure(model));
          } else {
-            OseeLog.log(BranchGraphActivator.class, Level.SEVERE, String.format("Orphan TxModel: [%s]",
-                  model.toString()));
+            OseeLog.log(BranchGraphActivator.class, Level.SEVERE,
+               String.format("Orphan TxModel: [%s]", model.toString()));
          }
       }
 
@@ -240,7 +242,7 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
 
    private String getConnectionLabel(TxModel source, TxModel target) {
       return String.format("%s:%s - %s:%s", source.getParentBranchModel().getBranch().getShortName(),
-            source.getRevision(), target.getParentBranchModel().getBranch().getShortName(), target.getRevision());
+         source.getRevision(), target.getParentBranchModel().getBranch().getShortName(), target.getRevision());
    }
 
    private void createTxConnections(Collection<BranchModel> toReturn) {
@@ -256,7 +258,7 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
                   if (parent != null) {
                      msg = getConnectionLabel(parentTxModel, txModel);
                      connect(ConnectionType.BRANCH_INTERNAL, getFigure(), parent, txFigure, msg, false,
-                           ColorConstants.black);
+                        ColorConstants.black);
                   }
                } else if (txModel.getSourceTx() != null) {
                   TxModel sourceTx = txModel.getSourceTx();
@@ -273,14 +275,14 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
                   BranchFigure branchFigure = branchFigureMap.get(branchModel.getBranch());
                   msg = getConnectionLabel(branchModel.getFirstTx(), txModel);
                   connect(ConnectionType.BRANCH_INTERNAL, getFigure(), branchFigure, txFigure, msg, false,
-                        ColorConstants.black);
+                     ColorConstants.black);
                }
             }
          } else {
             TxModel txModel = branchModel.getFirstTx();
             if (txModel == null) {
-               OseeLog.log(BranchGraphActivator.class, Level.SEVERE, String.format(
-                     "Branch did not have a starting tx [%s]", branchModel));
+               OseeLog.log(BranchGraphActivator.class, Level.SEVERE,
+                  String.format("Branch did not have a starting tx [%s]", branchModel));
             } else {
                if (txModel.getSourceTx() != null) {
                   TxModel sourceTx = txModel.getSourceTx();
@@ -291,12 +293,12 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
                      TxFigure source = getTxFigure(sourceTx);
                      if (source != null) {
                         connect(ConnectionType.PARENT_CHILD, getFigure(), source, branchFigure, msg, true,
-                              ColorConstants.lightBlue);
+                           ColorConstants.lightBlue);
                      }
                   } else {
                      BranchFigure source = branchFigureMap.get(sourceTx.getParentBranchModel().getBranch());
                      connect(ConnectionType.PARENT_CHILD, getFigure(), source, branchFigure, msg, true,
-                           ColorConstants.lightBlue);
+                        ColorConstants.lightBlue);
                   }
                }
             }
@@ -371,7 +373,7 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
 
    private void connect(ConnectionType connectType, IFigure contents, IFigure source, IFigure target, String toolTip, boolean hasEndPoint, Color color) {
       PolylineConnection connection =
-            FigureFactory.createConnection(getFigure(), source, target, toolTip, hasEndPoint, color);
+         FigureFactory.createConnection(getFigure(), source, target, toolTip, hasEndPoint, color);
       ConnectionMouseListener listener = new ConnectionMouseListener(connection);
       connection.addMouseMotionListener(listener);
       connection.addMouseListener(listener);
@@ -405,26 +407,33 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
          this.connection = connection;
       }
 
+      @Override
       public void mouseDragged(MouseEvent event) {
       }
 
+      @Override
       public void mouseEntered(MouseEvent event) {
       }
 
+      @Override
       public void mouseExited(MouseEvent event) {
          connection.setLineWidth(1);
       }
 
+      @Override
       public void mouseHover(MouseEvent event) {
          connection.setLineWidth(3);
       }
 
+      @Override
       public void mouseMoved(MouseEvent event) {
       }
 
+      @Override
       public void mouseDoubleClicked(MouseEvent event) {
       }
 
+      @Override
       public void mousePressed(MouseEvent event) {
          TxFigure txFigure = (TxFigure) connection.getTargetAnchor().getOwner();
          scrollTo(txFigure);
@@ -439,6 +448,7 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
          }
       }
 
+      @Override
       public void mouseReleased(MouseEvent event) {
       }
    }

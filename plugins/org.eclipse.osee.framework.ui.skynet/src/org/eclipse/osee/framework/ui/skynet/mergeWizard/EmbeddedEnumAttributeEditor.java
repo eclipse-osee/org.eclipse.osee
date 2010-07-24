@@ -31,17 +31,16 @@ import org.eclipse.swt.widgets.Composite;
  */
 
 /*
- * All of the instance of checks are needed to support both artifacts and
- * conflicts. The reason to support both is I created the classes for
- * artifacts so all of the work was already done for them. I then realized
- * that I needed to control the setting of values for conflicts and thus had to call
- * the conflict specific methods instead of simply setting the values.
+ * All of the instance of checks are needed to support both artifacts and conflicts. The reason to support both is I
+ * created the classes for artifacts so all of the work was already done for them. I then realized that I needed to
+ * control the setting of values for conflicts and thus had to call the conflict specific methods instead of simply
+ * setting the values.
  */
 
 public class EmbeddedEnumAttributeEditor implements IEmbeddedAttributeEditor {
    private static final String PROMPT = "Please select a value from the combo box";
    private static final String ERROR_PROMPT =
-         "All artifacts must be of the same type when edited in an enumeration editor.";
+      "All artifacts must be of the same type when edited in an enumeration editor.";
    protected IAttributeType attributeType;
    protected String displayName;
    protected Collection<?> attributeHolder;
@@ -55,6 +54,7 @@ public class EmbeddedEnumAttributeEditor implements IEmbeddedAttributeEditor {
       this.persist = persist;
    }
 
+   @Override
    public boolean create(Composite composite, GridData gd) {
       if (attributeHolder == null) {
          return false;
@@ -110,10 +110,12 @@ public class EmbeddedEnumAttributeEditor implements IEmbeddedAttributeEditor {
       return true;
    }
 
+   @Override
    public void update(Object value) {
       editor.setSelected(value.toString());
    }
 
+   @Override
    public boolean commit() {
       String selection = editor.getSelected();
       try {
@@ -143,10 +145,12 @@ public class EmbeddedEnumAttributeEditor implements IEmbeddedAttributeEditor {
       return true;
    }
 
+   @Override
    public boolean canClear() {
       return false;
    }
 
+   @Override
    public boolean canFinish() {
       return true;
    }

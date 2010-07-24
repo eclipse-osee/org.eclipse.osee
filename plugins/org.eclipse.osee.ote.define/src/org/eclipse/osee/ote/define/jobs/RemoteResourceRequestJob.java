@@ -23,8 +23,8 @@ import org.eclipse.osee.ote.define.operations.RemoteResourceRequestOperation;
  */
 public class RemoteResourceRequestJob extends Job {
    private static final String JOB_NAME = "Download Resource";
-   private String urlRequest;
-   private String targetFileName;
+   private final String urlRequest;
+   private final String targetFileName;
    private IFile downloaded;
 
    public RemoteResourceRequestJob(String urlRequest, String targetFileName) {
@@ -44,14 +44,14 @@ public class RemoteResourceRequestJob extends Job {
       IStatus status = Status.CANCEL_STATUS;
       try {
          RemoteResourceRequestOperation remoteRequest =
-               new RemoteResourceRequestOperation("TEMP", urlRequest, targetFileName);
+            new RemoteResourceRequestOperation("TEMP", urlRequest, targetFileName);
          remoteRequest.execute(monitor);
          downloaded = remoteRequest.getResults();
          status = Status.OK_STATUS;
       } catch (Exception ex) {
          status =
-               new Status(Status.ERROR, OteDefinePlugin.PLUGIN_ID, String.format("Error downloading resource [%s]",
-                     targetFileName), ex);
+            new Status(IStatus.ERROR, OteDefinePlugin.PLUGIN_ID, String.format("Error downloading resource [%s]",
+               targetFileName), ex);
       }
       return status;
    }

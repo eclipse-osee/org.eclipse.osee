@@ -28,48 +28,46 @@ import org.junit.Test;
  */
 public class WordMLExtractorDelegateTableOfContentsTest {
 
-	private static final Pattern PARAGRAPHREGEX = Pattern.compile("<w:p[ >].*?</w:p>", Pattern.DOTALL);
+   private static final Pattern PARAGRAPHREGEX = Pattern.compile("<w:p[ >].*?</w:p>", Pattern.DOTALL);
 
-	private static final String TABLE_OF_CONTENTS_FILE = "tableOfContentsHyperlinkTest.xml";
-	private final WordOutlineExtractorDelegate delegate = new WordOutlineExtractorDelegate();
+   private static final String TABLE_OF_CONTENTS_FILE = "tableOfContentsHyperlinkTest.xml";
+   private final WordOutlineExtractorDelegate delegate = new WordOutlineExtractorDelegate();
 
-	@Test
-	public void tableOfContentsLinksInput() throws Exception {
-		delegate.initialize();
-		Matcher matcher = PARAGRAPHREGEX.matcher(getFileAsString(TABLE_OF_CONTENTS_FILE));
-		boolean foundSomething = false;
-		if (matcher.find()) {
-			foundSomething = true;
-			try {
-				delegate.processContent(null, false, false, null, null, null, matcher.group(), false);
-			} catch (OseeCoreException ex) {
-				//we should get an exception because 
-				Assert.assertTrue(true);
-			}
-		}
-		Assert.assertTrue(foundSomething);
-		Assert.assertTrue(delegate.getLastHeaderNumber().isEmpty());
-		Assert.assertTrue(delegate.getLastHeaderName().isEmpty());
-		Assert.assertTrue(delegate.getLastContent().isEmpty());
-	}
+   @Test
+   public void tableOfContentsLinksInput() throws Exception {
+      delegate.initialize();
+      Matcher matcher = PARAGRAPHREGEX.matcher(getFileAsString(TABLE_OF_CONTENTS_FILE));
+      boolean foundSomething = false;
+      if (matcher.find()) {
+         foundSomething = true;
+         try {
+            delegate.processContent(null, false, false, null, null, null, matcher.group(), false);
+         } catch (OseeCoreException ex) {
+            //we should get an exception because 
+            Assert.assertTrue(true);
+         }
+      }
+      Assert.assertTrue(foundSomething);
+      Assert.assertTrue(delegate.getLastHeaderNumber().isEmpty());
+      Assert.assertTrue(delegate.getLastHeaderName().isEmpty());
+      Assert.assertTrue(delegate.getLastContent().isEmpty());
+   }
 
-	private static String getFileAsString(String nameOfFile) {
-		StringBuilder buffer = new StringBuilder();
-		InputStream inputStream = null;
-		try {
-			inputStream =
-						WordMLExtractorDelegateTableOfContentsTest.class.getResourceAsStream(TABLE_OF_CONTENTS_FILE);
-			buffer.append(Lib.inputStreamToString(inputStream));
-			Assert.assertTrue(buffer.length() != 0);
-		} catch (IOException ex) {
-			Assert.assertTrue(
-						String.format("%s something when wrong while reading a file...",
-									WordMLExtractorDelegateTableOfContentsTest.class.getName()), true);
-		} finally {
-			Lib.close(inputStream);
-		}
+   private static String getFileAsString(String nameOfFile) {
+      StringBuilder buffer = new StringBuilder();
+      InputStream inputStream = null;
+      try {
+         inputStream = WordMLExtractorDelegateTableOfContentsTest.class.getResourceAsStream(TABLE_OF_CONTENTS_FILE);
+         buffer.append(Lib.inputStreamToString(inputStream));
+         Assert.assertTrue(buffer.length() != 0);
+      } catch (IOException ex) {
+         Assert.assertTrue(String.format("%s something when wrong while reading a file...",
+            WordMLExtractorDelegateTableOfContentsTest.class.getName()), true);
+      } finally {
+         Lib.close(inputStream);
+      }
 
-		return buffer.toString();
-	}
+      return buffer.toString();
+   }
 
 }

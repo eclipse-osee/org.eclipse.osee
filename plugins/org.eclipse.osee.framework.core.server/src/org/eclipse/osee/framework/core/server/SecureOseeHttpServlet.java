@@ -19,30 +19,30 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  */
 public class SecureOseeHttpServlet extends OseeHttpServlet {
 
-	private static final long serialVersionUID = -4034231476048459552L;
-	private final ISessionManager sessionManager;
+   private static final long serialVersionUID = -4034231476048459552L;
+   private final ISessionManager sessionManager;
 
-	public SecureOseeHttpServlet(ISessionManager sessionManager) {
-		super();
-		this.sessionManager = sessionManager;
-	}
+   public SecureOseeHttpServlet(ISessionManager sessionManager) {
+      super();
+      this.sessionManager = sessionManager;
+   }
 
-	protected ISessionManager getSessionManager() {
-		return sessionManager;
-	}
+   protected ISessionManager getSessionManager() {
+      return sessionManager;
+   }
 
-	@Override
-	protected void checkAccessControl(HttpServletRequest request) throws OseeCoreException {
-		String sessionId = request.getParameter("sessionId");
-		String interaction =
-					String.format("%s %s %s", request.getMethod(), request.getRequestURI(), request.getQueryString());
-		sessionManager.updateSessionActivity(sessionId, interaction);
-	}
+   @Override
+   protected void checkAccessControl(HttpServletRequest request) throws OseeCoreException {
+      String sessionId = request.getParameter("sessionId");
+      String interaction =
+         String.format("%s %s %s", request.getMethod(), request.getRequestURI(), request.getQueryString());
+      sessionManager.updateSessionActivity(sessionId, interaction);
+   }
 
-	public boolean isInitializing(HttpServletRequest request) throws OseeCoreException {
-		String sessionId = request.getParameter("sessionId");
-		ISession session = sessionManager.getSessionById(sessionId);
-		String userId = session.getUserId();
-		return SystemUser.BootStrap.getUserID().equals(userId);
-	}
+   public boolean isInitializing(HttpServletRequest request) throws OseeCoreException {
+      String sessionId = request.getParameter("sessionId");
+      ISession session = sessionManager.getSessionById(sessionId);
+      String userId = session.getUserId();
+      return SystemUser.BootStrap.getUserID().equals(userId);
+   }
 }

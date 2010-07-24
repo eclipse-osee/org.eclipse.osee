@@ -27,17 +27,21 @@ public abstract class DataTypeEditPart extends NodeModelEditPart {
       super(model);
    }
 
+   @Override
    public void activate() {
       super.activate();
       getDataType().addListener(modelListener);
    }
 
+   @Override
    protected DirectEditPolicy createDirectEditPolicy() {
       return new DirectEditPolicy() {
+         @Override
          protected Command getDirectEditCommand(DirectEditRequest request) {
             return new ChangeNameCommand(getDataType(), (String) request.getCellEditor().getValue());
          }
 
+         @Override
          protected void showCurrentEditValue(DirectEditRequest request) {
             IFigure fig = getDirectEditFigure();
             if (fig instanceof Label) {
@@ -48,6 +52,7 @@ public abstract class DataTypeEditPart extends NodeModelEditPart {
       };
    }
 
+   @Override
    protected void createEditPolicies() {
       super.createEditPolicies();
       //      installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, new GraphicalNodeEditPolicy() {
@@ -75,6 +80,7 @@ public abstract class DataTypeEditPart extends NodeModelEditPart {
       //      });
    }
 
+   @Override
    public void deactivate() {
       getDataType().removeListener(modelListener);
       super.deactivate();

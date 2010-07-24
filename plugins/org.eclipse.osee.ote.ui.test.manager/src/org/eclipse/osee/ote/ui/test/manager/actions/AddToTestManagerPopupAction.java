@@ -32,10 +32,14 @@ public class AddToTestManagerPopupAction implements IWorkbenchWindowActionDelega
          Object obj = i.next();
          if (obj instanceof IResource) {
             IResource resource = (IResource) obj;
-            if (resource != null) selection = resource.getLocation().toOSString();
+            if (resource != null) {
+               selection = resource.getLocation().toOSString();
+            }
          } else if (obj instanceof ICompilationUnit) {
             ICompilationUnit resource = (ICompilationUnit) obj;
-            if (resource != null) selection = resource.getResource().getLocation().toOSString();
+            if (resource != null) {
+               selection = resource.getResource().getLocation().toOSString();
+            }
          }
       }
       return selection;
@@ -44,15 +48,18 @@ public class AddToTestManagerPopupAction implements IWorkbenchWindowActionDelega
    IWorkbenchWindow activeWindow = null;
 
    // IWorkbenchWindowActionDelegate method
+   @Override
    public void dispose() {
       // nothing to do
    }
 
    // IWorkbenchWindowActionDelegate method
+   @Override
    public void init(IWorkbenchWindow window) {
       activeWindow = window;
    }
 
+   @Override
    public void run(IAction proxyAction) {
       String file = getSelection();
       if (file == null || file.equals("")) {
@@ -63,6 +70,7 @@ public class AddToTestManagerPopupAction implements IWorkbenchWindowActionDelega
    }
 
    // IActionDelegate method
+   @Override
    public void selectionChanged(IAction proxyAction, ISelection selection) {
 
    }

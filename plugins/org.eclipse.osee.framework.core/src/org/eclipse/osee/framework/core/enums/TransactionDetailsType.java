@@ -15,7 +15,9 @@ package org.eclipse.osee.framework.core.enums;
  * @author Jeff C. Phillips
  */
 public enum TransactionDetailsType {
-   NonBaselined(0), Baselined(1), reverted(2);
+   NonBaselined(0),
+   Baselined(1),
+   reverted(2);
 
    private int id;
 

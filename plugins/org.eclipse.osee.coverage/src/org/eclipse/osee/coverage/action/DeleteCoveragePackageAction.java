@@ -52,17 +52,17 @@ public class DeleteCoveragePackageAction extends Action {
          }
          Branch branch = CoverageUtil.getBranch();
          CoveragePackageArtifactListDialog dialog =
-               new CoveragePackageArtifactListDialog("Delete Package", "Select Package");
+            new CoveragePackageArtifactListDialog("Delete Package", "Select Package");
          dialog.setInput(OseeCoveragePackageStore.getCoveragePackageArtifacts(branch));
          if (dialog.open() == 0) {
             Artifact coveragePackageArtifact = (Artifact) dialog.getResult()[0];
             CoveragePackage coveragePackage = OseeCoveragePackageStore.get(coveragePackageArtifact);
             CheckBoxDialog cDialog =
-                  new CheckBoxDialog(
-                        "Delete/Purge Package",
-                        String.format(
-                              "This will delete Coverage Package and all realted Coverage Units and Test Units.\n\nDelete/Purge Package [%s]?",
-                              coveragePackage.getName()), "Purge");
+               new CheckBoxDialog(
+                  "Delete/Purge Package",
+                  String.format(
+                     "This will delete Coverage Package and all realted Coverage Units and Test Units.\n\nDelete/Purge Package [%s]?",
+                     coveragePackage.getName()), "Purge");
             if (cDialog.open() == 0) {
                boolean purge = cDialog.isChecked();
                SkynetTransaction transaction = null;

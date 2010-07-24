@@ -41,12 +41,11 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 public class SMARelationsHyperlinkComposite extends Composite {
 
    private final XFormToolkit toolkit;
-   private static IRelationEnumeration[] sides =
-         new IRelationEnumeration[] {AtsRelationTypes.TeamWorkflowToReview_Review,
-               AtsRelationTypes.TeamWorkflowToReview_Team, CoreRelationTypes.Supercedes_Superceded,
-               CoreRelationTypes.Supercedes_Supercedes, CoreRelationTypes.SupportingInfo_SupportedBy,
-               CoreRelationTypes.SupportingInfo_SupportingInfo, CoreRelationTypes.Dependency__Artifact,
-               CoreRelationTypes.Dependency__Dependency};
+   private static IRelationEnumeration[] sides = new IRelationEnumeration[] {
+      AtsRelationTypes.TeamWorkflowToReview_Review, AtsRelationTypes.TeamWorkflowToReview_Team,
+      CoreRelationTypes.Supercedes_Superceded, CoreRelationTypes.Supercedes_Supercedes,
+      CoreRelationTypes.SupportingInfo_SupportedBy, CoreRelationTypes.SupportingInfo_SupportingInfo,
+      CoreRelationTypes.Dependency__Artifact, CoreRelationTypes.Dependency__Dependency};
    private StateMachineArtifact sma;
    private Label actionableItemsLabel;
 
@@ -75,9 +74,9 @@ public class SMARelationsHyperlinkComposite extends Composite {
       createArtifactRelationHyperlinks("This", sma, "depends on", CoreRelationTypes.Dependency__Dependency);
       createArtifactRelationHyperlinks("This", sma, "is dependency of", CoreRelationTypes.Dependency__Artifact);
       createArtifactRelationHyperlinks("This", sma, "is supported info for",
-            CoreRelationTypes.SupportingInfo_SupportedBy);
+         CoreRelationTypes.SupportingInfo_SupportedBy);
       createArtifactRelationHyperlinks("This", sma, "has supporting info",
-            CoreRelationTypes.SupportingInfo_SupportingInfo);
+         CoreRelationTypes.SupportingInfo_SupportingInfo);
 
       // Create label for review's related actionable items (if any) 
       if (sma instanceof ReviewSMArtifact) {
@@ -113,20 +112,23 @@ public class SMARelationsHyperlinkComposite extends Composite {
    private void createArtifactRelationHyperlinks(String prefix, Artifact thisArt, String action, IRelationEnumeration side) throws OseeCoreException {
       for (final Artifact art : thisArt.getRelatedArtifacts(side)) {
          toolkit.createLabel(
-               this,
-               prefix + " \"" + thisArt.getArtifactTypeName() + "\" " + action + getCompletedCancelledString(art) + " \"" + art.getArtifactTypeName() + "\" ");
+            this,
+            prefix + " \"" + thisArt.getArtifactTypeName() + "\" " + action + getCompletedCancelledString(art) + " \"" + art.getArtifactTypeName() + "\" ");
          Hyperlink link =
-               toolkit.createHyperlink(this, String.format("\"%s\" - %s",
-                     art.getName().length() < 60 ? art.getName() : art.getName().substring(0, 60),
-                     art.getHumanReadableId()), SWT.NONE);
+            toolkit.createHyperlink(this, String.format("\"%s\" - %s",
+               art.getName().length() < 60 ? art.getName() : art.getName().substring(0, 60), art.getHumanReadableId()),
+               SWT.NONE);
          link.addHyperlinkListener(new IHyperlinkListener() {
 
+            @Override
             public void linkEntered(HyperlinkEvent e) {
             }
 
+            @Override
             public void linkExited(HyperlinkEvent e) {
             }
 
+            @Override
             public void linkActivated(HyperlinkEvent e) {
                AtsUtil.openATSAction(art, AtsOpenOption.OpenOneOrPopupSelect);
             }
@@ -142,12 +144,15 @@ public class SMARelationsHyperlinkComposite extends Composite {
       Hyperlink link = toolkit.createHyperlink(this, "(Edit)", SWT.NONE);
       link.addHyperlinkListener(new IHyperlinkListener() {
 
+         @Override
          public void linkEntered(HyperlinkEvent e) {
          }
 
+         @Override
          public void linkExited(HyperlinkEvent e) {
          }
 
+         @Override
          public void linkActivated(HyperlinkEvent e) {
             editRelatedActionableItems(reviewArt);
          }
@@ -171,7 +176,7 @@ public class SMARelationsHyperlinkComposite extends Composite {
 
    private void editRelatedActionableItems(final ReviewSMArtifact reviewArt) {
       final AICheckTreeDialog diag =
-            new AICheckTreeDialog("Edit Actionable Items", "Select Actionable Items for this review", Active.Active);
+         new AICheckTreeDialog("Edit Actionable Items", "Select Actionable Items for this review", Active.Active);
       try {
          diag.setInitialSelections(reviewArt.getActionableItemsDam().getActionableItems());
          if (diag.open() != 0) {

@@ -30,7 +30,7 @@ public class WorkDefinitionProvider {
    public static List<IWorkDefinitionProvider> getWorkDefinitionProviders() {
       workDefinitionProviders = new ArrayList<IWorkDefinitionProvider>();
       for (IConfigurationElement el : ExtensionPoints.getExtensionElements(
-            "org.eclipse.osee.framework.ui.skynet.WorkDefinitionProvider", "WorkDefinitionProvider")) {
+         "org.eclipse.osee.framework.ui.skynet.WorkDefinitionProvider", "WorkDefinitionProvider")) {
          String classname = null;
          String bundleName = null;
          if (el.getName().equals("WorkDefinitionProvider")) {
@@ -44,7 +44,7 @@ public class WorkDefinitionProvider {
                   workDefinitionProviders.add((IWorkDefinitionProvider) obj);
                } catch (Exception ex) {
                   OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP,
-                        "Error loading WorkDefinitionProvider extension", ex);
+                     "Error loading WorkDefinitionProvider extension", ex);
                }
             }
 

@@ -12,6 +12,7 @@ package org.eclipse.osee.ote.message.elements;
 
 public interface IRecordFactory {
 
-	RecordElement create(int i);
-	int getBitLength();
+   RecordElement create(int i);
+
+   int getBitLength();
 }

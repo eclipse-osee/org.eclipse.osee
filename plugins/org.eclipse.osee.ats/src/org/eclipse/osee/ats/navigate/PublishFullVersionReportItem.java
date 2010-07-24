@@ -42,7 +42,7 @@ import org.eclipse.swt.widgets.FileDialog;
 public class PublishFullVersionReportItem extends XNavigateItemAction {
 
    private final TeamDefinitionArtifact teamDef;
-   private String publishToFilename;
+   private final String publishToFilename;
    private final String teamDefName;
 
    public PublishFullVersionReportItem(XNavigateItem parent, String name, TeamDefinitionArtifact teamDef, String publishToFilename) {
@@ -70,14 +70,16 @@ public class PublishFullVersionReportItem extends XNavigateItemAction {
          final FileDialog dialog = new FileDialog(Displays.getActiveShell().getShell(), SWT.SAVE);
          dialog.setFilterExtensions(new String[] {"*.html"});
          usePublishToFilename = dialog.open();
-         if (usePublishToFilename == null) return;
+         if (usePublishToFilename == null) {
+            return;
+         }
       }
       TeamDefinitionArtifact useTeamDef = teamDef;
       if (useTeamDef == null && teamDefName != null) {
          try {
             useTeamDef =
-                  (TeamDefinitionArtifact) AtsCacheManager.getSoleArtifactByName(
-                        ArtifactTypeManager.getType(AtsArtifactTypes.TeamDefinition), teamDefName);
+               (TeamDefinitionArtifact) AtsCacheManager.getSoleArtifactByName(
+                  ArtifactTypeManager.getType(AtsArtifactTypes.TeamDefinition), teamDefName);
          } catch (ArtifactDoesNotExist ex) {
             // do nothing, going to get team below
          }
@@ -88,9 +90,12 @@ public class PublishFullVersionReportItem extends XNavigateItemAction {
          int result = ld.open();
          if (result == 0) {
             useTeamDef = (TeamDefinitionArtifact) ld.getResult()[0];
-         } else
+         } else {
             return;
-      } else if (!MessageDialog.openConfirm(Displays.getActiveShell(), getName(), getName())) return;
+         }
+      } else if (!MessageDialog.openConfirm(Displays.getActiveShell(), getName(), getName())) {
+         return;
+      }
 
       String title = useTeamDef.getName() + " Version Report";
       PublishReportJob job = new PublishReportJob(title, teamDef, usePublishToFilename);
@@ -118,7 +123,7 @@ public class PublishFullVersionReportItem extends XNavigateItemAction {
             Program.launch(filename);
             AWorkbench.popup("Publish Complete", "Data Published To \"" + filename + "\"");
          } catch (Exception ex) {
-            return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.toString(), ex);
+            return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.toString(), ex);
          }
 
          monitor.done();

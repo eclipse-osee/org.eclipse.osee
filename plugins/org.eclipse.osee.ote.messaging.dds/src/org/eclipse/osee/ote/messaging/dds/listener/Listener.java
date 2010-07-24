@@ -11,9 +11,8 @@
 package org.eclipse.osee.ote.messaging.dds.listener;
 
 /**
- * This is the base interface for all of the DDS listener interfaces. The sole
- * purpose of this interface is to provide a common root for all of the
- * DDS listener interfaces.
+ * This is the base interface for all of the DDS listener interfaces. The sole purpose of this interface is to provide a
+ * common root for all of the DDS listener interfaces.
  * 
  * @author Robert A. Fisher
  * @author David Diepenbrock

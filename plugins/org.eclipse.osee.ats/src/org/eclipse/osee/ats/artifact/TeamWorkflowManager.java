@@ -42,57 +42,77 @@ public class TeamWorkflowManager {
       if (teamArt.getStateMgr().getCurrentStateName().equals(DefaultTeamState.Endorse.name())) {
          Result result = setEndorseData(null, 100, .2);
          if (result.isFalse()) {
-            if (popup) result.popup();
+            if (popup) {
+               result.popup();
+            }
             return result;
          }
          result =
-               teamArt.transition(DefaultTeamState.Analyze.name(),
-                     (user != null ? user : teamArt.getStateMgr().getAssignees().iterator().next()), transaction,
-                     TransitionOption.None);
+            teamArt.transition(DefaultTeamState.Analyze.name(),
+               (user != null ? user : teamArt.getStateMgr().getAssignees().iterator().next()), transaction,
+               TransitionOption.None);
          if (result.isFalse()) {
-            if (popup) result.popup();
+            if (popup) {
+               result.popup();
+            }
             return result;
          }
       }
-      if (toState == DefaultTeamState.Analyze) return Result.TrueResult;
+      if (toState == DefaultTeamState.Analyze) {
+         return Result.TrueResult;
+      }
 
       Result result = setAnalyzeData(null, null, 1, 100, .2);
       if (result.isFalse()) {
-         if (popup) result.popup();
+         if (popup) {
+            result.popup();
+         }
          return result;
       }
       result =
-            teamArt.transition(DefaultTeamState.Authorize.name(),
-                  (user != null ? user : teamArt.getStateMgr().getAssignees().iterator().next()), transaction,
-                  TransitionOption.None);
+         teamArt.transition(DefaultTeamState.Authorize.name(),
+            (user != null ? user : teamArt.getStateMgr().getAssignees().iterator().next()), transaction,
+            TransitionOption.None);
       if (result.isFalse()) {
-         if (popup) result.popup();
+         if (popup) {
+            result.popup();
+         }
          return result;
       }
-      if (toState == DefaultTeamState.Authorize) return Result.TrueResult;
+      if (toState == DefaultTeamState.Authorize) {
+         return Result.TrueResult;
+      }
 
       result = setAuthorizeData(100, .2);
       if (result.isFalse()) {
-         if (popup) result.popup();
+         if (popup) {
+            result.popup();
+         }
          return result;
       }
 
       result =
-            teamArt.transition(DefaultTeamState.Implement.name(),
-                  (user != null ? user : teamArt.getStateMgr().getAssignees().iterator().next()), transaction,
-                  TransitionOption.None);
+         teamArt.transition(DefaultTeamState.Implement.name(),
+            (user != null ? user : teamArt.getStateMgr().getAssignees().iterator().next()), transaction,
+            TransitionOption.None);
       if (result.isFalse()) {
-         if (popup) result.popup();
+         if (popup) {
+            result.popup();
+         }
          return result;
       }
-      if (toState == DefaultTeamState.Implement) return Result.TrueResult;
+      if (toState == DefaultTeamState.Implement) {
+         return Result.TrueResult;
+      }
 
       result =
-            teamArt.transition(DefaultTeamState.Completed.name(),
-                  (user != null ? user : teamArt.getStateMgr().getAssignees().iterator().next()), transaction,
-                  TransitionOption.None);
+         teamArt.transition(DefaultTeamState.Completed.name(),
+            (user != null ? user : teamArt.getStateMgr().getAssignees().iterator().next()), transaction,
+            TransitionOption.None);
       if (result.isFalse()) {
-         if (popup) result.popup();
+         if (popup) {
+            result.popup();
+         }
          return result;
       }
       return Result.TrueResult;
@@ -100,30 +120,34 @@ public class TeamWorkflowManager {
    }
 
    public Result setEndorseData(String propRes, int statePercentComplete, double stateHoursSpent) throws OseeCoreException {
-      if (!teamArt.getStateMgr().getCurrentStateName().equals("Endorse")) return new Result(
-            "Action not in Endorse state");
+      if (!teamArt.getStateMgr().getCurrentStateName().equals("Endorse")) {
+         return new Result("Action not in Endorse state");
+      }
       teamArt.getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
       return Result.TrueResult;
    }
 
    public Result setAnalyzeData(String problem, String propRes, double hourEstimate, int statePercentComplete, double stateHoursSpent) throws OseeCoreException {
-      if (!teamArt.getStateMgr().getCurrentStateName().equals("Analyze")) return new Result(
-            "Action not in Analyze state");
+      if (!teamArt.getStateMgr().getCurrentStateName().equals("Analyze")) {
+         return new Result("Action not in Analyze state");
+      }
       teamArt.setSoleAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(), hourEstimate);
       teamArt.getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
       return Result.TrueResult;
    }
 
    public Result setAuthorizeData(int statePercentComplete, double stateHoursSpent) throws OseeCoreException {
-      if (!teamArt.getStateMgr().getCurrentStateName().equals("Authorize")) return new Result(
-            "Action not in Authorize state");
+      if (!teamArt.getStateMgr().getCurrentStateName().equals("Authorize")) {
+         return new Result("Action not in Authorize state");
+      }
       teamArt.getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
       return Result.TrueResult;
    }
 
    public Result setImplementData(String resolution, int statePercentComplete, double stateHoursSpent) throws OseeCoreException {
-      if (!teamArt.getStateMgr().getCurrentStateName().equals("Implement")) return new Result(
-            "Action not in Implement state");
+      if (!teamArt.getStateMgr().getCurrentStateName().equals("Implement")) {
+         return new Result("Action not in Implement state");
+      }
       teamArt.getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
       return Result.TrueResult;
    }

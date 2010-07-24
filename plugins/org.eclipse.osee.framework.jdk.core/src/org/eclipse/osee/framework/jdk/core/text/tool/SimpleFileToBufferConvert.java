@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
  */
 public class SimpleFileToBufferConvert implements FileToBufferConvert {
 
+   @Override
    public CharSequence fileToCharSequence(File file) throws IOException {
       return Lib.fileToCharBuffer(file);
    }

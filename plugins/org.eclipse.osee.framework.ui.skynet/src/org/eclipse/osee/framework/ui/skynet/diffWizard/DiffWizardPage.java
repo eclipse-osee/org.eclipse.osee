@@ -36,8 +36,8 @@ import org.eclipse.swt.widgets.Listener;
 public class DiffWizardPage extends WizardPage {
 
    public static final String TITLE = "WFC Editor Page";
-   private Conflict conflict;
-   private String changeType = "";
+   private final Conflict conflict;
+   private final String changeType = "";
    private Button editButton;
    private Button mergeButton;
    private Button clearButton;
@@ -65,22 +65,23 @@ public class DiffWizardPage extends WizardPage {
    private static final String DEST_TOOLTIP = "Initialize the Document with Destination Values";
    private static final String SDIFF_TEXT = "Show Source Diff";
    private static final String SDIFF_TOOLTIP =
-         "Show the differences between the current Source" + " artifact and the artifact at the time the Source Branch was created";
+      "Show the differences between the current Source" + " artifact and the artifact at the time the Source Branch was created";
    private static final String DDIFF_TEXT = "Show Destination Diff";
    private static final String DDIFF_TOOLTIP =
-         "Show the differences between the current Destination" + " artifact and the artifact at the time the Source Branch was created";
+      "Show the differences between the current Destination" + " artifact and the artifact at the time the Source Branch was created";
    private static final String SDDIFF_TEXT = "Show Source/Destination Diff";
    private static final String SDDIFF_TOOLTIP =
-         "Show the differences between the current Source" + " artifact and the current Merge artifact";
+      "Show the differences between the current Source" + " artifact and the current Merge artifact";
    private static final String SMDIFF_TEXT = "Show Source/Merge Diff";
    private static final String SMDIFF_TOOLTIP =
-         "Show the differences between the current Destination" + " artifact and the current Merge artifact";
+      "Show the differences between the current Destination" + " artifact and the current Merge artifact";
    private static final String DMDIFF_TEXT = "Show Destination/Merge Diff";
    private static final String DMDIFF_TOOLTIP =
-         "Show the differences between the current Destination" + " artifact and the current Source artifact";
+      "Show the differences between the current Destination" + " artifact and the current Source artifact";
    private static final int NUM_COLUMNS = 2;
 
    private final Listener listener = new Listener() {
+      @Override
       public void handleEvent(Event event) {
          // ...
 
@@ -95,39 +96,40 @@ public class DiffWizardPage extends WizardPage {
             } else if (event.widget == destButton) {
                MergeUtility.setToDest(conflict, getShell(), true);
             } else if (event.widget == sourceDiffButton) {
-               MergeUtility.showCompareFile(MergeUtility.getStartArtifact(conflict), conflict.getSourceArtifact(),
-                     "Source_Diff_For_" + conflict.getArtifact().getSafeName() + (new Date()).toString().replaceAll(
-                           ":", ";") + ".xml");
+               MergeUtility.showCompareFile(
+                  MergeUtility.getStartArtifact(conflict),
+                  conflict.getSourceArtifact(),
+                  "Source_Diff_For_" + conflict.getArtifact().getSafeName() + new Date().toString().replaceAll(":", ";") + ".xml");
             } else if (event.widget == destDiffButton) {
                MergeUtility.showCompareFile(
-                     MergeUtility.getStartArtifact(conflict),
-                     conflict.getDestArtifact(),
-                     "Destination_Diff_For_" + conflict.getArtifact().getSafeName() + (new Date()).toString().replaceAll(
-                           ":", ";") + ".xml");
+                  MergeUtility.getStartArtifact(conflict),
+                  conflict.getDestArtifact(),
+                  "Destination_Diff_For_" + conflict.getArtifact().getSafeName() + new Date().toString().replaceAll(
+                     ":", ";") + ".xml");
             } else if (event.widget == sourceDestDiffButton) {
                MergeUtility.showCompareFile(
-                     conflict.getSourceArtifact(),
-                     conflict.getDestArtifact(),
-                     "Source_Destination_Diff_For_" + conflict.getArtifact().getSafeName() + (new Date()).toString().replaceAll(
-                           ":", ";") + ".xml");
+                  conflict.getSourceArtifact(),
+                  conflict.getDestArtifact(),
+                  "Source_Destination_Diff_For_" + conflict.getArtifact().getSafeName() + new Date().toString().replaceAll(
+                     ":", ";") + ".xml");
             } else if (event.widget == sourceMergeDiffButton) {
                //               if (conflict.wordMarkupPresent()) {
                //                  throw new OseeCoreException(AttributeConflict.DIFF_MERGE_MARKUP);
                //               }
                MergeUtility.showCompareFile(
-                     conflict.getSourceArtifact(),
-                     conflict.getArtifact(),
-                     "Source_Merge_Diff_For_" + conflict.getArtifact().getSafeName() + (new Date()).toString().replaceAll(
-                           ":", ";") + ".xml");
+                  conflict.getSourceArtifact(),
+                  conflict.getArtifact(),
+                  "Source_Merge_Diff_For_" + conflict.getArtifact().getSafeName() + new Date().toString().replaceAll(
+                     ":", ";") + ".xml");
             } else if (event.widget == destMergeDiffButton) {
                //               if (conflict.wordMarkupPresent()) {
                //                  throw new OseeCoreException(AttributeConflict.DIFF_MERGE_MARKUP);
                //               }
                MergeUtility.showCompareFile(
-                     conflict.getDestArtifact(),
-                     conflict.getArtifact(),
-                     "Destination_Merge_Diff_For_" + conflict.getArtifact().getSafeName() + (new Date()).toString().replaceAll(
-                           ":", ";") + ".xml");
+                  conflict.getDestArtifact(),
+                  conflict.getArtifact(),
+                  "Destination_Merge_Diff_For_" + conflict.getArtifact().getSafeName() + new Date().toString().replaceAll(
+                     ":", ";") + ".xml");
             } else if (event.widget == mergeButton) {
                // MergeUtility.launchMerge(conflict, getShell());
             }

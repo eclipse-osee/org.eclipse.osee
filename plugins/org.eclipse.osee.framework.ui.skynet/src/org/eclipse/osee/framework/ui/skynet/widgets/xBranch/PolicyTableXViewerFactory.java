@@ -24,8 +24,9 @@ public class PolicyTableXViewerFactory extends SkynetXViewerFactory {
       super(namespace);
       PolicyTableColumns[] columns = PolicyTableColumns.values();
       XViewerColumn[] xColumns = new XViewerColumn[columns.length];
-      for (int i = 0; i < columns.length; i++)
+      for (int i = 0; i < columns.length; i++) {
          xColumns[i] = columns[i].getXViewerColumn();
+      }
       registerColumns(xColumns);
    }
 }

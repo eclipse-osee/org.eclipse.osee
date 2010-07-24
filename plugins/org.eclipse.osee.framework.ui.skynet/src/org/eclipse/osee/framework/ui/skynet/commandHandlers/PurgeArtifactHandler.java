@@ -40,9 +40,9 @@ public class PurgeArtifactHandler extends CommandHandler {
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
       if (MessageDialog.openConfirm(
-            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-            "Confirm Artifact Purge ",
-            " Are you sure you want to purge this artifact, all of " + "its children and all history associated with these artifacts from the database ?")) {
+         PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+         "Confirm Artifact Purge ",
+         " Are you sure you want to purge this artifact, all of " + "its children and all history associated with these artifacts from the database ?")) {
          Job job = new Job("Purge artifact") {
 
             @Override
@@ -54,7 +54,7 @@ public class PurgeArtifactHandler extends CommandHandler {
                   toReturn = Status.OK_STATUS;
                } catch (Exception ex) {
                   OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-                  toReturn = new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
+                  toReturn = new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
                } finally {
                   monitor.done();
                }
@@ -70,6 +70,6 @@ public class PurgeArtifactHandler extends CommandHandler {
    public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
       artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
       return AccessControlManager.isOseeAdmin() && AccessControlManager.checkObjectListPermission(artifacts,
-                     PermissionEnum.WRITE);
+         PermissionEnum.WRITE);
    }
 }

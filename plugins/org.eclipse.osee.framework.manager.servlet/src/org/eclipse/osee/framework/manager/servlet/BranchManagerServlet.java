@@ -41,57 +41,57 @@ import org.eclipse.osee.framework.manager.servlet.internal.Activator;
  */
 public class BranchManagerServlet extends SecureOseeHttpServlet {
 
-	private static final long serialVersionUID = 226986283540461526L;
+   private static final long serialVersionUID = 226986283540461526L;
 
-	private final IOseeBranchService branchService;
-	private final IDataTranslationService translationService;
+   private final IOseeBranchService branchService;
+   private final IDataTranslationService translationService;
 
-	public BranchManagerServlet(ISessionManager sessionManager, IOseeBranchService branchService, IDataTranslationService translationService) {
-		super(sessionManager);
-		this.branchService = branchService;
-		this.translationService = translationService;
-	}
+   public BranchManagerServlet(ISessionManager sessionManager, IOseeBranchService branchService, IDataTranslationService translationService) {
+      super(sessionManager);
+      this.branchService = branchService;
+      this.translationService = translationService;
+   }
 
-	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		try {
-			String rawFunction = req.getParameter("function");
-			Function function = Function.fromString(rawFunction);
-			IOperation op = null;
-			switch (function) {
-				case BRANCH_COMMIT:
-					op = new CreateCommitFunction(req, resp, branchService, translationService);
-					break;
-				case CREATE_BRANCH:
-					op = new CreateBranchFunction(req, resp, branchService, translationService);
-					break;
-				case CHANGE_REPORT:
-					op = new ChangeReportFunction(req, resp, branchService, translationService);
-					break;
-				case PURGE_BRANCH:
-					op = new PurgeBranchFunction(req, resp, branchService, translationService);
-					break;
-				case UPDATE_BRANCH_TYPE:
-					op = new ChangeBranchTypeFunction(req, resp, branchService, translationService);
-					break;
-				case UPDATE_BRANCH_STATE:
-					op = new ChangeBranchStateFunction(req, resp, branchService, translationService);
-					break;
-				case UPDATE_ARCHIVE_STATE:
-					op = new ChangeBranchArchiveStateFunction(req, resp, branchService, translationService);
-					break;
-				default:
-					throw new UnsupportedOperationException();
-			}
-			Operations.executeWorkAndCheckStatus(op, new LogProgressMonitor(), -1.0);
-		} catch (Exception ex) {
-			OseeLog.log(Activator.class, Level.SEVERE,
-						String.format("Branch servlet request error: [%s]", req.toString()), ex);
-			resp.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
-			resp.setContentType("text/plain");
-			resp.getWriter().write(Lib.exceptionToString(ex));
-			resp.getWriter().flush();
-			resp.getWriter().close();
-		}
-	}
+   @Override
+   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+      try {
+         String rawFunction = req.getParameter("function");
+         Function function = Function.fromString(rawFunction);
+         IOperation op = null;
+         switch (function) {
+            case BRANCH_COMMIT:
+               op = new CreateCommitFunction(req, resp, branchService, translationService);
+               break;
+            case CREATE_BRANCH:
+               op = new CreateBranchFunction(req, resp, branchService, translationService);
+               break;
+            case CHANGE_REPORT:
+               op = new ChangeReportFunction(req, resp, branchService, translationService);
+               break;
+            case PURGE_BRANCH:
+               op = new PurgeBranchFunction(req, resp, branchService, translationService);
+               break;
+            case UPDATE_BRANCH_TYPE:
+               op = new ChangeBranchTypeFunction(req, resp, branchService, translationService);
+               break;
+            case UPDATE_BRANCH_STATE:
+               op = new ChangeBranchStateFunction(req, resp, branchService, translationService);
+               break;
+            case UPDATE_ARCHIVE_STATE:
+               op = new ChangeBranchArchiveStateFunction(req, resp, branchService, translationService);
+               break;
+            default:
+               throw new UnsupportedOperationException();
+         }
+         Operations.executeWorkAndCheckStatus(op, new LogProgressMonitor(), -1.0);
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE,
+            String.format("Branch servlet request error: [%s]", req.toString()), ex);
+         resp.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
+         resp.setContentType("text/plain");
+         resp.getWriter().write(Lib.exceptionToString(ex));
+         resp.getWriter().flush();
+         resp.getWriter().close();
+      }
+   }
 }

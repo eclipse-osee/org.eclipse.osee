@@ -42,7 +42,7 @@ public final class MockRequestFactory {
 
    private static IOseeModelFactoryService createFactoryService() {
       return new OseeModelFactoryService(new BranchFactory(), new TransactionRecordFactory(),
-            new ArtifactTypeFactory(), new AttributeTypeFactory(), new RelationTypeFactory(), new OseeEnumTypeFactory());
+         new ArtifactTypeFactory(), new AttributeTypeFactory(), new RelationTypeFactory(), new OseeEnumTypeFactory());
    }
 
    public static ArtifactChangeItem createArtifactChangeItem() throws OseeArgumentException {
@@ -50,7 +50,7 @@ public final class MockRequestFactory {
       Long gammaIdNumber = Long.valueOf((int) Math.random());
       int artTypeId = artId * 10;
       ArtifactChangeItem changeItem =
-            new ArtifactChangeItem(artId, artTypeId, gammaIdNumber, ModificationType.getMod(1));
+         new ArtifactChangeItem(artId, artTypeId, gammaIdNumber, ModificationType.getMod(1));
       populateChangeVersion(changeItem.getDestinationVersion(), 22);
       populateChangeVersion(changeItem.getCurrentVersion(), 15);
       return changeItem;
@@ -93,7 +93,7 @@ public final class MockRequestFactory {
       int destinationBranchId = -1;
 
       return new BranchCreationRequest(branchType, sourceTransactionId, parentBranchId, branchGuid, branchName,
-            associatedArtifactId, authorId, creationComment, populateBaseTxFromAddressingQueryId, destinationBranchId);
+         associatedArtifactId, authorId, creationComment, populateBaseTxFromAddressingQueryId, destinationBranchId);
    }
 
    public static Object createBranchCreateResponse(int index) {

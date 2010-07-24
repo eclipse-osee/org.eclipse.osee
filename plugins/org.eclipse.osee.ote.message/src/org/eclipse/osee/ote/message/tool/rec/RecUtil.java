@@ -14,7 +14,6 @@ import java.nio.ByteBuffer;
 
 /**
  * @author Ken J. Aguilar
- *
  */
 public class RecUtil {
    private static final int ASCII_A_ADDITIVE = 'A' - 10;
@@ -29,7 +28,7 @@ public class RecUtil {
     */
    public static void byteToAsciiHex(byte byteValue, ByteBuffer buffer) {
       int value = byteValue & 0xFF;
-      int code = (value >>> 4);
+      int code = value >>> 4;
       code += code >= 10 ? ASCII_A_ADDITIVE : ASCII_0_ADDITIVE;
       buffer.put((byte) code);
       code = value & 0x0F;

@@ -28,18 +28,22 @@ public class NotSearch implements ISearchPrimitive {
       this.search = search;
    }
 
+   @Override
    public String getCriteriaSql(List<Object> dataList, Branch branch) {
       return "NOT EXISTS(SELECT 'x' FROM (" + ArtifactPersistenceManager.getSelectArtIdSql(search, dataList, branch) + ") arts" + " WHERE osee_artifact.art_id = arts." + search.getArtIdColName() + ")";
    }
 
+   @Override
    public String getArtIdColName() {
       return "art_id";
    }
 
+   @Override
    public String getTableSql(List<Object> dataList, Branch branch) {
       return "osee_artifact";
    }
 
+   @Override
    public String getStorageString() {
       return "Not [" + search.getStorageString() + "]";
    }

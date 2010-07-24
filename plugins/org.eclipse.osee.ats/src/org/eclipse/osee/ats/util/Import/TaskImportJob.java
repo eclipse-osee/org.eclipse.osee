@@ -48,7 +48,7 @@ public class TaskImportJob extends Job {
          toReturn = Status.OK_STATUS;
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-         toReturn = new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
+         toReturn = new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
       } finally {
          monitor.done();
       }

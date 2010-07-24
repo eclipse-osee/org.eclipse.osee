@@ -14,7 +14,6 @@ import java.util.logging.Level;
 import org.eclipse.osee.ote.core.environment.config.ScriptVersionConfig;
 import org.eclipse.osee.ote.core.environment.config.TesterConfig;
 
-
 /**
  * @author Andrew M. Finkbeiner
  */
@@ -24,32 +23,28 @@ public class RunTestScriptDescription extends CommandDescription {
    private String clientOutfilePath;
    private String serverOutfilePath;
    private ScriptVersionConfig scriptVersion;
-   private TesterConfig testerConfig;
+   private final TesterConfig testerConfig;
    private Level logLevel;
 
-   public RunTestScriptDescription(String description, String clientOutfilePath,
-         ScriptVersionConfig scriptVersion, Level logLevel) {
+   public RunTestScriptDescription(String description, String clientOutfilePath, ScriptVersionConfig scriptVersion, Level logLevel) {
       super(description);
       this.clientOutfilePath = clientOutfilePath;
       this.scriptVersion = scriptVersion;
       this.testerConfig = new TesterConfig();
       this.logLevel = logLevel;
-      if(this.logLevel == null){
+      if (this.logLevel == null) {
          this.logLevel = Level.ALL;
       }
       /*
-      if(user != null){
-         testerConfig.setEmail(user.getEmail());
-         testerConfig.setName(user.getName());
-         testerConfig.setId(user.getId());
-      }
-      */
+       * if(user != null){ testerConfig.setEmail(user.getEmail()); testerConfig.setName(user.getName());
+       * testerConfig.setId(user.getId()); }
+       */
    }
 
-   public RunTestScriptDescription(String description, String clientOutfilePath,
-         ScriptVersionConfig scriptVersion) {
+   public RunTestScriptDescription(String description, String clientOutfilePath, ScriptVersionConfig scriptVersion) {
       this(description, clientOutfilePath, scriptVersion, Level.WARNING);
    }
+
    /**
     * @return Returns the outfile.
     */
@@ -85,7 +80,7 @@ public class RunTestScriptDescription extends CommandDescription {
    public ScriptVersionConfig getScriptVersion() {
       return this.scriptVersion;
    }
-   
+
    public TesterConfig getTesterConfig() {
       return this.testerConfig;
    }

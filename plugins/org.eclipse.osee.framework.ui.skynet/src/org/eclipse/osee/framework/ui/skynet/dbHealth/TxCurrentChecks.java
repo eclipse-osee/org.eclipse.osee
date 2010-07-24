@@ -50,7 +50,7 @@ public class TxCurrentChecks extends DatabaseHealthOperation {
       resultsTab.addColumn(new XViewerColumn("7", "TX Current", 80, SWT.LEFT, true, SortDataType.String, false, ""));
 
       doSubWork(new InvalidTxCurrentsAndModTypes(tableName, columnName, new ResultsReporter(resultsTab),
-            isFixOperationEnabled(), true), monitor, 0.3);
+         isFixOperationEnabled(), true), monitor, 0.3);
    }
 
    private static class ResultsReporter implements OperationReporter {

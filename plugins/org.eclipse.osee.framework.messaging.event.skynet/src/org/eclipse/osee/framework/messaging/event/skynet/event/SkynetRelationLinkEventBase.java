@@ -51,34 +51,42 @@ public class SkynetRelationLinkEventBase extends SkynetEventBase implements ISky
       this.artBTypeId = base.artBTypeId;
    }
 
+   @Override
    public int getId() {
       return branchId;
    }
 
+   @Override
    public int getArtATypeId() {
       return artATypeId;
    }
 
+   @Override
    public int getArtBTypeId() {
       return artBTypeId;
    }
 
+   @Override
    public int getArtAId() {
       return artAId;
    }
 
+   @Override
    public int getArtBId() {
       return artBId;
    }
 
+   @Override
    public Integer getRelId() {
       return relId;
    }
 
+   @Override
    public Integer getGammaId() {
       return gammaId;
    }
 
+   @Override
    public int getRelTypeId() {
       return relTypeId;
    }

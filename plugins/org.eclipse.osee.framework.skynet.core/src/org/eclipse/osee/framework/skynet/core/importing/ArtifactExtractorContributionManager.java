@@ -36,8 +36,7 @@ public class ArtifactExtractorContributionManager {
 
    public List<IArtifactExtractor> getExtractors() {
       ExtensionDefinedObjects<IArtifactExtractor> definedObjects =
-            new ExtensionDefinedObjects<IArtifactExtractor>(PARSER_EXTENSION, PARSER_ELEMENT, CLASS_NAME_ATTRIBUTE,
-                  true);
+         new ExtensionDefinedObjects<IArtifactExtractor>(PARSER_EXTENSION, PARSER_ELEMENT, CLASS_NAME_ATTRIBUTE, true);
       List<IArtifactExtractor> items = definedObjects.getObjects();
       Collections.sort(items, new ParserComparator());
       return items;
@@ -46,8 +45,8 @@ public class ArtifactExtractorContributionManager {
    public List<IArtifactExtractorDelegate> getAllDelegates() {
       List<IArtifactExtractorDelegate> contentHandlers = new ArrayList<IArtifactExtractorDelegate>();
       ExtensionDefinedObjects<IArtifactExtractorDelegate> contributions =
-            new ExtensionDefinedObjects<IArtifactExtractorDelegate>(PARSER_DELEGATE_EXTENSION, PARSER_DELEGATE_ELEMENT,
-                  CLASS_NAME_ATTRIBUTE, true);
+         new ExtensionDefinedObjects<IArtifactExtractorDelegate>(PARSER_DELEGATE_EXTENSION, PARSER_DELEGATE_ELEMENT,
+            CLASS_NAME_ATTRIBUTE, true);
       for (IArtifactExtractorDelegate delegate : contributions.getObjects()) {
          contentHandlers.add(delegate);
       }
@@ -70,6 +69,7 @@ public class ArtifactExtractorContributionManager {
    private static final class ParserDelegateComparator implements Comparator<IArtifactExtractorDelegate>, Serializable {
       private static final long serialVersionUID = 803641362587689953L;
 
+      @Override
       public int compare(IArtifactExtractorDelegate o1, IArtifactExtractorDelegate o2) {
          return o1.getName().compareToIgnoreCase(o2.getName());
       }
@@ -78,6 +78,7 @@ public class ArtifactExtractorContributionManager {
    private static final class ParserComparator implements Comparator<IArtifactExtractor>, Serializable {
       private static final long serialVersionUID = 297281600323509207L;
 
+      @Override
       public int compare(IArtifactExtractor o1, IArtifactExtractor o2) {
          return o1.getName().compareToIgnoreCase(o2.getName());
       }

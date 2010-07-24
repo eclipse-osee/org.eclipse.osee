@@ -33,7 +33,7 @@ class SearchStats extends BaseServerCommand {
       buffer.append("----------------------------------------------\n");
       buffer.append(String.format("Total Searches - [%d]\n", stats.getTotalSearches()));
       buffer.append(String.format("Search Time    - avg: [%s] ms - longest: [%s] ms\n", stats.getAverageSearchTime(),
-            stats.getLongestSearchTime()));
+         stats.getLongestSearchTime()));
       buffer.append(String.format("Longest Search  - %s\n", stats.getLongestSearch()));
       println(buffer.toString());
    }

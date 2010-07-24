@@ -24,26 +24,30 @@ import org.eclipse.ui.PlatformUI;
  */
 public class AdminAction implements IWorkbenchWindowActionDelegate {
 
+   @Override
    public void run(IAction proxyAction) {
       IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
       try {
          page.showView(AdminView.VIEW_ID);
       } catch (PartInitException e1) {
          MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Launch Error",
-               "Couldn't Launch Admin View " + e1.getMessage());
+            "Couldn't Launch Admin View " + e1.getMessage());
       }
    }
 
    // IActionDelegate method
+   @Override
    public void selectionChanged(IAction proxyAction, ISelection selection) {
 
    }
 
    // IWorkbenchWindowActionDelegate method
+   @Override
    public void init(IWorkbenchWindow window) {
    }
 
    // IWorkbenchWindowActionDelegate method
+   @Override
    public void dispose() {
       // nothing to do
    }

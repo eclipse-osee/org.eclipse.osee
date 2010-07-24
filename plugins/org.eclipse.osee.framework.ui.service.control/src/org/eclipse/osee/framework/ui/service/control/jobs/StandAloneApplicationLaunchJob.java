@@ -28,7 +28,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.ui.service.control.ControlPlugin;
+import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.service.control.wizards.launcher.ServiceLaunchDataPersist;
 import org.eclipse.osee.framework.ui.service.control.wizards.launcher.ServiceLaunchingInformation;
 import org.eclipse.osee.framework.ui.service.control.wizards.launcher.data.ServiceItem;
@@ -42,11 +42,11 @@ import org.osgi.framework.Bundle;
  */
 public class StandAloneApplicationLaunchJob extends Job {
 
-   private TextDisplayHelper display;
-   private ServiceLaunchingInformation serviceInfo;
-   private String javaCompiler;
-   private File localLocation;
-   private ProgressBar progress;
+   private final TextDisplayHelper display;
+   private final ServiceLaunchingInformation serviceInfo;
+   private final String javaCompiler;
+   private final File localLocation;
+   private final ProgressBar progress;
 
    public StandAloneApplicationLaunchJob(String name, String javaCompiler, File localLocation, ServiceLaunchingInformation serviceInfo, TextDisplayHelper display, ProgressBar progress) {
       super(name);
@@ -82,7 +82,7 @@ public class StandAloneApplicationLaunchJob extends Job {
          unzip(zipLocation, localLocation);
 
       } catch (Exception ex) {
-         display.addText(ControlPlugin.getStackMessages(ex) + "\n\n", SWT.NORMAL, SWT.COLOR_RED, false);
+         display.addText(OseeUiActivator.getStackMessages(ex) + "\n\n", SWT.NORMAL, SWT.COLOR_RED, false);
       }
 
       String exec = serviceInfo.getServiceItem().getStandAloneExecution();
@@ -111,7 +111,7 @@ public class StandAloneApplicationLaunchJob extends Job {
 
          display.startProcessHandling(process);
       } catch (IOException ex) {
-         display.addText(ControlPlugin.getStackMessages(ex) + "\n", SWT.NORMAL, SWT.COLOR_RED, false);
+         display.addText(OseeUiActivator.getStackMessages(ex) + "\n", SWT.NORMAL, SWT.COLOR_RED, false);
       }
       return toReturn;
    }
@@ -129,6 +129,7 @@ public class StandAloneApplicationLaunchJob extends Job {
          int countEntries = 0;
 
          PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+            @Override
             public void run() {
                progress.setMinimum(0);
                progress.setMaximum(totalEntries);
@@ -151,7 +152,7 @@ public class StandAloneApplicationLaunchJob extends Job {
                fileDir.getParentFile().mkdirs();
             }
 
-            if (!fileDir.exists() || (fileDir.exists() && fileDir.canWrite())) {
+            if (!fileDir.exists() || fileDir.exists() && fileDir.canWrite()) {
                FileOutputStream fos = new FileOutputStream(fileDir.getAbsolutePath());
                dest = new BufferedOutputStream(fos, BUFFER);
                while ((count = is.read(data, 0, BUFFER)) != -1) {
@@ -175,7 +176,7 @@ public class StandAloneApplicationLaunchJob extends Job {
          }
       } catch (Exception ex) {
          String information =
-               "ZipFile: " + (zipFile != null ? zipFile.getAbsolutePath() : "NULL") + "\n" + "DestinationDir: " + (destinationDir != null ? destinationDir.getAbsolutePath() : "NULL") + "\n" + "Entry Processed: " + (entry != null ? entry.toString() : "NULL") + "\n";
+            "ZipFile: " + (zipFile != null ? zipFile.getAbsolutePath() : "NULL") + "\n" + "DestinationDir: " + (destinationDir != null ? destinationDir.getAbsolutePath() : "NULL") + "\n" + "Entry Processed: " + (entry != null ? entry.toString() : "NULL") + "\n";
          throw new IOException(information + ex.getMessage());
       }
       return unzippedFiles;
@@ -183,6 +184,7 @@ public class StandAloneApplicationLaunchJob extends Job {
 
    private void incrementProgress(final int increment) {
       PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+         @Override
          public void run() {
             int position = progress.getSelection();
             progress.setSelection(position + increment);

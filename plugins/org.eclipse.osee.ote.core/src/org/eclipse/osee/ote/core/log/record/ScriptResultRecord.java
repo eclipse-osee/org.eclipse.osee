@@ -12,9 +12,7 @@ package org.eclipse.osee.ote.core.log.record;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.TestScript;
 import org.eclipse.osee.ote.core.log.TestLevel;
 import org.w3c.dom.Document;
@@ -30,10 +28,10 @@ public class ScriptResultRecord extends TestRecord {
     * 
     */
    private static final long serialVersionUID = -6132341487630154239L;
-   private List<Xmlizable> childElements;
+   private final List<Xmlizable> childElements;
+
    /**
-    * ScriptConfigRecord Constructor. Constructs test script configuration log message with
-    * timestamp.
+    * ScriptConfigRecord Constructor. Constructs test script configuration log message with timestamp.
     * 
     * @param script The test script who's configuration is to be recorded.
     * @param timeStamp <b>True </b> if a timestamp should be recorded, <b>False </b> if not.
@@ -43,18 +41,19 @@ public class ScriptResultRecord extends TestRecord {
       childElements = new ArrayList<Xmlizable>(1000);
    }
 
-   public void addChildElement(Xmlizable xml){
+   public void addChildElement(Xmlizable xml) {
       childElements.add(xml);
    }
-   
+
    /**
     * Convert an element to XML format.
     * 
     * @return XML formated config element.
     */
+   @Override
    public Element toXml(Document doc) {
       Element result = doc.createElement("ScriptResult");
-      for(Xmlizable xml:childElements){
+      for (Xmlizable xml : childElements) {
          result.appendChild(xml.toXml(doc));
       }
       childElements.clear();

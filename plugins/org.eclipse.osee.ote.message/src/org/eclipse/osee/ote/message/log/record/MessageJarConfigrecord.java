@@ -12,8 +12,8 @@ package org.eclipse.osee.ote.message.log.record;
 
 import java.io.File;
 import java.util.Map;
+import java.util.logging.Level;
 import org.eclipse.osee.ote.core.TestScript;
-import org.eclipse.osee.ote.core.log.TestLevel;
 import org.eclipse.osee.ote.core.log.record.TestRecord;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -24,7 +24,7 @@ import org.w3c.dom.Element;
  */
 public class MessageJarConfigrecord extends TestRecord {
 
-   private String[] jarVersions;
+   private final String[] jarVersions;
 
    /**
     * 
@@ -37,7 +37,7 @@ public class MessageJarConfigrecord extends TestRecord {
     * @param script The test script who's configuration is to be recorded.
     */
    public MessageJarConfigrecord(TestScript script, String[] jarVersions, Map<String, File> availableJars) {
-      super(script.getTestEnvironment(), TestLevel.CONFIG, script.getClass().getName(), false);
+      super(script.getTestEnvironment(), Level.CONFIG, script.getClass().getName(), false);
       this.jarVersions = jarVersions;
    }
 
@@ -46,6 +46,7 @@ public class MessageJarConfigrecord extends TestRecord {
     * 
     * @return XML formated config element.
     */
+   @Override
    public Element toXml(Document doc) {
       Element jarConfig = doc.createElement("JarConfig");
       doc.appendChild(jarConfig);

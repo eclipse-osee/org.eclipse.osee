@@ -28,73 +28,73 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
  */
 public class AttributeActionContribution implements IActionContributor {
 
-	private final AttributeTypeEditPresenter attributeTypeEditor;
+   private final AttributeTypeEditPresenter attributeTypeEditor;
 
-	public AttributeActionContribution(ArtifactEditor editor) {
-		AttributeTypeEditPresenter.Display view = new AttributeTypeEditDisplay();
-		attributeTypeEditor = new AttributeTypeEditPresenter(new Model(editor), view);
-	}
+   public AttributeActionContribution(ArtifactEditor editor) {
+      AttributeTypeEditPresenter.Display view = new AttributeTypeEditDisplay();
+      attributeTypeEditor = new AttributeTypeEditPresenter(new Model(editor), view);
+   }
 
-	private static final class Model implements AttributeTypeEditPresenter.Model {
-		private final ArtifactEditor editor;
+   private static final class Model implements AttributeTypeEditPresenter.Model {
+      private final ArtifactEditor editor;
 
-		public Model(ArtifactEditor editor) {
-			this.editor = editor;
-		}
+      public Model(ArtifactEditor editor) {
+         this.editor = editor;
+      }
 
-		@Override
-		public void doSave() {
-			editor.doSave(new NullProgressMonitor());
-		}
+      @Override
+      public void doSave() {
+         editor.doSave(new NullProgressMonitor());
+      }
 
-		@Override
-		public boolean isDirty() {
-			return editor.isDirty();
-		}
+      @Override
+      public boolean isDirty() {
+         return editor.isDirty();
+      }
 
-		@Override
-		public Artifact getArtifact() {
-			return editor.getEditorInput().getArtifact();
-		}
-	}
+      @Override
+      public Artifact getArtifact() {
+         return editor.getEditorInput().getArtifact();
+      }
+   }
 
-	@Override
-	public void contributeToToolBar(IToolBarManager manager) {
-		manager.add(new OpenAddAttributeTypeDialogAction());
-		manager.add(new OpenDeleteAttributeTypeDialogAction());
-	}
+   @Override
+   public void contributeToToolBar(IToolBarManager manager) {
+      manager.add(new OpenAddAttributeTypeDialogAction());
+      manager.add(new OpenDeleteAttributeTypeDialogAction());
+   }
 
-	private final class OpenAddAttributeTypeDialogAction extends Action {
-		public OpenAddAttributeTypeDialogAction() {
-			super();
-			setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.ADD_GREEN));
-			setToolTipText("Opens a dialog to select which attribute type instances to create on the artifact");
-		}
+   private final class OpenAddAttributeTypeDialogAction extends Action {
+      public OpenAddAttributeTypeDialogAction() {
+         super();
+         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.ADD_GREEN));
+         setToolTipText("Opens a dialog to select which attribute type instances to create on the artifact");
+      }
 
-		@Override
-		public void run() {
-			try {
-				attributeTypeEditor.onAddAttributeType();
-			} catch (OseeCoreException ex) {
-				OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-			}
-		}
-	}
+      @Override
+      public void run() {
+         try {
+            attributeTypeEditor.onAddAttributeType();
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         }
+      }
+   }
 
-	private final class OpenDeleteAttributeTypeDialogAction extends Action {
-		public OpenDeleteAttributeTypeDialogAction() {
-			super();
-			setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.DELETE));
-			setToolTipText("Opens a dialog to select which attribute type instances to remove from the artifact");
-		}
+   private final class OpenDeleteAttributeTypeDialogAction extends Action {
+      public OpenDeleteAttributeTypeDialogAction() {
+         super();
+         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.DELETE));
+         setToolTipText("Opens a dialog to select which attribute type instances to remove from the artifact");
+      }
 
-		@Override
-		public void run() {
-			try {
-				attributeTypeEditor.onRemoveAttributeType();
-			} catch (OseeCoreException ex) {
-				OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-			}
-		}
-	}
+      @Override
+      public void run() {
+         try {
+            attributeTypeEditor.onRemoveAttributeType();
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         }
+      }
+   }
 }

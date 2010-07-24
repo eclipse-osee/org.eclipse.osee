@@ -88,7 +88,9 @@ public class GoalSearchItem extends WorldUISearchItem {
    @Override
    public String getSelectedName(SearchType searchType) throws OseeCoreException {
       String prodName = getProductSearchName();
-      if (Strings.isValid(prodName)) return String.format("%s - %s", super.getSelectedName(searchType), prodName);
+      if (Strings.isValid(prodName)) {
+         return String.format("%s - %s", super.getSelectedName(searchType), prodName);
+      }
       return super.getSelectedName(searchType);
    }
 
@@ -102,8 +104,8 @@ public class GoalSearchItem extends WorldUISearchItem {
          teamDefs = new HashSet<TeamDefinitionArtifact>();
          for (String teamDefName : teamDefNames) {
             TeamDefinitionArtifact aia =
-                  (TeamDefinitionArtifact) AtsCacheManager.getSoleArtifactByName(
-                        ArtifactTypeManager.getType(AtsArtifactTypes.TeamDefinition), teamDefName);
+               (TeamDefinitionArtifact) AtsCacheManager.getSoleArtifactByName(
+                  ArtifactTypeManager.getType(AtsArtifactTypes.TeamDefinition), teamDefName);
             if (aia != null) {
                teamDefs.add(aia);
             }
@@ -128,11 +130,11 @@ public class GoalSearchItem extends WorldUISearchItem {
          cancelOrComplete.add(DefaultTeamState.Cancelled.name() + ";;;");
          cancelOrComplete.add(DefaultTeamState.Completed.name() + ";;;");
          criteria.add(new AttributeCriteria(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(), cancelOrComplete,
-               Operator.NOT_EQUAL));
+            Operator.NOT_EQUAL));
       }
 
       List<Artifact> artifacts =
-            ArtifactQuery.getArtifactListFromTypeAnd(AtsArtifactTypes.Goal, AtsUtil.getAtsBranch(), 1000, criteria);
+         ArtifactQuery.getArtifactListFromTypeAnd(AtsArtifactTypes.Goal, AtsUtil.getAtsBranch(), 1000, criteria);
 
       Set<Artifact> resultGoalArtifacts = new HashSet<Artifact>();
       for (Artifact art : artifacts) {

@@ -23,8 +23,8 @@ import org.eclipse.osee.ote.message.interfaces.ITestAccessor;
 public class NonMappingCharElement extends CharElement {
 
    public NonMappingCharElement(CharElement element) {
-      super(element.getMessage(), element.getElementName(), element.getMsgData(), element.getByteOffset(), element.getMsb(),
-            element.getLsb());
+      super(element.getMessage(), element.getElementName(), element.getMsgData(), element.getByteOffset(),
+         element.getMsb(), element.getLsb());
       for (Object obj : element.getElementPath()) {
          this.getElementPath().add(obj);
       }
@@ -97,11 +97,11 @@ public class NonMappingCharElement extends CharElement {
     * 
     * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    *           reference to the CheckGroup must be passed and this method will add the result of the check to the group
-    *           with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference should be passed and
-    *           this method will log the test point.
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param value Expected value
     * @return if the check passed
     */
@@ -130,11 +130,11 @@ public class NonMappingCharElement extends CharElement {
     * 
     * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    *           reference to the CheckGroup must be passed and this method will add the result of the check to the group
-    *           with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference should be passed and
-    *           this method will log the test point.
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param minValue The minimum value of the range.
     * @param maxValue The maximum value of the range.
     * @return if the check passed
@@ -166,11 +166,11 @@ public class NonMappingCharElement extends CharElement {
     * 
     * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    *           reference to the CheckGroup must be passed and this method will add the result of the check to the group
-    *           with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference should be passed and
-    *           this method will log the test point.
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param minValue The minimum value of the range.
     * @param minInclusive If the minumum value of the range is inclusive.
     * @param maxValue The maximum value of the range.
@@ -199,11 +199,11 @@ public class NonMappingCharElement extends CharElement {
     * 
     * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    *           reference to the CheckGroup must be passed and this method will add the result of the check to the group
-    *           with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference should be passed and
-    *           this method will log the test point.
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param value value to test against
     * @return if the check passed
     */
@@ -232,11 +232,11 @@ public class NonMappingCharElement extends CharElement {
     * 
     * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    *           reference to the CheckGroup must be passed and this method will add the result of the check to the group
-    *           with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference should be passed and
-    *           this method will log the test point.
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param minValue The minimum value of the range.
     * @param maxValue The maximum value of the range.
     * @return if the check passed
@@ -253,10 +253,10 @@ public class NonMappingCharElement extends CharElement {
     * @param accessor
     * @param minValue The minimum value of the range.
     * @param minInclusive If the minumum value of the range is inclusive. If true the actual value must not < and not =
-    *           to the range value.
+    * to the range value.
     * @param maxValue The maximum value of the range.
     * @param maxInclusive If the maximum value of the range is inclusive. If true the actual value must not > and not =
-    *           to the range value.
+    * to the range value.
     * @return if the check passed
     */
    public boolean checkNotRange(ITestAccessor accessor, char minValue, boolean minInclusive, char maxValue, boolean maxInclusive) {
@@ -270,17 +270,17 @@ public class NonMappingCharElement extends CharElement {
     * 
     * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    *           reference to the CheckGroup must be passed and this method will add the result of the check to the group
-    *           with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference should be passed and
-    *           this method will log the test point.
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param minValue The minimum value of the range.
     * @param minInclusive If the minumum value of the range is inclusive. If true the actual value must not < and not =
-    *           to the range value.
+    * to the range value.
     * @param maxValue The maximum value of the range.
     * @param maxInclusive If the maximum value of the range is inclusive. If true the actual value must not > and not =
-    *           to the range value.
+    * to the range value.
     * @return if the check passed
     */
    public boolean checkNotRange(ITestAccessor accessor, CheckGroup checkGroup, char minValue, boolean minInclusive, char maxValue, boolean maxInclusive) {
@@ -307,11 +307,11 @@ public class NonMappingCharElement extends CharElement {
     * 
     * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    *           reference to the CheckGroup must be passed and this method will add the result of the check to the group
-    *           with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference should be passed and
-    *           this method will log the test point.
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param value Expected value.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
@@ -344,11 +344,11 @@ public class NonMappingCharElement extends CharElement {
     * 
     * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    *           reference to the CheckGroup must be passed and this method will add the result of the check to the group
-    *           with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference should be passed and
-    *           this method will log the test point.
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param minValue The minimum value of the range.
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait for the element to be within the range.
@@ -384,11 +384,11 @@ public class NonMappingCharElement extends CharElement {
     * 
     * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    *           reference to the CheckGroup must be passed and this method will add the result of the check to the group
-    *           with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference should be passed and
-    *           this method will log the test point.
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param minValue The minimum value of the range.
     * @param minInclusive If the minumum value of the range is inclusive.
     * @param maxValue The maximum value of the range.
@@ -423,11 +423,11 @@ public class NonMappingCharElement extends CharElement {
     * 
     * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    *           reference to the CheckGroup must be passed and this method will add the result of the check to the group
-    *           with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference should be passed and
-    *           this method will log the test point.
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param value value to test against.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
@@ -460,11 +460,11 @@ public class NonMappingCharElement extends CharElement {
     * 
     * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    *           reference to the CheckGroup must be passed and this method will add the result of the check to the group
-    *           with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference should be passed and
-    *           this method will log the test point.
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param minValue The minimum value of the range.
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait for the element to be outside the range.
@@ -483,10 +483,10 @@ public class NonMappingCharElement extends CharElement {
     * @param accessor
     * @param minValue The minimum value of the range.
     * @param minInclusive If the minumum value of the range is inclusive. If true the actual value must not < and not =
-    *           to the range value.
+    * to the range value.
     * @param maxValue The maximum value of the range.
     * @param maxInclusive If the maximum value of the range is inclusive. If true the actual value must not > and not =
-    *           to the range value.
+    * to the range value.
     * @param milliseconds Number of milliseconds to wait for the element to be outside the range.
     * @return if the check passed
     * @throws InterruptedException
@@ -502,17 +502,17 @@ public class NonMappingCharElement extends CharElement {
     * 
     * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    *           reference to the CheckGroup must be passed and this method will add the result of the check to the group
-    *           with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference should be passed and
-    *           this method will log the test point.
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param minValue The minimum value of the range.
     * @param minInclusive If the minumum value of the range is inclusive. If true the actual value must not < and not =
-    *           to the range value.
+    * to the range value.
     * @param maxValue The maximum value of the range.
     * @param maxInclusive If the maximum value of the range is inclusive. If true the actual value must not > and not =
-    *           to the range value.
+    * to the range value.
     * @param milliseconds Number of milliseconds to wait for the element to be outside the range.
     * @return if the check passed
     * @throws InterruptedException
@@ -531,6 +531,7 @@ public class NonMappingCharElement extends CharElement {
     * @return If the check passed.
     * @throws InterruptedException
     */
+   @Override
    public boolean checkNot(ITestAccessor accessor, String value, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
       return false;
@@ -541,16 +542,17 @@ public class NonMappingCharElement extends CharElement {
     * 
     * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    *           reference to the CheckGroup must be passed and this method will add the result of the check to the group
-    *           with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference should be passed and
-    *           this method will log the test point.
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param value Expected value.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
     * @throws InterruptedException
     */
+   @Override
    public boolean checkNot(ITestAccessor accessor, CheckGroup checkGroup, String value, int milliseconds) throws InterruptedException {
 
       throwNoMappingElementException();
@@ -566,6 +568,7 @@ public class NonMappingCharElement extends CharElement {
     * @return If the check passed.
     * @throws InterruptedException
     */
+   @Override
    public boolean check(ITestAccessor accessor, String value, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
       return false;
@@ -576,16 +579,17 @@ public class NonMappingCharElement extends CharElement {
     * 
     * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    *           reference to the CheckGroup must be passed and this method will add the result of the check to the group
-    *           with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference should be passed and
-    *           this method will log the test point.
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param value Expected value.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
     * @throws InterruptedException
     */
+   @Override
    public boolean check(ITestAccessor accessor, CheckGroup checkGroup, String value, int milliseconds) throws InterruptedException {
 
       throwNoMappingElementException();
@@ -599,6 +603,7 @@ public class NonMappingCharElement extends CharElement {
     * @param value Expected value
     * @return if the check passed
     */
+   @Override
    public boolean checkNot(ITestAccessor accessor, String value) {
       throwNoMappingElementException();
       return false;
@@ -609,14 +614,15 @@ public class NonMappingCharElement extends CharElement {
     * 
     * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    *           reference to the CheckGroup must be passed and this method will add the result of the check to the group
-    *           with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference should be passed and
-    *           this method will log the test point.
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param value Expected value
     * @return if the check passed
     */
+   @Override
    public boolean checkNot(ITestAccessor accessor, CheckGroup checkGroup, String value) {
 
       throwNoMappingElementException();
@@ -630,6 +636,7 @@ public class NonMappingCharElement extends CharElement {
     * @param value Expected value
     * @return if the check passed
     */
+   @Override
    public boolean check(ITestAccessor accessor, String value) {
       throwNoMappingElementException();
       return false;
@@ -640,14 +647,15 @@ public class NonMappingCharElement extends CharElement {
     * 
     * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    *           reference to the CheckGroup must be passed and this method will add the result of the check to the group
-    *           with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference should be passed and
-    *           this method will log the test point.
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param value Expected value
     * @return if the check passed
     */
+   @Override
    public boolean check(ITestAccessor accessor, CheckGroup checkGroup, String value) {
 
       throwNoMappingElementException();
@@ -660,11 +668,11 @@ public class NonMappingCharElement extends CharElement {
     * 
     * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    *           reference to the CheckGroup must be passed and this method will add the result of the check to the group
-    *           with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference should be passed and
-    *           this method will log the test point.
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param value
     * @param milliseconds
     * @return last value observed. Either value expected or value found at timeout.
@@ -681,11 +689,11 @@ public class NonMappingCharElement extends CharElement {
     * 
     * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    *           reference to the CheckGroup must be passed and this method will add the result of the check to the group
-    *           with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference should be passed and
-    *           this method will log the test point.
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param value
     * @param milliseconds
     * @return last value observed
@@ -702,11 +710,11 @@ public class NonMappingCharElement extends CharElement {
     * 
     * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    *           reference to the CheckGroup must be passed and this method will add the result of the check to the group
-    *           with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference should be passed and
-    *           this method will log the test point.
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param minValue The minimum value of the range.
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait before failing.
@@ -723,11 +731,11 @@ public class NonMappingCharElement extends CharElement {
     * 
     * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    *           reference to the CheckGroup must be passed and this method will add the result of the check to the group
-    *           with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference should be passed and
-    *           this method will log the test point.
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param minValue The minimum value of the range.
     * @param minInclusive If the minumum value of the range is inclusive.
     * @param maxValue The maximum value of the range.
@@ -747,11 +755,11 @@ public class NonMappingCharElement extends CharElement {
     * 
     * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    *           reference to the CheckGroup must be passed and this method will add the result of the check to the group
-    *           with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference should be passed and
-    *           this method will log the test point.
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param minValue The minimum value of the range.
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait before failing.
@@ -768,17 +776,17 @@ public class NonMappingCharElement extends CharElement {
     * 
     * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    *           reference to the CheckGroup must be passed and this method will add the result of the check to the group
-    *           with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference should be passed and
-    *           this method will log the test point.
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param minValue The minimum value of the range.
     * @param minInclusive If the minumum value of the range is inclusive. If true the actual value must not < and not =
-    *           to the range value.
+    * to the range value.
     * @param maxValue The maximum value of the range.
     * @param maxInclusive If the maximum value of the range is inclusive. If true the actual value must not > and not =
-    *           to the range value.
+    * to the range value.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
     * @throws InterruptedException
@@ -788,6 +796,7 @@ public class NonMappingCharElement extends CharElement {
       return ' ';
    }
 
+   @Override
    public Character get(ITestEnvironmentAccessor accessor) {
       throwNoMappingElementException();
       return ' ';
@@ -800,6 +809,7 @@ public class NonMappingCharElement extends CharElement {
     * @param stringLength the length of the string to return
     * @return the string starting with this element
     */
+   @Override
    public String getString(ITestEnvironmentAccessor accessor, int stringLength) {
       throwNoMappingElementException();
       return null;
@@ -811,6 +821,7 @@ public class NonMappingCharElement extends CharElement {
     * @param accessor
     * @param value the string to set the bytes to
     */
+   @Override
    public void parseAndSet(ITestEnvironmentAccessor accessor, String value) {
 
       throwNoMappingElementException();
@@ -823,6 +834,7 @@ public class NonMappingCharElement extends CharElement {
     * @param accessor
     * @param value the string to set the bytes to
     */
+   @Override
    public void setNoLog(ITestEnvironmentAccessor accessor, String value) {
       throwNoMappingElementException();
    }
@@ -863,10 +875,10 @@ public class NonMappingCharElement extends CharElement {
     * @param accessor
     * @param minValue The minimum value of the range.
     * @param minInclusive If the minumum value of the range is inclusive. If true the actual value must not < and not =
-    *           to the range value.
+    * to the range value.
     * @param maxValue The maximum value of the range.
     * @param maxInclusive If the maximum value of the range is inclusive. If true the actual value must not > and not =
-    *           to the range value.
+    * to the range value.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
     * @throws InterruptedException
@@ -897,10 +909,10 @@ public class NonMappingCharElement extends CharElement {
     * @param accessor
     * @param minValue The minimum value of the range.
     * @param minInclusive If the minumum value of the range is inclusive. If true the actual value must not < and not =
-    *           to the range value.
+    * to the range value.
     * @param maxValue The maximum value of the range.
     * @param maxInclusive If the maximum value of the range is inclusive. If true the actual value must not > and not =
-    *           to the range value.
+    * to the range value.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
     * @throws InterruptedException
@@ -962,6 +974,7 @@ public class NonMappingCharElement extends CharElement {
     * @return last value found. Either value expected or value found at timeout.
     * @throws InterruptedException
     */
+   @Override
    protected String waitForValue(ITestEnvironmentAccessor accessor, String value, int milliseconds) throws InterruptedException {
 
       throwNoMappingElementException();
@@ -977,6 +990,7 @@ public class NonMappingCharElement extends CharElement {
     * @return last value found. Either value expected or value found at timeout.
     * @throws InterruptedException
     */
+   @Override
    protected String waitForNotValue(ITestEnvironmentAccessor accessor, String value, int milliseconds) throws InterruptedException {
 
       throwNoMappingElementException();

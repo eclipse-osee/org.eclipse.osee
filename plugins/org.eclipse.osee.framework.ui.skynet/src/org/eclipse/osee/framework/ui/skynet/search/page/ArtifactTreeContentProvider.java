@@ -33,8 +33,8 @@ public class ArtifactTreeContentProvider implements ITreeContentProvider, IArtif
    private final Object[] EMPTY_ARR = new Object[0];
 
    private AbstractArtifactSearchResult fResult;
-   private ArtifactSearchPage fPage;
-   private AbstractTreeViewer fTreeViewer;
+   private final ArtifactSearchPage fPage;
+   private final AbstractTreeViewer fTreeViewer;
    @SuppressWarnings("unchecked")
    private Map fChildrenMap;
 
@@ -43,6 +43,7 @@ public class ArtifactTreeContentProvider implements ITreeContentProvider, IArtif
       fTreeViewer = viewer;
    }
 
+   @Override
    public Object[] getElements(Object inputElement) {
       Object[] children = getChildren(inputElement);
       int elementLimit = getElementLimit();
@@ -58,10 +59,12 @@ public class ArtifactTreeContentProvider implements ITreeContentProvider, IArtif
       return fPage.getElementLimit().intValue();
    }
 
+   @Override
    public void dispose() {
       // nothing to do
    }
 
+   @Override
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
       if (newInput instanceof AbstractArtifactSearchResult) {
          initialize((AbstractArtifactSearchResult) newInput);
@@ -142,7 +145,9 @@ public class ArtifactTreeContentProvider implements ITreeContentProvider, IArtif
 
    private void remove(Object element, boolean refreshViewer) {
       if (hasChildren(element)) {
-         if (refreshViewer) fTreeViewer.refresh(element);
+         if (refreshViewer) {
+            fTreeViewer.refresh(element);
+         }
       } else {
          if (!hasMatches(element)) {
             fChildrenMap.remove(element);
@@ -152,7 +157,9 @@ public class ArtifactTreeContentProvider implements ITreeContentProvider, IArtif
                remove(parent, refreshViewer);
             } else {
                removeFromSiblings(element, fResult);
-               if (refreshViewer) fTreeViewer.refresh();
+               if (refreshViewer) {
+                  fTreeViewer.refresh();
+               }
             }
          } else {
             if (refreshViewer) {
@@ -178,17 +185,22 @@ public class ArtifactTreeContentProvider implements ITreeContentProvider, IArtif
       }
    }
 
+   @Override
    @SuppressWarnings("unchecked")
    public Object[] getChildren(Object parentElement) {
       Set children = (Set) fChildrenMap.get(parentElement);
-      if (children == null) return EMPTY_ARR;
+      if (children == null) {
+         return EMPTY_ARR;
+      }
       return children.toArray();
    }
 
+   @Override
    public boolean hasChildren(Object element) {
       return getChildren(element).length > 0;
    }
 
+   @Override
    public synchronized void elementsChanged(Object[] updatedElements) {
       for (int i = 0; i < updatedElements.length; i++) {
          if (!(updatedElements[i] instanceof AttributeLineElement)) {
@@ -213,11 +225,13 @@ public class ArtifactTreeContentProvider implements ITreeContentProvider, IArtif
       }
    }
 
+   @Override
    public void clear() {
       initialize(fResult);
       fTreeViewer.refresh();
    }
 
+   @Override
    public Object getParent(Object element) {
       if (element instanceof AttributeLineElement) {
          return ((AttributeLineElement) element).getParent();

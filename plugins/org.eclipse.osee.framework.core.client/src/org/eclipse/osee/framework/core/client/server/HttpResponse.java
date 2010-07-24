@@ -88,10 +88,10 @@ public class HttpResponse {
       codes.put(400, StatusCodes.STATUS_400);
    }
 
-   private Map<String, String> responseHeaderMap;
-   private PrintStream printStream;
-   private OutputStream outputStream;
-   private Socket socket;
+   private final Map<String, String> responseHeaderMap;
+   private final PrintStream printStream;
+   private final OutputStream outputStream;
+   private final Socket socket;
 
    protected HttpResponse(Socket socket) throws Exception {
       this.socket = socket;
@@ -192,9 +192,9 @@ public class HttpResponse {
 
    public void outputStandardError(int errorCode, String reason) {
       String errorStr = getStatus(errorCode);
-      String reasonStr = (reason != null ? "Reason: " + reason : "");
+      String reasonStr = reason != null ? "Reason: " + reason : "";
       String html =
-            AHTML.simplePage("<h1>Error " + errorStr + "</h1><h2>OSEE was unable to handle the request.</h2>" + reasonStr + "<form><input type=button onClick='window.opener=self;window.close()' value='Close'></form>");
+         AHTML.simplePage("<h1>Error " + errorStr + "</h1><h2>OSEE was unable to handle the request.</h2>" + reasonStr + "<form><input type=button onClick='window.opener=self;window.close()' value='Close'></form>");
       OseeLog.log(CoreClientActivator.class, Level.SEVERE, "HttpServer Request failed. " + reasonStr);
       try {
          printStream.println(html);

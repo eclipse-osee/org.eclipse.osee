@@ -43,6 +43,7 @@ public interface IXTaskViewer {
     */
    public boolean isTasksEditable() throws OseeCoreException;
 
+   @Override
    public String toString();
 
    /**

@@ -14,27 +14,27 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {//
+@Suite.SuiteClasses({//
 BranchCommitRequestTranslatorTest.class, //
-      BranchCommitResponseTranslatorTest.class, //
-      BranchCreationRequestTranslatorTest.class, //
-      BranchCreationResponseTranslatorTest.class, //
-      CacheUpdateRequestTranslatorTest.class, //
-      ChangeItemTranslatorTest.class, //
-      ChangeReportResponseTranslatorTest.class,//
-      ChangeVersionTranslatorTest.class, //
-      DatastoreInitRequestTranslatorTest.class, //
-      DataTranslationServiceFactoryTest.class, //
-      DataTranslationServiceTest.class, //
-      OseeImportModelRequestTranslatorTest.class, //
-      OseeImportModelResponseTranslatorTest.class, //
-      TableDataTranslatorTest.class, //
-      TransactionCacheUpdateResponseTranslatorTest.class, //
-      TransactionRecordTranslatorTest.class, //
-      PurgeBranchRequestTranslatorTest.class, //
-      BranchChangeTypeRequestTranslatorTest.class, //
-      BranchChangeStateRequestTranslatorTest.class, //
-      BranchChangeArchivedStateRequestTranslatorTest.class//
+   BranchCommitResponseTranslatorTest.class, //
+   BranchCreationRequestTranslatorTest.class, //
+   BranchCreationResponseTranslatorTest.class, //
+   CacheUpdateRequestTranslatorTest.class, //
+   ChangeItemTranslatorTest.class, //
+   ChangeReportResponseTranslatorTest.class,//
+   ChangeVersionTranslatorTest.class, //
+   DatastoreInitRequestTranslatorTest.class, //
+   DataTranslationServiceFactoryTest.class, //
+   DataTranslationServiceTest.class, //
+   OseeImportModelRequestTranslatorTest.class, //
+   OseeImportModelResponseTranslatorTest.class, //
+   TableDataTranslatorTest.class, //
+   TransactionCacheUpdateResponseTranslatorTest.class, //
+   TransactionRecordTranslatorTest.class, //
+   PurgeBranchRequestTranslatorTest.class, //
+   BranchChangeTypeRequestTranslatorTest.class, //
+   BranchChangeStateRequestTranslatorTest.class, //
+   BranchChangeArchivedStateRequestTranslatorTest.class//
 })
 /**
  * @author Roberto E. Escobar

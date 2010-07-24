@@ -50,7 +50,16 @@ public class ATSLog {
    private LogItem cancelledLogItem;
    private LogItem completedLogItem;
    public static enum LogType {
-      None, Originated, StateComplete, StateCancelled, StateEntered, Released, Error, Assign, Note, Metrics;
+      None,
+      Originated,
+      StateComplete,
+      StateCancelled,
+      StateEntered,
+      Released,
+      Error,
+      Assign,
+      Note,
+      Metrics;
 
       public static LogType getType(String type) throws OseeArgumentException {
          for (Enum<LogType> e : LogType.values()) {
@@ -88,8 +97,8 @@ public class ATSLog {
       StringBuffer sb = new StringBuffer();
       if (showLog) {
          sb.append(AHTML.addSpace(1) + AHTML.getLabelStr(
-               AHTML.LABEL_FONT,
-               "History for \"" + getArtifact().getArtifactTypeName() + "\" - " + getArtifact().getHumanReadableId() + " - titled \"" + getArtifact().getName() + "\""));
+            AHTML.LABEL_FONT,
+            "History for \"" + getArtifact().getArtifactTypeName() + "\" - " + getArtifact().getHumanReadableId() + " - titled \"" + getArtifact().getName() + "\""));
       }
       sb.append(getTable());
       return sb.toString();
@@ -103,7 +112,7 @@ public class ATSLog {
    }
 
    private static Pattern LOG_ITEM_PATTERN =
-         Pattern.compile("<Item date=\"(.*?)\" msg=\"(.*?)\" state=\"(.*?)\" type=\"(.*?)\" userId=\"(.*?)\"/>");
+      Pattern.compile("<Item date=\"(.*?)\" msg=\"(.*?)\" state=\"(.*?)\" type=\"(.*?)\" userId=\"(.*?)\"/>");
 
    private static Pattern LOG_ITEM_TAG_PATTERN = Pattern.compile("<Item ");
 
@@ -115,8 +124,8 @@ public class ATSLog {
          Matcher m = LOG_ITEM_PATTERN.matcher(xml);
          while (m.find()) {
             LogItem item =
-                  new LogItem(m.group(4), m.group(1), Strings.intern(m.group(5)), Strings.intern(m.group(3)),
-                        AXml.xmlToText(m.group(2)), getArtifact().getHumanReadableId());
+               new LogItem(m.group(4), m.group(1), Strings.intern(m.group(5)), Strings.intern(m.group(3)),
+                  AXml.xmlToText(m.group(2)), getArtifact().getHumanReadableId());
             logItems.add(item);
          }
 
@@ -127,8 +136,8 @@ public class ATSLog {
          }
          if (logItems.size() != openTagsFound) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, String.format(
-                  "ATS Log: open tags found %d doesn't match log items parsed %d for %s", openTagsFound,
-                  logItems.size(), getArtifact().getHumanReadableId()));
+               "ATS Log: open tags found %d doesn't match log items parsed %d for %s", openTagsFound, logItems.size(),
+               getArtifact().getHumanReadableId()));
          }
       }
       return logItems;
@@ -192,19 +201,25 @@ public class ATSLog {
 
    public String getCancellationReason() throws OseeCoreException {
       LogItem item = getStateEvent(LogType.StateCancelled);
-      if (item == null) return "";
+      if (item == null) {
+         return "";
+      }
       return item.getMsg();
    }
 
    public String getCancelledFromState() throws OseeCoreException {
       LogItem item = getStateEvent(LogType.StateCancelled);
-      if (item == null) return "";
+      if (item == null) {
+         return "";
+      }
       return item.getState();
    }
 
    public String getCompletedFromState() throws OseeCoreException {
       LogItem item = getStateEvent(LogType.StateComplete);
-      if (item == null) return "";
+      if (item == null) {
+         return "";
+      }
       return item.getState();
    }
 

@@ -37,11 +37,10 @@ public class ATSXWidgetOptionResolver extends DefaultXWidgetOptionResolver {
    public String[] getWidgetOptions(DynamicXWidgetLayoutData xWidgetData) {
 
       if (xWidgetData.getXWidgetName().contains(OPTIONS_FROM_ATTRIBUTE_VALIDITY) || xWidgetData.getXWidgetName().contains(
-            "ACTIVE_USER_COMMUNITIES")) {
+         "ACTIVE_USER_COMMUNITIES")) {
          Set<String> options;
          try {
-            options =
-                  AttributeTypeManager.getEnumerationValues(xWidgetData.getStorageName());
+            options = AttributeTypeManager.getEnumerationValues(xWidgetData.getStorageName());
          } catch (OseeCoreException ex) {
             options = new HashSet<String>();
             options.add(ex.getLocalizedMessage());

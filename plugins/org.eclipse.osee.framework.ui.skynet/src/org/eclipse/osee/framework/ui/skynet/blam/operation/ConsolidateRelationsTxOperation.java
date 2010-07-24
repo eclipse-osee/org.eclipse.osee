@@ -40,13 +40,13 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
  */
 public class ConsolidateRelationsTxOperation extends AbstractDbTxOperation {
    private static final String SELECT_RELATIONS =
-         "select * from osee_relation_link order by rel_link_type_id, a_art_id, b_art_id, gamma_id";
+      "select * from osee_relation_link order by rel_link_type_id, a_art_id, b_art_id, gamma_id";
 
    private static final String SELECT_RELATION_ADDRESSING =
-         "select txs.*, idj.id1 as net_gamma_id from osee_join_export_import idj, osee_txs txs where idj.query_id = ? and idj.id2 = txs.gamma_id order by net_gamma_id, transaction_id, id2";
+      "select txs.*, idj.id1 as net_gamma_id from osee_join_export_import idj, osee_txs txs where idj.query_id = ? and idj.id2 = txs.gamma_id order by net_gamma_id, transaction_id, id2";
 
    private static final String UPDATE_TXS_GAMMAS =
-         "update osee_txs set gamma_id = ?, mod_type = ?, tx_current = ? where transaction_id = ? and gamma_id = ?";
+      "update osee_txs set gamma_id = ?, mod_type = ?, tx_current = ? where transaction_id = ? and gamma_id = ?";
 
    private static final String DELETE_TXS = "delete from osee_txs where transaction_id = ? and gamma_id = ?";
 
@@ -176,7 +176,7 @@ public class ConsolidateRelationsTxOperation extends AbstractDbTxOperation {
             if (isNextAddressing(netGammaId, transactionId)) {
                if (updateAddressing) {
                   updateAddressingData.add(new Object[] {previousNetGammaId, netModType.getValue(),
-                        netTxCurrent.getValue(), previousTransactionId, previousObsoleteGammaId});
+                     netTxCurrent.getValue(), previousTransactionId, previousObsoleteGammaId});
                }
                updateAddressing = obsoleteGammaId != netGammaId;
                previousNetGammaId = netGammaId;
@@ -243,13 +243,13 @@ public class ConsolidateRelationsTxOperation extends AbstractDbTxOperation {
       backupWriter.close();
 
       System.out.println("Number of txs rows deleted: " + ConnectionHandler.runBatchUpdate(connection, DELETE_TXS,
-            addressingToDelete));
+         addressingToDelete));
 
       System.out.println("Number of relation rows deleted: " + ConnectionHandler.runBatchUpdate(connection,
-            DELETE_RELATIONS, relationDeleteData));
+         DELETE_RELATIONS, relationDeleteData));
 
       System.out.println("Number of txs rows updated: " + ConnectionHandler.runBatchUpdate(connection,
-            UPDATE_TXS_GAMMAS, updateAddressingData));
+         UPDATE_TXS_GAMMAS, updateAddressingData));
    }
 
    private void writeAddressingBackup(long obsoleteGammaId, int transactionId, long netGammaId, int modType, TxChange txCurrent) throws IOException {

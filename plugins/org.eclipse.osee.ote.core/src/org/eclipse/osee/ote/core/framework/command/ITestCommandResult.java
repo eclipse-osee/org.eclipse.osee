@@ -13,6 +13,7 @@ package org.eclipse.osee.ote.core.framework.command;
 import java.io.Serializable;
 
 public interface ITestCommandResult extends Serializable {
-	TestCommandStatus getStatus();
-	Throwable getThrowable();
+   TestCommandStatus getStatus();
+
+   Throwable getThrowable();
 }

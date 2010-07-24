@@ -10,10 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.core.internal;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.List;
-
 import org.eclipse.osee.framework.core.util.ServiceDependencyTracker;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.ote.core.OteProperties;
@@ -24,7 +21,6 @@ import org.eclipse.osee.ote.core.environment.TestEnvironment;
 import org.eclipse.osee.ote.core.environment.TestEnvironmentInterface;
 import org.eclipse.osee.ote.core.environment.console.ConsoleCommandManager;
 import org.eclipse.osee.ote.core.environment.console.ICommandManager;
-import org.eclipse.osee.ote.core.environment.interfaces.RuntimeConfigurationInitilizer;
 import org.eclipse.osee.ote.core.environment.status.OTEStatusBoard;
 import org.eclipse.osee.ote.core.environment.status.StatusBoard;
 import org.osgi.framework.BundleActivator;
@@ -45,18 +41,20 @@ public class Activator implements BundleActivator {
    CommandDistributer commandDistributer;
    private static Activator activator;
    private BundleContext bundleContext;
-   private CompositeKeyHashMap<String, ServiceTrackerCustomizer, ServiceTracker> serviceTrackers = new CompositeKeyHashMap<String, ServiceTrackerCustomizer, ServiceTracker>();
+   private final CompositeKeyHashMap<String, ServiceTrackerCustomizer, ServiceTracker> serviceTrackers =
+      new CompositeKeyHashMap<String, ServiceTrackerCustomizer, ServiceTracker>();
    private ConsoleCommandManager consoleCommandManager;
    private StandardShell stdShell;
    private ServiceRegistration consoleCommandRegistration;
    private ServiceRegistration commandDistributerRegistration;
-private ServiceDependencyTracker serviceDependencyTracker;
-   
+   private ServiceDependencyTracker serviceDependencyTracker;
+
+   @Override
    public void start(BundleContext context) throws Exception {
       activator = this;
-      statusBoard =  new StatusBoard();
+      statusBoard = new StatusBoard();
       bundleContext = context;
-      statusBoardRegistration = context.registerService(OTEStatusBoard.class.getName(),statusBoard, new Hashtable());
+      statusBoardRegistration = context.registerService(OTEStatusBoard.class.getName(), statusBoard, new Hashtable());
       consoleCommandManager = new ConsoleCommandManager();
       if (OteProperties.isOteCmdConsoleEnabled()) {
          stdShell = new StandardShell(consoleCommandManager);
@@ -64,18 +62,21 @@ private ServiceDependencyTracker serviceDependencyTracker;
       } else {
          stdShell = null;
       }
-      consoleCommandRegistration = context.registerService(ICommandManager.class.getName(), consoleCommandManager, new Hashtable());
+      consoleCommandRegistration =
+         context.registerService(ICommandManager.class.getName(), consoleCommandManager, new Hashtable());
 
       commandDistributer = new CommandDistributerImpl();
-      commandDistributerRegistration = context.registerService(CommandDistributer.class.getName(), commandDistributer, new Hashtable());
-      
+      commandDistributerRegistration =
+         context.registerService(CommandDistributer.class.getName(), commandDistributer, new Hashtable());
+
       serviceDependencyTracker = new ServiceDependencyTracker(bundleContext, new StatusBoardRegistrationHandler());
       serviceDependencyTracker.open();
    }
 
+   @Override
    public void stop(BundleContext context) throws Exception {
-	   serviceDependencyTracker.close();
-	   commandDistributer.shutdown();
+      serviceDependencyTracker.close();
+      commandDistributer.shutdown();
       closeAllValidServiceTrackers();
       statusBoardRegistration.unregister();
       unregisterTestEnvironment();
@@ -88,30 +89,31 @@ private ServiceDependencyTracker serviceDependencyTracker;
 
    }
 
-   public static Activator getInstance(){
+   public static Activator getInstance() {
       return activator;
    }
 
-   public OTEStatusBoard getOteStatusBoard(){
+   public OTEStatusBoard getOteStatusBoard() {
       return statusBoard;
    }
 
-   public CommandDistributer getCommandDistributer(){
+   public CommandDistributer getCommandDistributer() {
       return commandDistributer;
    }
 
-   public void registerTestEnvironment(TestEnvironment env){
-      if(testEnvironmentRegistration != null){
+   public void registerTestEnvironment(TestEnvironment env) {
+      if (testEnvironmentRegistration != null) {
          testEnvironmentRegistration.unregister();
       }
-      testEnvironmentRegistration = bundleContext.registerService(TestEnvironmentInterface.class.getName(), env, new Hashtable());
+      testEnvironmentRegistration =
+         bundleContext.registerService(TestEnvironmentInterface.class.getName(), env, new Hashtable());
    }
 
    /**
     * 
     */
    public void unregisterTestEnvironment() {
-      if(testEnvironmentRegistration != null){
+      if (testEnvironmentRegistration != null) {
          testEnvironmentRegistration.unregister();
          testEnvironmentRegistration = null;
       }
@@ -123,7 +125,7 @@ private ServiceDependencyTracker serviceDependencyTracker;
     */
    public ServiceTracker getServiceTracker(String clazz, ServiceTrackerCustomizer customizer) {
       ServiceTracker tracker = findServiceTracker(clazz, customizer);
-      if(tracker == null){
+      if (tracker == null) {
          tracker = createNewServiceTracker(clazz, customizer);
       }
       return tracker;
@@ -136,13 +138,13 @@ private ServiceDependencyTracker serviceDependencyTracker;
       return tracker;
    }
 
-   private ServiceTracker findServiceTracker(String clazz, ServiceTrackerCustomizer customizer){
+   private ServiceTracker findServiceTracker(String clazz, ServiceTrackerCustomizer customizer) {
       return serviceTrackers.get(clazz, customizer);
    }
 
-   private void closeAllValidServiceTrackers(){
-      for(ServiceTracker tracker :serviceTrackers.values()){
-         if(tracker != null){
+   private void closeAllValidServiceTrackers() {
+      for (ServiceTracker tracker : serviceTrackers.values()) {
+         if (tracker != null) {
             tracker.close();
          }
       }

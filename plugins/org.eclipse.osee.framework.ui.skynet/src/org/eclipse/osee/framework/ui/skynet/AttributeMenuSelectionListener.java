@@ -24,9 +24,9 @@ import org.eclipse.swt.widgets.MenuItem;
  * @author Ryan D. Brooks
  */
 public class AttributeMenuSelectionListener extends SelectionAdapter {
-   private AttributesComposite attrsComp;
-   private TableViewer tableViewer;
-   private IDirtiableEditor editor;
+   private final AttributesComposite attrsComp;
+   private final TableViewer tableViewer;
+   private final IDirtiableEditor editor;
 
    public AttributeMenuSelectionListener(AttributesComposite attrsComp, TableViewer tableViewer, IDirtiableEditor editor) {
       this.attrsComp = attrsComp;

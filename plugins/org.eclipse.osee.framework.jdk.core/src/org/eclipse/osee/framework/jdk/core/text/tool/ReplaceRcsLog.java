@@ -67,7 +67,7 @@ public class ReplaceRcsLog {
 
          ChangeSet changeSet = new ChangeSet(contentSeq);
          changeSet.replace(contentRange.start, contentRange.end, historySeq.array(), historyRange.start,
-               historyRange.length);
+            historyRange.length);
          changeSet.applyChanges(resultFile);
       } catch (IOException ex) {
          ex.printStackTrace();

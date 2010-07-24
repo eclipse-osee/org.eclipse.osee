@@ -21,8 +21,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class ConcurrentListMap<MAP_TYPE, LIST_TYPE> {
 
-   private Map<MAP_TYPE, List<LIST_TYPE>> data;
-   private List<LIST_TYPE> EMPTY_LIST = new ArrayList<LIST_TYPE>();
+   private final Map<MAP_TYPE, List<LIST_TYPE>> data;
+   private final List<LIST_TYPE> EMPTY_LIST = new ArrayList<LIST_TYPE>();
 
    public ConcurrentListMap() {
       data = new HashMap<MAP_TYPE, List<LIST_TYPE>>();

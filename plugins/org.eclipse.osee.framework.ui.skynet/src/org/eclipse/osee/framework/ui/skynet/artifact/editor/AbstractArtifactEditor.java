@@ -30,70 +30,70 @@ import org.eclipse.ui.forms.editor.FormEditor;
  */
 public abstract class AbstractArtifactEditor extends FormEditor implements IDirtiableEditor {
 
-	private final static Object[] EMPTY_ARRAY = new Object[0];
+   private final static Object[] EMPTY_ARRAY = new Object[0];
 
-	@Override
-	protected XFormToolkit createToolkit(Display display) {
-		// Create a toolkit that shares colors between editors.
-		// the toolkit will be disposed by the super class (FormEditor)
-		return new XFormToolkit(SkynetGuiPlugin.getInstance().getSharedFormColors(display));
-	}
+   @Override
+   protected XFormToolkit createToolkit(Display display) {
+      // Create a toolkit that shares colors between editors.
+      // the toolkit will be disposed by the super class (FormEditor)
+      return new XFormToolkit(SkynetGuiPlugin.getInstance().getSharedFormColors(display));
+   }
 
-	@Override
-	public void doSave(IProgressMonitor monitor) {
-	}
+   @Override
+   public void doSave(IProgressMonitor monitor) {
+   }
 
-	@Override
-	public void doSaveAs() {
-	}
+   @Override
+   public void doSaveAs() {
+   }
 
-	@Override
-	public boolean isSaveAsAllowed() {
-		return false;
-	}
+   @Override
+   public boolean isSaveAsAllowed() {
+      return false;
+   }
 
-	@Override
-	public void onDirtied() {
-	}
+   @Override
+   public void onDirtied() {
+   }
 
-	@Override
-	public XFormToolkit getToolkit() {
-		return (XFormToolkit) super.getToolkit();
-	}
+   @Override
+   public XFormToolkit getToolkit() {
+      return (XFormToolkit) super.getToolkit();
+   }
 
-	public Artifact getArtifactFromEditorInput() {
-		return (Artifact) getEditorInput().getAdapter(Artifact.class);
-	}
+   public Artifact getArtifactFromEditorInput() {
+      return (Artifact) getEditorInput().getAdapter(Artifact.class);
+   }
 
-	@Override
-	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
-		super.init(site, input);
-		ISelectionProvider provider = new ArtifactEditorSelectionProvider();
-		Artifact artifact = getArtifactFromEditorInput();
-		Object[] selected = artifact != null ? new Object[] {artifact} : EMPTY_ARRAY;
-		provider.setSelection(new StructuredSelection(selected));
-		getSite().setSelectionProvider(provider);
-	}
+   @Override
+   public void init(IEditorSite site, IEditorInput input) throws PartInitException {
+      super.init(site, input);
+      ISelectionProvider provider = new ArtifactEditorSelectionProvider();
+      Artifact artifact = getArtifactFromEditorInput();
+      Object[] selected = artifact != null ? new Object[] {artifact} : EMPTY_ARRAY;
+      provider.setSelection(new StructuredSelection(selected));
+      getSite().setSelectionProvider(provider);
+   }
 
-	private final class ArtifactEditorSelectionProvider implements ISelectionProvider {
-		private ISelection selection;
+   private final class ArtifactEditorSelectionProvider implements ISelectionProvider {
+      private ISelection selection;
 
-		@Override
-		public void addSelectionChangedListener(ISelectionChangedListener listener) {
-		}
+      @Override
+      public void addSelectionChangedListener(ISelectionChangedListener listener) {
+      }
 
-		@Override
-		public ISelection getSelection() {
-			return selection;
-		}
+      @Override
+      public ISelection getSelection() {
+         return selection;
+      }
 
-		@Override
-		public void removeSelectionChangedListener(ISelectionChangedListener listener) {
-		}
+      @Override
+      public void removeSelectionChangedListener(ISelectionChangedListener listener) {
+      }
 
-		@Override
-		public void setSelection(ISelection selection) {
-			this.selection = selection;
-		}
-	}
+      @Override
+      public void setSelection(ISelection selection) {
+         this.selection = selection;
+      }
+   }
 }

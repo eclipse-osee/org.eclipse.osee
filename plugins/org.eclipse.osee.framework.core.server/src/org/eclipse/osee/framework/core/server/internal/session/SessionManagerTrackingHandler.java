@@ -27,51 +27,51 @@ import org.osgi.framework.ServiceRegistration;
  */
 public final class SessionManagerTrackingHandler extends AbstractTrackingHandler {
 
-	private static final Class<?>[] SERVICE_DEPENDENCIES = new Class<?>[] {IOseeDatabaseService.class,
-				IApplicationServerManager.class, IAuthenticationManager.class};
+   private static final Class<?>[] SERVICE_DEPENDENCIES = new Class<?>[] {IOseeDatabaseService.class,
+      IApplicationServerManager.class, IAuthenticationManager.class};
 
-	private ServiceRegistration registration;
+   private ServiceRegistration registration;
 
-	private ISessionDataStoreSync dataStoreSync;
-	private ISessionManager sessionManager;
+   private ISessionDataStoreSync dataStoreSync;
+   private ISessionManager sessionManager;
 
-	@Override
-	public Class<?>[] getDependencies() {
-		return SERVICE_DEPENDENCIES;
-	}
+   @Override
+   public Class<?>[] getDependencies() {
+      return SERVICE_DEPENDENCIES;
+   }
 
-	@Override
-	public void onActivate(BundleContext context, Map<Class<?>, Object> services) {
-		IOseeDatabaseService databaseService = getService(IOseeDatabaseService.class, services);
-		IApplicationServerManager serverManager = getService(IApplicationServerManager.class, services);
-		IAuthenticationManager authenticationManager = getService(IAuthenticationManager.class, services);
+   @Override
+   public void onActivate(BundleContext context, Map<Class<?>, Object> services) {
+      IOseeDatabaseService databaseService = getService(IOseeDatabaseService.class, services);
+      IApplicationServerManager serverManager = getService(IApplicationServerManager.class, services);
+      IAuthenticationManager authenticationManager = getService(IAuthenticationManager.class, services);
 
-		String serverId = serverManager.getId();
-		BuildTypeIdentifier identifier = new BuildTypeIdentifier(new BuildTypeDataProvider());
-		SessionFactory sessionFactory = new SessionFactory(identifier);
+      String serverId = serverManager.getId();
+      BuildTypeIdentifier identifier = new BuildTypeIdentifier(new BuildTypeDataProvider());
+      SessionFactory sessionFactory = new SessionFactory(identifier);
 
-		ISessionQuery sessionQuery = new DatabaseSessionQuery(serverId, databaseService);
-		IOseeDataAccessor<Session> accessor =
-					new DatabaseSessionAccessor(serverId, sessionFactory, sessionQuery, databaseService);
-		SessionCache sessionCache = new SessionCache(accessor);
+      ISessionQuery sessionQuery = new DatabaseSessionQuery(serverId, databaseService);
+      IOseeDataAccessor<Session> accessor =
+         new DatabaseSessionAccessor(serverId, sessionFactory, sessionQuery, databaseService);
+      SessionCache sessionCache = new SessionCache(accessor);
 
-		sessionManager =
-					new SessionManagerImpl(serverId, sessionFactory, sessionQuery, sessionCache, authenticationManager);
+      sessionManager =
+         new SessionManagerImpl(serverId, sessionFactory, sessionQuery, sessionCache, authenticationManager);
 
-		registration = context.registerService(ISessionManager.class.getName(), sessionManager, null);
+      registration = context.registerService(ISessionManager.class.getName(), sessionManager, null);
 
-		dataStoreSync = new SessionDataStoreSync(sessionCache);
-		dataStoreSync.start();
-	}
+      dataStoreSync = new SessionDataStoreSync(sessionCache);
+      dataStoreSync.start();
+   }
 
-	@Override
-	public void onDeActivate() {
-		if (registration != null) {
-			if (dataStoreSync != null) {
-				dataStoreSync.stop();
-			}
-			registration.unregister();
-		}
-	}
+   @Override
+   public void onDeActivate() {
+      if (registration != null) {
+         if (dataStoreSync != null) {
+            dataStoreSync.stop();
+         }
+         registration.unregister();
+      }
+   }
 
 }

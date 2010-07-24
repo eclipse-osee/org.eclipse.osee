@@ -62,7 +62,7 @@ public class ColumnMetadata implements Xmlizable {
       }
       ColumnMetadata that = (ColumnMetadata) otherObject;
       return new EqualsBuilder().appendSuper(super.equals(otherObject)).append(this.columnFields,
-            that.getColumnFields()).isEquals();
+         that.getColumnFields()).isEquals();
    }
 
    @Override
@@ -81,6 +81,7 @@ public class ColumnMetadata implements Xmlizable {
       return toReturn;
    }
 
+   @Override
    public Element toXml(Document doc) {
       Element columnElement = doc.createElement(TableSections.Column.toString());
       for (ColumnFields key : columnFields.keySet()) {

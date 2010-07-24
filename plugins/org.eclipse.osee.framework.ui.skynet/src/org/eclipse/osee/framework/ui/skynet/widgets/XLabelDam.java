@@ -31,122 +31,122 @@ import org.eclipse.swt.widgets.Text;
  */
 public class XLabelDam extends XWidget implements IAttributeWidget {
 
-	private Artifact artifact;
-	private String attributeTypeName;
-	private Text valueTextWidget;
-	private Composite parent;
+   private Artifact artifact;
+   private String attributeTypeName;
+   private Text valueTextWidget;
+   private Composite parent;
 
-	public XLabelDam(String displayLabel) {
-		super(displayLabel);
-	}
+   public XLabelDam(String displayLabel) {
+      super(displayLabel);
+   }
 
-	@Override
-	public Control getControl() {
-		return valueTextWidget;
-	}
+   @Override
+   public Control getControl() {
+      return valueTextWidget;
+   }
 
-	@Override
-	protected void createControls(Composite parent, int horizontalSpan) {
-		this.parent = parent;
-		if (horizontalSpan < 2) {
-			horizontalSpan = 2;
-		}
-		// Create Data Widgets
-		if (isDisplayLabel() && !getLabel().equals("")) {
-			labelWidget = new Label(parent, SWT.NONE);
-			labelWidget.setText(getLabel() + ":");
-			if (getToolTip() != null) {
-				labelWidget.setToolTipText(getToolTip());
-			}
-		}
-		valueTextWidget = new Text(parent, SWT.NONE);
-		valueTextWidget.setEditable(false);
-		refresh();
-	}
+   @Override
+   protected void createControls(Composite parent, int horizontalSpan) {
+      this.parent = parent;
+      if (horizontalSpan < 2) {
+         horizontalSpan = 2;
+      }
+      // Create Data Widgets
+      if (isDisplayLabel() && !getLabel().equals("")) {
+         labelWidget = new Label(parent, SWT.NONE);
+         labelWidget.setText(getLabel() + ":");
+         if (getToolTip() != null) {
+            labelWidget.setToolTipText(getToolTip());
+         }
+      }
+      valueTextWidget = new Text(parent, SWT.NONE);
+      valueTextWidget.setEditable(false);
+      refresh();
+   }
 
-	@Override
-	public String getAttributeType() {
-		return attributeTypeName;
-	}
+   @Override
+   public String getAttributeType() {
+      return attributeTypeName;
+   }
 
-	@Override
-	public void setAttributeType(Artifact artifact, String attrName) {
-		this.artifact = artifact;
-		this.attributeTypeName = attrName;
+   @Override
+   public void setAttributeType(Artifact artifact, String attrName) {
+      this.artifact = artifact;
+      this.attributeTypeName = attrName;
 
-		refresh();
-	}
+      refresh();
+   }
 
-	@Override
-	public void saveToArtifact() {
-		// Do nothing cause labelDam is read-only
-	}
+   @Override
+   public void saveToArtifact() {
+      // Do nothing cause labelDam is read-only
+   }
 
-	@Override
-	public Result isDirty() {
-		return Result.FalseResult;
-	}
+   @Override
+   public Result isDirty() {
+      return Result.FalseResult;
+   }
 
-	@Override
-	public void refresh() {
-		if (artifact != null && valueTextWidget != null && !valueTextWidget.isDisposed()) {
-			try {
-				valueTextWidget.setText(artifact.getAttributesToString(attributeTypeName));
-			} catch (OseeCoreException ex) {
-				OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-			}
-		}
-	}
+   @Override
+   public void refresh() {
+      if (artifact != null && valueTextWidget != null && !valueTextWidget.isDisposed()) {
+         try {
+            valueTextWidget.setText(artifact.getAttributesToString(attributeTypeName));
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         }
+      }
+   }
 
-	@Override
-	public void dispose() {
-		if (labelWidget != null) {
-			labelWidget.dispose();
-		}
-		if (valueTextWidget != null) {
-			valueTextWidget.dispose();
-		}
-		if (parent != null && !parent.isDisposed()) {
-			parent.layout();
-		}
-	}
+   @Override
+   public void dispose() {
+      if (labelWidget != null) {
+         labelWidget.dispose();
+      }
+      if (valueTextWidget != null) {
+         valueTextWidget.dispose();
+      }
+      if (parent != null && !parent.isDisposed()) {
+         parent.layout();
+      }
+   }
 
-	@Override
-	public String getReportData() {
-		return null;
-	}
+   @Override
+   public String getReportData() {
+      return null;
+   }
 
-	@Override
-	public String getXmlData() {
-		return null;
-	}
+   @Override
+   public String getXmlData() {
+      return null;
+   }
 
-	@Override
-	public IStatus isValid() {
-		return Status.OK_STATUS;
-	}
+   @Override
+   public IStatus isValid() {
+      return Status.OK_STATUS;
+   }
 
-	@Override
-	public void setFocus() {
-	}
+   @Override
+   public void setFocus() {
+   }
 
-	@Override
-	public void setXmlData(String str) {
-	}
+   @Override
+   public void setXmlData(String str) {
+   }
 
-	@Override
-	public String toHTML(String labelFont) {
-		return "";
-	}
+   @Override
+   public String toHTML(String labelFont) {
+      return "";
+   }
 
-	@Override
-	public Object getData() {
-		return valueTextWidget.getText();
-	}
+   @Override
+   public Object getData() {
+      return valueTextWidget.getText();
+   }
 
-	@Override
-	public void revert() {
-		// Do nothing cause labelDam is read-only
-	}
+   @Override
+   public void revert() {
+      // Do nothing cause labelDam is read-only
+   }
 
 }

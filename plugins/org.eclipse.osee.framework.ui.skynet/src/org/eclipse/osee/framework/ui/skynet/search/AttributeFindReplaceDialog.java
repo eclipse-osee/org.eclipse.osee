@@ -111,6 +111,7 @@ public class AttributeFindReplaceDialog extends Dialog {
 
    private void addListeners() {
       txtFindRegEx.addModifyListener(new ModifyListener() {
+         @Override
          public void modifyText(ModifyEvent e) {
             checkEnabled();
          }
@@ -148,7 +149,7 @@ public class AttributeFindReplaceDialog extends Dialog {
 
    private void checkEnabled() {
       boolean enable =
-            cmbAttributeDescriptors.getInput() instanceof AttributeType[] && txtFindRegEx.getText().length() > 0 && !artifacts.isEmpty();
+         cmbAttributeDescriptors.getInput() instanceof AttributeType[] && txtFindRegEx.getText().length() > 0 && !artifacts.isEmpty();
 
       getButton(IDialogConstants.OK_ID).setEnabled(enable);
    }
@@ -158,7 +159,7 @@ public class AttributeFindReplaceDialog extends Dialog {
       final Pattern pattern = Pattern.compile(txtFindRegEx.getText());
       final String replaceText = txtReplaceStr.getText();
       final String attributeName =
-            ((AttributeType) ((IStructuredSelection) cmbAttributeDescriptors.getSelection()).getFirstElement()).getName();
+         ((AttributeType) ((IStructuredSelection) cmbAttributeDescriptors.getSelection()).getFirstElement()).getName();
 
       Job job = new Job("Find/Replace") {
 
@@ -189,7 +190,7 @@ public class AttributeFindReplaceDialog extends Dialog {
                if (ex.getMessage().equals("USER_PURPLE CANCELLED")) {
                   toReturn = Status.CANCEL_STATUS;
                } else {
-                  toReturn = new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, Status.OK, ex.getMessage(), ex);
+                  toReturn = new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, IStatus.OK, ex.getMessage(), ex);
                }
             } finally {
                monitor.done();
@@ -203,10 +204,12 @@ public class AttributeFindReplaceDialog extends Dialog {
    }
    private static class ArtifactTypeLabelProvider implements ILabelProvider {
 
+      @Override
       public Image getImage(Object element) {
          return null;
       }
 
+      @Override
       public String getText(Object element) {
          if (element instanceof AttributeType) {
             return ((AttributeType) element).getName();
@@ -215,16 +218,20 @@ public class AttributeFindReplaceDialog extends Dialog {
          }
       }
 
+      @Override
       public void addListener(ILabelProviderListener listener) {
       }
 
+      @Override
       public void dispose() {
       }
 
+      @Override
       public boolean isLabelProperty(Object element, String property) {
          return true;
       }
 
+      @Override
       public void removeListener(ILabelProviderListener listener) {
       }
    }

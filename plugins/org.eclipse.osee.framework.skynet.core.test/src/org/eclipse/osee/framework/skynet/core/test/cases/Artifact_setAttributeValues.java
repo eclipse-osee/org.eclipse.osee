@@ -37,8 +37,8 @@ public class Artifact_setAttributeValues {
    private static List<String> firstSet = Arrays.asList("First", "Second", "Third");
    private static List<String> addOneSet = Arrays.asList("First", "Second", "Third", "Fourth");
    private static List<String> addOneRemoveOneSet = Arrays.asList("Second", "Third", "Fourth", "Fifth");
-   private static List<String> addDuplicates_set =
-         Arrays.asList("Second", "Second", "Third", "Fourth", "Fifth", "Fourth");
+   private static List<String> addDuplicates_set = Arrays.asList("Second", "Second", "Third", "Fourth", "Fifth",
+      "Fourth");
    private static List<String> addDuplicates_result = Arrays.asList("Second", "Third", "Fifth", "Fourth");
    private static List<String> emptySet = Arrays.asList();
 
@@ -74,7 +74,7 @@ public class Artifact_setAttributeValues {
       artifact.persist();
 
       assertTrue(Collections.isEqual(addOneRemoveOneSet,
-            artifact.getAttributesToStringList(CoreAttributeTypes.STATIC_ID)));
+         artifact.getAttributesToStringList(CoreAttributeTypes.STATIC_ID)));
    }
 
    @org.junit.Test
@@ -93,7 +93,7 @@ public class Artifact_setAttributeValues {
       artifact.persist();
 
       assertTrue(Collections.isEqual(addDuplicates_result,
-            artifact.getAttributesToStringList(CoreAttributeTypes.STATIC_ID)));
+         artifact.getAttributesToStringList(CoreAttributeTypes.STATIC_ID)));
    }
 
    @AfterClass
@@ -111,8 +111,8 @@ public class Artifact_setAttributeValues {
       Branch branch = BranchManager.getBranchByGuid(DemoSawBuilds.SAW_Bld_1.getGuid());
       Assert.assertNotNull(branch);
       Collection<Artifact> arts =
-            ArtifactQuery.getArtifactListFromName(Artifact_setAttributeValues.class.getSimpleName(), branch,
-                  EXCLUDE_DELETED);
+         ArtifactQuery.getArtifactListFromName(Artifact_setAttributeValues.class.getSimpleName(), branch,
+            EXCLUDE_DELETED);
       new PurgeArtifacts(arts).execute();
    }
 }

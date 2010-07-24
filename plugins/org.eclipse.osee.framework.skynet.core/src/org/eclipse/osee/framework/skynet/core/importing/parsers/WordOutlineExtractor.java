@@ -38,14 +38,12 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
    private static final String TABLE_TAG_WITH_ATTRS = "<w:tbl ";
    private static final String TABLE_TAG_EMPTY = "<w:tbl/>";
    private static final String TABLE_TAG = "<w:tbl>";
-   private static final CharSequence[] BODY_TAGS =
-         new CharSequence[] {PARAGRAPH_TAG, PARAGRAPH_TAG_EMPTY, PARAGRAPH_TAG_WITH_ATTRS, TABLE_TAG, TABLE_TAG_EMPTY,
-               TABLE_TAG_WITH_ATTRS, WordUtil.BODY_END};
+   private static final CharSequence[] BODY_TAGS = new CharSequence[] {PARAGRAPH_TAG, PARAGRAPH_TAG_EMPTY,
+      PARAGRAPH_TAG_WITH_ATTRS, TABLE_TAG, TABLE_TAG_EMPTY, TABLE_TAG_WITH_ATTRS, WordUtil.BODY_END};
 
    // A regex for reading xml elements. Assumes that an element never has a descendant with the same name as itself
-   private static final Pattern internalAttributeElementsPattern =
-         Pattern.compile("<((\\w+:)?(\\w+))(\\s+.*?)((/>)|(>(.*?)</\\1>))",
-               Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern internalAttributeElementsPattern = Pattern.compile(
+      "<((\\w+:)?(\\w+))(\\s+.*?)((/>)|(>(.*?)</\\1>))", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
    private static final Pattern proofErrTagKiller = Pattern.compile("</?w:proofErr.*?/?>");
    private static final int NAMESPACE_GROUP = 2;
    private static final int ELEMENT_NAME_GROUP = 3;
@@ -98,6 +96,7 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
    @Override
    public FileFilter getFileFilter() {
       return new FileFilter() {
+         @Override
          public boolean accept(File file) {
             return file.isDirectory() || file.isFile() && file.getName().endsWith(".xml");
          }
@@ -163,7 +162,7 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
                paragraphStyle = null;
                parseContentDetails(content, new Stack<String>());
                delegate.processContent(collector, forceBody, forcePrimaryType, headerNumber, listIdentifier,
-                     paragraphStyle, content.toString(), element == PARAGRAPH_TAG);
+                  paragraphStyle, content.toString(), element == PARAGRAPH_TAG);
             }
          }
 
@@ -213,7 +212,7 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
             } else if (reqListMatcher.matches()) {
                if (isListStyle(parentElementNames)) {
                   listIdentifier =
-                        processListId(Integer.parseInt(getAttributeValue("w:val", elementAttributes)), numberCandidate);
+                     processListId(Integer.parseInt(getAttributeValue("w:val", elementAttributes)), numberCandidate);
                }
             }
          }

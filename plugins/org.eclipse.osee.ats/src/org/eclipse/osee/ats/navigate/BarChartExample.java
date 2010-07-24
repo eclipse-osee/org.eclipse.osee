@@ -82,13 +82,14 @@ public class BarChartExample extends XNavigateItemAction {
       sb.append("Example Bar Chart Data");
       sb.append(AHTML.beginMultiColumnTable(95, 1));
       sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Type", "Title", "Status"}));
-      for (int x = 0; x < 3; x++)
+      for (int x = 0; x < 3; x++) {
          sb.append(AHTML.addRowMultiColumnTable(new String[] {"Type " + x, "Title " + x, x + ""}));
+      }
       sb.append(AHTML.endMultiColumnTable());
       return new ResultsEditorHtmlTab("Example Bar Chart Data", "Report", AHTML.simplePage(sb.toString()));
    }
 
-   @SuppressWarnings( {"deprecation"})
+   @SuppressWarnings({"deprecation"})
    public static Chart createMyChart() {
       // bart charts are based on charts that contain axes
       ChartWithAxes cwaBar = ChartWithAxesImpl.create();

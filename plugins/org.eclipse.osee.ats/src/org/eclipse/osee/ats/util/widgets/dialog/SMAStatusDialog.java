@@ -63,8 +63,11 @@ public class SMAStatusDialog extends MessageDialog {
    protected Control createCustomArea(Composite parent) {
 
       boolean hasTask = false;
-      for (StateMachineArtifact sma : smas)
-         if (sma instanceof TaskArtifact) hasTask = true;
+      for (StateMachineArtifact sma : smas) {
+         if (sma instanceof TaskArtifact) {
+            hasTask = true;
+         }
+      }
 
       statusLabel = new Label(parent, SWT.NONE);
       statusLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
@@ -77,24 +80,30 @@ public class SMAStatusDialog extends MessageDialog {
 
       createPreCustomArea(parent);
 
-      if (hasTask) (new Label(parent, SWT.NONE)).setText("Task will auto-transition to complete when statused 100%.\n" + "Make all other changes to Task prior to statusing 100%.");
+      if (hasTask) {
+         new Label(parent, SWT.NONE).setText("Task will auto-transition to complete when statused 100%.\n" + "Make all other changes to Task prior to statusing 100%.");
+      }
 
       if (showPercent) {
          percent.setRequiredEntry(true);
          percent.setToolTip("Enter total percent complete.");
          percent.createWidgets(parent, 2);
          try {
-            if (smas.size() == 1) percent.set(smas.iterator().next().getStateMgr().getPercentComplete());
+            if (smas.size() == 1) {
+               percent.set(smas.iterator().next().getStateMgr().getPercentComplete());
+            }
          } catch (Exception ex) {
             OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
          percent.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(org.eclipse.swt.events.ModifyEvent e) {
                updateButtons();
                updateStatusLabel();
             };
          });
          percent.getLabelWidget().addListener(SWT.MouseUp, new Listener() {
+            @Override
             public void handleEvent(Event event) {
                if (event.button == 3) {
                   percent.set("100");
@@ -109,6 +118,7 @@ public class SMAStatusDialog extends MessageDialog {
       hours.setToolTip("Enter hours spent since last status entry.");
       hours.createWidgets(parent, 2);
       hours.addModifyListener(new ModifyListener() {
+         @Override
          public void modifyText(org.eclipse.swt.events.ModifyEvent e) {
             updateButtons();
             updateStatusLabel();
@@ -147,7 +157,7 @@ public class SMAStatusDialog extends MessageDialog {
    }
 
    public boolean isSplitHours() {
-      return (splitRadio.isSelected());
+      return splitRadio.isSelected();
    }
 
    protected IStatus isComplete() {

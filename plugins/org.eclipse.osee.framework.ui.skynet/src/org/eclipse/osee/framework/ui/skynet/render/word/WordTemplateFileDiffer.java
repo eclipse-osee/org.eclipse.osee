@@ -61,9 +61,9 @@ public class WordTemplateFileDiffer {
       Branch endBranch = variableMap.getBranch("Branch");
       Branch startBranch = variableMap.getBranch("compareBranch");
 
-      if (endBranch == null || (startBranch == null && !variableMap.getBoolean("Diff from Baseline"))) {
+      if (endBranch == null || startBranch == null && !variableMap.getBoolean("Diff from Baseline")) {
          throw new OseeCoreException(
-               "Must Select a " + endBranch == null ? "Branch" : "Date" + " to diff against when publishing as Diff");
+            "Must Select a " + endBranch == null ? "Branch" : "Date" + " to diff against when publishing as Diff");
       }
       TransactionRecord startTransaction;
 
@@ -77,7 +77,7 @@ public class WordTemplateFileDiffer {
       }
 
       TransactionDelta txDelta =
-            new TransactionDelta(startTransaction, TransactionManager.getHeadTransaction(endBranch));
+         new TransactionDelta(startTransaction, TransactionManager.getHeadTransaction(endBranch));
 
       for (Artifact artifact : newArtifacts) {
          try {
@@ -129,8 +129,8 @@ public class WordTemplateFileDiffer {
       List<Artifact> historicArtifacts = new ArrayList<Artifact>(artifacts.size());
       @SuppressWarnings("unused")
       Collection<Artifact> bulkLoadedArtifacts =
-            ArtifactQuery.getHistoricalArtifactListFromIds(Artifacts.toGuids(artifacts),
-                  TransactionManager.getTransactionId(transactionId), INCLUDE_DELETED);
+         ArtifactQuery.getHistoricalArtifactListFromIds(Artifacts.toGuids(artifacts),
+            TransactionManager.getTransactionId(transactionId), INCLUDE_DELETED);
 
       for (Artifact artifact : artifacts) {
          historicArtifacts.add(ArtifactCache.getActive(artifact.getArtId(), branchId));

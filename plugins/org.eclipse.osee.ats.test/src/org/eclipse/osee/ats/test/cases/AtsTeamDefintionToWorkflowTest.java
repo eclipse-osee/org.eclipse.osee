@@ -32,7 +32,7 @@ public class AtsTeamDefintionToWorkflowTest {
       boolean error = false;
       StringBuffer sb = new StringBuffer();
       for (Artifact artifact : ArtifactQuery.getArtifactListFromType(AtsArtifactTypes.TeamDefinition,
-            AtsUtil.getAtsBranch())) {
+         AtsUtil.getAtsBranch())) {
          TeamDefinitionArtifact teamDef = (TeamDefinitionArtifact) artifact;
          if (teamDef.isActionable() && teamDef.getWorkFlowDefinition() == null) {
             sb.append("Team Definition \"" + teamDef + "\" has no Work Flow associated and is Actionable.");

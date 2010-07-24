@@ -43,7 +43,7 @@ public class AtsLoadConfigArtifactsOperation extends AbstractOperation {
          Artifact headingArt = AtsFolderUtil.getFolder(AtsFolder.Ats_Heading);
          // Loading artifacts will cache them in ArtifactCache
          RelationManager.getRelatedArtifacts(Collections.singleton(headingArt), 8,
-               CoreRelationTypes.Default_Hierarchical__Child, AtsRelationTypes.TeamDefinitionToVersion_Version);
+            CoreRelationTypes.Default_Hierarchical__Child, AtsRelationTypes.TeamDefinitionToVersion_Version);
          // Load Work Definitions
          WorkItemDefinitionFactory.loadDefinitions();
          loaded = true;

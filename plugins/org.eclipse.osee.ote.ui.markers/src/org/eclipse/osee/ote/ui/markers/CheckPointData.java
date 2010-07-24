@@ -12,7 +12,6 @@ package org.eclipse.osee.ote.ui.markers;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public class CheckPointData {
 
@@ -20,7 +19,7 @@ public class CheckPointData {
    private String name;
    private String expected;
    private String actual;
-   
+
    public boolean isFailed() {
       return isFailed;
    }

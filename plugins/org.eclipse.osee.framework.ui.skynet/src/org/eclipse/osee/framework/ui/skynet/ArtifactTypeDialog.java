@@ -70,13 +70,13 @@ public class ArtifactTypeDialog extends IconAndMessageDialog {
     * @param dialogTitleImage the dialog title image, or <code>null</code> if none
     * @param dialogMessage the dialog message
     * @param dialogImageType one of the following values:
-    *           <ul>
-    *           <li><code>MessageDialog.NONE</code> for a dialog with no image</li>
-    *           <li><code>MessageDialog.ERROR</code> for a dialog with an error image</li>
-    *           <li><code>MessageDialog.INFORMATION</code> for a dialog with an information image</li>
-    *           <li><code>MessageDialog.QUESTION </code> for a dialog with a question image</li>
-    *           <li><code>MessageDialog.WARNING</code> for a dialog with a warning image</li>
-    *           </ul>
+    * <ul>
+    * <li><code>MessageDialog.NONE</code> for a dialog with no image</li>
+    * <li><code>MessageDialog.ERROR</code> for a dialog with an error image</li>
+    * <li><code>MessageDialog.INFORMATION</code> for a dialog with an information image</li>
+    * <li><code>MessageDialog.QUESTION </code> for a dialog with a question image</li>
+    * <li><code>MessageDialog.WARNING</code> for a dialog with a warning image</li>
+    * </ul>
     * @param dialogButtonLabels an array of labels for the buttons in the button bar
     * @param defaultIndex the index in the button label array of the default button
     */
@@ -220,10 +220,12 @@ public class ArtifactTypeDialog extends IconAndMessageDialog {
       }
 
       descriptorsList.addSelectionListener(new SelectionListener() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             updateButtons();
          }
 
+         @Override
          public void widgetDefaultSelected(SelectionEvent e) {
          }
       });
@@ -303,7 +305,7 @@ public class ArtifactTypeDialog extends IconAndMessageDialog {
    public static boolean openTextEntry(Shell parent, String title, String message) {
       MessageDialog dialog = new MessageDialog(parent, title, null,
       // accept the default window icon
-            message, QUESTION, new String[] {IDialogConstants.OK_LABEL, IDialogConstants.CANCEL_LABEL}, 0);
+         message, QUESTION, new String[] {IDialogConstants.OK_LABEL, IDialogConstants.CANCEL_LABEL}, 0);
       // OK is the default
       return dialog.open() == 0;
    }
@@ -321,8 +323,8 @@ public class ArtifactTypeDialog extends IconAndMessageDialog {
    }
 
    /*
-    * @see org.eclipse.jface.dialogs.Dialog#createButton(org.eclipse.swt.widgets.Composite, int,
-    *      java.lang.String, boolean)
+    * @see org.eclipse.jface.dialogs.Dialog#createButton(org.eclipse.swt.widgets.Composite, int, java.lang.String,
+    * boolean)
     */
    @Override
    protected Button createButton(Composite parent, int id, String label, boolean defaultButton) {

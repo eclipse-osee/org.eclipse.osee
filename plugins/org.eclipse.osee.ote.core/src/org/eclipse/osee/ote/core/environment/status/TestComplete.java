@@ -33,6 +33,7 @@ public class TestComplete implements Serializable, IServiceStatusData {
       this.healthStatus = healthStatus;
    }
 
+   @Override
    public void accept(IServiceStatusDataVisitor visitor) {
       visitor.asTestComplete(this);
    }

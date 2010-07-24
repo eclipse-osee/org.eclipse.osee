@@ -22,7 +22,7 @@ import org.junit.Test;
 
 /**
  * Test Cases for {@link ResourceLocator}
- *
+ * 
  * @author Roberto E. Escobar
  */
 public class ResourceLocatorTest {

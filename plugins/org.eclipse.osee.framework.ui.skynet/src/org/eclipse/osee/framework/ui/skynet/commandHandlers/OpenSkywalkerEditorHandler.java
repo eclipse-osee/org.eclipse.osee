@@ -27,7 +27,7 @@ public class OpenSkywalkerEditorHandler extends AbstractHandler {
    @Override
    public Object execute(ExecutionEvent arg0) throws ExecutionException {
       ISelectionProvider selectionProvider =
-            AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
+         AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
 
       if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
          IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();

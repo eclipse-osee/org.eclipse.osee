@@ -39,14 +39,17 @@ public class AtsWorkflowConfigEditorInput implements IEditorInput {
       return workflow.getId().hashCode();
    }
 
+   @Override
    public boolean exists() {
       return true;
    }
 
+   @Override
    public ImageDescriptor getImageDescriptor() {
       return null;
    }
 
+   @Override
    public String getName() {
       if (workflow == null) {
          return "No Artifact Input Provided";
@@ -54,14 +57,17 @@ public class AtsWorkflowConfigEditorInput implements IEditorInput {
       return workflow.getName();
    }
 
+   @Override
    public IPersistableElement getPersistable() {
       return null;
    }
 
+   @Override
    public String getToolTipText() {
       return getName();
    }
 
+   @Override
    @SuppressWarnings("rawtypes")
    public Object getAdapter(Class adapter) {
       return null;

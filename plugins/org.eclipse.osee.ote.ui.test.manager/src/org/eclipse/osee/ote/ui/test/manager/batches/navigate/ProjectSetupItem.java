@@ -25,8 +25,8 @@ import org.eclipse.osee.ote.ui.test.manager.internal.TestManagerPlugin;
  * @author Roberto E. Escobar
  */
 final class ProjectSetupItem extends XNavigateItem implements Runnable {
-   private URI projectSetFile;
-   private String jobName;
+   private final URI projectSetFile;
+   private final String jobName;
 
    public ProjectSetupItem(XNavigateItem parent, String name, KeyedImage oseeImage, URI projectSetFile) {
       super(parent, name, oseeImage);
@@ -34,6 +34,7 @@ final class ProjectSetupItem extends XNavigateItem implements Runnable {
       this.projectSetFile = projectSetFile;
    }
 
+   @Override
    public void run() {
       try {
          URL url = projectSetFile.toURL();

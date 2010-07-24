@@ -49,6 +49,7 @@ public abstract class ASkynetEventListener implements ISkynetEventListener {
     * 
     * @throws RemoteException
     */
+   @Override
    public abstract void onEvent(ISkynetEvent[] events) throws RemoteException;
 
 }

@@ -41,14 +41,14 @@ public class Xml {
    public final static XPathFactory myXPathFactory = XPathFactory.newInstance();
    public final static XPath myXPath = myXPathFactory.newXPath();
    public final static String wordLeader1 =
-         "<?xml version='1.0' encoding='UTF-8' standalone='yes'?>" + "<?mso-application progid='Word.Document'?>";
+      "<?xml version='1.0' encoding='UTF-8' standalone='yes'?>" + "<?mso-application progid='Word.Document'?>";
    public final static String wordLeader2 =
-         "<w:wordDocument xmlns:w='http://schemas.microsoft.com/office/word/2003/wordml' xmlns:v='urn:schemas-microsoft-com:vml' xmlns:w10='urn:schemas-microsoft-com:office:word' xmlns:sl='http://schemas.microsoft.com/schemaLibrary/2003/core' xmlns:aml='http://schemas.microsoft.com/aml/2001/core' xmlns:wx='http://schemas.microsoft.com/office/word/2003/auxHint' xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:dt='uuid:C2F41010-65B3-11d1-A29F-00AA00C14882' xmlns:wsp='http://schemas.microsoft.com/office/word/2003/wordml/sp2' xmlns:ns0='http://www.w3.org/2001/XMLSchema' xmlns:ns1='http://eclipse.org/artifact.xsd' xmlns:st1='urn:schemas-microsoft-com:office:smarttags' w:macrosPresent='no' w:embeddedObjPresent='no' w:ocxPresent='no' xml:space='preserve'>";
+      "<w:wordDocument xmlns:w='http://schemas.microsoft.com/office/word/2003/wordml' xmlns:v='urn:schemas-microsoft-com:vml' xmlns:w10='urn:schemas-microsoft-com:office:word' xmlns:sl='http://schemas.microsoft.com/schemaLibrary/2003/core' xmlns:aml='http://schemas.microsoft.com/aml/2001/core' xmlns:wx='http://schemas.microsoft.com/office/word/2003/auxHint' xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:dt='uuid:C2F41010-65B3-11d1-A29F-00AA00C14882' xmlns:wsp='http://schemas.microsoft.com/office/word/2003/wordml/sp2' xmlns:ns0='http://www.w3.org/2001/XMLSchema' xmlns:ns1='http://eclipse.org/artifact.xsd' xmlns:st1='urn:schemas-microsoft-com:office:smarttags' w:macrosPresent='no' w:embeddedObjPresent='no' w:ocxPresent='no' xml:space='preserve'>";
    public final static String wordLeader = wordLeader1.concat(wordLeader2);
    public final static String wordBody = "<w:body></w:body>";
    public final static String wordTrailer = "</w:wordDocument> ";
    public final SimpleNamespaceContext mySimpleNamespaceContext = new SimpleNamespaceContext();
-   public final static Matcher theFunnyQuoteMatcher = Pattern.compile("’").matcher("");
+   public final static Matcher theFunnyQuoteMatcher = Pattern.compile("ï¿½").matcher("");
 
    /**
     * TODO Optimize algorithm
@@ -80,7 +80,7 @@ public class Xml {
                   strB.append('"');
                } else {
                   throw new IllegalArgumentException(
-                        "unknown entity reference: " + text.substring(startIndex, endIndex));
+                     "unknown entity reference: " + text.substring(startIndex, endIndex));
                }
                index = endIndex - 1;
             } else {
@@ -148,7 +148,7 @@ public class Xml {
 
    public static String treatNonUTF8Characters(String contentString) {
       String resultString = contentString;
-      String[][] nonUTF8CharactersOfInterest = { {"–", "-"}, {"’", "'"}, {"’", "'"}, {"“", "\""}, {"”", "\""}};//Wider than usual dash , smaller than usual bullet
+      String[][] nonUTF8CharactersOfInterest = { {"ï¿½", "-"}, {"ï¿½", "'"}, {"ï¿½", "'"}, {"ï¿½", "\""}, {"ï¿½", "\""}};//Wider than usual dash , smaller than usual bullet
       for (int i = 0; i < nonUTF8CharactersOfInterest.length; i++) {
          String[] splitsOfNonUTF8 = resultString.split(nonUTF8CharactersOfInterest[i][0]);//Wider than usual dash or bullet
          if (splitsOfNonUTF8.length > 1) {
@@ -184,7 +184,7 @@ public class Xml {
       Element newElement = null;
       try {
          Document ownerDocument =
-               parentNode.getNodeType() == Node.DOCUMENT_NODE ? (Document) parentNode : parentNode.getOwnerDocument();
+            parentNode.getNodeType() == Node.DOCUMENT_NODE ? (Document) parentNode : parentNode.getOwnerDocument();
          newElement = ownerDocument.createElement(newElementTagName);
          parentNode.appendChild(newElement);
          if (newText != null) {
@@ -193,7 +193,8 @@ public class Xml {
          }
       } catch (Exception e) {
          e.printStackTrace();
-      };
+      }
+      ;
       return newElement;
    }
 
@@ -201,7 +202,7 @@ public class Xml {
       Element newElement = null;
       try {
          Document ownerDocument =
-               parentNode.getNodeType() == Node.DOCUMENT_NODE ? (Document) parentNode : parentNode.getOwnerDocument();
+            parentNode.getNodeType() == Node.DOCUMENT_NODE ? (Document) parentNode : parentNode.getOwnerDocument();
          newElement = ownerDocument.createElement(newElementTagName);
          parentNode.appendChild(newElement);
          if (newText != null) {
@@ -210,7 +211,8 @@ public class Xml {
          }
       } catch (Exception e) {
          e.printStackTrace();
-      };
+      }
+      ;
       return newElement;
    }
 
@@ -218,7 +220,7 @@ public class Xml {
       Element newElement = null;
       try {
          Document ownerDocument =
-               parentNode.getNodeType() == Node.DOCUMENT_NODE ? (Document) parentNode : parentNode.getOwnerDocument();
+            parentNode.getNodeType() == Node.DOCUMENT_NODE ? (Document) parentNode : parentNode.getOwnerDocument();
          newElement = ownerDocument.createElement(newElementTagName);
          parentNode.appendChild(newElement);
          if (newText != null) {
@@ -242,7 +244,7 @@ public class Xml {
          if (textInstances != null) {
             newElements = new Element[textInstances.length];
             Document ownerDocument =
-                  parentNode.getNodeType() == Node.DOCUMENT_NODE ? (Document) parentNode : parentNode.getOwnerDocument();
+               parentNode.getNodeType() == Node.DOCUMENT_NODE ? (Document) parentNode : parentNode.getOwnerDocument();
             for (int i = 0; i < textInstances.length; i++) {
                newElements[i] = ownerDocument.createElement(newElementsTagName);
                parentNode.appendChild(newElements[i]);
@@ -264,7 +266,8 @@ public class Xml {
          newElement.setAttribute(attributeName, attributeValue);
       } catch (Exception e) {
          e.printStackTrace();
-      };
+      }
+      ;
       return newElement;
    }
 
@@ -281,29 +284,29 @@ public class Xml {
             String myLastUsedListInitializeListFormat = mywilfo[0].getNodeValue();//
             int myNextILFO = Integer.parseInt(myLastUsedListInitializeListFormat);
             Node[] myListDefinition =
-                  selectNodeList(myDocumentElement,
-                        "descendant::w:listDef[child::w:lvl[1]/w:pStyle/@w:val = 'listlvl1'][1]");//<w:pStyle w:val="listlvl1"/>
+               selectNodeList(myDocumentElement,
+                  "descendant::w:listDef[child::w:lvl[1]/w:pStyle/@w:val = 'listlvl1'][1]");//<w:pStyle w:val="listlvl1"/>
             if (myListDefinition.length > 0) {
                String mylistDefaultID = selectNodeList(myListDefinition[0], "@w:listDefId")[0].getNodeValue();
                Node[] myWord_Formatted_Contents = selectNodeList(myDocument, "descendant::ns1:Word_Formatted_Content");
                for (int i = 0; i < myWord_Formatted_Contents.length; i++) {
                   Node[] myPStyles =
-                        selectNodeList(myWord_Formatted_Contents[i],
-                              "descendant::w:pPr[child::w:pStyle[@w:val = 'listlvl1']]");
+                     selectNodeList(myWord_Formatted_Contents[i],
+                        "descendant::w:pPr[child::w:pStyle[@w:val = 'listlvl1']]");
                   for (int j = 0; j < Math.min(1, myPStyles.length); j++) {
                      Node[] myListProperties = selectNodeList(myPStyles[j], "child::w:listPr");
                      if (myListProperties.length > 0) {
                         myNextILFO++;
                         Element newWList =
-                              appendNewElementWithTextAndOneAttribute(myListss[0], "w:list", null, "w:ilfo",
-                                    "" + myNextILFO);
+                           appendNewElementWithTextAndOneAttribute(myListss[0], "w:list", null, "w:ilfo",
+                              "" + myNextILFO);
                         appendNewElementWithTextAndOneAttribute(newWList, "w:ilst", null, "w:val", mylistDefaultID);
                         Element new_lvlOverride =
-                              appendNewElementWithTextAndOneAttribute(newWList, "w:lvlOverride", null, "w:ilvl", "0");
+                           appendNewElementWithTextAndOneAttribute(newWList, "w:lvlOverride", null, "w:ilvl", "0");
                         appendNewElementWithTextAndOneAttribute(new_lvlOverride, "w:startOverride", null, "w:val", "1");
                         appendNewElementWithTextAndOneAttribute(myListProperties[0], "w:ilvl", null, "w:val", "0");
                         appendNewElementWithTextAndOneAttribute(myListProperties[0], "w:ilfo", null, "w:val",
-                              "" + myNextILFO);
+                           "" + myNextILFO);
                      }
                   }
                }
@@ -401,16 +404,16 @@ public class Xml {
 
    public static final Element makeTable(Element parentDivElement, String caption, String[][] columnDescriptors) {
       Element newTableElement =
-            appendNewElementWithTextAndAttributes(parentDivElement, "table", null, new String[][] { {"border", "1"},
-                  {"cellpadding", "3"}, {"cellspacing", "0"}, {"width", "100%"}});
+         appendNewElementWithTextAndAttributes(parentDivElement, "table", null, new String[][] { {"border", "1"},
+            {"cellpadding", "3"}, {"cellspacing", "0"}, {"width", "100%"}});
       appendNewElementWithText(newTableElement, "caption", caption);
       Element columnGroupElement =
-            appendNewElementWithTextAndAttributes(newTableElement, "colgroup", null, new String[][] {{"align", "left"}});
+         appendNewElementWithTextAndAttributes(newTableElement, "colgroup", null, new String[][] {{"align", "left"}});
       String[] columnNames = new String[columnDescriptors.length];
       for (int i = 0; i < columnDescriptors.length; i++) {
          columnNames[i] = columnDescriptors[i][0];
          appendNewElementWithTextAndAttributes(columnGroupElement, "col", null, new String[][] {{"width",
-               columnDescriptors[i][1]}});//width,33
+            columnDescriptors[i][1]}});//width,33
       }
       Element headingTableRowElement = appendNewElementWithText(newTableElement, "tr", null);
       appendNewElementsWithText(headingTableRowElement, "th", columnNames);
@@ -419,7 +422,7 @@ public class Xml {
 
    public static final Element[] makeDivElementAndTableElement(Element parentDivElement, String caption, String[][] columnDescriptors) {
       Element[] divAndTableElements =
-            new Element[] {parentDivElement, parentDivElement.getOwnerDocument().createElement("div"), null};
+         new Element[] {parentDivElement, parentDivElement.getOwnerDocument().createElement("div"), null};
       divAndTableElements[2] = makeTable(divAndTableElements[1], caption, columnDescriptors);
       return divAndTableElements;
    }
@@ -435,7 +438,7 @@ public class Xml {
       for (String[] cellContentsAndStyleArray : cellContentsAndStyle) {
          if (cellContentsAndStyleArray.length > 1) {
             appendNewElementWithTextAndOneAttribute(nextRow, "td", cellContentsAndStyleArray[0],
-                  cellContentsAndStyleArray[1], cellContentsAndStyleArray[2]);
+               cellContentsAndStyleArray[1], cellContentsAndStyleArray[2]);
          } else {
             appendNewElementsWithText(nextRow, "td", new String[] {cellContentsAndStyleArray[0]});
          }
@@ -445,7 +448,7 @@ public class Xml {
 
    public static final Node writePrettyXML(Node aNode, File resultXmlFile) {
       try {
-         Node[] notUTF8Nodes = Xml.selectNodeList(aNode, "descendant::text()[contains(.,'’')]");
+         Node[] notUTF8Nodes = Xml.selectNodeList(aNode, "descendant::text()[contains(.,'ï¿½')]");
          for (int i = 0; i < notUTF8Nodes.length; i++) {
             notUTF8Nodes[i].setNodeValue(theFunnyQuoteMatcher.reset(notUTF8Nodes[i].getNodeValue()).replaceAll("'"));
          }

@@ -43,7 +43,7 @@ public class TransactionRecordTest {
 
    public TransactionRecordTest(int transactionNumber, int branchId, String comment, Date time, int authorArtId, int commitArtId, TransactionDetailsType txType) {
       this.transaction =
-            new TransactionRecord(transactionNumber, branchId, comment, time, authorArtId, commitArtId, txType);
+         new TransactionRecord(transactionNumber, branchId, comment, time, authorArtId, commitArtId, txType);
       this.transactionNumber = transactionNumber;
       this.branchId = branchId;
       this.comment = comment;

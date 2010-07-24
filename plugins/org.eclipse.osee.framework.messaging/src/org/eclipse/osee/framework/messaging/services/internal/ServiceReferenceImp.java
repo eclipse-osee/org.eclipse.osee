@@ -14,16 +14,15 @@ import org.eclipse.osee.framework.messaging.services.RegisteredServiceReference;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 class ServiceReferenceImp implements RegisteredServiceReference {
 
    UpdateStatus updateStatus;
 
-   ServiceReferenceImp(UpdateStatus updateStatus){
+   ServiceReferenceImp(UpdateStatus updateStatus) {
       this.updateStatus = updateStatus;
    }
-   
+
    @Override
    public void update() {
       updateStatus.run();

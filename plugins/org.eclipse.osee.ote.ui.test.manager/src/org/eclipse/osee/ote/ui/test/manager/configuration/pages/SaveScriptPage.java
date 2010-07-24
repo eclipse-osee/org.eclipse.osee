@@ -27,11 +27,11 @@ import org.eclipse.osee.ote.ui.test.manager.pages.scriptTable.ScriptTask;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class SaveScriptPage implements ISaveConfig, ScriptPageConstants, Xmlizable{
+public class SaveScriptPage implements ISaveConfig, ScriptPageConstants, Xmlizable {
 
-   private Document doc;
-   private Element root;
-   private ScriptPage scriptPage;
+   private final Document doc;
+   private final Element root;
+   private final ScriptPage scriptPage;
 
    public SaveScriptPage(ScriptPage tmPage) throws ParserConfigurationException {
       this.scriptPage = tmPage;
@@ -40,16 +40,17 @@ public class SaveScriptPage implements ISaveConfig, ScriptPageConstants, Xmlizab
       doc.appendChild(root);
    }
 
+   @Override
    public void printXmlTree() {
       OseeLog.log(TestManagerPlugin.class, Level.INFO, "Script Page Tree: ");
       try {
          OseeLog.log(TestManagerPlugin.class, Level.INFO, Jaxp.xmlToString(doc, Jaxp.getPrettyFormat(doc)));
-      }
-      catch (IOException ex) {
+      } catch (IOException ex) {
          OseeLog.log(TestManagerPlugin.class, Level.SEVERE, ex);
       }
    }
 
+   @Override
    public void saveConfig(File fileName) throws Exception {
       ScriptTableViewer scriptTable = scriptPage.getScriptTableViewer();
       Vector<ScriptTask> tasks = scriptTable.getTasks();
@@ -64,6 +65,7 @@ public class SaveScriptPage implements ISaveConfig, ScriptPageConstants, Xmlizab
       debug(fileName.getAbsolutePath());
    }
 
+   @Override
    public Element toXml(Document doc) {
       return root;
    }
@@ -83,9 +85,11 @@ public class SaveScriptPage implements ISaveConfig, ScriptPageConstants, Xmlizab
 
    private Element scriptTaskToXml(Document doc, ScriptTask task) {
       Element taskRoot = doc.createElement(ScriptPageConstants.SCRIPT_ENTRY);
-      taskRoot.appendChild(Jaxp.createElement(doc, ScriptPageConstants.SCRIPT_NAME_FIELD,task.getName()));
-      taskRoot.appendChild(Jaxp.createElement(doc, ScriptPageConstants.RAW_FILENAME_FIELD,task.getScriptModel().getWorkspaceRelativePath()));
-      taskRoot.appendChild(Jaxp.createElement(doc, ScriptPageConstants.RUNNABLE_FIELD,Boolean.toString(task.isRunnable())));
+      taskRoot.appendChild(Jaxp.createElement(doc, ScriptPageConstants.SCRIPT_NAME_FIELD, task.getName()));
+      taskRoot.appendChild(Jaxp.createElement(doc, ScriptPageConstants.RAW_FILENAME_FIELD,
+         task.getScriptModel().getWorkspaceRelativePath()));
+      taskRoot.appendChild(Jaxp.createElement(doc, ScriptPageConstants.RUNNABLE_FIELD,
+         Boolean.toString(task.isRunnable())));
       return taskRoot;
    }
 }

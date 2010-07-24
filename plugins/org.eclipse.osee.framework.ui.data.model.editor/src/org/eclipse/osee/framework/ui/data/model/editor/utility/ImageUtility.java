@@ -24,9 +24,8 @@ import org.eclipse.swt.graphics.ImageLoader;
 public class ImageUtility {
 
    private final static byte[] JPEG_HEADER = new byte[] {(byte) 0xff, (byte) 0xd8};
-   private final static byte[] PNG_HEADER =
-         new byte[] {(byte) 0x89, (byte) 0x50, (byte) 0x4E, (byte) 0x47, (byte) 0x0D, (byte) 0x0A, (byte) 0x1A,
-               (byte) 0x0A};
+   private final static byte[] PNG_HEADER = new byte[] {(byte) 0x89, (byte) 0x50, (byte) 0x4E, (byte) 0x47,
+      (byte) 0x0D, (byte) 0x0A, (byte) 0x1A, (byte) 0x0A};
    private final static byte[] GIF_HEADER = new byte[] {(byte) 0x47, (byte) 0x49, (byte) 0x46};
    private final static byte[] TIFF_HEADER = new byte[] {(byte) 0x49, (byte) 0x49, (byte) 0x2A};
    private final static byte[] BMP_HEADER = new byte[] {(byte) 0x42, (byte) 0x4D};
@@ -74,8 +73,12 @@ public class ImageUtility {
    }
 
    public static int getImageType(byte[] data) {
-      if (doesHeaderMatch(ICO_HEADER, data)) return SWT.IMAGE_ICO;
-      if (doesHeaderMatch(JPEG_HEADER, data)) return SWT.IMAGE_JPEG;
+      if (doesHeaderMatch(ICO_HEADER, data)) {
+         return SWT.IMAGE_ICO;
+      }
+      if (doesHeaderMatch(JPEG_HEADER, data)) {
+         return SWT.IMAGE_JPEG;
+      }
       if (doesHeaderMatch(BMP_HEADER, data)) {
          if (data.length > 14 && data[14] == 0x40) {
             if (data.length > 30 && data[30] == 0x00) {
@@ -87,9 +90,15 @@ public class ImageUtility {
             return SWT.IMAGE_OS2_BMP;
          }
       }
-      if (doesHeaderMatch(GIF_HEADER, data)) return SWT.IMAGE_GIF;
-      if (doesHeaderMatch(TIFF_HEADER, data)) return SWT.IMAGE_TIFF;
-      if (doesHeaderMatch(PNG_HEADER, data)) return SWT.IMAGE_PNG;
+      if (doesHeaderMatch(GIF_HEADER, data)) {
+         return SWT.IMAGE_GIF;
+      }
+      if (doesHeaderMatch(TIFF_HEADER, data)) {
+         return SWT.IMAGE_TIFF;
+      }
+      if (doesHeaderMatch(PNG_HEADER, data)) {
+         return SWT.IMAGE_PNG;
+      }
       return SWT.IMAGE_UNDEFINED;
    }
 }

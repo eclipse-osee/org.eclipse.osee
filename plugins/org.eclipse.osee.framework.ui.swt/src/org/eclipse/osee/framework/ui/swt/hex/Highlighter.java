@@ -40,7 +40,7 @@ class Highlighter implements IHexTblHighlighter {
    private void highlight(Color highlightColor, boolean ascii) {
       int row = index / provider.getBytesPerRow();
       int endRow = row;
-      int col = index - (row * provider.getBytesPerRow());
+      int col = index - row * provider.getBytesPerRow();
       HexTableRow[] elements = provider.getElements();
       for (int i = 0; i < length; i++) {
          HexTableRow e = elements[endRow];

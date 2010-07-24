@@ -75,6 +75,7 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
       return new TeamWorkflowSearchWorkflowSearchItem(this);
    }
 
+   @Override
    public TeamWorkflowSearchWorkflowSearchItem copyProvider() throws OseeArgumentException {
       return new TeamWorkflowSearchWorkflowSearchItem(this);
    }
@@ -101,8 +102,8 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
    @Override
    public Collection<? extends Artifact> performSearchGetResults(SearchType searchType) throws OseeCoreException {
       Collection<Artifact> artifacts =
-            new TeamWorldSearchItem("", getSelectedTeamDefinitions(), isIncludeCompletedCancelledCheckbox(), false,
-                  false, getSelectedVersionArtifact(), getSelectedUser(), getSelectedReleased()).performSearchGetResults(false);
+         new TeamWorldSearchItem("", getSelectedTeamDefinitions(), isIncludeCompletedCancelledCheckbox(), false, false,
+            getSelectedVersionArtifact(), getSelectedUser(), getSelectedReleased()).performSearchGetResults(false);
       return filterShowFlat(artifacts);
    }
 
@@ -177,13 +178,13 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
                         return;
                      }
                      TeamDefinitionArtifact teamDefHoldingVersions =
-                           teamDefArts.iterator().next().getTeamDefinitionHoldingVersions();
+                        teamDefArts.iterator().next().getTeamDefinitionHoldingVersions();
                      if (teamDefHoldingVersions == null) {
                         versionCombo.setDataStrings(new String[] {});
                         return;
                      }
                      Collection<String> names =
-                           Artifacts.artNames(teamDefHoldingVersions.getVersionsArtifacts(VersionReleaseType.Both));
+                        Artifacts.artNames(teamDefHoldingVersions.getVersionsArtifacts(VersionReleaseType.Both));
                      if (names.isEmpty()) {
                         versionCombo.setDataStrings(new String[] {});
                         return;
@@ -199,40 +200,58 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
    }
 
    protected User getSelectedUser() {
-      if (assigneeCombo == null) return null;
+      if (assigneeCombo == null) {
+         return null;
+      }
       return assigneeCombo.getUser();
    }
 
    public void setSelectedUser(User user) {
-      if (assigneeCombo != null) assigneeCombo.set(user);
+      if (assigneeCombo != null) {
+         assigneeCombo.set(user);
+      }
    }
 
    protected boolean isIncludeCompletedCancelledCheckbox() {
-      if (includeCompletedCancelledCheckbox == null) return false;
+      if (includeCompletedCancelledCheckbox == null) {
+         return false;
+      }
       return includeCompletedCancelledCheckbox.isSelected();
    }
 
    public void includeCompletedCancelledCheckbox(boolean selected) {
-      if (includeCompletedCancelledCheckbox != null) includeCompletedCancelledCheckbox.set(selected);
+      if (includeCompletedCancelledCheckbox != null) {
+         includeCompletedCancelledCheckbox.set(selected);
+      }
    }
 
    protected boolean isShowFlatCheckbox() {
-      if (showFlatCheckbox == null) return false;
+      if (showFlatCheckbox == null) {
+         return false;
+      }
       return showFlatCheckbox.isSelected();
    }
 
    public void includeShowFlatCheckbox(boolean selected) {
-      if (showFlatCheckbox != null) showFlatCheckbox.set(selected);
+      if (showFlatCheckbox != null) {
+         showFlatCheckbox.set(selected);
+      }
    }
 
    protected VersionArtifact getSelectedVersionArtifact() throws OseeCoreException {
-      if (versionCombo == null) return null;
+      if (versionCombo == null) {
+         return null;
+      }
       String versionStr = versionCombo.get();
-      if (versionStr == null || versionStr.equals("")) return null;
+      if (versionStr == null || versionStr.equals("")) {
+         return null;
+      }
       Collection<TeamDefinitionArtifact> teamDefs = getSelectedTeamDefinitions();
       if (teamDefs.size() > 0) {
          TeamDefinitionArtifact teamDefHoldingVersions = teamDefs.iterator().next().getTeamDefinitionHoldingVersions();
-         if (teamDefHoldingVersions == null) return null;
+         if (teamDefHoldingVersions == null) {
+            return null;
+         }
          for (VersionArtifact versionArtifact : teamDefHoldingVersions.getVersionsArtifacts(VersionReleaseType.Both)) {
             if (versionArtifact.getName().equals(versionStr)) {
                return versionArtifact;
@@ -252,7 +271,9 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
    }
 
    public Collection<TeamDefinitionArtifact> getSelectedTeamDefinitions() throws OseeCoreException {
-      if (teamCombo == null) return java.util.Collections.emptyList();
+      if (teamCombo == null) {
+         return java.util.Collections.emptyList();
+      }
       return teamCombo.getSelectedTeamDefintions();
    }
 
@@ -271,7 +292,9 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
    }
 
    public void setSelectedReleased(ReleasedOption option) {
-      if (releasedCombo != null) releasedCombo.set(option.toString());
+      if (releasedCombo != null) {
+         releasedCombo.set(option.toString());
+      }
    }
 
    @Override
@@ -322,7 +345,9 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
 
    @Override
    public VersionArtifact getTargetedVersionArtifact() throws OseeCoreException {
-      if (versionCombo == null) return null;
+      if (versionCombo == null) {
+         return null;
+      }
       return getSelectedVersionArtifact();
    }
 

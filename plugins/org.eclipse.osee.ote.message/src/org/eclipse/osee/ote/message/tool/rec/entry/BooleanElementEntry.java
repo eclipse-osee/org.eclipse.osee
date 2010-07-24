@@ -14,30 +14,30 @@ import java.nio.ByteBuffer;
 import org.eclipse.osee.ote.message.data.MemoryResource;
 import org.eclipse.osee.ote.message.elements.BooleanElement;
 
-
 public class BooleanElementEntry implements IElementEntry {
 
-	private final BooleanElement element;
-	private final byte[] nameAsBytes;
+   private final BooleanElement element;
+   private final byte[] nameAsBytes;
 
+   public BooleanElementEntry(BooleanElement element) {
+      this.element = element;
+      StringBuilder sb = new StringBuilder();
+      for (int i = 1; i < element.getElementPath().size(); i++) {
+         sb.append(element.getElementPath().get(i));
+      }
+      nameAsBytes = sb.toString().getBytes();
+      //		nameAsBytes = element.getName().getBytes();
+   }
 
-	public BooleanElementEntry(BooleanElement element) {
-		this.element = element;
-		StringBuilder sb = new StringBuilder();
-		for(int i = 1; i < element.getElementPath().size(); i++){
-		   sb.append(element.getElementPath().get(i));
-		}
-		nameAsBytes = sb.toString().getBytes();
-//		nameAsBytes = element.getName().getBytes();
-	}
+   @Override
+   public BooleanElement getElement() {
+      return element;
+   }
 
-	public BooleanElement getElement() {
-		return element;
-	}
-
-	public void write(ByteBuffer buffer, MemoryResource mem, int limit) {
-		mem.setOffset(element.getMsgData().getMem().getOffset());
-		buffer.put(nameAsBytes).put(COMMA).put(element.valueOf(mem).toString().getBytes()).put(COMMA);
-	}
+   @Override
+   public void write(ByteBuffer buffer, MemoryResource mem, int limit) {
+      mem.setOffset(element.getMsgData().getMem().getOffset());
+      buffer.put(nameAsBytes).put(COMMA).put(element.valueOf(mem).toString().getBytes()).put(COMMA);
+   }
 
 }

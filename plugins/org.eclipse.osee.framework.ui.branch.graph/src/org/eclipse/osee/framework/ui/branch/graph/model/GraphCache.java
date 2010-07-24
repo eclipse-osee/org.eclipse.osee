@@ -106,10 +106,9 @@ public class GraphCache {
       if (toReturn == null) {
          toReturn = new BranchModel(branch);
 
-
          TransactionRecord headTransaction = TransactionManager.getHeadTransaction(branch);
-         addTxsToBranchModel(toReturn,  branch.getBaseTransaction());
-         if ( branch.getBaseTransaction().equals(headTransaction)) {
+         addTxsToBranchModel(toReturn, branch.getBaseTransaction());
+         if (branch.getBaseTransaction().equals(headTransaction)) {
             addTxsToBranchModel(toReturn, headTransaction);
          }
          addBranchModel(toReturn);

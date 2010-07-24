@@ -25,8 +25,8 @@ import org.eclipse.swt.graphics.Image;
  */
 public class RevertLabelProvider extends LabelProvider implements IStyledLabelProvider {
    private static final String HIGHLIGHT_WRITE_BG_COLOR_NAME = "org.eclipse.jdt.ui.ColoredLabels.writeaccess_highlight"; //$NON-NLS-1$
-   private static final Styler HIGHLIGHT_STYLE =
-         StyledString.createColorRegistryStyler(null, HIGHLIGHT_WRITE_BG_COLOR_NAME);
+   private static final Styler HIGHLIGHT_STYLE = StyledString.createColorRegistryStyler(null,
+      HIGHLIGHT_WRITE_BG_COLOR_NAME);
    private static final String DASH = " - ";
    private final Map<Image, Image> disabledMap;
 

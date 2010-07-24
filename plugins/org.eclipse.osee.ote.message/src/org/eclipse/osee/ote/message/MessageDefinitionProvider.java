@@ -15,21 +15,20 @@ import java.io.InputStream;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public interface MessageDefinitionProvider {
 
    /**
-    * This function returns an ID that is intended to be unique to the running system.  The system should not 
-    * allow more than one active instance of a service with the same singletonId.
+    * This function returns an ID that is intended to be unique to the running system. The system should not allow more
+    * than one active instance of a service with the same singletonId.
     * 
-    * @return String 
+    * @return String
     */
    String singletonId();
-   
+
    String majorVersion();
-   
+
    String minorVersion();
-   
+
    InputStream getMetaInfo(String id) throws IOException;
 }

@@ -24,8 +24,8 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({//
 CoreRuntimeFeatureTestsSuite.class, //
-			FrameworkCore_Demo_Fast_Suite.class, //
-			AtsTest_Config_Suite.class, //
+   FrameworkCore_Demo_Fast_Suite.class, //
+   AtsTest_Config_Suite.class, //
 
 /* AtsTest_Demo_Suite.class */})
 /**
@@ -35,19 +35,19 @@ CoreRuntimeFeatureTestsSuite.class, //
  * @author Donald G. Dunne
  */
 public class MasterTestSuite_DemoDbFastTests {
-	@BeforeClass
-	public static void setUp() throws Exception {
-		assertTrue("Should be run on demo datbase.", TestUtil.isDemoDb());
-		assertTrue("Demo Application Server must be running.",
-					ClientSessionManager.getAuthenticationProtocols().contains("demo"));
-		assertTrue("Client must authenticate using demo protocol",
-					ClientSessionManager.getSession().getAuthenticationProtocol().equals("demo"));
-		ArtifactSaveNotificationHandler.setNoPopUp(true);
-		TestUtil.setIsInTest(true);
-	}
+   @BeforeClass
+   public static void setUp() throws Exception {
+      assertTrue("Should be run on demo datbase.", TestUtil.isDemoDb());
+      assertTrue("Demo Application Server must be running.",
+         ClientSessionManager.getAuthenticationProtocols().contains("demo"));
+      assertTrue("Client must authenticate using demo protocol",
+         ClientSessionManager.getSession().getAuthenticationProtocol().equals("demo"));
+      ArtifactSaveNotificationHandler.setNoPopUp(true);
+      TestUtil.setIsInTest(true);
+   }
 
-	@AfterClass
-	public static void tearDown() throws Exception {
-		TestUtil.setIsInTest(false);
-	}
+   @AfterClass
+   public static void tearDown() throws Exception {
+      TestUtil.setIsInTest(false);
+   }
 }

@@ -14,7 +14,6 @@ import org.eclipse.osee.ote.message.elements.StringElement;
 
 /**
  * @author Ken J. Aguilar
- *
  */
 
 public class StringComparisonCondition extends AbstractCondition implements IDiscreteElementCondition<String> {
@@ -40,7 +39,7 @@ public class StringComparisonCondition extends AbstractCondition implements IDis
       lastValue = element.getValue();
       return operation.evaluate(lastValue, value);
    }
-   
+
    public StringElement getElement() {
       return element;
    }

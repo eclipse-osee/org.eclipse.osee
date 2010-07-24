@@ -46,6 +46,7 @@ public class JiniLookupPlatformRunnable implements IApplication {
       return url.openStream();
    }
 
+   @Override
    public Object start(IApplicationContext context) throws Exception {
       String[] inputArgs = Platform.getApplicationArgs();
       CmdLineArgs args = new CmdLineArgs(inputArgs);
@@ -59,6 +60,7 @@ public class JiniLookupPlatformRunnable implements IApplication {
       return IApplication.EXIT_OK;
    }
 
+   @Override
    public void stop() {
       if (jiniService != null) {
          try {

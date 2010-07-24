@@ -30,9 +30,9 @@ import org.eclipse.swt.widgets.TableItem;
 public class ListSelectionPanel extends Composite {
 
    private TableViewer tableViewer;
-   private IBaseLabelProvider labelProvider;
-   private int width;
-   private int height;
+   private final IBaseLabelProvider labelProvider;
+   private final int width;
+   private final int height;
 
    public ListSelectionPanel(Composite parent, int style, int width, int height, IBaseLabelProvider labelProvider) {
       super(parent, style);

@@ -38,7 +38,7 @@ public class CoverageMergeLabelProvider extends CoverageLabelProvider {
 
    @Override
    public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
-      if (element instanceof MessageMergeItem && xCol.equals(CoverageMergeXViewerFactory.Name)) {
+      if (element instanceof MessageMergeItem && xCol.equals(CoverageXViewerFactory.Name)) {
          return ImageManager.getImage(FrameworkImage.X_RED);
       }
       if (element instanceof MessageMergeItem) {
@@ -48,7 +48,7 @@ public class CoverageMergeLabelProvider extends CoverageLabelProvider {
       if (xCol.equals(CoverageXViewerFactory.Assignees_Col)) {
          return getCoverageItemUserImage(coverageItem);
       }
-      if (xCol.equals(CoverageMergeXViewerFactory.Name)) {
+      if (xCol.equals(CoverageXViewerFactory.Name)) {
          return ImageManager.getImage(coverageItem.getOseeImage());
       }
       if (xCol.equals(CoverageMergeXViewerFactoryImport.Import) && element instanceof IMergeItem) {
@@ -66,7 +66,7 @@ public class CoverageMergeLabelProvider extends CoverageLabelProvider {
    @Override
    public String getColumnText(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
       ICoverage coverage = (ICoverage) element;
-      if (xCol.equals(CoverageMergeXViewerFactory.Name)) {
+      if (xCol.equals(CoverageXViewerFactory.Name)) {
          return coverage.getName();
       }
       if (element instanceof MessageMergeItem) {

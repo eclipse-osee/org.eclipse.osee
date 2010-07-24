@@ -27,11 +27,13 @@ public class ArtifactViewerSorter extends ViewerSorter {
       this.reverse = reverse;
    }
 
+   @Override
    @SuppressWarnings("unchecked")
    public int compare(Viewer viewer, Object o1, Object o2) {
-      if (reverse)
+      if (reverse) {
          return getComparator().compare(((Artifact) o2).getName(), ((Artifact) o1).getName());
-      else
+      } else {
          return getComparator().compare(((Artifact) o1).getName(), ((Artifact) o2).getName());
+      }
    }
 }

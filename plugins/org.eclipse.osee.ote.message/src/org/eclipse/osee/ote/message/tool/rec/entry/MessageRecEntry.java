@@ -86,13 +86,14 @@ public class MessageRecEntry<T extends Message<?, ?, T>> implements IMessageEntr
       for (Element element : bdyElements) {
          if (element.getMsgData().getType() != type) {
             throw new IllegalArgumentException(String.format("all elements(%s) must have a mem type of %s",
-                  element.getName(), type.toString()));
+               element.getName(), type.toString()));
          }
          bodyEntries[i] = ElementEntryFactory.createEntry(element);
          i++;
       }
       Arrays.sort(bodyEntries, new Comparator<IElementEntry>() {
 
+         @Override
          public int compare(IElementEntry o1, IElementEntry o2) {
             Element element1 = o1.getElement();
             Element element2 = o2.getElement();
@@ -141,6 +142,7 @@ public class MessageRecEntry<T extends Message<?, ?, T>> implements IMessageEntr
       return msg;
    }
 
+   @Override
    public synchronized void enable(boolean enable) {
       T msg = getMessage();
       if (enable) {
@@ -155,14 +157,14 @@ public class MessageRecEntry<T extends Message<?, ?, T>> implements IMessageEntr
 
    private void finishUp() {
       if (currentBuffer.position() > 0) {
-            try {
-               postProcess(currentBuffer);
-            } catch (Exception ex) {
-               OseeLog.log(MessageSystemTestEnvironment.class,
-                     Level.SEVERE, "failed to write remaining contents of buffer for message " + msg.getName(), ex);
-            }
+         try {
+            postProcess(currentBuffer);
+         } catch (Exception ex) {
+            OseeLog.log(MessageSystemTestEnvironment.class, Level.SEVERE,
+               "failed to write remaining contents of buffer for message " + msg.getName(), ex);
          }
       }
+   }
 
    protected final int getLowCapacitiyLevel() {
       return lowCapacitiyLevel;
@@ -172,10 +174,12 @@ public class MessageRecEntry<T extends Message<?, ?, T>> implements IMessageEntr
       return nameAsBytes;
    }
 
+   @Override
    public void onInitListener() throws MessageSystemException {
       // do nothing
    }
 
+   @Override
    public synchronized void onDataAvailable(MessageData data, DataType type) throws MessageSystemException {
       if (this.type == type && enabled) {
          bm.startSample();
@@ -183,7 +187,7 @@ public class MessageRecEntry<T extends Message<?, ?, T>> implements IMessageEntr
          if (length > longestLength) {
             longestLength = length;
          }
-         if (currentBuffer.remaining() < (length + 13)) {
+         if (currentBuffer.remaining() < length + 13) {
             try {
                // hand off for post processing
                handOffBufferForProcessing(currentBuffer);
@@ -192,20 +196,20 @@ public class MessageRecEntry<T extends Message<?, ?, T>> implements IMessageEntr
 
                currentBuffer.putInt(length);
                currentBuffer.putLong(recorder.getTimeStamp());
-                  Byte dataID = dataMap.get(data);
-                  if (dataID == null) {
-                     throw new IllegalArgumentException(String.format("no data mapped for %s", data.getName()));
-                  }
+               Byte dataID = dataMap.get(data);
+               if (dataID == null) {
+                  throw new IllegalArgumentException(String.format("no data mapped for %s", data.getName()));
+               }
                currentBuffer.put(dataID);
                currentBuffer.put(data.toByteArray(), 0, length);
             } catch (Throwable t) {
                throw new MessageSystemException(
-                     "problems handing off buffer(pos=" + currentBuffer.position() + ", remaing=" + currentBuffer.remaining() + ")  for " + msg.getName(),
-                     Level.SEVERE, t);
+                  "problems handing off buffer(pos=" + currentBuffer.position() + ", remaing=" + currentBuffer.remaining() + ")  for " + msg.getName(),
+                  Level.SEVERE, t);
             }
          } else {
             currentBuffer.putInt(length);
-           currentBuffer.putLong(recorder.getTimeStamp());
+            currentBuffer.putLong(recorder.getTimeStamp());
             Byte dataID = dataMap.get(data);
             if (dataID == null) {
                throw new IllegalArgumentException(String.format("no data mapped for %s", data.getName()));
@@ -222,12 +226,13 @@ public class MessageRecEntry<T extends Message<?, ?, T>> implements IMessageEntr
 
       recorder.submitTask(new Runnable() {
 
+         @Override
          public void run() {
             try {
-                  postProcess(buffer);
+               postProcess(buffer);
             } catch (Throwable t) {
-               OseeLog.log(MessageSystemTestEnvironment.class,
-                     Level.SEVERE, "failed to process buffer  for message " + msg.getName(), t);
+               OseeLog.log(MessageSystemTestEnvironment.class, Level.SEVERE,
+                  "failed to process buffer  for message " + msg.getName(), t);
             }
          }
 
@@ -238,59 +243,59 @@ public class MessageRecEntry<T extends Message<?, ?, T>> implements IMessageEntr
    private void postProcess(final ByteBuffer bufferToProcess) throws InterruptedException, IOException {
       pbm.startSample();
       ByteBuffer fileWriteBuffer = recorder.acquireOutputBuffer();
-         try {
-            bufferToProcess.flip();
-            fileWriteBuffer.clear();
+      try {
+         bufferToProcess.flip();
+         fileWriteBuffer.clear();
          //         fileWriteBuffer.put(String.format("%d, Start of post process by %s\n", recorder.getTimeStamp(),
          //               Thread.currentThread().getName()).getBytes());
-            final MemoryResource mem = new MemoryResource(new byte[longestLength], 0, longestLength);
-            while (bufferToProcess.hasRemaining()) {
-               final int length = bufferToProcess.getInt();
-               int bodySize = length - headerSize;
-               final long timeStamp = bufferToProcess.getLong();
-               final Byte dataID = bufferToProcess.get();
-               final byte[] data = mem.getData();
-               if (bufferToProcess.remaining() < length) {
-                  throw new IllegalStateException(String.format(
-                        "Invalid recording buffer for msg %s: buf remaining=%d, length expected=%d", msg.getName(),
-                        bufferToProcess.remaining(), length));
-               }
-               bufferToProcess.get(data, 0, length);
-               fileWriteBuffer.put(Long.toString(timeStamp).getBytes()).put(COMMA);
-               fileWriteBuffer.put(nameAsBytes).put(COMMA);
-               fileWriteBuffer.put(headerTypeAsBytes).put(COMMA);
-               for (IElementEntry entry : headerEntries) {
-                  entry.write(fileWriteBuffer, mem, headerSize);
-               }
+         final MemoryResource mem = new MemoryResource(new byte[longestLength], 0, longestLength);
+         while (bufferToProcess.hasRemaining()) {
+            final int length = bufferToProcess.getInt();
+            int bodySize = length - headerSize;
+            final long timeStamp = bufferToProcess.getLong();
+            final Byte dataID = bufferToProcess.get();
+            final byte[] data = mem.getData();
+            if (bufferToProcess.remaining() < length) {
+               throw new IllegalStateException(String.format(
+                  "Invalid recording buffer for msg %s: buf remaining=%d, length expected=%d", msg.getName(),
+                  bufferToProcess.remaining(), length));
+            }
+            bufferToProcess.get(data, 0, length);
+            fileWriteBuffer.put(Long.toString(timeStamp).getBytes()).put(COMMA);
+            fileWriteBuffer.put(nameAsBytes).put(COMMA);
+            fileWriteBuffer.put(headerTypeAsBytes).put(COMMA);
+            for (IElementEntry entry : headerEntries) {
+               entry.write(fileWriteBuffer, mem, headerSize);
+            }
 
-               for (IElementEntry entry : bodyEntries) {
-                  final Element element = entry.getElement();
-                  if (dataMap.get(element.getMsgData()).equals(dataID)) {
-                     if (element.getByteOffset() < bodySize) {
-                        entry.write(fileWriteBuffer, mem, bodySize);
-                     } else {
-                        break;
-                     }
+            for (IElementEntry entry : bodyEntries) {
+               final Element element = entry.getElement();
+               if (dataMap.get(element.getMsgData()).equals(dataID)) {
+                  if (element.getByteOffset() < bodySize) {
+                     entry.write(fileWriteBuffer, mem, bodySize);
+                  } else {
+                     break;
                   }
                }
-               
-               // hex dump
-               if(headerDump){
-                  fileWriteBuffer.put(HEADER_HEX_DUMP_STR).put(COMMA);
-                  for (int i = 0; i < headerSize; i++) {
-                     fileWriteBuffer.put((byte) ' ');
+            }
+
+            // hex dump
+            if (headerDump) {
+               fileWriteBuffer.put(HEADER_HEX_DUMP_STR).put(COMMA);
+               for (int i = 0; i < headerSize; i++) {
+                  fileWriteBuffer.put((byte) ' ');
                   RecUtil.byteToAsciiHex(data[i], fileWriteBuffer);
-                  }
                }
-               if(bodyDump){
-                  fileWriteBuffer.put(COMMA);
-                  fileWriteBuffer.put(BODY_HEX_DUMP_STR).put(COMMA);
-                  for (int i = headerSize; i < length; i++) {
-                     fileWriteBuffer.put((byte) ' ');
+            }
+            if (bodyDump) {
+               fileWriteBuffer.put(COMMA);
+               fileWriteBuffer.put(BODY_HEX_DUMP_STR).put(COMMA);
+               for (int i = headerSize; i < length; i++) {
+                  fileWriteBuffer.put((byte) ' ');
                   RecUtil.byteToAsciiHex(data[i], fileWriteBuffer);
-                  }
                }
-               fileWriteBuffer.put(NL);
+            }
+            fileWriteBuffer.put(NL);
             flush(fileWriteBuffer);
          }
          bufferToProcess.clear();
@@ -304,35 +309,34 @@ public class MessageRecEntry<T extends Message<?, ?, T>> implements IMessageEntr
    }
 
    private void flush(ByteBuffer fileWriteBuffer) throws IOException {
-               fileWriteBuffer.flip();
-               final WritableByteChannel channel = recorder.getChannel();
-               synchronized (channel) {
-                  int totalLimit = fileWriteBuffer.limit();
-                  int position = fileWriteBuffer.position();
+      fileWriteBuffer.flip();
+      final WritableByteChannel channel = recorder.getChannel();
+      synchronized (channel) {
+         int totalLimit = fileWriteBuffer.limit();
+         int position = fileWriteBuffer.position();
          int chunkSize = 4096;
-                  int limit = chunkSize;
-                  int written = 0;
-                  boolean moreToWrite = true;
-                  if(totalLimit < limit){
-                     limit = totalLimit;
-                  }
-                  while(moreToWrite){
-                     fileWriteBuffer.position(position);
-                     fileWriteBuffer.limit(limit);
-                     int size = channel.write(fileWriteBuffer);
-                     written += size;
-                     position = size + position;
-                     limit = position + chunkSize;
-                     if(position == totalLimit){
-                        moreToWrite = false;
-                     } else if(totalLimit < limit){
-                        limit = totalLimit;
-                     }
-                  }
-               }
-               fileWriteBuffer.clear();
+         int limit = chunkSize;
+         int written = 0;
+         boolean moreToWrite = true;
+         if (totalLimit < limit) {
+            limit = totalLimit;
+         }
+         while (moreToWrite) {
+            fileWriteBuffer.position(position);
+            fileWriteBuffer.limit(limit);
+            int size = channel.write(fileWriteBuffer);
+            written += size;
+            position = size + position;
+            limit = position + chunkSize;
+            if (position == totalLimit) {
+               moreToWrite = false;
+            } else if (totalLimit < limit) {
+               limit = totalLimit;
             }
-        
+         }
+      }
+      fileWriteBuffer.clear();
+   }
 
    @Override
    public String toString() {

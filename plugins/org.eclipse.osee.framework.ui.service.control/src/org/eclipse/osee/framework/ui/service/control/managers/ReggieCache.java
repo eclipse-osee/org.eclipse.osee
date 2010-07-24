@@ -155,6 +155,7 @@ public class ReggieCache implements DiscoveryListener {
       }
    }
 
+   @Override
    public void discovered(DiscoveryEvent arg0) {
       synchronized (serviceRegistrars) {
          ServiceRegistrar[] reggies = arg0.getRegistrars();
@@ -182,6 +183,7 @@ public class ReggieCache implements DiscoveryListener {
 
    }
 
+   @Override
    public void discarded(DiscoveryEvent arg0) {
       synchronized (serviceRegistrars) {
          ServiceRegistrar[] reggies = arg0.getRegistrars();

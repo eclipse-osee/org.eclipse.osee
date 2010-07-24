@@ -13,12 +13,12 @@ package org.eclipse.osee.framework.skynet.core.artifact.factory;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -49,7 +49,7 @@ public class UserArtifactFactory extends ArtifactFactory {
       try {
          artifactTypes.add(ArtifactTypeManager.getTypeByGuid(CoreArtifactTypes.User.getGuid()));
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return artifactTypes;
    }

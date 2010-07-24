@@ -18,7 +18,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {RemoteNetworkSenderTest.class,})
+@Suite.SuiteClasses({RemoteNetworkSenderTest.class,})
 /**
  * @author Donald G. Dunne
  */
@@ -26,9 +26,9 @@ public class FrameworkRes_Demo_Suite {
    @BeforeClass
    public static void setUp() throws Exception {
       assertTrue("Demo Application Server must be running.",
-            ClientSessionManager.getAuthenticationProtocols().contains("demo"));
+         ClientSessionManager.getAuthenticationProtocols().contains("demo"));
       assertTrue("Client must authenticate using demo protocol",
-            ClientSessionManager.getSession().getAuthenticationProtocol().equals("demo"));
+         ClientSessionManager.getSession().getAuthenticationProtocol().equals("demo"));
    }
 
 }

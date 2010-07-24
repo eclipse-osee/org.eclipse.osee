@@ -11,5 +11,7 @@
 package org.eclipse.osee.ote.core.framework.command;
 
 public enum TestCommandStatus {
-	SUCCESS, FAIL, CANCEL
+   SUCCESS,
+   FAIL,
+   CANCEL
 }

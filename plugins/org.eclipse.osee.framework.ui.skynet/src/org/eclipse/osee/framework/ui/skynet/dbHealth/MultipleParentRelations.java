@@ -75,20 +75,19 @@ public class MultipleParentRelations extends DatabaseHealthOperation {
    }
 
    private static final String GET_DUPLICATE_DEFAULT_HIER_LINKS =
-         "SELECT rel1.rel_link_id as Link_ID_1, rel2.rel_link_id as Link_ID_2, rel1.a_art_id As Parent_Id_1, rel2.a_art_id As Parent_Id_2, rel2.b_art_id As Child_ID, det1.branch_id, det1.time as Time_1 , det2.time as Time_2, bra.archived, txs1.gamma_id as Gamma1, txs2.gamma_id as Gamma2, txs1.transaction_id as transaction_1, txs2.transaction_id as transaction_2 FROM osee_branch bra, osee_relation_link rel1, osee_relation_link rel2, osee_txs txs1, osee_txs txs2, osee_tx_details det1, osee_tx_details det2, osee_relation_link_type typ where typ.type_name = 'Default Hierarchical' AND rel1.rel_link_type_id = typ.rel_link_type_id AND rel2.rel_link_type_id = typ.rel_link_type_id AND rel1.a_art_id < rel2.a_art_id AND rel1.b_art_id = rel2.b_art_id AND rel1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs2.tx_current = 1 AND txs1.transaction_id = det1.transaction_id AND det1.branch_id = det2.branch_id AND det2.transaction_id = txs2.transaction_id AND txs2.gamma_id = rel2.gamma_id AND bra.branch_id = det1.branch_id order by rel1.b_art_id, txs1.transaction_id";
+      "SELECT rel1.rel_link_id as Link_ID_1, rel2.rel_link_id as Link_ID_2, rel1.a_art_id As Parent_Id_1, rel2.a_art_id As Parent_Id_2, rel2.b_art_id As Child_ID, det1.branch_id, det1.time as Time_1 , det2.time as Time_2, bra.archived, txs1.gamma_id as Gamma1, txs2.gamma_id as Gamma2, txs1.transaction_id as transaction_1, txs2.transaction_id as transaction_2 FROM osee_branch bra, osee_relation_link rel1, osee_relation_link rel2, osee_txs txs1, osee_txs txs2, osee_tx_details det1, osee_tx_details det2, osee_relation_link_type typ where typ.type_name = 'Default Hierarchical' AND rel1.rel_link_type_id = typ.rel_link_type_id AND rel2.rel_link_type_id = typ.rel_link_type_id AND rel1.a_art_id < rel2.a_art_id AND rel1.b_art_id = rel2.b_art_id AND rel1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs2.tx_current = 1 AND txs1.transaction_id = det1.transaction_id AND det1.branch_id = det2.branch_id AND det2.transaction_id = txs2.transaction_id AND txs2.gamma_id = rel2.gamma_id AND bra.branch_id = det1.branch_id order by rel1.b_art_id, txs1.transaction_id";
 
    private static final String GET_AUTHOR =
-         "Select attr.Value FROM osee_attribute attr, osee_tx_details det, osee_attribute_type typ, osee_txs txs WHERE det.transaction_id = ? AND det.author = attr.art_id AND attr.attr_type_id = typ.attr_type_id AND typ.name = 'Name' AND attr.gamma_id = txs.gamma_id and txs.tx_current = 1";
+      "Select attr.Value FROM osee_attribute attr, osee_tx_details det, osee_attribute_type typ, osee_txs txs WHERE det.transaction_id = ? AND det.author = attr.art_id AND attr.attr_type_id = typ.attr_type_id AND typ.name = 'Name' AND attr.gamma_id = txs.gamma_id and txs.tx_current = 1";
 
    private static final String GET_ARTIFACT_NAME =
-         "Select attr.Value FROM osee_attribute attr, osee_attribute_type typ, osee_txs txs WHERE attr.art_id  = ? AND attr.attr_type_id = typ.attr_type_id AND typ.name = 'Name' AND attr.gamma_id = txs.gamma_id and txs.tx_current = 1";
+      "Select attr.Value FROM osee_attribute attr, osee_attribute_type typ, osee_txs txs WHERE attr.art_id  = ? AND attr.attr_type_id = typ.attr_type_id AND typ.name = 'Name' AND attr.gamma_id = txs.gamma_id and txs.tx_current = 1";
 
    private static final String GET_BRANCH_NAME = "Select branch_name from osee_branch where branch_id = ?";
 
-   private static final String[] columnHeaders =
-         new String[] {"Rel Link ID 1", "Rel Link ID 2", "Parent Art ID 1", "P1 Art Name", "Parent Art ID 2",
-               "P2 Art Name", "Child Art ID", "Child Art Name", "Branch Ids", "Branch Name", "Archived", "Author 1",
-               "Author 2"};
+   private static final String[] columnHeaders = new String[] {"Rel Link ID 1", "Rel Link ID 2", "Parent Art ID 1",
+      "P1 Art Name", "Parent Art ID 2", "P2 Art Name", "Child Art ID", "Child Art Name", "Branch Ids", "Branch Name",
+      "Archived", "Author 1", "Author 2"};
 
    private static final String HEADER = "Artifacts that have multiple Parents";
 
@@ -123,8 +122,8 @@ public class MultipleParentRelations extends DatabaseHealthOperation {
       monitor.worked(calculateWork(0.50));
 
       getSummary().append(
-            String.format("%s %d Artifacts with multiple Parents on %d total branches.\n",
-                  isFixOperationEnabled() ? "Fixed" : "Found", branches.size(), relations.size()));
+         String.format("%s %d Artifacts with multiple Parents on %d total branches.\n",
+            isFixOperationEnabled() ? "Fixed" : "Found", branches.size(), relations.size()));
       monitor.worked(calculateWork(0.10));
    }
 
@@ -185,11 +184,11 @@ public class MultipleParentRelations extends DatabaseHealthOperation {
          if (!relLink.author1.equals("")) {
             count++;
             sbFull.append(AHTML.addRowMultiColumnTable(new String[] {Integer.toString(relLink.relLinkId1),
-                  Integer.toString(relLink.relLinkId2), Integer.toString(relLink.parentArtId1), relLink.parentArt1,
-                  Integer.toString(relLink.parentArtId2), relLink.parentArt2, Integer.toString(relLink.childArtId),
-                  relLink.childArt,
-                  displayAll ? branches.get(relLink.relLinkId1).toString() : Integer.toString(relLink.branchId),
-                  relLink.branch, Integer.toString(relLink.archived), relLink.author1, relLink.author2}));
+               Integer.toString(relLink.relLinkId2), Integer.toString(relLink.parentArtId1), relLink.parentArt1,
+               Integer.toString(relLink.parentArtId2), relLink.parentArt2, Integer.toString(relLink.childArtId),
+               relLink.childArt,
+               displayAll ? branches.get(relLink.relLinkId1).toString() : Integer.toString(relLink.branchId),
+               relLink.branch, Integer.toString(relLink.archived), relLink.author1, relLink.author2}));
          }
       }
    }
@@ -203,10 +202,10 @@ public class MultipleParentRelations extends DatabaseHealthOperation {
          chStmt.runPreparedQuery(GET_DUPLICATE_DEFAULT_HIER_LINKS);
          while (chStmt.next()) {
             relations.add(new LocalRelationLink(chStmt.getInt("branch_id"), chStmt.getInt("child_id"),
-                  chStmt.getInt("gamma1"), chStmt.getInt("gamma2"), chStmt.getInt("parent_id_1"),
-                  chStmt.getInt("parent_id_2"), chStmt.getInt("link_id_1"), chStmt.getInt("link_id_2"),
-                  chStmt.getTimestamp("time_1"), chStmt.getTimestamp("time_2"), chStmt.getInt("transaction_1"),
-                  chStmt.getInt("transaction_2"), chStmt.getInt("archived")));
+               chStmt.getInt("gamma1"), chStmt.getInt("gamma2"), chStmt.getInt("parent_id_1"),
+               chStmt.getInt("parent_id_2"), chStmt.getInt("link_id_1"), chStmt.getInt("link_id_2"),
+               chStmt.getTimestamp("time_1"), chStmt.getTimestamp("time_2"), chStmt.getInt("transaction_1"),
+               chStmt.getInt("transaction_2"), chStmt.getInt("archived")));
          }
       } finally {
          chStmt.close();

@@ -43,6 +43,7 @@ public class TreeObject {
       return parent;
    }
 
+   @Override
    public String toString() {
       return getName();
    }

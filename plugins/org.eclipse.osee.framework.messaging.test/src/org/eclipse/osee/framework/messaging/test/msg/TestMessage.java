@@ -5,7 +5,6 @@
 // Generated on: 2010.01.24 at 05:48:12 PM MST 
 //
 
-
 package org.eclipse.osee.framework.messaging.test.msg;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,11 +12,11 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for TestMessage complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for TestMessage complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="TestMessage">
@@ -31,67 +30,50 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "TestMessage", propOrder = {
-    "message",
-    "anotherMessage"
-})
+@XmlType(name = "TestMessage", propOrder = {"message", "anotherMessage"})
 public class TestMessage {
 
-    @XmlElement(required = true)
-    protected String message;
-    @XmlElement(required = true)
-    protected String anotherMessage;
+   @XmlElement(required = true)
+   protected String message;
+   @XmlElement(required = true)
+   protected String anotherMessage;
 
-    /**
-     * Gets the value of the message property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getMessage() {
-        return message;
-    }
+   /**
+    * Gets the value of the message property.
+    * 
+    * @return possible object is {@link String }
+    */
+   public String getMessage() {
+      return message;
+   }
 
-    /**
-     * Sets the value of the message property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setMessage(String value) {
-        this.message = value;
-    }
+   /**
+    * Sets the value of the message property.
+    * 
+    * @param value allowed object is {@link String }
+    */
+   public void setMessage(String value) {
+      this.message = value;
+   }
 
-    /**
-     * Gets the value of the anotherMessage property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getAnotherMessage() {
-        return anotherMessage;
-    }
+   /**
+    * Gets the value of the anotherMessage property.
+    * 
+    * @return possible object is {@link String }
+    */
+   public String getAnotherMessage() {
+      return anotherMessage;
+   }
 
-    /**
-     * Sets the value of the anotherMessage property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setAnotherMessage(String value) {
-        this.anotherMessage = value;
-    }
+   /**
+    * Sets the value of the anotherMessage property.
+    * 
+    * @param value allowed object is {@link String }
+    */
+   public void setAnotherMessage(String value) {
+      this.anotherMessage = value;
+   }
 
 }

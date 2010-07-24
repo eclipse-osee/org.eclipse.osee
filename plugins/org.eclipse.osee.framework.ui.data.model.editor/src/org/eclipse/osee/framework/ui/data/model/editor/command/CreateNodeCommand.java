@@ -22,9 +22,9 @@ import org.eclipse.osee.framework.ui.data.model.editor.model.ODMDiagram;
 public class CreateNodeCommand extends Command {
 
    private int width = -1;
-   private Point location;
-   private DataType node;
-   private ODMDiagram diagram;
+   private final Point location;
+   private final DataType node;
+   private final ODMDiagram diagram;
 
    public CreateNodeCommand(DataType newObject, ODMDiagram diagram, Point location) {
       super("Create Node");
@@ -38,14 +38,17 @@ public class CreateNodeCommand extends Command {
       this.width = width;
    }
 
+   @Override
    public boolean canExecute() {
       return node != null && diagram != null && location != null && (width == -1 || width > 0);
    }
 
+   @Override
    public void execute() {
       redo();
    }
 
+   @Override
    public void redo() {
       if (node instanceof ArtifactDataType) {
          node.setLocation(location);
@@ -55,6 +58,7 @@ public class CreateNodeCommand extends Command {
       // if (node instanceof StickyNote) ((StickyNote) node).setText("Comment");
    }
 
+   @Override
    public void undo() {
       if (node instanceof ArtifactDataType) {
          diagram.remove(node);

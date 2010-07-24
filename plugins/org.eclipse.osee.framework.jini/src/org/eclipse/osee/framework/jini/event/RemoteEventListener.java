@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.jini.event;
  */
 public class RemoteEventListener implements IRemoteEventListener {
 
+   @Override
    public void notify(String event) {
    }
 

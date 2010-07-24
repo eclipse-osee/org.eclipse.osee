@@ -26,7 +26,11 @@ import org.w3c.dom.Element;
 public class ConstraintElement implements Xmlizable {
 
    public enum ConstraintFields {
-      id, schema, type, appliesTo, deferrable
+      id,
+      schema,
+      type,
+      appliesTo,
+      deferrable
    };
 
    private final ConstraintTypes constraintType;
@@ -109,6 +113,7 @@ public class ConstraintElement implements Xmlizable {
       return toReturn;
    }
 
+   @Override
    public Element toXml(Document doc) {
       Element constraintElement = doc.createElement(TableSections.Constraint.toString());
       constraintElement.setAttribute(ConstraintFields.schema.name(), schema);
@@ -129,13 +134,13 @@ public class ConstraintElement implements Xmlizable {
       }
       ConstraintElement that = (ConstraintElement) otherObject;
       return new EqualsBuilder().appendSuper(super.equals(otherObject)).append(this.constraintType,
-            that.getConstraintType()).append(this.schema, that.getSchema()).append(this.id, that.getId()).append(
-            this.columns, that.getColumns()).append(this.deferrable, that.deferrable).isEquals();
+         that.getConstraintType()).append(this.schema, that.getSchema()).append(this.id, that.getId()).append(
+         this.columns, that.getColumns()).append(this.deferrable, that.deferrable).isEquals();
    }
 
    @Override
    public int hashCode() {
       return new HashCodeBuilder(37, 11).append(constraintType).append(schema).append(id).append(columns).append(
-            deferrable).toHashCode();
+         deferrable).toHashCode();
    }
 }

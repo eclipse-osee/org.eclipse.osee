@@ -23,6 +23,9 @@ public enum PromptResponseType {
    /**
     * Pause script execution until a response is recieved from a client.
     */
-   SCRIPT_PAUSE, PASS_FAIL, SCRIPT_STEP, USER_INPUT;
+   SCRIPT_PAUSE,
+   PASS_FAIL,
+   SCRIPT_STEP,
+   USER_INPUT;
 
 }

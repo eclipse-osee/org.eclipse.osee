@@ -31,7 +31,7 @@ public class V0_9_0TxsTransformer extends SaxTransformer {
       if (localName.equals("entry")) {
          if (attributes.getIndex("branch_id") == -1) {
             writer.writeAttribute("branch_id",
-                  String.valueOf(branchIdMap.get(Integer.parseInt(attributes.getValue("transaction_id")))));
+               String.valueOf(branchIdMap.get(Integer.parseInt(attributes.getValue("transaction_id")))));
          }
       }
    }

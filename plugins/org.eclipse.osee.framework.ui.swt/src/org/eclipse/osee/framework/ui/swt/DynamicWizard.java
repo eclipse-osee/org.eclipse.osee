@@ -14,10 +14,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.IWizardContainer;
 import org.eclipse.jface.wizard.IWizardPage;
@@ -38,7 +38,7 @@ public abstract class DynamicWizard implements IWizard {
     */
    static {
       JFaceResources.getImageRegistry().put(DEFAULT_IMAGE,
-            ImageDescriptor.createFromFile(Wizard.class, "images/page.gif"));//$NON-NLS-1$
+         ImageDescriptor.createFromFile(Wizard.class, "images/page.gif"));//$NON-NLS-1$
    }
 
    /**
@@ -49,7 +49,7 @@ public abstract class DynamicWizard implements IWizard {
    /**
     * This wizard's list of pages (element type: <code>IWizardPage</code>).
     */
-   private Map<String, IWizardPage> pages = new HashMap<String, IWizardPage>();
+   private final Map<String, IWizardPage> pages = new HashMap<String, IWizardPage>();
 
    /**
     * Indicates whether this wizard needs a progress monitor.
@@ -72,8 +72,7 @@ public abstract class DynamicWizard implements IWizard {
    private Image defaultImage = null;
 
    /**
-    * The default page image descriptor, used for creating a default page image if required; <code>null</code> if
-    * none.
+    * The default page image descriptor, used for creating a default page image if required; <code>null</code> if none.
     */
    private ImageDescriptor defaultImageDescriptor = JFaceResources.getImageRegistry().getDescriptor(DEFAULT_IMAGE);
 
@@ -114,13 +113,15 @@ public abstract class DynamicWizard implements IWizard {
    }
 
    /**
-    * The <code>Wizard</code> implementation of this <code>IWizard</code> method does nothing. Subclasses should
-    * extend if extra pages need to be added before the wizard opens. New pages should be added by calling
-    * <code>addPage</code>.
+    * The <code>Wizard</code> implementation of this <code>IWizard</code> method does nothing. Subclasses should extend
+    * if extra pages need to be added before the wizard opens. New pages should be added by calling <code>addPage</code>
+    * .
     */
+   @Override
    public void addPages() {
    }
 
+   @Override
    public boolean canFinish() {
       Set<String> keys = pages.keySet();
       for (String key : keys) {
@@ -132,11 +133,12 @@ public abstract class DynamicWizard implements IWizard {
    }
 
    /**
-    * The <code>Wizard</code> implementation of this <code>IWizard</code> method creates all the pages controls
-    * using <code>IDialogPage.createControl</code>. Subclasses should reimplement this method if they want to delay
-    * creating one or more of the pages lazily. The framework ensures that the contents of a page will be created before
+    * The <code>Wizard</code> implementation of this <code>IWizard</code> method creates all the pages controls using
+    * <code>IDialogPage.createControl</code>. Subclasses should reimplement this method if they want to delay creating
+    * one or more of the pages lazily. The framework ensures that the contents of a page will be created before
     * attempting to show it.
     */
+   @Override
    public void createPageControls(Composite pageContainer) {
       // the default behavior is to create all the pages controls
       Set<String> keys = pages.keySet();
@@ -151,15 +153,16 @@ public abstract class DynamicWizard implements IWizard {
    }
 
    /**
-    * The <code>Wizard</code> implementation of this <code>IWizard</code> method disposes all the pages controls
-    * using <code>DialogPage.dispose</code>. Subclasses should extend this method if the wizard instance maintains
-    * addition SWT resource that need to be disposed.
+    * The <code>Wizard</code> implementation of this <code>IWizard</code> method disposes all the pages controls using
+    * <code>DialogPage.dispose</code>. Subclasses should extend this method if the wizard instance maintains addition
+    * SWT resource that need to be disposed.
     */
+   @Override
    public void dispose() {
       // notify pages
       Set<String> keys = pages.keySet();
       for (String key : keys) {
-         (pages.get(key)).dispose();
+         pages.get(key).dispose();
       }
       // dispose of image
       if (defaultImage != null) {
@@ -168,10 +171,12 @@ public abstract class DynamicWizard implements IWizard {
       }
    }
 
+   @Override
    public IWizardContainer getContainer() {
       return container;
    }
 
+   @Override
    public Image getDefaultPageImage() {
       if (defaultImage == null) {
          defaultImage = JFaceResources.getResources().createImageWithDefault(defaultImageDescriptor);
@@ -179,25 +184,30 @@ public abstract class DynamicWizard implements IWizard {
       return defaultImage;
    }
 
+   @Override
    public IDialogSettings getDialogSettings() {
       return dialogSettings;
    }
 
+   @Override
    public IWizardPage getPage(String name) {
       return pages.get(name);
    }
 
+   @Override
    public IWizardPage getNextPage(IWizardPage page) {
       return page.getNextPage();
    }
 
+   @Override
    public int getPageCount() {
       return pages.size();
    }
 
+   @Override
    public IWizardPage[] getPages() {
       Collection<IWizardPage> collectionOfPages = pages.values();
-      return (IWizardPage[]) collectionOfPages.toArray(new IWizardPage[collectionOfPages.size()]);
+      return collectionOfPages.toArray(new IWizardPage[collectionOfPages.size()]);
    }
 
    public boolean containsPage(IWizardPage page) {
@@ -205,6 +215,7 @@ public abstract class DynamicWizard implements IWizard {
       return pageNames.contains(page.getName());
    }
 
+   @Override
    public IWizardPage getPreviousPage(IWizardPage page) {
       return page.getPreviousPage();
    }
@@ -215,39 +226,48 @@ public abstract class DynamicWizard implements IWizard {
     * @return Shell
     */
    public Shell getShell() {
-      if (container == null) return null;
+      if (container == null) {
+         return null;
+      }
       return container.getShell();
    }
 
+   @Override
    public IWizardPage getStartingPage() {
       return this.startingPage;
    }
 
+   @Override
    public RGB getTitleBarColor() {
       return titleBarColor;
    }
 
+   @Override
    public String getWindowTitle() {
       return windowTitle;
    }
 
+   @Override
    public boolean isHelpAvailable() {
       return isHelpAvailable;
    }
 
+   @Override
    public boolean needsPreviousAndNextButtons() {
       return forcePreviousAndNextButtons || pages.size() > 1;
    }
 
+   @Override
    public boolean needsProgressMonitor() {
       return needsProgressMonitor;
    }
 
    /**
     * The <code>Wizard</code> implementation of this <code>IWizard</code> method does nothing and returns
-    * <code>true</code>. Subclasses should reimplement this method if they need to perform any special cancel
-    * processing for their wizard.
+    * <code>true</code>. Subclasses should reimplement this method if they need to perform any special cancel processing
+    * for their wizard.
     */
+   @Override
    public boolean performCancel() {
       return true;
    }
@@ -256,8 +276,10 @@ public abstract class DynamicWizard implements IWizard {
     * Subclasses must implement this <code>IWizard</code> method to perform any special finish processing for their
     * wizard.
     */
+   @Override
    public abstract boolean performFinish();
 
+   @Override
    public void setContainer(IWizardContainer wizardContainer) {
       container = wizardContainer;
    }
@@ -295,8 +317,8 @@ public abstract class DynamicWizard implements IWizard {
     * This flag should be set on wizards where the first wizard page adds follow-on wizard pages based on user input.
     * </p>
     * 
-    * @param b <code>true</code> to always show Next and Previous buttons, and <code>false</code> to suppress Next
-    *           and Previous buttons for single page wizards
+    * @param b <code>true</code> to always show Next and Previous buttons, and <code>false</code> to suppress Next and
+    * Previous buttons for single page wizards
     */
    public void setForcePreviousAndNextButtons(boolean b) {
       forcePreviousAndNextButtons = b;
@@ -341,7 +363,9 @@ public abstract class DynamicWizard implements IWizard {
     */
    public void setWindowTitle(String newTitle) {
       windowTitle = newTitle;
-      if (container != null) container.updateWindowTitle();
+      if (container != null) {
+         container.updateWindowTitle();
+      }
    }
 
    public void setStartingPage(IWizardPage startingPage) {

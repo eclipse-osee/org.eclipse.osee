@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.service.control.wizards.launcher.pages;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.framework.ui.service.control.ControlPlugin;
+import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.service.control.wizards.launcher.ServiceLaunchingInformation;
 import org.eclipse.osee.framework.ui.service.control.wizards.launcher.data.JiniGroupSelector;
 import org.eclipse.osee.framework.ui.service.control.wizards.launcher.data.ServiceItem;
@@ -38,13 +38,15 @@ public class ExecutePage extends DynamicWizardPage {
 
    private static final String TEMPORARY_JINI_GROUP = "<USE COMBO BOX FROM ABOVE>";
    private enum LabelEnum {
-      Service, User, Host;
+      Service,
+      User,
+      Host;
    }
 
-   private Map<LabelEnum, Text> dataMap;
+   private final Map<LabelEnum, Text> dataMap;
    private FormattedText cmdText;
    private FormattedText updateText;
-   private ServiceLaunchingInformation serviceInfo;
+   private final ServiceLaunchingInformation serviceInfo;
    private JiniGroupSelector jiniGroupSelector;
 
    public ExecutePage(String pageName, String previous, String next, ServiceLaunchingInformation serviceInfo) {
@@ -56,6 +58,7 @@ public class ExecutePage extends DynamicWizardPage {
       setPageComplete(true);
    }
 
+   @Override
    public void createControl(Composite parent) {
       Group composite = new Group(parent, SWT.NULL);
       composite.setLayout(new GridLayout());
@@ -105,6 +108,7 @@ public class ExecutePage extends DynamicWizardPage {
       cmdText.getStyledText().setBackground(PlatformUI.getWorkbench().getDisplay().getSystemColor(SWT.COLOR_WHITE));
       cmdText.getStyledText().addModifyListener(new ModifyListener() {
 
+         @Override
          public void modifyText(ModifyEvent e) {
             String cmds = cmdText.getStyledText().getText();
             String[] cmdList = cmds.split("\r\n");
@@ -148,6 +152,7 @@ public class ExecutePage extends DynamicWizardPage {
          @Override
          public void widgetSelected(SelectionEvent e) {
             PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+               @Override
                public void run() {
                   execute.setEnabled(false);
                   try {
@@ -159,14 +164,14 @@ public class ExecutePage extends DynamicWizardPage {
                            String temp = execCommands[index];
                            if (temp.contains(TEMPORARY_JINI_GROUP)) {
                               execCommands[index] =
-                                    temp.replace(TEMPORARY_JINI_GROUP, serviceInfo.getServiceItem().getJiniGroup());
+                                 temp.replace(TEMPORARY_JINI_GROUP, serviceInfo.getServiceItem().getJiniGroup());
                            }
                         }
                      }
                      String output = serviceInfo.getSSHConnection().executeCommandList(execCommands);
                      updateText.addText(output);
                   } catch (Exception ex) {
-                     updateText.addText("\n" + ControlPlugin.getStackMessages(ex) + "\n", SWT.NORMAL, SWT.COLOR_RED);
+                     updateText.addText("\n" + OseeUiActivator.getStackMessages(ex) + "\n", SWT.NORMAL, SWT.COLOR_RED);
                   }
                   execute.setEnabled(true);
                }
@@ -187,8 +192,8 @@ public class ExecutePage extends DynamicWizardPage {
       }
 
       String execute =
-            "cd " + serviceInfo.getUnzipLocation() + "\n" + serviceInfo.getServiceItem().getRemoteExecution().replaceAll(
-                  ServiceItem.EXEC_SEPARATOR, " ");
+         "cd " + serviceInfo.getUnzipLocation() + "\n" + serviceInfo.getServiceItem().getRemoteExecution().replaceAll(
+            ServiceItem.EXEC_SEPARATOR, " ");
 
       this.cmdText.addText(execute);
 

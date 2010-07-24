@@ -13,27 +13,30 @@ package org.eclipse.osee.ote.message;
 import org.eclipse.osee.ote.message.elements.Element;
 
 /**
- * Defines operations for setting and getting the raw bytes that 
- * comprise a message header as well as getting the name of the 
- * message that the header is attached to
+ * Defines operations for setting and getting the raw bytes that comprise a message header as well as getting the name
+ * of the message that the header is attached to
+ * 
  * @author Ken J. Aguilar
  */
 public interface IMessageHeader {
    public String getMessageName();
+
    public int getHeaderSize();
-   
+
    /**
-    * Sets the data that backs this header. 
+    * Sets the data that backs this header.
+    * 
     * @param data
     */
-//   public void copyData(byte[] data);
+   //   public void copyData(byte[] data);
    public byte[] getData();
-   
+
    public Element[] getElements();
+
    /**
     * @param data
     */
    public void setNewBackingBuffer(byte[] data);
-   
+
    public String toXml();
 }

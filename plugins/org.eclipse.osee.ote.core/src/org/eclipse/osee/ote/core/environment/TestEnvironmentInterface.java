@@ -44,40 +44,76 @@ import org.osgi.util.tracker.ServiceTracker;
  */
 public interface TestEnvironmentInterface {
    public ServiceTracker getServiceTracker(String clazz);
+
    public ICommandHandle addCommand(ITestServerCommand cmd) throws ExportException;
+
    public IRunManager getRunManager();
+
    public IRuntimeLibraryManager getRuntimeManager();
+
    public boolean isInBatchMode();
-   public void setBatchMode(boolean isInBatchMode) ;
-   public void addEnvironmentListener(ITestEnvironmentListener listener) ;
-   public boolean addTask(EnvironmentTask task) ;
+
+   public void setBatchMode(boolean isInBatchMode);
+
+   public void addEnvironmentListener(ITestEnvironmentListener listener);
+
+   public boolean addTask(EnvironmentTask task);
+
    public UserTestSessionKey addUser(IUserSession user) throws Exception;
-   public long getEnvTime() ;
-   public IExecutionUnitManagement getExecutionUnitManagement() ;
-   public ITestLogger getLogger() ;
-   public List<String> getQueueLabels() ;
+
+   public long getEnvTime();
+
+   public IExecutionUnitManagement getExecutionUnitManagement();
+
+   public ITestLogger getLogger();
+
+   public List<String> getQueueLabels();
+
    public abstract Object getModel(String modelClassName);
-   public IScriptControl getScriptCtrl() ;
-   public byte[] getScriptOutfile(String filepath) throws RemoteException ;
-   public ITestStation getTestStation() ;
-   public ITimerControl getTimerCtrl() ;
-   public int getUniqueId() ;
-   public ArrayList<Serializable> getUserList() ;
-   public void disconnect(final UserTestSessionKey key) throws RemoteException ;
-   public Set<Serializable> getSessionKeys() ;
-   public IUserSession getUserSession(final UserTestSessionKey key) ;
-   public void removeUser(OSEEPerson1_4 user) ;
-   public URL setBatchLibJar(byte[] batchJar) throws IOException ;
-   public ICancelTimer setTimerFor(ITimeout listener, int time) ;
-   public void shutdown() ;
-   public IUserSession getActiveUser() ;
-   public File getClientResource(String workspacePath) throws Exception, IOException ;
-   public void setActiveUser(UserTestSessionKey key) ;
-   public File getOutDir() ;
-   public List<IUserSession> getUserSessions() ;
-   public Remote getControlInterface(String id) ;
-   public void registerControlInterface(String id, Remote controlInterface) ;
-   public IServiceConnector getConnector() ;
+
+   public IScriptControl getScriptCtrl();
+
+   public byte[] getScriptOutfile(String filepath) throws RemoteException;
+
+   public ITestStation getTestStation();
+
+   public ITimerControl getTimerCtrl();
+
+   public int getUniqueId();
+
+   public ArrayList<Serializable> getUserList();
+
+   public void disconnect(final UserTestSessionKey key) throws RemoteException;
+
+   public Set<Serializable> getSessionKeys();
+
+   public IUserSession getUserSession(final UserTestSessionKey key);
+
+   public void removeUser(OSEEPerson1_4 user);
+
+   public URL setBatchLibJar(byte[] batchJar) throws IOException;
+
+   public ICancelTimer setTimerFor(ITimeout listener, int time);
+
+   public void shutdown();
+
+   public IUserSession getActiveUser();
+
+   public File getClientResource(String workspacePath) throws Exception, IOException;
+
+   public void setActiveUser(UserTestSessionKey key);
+
+   public File getOutDir();
+
+   public List<IUserSession> getUserSessions();
+
+   public Remote getControlInterface(String id);
+
+   public void registerControlInterface(String id, Remote controlInterface);
+
+   public IServiceConnector getConnector();
+
    public IEnvironmentFactory getEnvironmentFactory();
+
    public void initializationThreadAdd(Callable callable);
 }

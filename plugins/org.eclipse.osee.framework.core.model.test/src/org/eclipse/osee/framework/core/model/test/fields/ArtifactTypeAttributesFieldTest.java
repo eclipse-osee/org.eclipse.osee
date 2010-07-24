@@ -79,7 +79,7 @@ public class ArtifactTypeAttributesFieldTest {
 
       // Add to emptylist
       assertSetGet(field, Collections.<Branch, Collection<AttributeType>> emptyMap(),
-            Collections.<Branch, Collection<AttributeType>> emptyMap(), true);
+         Collections.<Branch, Collection<AttributeType>> emptyMap(), true);
       field.clearDirty();
    }
 

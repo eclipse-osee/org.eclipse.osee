@@ -47,148 +47,149 @@ import org.eclipse.ui.part.ViewPart;
  */
 public class CoverageNavigateView extends ViewPart implements IActionable {
 
-	public static final String VIEW_ID = "org.eclipse.osee.coverage.navigate.CoverageNavigateView";
-	private XNavigateComposite xNavComp;
-	private XBranchSelectWidget xBranchSelectWidget;
+   public static final String VIEW_ID = "org.eclipse.osee.coverage.navigate.CoverageNavigateView";
+   private XNavigateComposite xNavComp;
+   private XBranchSelectWidget xBranchSelectWidget;
 
-	public CoverageNavigateView() {
-	}
+   public CoverageNavigateView() {
+   }
 
-	@Override
-	public void setFocus() {
-	}
+   @Override
+   public void setFocus() {
+   }
 
-	@Override
-	public void createPartControl(Composite parent) {
-		if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
-			return;
-		}
+   @Override
+   public void createPartControl(Composite parent) {
+      if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
+         return;
+      }
 
-		OseeContributionItem.addTo(this, false);
+      OseeContributionItem.addTo(this, false);
 
-		Composite comp = new Composite(parent, SWT.None);
-		comp.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
+      Composite comp = new Composite(parent, SWT.None);
+      comp.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
 
-		xBranchSelectWidget = new XBranchSelectWidget("");
-		xBranchSelectWidget.setDisplayLabel(false);
-		if (CoverageUtil.getBranch() != null) {
-			xBranchSelectWidget.setSelection(CoverageUtil.getBranch());
-		}
-		xBranchSelectWidget.createWidgets(comp, 1);
-		xBranchSelectWidget.addListener(new Listener() {
-			@Override
-			public void handleEvent(Event event) {
-				try {
-					Branch selectedBranch = xBranchSelectWidget.getData();
-					if (selectedBranch != null) {
-						CoverageUtil.setNavigatorSelectedBranch(selectedBranch);
-					}
-				} catch (Exception ex) {
-					OseeLog.log(getClass(), Level.SEVERE, ex);
-				}
-			}
+      xBranchSelectWidget = new XBranchSelectWidget("");
+      xBranchSelectWidget.setDisplayLabel(false);
+      if (CoverageUtil.getBranch() != null) {
+         xBranchSelectWidget.setSelection(CoverageUtil.getBranch());
+      }
+      xBranchSelectWidget.createWidgets(comp, 1);
+      xBranchSelectWidget.addListener(new Listener() {
+         @Override
+         public void handleEvent(Event event) {
+            try {
+               Branch selectedBranch = xBranchSelectWidget.getData();
+               if (selectedBranch != null) {
+                  CoverageUtil.setNavigatorSelectedBranch(selectedBranch);
+               }
+            } catch (Exception ex) {
+               OseeLog.log(getClass(), Level.SEVERE, ex);
+            }
+         }
 
-		});
-		CoverageUtil.addBranchChangeListener(new Listener() {
-			@Override
-			public void handleEvent(Event event) {
-				xBranchSelectWidget.setSelection(CoverageUtil.getBranch());
-			}
-		});
-		xNavComp = new XNavigateComposite(new CoverageNavigateViewItems(), comp, SWT.NONE);
+      });
+      CoverageUtil.addBranchChangeListener(new Listener() {
+         @Override
+         public void handleEvent(Event event) {
+            xBranchSelectWidget.setSelection(CoverageUtil.getBranch());
+         }
+      });
+      xNavComp = new XNavigateComposite(new CoverageNavigateViewItems(), comp, SWT.NONE);
 
-		createActions();
-		xNavComp.refresh();
+      createActions();
+      xNavComp.refresh();
 
-		Label label = new Label(xNavComp, SWT.None);
-		String str = getWhoAmI();
-		if (CoverageUtil.isAdmin()) {
-			str += " - Admin";
-		}
-		if (!str.equals("")) {
-			if (CoverageUtil.isAdmin()) {
-				label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
-			} else {
-				label.setForeground(Displays.getSystemColor(SWT.COLOR_BLUE));
-			}
-		}
-		label.setText(str);
-		label.setToolTipText(str);
-		GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_CENTER | GridData.VERTICAL_ALIGN_CENTER);
-		gridData.heightHint = 15;
-		label.setLayoutData(gridData);
+      Label label = new Label(xNavComp, SWT.None);
+      String str = getWhoAmI();
+      if (CoverageUtil.isAdmin()) {
+         str += " - Admin";
+      }
+      if (!str.equals("")) {
+         if (CoverageUtil.isAdmin()) {
+            label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
+         } else {
+            label.setForeground(Displays.getSystemColor(SWT.COLOR_BLUE));
+         }
+      }
+      label.setText(str);
+      label.setToolTipText(str);
+      GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_CENTER | GridData.VERTICAL_ALIGN_CENTER);
+      gridData.heightHint = 15;
+      label.setLayoutData(gridData);
 
-		addExtensionPointListenerBecauseOfWorkspaceLoading();
-	}
+      addExtensionPointListenerBecauseOfWorkspaceLoading();
+   }
 
-	private String getWhoAmI() {
-		try {
-			String userName = UserManager.getUser().getName();
-			return String.format("%s - %s:%s", userName, ClientSessionManager.getDataStoreName(),
-						ClientSessionManager.getDataStoreLoginName());
-		} catch (Exception ex) {
-			OseeLog.log(Activator.class, Level.SEVERE, ex);
-			return "Exception: " + ex.getLocalizedMessage();
-		}
-	}
+   private String getWhoAmI() {
+      try {
+         String userName = UserManager.getUser().getName();
+         return String.format("%s - %s:%s", userName, ClientSessionManager.getDataStoreName(),
+            ClientSessionManager.getDataStoreLoginName());
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         return "Exception: " + ex.getLocalizedMessage();
+      }
+   }
 
-	private void addExtensionPointListenerBecauseOfWorkspaceLoading() {
-		IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
-		extensionRegistry.addListener(new IRegistryEventListener() {
-			@Override
-			public void added(IExtension[] extensions) {
-				refresh();
-			}
+   private void addExtensionPointListenerBecauseOfWorkspaceLoading() {
+      IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
+      extensionRegistry.addListener(new IRegistryEventListener() {
+         @Override
+         public void added(IExtension[] extensions) {
+            refresh();
+         }
 
-			@Override
-			public void added(IExtensionPoint[] extensionPoints) {
-				refresh();
-			}
+         @Override
+         public void added(IExtensionPoint[] extensionPoints) {
+            refresh();
+         }
 
-			@Override
-			public void removed(IExtension[] extensions) {
-				refresh();
-			}
+         @Override
+         public void removed(IExtension[] extensions) {
+            refresh();
+         }
 
-			@Override
-			public void removed(IExtensionPoint[] extensionPoints) {
-				refresh();
-			}
-		}, "org.eclipse.osee.coverage.CoverageNavigateItem");
-	}
+         @Override
+         public void removed(IExtensionPoint[] extensionPoints) {
+            refresh();
+         }
+      }, "org.eclipse.osee.coverage.CoverageNavigateItem");
+   }
 
-	protected void createActions() {
-		Action refreshAction = new Action("Refresh") {
+   protected void createActions() {
+      Action refreshAction = new Action("Refresh") {
 
-			@Override
-			public void run() {
-				xNavComp.refresh();
-			}
-		};
-		refreshAction.setImageDescriptor(ImageManager.getImageDescriptor(PluginUiImage.REFRESH));
-		refreshAction.setToolTipText("Refresh");
-		getViewSite().getActionBars().getMenuManager().add(refreshAction);
+         @Override
+         public void run() {
+            xNavComp.refresh();
+         }
+      };
+      refreshAction.setImageDescriptor(ImageManager.getImageDescriptor(PluginUiImage.REFRESH));
+      refreshAction.setToolTipText("Refresh");
+      getViewSite().getActionBars().getMenuManager().add(refreshAction);
 
-		OseeUiActions.addBugToViewToolbar(this, this, Activator.getInstance(), VIEW_ID, "Coverage Navigator");
+      OseeUiActions.addBugToViewToolbar(this, this, Activator.getInstance(), VIEW_ID, "Coverage Navigator");
 
-	}
+   }
 
-	public String getActionDescription() {
-		IStructuredSelection sel = (IStructuredSelection) xNavComp.getFilteredTree().getViewer().getSelection();
-		if (sel.iterator().hasNext()) {
-			return String.format("Currently Selected - %s", ((XNavigateItem) sel.iterator().next()).getName());
-		}
-		return "";
-	}
+   @Override
+   public String getActionDescription() {
+      IStructuredSelection sel = (IStructuredSelection) xNavComp.getFilteredTree().getViewer().getSelection();
+      if (sel.iterator().hasNext()) {
+         return String.format("Currently Selected - %s", ((XNavigateItem) sel.iterator().next()).getName());
+      }
+      return "";
+   }
 
-	public void refresh() {
-		Displays.ensureInDisplayThread(new Runnable() {
+   public void refresh() {
+      Displays.ensureInDisplayThread(new Runnable() {
 
-			@Override
-			public void run() {
-				xNavComp.refresh();
-			}
-		});
-	}
+         @Override
+         public void run() {
+            xNavComp.refresh();
+         }
+      });
+   }
 
 }

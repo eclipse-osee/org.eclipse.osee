@@ -39,7 +39,7 @@ public class OpenBranchGraph extends AbstractSelectionChangedHandler {
             List<Branch> branches = Handlers.getBranchesFromStructuredSelection((IStructuredSelection) selection);
             if (!branches.isEmpty()) {
                PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(
-                     new BranchGraphEditorInput(branches.iterator().next()), BranchGraphEditor.EDITOR_ID);
+                  new BranchGraphEditorInput(branches.iterator().next()), BranchGraphEditor.EDITOR_ID);
             }
          }
       } catch (Exception ex) {

@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.ui.service.control.widgets.IServiceManager;
  */
 public class ServiceUpdates implements IInputListener<TreeParent> {
 
-   private IServiceManager<TreeParent> parentWindow;
+   private final IServiceManager<TreeParent> parentWindow;
 
    @SuppressWarnings("unchecked")
    public ServiceUpdates(IServiceManager parentWindow) {
@@ -32,26 +32,32 @@ public class ServiceUpdates implements IInputListener<TreeParent> {
       this.parentWindow.getServicesViewer().refresh();
    }
 
+   @Override
    public void addNode(TreeParent node) {
       refresh();
    }
 
+   @Override
    public void removeNode(TreeParent node) {
       refresh();
    }
 
+   @Override
    public void removeAll() {
       refresh();
    }
 
+   @Override
    public void inputChanged() {
       refresh();
    }
 
+   @Override
    public void addNodes(Collection<TreeParent> nodes) {
       refresh();
    }
 
+   @Override
    public void nodeChanged(TreeParent inNode) {
       refresh();
    }

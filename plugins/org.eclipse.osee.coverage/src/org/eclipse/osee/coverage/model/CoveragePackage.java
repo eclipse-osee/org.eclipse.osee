@@ -42,7 +42,7 @@ public class CoveragePackage extends CoveragePackageBase implements ICoverage {
    @Override
    public void getOverviewHtmlHeader(XResultData xResultData) {
       xResultData.log(AHTML.bold("Coverage Package " + getName() + " as of " + XDate.getDateStr(new Date(),
-            XDate.MMDDYYHHMM)) + AHTML.newline());
+         XDate.MMDDYYHHMM)) + AHTML.newline());
    }
 
    public void setCreationDate(Date creationDate) {

@@ -61,8 +61,8 @@ public class HttpServer {
             try {
                portToUse = Integer.valueOf(value);
             } catch (Exception ex) {
-               OseeLog.log(CoreClientActivator.class, Level.SEVERE, String.format(
-                     "Unable to parse port property - [%s]", value), ex);
+               OseeLog.log(CoreClientActivator.class, Level.SEVERE,
+                  String.format("Unable to parse port property - [%s]", value), ex);
             }
          }
 
@@ -81,7 +81,7 @@ public class HttpServer {
             thread.start();
          } else {
             OseeLog.log(CoreClientActivator.class, Level.SEVERE,
-                  "Unable to get a valid port for osee http local server.");
+               "Unable to get a valid port for osee http local server.");
          }
       }
    }
@@ -99,8 +99,8 @@ public class HttpServer {
       private final int port;
       private boolean listenFlag;
       private ServerSocket listenSocket;
-      private String serviceName;
-      private ExecutorService executorService;
+      private final String serviceName;
+      private final ExecutorService executorService;
 
       private InternalHttpServer(String serviceName, int port, int poolSize) {
          this.listenFlag = true;
@@ -123,15 +123,15 @@ public class HttpServer {
 
       private String createNameForConnection(Socket incoming) {
          return String.format("%s:%s - Worker - %s:%s", getServiceName(), getPort(), incoming.getInetAddress(),
-               incoming.getPort());
+            incoming.getPort());
       }
 
       @Override
       public void run() {
          try {
             listenSocket = new ServerSocket(getPort());
-            OseeLog.log(CoreClientActivator.class, Level.INFO, String.format("Starting HttpServer on port: [%s]",
-                  getPort()));
+            OseeLog.log(CoreClientActivator.class, Level.INFO,
+               String.format("Starting HttpServer on port: [%s]", getPort()));
 
             // Process HTTP service requests in an infinite loop.
             while (listenFlag) {
@@ -145,6 +145,7 @@ public class HttpServer {
 
                      // Process the request in a new thread
                      executorService.execute(new Runnable() {
+                        @Override
                         public void run() {
                            Thread thread = Thread.currentThread();
                            String oldName = thread.getName();
@@ -161,9 +162,8 @@ public class HttpServer {
                   }
                } catch (SocketTimeoutException ex) {
                   /*
-                   * this catch statement is hit every 10 seconds since that is the timeout value that
-                   * has been set which allows the loop to check if the server should keep running (so
-                   * don't log the exception)
+                   * this catch statement is hit every 10 seconds since that is the timeout value that has been set
+                   * which allows the loop to check if the server should keep running (so don't log the exception)
                    */
                }
             }

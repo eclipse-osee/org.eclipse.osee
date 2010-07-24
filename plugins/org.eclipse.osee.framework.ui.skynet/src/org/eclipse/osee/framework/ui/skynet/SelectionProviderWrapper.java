@@ -25,6 +25,7 @@ public class SelectionProviderWrapper implements ISelectionProvider {
    private List<Object> selectionListeners;
    private ISelection sel = StructuredSelection.EMPTY;
 
+   @Override
    public void addSelectionChangedListener(ISelectionChangedListener listener) {
       if (selectionListeners == null) {
          selectionListeners = new ArrayList<Object>(1);
@@ -35,6 +36,7 @@ public class SelectionProviderWrapper implements ISelectionProvider {
       }
    }
 
+   @Override
    public void removeSelectionChangedListener(ISelectionChangedListener listener) {
       if (selectionListeners != null) {
          selectionListeners.remove(listener);
@@ -44,10 +46,12 @@ public class SelectionProviderWrapper implements ISelectionProvider {
       }
    }
 
+   @Override
    public ISelection getSelection() {
       return provider != null ? provider.getSelection() : sel;
    }
 
+   @Override
    public void setSelection(ISelection selection) {
       if (provider != null) {
          provider.setSelection(selection);

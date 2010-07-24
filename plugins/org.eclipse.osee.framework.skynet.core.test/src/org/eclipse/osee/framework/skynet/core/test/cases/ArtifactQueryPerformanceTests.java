@@ -32,36 +32,21 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 public class ArtifactQueryPerformanceTests {
 
    /*
-    * constructors to test
-    * no good way to get id's for test so we son't test these two.
-    * public ArtifactQueryBuilder(int artId, Branch branch, boolean allowDeleted, ArtifactLoad loadLevel) {
-    * this(null, artId, null, null, null, branch, allowDeleted, loadLevel, true);
-    * }
-    * public ArtifactQueryBuilder(Collection<Integer> artifactIds, Branch branch, boolean allowDeleted, ArtifactLoad
-    * loadLevel) {
-    * this(artifactIds, 0, null, null, null, branch, allowDeleted, loadLevel, true);
-    * emptyCriteria = artifactIds.isEmpty();
-    * }
-    * public ArtifactQueryBuilder(Branch branch, ArtifactLoad loadLevel, boolean allowDeleted,
-    * AbstractArtifactSearchCriteria... criteria) {
-    * this(null, 0, null, null, null, branch, allowDeleted, loadLevel, true, criteria);
-    * emptyCriteria = criteria.length == 0;
-    * }
-    * public ArtifactQueryBuilder(Branch branch, ArtifactLoad loadLevel, List<AbstractArtifactSearchCriteria> criteria)
-    * {
-    * this(null, 0, null, null, null, branch, false, loadLevel, true, toArray(criteria));
-    * emptyCriteria = criteria.isEmpty();
-    * }
-    * public ArtifactQueryBuilder(ArtifactType artifactType, Branch branch, ArtifactLoad loadLevel,
-    * AbstractArtifactSearchCriteria... criteria) {
-    * this(null, 0, null, null, Arrays.asList(artifactType), branch, false, loadLevel, true, criteria);
-    * emptyCriteria = criteria.length == 0;
-    * }
-    * public ArtifactQueryBuilder(ArtifactType artifactType, Branch branch, ArtifactLoad loadLevel,
-    * List<AbstractArtifactSearchCriteria> criteria) {
-    * this(null, 0, null, null, Arrays.asList(artifactType), branch, false, loadLevel, true, toArray(criteria));
-    * emptyCriteria = criteria.isEmpty();
-    * }
+    * constructors to test no good way to get id's for test so we son't test these two. public ArtifactQueryBuilder(int
+    * artId, Branch branch, boolean allowDeleted, ArtifactLoad loadLevel) { this(null, artId, null, null, null, branch,
+    * allowDeleted, loadLevel, true); } public ArtifactQueryBuilder(Collection<Integer> artifactIds, Branch branch,
+    * boolean allowDeleted, ArtifactLoad loadLevel) { this(artifactIds, 0, null, null, null, branch, allowDeleted,
+    * loadLevel, true); emptyCriteria = artifactIds.isEmpty(); } public ArtifactQueryBuilder(Branch branch, ArtifactLoad
+    * loadLevel, boolean allowDeleted, AbstractArtifactSearchCriteria... criteria) { this(null, 0, null, null, null,
+    * branch, allowDeleted, loadLevel, true, criteria); emptyCriteria = criteria.length == 0; } public
+    * ArtifactQueryBuilder(Branch branch, ArtifactLoad loadLevel, List<AbstractArtifactSearchCriteria> criteria) {
+    * this(null, 0, null, null, null, branch, false, loadLevel, true, toArray(criteria)); emptyCriteria =
+    * criteria.isEmpty(); } public ArtifactQueryBuilder(ArtifactType artifactType, Branch branch, ArtifactLoad
+    * loadLevel, AbstractArtifactSearchCriteria... criteria) { this(null, 0, null, null, Arrays.asList(artifactType),
+    * branch, false, loadLevel, true, criteria); emptyCriteria = criteria.length == 0; } public
+    * ArtifactQueryBuilder(ArtifactType artifactType, Branch branch, ArtifactLoad loadLevel,
+    * List<AbstractArtifactSearchCriteria> criteria) { this(null, 0, null, null, Arrays.asList(artifactType), branch,
+    * false, loadLevel, true, toArray(criteria)); emptyCriteria = criteria.isEmpty(); }
     */
 
    @org.junit.Test
@@ -74,7 +59,7 @@ public class ArtifactQueryPerformanceTests {
       System.out.println(String.format("testGetArtifactByHRID took %dms", elapsedTime));
       assertNotNull("No artifact found", result);
       assertTrue(String.format("Elapsed time for artifact by hrid query took %dms.  It should take less than 100ms.",
-            elapsedTime), elapsedTime < 100);
+         elapsedTime), elapsedTime < 100);
    }
 
    @org.junit.Test
@@ -92,7 +77,7 @@ public class ArtifactQueryPerformanceTests {
       System.out.println(String.format("testGetArtifactsByHRID took %dms for %d artifacts", elapsedTime, result.size()));
       assertTrue("No artifacts found", result.size() > 0);
       assertTrue(String.format("Elapsed time for artifact by hrid query took %dms.  It should take less than 180ms.",
-            elapsedTime), elapsedTime < 180);
+         elapsedTime), elapsedTime < 180);
    }
 
    @org.junit.Test
@@ -108,10 +93,10 @@ public class ArtifactQueryPerformanceTests {
       List<Artifact> result = ArtifactQuery.getArtifactListFromIds(hrids, common, EXCLUDE_DELETED);
       long elapsedTime = System.currentTimeMillis() - startTime;
       System.out.println(String.format("testGetArtifactsByHRIDNoDeleted took %dms for %d artifacts", elapsedTime,
-            result.size()));
+         result.size()));
       assertTrue("No artifacts found", result.size() > 0);
       assertTrue(String.format("Elapsed time for artifact by hrid query took %dms.  It should take less than 50ms.",
-            elapsedTime), elapsedTime < 50);
+         elapsedTime), elapsedTime < 50);
    }
 
    @org.junit.Test
@@ -120,11 +105,11 @@ public class ArtifactQueryPerformanceTests {
       List<Artifact> result = ArtifactQuery.getArtifactListFromType("Team Definition", BranchManager.getCommonBranch());
       long elapsedTime = System.currentTimeMillis() - startTime;
       System.out.println(String.format("testGetArtifactsByArtType took %dms for %d artifacts", elapsedTime,
-            result.size()));
+         result.size()));
       assertTrue("No artifacts found", result.size() > 0);
       assertTrue(String.format(
-            "Elapsed time for testGetArtifactsByArtType took %dms.  It should take less than 750ms.", elapsedTime),
-            elapsedTime < 750);
+         "Elapsed time for testGetArtifactsByArtType took %dms.  It should take less than 750ms.", elapsedTime),
+         elapsedTime < 750);
    }
 
    @org.junit.Test
@@ -135,21 +120,20 @@ public class ArtifactQueryPerformanceTests {
    private void internalTestGetArtifactsByArtTypes(boolean allowDeleted, long expectedElapseTime) throws OseeCoreException {
       Branch common = BranchManager.getCommonBranch();
       List<? extends IArtifactType> artTypes =
-            Arrays.asList(CoreArtifactTypes.GeneralDocument, CoreArtifactTypes.Folder,
-                  CoreArtifactTypes.WorkFlowDefinition, CoreArtifactTypes.User, CoreArtifactTypes.WorkPageDefinition,
-                  CoreArtifactTypes.WorkRuleDefinition);
+         Arrays.asList(CoreArtifactTypes.GeneralDocument, CoreArtifactTypes.Folder,
+            CoreArtifactTypes.WorkFlowDefinition, CoreArtifactTypes.User, CoreArtifactTypes.WorkPageDefinition,
+            CoreArtifactTypes.WorkRuleDefinition);
 
       long startTime = System.currentTimeMillis();
       List<Artifact> result = ArtifactQuery.getArtifactListFromTypes(artTypes, common, EXCLUDE_DELETED);
       long elapsedTime = System.currentTimeMillis() - startTime;
 
       System.out.println(String.format("testGetArtifactsByArtTypes took %dms for %d artifacts", elapsedTime,
-            result.size()));
+         result.size()));
       assertTrue("No artifacts found", result.size() > 0);
-      assertTrue(
-            String.format(
-                  "Elapsed time for testGetArtifactsByArtTypes took %dms to load %d artifacts.  It should take less than %dms.",
-                  elapsedTime, result.size(), expectedElapseTime), elapsedTime < expectedElapseTime);
+      assertTrue(String.format(
+         "Elapsed time for testGetArtifactsByArtTypes took %dms to load %d artifacts.  It should take less than %dms.",
+         elapsedTime, result.size(), expectedElapseTime), elapsedTime < expectedElapseTime);
    }
 
    @org.junit.Test
@@ -165,8 +149,9 @@ public class ArtifactQueryPerformanceTests {
       long elapsedTime = System.currentTimeMillis() - startTime;
       System.out.println(String.format("loadAllBranch took %dms for %d artifacts", elapsedTime, result.size()));
       assertTrue("No artifacts found", result.size() > 0);
-      assertTrue(String.format("Elapsed time for loadAllBranch took %dms.  It should take less than 700000ms.",
-            elapsedTime), elapsedTime < 700000);
+      assertTrue(
+         String.format("Elapsed time for loadAllBranch took %dms.  It should take less than 700000ms.", elapsedTime),
+         elapsedTime < 700000);
 
       // check for exceptions
       assertTrue(result.size() > 0);

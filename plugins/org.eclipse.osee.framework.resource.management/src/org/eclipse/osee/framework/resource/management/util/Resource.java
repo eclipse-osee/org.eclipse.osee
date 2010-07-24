@@ -29,6 +29,7 @@ public class Resource implements IResource {
       this.isCompressed = isCompressed;
    }
 
+   @Override
    public InputStream getContent() throws OseeCoreException {
       InputStream stream = null;
       try {
@@ -39,6 +40,7 @@ public class Resource implements IResource {
       return stream;
    }
 
+   @Override
    public URI getLocation() {
       return uri;
    }

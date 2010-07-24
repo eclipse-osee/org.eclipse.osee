@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.plugin;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -65,7 +66,7 @@ public final class OseeUiActions {
       if (!isActionReportingServiceAvailable()) {
          return;
       }
-      Action bugAction = new Action(BUG_TITLE, Action.AS_PUSH_BUTTON) {
+      Action bugAction = new Action(BUG_TITLE, IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
             String version = (String) oseePlugin.getBundle().getHeaders().get("Bundle-Version");
@@ -131,9 +132,11 @@ public final class OseeUiActions {
          bugButton.setImage(ImageManager.getImage(PluginUiImage.BUG));
          bugButton.addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                String version = (String) oseePlugin.getBundle().getHeaders().get("Bundle-Version");
                String desc = String.format("\n\nItem: %s\nVersion: %s", editorId, version);
@@ -193,7 +196,7 @@ public final class OseeUiActions {
       private final String actionableItem;
 
       public BugAction(OseeUiActivator oseePlugin, IAdaptable target, String itemId, String actionableItem) {
-         super(BUG_TITLE, Action.AS_PUSH_BUTTON);
+         super(BUG_TITLE, IAction.AS_PUSH_BUTTON);
          this.oseePlugin = oseePlugin;
          this.itemId = itemId;
          this.target = target;
@@ -205,8 +208,7 @@ public final class OseeUiActions {
       @Override
       public void run() {
          Version version =
-               new Version(
-                     (String) oseePlugin.getBundle().getHeaders().get(org.osgi.framework.Constants.BUNDLE_VERSION));
+            new Version((String) oseePlugin.getBundle().getHeaders().get(org.osgi.framework.Constants.BUNDLE_VERSION));
          String desc = String.format("Found in \"%s\" version %s.", itemId, version);
          IActionable actionable = (IActionable) target.getAdapter(IActionable.class);
          if (actionable != null) {

@@ -66,8 +66,8 @@ public class NewActionJob extends Job {
             title += " " + AtsUtil.getAtsDeveloperIncrementingNum();
          }
          actionArt =
-               ActionManager.createAction(monitor, title, desc, changeType, priority, validationRequired, needByDate,
-                     actionableItems, transaction);
+            ActionManager.createAction(monitor, title, desc, changeType, priority, validationRequired, needByDate,
+               actionableItems, transaction);
 
          if (wizard != null) {
             wizard.notifyAtsWizardItemExtensions(actionArt, transaction);
@@ -83,7 +83,7 @@ public class NewActionJob extends Job {
          OseeNotificationManager.getInstance().sendNotifications();
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-         return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
+         return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
       } finally {
          monitor.done();
       }

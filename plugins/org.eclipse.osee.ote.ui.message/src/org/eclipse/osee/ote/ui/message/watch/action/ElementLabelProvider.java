@@ -28,6 +28,6 @@ public final class ElementLabelProvider extends LabelProvider {
    public String getText(Object element) {
       final Element elem = (Element) element;
       return String.format("%s: byte=%d, msb=%d, lsb=%d", elem.getName(), elem.getByteOffset(), elem.getMsb(),
-            elem.getLsb());
+         elem.getLsb());
    }
 }

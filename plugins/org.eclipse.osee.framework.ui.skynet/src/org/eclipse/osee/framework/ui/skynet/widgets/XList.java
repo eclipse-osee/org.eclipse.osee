@@ -100,10 +100,12 @@ public class XList extends XWidget {
 
    protected SelectionListener listListener = new SelectionListener() {
 
+      @Override
       public void widgetSelected(SelectionEvent e) {
          handleSelection();
       }
 
+      @Override
       public void widgetDefaultSelected(SelectionEvent e) {
          widgetSelected(e);
       }
@@ -143,7 +145,7 @@ public class XList extends XWidget {
       this.parent = parent;
       composite = null;
 
-      if (!verticalLabel && (horizontalSpan < 2)) {
+      if (!verticalLabel && horizontalSpan < 2) {
          horizontalSpan = 2;
       } else if (verticalLabel) {
          horizontalSpan = 1;
@@ -156,8 +158,8 @@ public class XList extends XWidget {
          gridLayout.numColumns = numColumns;
          composite.setLayout(gridLayout);
          GridData gd =
-               new GridData(
-                     GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL);
+            new GridData(
+               GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL);
          gd.horizontalSpan = horizontalSpan;
          composite.setLayoutData(gd);
       } else {
@@ -198,8 +200,12 @@ public class XList extends XWidget {
    public void dispose() {
       labelWidget.dispose();
       listList.dispose();
-      if (composite != parent) composite.dispose();
-      if (parent != null && !parent.isDisposed()) parent.layout();
+      if (composite != parent) {
+         composite.dispose();
+      }
+      if (parent != null && !parent.isDisposed()) {
+         parent.layout();
+      }
    }
 
    @Override
@@ -224,11 +230,14 @@ public class XList extends XWidget {
 
    private void handleSelection() {
       String sels[] = listList.getSelection();
-      for (XListItem xItem : items.values())
+      for (XListItem xItem : items.values()) {
          xItem.setSelected(false);
+      }
       for (String sel : sels) {
          XListItem xItem = items.get(sel);
-         if (xItem != null) xItem.setSelected(true);
+         if (xItem != null) {
+            xItem.setSelected(true);
+         }
       }
       validate();
 
@@ -247,7 +256,9 @@ public class XList extends XWidget {
    public Set<XListItem> getSelected() {
       Set<XListItem> sel = new HashSet<XListItem>();
       for (XListItem xItem : items.values()) {
-         if (xItem.isSelected()) sel.add(xItem);
+         if (xItem.isSelected()) {
+            sel.add(xItem);
+         }
       }
       return sel;
    }
@@ -258,17 +269,17 @@ public class XList extends XWidget {
       String outterXml;
       items.clear();
       outter =
-            Pattern.compile("<" + getXmlRoot() + ">(.*?)</" + getXmlRoot() + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(
-                  xml);
+         Pattern.compile("<" + getXmlRoot() + ">(.*?)</" + getXmlRoot() + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(
+            xml);
       while (outter.find()) {
          outterXml = outter.group(1);
          inner = Pattern.compile("<" + getXmlSubRoot() + ">(.*?)</" + getXmlSubRoot() + ">").matcher(outterXml);
          while (inner.find()) {
             String str = inner.group(1);
             XListItem xItem = getByXmlName(str);
-            if (xItem != null)
+            if (xItem != null) {
                xItem.setSelected(true);
-            else {
+            } else {
                xItem = add(str);
                xItem.setSelected(true);
             }
@@ -287,8 +298,9 @@ public class XList extends XWidget {
 
    public String getSelectedStr() {
       StringBuffer sb = new StringBuffer();
-      for (XListItem item : getSelected())
+      for (XListItem item : getSelected()) {
          sb.append(item.getName() + ", ");
+      }
       return sb.toString().replaceFirst(", $", "");
    }
 
@@ -302,25 +314,34 @@ public class XList extends XWidget {
 
    public XListItem getByXmlName(String xmlName) {
       for (XListItem xItem : items.values()) {
-         if (xItem.xmlValue.equals(xmlName)) return xItem;
+         if (xItem.xmlValue.equals(xmlName)) {
+            return xItem;
+         }
       }
       return null;
    }
 
    protected void updateListWidget() {
-      if (listList == null || listList.isDisposed()) return;
+      if (listList == null || listList.isDisposed()) {
+         return;
+      }
       String listItems[] = listList.getItems();
       Set<String> listItemsSet = new HashSet<String>();
       Set<String> selected = new HashSet<String>();
-      for (String listItem : listItems)
+      for (String listItem : listItems) {
          listItemsSet.add(listItem);
+      }
       if (listList != null) {
          listList.deselectAll();
          for (XListItem xItem : items.values()) {
             if (!listItemsSet.contains(xItem.getName())) {
                listList.add(xItem.getName());
-               if (xItem.isSelected()) selected.add(xItem.getName());
-            } else if (xItem.isSelected()) selected.add(xItem.getName());
+               if (xItem.isSelected()) {
+                  selected.add(xItem.getName());
+               }
+            } else if (xItem.isSelected()) {
+               selected.add(xItem.getName());
+            }
          }
          listList.setSelection(selected.toArray(new String[selected.size()]));
          validate();
@@ -347,9 +368,9 @@ public class XList extends XWidget {
 
    public void addSelected(String name) {
       XListItem xItem = get(name);
-      if (xItem != null)
+      if (xItem != null) {
          xItem.setSelected(true);
-      else {
+      } else {
          xItem = add(name);
          xItem.setSelected(true);
       }
@@ -367,8 +388,9 @@ public class XList extends XWidget {
          if (names.contains(entry.getKey())) {
             entry.getValue().selected = true;
             handledNames.add(entry.getKey());
-         } else
+         } else {
             entry.getValue().selected = false;
+         }
       }
       for (String name : names) {
          if (!handledNames.contains(name)) {
@@ -382,21 +404,26 @@ public class XList extends XWidget {
 
    @Override
    public IStatus isValid() {
-      if (!isRequiredEntry()) return Status.OK_STATUS;
+      if (!isRequiredEntry()) {
+         return Status.OK_STATUS;
+      }
       int size = getSelected().size();
       if (requiredMaxSelected != 0) {
-         if ((size >= requiredMinSelected) && (size <= requiredMaxSelected)) {
+         if (size >= requiredMinSelected && size <= requiredMaxSelected) {
             return Status.OK_STATUS;
-         } else if (size < requiredMinSelected)
+         } else if (size < requiredMinSelected) {
             return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID,
-                  getLabel() + " must have at least " + requiredMinSelected + " selected.");
-         else if (size < requiredMaxSelected)
+               getLabel() + " must have at least " + requiredMinSelected + " selected.");
+         } else if (size < requiredMaxSelected) {
             return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID,
-                  getLabel() + " should only have " + requiredMaxSelected + " selected.");
-         else
+               getLabel() + " should only have " + requiredMaxSelected + " selected.");
+         } else {
             return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, getLabel());
+         }
       }
-      if (size == 0) return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, getLabel() + " must be selected.");
+      if (size == 0) {
+         return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, getLabel() + " must be selected.");
+      }
       return Status.OK_STATUS;
    }
 
@@ -470,7 +497,9 @@ public class XList extends XWidget {
    }
 
    protected void clearAll() {
-      if (listList != null) listList.removeAll();
+      if (listList != null) {
+         listList.removeAll();
+      }
    }
 
    @Override

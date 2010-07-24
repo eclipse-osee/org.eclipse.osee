@@ -20,13 +20,11 @@ import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 /**
- * 
  * @author Jeff C. Phillips
- *
  */
 public interface IElementExtractor {
 
-   public Element getOleDataElement() ;
+   public Element getOleDataElement();
 
    public Collection<Element> extractElements() throws DOMException, ParserConfigurationException, SAXException, IOException, OseeCoreException;
 }

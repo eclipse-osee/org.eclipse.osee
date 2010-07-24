@@ -12,7 +12,6 @@ package org.eclipse.osee.connection.service.internal;
 
 import java.util.List;
 import java.util.logging.Level;
-
 import org.eclipse.osee.connection.service.IConnectionService;
 import org.eclipse.osee.connection.service.IConnectorContributor;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -23,45 +22,48 @@ import org.osgi.framework.ServiceRegistration;
 
 public class Activator implements BundleActivator {
 
-	private ConnectionServiceImpl service;
-	private ServiceRegistration registration;
+   private ConnectionServiceImpl service;
+   private ServiceRegistration registration;
 
-	public void start(BundleContext context) throws Exception {
-		service = new ConnectionServiceImpl();
+   @Override
+   public void start(BundleContext context) throws Exception {
+      service = new ConnectionServiceImpl();
 
-		// register the service
-		registration = context.registerService(IConnectionService.class.getName(), service, null);
+      // register the service
+      registration = context.registerService(IConnectionService.class.getName(), service, null);
 
-		// create a tracker and track the service
+      // create a tracker and track the service
 
-		ExtensionDefinedObjects<IConnectorContributor> definedObjects = new ExtensionDefinedObjects<IConnectorContributor>(
-				"org.eclipse.osee.connection.service.ext", "ConnectorContribution", "className");
-		try {
-			List<IConnectorContributor> contributors = definedObjects.getObjects();
-			for (IConnectorContributor contributor : contributors) {
-				try {
-					contributor.init();
-				} catch (Exception e) {
-					log(Level.SEVERE, "exception initializing connector contributor", e);
-				}
-			}
-		} catch (Exception ex) {
-			log(Level.SEVERE, "failed to process OTE runtime library provider extensions", ex);
-		}
-	}
+      ExtensionDefinedObjects<IConnectorContributor> definedObjects =
+         new ExtensionDefinedObjects<IConnectorContributor>("org.eclipse.osee.connection.service.ext",
+            "ConnectorContribution", "className");
+      try {
+         List<IConnectorContributor> contributors = definedObjects.getObjects();
+         for (IConnectorContributor contributor : contributors) {
+            try {
+               contributor.init();
+            } catch (Exception e) {
+               log(Level.SEVERE, "exception initializing connector contributor", e);
+            }
+         }
+      } catch (Exception ex) {
+         log(Level.SEVERE, "failed to process OTE runtime library provider extensions", ex);
+      }
+   }
 
-	public void stop(BundleContext context) throws Exception {
-		service.stop();
-		registration.unregister();
-		service = null;
-	}
+   @Override
+   public void stop(BundleContext context) throws Exception {
+      service.stop();
+      registration.unregister();
+      service = null;
+   }
 
-	public static void log(Level level, String message, Throwable t) {
-		OseeLog.log(Activator.class, level, message, t);
-	}
+   public static void log(Level level, String message, Throwable t) {
+      OseeLog.log(Activator.class, level, message, t);
+   }
 
-	public static void log(Level level, String message) {
-		log(level, message, null);
-	}
+   public static void log(Level level, String message) {
+      log(level, message, null);
+   }
 
 }

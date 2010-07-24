@@ -14,7 +14,6 @@ import org.eclipse.osee.ote.message.elements.NumericElement;
 
 /**
  * @author Ken J. Aguilar
- *
  */
 
 public class DifferenceCondition<T extends Number & Comparable<T>> extends AbstractCondition implements IDiscreteElementCondition<T> {
@@ -23,7 +22,7 @@ public class DifferenceCondition<T extends Number & Comparable<T>> extends Abstr
    private final T differenceThreshold;
    private T lastValue;
    private final NumericEvaluator<T> evaluator;
-   
+
    public DifferenceCondition(NumericElement<T> element, T differenceThreshold) {
       this.element = element;
       this.differenceThreshold = differenceThreshold;
@@ -41,7 +40,6 @@ public class DifferenceCondition<T extends Number & Comparable<T>> extends Abstr
       }
    }
 
-   
    public NumericElement<T> getElement() {
       return element;
    }
@@ -49,7 +47,6 @@ public class DifferenceCondition<T extends Number & Comparable<T>> extends Abstr
    public T getDifferenceThreshold() {
       return differenceThreshold;
    }
-
 
    @Override
    public T getLastCheckValue() {

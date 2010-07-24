@@ -62,8 +62,8 @@ public class AtsExportWizard extends Wizard implements IExportWizard {
          return false;
       }
       try {
-         AtsExportManager.export(artifacts, mainPage.getSelectedExportOptions().toArray(
-               new ExportOption[mainPage.getSelectedExportOptions().size()]));
+         AtsExportManager.export(artifacts,
+            mainPage.getSelectedExportOptions().toArray(new ExportOption[mainPage.getSelectedExportOptions().size()]));
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }

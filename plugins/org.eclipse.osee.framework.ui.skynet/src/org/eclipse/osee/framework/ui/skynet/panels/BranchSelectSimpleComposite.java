@@ -216,8 +216,8 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
                   }
                }
             } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, String.format(
-                     "Unable to add invalid branch id [%s] to selection list.", toStore));
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE,
+                  String.format("Unable to add invalid branch id [%s] to selection list.", toStore));
             }
          }
       }
@@ -242,6 +242,7 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
       return toReturn.toArray(new String[toReturn.size()]);
    }
 
+   @Override
    public void handleEvent(Event event) {
       if (event.widget == branchSelectButton) {
          if (areOnlyWorkingBranchesAllowed() != false) {

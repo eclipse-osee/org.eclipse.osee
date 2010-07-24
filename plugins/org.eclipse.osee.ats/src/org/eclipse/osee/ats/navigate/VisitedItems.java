@@ -46,7 +46,9 @@ public class VisitedItems extends XNavigateItemAction {
    }
 
    public static void addVisited(Artifact art) {
-      if (!visitedGuids.contains(art.getGuid())) visitedGuids.add(art.getGuid());
+      if (!visitedGuids.contains(art.getGuid())) {
+         visitedGuids.add(art.getGuid());
+      }
    }
 
    public static void clearVisited() {

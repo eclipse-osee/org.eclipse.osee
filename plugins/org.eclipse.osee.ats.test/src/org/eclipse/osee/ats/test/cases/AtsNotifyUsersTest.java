@@ -15,15 +15,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import junit.framework.Assert;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.test.util.DemoTestUtil;
 import org.eclipse.osee.ats.test.util.TestNotificationManager;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
+import org.eclipse.osee.ats.util.AtsNotifyUsers.NotifyType;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.SubscribeManager;
-import org.eclipse.osee.ats.util.AtsNotifyUsers.NotifyType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -44,7 +44,7 @@ public class AtsNotifyUsersTest {
    @AfterClass
    public static void cleanup() throws OseeCoreException {
       for (Artifact artifact : ArtifactQuery.getArtifactListFromName(AtsNotifyUsersTest.class.getSimpleName(),
-            AtsUtil.getAtsBranch(), EXCLUDE_DELETED)) {
+         AtsUtil.getAtsBranch(), EXCLUDE_DELETED)) {
          artifact.delete();
       }
    }
@@ -77,8 +77,8 @@ public class AtsNotifyUsersTest {
       Assert.assertEquals(NotifyType.Originator.name(), event.getType());
       Assert.assertEquals(kay_ValidEmail, event.getUsers().iterator().next());
       Assert.assertEquals(
-            "You have been set as the originator of [Demo Code Team Workflow] state [Endorse] titled [AtsNotifyUsersTest]",
-            event.getDescription());
+         "You have been set as the originator of [Demo Code Team Workflow] state [Endorse] titled [AtsNotifyUsersTest]",
+         event.getDescription());
 
       notifyManager.clear();
       AtsNotifyUsers.getInstance().notify(teamArt, NotifyType.Assigned);
@@ -87,11 +87,11 @@ public class AtsNotifyUsersTest {
       Assert.assertEquals(NotifyType.Assigned.name(), event.getType());
       // joe smith should be removed from list cause it's current user
       // alex should be removed cause not valid email
-      Assert.assertTrue(org.eclipse.osee.framework.jdk.core.util.Collections.isEqual(Arrays.asList(jason_ValidEmail,
-            kay_ValidEmail), event.getUsers()));
+      Assert.assertTrue(org.eclipse.osee.framework.jdk.core.util.Collections.isEqual(
+         Arrays.asList(jason_ValidEmail, kay_ValidEmail), event.getUsers()));
       Assert.assertEquals(
-            "You have been set as the assignee of [Demo Code Team Workflow] in state [Endorse] titled [AtsNotifyUsersTest]",
-            event.getDescription());
+         "You have been set as the assignee of [Demo Code Team Workflow] in state [Endorse] titled [AtsNotifyUsersTest]",
+         event.getDescription());
 
       notifyManager.clear();
       AtsNotifyUsers.getInstance().notify(teamArt, Collections.singleton(jason_ValidEmail), NotifyType.Assigned);
@@ -101,8 +101,8 @@ public class AtsNotifyUsersTest {
       // only alex should be emailed cause sent in list
       Assert.assertEquals(Collections.singleton(jason_ValidEmail), event.getUsers());
       Assert.assertEquals(
-            "You have been set as the assignee of [Demo Code Team Workflow] in state [Endorse] titled [AtsNotifyUsersTest]",
-            event.getDescription());
+         "You have been set as the assignee of [Demo Code Team Workflow] in state [Endorse] titled [AtsNotifyUsersTest]",
+         event.getDescription());
 
       notifyManager.clear();
       new SubscribeManager(teamArt).toggleSubscribe(false);
@@ -112,8 +112,8 @@ public class AtsNotifyUsersTest {
       Assert.assertEquals(NotifyType.Subscribed.name(), event.getType());
       Assert.assertEquals(UserManager.getUser(), event.getUsers().iterator().next());
       Assert.assertEquals(
-            "[Demo Code Team Workflow] titled [AtsNotifyUsersTest] transitioned to [Endorse] and you subscribed for notification.",
-            event.getDescription());
+         "[Demo Code Team Workflow] titled [AtsNotifyUsersTest] transitioned to [Endorse] and you subscribed for notification.",
+         event.getDescription());
       new SubscribeManager(teamArt).toggleSubscribe(false);
 
       notifyManager.clear();
@@ -137,7 +137,7 @@ public class AtsNotifyUsersTest {
       Assert.assertEquals(NotifyType.Cancelled.name(), event.getType());
       Assert.assertEquals(kay_ValidEmail, event.getUsers().iterator().next());
       Assert.assertTrue(event.getDescription().startsWith(
-            "[Demo Code Team Workflow] titled [AtsNotifyUsersTest] was cancelled from the [Endorse] state on"));
+         "[Demo Code Team Workflow] titled [AtsNotifyUsersTest] was cancelled from the [Endorse] state on"));
       Assert.assertTrue(event.getDescription().endsWith(".<br>Reason: [this is the reason]"));
 
    }

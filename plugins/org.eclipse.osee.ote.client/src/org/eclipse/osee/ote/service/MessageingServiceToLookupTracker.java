@@ -19,44 +19,44 @@ import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 class MessageingServiceToLookupTracker extends ServiceTracker {
 
-	private IConnectionService connectionService;
-	private ExportClassLoader exportClassLoader;
-	private MessageService messageService;
-	private RemoteLookupServiceTracker remoteLookupServiceTracker;
-	/**
-	 * @param context
-	 * @param connectionService
-	 * @param exportClassLoader
-	 */
-	MessageingServiceToLookupTracker(BundleContext context,
-			IConnectionService connectionService, ExportClassLoader exportClassLoader) {
-		super(context, MessageService.class.getName(), null);
-		this.connectionService = connectionService;
-		this.exportClassLoader = exportClassLoader;
-	}
+   private final IConnectionService connectionService;
+   private final ExportClassLoader exportClassLoader;
+   private MessageService messageService;
+   private RemoteLookupServiceTracker remoteLookupServiceTracker;
 
-	@Override
-	public Object addingService(ServiceReference reference) {
-		messageService = (MessageService)context.getService(reference);
-		remoteLookupServiceTracker = new RemoteLookupServiceTracker(context, messageService, connectionService, exportClassLoader);
-		remoteLookupServiceTracker.open(true);
-		return super.addingService(reference);
-	}
+   /**
+    * @param context
+    * @param connectionService
+    * @param exportClassLoader
+    */
+   MessageingServiceToLookupTracker(BundleContext context, IConnectionService connectionService, ExportClassLoader exportClassLoader) {
+      super(context, MessageService.class.getName(), null);
+      this.connectionService = connectionService;
+      this.exportClassLoader = exportClassLoader;
+   }
 
-	@Override
-	public void close() {
-		remoteLookupServiceTracker.close();
-		super.close();
-	}
+   @Override
+   public Object addingService(ServiceReference reference) {
+      messageService = (MessageService) context.getService(reference);
+      remoteLookupServiceTracker =
+         new RemoteLookupServiceTracker(context, messageService, connectionService, exportClassLoader);
+      remoteLookupServiceTracker.open(true);
+      return super.addingService(reference);
+   }
 
-	@Override
-	public void removedService(ServiceReference reference, Object service) {
-		remoteLookupServiceTracker.close();
-		super.removedService(reference, service);
-	}
+   @Override
+   public void close() {
+      remoteLookupServiceTracker.close();
+      super.close();
+   }
+
+   @Override
+   public void removedService(ServiceReference reference, Object service) {
+      remoteLookupServiceTracker.close();
+      super.removedService(reference, service);
+   }
 
 }

@@ -93,7 +93,8 @@ public class TestBatchRegistry {
       // Chain Items
       XNavigateItem parentFolder = new XNavigateItem(parent, id, PluginUiImage.FOLDER);
       new ProjectSetupItem(parentFolder, id + " Checkout", OteTestManagerImage.PROJECT_SET_IMAGE, projectSetFile);
-      new TestBatchSetupItem(parentFolder, id + " Test Manager Batch Config", OteTestManagerImage.TEST_BATCH_IMAGE, testBatchFile);
+      new TestBatchSetupItem(parentFolder, id + " Test Manager Batch Config", OteTestManagerImage.TEST_BATCH_IMAGE,
+         testBatchFile);
 
       // Store into dataObject
       return new TestBatchData(parentFolder, id, projectSetFile, testBatchFile);

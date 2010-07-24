@@ -76,7 +76,7 @@ public class WholeDocumentRenderer extends WordRenderer {
             String content = artifact.getOrInitializeSoleAttributeValue(CoreAttributeTypes.WHOLE_WORD_CONTENT);
             if (presentationType == PresentationType.DIFF && WordAnnotationHandler.containsWordAnnotations(content)) {
                throw new OseeStateException(
-                     "Trying to diff the " + artifact.getName() + " artifact on the " + artifact.getBranch().getShortName() + " branch, which has tracked changes turned on.  All tracked changes must be removed before the artifacts can be compared.");
+                  "Trying to diff the " + artifact.getName() + " artifact on the " + artifact.getBranch().getShortName() + " branch, which has tracked changes turned on.  All tracked changes must be removed before the artifacts can be compared.");
             }
 
             LinkType linkType = LinkType.OSEE_SERVER_LINK;

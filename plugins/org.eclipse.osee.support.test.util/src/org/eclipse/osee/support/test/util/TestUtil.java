@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.logging.Level;
-import junit.framework.TestCase;
+import junit.framework.Assert;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -28,8 +28,8 @@ import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
  */
 public class TestUtil {
    private static final String DEMO_DB_TYPE = "demo";
-   public static final Collection<String> ignoreLogging =
-         Arrays.asList("No image was defined for art type", "Unable to load the image for [SAVED]");
+   public static final Collection<String> ignoreLogging = Arrays.asList("No image was defined for art type",
+      "Unable to load the image for [SAVED]");
    public static boolean isInTest = false;
 
    public static boolean isProductionDb() throws OseeCoreException {
@@ -116,7 +116,7 @@ public class TestUtil {
          }
          if (numExceptions > 0) {
             throw new OseeStateException(
-                  "SevereLoggingMonitor found " + numExceptions + " exceptions (see console for details)!");
+               "SevereLoggingMonitor found " + numExceptions + " exceptions (see console for details)!");
          }
       }
    }
@@ -143,11 +143,11 @@ public class TestUtil {
       for (String name : prevCount.keySet()) {
          String incStr = postCount.get(name) > prevCount.get(name) ? "Increased" : "ERROR, Not Increased";
          System.out.println(String.format(incStr + ": [%s] pre[%d] vs post[%d]", name, prevCount.get(name),
-               postCount.get(name)));
+            postCount.get(name)));
       }
       for (String name : prevCount.keySet()) {
-         TestCase.assertTrue(String.format("[%s] did not increase as expected: pre[%d] vs post[%d]", name,
-               prevCount.get(name), postCount.get(name)), postCount.get(name) > prevCount.get(name));
+         Assert.assertTrue(String.format("[%s] did not increase as expected: pre[%d] vs post[%d]", name,
+            prevCount.get(name), postCount.get(name)), postCount.get(name) > prevCount.get(name));
       }
    }
 
@@ -155,12 +155,12 @@ public class TestUtil {
       for (String tableName : prevCount.keySet()) {
          String equalStr = postCount.get(tableName).equals(prevCount.get(tableName)) ? "Equal" : "ERROR, NotEqual";
          System.out.println(String.format(equalStr + ": [%s] pre[%d] post[%d]", tableName, prevCount.get(tableName),
-               postCount.get(tableName)));
+            postCount.get(tableName)));
       }
       for (String tableName : prevCount.keySet()) {
-         TestCase.assertTrue(String.format("[%s] count not equal pre[%d] post[%d]", tableName,
-               prevCount.get(tableName), postCount.get(tableName)), postCount.get(tableName).equals(
-               prevCount.get(tableName)));
+         Assert.assertTrue(
+            String.format("[%s] count not equal pre[%d] post[%d]", tableName, prevCount.get(tableName),
+               postCount.get(tableName)), postCount.get(tableName).equals(prevCount.get(tableName)));
       }
    }
 

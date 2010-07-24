@@ -16,8 +16,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public class ArtifactModel {
 
    private boolean add;
-   private boolean artifactFound;
-   private Artifact artifact;
+   private final boolean artifactFound;
+   private final Artifact artifact;
    private String name;
    private ArtifactType descriptor;
    private String rationale;

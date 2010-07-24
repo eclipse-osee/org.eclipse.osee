@@ -31,64 +31,63 @@ import org.eclipse.swt.widgets.Listener;
  */
 public class ImageCaptureBlam extends AbstractBlam {
 
-	public Point topLeftPoint;
-	public Point botRightPoint;
-	public boolean listenerAdded = false;
+   public Point topLeftPoint;
+   public Point botRightPoint;
+   public boolean listenerAdded = false;
 
-	@Override
-	public String getName() {
-		return "Image Capture";
-	}
+   @Override
+   public String getName() {
+      return "Image Capture";
+   }
 
-	@Override
-	public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
+   @Override
+   public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
 
-		Displays.ensureInDisplayThread(new Runnable() {
-			@Override
-			public void run() {
-				System.out.println("Starting Image Capture...");
-				topLeftPoint = null;
-				botRightPoint = null;
-				Display.getDefault().addFilter(SWT.MouseUp, displayKeysListener);
-			}
-		});
-	}
-	Listener displayKeysListener = new Listener() {
-		@Override
-		public void handleEvent(org.eclipse.swt.widgets.Event event) {
-			if (event.type == SWT.MouseUp) {
-				if (topLeftPoint == null) {
-					topLeftPoint = event.display.getCursorLocation();
-					print("\nFirst Mouse Event " + topLeftPoint + "\n");
-				} else {
-					botRightPoint = event.display.getCursorLocation();
-					print("Second Mouse Event " + botRightPoint + "\n");
-					GC gc = new GC(Display.getCurrent());
-					Image image =
-								new Image(Display.getCurrent(), botRightPoint.x - topLeftPoint.x,
-											botRightPoint.y - topLeftPoint.y);
-					gc.copyArea(image, topLeftPoint.x, topLeftPoint.y);
-					gc.dispose();
-					Display.getDefault().removeFilter(SWT.MouseUp, displayKeysListener);
-					ImageDialog diag = new ImageDialog(image, Displays.getActiveShell());
-					diag.open();
-				}
-			}
-		}
-	};
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            System.out.println("Starting Image Capture...");
+            topLeftPoint = null;
+            botRightPoint = null;
+            Display.getDefault().addFilter(SWT.MouseUp, displayKeysListener);
+         }
+      });
+   }
+   Listener displayKeysListener = new Listener() {
+      @Override
+      public void handleEvent(org.eclipse.swt.widgets.Event event) {
+         if (event.type == SWT.MouseUp) {
+            if (topLeftPoint == null) {
+               topLeftPoint = event.display.getCursorLocation();
+               print("\nFirst Mouse Event " + topLeftPoint + "\n");
+            } else {
+               botRightPoint = event.display.getCursorLocation();
+               print("Second Mouse Event " + botRightPoint + "\n");
+               GC gc = new GC(Display.getCurrent());
+               Image image =
+                  new Image(Display.getCurrent(), botRightPoint.x - topLeftPoint.x, botRightPoint.y - topLeftPoint.y);
+               gc.copyArea(image, topLeftPoint.x, topLeftPoint.y);
+               gc.dispose();
+               Display.getDefault().removeFilter(SWT.MouseUp, displayKeysListener);
+               ImageDialog diag = new ImageDialog(image, Displays.getActiveShell());
+               diag.open();
+            }
+         }
+      }
+   };
 
-	@Override
-	public String getXWidgetsXml() {
-		return "<xWidgets></xWidgets>";
-	}
+   @Override
+   public String getXWidgetsXml() {
+      return "<xWidgets></xWidgets>";
+   }
 
-	@Override
-	public String getDescriptionUsage() {
-		return "Mouse Down on top left location, Mouse Up on bottom right.  Only works within bounds of workbench window.";
-	}
+   @Override
+   public String getDescriptionUsage() {
+      return "Mouse Down on top left location, Mouse Up on bottom right.  Only works within bounds of workbench window.";
+   }
 
-	@Override
-	public Collection<String> getCategories() {
-		return Arrays.asList("Util");
-	}
+   @Override
+   public Collection<String> getCategories() {
+      return Arrays.asList("Util");
+   }
 }

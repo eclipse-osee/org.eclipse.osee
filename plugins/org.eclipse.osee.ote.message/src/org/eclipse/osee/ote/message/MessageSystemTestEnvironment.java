@@ -19,7 +19,6 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import org.eclipse.osee.ote.core.IUserSession;
 import org.eclipse.osee.ote.core.TestScript;
 import org.eclipse.osee.ote.core.environment.BundleDescription;
@@ -41,9 +40,8 @@ import org.osgi.util.tracker.ServiceTracker;
 public abstract class MessageSystemTestEnvironment extends TestEnvironment implements ITestEnvironmentMessageSystemAccessor, IMessageTestContext {
    protected URL[] clientClasses;
    private final List<IPreScriptInstantiation> preInstantiation = new ArrayList<IPreScriptInstantiation>();
-   protected boolean promptResponse= false;
+   protected boolean promptResponse = false;
    private IOInstrumentationDB ioInstrumentation;
-
 
    /**
     * @throws IOException
@@ -55,8 +53,8 @@ public abstract class MessageSystemTestEnvironment extends TestEnvironment imple
       getScriptCtrl().setScriptReady(false);
    }
 
-   private void setupIOInstrumentation(){
-      if(ioInstrumentation == null){
+   private void setupIOInstrumentation() {
+      if (ioInstrumentation == null) {
          ioInstrumentation = new IOInstrumentationDB();
       }
    }
@@ -72,15 +70,16 @@ public abstract class MessageSystemTestEnvironment extends TestEnvironment imple
       }
    }
 
+   @Override
    public IMessageManager getMsgManager() {
       ServiceTracker tracker = getServiceTracker(IMessageManager.class.getName());
-      return (IMessageManager)tracker.getService();
+      return (IMessageManager) tracker.getService();
    }
 
    public IModelManager getModelManager() {
       ServiceTracker tracker = getServiceTracker(IModelManager.class.getName());
       try {
-         return (IModelManager)tracker.waitForService(5000);
+         return (IModelManager) tracker.waitForService(5000);
       } catch (InterruptedException ex) {
          throw new IllegalStateException("interrupted while trying to acquire model manager service", ex);
       }
@@ -122,7 +121,7 @@ public abstract class MessageSystemTestEnvironment extends TestEnvironment imple
    }
 
    public void cleanupRuntimeBundles() throws Exception {
-      if(isNoBundleCleanup()){
+      if (isNoBundleCleanup()) {
          return;
       } else {
          getRuntimeManager().cleanup();
@@ -140,6 +139,7 @@ public abstract class MessageSystemTestEnvironment extends TestEnvironment imple
       clientClasses = urls;
    }
 
+   @Override
    public void resetScriptLoader(String[] strings) throws Exception {
       getRuntimeManager().resetScriptLoader(strings);
    }

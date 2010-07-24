@@ -32,8 +32,12 @@ public final class Readers {
     * @throws IOException
     */
    public static final void xmlForward(Reader reader, Appendable appendable, CharSequence elementName) throws IOException {
-      if (reader == null) throw new IllegalArgumentException("reader can not be null");
-      if (elementName == null) throw new IllegalArgumentException("elementName can not be null");
+      if (reader == null) {
+         throw new IllegalArgumentException("reader can not be null");
+      }
+      if (elementName == null) {
+         throw new IllegalArgumentException("elementName can not be null");
+      }
 
       final String CLOSE_TAG = "</" + elementName + ">";
       final String EMPTY_TAG = "<" + elementName + "/>";
@@ -102,9 +106,15 @@ public final class Readers {
     * @throws IllegalArgumentException if any of the sequences elements are length zero
     */
    public static final CharSequence forward(Reader reader, Appendable appendable, CharSequence... sequences) throws IOException {
-      if (reader == null) throw new IllegalArgumentException("reader can not be null");
-      if (sequences == null) throw new IllegalArgumentException("sequences can not be null");
-      if (sequences.length == 0) throw new IllegalArgumentException("must provide at least one sequence");
+      if (reader == null) {
+         throw new IllegalArgumentException("reader can not be null");
+      }
+      if (sequences == null) {
+         throw new IllegalArgumentException("sequences can not be null");
+      }
+      if (sequences.length == 0) {
+         throw new IllegalArgumentException("must provide at least one sequence");
+      }
 
       // Precalculate all of the lengths and check for unacceptable data
       int[] lengths = new int[sequences.length];

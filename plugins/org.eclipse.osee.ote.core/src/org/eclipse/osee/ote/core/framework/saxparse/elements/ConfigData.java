@@ -10,21 +10,21 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.core.framework.saxparse.elements;
 
-
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public class ConfigData {
-   private String machineName;
+   private final String machineName;
+
    /**
     * @return the machineName
     */
    public String getMachineName() {
       return machineName;
    }
+
    /**
-    * @param machineName 
+    * @param machineName
     * @param name
     */
    public ConfigData(String machineName) {

@@ -63,23 +63,22 @@ public class DoesNotWorkItemDemo extends WorldXNavigateItemAction {
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Demo - Create and Persist Review");
       // Create a PeerToPeer review and leave in Prepare state
       PeerToPeerReviewArtifact reviewArt =
-            ReviewManager.createNewPeerToPeerReview(firstCodeArt, "Peer Review first set of code changes",
-                  firstCodeArt.getStateMgr().getCurrentStateName(), transaction);
+         ReviewManager.createNewPeerToPeerReview(firstCodeArt, "Peer Review first set of code changes",
+            firstCodeArt.getStateMgr().getCurrentStateName(), transaction);
       reviewArt.persist(transaction);
 
       // Create a PeerToPeer review and transition to Review state
       reviewArt =
-            ReviewManager.createNewPeerToPeerReview(firstCodeArt,
-                  "Does Not Work " + AtsUtil.getAtsDeveloperIncrementingNum(),
-                  firstCodeArt.getStateMgr().getCurrentStateName(), transaction);
+         ReviewManager.createNewPeerToPeerReview(firstCodeArt,
+            "Does Not Work " + AtsUtil.getAtsDeveloperIncrementingNum(),
+            firstCodeArt.getStateMgr().getCurrentStateName(), transaction);
       List<UserRole> roles = new ArrayList<UserRole>();
       roles.add(new UserRole(Role.Author, DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith)));
       roles.add(new UserRole(Role.Reviewer, DemoDbUtil.getDemoUser(DemoUsers.Kay_Jones)));
       roles.add(new UserRole(Role.Reviewer, DemoDbUtil.getDemoUser(DemoUsers.Alex_Kay), 2.0, true));
       Result result =
-            PeerToPeerReviewWorkflowManager.transitionTo(reviewArt,
-                  PeerToPeerReviewArtifact.PeerToPeerReviewState.Review, roles, null, UserManager.getUser(), false,
-                  transaction);
+         PeerToPeerReviewWorkflowManager.transitionTo(reviewArt, PeerToPeerReviewArtifact.PeerToPeerReviewState.Review,
+            roles, null, UserManager.getUser(), false, transaction);
       if (result.isFalse()) {
          throw new IllegalStateException("Failed transitioning review to Review: " + result.getText());
       }

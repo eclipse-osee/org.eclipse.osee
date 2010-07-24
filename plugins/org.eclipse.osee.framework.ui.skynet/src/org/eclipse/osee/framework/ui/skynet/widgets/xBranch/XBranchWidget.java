@@ -129,8 +129,7 @@ public class XBranchWidget extends XWidget implements IActionable {
       }
 
       branchXViewer =
-            new BranchXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this, filterRealTime,
-                  searchRealTime);
+         new BranchXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this, filterRealTime, searchRealTime);
       branchXViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
       branchContentProvider = new XBranchContentProvider(branchXViewer);
@@ -182,7 +181,7 @@ public class XBranchWidget extends XWidget implements IActionable {
       });
 
       OseeUiActions.addButtonToEditorToolBar(this, SkynetGuiPlugin.getInstance(), toolBar, BranchView.VIEW_ID,
-            "Branch Manager");
+         "Branch Manager");
    }
 
    public void loadTable() {
@@ -269,6 +268,7 @@ public class XBranchWidget extends XWidget implements IActionable {
          protected IStatus run(IProgressMonitor monitor) {
 
             Displays.ensureInDisplayThread(new Runnable() {
+               @Override
                public void run() {
 
                   if (extraInfoLabel != null && !extraInfoLabel.isDisposed()) {

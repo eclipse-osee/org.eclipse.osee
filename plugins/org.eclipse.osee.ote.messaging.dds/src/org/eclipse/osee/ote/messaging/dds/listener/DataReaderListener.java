@@ -22,54 +22,52 @@ import org.eclipse.osee.ote.messaging.dds.status.SubscriptionMatchStatus;
  * The interface for receiving events from a particular <code>DataReader</code>.
  * 
  * @see org.eclipse.osee.ote.messaging.dds.entity.DataReader
- * 
  * @author Robert A. Fisher
  * @author David Diepenbrock
  */
-public interface DataReaderListener extends Listener{
-   
+public interface DataReaderListener extends Listener {
+
    /**
-    * The method called when data is available for a <code>DataReader</code>. This method
-    * is only called if there is no <code>SubscriberListener</code> assigned to the
-    * <code>Subscriber</code> that created the <code>DataReader</code>.
+    * The method called when data is available for a <code>DataReader</code>. This method is only called if there is no
+    * <code>SubscriberListener</code> assigned to the <code>Subscriber</code> that created the <code>DataReader</code>.
     * 
     * @param theReader - The reader for which data is available.
     */
    public void onDataAvailable(DataReader theReader);
 
    /**
-    * This method is here for future functionality that is described in the DDS specification
-    * but has not been implemented or used.
+    * This method is here for future functionality that is described in the DDS specification but has not been
+    * implemented or used.
     */
    public void onSampleRejected(DataReader theReader, SampleRejectedStatus status);
 
    /**
-    * This method is here for future functionality that is described in the DDS specification
-    * but has not been implemented or used.
+    * This method is here for future functionality that is described in the DDS specification but has not been
+    * implemented or used.
     */
    public void onLivelinessChanged(DataReader theReader, LivelinessChangedStatus status);
 
    /**
-    * This method is here for future functionality that is described in the DDS specification
-    * but has not been implemented or used.
+    * This method is here for future functionality that is described in the DDS specification but has not been
+    * implemented or used.
     */
    public void onRequestedDeadlineMissed(DataReader theReader, RequestedDeadlineMissedStatus status);
 
    /**
-    * This method is here for future functionality that is described in the DDS specification
-    * but has not been implemented or used.
+    * This method is here for future functionality that is described in the DDS specification but has not been
+    * implemented or used.
     */
    public void onRequestedIncompatibleQos(DataReader theReader, RequestedIncompatibleQosStatus status);
 
    /**
-    * This method is here for future functionality that is described in the DDS specification
-    * but has not been implemented or used.
+    * This method is here for future functionality that is described in the DDS specification but has not been
+    * implemented or used.
     */
    public void onSubscriptionMatch(DataReader theReader, SubscriptionMatchStatus status);
 
    /**
-    * This method is here for future functionality that is described in the DDS specification
-    * but has not been implemented or used.
+    * This method is here for future functionality that is described in the DDS specification but has not been
+    * implemented or used.
     */
    public void onSampleLost(DataReader theReader, SampleLostStatus status);
 }

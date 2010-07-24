@@ -11,6 +11,7 @@
 package org.eclipse.osee.coverage.action;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.coverage.editor.xmerge.XCoverageMergeViewer;
 import org.eclipse.osee.coverage.internal.Activator;
@@ -38,7 +39,7 @@ public class ShowMergeDetailsAction extends Action {
    private XCoverageMergeViewer importXViewer;
 
    public ShowMergeDetailsAction() {
-      super("Show Merge Details", Action.AS_PUSH_BUTTON);
+      super("Show Merge Details", IAction.AS_PUSH_BUTTON);
    }
 
    @Override
@@ -51,11 +52,11 @@ public class ShowMergeDetailsAction extends Action {
       try {
          if (((ISelectedCoverageEditorItem) importXViewer.getXViewer()).getSelectedCoverageEditorItems().size() == 1) {
             ICoverage importCoverageEditorItem =
-                  ((ISelectedCoverageEditorItem) importXViewer.getXViewer()).getSelectedCoverageEditorItems().iterator().next();
+               ((ISelectedCoverageEditorItem) importXViewer.getXViewer()).getSelectedCoverageEditorItems().iterator().next();
             // If mergeitemgroup, want to link with parent of one of the children items
             if (importCoverageEditorItem instanceof MergeItemGroup) {
                importCoverageEditorItem =
-                     ((MergeItemGroup) importCoverageEditorItem).getMergeItems().iterator().next().getParent();
+                  ((MergeItemGroup) importCoverageEditorItem).getMergeItems().iterator().next().getParent();
             } else if (importCoverageEditorItem instanceof MergeItem) {
                importCoverageEditorItem = ((MergeItem) importCoverageEditorItem).getImportItem().getParent();
             } else {

@@ -16,5 +16,9 @@ package org.eclipse.osee.ats.config.demo.util;
  * @author Donald G. Dunne
  */
 public enum DemoWorkType {
-   Code, Test, Requirements, SW_Design, All
+   Code,
+   Test,
+   Requirements,
+   SW_Design,
+   All
 }

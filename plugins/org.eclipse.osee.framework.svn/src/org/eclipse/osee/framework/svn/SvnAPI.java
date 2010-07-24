@@ -32,8 +32,8 @@ import org.eclipse.osee.framework.svn.entry.NullRepositoryEntry;
 import org.eclipse.osee.framework.svn.entry.RepositoryEntry;
 import org.eclipse.osee.framework.svn.enums.RepositoryEnums.ControlledType;
 import org.eclipse.osee.framework.svn.enums.RepositoryEnums.EntryFields;
-import org.eclipse.team.svn.core.connector.SVNEntryInfo;
 import org.eclipse.team.svn.core.connector.ISVNConnector.Depth;
+import org.eclipse.team.svn.core.connector.SVNEntryInfo;
 import org.eclipse.team.svn.core.operation.remote.CheckoutOperation;
 import org.eclipse.team.svn.core.resource.ILocalResource;
 import org.eclipse.team.svn.core.resource.IRepositoryLocation;
@@ -90,7 +90,7 @@ public class SvnAPI {
          entryType = NodeKind.NAMES[info.kind];
       }
       DateFormat dateFormat =
-            DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, Locale.getDefault());
+         DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, Locale.getDefault());
       final RepositoryEntry entry = new RepositoryEntry(entryType, getVersionControlSystem());
       entry.addField(EntryFields.checksum, info.checksum);
       entry.addField(EntryFields.committedRev, Long.toString(info.lastChangedRevision));
@@ -99,7 +99,7 @@ public class SvnAPI {
       entry.addField(EntryFields.url, info.url);
       entry.addField(EntryFields.lastAuthor, info.lastChangedAuthor);
       entry.addField(EntryFields.kind,
-            info.kind == NodeKind.dir ? ControlledType.dir.name() : ControlledType.file.name());
+         info.kind == NodeKind.dir ? ControlledType.dir.name() : ControlledType.file.name());
       entry.addField(EntryFields.uuid, info.reposUUID);
       entry.addField(EntryFields.repository, info.reposRootUrl);
       entry.addField(EntryFields.currentRevision, Long.toString(info.revision));
@@ -211,6 +211,7 @@ public class SvnAPI {
 
       public CheckoutOperation getOperation() {
          PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+            @Override
             public void run() {
                checkoutOperation = getCheckoutOperation(checkoutMap);
                callbackReceived();
@@ -233,30 +234,30 @@ public class SvnAPI {
          if (checkoutMap != null) {
             HashMap resources2names = CheckoutAction.getResources2Names(checkoutMap);
             ArrayList operateResources =
-                  CheckoutAction.getOperateResources(checkoutMap, resources2names,
-                        PlatformUI.getWorkbench().getDisplay().getActiveShell(),
-                        ResourcesPlugin.getWorkspace().getRoot().getLocation().toString(), true);
+               CheckoutAction.getOperateResources(checkoutMap, resources2names,
+                  PlatformUI.getWorkbench().getDisplay().getActiveShell(),
+                  ResourcesPlugin.getWorkspace().getRoot().getLocation().toString(), true);
 
             if (operateResources.size() > 0) {
                IRepositoryResource[] checkoutSet =
-                     (IRepositoryResource[]) operateResources.toArray(new IRepositoryResource[operateResources.size()]);
+                  (IRepositoryResource[]) operateResources.toArray(new IRepositoryResource[operateResources.size()]);
                HashMap operateMap = new HashMap();
                for (int i = 0; i < checkoutSet.length; i++) {
                   operateMap.put(resources2names.get(checkoutSet[i]), checkoutSet[i]);
                }
                try {
                   Class<?> clazz =
-                        Platform.getBundle("org.eclipse.team.svn.core").loadClass(
-                              "org.eclipse.team.svn.core.operation.remote.CheckoutOperation");
+                     Platform.getBundle("org.eclipse.team.svn.core").loadClass(
+                        "org.eclipse.team.svn.core.operation.remote.CheckoutOperation");
                   if (EclipseVersion.isVersion("3.3")) {
                      Constructor<?> constructor =
-                           clazz.getConstructor(Map.class, boolean.class, String.class, boolean.class);
+                        clazz.getConstructor(Map.class, boolean.class, String.class, boolean.class);
                      toReturn = (CheckoutOperation) constructor.newInstance(operateMap, false, location, true);
                   } else if (EclipseVersion.isVersion("3.4")) {
                      Constructor<?> constructor =
-                           clazz.getConstructor(Map.class, boolean.class, String.class, int.class);
+                        clazz.getConstructor(Map.class, boolean.class, String.class, int.class);
                      toReturn =
-                           (CheckoutOperation) constructor.newInstance(operateMap, true, location, Depth.INFINITY, true);
+                        (CheckoutOperation) constructor.newInstance(operateMap, true, location, Depth.INFINITY, true);
                   }
                } catch (Exception ex) {
                   throw new UnsupportedOperationException();

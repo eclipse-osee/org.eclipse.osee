@@ -15,22 +15,26 @@ import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironment;
 import org.eclipse.osee.ote.message.IInstrumentationRegistrationListener;
 import org.eclipse.osee.ote.message.instrumentation.IOInstrumentation;
 
-
-
 /**
  * @author Andrew M. Finkbeiner
  */
 public interface ITestEnvironmentMessageSystem extends ITestEnvironment {
-   IRemoteMessageService getMessageToolServiceProxy() throws RemoteException;  
-   @Deprecated 
-   boolean isMessageJarAvailable(String version) throws RemoteException;
+   IRemoteMessageService getMessageToolServiceProxy() throws RemoteException;
+
    @Deprecated
-   void sendRuntimeJar(byte[] messageJar) throws RemoteException; 
+   boolean isMessageJarAvailable(String version) throws RemoteException;
+
+   @Deprecated
+   void sendRuntimeJar(byte[] messageJar) throws RemoteException;
 
    void setupClassLoaderAndJar(String[] jarVersions, String classPath) throws RemoteException;
+
    void setupClassLoaderAndJar(String[] jarVersion, String[] classPaths) throws RemoteException;
+
    IOInstrumentation getIOInstrumentation(String name) throws RemoteException;
+
    void addInstrumentationRegistrationListener(IInstrumentationRegistrationListener listener) throws RemoteException;
+
    void removeInstrumentationRegistrationListener(IInstrumentationRegistrationListener listener) throws RemoteException;
-   
+
 }

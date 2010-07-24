@@ -12,7 +12,6 @@ package org.eclipse.osee.ote.ui.define.reports.html;
 
 import java.io.IOException;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -20,11 +19,11 @@ import java.util.Date;
  */
 public class HtmlTableReport {
    private static String HTML_HEADER =
-         "<html><meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\"><head>";
+      "<html><meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\"><head>";
    private static String HTML_FOOTER = "</body></html>";
 
    private String reportTitle;
-   private HtmlActiveTable activeTable;
+   private final HtmlActiveTable activeTable;
 
    public HtmlTableReport() {
       this.activeTable = new HtmlActiveTable();
@@ -66,7 +65,7 @@ public class HtmlTableReport {
       builder.append(reportTitle);
       builder.append("</b></td>");
       builder.append("<td style=\"text-align:right; font-size:14px;\"><b>");
-      builder.append(SimpleDateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(new Date()));
+      builder.append(DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(new Date()));
       builder.append("</b></td>");
       builder.append("</tr>");
       builder.append("</table>");

@@ -29,7 +29,7 @@ import org.eclipse.osee.ote.define.artifacts.TestRunOperator;
 public class FindCommitableJob extends Job {
 
    private static final String JOB_NAME = "Check commit allowed";
-   private Artifact[] artifactsToSort;
+   private final Artifact[] artifactsToSort;
    private Artifact[] itemsToCommit;
    private Artifact[] nonCommitableItems;
 

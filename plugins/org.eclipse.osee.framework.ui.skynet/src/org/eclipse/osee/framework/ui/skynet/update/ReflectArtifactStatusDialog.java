@@ -20,17 +20,15 @@ import org.eclipse.swt.widgets.Control;
 
 /**
  * @author Jeff C. Phillips
- *
  */
-public class ReflectArtifactStatusDialog extends MessageDialog{
+public class ReflectArtifactStatusDialog extends MessageDialog {
    private static final String TITLE = "Confirm Inter Artifact Explorer Drop";
    private static final String OK = "Ok";
    private static final String CANCEL = "Cancel";
-   private List<TransferObject> transferObjects;
-   
+   private final List<TransferObject> transferObjects;
+
    public ReflectArtifactStatusDialog(List<TransferObject> transferObjects) {
-      super(Displays.getActiveShell(), TITLE, null, null, MessageDialog.NONE,
-            new String[] {OK, CANCEL}, 0);
+      super(Displays.getActiveShell(), TITLE, null, null, MessageDialog.NONE, new String[] {OK, CANCEL}, 0);
       this.transferObjects = transferObjects;
    }
 
@@ -44,7 +42,7 @@ public class ReflectArtifactStatusDialog extends MessageDialog{
       listViewer.setContentProvider(new ReflectContentProvider());
       listViewer.setLabelProvider(new ReflectDecoratingLabelProvider(new RevertLabelProvider()));
       listViewer.setInput(transferObjects);
-      
+
       return listViewer.getControl();
    }
 }

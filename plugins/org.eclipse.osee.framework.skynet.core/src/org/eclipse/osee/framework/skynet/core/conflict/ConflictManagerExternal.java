@@ -34,8 +34,8 @@ public class ConflictManagerExternal {
    public List<Conflict> getOriginalConflicts() throws OseeCoreException {
       if (originalConflicts == null) {
          originalConflicts =
-               ConflictManagerInternal.getConflictsPerBranch(sourceBranch, destinationBranch,
-                     sourceBranch.getBaseTransaction(), new NullProgressMonitor());
+            ConflictManagerInternal.getConflictsPerBranch(sourceBranch, destinationBranch,
+               sourceBranch.getBaseTransaction(), new NullProgressMonitor());
       }
       return originalConflicts;
    }

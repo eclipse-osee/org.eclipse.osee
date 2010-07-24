@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
  */
 public class SearchResult {
 
-   private Map<Integer, Map<Integer, ArtifactMatch>> entries;
+   private final Map<Integer, Map<Integer, ArtifactMatch>> entries;
    private int size;
 
    public SearchResult() {
@@ -83,10 +83,10 @@ public class SearchResult {
    }
 
    public class ArtifactMatch {
-      private int artId;
-      private int branchId;
+      private final int artId;
+      private final int branchId;
       private boolean hasMatchLocations;
-      private HashCollection<Long, MatchLocation> attributes;
+      private final HashCollection<Long, MatchLocation> attributes;
 
       public ArtifactMatch(int branchId, int artId) {
          this.artId = artId;

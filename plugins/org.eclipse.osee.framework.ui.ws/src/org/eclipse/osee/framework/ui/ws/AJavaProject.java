@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 public final class AJavaProject {
 
    private static final Map<IJavaProject, IClasspathEntry[]> cachedPath =
-         new HashMap<IJavaProject, IClasspathEntry[]>();
+      new HashMap<IJavaProject, IClasspathEntry[]>();
 
    private static final Pattern JAVA_PACKAGE_PATTERN = Pattern.compile(".*?package\\s*(.*?);.*", Pattern.DOTALL);
    private static final Matcher JAVA_PACKAGE_MATCHER = JAVA_PACKAGE_PATTERN.matcher("");
@@ -87,7 +87,7 @@ public final class AJavaProject {
                }
             } else if (paths[i].getEntryKind() == IClasspathEntry.CPE_PROJECT) {
                urls.add(new File(AWorkspace.getWorkspacePath().concat(
-                     paths[i].getPath().toFile().getPath().concat(File.separator + "bin" + File.separator))));
+                  paths[i].getPath().toFile().getPath().concat(File.separator + "bin" + File.separator))));
             } else if (paths[i].getEntryKind() == IClasspathEntry.CPE_SOURCE) {
                File projectlocation = javaProject.getProject().getLocation().toFile();
                File projecttricky = javaProject.getProject().getFullPath().toFile();
@@ -99,7 +99,7 @@ public final class AJavaProject {
                   fileLocation = paths[i].getOutputLocation().toFile();
                }
                String realLocation =
-                     fileLocation.toString().replace(projecttricky.toString(), projectlocation.toString());
+                  fileLocation.toString().replace(projecttricky.toString(), projectlocation.toString());
                urls.add(new File(realLocation));
             }
          }

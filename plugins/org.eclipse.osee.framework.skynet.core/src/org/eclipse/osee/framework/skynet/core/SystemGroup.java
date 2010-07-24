@@ -18,7 +18,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public enum SystemGroup {
 
-   Everyone, OseeAdmin;
+   Everyone,
+   OseeAdmin;
 
    private final OseeGroup group;
 

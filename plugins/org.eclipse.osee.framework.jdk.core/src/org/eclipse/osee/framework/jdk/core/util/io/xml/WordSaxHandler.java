@@ -20,8 +20,8 @@ import org.xml.sax.SAXException;
 public class WordSaxHandler extends AbstractSaxHandler {
    private boolean inHeader;
    private boolean inFooter;
-   private StringBuilder headerText;
-   private StringBuilder footerText;
+   private final StringBuilder headerText;
+   private final StringBuilder footerText;
 
    public WordSaxHandler() {
       super();

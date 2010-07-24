@@ -142,7 +142,7 @@ public abstract class SqlDataType {
          case NUMERIC:
          case SMALLINT:
          case TINYINT:
-            toReturn = ((columnValue != null && !columnValue.equals("")) ? columnValue : "0");
+            toReturn = columnValue != null && !columnValue.equals("") ? columnValue : "0";
             break;
          case DATE:
             toReturn = "{d '" + formatDate(columnValue) + "'}";

@@ -14,22 +14,22 @@ import java.io.Serializable;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public class TestStart implements IServiceStatusData, Serializable {
 
-	private static final long serialVersionUID = -3458459132672153638L;
-	private final String testClassName;
-	
-	public TestStart(String testClassName){
-		this.testClassName = testClassName;
-	}
-	
-	public void accept(IServiceStatusDataVisitor visitor) {
-		visitor.asTestStart(this);
-	}
+   private static final long serialVersionUID = -3458459132672153638L;
+   private final String testClassName;
 
-	public String getTestClassName(){
-		return testClassName;
-	}
+   public TestStart(String testClassName) {
+      this.testClassName = testClassName;
+   }
+
+   @Override
+   public void accept(IServiceStatusDataVisitor visitor) {
+      visitor.asTestStart(this);
+   }
+
+   public String getTestClassName() {
+      return testClassName;
+   }
 }

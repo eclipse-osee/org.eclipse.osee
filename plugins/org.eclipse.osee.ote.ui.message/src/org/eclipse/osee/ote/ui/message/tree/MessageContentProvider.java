@@ -17,21 +17,25 @@ public class MessageContentProvider implements ITreeContentProvider {
    private Viewer viewer;
    private RootNode rootInput = null;
 
+   @Override
    public Object[] getChildren(Object parentElement) {
-      assert (parentElement instanceof AbstractTreeNode);
+      assert parentElement instanceof AbstractTreeNode;
       return ((AbstractTreeNode) parentElement).getChildren().toArray();
    }
 
+   @Override
    public Object getParent(Object element) {
-      assert (element instanceof AbstractTreeNode);
+      assert element instanceof AbstractTreeNode;
       return ((AbstractTreeNode) element).getParent();
    }
 
+   @Override
    public boolean hasChildren(Object element) {
-      assert (element instanceof AbstractTreeNode);
+      assert element instanceof AbstractTreeNode;
       return ((AbstractTreeNode) element).hasChildren();
    }
 
+   @Override
    public Object[] getElements(Object inputElement) {
       if (inputElement == null) {
          return new Object[0];
@@ -57,6 +61,7 @@ public class MessageContentProvider implements ITreeContentProvider {
       viewer.refresh();
    }
 
+   @Override
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
       this.viewer = viewer;
       if (oldInput != null) {

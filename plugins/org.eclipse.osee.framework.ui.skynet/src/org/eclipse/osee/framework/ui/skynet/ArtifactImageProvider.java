@@ -23,27 +23,27 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  * @author Ryan D. Brooks
  */
 public abstract class ArtifactImageProvider {
-	/**
-	 * Providers can return null which will cause null to be returned from the associated getImage or getImageDescriptor
-	 * call. Alternatively, providers that wish to defer to the basic implementation should call return
-	 * super.setupImage()
-	 * 
-	 * @param artifact
-	 * @throws OseeCoreException
-	 */
-	public String setupImage(Artifact artifact) throws OseeCoreException {
-		return ArtifactImageManager.setupImageNoProviders(artifact);
-	}
+   /**
+    * Providers can return null which will cause null to be returned from the associated getImage or getImageDescriptor
+    * call. Alternatively, providers that wish to defer to the basic implementation should call return
+    * super.setupImage()
+    * 
+    * @param artifact
+    * @throws OseeCoreException
+    */
+   public String setupImage(Artifact artifact) throws OseeCoreException {
+      return ArtifactImageManager.setupImageNoProviders(artifact);
+   }
 
-	public String setupImage(ArtifactType artifactType) throws OseeCoreException {
-		return ArtifactImageManager.setupImage(BaseImage.getBaseImageEnum(artifactType));
-	}
+   public String setupImage(ArtifactType artifactType) throws OseeCoreException {
+      return ArtifactImageManager.setupImage(BaseImage.getBaseImageEnum(artifactType));
+   }
 
-	/**
-	 * Provide image artifact type registration by ImageManager.register.* calls
-	 * 
-	 * @throws OseeCoreException
-	 */
-	public abstract void init() throws OseeCoreException;
+   /**
+    * Provide image artifact type registration by ImageManager.register.* calls
+    * 
+    * @throws OseeCoreException
+    */
+   public abstract void init() throws OseeCoreException;
 
 }

@@ -12,7 +12,6 @@ package org.eclipse.osee.ote.ui.message.util;
 
 import java.util.ArrayList;
 import java.util.logging.Level;
-
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -25,81 +24,76 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.osgi.util.tracker.ServiceTracker;
 
-
 /**
  * @author Ken J. Aguilar
- *
  */
 public class MessageSelectionDialog extends ElementListSelectionDialog {
 
+   /**
+    * @param parent
+    */
+   public MessageSelectionDialog(Shell parent) {
+      super(parent, new ILabelProvider() {
 
-	/**
-	 * @param parent
-	 */
-	public MessageSelectionDialog(Shell parent) {
-		super(parent, new ILabelProvider() {
+         @Override
+         public Image getImage(Object element) {
+            return null;
+         }
 
-			@Override
-			public Image getImage(Object element) {
-				return null;
-			}
+         @Override
+         public String getText(Object element) {
+            String msgName = (String) element;
+            String packageName = msgName.substring(0, msgName.lastIndexOf('.'));
+            String type = packageName.substring(packageName.lastIndexOf('.') + 1);
 
-			@Override
-			public String getText(Object element) {
-				String msgName = (String) element;
-				String packageName = msgName.substring(0, msgName
-						.lastIndexOf('.'));
-				String type = packageName.substring(packageName
-						.lastIndexOf('.') + 1);
+            return String.format("%s [%s]", msgName.substring(msgName.lastIndexOf('.') + 1), type);
+         }
 
-				return String.format("%s [%s]", msgName.substring(msgName
-						.lastIndexOf('.') + 1), type);
-			}
+         @Override
+         public void addListener(ILabelProviderListener listener) {
+         }
 
-			@Override
-			public void addListener(ILabelProviderListener listener) {
-			}
+         @Override
+         public void dispose() {
+         }
 
-			@Override
-			public void dispose() {
-			}
+         @Override
+         public boolean isLabelProperty(Object element, String property) {
+            return false;
+         }
 
-			@Override
-			public boolean isLabelProperty(Object element, String property) {
-				return false;
-			}
+         @Override
+         public void removeListener(ILabelProviderListener listener) {
+         }
 
-			@Override
-			public void removeListener(ILabelProviderListener listener) {
-			}
+      });
 
-		});
+      ServiceTracker tracker =
+         new ServiceTracker(Activator.getDefault().getBundle().getBundleContext(), IOteClientService.class.getName(),
+            null);
+      tracker.open(true);
+      try {
+         IMessageDictionary dictionary = ((IOteClientService) tracker.waitForService(1000)).getLoadedDictionary();
+         final ArrayList<String> messages = new ArrayList<String>(4096);
+         dictionary.generateMessageIndex(new MessageSink() {
 
-		ServiceTracker tracker =new ServiceTracker(Activator.getDefault().getBundle().getBundleContext(), IOteClientService.class.getName(), null);
-		tracker.open(true);
-		try {
-			IMessageDictionary dictionary = ((IOteClientService)tracker.waitForService(1000)).getLoadedDictionary();
-			final ArrayList<String> messages = new ArrayList<String>(4096);
-			dictionary.generateMessageIndex(new MessageSink() {
+            @Override
+            public void absorbElement(String elementName) {
+            }
 
-				@Override
-				public void absorbElement(String elementName) {
-				}
+            @Override
+            public void absorbMessage(String messageName) {
+               messages.add(messageName);
+            }
 
-				@Override
-				public void absorbMessage(String messageName) {
-					messages.add(messageName);
-				}
-
-			});
-			setElements(messages.toArray());
-		} catch (Exception e) {
-			OseeLog.log(MessageSelectionDialog.class, Level.SEVERE,
-					"failed to generate message listing", e);
-		} finally {
-			tracker.close();
-		}
-		setMessage("Select a message. Use * as the wild card character");
-		setTitle("Message Selection");
-	}
+         });
+         setElements(messages.toArray());
+      } catch (Exception e) {
+         OseeLog.log(MessageSelectionDialog.class, Level.SEVERE, "failed to generate message listing", e);
+      } finally {
+         tracker.close();
+      }
+      setMessage("Select a message. Use * as the wild card character");
+      setTitle("Message Selection");
+   }
 }

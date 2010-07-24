@@ -110,12 +110,12 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
    private OteServerSideEndprointRecieve oteServerSideEndpointRecieve;
    private OteServerSideEndpointSender oteServerSideEndpointSender;
    private final ServiceTracker messagingServiceTracker;
-   private ExecutorService execInitializationTasks;
+   private final ExecutorService execInitializationTasks;
    private final LinkedBlockingQueue<Future> listOfThreadsToWaitOnInInit = new LinkedBlockingQueue<Future>();
 
    private volatile boolean isShutdown = false;
    private NodeInfo oteEmbeddedBroker;
-   
+
    protected TestEnvironment(IEnvironmentFactory factory) {
       GCHelper.getGCHelper().addRefWatch(this);
       try {
@@ -141,6 +141,7 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
    public void init(IServiceConnector connector) {
       this.connector = connector;
       initializationThreadAdd(new Callable() {
+         @Override
          public Object call() throws Exception {
             Activator.getInstance().registerTestEnvironment(TestEnvironment.this);
             return null;
@@ -162,6 +163,7 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       }
    }
 
+   @Override
    public void initializationThreadAdd(Callable callable) {
       listOfThreadsToWaitOnInInit.add(execInitializationTasks.submit(callable));
    }
@@ -194,8 +196,8 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
 
          SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH_mm_ss");
          saveFile =
-               String.format("%s%s%s_%s_%s.xml", saveFile, System.getProperty("file.separator"),
-                     InetAddress.getLocalHost().getHostName(), System.getProperty("user.name"), sdf.format(new Date()));
+            String.format("%s%s%s_%s_%s.xml", saveFile, System.getProperty("file.separator"),
+               InetAddress.getLocalHost().getHostName(), System.getProperty("user.name"), sdf.format(new Date()));
          oteLog = new OteLogFile(new File(saveFile));
          OseeLog.registerLoggerListener(oteLog);
       } catch (Exception e1) {
@@ -208,8 +210,8 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       oteServerSideEndpointSender = new OteServerSideEndpointSender(this);
       BundleContext context = Platform.getBundle("org.eclipse.osee.ote.core").getBundleContext();
       return getServiceTracker(MessagingGateway.class.getName(), new OteEnvironmentTrackerCustomizer(context,
-            oteServerSideEndpointRecieve, oteServerSideEndpointSender,
-            OteServerSideEndpointSender.OTE_SERVER_SIDE_SEND_PROTOCOL));
+         oteServerSideEndpointRecieve, oteServerSideEndpointSender,
+         OteServerSideEndpointSender.OTE_SERVER_SIDE_SEND_PROTOCOL));
    }
 
    public void sendCommand(Command command) {
@@ -224,45 +226,55 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       return Activator.getInstance().getServiceTracker(clazz, customizer);
    }
 
+   @Override
    public ServiceTracker getServiceTracker(String clazz) {
       return getServiceTracker(clazz, null);
    }
 
+   @Override
    public ICommandHandle addCommand(ITestServerCommand cmd) throws ExportException {
       return factory.getCommandManager().addCommand(cmd, this);
    }
 
+   @Override
    public IRunManager getRunManager() {
       return factory.getRunManager();
    }
 
+   @Override
    public IRuntimeLibraryManager getRuntimeManager() {
       return this.runtimeManager;
    }
 
+   @Override
    public IEnvironmentFactory getEnvironmentFactory() {
       return factory;
    }
 
+   @Override
    public boolean isInBatchMode() {
       return batchMode;
    }
 
+   @Override
    public void setBatchMode(boolean isInBatchMode) {
       if (!OteProperties.isOseeOteInBatchModeEnabled()) {
          this.batchMode = isInBatchMode;
       }
    }
 
+   @Override
    public void addEnvironmentListener(ITestEnvironmentListener listener) {
       envListeners.add(listener);
    }
 
+   @Override
    public boolean addTask(EnvironmentTask task) {
       factory.getTimerControl().addTask(task, this);
       return true;
    }
 
+   @Override
    public UserTestSessionKey addUser(IUserSession user) throws Exception {
       UserTestSessionKey key = new UserTestSessionKey(user.getUser());
       users.put(key, user);
@@ -277,35 +289,42 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       }
    }
 
+   @Override
    public long getEnvTime() {
       return getTimerCtrl().getEnvTime();
    }
 
+   @Override
    public IExecutionUnitManagement getExecutionUnitManagement() {
       return this.executionUnitManagement;
    }
 
+   @Override
    public ITestLogger getLogger() {
       return factory.getTestLogger();
    }
 
+   @Override
    public List<String> getQueueLabels() {
       List<String> list = new ArrayList<String>();
       list.add("Description");
       return list;
    }
 
+   @Override
    public abstract Object getModel(String modelClassName);
 
    /*
-    * public Remote getRemoteModel(String modelClassName) throws RemoteException { return
-    * getRemoteModel(modelClassName, new Class[] {}, new Object[] {}); }
+    * public Remote getRemoteModel(String modelClassName) throws RemoteException { return getRemoteModel(modelClassName,
+    * new Class[] {}, new Object[] {}); }
     */
 
+   @Override
    public IScriptControl getScriptCtrl() {
       return factory.getScriptControl();
    }
 
+   @Override
    public byte[] getScriptOutfile(String filepath) throws RemoteException {
       try {
          File file = new File(filepath);
@@ -326,22 +345,27 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       }
    }
 
+   @Override
    public ITestStation getTestStation() {
       return testStation;
    }
 
+   @Override
    public ITimerControl getTimerCtrl() {
       return factory.getTimerControl();
    }
 
+   @Override
    public int getUniqueId() {
       return this.hashCode();
    }
 
+   @Override
    public ArrayList<Serializable> getUserList() {
       return new ArrayList<Serializable>(getSessionKeys());
    }
 
+   @Override
    public void disconnect(final UserTestSessionKey key) throws RemoteException {
       try {
          OseeLog.log(TestEnvironment.class, Level.INFO, "Disconnecting user " + getUserSession(key).getUser().getName());
@@ -351,10 +375,12 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       users.remove(key);
    }
 
+   @Override
    public Set<Serializable> getSessionKeys() {
       return users.keySet();
    }
 
+   @Override
    public IUserSession getUserSession(final UserTestSessionKey key) {
       return (IUserSession) users.get(key);
    }
@@ -363,6 +389,7 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       factory.getTimerControl().cancelAllTasks();
    }
 
+   @Override
    public void removeUser(OSEEPerson1_4 user) {
       if (users.containsKey(user)) {
          users.put(user, Integer.valueOf(((Integer) users.get(user)).intValue() - 1));
@@ -372,6 +399,7 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       }
    }
 
+   @Override
    public URL setBatchLibJar(byte[] batchJar) throws IOException {
       String path = System.getProperty("user.home") + File.separator + TestEnvironment.class.getName();
 
@@ -384,6 +412,7 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       return jar.toURI().toURL();
    }
 
+   @Override
    public ICancelTimer setTimerFor(ITimeout listener, int time) {
       return getTimerCtrl().setTimerFor(listener, time);
    }
@@ -395,17 +424,18 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
             if (!outDir.mkdirs()) {
                throw new IOException("Failed to create the output directory");
             }
-            OseeLog.log(TestEnvironment.class, Level.INFO, String.format("Outfile Dir [%s] created.",
-                  outDir.getAbsolutePath()));
+            OseeLog.log(TestEnvironment.class, Level.INFO,
+               String.format("Outfile Dir [%s] created.", outDir.getAbsolutePath()));
          } else {
-            OseeLog.log(TestEnvironment.class, Level.FINE, String.format("Outfile Dir [%s] exists.",
-                  outDir.getAbsolutePath()));
+            OseeLog.log(TestEnvironment.class, Level.FINE,
+               String.format("Outfile Dir [%s] exists.", outDir.getAbsolutePath()));
          }
       } else {
          throw new IOException("A valid outfile directory must be specified.");
       }
    }
 
+   @Override
    public void shutdown() {
       if (isShutdown) {
          return;
@@ -427,18 +457,18 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       cleanupClassReferences();
       OseeTestThread.clearThreadReferences();
       for (ITestEnvironmentListener listener : envListeners) {
-    	  try {
-    		  listener.onEnvironmentKilled(this);
-    	  } catch (Exception e) {
-    		  OseeLog.log(TestEnvironment.class, Level.SEVERE, "exception during listener notification", e);
-    	  }
+         try {
+            listener.onEnvironmentKilled(this);
+         } catch (Exception e) {
+            OseeLog.log(TestEnvironment.class, Level.SEVERE, "exception during listener notification", e);
+         }
       }
       envListeners.clear();
       if (getRunManager() != null) {
          getRunManager().clearAllListeners();
       }
       users.clear();
-      
+
    }
 
    protected abstract void loadExternalDrivers();
@@ -455,10 +485,12 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
 
    }
 
+   @Override
    public IUserSession getActiveUser() {
       return activeUser;
    }
 
+   @Override
    public File getClientResource(String workspacePath) throws Exception, IOException {
       if (activeUser == null) {
          throw new IllegalStateException("No active user");
@@ -476,8 +508,8 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
 
    private File getResourceDir() {
       File file =
-            new File(
-                  System.getProperty("java.io.tmpdir") + File.separator + System.getProperty("user.name") + File.separator + "oseeresources");
+         new File(
+            System.getProperty("java.io.tmpdir") + File.separator + System.getProperty("user.name") + File.separator + "oseeresources");
       file.mkdirs();
       return file;
    }
@@ -489,6 +521,7 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       return new File(getResourceDir(), filename);
    }
 
+   @Override
    public void setActiveUser(UserTestSessionKey key) {
       activeUser = (IUserSession) users.get(key);
    }
@@ -515,10 +548,12 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       this.executionUnitManagement = executionUnitManagement;
    }
 
+   @Override
    public File getOutDir() {
       return outDir;
    }
 
+   @Override
    public List<IUserSession> getUserSessions() {
       List<IUserSession> people = new ArrayList<IUserSession>();
       for (Object user : users.values()) {
@@ -529,14 +564,17 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       return people;
    }
 
+   @Override
    public Remote getControlInterface(String id) {
       return controlInterfaces.get(id);
    }
 
+   @Override
    public void registerControlInterface(String id, Remote controlInterface) {
       controlInterfaces.put(id, controlInterface);
    }
 
+   @Override
    public IServiceConnector getConnector() {
       return connector;
    }
@@ -628,6 +666,7 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       }
    }
 
+   @Override
    @Deprecated
    /**
     * marks the script as ready as well as clears any objects that are associated with the environment.
@@ -646,6 +685,7 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       factory.getReportDataControl().removeQueueListener(listener);
    }
 
+   @Override
    @Deprecated
    public void onScriptComplete() throws InterruptedException {
       factory.getScriptControl().setScriptReady(false);
@@ -664,6 +704,7 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       }
    }
 
+   @Override
    @Deprecated
    public void associateObject(Class<?> c, Object obj) {
       associatedObjects.put(c, obj);
@@ -671,7 +712,7 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       if (listeners != null) {
          for (int i = 0; i < listeners.size(); i++) {
             try {
-               (listeners.get(i)).updateAssociatedListener();
+               listeners.get(i).updateAssociatedListener();
             } catch (RemoteException e) {
                OseeLog.log(TestEnvironment.class, Level.SEVERE, e.getMessage(), e);
             }
@@ -680,16 +721,19 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       }
    }
 
+   @Override
    @Deprecated
    public Object getAssociatedObject(Class<?> c) {
       return associatedObjects.get(c);
    }
 
+   @Override
    @Deprecated
    public Set<Class<?>> getAssociatedObjects() {
       return associatedObjects.keySet();
    }
 
+   @Override
    @Deprecated
    /**
     * Use getRunManager().getCurrentScript() instead of this method.
@@ -698,20 +742,22 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       return getRunManager().getCurrentScript();
    }
 
+   @Override
    @Deprecated
    public void abortTestScript() {
       getRunManager().abort();
    }
 
+   @Override
    @Deprecated
    public void abortTestScript(Throwable t) {
       getRunManager().abort(t, false);
    }
-   
+
    public void setOteNodeInfo(NodeInfo oteEmbeddedBroker) {
       this.oteEmbeddedBroker = oteEmbeddedBroker;
    }
-   
+
    public NodeInfo getOteNodeInfo() {
       return oteEmbeddedBroker;
    }

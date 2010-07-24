@@ -45,8 +45,8 @@ public class Artifact_getLastModified {
    @org.junit.Test
    public void testGetLastModified() throws Exception {
       Artifact artifact =
-            ArtifactTypeManager.addArtifact("General Document", BranchManager.getCommonBranch(),
-                  getClass().getSimpleName());
+         ArtifactTypeManager.addArtifact("General Document", BranchManager.getCommonBranch(),
+            getClass().getSimpleName());
 
       Assert.assertNotNull(artifact.getLastModified());
       Assert.assertEquals(UserManager.getUser(SystemUser.OseeSystem), artifact.getLastModifiedBy());
@@ -78,13 +78,13 @@ public class Artifact_getLastModified {
 
    private void assertBefore(Date previousModifyDate, Artifact artifact) throws OseeCoreException {
       Assert.assertTrue(String.format("expected %tc to be before %tc", previousModifyDate, artifact.getLastModified()),
-            previousModifyDate.before(artifact.getLastModified()));
+         previousModifyDate.before(artifact.getLastModified()));
    }
 
    private static void cleanup() throws Exception {
       Collection<Artifact> arts =
-            ArtifactQuery.getArtifactListFromName(Artifact_getLastModified.class.getSimpleName(),
-                  BranchManager.getCommonBranch(), EXCLUDE_DELETED);
+         ArtifactQuery.getArtifactListFromName(Artifact_getLastModified.class.getSimpleName(),
+            BranchManager.getCommonBranch(), EXCLUDE_DELETED);
       new PurgeArtifacts(arts).execute();
    }
 }

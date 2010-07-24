@@ -11,7 +11,6 @@
 package org.eclipse.osee.ote.message.elements;
 
 import java.util.Collection;
-
 import org.eclipse.osee.ote.core.MethodFormatter;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 import org.eclipse.osee.ote.core.testPoint.CheckGroup;
@@ -100,22 +99,22 @@ public class CharElement extends DiscreteElement<Character> {
     * 
     * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    *           reference to the CheckGroup must be passed and this method will add the result of the check to the group
-    *           with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference should be passed and
-    *           this method will log the test point.
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param value Expected value.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
     * @throws InterruptedException
     */
    public boolean checkNot(ITestAccessor accessor, CheckGroup checkGroup, String value, int milliseconds) throws InterruptedException {
-	  if (accessor == null) {
-		  throw new IllegalArgumentException("accessor cannot be null");
-	  }
-	   accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(),
-			   (new MethodFormatter()).add(value).add(milliseconds), getMessage());
+      if (accessor == null) {
+         throw new IllegalArgumentException("accessor cannot be null");
+      }
+      accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(),
+         new MethodFormatter().add(value).add(milliseconds), getMessage());
 
       long time = accessor.getEnvTime();
       String currentValue;
@@ -123,7 +122,7 @@ public class CharElement extends DiscreteElement<Character> {
       if (milliseconds > 0) {
          final MessageSystemListener listener = getMessage().getListener();
          org.eclipse.osee.ote.core.environment.interfaces.ICancelTimer cancelTimer =
-               accessor.setTimerFor(listener, milliseconds);
+            accessor.setTimerFor(listener, milliseconds);
 
          accessor.getLogger().debug(accessor, "waiting............", true);
 
@@ -131,9 +130,9 @@ public class CharElement extends DiscreteElement<Character> {
             listener.waitForData(); // will also return if the timer (set above)
             // expires
             /*
-             * NOTE: had to add isTimedOut() because we were getting data at the same time we're timing
-             * out, so the notifyAll() isn't guaranteed to work since we would not be in a waiting
-             * state at that time - so we're forced to save the fact that we timed out.
+             * NOTE: had to add isTimedOut() because we were getting data at the same time we're timing out, so the
+             * notifyAll() isn't guaranteed to work since we would not be in a waiting state at that time - so we're
+             * forced to save the fact that we timed out.
              */
             if (listener.isTimedOut()) {
                break;
@@ -147,10 +146,11 @@ public class CharElement extends DiscreteElement<Character> {
       time = accessor.getEnvTime() - time;
       CheckPoint passFail = new CheckPoint(this.getFullName(), "Not " + value, currentValue, result, time);
 
-      if (checkGroup == null)
+      if (checkGroup == null) {
          accessor.getLogger().testpoint(accessor, accessor.getTestScript(), accessor.getTestCase(), passFail);
-      else
+      } else {
          checkGroup.add(passFail);
+      }
 
       if (accessor != null) {
          accessor.getLogger().methodEnded(accessor);
@@ -176,11 +176,11 @@ public class CharElement extends DiscreteElement<Character> {
     * 
     * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    *           reference to the CheckGroup must be passed and this method will add the result of the check to the group
-    *           with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference should be passed and
-    *           this method will log the test point.
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param value Expected value.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
@@ -188,16 +188,16 @@ public class CharElement extends DiscreteElement<Character> {
     */
    public boolean check(ITestAccessor accessor, CheckGroup checkGroup, String value, int milliseconds) throws InterruptedException {
       if (accessor == null) {
-    	  throw new IllegalArgumentException("accessor cannot be null");
+         throw new IllegalArgumentException("accessor cannot be null");
       }
       accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(),
-    		  (new MethodFormatter()).add(value).add(milliseconds), this.getMessage());
+         new MethodFormatter().add(value).add(milliseconds), this.getMessage());
       long time = accessor.getEnvTime();
       String currentValue;
       if (milliseconds > 0) {
          MessageSystemListener listener = getMessage().getListener();
          org.eclipse.osee.ote.core.environment.interfaces.ICancelTimer cancelTimer =
-               accessor.setTimerFor(listener, milliseconds);
+            accessor.setTimerFor(listener, milliseconds);
 
          accessor.getLogger().debug(accessor, "waiting............", true);
 
@@ -205,9 +205,9 @@ public class CharElement extends DiscreteElement<Character> {
             listener.waitForData(); // will also return if the timer (set above)
             // expires
             /*
-             * NOTE: had to add isTimedOut() because we were getting data at the same time we're timing
-             * out, so the notifyAll() isn't guaranteed to work since we would not be in a waiting
-             * state at that time - so we're forced to save the fact that we timed out.
+             * NOTE: had to add isTimedOut() because we were getting data at the same time we're timing out, so the
+             * notifyAll() isn't guaranteed to work since we would not be in a waiting state at that time - so we're
+             * forced to save the fact that we timed out.
              */
             if (listener.isTimedOut()) {
                break;
@@ -221,12 +221,13 @@ public class CharElement extends DiscreteElement<Character> {
       }
       time = accessor.getEnvTime() - time;
       CheckPoint passFail =
-            new CheckPoint(this.getFullName(), value, currentValue, compareString(currentValue, value), time);
+         new CheckPoint(this.getFullName(), value, currentValue, compareString(currentValue, value), time);
 
-      if (checkGroup == null)
+      if (checkGroup == null) {
          accessor.getLogger().testpoint(accessor, accessor.getTestScript(), accessor.getTestCase(), passFail);
-      else
+      } else {
          checkGroup.add(passFail);
+      }
 
       if (accessor != null) {
          accessor.getLogger().methodEnded(accessor);
@@ -259,29 +260,30 @@ public class CharElement extends DiscreteElement<Character> {
     * 
     * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    *           reference to the CheckGroup must be passed and this method will add the result of the check to the group
-    *           with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference should be passed and
-    *           this method will log the test point.
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param value Expected value
     * @return if the check passed
     */
    public boolean checkNot(ITestAccessor accessor, CheckGroup checkGroup, String value) {
       if (accessor != null) {
-         accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(), (new MethodFormatter()).add(value),
-               this.getMessage());
+         accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(), new MethodFormatter().add(value),
+            this.getMessage());
       }
 
       String actualValue = getString(accessor, value.length());
 
       CheckPoint passFail =
-            new CheckPoint(this.getFullName(), "Not " + value, actualValue, value.compareTo(actualValue) != 0, 0);
+         new CheckPoint(this.getFullName(), "Not " + value, actualValue, value.compareTo(actualValue) != 0, 0);
 
-      if (checkGroup == null)
+      if (checkGroup == null) {
          accessor.getLogger().testpoint(accessor, accessor.getTestScript(), accessor.getTestCase(), passFail);
-      else
+      } else {
          checkGroup.add(passFail);
+      }
 
       if (accessor != null) {
          accessor.getLogger().methodEnded(accessor);
@@ -306,28 +308,29 @@ public class CharElement extends DiscreteElement<Character> {
     * 
     * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    *           reference to the CheckGroup must be passed and this method will add the result of the check to the group
-    *           with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference should be passed and
-    *           this method will log the test point.
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param value Expected value
     * @return if the check passed
     */
    public boolean check(ITestAccessor accessor, CheckGroup checkGroup, String value) {
       if (accessor != null) {
-         accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(), (new MethodFormatter()).add(value),
-               this.getMessage());
+         accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(), new MethodFormatter().add(value),
+            this.getMessage());
       }
       String actualValue = getString(accessor, value.length());
 
       CheckPoint passFail =
-            new CheckPoint(this.getFullName(), value, actualValue, value.compareTo(actualValue) == 0, 0);
+         new CheckPoint(this.getFullName(), value, actualValue, value.compareTo(actualValue) == 0, 0);
 
-      if (checkGroup == null)
+      if (checkGroup == null) {
          accessor.getLogger().testpoint(accessor, accessor.getTestScript(), accessor.getTestCase(), passFail);
-      else
+      } else {
          checkGroup.add(passFail);
+      }
 
       if (accessor != null) {
          accessor.getLogger().methodEnded(accessor);
@@ -352,13 +355,15 @@ public class CharElement extends DiscreteElement<Character> {
     * @param accessor
     * @param value the string to set the bytes to
     */
+   @Override
    public void parseAndSet(ITestEnvironmentAccessor accessor, String value) {
-      if ((value.length() + this.getByteOffset()) > this.getMessage().getData().length) throw new IllegalArgumentException(
-            "Setting a String whose length exceeds the Message bounds!");
+      if (value.length() + this.getByteOffset() > this.getMessage().getData().length) {
+         throw new IllegalArgumentException("Setting a String whose length exceeds the Message bounds!");
+      }
 
       if (accessor != null) {
-         accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(), (new MethodFormatter()).add(value),
-               this.getMessage());
+         accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(), new MethodFormatter().add(value),
+            this.getMessage());
       }
 
       setASCIIString(value);
@@ -422,13 +427,13 @@ public class CharElement extends DiscreteElement<Character> {
    protected String waitForValue(ITestEnvironmentAccessor accessor, String value, int milliseconds) throws InterruptedException {
       if (accessor != null) {
          accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(),
-               (new MethodFormatter()).add(value).add(milliseconds), this.getMessage());
+            new MethodFormatter().add(value).add(milliseconds), this.getMessage());
       }
       String currentValue;
       if (milliseconds > 0) {
          MessageSystemListener listener = getMessage().getListener();
          org.eclipse.osee.ote.core.environment.interfaces.ICancelTimer cancelTimer =
-               accessor.setTimerFor(listener, milliseconds);
+            accessor.setTimerFor(listener, milliseconds);
 
          accessor.getLogger().debug(accessor, "waiting............", true);
 
@@ -436,9 +441,9 @@ public class CharElement extends DiscreteElement<Character> {
             listener.waitForData(); // will also return if the timer (set above)
             // expires
             /*
-             * NOTE: had to add isTimedOut() because we were getting data at the same time we're timing
-             * out, so the notifyAll() isn't guaranteed to work since we would not be in a waiting
-             * state at that time - so we're forced to save the fact that we timed out.
+             * NOTE: had to add isTimedOut() because we were getting data at the same time we're timing out, so the
+             * notifyAll() isn't guaranteed to work since we would not be in a waiting state at that time - so we're
+             * forced to save the fact that we timed out.
              */
             if (listener.isTimedOut()) {
                break;
@@ -450,8 +455,8 @@ public class CharElement extends DiscreteElement<Character> {
          currentValue = getString(accessor, value.length());
       }
       if (accessor != null) {
-         accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(), (new MethodFormatter()).add(value),
-               this.getMessage());
+         accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(), new MethodFormatter().add(value),
+            this.getMessage());
       }
       return currentValue;
    }
@@ -468,14 +473,14 @@ public class CharElement extends DiscreteElement<Character> {
    protected String waitForNotValue(ITestEnvironmentAccessor accessor, String value, int milliseconds) throws InterruptedException {
       if (accessor != null) {
          accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(),
-               (new MethodFormatter()).add(value).add(milliseconds), this.getMessage());
+            new MethodFormatter().add(value).add(milliseconds), this.getMessage());
       }
       String currentValue;
       if (milliseconds > 0) {
 
          MessageSystemListener listener = getMessage().getListener();
          org.eclipse.osee.ote.core.environment.interfaces.ICancelTimer cancelTimer =
-               accessor.setTimerFor(listener, milliseconds);
+            accessor.setTimerFor(listener, milliseconds);
 
          accessor.getLogger().debug(accessor, "waiting............", true);
 
@@ -483,9 +488,9 @@ public class CharElement extends DiscreteElement<Character> {
             listener.waitForData(); // will also return if the timer (set above)
             // expires
             /*
-             * NOTE: had to add isTimedOut() because we were getting data at the same time we're timing
-             * out, so the notifyAll() isn't guaranteed to work since we would not be in a waiting
-             * state at that time - so we're forced to save the fact that we timed out.
+             * NOTE: had to add isTimedOut() because we were getting data at the same time we're timing out, so the
+             * notifyAll() isn't guaranteed to work since we would not be in a waiting state at that time - so we're
+             * forced to save the fact that we timed out.
              */
             if (listener.isTimedOut()) {
                break;
@@ -497,8 +502,8 @@ public class CharElement extends DiscreteElement<Character> {
          currentValue = getString(accessor, value.length());
       }
       if (accessor != null) {
-         accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(), (new MethodFormatter()).add(value),
-               this.getMessage());
+         accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(), new MethodFormatter().add(value),
+            this.getMessage());
       }
       return currentValue;
    }

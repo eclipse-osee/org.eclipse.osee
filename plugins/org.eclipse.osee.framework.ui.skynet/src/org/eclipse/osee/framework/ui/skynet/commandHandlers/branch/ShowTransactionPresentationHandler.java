@@ -30,11 +30,12 @@ import org.eclipse.ui.menus.UIElement;
 public class ShowTransactionPresentationHandler extends AbstractHandler implements IElementUpdater {
    public static String COMMAND_ID = "org.eclipse.osee.framework.ui.skynet.branch.BranchView.showTransactions";
    boolean itemChk;
-   private ICommandService service;
+   private final ICommandService service;
 
-   public ShowTransactionPresentationHandler(){
+   public ShowTransactionPresentationHandler() {
       this.service = (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
    }
+
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
       ((BranchView) HandlerUtil.getActivePartChecked(event)).changeTransactionPresentation(!itemChk);
@@ -43,14 +44,16 @@ public class ShowTransactionPresentationHandler extends AbstractHandler implemen
 
    @Override
    public void updateElement(UIElement element, Map parameters) {
-      itemChk = Platform.getPreferencesService().getRootNode().node(InstanceScope.SCOPE).node(BranchView.VIEW_ID).getBoolean(BranchViewPresentationPreferences.SHOW_TRANSACTIONS, true);
+      itemChk =
+         Platform.getPreferencesService().getRootNode().node(InstanceScope.SCOPE).node(BranchView.VIEW_ID).getBoolean(
+            BranchViewPresentationPreferences.SHOW_TRANSACTIONS, true);
       element.setChecked(itemChk);
    }
 
    @Override
    public boolean isEnabled() {
       service.refreshElements(COMMAND_ID, null);
-      
+
       return true;
    }
 }

@@ -50,13 +50,12 @@ public class AccessControlHandler extends CommandHandler {
       List<Artifact> artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
 
       boolean hasArtifacts = artifacts.size() == 1;
-      boolean enabled = hasArtifacts || (branches.size() == 1);
+      boolean enabled = hasArtifacts || branches.size() == 1;
 
       if (enabled) {
          object = hasArtifacts ? artifacts.iterator().next() : branches.iterator().next();
          enabled &=
-               (AccessControlManager.isOseeAdmin() || AccessControlManager.hasPermission(object,
-                     PermissionEnum.FULLACCESS));
+            AccessControlManager.isOseeAdmin() || AccessControlManager.hasPermission(object, PermissionEnum.FULLACCESS);
       }
 
       return enabled;

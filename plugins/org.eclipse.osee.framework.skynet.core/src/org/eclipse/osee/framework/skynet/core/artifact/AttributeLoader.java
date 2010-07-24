@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.INCLUDE_DELETED;
 import static org.eclipse.osee.framework.skynet.core.artifact.LoadLevel.RELATION;
 import static org.eclipse.osee.framework.skynet.core.artifact.LoadLevel.SHALLOW;
-import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.INCLUDE_DELETED;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -116,8 +116,8 @@ public class AttributeLoader {
          artifact = ArtifactCache.getActive(current.artifactId, current.branchId);
       }
       if (artifact == null) {
-         OseeLog.log(ArtifactLoader.class, Level.WARNING, String.format(
-               "Orphaned attribute for artifact id[%d] branch[%d]", current.artifactId, current.branchId));
+         OseeLog.log(ArtifactLoader.class, Level.WARNING,
+            String.format("Orphaned attribute for artifact id[%d] branch[%d]", current.artifactId, current.branchId));
       }
       return artifact;
    }
@@ -151,12 +151,12 @@ public class AttributeLoader {
       // transaction is used first due to sorting on the query
       if (!historical) {
          OseeLog.log(
-               ArtifactLoader.class,
-               Level.WARNING,
-               String.format(
-                     "multiple attribute version for attribute id [%d] artifact id[%d] branch[%d] previousGammaId[%s] currentGammaId[%s] previousModType[%s] currentModType[%s]",
-                     current.attrId, current.artifactId, current.branchId, previous.gammaId, current.gammaId,
-                     previous.modType, current.modType));
+            ArtifactLoader.class,
+            Level.WARNING,
+            String.format(
+               "multiple attribute version for attribute id [%d] artifact id[%d] branch[%d] previousGammaId[%s] currentGammaId[%s] previousModType[%s] currentModType[%s]",
+               current.attrId, current.artifactId, current.branchId, previous.gammaId, current.gammaId,
+               previous.modType, current.modType));
       }
    }
 
@@ -168,7 +168,7 @@ public class AttributeLoader {
       }
       boolean markDirty = false;
       artifact.internalInitializeAttribute(attributeType, current.attrId, current.gammaId,
-            ModificationType.getMod(current.modType), markDirty, value, current.uri);
+         ModificationType.getMod(current.modType), markDirty, value, current.uri);
    }
 
    private static boolean isEnumOrBoolean(IAttributeType attributeType) throws OseeCoreException {

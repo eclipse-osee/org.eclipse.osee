@@ -23,22 +23,22 @@ import org.osgi.framework.BundleException;
  */
 public class EarlyStartup implements IStartup {
 
-	private SafeWorkspaceTracker workspaceTracker;
+   private SafeWorkspaceTracker workspaceTracker;
 
-	@Override
-	public void earlyStartup() {
-		Displays.ensureInDisplayThread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					Bundle bundle = Platform.getBundle("org.eclipse.osee.ote.runtimeManager");
-					bundle.start();
-					workspaceTracker = new SafeWorkspaceTracker(bundle.getBundleContext());
-					workspaceTracker.open(true);
-				} catch (BundleException ex) {
-					OseeLog.log(RuntimeManager.class, Level.SEVERE, ex);
-				}
-			}
-		});
-	}
+   @Override
+   public void earlyStartup() {
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            try {
+               Bundle bundle = Platform.getBundle("org.eclipse.osee.ote.runtimeManager");
+               bundle.start();
+               workspaceTracker = new SafeWorkspaceTracker(bundle.getBundleContext());
+               workspaceTracker.open(true);
+            } catch (BundleException ex) {
+               OseeLog.log(RuntimeManager.class, Level.SEVERE, ex);
+            }
+         }
+      });
+   }
 }

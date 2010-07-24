@@ -38,209 +38,210 @@ import org.eclipse.ui.PlatformUI;
  */
 public class AuthenticationDialog extends OseeMessageDialog {
 
-	private Button okButton;
-	private Button cancelButton;
-	protected AuthenticationComposite authenticationComposite;
-	private boolean selectionOk;
-	private static final int MAX_RETRIES = 3;
+   private Button okButton;
+   private Button cancelButton;
+   protected AuthenticationComposite authenticationComposite;
+   private boolean selectionOk;
+   private static final int MAX_RETRIES = 3;
 
-	public AuthenticationDialog(Shell parentShell) {
-		super(parentShell, "OSEE Authenticate", null, "Enter your user id (email address), password, and domain.",
-					ImageManager.getImage(FrameworkImage.LOCKED_KEY), new String[] {"Enter", "Cancel"}, 0);
+   public AuthenticationDialog(Shell parentShell) {
+      super(parentShell, "OSEE Authenticate", null, "Enter your user id (email address), password, and domain.",
+         ImageManager.getImage(FrameworkImage.LOCKED_KEY), new String[] {"Enter", "Cancel"}, 0);
 
-		selectionOk = false;
-		authenticationComposite = new AuthenticationComposite(parentShell, SWT.NONE, false);
-	}
+      selectionOk = false;
+      authenticationComposite = new AuthenticationComposite(parentShell, SWT.NONE, false);
+   }
 
-	@Override
-	protected Control createCustomArea(Composite parent) {
-		authenticationComposite.setParent(parent);
-		return authenticationComposite;
-	}
+   @Override
+   protected Control createCustomArea(Composite parent) {
+      authenticationComposite.setParent(parent);
+      return authenticationComposite;
+   }
 
-	@Override
-	protected Control createButtonBar(Composite parent) {
-		Control c = super.createButtonBar(parent);
-		okButton = getButton(0);
-		cancelButton = getButton(1);
+   @Override
+   protected Control createButtonBar(Composite parent) {
+      Control c = super.createButtonBar(parent);
+      okButton = getButton(0);
+      cancelButton = getButton(1);
 
-		okButton.setEnabled(false);
-		okButton.addSelectionListener(authenticationComposite.getAuthenticateListener());
-		okButton.addSelectionListener(new SelectionAdapter() {
+      okButton.setEnabled(false);
+      okButton.addSelectionListener(authenticationComposite.getAuthenticateListener());
+      okButton.addSelectionListener(new SelectionAdapter() {
 
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				selectionOk = true;
-			}
-		});
-		authenticationComposite.getShell().setDefaultButton(okButton);
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            selectionOk = true;
+         }
+      });
+      authenticationComposite.getShell().setDefaultButton(okButton);
 
-		cancelButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				selectionOk = false;
-			}
-		});
-		return c;
-	}
+      cancelButton.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            selectionOk = false;
+         }
+      });
+      return c;
+   }
 
-	public boolean isValid() {
-		return selectionOk;
-	}
+   public boolean isValid() {
+      return selectionOk;
+   }
 
-	private void setUserName(String user) {
-		authenticationComposite.setUserName(user);
-	}
+   private void setUserName(String user) {
+      authenticationComposite.setUserName(user);
+   }
 
-	private void setPassword(String password) {
-		authenticationComposite.setPassword(password);
-	}
+   private void setPassword(String password) {
+      authenticationComposite.setPassword(password);
+   }
 
-	private void setDomain(String domain) {
-		authenticationComposite.setDomain(domain);
-	}
+   private void setDomain(String domain) {
+      authenticationComposite.setDomain(domain);
+   }
 
-	private void setStorageAllowed(boolean isStorageAllowed) {
-		authenticationComposite.setStorageAllowed(isStorageAllowed);
-	}
+   private void setStorageAllowed(boolean isStorageAllowed) {
+      authenticationComposite.setStorageAllowed(isStorageAllowed);
+   }
 
-	private void setGuestLogin(boolean isGuestLogin) {
-		authenticationComposite.setGuestLogin(isGuestLogin);
-	}
+   private void setGuestLogin(boolean isGuestLogin) {
+      authenticationComposite.setGuestLogin(isGuestLogin);
+   }
 
-	private void setProtocol(String protocol) {
-		authenticationComposite.setProtocol(protocol);
-	}
+   private void setProtocol(String protocol) {
+      authenticationComposite.setProtocol(protocol);
+   }
 
-	private String getUserName() {
-		return authenticationComposite.getUserName();
-	}
+   private String getUserName() {
+      return authenticationComposite.getUserName();
+   }
 
-	private String getDomain() {
-		return authenticationComposite.getDomain();
-	}
+   private String getDomain() {
+      return authenticationComposite.getDomain();
+   }
 
-	private String getProtocol() {
-		return authenticationComposite.getProtocol();
-	}
+   private String getProtocol() {
+      return authenticationComposite.getProtocol();
+   }
 
-	private boolean isStorageAllowed() {
-		return authenticationComposite.isStorageAllowed();
-	}
+   private boolean isStorageAllowed() {
+      return authenticationComposite.isStorageAllowed();
+   }
 
-	private boolean isGuestLogin() {
-		return authenticationComposite.isGuestLogin();
-	}
+   private boolean isGuestLogin() {
+      return authenticationComposite.isGuestLogin();
+   }
 
-	public static void openDialog() {
-		Displays.pendInDisplayThread(new Runnable() {
+   public static void openDialog() {
+      Displays.pendInDisplayThread(new Runnable() {
 
-			private String getErrorMessage(AuthenticationErrorCode status) {
-				String toReturn = "";
-				if (status == null) {
-					status = AuthenticationErrorCode.Unknown;
-				}
-				switch (status) {
-					case UserNotFound:
-						toReturn = "User Id not found.\n" + "Enter your user id.";
-						break;
-					case InvalidPassword:
-						toReturn =
-									"Invalid Password.\n" + "Make sure <CAPS LOCK> is not enabled.\n" + "Enter a valid password.";
-						break;
-					case NoResponse:
-						toReturn = "Please enter a valid user id and password.";
-						break;
-					default:
-						toReturn = "Unknown authentication error";
-						break;
-				}
-				return toReturn;
-			}
+         private String getErrorMessage(AuthenticationErrorCode status) {
+            String toReturn = "";
+            if (status == null) {
+               status = AuthenticationErrorCode.Unknown;
+            }
+            switch (status) {
+               case UserNotFound:
+                  toReturn = "User Id not found.\n" + "Enter your user id.";
+                  break;
+               case InvalidPassword:
+                  toReturn =
+                     "Invalid Password.\n" + "Make sure <CAPS LOCK> is not enabled.\n" + "Enter a valid password.";
+                  break;
+               case NoResponse:
+                  toReturn = "Please enter a valid user id and password.";
+                  break;
+               default:
+                  toReturn = "Unknown authentication error";
+                  break;
+            }
+            return toReturn;
+         }
 
-			public void run() {
-				String dialogTitle = "Authentication Failed";
-				String endMsg = "Shutting down the workbench.";
-				String user = "";
-				String domain = "";
-				String message = "";
-				String protocol = "";
-				boolean isStorageAllowed = false;
-				boolean isGuestLogin = false;
-				boolean shutdown = false;
-				Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+         @Override
+         public void run() {
+            String dialogTitle = "Authentication Failed";
+            String endMsg = "Shutting down the workbench.";
+            String user = "";
+            String domain = "";
+            String message = "";
+            String protocol = "";
+            boolean isStorageAllowed = false;
+            boolean isGuestLogin = false;
+            boolean shutdown = false;
+            Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
 
-				for (int numberOfTries = 0; numberOfTries < MAX_RETRIES; numberOfTries++) {
-					AuthenticationDialog dialog = new AuthenticationDialog(shell);
-					if (numberOfTries != 0) {
-						dialog.setUserName(user);
-						dialog.setPassword("");
-						dialog.setDomain(domain);
-						dialog.setProtocol(protocol);
-						dialog.setStorageAllowed(isStorageAllowed);
-						dialog.setGuestLogin(isGuestLogin);
-					}
-					int result = dialog.open();
+            for (int numberOfTries = 0; numberOfTries < MAX_RETRIES; numberOfTries++) {
+               AuthenticationDialog dialog = new AuthenticationDialog(shell);
+               if (numberOfTries != 0) {
+                  dialog.setUserName(user);
+                  dialog.setPassword("");
+                  dialog.setDomain(domain);
+                  dialog.setProtocol(protocol);
+                  dialog.setStorageAllowed(isStorageAllowed);
+                  dialog.setGuestLogin(isGuestLogin);
+               }
+               int result = dialog.open();
 
-					user = dialog.getUserName();
-					protocol = dialog.getProtocol();
-					domain = dialog.getDomain();
-					isStorageAllowed = dialog.isStorageAllowed();
-					isGuestLogin = dialog.isGuestLogin();
+               user = dialog.getUserName();
+               protocol = dialog.getProtocol();
+               domain = dialog.getDomain();
+               isStorageAllowed = dialog.isStorageAllowed();
+               isGuestLogin = dialog.isGuestLogin();
 
-					if (result == Window.CANCEL) {
-						// TODO This was added because ATS requires a user to be logged in
-						// Non-Authentication is not an option --
-						if (numberOfTries > MAX_RETRIES) {
-							message = "Maximum number of Retries reached.\n" + endMsg;
-							shutdown = true;
-						} else {
-							message =
-										"Please log in as Guest or with your credentials.\n" + "A Log-in account is required to continue.";
-						}
+               if (result == Window.CANCEL) {
+                  // TODO This was added because ATS requires a user to be logged in
+                  // Non-Authentication is not an option --
+                  if (numberOfTries > MAX_RETRIES) {
+                     message = "Maximum number of Retries reached.\n" + endMsg;
+                     shutdown = true;
+                  } else {
+                     message =
+                        "Please log in as Guest or with your credentials.\n" + "A Log-in account is required to continue.";
+                  }
 
-						MessageDialog.openError(shell, "Authentication Cancelled", message);
-					}
-					// else if (result != Window.OK ) {
-					// numberOfTries = MAX_RETRIES;
-					// }
-					else {
-						if (dialog.isValid()) {
-							if (ClientSessionManager.isSessionValid()) {
-								numberOfTries = MAX_RETRIES;
-								String userText;
-								try {
-									userText = UserManager.getUser().toString();
-								} catch (OseeCoreException ex) {
-									userText = ex.getLocalizedMessage();
-								}
-								MessageDialog.openInformation(shell, "Authenticated", "Logged in as: " + userText);
-							} else {
-								if (numberOfTries >= MAX_RETRIES - 1) {
-									message = "Maximum number of Retries reached.\n" + endMsg;
-									shutdown = true;
-								} else {
-									IHealthStatus status = OseeLog.getStatusByName(ClientSessionManager.getStatusId());
-									if (status != null && status.getException() != null) {
-										Throwable ex = status.getException();
-										if (ex instanceof OseeAuthenticationException) {
-											message = getErrorMessage(((OseeAuthenticationException) ex).getCode());
-										}
-										message = ex.getLocalizedMessage();
-									} else {
-										message = "Authentication error";
-									}
-								}
-								MessageDialog.openError(shell, dialogTitle, message);
-							}
-						}
-					}
-				}
+                  MessageDialog.openError(shell, "Authentication Cancelled", message);
+               }
+               // else if (result != Window.OK ) {
+               // numberOfTries = MAX_RETRIES;
+               // }
+               else {
+                  if (dialog.isValid()) {
+                     if (ClientSessionManager.isSessionValid()) {
+                        numberOfTries = MAX_RETRIES;
+                        String userText;
+                        try {
+                           userText = UserManager.getUser().toString();
+                        } catch (OseeCoreException ex) {
+                           userText = ex.getLocalizedMessage();
+                        }
+                        MessageDialog.openInformation(shell, "Authenticated", "Logged in as: " + userText);
+                     } else {
+                        if (numberOfTries >= MAX_RETRIES - 1) {
+                           message = "Maximum number of Retries reached.\n" + endMsg;
+                           shutdown = true;
+                        } else {
+                           IHealthStatus status = OseeLog.getStatusByName(ClientSessionManager.getStatusId());
+                           if (status != null && status.getException() != null) {
+                              Throwable ex = status.getException();
+                              if (ex instanceof OseeAuthenticationException) {
+                                 message = getErrorMessage(((OseeAuthenticationException) ex).getCode());
+                              }
+                              message = ex.getLocalizedMessage();
+                           } else {
+                              message = "Authentication error";
+                           }
+                        }
+                        MessageDialog.openError(shell, dialogTitle, message);
+                     }
+                  }
+               }
+            }
 
-				if (shutdown) {
-					PlatformUI.getWorkbench().close();
-				}
-			}
-		});
-	}
+            if (shutdown) {
+               PlatformUI.getWorkbench().close();
+            }
+         }
+      });
+   }
 }

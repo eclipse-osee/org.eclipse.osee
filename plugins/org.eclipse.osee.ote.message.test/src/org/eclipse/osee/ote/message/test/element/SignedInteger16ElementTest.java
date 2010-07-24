@@ -60,8 +60,9 @@ public class SignedInteger16ElementTest {
 
    private void check(SignedInteger16Element e, int expectedVals) {
       if (e.getValue() != expectedVals) {
-         Assert.failNotEquals(String.format("corruption detect on %s: msb=%d, lsb=%d", e.getName(), e.getMsb(),
-               e.getLsb()), expectedVals, e.getValue());
+         Assert.failNotEquals(
+            String.format("corruption detect on %s: msb=%d, lsb=%d", e.getName(), e.getMsb(), e.getLsb()),
+            expectedVals, e.getValue());
       }
    }
 }

@@ -27,8 +27,8 @@ public class MasterTestSuite_DemoDbInit {
    public void testDemoDbInit() throws Exception {
       OseeLog.log(DatabaseInitializationOperation.class, Level.INFO, "Begin database initialization...");
 
-      assertTrue("Demo Application Server must be running", ClientSessionManager.getAuthenticationProtocols().contains(
-            "demo"));
+      assertTrue("Demo Application Server must be running",
+         ClientSessionManager.getAuthenticationProtocols().contains("demo"));
       TestUtil.setIsInTest(true);
       try {
          SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();

@@ -15,8 +15,8 @@ package org.eclipse.osee.framework.lifecycle.test.mock;
  */
 public class AnotherMockHandler extends MockHandler {
 
-	@Override
-	public void doSomething() {
-		hasRan = true;
-	}
+   @Override
+   public void doSomething() {
+      hasRan = true;
+   }
 }

@@ -20,13 +20,14 @@ import org.eclipse.search.ui.text.Match;
  */
 public class AttributeMatch extends Match implements IAdaptable {
    private Region fOriginalLocation;
-   private AttributeLineElement fLineElement;
+   private final AttributeLineElement fLineElement;
 
    public AttributeMatch(Artifact element, int offset, int length, AttributeLineElement lineEntry) {
       super(element, offset, length);
       fLineElement = lineEntry;
    }
 
+   @Override
    public void setOffset(int offset) {
       if (fOriginalLocation == null) {
          fOriginalLocation = new Region(getOffset(), getLength());
@@ -34,6 +35,7 @@ public class AttributeMatch extends Match implements IAdaptable {
       super.setOffset(offset);
    }
 
+   @Override
    public void setLength(int length) {
       if (fOriginalLocation == null) {
          fOriginalLocation = new Region(getOffset(), getLength());

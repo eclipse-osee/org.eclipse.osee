@@ -26,6 +26,7 @@ import java.util.Collection;
 public class HashCollectionHeavy<K, V> extends HashCollectionPlus<K, V, Object> {
 
    private static IPlusProvider<Object> provider = new IPlusProvider<Object>() {
+      @Override
       public Object newObject() {
          return null;
       }

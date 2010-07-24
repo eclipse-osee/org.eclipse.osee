@@ -51,20 +51,24 @@ public class XCoverageMergeViewer extends XCoverageViewer implements IRefreshAct
       Composite mainComp = new Composite(parent, SWT.BORDER);
       mainComp.setLayoutData(new GridData(GridData.FILL_BOTH));
       mainComp.setLayout(ALayout.getZeroMarginLayout());
-      if (toolkit != null) toolkit.paintBordersFor(mainComp);
+      if (toolkit != null) {
+         toolkit.paintBordersFor(mainComp);
+      }
 
       createTaskActionBar(mainComp);
 
       xViewer =
-            new CoverageMergeXViewer(mergeManager, mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION,
-                  coverageMergeXViewerFactory, this);
+         new CoverageMergeXViewer(mergeManager, mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION,
+            coverageMergeXViewerFactory, this);
       mergeXViewer = (CoverageMergeXViewer) xViewer;
       xViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
       xViewer.setContentProvider(new CoverageContentProvider(mergeXViewer));
       xViewer.setLabelProvider(new CoverageMergeLabelProvider(mergeXViewer));
 
-      if (toolkit != null) toolkit.adapt(xViewer.getStatusLabel(), false, false);
+      if (toolkit != null) {
+         toolkit.adapt(xViewer.getStatusLabel(), false, false);
+      }
 
       // NOTE: Don't adapt the tree using xToolkit cause will loose xViewer's context menu
       updateExtraLabel();

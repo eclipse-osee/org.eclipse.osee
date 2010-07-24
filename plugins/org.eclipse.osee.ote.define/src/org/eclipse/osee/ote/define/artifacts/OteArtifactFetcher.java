@@ -66,7 +66,7 @@ public class OteArtifactFetcher<T extends Artifact> {
       checkForNull(attributeValue);
       checkForNull(branch);
       return (T) ArtifactQuery.getArtifactFromTypeAndAttribute(oteArtifactType.getName(), attributeTypeName,
-            attributeValue, branch);
+         attributeValue, branch);
    }
 
    /**
@@ -86,8 +86,8 @@ public class OteArtifactFetcher<T extends Artifact> {
             toReturn.add((T) artifact);
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(OteDefinePlugin.class, Level.WARNING, String.format("Search for all artifacts failed [%s, %s]",
-               oteArtifactType.getName(), branch.getName()), ex);
+         OseeLog.log(OteDefinePlugin.class, Level.WARNING,
+            String.format("Search for all artifacts failed [%s, %s]", oteArtifactType.getName(), branch.getName()), ex);
       }
       return toReturn;
    }

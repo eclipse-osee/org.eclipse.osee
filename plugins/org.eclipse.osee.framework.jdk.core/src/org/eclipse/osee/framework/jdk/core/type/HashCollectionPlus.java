@@ -49,8 +49,8 @@ public class HashCollectionPlus<K, V, O> {
 
    /**
     * @param isSynchronized - If true, the Map & Collection will both be synchronized using the
-    *           Collections.synchronizedMap & Collections.synchronizedCollection. otherwise, this class will not be
-    *           synchronzied and therefore not threadsafe.
+    * Collections.synchronizedMap & Collections.synchronizedCollection. otherwise, this class will not be synchronzied
+    * and therefore not threadsafe.
     * @param collectionType The type of collection to use to as the values within the HashMap.
     * @param initialCapacity
     * @param plusProvider
@@ -72,8 +72,8 @@ public class HashCollectionPlus<K, V, O> {
 
    /**
     * @param isSynchronized - If true, the Map & Collection will both be synchronized using the
-    *           Collections.synchronizedMap & Collections.synchronizedCollection. otherwise, this class will not be
-    *           synchronzied and therefore not threadsafe.
+    * Collections.synchronizedMap & Collections.synchronizedCollection. otherwise, this class will not be synchronzied
+    * and therefore not threadsafe.
     * @param collectionType - The type of collection to use to as the values within the HashMap.
     * @param initialCapacity
     * @param plusProvider
@@ -94,8 +94,8 @@ public class HashCollectionPlus<K, V, O> {
 
    /**
     * @param isSynchronized - If true, the Map & Collection will both be synchronized using the
-    *           Collections.synchronizedMap & Collections.synchronizedCollection. otherwise, this class will not be
-    *           synchronzied and therefore not threadsafe.
+    * Collections.synchronizedMap & Collections.synchronizedCollection. otherwise, this class will not be synchronzied
+    * and therefore not threadsafe.
     * @param collectionType - The type of collection to use to as the values within the HashMap.
     * @param plusProvider
     * @see HashMap#HashMap()

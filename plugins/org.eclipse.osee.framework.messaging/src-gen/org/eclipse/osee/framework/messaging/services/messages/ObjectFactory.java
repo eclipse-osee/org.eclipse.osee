@@ -5,7 +5,6 @@
 // Generated on: 2010.03.30 at 03:47:04 PM MST 
 //
 
-
 package org.eclipse.osee.framework.messaging.services.messages;
 
 import javax.xml.bind.JAXBElement;
@@ -13,82 +12,70 @@ import javax.xml.bind.annotation.XmlElementDecl;
 import javax.xml.bind.annotation.XmlRegistry;
 import javax.xml.namespace.QName;
 
-
 /**
- * This object contains factory methods for each 
- * Java content interface and Java element interface 
- * generated in the org.eclipse.osee.framework.messaging.services.messages package. 
- * <p>An ObjectFactory allows you to programatically 
- * construct new instances of the Java representation 
- * for XML content. The Java representation of XML 
- * content can consist of schema derived interfaces 
- * and classes representing the binding of schema 
- * type definitions, element declarations and model 
- * groups.  Factory methods for each of these are 
- * provided in this class.
- * 
+ * This object contains factory methods for each Java content interface and Java element interface generated in the
+ * org.eclipse.osee.framework.messaging.services.messages package.
+ * <p>
+ * An ObjectFactory allows you to programatically construct new instances of the Java representation for XML content.
+ * The Java representation of XML content can consist of schema derived interfaces and classes representing the binding
+ * of schema type definitions, element declarations and model groups. Factory methods for each of these are provided in
+ * this class.
  */
 @XmlRegistry
 public class ObjectFactory {
 
-    private final static QName _ServiceHealth_QNAME = new QName("", "ServiceHealth");
-    private final static QName _ServiceHealthRequest_QNAME = new QName("", "ServiceHealthRequest");
+   private final static QName _ServiceHealth_QNAME = new QName("", "ServiceHealth");
+   private final static QName _ServiceHealthRequest_QNAME = new QName("", "ServiceHealthRequest");
 
-    /**
-     * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: org.eclipse.osee.framework.messaging.services.messages
-     * 
-     */
-    public ObjectFactory() {
-    }
+   /**
+    * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package:
+    * org.eclipse.osee.framework.messaging.services.messages
+    */
+   public ObjectFactory() {
+   }
 
-    /**
-     * Create an instance of {@link ServiceHealthRequest }
-     * 
-     */
-    public ServiceHealthRequest createServiceHealthRequest() {
-        return new ServiceHealthRequest();
-    }
+   /**
+    * Create an instance of {@link ServiceHealthRequest }
+    */
+   public ServiceHealthRequest createServiceHealthRequest() {
+      return new ServiceHealthRequest();
+   }
 
-    /**
-     * Create an instance of {@link ServiceHealth }
-     * 
-     */
-    public ServiceHealth createServiceHealth() {
-        return new ServiceHealth();
-    }
+   /**
+    * Create an instance of {@link ServiceHealth }
+    */
+   public ServiceHealth createServiceHealth() {
+      return new ServiceHealth();
+   }
 
-    /**
-     * Create an instance of {@link ServiceDescriptionPair }
-     * 
-     */
-    public ServiceDescriptionPair createServiceDescriptionPair() {
-        return new ServiceDescriptionPair();
-    }
+   /**
+    * Create an instance of {@link ServiceDescriptionPair }
+    */
+   public ServiceDescriptionPair createServiceDescriptionPair() {
+      return new ServiceDescriptionPair();
+   }
 
-    /**
-     * Create an instance of {@link Synch }
-     * 
-     */
-    public Synch createSynch() {
-        return new Synch();
-    }
+   /**
+    * Create an instance of {@link Synch }
+    */
+   public Synch createSynch() {
+      return new Synch();
+   }
 
-    /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link ServiceHealth }{@code >}}
-     * 
-     */
-    @XmlElementDecl(namespace = "", name = "ServiceHealth")
-    public JAXBElement<ServiceHealth> createServiceHealth(ServiceHealth value) {
-        return new JAXBElement<ServiceHealth>(_ServiceHealth_QNAME, ServiceHealth.class, null, value);
-    }
+   /**
+    * Create an instance of {@link JAXBElement }{@code <}{@link ServiceHealth }{@code >}
+    */
+   @XmlElementDecl(namespace = "", name = "ServiceHealth")
+   public JAXBElement<ServiceHealth> createServiceHealth(ServiceHealth value) {
+      return new JAXBElement<ServiceHealth>(_ServiceHealth_QNAME, ServiceHealth.class, null, value);
+   }
 
-    /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link ServiceHealthRequest }{@code >}}
-     * 
-     */
-    @XmlElementDecl(namespace = "", name = "ServiceHealthRequest")
-    public JAXBElement<ServiceHealthRequest> createServiceHealthRequest(ServiceHealthRequest value) {
-        return new JAXBElement<ServiceHealthRequest>(_ServiceHealthRequest_QNAME, ServiceHealthRequest.class, null, value);
-    }
+   /**
+    * Create an instance of {@link JAXBElement }{@code <}{@link ServiceHealthRequest }{@code >}
+    */
+   @XmlElementDecl(namespace = "", name = "ServiceHealthRequest")
+   public JAXBElement<ServiceHealthRequest> createServiceHealthRequest(ServiceHealthRequest value) {
+      return new JAXBElement<ServiceHealthRequest>(_ServiceHealthRequest_QNAME, ServiceHealthRequest.class, null, value);
+   }
 
 }

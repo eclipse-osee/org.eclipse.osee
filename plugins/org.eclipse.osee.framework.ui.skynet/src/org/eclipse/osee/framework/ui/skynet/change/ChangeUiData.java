@@ -103,8 +103,8 @@ public class ChangeUiData {
    public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + ((compareType == null) ? 0 : compareType.hashCode());
-      result = prime * result + ((txDelta == null) ? 0 : txDelta.hashCode());
+      result = prime * result + (compareType == null ? 0 : compareType.hashCode());
+      result = prime * result + (txDelta == null ? 0 : txDelta.hashCode());
       return result;
    }
 

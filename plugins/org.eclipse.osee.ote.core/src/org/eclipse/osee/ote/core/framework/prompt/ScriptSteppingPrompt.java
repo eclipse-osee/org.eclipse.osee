@@ -33,11 +33,13 @@ public class ScriptSteppingPrompt extends AbstractInteractivePrompt<String> impl
       getScript().getUserSession().initiateResumePrompt(createRemoteReference(IResumeResponse.class));
    }
 
+   @Override
    public void step() throws RemoteException {
       // environment.singleStepEnv();
       endPrompt("RESUME", null);
    }
 
+   @Override
    public void resume() throws RemoteException {
 
       endPrompt("CONTINUE", null);

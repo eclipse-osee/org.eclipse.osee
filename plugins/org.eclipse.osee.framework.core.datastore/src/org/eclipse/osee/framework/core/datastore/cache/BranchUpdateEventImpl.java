@@ -55,6 +55,7 @@ public class BranchUpdateEventImpl implements IBranchUpdateEvent {
       this.manager = manager;
    }
 
+   @Override
    public void send(final Collection<Branch> branches) throws OseeCoreException {
       List<Branch> branchToUpdate = new ArrayList<Branch>();
       for (Branch branch : branches) {
@@ -115,15 +116,15 @@ public class BranchUpdateEventImpl implements IBranchUpdateEvent {
                try {
 
                   String urlString =
-                        HttpUrlBuilder.createURL(serverInfo.getServerAddress(), serverInfo.getPort(),
-                              OseeServerContext.CACHE_CONTEXT, parameters);
+                     HttpUrlBuilder.createURL(serverInfo.getServerAddress(), serverInfo.getPort(),
+                        OseeServerContext.CACHE_CONTEXT, parameters);
 
                   BranchCacheStoreRequest message =
-                        is_0_9_2_Compatible(serverInfo.getVersion()) ? request : request0_9_1;
+                     is_0_9_2_Compatible(serverInfo.getVersion()) ? request : request0_9_1;
 
                   AcquireResult updateResponse =
-                        HttpMessage.send(urlString, txProvider.getTranslationService(),
-                              CoreTranslatorId.BRANCH_CACHE_STORE_REQUEST, message, null);
+                     HttpMessage.send(urlString, txProvider.getTranslationService(),
+                        CoreTranslatorId.BRANCH_CACHE_STORE_REQUEST, message, null);
                   if (!updateResponse.wasSuccessful()) {
                      OseeLog.log(Activator.class, Level.SEVERE, "Error relaying branch updates to servers");
                   }

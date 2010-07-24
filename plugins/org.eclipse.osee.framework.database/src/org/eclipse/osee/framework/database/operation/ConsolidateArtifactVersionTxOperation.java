@@ -23,8 +23,8 @@ import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.JoinUtility;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.JoinUtility.ExportImportJoinQuery;
+import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.internal.Activator;
 
 /**
@@ -32,32 +32,32 @@ import org.eclipse.osee.framework.database.internal.Activator;
  */
 public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation {
    private static final String SELECT_ARTIFACT_VERSIONS =
-         "select * from osee_artifact_version order by art_id, gamma_id";
+      "select * from osee_artifact_version order by art_id, gamma_id";
 
    private static final String SELECT_ADDRESSING =
-         "select txs.*, idj.id1 as net_gamma_id from osee_join_export_import idj, osee_txs%s txs where idj.query_id = ? and idj.id2 = txs.gamma_id order by net_gamma_id, branch_id, transaction_id, gamma_id desc";
+      "select txs.*, idj.id1 as net_gamma_id from osee_join_export_import idj, osee_txs%s txs where idj.query_id = ? and idj.id2 = txs.gamma_id order by net_gamma_id, branch_id, transaction_id, gamma_id desc";
 
    private static final String UPDATE_CONFLICTS =
-         "update osee_conflict set %s = (select gamma_id from osee_artifact_version where conflict_id = art_id) where conflict_type = 3";
+      "update osee_conflict set %s = (select gamma_id from osee_artifact_version where conflict_id = art_id) where conflict_type = 3";
 
    private static final String UPDATE_TXS_GAMMAS =
-         "update osee_txs%s set gamma_id = ?, mod_type = ? where transaction_id = ? and gamma_id = ?";
+      "update osee_txs%s set gamma_id = ?, mod_type = ? where transaction_id = ? and gamma_id = ?";
 
    private static final String DELETE_TXS = "delete from osee_txs%s where transaction_id = ? and gamma_id = ?";
 
    private static final String DELETE_ARTIFACT_VERSIONS = "delete from osee_artifact_version where gamma_id = ?";
 
    private static final String SET_BASELINE_TRANSACTION =
-         "UPDATE osee_branch ob SET ob.baseline_transaction_id = (SELECT otd.transaction_id FROM osee_tx_details otd WHERE otd.branch_id = ob.branch_id AND otd.tx_type = 1)";
+      "UPDATE osee_branch ob SET ob.baseline_transaction_id = (SELECT otd.transaction_id FROM osee_tx_details otd WHERE otd.branch_id = ob.branch_id AND otd.tx_type = 1)";
 
    private static final String POPULATE_ARTS =
-         "insert into osee_artifact(gamma_id, art_id, art_type_id, guid, human_readable_id) select gamma_id, art.art_id, art_type_id, guid, human_readable_id from osee_artifact art, osee_artifact_version arv where art.art_id = arv.art_id and not exists (select 1 from osee_artifact arts where art.art_id = arts.art_id)";
+      "insert into osee_artifact(gamma_id, art_id, art_type_id, guid, human_readable_id) select gamma_id, art.art_id, art_type_id, guid, human_readable_id from osee_artifact art, osee_artifact_version arv where art.art_id = arv.art_id and not exists (select 1 from osee_artifact arts where art.art_id = arts.art_id)";
 
    private static final String FIND_ARTIFACT_MODS =
-         "select * from osee_artifact art, osee_txs txs where art.gamma_id = txs.gamma_id order by art_id, branch_id, transaction_id";
+      "select * from osee_artifact art, osee_txs txs where art.gamma_id = txs.gamma_id order by art_id, branch_id, transaction_id";
 
    private static final String UPDATE_TXS_MOD_CURRENT =
-         "update osee_txs%s set mod_type = ?, tx_current = ? where transaction_id = ? and gamma_id = ?";
+      "update osee_txs%s set mod_type = ?, tx_current = ? where transaction_id = ? and gamma_id = ?";
 
    private List<Long[]> deleteArtifactVersionData;
    private final List<Long> obsoleteGammas = new ArrayList<Long>();
@@ -113,8 +113,7 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
                previousBranchId = branchId;
             }
             mods.add(new Address(false, -1, -1, chStmt.getInt("transaction_id"), chStmt.getInt("gamma_id"),
-                  ModificationType.getMod(chStmt.getInt("mod_type")),
-                  TxChange.getChangeType(chStmt.getInt("tx_current"))));
+               ModificationType.getMod(chStmt.getInt("mod_type")), TxChange.getChangeType(chStmt.getInt("tx_current"))));
          }
       } finally {
          if (chStmt != null) {
@@ -130,7 +129,7 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
          if (mod0 == ModificationType.MODIFIED) {
             knownCase = true;
             updateTxsCurrentModData.add(new Object[] {ModificationType.NEW.getValue(),
-                  mods.get(0).getTxCurrent().getValue(), mods.get(0).getTransactionId(), mods.get(0).getGammaId()});
+               mods.get(0).getTxCurrent().getValue(), mods.get(0).getTransactionId(), mods.get(0).getGammaId()});
          } else {
             knownCase = true;
          }
@@ -145,7 +144,7 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
                   knownCase = true;
                   // must purge most recent delete and set previous one to current
                   updateTxsCurrentModData.add(new Object[] {mods.get(1).getModType().getValue(),
-                        TxChange.DELETED.getValue(), mods.get(1).getTransactionId(), mods.get(1).getGammaId()});
+                     TxChange.DELETED.getValue(), mods.get(1).getTransactionId(), mods.get(1).getGammaId()});
                   addressingToDelete.add(new Object[] {mods.get(2).getTransactionId(), mods.get(2).getGammaId()});
                } else if (mod1 == ModificationType.MERGED && mod2 == ModificationType.DELETED) {
                   knownCase = true;
@@ -155,7 +154,7 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
       }
       if (!knownCase) {
          reporter.report(String.format("unknown case: artifact id: %d branch_id: %d", previousArtifactId,
-               previousBranchId));
+            previousBranchId));
       }
    }
 
@@ -171,7 +170,7 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
          reporter.report("addressingToDelete size: " + addressingToDelete.size());
 
          getDatabaseService().runBatchUpdate(connection, prepareSql(UPDATE_TXS_MOD_CURRENT, false),
-               updateTxsCurrentModData);
+            updateTxsCurrentModData);
          getDatabaseService().runBatchUpdate(connection, prepareSql(DELETE_TXS, false), addressingToDelete);
 
          return;
@@ -181,7 +180,7 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
       reporter.report("gamma join size: " + gammaJoin.size());
 
       reporter.report("Number of artifact version rows deleted: " + getDatabaseService().runBatchUpdate(connection,
-            DELETE_ARTIFACT_VERSIONS, deleteArtifactVersionData));
+         DELETE_ARTIFACT_VERSIONS, deleteArtifactVersionData));
       deleteArtifactVersionData = null;
 
       gammaJoin.store(connection);
@@ -248,7 +247,7 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
       try {
          reporter.report("query id: " + gammaJoin.getQueryId());
          chStmt.runPreparedQuery(10000, String.format(SELECT_ADDRESSING, archived ? "_archived" : ""),
-               gammaJoin.getQueryId());
+            gammaJoin.getQueryId());
 
          while (chStmt.next()) {
             long obsoleteGammaId = chStmt.getLong("gamma_id");
@@ -263,7 +262,7 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
                if (modType == ModificationType.MODIFIED) {
                   addToUpdateAddresssing(ModificationType.NEW, netGammaId, modType, transactionId, obsoleteGammaId);
                } else if (modType.matches(ModificationType.NEW, ModificationType.INTRODUCED, ModificationType.DELETED,
-                     ModificationType.MERGED)) {
+                  ModificationType.MERGED)) {
                   addToUpdateAddresssing(modType, netGammaId, modType, transactionId, obsoleteGammaId);
                } else {
                   throw new OseeStateException("unexpected mod type: " + modType);
@@ -311,15 +310,15 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
       String archivedStr = archived ? "_archived" : "";
       if (addressingToDelete.size() > 99960 || force) {
          deleteTxsCounter +=
-               getDatabaseService().runBatchUpdate(connection, prepareSql(DELETE_TXS, archived), addressingToDelete);
+            getDatabaseService().runBatchUpdate(connection, prepareSql(DELETE_TXS, archived), addressingToDelete);
          reporter.report("Number of txs" + archivedStr + " rows deleted: " + deleteTxsCounter);
          addressingToDelete.clear();
       }
 
       if (updateAddressingData.size() > 99960 || force) {
          updateTxsCounter +=
-               getDatabaseService().runBatchUpdate(connection, prepareSql(UPDATE_TXS_GAMMAS, archived),
-                     updateAddressingData);
+            getDatabaseService().runBatchUpdate(connection, prepareSql(UPDATE_TXS_GAMMAS, archived),
+               updateAddressingData);
          reporter.report("Number of txs" + archivedStr + " rows updated: " + updateTxsCounter);
 
          updateAddressingData.clear();

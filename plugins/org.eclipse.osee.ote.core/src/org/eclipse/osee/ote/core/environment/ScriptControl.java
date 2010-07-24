@@ -11,59 +11,70 @@
 package org.eclipse.osee.ote.core.environment;
 
 import org.eclipse.osee.ote.core.environment.interfaces.IScriptControl;
- 
+
 public class ScriptControl implements IScriptControl {
 
    protected boolean isOfpPaused = false;
    protected boolean isScriptPaused = false;
    protected boolean isScriptReady = false;
-   
-   public ScriptControl(){
+
+   public ScriptControl() {
    }
-   
-   public boolean isLocked(){
+
+   @Override
+   public boolean isLocked() {
       return false;
    }
-   
+
+   @Override
    public boolean isExecutionUnitPaused() {
       return isOfpPaused;
    }
-   
+
+   @Override
    public boolean isScriptPaused() {
       return isScriptPaused;
    }
 
+   @Override
    public boolean isScriptReady() {
       return isScriptReady;
    }
-   
-   
-   public void lock(){
+
+   @Override
+   public void lock() {
    }
 
+   @Override
    public void setExecutionUnitPause(boolean pause) {
       isOfpPaused = pause;
    }
 
+   @Override
    public void setScriptPause(boolean pause) {
       isScriptPaused = pause;
    }
 
-   public void setScriptReady(boolean ready){
+   @Override
+   public void setScriptReady(boolean ready) {
       isScriptReady = ready;
    }
 
-   public boolean shouldStep(){
-      return (isScriptPaused() && !isExecutionUnitPaused());   
+   @Override
+   public boolean shouldStep() {
+      return isScriptPaused() && !isExecutionUnitPaused();
    }
 
-   public void unlock(){
+   @Override
+   public void unlock() {
    }
-   
-   public boolean hasLock(){
+
+   @Override
+   public boolean hasLock() {
       return false;
    }
-   
+
+   @Override
    public boolean isHeldByCurrentThread() {
       return false;
    }

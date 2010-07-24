@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.internal.accessors;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.enums.CacheOperation;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
@@ -28,7 +29,6 @@ import org.eclipse.osee.framework.core.model.cache.IOseeCache;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.HttpClientMessage;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
@@ -80,8 +80,8 @@ public class ClientBranchAccessor extends AbstractClientDataAccessor<Branch> {
 
       BranchCacheStoreRequest request = BranchCacheStoreRequest.fromCache(types);
       AcquireResult updateResponse =
-            HttpClientMessage.send(OseeServerContext.CACHE_CONTEXT, parameters,
-                  CoreTranslatorId.BRANCH_CACHE_STORE_REQUEST, request, null);
+         HttpClientMessage.send(OseeServerContext.CACHE_CONTEXT, parameters,
+            CoreTranslatorId.BRANCH_CACHE_STORE_REQUEST, request, null);
 
       if (updateResponse.wasSuccessful()) {
          sendChangeEvents(types);
@@ -96,19 +96,19 @@ public class ClientBranchAccessor extends AbstractClientDataAccessor<Branch> {
          if (branch.getBranchState().isDeleted()) {
             try {
                OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.Deleted, branch.getGuid()),
-                     branch.getId());
+                  branch.getId());
             } catch (Exception ex) {
-               OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
 
          try {
             if (branch.isFieldDirty(AbstractOseeType.NAME_FIELD_KEY)) {
                OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.Renamed, branch.getGuid()),
-                     branch.getId());
+                  branch.getId());
             }
          } catch (Exception ex) {
-            OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
    }

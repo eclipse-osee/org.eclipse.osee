@@ -16,6 +16,7 @@ public class SqlResolver implements Resolver {
       super();
    }
 
+   @Override
    public boolean resolve(Exception ex, StateValue value) {
       if (ex.getMessage().contains("connection")) {
          value.andSaveValid(false);

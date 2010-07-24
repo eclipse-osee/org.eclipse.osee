@@ -15,11 +15,13 @@ import org.eclipse.equinox.app.IApplicationContext;
 
 public class ConfigDatabase implements IApplication {
 
+   @Override
    public Object start(IApplicationContext context) throws Exception {
       DatabaseInitializationOperation.executeConfigureFromJvmProperties();
       return EXIT_OK;
    }
 
+   @Override
    public void stop() {
    }
 

@@ -16,7 +16,7 @@ import org.eclipse.jface.dialogs.IInputValidator;
  * @author Ryan D. Brooks
  */
 public class NonBlankValidator implements IInputValidator {
-   private String blankErrorMessage;
+   private final String blankErrorMessage;
 
    /**
     * @param blankErrorMessage
@@ -25,6 +25,7 @@ public class NonBlankValidator implements IInputValidator {
       this.blankErrorMessage = blankErrorMessage;
    }
 
+   @Override
    public String isValid(String newText) {
       if (newText == null || newText.length() == 0) {
          return blankErrorMessage;

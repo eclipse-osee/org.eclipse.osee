@@ -57,7 +57,7 @@ public class XScriptTable extends XViewer {
       }
       return super.handleLeftClick(treeColumn, treeItem);
    }
-   
+
    @Override
    public boolean handleLeftClickInIconArea(TreeColumn treeColumn, TreeItem treeItem) {
       XViewerColumn aCol = (XViewerColumn) treeColumn.getData();

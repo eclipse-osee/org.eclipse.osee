@@ -59,7 +59,7 @@ public class UpdateBranchHandler extends CommandHandler {
          return null;
       }
       IStructuredSelection selection =
-            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+         (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
 
       List<Branch> branches = Handlers.getBranchesFromStructuredSelection(selection);
       if (branches.size() == 1) {
@@ -83,9 +83,8 @@ public class UpdateBranchHandler extends CommandHandler {
       Branch branchToUpdate = getSelectedBranch();
       if (branchToUpdate != null) {
          boolean isUpdateAllowed =
-               MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                     "Update Branch", String.format("Are you sure you want to update [%s] branch",
-                           branchToUpdate.getName()));
+            MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+               "Update Branch", String.format("Are you sure you want to update [%s] branch", branchToUpdate.getName()));
          if (isUpdateAllowed) {
             BranchManager.updateBranch(branchToUpdate, new UserConflictResolver());
          }
@@ -114,9 +113,9 @@ public class UpdateBranchHandler extends CommandHandler {
                try {
                   IWorkbenchPage page = AWorkbench.getActivePage();
                   IViewPart viewPart =
-                        page.showView(MergeView.VIEW_ID,
-                              String.valueOf(sourceBranch.getId() * 100000 + destinationBranch.getId()),
-                              IWorkbenchPage.VIEW_ACTIVATE);
+                     page.showView(MergeView.VIEW_ID,
+                        String.valueOf(sourceBranch.getId() * 100000 + destinationBranch.getId()),
+                        IWorkbenchPage.VIEW_ACTIVATE);
                   if (viewPart instanceof MergeView) {
                      MergeView mergeView = (MergeView) viewPart;
                      mergeView.explore(sourceBranch, destinationBranch, null, null, true);

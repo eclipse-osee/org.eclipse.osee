@@ -59,10 +59,10 @@ import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulatio
  */
 public class ResourceManipulation extends AbstractBlam {
    private static final boolean DEBUG =
-         Boolean.parseBoolean(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Blam"));
+      Boolean.parseBoolean(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Blam"));
 
    private static final String GET_ATTRS =
-         "SELECT DISTINCT(art.human_readable_id), attr.gamma_id, attr.uri FROM osee_attribute attr, osee_artifact art WHERE attr.attr_type_id = ? AND attr.art_id = art.art_id AND attr.uri is not null AND attr.uri != ''";
+      "SELECT DISTINCT(art.human_readable_id), attr.gamma_id, attr.uri FROM osee_attribute attr, osee_artifact art WHERE attr.attr_type_id = ? AND attr.art_id = art.art_id AND attr.uri is not null AND attr.uri != ''";
    private static final String GET_ATTRS_TEST = GET_ATTRS + " AND t1.gamma_id = 4259157";
 
    private final Collection<String> badData = new LinkedList<String>();
@@ -82,8 +82,8 @@ public class ResourceManipulation extends AbstractBlam {
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       File backupFolder = createTempFolder();
-      OseeLog.log(SkynetGuiPlugin.class, Level.INFO, String.format("Backup Folder location: [%s]",
-            backupFolder.getAbsolutePath()));
+      OseeLog.log(SkynetGuiPlugin.class, Level.INFO,
+         String.format("Backup Folder location: [%s]", backupFolder.getAbsolutePath()));
 
       if (true) {
          System.out.println("An admin must enable this operation");
@@ -166,12 +166,11 @@ public class ResourceManipulation extends AbstractBlam {
                if (countlast + 1 != count) {
                   System.out.println("");
                }
-               System.out.println(count + "   " + byt + " " + new String(
-                     new byte[] {originalData[count - 8], originalData[count - 7], originalData[count - 6],
-                           originalData[count - 5], originalData[count - 4], originalData[count - 3],
-                           originalData[count - 2], originalData[count - 1], originalData[count],
-                           originalData[count + 1], originalData[count + 2], originalData[count + 3],
-                           originalData[count + 4], originalData[count + 5], originalData[count + 6]}, "UTF-8"));
+               System.out.println(count + "   " + byt + " " + new String(new byte[] {originalData[count - 8],
+                  originalData[count - 7], originalData[count - 6], originalData[count - 5], originalData[count - 4],
+                  originalData[count - 3], originalData[count - 2], originalData[count - 1], originalData[count],
+                  originalData[count + 1], originalData[count + 2], originalData[count + 3], originalData[count + 4],
+                  originalData[count + 5], originalData[count + 6]}, "UTF-8"));
                countlast = count;
             }
          }
@@ -186,11 +185,10 @@ public class ResourceManipulation extends AbstractBlam {
                   System.out.println("");
                }
                System.out.println(count + "   " + byt + " " + new String(new byte[] {finalVersion[count - 9],
-                     finalVersion[count - 8], finalVersion[count - 7], finalVersion[count - 6],
-                     finalVersion[count - 5], finalVersion[count - 4], finalVersion[count - 3],
-                     finalVersion[count - 2], finalVersion[count - 1], finalVersion[count], finalVersion[count + 1],
-                     finalVersion[count + 2], finalVersion[count + 3], finalVersion[count + 4],
-                     finalVersion[count + 5], finalVersion[count + 6]}, "UTF-8"));
+                  finalVersion[count - 8], finalVersion[count - 7], finalVersion[count - 6], finalVersion[count - 5],
+                  finalVersion[count - 4], finalVersion[count - 3], finalVersion[count - 2], finalVersion[count - 1],
+                  finalVersion[count], finalVersion[count + 1], finalVersion[count + 2], finalVersion[count + 3],
+                  finalVersion[count + 4], finalVersion[count + 5], finalVersion[count + 6]}, "UTF-8"));
                countlast = count;
             }
          }
@@ -213,8 +211,8 @@ public class ResourceManipulation extends AbstractBlam {
                OseeLog.log(SkynetGuiPlugin.class, Level.INFO, String.format(" After Fix : %s", resource.data));
             }
          } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, String.format("Skiping File %s because of exception %s",
-                  attrData.getHrid(), ex));
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE,
+               String.format("Skiping File %s because of exception %s", attrData.getHrid(), ex));
          }
          monitor.worked(1);
       }
@@ -283,10 +281,10 @@ public class ResourceManipulation extends AbstractBlam {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(GET_ATTRS_TEST,
-               AttributeTypeManager.getType(CoreAttributeTypes.WORD_TEMPLATE_CONTENT).getId());
+            AttributeTypeManager.getType(CoreAttributeTypes.WORD_TEMPLATE_CONTENT).getId());
          while (chStmt.next()) {
             attrData.add(new AttrData(chStmt.getString("gamma_Id"), chStmt.getString("human_readable_id"),
-                  chStmt.getString("uri")));
+               chStmt.getString("uri")));
          }
       } finally {
          chStmt.close();
@@ -316,10 +314,9 @@ public class ResourceManipulation extends AbstractBlam {
       }
 
       String urlString =
-            HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.RESOURCE_CONTEXT,
-                  parameterMap);
+         HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.RESOURCE_CONTEXT, parameterMap);
       HttpProcessor.put(new URL(urlString), new ByteArrayInputStream(toUpload), resource.result.getContentType(),
-            resource.result.getEncoding());
+         resource.result.getEncoding());
    }
 
    private Resource getResource(String resourcePath) throws OseeCoreException {
@@ -330,8 +327,8 @@ public class ResourceManipulation extends AbstractBlam {
          parameterMap.put("sessionId", ClientSessionManager.getSessionId());
          parameterMap.put("uri", resourcePath);
          String urlString =
-               HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.RESOURCE_CONTEXT,
-                     parameterMap);
+            HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.RESOURCE_CONTEXT,
+               parameterMap);
 
          AcquireResult result = HttpProcessor.acquire(new URL(urlString), sourceOutputStream);
          if (result.getCode() == HttpURLConnection.HTTP_OK) {

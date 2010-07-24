@@ -24,8 +24,8 @@ public class VueDiagram {
    private final ArrayList<VueLink> links = new ArrayList<VueLink>();
    private final ArrayList<VueNode> vuePages = new ArrayList<VueNode>();
    private final Diagram workflow;
-   private static Pattern childPattern =
-         Pattern.compile("<child(.*?)>(.*?)</child>", Pattern.DOTALL | Pattern.MULTILINE);
+   private static Pattern childPattern = Pattern.compile("<child(.*?)>(.*?)</child>",
+      Pattern.DOTALL | Pattern.MULTILINE);
 
    public VueDiagram(String workflowId, String vueXml) throws OseeCoreException {
       workflow = new Diagram(workflowId);
@@ -59,7 +59,7 @@ public class VueDiagram {
          VueNode toVuePage = getPageFromVueId(link.getToVueId());
          if (toVuePage == null) {
             throw new OseeArgumentException(
-                  "Can't retrieve toVuePage " + link.getToVueId() + " fromVuePage " + link.getFromVueId() + " named \"" + fromVuePage.getWorkPage().getName() + "\"");
+               "Can't retrieve toVuePage " + link.getToVueId() + " fromVuePage " + link.getFromVueId() + " named \"" + fromVuePage.getWorkPage().getName() + "\"");
          }
          fromVuePage.getWorkPage().addToPage(toVuePage.getWorkPage(), link.getName().equals("return"));
          toVuePage.getWorkPage().addFromPage(fromVuePage.getWorkPage());
@@ -68,18 +68,22 @@ public class VueDiagram {
             fromVuePage.getWorkPage().addFromPage(toVuePage.getWorkPage());
          }
          if (link.getName().equals("default")) {
-            if (fromVuePage.getWorkPage().getDefaultToPage() == null)
+            if (fromVuePage.getWorkPage().getDefaultToPage() == null) {
                fromVuePage.getWorkPage().setDefaultToPage(toVuePage.getWorkPage());
-            else
+            } else {
                throw new OseeArgumentException(
-                     "Can't have 2 default transitions. Page " + fromVuePage.getWorkPage().getName());
+                  "Can't have 2 default transitions. Page " + fromVuePage.getWorkPage().getName());
+            }
          }
       }
    }
 
    public VueNode getPageFromVueId(String vueId) {
-      for (VueNode page : vuePages)
-         if (page.getVueId().equals(vueId)) return page;
+      for (VueNode page : vuePages) {
+         if (page.getVueId().equals(vueId)) {
+            return page;
+         }
+      }
       return null;
    }
 

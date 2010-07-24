@@ -20,39 +20,39 @@ import java.util.Map;
  */
 public class UnicodeConverter {
 
-   private static final byte[] tickyQuoteBack =
-         new byte[] {(byte) -61, (byte) -94, (byte) -30, (byte) -126, (byte) -84, (byte) -59, (byte) -109};
-   private static final String tickyQuoteBackString = "“";
+   private static final byte[] tickyQuoteBack = new byte[] {(byte) -61, (byte) -94, (byte) -30, (byte) -126,
+      (byte) -84, (byte) -59, (byte) -109};
+   private static final String tickyQuoteBackString = "ï¿½";
    private static final byte[] tickyQuoteBackGood = new byte[] {(byte) -30, (byte) -128, (byte) -100};
 
    //   private static final byte[] degree =
    //         new byte[] {(byte) -61, (byte) -94, (byte) -30, (byte) -126, (byte) -84, (byte) -59, (byte) -109};
-   private static final String degreeString = "°";
+   private static final String degreeString = "ï¿½";
    private static final byte[] degreeGood = new byte[] {(byte) -62, (byte) -80};
 
-   private static final byte[] tickyQuoteForward =
-         new byte[] {(byte) -61, (byte) -94, (byte) -30, (byte) -126, (byte) -84, (byte) -17, (byte) -65, (byte) -67};
-   private static final String tickyQuoteForwardString = "”";
+   private static final byte[] tickyQuoteForward = new byte[] {(byte) -61, (byte) -94, (byte) -30, (byte) -126,
+      (byte) -84, (byte) -17, (byte) -65, (byte) -67};
+   private static final String tickyQuoteForwardString = "ï¿½";
    private static final byte[] tickyQuoteForwardGood = new byte[] {(byte) -30, (byte) -128, (byte) -99};
 
-   private static final byte[] notEquals =
-         new byte[] {(byte) -61, (byte) -81, (byte) -30, (byte) -128, (byte) -102, (byte) -62, (byte) -71};
+   private static final byte[] notEquals = new byte[] {(byte) -61, (byte) -81, (byte) -30, (byte) -128, (byte) -102,
+      (byte) -62, (byte) -71};
    private static final byte[] notEqualsGood = new byte[] {(byte) -17, (byte) -126, (byte) -71};
    private static final String notEqualsString = " ";
 
    //Renders as a ? in Java however appears as  equal slash in Word
-   private static final byte[] notEqualsForward =
-         new byte[] {(byte) -61, (byte) -94, (byte) -30, (byte) -128, (byte) -80, (byte) -62, (byte) -96};
+   private static final byte[] notEqualsForward = new byte[] {(byte) -61, (byte) -94, (byte) -30, (byte) -128,
+      (byte) -80, (byte) -62, (byte) -96};
    private static final String notEqualsForwardString = "Not Equals Forward";
    private static final byte[] notEqualsForwardGood = new byte[] {(byte) -30, (byte) -119, (byte) -96};
 
-   private static final byte[] greaterThanEquals =
-         new byte[] {(byte) -61, (byte) -81, (byte) -30, (byte) -128, (byte) -102, (byte) -62, (byte) -77};
+   private static final byte[] greaterThanEquals = new byte[] {(byte) -61, (byte) -81, (byte) -30, (byte) -128,
+      (byte) -102, (byte) -62, (byte) -77};
    private static final String greaterThanEqualsString = " ";
    private static final byte[] greaterThanEqualsGood = new byte[] {(byte) -17, (byte) -126, (byte) -77};
 
-   private static final byte[] lessThanEquals =
-         new byte[] {(byte) -61, (byte) -81, (byte) -30, (byte) -128, (byte) -102, (byte) -62, (byte) -93};
+   private static final byte[] lessThanEquals = new byte[] {(byte) -61, (byte) -81, (byte) -30, (byte) -128,
+      (byte) -102, (byte) -62, (byte) -93};
    private static final String lessThanEqualsString = " Less Than Equals";
    private static final byte[] lessThanEqualsGood = new byte[] {(byte) -17, (byte) -126, (byte) -93};
 
@@ -67,21 +67,21 @@ public class UnicodeConverter {
    //      new byte[] {(byte) -61, (byte) -81, (byte) -30, (byte) -128, (byte) -102, (byte) -62, (byte) -93};
    private static final byte[] microCharacterGood = new byte[] {(byte) -62, (byte) -75};
 
-   private static final byte[] forwardTick =
-         new byte[] {(byte) -61, (byte) -94, (byte) -30, (byte) -126, (byte) -84, (byte) -30, (byte) -124, (byte) -94};
-   private static final String forwardTickString = "’";
+   private static final byte[] forwardTick = new byte[] {(byte) -61, (byte) -94, (byte) -30, (byte) -126, (byte) -84,
+      (byte) -30, (byte) -124, (byte) -94};
+   private static final String forwardTickString = "ï¿½";
    private static final byte[] forwardTickGood = new byte[] {(byte) -30, (byte) -128, (byte) -103};
 
-   private static final byte[] dash =
-         new byte[] {(byte) -61, (byte) -94, (byte) -30, (byte) -126, (byte) -84, (byte) -30, (byte) -128, (byte) -100};
+   private static final byte[] dash = new byte[] {(byte) -61, (byte) -94, (byte) -30, (byte) -126, (byte) -84,
+      (byte) -30, (byte) -128, (byte) -100};
    private static final byte[] dashGood = new byte[] {(byte) -30, (byte) -128, (byte) -109};
 
    private static final byte[] dotGood = new byte[] {(byte) -62, (byte) -73};
    private static final byte[] plusMinusGood = new byte[] {(byte) -62, (byte) -79};
    private static final byte[] miniOneGood = new byte[] {(byte) -62, (byte) -71};
 
-   private static final byte[] whatisit =
-         new byte[] {(byte) -61, (byte) -81, (byte) -30, (byte) -126, (byte) -84, (byte) -62, (byte) -67};
+   private static final byte[] whatisit = new byte[] {(byte) -61, (byte) -81, (byte) -30, (byte) -126, (byte) -84,
+      (byte) -62, (byte) -67};
    private static final byte[] whatisitGood = new byte[] {(byte) -17, (byte) -128, (byte) -67};
 
    private static final byte[] WHATISIT2 = new byte[] {(byte) -17, (byte) -126, (byte) -80};
@@ -89,12 +89,12 @@ public class UnicodeConverter {
    private static final byte[] WHATISIT4 = new byte[] {(byte) -49, (byte) -128};
    private static final byte[] WHATISIT5 = new byte[] {(byte) -30, (byte) -119, (byte) -92};
 
-   private static final byte[] upsideDownTick =
-         new byte[] {(byte) -61, (byte) -94, (byte) -30, (byte) -126, (byte) -84, (byte) -53, (byte) -100};
+   private static final byte[] upsideDownTick = new byte[] {(byte) -61, (byte) -94, (byte) -30, (byte) -126,
+      (byte) -84, (byte) -53, (byte) -100};
    private static final byte[] upsideDownTickGood = new byte[] {(byte) -30, (byte) -128, (byte) -104};
 
-   private static final byte[] dotdotdot =
-         new byte[] {(byte) -61, (byte) -94, (byte) -30, (byte) -126, (byte) -84, (byte) -62, (byte) -90};
+   private static final byte[] dotdotdot = new byte[] {(byte) -61, (byte) -94, (byte) -30, (byte) -126, (byte) -84,
+      (byte) -62, (byte) -90};
    private static final byte[] dotdotdotGood = new byte[] {(byte) -30, (byte) -128, (byte) -90};
 
    private static final byte[] lambdaGood = new byte[] {(byte) -62, (byte) -93};

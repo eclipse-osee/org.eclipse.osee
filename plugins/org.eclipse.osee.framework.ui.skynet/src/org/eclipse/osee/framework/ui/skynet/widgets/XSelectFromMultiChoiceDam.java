@@ -32,81 +32,80 @@ import org.eclipse.osee.framework.ui.skynet.util.filteredTree.SimpleCheckFiltere
  */
 public class XSelectFromMultiChoiceDam extends XSelectFromDialog<String> implements IAttributeWidget {
 
-	private Artifact artifact;
-	private String attributeTypeName;
+   private Artifact artifact;
+   private String attributeTypeName;
 
-	public XSelectFromMultiChoiceDam(String displayLabel) {
-		super(displayLabel);
-		this.artifact = null;
-	}
+   public XSelectFromMultiChoiceDam(String displayLabel) {
+      super(displayLabel);
+      this.artifact = null;
+   }
 
-	@Override
-	public String getAttributeType() {
-		return attributeTypeName;
-	}
+   @Override
+   public String getAttributeType() {
+      return attributeTypeName;
+   }
 
-	@Override
-	public void setAttributeType(Artifact artifact, String attributeTypeName) throws OseeCoreException {
-		this.artifact = artifact;
-		this.attributeTypeName = attributeTypeName;
-		AttributeType attributeType = AttributeTypeManager.getType(attributeTypeName);
-		int minOccurrence = attributeType.getMinOccurrences();
-		int maxOccurrence = attributeType.getMaxOccurrences();
+   @Override
+   public void setAttributeType(Artifact artifact, String attributeTypeName) throws OseeCoreException {
+      this.artifact = artifact;
+      this.attributeTypeName = attributeTypeName;
+      AttributeType attributeType = AttributeTypeManager.getType(attributeTypeName);
+      int minOccurrence = attributeType.getMinOccurrences();
+      int maxOccurrence = attributeType.getMaxOccurrences();
 
-		setRequiredSelection(minOccurrence, maxOccurrence);
-		setSelected(getStored());
-		setRequiredEntry(true);
-	}
+      setRequiredSelection(minOccurrence, maxOccurrence);
+      setSelected(getStored());
+      setRequiredEntry(true);
+   }
 
-	@Override
-	public MinMaxOSEECheckedFilteredTreeDialog createDialog() {
-		SimpleCheckFilteredTreeDialog dialog =
-					new SimpleCheckFilteredTreeDialog(getLabel(), "Select from the items below",
-								new ArrayTreeContentProvider(), new LabelProvider(), new ArtifactNameSorter(),
-								getMinSelectionRequired(), getMaxSelectionRequired());
-		return dialog;
-	}
+   @Override
+   public MinMaxOSEECheckedFilteredTreeDialog createDialog() {
+      SimpleCheckFilteredTreeDialog dialog =
+         new SimpleCheckFilteredTreeDialog(getLabel(), "Select from the items below", new ArrayTreeContentProvider(),
+            new LabelProvider(), new ArtifactNameSorter(), getMinSelectionRequired(), getMaxSelectionRequired());
+      return dialog;
+   }
 
-	public Collection<String> getStored() throws OseeCoreException {
-		return artifact.getAttributesToStringList(attributeTypeName);
-	}
+   public Collection<String> getStored() throws OseeCoreException {
+      return artifact.getAttributesToStringList(attributeTypeName);
+   }
 
-	@Override
-	public Result isDirty() throws OseeCoreException {
-		try {
-			Collection<String> enteredValues = getSelected();
-			Collection<String> storedValues = getStored();
-			if (!Collections.isEqual(enteredValues, storedValues)) {
-				return new Result(true, attributeTypeName + " is dirty");
-			}
-		} catch (NumberFormatException ex) {
-			// do nothing
-		}
-		return Result.FalseResult;
-	}
+   @Override
+   public Result isDirty() throws OseeCoreException {
+      try {
+         Collection<String> enteredValues = getSelected();
+         Collection<String> storedValues = getStored();
+         if (!Collections.isEqual(enteredValues, storedValues)) {
+            return new Result(true, attributeTypeName + " is dirty");
+         }
+      } catch (NumberFormatException ex) {
+         // do nothing
+      }
+      return Result.FalseResult;
+   }
 
-	@Override
-	public void revert() throws OseeCoreException {
-		setAttributeType(artifact, attributeTypeName);
-	}
+   @Override
+   public void revert() throws OseeCoreException {
+      setAttributeType(artifact, attributeTypeName);
+   }
 
-	@Override
-	public void saveToArtifact() throws OseeCoreException {
-		artifact.setAttributeValues(attributeTypeName, getSelected());
-	}
+   @Override
+   public void saveToArtifact() throws OseeCoreException {
+      artifact.setAttributeValues(attributeTypeName, getSelected());
+   }
 
-	@Override
-	public IStatus isValid() {
-		IStatus status = super.isValid();
-		if (status.isOK()) {
-			List<String> items = getSelected();
-			for (String item : items) {
-				status = OseeValidator.getInstance().validate(IOseeValidator.SHORT, artifact, attributeTypeName, item);
-				if (!status.isOK()) {
-					break;
-				}
-			}
-		}
-		return status;
-	}
+   @Override
+   public IStatus isValid() {
+      IStatus status = super.isValid();
+      if (status.isOK()) {
+         List<String> items = getSelected();
+         for (String item : items) {
+            status = OseeValidator.getInstance().validate(IOseeValidator.SHORT, artifact, attributeTypeName, item);
+            if (!status.isOK()) {
+               break;
+            }
+         }
+      }
+      return status;
+   }
 }

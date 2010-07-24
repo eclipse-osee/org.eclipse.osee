@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.service.control.data;
 
-import org.eclipse.osee.framework.jini.service.core.SimpleFormattedEntry;
-import org.eclipse.osee.framework.jini.utility.StartJini;
 import net.jini.core.entry.Entry;
 import net.jini.core.lookup.ServiceID;
 import net.jini.core.lookup.ServiceItem;
+import org.eclipse.osee.framework.jini.service.core.SimpleFormattedEntry;
+import org.eclipse.osee.framework.jini.utility.StartJini;
 
 /**
  * @author Roberto E. Escobar

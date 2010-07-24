@@ -41,18 +41,22 @@ public class ResultsEditorInput implements IEditorInput {
       return false;
    }
 
+   @Override
    public boolean exists() {
       return false;
    }
 
+   @Override
    public ImageDescriptor getImageDescriptor() {
       return null;
    }
 
+   @Override
    public IPersistableElement getPersistable() {
       return null;
    }
 
+   @Override
    public String getToolTipText() {
       return "";
    }

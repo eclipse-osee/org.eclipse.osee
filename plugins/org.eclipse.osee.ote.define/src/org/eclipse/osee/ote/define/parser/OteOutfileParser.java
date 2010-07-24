@@ -32,7 +32,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * @author Roberto E. Escobar
  */
 public class OteOutfileParser extends BaseOutfileParser {
-   private ArrayList<SaxChunkCollector> collectors;
+   private final ArrayList<SaxChunkCollector> collectors;
 
    public OteOutfileParser() {
       super();
@@ -48,6 +48,7 @@ public class OteOutfileParser extends BaseOutfileParser {
       collectors.add(new SaxChunkCollector(new DemoInfoHandler(), "Qualification"));
    }
 
+   @Override
    public void registerListener(IDataListener listener) {
       super.registerListener(listener);
       for (SaxChunkCollector collector : collectors) {
@@ -55,6 +56,7 @@ public class OteOutfileParser extends BaseOutfileParser {
       }
    }
 
+   @Override
    public void deregisterListener(IDataListener listener) {
       super.deregisterListener(listener);
       for (SaxChunkCollector collector : collectors) {

@@ -11,7 +11,6 @@
 package org.eclipse.osee.ote.message;
 
 import java.util.Set;
-
 import org.eclipse.osee.ote.core.TestCase;
 import org.eclipse.osee.ote.core.TestScript;
 import org.eclipse.osee.ote.message.enums.DataType;
@@ -23,13 +22,14 @@ import org.eclipse.osee.ote.message.interfaces.ITestEnvironmentMessageSystemAcce
  * @author Andy Jury
  */
 public abstract class MessageSystemTestCase extends TestCase implements ITestAccessor {
-   
+
    private final ITestEnvironmentMessageSystemAccessor msgSysTestEnvironment;
-   
+
    protected MessageSystemTestCase(TestScript testScript, boolean standAlone, boolean addToRunList) {
       super(testScript, standAlone, addToRunList);
-      msgSysTestEnvironment = (MessageSystemTestScript)testScript;
+      msgSysTestEnvironment = (MessageSystemTestScript) testScript;
    }
+
    /**
     * TestCase Constructor.
     * 
@@ -48,20 +48,25 @@ public abstract class MessageSystemTestCase extends TestCase implements ITestAcc
    public MessageSystemTestCase(TestScript testScript) {
       this(testScript, false);
    }
-   
-   public IMessageManager<?,?> getMsgManager() {
+
+   @Override
+   public IMessageManager<?, ?> getMsgManager() {
       return msgSysTestEnvironment.getMsgManager();
    }
+
+   @Override
    public boolean isPhysicalTypeAvailable(DataType mux) {
       return msgSysTestEnvironment.isPhysicalTypeAvailable(mux);
    }
+
+   @Override
    public void associateObject(Class<?> c, Object obj) {
       msgSysTestEnvironment.associateObject(c, obj);
    }
 
-	@Override
-	public Set<? extends DataType> getDataTypes() {
-		return msgSysTestEnvironment.getDataTypes();
-	}
+   @Override
+   public Set<? extends DataType> getDataTypes() {
+      return msgSysTestEnvironment.getDataTypes();
+   }
 
 }

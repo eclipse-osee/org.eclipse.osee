@@ -27,7 +27,13 @@ public class DbSetupData implements Serializable {
    }
 
    public enum ServerInfoFields {
-      id, dbInfo, hostAddress, port, connectsWith, serverConfig, isProduction;
+      id,
+      dbInfo,
+      hostAddress,
+      port,
+      connectsWith,
+      serverConfig,
+      isProduction;
    }
 
    Map<ServerInfoFields, String> serverFieldMap;

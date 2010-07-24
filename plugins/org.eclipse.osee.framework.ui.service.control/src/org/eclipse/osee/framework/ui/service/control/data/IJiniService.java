@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.service.control.data;
 
-import org.eclipse.osee.framework.ui.service.control.renderer.IRenderer;
 import net.jini.core.lookup.ServiceID;
+import org.eclipse.osee.framework.ui.service.control.renderer.IRenderer;
 
 /**
  * @author Roberto E. Escobar

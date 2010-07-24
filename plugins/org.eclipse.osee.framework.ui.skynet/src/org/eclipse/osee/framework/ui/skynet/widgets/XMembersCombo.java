@@ -78,10 +78,11 @@ public class XMembersCombo extends XWidget {
 
    @Override
    public boolean equals(Object obj) {
-      if (obj instanceof XMembersCombo)
+      if (obj instanceof XMembersCombo) {
          return ((XMembersCombo) obj).selectedUser.equals(selectedUser);
-      else
+      } else {
          return super.equals(obj);
+      }
    }
 
    public void set(User user) {
@@ -102,7 +103,9 @@ public class XMembersCombo extends XWidget {
    protected void createControls(Composite parent, int horizontalSpan) {
       composite = parent;
 
-      if (horizontalSpan < 2) horizontalSpan = 2;
+      if (horizontalSpan < 2) {
+         horizontalSpan = 2;
+      }
 
       // Create Data Widgets
       if (!getLabel().equals("")) {
@@ -127,15 +130,22 @@ public class XMembersCombo extends XWidget {
       searchControl = new Search(dataCombo.getItems());
 
       GridData gridData = new GridData();
-      if (fillHorizontally) gridData.grabExcessHorizontalSpace = true;
-      if (fillVertically) gridData.grabExcessVerticalSpace = true;
+      if (fillHorizontally) {
+         gridData.grabExcessHorizontalSpace = true;
+      }
+      if (fillVertically) {
+         gridData.grabExcessVerticalSpace = true;
+      }
       gridData.horizontalSpan = horizontalSpan - 1;
       dataCombo.setLayoutData(gridData);
 
-      if (dataCombo.getItemCount() > 20) dataCombo.setVisibleItemCount(20);
+      if (dataCombo.getItemCount() > 20) {
+         dataCombo.setVisibleItemCount(20);
+      }
 
       dataCombo.addModifyListener(new ModifyListener() {
 
+         @Override
          public void modifyText(ModifyEvent e) {
             String selectedUserName = dataCombo.getText();
             selectedUser = (User) dataCombo.getData(selectedUserName);
@@ -179,7 +189,9 @@ public class XMembersCombo extends XWidget {
 
    @Override
    public void dispose() {
-      if (composite != null && !composite.isDisposed()) composite.dispose();
+      if (composite != null && !composite.isDisposed()) {
+         composite.dispose();
+      }
    }
 
    public User getUser() {
@@ -197,12 +209,16 @@ public class XMembersCombo extends XWidget {
    @Override
    public void setEditable(boolean editable) {
       super.setEditable(editable);
-      if (dataCombo != null && !dataCombo.isDisposed()) dataCombo.setEnabled(editable);
+      if (dataCombo != null && !dataCombo.isDisposed()) {
+         dataCombo.setEnabled(editable);
+      }
    }
 
    @Override
    public void setFocus() {
-      if (dataCombo != null) dataCombo.setFocus();
+      if (dataCombo != null) {
+         dataCombo.setFocus();
+      }
    }
 
    @Override
@@ -210,13 +226,13 @@ public class XMembersCombo extends XWidget {
       Matcher matcher;
       if (getXmlSubRoot().equals("")) {
          matcher =
-               Pattern.compile("<" + getXmlRoot() + ">(.*?)</" + getXmlRoot() + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(
-                     xml);
+            Pattern.compile("<" + getXmlRoot() + ">(.*?)</" + getXmlRoot() + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(
+               xml);
       } else {
          matcher =
-               Pattern.compile(
-                     "<" + getXmlRoot() + "><" + getXmlSubRoot() + ">(.*?)</" + getXmlSubRoot() + "></" + getXmlRoot() + ">",
-                     Pattern.MULTILINE | Pattern.DOTALL).matcher(xml);
+            Pattern.compile(
+               "<" + getXmlRoot() + "><" + getXmlSubRoot() + ">(.*?)</" + getXmlSubRoot() + "></" + getXmlRoot() + ">",
+               Pattern.MULTILINE | Pattern.DOTALL).matcher(xml);
       }
       while (matcher.find()) {
          String userId = matcher.group(1);
@@ -287,8 +303,9 @@ public class XMembersCombo extends XWidget {
 
    @Override
    public IStatus isValid() {
-      if (isRequiredEntry() && !isAssigned()) return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID,
-            "Must select " + getLabel());
+      if (isRequiredEntry() && !isAssigned()) {
+         return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "Must select " + getLabel());
+      }
       return Status.OK_STATUS;
    }
 

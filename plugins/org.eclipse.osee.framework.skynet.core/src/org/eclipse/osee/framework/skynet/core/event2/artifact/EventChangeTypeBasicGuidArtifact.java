@@ -29,14 +29,15 @@ public class EventChangeTypeBasicGuidArtifact extends EventBasicGuidArtifact {
       return fromArtTypeGuid;
    }
 
+   @Override
    public String toString() {
       try {
          return String.format("[%s - %s from type [%s][%s] to [%s][%s]]", EventModType.ChangeType.name(), getGuid(),
-               fromArtTypeGuid, ArtifactTypeManager.getTypeByGuid(fromArtTypeGuid), getArtTypeGuid(),
-               ArtifactTypeManager.getTypeByGuid(getArtTypeGuid()));
+            fromArtTypeGuid, ArtifactTypeManager.getTypeByGuid(fromArtTypeGuid), getArtTypeGuid(),
+            ArtifactTypeManager.getTypeByGuid(getArtTypeGuid()));
       } catch (OseeCoreException ex) {
          return String.format("[%s - %s from type [%s] to [%s]]", EventModType.ChangeType.name(), getGuid(),
-               fromArtTypeGuid, getArtTypeGuid());
+            fromArtTypeGuid, getArtTypeGuid());
       }
    }
 
@@ -44,19 +45,29 @@ public class EventChangeTypeBasicGuidArtifact extends EventBasicGuidArtifact {
    public int hashCode() {
       final int prime = 31;
       int result = super.hashCode();
-      result = prime * result + ((fromArtTypeGuid == null) ? 0 : fromArtTypeGuid.hashCode());
+      result = prime * result + (fromArtTypeGuid == null ? 0 : fromArtTypeGuid.hashCode());
       return result;
    }
 
    @Override
    public boolean equals(Object obj) {
-      if (this == obj) return true;
-      if (!super.equals(obj)) return false;
-      if (getClass() != obj.getClass()) return false;
+      if (this == obj) {
+         return true;
+      }
+      if (!super.equals(obj)) {
+         return false;
+      }
+      if (getClass() != obj.getClass()) {
+         return false;
+      }
       EventChangeTypeBasicGuidArtifact other = (EventChangeTypeBasicGuidArtifact) obj;
       if (fromArtTypeGuid == null) {
-         if (other.fromArtTypeGuid != null) return false;
-      } else if (!fromArtTypeGuid.equals(other.fromArtTypeGuid)) return false;
+         if (other.fromArtTypeGuid != null) {
+            return false;
+         }
+      } else if (!fromArtTypeGuid.equals(other.fromArtTypeGuid)) {
+         return false;
+      }
       return true;
    }
 

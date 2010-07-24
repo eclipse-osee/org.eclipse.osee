@@ -74,6 +74,7 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
       return new UserSearchWorkflowSearchItem(this);
    }
 
+   @Override
    public UserSearchWorkflowSearchItem copyProvider() throws OseeArgumentException {
       return new UserSearchWorkflowSearchItem(this);
    }
@@ -112,19 +113,19 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
    @Override
    public Collection<? extends Artifact> performSearchGetResults(SearchType searchType) throws OseeCoreException {
       return new UserWorldSearchItem(
-            getSelectedUser(),
-            getSelectedTeamDefinitions(),
-            (getSelectedVersionArtifact() != null ? Collections.singleton(getSelectedVersionArtifact()) : null),
-            //
-            (isAssigneeCheckbox() ? UserSearchOption.Assignee : UserSearchOption.None),
-            (isFavoritesCheckbox() ? UserSearchOption.Favorites : UserSearchOption.None),
-            (isOriginatedCheckbox() ? UserSearchOption.Originator : UserSearchOption.None),
-            (isSubscribedCheckbox() ? UserSearchOption.Subscribed : UserSearchOption.None),
-            (isReviewsCheckbox() ? UserSearchOption.IncludeReviews : UserSearchOption.None),
-            (isTeamWorkflowsCheckbox() ? UserSearchOption.IncludeTeamWorkflows : UserSearchOption.None),
-            (isTasksCheckbox() ? UserSearchOption.IncludeTasks : UserSearchOption.None),
-            (isIncludeCancelledCheckbox() ? UserSearchOption.IncludeCancelled : UserSearchOption.None),
-            (isIncludeCompletedCheckbox() ? UserSearchOption.IncludeCompleted : UserSearchOption.None)
+         getSelectedUser(),
+         getSelectedTeamDefinitions(),
+         (getSelectedVersionArtifact() != null ? Collections.singleton(getSelectedVersionArtifact()) : null),
+         //
+         (isAssigneeCheckbox() ? UserSearchOption.Assignee : UserSearchOption.None),
+         (isFavoritesCheckbox() ? UserSearchOption.Favorites : UserSearchOption.None),
+         (isOriginatedCheckbox() ? UserSearchOption.Originator : UserSearchOption.None),
+         (isSubscribedCheckbox() ? UserSearchOption.Subscribed : UserSearchOption.None),
+         (isReviewsCheckbox() ? UserSearchOption.IncludeReviews : UserSearchOption.None),
+         (isTeamWorkflowsCheckbox() ? UserSearchOption.IncludeTeamWorkflows : UserSearchOption.None),
+         (isTasksCheckbox() ? UserSearchOption.IncludeTasks : UserSearchOption.None),
+         (isIncludeCancelledCheckbox() ? UserSearchOption.IncludeCancelled : UserSearchOption.None),
+         (isIncludeCompletedCheckbox() ? UserSearchOption.IncludeCompleted : UserSearchOption.None)
 
       //
       ).performSearch();
@@ -223,13 +224,13 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
                         return;
                      }
                      TeamDefinitionArtifact teamDefHoldingVersions =
-                           teamDefArts.iterator().next().getTeamDefinitionHoldingVersions();
+                        teamDefArts.iterator().next().getTeamDefinitionHoldingVersions();
                      if (teamDefHoldingVersions == null) {
                         versionCombo.setDataStrings(new String[] {});
                         return;
                      }
                      Collection<String> names =
-                           Artifacts.artNames(teamDefHoldingVersions.getVersionsArtifacts(VersionReleaseType.Both));
+                        Artifacts.artNames(teamDefHoldingVersions.getVersionsArtifacts(VersionReleaseType.Both));
                      if (names.isEmpty()) {
                         versionCombo.setDataStrings(new String[] {});
                         return;
@@ -245,12 +246,16 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
    }
 
    private User getSelectedUser() {
-      if (userCombo == null) return null;
+      if (userCombo == null) {
+         return null;
+      }
       return userCombo.getUser();
    }
 
    public void setSelectedUser(User user) {
-      if (userCombo != null) userCombo.set(user);
+      if (userCombo != null) {
+         userCombo.set(user);
+      }
    }
 
    public void setSelected(UserSearchOption userSearchOption, boolean set) {
@@ -278,66 +283,94 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
    }
 
    private boolean isIncludeCompletedCheckbox() {
-      if (includeCompletedCheckbox == null) return false;
+      if (includeCompletedCheckbox == null) {
+         return false;
+      }
       return includeCompletedCheckbox.isSelected();
    }
 
    private boolean isIncludeCancelledCheckbox() {
-      if (includeCancelledCheckbox == null) return false;
+      if (includeCancelledCheckbox == null) {
+         return false;
+      }
       return includeCancelledCheckbox.isSelected();
    }
 
    private boolean isAssigneeCheckbox() {
-      if (assigneeCheckbox == null) return false;
+      if (assigneeCheckbox == null) {
+         return false;
+      }
       return assigneeCheckbox.isSelected();
    }
 
    private boolean isFavoritesCheckbox() {
-      if (favoriteCheckbox == null) return false;
+      if (favoriteCheckbox == null) {
+         return false;
+      }
       return favoriteCheckbox.isSelected();
    }
 
    private boolean isOriginatedCheckbox() {
-      if (originatorCheckbox == null) return false;
+      if (originatorCheckbox == null) {
+         return false;
+      }
       return originatorCheckbox.isSelected();
    }
 
    private boolean isSubscribedCheckbox() {
-      if (subscribedCheckbox == null) return false;
+      if (subscribedCheckbox == null) {
+         return false;
+      }
       return subscribedCheckbox.isSelected();
    }
 
    private boolean isTeamWorkflowsCheckbox() {
-      if (teamWorkflowsCheckbox == null) return false;
+      if (teamWorkflowsCheckbox == null) {
+         return false;
+      }
       return teamWorkflowsCheckbox.isSelected();
    }
 
    private boolean isReviewsCheckbox() {
-      if (reviewsCheckbox == null) return false;
+      if (reviewsCheckbox == null) {
+         return false;
+      }
       return reviewsCheckbox.isSelected();
    }
 
    private boolean isTasksCheckbox() {
-      if (tasksCheckbox == null) return false;
+      if (tasksCheckbox == null) {
+         return false;
+      }
       return tasksCheckbox.isSelected();
    }
 
    public void includeCompletedCheckbox(boolean selected) {
-      if (includeCompletedCheckbox != null) includeCompletedCheckbox.set(selected);
+      if (includeCompletedCheckbox != null) {
+         includeCompletedCheckbox.set(selected);
+      }
    }
 
    public void includeCancelledCheckbox(boolean selected) {
-      if (includeCancelledCheckbox != null) includeCancelledCheckbox.set(selected);
+      if (includeCancelledCheckbox != null) {
+         includeCancelledCheckbox.set(selected);
+      }
    }
 
    private VersionArtifact getSelectedVersionArtifact() throws OseeCoreException {
-      if (versionCombo == null) return null;
+      if (versionCombo == null) {
+         return null;
+      }
       String versionStr = versionCombo.get();
-      if (versionStr == null || versionStr.equals("")) return null;
+      if (versionStr == null || versionStr.equals("")) {
+         return null;
+      }
       Collection<TeamDefinitionArtifact> teamDefs = getSelectedTeamDefinitions();
       if (teamDefs.size() > 0) {
          TeamDefinitionArtifact teamDefHoldingVersions = teamDefs.iterator().next().getTeamDefinitionHoldingVersions();
-         if (teamDefHoldingVersions == null) return null;
+         if (teamDefHoldingVersions == null) {
+            return null;
+         }
          for (VersionArtifact versionArtifact : teamDefHoldingVersions.getVersionsArtifacts(VersionReleaseType.Both)) {
             if (versionArtifact.getName().equals(versionStr)) {
                return versionArtifact;
@@ -357,7 +390,9 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
    }
 
    public Collection<TeamDefinitionArtifact> getSelectedTeamDefinitions() throws OseeCoreException {
-      if (teamCombo == null) return java.util.Collections.emptyList();
+      if (teamCombo == null) {
+         return java.util.Collections.emptyList();
+      }
       return teamCombo.getSelectedTeamDefintions();
    }
 
@@ -403,7 +438,9 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
 
    @Override
    public VersionArtifact getTargetedVersionArtifact() throws OseeCoreException {
-      if (versionCombo == null) return null;
+      if (versionCombo == null) {
+         return null;
+      }
       return getSelectedVersionArtifact();
    }
 

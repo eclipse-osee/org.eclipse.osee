@@ -26,9 +26,9 @@ import org.eclipse.osee.framework.messaging.id.ProtocolId;
  */
 public class MessagingGatewayImpl implements MessagingGateway, ApplicationDistributer {
 
-   private MessageListenerCollection messageListeners;
-   private EndpointReceiveCollection endpointReceivers;
-   private EndpointSendCollection endpointSenders;
+   private final MessageListenerCollection messageListeners;
+   private final EndpointReceiveCollection endpointReceivers;
+   private final EndpointSendCollection endpointSenders;
 
    public MessagingGatewayImpl() {
       messageListeners = new MessageListenerCollection();

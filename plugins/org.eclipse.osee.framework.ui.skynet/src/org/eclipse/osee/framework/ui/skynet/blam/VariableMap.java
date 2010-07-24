@@ -39,7 +39,7 @@ public class VariableMap {
             throw new OseeArgumentException(String.format("The %dth option must not be null", i));
          } else {
             throw new OseeArgumentException(String.format("The %dth option must be of type string but is of type %s",
-                  i, optionArgs[i].getClass().getName()));
+               i, optionArgs[i].getClass().getName()));
          }
       }
    }
@@ -103,7 +103,7 @@ public class VariableMap {
 
       if (value != null && !clazz.isInstance(value)) {
          throw new OseeArgumentException(
-               "Expecting object of type " + clazz.getName() + " not " + value.getClass().getName());
+            "Expecting object of type " + clazz.getName() + " not " + value.getClass().getName());
       }
       return clazz.cast(value);
    }

@@ -16,7 +16,7 @@ package org.eclipse.osee.ote.service;
 public interface MessageSink {
 
    /**
-    * called once for each message in the message list 
+    * called once for each message in the message list
     */
    public void absorbMessage(String messageName);
 

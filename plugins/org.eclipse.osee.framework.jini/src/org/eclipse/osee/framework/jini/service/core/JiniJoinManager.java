@@ -48,14 +48,14 @@ public class JiniJoinManager implements IRegistrarListener {
    private static final long RENEWAL_TIME = 2 * 60 * 1000; // 2 minutes
 
    //  private HashMap<ServiceID, ServiceRegistrar> idToReggie;
-   private HashMap<ServiceID, ServiceRegistrar> idToReggie;
+   private final HashMap<ServiceID, ServiceRegistrar> idToReggie;
    //  private ArrayList<ServiceRegistration> registrations;
-   private ArrayList<ServiceRegistration> registrations;
-   private Timer renewTimer;
+   private final ArrayList<ServiceRegistration> registrations;
+   private final Timer renewTimer;
    private final Remote proxy;
-   private Entry[] entry;
-   private ServiceID serviceID;
-   private ServiceDataStore serviceDataStore;
+   private final Entry[] entry;
+   private final ServiceID serviceID;
+   private final ServiceDataStore serviceDataStore;
 
    public JiniJoinManager(ServiceID serviceID, JiniService js, Entry[] entry) throws IOException {
       proxy = OseeJini.getRemoteReference(js);
@@ -115,12 +115,13 @@ public class JiniJoinManager implements IRegistrarListener {
          this.registration = registration;
       }
 
+      @Override
       public void run() {
          try {
             // Renew for the maximum amount of time allowed
             registration.getLease().renew(Lease.FOREVER);
             renewTimer.schedule(new RenewLease(registration),
-                  registration.getLease().getExpiration() - System.currentTimeMillis() - RENEWAL_TIME);
+               registration.getLease().getExpiration() - System.currentTimeMillis() - RENEWAL_TIME);
          } catch (LeaseDeniedException ex) {
             //		ex.printStackTrace();
          } catch (UnknownLeaseException ex) {
@@ -143,9 +144,9 @@ public class JiniJoinManager implements IRegistrarListener {
       return serviceDataStore.getGroups();
    }
 
+   @Override
    public void reggieAdded(List<ServiceRegistrar> serviceRegistrars) {
-      ServiceRegistrar[] reggies =
-            (ServiceRegistrar[]) serviceRegistrars.toArray(new ServiceRegistrar[serviceRegistrars.size()]);
+      ServiceRegistrar[] reggies = serviceRegistrars.toArray(new ServiceRegistrar[serviceRegistrars.size()]);
       try {
          for (int i = 0; i < reggies.length; i++) {
             ServiceRegistration registration;
@@ -153,7 +154,7 @@ public class JiniJoinManager implements IRegistrarListener {
             idToReggie.put(reggies[i].getServiceID(), reggies[i]);
             registrations.add(registration);
             renewTimer.schedule(new RenewLease(registration),
-                  registration.getLease().getExpiration() - System.currentTimeMillis() - RENEWAL_TIME);
+               registration.getLease().getExpiration() - System.currentTimeMillis() - RENEWAL_TIME);
          }
       } catch (ExportException ex) {
          ex.printStackTrace();
@@ -164,14 +165,15 @@ public class JiniJoinManager implements IRegistrarListener {
       }
    }
 
+   @Override
    public void reggieRemoved(List<ServiceRegistrar> serviceRegistrars) {
-      ServiceRegistrar[] reggies =
-            (ServiceRegistrar[]) serviceRegistrars.toArray(new ServiceRegistrar[serviceRegistrars.size()]);
+      ServiceRegistrar[] reggies = serviceRegistrars.toArray(new ServiceRegistrar[serviceRegistrars.size()]);
       for (int i = 0; i < reggies.length; i++) {
          idToReggie.remove(reggies[i].getServiceID());
       }
    }
 
+   @Override
    public void reggieChanged(List<ServiceRegistrar> serviceRegistrars) {
    }
 

@@ -74,7 +74,7 @@ public class CoverageEditorCoverageTab extends FormPage implements ISaveable {
 
       scrolledForm = managedForm.getForm();
       scrolledForm.setText(coveragePackageBase.getName() + " - " + XDate.getDateStr(coveragePackageBase.getDate(),
-            XDate.MMDDYYHHMM) + " - " + coveragePackageBase.getCoverageItems().size() + " Coverage Items");
+         XDate.MMDDYYHHMM) + " - " + coveragePackageBase.getCoverageItems().size() + " Coverage Items");
       scrolledForm.setImage(ImageManager.getImage(CoverageUtil.getCoveragePackageBaseImage(coveragePackageBase)));
       scrolledForm.getBody().setLayout(new GridLayout(2, false));
       Composite mainComp = scrolledForm.getBody();
@@ -83,12 +83,12 @@ public class CoverageEditorCoverageTab extends FormPage implements ISaveable {
 
       coverageParameters = new CoverageParameters(coveragePackageBase);
       new CoverageParametersComposite(mainComp, managedForm, coverageEditor, coverageParameters,
-            new SelectionAdapter() {
-               @Override
-               public void widgetSelected(SelectionEvent e) {
-                  handleSearchButtonPressed();
-               }
-            });
+         new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+               handleSearchButtonPressed();
+            }
+         });
 
       Composite tableComp = new Composite(mainComp, SWT.NONE);
       tableComp.setLayout(ALayout.getZeroMarginLayout(1, false));
@@ -99,8 +99,8 @@ public class CoverageEditorCoverageTab extends FormPage implements ISaveable {
       coverageEditor.getToolkit().adapt(tableComp);
 
       xCoverageViewer =
-            new XCoverageViewer(this, coveragePackageBase.getCoverageOptionManager(),
-                  coveragePackageBase instanceof CoverageImport ? TableType.Import : TableType.Package);
+         new XCoverageViewer(this, coveragePackageBase.getCoverageOptionManager(),
+            coveragePackageBase instanceof CoverageImport ? TableType.Import : TableType.Package);
       xCoverageViewer.setDisplayLabel(false);
       xCoverageViewer.createWidgets(managedForm, tableComp, 1);
       xCoverageViewer.getXViewer().getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -172,7 +172,8 @@ public class CoverageEditorCoverageTab extends FormPage implements ISaveable {
 
    @Override
    public Result save(Collection<ICoverage> coverages) throws OseeCoreException {
-      return (OseeCoveragePackageStore.get((CoveragePackage) coveragePackageBase, coverageEditor.getBranch())).save(coverages);
+      return OseeCoveragePackageStore.get((CoveragePackage) coveragePackageBase, coverageEditor.getBranch()).save(
+         coverages);
    }
 
    @Override

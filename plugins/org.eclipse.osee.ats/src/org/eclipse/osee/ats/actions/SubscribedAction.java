@@ -43,7 +43,7 @@ public class SubscribedAction extends Action {
       try {
          if (getSelectedSubscribableArts().size() == 1) {
             title =
-                  getSelectedSubscribableArts().iterator().next().amISubscribed() ? "Remove Subscribed" : "Add as Subscribed";
+               getSelectedSubscribableArts().iterator().next().amISubscribed() ? "Remove Subscribed" : "Add as Subscribed";
          } else {
             title = "Toggle Subscribed";
          }

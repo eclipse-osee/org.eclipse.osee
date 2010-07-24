@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.plugin.core.internal.PluginCoreActivator;
 import org.osgi.framework.Bundle;
 
 public class BundleResourceFinder extends ResourceFinder {
-   private ArrayList<Bundle> bundles;
+   private final ArrayList<Bundle> bundles;
 
    public BundleResourceFinder(String[] bundlenames) {
       bundles = new ArrayList<Bundle>();
@@ -30,12 +30,13 @@ public class BundleResourceFinder extends ResourceFinder {
             bundles.add(Platform.getBundle(bundlenames[i]));
          } else {
             OseeLog.log(PluginCoreActivator.class, Level.SEVERE, String.format(
-                  "Unable to load bundle [ %s ].  This bundle was not added to the list in BundleResourceFinder.",
-                  bundlenames[i]));
+               "Unable to load bundle [ %s ].  This bundle was not added to the list in BundleResourceFinder.",
+               bundlenames[i]));
          }
       }
    }
 
+   @Override
    public byte[] find(String path) throws IOException {
       for (int i = 0; i < bundles.size(); i++) {
          URL url = bundles.get(i).getResource(path);
@@ -46,6 +47,7 @@ public class BundleResourceFinder extends ResourceFinder {
       return null;
    }
 
+   @Override
    public void dispose() {
       bundles.clear();
    }

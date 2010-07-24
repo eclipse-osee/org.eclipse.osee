@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.jdk.core.test.type;
 
-import java.util.Properties;
 import java.util.Map.Entry;
+import java.util.Properties;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.junit.Assert;
 

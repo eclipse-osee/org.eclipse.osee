@@ -22,53 +22,53 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
  */
 public class XCheckBoxDam extends XCheckBox implements IAttributeWidget {
 
-	private Artifact artifact;
-	private String attributeTypeName;
+   private Artifact artifact;
+   private String attributeTypeName;
 
-	public XCheckBoxDam(String displayLabel) {
-		super(displayLabel);
-	}
+   public XCheckBoxDam(String displayLabel) {
+      super(displayLabel);
+   }
 
-	@Override
-	public String getAttributeType() {
-		return attributeTypeName;
-	}
+   @Override
+   public String getAttributeType() {
+      return attributeTypeName;
+   }
 
-	@Override
-	public void setAttributeType(Artifact artifact, String attrName) throws OseeCoreException {
-		this.artifact = artifact;
-		this.attributeTypeName = attrName;
-		super.set(artifact.getSoleAttributeValue(attributeTypeName, Boolean.FALSE));
-	}
+   @Override
+   public void setAttributeType(Artifact artifact, String attrName) throws OseeCoreException {
+      this.artifact = artifact;
+      this.attributeTypeName = attrName;
+      super.set(artifact.getSoleAttributeValue(attributeTypeName, Boolean.FALSE));
+   }
 
-	@Override
-	public void saveToArtifact() throws OseeCoreException {
-		artifact.setSoleAttributeValue(attributeTypeName, checkButton.getSelection());
-	}
+   @Override
+   public void saveToArtifact() throws OseeCoreException {
+      artifact.setSoleAttributeValue(attributeTypeName, checkButton.getSelection());
+   }
 
-	@Override
-	public Result isDirty() throws OseeCoreException {
-		if (checkButton != null && !checkButton.isDisposed()) {
-			Boolean enteredValue = checkButton.getSelection();
-			Boolean storedValue = artifact.getSoleAttributeValue(attributeTypeName, false);
-			if (enteredValue.booleanValue() != storedValue.booleanValue()) {
-				return new Result(true, attributeTypeName + " is dirty");
-			}
-		}
-		return Result.FalseResult;
-	}
+   @Override
+   public Result isDirty() throws OseeCoreException {
+      if (checkButton != null && !checkButton.isDisposed()) {
+         Boolean enteredValue = checkButton.getSelection();
+         Boolean storedValue = artifact.getSoleAttributeValue(attributeTypeName, false);
+         if (enteredValue.booleanValue() != storedValue.booleanValue()) {
+            return new Result(true, attributeTypeName + " is dirty");
+         }
+      }
+      return Result.FalseResult;
+   }
 
-	@Override
-	public void revert() throws OseeCoreException {
-		setAttributeType(artifact, attributeTypeName);
-	}
+   @Override
+   public void revert() throws OseeCoreException {
+      setAttributeType(artifact, attributeTypeName);
+   }
 
-	@Override
-	public IStatus isValid() {
-		IStatus status = super.isValid();
-		if (status.isOK()) {
-			status = OseeValidator.getInstance().validate(IOseeValidator.SHORT, artifact, attributeTypeName, get());
-		}
-		return status;
-	}
+   @Override
+   public IStatus isValid() {
+      IStatus status = super.isValid();
+      if (status.isOK()) {
+         status = OseeValidator.getInstance().validate(IOseeValidator.SHORT, artifact, attributeTypeName, get());
+      }
+      return status;
+   }
 }

@@ -66,8 +66,9 @@ public class TeamVersionListDialog extends SelectionDialog {
 
       ArrayList<Object> objs = new ArrayList<Object>();
       try {
-         for (Artifact art : TeamDefinitionArtifact.getTeamReleaseableDefinitions(active))
-            objs.add((Object) art);
+         for (Artifact art : TeamDefinitionArtifact.getTeamReleaseableDefinitions(active)) {
+            objs.add(art);
+         }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -85,24 +86,28 @@ public class TeamVersionListDialog extends SelectionDialog {
          teamCombo.createWidgets(comp, 2);
          teamCombo.getCombo().setVisibleItemCount(20);
          teamCombo.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                widgetSelected(e);
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                ArrayList<Object> objs = new ArrayList<Object>();
                try {
                   selectedTeamDef = (TeamDefinitionArtifact) teamCombo.getSelected();
-                  for (Artifact pda : selectedTeamDef.getVersionsArtifacts(VersionReleaseType.Both))
-                     objs.add((Object) pda);
+                  for (Artifact pda : selectedTeamDef.getVersionsArtifacts(VersionReleaseType.Both)) {
+                     objs.add(pda);
+                  }
                   versionCombo.setInput(objs);
                } catch (Exception ex) {
                   OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }
             };
          });
-      } else
+      } else {
          selectedTeamDef = teamDef;
+      }
 
       versionCombo.setLabelProvider(new ArtifactDescriptiveLabelProvider());
       versionCombo.setContentProvider(new ArrayContentProvider());
@@ -111,10 +116,12 @@ public class TeamVersionListDialog extends SelectionDialog {
       versionCombo.createWidgets(comp, 2);
       versionCombo.getCombo().setVisibleItemCount(20);
       versionCombo.addSelectionListener(new SelectionListener() {
+         @Override
          public void widgetDefaultSelected(SelectionEvent e) {
             widgetSelected(e);
          }
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             selectedVersion = (VersionArtifact) versionCombo.getSelected();
          };
@@ -122,8 +129,9 @@ public class TeamVersionListDialog extends SelectionDialog {
       if (teamDef != null) {
          objs = new ArrayList<Object>();
          try {
-            for (Artifact pda : teamDef.getVersionsArtifacts(VersionReleaseType.Both))
-               objs.add((Object) pda);
+            for (Artifact pda : teamDef.getVersionsArtifacts(VersionReleaseType.Both)) {
+               objs.add(pda);
+            }
             versionCombo.setInput(objs);
          } catch (Exception ex) {
             OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);

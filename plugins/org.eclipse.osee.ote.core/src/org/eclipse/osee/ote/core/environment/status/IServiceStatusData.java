@@ -12,7 +12,7 @@ package org.eclipse.osee.ote.core.environment.status;
 
 import java.io.Serializable;
 
-public interface IServiceStatusData extends Serializable{
+public interface IServiceStatusData extends Serializable {
 
    public void accept(IServiceStatusDataVisitor visitor);
 }

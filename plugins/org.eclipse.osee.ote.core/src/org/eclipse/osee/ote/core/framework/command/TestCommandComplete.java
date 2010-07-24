@@ -21,7 +21,7 @@ import org.eclipse.osee.ote.core.environment.TestEnvironment;
 public class TestCommandComplete implements Callable<ITestCommandResult> {
 
    private ICommandHandle handle;
-   private TestEnvironment env;
+   private final TestEnvironment env;
    private Future<ITestCommandResult> future;
    private ITestServerCommand cmd;
 
@@ -42,6 +42,7 @@ public class TestCommandComplete implements Callable<ITestCommandResult> {
       this.handle = handle;
    }
 
+   @Override
    public ITestCommandResult call() throws Exception {
       ITestCommandResult result;
       try {

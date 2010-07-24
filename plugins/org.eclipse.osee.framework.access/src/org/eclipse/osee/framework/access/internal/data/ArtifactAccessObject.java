@@ -24,7 +24,7 @@ public class ArtifactAccessObject extends AccessObject {
    private final Integer artId;
    private final Integer branchId;
    private static final DoubleKeyHashMap<Integer, Integer, ArtifactAccessObject> cache =
-         new DoubleKeyHashMap<Integer, Integer, ArtifactAccessObject>();
+      new DoubleKeyHashMap<Integer, Integer, ArtifactAccessObject>();
 
    public ArtifactAccessObject(Integer artId, Integer branchId) {
       super();
@@ -39,8 +39,6 @@ public class ArtifactAccessObject extends AccessObject {
       result = 31 * result + branchId;
       return result;
    }
-
-
 
    public Integer getArtId() {
       return artId;
@@ -59,7 +57,7 @@ public class ArtifactAccessObject extends AccessObject {
    @Override
    public void removeFromDatabase(int subjectId) throws OseeDataStoreException {
       final String DELETE_ARTIFACT_ACL =
-            "DELETE FROM OSEE_ARTIFACT_ACL WHERE privilege_entity_id = ? AND art_id =? AND branch_id =?";
+         "DELETE FROM OSEE_ARTIFACT_ACL WHERE privilege_entity_id = ? AND art_id =? AND branch_id =?";
       ConnectionHandler.runPreparedUpdate(DELETE_ARTIFACT_ACL, subjectId, artId, branchId);
    }
 

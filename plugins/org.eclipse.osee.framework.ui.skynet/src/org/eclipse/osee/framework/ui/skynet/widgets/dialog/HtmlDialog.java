@@ -63,7 +63,9 @@ public class HtmlDialog extends MessageDialog {
       b.setLayoutData(gd);
       b.setText(html);
       b.setSize(500, 500);
-      if (listener != null) b.addLocationListener(listener);
+      if (listener != null) {
+         b.addLocationListener(listener);
+      }
       b.setMenu(pageOverviewGetPopup());
       return c;
    }

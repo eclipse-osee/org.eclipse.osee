@@ -55,9 +55,9 @@ public class DefaultBasicGuidRelationReorder implements IBasicRelationReorder {
    public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + ((parentArt == null) ? 0 : parentArt.hashCode());
-      result = prime * result + ((branchGuid == null) ? 0 : branchGuid.hashCode());
-      result = prime * result + ((relTypeGuid == null) ? 0 : relTypeGuid.hashCode());
+      result = prime * result + (parentArt == null ? 0 : parentArt.hashCode());
+      result = prime * result + (branchGuid == null ? 0 : branchGuid.hashCode());
+      result = prime * result + (relTypeGuid == null ? 0 : relTypeGuid.hashCode());
       return result;
    }
 

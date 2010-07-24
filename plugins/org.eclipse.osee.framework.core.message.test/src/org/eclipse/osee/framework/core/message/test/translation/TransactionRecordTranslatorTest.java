@@ -28,7 +28,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Test Case For {@link TransactionRecordTranslator}
- *
+ * 
  * @author Roberto E. Escobar
  */
 @RunWith(Parameterized.class)

@@ -48,10 +48,11 @@ public class FilterArtifactSearchQuery extends AbstractLegacyArtifactSearchQuery
          criteria.add(model.getSearchPrimitive());
 
          if (!firstTime) {
-            if (filterList.isAllSelected())
+            if (filterList.isAllSelected()) {
                criteriaLabel += " and ";
-            else
+            } else {
                criteriaLabel += " or ";
+            }
          }
 
          criteriaLabel += model;
@@ -60,7 +61,7 @@ public class FilterArtifactSearchQuery extends AbstractLegacyArtifactSearchQuery
 
       MaxMatchCountConfirmer confirmer = new MaxMatchCountConfirmer();
       Collection<Artifact> artifacts =
-            ArtifactPersistenceManager.getArtifacts(criteria, filterList.isAllSelected(), branch, confirmer);
+         ArtifactPersistenceManager.getArtifacts(criteria, filterList.isAllSelected(), branch, confirmer);
       if (confirmer.isConfirmed()) {
          return artifacts;
       }

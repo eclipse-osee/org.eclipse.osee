@@ -88,7 +88,7 @@ public class ExtractTestRelations {
 
       // Make sure that the runtime relation type is available
       Artifact reqArtifact =
-            ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirement, reqArtifactName, branch);
+         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirement, reqArtifactName, branch);
 
       // Make sure we have the reqArtifact
       if (reqArtifact == null) {
@@ -126,7 +126,7 @@ public class ExtractTestRelations {
          return null;
       } catch (ArtifactDoesNotExist ex) {
          Artifact testArtifact =
-               ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestCase, branch, testArtifactFile.getName());
+            ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestCase, branch, testArtifactFile.getName());
          testArtifact.setSoleAttributeValue("Content URL", testArtifactFile.getFullPath().toString());
          testArtifact.persist();
          return testArtifact;

@@ -45,7 +45,7 @@ import org.junit.Before;
 public class WordEditTest {
 
    private static final String TEST_PATH_NAME =
-         "../org.eclipse.osee.framework.ui.skynet.test/src/org/eclipse/osee/framework/ui/skynet/test/cases/support/";
+      "../org.eclipse.osee.framework.ui.skynet.test/src/org/eclipse/osee/framework/ui/skynet/test/cases/support/";
    private static final String TEST_WORD_EDIT_FILE_NAME = TEST_PATH_NAME + "WordEditTest.xml";
    private static InputStream inputStream;
 

@@ -15,15 +15,14 @@ import java.util.List;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public class TestPointData {
 
    private boolean isFailed;
-   private List<CheckPointData> data = new ArrayList<CheckPointData>();
+   private final List<CheckPointData> data = new ArrayList<CheckPointData>();
    private String number;
    private StackTraceCollection stacktrace;
-   
+
    public boolean isFailed() {
       return isFailed;
    }
@@ -40,10 +39,10 @@ public class TestPointData {
       this.number = number;
    }
 
-   public String getNumber(){
+   public String getNumber() {
       return number;
    }
-   
+
    public void setStackTrace(StackTraceCollection currentStackTrace) {
       this.stacktrace = currentStackTrace;
    }

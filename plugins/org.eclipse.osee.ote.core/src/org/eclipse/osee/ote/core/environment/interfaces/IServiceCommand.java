@@ -12,10 +12,8 @@ package org.eclipse.osee.ote.core.environment.interfaces;
 
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
 
-
-
 public interface IServiceCommand {
 
-	public abstract void execute(TestEnvironment environment);
-   
+   public abstract void execute(TestEnvironment environment);
+
 }

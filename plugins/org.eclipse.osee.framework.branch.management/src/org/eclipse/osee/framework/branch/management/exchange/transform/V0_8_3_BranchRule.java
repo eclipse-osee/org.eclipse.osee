@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 
 public class V0_8_3_BranchRule extends Rule {
    private static final Pattern branchPattern =
-         Pattern.compile("<entry ()branch_type=\"(\\d+)\" .*\\s+<branch_name>(.*?)</branch_name>");
+      Pattern.compile("<entry ()branch_type=\"(\\d+)\" .*\\s+<branch_name>(.*?)</branch_name>");
 
    public V0_8_3_BranchRule() {
       super(null);

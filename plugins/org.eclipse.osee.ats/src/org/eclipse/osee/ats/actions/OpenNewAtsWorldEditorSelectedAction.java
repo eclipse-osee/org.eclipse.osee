@@ -53,8 +53,8 @@ public class OpenNewAtsWorldEditorSelectedAction extends Action {
             return;
          }
          WorldEditor.open(new WorldEditorSimpleProvider("ATS World",
-               openNewAtsWorldEditorSelectedHandler.getSelectedArtifacts(),
-               openNewAtsWorldEditorSelectedHandler.getCustomizeDataCopy(), (TableLoadOption[]) null));
+            openNewAtsWorldEditorSelectedHandler.getSelectedArtifacts(),
+            openNewAtsWorldEditorSelectedHandler.getCustomizeDataCopy(), (TableLoadOption[]) null));
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }

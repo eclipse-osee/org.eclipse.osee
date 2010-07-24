@@ -52,16 +52,19 @@ public class SkyWalkerRelTypeTabItem {
       treeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
       treeViewer.setContentProvider(new RelTypeContentProvider());
       treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+         @Override
          public void selectionChanged(SelectionChangedEvent event) {
             storeSelected();
          }
       });
       treeViewer.setLabelProvider(new LabelProvider() {
 
+         @Override
          public Image getImage(Object obj) {
             return null;
          }
 
+         @Override
          public String getText(Object obj) {
             return obj.toString();
          }
@@ -75,9 +78,11 @@ public class SkyWalkerRelTypeTabItem {
       selectAll = new Button(buttonComp, SWT.PUSH);
       selectAll.setText("Select All");
       selectAll.addSelectionListener(new SelectionListener() {
+         @Override
          public void widgetDefaultSelected(SelectionEvent e) {
          }
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             treeViewer.setAllChecked(true);
             storeSelected();
@@ -87,9 +92,11 @@ public class SkyWalkerRelTypeTabItem {
       deSelectAll = new Button(buttonComp, SWT.PUSH);
       deSelectAll.setText("De-Select All");
       deSelectAll.addSelectionListener(new SelectionListener() {
+         @Override
          public void widgetDefaultSelected(SelectionEvent e) {
          }
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             treeViewer.setAllChecked(false);
             storeSelected();
@@ -97,6 +104,7 @@ public class SkyWalkerRelTypeTabItem {
       });
 
       options.addSkyWalkerOptionsChangeListener(new ISkyWalkerOptionsChangeListener() {
+         @Override
          public void modified(ModType... modTypes) {
             handleOptionModified(modTypes);
          }
@@ -114,10 +122,12 @@ public class SkyWalkerRelTypeTabItem {
    public void handleOptionModified(ModType... modTypes) {
       List<ModType> modList = Arrays.asList(modTypes);
       if (modList.contains(ModType.FilterEnabled)) {
-         if (selectAll != null)
+         if (selectAll != null) {
             selectAll.setEnabled(options.isFilterEnabled());
-         if (deSelectAll != null)
+         }
+         if (deSelectAll != null) {
             deSelectAll.setEnabled(options.isFilterEnabled());
+         }
       }
       if (modList.contains(ModType.RelType)) {
          if (treeViewer != null) {

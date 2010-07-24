@@ -157,14 +157,14 @@ public class DatabaseIntegrityCheckApplication implements IApplication {
          int count = operation.getItemsToFixCount();
          if (links.isEmpty()) {
             mainTab.addRow(new ResultsXViewerRow(new String[] {operation.getName(), count > 0 ? "Failed" : "Passed",
-                  String.valueOf(count), ""}));
+               String.valueOf(count), ""}));
          } else {
             int index = 0;
             for (String link : links) {
                String value = String.format("<a href=\"%s\">%s</a>", link, link);
                if (index == 0) {
                   mainTab.addRow(new ResultsXViewerRow(new String[] {operation.getName(),
-                        count > 0 ? "Failed" : "Passed", String.valueOf(count), value}));
+                     count > 0 ? "Failed" : "Passed", String.valueOf(count), value}));
                } else {
                   mainTab.addRow(new ResultsXViewerRow(new String[] {"", "", "", value}));
                }
@@ -175,7 +175,7 @@ public class DatabaseIntegrityCheckApplication implements IApplication {
 
       public void addError(DatabaseHealthOperation operation, Throwable th) {
          mainTab.addRow(new ResultsXViewerRow(new String[] {operation.getName(), "Expection", "0",
-               Lib.exceptionToString(th), ""}));
+            Lib.exceptionToString(th), ""}));
       }
 
       @Override

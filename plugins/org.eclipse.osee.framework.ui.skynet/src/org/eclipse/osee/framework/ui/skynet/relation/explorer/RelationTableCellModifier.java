@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.swt.widgets.TableItem;
 
 public class RelationTableCellModifier implements ICellModifier {
-   private RelationTableViewer relationTableViewer;
+   private final RelationTableViewer relationTableViewer;
 
    public RelationTableCellModifier(RelationTableViewer relationTableViewer) {
       super();
@@ -25,6 +25,7 @@ public class RelationTableCellModifier implements ICellModifier {
    /**
     * @see org.eclipse.jface.viewers.ICellModifier#canModify(java.lang.Object, java.lang.String)
     */
+   @Override
    public boolean canModify(Object element, String property) {
       // Find the index of the column
       int columnIndex = relationTableViewer.getColumnNames().indexOf(property);
@@ -32,10 +33,14 @@ public class RelationTableCellModifier implements ICellModifier {
       ArtifactModel model = (ArtifactModel) element;
       switch (columnIndex) {
          case RelationTableViewer.ARTIFACT_NAME_NUM:
-            if (model.isArtifactFound()) return false;
+            if (model.isArtifactFound()) {
+               return false;
+            }
             break;
          case RelationTableViewer.ARTIFACT_TYPE_NUM:
-            if (model.isArtifactFound()) return false;
+            if (model.isArtifactFound()) {
+               return false;
+            }
             break;
       }
       return true;
@@ -44,6 +49,7 @@ public class RelationTableCellModifier implements ICellModifier {
    /**
     * @see org.eclipse.jface.viewers.ICellModifier#getValue(java.lang.Object, java.lang.String)
     */
+   @Override
    public Object getValue(Object element, String property) {
 
       // Find the index of the column
@@ -74,6 +80,7 @@ public class RelationTableCellModifier implements ICellModifier {
    /**
     * @see org.eclipse.jface.viewers.ICellModifier#modify(java.lang.Object, java.lang.String, java.lang.Object)
     */
+   @Override
    public void modify(Object element, String property, Object value) {
 
       // Find the index of the column
@@ -87,7 +94,9 @@ public class RelationTableCellModifier implements ICellModifier {
             model.setAdd(((Boolean) value).booleanValue());
             break;
          case RelationTableViewer.ARTIFACT_NAME_NUM:
-            if (!model.isArtifactFound()) model.setName((String) value);
+            if (!model.isArtifactFound()) {
+               model.setName((String) value);
+            }
             break;
          case RelationTableViewer.ARTIFACT_TYPE_NUM:
             if (!model.isArtifactFound()) {

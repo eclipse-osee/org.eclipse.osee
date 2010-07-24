@@ -12,26 +12,24 @@ package org.eclipse.osee.framework.messaging.internal.activemq;
 
 import javax.jms.ExceptionListener;
 import javax.jms.JMSException;
-
 import org.eclipse.osee.framework.messaging.internal.FailoverConnectionNode;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public class OseeExceptionListener implements ExceptionListener {
 
-	private FailoverConnectionNode failoverConnectionNode;
+   private FailoverConnectionNode failoverConnectionNode;
 
-	@Override
-	public void onException(JMSException ex) {
-		if(failoverConnectionNode != null){
-			failoverConnectionNode.onException(ex);
-		}
-	}
+   @Override
+   public void onException(JMSException ex) {
+      if (failoverConnectionNode != null) {
+         failoverConnectionNode.onException(ex);
+      }
+   }
 
-	public void setListener(FailoverConnectionNode failoverConnectionNode) {
-		this.failoverConnectionNode = failoverConnectionNode;
-	}
+   public void setListener(FailoverConnectionNode failoverConnectionNode) {
+      this.failoverConnectionNode = failoverConnectionNode;
+   }
 
 }

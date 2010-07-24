@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.client.msg.core.internal.MessageReference;
 import org.eclipse.osee.ote.message.Message;
@@ -34,9 +33,9 @@ import org.eclipse.osee.ote.service.IMessageDictionary;
 public abstract class AbstractMessageDataBase {
 
    private final HashMap<MessageReference, MessageInstance> referenceToMsgMap =
-         new HashMap<MessageReference, MessageInstance>();
+      new HashMap<MessageReference, MessageInstance>();
    private final ConcurrentHashMap<Integer, MessageInstance> idToMsgMap =
-         new ConcurrentHashMap<Integer, MessageInstance>();
+      new ConcurrentHashMap<Integer, MessageInstance>();
 
    private final IMessageDictionary dictionary;
    private IMsgToolServiceClient client;
@@ -102,7 +101,7 @@ public abstract class AbstractMessageDataBase {
             doInstanceDetach(instance, service);
          }
          MessageReference reference =
-               new MessageReference(instance.getType(), instance.getMode(), instance.getMessage().getClass().getName());
+            new MessageReference(instance.getType(), instance.getMode(), instance.getMessage().getClass().getName());
          referenceToMsgMap.remove(reference);
          destroyMessage(instance.getMessage());
       }
@@ -121,7 +120,7 @@ public abstract class AbstractMessageDataBase {
             doInstanceAttach(instance, service);
          } catch (Exception e) {
             OseeLog.log(AbstractMessageDataBase.class, Level.SEVERE,
-                  "could not attach instance for " + instance.toString(), e);
+               "could not attach instance for " + instance.toString(), e);
          }
       }
    }

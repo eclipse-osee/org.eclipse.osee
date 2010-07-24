@@ -27,6 +27,7 @@ import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
+import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.ote.ui.markers.MarkerPlugin;
@@ -136,12 +137,12 @@ public class ScriptTableViewer {
       File file = OseeData.getFile("tm.xml");
       String configFile = testManagerEditor.loadValue(testManagerEditor.configFileName);
       ISaveConfig saveConfig =
-            ConfigFactory.getInstance().getSaveConfigHandler(testManagerEditor.getPageManager().getScriptPage());
+         ConfigFactory.getInstance().getSaveConfigHandler(testManagerEditor.getPageManager().getScriptPage());
       try {
          saveConfig.saveConfig(file);
       } catch (Exception ex) {
-         Dialogs.popupError("Error Loading File", String.format("Error loading file: [%s]\n%s", configFile,
-               TestManagerPlugin.getStackMessages(ex)));
+         Dialogs.popupError("Error Loading File",
+            String.format("Error loading file: [%s]\n%s", configFile, OseeUiActivator.getStackMessages(ex)));
       }
 
       return "file:";
@@ -176,13 +177,12 @@ public class ScriptTableViewer {
          if (str.equals("file:")) {
             File configFile = OseeData.getFile("tm.xml");
             ILoadConfig loadConfig =
-                  ConfigFactory.getInstance().getLoadConfigHandler(
-                        this.testManagerEditor.getPageManager().getScriptPage());
+               ConfigFactory.getInstance().getLoadConfigHandler(this.testManagerEditor.getPageManager().getScriptPage());
             try {
                loadConfig.loadConfiguration(configFile);
             } catch (Exception ex) {
-               Dialogs.popupError("Error Saving File", String.format("Error saving file: [%s]\n%s", configFile,
-                     TestManagerPlugin.getStackMessages(ex)));
+               Dialogs.popupError("Error Saving File",
+                  String.format("Error saving file: [%s]\n%s", configFile, OseeUiActivator.getStackMessages(ex)));
             }
          } else {
             String scripts[] = str.split(",");
@@ -199,8 +199,8 @@ public class ScriptTableViewer {
                      task.setRun(run);
                      taskList.addTask(task);
                   } catch (Exception ex) {
-                     OseeLog.log(TestManagerPlugin.class, Level.SEVERE, String.format(
-                           "Unable to add file [%s] to script view.", script), ex);
+                     OseeLog.log(TestManagerPlugin.class, Level.SEVERE,
+                        String.format("Unable to add file [%s] to script view.", script), ex);
                   }
                }
             }
@@ -267,6 +267,7 @@ public class ScriptTableViewer {
       attachDragDropListener();
       attachKeyListeners();
       scriptTable.getMenuManager().addMenuListener(new IMenuListener() {
+         @Override
          public void menuAboutToShow(IMenuManager manager) {
             getPopupMenu();
          }
@@ -321,49 +322,49 @@ public class ScriptTableViewer {
          }
       });
       menuManager.insertBefore(XViewer.MENU_GROUP_PRE, new Separator());
-      menuManager.insertBefore(XViewer.MENU_GROUP_PRE, new Action("Set Selected to Run",
-            ImageManager.getImageDescriptor(PluginUiImage.CHECKBOX_ENABLED)) {
-         @Override
-         public void run() {
-            IStructuredSelection sel = (IStructuredSelection) getSelection();
-            Iterator<?> iter = sel.iterator();
-            while (iter.hasNext()) {
-               ScriptTask task = (ScriptTask) iter.next();
-               task.setRun(true);
-               taskList.taskChanged(task);
+      menuManager.insertBefore(XViewer.MENU_GROUP_PRE,
+         new Action("Set Selected to Run", ImageManager.getImageDescriptor(PluginUiImage.CHECKBOX_ENABLED)) {
+            @Override
+            public void run() {
+               IStructuredSelection sel = (IStructuredSelection) getSelection();
+               Iterator<?> iter = sel.iterator();
+               while (iter.hasNext()) {
+                  ScriptTask task = (ScriptTask) iter.next();
+                  task.setRun(true);
+                  taskList.taskChanged(task);
+               }
+               refresh();
             }
-            refresh();
-         }
-      });
-      menuManager.insertBefore(XViewer.MENU_GROUP_PRE, new Action("Set Selected to Not Run",
-            ImageManager.getImageDescriptor(PluginUiImage.CHECKBOX_DISABLED)) {
-         @Override
-         public void run() {
-            IStructuredSelection sel = (IStructuredSelection) getSelection();
-            Iterator<?> iter = sel.iterator();
-            while (iter.hasNext()) {
-               ScriptTask task = (ScriptTask) iter.next();
-               task.setRun(false);
-               taskList.taskChanged(task);
+         });
+      menuManager.insertBefore(XViewer.MENU_GROUP_PRE,
+         new Action("Set Selected to Not Run", ImageManager.getImageDescriptor(PluginUiImage.CHECKBOX_DISABLED)) {
+            @Override
+            public void run() {
+               IStructuredSelection sel = (IStructuredSelection) getSelection();
+               Iterator<?> iter = sel.iterator();
+               while (iter.hasNext()) {
+                  ScriptTask task = (ScriptTask) iter.next();
+                  task.setRun(false);
+                  taskList.taskChanged(task);
+               }
+               refresh();
             }
-            refresh();
-         }
-      });
+         });
       menuManager.insertBefore(XViewer.MENU_GROUP_PRE, new Separator());
-      menuManager.insertBefore(XViewer.MENU_GROUP_PRE, new Action("Select All to Run",
-            ImageManager.getImageDescriptor(PluginUiImage.CHECKBOX_ENABLED)) {
-         @Override
-         public void run() {
-            setAllTasksRun(true);
-         }
-      });
-      menuManager.insertBefore(XViewer.MENU_GROUP_PRE, new Action("Deselect All to Run",
-            ImageManager.getImageDescriptor(PluginUiImage.CHECKBOX_DISABLED)) {
-         @Override
-         public void run() {
-            setAllTasksRun(false);
-         }
-      });
+      menuManager.insertBefore(XViewer.MENU_GROUP_PRE,
+         new Action("Select All to Run", ImageManager.getImageDescriptor(PluginUiImage.CHECKBOX_ENABLED)) {
+            @Override
+            public void run() {
+               setAllTasksRun(true);
+            }
+         });
+      menuManager.insertBefore(XViewer.MENU_GROUP_PRE,
+         new Action("Deselect All to Run", ImageManager.getImageDescriptor(PluginUiImage.CHECKBOX_DISABLED)) {
+            @Override
+            public void run() {
+               setAllTasksRun(false);
+            }
+         });
       menuManager.insertBefore(XViewer.MENU_GROUP_PRE, new Separator());
 
       // item = new MenuItem(previewMenu, SWT.CASCADE);
@@ -438,7 +439,7 @@ public class ScriptTableViewer {
             batchDropHandler(new File(toProcess));
          } else {
             if (toProcess.endsWith(".java") || toProcess.endsWith(".vxe") || !new File(toProcess).getName().matches(
-                  ".*\\..*")) {
+               ".*\\..*")) {
                ScriptTask newTask = new ScriptTask(files[i], testManagerEditor.getAlternateOutputDir());
                if (!taskList.contains(newTask)) {
                   //                  newTask.computeExists();
@@ -463,11 +464,11 @@ public class ScriptTableViewer {
    private void batchDropHandler(File batchFile) {
       try {
          ILoadConfig loadConfig =
-               ConfigFactory.getInstance().getLoadConfigHandler(testManagerEditor.getPageManager().getScriptPage());
+            ConfigFactory.getInstance().getLoadConfigHandler(testManagerEditor.getPageManager().getScriptPage());
          loadConfig.loadConfiguration(batchFile);
       } catch (Exception ex) {
          Dialogs.popupError("Invalid Drop", String.format("Unable to read batch file\nFile [%s]\n%s",
-               (batchFile != null ? batchFile.getAbsolutePath() : "NULL"), TestManagerPlugin.getStackMessages(ex)));
+            (batchFile != null ? batchFile.getAbsolutePath() : "NULL"), OseeUiActivator.getStackMessages(ex)));
       }
    }
 
@@ -480,9 +481,11 @@ public class ScriptTableViewer {
 
    private void attachKeyListeners() {
       scriptTable.getTree().addKeyListener(new KeyListener() {
+         @Override
          public void keyPressed(KeyEvent e) {
          }
 
+         @Override
          public void keyReleased(KeyEvent e) {
             // If they press enter, do the same as a double click
             if (e.character == SWT.DEL) {

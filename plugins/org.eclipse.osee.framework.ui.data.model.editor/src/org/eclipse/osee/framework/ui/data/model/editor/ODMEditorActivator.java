@@ -19,9 +19,11 @@ import org.osgi.framework.BundleContext;
 public class ODMEditorActivator implements BundleActivator {
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.ui.data.model.editor";
 
+   @Override
    public void start(BundleContext context) throws Exception {
    }
 
+   @Override
    public void stop(BundleContext context) throws Exception {
    }
 }

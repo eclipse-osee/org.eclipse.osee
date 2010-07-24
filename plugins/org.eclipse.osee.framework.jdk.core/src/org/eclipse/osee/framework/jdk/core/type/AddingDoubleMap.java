@@ -12,8 +12,8 @@ package org.eclipse.osee.framework.jdk.core.type;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * @author Donald G. Dunne
@@ -31,14 +31,18 @@ public class AddingDoubleMap<K> {
 
    public double get(K key) {
       for (Entry<K, MutableDouble> entry : getCounts()) {
-         if (entry.getKey().equals(key)) return entry.getValue().getValue();
+         if (entry.getKey().equals(key)) {
+            return entry.getValue().getValue();
+         }
       }
       return 0;
    }
 
    public boolean contains(K key) {
       for (Entry<K, MutableDouble> entry : getCounts()) {
-         if (entry.getKey().equals(key)) return true;
+         if (entry.getKey().equals(key)) {
+            return true;
+         }
       }
       return false;
    }

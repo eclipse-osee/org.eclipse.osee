@@ -13,32 +13,31 @@ package org.eclipse.osee.ote.message.interfaces;
 /**
  * @author Andrew M. Finkbeiner
  */
-public class Namespace implements INamespace{
+public class Namespace implements INamespace {
 
-   private String namespace;
+   private final String namespace;
+
    /**
     * @param string
     */
    public Namespace(String string) {
       namespace = string;
    }
-   
-   public String toString(){
+
+   @Override
+   public String toString() {
       return namespace;
    }
 
    @Override
    public boolean equals(Object obj) {
-      Namespace ns = (Namespace)obj;
+      Namespace ns = (Namespace) obj;
       return namespace.equals(ns.namespace);
    }
-
 
    @Override
    public int hashCode() {
       return namespace.hashCode();
    }
 
-   
-   
 }

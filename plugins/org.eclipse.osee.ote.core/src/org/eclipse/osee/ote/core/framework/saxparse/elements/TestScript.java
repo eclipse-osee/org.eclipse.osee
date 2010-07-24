@@ -15,9 +15,8 @@ import org.xml.sax.Attributes;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
-public class TestScript extends ElementHandlers{
+public class TestScript extends ElementHandlers {
 
    /**
     * @param name

@@ -16,11 +16,12 @@ import java.rmi.RemoteException;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
-public interface IOInstrumentation extends Remote{
+public interface IOInstrumentation extends Remote {
 
    void register(InetSocketAddress address) throws RemoteException;
+
    void command(byte[] cmd) throws RemoteException;
+
    void unregister(InetSocketAddress address) throws RemoteException;
 }

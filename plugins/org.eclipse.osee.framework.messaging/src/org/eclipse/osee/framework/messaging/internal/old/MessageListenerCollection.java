@@ -20,8 +20,8 @@ import org.eclipse.osee.framework.messaging.id.MessageId;
  */
 public class MessageListenerCollection {
 
-   private ConcurrentListMap<MessageId, ReceiveListener> receiveListeners;
-   private ConcurrentListMap<MessageId, SendListener> sendListeners;
+   private final ConcurrentListMap<MessageId, ReceiveListener> receiveListeners;
+   private final ConcurrentListMap<MessageId, SendListener> sendListeners;
 
    public MessageListenerCollection() {
       receiveListeners = new ConcurrentListMap<MessageId, ReceiveListener>();

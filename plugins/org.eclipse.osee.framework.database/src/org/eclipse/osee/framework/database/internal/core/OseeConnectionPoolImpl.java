@@ -68,7 +68,7 @@ public class OseeConnectionPoolImpl {
 
       if (connections.size() >= MAX_CONNECTIONS_PER_CLIENT) {
          throw new OseeDataStoreException(
-               "This client has reached the maximum number of allowed simultaneous database connections of : " + MAX_CONNECTIONS_PER_CLIENT);
+            "This client has reached the maximum number of allowed simultaneous database connections of : " + MAX_CONNECTIONS_PER_CLIENT);
       }
       try {
          OseeConnectionImpl connection = getOseeConnection();

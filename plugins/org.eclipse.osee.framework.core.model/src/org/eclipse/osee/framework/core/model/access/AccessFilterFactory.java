@@ -12,19 +12,19 @@ import org.eclipse.osee.framework.core.model.access.exp.IAccessFilter;
 
 public class AccessFilterFactory {
 
-	public Collection<IAccessFilter> createFilter() {
-		List<IAccessFilter> filters = new ArrayList<IAccessFilter>();
+   public Collection<IAccessFilter> createFilter() {
+      List<IAccessFilter> filters = new ArrayList<IAccessFilter>();
 
-		//		Collection<IOseeBranch> allowedBranches = new List<IOseeBranch>();
-		//		Collection<IBasicArtifact<T>> allowedArtifactType = new List<IArtifactType>();
-		//		Collection<IArtifactType> allowedArtifactType = new List<IArtifactType>();
-		//
-		//		filters.add(new BranchAccessFilter(artifact, branchPermission));
-		//		filters.add(new ArtifactAccessFilter());
-		//		filters.add(new ArtifactTypeFilter());
-		//		filters.add(new AttributeTypeFilter());
-		//		filters.add(new RelationTypeFilter());
+      //		Collection<IOseeBranch> allowedBranches = new List<IOseeBranch>();
+      //		Collection<IBasicArtifact<T>> allowedArtifactType = new List<IArtifactType>();
+      //		Collection<IArtifactType> allowedArtifactType = new List<IArtifactType>();
+      //
+      //		filters.add(new BranchAccessFilter(artifact, branchPermission));
+      //		filters.add(new ArtifactAccessFilter());
+      //		filters.add(new ArtifactTypeFilter());
+      //		filters.add(new AttributeTypeFilter());
+      //		filters.add(new RelationTypeFilter());
 
-		return filters;
-	}
+      return filters;
+   }
 }

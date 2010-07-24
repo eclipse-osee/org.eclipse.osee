@@ -28,182 +28,185 @@ import org.eclipse.osee.ote.core.environment.command.TestEnvironmentCommand;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentListener;
 import org.eclipse.osee.ote.core.framework.command.ICommandHandle;
 
-
 /**
  * @author Robert A. Fisher
  * @author Ryan D. Brooks
  */
-public class StatusBoard implements ITestEnvironmentListener, OTEStatusBoard{
-	private static final long TP_UPDATE_THROTTLE = 5000;
+public class StatusBoard implements ITestEnvironmentListener, OTEStatusBoard {
+   private static final long TP_UPDATE_THROTTLE = 5000;
    private CommandDescription currentCommand;
-	private ArrayList<IServiceStatusListener> listeners;
+   private ArrayList<IServiceStatusListener> listeners;
 
-	private long lastTpUpdateTime = 0;
-	
-//	private long tpSentCount;
-//	private long tpCanceledCount;
-    /**
+   private long lastTpUpdateTime = 0;
+
+   //	private long tpSentCount;
+   //	private long tpCanceledCount;
+   /**
     * @return the listeners
     */
    ArrayList<IServiceStatusListener> getListeners() {
       return listeners;
    }
 
-   private ThreadPoolExecutor executor ;
-   private ScheduledExecutorService  scheduledExecutor;
-   private Object testPointLock = new Object();
+   private final ThreadPoolExecutor executor;
+   private final ScheduledExecutorService scheduledExecutor;
+   private final Object testPointLock = new Object();
    private TestPointStatusBoardRunnable latestTestPointUpdate;
-   private AtomicBoolean executeLatestTestPointUpdate = new AtomicBoolean();
-//   private Future<?> lastTestPointUpdate;
+   private final AtomicBoolean executeLatestTestPointUpdate = new AtomicBoolean();
 
-	/**
-	 * StatusBoard Constructor. This class handles passing status information from the test
-	 * enviornment to the UI's (StatusHandler Class).
-	 */
-	public StatusBoard() {
-		super();
-		GCHelper.getGCHelper().addRefWatch(this);
-		this.listeners = new ArrayList<IServiceStatusListener>(6);
-		executeLatestTestPointUpdate.set(false);
-		executor = (ThreadPoolExecutor)Executors.newFixedThreadPool(1);
-	   scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
-	   scheduledExecutor.scheduleAtFixedRate(new Runnable(){
+   //   private Future<?> lastTestPointUpdate;
 
+   /**
+    * StatusBoard Constructor. This class handles passing status information from the test enviornment to the UI's
+    * (StatusHandler Class).
+    */
+   public StatusBoard() {
+      super();
+      GCHelper.getGCHelper().addRefWatch(this);
+      this.listeners = new ArrayList<IServiceStatusListener>(6);
+      executeLatestTestPointUpdate.set(false);
+      executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
+      scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
+      scheduledExecutor.scheduleAtFixedRate(new Runnable() {
+
+         @Override
          public void run() {
             synchronized (testPointLock) {
-                if(executeLatestTestPointUpdate.get()){
-                   executeLatestTestPointUpdate.set(false);
-                   lastTpUpdateTime = System.currentTimeMillis();
-                   executor.submit(latestTestPointUpdate);
-                }
+               if (executeLatestTestPointUpdate.get()) {
+                  executeLatestTestPointUpdate.set(false);
+                  lastTpUpdateTime = System.currentTimeMillis();
+                  executor.submit(latestTestPointUpdate);
+               }
             }
          }
-	      
-	   },  TP_UPDATE_THROTTLE,TP_UPDATE_THROTTLE, TimeUnit.MILLISECONDS);
-	}
 
-	/**
-	 * Add UI listner to list of listners.
-	 * 
-	 * @param listener Refernece to the UI listener.
-	 */
-	public void addStatusListener(IServiceStatusListener listener) {
-		listeners.add(listener);
-	}
+      }, TP_UPDATE_THROTTLE, TP_UPDATE_THROTTLE, TimeUnit.MILLISECONDS);
+   }
 
-	public void onCommandAdded(TestEnvironment env, TestEnvironmentCommand cmd) {
-		CommandAdded cmdAdded 	= new CommandAdded();
-		cmdAdded.set(cmd.getDescription());
-		notifyListeners(cmdAdded);
-	}   
+   /**
+    * Add UI listner to list of listners.
+    * 
+    * @param listener Refernece to the UI listener.
+    */
+   @Override
+   public void addStatusListener(IServiceStatusListener listener) {
+      listeners.add(listener);
+   }
 
-	public void onCommandRemoved(TestEnvironment env, CommandDescription cmdDesc, CommandEndedStatusEnum status) {
-		CommandRemoved cmdRemoved = new CommandRemoved();
-		cmdRemoved.setDescription(cmdDesc);
-		cmdRemoved.setReason(status);
-		notifyListeners(cmdRemoved);
-	}
+   @Override
+   public void onCommandAdded(TestEnvironment env, TestEnvironmentCommand cmd) {
+      CommandAdded cmdAdded = new CommandAdded();
+      cmdAdded.set(cmd.getDescription());
+      notifyListeners(cmdAdded);
+   }
 
-	public void onException(String message, Throwable t) {
-		EnvironmentError envError= new EnvironmentError();
-		envError.set(t);
-		notifyListeners(envError);
-	}
+   @Override
+   public void onCommandRemoved(TestEnvironment env, CommandDescription cmdDesc, CommandEndedStatusEnum status) {
+      CommandRemoved cmdRemoved = new CommandRemoved();
+      cmdRemoved.setDescription(cmdDesc);
+      cmdRemoved.setReason(status);
+      notifyListeners(cmdRemoved);
+   }
 
-	/**
-	 * Remove UI listener from list of listners
-	 * 
-	 * @param listener Reference to the UI listener.
-	 */
-	public void removeStatusListener(IServiceStatusListener listener) {
-		listeners.remove(listener);
-	}
+   @Override
+   public void onException(String message, Throwable t) {
+      EnvironmentError envError = new EnvironmentError();
+      envError.set(t);
+      notifyListeners(envError);
+   }
 
+   /**
+    * Remove UI listener from list of listners
+    * 
+    * @param listener Reference to the UI listener.
+    */
+   @Override
+   public void removeStatusListener(IServiceStatusListener listener) {
+      listeners.remove(listener);
+   }
 
-	public void onCommandBegan(TestEnvironment env, CommandDescription cmdDesc) {
-		this.currentCommand = cmdDesc;
-		
-		SequentialCommandBegan seqCmdBegan= new SequentialCommandBegan();
-		seqCmdBegan.set(cmdDesc);
-		notifyListeners(seqCmdBegan);
-	}
+   @Override
+   public void onCommandBegan(TestEnvironment env, CommandDescription cmdDesc) {
+      this.currentCommand = cmdDesc;
 
+      SequentialCommandBegan seqCmdBegan = new SequentialCommandBegan();
+      seqCmdBegan.set(cmdDesc);
+      notifyListeners(seqCmdBegan);
+   }
 
-	public void onCommandFinished(TestEnvironment env, CommandDescription cmdDesc, CommandEndedStatusEnum status) {
-		OseeLog.log(TestEnvironment.class,		
-				Level.INFO,
-				"To End: " + cmdDesc.getGuid());
-		
-		SequentialCommandEnded seqCmdEnded= new SequentialCommandEnded();
-		seqCmdEnded.set(cmdDesc, status);
-		notifyListeners(seqCmdEnded);
-	}
+   @Override
+   public void onCommandFinished(TestEnvironment env, CommandDescription cmdDesc, CommandEndedStatusEnum status) {
+      OseeLog.log(TestEnvironment.class, Level.INFO, "To End: " + cmdDesc.getGuid());
 
+      SequentialCommandEnded seqCmdEnded = new SequentialCommandEnded();
+      seqCmdEnded.set(cmdDesc, status);
+      notifyListeners(seqCmdEnded);
+   }
 
-	public void onTestPointUpdate(int pass, int fail, String testClassName) {
-	   TestPointStatusBoardRunnable runnable =  new TestPointStatusBoardRunnable(new TestPointUpdate(pass, fail, testClassName), this);
-	   if(System.currentTimeMillis() - lastTpUpdateTime > TP_UPDATE_THROTTLE){
-   	   lastTpUpdateTime = System.currentTimeMillis();
-  		   executor.submit(runnable);
-	   } else {
-	      synchronized (testPointLock) {
-	            latestTestPointUpdate = runnable;
-	            executeLatestTestPointUpdate.set(true);
+   @Override
+   public void onTestPointUpdate(int pass, int fail, String testClassName) {
+      TestPointStatusBoardRunnable runnable =
+         new TestPointStatusBoardRunnable(new TestPointUpdate(pass, fail, testClassName), this);
+      if (System.currentTimeMillis() - lastTpUpdateTime > TP_UPDATE_THROTTLE) {
+         lastTpUpdateTime = System.currentTimeMillis();
+         executor.submit(runnable);
+      } else {
+         synchronized (testPointLock) {
+            latestTestPointUpdate = runnable;
+            executeLatestTestPointUpdate.set(true);
          }
-	   }
-	}
+      }
+   }
 
-	
-	
-	void notifyListeners(final IServiceStatusData data) {
-		IServiceStatusData classData = data;
-		executor.execute(new StatusBoardRunnable(classData) {
-			public void run() {
+   void notifyListeners(final IServiceStatusData data) {
+      IServiceStatusData classData = data;
+      executor.execute(new StatusBoardRunnable(classData) {
+         @Override
+         public void run() {
 
-				int size = listeners.size();
-				for (int i = 0; i < size; i++) {
-					try {
-						listeners.get(i).statusBoardUpdated(getData());
-					} catch (ConnectException e) {
-					   OseeLog.log(TestEnvironment.class,Level.SEVERE,
-								e.getMessage(), e);
-						listeners.remove(i);
-						notifyListeners(getData());
-						return;
-					} catch (Throwable e) {
-						e.printStackTrace();
-						OseeLog.log(TestEnvironment.class, Level.SEVERE,
-								e.getMessage(), e);
-					}
-				}
-			}
-		});
-	}
-	
-	
-	
+            int size = listeners.size();
+            for (int i = 0; i < size; i++) {
+               try {
+                  listeners.get(i).statusBoardUpdated(getData());
+               } catch (ConnectException e) {
+                  OseeLog.log(TestEnvironment.class, Level.SEVERE, e.getMessage(), e);
+                  listeners.remove(i);
+                  notifyListeners(getData());
+                  return;
+               } catch (Throwable e) {
+                  e.printStackTrace();
+                  OseeLog.log(TestEnvironment.class, Level.SEVERE, e.getMessage(), e);
+               }
+            }
+         }
+      });
+   }
 
-	public void onEnvironmentKilled(TestEnvironment env) {
+   @Override
+   public void onEnvironmentKilled(TestEnvironment env) {
 
-	}
+   }
 
-	public void dispose(){
-		currentCommand = null;
-		listeners.clear();
-		listeners = null;
-	}
+   @Override
+   public void dispose() {
+      currentCommand = null;
+      listeners.clear();
+      listeners = null;
+   }
 
-	public void onTestServerCommandFinished(TestEnvironment env,
-			ICommandHandle handle) {
-		notifyListeners(new TestServerCommandComplete(handle));
-	}
-	
-	public void onTestComplete(String className, String serverOutfilePath, String clientOutfilePath, CommandEndedStatusEnum status, List<IHealthStatus> healthStatus){
-		notifyListeners(new TestComplete(className, serverOutfilePath, clientOutfilePath, status, healthStatus));
-	}
+   @Override
+   public void onTestServerCommandFinished(TestEnvironment env, ICommandHandle handle) {
+      notifyListeners(new TestServerCommandComplete(handle));
+   }
 
-	public void onTestStart(String className) {
-		notifyListeners(new TestStart(className));
-	}
+   @Override
+   public void onTestComplete(String className, String serverOutfilePath, String clientOutfilePath, CommandEndedStatusEnum status, List<IHealthStatus> healthStatus) {
+      notifyListeners(new TestComplete(className, serverOutfilePath, clientOutfilePath, status, healthStatus));
+   }
+
+   @Override
+   public void onTestStart(String className) {
+      notifyListeners(new TestStart(className));
+   }
 
 }

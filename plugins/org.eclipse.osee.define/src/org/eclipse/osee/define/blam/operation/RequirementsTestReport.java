@@ -148,9 +148,9 @@ public class RequirementsTestReport extends AbstractBlam {
          requirementsBulkLoad.addAll(input.getDescendants());
       }
       Collection<Artifact> temp =
-            RelationManager.getRelatedArtifacts(requirementsBulkLoad, 1, CoreRelationTypes.Verification__Verifier);
+         RelationManager.getRelatedArtifacts(requirementsBulkLoad, 1, CoreRelationTypes.Verification__Verifier);
       Collection<Artifact> temp2 =
-            RelationManager.getRelatedArtifacts(temp, 1, CoreRelationTypes.Test_Unit_Result__Test_Result);
+         RelationManager.getRelatedArtifacts(temp, 1, CoreRelationTypes.Test_Unit_Result__Test_Result);
       System.out.println("Bulk loaded " + temp2.size() + " test results");
    }
 

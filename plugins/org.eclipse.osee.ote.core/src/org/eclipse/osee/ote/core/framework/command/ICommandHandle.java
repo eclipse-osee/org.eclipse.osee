@@ -14,10 +14,15 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public interface ICommandHandle extends Remote {
-	boolean cancelAll(boolean mayInterruptIfRunning) throws RemoteException;
-	boolean cancelSingle(boolean mayInterruptIfRunning) throws RemoteException;	
-	ITestCommandResult get() throws RemoteException;
-	boolean isCancelled() throws RemoteException;
-	boolean isDone() throws RemoteException;
-	String getCommandKey() throws RemoteException;
+   boolean cancelAll(boolean mayInterruptIfRunning) throws RemoteException;
+
+   boolean cancelSingle(boolean mayInterruptIfRunning) throws RemoteException;
+
+   ITestCommandResult get() throws RemoteException;
+
+   boolean isCancelled() throws RemoteException;
+
+   boolean isDone() throws RemoteException;
+
+   String getCommandKey() throws RemoteException;
 }

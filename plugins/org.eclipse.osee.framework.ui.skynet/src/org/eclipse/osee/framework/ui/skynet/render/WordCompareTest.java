@@ -36,8 +36,9 @@ public class WordCompareTest {
             return "Select an Xml File";
          }
 
+         @Override
          public boolean accept(File file) {
-            return file.isDirectory() || (file.isFile() && file.getName().endsWith(".xml"));
+            return file.isDirectory() || file.isFile() && file.getName().endsWith(".xml");
          }
       });
 
@@ -65,9 +66,11 @@ public class WordCompareTest {
             // Convert a code source location into a full class file location
             if (result.getProtocol().equals("file")) {
                try {
-                  if (result.toExternalForm().endsWith(".jar") || result.toExternalForm().endsWith(".zip"))
+                  if (result.toExternalForm().endsWith(".jar") || result.toExternalForm().endsWith(".zip")) {
                      result = new URL("jar:".concat(result.toExternalForm()).concat("!/").concat(classAsResource));
-                  else if (new File(result.getFile()).isDirectory()) result = new URL(result, classAsResource);
+                  } else if (new File(result.getFile()).isDirectory()) {
+                     result = new URL(result, classAsResource);
+                  }
                } catch (MalformedURLException ignore) {
                }
             }
@@ -77,7 +80,7 @@ public class WordCompareTest {
          // Try to find class definition as a resource
          final ClassLoader classLoader = classToFind.getClassLoader();
          result =
-               classLoader != null ? classLoader.getResource(classAsResource) : ClassLoader.getSystemResource(classAsResource);
+            classLoader != null ? classLoader.getResource(classAsResource) : ClassLoader.getSystemResource(classAsResource);
       }
       return result;
    }
@@ -119,11 +122,11 @@ public class WordCompareTest {
 
          // quotes are neccessary because of Runtime.exec wraps the last element in quotes...crazy
          String cmd[] =
-               {
-                     "cmd",
-                     "/s /c",
-                     "\"" + vbDiffScript.getPath() + "\"",
-                     "/author:CoolOseeUser\" /diffPath:\"" + diffPath + "\" /detectFormatChanges:true /ver1:\"" + baseFile.getAbsolutePath() + "\" /ver2:\"" + newerFile.getAbsolutePath()};
+            {
+               "cmd",
+               "/s /c",
+               "\"" + vbDiffScript.getPath() + "\"",
+               "/author:CoolOseeUser\" /diffPath:\"" + diffPath + "\" /detectFormatChanges:true /ver1:\"" + baseFile.getAbsolutePath() + "\" /ver2:\"" + newerFile.getAbsolutePath()};
 
          Process proc = Runtime.getRuntime().exec(cmd);
 

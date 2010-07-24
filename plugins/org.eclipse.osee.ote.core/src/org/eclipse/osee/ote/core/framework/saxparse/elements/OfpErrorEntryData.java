@@ -10,18 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.core.framework.saxparse.elements;
 
-
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public class OfpErrorEntryData {
 
-   private String nodeId;
-   private String count;
-   private String severity;
-   private String version;
-   
+   private final String nodeId;
+   private final String count;
+   private final String severity;
+   private final String version;
+
    /**
     * @return the nodeId
     */

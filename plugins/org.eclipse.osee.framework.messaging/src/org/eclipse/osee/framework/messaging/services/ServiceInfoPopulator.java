@@ -11,13 +11,11 @@
 package org.eclipse.osee.framework.messaging.services;
 
 import java.util.List;
-
 import org.eclipse.osee.framework.messaging.services.messages.ServiceDescriptionPair;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public interface ServiceInfoPopulator {
-	void updateServiceInfo(List<ServiceDescriptionPair> serviceDescription);
+   void updateServiceInfo(List<ServiceDescriptionPair> serviceDescription);
 }

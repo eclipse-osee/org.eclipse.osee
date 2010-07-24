@@ -33,8 +33,8 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.JoinUtility;
-import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.database.core.JoinUtility.CharJoinQuery;
+import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -149,7 +149,7 @@ public class ArtifactQueryBuilder {
 
    public ArtifactQueryBuilder(IArtifactType artifactType, IOseeBranch branch, LoadLevel loadLevel, List<AbstractArtifactSearchCriteria> criteria) {
       this(null, 0, null, null, Arrays.asList(artifactType), branch, null, EXCLUDE_DELETED, loadLevel, true,
-            toArray(criteria));
+         toArray(criteria));
       emptyCriteria = criteria.isEmpty();
    }
 
@@ -471,8 +471,8 @@ public class ArtifactQueryBuilder {
       }
 
       List<Artifact> artifacts =
-            ArtifactLoader.getArtifacts(getArtifactSelectSql(), queryParameters.toArray(), artifactCountEstimate,
-                  loadLevel, reload, confirmer, transactionId, allowDeleted);
+         ArtifactLoader.getArtifacts(getArtifactSelectSql(), queryParameters.toArray(), artifactCountEstimate,
+            loadLevel, reload, confirmer, transactionId, allowDeleted);
       cleanup();
 
       return artifacts;

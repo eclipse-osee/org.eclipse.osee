@@ -32,35 +32,34 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
  * @author Roberto E. Escobar
  */
 public class OseeTypesExportOperation extends AbstractOperation {
-	private final File folder;
+   private final File folder;
 
-	public OseeTypesExportOperation(File folder) {
-		super("Export Osee Types Model", Activator.PLUGIN_ID);
-		this.folder = folder;
-	}
+   public OseeTypesExportOperation(File folder) {
+      super("Export Osee Types Model", Activator.PLUGIN_ID);
+      this.folder = folder;
+   }
 
-	@Override
-	protected void doWork(IProgressMonitor monitor) throws Exception {
-		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("sessionId", ClientSessionManager.getSessionId());
+   @Override
+   protected void doWork(IProgressMonitor monitor) throws Exception {
+      Map<String, String> parameters = new HashMap<String, String>();
+      parameters.put("sessionId", ClientSessionManager.getSessionId());
 
-		String url =
-					HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.OSEE_MODEL_CONTEXT,
-								parameters);
+      String url =
+         HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.OSEE_MODEL_CONTEXT, parameters);
 
-		OutputStream outputStream = null;
-		try {
-			outputStream = new BufferedOutputStream(new FileOutputStream(new File(folder, getOseeFileName())));
-			AcquireResult results = HttpProcessor.acquire(new URL(url), outputStream);
-			if (!results.wasSuccessful()) {
-				throw new OseeCoreException("Error exporting osee types");
-			}
-		} finally {
-			Lib.close(outputStream);
-		}
-	}
+      OutputStream outputStream = null;
+      try {
+         outputStream = new BufferedOutputStream(new FileOutputStream(new File(folder, getOseeFileName())));
+         AcquireResult results = HttpProcessor.acquire(new URL(url), outputStream);
+         if (!results.wasSuccessful()) {
+            throw new OseeCoreException("Error exporting osee types");
+         }
+      } finally {
+         Lib.close(outputStream);
+      }
+   }
 
-	private String getOseeFileName() {
-		return "OseeTypes_" + Lib.getDateTimeString() + ".osee";
-	}
+   private String getOseeFileName() {
+      return "OseeTypes_" + Lib.getDateTimeString() + ".osee";
+   }
 }

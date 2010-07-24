@@ -23,6 +23,7 @@ import org.eclipse.swt.graphics.Image;
  */
 public class ArtifactTypeLabelProvider implements ILabelProvider {
 
+   @Override
    public Image getImage(Object arg0) {
       if (arg0 instanceof ArtifactType) {
          return ArtifactImageManager.getImage(((ArtifactType) arg0));
@@ -30,6 +31,7 @@ public class ArtifactTypeLabelProvider implements ILabelProvider {
       return null;
    }
 
+   @Override
    public String getText(Object arg0) {
       if (arg0 instanceof ArtifactType) {
          return ((ArtifactType) arg0).getName();
@@ -37,16 +39,20 @@ public class ArtifactTypeLabelProvider implements ILabelProvider {
       return "";
    }
 
+   @Override
    public void addListener(ILabelProviderListener arg0) {
    }
 
+   @Override
    public void dispose() {
    }
 
+   @Override
    public boolean isLabelProperty(Object arg0, String arg1) {
       return false;
    }
 
+   @Override
    public void removeListener(ILabelProviderListener arg0) {
    }
 

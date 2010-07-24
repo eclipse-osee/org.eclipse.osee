@@ -16,42 +16,44 @@ import org.eclipse.osee.ote.ui.message.watch.ElementPath;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public class DetailsWrapper implements IElementPath {
 
-	private MessageRecordDetails details;
-	private ElementPath elementPath;
-	private MessageNode messageNode;
-	
-	public DetailsWrapper(MessageRecordDetails details, ElementPath elementPath){
-		this.details = details;
-		this.elementPath = elementPath;
-	}
-	
-	public DetailsWrapper(MessageRecordDetails details){
-		this.details = details;
-		
-	}
-	
-	/**
-	 * @param messageNode
-	 */
-	public DetailsWrapper(MessageNode messageNode) {
-	this.messageNode = messageNode;	
-	elementPath = new ElementPath(messageNode.getMessageClassName());
-	}
+   private MessageRecordDetails details;
+   private ElementPath elementPath;
+   private MessageNode messageNode;
 
-	public MessageRecordDetails getDetails(){
-		return details;
-	}
-	public ElementPath getElementPath(){
-		return elementPath;
-	}
-	/**
+   public DetailsWrapper(MessageRecordDetails details, ElementPath elementPath) {
+      this.details = details;
+      this.elementPath = elementPath;
+   }
+
+   public DetailsWrapper(MessageRecordDetails details) {
+      this.details = details;
+
+   }
+
+   /**
+    * @param messageNode
+    */
+   public DetailsWrapper(MessageNode messageNode) {
+      this.messageNode = messageNode;
+      elementPath = new ElementPath(messageNode.getMessageClassName());
+   }
+
+   public MessageRecordDetails getDetails() {
+      return details;
+   }
+
+   @Override
+   public ElementPath getElementPath() {
+      return elementPath;
+   }
+
+   /**
 	 * 
 	 */
-	public MessageNode getMessageNode() {
-		return messageNode;
-	}
+   public MessageNode getMessageNode() {
+      return messageNode;
+   }
 }

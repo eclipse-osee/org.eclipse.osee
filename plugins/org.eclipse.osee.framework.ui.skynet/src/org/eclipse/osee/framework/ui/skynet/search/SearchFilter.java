@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.Control;
  */
 public abstract class SearchFilter {
    private static final Pattern wildCardPattern = Pattern.compile("(?<!\\\\)\\*");
-   private String filterName;
+   private final String filterName;
    protected Control optionsControl;
    protected boolean not;
 

@@ -32,6 +32,7 @@ public class PropertyId {
       return displayName;
    }
 
+   @Override
    public String toString() {
       return categoryName + " : " + displayName;
    }

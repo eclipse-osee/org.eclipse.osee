@@ -32,10 +32,10 @@ public class PageManager {
    protected HostPage hostPage;
    protected OverviewPage overviewPage;
    protected ScriptPage scriptPage;
-   private List<TestManagerPage> pages;
+   private final List<TestManagerPage> pages;
 
-   private TestManagerEditor testManager;
-   private ITestManagerFactory factory;
+   private final TestManagerEditor testManager;
+   private final ITestManagerFactory factory;
 
    public PageManager(ITestManagerFactory factory, TestManagerEditor testManager) {
       this.factory = factory;

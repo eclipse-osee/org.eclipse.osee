@@ -46,7 +46,7 @@ public class WorkWidgetDefinition extends WorkItemDefinition {
 
    public WorkWidgetDefinition(Artifact artifact) throws OseeCoreException {
       this(artifact.getName(), artifact.getSoleAttributeValue(WorkItemAttributes.WORK_ID.getAttributeTypeName(),
-            artifact.getName()));
+         artifact.getName()));
       setType(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_TYPE.getAttributeTypeName(), (String) null));
       loadWorkDataKeyValueMap(artifact);
 
@@ -59,7 +59,7 @@ public class WorkWidgetDefinition extends WorkItemDefinition {
       Artifact art = super.toArtifact(writeType);
       try {
          art.setSoleAttributeFromString(WorkItemAttributes.WORK_DATA.getAttributeTypeName(),
-               tagName + "=" + XWidgetParser.toXml(get()));
+            tagName + "=" + XWidgetParser.toXml(get()));
       } catch (ParserConfigurationException ex) {
          throw new OseeCoreException(ex);
       } catch (TransformerException ex) {
@@ -106,8 +106,9 @@ public class WorkWidgetDefinition extends WorkItemDefinition {
    public static DynamicXWidgetLayoutData getFromXml(String xml) throws OseeCoreException {
       try {
          DynamicXWidgetLayoutData data = XWidgetParser.extractlayoutData(null, xml);
-         if (data == null) throw new IllegalArgumentException(
-               "Unable to create WorkItemXWidgetDefinition from xml\"" + xml + "\"");
+         if (data == null) {
+            throw new IllegalArgumentException("Unable to create WorkItemXWidgetDefinition from xml\"" + xml + "\"");
+         }
          return data;
       } catch (ParserConfigurationException ex) {
          throw new OseeCoreException(ex);
@@ -118,6 +119,7 @@ public class WorkWidgetDefinition extends WorkItemDefinition {
       }
    }
 
+   @Override
    public IArtifactType getArtifactType() {
       return CoreArtifactTypes.WorkWidgetDefinition;
    }

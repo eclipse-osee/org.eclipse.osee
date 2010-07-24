@@ -35,6 +35,7 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
       this.artifact = artifact;
    }
 
+   @Override
    public Image getColumnImage(Object element, int columnIndex) {
       if (element instanceof RelationType && columnIndex == 0) {
          return ImageManager.getImage(FrameworkImage.RELATION);
@@ -71,6 +72,7 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
       return null;
    }
 
+   @Override
    public String getColumnText(Object element, int columnIndex) {
       if (element instanceof RelationTypeSideSorter && columnIndex == 0) {
          RelationTypeSideSorter side = (RelationTypeSideSorter) element;
@@ -98,8 +100,8 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
             String rationale = "";
             try {
                rationale =
-                     RelationManager.getRelationRationale(wrapper.getArtifactA(), wrapper.getArtifactB(),
-                           wrapper.getRelationType());
+                  RelationManager.getRelationRationale(wrapper.getArtifactA(), wrapper.getArtifactB(),
+                     wrapper.getRelationType());
             } catch (OseeCoreException ex) {
 
             }
@@ -109,23 +111,29 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
       return "";
    }
 
+   @Override
    public void addListener(ILabelProviderListener listener) {
    }
 
+   @Override
    public void dispose() {
    }
 
+   @Override
    public boolean isLabelProperty(Object element, String property) {
       return true;
    }
 
+   @Override
    public void removeListener(ILabelProviderListener listener) {
    }
 
+   @Override
    public Image getImage(Object element) {
       return getColumnImage(element, 0);
    }
 
+   @Override
    public String getText(Object element) {
       return getColumnText(element, 0);
    }

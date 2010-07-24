@@ -63,10 +63,10 @@ import org.w3c.dom.NodeList;
  */
 public class FixTemplateContentArtifacts extends AbstractBlam {
    private static final boolean DEBUG =
-         Boolean.parseBoolean(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Blam"));
+      Boolean.parseBoolean(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Blam"));
 
    private static final String GET_ATTRS =
-         "SELECT DISTINCT(art.human_readable_id), attr.gamma_id, attr.uri FROM osee_attribute attr, osee_artifact art WHERE attr.attr_type_id = ? AND attr.art_id = art.art_id AND attr.uri is not null AND attr.uri != ''";
+      "SELECT DISTINCT(art.human_readable_id), attr.gamma_id, attr.uri FROM osee_attribute attr, osee_artifact art WHERE attr.attr_type_id = ? AND attr.art_id = art.art_id AND attr.uri is not null AND attr.uri != ''";
    private final Collection<String> badData = new LinkedList<String>();
    private static final String[] columnHeaders = new String[] {"Corrupted Data"};
 
@@ -88,8 +88,8 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
          return;
       }
       File backupFolder = createTempFolder();
-      OseeLog.log(SkynetGuiPlugin.class, Level.INFO, String.format("Backup Folder location: [%s]",
-            backupFolder.getAbsolutePath()));
+      OseeLog.log(SkynetGuiPlugin.class, Level.INFO,
+         String.format("Backup Folder location: [%s]", backupFolder.getAbsolutePath()));
 
       ArrayList<AttrData> attrDatas = loadAttrData();
       int totalAttrs = attrDatas.size();
@@ -136,8 +136,8 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
             }
          } catch (Exception ex) {
             badData.add(attrData.gammaId);
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, String.format("Skiping File %s because of exception %s",
-                  attrData.getHrid(), ex));
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE,
+               String.format("Skiping File %s because of exception %s", attrData.getHrid(), ex));
          }
 
          if (fixedAttribute) {
@@ -156,8 +156,8 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
                   OseeLog.log(SkynetGuiPlugin.class, Level.INFO, String.format(" After Fix : %s", resource.data));
                }
             } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, String.format(
-                     "Skiping File %s because of exception %s", attrData.getHrid(), ex));
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE,
+                  String.format("Skiping File %s because of exception %s", attrData.getHrid(), ex));
             }
          }
          monitor.worked(1);
@@ -182,10 +182,10 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(GET_ATTRS,
-               AttributeTypeManager.getType(CoreAttributeTypes.WORD_TEMPLATE_CONTENT).getId());
+            AttributeTypeManager.getType(CoreAttributeTypes.WORD_TEMPLATE_CONTENT).getId());
          while (chStmt.next()) {
             attrData.add(new AttrData(chStmt.getString("gamma_Id"), chStmt.getString("human_readable_id"),
-                  chStmt.getString("uri")));
+               chStmt.getString("uri")));
          }
       } finally {
          chStmt.close();
@@ -215,10 +215,9 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
       }
 
       String urlString =
-            HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.RESOURCE_CONTEXT,
-                  parameterMap);
+         HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.RESOURCE_CONTEXT, parameterMap);
       HttpProcessor.put(new URL(urlString), new ByteArrayInputStream(toUpload), resource.result.getContentType(),
-            resource.result.getEncoding());
+         resource.result.getEncoding());
    }
 
    private Resource getResource(String resourcePath) throws OseeCoreException {
@@ -229,8 +228,8 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
          parameterMap.put("sessionId", ClientSessionManager.getSessionId());
          parameterMap.put("uri", resourcePath);
          String urlString =
-               HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.RESOURCE_CONTEXT,
-                     parameterMap);
+            HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.RESOURCE_CONTEXT,
+               parameterMap);
 
          AcquireResult result = HttpProcessor.acquire(new URL(urlString), sourceOutputStream);
          if (result.getCode() == HttpURLConnection.HTTP_OK) {

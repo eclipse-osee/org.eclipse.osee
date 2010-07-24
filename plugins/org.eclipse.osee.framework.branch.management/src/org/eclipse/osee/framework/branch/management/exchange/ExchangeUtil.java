@@ -46,8 +46,8 @@ public class ExchangeUtil {
    public static Writer createXmlWriter(File tempFolder, String name, int bufferSize) throws Exception {
       File indexFile = new File(tempFolder, name);
       Writer writer =
-            new BufferedWriter(new OutputStreamWriter(new FileOutputStream(indexFile), ExportImportXml.XML_ENCODING),
-                  bufferSize);
+         new BufferedWriter(new OutputStreamWriter(new FileOutputStream(indexFile), ExportImportXml.XML_ENCODING),
+            bufferSize);
       writer.write(ExportImportXml.XML_HEADER);
       return writer;
    }
@@ -60,8 +60,8 @@ public class ExchangeUtil {
       if (source.isFile()) {
          wasZipExtractionRequired = true;
          importSource = ExchangeUtil.createTempFolder();
-         OseeLog.log(ExchangeUtil.class, Level.INFO, String.format("Extracting Exchange File: [%s] to [%s]",
-               source.getName(), importSource));
+         OseeLog.log(ExchangeUtil.class, Level.INFO,
+            String.format("Extracting Exchange File: [%s] to [%s]", source.getName(), importSource));
          Lib.decompressStream(new FileInputStream(source), importSource);
          wasZipExtractionRequired = true;
       } else {
@@ -73,9 +73,9 @@ public class ExchangeUtil {
 
    public static void cleanUpTempExchangeFile(File exchangeSource, boolean wasZipExtractionRequired) {
       if (wasZipExtractionRequired && exchangeSource != null && exchangeSource.exists() && !exchangeSource.getAbsolutePath().equals(
-            ExchangeProvider.getExchangeFilePath())) {
-         OseeLog.log(ExchangeUtil.class, Level.INFO, String.format("Deleting Branch Import Temp Folder - [%s]",
-               exchangeSource));
+         ExchangeProvider.getExchangeFilePath())) {
+         OseeLog.log(ExchangeUtil.class, Level.INFO,
+            String.format("Deleting Branch Import Temp Folder - [%s]", exchangeSource));
          Lib.deleteDir(exchangeSource);
       }
    }

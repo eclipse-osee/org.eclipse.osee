@@ -27,8 +27,8 @@ import org.eclipse.osee.framework.messaging.id.ProtocolId;
 public class EndpointSendCollection {
 
    private final List<EndpointSend> endpoints;
-   private Map<ProtocolId, EndpointSend> protocolMapping;
-   private Map<MessageId, ProtocolId> messageIdMapping;
+   private final Map<ProtocolId, EndpointSend> protocolMapping;
+   private final Map<MessageId, ProtocolId> messageIdMapping;
 
    public EndpointSendCollection() {
       endpoints = new CopyOnWriteArrayList<EndpointSend>();

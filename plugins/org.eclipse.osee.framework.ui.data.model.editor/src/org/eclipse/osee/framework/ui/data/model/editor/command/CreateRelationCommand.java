@@ -28,18 +28,22 @@ public class CreateRelationCommand extends Command {
       this.parent = parent;
    }
 
+   @Override
    public boolean canExecute() {
       return relation != null && parent != null;
    }
 
+   @Override
    public void execute() {
       redo();
    }
 
+   @Override
    public void redo() {
       parent.add(relation);
    }
 
+   @Override
    public void undo() {
       parent.remove(relation);
    }

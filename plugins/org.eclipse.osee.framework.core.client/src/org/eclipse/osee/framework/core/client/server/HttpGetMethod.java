@@ -23,12 +23,13 @@ final class HttpGetMethod implements IHttpMethod {
    protected HttpGetMethod() {
    }
 
+   @Override
    public void processRequest(HttpRequest httpRequest, HttpResponse httpResponse) {
       String requestType = httpRequest.getUrlRequest();
       if (extensionObjects == null) {
          extensionObjects =
-               new ExtensionDefinedObjects<IHttpServerRequest>(
-                     "org.eclipse.osee.framework.skynet.core.HttpServerRequest", "IHttpServerRequest", "classname");
+            new ExtensionDefinedObjects<IHttpServerRequest>("org.eclipse.osee.framework.skynet.core.HttpServerRequest",
+               "IHttpServerRequest", "classname");
       }
       List<IHttpServerRequest> httpServerRequests = extensionObjects.getObjects();
       for (IHttpServerRequest request : httpServerRequests) {

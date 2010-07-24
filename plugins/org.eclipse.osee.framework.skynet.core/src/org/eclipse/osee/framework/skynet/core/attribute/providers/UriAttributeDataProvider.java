@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.utils.BinaryContentUtils
  * @author Roberto E. Escobar
  */
 public class UriAttributeDataProvider extends AbstractAttributeDataProvider implements ICharacterAttributeDataProvider, IBinaryAttributeDataProvider {
-   private DataStore dataStore;
+   private final DataStore dataStore;
    private String displayable;
 
    public UriAttributeDataProvider(Attribute<?> attribute) {

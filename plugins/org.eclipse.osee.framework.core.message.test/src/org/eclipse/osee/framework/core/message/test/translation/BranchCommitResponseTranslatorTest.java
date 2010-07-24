@@ -32,7 +32,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Test Case for {@link BranchCommitResponseTranslator}
- *
+ * 
  * @author Megumi Telles
  */
 @RunWith(Parameterized.class)

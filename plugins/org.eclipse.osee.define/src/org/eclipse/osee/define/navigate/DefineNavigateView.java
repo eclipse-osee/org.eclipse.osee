@@ -109,6 +109,7 @@ public class DefineNavigateView extends ViewPart implements IActionable {
 
    }
 
+   @Override
    public String getActionDescription() {
       IStructuredSelection sel = (IStructuredSelection) xNavComp.getFilteredTree().getViewer().getSelection();
       if (sel.iterator().hasNext()) {

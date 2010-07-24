@@ -15,5 +15,6 @@ package org.eclipse.osee.framework.skynet.core.artifact;
  */
 
 public enum DeletionFlag {
-   INCLUDE_DELETED, EXCLUDE_DELETED;
+   INCLUDE_DELETED,
+   EXCLUDE_DELETED;
 }

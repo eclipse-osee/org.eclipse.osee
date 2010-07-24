@@ -69,7 +69,7 @@ public final class OseeStatementImpl implements IOseeStatement {
 
    /**
     * @param fetchSize hint as to the number of rows that should be fetched from the database at a time. will be limited
-    *           to 10,000
+    * to 10,000
     * @param query
     * @param data
     * @throws OseeDataStoreException

@@ -66,16 +66,18 @@ public class NewActionPage1 extends WizardPage {
    }
 
    private final XModifiedListener xModListener = new XModifiedListener() {
+      @Override
       public void widgetModified(XWidget widget) {
          getContainer().updateButtons();
       }
    };
 
+   @Override
    public void createControl(Composite parent) {
 
       try {
          String xWidgetXml =
-               "<WorkPage><XWidget displayName=\"Title\" required=\"true\" xwidgetType=\"XText\" toolTip=\"" + ATSAttributes.TITLE_ATTRIBUTE.getDescription() + "\"/></WorkPage>";
+            "<WorkPage><XWidget displayName=\"Title\" required=\"true\" xwidgetType=\"XText\" toolTip=\"" + ATSAttributes.TITLE_ATTRIBUTE.getDescription() + "\"/></WorkPage>";
          Composite comp = new Composite(parent, SWT.NONE);
          comp.setLayout(new GridLayout(1, false));
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -89,8 +91,8 @@ public class NewActionPage1 extends WizardPage {
 
          new Label(aiComp, SWT.NONE).setText("Select Actionable Items:");
          treeViewer =
-               new OSEECheckedFilteredTree(aiComp,
-                     SWT.CHECK | SWT.MULTI | SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter);
+            new OSEECheckedFilteredTree(aiComp,
+               SWT.CHECK | SWT.MULTI | SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter);
          treeViewer.getViewer().getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
          treeViewer.getViewer().setContentProvider(new AITreeContentProvider(Active.Active));
          treeViewer.getViewer().setLabelProvider(new ArtifactLabelProvider());
@@ -101,6 +103,7 @@ public class NewActionPage1 extends WizardPage {
          }
          treeViewer.getViewer().setSorter(new ArtifactNameSorter());
          treeViewer.getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                getContainer().updateButtons();
             }
@@ -125,6 +128,7 @@ public class NewActionPage1 extends WizardPage {
             public void widgetDefaultSelected(SelectionEvent e) {
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                treeViewer.clearChecked();
             };
@@ -142,6 +146,7 @@ public class NewActionPage1 extends WizardPage {
    }
 
    private class SelectionChangedListener implements ISelectionChangedListener {
+      @Override
       public void selectionChanged(SelectionChangedEvent event) {
          IStructuredSelection sel = (IStructuredSelection) treeViewer.getViewer().getSelection();
          if (sel.isEmpty()) {
@@ -151,7 +156,7 @@ public class NewActionPage1 extends WizardPage {
          try {
             descriptionLabel.setText(aia.getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), ""));
          } catch (OseeCoreException ex) {
-            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          }
       }
    }
@@ -188,7 +193,7 @@ public class NewActionPage1 extends WizardPage {
             }
          }
          Collection<TeamDefinitionArtifact> teamDefs =
-               TeamDefinitionArtifact.getImpactedTeamDefs(getSelectedActionableItemArtifacts());
+            TeamDefinitionArtifact.getImpactedTeamDefs(getSelectedActionableItemArtifacts());
          if (teamDefs.isEmpty()) {
             AWorkbench.popup("ERROR", "No Teams Associated with selected Actionable Items");
             return false;

@@ -40,23 +40,29 @@ public class WorldEditorInput implements IEditorInput {
 
    @Override
    public boolean equals(Object obj) {
-      if (!(obj instanceof WorldEditorInput)) return false;
+      if (!(obj instanceof WorldEditorInput)) {
+         return false;
+      }
       WorldEditorInput castObj = (WorldEditorInput) obj;
       return castObj.iWorldEditorProvider.equals(this.iWorldEditorProvider);
    }
 
+   @Override
    public boolean exists() {
       return false;
    }
 
+   @Override
    public ImageDescriptor getImageDescriptor() {
       return null;
    }
 
+   @Override
    public IPersistableElement getPersistable() {
       return null;
    }
 
+   @Override
    public String getToolTipText() {
       try {
          return iWorldEditorProvider.getName();

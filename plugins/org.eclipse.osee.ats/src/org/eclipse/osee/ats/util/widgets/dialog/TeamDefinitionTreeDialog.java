@@ -42,9 +42,11 @@ public class TeamDefinitionTreeDialog extends TeamDefinitionTreeWithChildrenDial
          showFinishedCheck.createWidgets(dialogComp, 2);
          showFinishedCheck.set(showFinished);
          showFinishedCheck.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                showFinished = showFinishedCheck.isSelected();
             };
@@ -55,9 +57,11 @@ public class TeamDefinitionTreeDialog extends TeamDefinitionTreeWithChildrenDial
          showActionCheck.createWidgets(dialogComp, 2);
          showActionCheck.set(showAction);
          showActionCheck.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                showAction = showActionCheck.isSelected();
             };

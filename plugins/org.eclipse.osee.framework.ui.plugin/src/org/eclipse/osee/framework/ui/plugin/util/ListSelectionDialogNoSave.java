@@ -27,10 +27,11 @@ public class ListSelectionDialogNoSave extends MessageDialog {
    private Button cancelButton;
    private List selections;
    private int selectionIndex;
-   private Object[] choose;
+   private final Object[] choose;
 
    public ListSelectionDialogNoSave(Object[] choose, Shell parentShell, String dialogTitle, Image dialogTitleImage, String dialogMessage, int dialogImageType, String[] dialogButtonLabels, int defaultIndex) {
-      super(parentShell, dialogTitle, dialogTitleImage, dialogMessage, dialogImageType, dialogButtonLabels, defaultIndex);
+      super(parentShell, dialogTitle, dialogTitleImage, dialogMessage, dialogImageType, dialogButtonLabels,
+         defaultIndex);
       this.choose = choose;
    }
 
@@ -43,11 +44,13 @@ public class ListSelectionDialogNoSave extends MessageDialog {
 
       selections.addSelectionListener(new SelectionListener() {
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             selectionIndex = selections.getSelectionIndex();
             System.out.println("selected index " + selectionIndex);
          }
 
+         @Override
          public void widgetDefaultSelected(SelectionEvent e) {
          }
 
@@ -66,20 +69,24 @@ public class ListSelectionDialogNoSave extends MessageDialog {
 
       okButton.addSelectionListener(new SelectionListener() {
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
 
          }
 
+         @Override
          public void widgetDefaultSelected(SelectionEvent e) {
          }
       });
 
       cancelButton.addSelectionListener(new SelectionListener() {
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
 
          }
 
+         @Override
          public void widgetDefaultSelected(SelectionEvent e) {
          }
 

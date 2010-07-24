@@ -25,17 +25,16 @@ import org.osgi.service.packageadmin.PackageAdmin;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public class OteServiceStarterCreationHandler extends AbstractTrackingHandler {
 
-   private final static Class<?>[] SERVICE_DEPENDENCIES =
-      new Class<?>[] {IRuntimeLibraryManager.class, RemoteServiceRegistrar.class, MessageService.class, IConnectionService.class, PackageAdmin.class};
+   private final static Class<?>[] SERVICE_DEPENDENCIES = new Class<?>[] {IRuntimeLibraryManager.class,
+      RemoteServiceRegistrar.class, MessageService.class, IConnectionService.class, PackageAdmin.class};
    private ServiceRegistration registration;
-   
-   OteServiceStarterCreationHandler(){
+
+   OteServiceStarterCreationHandler() {
    }
-   
+
    @Override
    public Class<?>[] getDependencies() {
       return SERVICE_DEPENDENCIES;
@@ -49,7 +48,9 @@ public class OteServiceStarterCreationHandler extends AbstractTrackingHandler {
       IRuntimeLibraryManager runtimeLibraryManager = getService(IRuntimeLibraryManager.class, services);
       PackageAdmin packateAdmin = getService(PackageAdmin.class, services);
       try {
-         OteServiceStarterImpl oteServiceStarterImpl = new OteServiceStarterImpl(packateAdmin, runtimeLibraryManager, connectionService, remoteServiceRegistrar, messageService);
+         OteServiceStarterImpl oteServiceStarterImpl =
+            new OteServiceStarterImpl(packateAdmin, runtimeLibraryManager, connectionService, remoteServiceRegistrar,
+               messageService);
          registration = context.registerService(OteServiceStarter.class.getName(), oteServiceStarterImpl, null);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

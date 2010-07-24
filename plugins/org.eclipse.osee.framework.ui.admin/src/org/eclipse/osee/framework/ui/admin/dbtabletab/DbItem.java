@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.admin.dbtabletab;
 
-
 public abstract class DbItem {
 
    private final String tableName;
@@ -20,7 +19,7 @@ public abstract class DbItem {
    }
 
    public boolean isWriteAccess() {
-	   return true;
+      return true;
    }
 
    public String getTableName() {

@@ -18,10 +18,11 @@ import org.eclipse.osee.ote.message.interfaces.IRemoteMessageService;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
-public class MessageToolExportCustomizer implements ServiceTrackerCustomizer{
+public class MessageToolExportCustomizer implements ServiceTrackerCustomizer {
 
    private final IServiceConnector connector;
    private IRemoteMessageService messageToolServiceInstance;
+
    public MessageToolExportCustomizer(IServiceConnector connector) {
       this.connector = connector;
    }
@@ -41,7 +42,7 @@ public class MessageToolExportCustomizer implements ServiceTrackerCustomizer{
    @Override
    public void modifiedService(ServiceReference reference, Object service) {
       // TODO Auto-generated method stub
-      
+
    }
 
    @Override

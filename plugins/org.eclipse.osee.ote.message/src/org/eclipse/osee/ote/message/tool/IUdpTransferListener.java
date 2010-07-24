@@ -16,13 +16,15 @@ package org.eclipse.osee.ote.message.tool;
 public interface IUdpTransferListener {
    /**
     * called by the file transfer handler when a file transfer is complete
+    * 
     * @param config the transfer configuration
     */
    void onTransferComplete(TransferConfig config);
-   
+
    /**
-    * called when the an error is experienced during transfer operations. The handle for this
-    * transfer will be automatically stopped prior to this method being called
+    * called when the an error is experienced during transfer operations. The handle for this transfer will be
+    * automatically stopped prior to this method being called
+    * 
     * @param config
     * @param t
     */

@@ -377,7 +377,7 @@ public class CoveragePackageImportTest {
 
       // Look at file contents for PowerUnit1.java
       CoverageUnit coverageUnit =
-            (CoverageUnit) CoverageTestUtil.getFirstCoverageByName(coveragePackage, "PowerUnit1.java");
+         (CoverageUnit) CoverageTestUtil.getFirstCoverageByName(coveragePackage, "PowerUnit1.java");
       Assert.assertNotNull(coverageUnit);
       String preFileContents = coverageUnit.getFileContents();
       Assert.assertFalse("initAdded should not yet exist in file contents", preFileContents.contains("initAdded"));
@@ -434,7 +434,7 @@ public class CoveragePackageImportTest {
       Assert.assertNotNull(coverageUnit);
       String postFileContents = coverageUnit.getFileContents();
       Assert.assertTrue("File Contents should have been updated and thus not equal",
-            !postFileContents.equals(preFileContents));
+         !postFileContents.equals(preFileContents));
       Assert.assertTrue("initAdded should now exist in file contents", postFileContents.contains("initAdded"));
 
       CoveragePackage loadedCp = null;
@@ -492,11 +492,11 @@ public class CoveragePackageImportTest {
 
       // Look at file contents for PowerUnit1.java
       CoverageUnit coverageUnit =
-            (CoverageUnit) CoverageTestUtil.getFirstCoverageByName(coveragePackage, "PowerUnit1.java");
+         (CoverageUnit) CoverageTestUtil.getFirstCoverageByName(coveragePackage, "PowerUnit1.java");
       Assert.assertNotNull(coverageUnit);
       String preFileContents = coverageUnit.getFileContents();
       Assert.assertFalse("deselectAdded should not yet exist in file contents",
-            preFileContents.contains("deselectAdded"));
+         preFileContents.contains("deselectAdded"));
 
       // Test MergeManager
       Assert.assertNotNull(coveragePackage);
@@ -550,7 +550,7 @@ public class CoveragePackageImportTest {
       Assert.assertNotNull(coverageUnit);
       String postFileContents = coverageUnit.getFileContents();
       Assert.assertTrue("File Contents should have been updated and thus not equal",
-            !postFileContents.equals(preFileContents));
+         !postFileContents.equals(preFileContents));
       Assert.assertTrue("deselectAdded should now exist in file contents", postFileContents.contains("deselectAdded"));
 
       CoveragePackage loadedCp = null;
@@ -587,7 +587,7 @@ public class CoveragePackageImportTest {
       String postLoadFileContents = coverageUnit.getFileContents();
       Assert.assertEquals("File Contents should be same pre and post save", postLoadFileContents, postFileContents);
       Assert.assertTrue("deselectAdded should exist in loaded file contents",
-            postLoadFileContents.contains("deselectAdded"));
+         postLoadFileContents.contains("deselectAdded"));
    }
 
    @Test
@@ -609,7 +609,7 @@ public class CoveragePackageImportTest {
 
       // Look at file contents for NavigationButton.setImage and make sure only one coverageitem exists
       CoverageUnit coverageUnit =
-            (CoverageUnit) CoverageTestUtil.getFirstCoverageByName(coveragePackage, "NavigationButton1.java");
+         (CoverageUnit) CoverageTestUtil.getFirstCoverageByName(coveragePackage, "NavigationButton1.java");
       Assert.assertNotNull(coverageUnit);
       CoverageUnit setImageCoverageUnit = null;
       for (CoverageUnit childCoverageUnit : coverageUnit.getCoverageUnits()) {
@@ -716,7 +716,7 @@ public class CoveragePackageImportTest {
 
       // Get and store off coverage unit to delete so can confirm deletion occurred
       CoverageUnit powerUnit2CoverageUnit =
-            (CoverageUnit) CoverageTestUtil.getFirstCoverageByName(coveragePackage, "PowerUnit2.java");
+         (CoverageUnit) CoverageTestUtil.getFirstCoverageByName(coveragePackage, "PowerUnit2.java");
       Assert.assertNotNull(powerUnit2CoverageUnit);
       CoverageUnit clearCoverageUnitForDeletion = null;
       for (CoverageUnit childCoverageUnit : powerUnit2CoverageUnit.getCoverageUnits()) {
@@ -777,7 +777,7 @@ public class CoveragePackageImportTest {
 
       // Make sure clear is not there anymore
       powerUnit2CoverageUnit =
-            (CoverageUnit) CoverageTestUtil.getFirstCoverageByName(coveragePackage, "PowerUnit2.java");
+         (CoverageUnit) CoverageTestUtil.getFirstCoverageByName(coveragePackage, "PowerUnit2.java");
       Assert.assertNotNull(powerUnit2CoverageUnit);
       boolean found = false;
       for (CoverageUnit childCoverageUnit : powerUnit2CoverageUnit.getCoverageUnits()) {
@@ -845,7 +845,7 @@ public class CoveragePackageImportTest {
          // do nothing, this exception should have been thrown
       }
       Artifact clearArt =
-            ArtifactQuery.getArtifactFromId(clearCoverageUnitForDeletion.getGuid(), commonBranch, INCLUDE_DELETED);
+         ArtifactQuery.getArtifactFromId(clearCoverageUnitForDeletion.getGuid(), commonBranch, INCLUDE_DELETED);
       Assert.assertNotNull("clear CoverageUnit should exist if search for deleted == true", clearArt);
 
    }
@@ -869,7 +869,7 @@ public class CoveragePackageImportTest {
 
       // Get and store off coverage unit to delete so can confirm deletion occurred
       CoverageUnit auxPowerUnit1CoverageUnit =
-            (CoverageUnit) CoverageTestUtil.getFirstCoverageByName(coveragePackage, "AuxPowerUnit1.java");
+         (CoverageUnit) CoverageTestUtil.getFirstCoverageByName(coveragePackage, "AuxPowerUnit1.java");
       Assert.assertNotNull(auxPowerUnit1CoverageUnit);
       CoverageUnit clearCoverageUnit = null;
       for (CoverageUnit childCoverageUnit : auxPowerUnit1CoverageUnit.getCoverageUnits()) {
@@ -893,7 +893,7 @@ public class CoveragePackageImportTest {
 
       String preFileContents = auxPowerUnit1CoverageUnit.getFileContents();
       Assert.assertFalse("\"clear it now\" should not yet exist in file contents",
-            preFileContents.contains("clear it now"));
+         preFileContents.contains("clear it now"));
 
       // Test MergeManager
       Assert.assertNotNull(coveragePackage);
@@ -906,7 +906,7 @@ public class CoveragePackageImportTest {
             numRename++;
          } else {
             throw new OseeStateException(String.format("Unexpected merge type [%s] for Delete_And_Reorder group",
-                  mergeItem.getMergeType()));
+               mergeItem.getMergeType()));
          }
       }
       Assert.assertEquals(2, numRename);
@@ -973,11 +973,11 @@ public class CoveragePackageImportTest {
 
       // Confirm that fileContents were updated
       auxPowerUnit1CoverageUnit =
-            (CoverageUnit) CoverageTestUtil.getFirstCoverageByName(coveragePackage, "AuxPowerUnit1.java");
+         (CoverageUnit) CoverageTestUtil.getFirstCoverageByName(coveragePackage, "AuxPowerUnit1.java");
       Assert.assertNotNull(auxPowerUnit1CoverageUnit);
       String postFileContents = auxPowerUnit1CoverageUnit.getFileContents();
       Assert.assertTrue("File Contents should have been updated and thus not equal",
-            !postFileContents.equals(preFileContents));
+         !postFileContents.equals(preFileContents));
       Assert.assertTrue("\"clear it now\" should now exist in file contents", postFileContents.contains("clear it now"));
 
       Assert.assertEquals(69, loadedCp.getCoverageItemsCovered().size());
@@ -994,12 +994,12 @@ public class CoveragePackageImportTest {
 
       // Ensure that file contents were updated
       auxPowerUnit1CoverageUnit =
-            (CoverageUnit) CoverageTestUtil.getFirstCoverageByName(coveragePackage, "AuxPowerUnit1.java");
+         (CoverageUnit) CoverageTestUtil.getFirstCoverageByName(coveragePackage, "AuxPowerUnit1.java");
       Assert.assertNotNull(auxPowerUnit1CoverageUnit);
       String postLoadFileContents = auxPowerUnit1CoverageUnit.getFileContents();
       Assert.assertEquals("File Contents should be same pre and post save", postLoadFileContents, postFileContents);
       Assert.assertTrue("deselectAdded should exist in loaded file contents",
-            postLoadFileContents.contains("clear it now"));
+         postLoadFileContents.contains("clear it now"));
 
    }
 
@@ -1022,7 +1022,7 @@ public class CoveragePackageImportTest {
 
       // Get and store off coverage unit to delete so can confirm deletion occurred
       CoverageUnit navigateButton2 =
-            (CoverageUnit) CoverageTestUtil.getFirstCoverageByName(coveragePackage, "NavigationButton2.java");
+         (CoverageUnit) CoverageTestUtil.getFirstCoverageByName(coveragePackage, "NavigationButton2.java");
       Assert.assertNotNull(navigateButton2);
       CoverageUnit getTextCoverageUnit = null;
       for (CoverageUnit childCoverageUnit : navigateButton2.getCoverageUnits()) {
@@ -1056,7 +1056,7 @@ public class CoveragePackageImportTest {
             numDeleted++;
          } else {
             throw new OseeStateException(String.format("Unexpected merge type [%s] for CI_Changes group",
-                  mergeItem.getMergeType()));
+               mergeItem.getMergeType()));
          }
       }
       Assert.assertEquals(2, numRename);
@@ -1124,13 +1124,13 @@ public class CoveragePackageImportTest {
 
       // Confirm that fileContents were updated
       navigateButton2 =
-            (CoverageUnit) CoverageTestUtil.getFirstCoverageByName(coveragePackage, "NavigationButton2.java");
+         (CoverageUnit) CoverageTestUtil.getFirstCoverageByName(coveragePackage, "NavigationButton2.java");
       Assert.assertNotNull(navigateButton2);
       String postFileContents = navigateButton2.getFileContents();
       Assert.assertTrue("File Contents should been updated and thus not equal",
-            !postFileContents.equals(preFileContents));
+         !postFileContents.equals(preFileContents));
       Assert.assertFalse("\"Navigate Here\" should NOT exist in file contents",
-            postFileContents.contains("Navigate Here"));
+         postFileContents.contains("Navigate Here"));
 
       Assert.assertEquals(68, loadedCp.getCoverageItemsCovered().size());
       Assert.assertEquals(134, loadedCp.getCoverageItems().size());
@@ -1142,12 +1142,12 @@ public class CoveragePackageImportTest {
 
       // Ensure that file contents were updated
       navigateButton2 =
-            (CoverageUnit) CoverageTestUtil.getFirstCoverageByName(coveragePackage, "NavigationButton2.java");
+         (CoverageUnit) CoverageTestUtil.getFirstCoverageByName(coveragePackage, "NavigationButton2.java");
       Assert.assertNotNull(navigateButton2);
       String postLoadFileContents = navigateButton2.getFileContents();
       Assert.assertEquals("File Contents should be same pre and post save", postLoadFileContents, postFileContents);
       Assert.assertFalse("\"Navigate Here\" should NOT exist in loaded file contents",
-            postLoadFileContents.contains("Navigate Here"));
+         postLoadFileContents.contains("Navigate Here"));
 
    }
 
@@ -1179,7 +1179,7 @@ public class CoveragePackageImportTest {
             numUpdateMethod++;
          } else {
             throw new OseeStateException(String.format("Unexpected merge type [%s] for CI_Changes group",
-                  mergeItem.getMergeType()));
+               mergeItem.getMergeType()));
          }
       }
       Assert.assertEquals(2, numUpdateMethod);

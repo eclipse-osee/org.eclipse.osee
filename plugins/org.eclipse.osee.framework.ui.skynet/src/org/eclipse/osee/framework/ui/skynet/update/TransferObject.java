@@ -16,8 +16,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  * @author Jeff C. Phillips
  */
 public class TransferObject {
-   private TransferStatus status;
-   private Artifact artifact;
+   private final TransferStatus status;
+   private final Artifact artifact;
 
    public TransferObject(Artifact artifact, TransferStatus status) {
       super();

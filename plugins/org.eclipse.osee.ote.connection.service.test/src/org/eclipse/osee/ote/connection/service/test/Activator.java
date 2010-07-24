@@ -14,7 +14,6 @@ import java.rmi.Remote;
 import java.util.Collection;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import org.eclipse.osee.connection.service.IConnectionService;
 import org.eclipse.osee.connection.service.IConnectorListener;
 import org.eclipse.osee.connection.service.IServiceConnector;
@@ -29,6 +28,7 @@ public class Activator implements BundleActivator {
    private static Activator instance = null;
    private JiniServiceSideConnector testConnector;
 
+   @Override
    public void start(BundleContext context) throws Exception {
       instance = this;
       connectionServiceTracker = new ServiceTracker(context, IConnectionService.class.getName(), null);
@@ -49,8 +49,8 @@ public class Activator implements BundleActivator {
          public void onConnectorsAdded(Collection<IServiceConnector> connectors) {
             for (IServiceConnector connector : connectors) {
                if (connector.getService() instanceof Remote) {
-                  System.out.printf("found remote service %s. connector type=%s\n", connector.getProperty("name",
-                        "N.A."), connector.getConnectorType());
+                  System.out.printf("found remote service %s. connector type=%s\n",
+                     connector.getProperty("name", "N.A."), connector.getConnectorType());
                } else {
                   System.out.println("found a non-remote service!?. connector type=" + connector.getConnectorType());
                }
@@ -78,6 +78,7 @@ public class Activator implements BundleActivator {
       }, 10000);
    }
 
+   @Override
    public void stop(BundleContext context) throws Exception {
       instance = null;
       getConnectionService().removeConnector(testConnector);

@@ -37,58 +37,58 @@ import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
  * @author Andrew M. Finkbeiner
  */
 public class DbBootstrapTask implements IDbInitializationTask {
-	private DbInitConfiguration configuration;
+   private DbInitConfiguration configuration;
 
-	public void setConfiguration(DbInitConfiguration configuration) {
-		this.configuration = configuration;
-	}
+   public void setConfiguration(DbInitConfiguration configuration) {
+      this.configuration = configuration;
+   }
 
-	@Override
-	public void run() throws OseeCoreException {
-		Conditions.checkNotNull(configuration, "DbInitConfiguration Info");
+   @Override
+   public void run() throws OseeCoreException {
+      Conditions.checkNotNull(configuration, "DbInitConfiguration Info");
 
-		DbUtil.setDbInit(true);
+      DbUtil.setDbInit(true);
 
-		createOseeDatastore();
-		Branch systemRoot = BranchManager.getSystemRootBranch();
-		Conditions.checkNotNull(systemRoot, "System root was not created - ");
+      createOseeDatastore();
+      Branch systemRoot = BranchManager.getSystemRootBranch();
+      Conditions.checkNotNull(systemRoot, "System root was not created - ");
 
-		ClientSessionManager.authenticate(new BaseCredentialProvider() {
+      ClientSessionManager.authenticate(new BaseCredentialProvider() {
 
-			@Override
-			public OseeCredential getCredential() {
-				OseeCredential credential = new OseeCredential();
-				credential.setUserName(SystemUser.BootStrap.getName());
-				return credential;
-			}
-		});
+         @Override
+         public OseeCredential getCredential() {
+            OseeCredential credential = new OseeCredential();
+            credential.setUserName(SystemUser.BootStrap.getName());
+            return credential;
+         }
+      });
 
-		List<String> oseeTypes = configuration.getOseeTypeExtensionIds();
-		Conditions.checkExpressionFailOnTrue(oseeTypes.isEmpty(), "osee types cannot be empty");
+      List<String> oseeTypes = configuration.getOseeTypeExtensionIds();
+      Conditions.checkExpressionFailOnTrue(oseeTypes.isEmpty(), "osee types cannot be empty");
 
-		OseeTypesSetup oseeTypesSetup = new OseeTypesSetup();
-		oseeTypesSetup.execute(oseeTypes);
-	}
+      OseeTypesSetup oseeTypesSetup = new OseeTypesSetup();
+      oseeTypesSetup.execute(oseeTypes);
+   }
 
-	private void createOseeDatastore() throws OseeCoreException {
-		//    OseeClientProperties.isOseeImportAllowed();
+   private void createOseeDatastore() throws OseeCoreException {
+      //    OseeClientProperties.isOseeImportAllowed();
 
-		String tableDataSpace = OseeClientProperties.getOseeTableDataSpaceForDbInit();
-		String indexDataSpace = OseeClientProperties.getOseeIndexDataSpaceForDbInit();
-		boolean useSchemasSpecified = OseeClientProperties.useSchemasSpecifiedInDbConfigFiles();
+      String tableDataSpace = OseeClientProperties.getOseeTableDataSpaceForDbInit();
+      String indexDataSpace = OseeClientProperties.getOseeIndexDataSpaceForDbInit();
+      boolean useSchemasSpecified = OseeClientProperties.useSchemasSpecifiedInDbConfigFiles();
 
-		DatastoreInitRequest requestData = new DatastoreInitRequest(tableDataSpace, indexDataSpace, useSchemasSpecified);
+      DatastoreInitRequest requestData = new DatastoreInitRequest(tableDataSpace, indexDataSpace, useSchemasSpecified);
 
-		String datastoreInitContext = OseeServerContext.OSEE_CONFIGURE_CONTEXT + "/datastore/initialize";
-		String urlString =
-					HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(datastoreInitContext,
-								new HashMap<String, String>());
+      String datastoreInitContext = OseeServerContext.OSEE_CONFIGURE_CONTEXT + "/datastore/initialize";
+      String urlString =
+         HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(datastoreInitContext,
+            new HashMap<String, String>());
 
-		IDataTranslationService service = DatabaseInitActivator.getInstance().getTranslationService();
-		AcquireResult updateResponse =
-					HttpMessage.send(urlString, service, CoreTranslatorId.OSEE_DATASTORE_INIT_REQUEST, requestData, null);
-		if (!updateResponse.wasSuccessful()) {
-			throw new OseeStateException("Error during datastore init");
-		}
-	}
+      IDataTranslationService service = DatabaseInitActivator.getInstance().getTranslationService();
+      AcquireResult updateResponse =
+         HttpMessage.send(urlString, service, CoreTranslatorId.OSEE_DATASTORE_INIT_REQUEST, requestData, null);
+      if (!updateResponse.wasSuccessful()) {
+         throw new OseeStateException("Error during datastore init");
+      }
+   }
 }

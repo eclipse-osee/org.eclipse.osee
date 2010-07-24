@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.List;
  * @author Robert A. Fisher
  */
 public class ObjectList<A> extends List {
-   private java.util.List<A> items;
+   private final java.util.List<A> items;
 
    public ObjectList(Composite parent, int style) {
       super(parent, style);
@@ -53,28 +53,33 @@ public class ObjectList<A> extends List {
    }
 
    public A getSelectedItem() {
-      if (this.getSelectionCount() > 1) throw new IllegalStateException("There is more than one item selected");
+      if (this.getSelectionCount() > 1) {
+         throw new IllegalStateException("There is more than one item selected");
+      }
 
       int index = this.getSelectionIndex();
-      if (index < 0)
+      if (index < 0) {
          return null;
-      else
+      } else {
          return getItemAt(this.getSelectionIndex());
+      }
    }
 
    public Collection<A> getSelectedItems() {
       int[] selected = super.getSelectionIndices();
       ArrayList<A> selectedItems = new ArrayList<A>(selected.length);
-      for (int i : selected)
+      for (int i : selected) {
          selectedItems.add(items.get(i));
+      }
 
       return selectedItems;
    }
 
    @Override
    public void remove(int start, int end) {
-      for (int i = 0; i <= (end - start); i++)
+      for (int i = 0; i <= end - start; i++) {
          items.remove(start);
+      }
       super.remove(start, end);
    }
 

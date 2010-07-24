@@ -16,23 +16,21 @@ import org.eclipse.osee.ote.ui.message.tree.WatchedMessageNode;
 
 /**
  * @author Ken J. Aguilar
- *
  */
 public class SetMessageModeAction extends Action {
 
+   private final WatchedMessageNode node;
+   private final MessageMode mode;
 
-	private final WatchedMessageNode node;
-	private final MessageMode mode;
+   public SetMessageModeAction(WatchedMessageNode node, MessageMode mode) {
+      super(mode.name());
+      this.node = node;
+      this.mode = mode;
+      setChecked(node.getSubscription().getMessageMode() == mode);
+   }
 
-	public SetMessageModeAction(WatchedMessageNode node, MessageMode mode) {
-		super(mode.name());
-		this.node = node;
-		this.mode = mode;
-		setChecked(node.getSubscription().getMessageMode() == mode);
-	}
-	
-	@Override
-	public void run() {
-		node.getSubscription().changeMessageMode(mode);
-	}
+   @Override
+   public void run() {
+      node.getSubscription().changeMessageMode(mode);
+   }
 }

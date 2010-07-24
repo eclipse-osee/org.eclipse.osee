@@ -37,7 +37,7 @@ public class CollapseTreeHandler extends AbstractHandler {
          return false;
       }
       ISelectionProvider selectionProvider =
-            AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
+         AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
       treeViewer = selectionProvider instanceof TreeViewer ? (TreeViewer) selectionProvider : null;
 
       return treeViewer != null;

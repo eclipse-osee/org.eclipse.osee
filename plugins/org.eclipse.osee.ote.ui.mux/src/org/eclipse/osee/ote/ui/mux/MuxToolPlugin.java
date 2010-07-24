@@ -21,60 +21,58 @@ import org.osgi.util.tracker.ServiceTracker;
  */
 public class MuxToolPlugin extends AbstractUIPlugin {
 
-    private ServiceTracker oteClientServiceTracker;
+   private ServiceTracker oteClientServiceTracker;
 
-    // The shared instance.
-    private static MuxToolPlugin plugin;
+   // The shared instance.
+   private static MuxToolPlugin plugin;
 
-    
-    public static String PLUGIN_ID = "org.eclipse.osee.ote.ui.mux";
-    /**
-     * The constructor.
-     */
-    public MuxToolPlugin() {
-	plugin = this;
-    }
+   public static String PLUGIN_ID = "org.eclipse.osee.ote.ui.mux";
 
-    /**
-     * This method is called upon plug-in activation
-     */
-    public void start(BundleContext context) throws Exception {
-	super.start(context);
-	oteClientServiceTracker = new ServiceTracker(context,
-		IOteClientService.class.getName(), null);
-	oteClientServiceTracker.open();
-    }
+   /**
+    * The constructor.
+    */
+   public MuxToolPlugin() {
+      plugin = this;
+   }
 
-    /**
-     * This method is called when the plug-in is stopped
-     */
-    public void stop(BundleContext context) throws Exception {
-	super.stop(context);
-	plugin = null;
-	oteClientServiceTracker.close();
-    }
+   /**
+    * This method is called upon plug-in activation
+    */
+   @Override
+   public void start(BundleContext context) throws Exception {
+      super.start(context);
+      oteClientServiceTracker = new ServiceTracker(context, IOteClientService.class.getName(), null);
+      oteClientServiceTracker.open();
+   }
 
-    /**
-     * Returns the shared instance.
-     */
-    public static MuxToolPlugin getDefault() {
-	return plugin;
-    }
+   /**
+    * This method is called when the plug-in is stopped
+    */
+   @Override
+   public void stop(BundleContext context) throws Exception {
+      super.stop(context);
+      plugin = null;
+      oteClientServiceTracker.close();
+   }
 
-    /**
-     * Returns an image descriptor for the image file at the given plug-in
-     * relative path.
-     * 
-     * @param path
-     *            the path
-     * @return the image descriptor
-     */
-    public static ImageDescriptor getImageDescriptor(String path) {
-	return AbstractUIPlugin.imageDescriptorFromPlugin(
-		"org.eclipse.osee.ote.ui.mux", path);
-    }
-    
-    public IOteClientService getOteClientService() {
-	return (IOteClientService) oteClientServiceTracker.getService();
-    }
+   /**
+    * Returns the shared instance.
+    */
+   public static MuxToolPlugin getDefault() {
+      return plugin;
+   }
+
+   /**
+    * Returns an image descriptor for the image file at the given plug-in relative path.
+    * 
+    * @param path the path
+    * @return the image descriptor
+    */
+   public static ImageDescriptor getImageDescriptor(String path) {
+      return AbstractUIPlugin.imageDescriptorFromPlugin("org.eclipse.osee.ote.ui.mux", path);
+   }
+
+   public IOteClientService getOteClientService() {
+      return (IOteClientService) oteClientServiceTracker.getService();
+   }
 }

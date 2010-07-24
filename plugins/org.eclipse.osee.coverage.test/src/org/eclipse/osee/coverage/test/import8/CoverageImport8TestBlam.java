@@ -24,9 +24,9 @@ public class CoverageImport8TestBlam extends CoverageImportTestBlam {
 
    public CoverageImport8TestBlam() {
       super(NAME, Arrays.asList(
-            //
-            "import5/nav/NavigationButton1.java", "import8/nav/NavigationButton2.java",
-            "import1/nav/NavigationButton3.java"
+         //
+         "import5/nav/NavigationButton1.java", "import8/nav/NavigationButton2.java",
+         "import1/nav/NavigationButton3.java"
       //
       ));
    }

@@ -31,42 +31,42 @@ import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Test Case For {@link ChangeReportResponseTranslator}
- *
+ * 
  * @author Jeff C. Phillips
  */
 @RunWith(Parameterized.class)
 public class ChangeReportResponseTranslatorTest extends BaseTranslatorTest<ChangeReportResponse> {
 
-	public ChangeReportResponseTranslatorTest(ChangeReportResponse data, ITranslator<ChangeReportResponse> translator) {
-		super(data, translator);
-	}
+   public ChangeReportResponseTranslatorTest(ChangeReportResponse data, ITranslator<ChangeReportResponse> translator) {
+      super(data, translator);
+   }
 
-	@Override
-	protected void checkEquals(ChangeReportResponse expected, ChangeReportResponse actual) throws OseeCoreException {
-		List<ChangeItem> expectedChangeItems = expected.getChangeItems();
-		List<ChangeItem> actualChangeItems = actual.getChangeItems();
+   @Override
+   protected void checkEquals(ChangeReportResponse expected, ChangeReportResponse actual) throws OseeCoreException {
+      List<ChangeItem> expectedChangeItems = expected.getChangeItems();
+      List<ChangeItem> actualChangeItems = actual.getChangeItems();
 
-		for (int i = 0; i < expected.getChangeItems().size(); i++) {
-			DataAsserts.assertEquals(expectedChangeItems.get(i), actualChangeItems.get(i));
-		}
-	}
+      for (int i = 0; i < expected.getChangeItems().size(); i++) {
+         DataAsserts.assertEquals(expectedChangeItems.get(i), actualChangeItems.get(i));
+      }
+   }
 
-	@Parameters
-	public static Collection<Object[]> data() throws OseeCoreException {
-		DataTranslationService dataTranslationService = new DataTranslationService();
-		dataTranslationService.addTranslator(new ChangeItemTranslator(dataTranslationService),
-				CoreTranslatorId.CHANGE_ITEM);
-		dataTranslationService.addTranslator(new ChangeVersionTranslator(), CoreTranslatorId.CHANGE_VERSION);
+   @Parameters
+   public static Collection<Object[]> data() throws OseeCoreException {
+      DataTranslationService dataTranslationService = new DataTranslationService();
+      dataTranslationService.addTranslator(new ChangeItemTranslator(dataTranslationService),
+         CoreTranslatorId.CHANGE_ITEM);
+      dataTranslationService.addTranslator(new ChangeVersionTranslator(), CoreTranslatorId.CHANGE_VERSION);
 
-		ChangeReportResponse response = new ChangeReportResponse();
-		response.addItem(MockRequestFactory.createArtifactChangeItem());
-		response.addItem(MockRequestFactory.createArtifactChangeItem());
-		response.addItem(MockRequestFactory.createArtifactChangeItem());
+      ChangeReportResponse response = new ChangeReportResponse();
+      response.addItem(MockRequestFactory.createArtifactChangeItem());
+      response.addItem(MockRequestFactory.createArtifactChangeItem());
+      response.addItem(MockRequestFactory.createArtifactChangeItem());
 
-		List<Object[]> data = new ArrayList<Object[]>();
-		ITranslator<ChangeReportResponse> translator = new ChangeReportResponseTranslator(dataTranslationService);
+      List<Object[]> data = new ArrayList<Object[]>();
+      ITranslator<ChangeReportResponse> translator = new ChangeReportResponseTranslator(dataTranslationService);
 
-		data.add(new Object[] { response, translator });
-		return data;
-	}
+      data.add(new Object[] {response, translator});
+      return data;
+   }
 }

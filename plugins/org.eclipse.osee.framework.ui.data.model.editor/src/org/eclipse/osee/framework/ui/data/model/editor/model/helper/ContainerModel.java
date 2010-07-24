@@ -23,7 +23,10 @@ public class ContainerModel {
    private final ContainerType internals;
 
    public static enum ContainerType {
-      INHERITED_ATTRIBUTES, INHERITED_RELATIONS, LOCAL_RELATIONS, LOCAL_ATTRIBUTES;
+      INHERITED_ATTRIBUTES,
+      INHERITED_RELATIONS,
+      LOCAL_RELATIONS,
+      LOCAL_ATTRIBUTES;
    }
 
    public ContainerModel(ArtifactDataType theClass, ContainerType internals) {

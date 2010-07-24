@@ -10,10 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.importing;
 
-
 /**
  * @author Ryan D. Brooks
  */
 public enum RoughArtifactKind {
-   PRIMARY, SECONDARY, CONTAINER
+   PRIMARY,
+   SECONDARY,
+   CONTAINER
 }

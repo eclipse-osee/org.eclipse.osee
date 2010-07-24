@@ -11,23 +11,22 @@
 package org.eclipse.osee.ote.messaging.dds.condition;
 
 import java.util.Collection;
-
 import org.eclipse.osee.ote.messaging.dds.NotImplementedException;
 import org.eclipse.osee.ote.messaging.dds.ReturnCode;
 import org.eclipse.osee.ote.messaging.dds.entity.Entity;
 
 /**
- * This class is here for future functionality that is described in the DDS specification
- * but has not been implemented or used.
+ * This class is here for future functionality that is described in the DDS specification but has not been implemented
+ * or used.
  * 
  * @author Robert A. Fisher
  * @author David Diepenbrock
  */
 public class StatusCondition extends Condition {
 
-   private Collection<?> enabledStatuses;
-   private Entity parentEntity;
-   
+   private final Collection<?> enabledStatuses;
+   private final Entity parentEntity;
+
    /**
     * 
     */
@@ -35,19 +34,19 @@ public class StatusCondition extends Condition {
 
       this.parentEntity = parentEntity;
       enabledStatuses = null; // UNSURE find out if this should be something else?
-      
+
       // This class, and the use of it has not been implemented
       throw new NotImplementedException();
    }
-   
+
    public ReturnCode setEnabledStatuses(Collection<?> mask) {
       return ReturnCode.ERROR;
    }
-   
+
    public Collection<?> getEnabledStatuses() {
       return enabledStatuses;
    }
-   
+
    /**
     * @return Returns the entity.
     */

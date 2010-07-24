@@ -27,14 +27,17 @@ public class CoverageListDialog extends org.eclipse.ui.dialogs.ListDialog {
       setTitle(title);
       setMessage(message);
       setContentProvider(new IStructuredContentProvider() {
+         @Override
          @SuppressWarnings("unchecked")
          public Object[] getElements(Object arg0) {
             return ((Collection) arg0).toArray();
          }
 
+         @Override
          public void dispose() {
          }
 
+         @Override
          public void inputChanged(Viewer arg0, Object arg1, Object arg2) {
          }
       });

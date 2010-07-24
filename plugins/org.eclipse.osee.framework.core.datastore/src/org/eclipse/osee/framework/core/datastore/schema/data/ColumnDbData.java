@@ -14,8 +14,8 @@ package org.eclipse.osee.framework.core.datastore.schema.data;
  * @author Roberto E. Escobar
  */
 public class ColumnDbData {
-   private String columnName;
-   private String columnValue;
+   private final String columnName;
+   private final String columnValue;
 
    public ColumnDbData(String columnName, String columnValue) {
       this.columnName = columnName;
@@ -30,6 +30,7 @@ public class ColumnDbData {
       return columnValue;
    }
 
+   @Override
    public String toString() {
       return "[" + columnName + ", " + columnValue + "]";
    }

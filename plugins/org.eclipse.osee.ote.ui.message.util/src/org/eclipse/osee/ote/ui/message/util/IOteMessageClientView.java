@@ -15,9 +15,9 @@ import org.eclipse.ui.IViewPart;
 
 /**
  * @author Ken J. Aguilar
- *
  */
 public interface IOteMessageClientView extends IViewPart {
-	void oteMessageServiceAcquired(IOteMessageService service);
-	void oteMessageServiceReleased();	
+   void oteMessageServiceAcquired(IOteMessageService service);
+
+   void oteMessageServiceReleased();
 }

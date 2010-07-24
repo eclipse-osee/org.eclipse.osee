@@ -100,7 +100,7 @@ public class RelationOrderRepairBlam extends AbstractBlam {
             type = RelationTypeManager.getType(typeSide.getFirst());
          } catch (OseeTypeDoesNotExist ex) {
             getOutput().append(
-                  String.format("Type [%s] on artifact [%s] does not exist\n", typeSide.getFirst(), art.getName()));
+               String.format("Type [%s] on artifact [%s] does not exist\n", typeSide.getFirst(), art.getName()));
             return;
          }
          RelationSide side = RelationSide.fromString(typeSide.getSecond());

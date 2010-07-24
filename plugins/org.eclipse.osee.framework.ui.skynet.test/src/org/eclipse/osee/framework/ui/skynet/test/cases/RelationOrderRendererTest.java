@@ -68,13 +68,13 @@ public class RelationOrderRendererTest {
       List<Object[]> expectedData = new ArrayList<Object[]>();
 
       addData(orderData, expectedData, "Relation 1", "Relation 1_A", RelationSide.SIDE_A,
-            RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC.getGuid(), "1", "2", "3");
+         RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC.getGuid(), "1", "2", "3");
 
       addData(orderData, expectedData, "Relation 2", "Relation 2_B", RelationSide.SIDE_B, //
-            RelationOrderBaseTypes.UNORDERED.getGuid(), "4", "5", "6");
+         RelationOrderBaseTypes.UNORDERED.getGuid(), "4", "5", "6");
 
       addData(orderData, expectedData, "Relation 3", "Relation 3_B", RelationSide.SIDE_B, //
-            RelationOrderBaseTypes.USER_DEFINED.getGuid(), "7", "8", "9");
+         RelationOrderBaseTypes.USER_DEFINED.getGuid(), "7", "8", "9");
 
       checkRelationOrderRenderer(getExpected(expectedData), orderData);
    }
@@ -92,7 +92,7 @@ public class RelationOrderRendererTest {
       RelationOrderData orderData = new MockRelationOrderData();
       List<Object[]> expectedData = new ArrayList<Object[]>();
       addData(orderData, expectedData, "Relation 1", "Relation 1_A", RelationSide.SIDE_A,
-            RelationOrderBaseTypes.USER_DEFINED.getGuid());
+         RelationOrderBaseTypes.USER_DEFINED.getGuid());
       checkRelationOrderRenderer(getExpected(expectedData), orderData);
    }
 
@@ -118,7 +118,7 @@ public class RelationOrderRendererTest {
          // Do Nothing
       }
       expectedData.add(new Object[] {relationType, relationSideName, side.name().toLowerCase(), expectedOrderId,
-            artGuids});
+         artGuids});
    }
 
    private String getExpected(List<Object[]> data) {
@@ -204,8 +204,8 @@ public class RelationOrderRendererTest {
 
    private final static void createRelationType(AbstractOseeCache<RelationType> cache, String name, ArtifactType artifactType1, ArtifactType artifactType2) throws OseeCoreException {
       RelationType type =
-            new RelationType(GUID.create(), name, name + "_A", name + "_B", artifactType1, artifactType2,
-                  RelationTypeMultiplicity.MANY_TO_MANY, "");
+         new RelationType(GUID.create(), name, name + "_A", name + "_B", artifactType1, artifactType2,
+            RelationTypeMultiplicity.MANY_TO_MANY, "");
       cache.cache(type);
    }
    private final static class MockRelationOrderData extends RelationOrderData {

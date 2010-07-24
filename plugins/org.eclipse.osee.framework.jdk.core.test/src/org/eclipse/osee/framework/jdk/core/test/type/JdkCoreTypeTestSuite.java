@@ -17,8 +17,8 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {PairTest.class, PropertyStoreTest.class, PropertyStoreWriterTest.class, QuadTest.class,
-      TripletTest.class})
+@Suite.SuiteClasses({PairTest.class, PropertyStoreTest.class, PropertyStoreWriterTest.class, QuadTest.class,
+   TripletTest.class})
 public class JdkCoreTypeTestSuite {
 
 }

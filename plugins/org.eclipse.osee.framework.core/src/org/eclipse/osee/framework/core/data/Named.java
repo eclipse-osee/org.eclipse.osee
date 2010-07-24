@@ -13,8 +13,7 @@ package org.eclipse.osee.framework.core.data;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public interface Named {
-	String getName();
+   String getName();
 }

@@ -30,50 +30,50 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  */
 public class ODMLoadGraphRunnable implements IExceptionableRunnable {
 
-	private final GraphicalViewer viewer;
-	private final ODMEditor editor;
-	private final ODMEditorInput input;
+   private final GraphicalViewer viewer;
+   private final ODMEditor editor;
+   private final ODMEditorInput input;
 
-	public ODMLoadGraphRunnable(GraphicalViewer viewer, ODMEditor editor, ODMEditorInput input) {
-		super();
-		this.viewer = viewer;
-		this.editor = editor;
-		this.input = input;
-	}
+   public ODMLoadGraphRunnable(GraphicalViewer viewer, ODMEditor editor, ODMEditorInput input) {
+      super();
+      this.viewer = viewer;
+      this.editor = editor;
+      this.input = input;
+   }
 
-	public String getName() {
-		return "Loading Osee Data Type Graph";
-	}
+   public String getName() {
+      return "Loading Osee Data Type Graph";
+   }
 
-	@Override
-	public IStatus run(IProgressMonitor monitor) throws Exception {
-		monitor.beginTask(getName(), ODMConstants.TOTAL_STEPS);
-		monitor.worked(ODMConstants.SHORT_TASK_STEPS);
-		monitor.setTaskName("Initializating cache");
-		DataTypeCache dataTypeCache = input.getDataTypeCache();
-		dataTypeCache.clear();
-		monitor.worked(ODMConstants.SHORT_TASK_STEPS);
+   @Override
+   public IStatus run(IProgressMonitor monitor) throws Exception {
+      monitor.beginTask(getName(), ODMConstants.TOTAL_STEPS);
+      monitor.worked(ODMConstants.SHORT_TASK_STEPS);
+      monitor.setTaskName("Initializating cache");
+      DataTypeCache dataTypeCache = input.getDataTypeCache();
+      dataTypeCache.clear();
+      monitor.worked(ODMConstants.SHORT_TASK_STEPS);
 
-		OseeDataTypeFactory.addTypesFromDataStore(dataTypeCache);
-		monitor.worked(ODMConstants.SHORT_TASK_STEPS);
+      OseeDataTypeFactory.addTypesFromDataStore(dataTypeCache);
+      monitor.worked(ODMConstants.SHORT_TASK_STEPS);
 
-		IResource resource = input.getResource();
-		if (resource != null) {
-			DataTypeSource dataTypeSource = OseeDataTypeFactory.loadFromFile(resource.getFullPath());
-			dataTypeCache.addDataTypeSource(dataTypeSource);
-		}
-		monitor.worked(ODMConstants.SHORT_TASK_STEPS);
+      IResource resource = input.getResource();
+      if (resource != null) {
+         DataTypeSource dataTypeSource = OseeDataTypeFactory.loadFromFile(resource.getFullPath());
+         dataTypeCache.addDataTypeSource(dataTypeSource);
+      }
+      monitor.worked(ODMConstants.SHORT_TASK_STEPS);
 
-		if (editor != null) {
-			monitor.setTaskName("Drawing graph");
-			Displays.ensureInDisplayThread(new Runnable() {
-				@Override
-				public void run() {
-					viewer.setContents(new ODMDiagram(input.getDataTypeCache()));
-					editor.updatePalette();
-				}
-			});
-		}
-		return Status.OK_STATUS;
-	}
+      if (editor != null) {
+         monitor.setTaskName("Drawing graph");
+         Displays.ensureInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               viewer.setContents(new ODMDiagram(input.getDataTypeCache()));
+               editor.updatePalette();
+            }
+         });
+      }
+      return Status.OK_STATUS;
+   }
 }

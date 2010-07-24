@@ -45,11 +45,12 @@ import org.eclipse.osee.support.test.util.DemoUsers;
 
 /**
  * Initialization class that will load configuration information for a sample DB.
- *
+ * 
  * @author Donald G. Dunne
  */
 public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitializationTask {
 
+   @Override
    public void run() throws OseeCoreException {
 
       new DemoCodeWorkFlowDefinition().config(WriteType.New, null);
@@ -75,14 +76,13 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
       // Map team definitions versions to their related branches
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Demo Database Config");
       mapTeamVersionToBranch(DemoTeams.getInstance().getTeamDef(Team.SAW_SW), DemoSawBuilds.SAW_Bld_1.getName(),
-            DemoSawBuilds.SAW_Bld_1.getName(), transaction);
+         DemoSawBuilds.SAW_Bld_1.getName(), transaction);
       mapTeamVersionToBranch(DemoTeams.getInstance().getTeamDef(Team.CIS_SW), DemoCISBuilds.CIS_Bld_1.getName(),
-            DemoCISBuilds.CIS_Bld_1.getName(), transaction);
+         DemoCISBuilds.CIS_Bld_1.getName(), transaction);
 
       // Set Joe Smith as Priviledged Member of SAW Test
       Artifact teamDef =
-            ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.TeamDefinition, "SAW Test",
-                  AtsUtil.getAtsBranch());
+         ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.TeamDefinition, "SAW Test", AtsUtil.getAtsBranch());
       teamDef.addRelation(AtsRelationTypes.PrivilegedMember_Member, DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith));
       teamDef.persist(transaction);
 
@@ -101,7 +101,7 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
    private void populateProgramBranch(IOseeBranch branch) throws OseeCoreException {
       Branch programBranch = BranchManager.getBranch(branch);
       Artifact sawProduct =
-            ArtifactTypeManager.addArtifact(CoreArtifactTypes.Component, programBranch, "SAW Product Decomposition");
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.Component, programBranch, "SAW Product Decomposition");
 
       for (String subsystem : DemoSubsystems.getSubsystems()) {
          sawProduct.addChild(ArtifactTypeManager.addArtifact(CoreArtifactTypes.Component, programBranch, subsystem));
@@ -111,8 +111,8 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
       programRoot.addChild(sawProduct);
 
       for (String name : new String[] {Requirements.SYSTEM_REQUIREMENTS, Requirements.SUBSYSTEM_REQUIREMENTS,
-            Requirements.SOFTWARE_REQUIREMENTS, Requirements.HARDWARE_REQUIREMENTS, "Verification Tests",
-            "Validation Tests", "Integration Tests"}) {
+         Requirements.SOFTWARE_REQUIREMENTS, Requirements.HARDWARE_REQUIREMENTS, "Verification Tests",
+         "Validation Tests", "Integration Tests"}) {
          programRoot.addChild(ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, programBranch, name));
       }
 
@@ -125,10 +125,9 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
 
       // Setup some sample builds for Widget A
       for (String verName : new String[] {DemoSawBuilds.SAW_Bld_1.getName(), DemoSawBuilds.SAW_Bld_2.getName(),
-            DemoSawBuilds.SAW_Bld_3.getName()}) {
+         DemoSawBuilds.SAW_Bld_3.getName()}) {
          VersionArtifact ver =
-               (VersionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtil.getAtsBranch(),
-                     verName);
+            (VersionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtil.getAtsBranch(), verName);
          if (verName.contains("1")) {
             ver.setReleased(true);
          }
@@ -138,16 +137,15 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
             ver.setSoleAttributeValue(ATSAttributes.ALLOW_CREATE_BRANCH.getStoreName(), true);
          }
          DemoTeams.getInstance().getTeamDef(Team.SAW_SW).addRelation(AtsRelationTypes.TeamDefinitionToVersion_Version,
-               ver);
+            ver);
          ver.persist();
       }
 
       // Setup some sample builds for Widget B
       for (String verName : new String[] {DemoCISBuilds.CIS_Bld_1.getName(), DemoCISBuilds.CIS_Bld_2.getName(),
-            DemoCISBuilds.CIS_Bld_3.getName()}) {
+         DemoCISBuilds.CIS_Bld_3.getName()}) {
          VersionArtifact ver =
-               (VersionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtil.getAtsBranch(),
-                     verName);
+            (VersionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtil.getAtsBranch(), verName);
          if (verName.contains("1")) {
             ver.setReleased(true);
          }
@@ -155,7 +153,7 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
             ver.setSoleAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), true);
          }
          DemoTeams.getInstance().getTeamDef(Team.CIS_SW).addRelation(AtsRelationTypes.TeamDefinitionToVersion_Version,
-               ver);
+            ver);
          ver.persist();
       }
    }

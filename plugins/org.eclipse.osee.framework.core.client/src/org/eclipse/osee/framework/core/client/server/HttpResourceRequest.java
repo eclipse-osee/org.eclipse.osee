@@ -40,6 +40,7 @@ public class HttpResourceRequest implements IHttpMethod {
       return instance;
    }
 
+   @Override
    public void processRequest(HttpRequest httpRequest, HttpResponse httpResponse) {
       String urlRequest = httpRequest.getUrlRequest();
       URL url = findResource(urlRequest);
@@ -76,8 +77,7 @@ public class HttpResourceRequest implements IHttpMethod {
       if (Strings.isValid(urlRequested) && urlRequested.endsWith("/") != true) {
          if (resource == null) {
             List<IConfigurationElement> elements =
-                  ExtensionPoints.getExtensionElements("org.eclipse.osee.framework.skynet.core.WebPage",
-                        "WebPageFolder");
+               ExtensionPoints.getExtensionElements("org.eclipse.osee.framework.skynet.core.WebPage", "WebPageFolder");
             for (IConfigurationElement element : elements) {
                String resourceName = element.getAttribute("Path");
                String bundleName = element.getContributor().getName();
@@ -92,7 +92,7 @@ public class HttpResourceRequest implements IHttpMethod {
                      }
                   } catch (Exception ex) {
                      throw new IllegalArgumentException(String.format("Unable to Load: [%s.%s]", bundleName,
-                           resourceName));
+                        resourceName));
                   }
                }
             }

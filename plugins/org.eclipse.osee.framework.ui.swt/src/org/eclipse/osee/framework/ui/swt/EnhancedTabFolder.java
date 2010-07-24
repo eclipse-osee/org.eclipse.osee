@@ -28,13 +28,19 @@ public class EnhancedTabFolder implements ITabFolderItem {
       folder = new TabFolder(parent, style);
       folder.addSelectionListener(new SelectionListener() {
 
+         @Override
          public void widgetDefaultSelected(SelectionEvent e) {
          }
 
+         @Override
          public void widgetSelected(SelectionEvent event) {
             final TabFolderItem item = (TabFolderItem) ((TabItem) event.item).getControl();
-            if (item == previousItem) return;
-            if (previousItem != null) previousItem.OnTabDeselected();
+            if (item == previousItem) {
+               return;
+            }
+            if (previousItem != null) {
+               previousItem.OnTabDeselected();
+            }
             item.OnTabSelected();
             previousItem = item;
          }
@@ -43,6 +49,7 @@ public class EnhancedTabFolder implements ITabFolderItem {
 
       folder.addTraverseListener(new TraverseListener() {
 
+         @Override
          public void keyTraversed(TraverseEvent e) {
             switch (e.detail) {
                case SWT.TRAVERSE_TAB_NEXT:
@@ -91,6 +98,7 @@ public class EnhancedTabFolder implements ITabFolderItem {
       item.setToolTipText(toolTip);
    }
 
+   @Override
    public void OnTabDeselected() {
       final int index = folder.getSelectionIndex();
       if (index != -1) {
@@ -98,6 +106,7 @@ public class EnhancedTabFolder implements ITabFolderItem {
       }
    }
 
+   @Override
    public void OnTabSelected() {
       final int index = folder.getSelectionIndex();
       if (index != -1) {

@@ -34,10 +34,12 @@ public class EnvironmentPreferenceNode extends TreeParent {
       return value;
    }
 
+   @Override
    public boolean isChecked() {
       return checked;
    }
 
+   @Override
    public void setChecked(boolean selected) {
       this.checked = selected;
    }

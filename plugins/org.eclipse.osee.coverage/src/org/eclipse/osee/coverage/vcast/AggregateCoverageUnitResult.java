@@ -11,7 +11,7 @@
 package org.eclipse.osee.coverage.vcast;
 
 public class AggregateCoverageUnitResult {
-   private String name;
+   private final String name;
    private Integer numLines = null;
    private Integer numCovered = null;
    private String notes = "";
@@ -40,6 +40,7 @@ public class AggregateCoverageUnitResult {
       this.numCovered = numCovered;
    }
 
+   @Override
    public String toString() {
       return String.format("Aggregate Result [%s] - [%d] of [%d] [%s]", name, numCovered, numLines, notes);
    }

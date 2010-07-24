@@ -36,14 +36,15 @@ public class HistoricalTestRunData implements ITestRunReport {
 
    private static final DateFormat formatter = SimpleDateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
 
-   private HashMap<Date, Map<String, TestRunOperator>> runByCollection;
-   private Set<String> runsByName;
+   private final HashMap<Date, Map<String, TestRunOperator>> runByCollection;
+   private final Set<String> runsByName;
 
    public HistoricalTestRunData() {
       this.runByCollection = new HashMap<Date, Map<String, TestRunOperator>>();
       this.runsByName = new TreeSet<String>();
    }
 
+   @Override
    public void gatherData(IProgressMonitor monitor, TestRunOperator... artifacts) throws Exception {
       clear();
       for (TestRunOperator operator : artifacts) {
@@ -63,6 +64,7 @@ public class HistoricalTestRunData implements ITestRunReport {
       }
    }
 
+   @Override
    public String[][] getBody() {
       String[][] toReturn = new String[runByCollection.size() + 1][getHeader().length];
       int index = 0;
@@ -113,10 +115,12 @@ public class HistoricalTestRunData implements ITestRunReport {
       return header.toArray(new String[header.size()]);
    }
 
+   @Override
    public String getDescription() {
       return "Creates a table of run results by date.";
    }
 
+   @Override
    public String[] getHeader() {
       List<String> header = new ArrayList<String>();
       header.add(DATE_HEADER);
@@ -129,6 +133,7 @@ public class HistoricalTestRunData implements ITestRunReport {
       return header.toArray(new String[header.size()]);
    }
 
+   @Override
    public String getTitle() {
       return "Test Run Historical Trend";
    }

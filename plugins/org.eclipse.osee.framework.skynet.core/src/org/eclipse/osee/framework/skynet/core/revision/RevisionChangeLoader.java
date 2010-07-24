@@ -75,14 +75,14 @@ public final class RevisionChangeLoader {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.LOAD_REVISION_HISTORY_TRANSACTION_ATTR),
-               artifact.getArtId(), branch.getId(), transactionId.getId());
+            artifact.getArtId(), branch.getId(), transactionId.getId());
 
          while (chStmt.next()) {
             transactionIds.add(TransactionManager.getTransactionId(chStmt.getInt("transaction_id")));
          }
 
          chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.LOAD_REVISION_HISTORY_TRANSACTION_REL),
-               artifact.getArtId(), artifact.getArtId(), branch.getId(), transactionId.getId());
+            artifact.getArtId(), artifact.getArtId(), branch.getId(), transactionId.getId());
 
          while (chStmt.next()) {
             transactionIds.add(TransactionManager.getTransactionId(chStmt.getInt("transaction_id")));
@@ -95,8 +95,8 @@ public final class RevisionChangeLoader {
    }
 
    /**
-    * Not Part of Change Report
-    * Acquires artifact, relation and attribute changes from a source branch since its creation.
+    * Not Part of Change Report Acquires artifact, relation and attribute changes from a source branch since its
+    * creation.
     * 
     * @param sourceBranch
     * @param baselineTransactionId
@@ -117,18 +117,18 @@ public final class RevisionChangeLoader {
       monitor.beginTask("Find Changes", 100);
 
       ArtifactChangeAcquirer artifactChangeAcquirer =
-            new ArtifactChangeAcquirer(sourceBranch, transactionId, monitor, specificArtifact, artIds, changeBuilders,
-                  newAndDeletedArtifactIds);
+         new ArtifactChangeAcquirer(sourceBranch, transactionId, monitor, specificArtifact, artIds, changeBuilders,
+            newAndDeletedArtifactIds);
       changeBuilders = artifactChangeAcquirer.acquireChanges();
 
       AttributeChangeAcquirer attributeChangeAcquirer =
-            new AttributeChangeAcquirer(sourceBranch, transactionId, monitor, specificArtifact, artIds, changeBuilders,
-                  newAndDeletedArtifactIds);
+         new AttributeChangeAcquirer(sourceBranch, transactionId, monitor, specificArtifact, artIds, changeBuilders,
+            newAndDeletedArtifactIds);
       changeBuilders = attributeChangeAcquirer.acquireChanges();
 
       RelationChangeAcquirer relationChangeAcquirer =
-            new RelationChangeAcquirer(sourceBranch, transactionId, monitor, specificArtifact, artIds, changeBuilders,
-                  newAndDeletedArtifactIds);
+         new RelationChangeAcquirer(sourceBranch, transactionId, monitor, specificArtifact, artIds, changeBuilders,
+            newAndDeletedArtifactIds);
       changeBuilders = relationChangeAcquirer.acquireChanges();
 
       monitor.subTask("Loading Artifacts from the Database");

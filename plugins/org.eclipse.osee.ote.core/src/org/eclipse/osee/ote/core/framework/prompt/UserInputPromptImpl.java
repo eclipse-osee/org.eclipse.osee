@@ -33,6 +33,7 @@ public class UserInputPromptImpl extends AbstractInteractivePrompt<String> imple
       getScript().getUserSession().initiateUserInputPrompt(createRemoteReference(IUserInputPromptResponse.class));
    }
 
+   @Override
    public void respond(String text) throws RemoteException {
       endPrompt(text, null);
    }

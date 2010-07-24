@@ -101,7 +101,7 @@ public final class ArtifactType extends AbstractOseeType implements Comparable<A
       IOseeField<?> field = getField(ARTIFACT_TYPE_ATTRIBUTES_FIELD_KEY);
       ((ArtifactTypeAttributesField) field).put(branch, attributeTypes);
    }
-   
+
    public void setAllAttributeTypes(Map<Branch, Collection<AttributeType>> attributeTypes) throws OseeCoreException {
       IOseeField<?> field = getField(ARTIFACT_TYPE_ATTRIBUTES_FIELD_KEY);
       ((ArtifactTypeAttributesField) field).set(attributeTypes);
@@ -150,7 +150,7 @@ public final class ArtifactType extends AbstractOseeType implements Comparable<A
    /**
     * Determines if this artifact type equals, or is a sub-type of, the artifact type specified by the
     * <code>otherType</code> parameter.
-    *
+    * 
     * @param otherType artifact type to check against
     * @return whether this artifact type inherits from otherType
     */
@@ -171,6 +171,7 @@ public final class ArtifactType extends AbstractOseeType implements Comparable<A
       return getName();
    }
 
+   @Override
    public int compareTo(ArtifactType other) {
       int result = -1;
       if (other != null && other.getName() != null && getName() != null) {

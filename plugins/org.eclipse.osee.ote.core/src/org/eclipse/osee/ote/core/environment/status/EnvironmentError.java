@@ -32,6 +32,7 @@ public class EnvironmentError implements IServiceStatusData, Serializable {
       this.err = err;
    }
 
+   @Override
    public void accept(IServiceStatusDataVisitor visitor) {
       if (visitor != null) {
          visitor.asEnvironmentError(this);

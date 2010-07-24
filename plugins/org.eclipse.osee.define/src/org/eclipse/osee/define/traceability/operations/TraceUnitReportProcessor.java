@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 public final class TraceUnitReportProcessor implements ITraceUnitProcessor {
    private long startTime;
    private long startMemory;
-   private XResultData resultData;
+   private final XResultData resultData;
 
    public TraceUnitReportProcessor() {
       this.resultData = new XResultData();
@@ -42,7 +42,7 @@ public final class TraceUnitReportProcessor implements ITraceUnitProcessor {
    public void initialize(IProgressMonitor monitor) {
       resultData.addRaw(AHTML.beginMultiColumnTable(95, 1));
       resultData.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"Test Unit Type", "Test Unit Name",
-            "Trace Type", "Trace Mark"}));
+         "Trace Type", "Trace Mark"}));
    }
 
    @Override
@@ -50,9 +50,11 @@ public final class TraceUnitReportProcessor implements ITraceUnitProcessor {
       if (testUnit != null) {
          for (String traceTypes : testUnit.getTraceMarkTypes()) {
             for (TraceMark traceMark : testUnit.getTraceMarksByType(traceTypes)) {
-               if (monitor.isCanceled()) break;
+               if (monitor.isCanceled()) {
+                  break;
+               }
                resultData.addRaw(AHTML.addRowMultiColumnTable(testUnit.getTraceUnitType(), testUnit.getName(),
-                     traceMark.getTraceType(), traceMark.getRawTraceMark()));
+                  traceMark.getTraceType(), traceMark.getRawTraceMark()));
             }
          }
       }

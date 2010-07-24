@@ -44,8 +44,7 @@ public class NativeArtifactTest {
    @org.junit.Test
    public void testNativeArtifact() throws Exception {
       CsvArtifact csvArtifact =
-            CsvArtifact.getCsvArtifact(getClass().getSimpleName(), BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1),
-                  true);
+         CsvArtifact.getCsvArtifact(getClass().getSimpleName(), BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1), true);
       assertNotNull(csvArtifact);
       Artifact artifact = csvArtifact.getArtifact();
       assertTrue(artifact.isAttributeTypeValid(CoreAttributeTypes.NATIVE_CONTENT));
@@ -97,7 +96,7 @@ public class NativeArtifactTest {
    private void cleanup() throws Exception {
       Branch branch = BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1);
       Collection<Artifact> arts =
-            ArtifactQuery.getArtifactListFromName(getClass().getSimpleName(), branch, EXCLUDE_DELETED);
+         ArtifactQuery.getArtifactListFromName(getClass().getSimpleName(), branch, EXCLUDE_DELETED);
       new PurgeArtifacts(arts).execute();
    }
 }

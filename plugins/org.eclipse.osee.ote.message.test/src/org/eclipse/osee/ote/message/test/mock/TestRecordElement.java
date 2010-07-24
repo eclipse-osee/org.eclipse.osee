@@ -16,7 +16,7 @@ import org.eclipse.osee.ote.message.elements.RecordElement;
 
 public class TestRecordElement extends RecordElement {
 
-    public TestRecordElement(Message<?,?,?> message, String name,  int index, int bitOffset, MessageData messageData) {
-	super(message, name, index, messageData, bitOffset, 152);
-    }
+   public TestRecordElement(Message<?, ?, ?> message, String name, int index, int bitOffset, MessageData messageData) {
+      super(message, name, index, messageData, bitOffset, 152);
+   }
 }

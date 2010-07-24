@@ -48,6 +48,7 @@ public class AttributeData implements IAttributeLocator {
       return branchId;
    }
 
+   @Override
    public long getGammaId() {
       return gammaId;
    }
@@ -83,7 +84,7 @@ public class AttributeData implements IAttributeLocator {
    @Override
    public String toString() {
       return String.format("artId:[%s] branchId:[%d] gammaId:[%s] uri:[%s] attrTypeId:[%s]", getArtId(), getId(),
-            getGammaId(), getUri(), getAttrTypeId());
+         getGammaId(), getUri(), getAttrTypeId());
    }
 
    @Override

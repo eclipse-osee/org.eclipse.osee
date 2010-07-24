@@ -36,7 +36,7 @@ public class OpenChangeReportByIdAction extends Action {
    @Override
    public void run() {
       Operations.executeAsJob(new MultipleHridSearchOperation(new MultipleHridSearchData(getText(),
-            AtsEditor.ChangeReport)), true);
+         AtsEditor.ChangeReport)), true);
    }
 
    @Override

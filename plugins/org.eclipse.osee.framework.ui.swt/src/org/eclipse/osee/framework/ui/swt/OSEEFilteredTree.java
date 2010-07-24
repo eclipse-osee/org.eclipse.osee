@@ -54,10 +54,12 @@ public class OSEEFilteredTree extends FilteredTree {
    protected void createFilterText(Composite parent) {
       super.createFilterText(parent);
       filterText.addKeyListener(new KeyListener() {
+         @Override
          public void keyPressed(KeyEvent e) {
             filterText.setFocus();
          }
 
+         @Override
          public void keyReleased(KeyEvent e) {
             filterText.setFocus();
          }

@@ -20,53 +20,52 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
 
-public class OteClientServiceTracker extends ServiceTracker{
+public class OteClientServiceTracker extends ServiceTracker {
 
-	private final IMessageDbFactory factory;
-	
-	private MessageSubscriptionService messageSubscriptionService;
+   private final IMessageDbFactory factory;
 
-	private ServiceRegistration registration;
-	
-	OteClientServiceTracker(IMessageDbFactory factory) {
-		super(Activator.getDefault().getBundleContext(), IOteClientService.class.getName(), null);
-		this.factory = factory;
-	}
+   private MessageSubscriptionService messageSubscriptionService;
 
-	@Override
-	public Object addingService(ServiceReference reference) {
-		IOteClientService service = (IOteClientService) super.addingService(reference);
-		try {
-			messageSubscriptionService = new MessageSubscriptionService(service, factory);
-			registration = context.registerService(IOteMessageService.class.getName(), messageSubscriptionService, null);
-		} catch (IOException e) {
-			OseeLog.log(OteClientServiceTracker.class, Level.SEVERE, "could not start Message Service", e);
-		}
-		return service;
-	}
+   private ServiceRegistration registration;
 
-	@Override
-	public void removedService(ServiceReference reference, Object service) {
-		shutdownMessageService();
-		super.removedService(reference, service);
-	}
-	
-	private void shutdownMessageService() {
-		if (registration != null) {
-			registration.unregister();
-			registration = null;
-		}
-		if (messageSubscriptionService != null) {
-			messageSubscriptionService.shutdown();
-			messageSubscriptionService = null;
-		}
-	}
+   OteClientServiceTracker(IMessageDbFactory factory) {
+      super(Activator.getDefault().getBundleContext(), IOteClientService.class.getName(), null);
+      this.factory = factory;
+   }
 
-	@Override
-	public void close() {
-		shutdownMessageService();
-		super.close();
-	}
-	
-	
+   @Override
+   public Object addingService(ServiceReference reference) {
+      IOteClientService service = (IOteClientService) super.addingService(reference);
+      try {
+         messageSubscriptionService = new MessageSubscriptionService(service, factory);
+         registration = context.registerService(IOteMessageService.class.getName(), messageSubscriptionService, null);
+      } catch (IOException e) {
+         OseeLog.log(OteClientServiceTracker.class, Level.SEVERE, "could not start Message Service", e);
+      }
+      return service;
+   }
+
+   @Override
+   public void removedService(ServiceReference reference, Object service) {
+      shutdownMessageService();
+      super.removedService(reference, service);
+   }
+
+   private void shutdownMessageService() {
+      if (registration != null) {
+         registration.unregister();
+         registration = null;
+      }
+      if (messageSubscriptionService != null) {
+         messageSubscriptionService.shutdown();
+         messageSubscriptionService = null;
+      }
+   }
+
+   @Override
+   public void close() {
+      shutdownMessageService();
+      super.close();
+   }
+
 }

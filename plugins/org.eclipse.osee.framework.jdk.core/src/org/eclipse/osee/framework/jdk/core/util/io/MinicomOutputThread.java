@@ -20,8 +20,8 @@ import java.io.Writer;
  * @author Michael P. Masterson
  */
 public class MinicomOutputThread extends Thread {
-   private Writer output;
-   private BufferedReader input;
+   private final Writer output;
+   private final BufferedReader input;
    private boolean resetFinished;
 
    /**
@@ -44,7 +44,9 @@ public class MinicomOutputThread extends Thread {
          String outLine = null;
          while ((outLine = input.readLine()) != null) {
             output.write("\nWELCOME: " + outLine);
-            if (outLine.contains(welcomeLine)) break;
+            if (outLine.contains(welcomeLine)) {
+               break;
+            }
 
          }
       } catch (IOException ex) {
@@ -63,11 +65,14 @@ public class MinicomOutputThread extends Thread {
     * Common run command for the thread. Sits on the serial line reading input from the minicom and printing it to the
     * the output stream. If the expected end of a reset is found, it sets that field to indicate the reset is finished.
     */
+   @Override
    public void run() {
       String outLine = null;
       try {
          while ((outLine = input.readLine()) != null) {
-            if (!outLine.contains("[")) output.write(outLine + "\n");
+            if (!outLine.contains("[")) {
+               output.write(outLine + "\n");
+            }
 
             if (outLine.contains("Start of wp_periodic_task")) {
                output.write("Found end of reset\n");
@@ -94,7 +99,9 @@ public class MinicomOutputThread extends Thread {
       try {
          String outLine;
          while ((outLine = input.readLine()) != null && !isResetFinished()) {
-            if (!outLine.contains("[")) output.write(outLine + "\n");
+            if (!outLine.contains("[")) {
+               output.write(outLine + "\n");
+            }
 
             if (outLine.contains("Start of wp_periodic_task")) {
                output.write("Found end of reset\n");

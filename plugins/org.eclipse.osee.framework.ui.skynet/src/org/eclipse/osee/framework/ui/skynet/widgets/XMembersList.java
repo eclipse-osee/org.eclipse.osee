@@ -45,12 +45,13 @@ public class XMembersList extends XListViewer {
          User u = (User) obj;
          String name = u.getName();
          String email = u.getEmail();
-         if (!email.equals(""))
+         if (!email.equals("")) {
             v.add(email);
-         else
+         } else {
             v.add(name);
+         }
       }
-      return (v.toArray(new String[0]));
+      return v.toArray(new String[0]);
    }
 
    public ArrayList<User> getUsers() {

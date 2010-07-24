@@ -19,12 +19,14 @@ public class OracleConnection implements IConnectionFactory {
 
    private static final String driver = "oracle.jdbc.OracleDriver";
 
+   @Override
    public Connection getConnection(Properties properties, String connectionURL) throws Exception {
       Class.forName(driver);
       Connection connection = DriverManager.getConnection(connectionURL, properties);
       return connection;
    }
 
+   @Override
    public String getDriver() {
       return driver;
    }

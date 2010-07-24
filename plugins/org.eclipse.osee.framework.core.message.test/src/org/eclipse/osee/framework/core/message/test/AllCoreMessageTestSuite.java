@@ -16,8 +16,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {//
-   DataTestSuite.class, //
+@Suite.SuiteClasses({//
+DataTestSuite.class, //
    TranslationTestSuite.class, //
 })
 /**

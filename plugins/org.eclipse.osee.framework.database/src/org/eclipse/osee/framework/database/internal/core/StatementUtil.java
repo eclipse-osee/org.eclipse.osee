@@ -91,13 +91,13 @@ public class StatementUtil {
                int length = ((String) dataValue).length();
                if (length > 4000) {
                   throw new OseeDataStoreException(
-                        "SQL data value length must be  <= 4000 not " + length + "\nValue: " + dataValue);
+                     "SQL data value length must be  <= 4000 not " + length + "\nValue: " + dataValue);
                }
             }
 
             if (dataValue == null) {
                throw new OseeDataStoreException(
-                     "instead of passing null for an query parameter, pass the corresponding SQL3DataType");
+                  "instead of passing null for an query parameter, pass the corresponding SQL3DataType");
             } else if (dataValue instanceof SQL3DataType) {
                int dataTypeNumber = ((SQL3DataType) dataValue).getSQLTypeNumber();
                if (dataTypeNumber == java.sql.Types.BLOB) {
@@ -109,7 +109,7 @@ public class StatementUtil {
                }
             } else if (dataValue instanceof ByteArrayInputStream) {
                preparedStatement.setBinaryStream(preparedIndex, (ByteArrayInputStream) dataValue,
-                     ((ByteArrayInputStream) dataValue).available());
+                  ((ByteArrayInputStream) dataValue).available());
             } else {
                preparedStatement.setObject(preparedIndex, dataValue);
             }

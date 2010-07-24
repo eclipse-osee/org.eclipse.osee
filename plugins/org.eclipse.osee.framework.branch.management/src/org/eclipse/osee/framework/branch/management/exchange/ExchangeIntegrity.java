@@ -17,10 +17,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.branch.management.exchange.handler.DbTableSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.handler.IExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ManifestSaxHandler;
-import org.eclipse.osee.framework.branch.management.exchange.handler.DbTableSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.transform.ExchangeDataProcessor;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -59,15 +59,18 @@ public class ExchangeIntegrity {
 
          final List<IndexCollector> checkList = ExchangeDb.createCheckList();
          for (final IExportItem importFile : filesToCheck) {
-            processor.parse(importFile, new CheckSaxHandler(services, exportDataProvider, checkList,
-                  importFile.getFileName()));
+            processor.parse(importFile,
+               new CheckSaxHandler(services, exportDataProvider, checkList, importFile.getFileName()));
          }
          checkExchange = exportDataProvider.getExportedDataRoot() + ".verify.xml";
          writeResults(exportDataProvider.getExportedDataRoot().getParentFile(), checkExchange, checkList);
       } finally {
          processor.cleanUp();
-         OseeLog.log(this.getClass(), Level.INFO, String.format("Verified [%s] in [%s]",
-               exportDataProvider.getExportedDataRoot(), Lib.getElapseString(startTime)));
+         OseeLog.log(
+            this.getClass(),
+            Level.INFO,
+            String.format("Verified [%s] in [%s]", exportDataProvider.getExportedDataRoot(),
+               Lib.getElapseString(startTime)));
       }
    }
 

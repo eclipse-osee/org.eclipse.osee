@@ -47,7 +47,9 @@ public class FixedSizePriorityQueue<E> extends PriorityQueue<E> {
 
    @Override
    public boolean offer(E o) {
-      if (size() >= qSize) this.poll();
+      if (size() >= qSize) {
+         this.poll();
+      }
       return super.offer(o);
    }
 

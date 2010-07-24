@@ -14,5 +14,7 @@ package org.eclipse.osee.ats.workflow.item;
  * @author Donald G. Dunne
  */
 public enum StateEventType {
-   TransitionTo, CreateBranch, CommitBranch;
+   TransitionTo,
+   CreateBranch,
+   CommitBranch;
 }

@@ -87,8 +87,8 @@ public class RelationLink {
 
       if (relation == null) {
          relation =
-               new RelationLink(aArtifactId, bArtifactId, aBranch, bBranch, relationType, relationId, gammaId,
-                     rationale, modificationType);
+            new RelationLink(aArtifactId, bArtifactId, aBranch, bBranch, relationType, relationId, gammaId, rationale,
+               modificationType);
       }
       RelationManager.manageRelation(relation, RelationSide.SIDE_A);
       RelationManager.manageRelation(relation, RelationSide.SIDE_B);
@@ -98,7 +98,7 @@ public class RelationLink {
 
    public static RelationLink getOrCreate(Artifact aArtifact, Artifact bArtifact, RelationType relationType, String rationale, ModificationType modificationType) {
       return getOrCreate(aArtifact.getArtId(), bArtifact.getArtId(), aArtifact.getBranch(), bArtifact.getBranch(),
-            relationType, 0, 0, rationale, modificationType);
+         relationType, 0, 0, rationale, modificationType);
    }
 
    public RelationSide getSide(Artifact artifact) {
@@ -155,7 +155,7 @@ public class RelationLink {
       internalUnDelete();
       try {
          OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationEventType.Undeleted, this,
-               getABranch(), relationType.getName());
+            getABranch(), relationType.getName());
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
@@ -191,7 +191,7 @@ public class RelationLink {
          if (setDirty) {
             try {
                OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationEventType.Deleted, this,
-                     getABranch(), relationType.getName());
+                  getABranch(), relationType.getName());
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
@@ -256,7 +256,7 @@ public class RelationLink {
       if (notify) {
          try {
             OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationEventType.ModifiedRationale,
-                  this, getABranch(), relationType.getName());
+               this, getABranch(), relationType.getName());
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
@@ -322,8 +322,8 @@ public class RelationLink {
       }
 
       return String.format("type[%s] id[%d] modType[%s] [%s]: aName[%s] aId[%d] <--> bName[%s] bId[%s]",
-            relationType.getName(), relationId, getModificationType(), (isDirty() ? "dirty" : "not dirty"), artAName,
-            aArtifactId, artBName, bArtifactId);
+         relationType.getName(), relationId, getModificationType(), (isDirty() ? "dirty" : "not dirty"), artAName,
+         aArtifactId, artBName, bArtifactId);
    }
 
    public boolean isExplorable() {

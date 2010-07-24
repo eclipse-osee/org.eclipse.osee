@@ -24,72 +24,72 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 public class XComboDam extends XCombo implements IAttributeWidget {
 
-	private Artifact artifact;
-	private String attributeTypeName;
+   private Artifact artifact;
+   private String attributeTypeName;
 
-	public XComboDam(String displayLabel) {
-		super(displayLabel);
-	}
+   public XComboDam(String displayLabel) {
+      super(displayLabel);
+   }
 
-	@Override
-	public String getAttributeType() {
-		return attributeTypeName;
-	}
+   @Override
+   public String getAttributeType() {
+      return attributeTypeName;
+   }
 
-	@Override
-	public void setAttributeType(Artifact artifact, String attrName) throws OseeCoreException {
-		this.artifact = artifact;
-		this.attributeTypeName = attrName;
-		try {
-			String value = artifact.getSoleAttributeValue(attributeTypeName);
-			super.set(value.toString());
-		} catch (AttributeDoesNotExist ex) {
-			super.set("");
-		}
-	}
+   @Override
+   public void setAttributeType(Artifact artifact, String attrName) throws OseeCoreException {
+      this.artifact = artifact;
+      this.attributeTypeName = attrName;
+      try {
+         String value = artifact.getSoleAttributeValue(attributeTypeName);
+         super.set(value.toString());
+      } catch (AttributeDoesNotExist ex) {
+         super.set("");
+      }
+   }
 
-	@Override
-	public void saveToArtifact() {
-		try {
-			if (!Strings.isValid(data)) {
-				artifact.deleteSoleAttribute(attributeTypeName);
-			} else {
-				String enteredValue = get();
-				artifact.setSoleAttributeValue(attributeTypeName, enteredValue);
-			}
-		} catch (Exception ex) {
-			OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-		}
-	}
+   @Override
+   public void saveToArtifact() {
+      try {
+         if (!Strings.isValid(data)) {
+            artifact.deleteSoleAttribute(attributeTypeName);
+         } else {
+            String enteredValue = get();
+            artifact.setSoleAttributeValue(attributeTypeName, enteredValue);
+         }
+      } catch (Exception ex) {
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+   }
 
-	@Override
-	public Result isDirty() throws OseeCoreException {
-		try {
-			String enteredValue = get();
-			String storedValue = artifact.getSoleAttributeValue(attributeTypeName);
-			if (!enteredValue.equals(storedValue)) {
-				return new Result(true, attributeTypeName + " is dirty");
-			}
-		} catch (AttributeDoesNotExist ex) {
-			if (!get().equals("")) {
-				return new Result(true, attributeTypeName + " is dirty");
-			}
-		}
-		return Result.FalseResult;
-	}
+   @Override
+   public Result isDirty() throws OseeCoreException {
+      try {
+         String enteredValue = get();
+         String storedValue = artifact.getSoleAttributeValue(attributeTypeName);
+         if (!enteredValue.equals(storedValue)) {
+            return new Result(true, attributeTypeName + " is dirty");
+         }
+      } catch (AttributeDoesNotExist ex) {
+         if (!get().equals("")) {
+            return new Result(true, attributeTypeName + " is dirty");
+         }
+      }
+      return Result.FalseResult;
+   }
 
-	@Override
-	public IStatus isValid() {
-		IStatus status = super.isValid();
-		if (status.isOK() && !data.equals("")) {
-			status = OseeValidator.getInstance().validate(IOseeValidator.SHORT, artifact, attributeTypeName, get());
-		}
-		return status;
-	}
+   @Override
+   public IStatus isValid() {
+      IStatus status = super.isValid();
+      if (status.isOK() && !data.equals("")) {
+         status = OseeValidator.getInstance().validate(IOseeValidator.SHORT, artifact, attributeTypeName, get());
+      }
+      return status;
+   }
 
-	@Override
-	public void revert() throws OseeCoreException {
-		setAttributeType(artifact, attributeTypeName);
-	}
+   @Override
+   public void revert() throws OseeCoreException {
+      setAttributeType(artifact, attributeTypeName);
+   }
 
 }

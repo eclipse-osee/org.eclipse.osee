@@ -40,7 +40,7 @@ public class OtherEditorHandler extends AbstractEditorHandler {
       if (!artifacts.isEmpty()) {
          try {
             EditorSelectionDialog dialog =
-                  new EditorSelectionDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
+               new EditorSelectionDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
             dialog.setMessage(String.format("Choose the editor for opening %s", artifacts));
 
             NativeRenderer renderer = new NativeRenderer();
@@ -93,7 +93,7 @@ public class OtherEditorHandler extends AbstractEditorHandler {
             String editorId = editor == null ? IEditorRegistry.SYSTEM_EXTERNAL_EDITOR_ID : editor.getId();
 
             page.openEditor(new FileEditorInput(file), editorId, true,
-                  IWorkbenchPage.MATCH_INPUT | IWorkbenchPage.MATCH_ID);
+               IWorkbenchPage.MATCH_INPUT | IWorkbenchPage.MATCH_ID);
             // only remember the default editor if the open succeeds
             IDE.setDefaultEditor(file, editorId);
          }

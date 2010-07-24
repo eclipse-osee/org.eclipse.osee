@@ -15,42 +15,41 @@ import org.eclipse.osee.ote.message.data.MemoryResource;
 import org.eclipse.osee.ote.message.elements.ArrayElement;
 import org.eclipse.osee.ote.message.tool.rec.RecUtil;
 
-
 public class ArrayElementEntry implements IElementEntry {
 
-	private final ArrayElement element;
-	private final byte[] nameAsBytes;
-	private static final byte[] LENGTH_BYTES = ".LENGTH".getBytes();
+   private final ArrayElement element;
+   private final byte[] nameAsBytes;
+   private static final byte[] LENGTH_BYTES = ".LENGTH".getBytes();
 
-	public ArrayElementEntry(ArrayElement element) {
-		this.element = element;
-		nameAsBytes = element.getElementPathAsString().getBytes();
-	}
+   public ArrayElementEntry(ArrayElement element) {
+      this.element = element;
+      nameAsBytes = element.getElementPathAsString().getBytes();
+   }
 
-	public ArrayElement getElement() {
-		return element;
-	}
+   @Override
+   public ArrayElement getElement() {
+      return element;
+   }
 
-	public void write(ByteBuffer buffer, MemoryResource mem, int limit) {
-		mem.setOffset(element.getMsgData().getMem().getOffset());
-		int msgLimit = limit - element.getArrayStartOffset();
-		int length = element.getArrayEndOffset() - element.getArrayStartOffset();
-		length = msgLimit < length ? msgLimit : length;
+   @Override
+   public void write(ByteBuffer buffer, MemoryResource mem, int limit) {
+      mem.setOffset(element.getMsgData().getMem().getOffset());
+      int msgLimit = limit - element.getArrayStartOffset();
+      int length = element.getArrayEndOffset() - element.getArrayStartOffset();
+      length = msgLimit < length ? msgLimit : length;
       buffer.put(nameAsBytes).put(LENGTH_BYTES).put(COMMA).put(Integer.toString(length).getBytes()).put(COMMA).put(
-            nameAsBytes).put(COMMA);
+         nameAsBytes).put(COMMA);
       for (int i = 0; i < length; i++) {
          RecUtil.byteToAsciiHex(element.getValue(mem, i), buffer);
          buffer.put((byte) ' ');
       }
       buffer.put(COMMA);
-	}
+   }
 
+   public static void main(String[] args) {
+      ByteBuffer buffer = ByteBuffer.allocate(100);
 
-	
-	public static void main(String[] args) {
-	   ByteBuffer buffer = ByteBuffer.allocate(100);
-
-	   RecUtil.byteToAsciiHex((byte) 21, buffer);
+      RecUtil.byteToAsciiHex((byte) 21, buffer);
       buffer.put((byte) ' ');
       RecUtil.byteToAsciiHex((byte) 255, buffer);
       buffer.put((byte) ' ');
@@ -73,6 +72,5 @@ public class ArrayElementEntry implements IElementEntry {
       String ascii = new String(data);
       System.out.println(ascii);
    }
-	
-	
+
 }

@@ -77,7 +77,7 @@ public class ChangeItemLoader {
 
    private final class ArtifactChangeItemFactory implements ChangeItemFactory {
       private static final String SELECT_ARTIFACTS_BY_GAMMAS =
-            "select art_id, art_type_id, txj.gamma_id from osee_artifact id, osee_join_transaction txj where id.gamma_id = txj.gamma_id and txj.query_id = ?";
+         "select art_id, art_type_id, txj.gamma_id from osee_artifact id, osee_join_transaction txj where id.gamma_id = txj.gamma_id and txj.query_id = ?";
 
       @Override
       public String getLoadByGammaQuery() {
@@ -113,7 +113,7 @@ public class ChangeItemLoader {
 
    private final class AttributeChangeItemFactory implements ChangeItemFactory {
       private static final String SELECT_ATTRIBUTES_BY_GAMMAS =
-            "select art_id, attr_id, value, attr_type_id, txj.gamma_id from osee_attribute id, osee_join_transaction txj where id.gamma_id = txj.gamma_id and txj.query_id = ?";
+         "select art_id, attr_id, value, attr_type_id, txj.gamma_id from osee_attribute id, osee_join_transaction txj where id.gamma_id = txj.gamma_id and txj.query_id = ?";
 
       @Override
       public String getLoadByGammaQuery() {
@@ -152,7 +152,7 @@ public class ChangeItemLoader {
 
    private final class RelationChangeItemFactory implements ChangeItemFactory {
       private static final String SELECT_RELATIONS_BY_GAMMAS =
-            "select a_art_id, b_art_id, rel_link_id, rel_link_type_id, rationale, txj.gamma_id from osee_relation_link id, osee_join_transaction txj where id.gamma_id = txj.gamma_id and txj.query_id = ?";
+         "select a_art_id, b_art_id, rel_link_id, rel_link_type_id, rationale, txj.gamma_id from osee_relation_link id, osee_join_transaction txj where id.gamma_id = txj.gamma_id and txj.query_id = ?";
 
       @Override
       public String getLoadByGammaQuery() {

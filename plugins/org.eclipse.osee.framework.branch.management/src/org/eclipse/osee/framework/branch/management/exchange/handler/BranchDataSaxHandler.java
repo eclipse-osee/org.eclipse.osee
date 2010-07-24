@@ -103,8 +103,8 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       if (branchesToImport != null && branchesToImport.length > 0) {
          if (!areAvailable(branchesToImport)) {
             throw new OseeDataStoreException(String.format(
-                  "Branches not found in import file:\n\t\t- selected to import: [%s]\n\t\t- in import file: [%s]",
-                  branchesToImport, getAllBranchDataFromImportFile()));
+               "Branches not found in import file:\n\t\t- selected to import: [%s]\n\t\t- in import file: [%s]",
+               branchesToImport, getAllBranchDataFromImportFile()));
          }
       }
    }
@@ -118,7 +118,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       int index = 0;
       for (BranchData branchData : branchesToStore) {
          if (!getOptions().getBoolean(ImportOptions.CLEAN_BEFORE_IMPORT.name()) && branchData.getBranchGuid().equals(
-               CoreBranches.SYSTEM_ROOT.getGuid())) {
+            CoreBranches.SYSTEM_ROOT.getGuid())) {
             continue;
          }
 
@@ -193,8 +193,8 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
    @Override
    public void clearDataTable() throws OseeDataStoreException {
       getDatabaseService().runPreparedUpdate(
-            getConnection(),
-            String.format("DELETE FROM %s where NOT branch_type = " + BranchType.SYSTEM_ROOT.getValue(),
-                  getMetaData().getTableName()));
+         getConnection(),
+         String.format("DELETE FROM %s where NOT branch_type = " + BranchType.SYSTEM_ROOT.getValue(),
+            getMetaData().getTableName()));
    }
 }

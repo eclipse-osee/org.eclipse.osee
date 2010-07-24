@@ -62,7 +62,7 @@ public class TaskMetrics extends AbstractBlam {
       return "Task Metrics";
    }
 
-   
+   @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws OseeCoreException {
       try {
          monitor.beginTask("TaskMetrics", 5);
@@ -126,12 +126,12 @@ public class TaskMetrics extends AbstractBlam {
       }
    }
 
-   
    @Override
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XArtifactTypeListViewer\" displayName=\"Artifact Type\" keyedBranch=\"common\" defaultValue=\"Lba Test Team Workflow\" /></xWidgets>";
    }
 
+   @Override
    public Collection<String> getCategories() {
       return Arrays.asList("ATS.Report");
    }

@@ -35,6 +35,7 @@ public class ExportBranchPage extends WizardDataTransferPage {
       setDescription("Import OSEE Types");
    }
 
+   @Override
    public void createControl(Composite parent) {
 
       initializeDialogUnits(parent);
@@ -60,6 +61,7 @@ public class ExportBranchPage extends WizardDataTransferPage {
     * 
     * @param event Event
     */
+   @Override
    public void handleEvent(Event event) {
       setPageComplete(determinePageCompletion());
    }
@@ -105,8 +107,8 @@ public class ExportBranchPage extends WizardDataTransferPage {
       } catch (Exception ex) {
          ex.printStackTrace();
          ErrorDialog.openError(getShell(), "OSEE Import Error", "An error has occured while importing a document.",
-               new Status(IStatus.ERROR, "org.eclipse.osee.framework.jdk.core", IStatus.ERROR,
-                     "Unknown exception occurred in the import", ex));
+            new Status(IStatus.ERROR, "org.eclipse.osee.framework.jdk.core", IStatus.ERROR,
+               "Unknown exception occurred in the import", ex));
       }
       return true;
    }

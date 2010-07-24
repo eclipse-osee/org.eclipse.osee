@@ -22,20 +22,19 @@ public class ReturnStatus implements Serializable {
     */
    private static final long serialVersionUID = -7774073812320127561L;
 
-   
-   private boolean status;
-   private String message;
-   
-   public ReturnStatus(String message, boolean status){
+   private final boolean status;
+   private final String message;
+
+   public ReturnStatus(String message, boolean status) {
       this.status = status;
       this.message = message;
    }
-   
-   public boolean getStatus(){
+
+   public boolean getStatus() {
       return status;
    }
-   
-   public String getMessage(){
+
+   public String getMessage() {
       return message;
    }
 }

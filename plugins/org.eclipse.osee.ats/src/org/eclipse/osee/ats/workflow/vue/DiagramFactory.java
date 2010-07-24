@@ -38,14 +38,14 @@ public class DiagramFactory {
          String vueXml = AFile.readFile(new File(workFlowFilename));
          objToAtsWorkFlowXml.put(workFlowFilename, vueXml);
       }
-      return (Diagram) (new VueDiagram(workFlowFilename, objToAtsWorkFlowXml.get(workFlowFilename))).getWorkflow();
+      return new VueDiagram(workFlowFilename, objToAtsWorkFlowXml.get(workFlowFilename)).getWorkflow();
    }
 
    public Diagram getWorkFlowFromFileContents(String name, String vueXml) throws OseeCoreException {
       if (!objToAtsWorkFlowXml.containsKey(name)) {
          objToAtsWorkFlowXml.put(name, vueXml);
       }
-      return (Diagram) (new VueDiagram(name, objToAtsWorkFlowXml.get(name))).getWorkflow();
+      return new VueDiagram(name, objToAtsWorkFlowXml.get(name)).getWorkflow();
    }
 
 }

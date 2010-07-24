@@ -33,6 +33,7 @@ public class ScriptPausePromptImpl extends AbstractInteractivePrompt<String> imp
       getScript().getUserSession().initiateResumePrompt(createRemoteReference(IResumeResponse.class));
    }
 
+   @Override
    public void resume() throws RemoteException {
       endPrompt("CONTINUE", null);
    }

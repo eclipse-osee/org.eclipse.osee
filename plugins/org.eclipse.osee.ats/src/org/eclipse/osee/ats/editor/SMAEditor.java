@@ -141,7 +141,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
 
       if (sma == null) {
          MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Open Error",
-               "Can't Find Action in DB");
+            "Can't Find Action in DB");
          return;
       }
       try {
@@ -197,10 +197,10 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
       try {
          if (sma.isHistoricalVersion()) {
             AWorkbench.popup("Historical Error",
-                  "You can not change a historical version of " + sma.getArtifactTypeName() + ":\n\n" + sma);
+               "You can not change a historical version of " + sma.getArtifactTypeName() + ":\n\n" + sma);
          } else if (!sma.isAccessControlWrite()) {
             AWorkbench.popup("Authentication Error",
-                  "You do not have permissions to save " + sma.getArtifactTypeName() + ":" + sma);
+               "You do not have permissions to save " + sma.getArtifactTypeName() + ":" + sma);
          } else {
             try {
                SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Workflow Editor - Save");
@@ -272,7 +272,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
       try {
          return isDirtyResult().isTrue();
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
       return false;
    }
@@ -446,6 +446,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
    public void onDirtied() {
       Displays.ensureInDisplayThread(new Runnable() {
 
+         @Override
          public void run() {
             firePropertyChange(PROP_DIRTY);
          }
@@ -494,22 +495,27 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
       });
    }
 
+   @Override
    public StateMachineArtifact getSma() {
       return sma;
    }
 
+   @Override
    public String getCurrentStateName() throws OseeCoreException {
       return sma.getStateMgr().getCurrentStateName();
    }
 
+   @Override
    public IDirtiableEditor getEditor() throws OseeCoreException {
       return this;
    }
 
+   @Override
    public String getTabName() throws OseeCoreException {
       return "Tasks";
    }
 
+   @Override
    public Collection<TaskArtifact> getTaskArtifacts(String stateName) throws OseeCoreException {
       if (sma instanceof TaskableStateMachineArtifact) {
          if (stateName == null || stateName.equals("")) {
@@ -521,10 +527,12 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
       return Collections.emptyList();
    }
 
+   @Override
    public boolean isTaskable() throws OseeCoreException {
       return sma.isTaskable();
    }
 
+   @Override
    public boolean isTasksEditable() throws OseeCoreException {
       return sma.isTaskable();
    }

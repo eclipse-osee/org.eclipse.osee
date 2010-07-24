@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-
 /**
  * @author Ryan D. Brooks
  */

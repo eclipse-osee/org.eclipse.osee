@@ -16,15 +16,14 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.JoinUtility;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.JoinUtility.IdJoinQuery;
+import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.search.engine.SearchOptions;
 import org.eclipse.osee.framework.search.engine.SearchOptions.SearchOptionsEnum;
@@ -34,16 +33,21 @@ import org.eclipse.osee.framework.search.engine.SearchOptions.SearchOptionsEnum;
  */
 public class AttributeDataStore {
 
-   private static final String LOAD_ATTRIBUTE = "SELECT attr1.gamma_id, attr1.VALUE, attr1.uri, attr1.attr_type_id FROM osee_attribute attr1, osee_tag_gamma_queue tgq1 WHERE attr1.gamma_id = tgq1.gamma_id AND tgq1.query_id = ?";
+   private static final String LOAD_ATTRIBUTE =
+      "SELECT attr1.gamma_id, attr1.VALUE, attr1.uri, attr1.attr_type_id FROM osee_attribute attr1, osee_tag_gamma_queue tgq1 WHERE attr1.gamma_id = tgq1.gamma_id AND tgq1.query_id = ?";
 
-   private static final String GET_TAGGABLE_SQL_BODY = " FROM osee_attribute attr1, osee_attribute_type type1, osee_txs txs1 WHERE txs1.gamma_id = attr1.gamma_id AND attr1.attr_type_id = type1.attr_type_id AND type1.tagger_id IS NOT NULL";
+   private static final String GET_TAGGABLE_SQL_BODY =
+      " FROM osee_attribute attr1, osee_attribute_type type1, osee_txs txs1 WHERE txs1.gamma_id = attr1.gamma_id AND attr1.attr_type_id = type1.attr_type_id AND type1.tagger_id IS NOT NULL";
 
-   private static final String FIND_ALL_TAGGABLE_ATTRIBUTES = "SELECT DISTINCT attr1.gamma_id, type1.tagger_id" + GET_TAGGABLE_SQL_BODY;
-   private static final String COUNT_TAGGABLE_ATTRIBUTES = "SELECT count(DISTINCT attr1.gamma_id)" + GET_TAGGABLE_SQL_BODY;
+   private static final String FIND_ALL_TAGGABLE_ATTRIBUTES =
+      "SELECT DISTINCT attr1.gamma_id, type1.tagger_id" + GET_TAGGABLE_SQL_BODY;
+   private static final String COUNT_TAGGABLE_ATTRIBUTES =
+      "SELECT count(DISTINCT attr1.gamma_id)" + GET_TAGGABLE_SQL_BODY;
 
    private static final String RESTRICT_BY_BRANCH = " AND txs1.branch_id = ?";
 
-   private static final CompositeKeyHashMap<Integer, Boolean, String> queryCache = new CompositeKeyHashMap<Integer, Boolean, String>();
+   private static final CompositeKeyHashMap<Integer, Boolean, String> queryCache =
+      new CompositeKeyHashMap<Integer, Boolean, String>();
 
    private AttributeDataStore() {
    }
@@ -55,11 +59,10 @@ public class AttributeDataStore {
       try {
          chStmt.runPreparedQuery(LOAD_ATTRIBUTE, tagQueueQueryId);
          while (chStmt.next()) {
-            attributeData.add(new AttributeData(chStmt.getLong("gamma_id"), chStmt.getString("value"), chStmt.getString("uri"),
-                                                chStmt.getInt("attr_type_id")));
+            attributeData.add(new AttributeData(chStmt.getLong("gamma_id"), chStmt.getString("value"),
+               chStmt.getString("uri"), chStmt.getInt("attr_type_id")));
          }
-      }
-      finally {
+      } finally {
          chStmt.close();
       }
 
@@ -86,7 +89,8 @@ public class AttributeDataStore {
          for (int index = 1; index < numberOfTags; index++) {
             codedTag.append(String.format("ost%d.gamma_id = ost%d.gamma_id and \n", index - 1, index));
          }
-         codedTag.append(String.format("ost%d.gamma_id = attr1.gamma_id and\n attr1.gamma_id = txs1.gamma_id \n", numberOfTags - 1));
+         codedTag.append(String.format("ost%d.gamma_id = attr1.gamma_id and\n attr1.gamma_id = txs1.gamma_id \n",
+            numberOfTags - 1));
 
          if (useAttrTypeJoin) {
             codedTag.append(" and attr1.attr_type_id = idj.id and idj.query_id = ? ");
@@ -105,8 +109,7 @@ public class AttributeDataStore {
       // txs1 is for attributes, txs2 is for artifact
       if (options.getBoolean(SearchOptionsEnum.include_deleted.asStringOption())) {
          toReturn.append(" AND txs1.tx_current IN (1,3)");
-      }
-      else {
+      } else {
          toReturn.append(" AND txs1.tx_current = 1");
       }
       return toReturn.toString();
@@ -128,8 +131,7 @@ public class AttributeDataStore {
       }
    }
 
-   public static Set<AttributeData> getAttributesByTags(final int branchId, final SearchOptions options, final Collection<Long> tagData,
-         final AttributeType... attributeTypes) throws OseeCoreException {
+   public static Set<AttributeData> getAttributesByTags(final int branchId, final SearchOptions options, final Collection<Long> tagData, final AttributeType... attributeTypes) throws OseeCoreException {
       final Set<AttributeData> toReturn = new HashSet<AttributeData>();
       IdJoinQuery oseeIdJoin = null;
       IOseeStatement chStmt = ConnectionHandler.getStatement();
@@ -142,8 +144,7 @@ public class AttributeDataStore {
 
          if (attributeTypes.length == 1) {
             sqlQuery += " and attr1.attr_type_id = ?";
-         }
-         else if (useAttrTypeJoin) {
+         } else if (useAttrTypeJoin) {
             oseeIdJoin = JoinUtility.createIdJoinQuery();
             for (AttributeType attributeType : attributeTypes) {
                oseeIdJoin.add(attributeType.getId());
@@ -161,11 +162,11 @@ public class AttributeDataStore {
 
          chStmt.runPreparedQuery(sqlQuery, params.toArray(new Object[params.size()]));
          while (chStmt.next()) {
-            toReturn.add(new AttributeData(chStmt.getInt("art_id"), chStmt.getLong("gamma_id"), chStmt.getInt("branch_id"),
-                                           chStmt.getString("value"), chStmt.getString("uri"), chStmt.getInt("attr_type_id")));
+            toReturn.add(new AttributeData(chStmt.getInt("art_id"), chStmt.getLong("gamma_id"),
+               chStmt.getInt("branch_id"), chStmt.getString("value"), chStmt.getString("uri"),
+               chStmt.getInt("attr_type_id")));
          }
-      }
-      finally {
+      } finally {
          chStmt.close();
          if (useAttrTypeJoin) {
             oseeIdJoin.delete();
@@ -193,6 +194,6 @@ public class AttributeDataStore {
 
    public static int getTotalTaggableItems(OseeConnection connection, final int branchId) throws OseeDataStoreException {
       return ConnectionHandler.runPreparedQueryFetchInt(connection, -1, getBranchTaggingQueries(branchId, true),
-                                                        getAllTaggableGammasByBranchQueryData(branchId));
+         getAllTaggableGammasByBranchQueryData(branchId));
    }
 }

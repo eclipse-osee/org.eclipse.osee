@@ -28,7 +28,7 @@ public class AtsWorldEditorItem extends AtsWorldEditorItemBase {
    @Override
    public List<? extends Action> getWorldEditorMenuActions(IWorldEditorProvider worldEditorProvider, WorldEditor worldEditor) throws OseeCoreException {
       return Arrays.asList(new AtsExportManager(worldEditor), new ExportChangeReportsAction(worldEditor),
-            new DuplicateWorkflowViaWorldEditorAction(worldEditor), new CompleteMultipleWorkflows(worldEditor),
-            new CancelMultipleWorkflows(worldEditor));
+         new DuplicateWorkflowViaWorldEditorAction(worldEditor), new CompleteMultipleWorkflows(worldEditor),
+         new CancelMultipleWorkflows(worldEditor));
    }
 }

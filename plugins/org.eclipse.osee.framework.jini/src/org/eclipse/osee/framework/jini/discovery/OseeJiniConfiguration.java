@@ -18,7 +18,7 @@ import net.jini.config.ConfigurationProvider;
  * @author Andrew M. Finkbeiner
  */
 public class OseeJiniConfiguration implements Configuration {
-   private Configuration config;
+   private final Configuration config;
 
    public OseeJiniConfiguration() throws ConfigurationException {
       config = ConfigurationProvider.getInstance(null);
@@ -30,17 +30,20 @@ public class OseeJiniConfiguration implements Configuration {
 
    }
 
+   @Override
    @SuppressWarnings("unchecked")
    public Object getEntry(String arg0, String arg1, Class arg2) throws ConfigurationException {
       return config.getEntry(arg0, arg1, arg2);
    }
 
+   @Override
    @SuppressWarnings("unchecked")
    public Object getEntry(String arg0, String arg1, Class arg2, Object arg3) throws ConfigurationException {
       Object o = config.getEntry(arg0, arg1, arg2, arg3);
       return o;
    }
 
+   @Override
    @SuppressWarnings("unchecked")
    public Object getEntry(String arg0, String arg1, Class arg2, Object arg3, Object arg4) throws ConfigurationException {
       return config.getEntry(arg0, arg1, arg2, arg3, arg4);

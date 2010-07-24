@@ -17,10 +17,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {//
+@Suite.SuiteClasses({//
 CacheTestSuite.class, //
-      FieldTestSuite.class, //
-      ModelTestSuite.class, //
+   FieldTestSuite.class, //
+   ModelTestSuite.class, //
 })
 /**
  * @author Roberto E. Escobar

@@ -15,10 +15,10 @@ import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 
 public class OteRelationTypes extends NamedIdentity implements IRelationEnumeration {
-   public static final OteRelationTypes TEST_SCRIPT_TO_RUN_RELATION__TEST_SCRIPT =
-         new OteRelationTypes(RelationSide.SIDE_A, "AAMFE+jMyBDK7CV479wA", "Test Case to Run Relation");
-   public static final OteRelationTypes TEST_SCRIPT_TO_RUN_RELATION__TEST_RUN =
-         new OteRelationTypes(RelationSide.SIDE_B, "AAMFE+jMyBDK7CV479wA", "Test Case to Run Relation");
+   public static final OteRelationTypes TEST_SCRIPT_TO_RUN_RELATION__TEST_SCRIPT = new OteRelationTypes(
+      RelationSide.SIDE_A, "AAMFE+jMyBDK7CV479wA", "Test Case to Run Relation");
+   public static final OteRelationTypes TEST_SCRIPT_TO_RUN_RELATION__TEST_RUN = new OteRelationTypes(
+      RelationSide.SIDE_B, "AAMFE+jMyBDK7CV479wA", "Test Case to Run Relation");
    private final RelationSide relationSide;
 
    private OteRelationTypes(RelationSide relationSide, String guid, String name) {

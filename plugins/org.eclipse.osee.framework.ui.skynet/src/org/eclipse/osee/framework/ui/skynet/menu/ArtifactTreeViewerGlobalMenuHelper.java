@@ -30,18 +30,24 @@ public class ArtifactTreeViewerGlobalMenuHelper implements IGlobalMenuHelper {
       this.treeViewer = treeViewer;
    }
 
+   @Override
    public Collection<Artifact> getArtifacts() {
       Set<Artifact> artifacts = new HashSet<Artifact>();
-      if (treeViewer == null || treeViewer.getTree().isDisposed()) return artifacts;
+      if (treeViewer == null || treeViewer.getTree().isDisposed()) {
+         return artifacts;
+      }
       IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
       Iterator<?> iterator = selection.iterator();
       while (iterator.hasNext()) {
          Object obj = iterator.next();
-         if (obj instanceof Artifact) artifacts.add((Artifact) obj);
+         if (obj instanceof Artifact) {
+            artifacts.add((Artifact) obj);
+         }
       }
       return artifacts;
    }
 
+   @Override
    public Collection<GlobalMenuItem> getValidMenuItems() {
       return GlobalMenuItem.ALL;
    }

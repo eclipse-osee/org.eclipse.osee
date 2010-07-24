@@ -129,6 +129,7 @@ public class XCombo extends XWidget {
       dataCombo.setLayoutData(gd);
       ModifyListener dataComboListener = new ModifyListener() {
 
+         @Override
          public void modifyText(ModifyEvent e) {
             data = dataCombo.getText();
             if (data.compareTo("--select--") == 0) {

@@ -44,16 +44,19 @@ public class MarkerPlugin extends OseeUiActivator {
    public MarkerPlugin() {
    }
 
+   @Override
    public void start(BundleContext context) throws Exception {
       super.start(context);
       plugin = this;
       filesToWatch = new FileWatchList();
       ResourcesPlugin.getWorkspace().addResourceChangeListener(new IResourceChangeListener() {
 
+         @Override
          public void resourceChanged(final IResourceChangeEvent event) {
             IResourceDelta delta = event.getDelta();
             try {
                delta.accept(new IResourceDeltaVisitor() {
+                  @Override
                   public boolean visit(IResourceDelta delta) throws CoreException {
                      IPath path = delta.getFullPath();
                      String extension = path.getFileExtension();
@@ -82,7 +85,9 @@ public class MarkerPlugin extends OseeUiActivator {
                            }
                         }
                      }
-                     if (delta.getAffectedChildren().length > 0) return true;
+                     if (delta.getAffectedChildren().length > 0) {
+                        return true;
+                     }
                      return false;
                   }
                });
@@ -94,6 +99,7 @@ public class MarkerPlugin extends OseeUiActivator {
       }, IResourceChangeEvent.POST_CHANGE);
    }
 
+   @Override
    public void stop(BundleContext context) throws Exception {
       plugin = null;
       super.stop(context);
@@ -110,7 +116,8 @@ public class MarkerPlugin extends OseeUiActivator {
 
    public void addMarkers(IFile file) {
       removeMarkers(file);
-      Jobs.runInJob("OTE Marker Processing", new ProcessOutfileSax(this, file), MarkerPlugin.class, MarkerPlugin.PLUGIN_ID, false);
+      Jobs.runInJob("OTE Marker Processing", new ProcessOutfileSax(this, file), MarkerPlugin.class,
+         MarkerPlugin.PLUGIN_ID, false);
    }
 
    public void removeMarkers(IFile file) {
@@ -127,7 +134,7 @@ public class MarkerPlugin extends OseeUiActivator {
 
    synchronized void updateMarkerInfo(IFile file, List<IMarker> markers) {
       List<IMarker> oldMarkers = filesToWatch.get(file);
-      if(oldMarkers != null){
+      if (oldMarkers != null) {
          oldMarkers.addAll(markers);
       } else {
          filesToWatch.put(file, markers);

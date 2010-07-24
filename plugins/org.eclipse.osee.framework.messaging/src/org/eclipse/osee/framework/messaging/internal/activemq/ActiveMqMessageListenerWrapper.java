@@ -30,44 +30,47 @@ import org.eclipse.osee.framework.messaging.internal.Activator;
  */
 class ActiveMqMessageListenerWrapper implements MessageListener {
 
-   private OseeMessagingListener listener;
-   private MessageProducer producer;
-   private Session session;
-   private ActiveMqUtil activeMqUtil;
-   
-   ActiveMqMessageListenerWrapper(ActiveMqUtil activeMqUtil, MessageProducer producer, Session session, OseeMessagingListener listener){
+   private final OseeMessagingListener listener;
+   private final MessageProducer producer;
+   private final Session session;
+   private final ActiveMqUtil activeMqUtil;
+
+   ActiveMqMessageListenerWrapper(ActiveMqUtil activeMqUtil, MessageProducer producer, Session session, OseeMessagingListener listener) {
       this.producer = producer;
       this.session = session;
       this.listener = listener;
       this.activeMqUtil = activeMqUtil;
    }
 
-	public void onMessage(javax.jms.Message jmsMessage){
-      try{
+   @Override
+   public void onMessage(javax.jms.Message jmsMessage) {
+      try {
          Destination destReply = jmsMessage.getJMSReplyTo();
-         if(destReply != null){
-            ActiveMQDestination dest = (ActiveMQDestination)jmsMessage.getJMSDestination();
+         if (destReply != null) {
+            ActiveMQDestination dest = (ActiveMQDestination) jmsMessage.getJMSDestination();
             String correlationId = dest.getPhysicalName();
-            ReplyConnectionActiveMqImpl replyConnectionActiveMqImpl = new ReplyConnectionActiveMqImpl(activeMqUtil, session, producer, destReply, correlationId);
+            ReplyConnectionActiveMqImpl replyConnectionActiveMqImpl =
+               new ReplyConnectionActiveMqImpl(activeMqUtil, session, producer, destReply, correlationId);
             process(jmsMessage, replyConnectionActiveMqImpl);
          } else {
             process(jmsMessage, new ReplyConnectionActiveMqImpl());
-         } 
-      } catch (JMSException ex){
+         }
+      } catch (JMSException ex) {
          OseeLog.log(ActiveMqMessageListenerWrapper.class, Level.SEVERE, ex);
       } catch (OseeCoreException ex) {
          OseeLog.log(ActiveMqMessageListenerWrapper.class, Level.SEVERE, ex);
       }
-	}
-	
-	OseeMessagingListener getListener(){
-	   return listener;
-	}
-	
-	private void process(javax.jms.Message message, ReplyConnection replyConnection) throws JMSException, OseeCoreException{
-	   Map<String, Object> headers = new HashMap<String, Object>();
-	   listener.process(activeMqUtil.translateMessage(message, listener.getClazz()), headers, replyConnection);
-	   OseeLog.log(Activator.class, Level.FINE, String.format("recieved message %s - %s", message.getJMSDestination().toString(), message.toString()));
-	}
+   }
+
+   OseeMessagingListener getListener() {
+      return listener;
+   }
+
+   private void process(javax.jms.Message message, ReplyConnection replyConnection) throws JMSException, OseeCoreException {
+      Map<String, Object> headers = new HashMap<String, Object>();
+      listener.process(activeMqUtil.translateMessage(message, listener.getClazz()), headers, replyConnection);
+      OseeLog.log(Activator.class, Level.FINE,
+         String.format("recieved message %s - %s", message.getJMSDestination().toString(), message.toString()));
+   }
 
 }

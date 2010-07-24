@@ -56,8 +56,7 @@ public final class MockDataFactory {
    public static AttributeType createAttributeType() throws OseeCoreException {
       OseeEnumTypeFactory oseeEnumTypeFactory = new OseeEnumTypeFactory();
       AttributeType attributeType =
-            new AttributeType(GUID.create(), "name", "baseType", "providerName", ".xml", "", 1, 1, "description",
-                  "tagger");
+         new AttributeType(GUID.create(), "name", "baseType", "providerName", ".xml", "", 1, 1, "description", "tagger");
       attributeType.setOseeEnumType(oseeEnumTypeFactory.createEnumType(GUID.create(), "enum type name"));
       return attributeType;
    }
@@ -71,7 +70,7 @@ public final class MockDataFactory {
 
    public static TransactionRecord createTransaction(int index, int branchId) {
       TransactionDetailsType type =
-            TransactionDetailsType.values()[Math.abs(index % TransactionDetailsType.values().length)];
+         TransactionDetailsType.values()[Math.abs(index % TransactionDetailsType.values().length)];
       int value = index;
       if (value == 0) {
          value++;
@@ -89,8 +88,8 @@ public final class MockDataFactory {
 
    public static AttributeType createAttributeType(int index, OseeEnumType oseeEnumType) throws OseeCoreException {
       AttributeType type =
-            new AttributeType(GUID.create(), "attrType_" + index, "baseClass_" + index, "providerId_" + index,
-                  "ext_" + index, "default_" + index, index * 2, index * 7, "description_" + index, "tag_" + index);
+         new AttributeType(GUID.create(), "attrType_" + index, "baseClass_" + index, "providerId_" + index,
+            "ext_" + index, "default_" + index, index * 2, index * 7, "description_" + index, "tag_" + index);
       type.setOseeEnumType(oseeEnumType);
       return type;
    }
@@ -106,10 +105,10 @@ public final class MockDataFactory {
 
    public static RelationType createRelationType(int index, ArtifactType artTypeA, ArtifactType artTypeB) {
       RelationTypeMultiplicity multiplicity =
-            RelationTypeMultiplicity.values()[Math.abs(index % RelationTypeMultiplicity.values().length)];
+         RelationTypeMultiplicity.values()[Math.abs(index % RelationTypeMultiplicity.values().length)];
       String order = RelationOrderBaseTypes.values[index % RelationTypeMultiplicity.values().length].getGuid();
       return new RelationType(GUID.create(), "relType_" + index, "sideA_" + index, "sideB_" + index, artTypeA,
-            artTypeB, multiplicity, order);
+         artTypeB, multiplicity, order);
    }
 
    public static IOseeCachingServiceProvider createCachingProvider() {

@@ -15,7 +15,6 @@ import org.xml.sax.Attributes;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public class ExecutedBy extends ElementHandlers {
 

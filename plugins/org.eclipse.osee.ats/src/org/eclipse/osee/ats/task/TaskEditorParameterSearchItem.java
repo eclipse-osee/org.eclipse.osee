@@ -44,6 +44,7 @@ public abstract class TaskEditorParameterSearchItem extends WorldSearchItem impl
 
    public abstract Result isParameterSelectionValid() throws OseeCoreException;
 
+   @Override
    public abstract Collection<? extends Artifact> getTaskEditorTaskArtifacts() throws OseeCoreException;
 
    @Override

@@ -13,20 +13,19 @@ package org.eclipse.osee.ote.messaging.dds.service;
 import java.lang.ref.WeakReference;
 
 /**
- * Provides the necessary information to communicate type information for messaging
- * within the DDS system. This allows the DDS system to be introduced to new types
- * at run time, and be able to handle them properly.
+ * Provides the necessary information to communicate type information for messaging within the DDS system. This allows
+ * the DDS system to be introduced to new types at run time, and be able to handle them properly.
  * 
  * @author Robert A. Fisher
  * @author David Diepenbrock
  */
 public class TypeSignature {
-   private String typeName;
-   private int typeDataSize;
-   private WeakReference<Key> key;
-   private String readerName;
-   private String writerName;
-   private WeakReference<ClassLoader> classLoader;
+   private final String typeName;
+   private final int typeDataSize;
+   private final WeakReference<Key> key;
+   private final String readerName;
+   private final String writerName;
+   private final WeakReference<ClassLoader> classLoader;
 
    /**
     * Create a <code>TypeSignature</code> with all of the necessary information.
@@ -45,7 +44,7 @@ public class TypeSignature {
       this.key = new WeakReference<Key>(key);
       this.readerName = readerName;
       this.writerName = writerName;
-      this.classLoader = new WeakReference<ClassLoader>( classLoader);
+      this.classLoader = new WeakReference<ClassLoader>(classLoader);
    }
 
    /**
@@ -89,22 +88,21 @@ public class TypeSignature {
    public String getWriterName() {
       return writerName;
    }
-   
+
+   @Override
    public boolean equals(Object obj) {
 
       if (obj instanceof TypeSignature) {
-         TypeSignature signature = (TypeSignature)obj;
-         
-         return typeName.equals(signature.typeName) &&
-                typeDataSize == signature.typeDataSize &&
-                readerName.equals(signature.readerName) &&
-                writerName.equals(signature.writerName) &&
-                classLoader.get().equals(signature.classLoader.get());
+         TypeSignature signature = (TypeSignature) obj;
+
+         return typeName.equals(signature.typeName) && typeDataSize == signature.typeDataSize && readerName.equals(signature.readerName) && writerName.equals(signature.writerName) && classLoader.get().equals(
+            signature.classLoader.get());
       }
 
       return false;
    }
 
+   @Override
    public int hashCode() {
       return typeName.hashCode();
    }

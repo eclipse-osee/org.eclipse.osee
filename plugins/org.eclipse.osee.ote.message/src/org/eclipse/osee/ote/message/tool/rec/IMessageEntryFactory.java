@@ -13,7 +13,7 @@ package org.eclipse.osee.ote.message.tool.rec;
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.tool.rec.entry.IMessageEntry;
 
-public interface IMessageEntryFactory <T extends Message<?, ?, T>>{
+public interface IMessageEntryFactory<T extends Message<?, ?, T>> {
 
-	public IMessageEntry createMessageEntry(MessageRecordConfig config, MessageRecorder recorder);
+   public IMessageEntry createMessageEntry(MessageRecordConfig config, MessageRecorder recorder);
 }

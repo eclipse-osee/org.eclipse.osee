@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 public class SimpleTemplateProviderTask implements IDbInitializationTask {
 
+   @Override
    public void run() throws OseeCoreException {
       try {
          processTemplatesForDBInit();
@@ -43,12 +44,12 @@ public class SimpleTemplateProviderTask implements IDbInitializationTask {
 
       Artifact templateFolder = getTemplateFolder();
       IExtensionPoint ep =
-            Platform.getExtensionRegistry().getExtensionPoint(
-                  "org.eclipse.osee.framework.ui.skynet.SimpleTemplateProviderTemplate");
+         Platform.getExtensionRegistry().getExtensionPoint(
+            "org.eclipse.osee.framework.ui.skynet.SimpleTemplateProviderTemplate");
       for (IExtension extension : ep.getExtensions()) {
          for (IConfigurationElement el : extension.getConfigurationElements()) {
             Artifact templateArtifact =
-                  ArtifactTypeManager.addArtifact("Renderer Template", BranchManager.getCommonBranch());
+               ArtifactTypeManager.addArtifact("Renderer Template", BranchManager.getCommonBranch());
             String filePath = el.getAttribute("File");
             String name = filePath.substring(filePath.lastIndexOf('/') + 1);
             name = name.substring(0, name.lastIndexOf('.'));
@@ -64,8 +65,8 @@ public class SimpleTemplateProviderTask implements IDbInitializationTask {
                templateArtifact.persist();
                templateFolder.addChild(templateArtifact);
             } else {
-               OseeLog.log(SimpleTemplateProviderTask.class, Level.SEVERE, String.format("Problem loading file %s",
-                     filePath));
+               OseeLog.log(SimpleTemplateProviderTask.class, Level.SEVERE,
+                  String.format("Problem loading file %s", filePath));
             }
          }
       }
@@ -74,14 +75,14 @@ public class SimpleTemplateProviderTask implements IDbInitializationTask {
 
    private Artifact getTemplateFolder() throws OseeCoreException {
       Artifact templateFolder =
-            ArtifactQuery.checkArtifactFromTypeAndName(CoreArtifactTypes.Heading, "Document Templates",
-                  BranchManager.getCommonBranch());
+         ArtifactQuery.checkArtifactFromTypeAndName(CoreArtifactTypes.Heading, "Document Templates",
+            BranchManager.getCommonBranch());
       if (templateFolder == null) {
          Artifact rootArt = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(BranchManager.getCommonBranch());
 
          templateFolder =
-               ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, BranchManager.getCommonBranch(),
-                     "Document Templates");
+            ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, BranchManager.getCommonBranch(),
+               "Document Templates");
          rootArt.addChild(templateFolder);
          templateFolder.persist();
       }

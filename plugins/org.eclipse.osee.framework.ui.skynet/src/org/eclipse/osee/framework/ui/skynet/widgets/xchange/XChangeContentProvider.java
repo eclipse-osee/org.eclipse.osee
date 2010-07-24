@@ -21,6 +21,7 @@ public class XChangeContentProvider implements ITreeContentProvider {
       super();
    }
 
+   @Override
    @SuppressWarnings("unchecked")
    public Object[] getChildren(Object parentElement) {
       if (parentElement instanceof Collection) {
@@ -29,10 +30,12 @@ public class XChangeContentProvider implements ITreeContentProvider {
       return EMPTY_ARRAY;
    }
 
+   @Override
    public Object getParent(Object element) {
       return null;
    }
 
+   @Override
    public boolean hasChildren(Object element) {
       if (element instanceof Collection<?>) {
          return true;
@@ -40,13 +43,16 @@ public class XChangeContentProvider implements ITreeContentProvider {
       return false;
    }
 
+   @Override
    public Object[] getElements(Object inputElement) {
       return getChildren(inputElement);
    }
 
+   @Override
    public void dispose() {
    }
 
+   @Override
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
    }
 

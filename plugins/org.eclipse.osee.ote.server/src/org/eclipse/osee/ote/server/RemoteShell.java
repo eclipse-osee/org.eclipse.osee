@@ -18,11 +18,12 @@ import org.eclipse.osee.ote.core.environment.interfaces.IRemoteCommandConsole;
 /**
  * @author Ken J. Aguilar
  */
-public class RemoteShell extends ConsoleShell implements IRemoteCommandConsole{
+public class RemoteShell extends ConsoleShell implements IRemoteCommandConsole {
 
    private static final long serialVersionUID = -4931966494670170915L;
    private final StringBuffer buffer = new StringBuffer(32000);
-   
+
+   @Override
    public synchronized String doCommand(String line) throws RemoteException {
       buffer.setLength(0);
       buffer.append('>').append(line).append('\n');
@@ -37,15 +38,18 @@ public class RemoteShell extends ConsoleShell implements IRemoteCommandConsole{
    public RemoteShell(ICommandManager manager) {
       super(manager);
    }
-   
+
+   @Override
    public void println(String string) {
       buffer.append(string).append('\n');
    }
 
+   @Override
    public void print(String string) {
       buffer.append(string);
    }
 
+   @Override
    public void println() {
       buffer.append('\n');
    }

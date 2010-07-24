@@ -28,7 +28,12 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 public class DemoTeams {
 
    public static enum Team {
-      Process_Team, Tools_Team, SAW_HW, SAW_SW, CIS_SW, Facilities_Team
+      Process_Team,
+      Tools_Team,
+      SAW_HW,
+      SAW_SW,
+      CIS_SW,
+      Facilities_Team
    };
    private static DemoTeams instance = new DemoTeams();
 
@@ -41,10 +46,12 @@ public class DemoTeams {
 
    public TeamDefinitionArtifact getTeamDef(Team team) throws OseeCoreException {
       // Add check to keep exception from occurring for OSEE developers running against production
-      if (ClientSessionManager.isProductionDataStore()) return null;
+      if (ClientSessionManager.isProductionDataStore()) {
+         return null;
+      }
       try {
          return (TeamDefinitionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.TeamDefinition,
-               team.name().replaceAll("_", " "), AtsUtil.getAtsBranch());
+            team.name().replaceAll("_", " "), AtsUtil.getAtsBranch());
       } catch (Exception ex) {
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.SEVERE, ex);
       }

@@ -13,19 +13,18 @@ package org.eclipse.osee.ote.core.environment.status;
 import java.io.Serializable;
 import org.eclipse.osee.ote.core.environment.command.CommandDescription;
 
-
-
 /**
  * @author Ryan D. Brooks
  * @author Andrew M. Finkbeiner
  */
-public class ExceptionEvent extends CommandStatusEvent implements Serializable{
+public class ExceptionEvent extends CommandStatusEvent implements Serializable {
 
    /**
     * 
     */
    private static final long serialVersionUID = -831107014787093973L;
-   private Throwable throwable;
+   private final Throwable throwable;
+
    /**
     * @param description
     * @param exception

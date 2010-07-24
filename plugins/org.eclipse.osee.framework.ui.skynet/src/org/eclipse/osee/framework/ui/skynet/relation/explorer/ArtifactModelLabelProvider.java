@@ -24,6 +24,7 @@ public class ArtifactModelLabelProvider implements ITableLabelProvider {
    /**
     * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int)
     */
+   @Override
    public String getColumnText(Object element, int columnIndex) {
       String result = "";
       ArtifactModel model = (ArtifactModel) element;
@@ -50,6 +51,7 @@ public class ArtifactModelLabelProvider implements ITableLabelProvider {
    /**
     * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int)
     */
+   @Override
    public Image getColumnImage(Object element, int columnIndex) {
       ArtifactModel model = (ArtifactModel) element;
       switch (columnIndex) {
@@ -63,15 +65,19 @@ public class ArtifactModelLabelProvider implements ITableLabelProvider {
       return null;
    }
 
+   @Override
    public void dispose() {
    }
 
+   @Override
    public void removeListener(ILabelProviderListener listener) {
    }
 
+   @Override
    public void addListener(ILabelProviderListener listener) {
    }
 
+   @Override
    public boolean isLabelProperty(Object element, String property) {
       return true;
    }

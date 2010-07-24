@@ -27,6 +27,7 @@ public class RelTypeContentProvider implements ITreeContentProvider {
       super();
    }
 
+   @Override
    @SuppressWarnings("unchecked")
    public Object[] getChildren(Object parentElement) {
       if (parentElement instanceof Collection) {
@@ -35,26 +36,31 @@ public class RelTypeContentProvider implements ITreeContentProvider {
       if (parentElement instanceof RelationType) {
 
          return new Object[] {new RelationTypeSide((RelationType) parentElement, RelationSide.SIDE_A),
-               new RelationTypeSide((RelationType) parentElement, RelationSide.SIDE_B)};
+            new RelationTypeSide((RelationType) parentElement, RelationSide.SIDE_B)};
       }
       return new Object[] {};
    }
 
+   @Override
    public Object getParent(Object element) {
       return null;
    }
 
+   @Override
    public boolean hasChildren(Object element) {
       return element instanceof RelationType;
    }
 
+   @Override
    public Object[] getElements(Object inputElement) {
       return getChildren(inputElement);
    }
 
+   @Override
    public void dispose() {
    }
 
+   @Override
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
    }
 

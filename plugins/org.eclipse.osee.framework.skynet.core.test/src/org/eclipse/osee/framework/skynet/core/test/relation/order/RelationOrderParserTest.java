@@ -30,19 +30,19 @@ import org.junit.Test;
 public class RelationOrderParserTest {
 
    private static String oneEntry =
-         "<OrderList>\n<Order relType=\"Default Hierarchical\" side=\"SIDE_B\" orderType=\"AAT0xogoMjMBhARkBZQA\" list=\"AAABDEJ_mIQBf8VXVtGqvA,AAABDEJ_nMkBf8VXVXptpg,AAABDEJ_oQ8Bf8VXLX7U_g\"/>\n</OrderList>";
+      "<OrderList>\n<Order relType=\"Default Hierarchical\" side=\"SIDE_B\" orderType=\"AAT0xogoMjMBhARkBZQA\" list=\"AAABDEJ_mIQBf8VXVtGqvA,AAABDEJ_nMkBf8VXVXptpg,AAABDEJ_oQ8Bf8VXLX7U_g\"/>\n</OrderList>";
    private static String oneDiffEntry =
-         "<OrderList>\n<Order relType=\"Default Hierarchical\" side=\"SIDE_B\" orderType=\"AAT0xogoMjMBhARkBZQA\" list=\"AAABDEJ_mIQBf8VXVtGqvA\"/>\n</OrderList>";
+      "<OrderList>\n<Order relType=\"Default Hierarchical\" side=\"SIDE_B\" orderType=\"AAT0xogoMjMBhARkBZQA\" list=\"AAABDEJ_mIQBf8VXVtGqvA\"/>\n</OrderList>";
 
    private static String twoEntries =
-         "<OrderList>\n<Order relType=\"Default Hierarchical\" side=\"SIDE_B\" orderType=\"AAT0xogoMjMBhARkBZQA\" list=\"AAABDEJ_mIQBf8VXVtGqvA,AAABDEJ_oQ8Bf8VXLX7U_g\"/>\n" + "<Order relType=\"Some Type\" side=\"SIDE_A\" orderType=\"AAABDEJ_mIQBf8VXVtGqvA\" list=\"AAABDEJ_mIQXf8VXVtGqvA,AAABDEJ_oQVBf8VXLX7U_g\"/>\n</OrderList>";
+      "<OrderList>\n<Order relType=\"Default Hierarchical\" side=\"SIDE_B\" orderType=\"AAT0xogoMjMBhARkBZQA\" list=\"AAABDEJ_mIQBf8VXVtGqvA,AAABDEJ_oQ8Bf8VXLX7U_g\"/>\n" + "<Order relType=\"Some Type\" side=\"SIDE_A\" orderType=\"AAABDEJ_mIQBf8VXVtGqvA\" list=\"AAABDEJ_mIQXf8VXVtGqvA,AAABDEJ_oQVBf8VXLX7U_g\"/>\n</OrderList>";
    private static String oneEntryEmptyList =
-         "<OrderList>\n<Order relType=\"X\" side=\"SIDE_B\" orderType=\"AAT0xogoMjMBhARkBZQA\"/>\n</OrderList>";
+      "<OrderList>\n<Order relType=\"X\" side=\"SIDE_B\" orderType=\"AAT0xogoMjMBhARkBZQA\"/>\n</OrderList>";
 
    private static String emptyType =
-         "<OrderList>\n<Order side=\"SIDE_B\" orderType=\"AAT0xogoMjMBhARkBZQA\"/>\n</OrderList>";
+      "<OrderList>\n<Order side=\"SIDE_B\" orderType=\"AAT0xogoMjMBhARkBZQA\"/>\n</OrderList>";
    private static String emptySide =
-         "<OrderList>\n<Order relType=\"X\" orderType=\"AAT0xogoMjMBhARkBZQA\"/>\n</OrderList>";
+      "<OrderList>\n<Order relType=\"X\" orderType=\"AAT0xogoMjMBhARkBZQA\"/>\n</OrderList>";
    private static String emptyOrderType = "<OrderList>\n<Order relType=\"X\" side=\"SIDE_B\" />\n</OrderList>";
 
    @Test
@@ -76,7 +76,7 @@ public class RelationOrderParserTest {
 
       List<Object[]> expectedData = new ArrayList<Object[]>();
       addData(expectedData, "Default Hierarchical", RelationSide.SIDE_B, "AAT0xogoMjMBhARkBZQA",
-            "AAABDEJ_mIQBf8VXVtGqvA", "AAABDEJ_nMkBf8VXVXptpg", "AAABDEJ_oQ8Bf8VXLX7U_g");
+         "AAABDEJ_mIQBf8VXVtGqvA", "AAABDEJ_nMkBf8VXVXptpg", "AAABDEJ_oQ8Bf8VXLX7U_g");
 
       checkData(data, expectedData);
       Assert.assertEquals(oneEntry, parser.toXml(data));
@@ -106,9 +106,9 @@ public class RelationOrderParserTest {
 
       List<Object[]> expectedData = new ArrayList<Object[]>();
       addData(expectedData, "Default Hierarchical", RelationSide.SIDE_B, "AAT0xogoMjMBhARkBZQA",
-            "AAABDEJ_mIQBf8VXVtGqvA", "AAABDEJ_oQ8Bf8VXLX7U_g");
+         "AAABDEJ_mIQBf8VXVtGqvA", "AAABDEJ_oQ8Bf8VXLX7U_g");
       addData(expectedData, "Some Type", RelationSide.SIDE_A, "AAABDEJ_mIQBf8VXVtGqvA", "AAABDEJ_mIQXf8VXVtGqvA",
-            "AAABDEJ_oQVBf8VXLX7U_g");
+         "AAABDEJ_oQVBf8VXLX7U_g");
 
       checkData(data, expectedData);
       Assert.assertEquals(twoEntries, parser.toXml(data));
@@ -191,8 +191,8 @@ public class RelationOrderParserTest {
       Assert.assertEquals(expectedValues.size(), orderData.size());
       for (Entry<Pair<String, String>, Pair<String, List<String>>> entry : orderData.getOrderedEntrySet()) {
          Object[] actual =
-               new Object[] {entry.getKey().getFirst(), entry.getKey().getSecond(), entry.getValue().getFirst(),
-                     entry.getValue().getSecond()};
+            new Object[] {entry.getKey().getFirst(), entry.getKey().getSecond(), entry.getValue().getFirst(),
+               entry.getValue().getSecond()};
          Object[] expected = expectedValues.get(index++);
          Assert.assertEquals(expected.length, actual.length);
          for (int index2 = 0; index2 < expected.length; index2++) {

@@ -10,14 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.message.interfaces;
 
-
-
 /**
  * @author Andrew M. Finkbeiner
  */
 public interface IOSEEMessageReader {
    void set(byte[] data);
+
    byte[] get();
+
    void set(IOSEEMessageWriterListener listener);
+
    void takeNextSample();
 }

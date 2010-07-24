@@ -53,6 +53,7 @@ public class EditAttributeWizardPage extends WizardPage {
    private IEmbeddedAttributeEditor editor;
 
    private final Listener listener = new Listener() {
+      @Override
       public void handleEvent(Event event) {
          // ...
          try {
@@ -92,8 +93,8 @@ public class EditAttributeWizardPage extends WizardPage {
          changeType = conflict.getAttributeType().getName();
          if (!conflict.isWordAttribute()) {
             editor =
-                  EmbededAttributeEditorFactory.getEmbeddedEditor(conflict.getAttributeType(),
-                        conflict.getSourceDisplayData(), Arrays.asList(conflict), true);
+               EmbededAttributeEditorFactory.getEmbeddedEditor(conflict.getAttributeType(),
+                  conflict.getSourceDisplayData(), Arrays.asList(conflict), true);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);

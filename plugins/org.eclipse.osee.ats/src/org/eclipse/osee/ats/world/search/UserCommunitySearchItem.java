@@ -47,9 +47,11 @@ public class UserCommunitySearchItem extends WorldUISearchItem {
    }
 
    public String getGroupSearchName() {
-      if (userComm != null)
+      if (userComm != null) {
          return userComm;
-      else if (selectedUserComm != null) return selectedUserComm;
+      } else if (selectedUserComm != null) {
+         return selectedUserComm;
+      }
       return "";
    }
 
@@ -59,24 +61,34 @@ public class UserCommunitySearchItem extends WorldUISearchItem {
    }
 
    private String getSearchUserComm() {
-      if (userComm != null) return userComm;
+      if (userComm != null) {
+         return userComm;
+      }
       return selectedUserComm;
    }
 
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
-      if (isCancelled()) return EMPTY_SET;
+      if (isCancelled()) {
+         return EMPTY_SET;
+      }
 
       return ArtifactQuery.getArtifactListFromTypeAndAttribute(AtsArtifactTypes.TeamWorkflow,
-            ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName(), getSearchUserComm(), AtsUtil.getAtsBranch());
+         ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName(), getSearchUserComm(), AtsUtil.getAtsBranch());
    }
 
    @Override
    public void performUI(SearchType searchType) throws OseeCoreException {
       super.performUI(searchType);
-      if (userCommName != null) return;
-      if (userComm != null) return;
-      if (searchType == SearchType.ReSearch && selectedUserComm != null) return;
+      if (userCommName != null) {
+         return;
+      }
+      if (userComm != null) {
+         return;
+      }
+      if (searchType == SearchType.ReSearch && selectedUserComm != null) {
+         return;
+      }
       UserCommunityListDialog gld = new UserCommunityListDialog();
       int result = gld.open();
       if (result == 0) {

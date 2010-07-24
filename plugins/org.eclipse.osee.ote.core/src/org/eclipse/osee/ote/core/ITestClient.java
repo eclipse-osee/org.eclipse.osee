@@ -15,8 +15,8 @@ import org.eclipse.osee.ote.core.environment.status.SequentialCommandEnded;
 
 public interface ITestClient {
 
-	ITestEnvironment getEnvironment();
+   ITestEnvironment getEnvironment();
 
-	void notifyCmdEmded(SequentialCommandEnded data);
+   void notifyCmdEmded(SequentialCommandEnded data);
 
 }

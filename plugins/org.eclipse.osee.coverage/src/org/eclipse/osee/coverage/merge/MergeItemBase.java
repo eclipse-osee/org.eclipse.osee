@@ -27,14 +27,17 @@ public abstract class MergeItemBase implements IMergeItem {
       this.isCheckable = isCheckable;
    }
 
+   @Override
    public MergeType getMergeType() {
       return mergeType;
    }
 
+   @Override
    public boolean isChecked() {
       return checked;
    }
 
+   @Override
    public void setChecked(boolean checked) throws OseeArgumentException {
       if (!isCheckable) {
          throw new OseeArgumentException(String.format("Merge Item is not checkable [%s]", this));
@@ -42,6 +45,7 @@ public abstract class MergeItemBase implements IMergeItem {
       this.checked = checked;
    }
 
+   @Override
    public boolean isImportAllowed() {
       return importAllowed;
    }
@@ -50,6 +54,7 @@ public abstract class MergeItemBase implements IMergeItem {
       this.importAllowed = importAllowed;
    }
 
+   @Override
    public boolean isCheckable() {
       return isCheckable;
    }

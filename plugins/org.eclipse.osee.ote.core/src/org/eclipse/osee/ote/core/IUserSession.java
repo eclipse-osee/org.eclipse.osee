@@ -42,8 +42,8 @@ public interface IUserSession {
 
    public void initiateResumePrompt(IResumeResponse prompt) throws Exception;
 
-   public void sendMessageToClient(Message message)  throws Exception;
-   
+   public void sendMessageToClient(Message message) throws Exception;
+
    public boolean isAlive() throws Exception;
 
 }

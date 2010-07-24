@@ -30,6 +30,7 @@ public class SkynetEventServicePlatformRunnable implements IApplication {
       skynetEventService = null;
    }
 
+   @Override
    public Object start(IApplicationContext context) throws Exception {
       CmdLineArgs commandArgs = new CmdLineArgs(Platform.getApplicationArgs());
 
@@ -38,6 +39,7 @@ public class SkynetEventServicePlatformRunnable implements IApplication {
       return EXIT_OK;
    }
 
+   @Override
    public void stop() {
       try {
          skynetEventService.kill();

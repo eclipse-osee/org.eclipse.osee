@@ -37,149 +37,142 @@ import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 class OteJmsServiceConnector implements ServiceNotification, OseeMessagingStatusCallback {
 
-	private ConcurrentHashMap<String, JmsToJiniBridgeConnector> connectors;
-	private ConcurrentHashMap<String, ServiceHealth> serviceHealthMap;
-	private RemoteServiceLookup remoteServiceLookup;
-	private MessageService messageService;
-	private IConnectionService connectionService;
-	private ExportClassLoader exportClassLoader;
-	private OseeMessagingListener myOteServiceRequestHandler;
-	
-	/**
-	 * @param remoteServiceLookup
-	 * @param messageService
-	 * @param connectionService
-	 * @param exportClassLoader
-	 */
-	OteJmsServiceConnector(RemoteServiceLookup remoteServiceLookup,
-			MessageService messageService,
-			IConnectionService connectionService,
-			ExportClassLoader exportClassLoader) {
-		this.remoteServiceLookup = remoteServiceLookup;
-		this.messageService = messageService;
-		this.connectionService = connectionService;
-		this.exportClassLoader = exportClassLoader;
-		myOteServiceRequestHandler = new OteServiceRequestHandler();
-		connectors = new ConcurrentHashMap<String, JmsToJiniBridgeConnector>();
-		serviceHealthMap = new ConcurrentHashMap<String, ServiceHealth>();
-	}
+   private final ConcurrentHashMap<String, JmsToJiniBridgeConnector> connectors;
+   private final ConcurrentHashMap<String, ServiceHealth> serviceHealthMap;
+   private final RemoteServiceLookup remoteServiceLookup;
+   private final MessageService messageService;
+   private final IConnectionService connectionService;
+   private final ExportClassLoader exportClassLoader;
+   private final OseeMessagingListener myOteServiceRequestHandler;
 
-	public void start() {
-		remoteServiceLookup.register("osee.ote.server", "1.0", this);
-	}
+   /**
+    * @param remoteServiceLookup
+    * @param messageService
+    * @param connectionService
+    * @param exportClassLoader
+    */
+   OteJmsServiceConnector(RemoteServiceLookup remoteServiceLookup, MessageService messageService, IConnectionService connectionService, ExportClassLoader exportClassLoader) {
+      this.remoteServiceLookup = remoteServiceLookup;
+      this.messageService = messageService;
+      this.connectionService = connectionService;
+      this.exportClassLoader = exportClassLoader;
+      myOteServiceRequestHandler = new OteServiceRequestHandler();
+      connectors = new ConcurrentHashMap<String, JmsToJiniBridgeConnector>();
+      serviceHealthMap = new ConcurrentHashMap<String, ServiceHealth>();
+   }
 
-	public void stop() {
-		remoteServiceLookup.unregister("osee.ote.server", "1.0", this);
-	}
+   public void start() {
+      remoteServiceLookup.register("osee.ote.server", "1.0", this);
+   }
 
-	@Override
-	public void onServiceGone(ServiceHealth serviceHealth) {
-		JmsToJiniBridgeConnector connector = removeExistingConnector(serviceHealth);
-		if(connector != null){
-			try {
-				connectionService.removeConnector(connector);
-			} catch (Exception ex) {
-				OseeLog.log(Activator.class, Level.SEVERE, ex);
-			}
-		}
-	}
+   public void stop() {
+      remoteServiceLookup.unregister("osee.ote.server", "1.0", this);
+   }
 
-	private JmsToJiniBridgeConnector removeExistingConnector(
-			ServiceHealth serviceHealth) {
-		return connectors.remove(serviceHealth.getServiceUniqueId());
-	}
+   @Override
+   public void onServiceGone(ServiceHealth serviceHealth) {
+      JmsToJiniBridgeConnector connector = removeExistingConnector(serviceHealth);
+      if (connector != null) {
+         try {
+            connectionService.removeConnector(connector);
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
+      }
+   }
 
-	@Override
-	public void onServiceUpdate(ServiceHealth serviceHealth) {
-	   serviceHealthMap.put(serviceHealth.getServiceUniqueId(), serviceHealth);
-		if(isNewService(serviceHealth)){
-			requestJmsJiniBridgeConnector(serviceHealth);
-		} else {
-		   updateServiceProperties(serviceHealth);
-		}
-	}
+   private JmsToJiniBridgeConnector removeExistingConnector(ServiceHealth serviceHealth) {
+      return connectors.remove(serviceHealth.getServiceUniqueId());
+   }
+
+   @Override
+   public void onServiceUpdate(ServiceHealth serviceHealth) {
+      serviceHealthMap.put(serviceHealth.getServiceUniqueId(), serviceHealth);
+      if (isNewService(serviceHealth)) {
+         requestJmsJiniBridgeConnector(serviceHealth);
+      } else {
+         updateServiceProperties(serviceHealth);
+      }
+   }
 
    private void updateServiceProperties(ServiceHealth serviceHealth) {
       JmsToJiniBridgeConnector item = connectors.get(serviceHealth.getServiceUniqueId());
-      if(item != null){
-         for(ServiceDescriptionPair pair:serviceHealth.getServiceDescription()){
+      if (item != null) {
+         for (ServiceDescriptionPair pair : serviceHealth.getServiceDescription()) {
             item.setProperty(pair.getName(), pair.getValue());
          }
       }
    }
 
    private void requestJmsJiniBridgeConnector(ServiceHealth serviceHealth) {
-		try {
-//			ConnectionNode connectionNode = messageService.get(new NodeInfo(serviceHealth.getServiceUniqueId(), new URI(serviceHealth.getBrokerURI())));
-		   ConnectionNode connectionNode = messageService.getDefault();
-			connectionNode.subscribeToReply(OteBaseMessages.RequestOteHost, myOteServiceRequestHandler);
-			connectionNode.send(OteBaseMessages.RequestOteHost, serviceHealth.getServiceUniqueId(), this);
-		} catch (OseeCoreException ex) {
-		   OseeLog.log(Activator.class, Level.SEVERE, ex);
-		}
-//		catch (URISyntaxException ex) {
-//			OseeLog.log(Activator.class, Level.SEVERE, ex);
-//		}
-	}
+      try {
+         //			ConnectionNode connectionNode = messageService.get(new NodeInfo(serviceHealth.getServiceUniqueId(), new URI(serviceHealth.getBrokerURI())));
+         ConnectionNode connectionNode = messageService.getDefault();
+         connectionNode.subscribeToReply(OteBaseMessages.RequestOteHost, myOteServiceRequestHandler);
+         connectionNode.send(OteBaseMessages.RequestOteHost, serviceHealth.getServiceUniqueId(), this);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+      //		catch (URISyntaxException ex) {
+      //			OseeLog.log(Activator.class, Level.SEVERE, ex);
+      //		}
+   }
 
-	private boolean isNewService(ServiceHealth serviceHealth) {
-		return !connectors.containsKey(serviceHealth.getServiceUniqueId());
-	}
+   private boolean isNewService(ServiceHealth serviceHealth) {
+      return !connectors.containsKey(serviceHealth.getServiceUniqueId());
+   }
 
-	@Override
-	public void fail(Throwable th) {
-		th.printStackTrace();
-	}
+   @Override
+   public void fail(Throwable th) {
+      th.printStackTrace();
+   }
 
-	@Override
-	public void success() {
-	}
+   @Override
+   public void success() {
+   }
 
-	class OteServiceRequestHandler extends OseeMessagingListener{
+   class OteServiceRequestHandler extends OseeMessagingListener {
 
-		@Override
-		public void process(Object message, Map<String, Object> headers,
-				ReplyConnection replyConnection) {
-			
-			try {
-				System.out.println("please be a remote reference");
-				ByteArrayInputStream bais = new ByteArrayInputStream((byte[])message);
-				ObjectInputStream ois = new ObjectInputStream(bais);
-				Object msg = ois.readObject();
-				String id = msg.toString();
-				Object obj = ois.readObject();
-				IHostTestEnvironment hostEnv = (IHostTestEnvironment)obj;
-				JmsToJiniBridgeConnector connector = new JmsToJiniBridgeConnector(exportClassLoader, hostEnv, id);
-				connector.setProperty("OTEEmbeddedBroker", getNodeInfo(id));
-//				connector.setProperty(key, value);
-//				connectors.put(key, connector)
-//				connectors.put(ser, value);
-//				String id = (String)headers.get("OseeServiceUniqueId");
-				if(id != null){
-					connectors.put(id, connector);
-					connectionService.addConnector(connector);
-				}
-			} catch (IOException ex) {
-			   OseeLog.log(Activator.class, Level.SEVERE, ex);
-			} catch (ClassNotFoundException ex) {
-			   OseeLog.log(Activator.class, Level.SEVERE, ex);
-			} catch (URISyntaxException ex) {
-			   OseeLog.log(Activator.class, Level.SEVERE, ex);
+      @Override
+      public void process(Object message, Map<String, Object> headers, ReplyConnection replyConnection) {
+
+         try {
+            System.out.println("please be a remote reference");
+            ByteArrayInputStream bais = new ByteArrayInputStream((byte[]) message);
+            ObjectInputStream ois = new ObjectInputStream(bais);
+            Object msg = ois.readObject();
+            String id = msg.toString();
+            Object obj = ois.readObject();
+            IHostTestEnvironment hostEnv = (IHostTestEnvironment) obj;
+            JmsToJiniBridgeConnector connector = new JmsToJiniBridgeConnector(exportClassLoader, hostEnv, id);
+            connector.setProperty("OTEEmbeddedBroker", getNodeInfo(id));
+            //				connector.setProperty(key, value);
+            //				connectors.put(key, connector)
+            //				connectors.put(ser, value);
+            //				String id = (String)headers.get("OseeServiceUniqueId");
+            if (id != null) {
+               connectors.put(id, connector);
+               connectionService.addConnector(connector);
+            }
+         } catch (IOException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         } catch (ClassNotFoundException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         } catch (URISyntaxException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
-		}
-	}
-	
-	private NodeInfo getNodeInfo(String id) throws URISyntaxException{
-	   ServiceHealth serviceHealth = this.serviceHealthMap.get(id);
-	   if(serviceHealth != null){
-	      return new NodeInfo("OTEEmbeddedBroker", new URI(serviceHealth.getBrokerURI()));
-	   }
-	   return null;
-	}
-	
-	
+      }
+   }
+
+   private NodeInfo getNodeInfo(String id) throws URISyntaxException {
+      ServiceHealth serviceHealth = this.serviceHealthMap.get(id);
+      if (serviceHealth != null) {
+         return new NodeInfo("OTEEmbeddedBroker", new URI(serviceHealth.getBrokerURI()));
+      }
+      return null;
+   }
+
 }

@@ -27,6 +27,7 @@ public class XPercent extends XText {
       super.set(percent + "");
    }
 
+   @Override
    public IStatus isValid() {
       if (isRequiredEntry()) {
          IStatus result = super.isValid();

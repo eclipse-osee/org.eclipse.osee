@@ -9,6 +9,7 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 package org.eclipse.osee.ote.messaging.dds.test.data;
+
 import org.eclipse.osee.ote.messaging.dds.service.Key;
 import org.eclipse.osee.ote.messaging.dds.service.TypeSupport;
 
@@ -17,19 +18,23 @@ import org.eclipse.osee.ote.messaging.dds.service.TypeSupport;
  * @author David Diepenbrock
  */
 public class IntMessageTypeSupport extends TypeSupport {
-   
+
+   @Override
    protected int getTypeDataSize() {
-      return Integer.SIZE/8;
+      return Integer.SIZE / 8;
    }
 
+   @Override
    protected Key getKey() {
       return null;
    }
 
+   @Override
    protected String getReaderName() {
       return IntMessageReader.class.getCanonicalName();
    }
 
+   @Override
    protected String getWriterName() {
       return IntMessageWriter.class.getCanonicalName();
    }

@@ -11,7 +11,6 @@
 package org.eclipse.osee.ote.message.internal;
 
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.environment.TestEnvironmentInterface;
 import org.osgi.framework.BundleActivator;
@@ -25,8 +24,7 @@ public class Activator implements BundleActivator {
    private MessageWatchActivator messageWatchActivator;
    private MessageIoManagementStarter messageIoManagementStarter;
    private BundleContext context;
-   
-   
+
    public Activator() {
    }
 
@@ -36,10 +34,10 @@ public class Activator implements BundleActivator {
       this.context = context;
       testEnvTracker = new ServiceTracker(context, TestEnvironmentInterface.class.getName(), null);
       testEnvTracker.open(true);
-      
+
       messageWatchActivator = new MessageWatchActivator(context);
       messageWatchActivator.open(true);
-      
+
       messageIoManagementStarter = new MessageIoManagementStarter(context);
       messageIoManagementStarter.open(true);
    }
@@ -51,20 +49,20 @@ public class Activator implements BundleActivator {
       messageIoManagementStarter.close();
       this.context = null;
    }
-   
-   public static TestEnvironmentInterface getTestEnvironment(){
+
+   public static TestEnvironmentInterface getTestEnvironment() {
       try {
-         return (TestEnvironmentInterface)me.testEnvTracker.waitForService(20000);
+         return (TestEnvironmentInterface) me.testEnvTracker.waitForService(20000);
       } catch (InterruptedException e) {
          OseeLog.log(Activator.class, Level.SEVERE, e);
       }
       return null;
    }
-   
+
    public static Activator getDefault() {
       return me;
    }
-   
+
    BundleContext getBundleContext() {
       return context;
    }

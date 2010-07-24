@@ -28,11 +28,11 @@ public class TestPointUpdate implements Serializable, IServiceStatusDataCommand 
    }
 
    public TestPointUpdate(int pass, int fail, String testClassName) {
-	      this.pass = pass;
-	      this.fail = fail;
-	      this.testClassName = testClassName;
-	   }
-   
+      this.pass = pass;
+      this.fail = fail;
+      this.testClassName = testClassName;
+   }
+
    public TestPointUpdate() {
    }
 
@@ -43,11 +43,12 @@ public class TestPointUpdate implements Serializable, IServiceStatusDataCommand 
    public int getPass() {
       return pass;
    }
-   
-   public String getClassName(){
-	   return testClassName;
+
+   public String getClassName() {
+      return testClassName;
    }
 
+   @Override
    public CommandDescription getDescription() {
       return description;
    }
@@ -58,6 +59,7 @@ public class TestPointUpdate implements Serializable, IServiceStatusDataCommand 
       this.description = description;
    }
 
+   @Override
    public void accept(IServiceStatusDataVisitor visitor) {
       if (visitor != null) {
          visitor.asTestPointUpdate(this);

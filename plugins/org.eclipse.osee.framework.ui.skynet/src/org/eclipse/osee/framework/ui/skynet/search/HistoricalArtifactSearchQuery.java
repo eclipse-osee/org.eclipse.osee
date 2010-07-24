@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
  * @author Ryan D. Brooks
  */
 public class HistoricalArtifactSearchQuery extends AbstractLegacyArtifactSearchQuery {
-   private String attributePattern;
+   private final String attributePattern;
    private final Branch branch;
 
    public HistoricalArtifactSearchQuery(String attributePattern, Branch branch) {
@@ -33,6 +33,7 @@ public class HistoricalArtifactSearchQuery extends AbstractLegacyArtifactSearchQ
       return ArtifactQuery.getArtifactListFromHistoricalAttributeValue(attributePattern, branch);
    }
 
+   @Override
    public String getCriteriaLabel() {
       return attributePattern;
    }

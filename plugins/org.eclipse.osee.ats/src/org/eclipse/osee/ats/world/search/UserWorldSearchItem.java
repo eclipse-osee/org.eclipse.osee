@@ -74,7 +74,7 @@ public class UserWorldSearchItem {
          // Note: Don't need to do this for Originator, Subscribed or Favorites, cause it does completed canceled in it's own searches
          if (options.contains(UserSearchOption.IncludeCancelled) || options.contains(UserSearchOption.IncludeCompleted)) {
             searchArts.addAll(SMAUtil.getSMAs(ArtifactQuery.getArtifactListFromAttribute(
-                  ATSAttributes.STATE_ATTRIBUTE.getStoreName(), "%<" + user.getUserId() + ">%", AtsUtil.getAtsBranch())));
+               ATSAttributes.STATE_ATTRIBUTE.getStoreName(), "%<" + user.getUserId() + ">%", AtsUtil.getAtsBranch())));
          }
       }
 
@@ -106,12 +106,12 @@ public class UserWorldSearchItem {
 
       if (!options.contains(UserSearchOption.IncludeCancelled)) {
          filteredArts =
-               SMAUtil.filterOutState(filteredArts, java.util.Collections.singleton(DefaultTeamState.Cancelled.name()));
+            SMAUtil.filterOutState(filteredArts, java.util.Collections.singleton(DefaultTeamState.Cancelled.name()));
       }
 
       if (!options.contains(UserSearchOption.IncludeCompleted)) {
          filteredArts =
-               SMAUtil.filterOutState(filteredArts, java.util.Collections.singleton(DefaultTeamState.Completed.name()));
+            SMAUtil.filterOutState(filteredArts, java.util.Collections.singleton(DefaultTeamState.Completed.name()));
       }
 
       return filteredArts;
@@ -120,8 +120,8 @@ public class UserWorldSearchItem {
    private Collection<StateMachineArtifact> getOriginatorArtifacts() throws OseeCoreException {
       Collection<StateMachineArtifact> originators = new ArrayList<StateMachineArtifact>();
       Collection<StateMachineArtifact> artifacts =
-            Collections.castAll(ArtifactQuery.getArtifactListFromAttribute(ATSAttributes.LOG_ATTRIBUTE.getStoreName(),
-                  "%type=\"Originated\" userId=\"" + user.getUserId() + "\"%", AtsUtil.getAtsBranch()));
+         Collections.castAll(ArtifactQuery.getArtifactListFromAttribute(ATSAttributes.LOG_ATTRIBUTE.getStoreName(),
+            "%type=\"Originated\" userId=\"" + user.getUserId() + "\"%", AtsUtil.getAtsBranch()));
       // omit historical originators; list current originators
       for (StateMachineArtifact art : artifacts) {
          if (art.getWorldViewOriginator().equals(user.getName())) {

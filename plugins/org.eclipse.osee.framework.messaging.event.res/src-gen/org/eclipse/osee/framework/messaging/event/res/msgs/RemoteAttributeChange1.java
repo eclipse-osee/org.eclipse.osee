@@ -5,7 +5,6 @@
 // Generated on: 2010.05.13 at 02:00:51 PM MST 
 //
 
-
 package org.eclipse.osee.framework.messaging.event.res.msgs;
 
 import java.util.ArrayList;
@@ -16,11 +15,11 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
 
-
 /**
- * <p>Java class for RemoteAttributeChange1 complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for RemoteAttributeChange1 complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="RemoteAttributeChange1">
@@ -37,137 +36,104 @@ import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "RemoteAttributeChange1", propOrder = {
-    "attrTypeGuid",
-    "modTypeGuid",
-    "attributeId",
-    "gammaId",
-    "data"
-})
-public class RemoteAttributeChange1
-    extends RemoteEvent
-{
+@XmlType(name = "RemoteAttributeChange1", propOrder = {"attrTypeGuid", "modTypeGuid", "attributeId", "gammaId", "data"})
+public class RemoteAttributeChange1 extends RemoteEvent {
 
-    @XmlElement(required = true)
-    protected String attrTypeGuid;
-    @XmlElement(required = true)
-    protected String modTypeGuid;
-    protected int attributeId;
-    protected int gammaId;
-    @XmlElement(required = true)
-    protected List<String> data;
+   @XmlElement(required = true)
+   protected String attrTypeGuid;
+   @XmlElement(required = true)
+   protected String modTypeGuid;
+   protected int attributeId;
+   protected int gammaId;
+   @XmlElement(required = true)
+   protected List<String> data;
 
-    /**
-     * Gets the value of the attrTypeGuid property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getAttrTypeGuid() {
-        return attrTypeGuid;
-    }
+   /**
+    * Gets the value of the attrTypeGuid property.
+    * 
+    * @return possible object is {@link String }
+    */
+   public String getAttrTypeGuid() {
+      return attrTypeGuid;
+   }
 
-    /**
-     * Sets the value of the attrTypeGuid property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setAttrTypeGuid(String value) {
-        this.attrTypeGuid = value;
-    }
+   /**
+    * Sets the value of the attrTypeGuid property.
+    * 
+    * @param value allowed object is {@link String }
+    */
+   public void setAttrTypeGuid(String value) {
+      this.attrTypeGuid = value;
+   }
 
-    /**
-     * Gets the value of the modTypeGuid property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getModTypeGuid() {
-        return modTypeGuid;
-    }
+   /**
+    * Gets the value of the modTypeGuid property.
+    * 
+    * @return possible object is {@link String }
+    */
+   public String getModTypeGuid() {
+      return modTypeGuid;
+   }
 
-    /**
-     * Sets the value of the modTypeGuid property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setModTypeGuid(String value) {
-        this.modTypeGuid = value;
-    }
+   /**
+    * Sets the value of the modTypeGuid property.
+    * 
+    * @param value allowed object is {@link String }
+    */
+   public void setModTypeGuid(String value) {
+      this.modTypeGuid = value;
+   }
 
-    /**
-     * Gets the value of the attributeId property.
-     * 
-     */
-    public int getAttributeId() {
-        return attributeId;
-    }
+   /**
+    * Gets the value of the attributeId property.
+    */
+   public int getAttributeId() {
+      return attributeId;
+   }
 
-    /**
-     * Sets the value of the attributeId property.
-     * 
-     */
-    public void setAttributeId(int value) {
-        this.attributeId = value;
-    }
+   /**
+    * Sets the value of the attributeId property.
+    */
+   public void setAttributeId(int value) {
+      this.attributeId = value;
+   }
 
-    /**
-     * Gets the value of the gammaId property.
-     * 
-     */
-    public int getGammaId() {
-        return gammaId;
-    }
+   /**
+    * Gets the value of the gammaId property.
+    */
+   public int getGammaId() {
+      return gammaId;
+   }
 
-    /**
-     * Sets the value of the gammaId property.
-     * 
-     */
-    public void setGammaId(int value) {
-        this.gammaId = value;
-    }
+   /**
+    * Sets the value of the gammaId property.
+    */
+   public void setGammaId(int value) {
+      this.gammaId = value;
+   }
 
-    /**
-     * Gets the value of the data property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the data property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getData().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link String }
-     * 
-     * 
-     */
-    public List<String> getData() {
-        if (data == null) {
-            data = new ArrayList<String>();
-        }
-        return this.data;
-    }
+   /**
+    * Gets the value of the data property.
+    * <p>
+    * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to
+    * the returned list will be present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for
+    * the data property.
+    * <p>
+    * For example, to add a new item, do as follows:
+    * 
+    * <pre>
+    * getData().add(newItem);
+    * </pre>
+    * <p>
+    * Objects of the following type(s) are allowed in the list {@link String }
+    */
+   public List<String> getData() {
+      if (data == null) {
+         data = new ArrayList<String>();
+      }
+      return this.data;
+   }
 
 }

@@ -26,38 +26,38 @@ import org.eclipse.osee.framework.core.util.Conditions;
  */
 public class OseeDslToAccessDataOperation extends AbstractOperation {
 
-	private final AccessModelInterpreter interpreter;
-	private final AccessData accessData;
-	private final AccessContextId contextId;
-	private final Collection<AccessContext> accessContexts;
-	private final Collection<?> objectsToCheck;
+   private final AccessModelInterpreter interpreter;
+   private final AccessData accessData;
+   private final AccessContextId contextId;
+   private final Collection<AccessContext> accessContexts;
+   private final Collection<?> objectsToCheck;
 
-	public OseeDslToAccessDataOperation(AccessModelInterpreter interpreter, AccessData accessData, AccessContextId contextId, Collection<AccessContext> accessContexts, Collection<?> objectsToCheck) {
-		super("Access Dsl To AccessData", Activator.PLUGIN_ID);
-		this.accessData = accessData;
-		this.contextId = contextId;
-		this.accessContexts = accessContexts;
-		this.objectsToCheck = objectsToCheck;
-		this.interpreter = interpreter;
-	}
+   public OseeDslToAccessDataOperation(AccessModelInterpreter interpreter, AccessData accessData, AccessContextId contextId, Collection<AccessContext> accessContexts, Collection<?> objectsToCheck) {
+      super("Access Dsl To AccessData", Activator.PLUGIN_ID);
+      this.accessData = accessData;
+      this.contextId = contextId;
+      this.accessContexts = accessContexts;
+      this.objectsToCheck = objectsToCheck;
+      this.interpreter = interpreter;
+   }
 
-	@Override
-	protected void doWork(IProgressMonitor monitor) throws Exception {
-		AccessContext context = interpreter.getContext(accessContexts, contextId);
-		Conditions.checkNotNull(context, "context", "Unable to find accessContext for [%s]", contextId);
+   @Override
+   protected void doWork(IProgressMonitor monitor) throws Exception {
+      AccessContext context = interpreter.getContext(accessContexts, contextId);
+      Conditions.checkNotNull(context, "context", "Unable to find accessContext for [%s]", contextId);
 
-		if (objectsToCheck.isEmpty()) {
-			monitor.worked(getTotalWorkUnits());
-		} else {
-			double stepAmount = 1.0 / objectsToCheck.size();
-			int step = calculateWork(stepAmount);
-			for (Object objectToCheck : objectsToCheck) {
-				checkForCancelledStatus(monitor);
-				Collection<AccessDetail<?>> accessDetail = new HashSet<AccessDetail<?>>();
-				interpreter.computeAccessDetails(context, objectToCheck, accessDetail);
-				accessData.addAll(objectToCheck, accessDetail);
-				monitor.worked(step);
-			}
-		}
-	}
+      if (objectsToCheck.isEmpty()) {
+         monitor.worked(getTotalWorkUnits());
+      } else {
+         double stepAmount = 1.0 / objectsToCheck.size();
+         int step = calculateWork(stepAmount);
+         for (Object objectToCheck : objectsToCheck) {
+            checkForCancelledStatus(monitor);
+            Collection<AccessDetail<?>> accessDetail = new HashSet<AccessDetail<?>>();
+            interpreter.computeAccessDetails(context, objectToCheck, accessDetail);
+            accessData.addAll(objectToCheck, accessDetail);
+            monitor.worked(step);
+         }
+      }
+   }
 }

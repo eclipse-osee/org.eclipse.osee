@@ -45,14 +45,14 @@ public class NewPeerToPeerReviewJob extends Job {
       try {
          SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "New Peer To Peer Review");
          peerToPeerReviewArtifact =
-               ReviewManager.createNewPeerToPeerReview(teamParent, reviewTitle, againstState, transaction);
+            ReviewManager.createNewPeerToPeerReview(teamParent, reviewTitle, againstState, transaction);
          peerToPeerReviewArtifact.persist(transaction);
          transaction.execute();
 
          AtsUtil.openATSAction(peerToPeerReviewArtifact, AtsOpenOption.OpenOneOrPopupSelect);
       } catch (Exception ex) {
          monitor.done();
-         return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, "Error creating PeerToPeer Review", ex);
+         return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, -1, "Error creating PeerToPeer Review", ex);
       } finally {
          monitor.done();
       }

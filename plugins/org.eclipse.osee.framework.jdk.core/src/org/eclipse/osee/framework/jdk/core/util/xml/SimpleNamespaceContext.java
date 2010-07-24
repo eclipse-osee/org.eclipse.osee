@@ -26,9 +26,9 @@ import javax.xml.namespace.NamespaceContext;
 
 public class SimpleNamespaceContext implements NamespaceContext {
 
-   private Map<String, String> urisByPrefix = new HashMap<String, String>();
+   private final Map<String, String> urisByPrefix = new HashMap<String, String>();
 
-   private Map<String, Set<String>> prefixesByURI = new HashMap<String, Set<String>>();
+   private final Map<String, Set<String>> prefixesByURI = new HashMap<String, Set<String>>();
 
    public SimpleNamespaceContext() {
       // prepopulate with xml and xmlns prefixes
@@ -40,7 +40,7 @@ public class SimpleNamespaceContext implements NamespaceContext {
    public synchronized void addNamespace(String prefix, String namespaceURI) {
       urisByPrefix.put(prefix, namespaceURI);
       if (prefixesByURI.containsKey(namespaceURI)) {
-         ((Set<String>) prefixesByURI.get(namespaceURI)).add(prefix);
+         (prefixesByURI.get(namespaceURI)).add(prefix);
       } else {
          Set<String> set = new HashSet<String>();
          set.add(prefix);
@@ -48,22 +48,30 @@ public class SimpleNamespaceContext implements NamespaceContext {
       }
    }
 
+   @Override
    public String getNamespaceURI(String prefix) {
-      if (prefix == null) throw new IllegalArgumentException("prefix cannot be null");
-      if (urisByPrefix.containsKey(prefix))
-         return (String) urisByPrefix.get(prefix);
-      else
+      if (prefix == null) {
+         throw new IllegalArgumentException("prefix cannot be null");
+      }
+      if (urisByPrefix.containsKey(prefix)) {
+         return urisByPrefix.get(prefix);
+      } else {
          return XMLConstants.NULL_NS_URI;
+      }
    }
 
+   @Override
    public String getPrefix(String namespaceURI) {
-      return (String) getPrefixes(namespaceURI).next();
+      return getPrefixes(namespaceURI).next();
    }
 
+   @Override
    public Iterator<String> getPrefixes(String namespaceURI) {
-      if (namespaceURI == null) throw new IllegalArgumentException("namespaceURI cannot be null");
+      if (namespaceURI == null) {
+         throw new IllegalArgumentException("namespaceURI cannot be null");
+      }
       if (prefixesByURI.containsKey(namespaceURI)) {
-         return ((Set<String>) prefixesByURI.get(namespaceURI)).iterator();
+         return (prefixesByURI.get(namespaceURI)).iterator();
       } else {
          return Collections.EMPTY_SET.iterator();
       }

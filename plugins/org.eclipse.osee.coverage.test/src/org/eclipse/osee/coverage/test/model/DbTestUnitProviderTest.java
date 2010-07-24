@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import junit.framework.Assert;
 import org.eclipse.osee.coverage.model.CoverageItem;
-import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
+import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.store.DbTestUnitProvider;
 import org.eclipse.osee.coverage.store.TestUnitStore;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -33,8 +33,8 @@ public class DbTestUnitProviderTest {
 
    @BeforeClass
    public static void setup() throws OseeCoreException {
-      item = new CoverageItem(null, CoverageOptionManagerDefault.Test_Unit, "1");
-      item2 = new CoverageItem(null, CoverageOptionManagerDefault.Test_Unit, "2");
+      item = new CoverageItem(null, CoverageOptionManager.Test_Unit, "1");
+      item2 = new CoverageItem(null, CoverageOptionManager.Test_Unit, "2");
       dbTestUnitProvider = DbTestUnitProvider.instance();
       TestUnitStore.clearStore();
    }

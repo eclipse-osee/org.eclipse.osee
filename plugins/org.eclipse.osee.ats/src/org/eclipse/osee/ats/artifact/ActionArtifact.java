@@ -348,7 +348,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       super.atsDelete(deleteArts, allRelated);
       // Delete all products
       for (TeamWorkFlowArtifact art : getRelatedArtifacts(AtsRelationTypes.ActionToWorkflow_WorkFlow,
-            TeamWorkFlowArtifact.class)) {
+         TeamWorkFlowArtifact.class)) {
          art.atsDelete(deleteArts, allRelated);
       }
    }
@@ -592,10 +592,10 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
 
    public Result editActionableItems() throws OseeCoreException {
       final AICheckTreeDialog diag =
-            new AICheckTreeDialog(
-                  "Add Impacted Actionable Items",
-                  "Select New Impacted Actionable Items\n\n" + "Note: Un-selecting existing items will NOT remove the impact.\n" + "Team Workflow with no impact should be transitioned to Cancelled.",
-                  Active.Active);
+         new AICheckTreeDialog(
+            "Add Impacted Actionable Items",
+            "Select New Impacted Actionable Items\n\n" + "Note: Un-selecting existing items will NOT remove the impact.\n" + "Team Workflow with no impact should be transitioned to Cancelled.",
+            Active.Active);
 
       diag.setInitialAias(getActionableItems());
       if (diag.open() != 0) {
@@ -693,8 +693,8 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
 
       // NOTE: The persist of the workflow will auto-email the assignees
       TeamWorkFlowArtifact teamArt =
-            createTeamWorkflow(teamDef, actionableItems, assignees,
-                  ArtifactTypeManager.getType(teamWorkflowArtifactName), transaction, createTeamOption);
+         createTeamWorkflow(teamDef, actionableItems, assignees, ArtifactTypeManager.getType(teamWorkflowArtifactName),
+            transaction, createTeamOption);
       // Notify extension that workflow was created
       if (teamExt != null) {
          teamExt.teamWorkflowCreated(teamArt);
@@ -704,7 +704,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
 
    public TeamWorkFlowArtifact createTeamWorkflow(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<User> assignees, IArtifactType artifactType, SkynetTransaction transaction, CreateTeamOption... createTeamOption) throws OseeCoreException {
       return createTeamWorkflow(teamDef, actionableItems, assignees, null, null, artifactType, transaction,
-            createTeamOption);
+         createTeamOption);
    }
 
    public TeamWorkFlowArtifact createTeamWorkflow(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<User> assignees, String guid, String hrid, IArtifactType artifactType, SkynetTransaction transaction, CreateTeamOption... createTeamOption) throws OseeCoreException {
@@ -715,7 +715,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
             if (teamArt.getTeamDefinition().equals(teamDef)) {
                AWorkbench.popup("ERROR", "Team already exist");
                throw new OseeArgumentException(
-                     "Team \"" + teamDef + "\" already exists for Action " + getHumanReadableId());
+                  "Team \"" + teamDef + "\" already exists for Action " + getHumanReadableId());
             }
          }
       }
@@ -725,7 +725,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
          teamArt = (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactType, AtsUtil.getAtsBranch());
       } else {
          teamArt =
-               (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactType, AtsUtil.getAtsBranch(), guid, hrid);
+            (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactType, AtsUtil.getAtsBranch(), guid, hrid);
       }
       setArtifactIdentifyData(this, teamArt);
 
@@ -770,12 +770,12 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
          throw new OseeArgumentException("Invalid priority => " + priorityStr);
       }
       setArtifactIdentifyData(toTeam, fromAction.getName(), fromAction.getSoleAttributeValue(
-            ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), ""),
-            ChangeType.getChangeType(fromAction.getSoleAttributeValue(
-                  ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), "")), priType,
-            //            fromAction.getAttributesToStringList(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName()),
-            fromAction.getSoleAttributeValue(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), false),
-            fromAction.getSoleAttributeValue(ATSAttributes.NEED_BY_ATTRIBUTE.getStoreName(), null, Date.class));
+         ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), ""),
+         ChangeType.getChangeType(fromAction.getSoleAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(),
+            "")), priType,
+         //            fromAction.getAttributesToStringList(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName()),
+         fromAction.getSoleAttributeValue(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), false),
+         fromAction.getSoleAttributeValue(ATSAttributes.NEED_BY_ATTRIBUTE.getStoreName(), null, Date.class));
    }
 
    /**

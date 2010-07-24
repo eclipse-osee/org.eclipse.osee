@@ -12,11 +12,10 @@ package org.eclipse.osee.framework.ui.workspacebundleloader;
 
 import java.net.URL;
 
-/** 
+/**
  * @author Robert A. Fisher
- *
  */
-public interface IJarChangeListener <T extends JarCollectionNature> {
+public interface IJarChangeListener<T extends JarCollectionNature> {
 
    /**
     * Called for each addition of bundle
@@ -40,13 +39,13 @@ public interface IJarChangeListener <T extends JarCollectionNature> {
    public void handleBundleRemoved(URL url);
 
    /**
-    * Called after all add/change/remove methods have been
-    * invoked for a given delta.
+    * Called after all add/change/remove methods have been invoked for a given delta.
     */
    public void handlePostChange();
 
    /**
     * Called just before a project with the nature is closed
+    * 
     * @param nature
     */
    public void handleNatureClosed(T nature);

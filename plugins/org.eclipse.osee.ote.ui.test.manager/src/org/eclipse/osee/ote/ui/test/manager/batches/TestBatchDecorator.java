@@ -31,41 +31,42 @@ import org.eclipse.ui.IDecoratorManager;
  * @author Roberto E. Escobar
  */
 public class TestBatchDecorator extends LabelProvider implements ILightweightLabelDecorator {
-	private static final String DECORATOR_ID = "org.eclipse.osee.ote.ui.test.manager.decorator";
-	private static final ImageDescriptor IMAGE = ImageManager.getImageDescriptor(OteTestManagerImage.TEST);
+   private static final String DECORATOR_ID = "org.eclipse.osee.ote.ui.test.manager.decorator";
+   private static final ImageDescriptor IMAGE = ImageManager.getImageDescriptor(OteTestManagerImage.TEST);
 
-	public void decorate(Object element, IDecoration decoration) {
-		try {
-			IProject project = null;
-			if (element instanceof IJavaProject) {
-				project = ((IJavaProject) element).getProject();
-			} else {
-				project = (IProject) element;
-			}
-			if (project.isOpen() && project.hasNature(TestBatchProjectNature.NATURE_ID)) {
-				decoration.addOverlay(IMAGE);
-			}
-		} catch (Exception ex) {
-			OseeLog.log(TestManagerPlugin.class, Level.SEVERE, SelectionUtil.getStatusMessages(ex));
-		}
-	}
+   @Override
+   public void decorate(Object element, IDecoration decoration) {
+      try {
+         IProject project = null;
+         if (element instanceof IJavaProject) {
+            project = ((IJavaProject) element).getProject();
+         } else {
+            project = (IProject) element;
+         }
+         if (project.isOpen() && project.hasNature(TestBatchProjectNature.NATURE_ID)) {
+            decoration.addOverlay(IMAGE);
+         }
+      } catch (Exception ex) {
+         OseeLog.log(TestManagerPlugin.class, Level.SEVERE, SelectionUtil.getStatusMessages(ex));
+      }
+   }
 
-	private void startDecoratorUpdate(IProject project) {
-		final LabelProviderChangedEvent evnt = new LabelProviderChangedEvent(this, project);
-		Displays.ensureInDisplayThread(new Runnable() {
-			@Override
-			public void run() {
-				fireLabelProviderChanged(evnt);
-			}
-		});
-	}
+   private void startDecoratorUpdate(IProject project) {
+      final LabelProviderChangedEvent evnt = new LabelProviderChangedEvent(this, project);
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            fireLabelProviderChanged(evnt);
+         }
+      });
+   }
 
-	public static void performLabelDecoratorUpdate(IProject project) {
-		IDecoratorManager decoratorManager = TestManagerPlugin.getInstance().getWorkbench().getDecoratorManager();
-		IBaseLabelProvider provider = decoratorManager.getBaseLabelProvider(DECORATOR_ID);
-		if (provider != null) {
-			TestBatchDecorator decorator = (TestBatchDecorator) provider;
-			decorator.startDecoratorUpdate(project);
-		}
-	}
+   public static void performLabelDecoratorUpdate(IProject project) {
+      IDecoratorManager decoratorManager = TestManagerPlugin.getInstance().getWorkbench().getDecoratorManager();
+      IBaseLabelProvider provider = decoratorManager.getBaseLabelProvider(DECORATOR_ID);
+      if (provider != null) {
+         TestBatchDecorator decorator = (TestBatchDecorator) provider;
+         decorator.startDecoratorUpdate(project);
+      }
+   }
 }

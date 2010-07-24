@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 public class VcpResultsDatFile {
 
    private final CompositeKeyHashMap<String, String, HashSet<String>> resultsValues =
-         new CompositeKeyHashMap<String, String, HashSet<String>>(1000, true);
+      new CompositeKeyHashMap<String, String, HashSet<String>>(1000, true);
    Pattern valuePattern = Pattern.compile("\\s*([0-9]+)\\s+([0-9]+)\\s+([0-9]+)");
    String resultFilename = null;
 
@@ -45,7 +45,7 @@ public class VcpResultsDatFile {
       File resultsFile = getFile();
       if (!resultsFile.exists()) {
          throw new OseeArgumentException(
-               String.format("VectorCast resultsFile file doesn't exist [%s]", resultFilename));
+            String.format("VectorCast resultsFile file doesn't exist [%s]", resultFilename));
       }
       for (String resultsLine : AFile.readFile(resultsFile).split("\n")) {
          if (Strings.isValid(resultsLine)) {
@@ -87,7 +87,7 @@ public class VcpResultsDatFile {
       for (Pair<String, String> pair : resultsValues.keySet()) {
          if (fileNumber.equals(pair.getFirst())) {
             methodExecutionPairs.add(new Pair<String, HashSet<String>>(pair.getSecond(), resultsValues.get(fileNumber,
-                  pair.getSecond())));
+               pair.getSecond())));
          }
       }
       return methodExecutionPairs;

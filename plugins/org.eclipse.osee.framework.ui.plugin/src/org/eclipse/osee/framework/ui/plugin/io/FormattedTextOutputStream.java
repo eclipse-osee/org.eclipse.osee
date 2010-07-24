@@ -23,10 +23,10 @@ import org.eclipse.swt.custom.StyledText;
  */
 public class FormattedTextOutputStream extends OutputStream {
 
-   private FormattedText textArea;
+   private final FormattedText textArea;
    private String charset;
-   private StyledText styledText;
-   private String type;
+   private final StyledText styledText;
+   private final String type;
    private int swtColor;
 
    public FormattedTextOutputStream(FormattedText textArea, String type) {
@@ -43,25 +43,28 @@ public class FormattedTextOutputStream extends OutputStream {
       this.charset = charset;
    }
 
+   @Override
    public void write(byte[] b) {
       write(b, 0, b.length);
    }
 
    private boolean isTextAreaAvailable() {
-      return (textArea != null && !textArea.getStyledText().isDisposed());
+      return textArea != null && !textArea.getStyledText().isDisposed();
    }
 
    public void typeColor(int swtColor) {
       this.swtColor = swtColor;
    }
 
+   @Override
    public void write(byte[] b, int off, int len) {
       String s;
       try {
-         if (charset == null)
+         if (charset == null) {
             s = new String(b, off, len);
-         else
+         } else {
             s = new String(b, off, len, charset);
+         }
       } catch (UnsupportedEncodingException ex) {
          throw new Error("encoding support was already verified", ex);
       }
@@ -74,6 +77,7 @@ public class FormattedTextOutputStream extends OutputStream {
       }
    }
 
+   @Override
    public void write(int b) {
       byte[] tmp = {(byte) b};
       write(tmp);

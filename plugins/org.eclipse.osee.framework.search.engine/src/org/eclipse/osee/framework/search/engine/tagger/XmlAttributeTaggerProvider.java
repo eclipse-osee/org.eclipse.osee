@@ -43,6 +43,7 @@ public class XmlAttributeTaggerProvider extends BaseAttributeTaggerProvider {
       return Collections.emptyList();
    }
 
+   @Override
    public void tagIt(AttributeData attributeData, ITagCollector collector) throws OseeCoreException {
       InputStream inputStream = null;
       try {

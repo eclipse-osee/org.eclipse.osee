@@ -45,6 +45,7 @@ public class OSEECheckedFilteredTree extends OSEEFilteredTree {
    protected Control createTreeControl(Composite parent, int style) {
       Control control = super.createTreeControl(parent, style);
       getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
+         @Override
          public void selectionChanged(SelectionChangedEvent event) {
             storeResults(treeViewer.getTree().getItems());
          }

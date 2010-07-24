@@ -51,7 +51,7 @@ public class WorldEditorUISearchItemProvider extends WorldEditorProvider {
    @Override
    public IWorldEditorProvider copyProvider() throws OseeArgumentException {
       return new WorldEditorUISearchItemProvider((WorldUISearchItem) worldUISearchItem.copy(), customizeData,
-            tableLoadOptions);
+         tableLoadOptions);
    }
 
    /**
@@ -139,7 +139,7 @@ public class WorldEditorUISearchItemProvider extends WorldEditorProvider {
          } catch (final Exception ex) {
             worldEditor.getWorldComposite().setTableTitle("Searching Error - " + selectedName, false);
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-            return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.getLocalizedMessage(), ex);
+            return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.getLocalizedMessage(), ex);
          } finally {
             monitor.done();
          }

@@ -17,11 +17,11 @@ import org.eclipse.osee.ote.core.environment.TestEnvironment;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public class TestPointStatusBoardRunnable extends StatusBoardRunnable {
 
-   private StatusBoard statusBoard;
+   private final StatusBoard statusBoard;
+
    /**
     * 
     */
@@ -29,22 +29,21 @@ public class TestPointStatusBoardRunnable extends StatusBoardRunnable {
       super(data);
       this.statusBoard = statusBoard;
    }
-   
+
+   @Override
    public void run() {
       int size = statusBoard.getListeners().size();
       for (int i = 0; i < size; i++) {
          try {
             statusBoard.getListeners().get(i).statusBoardUpdated(getData());
          } catch (ConnectException e) {
-            OseeLog.log(TestEnvironment.class,Level.SEVERE,
-                  e.getMessage(), e);
+            OseeLog.log(TestEnvironment.class, Level.SEVERE, e.getMessage(), e);
             statusBoard.getListeners().remove(i);
             statusBoard.notifyListeners(getData());
             return;
          } catch (Throwable e) {
             e.printStackTrace();
-            OseeLog.log(TestEnvironment.class, Level.SEVERE,
-                  e.getMessage(), e);
+            OseeLog.log(TestEnvironment.class, Level.SEVERE, e.getMessage(), e);
          }
       }
    }

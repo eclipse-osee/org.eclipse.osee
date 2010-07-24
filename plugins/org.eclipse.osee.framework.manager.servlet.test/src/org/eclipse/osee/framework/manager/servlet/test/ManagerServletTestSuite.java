@@ -15,7 +15,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {ServletDataTestSuite.class})
+@Suite.SuiteClasses({ServletDataTestSuite.class})
 /**
  * @author Roberto E. Escobar
  */

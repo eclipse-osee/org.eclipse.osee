@@ -46,7 +46,9 @@ public class StateListAndTitleDialog extends StateListDialog {
       comp.setLayoutData(new GridData(SWT.FILL, SWT.LEFT, true, false));
       titleText = new XText("Review Title");
       titleText.createWidgets(comp, 1);
-      if (reviewTitle != null) titleText.set(reviewTitle);
+      if (reviewTitle != null) {
+         titleText.set(reviewTitle);
+      }
       titleText.getStyledText().setLayoutData(new GridData(SWT.FILL, SWT.LEFT, true, false));
       titleText.addXModifiedListener(new XModifiedListener() {
          @Override
@@ -60,7 +62,7 @@ public class StateListAndTitleDialog extends StateListDialog {
          @SuppressWarnings("unchecked")
          @Override
          public int compare(Viewer viewer, Object e1, Object e2) {
-            return getComparator().compare((String) e1, (String) e2);
+            return getComparator().compare(e1, e2);
          }
       });
 

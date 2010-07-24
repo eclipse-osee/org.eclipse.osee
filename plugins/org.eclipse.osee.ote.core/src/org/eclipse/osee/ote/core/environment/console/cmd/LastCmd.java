@@ -17,17 +17,18 @@ import org.eclipse.osee.ote.core.environment.console.ConsoleShell;
  * @author Ken J. Aguilar
  */
 public class LastCmd extends ConsoleCommand {
-   
+
    private static final String NAME = "lc";
    private static final String DESCRIPTION = "Executes the last command executed";
-   
+
    public LastCmd() {
       super(NAME, DESCRIPTION);
    }
-   
+
+   @Override
    protected void doCmd(ConsoleShell shell, String[] switches, String[] args) {
-	   shell.runLast();
-	   shell.setSaveLastCmdFlag(false);
+      shell.runLast();
+      shell.setSaveLastCmdFlag(false);
    }
-   
+
 }

@@ -23,7 +23,7 @@ public class CompareDropDown extends Action {
    private final MenuManager manager;
 
    public CompareDropDown() {
-      super("Compare Against...", Action.AS_DROP_DOWN_MENU);
+      super("Compare Against...", IAction.AS_DROP_DOWN_MENU);
       setToolTipText("Select from the drop down to change the current change report settings.");
       setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.CHANGE_LOG));
       manager = new MenuManager();
@@ -36,10 +36,12 @@ public class CompareDropDown extends Action {
 
    private final class CompareMenuCreator implements IMenuCreator {
 
+      @Override
       public void dispose() {
          manager.dispose();
       }
 
+      @Override
       public Menu getMenu(Control parent) {
          if (manager.getMenu() == null) {
             manager.createContextMenu(parent);
@@ -47,6 +49,7 @@ public class CompareDropDown extends Action {
          return manager.getMenu();
       }
 
+      @Override
       public Menu getMenu(Menu parent) {
          return null;
       }

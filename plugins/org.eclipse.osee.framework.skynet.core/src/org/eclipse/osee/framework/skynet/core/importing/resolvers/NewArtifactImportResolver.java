@@ -37,13 +37,13 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
       ArtifactType artifactType = getArtifactType(roughArtifact.getRoughArtifactKind());
 
       Artifact realArtifact =
-            ArtifactTypeManager.getFactory(artifactType).makeNewArtifact(branch, artifactType, roughArtifact.getGuid(),
-                  roughArtifact.getHumanReadableId(), new ArtifactProcessor() {
-                     @Override
-                     public void run(Artifact artifact) throws OseeCoreException {
-                        roughArtifact.translateAttributes(artifact);
-                     }
-                  });
+         ArtifactTypeManager.getFactory(artifactType).makeNewArtifact(branch, artifactType, roughArtifact.getGuid(),
+            roughArtifact.getHumanReadableId(), new ArtifactProcessor() {
+               @Override
+               public void run(Artifact artifact) throws OseeCoreException {
+                  roughArtifact.translateAttributes(artifact);
+               }
+            });
 
       return realArtifact;
    }

@@ -120,7 +120,7 @@ public class ChangeData {
             for (ModificationType modificationType : ModificationType.values()) {
                Collection<Artifact> artifacts = getArtifacts(kindType, modificationType);
                sb.append(String.format("Kind: %s ModType: %s Num: %s\n", kindType, modificationType.getDisplayName(),
-                     artifacts.size()));
+                  artifacts.size()));
             }
          }
          return sb.toString();

@@ -15,8 +15,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.datastore.internal.Activator;
 import org.eclipse.osee.framework.core.enums.StorageState;
@@ -49,24 +49,24 @@ public class DatabaseArtifactTypeAccessor extends AbstractDatabaseAccessor<Artif
 
    private static final String SELECT_ARTIFACT_TYPES = "select * from osee_artifact_type";
    private static final String INSERT_ARTIFACT_TYPE =
-         "insert into osee_artifact_type (art_type_id, art_type_guid, name, is_abstract) VALUES (?,?,?,?)";
+      "insert into osee_artifact_type (art_type_id, art_type_guid, name, is_abstract) VALUES (?,?,?,?)";
 
    private static final String UPDATE_ARTIFACT_TYPE =
-         "update osee_artifact_type SET name = ?, is_abstract = ? where art_type_id = ?";
+      "update osee_artifact_type SET name = ?, is_abstract = ? where art_type_id = ?";
 
    private static final String SELECT_ARTIFACT_TYPE_INHERITANCE =
-         "select * from osee_artifact_type_inheritance order by super_art_type_id, art_type_id";
+      "select * from osee_artifact_type_inheritance order by super_art_type_id, art_type_id";
    private static final String INSERT_ARTIFACT_TYPE_INHERITANCE =
-         "insert into osee_artifact_type_inheritance (art_type_id, super_art_type_id) VALUES (?,?)";
+      "insert into osee_artifact_type_inheritance (art_type_id, super_art_type_id) VALUES (?,?)";
    private static final String DELETE_ARTIFACT_TYPE_INHERITANCE =
-         "delete from osee_artifact_type_inheritance where art_type_id = ?";
+      "delete from osee_artifact_type_inheritance where art_type_id = ?";
 
    private static final String SELECT_ARTIFACT_TYPE_ATTRIBUTES =
-         "select * from osee_artifact_type_attributes order by art_type_id, branch_id, attr_type_id";
+      "select * from osee_artifact_type_attributes order by art_type_id, branch_id, attr_type_id";
    private static final String INSERT_ARTIFACT_TYPE_ATTRIBUTES =
-         "insert into osee_artifact_type_attributes (art_type_id, attr_type_id, branch_id) VALUES (?, ?, ?)";
+      "insert into osee_artifact_type_attributes (art_type_id, attr_type_id, branch_id) VALUES (?, ?, ?)";
    private static final String DELETE_ARTIFACT_TYPE_ATTRIBUTES =
-         "delete from osee_artifact_type_attributes where art_type_id = ?";
+      "delete from osee_artifact_type_attributes where art_type_id = ?";
 
    private final AttributeTypeCache attributeCache;
    private final BranchCache branchCache;
@@ -105,7 +105,7 @@ public class DatabaseArtifactTypeAccessor extends AbstractDatabaseAccessor<Artif
                String guid = chStmt.getString("art_type_guid");
 
                ArtifactType artifactType =
-                     factory.createOrUpdate(cache, artTypeId, StorageState.LOADED, guid, isAbstract, artifactTypeName);
+                  factory.createOrUpdate(cache, artTypeId, StorageState.LOADED, guid, isAbstract, artifactTypeName);
                loadedTypes.add(artifactType);
             } catch (OseeDataStoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -121,7 +121,7 @@ public class DatabaseArtifactTypeAccessor extends AbstractDatabaseAccessor<Artif
       try {
          chStmt2.runPreparedQuery(SELECT_ARTIFACT_TYPE_INHERITANCE);
          HashCollection<ArtifactType, ArtifactType> baseToSuperTypes =
-               new HashCollection<ArtifactType, ArtifactType>(false, HashSet.class);
+            new HashCollection<ArtifactType, ArtifactType>(false, HashSet.class);
 
          while (chStmt2.next()) {
             int artTypeId = chStmt2.getInt("art_type_id");
@@ -131,11 +131,11 @@ public class DatabaseArtifactTypeAccessor extends AbstractDatabaseAccessor<Artif
 
             if (baseArtType == null) {
                throw new OseeInvalidInheritanceException(String.format(
-                     "ArtifactType [%s] which inherits from [%s] is null", artTypeId, superArtType));
+                  "ArtifactType [%s] which inherits from [%s] is null", artTypeId, superArtType));
             }
             if (superArtType == null) {
                throw new OseeInvalidInheritanceException(String.format(
-                     "ArtifactType [%s] which inherits from null artifact [%s]", artTypeId, superArtType));
+                  "ArtifactType [%s] which inherits from null artifact [%s]", artTypeId, superArtType));
             }
             baseToSuperTypes.put(baseArtType, superArtType);
          }
@@ -152,7 +152,7 @@ public class DatabaseArtifactTypeAccessor extends AbstractDatabaseAccessor<Artif
 
    private void loadAllTypeValidity(ArtifactTypeCache cache) throws OseeCoreException {
       CompositeKeyHashMap<ArtifactType, Branch, Collection<AttributeType>> typeValidity =
-            new CompositeKeyHashMap<ArtifactType, Branch, Collection<AttributeType>>();
+         new CompositeKeyHashMap<ArtifactType, Branch, Collection<AttributeType>>();
       IOseeStatement chStmt = getDatabaseService().getStatement();
       try {
          chStmt.runPreparedQuery(2000, SELECT_ARTIFACT_TYPE_ATTRIBUTES);
@@ -227,7 +227,7 @@ public class DatabaseArtifactTypeAccessor extends AbstractDatabaseAccessor<Artif
 
    private boolean isDataDirty(ArtifactType type) throws OseeCoreException {
       return type.areFieldsDirty(AbstractOseeType.NAME_FIELD_KEY, AbstractOseeType.UNIQUE_ID_FIELD_KEY,
-            ArtifactType.ARTIFACT_IS_ABSTRACT_FIELD_KEY);
+         ArtifactType.ARTIFACT_IS_ABSTRACT_FIELD_KEY);
    }
 
    private void storeArtifactTypeInheritance(Collection<ArtifactType> types) throws OseeDataStoreException {

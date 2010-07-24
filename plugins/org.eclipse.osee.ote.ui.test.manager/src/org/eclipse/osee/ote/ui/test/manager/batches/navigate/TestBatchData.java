@@ -18,10 +18,10 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
  */
 public class TestBatchData {
 
-   private String name;
-   private XNavigateItem itemFolder;
-   private URI testBatchFile;
-   private URI projectSetFile;
+   private final String name;
+   private final XNavigateItem itemFolder;
+   private final URI testBatchFile;
+   private final URI projectSetFile;
 
    protected TestBatchData(XNavigateItem itemFolder, String name, URI projectSetFile, URI testBatchFile) {
       this.name = name;

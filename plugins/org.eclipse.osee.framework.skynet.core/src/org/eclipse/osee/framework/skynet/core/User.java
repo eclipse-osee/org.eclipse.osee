@@ -106,7 +106,7 @@ public class User extends Artifact {
    public void toggleFavoriteBranch(Branch favoriteBranch) throws OseeCoreException {
       HashSet<String> branchGuids = new HashSet<String>();
       for (Branch branch : BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING,
-            BranchType.BASELINE)) {
+         BranchType.BASELINE)) {
          branchGuids.add(branch.getGuid());
       }
 

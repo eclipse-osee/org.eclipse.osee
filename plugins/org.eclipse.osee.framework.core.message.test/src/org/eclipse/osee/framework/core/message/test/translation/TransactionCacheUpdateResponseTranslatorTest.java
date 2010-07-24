@@ -29,7 +29,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Test Case for {@link TransactionCacheUpdateResponseTranslator}
- *
+ * 
  * @author Roberto E. Escobar
  */
 @RunWith(Parameterized.class)
@@ -54,7 +54,7 @@ public class TransactionCacheUpdateResponseTranslatorTest extends BaseTranslator
    public static Collection<Object[]> data() throws OseeCoreException {
       IOseeModelFactoryServiceProvider factoryProvider = MockRequestFactory.createFactoryProvider();
       ITranslator<TransactionCacheUpdateResponse> translator =
-            new TransactionCacheUpdateResponseTranslator(factoryProvider);
+         new TransactionCacheUpdateResponseTranslator(factoryProvider);
 
       List<Object[]> data = new ArrayList<Object[]>();
       for (int index = 1; index <= 2; index++) {

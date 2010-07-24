@@ -38,11 +38,10 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 
 /**
- * This is a sample new wizard. Its role is to create a new file resource in the provided container.
- * If the container resource (a folder or a project) is selected in the workspace when the wizard is
- * opened, it will accept it as the target container. The wizard creates one file with the extension
- * "mpe". If a sample multi-page editor (also available as a template) is registered for the same
- * extension, it will be able to open it.
+ * This is a sample new wizard. Its role is to create a new file resource in the provided container. If the container
+ * resource (a folder or a project) is selected in the workspace when the wizard is opened, it will accept it as the
+ * target container. The wizard creates one file with the extension "mpe". If a sample multi-page editor (also available
+ * as a template) is registered for the same extension, it will be able to open it.
  */
 
 public class TestManagerNewWizard extends Wizard implements INewWizard {
@@ -62,6 +61,7 @@ public class TestManagerNewWizard extends Wizard implements INewWizard {
     * Adding the page to the wizard.
     */
 
+   @Override
    public void addPages() {
       page = new TestManagerNewWizardPage(selection);
       addPage(page);
@@ -72,37 +72,36 @@ public class TestManagerNewWizard extends Wizard implements INewWizard {
     * 
     * @see IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
     */
+   @Override
    public void init(IWorkbench workbench, IStructuredSelection selection) {
       this.selection = selection;
    }
 
    /**
-    * This method is called when 'Finish' button is pressed in the wizard. We will create an
-    * operation and run it using wizard as execution context.
+    * This method is called when 'Finish' button is pressed in the wizard. We will create an operation and run it using
+    * wizard as execution context.
     */
+   @Override
    public boolean performFinish() {
       final String containerName = page.getContainerName();
       final String fileName = page.getFileName();
       IRunnableWithProgress op = new IRunnableWithProgress() {
+         @Override
          public void run(IProgressMonitor monitor) throws InvocationTargetException {
             try {
                doFinish(containerName, fileName, monitor);
-            }
-            catch (CoreException e) {
+            } catch (CoreException e) {
                throw new InvocationTargetException(e);
-            }
-            finally {
+            } finally {
                monitor.done();
             }
          }
       };
       try {
          getContainer().run(true, false, op);
-      }
-      catch (InterruptedException e) {
+      } catch (InterruptedException e) {
          return false;
-      }
-      catch (InvocationTargetException e) {
+      } catch (InvocationTargetException e) {
          Throwable realException = e.getTargetException();
          MessageDialog.openError(getShell(), "Error", realException.getMessage());
          return false;
@@ -111,8 +110,8 @@ public class TestManagerNewWizard extends Wizard implements INewWizard {
    }
 
    /**
-    * The worker method. It will find the container, create the file if missing or just replace its
-    * contents, and open the editor on the newly created file.
+    * The worker method. It will find the container, create the file if missing or just replace its contents, and open
+    * the editor on the newly created file.
     */
 
    private void doFinish(String containerName, String fileName, IProgressMonitor monitor) throws CoreException {
@@ -129,23 +128,21 @@ public class TestManagerNewWizard extends Wizard implements INewWizard {
          InputStream stream = openContentStream();
          if (file.exists()) {
             file.setContents(stream, true, true, monitor);
-         }
-         else {
+         } else {
             file.create(stream, true, monitor);
          }
          stream.close();
-      }
-      catch (IOException e) {
+      } catch (IOException e) {
       }
       monitor.worked(1);
       monitor.setTaskName("Opening file for editing...");
       getShell().getDisplay().asyncExec(new Runnable() {
+         @Override
          public void run() {
             IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
             try {
                IDE.openEditor(page, file, true);
-            }
-            catch (PartInitException e) {
+            } catch (PartInitException e) {
             }
          }
       });
@@ -157,9 +154,8 @@ public class TestManagerNewWizard extends Wizard implements INewWizard {
     */
 
    private InputStream openContentStream() {
-      String contents = "<testManager>\n"
-            + "<contact></contact>\n"
-            + "<description>Find those bugs</description>\n</testManager>\n";
+      String contents =
+         "<testManager>\n" + "<contact></contact>\n" + "<description>Find those bugs</description>\n</testManager>\n";
       return new ByteArrayInputStream(contents.getBytes());
    }
 

@@ -29,8 +29,8 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * @param element
     */
    public NonMappingLongIntegerElement(LongIntegerElement element) {
-      super(element.getMessage(), element.getElementName(), element.getMsgData(), element.getByteOffset(), element.getMsb(),
-            element.getLsb());
+      super(element.getMessage(), element.getElementName(), element.getMsgData(), element.getByteOffset(),
+         element.getMsb(), element.getLsb());
       for (Object obj : element.getElementPath()) {
          this.getElementPath().add(obj);
       }
@@ -114,11 +114,11 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * 
     * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    *           reference to the CheckGroup must be passed and this method will add the result of the check to the group
-    *           with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference should be passed and
-    *           this method will log the test point.
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param value Expected value
     * @return if the check passed
     */
@@ -147,11 +147,11 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * 
     * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    *           reference to the CheckGroup must be passed and this method will add the result of the check to the group
-    *           with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference should be passed and
-    *           this method will log the test point.
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param minValue The minimum value of the range.
     * @param maxValue The maximum value of the range.
     * @return if the check passed
@@ -183,11 +183,11 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * 
     * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    *           reference to the CheckGroup must be passed and this method will add the result of the check to the group
-    *           with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference should be passed and
-    *           this method will log the test point.
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param minValue The minimum value of the range.
     * @param minInclusive If the minumum value of the range is inclusive.
     * @param maxValue The maximum value of the range.
@@ -216,11 +216,11 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * 
     * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    *           reference to the CheckGroup must be passed and this method will add the result of the check to the group
-    *           with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference should be passed and
-    *           this method will log the test point.
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param value value to test against
     * @return if the check passed
     */
@@ -249,11 +249,11 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * 
     * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    *           reference to the CheckGroup must be passed and this method will add the result of the check to the group
-    *           with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference should be passed and
-    *           this method will log the test point.
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param minValue The minimum value of the range.
     * @param maxValue The maximum value of the range.
     * @return if the check passed
@@ -270,10 +270,10 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * @param accessor
     * @param minValue The minimum value of the range.
     * @param minInclusive If the minumum value of the range is inclusive. If true the actual value must not < and not =
-    *           to the range value.
+    * to the range value.
     * @param maxValue The maximum value of the range.
     * @param maxInclusive If the maximum value of the range is inclusive. If true the actual value must not > and not =
-    *           to the range value.
+    * to the range value.
     * @return if the check passed
     */
    public boolean checkNotRange(ITestAccessor accessor, int minValue, boolean minInclusive, int maxValue, boolean maxInclusive) {
@@ -287,17 +287,17 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * 
     * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    *           reference to the CheckGroup must be passed and this method will add the result of the check to the group
-    *           with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference should be passed and
-    *           this method will log the test point.
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param minValue The minimum value of the range.
     * @param minInclusive If the minumum value of the range is inclusive. If true the actual value must not < and not =
-    *           to the range value.
+    * to the range value.
     * @param maxValue The maximum value of the range.
     * @param maxInclusive If the maximum value of the range is inclusive. If true the actual value must not > and not =
-    *           to the range value.
+    * to the range value.
     * @return if the check passed
     */
    public boolean checkNotRange(ITestAccessor accessor, CheckGroup checkGroup, int minValue, boolean minInclusive, int maxValue, boolean maxInclusive) {
@@ -324,11 +324,11 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * 
     * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    *           reference to the CheckGroup must be passed and this method will add the result of the check to the group
-    *           with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference should be passed and
-    *           this method will log the test point.
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param value Expected value.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
@@ -410,11 +410,11 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * 
     * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    *           reference to the CheckGroup must be passed and this method will add the result of the check to the group
-    *           with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference should be passed and
-    *           this method will log the test point.
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param minValue The minimum value of the range.
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait for the element to be within the range.
@@ -450,11 +450,11 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * 
     * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    *           reference to the CheckGroup must be passed and this method will add the result of the check to the group
-    *           with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference should be passed and
-    *           this method will log the test point.
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param minValue The minimum value of the range.
     * @param minInclusive If the minumum value of the range is inclusive.
     * @param maxValue The maximum value of the range.
@@ -489,11 +489,11 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * 
     * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    *           reference to the CheckGroup must be passed and this method will add the result of the check to the group
-    *           with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference should be passed and
-    *           this method will log the test point.
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param value value to test against.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
@@ -526,11 +526,11 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * 
     * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    *           reference to the CheckGroup must be passed and this method will add the result of the check to the group
-    *           with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference should be passed and
-    *           this method will log the test point.
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param minValue The minimum value of the range.
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait for the element to be outside the range.
@@ -549,10 +549,10 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * @param accessor
     * @param minValue The minimum value of the range.
     * @param minInclusive If the minumum value of the range is inclusive. If true the actual value must not < and not =
-    *           to the range value.
+    * to the range value.
     * @param maxValue The maximum value of the range.
     * @param maxInclusive If the maximum value of the range is inclusive. If true the actual value must not > and not =
-    *           to the range value.
+    * to the range value.
     * @param milliseconds Number of milliseconds to wait for the element to be outside the range.
     * @return if the check passed
     * @throws InterruptedException
@@ -568,17 +568,17 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * 
     * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    *           reference to the CheckGroup must be passed and this method will add the result of the check to the group
-    *           with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference should be passed and
-    *           this method will log the test point.
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param minValue The minimum value of the range.
     * @param minInclusive If the minumum value of the range is inclusive. If true the actual value must not < and not =
-    *           to the range value.
+    * to the range value.
     * @param maxValue The maximum value of the range.
     * @param maxInclusive If the maximum value of the range is inclusive. If true the actual value must not > and not =
-    *           to the range value.
+    * to the range value.
     * @param milliseconds Number of milliseconds to wait for the element to be outside the range.
     * @return if the check passed
     * @throws InterruptedException
@@ -609,11 +609,11 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * 
     * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    *           reference to the CheckGroup must be passed and this method will add the result of the check to the group
-    *           with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference should be passed and
-    *           this method will log the test point.
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param value
     * @param milliseconds
     * @return last value observed. Either value expected or value found at timeout.
@@ -645,11 +645,11 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * 
     * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    *           reference to the CheckGroup must be passed and this method will add the result of the check to the group
-    *           with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference should be passed and
-    *           this method will log the test point.
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param value
     * @param milliseconds
     * @return last value observed
@@ -666,11 +666,11 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * 
     * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    *           reference to the CheckGroup must be passed and this method will add the result of the check to the group
-    *           with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference should be passed and
-    *           this method will log the test point.
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param minValue The minimum value of the range.
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait before failing.
@@ -687,11 +687,11 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * 
     * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    *           reference to the CheckGroup must be passed and this method will add the result of the check to the group
-    *           with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference should be passed and
-    *           this method will log the test point.
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param minValue The minimum value of the range.
     * @param minInclusive If the minumum value of the range is inclusive.
     * @param maxValue The maximum value of the range.
@@ -780,11 +780,11 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * 
     * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    *           reference to the CheckGroup must be passed and this method will add the result of the check to the group
-    *           with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference should be passed and
-    *           this method will log the test point.
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param minValue The minimum value of the range.
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait before failing.
@@ -801,17 +801,17 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * 
     * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    *           reference to the CheckGroup must be passed and this method will add the result of the check to the group
-    *           with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference should be passed and
-    *           this method will log the test point.
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param minValue The minimum value of the range.
     * @param minInclusive If the minumum value of the range is inclusive. If true the actual value must not < and not =
-    *           to the range value.
+    * to the range value.
     * @param maxValue The maximum value of the range.
     * @param maxInclusive If the maximum value of the range is inclusive. If true the actual value must not > and not =
-    *           to the range value.
+    * to the range value.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
     * @throws InterruptedException
@@ -906,10 +906,10 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * @param accessor
     * @param minValue The minimum value of the range.
     * @param minInclusive If the minumum value of the range is inclusive. If true the actual value must not < and not =
-    *           to the range value.
+    * to the range value.
     * @param maxValue The maximum value of the range.
     * @param maxInclusive If the maximum value of the range is inclusive. If true the actual value must not > and not =
-    *           to the range value.
+    * to the range value.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
     * @throws InterruptedException
@@ -940,10 +940,10 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * @param accessor
     * @param minValue The minimum value of the range.
     * @param minInclusive If the minumum value of the range is inclusive. If true the actual value must not < and not =
-    *           to the range value.
+    * to the range value.
     * @param maxValue The maximum value of the range.
     * @param maxInclusive If the maximum value of the range is inclusive. If true the actual value must not > and not =
-    *           to the range value.
+    * to the range value.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
     * @throws InterruptedException

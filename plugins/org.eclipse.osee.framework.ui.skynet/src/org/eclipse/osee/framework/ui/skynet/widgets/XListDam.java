@@ -21,54 +21,54 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
  */
 public class XListDam extends XList implements IAttributeWidget {
 
-	private Artifact artifact;
-	private String attributeTypeName;
+   private Artifact artifact;
+   private String attributeTypeName;
 
-	/**
-	 * @param displayLabel
-	 */
-	public XListDam(String displayLabel) {
-		super(displayLabel);
-	}
+   /**
+    * @param displayLabel
+    */
+   public XListDam(String displayLabel) {
+      super(displayLabel);
+   }
 
-	@Override
-	public String getAttributeType() {
-		return attributeTypeName;
-	}
+   @Override
+   public String getAttributeType() {
+      return attributeTypeName;
+   }
 
-	@Override
-	public void setAttributeType(Artifact artifact, String attrName) throws OseeCoreException {
-		this.artifact = artifact;
-		this.attributeTypeName = attrName;
-		super.setSelected(getStoredStrs());
-	}
+   @Override
+   public void setAttributeType(Artifact artifact, String attrName) throws OseeCoreException {
+      this.artifact = artifact;
+      this.attributeTypeName = attrName;
+      super.setSelected(getStoredStrs());
+   }
 
-	@Override
-	public void saveToArtifact() throws OseeCoreException {
-		artifact.setAttributeValues(attributeTypeName, getSelectedStrs());
-	}
+   @Override
+   public void saveToArtifact() throws OseeCoreException {
+      artifact.setAttributeValues(attributeTypeName, getSelectedStrs());
+   }
 
-	public Collection<String> getStoredStrs() throws OseeCoreException {
-		return artifact.getAttributesToStringList(attributeTypeName);
-	}
+   public Collection<String> getStoredStrs() throws OseeCoreException {
+      return artifact.getAttributesToStringList(attributeTypeName);
+   }
 
-	@Override
-	public Result isDirty() throws OseeCoreException {
-		try {
-			Collection<String> enteredValues = getSelectedStrs();
-			Collection<String> storedValues = getStoredStrs();
-			if (!Collections.isEqual(enteredValues, storedValues)) {
-				return new Result(true, attributeTypeName + " is dirty");
-			}
-		} catch (NumberFormatException ex) {
-			// do nothing
-		}
-		return Result.FalseResult;
-	}
+   @Override
+   public Result isDirty() throws OseeCoreException {
+      try {
+         Collection<String> enteredValues = getSelectedStrs();
+         Collection<String> storedValues = getStoredStrs();
+         if (!Collections.isEqual(enteredValues, storedValues)) {
+            return new Result(true, attributeTypeName + " is dirty");
+         }
+      } catch (NumberFormatException ex) {
+         // do nothing
+      }
+      return Result.FalseResult;
+   }
 
-	@Override
-	public void revert() throws OseeCoreException {
-		setAttributeType(artifact, attributeTypeName);
-	}
+   @Override
+   public void revert() throws OseeCoreException {
+      setAttributeType(artifact, attributeTypeName);
+   }
 
 }

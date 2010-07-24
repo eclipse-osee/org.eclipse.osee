@@ -13,11 +13,8 @@ package org.eclipse.osee.ote.core.environment.interfaces;
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 
 /**
- * @author Robert A. Fisher
- * 
- * The TestPoint interface should be implemented by objects that store
- * pass/fail data.
+ * @author Robert A. Fisher The TestPoint interface should be implemented by objects that store pass/fail data.
  */
 public interface ITestPoint extends Xmlizable {
-	public boolean isPass();
+   public boolean isPass();
 }

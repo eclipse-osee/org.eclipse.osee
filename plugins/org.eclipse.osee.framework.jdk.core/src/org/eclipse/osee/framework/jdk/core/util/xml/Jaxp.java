@@ -70,7 +70,7 @@ public class Jaxp {
     * @param element the element to find the children of
     * @param childTagName the tag name for the children
     * @return A list of elements that are direct children of element whose tag names match childTagName. If no such
-    *         children exist, an empty list is returned.
+    * children exist, an empty list is returned.
     */
    public static List<Element> getChildDirects(Element element, String childTagName) {
       List<Element> elementList = new ArrayList<Element>();
@@ -131,9 +131,9 @@ public class Jaxp {
     * @param e The element go get the character data for
     * @param trimWhitespace iff true, each segment will be trimmed.
     * @return All of the character data for the Element e. This means if there are elements separating the character
-    *         data, it will all be concatenated together. If trimWhitespace, each segment will be trimmed of whitespace,
-    *         with a single space between segments; otherwise the segments will be concatenated without any space
-    *         separation. If no character data is present, returns an empty string.
+    * data, it will all be concatenated together. If trimWhitespace, each segment will be trimmed of whitespace, with a
+    * single space between segments; otherwise the segments will be concatenated without any space separation. If no
+    * character data is present, returns an empty string.
     */
    public static String getElementCharacterData(Element e, boolean trimWhitespace) {
       NodeList childNodes = e.getChildNodes();
@@ -166,8 +166,8 @@ public class Jaxp {
     * 
     * @param e The element go get the character data for
     * @return All of the character data for the Element e. This means if there are elements separating the character
-    *         data, it will all be concatenated together. Each segment will be trimmed of whitespace, with a single
-    *         space between segments. If no character data is present, returns an empty string.
+    * data, it will all be concatenated together. Each segment will be trimmed of whitespace, with a single space
+    * between segments. If no character data is present, returns an empty string.
     */
    public static String getElementCharacterData(Element e) {
       return getElementCharacterData(e, true);
@@ -261,9 +261,8 @@ public class Jaxp {
     * @param element The element underneath which we will search
     * @param elementPath The path to follow. For example ["script","configuration","element_i_want"]
     * @param firstIsRoot If true, the first item in elementPath must match element. That is, in the above example, e's
-    *           tag name must be "script". This is useful when calling from the document level, that is where element is
-    *           Document.getDocumentElement(), the first item in the path would be the first root element of the xml
-    *           tree.
+    * tag name must be "script". This is useful when calling from the document level, that is where element is
+    * Document.getDocumentElement(), the first item in the path would be the first root element of the xml tree.
     * @return All elements that match the specified path.
     */
    public static List<Element> findElements(Element element, List<String> elementPath, boolean firstIsRoot) {
@@ -319,7 +318,7 @@ public class Jaxp {
     * @param e The element underneath which we will search
     * @param elementPath The path to follow. For example ["script","configuration","element_i_want"]
     * @return The first element that matches the provided path, beneath the provided element e, or null if no such
-    *         element exists.
+    * element exists.
     */
    public static Element findElement(Element element, List<String> elementPath) {
 
@@ -374,7 +373,7 @@ public class Jaxp {
     * @param e The element underneath which we will search
     * @param elementPath The path to follow. For example "script/configuration/element_i_want"
     * @return The first element that matches the provided path, beneath the provided element e, or null if no such
-    *         element exists.
+    * element exists.
     */
    public static Element findElement(Element e, String elementPath) {
       return findElement(e, Arrays.asList(elementPath.split("/")));
@@ -443,7 +442,7 @@ public class Jaxp {
     */
    public static void setXslProperty(Document d, String xslPath) {
       ProcessingInstruction xsl = d.createProcessingInstruction("xml-stylesheet", // 
-            "type=\"text/xsl\" href=\"" + xslPath + "\"");
+         "type=\"text/xsl\" href=\"" + xslPath + "\"");
       d.appendChild(xsl);
    }
 
@@ -483,7 +482,7 @@ public class Jaxp {
     * @param document The XML document to output
     * @param file Where to put the output
     * @param prettyOutput If true, turns on indention so the output is more easily readable, if False turns indention
-    *           off to save space.
+    * off to save space.
     * @throws TransformerException
     * @throws IOException
     */
@@ -499,7 +498,7 @@ public class Jaxp {
     * @param document The XML document to output
     * @param file Where to put the output
     * @param prettyOutput If true, turns on indention so the output is more easily readable, if False turns indention
-    *           off and is assumed to provide the XML as compactly as possible.
+    * off and is assumed to provide the XML as compactly as possible.
     * @throws TransformerException
     */
    public static String xmlToString(Document document, OutputFormat format) throws IOException {
@@ -568,14 +567,14 @@ public class Jaxp {
    public static void main(String args[]) {
       try {
          Document doc = readXmlDocument("<A name='george' type='level1'>" + "  <B type='level2'>I'm at level 2</B>" //
-               + "  <B type='level2'>I'm also at level 2</B>" //
-               + "  <C type='level2'>" //
-               + "      <D>likes to be C's child</D>" //
-               + "C has some more text here" //
-               + "      <D>2nd round</D>"//
-               + "END of C" //
-               + "  </C>" //
-               + "</A>");
+            + "  <B type='level2'>I'm also at level 2</B>" //
+            + "  <C type='level2'>" //
+            + "      <D>likes to be C's child</D>" //
+            + "C has some more text here" //
+            + "      <D>2nd round</D>"//
+            + "END of C" //
+            + "  </C>" //
+            + "</A>");
 
          Element e = getChild(doc.getDocumentElement(), "C");
          System.out.println("e.getTagName     :" + e.getTagName());

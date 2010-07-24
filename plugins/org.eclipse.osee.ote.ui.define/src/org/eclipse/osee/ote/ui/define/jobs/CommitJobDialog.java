@@ -125,6 +125,7 @@ class CommitJobDialog extends UIJob {
          }
       }
 
+      @Override
       public Image getColumnImage(Object element, int columnIndex) {
          Image toReturn = null;
          if (columnIndex >= DUMMY_COLUMNS) {
@@ -140,6 +141,7 @@ class CommitJobDialog extends UIJob {
          return toReturn;
       }
 
+      @Override
       public String getColumnText(Object element, int columnIndex) {
          String toReturn = "";
          if (columnIndex >= DUMMY_COLUMNS) {

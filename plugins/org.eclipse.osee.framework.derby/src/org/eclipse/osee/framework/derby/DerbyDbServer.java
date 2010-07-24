@@ -47,7 +47,7 @@ public class DerbyDbServer {
          } else {
             OseeLog.log(Activator.class, Level.INFO, "Exiting, since unable to connect to Derby Network Server.");
             OseeLog.log(Activator.class, Level.INFO,
-                  "Please try to increase the amount of time to keep trying to connect to the Server.");
+               "Please try to increase the amount of time to keep trying to connect to the Server.");
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -101,7 +101,7 @@ public class DerbyDbServer {
             knowIfServerUp = true;
          } catch (Exception e) {
             OseeLog.log(Activator.class, Level.SEVERE,
-                  "Unable to obtain a connection to network server, trying again after 3000 ms.", e);
+               "Unable to obtain a connection to network server, trying again after 3000 ms.", e);
             Thread.sleep(3000);
          }
       }

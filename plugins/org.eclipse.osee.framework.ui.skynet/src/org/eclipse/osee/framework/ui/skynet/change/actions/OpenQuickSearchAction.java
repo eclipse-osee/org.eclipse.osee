@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.IBranchProvider;
@@ -31,7 +32,7 @@ public class OpenQuickSearchAction extends Action {
    private final IBranchProvider branchProvider;
 
    public OpenQuickSearchAction(IBranchProvider branchProvider) {
-      super("Open Quick Search", Action.AS_PUSH_BUTTON);
+      super("Open Quick Search", IAction.AS_PUSH_BUTTON);
       this.branchProvider = branchProvider;
       setId("open.quick.search.change.report");
       setToolTipText("Open Quick Search");
@@ -49,8 +50,8 @@ public class OpenQuickSearchAction extends Action {
                Branch branch = branchProvider.getBranch(monitor);
                if (branch != null) {
                   IViewPart viewPart =
-                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
-                              QuickSearchView.VIEW_ID);
+                     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
+                        QuickSearchView.VIEW_ID);
                   if (viewPart != null) {
                      ((QuickSearchView) viewPart).setBranch(branch);
                   }

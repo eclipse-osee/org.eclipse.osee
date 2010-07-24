@@ -22,10 +22,10 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.osee.framework.plugin.core.server.ResourceFinder;
 
-/** 
- * Finds resources that 
+/**
+ * Finds resources that
+ * 
  * @author Robert A. Fisher
- *
  */
 public class UserLibResourceFinder extends ResourceFinder {
 
@@ -37,19 +37,21 @@ public class UserLibResourceFinder extends ResourceFinder {
       try {
          for (OteUserLibsNature userLibsNature : OteUserLibsNature.getWorkspaceProjects()) {
             IProject project = userLibsNature.getProject();
-            
+
             IProjectDescription description;
             try {
                description = project.getDescription();
                if (description.hasNature("org.eclipse.jdt.core.javanature")) {
-                  
+
                   IJavaProject javaProject = JavaCore.create(project);
-                  
+
                   // Projects don't have to be stored in the workspace, so make sure to use the project.getLocation as the starting point
-                  IPath candidate = project.getLocation().removeLastSegments(1).append(javaProject.getOutputLocation().makeAbsolute()).append(path);
+                  IPath candidate =
+                     project.getLocation().removeLastSegments(1).append(javaProject.getOutputLocation().makeAbsolute()).append(
+                        path);
                   if (candidate.toFile().exists()) {
                      File file = candidate.toFile();
-                     
+
                      try {
                         return getBytes(new FileInputStream(file), file.length());
                      } catch (FileNotFoundException e) {

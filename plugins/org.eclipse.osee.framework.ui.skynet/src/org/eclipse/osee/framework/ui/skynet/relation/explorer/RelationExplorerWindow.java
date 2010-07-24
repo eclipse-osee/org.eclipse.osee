@@ -146,8 +146,8 @@ public class RelationExplorerWindow {
       validLabel.setText("Valid artifacts - will be added");
 
       Table validTable =
-            new Table(validComposite,
-                  SWT.MULTI | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.HIDE_SELECTION);
+         new Table(validComposite,
+            SWT.MULTI | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.HIDE_SELECTION);
       validTable.setLinesVisible(true);
       validTable.setHeaderVisible(true);
 
@@ -162,8 +162,8 @@ public class RelationExplorerWindow {
       invalidLabel.setText("Invalid artifacts - will not be added");
 
       Table invalidTable =
-            new Table(invalidComposite,
-                  SWT.MULTI | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.HIDE_SELECTION);
+         new Table(invalidComposite,
+            SWT.MULTI | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.HIDE_SELECTION);
       invalidTable.setLinesVisible(true);
       invalidTable.setHeaderVisible(true);
 
@@ -234,19 +234,23 @@ public class RelationExplorerWindow {
 
       // Add Listeners to buttons
       okButton.addSelectionListener(new SelectionListener() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             okSelected();
          }
 
+         @Override
          public void widgetDefaultSelected(SelectionEvent e) {
          }
       });
 
       cancelButton.addSelectionListener(new SelectionListener() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             cancelSelected();
          }
 
+         @Override
          public void widgetDefaultSelected(SelectionEvent e) {
          }
       });
@@ -254,9 +258,11 @@ public class RelationExplorerWindow {
       // Add shell resize listener
       shell.addControlListener(new ControlListener() {
 
+         @Override
          public void controlMoved(ControlEvent e) {
          }
 
+         @Override
          public void controlResized(ControlEvent e) {
             relationTableViewer.resizeTable(((Shell) e.widget).getClientArea().width);
             shell.layout();
@@ -302,7 +308,7 @@ public class RelationExplorerWindow {
             if (artifact != null) {
                try {
                   RelationTypeSide relationToInsert =
-                        new RelationTypeSide(relationGroup.getRelationType(), relationGroup.getSide());
+                     new RelationTypeSide(relationGroup.getRelationType(), relationGroup.getSide());
                   relationGroup.getArtifact().addRelation(relationToInsert, artifact);
                } catch (OseeCoreException ex) {
                   OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);

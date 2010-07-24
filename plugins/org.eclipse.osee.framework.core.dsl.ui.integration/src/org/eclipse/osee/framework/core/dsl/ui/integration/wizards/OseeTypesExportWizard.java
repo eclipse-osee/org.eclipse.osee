@@ -27,33 +27,33 @@ import org.eclipse.ui.IWorkbench;
  * @author Roberto E. Escobar
  */
 public class OseeTypesExportWizard extends Wizard implements IImportWizard {
-	private ResourceSelectionPage mainPage;
+   private ResourceSelectionPage mainPage;
 
-	public OseeTypesExportWizard() {
-		super();
-		// setDialogSettings(Activator.getInstance().getDialogSettings());
-		setWindowTitle("OSEE Types Export Wizard");
-		setNeedsProgressMonitor(true);
-		setHelpAvailable(true);
-	}
+   public OseeTypesExportWizard() {
+      super();
+      // setDialogSettings(Activator.getInstance().getDialogSettings());
+      setWindowTitle("OSEE Types Export Wizard");
+      setNeedsProgressMonitor(true);
+      setHelpAvailable(true);
+   }
 
-	@Override
-	public boolean performFinish() {
-		final File folder = mainPage.getFile();
+   @Override
+   public boolean performFinish() {
+      final File folder = mainPage.getFile();
 
-		List<IOperation> ops = new ArrayList<IOperation>();
-		ops.add(new OseeTypesExportOperation(folder));
-		Operations.executeAsJob(new CompositeOperation("Export Osee Type Model", Activator.PLUGIN_ID, ops), true);
-		return true;
-	}
+      List<IOperation> ops = new ArrayList<IOperation>();
+      ops.add(new OseeTypesExportOperation(folder));
+      Operations.executeAsJob(new CompositeOperation("Export Osee Type Model", Activator.PLUGIN_ID, ops), true);
+      return true;
+   }
 
-	@Override
-	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		mainPage = new ResourceSelectionPage(getWindowTitle());
-	}
+   @Override
+   public void init(IWorkbench workbench, IStructuredSelection selection) {
+      mainPage = new ResourceSelectionPage(getWindowTitle());
+   }
 
-	@Override
-	public void addPages() {
-		addPage(mainPage);
-	}
+   @Override
+   public void addPages() {
+      addPage(mainPage);
+   }
 }

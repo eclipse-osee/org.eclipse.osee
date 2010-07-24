@@ -28,14 +28,14 @@ public final class RelationType extends AbstractOseeType implements IRelationTyp
    private static final String RELATION_SIDE_A_ART_TYPE_FIELD_KEY = "osee.relation.type.side.a.artifact.type.field";
    private static final String RELATION_SIDE_B_ART_TYPE_FIELD_KEY = "osee.relation.type.side.b.artifact.type.field";
    private static final String RELATION_DEFAULT_ORDER_TYPE_GUID_FIELD_KEY =
-         "osee.relation.type.default.order.type.guid.field";
+      "osee.relation.type.default.order.type.guid.field";
    private static final String RELATION_MULTIPLICITY_FIELD_KEY = "osee.relation.type.multiplicity.field";
 
    public RelationType(String guid, String relationTypeName, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, String defaultOrderTypeGuid) {
       super(guid, relationTypeName);
       initializeFields();
       setFields(relationTypeName, sideAName, sideBName, artifactTypeSideA, artifactTypeSideB, multiplicity,
-            defaultOrderTypeGuid);
+         defaultOrderTypeGuid);
    }
 
    protected void initializeFields() {
@@ -103,6 +103,7 @@ public final class RelationType extends AbstractOseeType implements IRelationTyp
       return getSideAName().equals(sideName);
    }
 
+   @Override
    public int compareTo(RelationType other) {
       int result = -1;
       if (other != null && other.getName() != null && getName() != null) {

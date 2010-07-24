@@ -10,10 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.ui.message.tree;
 
-
 public interface INodeVisitor<T> {
 
    T messageNode(MessageNode node);
+
    T elementNode(ElementNode node);
+
    T rootNode(RootNode node);
 }

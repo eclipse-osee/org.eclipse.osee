@@ -28,10 +28,12 @@ import org.eclipse.osee.framework.search.engine.utility.WordOrderMatcher;
  */
 public class DefaultAttributeTaggerProvider extends BaseAttributeTaggerProvider {
 
+   @Override
    public void tagIt(AttributeData attributeData, ITagCollector tagCollector) throws OseeCoreException {
       TagProcessor.collectFromString(getValue(attributeData), tagCollector);
    }
 
+   @Override
    public List<MatchLocation> find(AttributeData attributeData, String toSearch, SearchOptions options) throws OseeCoreException {
       if (Strings.isValid(toSearch)) {
          InputStream inputStream = null;

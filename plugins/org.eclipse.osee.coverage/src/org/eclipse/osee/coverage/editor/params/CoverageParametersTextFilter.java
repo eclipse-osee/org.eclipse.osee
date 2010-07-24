@@ -25,7 +25,7 @@ import org.eclipse.osee.coverage.model.MessageCoverageItem;
 public class CoverageParametersTextFilter extends ViewerFilter {
 
    private Set<ICoverage> shownCoverages;
-   private Set<ICoverage> parentCoverages = new HashSet<ICoverage>(1000);
+   private final Set<ICoverage> parentCoverages = new HashSet<ICoverage>(1000);
    private boolean showAll = true;
 
    public CoverageParametersTextFilter(XViewer xViewer) {
@@ -33,10 +33,18 @@ public class CoverageParametersTextFilter extends ViewerFilter {
 
    @Override
    public boolean select(Viewer viewer, Object parentElement, Object element) {
-      if (isShowAll()) return true;
-      if (shownCoverages.contains(element)) return true;
-      if (parentCoverages.contains(element)) return true;
-      if (element instanceof MessageCoverageItem || element instanceof MessageMergeItem) return true;
+      if (isShowAll()) {
+         return true;
+      }
+      if (shownCoverages.contains(element)) {
+         return true;
+      }
+      if (parentCoverages.contains(element)) {
+         return true;
+      }
+      if (element instanceof MessageCoverageItem || element instanceof MessageMergeItem) {
+         return true;
+      }
       return false;
    }
 
@@ -61,7 +69,9 @@ public class CoverageParametersTextFilter extends ViewerFilter {
    }
 
    private void computeParentCoverages(ICoverage coverage) {
-      if (coverage == null) return;
+      if (coverage == null) {
+         return;
+      }
       parentCoverages.add(coverage);
       if (coverage.getParent() != null) {
          computeParentCoverages(coverage.getParent());

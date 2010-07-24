@@ -32,28 +32,28 @@ import org.junit.Test;
  */
 public class LifecycleOperationTest {
 
-	@Test
-	public void testOperation() throws OseeCoreException {
-		ILifecycleService service = new LifecycleServiceImpl();
+   @Test
+   public void testOperation() throws OseeCoreException {
+      ILifecycleService service = new LifecycleServiceImpl();
 
-		service.addHandler(StrictMockLifecycePoint.TYPE, new MockHandler());
+      service.addHandler(StrictMockLifecycePoint.TYPE, new MockHandler());
 
-		IOperation op = new MockLifecycleOperation(service, "a string", "b string");
-		Operations.executeWork(op, new LogProgressMonitor(), -1.0);
+      IOperation op = new MockLifecycleOperation(service, "a string", "b string");
+      Operations.executeWork(op, new LogProgressMonitor(), -1.0);
 
-		IStatus status = op.getStatus();
-		Assert.assertTrue(status.isOK());
-	}
+      IStatus status = op.getStatus();
+      Assert.assertTrue(status.isOK());
+   }
 
-	private static class MockLifecycleOperation extends AbstractLifecycleOperation {
+   private static class MockLifecycleOperation extends AbstractLifecycleOperation {
 
-		public MockLifecycleOperation(ILifecycleService service, String a, String b) {
-			super(service, new StrictMockLifecycePoint(a, b), "Mock Op", "TestBundle");
-		}
+      public MockLifecycleOperation(ILifecycleService service, String a, String b) {
+         super(service, new StrictMockLifecycePoint(a, b), "Mock Op", "TestBundle");
+      }
 
-		@Override
-		protected void doCoreWork(IProgressMonitor monitor) throws Exception {
-		}
-	}
+      @Override
+      protected void doCoreWork(IProgressMonitor monitor) throws Exception {
+      }
+   }
 
 }

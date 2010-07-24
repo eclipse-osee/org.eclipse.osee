@@ -37,7 +37,7 @@ import org.junit.BeforeClass;
  * This test is intended to be run against a demo database. It tests the purge logic by counting the rows of the version
  * and txs tables, creating artifacts, changing them and then purging them. If it works properly, all rows should be
  * equal.
- *
+ * 
  * @author Donald G. Dunne
  */
 public class ArtifactPurgeTest {
@@ -47,8 +47,8 @@ public class ArtifactPurgeTest {
    private Map<String, Integer> postCreateArtifactsCount;
    private Map<String, Integer> postPurgeCount;
 
-   private static final List<String> tables =
-         Arrays.asList("osee_attribute", "osee_artifact", "osee_relation_link", "osee_tx_details", "osee_txs");
+   private static final List<String> tables = Arrays.asList("osee_attribute", "osee_artifact", "osee_relation_link",
+      "osee_tx_details", "osee_txs");
 
    @BeforeClass
    public static void testInitialize() throws Exception {
@@ -100,9 +100,8 @@ public class ArtifactPurgeTest {
       Branch branch = BranchManager.getBranch(DemoSawBuilds.SAW_Bld_2.getName());
       SkynetTransaction transaction = new SkynetTransaction(branch, "Test purge artifacts");
       Collection<Artifact> softArts =
-            FrameworkTestUtil.createSimpleArtifacts(CoreArtifactTypes.SoftwareRequirement, 10,
-                  getClass().getSimpleName(),
-                  branch);
+         FrameworkTestUtil.createSimpleArtifacts(CoreArtifactTypes.SoftwareRequirement, 10, getClass().getSimpleName(),
+            branch);
       for (Artifact softArt : softArts) {
          softArt.persist(transaction);
       }

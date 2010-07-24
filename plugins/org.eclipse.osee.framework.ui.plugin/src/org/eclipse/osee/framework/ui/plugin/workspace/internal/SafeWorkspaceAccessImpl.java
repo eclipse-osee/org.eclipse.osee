@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.ui.plugin.workspace.WrapResourceChangeListener
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public class SafeWorkspaceAccessImpl implements SafeWorkspaceAccess {
 

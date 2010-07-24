@@ -51,7 +51,7 @@ public class ClientAttributeTypeAccessor extends AbstractClientDataAccessor<Attr
       List<AttributeType> updatedItems = new ArrayList<AttributeType>();
 
       AttributeTypeCacheUpdateResponse response =
-            requestUpdateMessage(cache, CoreTranslatorId.ATTRIBUTE_TYPE_CACHE_UPDATE_RESPONSE);
+         requestUpdateMessage(cache, CoreTranslatorId.ATTRIBUTE_TYPE_CACHE_UPDATE_RESPONSE);
 
       Map<Integer, Integer> attrToEnums = response.getAttrToEnums();
       AttributeTypeFactory factory = getFactory();
@@ -63,9 +63,9 @@ public class ClientAttributeTypeAccessor extends AbstractClientDataAccessor<Attr
             oseeEnumType = enumCache.getById(enumId);
          }
          factory.createOrUpdate(cache, row.getId(), row.getStorageState(), row.getGuid(), row.getName(),
-               row.getBaseAttributeTypeId(), row.getAttributeProviderId(), row.getFileTypeExtension(),
-               row.getDefaultValue(), oseeEnumType, row.getMinOccurrences(), row.getMaxOccurrences(),
-               row.getDescription(), row.getTaggerId());
+            row.getBaseAttributeTypeId(), row.getAttributeProviderId(), row.getFileTypeExtension(),
+            row.getDefaultValue(), oseeEnumType, row.getMinOccurrences(), row.getMaxOccurrences(),
+            row.getDescription(), row.getTaggerId());
       }
       return updatedItems;
    }

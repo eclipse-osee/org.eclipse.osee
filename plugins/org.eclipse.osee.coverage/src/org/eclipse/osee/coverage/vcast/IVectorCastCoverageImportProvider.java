@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.vcast;
 
-
 /**
  * @author Donald G. Dunne
  */

@@ -10,12 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.messaging;
 
-
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public interface OseeMessagingStatusCallback {
-	void success();
-	void fail(Throwable th);
+   void success();
+
+   void fail(Throwable th);
 }

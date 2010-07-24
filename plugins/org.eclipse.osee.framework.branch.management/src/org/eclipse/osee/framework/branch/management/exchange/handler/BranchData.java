@@ -92,7 +92,7 @@ public final class BranchData implements Cloneable {
    public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + ((backingData == null) ? 0 : backingData.hashCode());
+      result = prime * result + (backingData == null ? 0 : backingData.hashCode());
       return result;
    }
 

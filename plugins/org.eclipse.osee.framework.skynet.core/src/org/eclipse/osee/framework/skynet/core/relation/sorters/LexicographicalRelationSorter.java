@@ -25,7 +25,8 @@ import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 public class LexicographicalRelationSorter implements IRelationSorter {
 
    public static enum SortMode {
-      ASCENDING, DESCENDING;
+      ASCENDING,
+      DESCENDING;
    }
    private final ArtifactNameComparator comparator;
    private final IRelationSorterId id;

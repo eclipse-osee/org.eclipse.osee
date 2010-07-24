@@ -10,22 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.core.framework.saxparse.elements;
 
-
 /**
  * @author Andrew M. Finkbeiner
- *
  */
-public class UserData{
+public class UserData {
 
-   private String email;
-   private String id;
-   private String name;
-   
-   
+   private final String email;
+   private final String id;
+   private final String name;
+
    /**
-    * @param name 
-    * @param id 
-    * @param email 
+    * @param name
+    * @param id
+    * @param email
     * @param name
     */
    UserData(String email, String id, String name) {
@@ -34,7 +31,6 @@ public class UserData{
       this.name = name;
    }
 
-
    /**
     * @return the email
     */
@@ -42,14 +38,12 @@ public class UserData{
       return email;
    }
 
-
    /**
     * @return the id
     */
    public String getId() {
       return id;
    }
-
 
    /**
     * @return the name

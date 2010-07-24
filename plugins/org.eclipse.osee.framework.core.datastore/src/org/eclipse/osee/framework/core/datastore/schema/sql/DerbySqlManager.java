@@ -83,14 +83,14 @@ public class DerbySqlManager extends SqlManagerImpl {
 
                else {
                   OseeLog.log(Activator.class, Level.WARNING,
-                        "Skipping CONSTRAINT at Table: " + tableID + "\n\t " + fk.toString());
+                     "Skipping CONSTRAINT at Table: " + tableID + "\n\t " + fk.toString());
                }
 
             }
          }
       } else {
          OseeLog.log(Activator.class, Level.WARNING,
-               "Skipping CONSTRAINT at Table: " + tableID + "\n\t " + constraint.toString());
+            "Skipping CONSTRAINT at Table: " + tableID + "\n\t " + constraint.toString());
       }
       return toReturn.toString();
    }

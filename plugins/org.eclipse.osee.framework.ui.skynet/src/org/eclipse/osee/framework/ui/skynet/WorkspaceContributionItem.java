@@ -23,62 +23,62 @@ import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.texteditor.StatusLineContributionItem;
 
 public class WorkspaceContributionItem extends StatusLineContributionItem {
-	public WorkspaceContributionItem() {
-		super("org.eclipse.osee.framework.ui.skynet.workspace.status", true, getShortPath().length() + 5);
-		setToolTipText(ResourcesPlugin.getWorkspace().getRoot().getLocation().toOSString());
-		setText(getShortPath());
-		setActionHandler(new Action() {
-			@Override
-			public void run() {
-				Program.launch(ResourcesPlugin.getWorkspace().getRoot().getLocation().toOSString());
-			}
-		});
-	}
+   public WorkspaceContributionItem() {
+      super("org.eclipse.osee.framework.ui.skynet.workspace.status", true, getShortPath().length() + 5);
+      setToolTipText(ResourcesPlugin.getWorkspace().getRoot().getLocation().toOSString());
+      setText(getShortPath());
+      setActionHandler(new Action() {
+         @Override
+         public void run() {
+            Program.launch(ResourcesPlugin.getWorkspace().getRoot().getLocation().toOSString());
+         }
+      });
+   }
 
-	private static String getShortPath() {
-		String path = ResourcesPlugin.getWorkspace().getRoot().getLocation().toString();
-		String elements[] = path.split("\\/");
-		if (elements.length >= 2) {
-			return elements[elements.length - 2] + File.separator + elements[elements.length - 1];
-		}
-		return path;
-	}
+   private static String getShortPath() {
+      String path = ResourcesPlugin.getWorkspace().getRoot().getLocation().toString();
+      String elements[] = path.split("\\/");
+      if (elements.length >= 2) {
+         return elements[elements.length - 2] + File.separator + elements[elements.length - 1];
+      }
+      return path;
+   }
 
-	public static void addToAllViews() {
-		Displays.ensureInDisplayThread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					if (PlatformUI.getWorkbench() == null || PlatformUI.getWorkbench().getActiveWorkbenchWindow() == null) {
-						return;
-					}
-					for (IViewReference viewDesc : PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getViewReferences()) {
-						IViewPart viewPart = viewDesc.getView(false);
-						if (viewPart != null) {
-							addToViewpart((ViewPart) viewPart);
-						}
-					}
-				} catch (Exception ex) {
-					// DO NOTHING
-				}
-			}
-		});
-	}
+   public static void addToAllViews() {
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            try {
+               if (PlatformUI.getWorkbench() == null || PlatformUI.getWorkbench().getActiveWorkbenchWindow() == null) {
+                  return;
+               }
+               for (IViewReference viewDesc : PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getViewReferences()) {
+                  IViewPart viewPart = viewDesc.getView(false);
+                  if (viewPart != null) {
+                     addToViewpart((ViewPart) viewPart);
+                  }
+               }
+            } catch (Exception ex) {
+               // DO NOTHING
+            }
+         }
+      });
+   }
 
-	public static void addToViewpart(ViewPart viewPart) {
-		// Attempt to add to PackageExplorerPart
-		try {
-			if (viewPart != null) {
-				for (IContributionItem item : viewPart.getViewSite().getActionBars().getStatusLineManager().getItems()) {
-					if (item instanceof WorkspaceContributionItem) {
-						return;
-					}
-				}
-				// System.err.println("Adding to " + viewPart);
-				viewPart.getViewSite().getActionBars().getStatusLineManager().add(new WorkspaceContributionItem());
-			}
-		} catch (Exception ex) {
-			// do nothing
-		}
-	}
+   public static void addToViewpart(ViewPart viewPart) {
+      // Attempt to add to PackageExplorerPart
+      try {
+         if (viewPart != null) {
+            for (IContributionItem item : viewPart.getViewSite().getActionBars().getStatusLineManager().getItems()) {
+               if (item instanceof WorkspaceContributionItem) {
+                  return;
+               }
+            }
+            // System.err.println("Adding to " + viewPart);
+            viewPart.getViewSite().getActionBars().getStatusLineManager().add(new WorkspaceContributionItem());
+         }
+      } catch (Exception ex) {
+         // do nothing
+      }
+   }
 }

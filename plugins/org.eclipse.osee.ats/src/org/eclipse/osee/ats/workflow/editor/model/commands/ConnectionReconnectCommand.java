@@ -32,7 +32,7 @@ import org.eclipse.osee.ats.workflow.editor.model.Shape;
  * </ol>
  * 
  * @see org.eclipse.osee.ats.workflow.editor.parts.ShapeEditPart#createEditPolicies() for an example of the above
- *      procedure.
+ * procedure.
  * @see org.eclipse.gef.editpolicies.GraphicalNodeEditPolicy
  * @see #setNewSource(Shape)
  * @see #setNewTarget(Shape)

@@ -45,9 +45,9 @@ public class AttributeTypeCacheUpdateResponse {
       Map<Integer, Integer> attrToEnum = new HashMap<Integer, Integer>();
       for (AttributeType item : types) {
          AttributeType type =
-               factory.create(item.getGuid(), item.getName(), item.getBaseAttributeTypeId(),
-                     item.getAttributeProviderId(), item.getFileTypeExtension(), item.getDefaultValue(),
-                     item.getMinOccurrences(), item.getMaxOccurrences(), item.getDescription(), item.getTaggerId());
+            factory.create(item.getGuid(), item.getName(), item.getBaseAttributeTypeId(),
+               item.getAttributeProviderId(), item.getFileTypeExtension(), item.getDefaultValue(),
+               item.getMinOccurrences(), item.getMaxOccurrences(), item.getDescription(), item.getTaggerId());
          type.setId(item.getId());
          type.setStorageState(item.getStorageState());
          rows.add(type);

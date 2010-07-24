@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulatio
  */
 public class ShowRevertTransactions extends AbstractBlam {
    private static final String GET_REVERT_TRANSACTIONS =
-         "Select DISTINCT det.branch_id, Value, txs.transaction_id, Time FROM osee_removed_txs txs, osee_tx_details det, osee_attribute attr, osee_txs txs1 WHERE txs.transaction_id = det.transaction_id AND det.author = attr.art_id AND attr.attr_type_id = 30 AND attr.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 ORDER BY time";
+      "Select DISTINCT det.branch_id, Value, txs.transaction_id, Time FROM osee_removed_txs txs, osee_tx_details det, osee_attribute attr, osee_txs txs1 WHERE txs.transaction_id = det.transaction_id AND det.author = attr.art_id AND attr.attr_type_id = 30 AND attr.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 ORDER BY time";
 
    @Override
    public String getName() {
@@ -44,8 +44,8 @@ public class ShowRevertTransactions extends AbstractBlam {
          chStmt.runPreparedQuery(GET_REVERT_TRANSACTIONS);
          while (chStmt.next()) {
             sbFull.append(AHTML.addRowMultiColumnTable(new String[] {String.valueOf(chStmt.getInt("branch_id")),
-                  chStmt.getString("value"), String.valueOf(chStmt.getInt("transaction_id")),
-                  chStmt.getDate("time").toString()}));
+               chStmt.getString("value"), String.valueOf(chStmt.getInt("transaction_id")),
+               chStmt.getDate("time").toString()}));
          }
          sbFull.append(AHTML.endMultiColumnTable());
          XResultData rd = new XResultData();

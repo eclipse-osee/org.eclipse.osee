@@ -15,8 +15,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * @author Ken J. Aguilar
@@ -30,13 +30,13 @@ public class EnhancedProperties implements Serializable {
    private final HashMap<String, Serializable> map;
 
    public EnhancedProperties() {
-       map = new HashMap<String, Serializable>();
+      map = new HashMap<String, Serializable>();
    }
 
    public EnhancedProperties(int initialCapacity) {
-	map = new HashMap<String, Serializable>(initialCapacity);
-    }
-   
+      map = new HashMap<String, Serializable>(initialCapacity);
+   }
+
    public EnhancedProperties(EnhancedProperties props) {
       this();
       addAll(props);

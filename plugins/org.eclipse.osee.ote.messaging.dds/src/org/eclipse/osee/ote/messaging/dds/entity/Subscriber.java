@@ -26,23 +26,28 @@ import org.eclipse.osee.ote.messaging.dds.service.TopicDescription;
 import org.eclipse.osee.ote.messaging.dds.status.SampleLostStatus;
 
 /**
- * Provides functionality for applications to create <code>DataReader</code>'s to receive the appropriate published data. Maintains the data which is made
- * available to those <code>DataReader</code> 's.
+ * Provides functionality for applications to create <code>DataReader</code>'s to receive the appropriate published
+ * data. Maintains the data which is made available to those <code>DataReader</code> 's.
  * 
  * @author Robert A. Fisher
  * @author David Diepenbrock
  */
 public class Subscriber extends DomainEntity implements EntityFactory {
 
-   private final ConcurrentHashMap<TopicDescription, CopyOnWriteArrayList<DataReader>> topicMap = new ConcurrentHashMap<TopicDescription, CopyOnWriteArrayList<DataReader>>(512);
-   private DomainParticipant participant;
+   private final ConcurrentHashMap<TopicDescription, CopyOnWriteArrayList<DataReader>> topicMap =
+      new ConcurrentHashMap<TopicDescription, CopyOnWriteArrayList<DataReader>>(512);
+   private final DomainParticipant participant;
    private final ExecutorService threadService;
+
    /**
-    * Constructor for <code>Subscriber</code> with the provided listener attached, and enabled status set as passed. This constructor is only visible to the
-    * DDS system, applications should use {@link DomainParticipant#createSubscriber(SubscriberListener)}to create a <code>Subscriber</code>.
+    * Constructor for <code>Subscriber</code> with the provided listener attached, and enabled status set as passed.
+    * This constructor is only visible to the DDS system, applications should use
+    * {@link DomainParticipant#createSubscriber(SubscriberListener)}to create a <code>Subscriber</code>.
     * 
-    * @param participant The participant creating this <code>Subscriber</code>. This is also used as the parentEntity for enabling purposes.
-    * @param enabled If <b>true </b>, the created <code>Subscriber</code> will be enabled iff the parentEntity is enabled.
+    * @param participant The participant creating this <code>Subscriber</code>. This is also used as the parentEntity
+    * for enabling purposes.
+    * @param enabled If <b>true </b>, the created <code>Subscriber</code> will be enabled iff the parentEntity is
+    * enabled.
     * @param listener The listener to attach to the created subscriber.
     */
    Subscriber(DomainParticipant participant, boolean enabled, Listener listener) {
@@ -80,85 +85,83 @@ public class Subscriber extends DomainEntity implements EntityFactory {
    public DataReader createDataReader(TopicDescription topicDescription, DataReaderListener listener) {
       DataReader dataReader = null;
 
-      if (true != (topicDescription instanceof Topic)) {
+      if (true != topicDescription instanceof Topic) {
          return null;
       }
 
       //TUNE - get the classloader & constructor during Topic creation instead of here
       try {
-//         Class readerClass = topic.getTypeSignature().getClassLoader().loadClass(topic.getTypeSignature().getReaderName());
-//
-//         Constructor constructor = readerClass.getConstructor(new Class[] {TopicDescription.class, Subscriber.class, Boolean.class, DataReaderListener.class,
-//               EntityFactory.class});
-//
-//         dataReader = (DataReader) constructor.newInstance(new Object[] {topicDescription, this, new Boolean(this.isEnabled()), listener, this});
-         
-         
+         //         Class readerClass = topic.getTypeSignature().getClassLoader().loadClass(topic.getTypeSignature().getReaderName());
+         //
+         //         Constructor constructor = readerClass.getConstructor(new Class[] {TopicDescription.class, Subscriber.class, Boolean.class, DataReaderListener.class,
+         //               EntityFactory.class});
+         //
+         //         dataReader = (DataReader) constructor.newInstance(new Object[] {topicDescription, this, new Boolean(this.isEnabled()), listener, this});
+
          dataReader = new DataReader(topicDescription, this, new Boolean(this.isEnabled()), listener, this);
       }
-//      catch (InstantiationException ex) {
-//         ex.printStackTrace();
-//      }
-//      catch (IllegalAccessException ex) {
-//         ex.printStackTrace();
-//      }
-//      catch (ClassNotFoundException ex) {
-//         ex.printStackTrace();
-//      }
+      //      catch (InstantiationException ex) {
+      //         ex.printStackTrace();
+      //      }
+      //      catch (IllegalAccessException ex) {
+      //         ex.printStackTrace();
+      //      }
+      //      catch (ClassNotFoundException ex) {
+      //         ex.printStackTrace();
+      //      }
       catch (IllegalArgumentException ex) {
          ex.printStackTrace();
-      }
-      catch (SecurityException ex) {
+      } catch (SecurityException ex) {
          ex.printStackTrace();
       }
-//      catch (InvocationTargetException ex) {
-//         ex.printStackTrace();
-//      }
-//      catch (NoSuchMethodException ex) {
-//         ex.printStackTrace();
-//      }
+      //      catch (InvocationTargetException ex) {
+      //         ex.printStackTrace();
+      //      }
+      //      catch (NoSuchMethodException ex) {
+      //         ex.printStackTrace();
+      //      }
       catch (OutOfMemoryError er) {
          er.printStackTrace();
       }
 
       // Only keep this writer if it was successfully created.
       if (dataReader != null) {
-    	  CopyOnWriteArrayList<DataReader> readers = topicMap.get(topicDescription);
-    	  if (readers == null) {
-    		  readers = new CopyOnWriteArrayList<DataReader>();
-    		  topicMap.put(topicDescription, readers);
-    	  }
-    	  readers.add(dataReader);
+         CopyOnWriteArrayList<DataReader> readers = topicMap.get(topicDescription);
+         if (readers == null) {
+            readers = new CopyOnWriteArrayList<DataReader>();
+            topicMap.put(topicDescription, readers);
+         }
+         readers.add(dataReader);
       }
       return dataReader;
    }
 
    /**
-    * Removes the <code>DataReader</code> from this <code>Subscriber</code>. If the reader was already deleted, or was not created by this
-    * <code>Subscriber</code>, an error is returned.
+    * Removes the <code>DataReader</code> from this <code>Subscriber</code>. If the reader was already deleted, or was
+    * not created by this <code>Subscriber</code>, an error is returned.
     * 
     * @param dataReader The reader to delete.
-    * @return {@link ReturnCode#OK}if the reader was successfully deleted, otherwise {@link ReturnCode#NOT_ENABLED}if this <code>Subscriber</code> is not
-    *         enabled, or {@link ReturnCode#ALREADY_DELETED}if the reader has already been deleted, or {@link ReturnCode#PRECONDITION_NOT_MET}if dataReader
-    *         was not created by this <code>Subscriber</code>.
+    * @return {@link ReturnCode#OK}if the reader was successfully deleted, otherwise {@link ReturnCode#NOT_ENABLED}if
+    * this <code>Subscriber</code> is not enabled, or {@link ReturnCode#ALREADY_DELETED}if the reader has already been
+    * deleted, or {@link ReturnCode#PRECONDITION_NOT_MET}if dataReader was not created by this <code>Subscriber</code>.
     */
    public ReturnCode deleteDataReader(DataReader dataReader) {
 
       // Check that the Entity is enabled before proceeding (See description of enable on the Entity object in the DDS spec)
-      if (!isEnabled())
+      if (!isEnabled()) {
          return ReturnCode.NOT_ENABLED;
+      }
 
       // Check that the writer is not already marked as deleted (in case others kept a reference to it
-      if (dataReader.isDeleted())
+      if (dataReader.isDeleted()) {
          return ReturnCode.ALREADY_DELETED;
+      }
 
-
-      
-//      boolean found = dataReaders.remove(dataReader);
+      //      boolean found = dataReaders.remove(dataReader);
 
       if (topicMap.remove(dataReader.getTopicDescription()) != null) {
-    	  dataReader.markAsDeleted();
-          return ReturnCode.OK;
+         dataReader.markAsDeleted();
+         return ReturnCode.OK;
       } else {
          return ReturnCode.PRECONDITION_NOT_MET;
       }
@@ -166,76 +169,91 @@ public class Subscriber extends DomainEntity implements EntityFactory {
    }
 
    /**
-    * This method is here for future functionality that is described in the DDS specification but has not been implemented or used.
+    * This method is here for future functionality that is described in the DDS specification but has not been
+    * implemented or used.
     */
    public DataReader lookupDataReader(String topicName) {
       // UNSURE This method has not been implemented, but is called out in the spec
-      if (true)
+      if (true) {
          throw new NotImplementedException();
+      }
       return null;
    }
 
    /**
-    * This method is here for future functionality that is described in the DDS specification but has not been implemented or used.
+    * This method is here for future functionality that is described in the DDS specification but has not been
+    * implemented or used.
     */
    public ReturnCode beginAccess() {
       // DONT_NEED This method has not been implemented, but is called out in the spec
-      if (true)
+      if (true) {
          throw new NotImplementedException();
+      }
 
       // Check that the Entity is enabled before proceeding (See description of enable on the Entity object in the DDS spec)
-      if (!isEnabled())
+      if (!isEnabled()) {
          return ReturnCode.NOT_ENABLED;
+      }
 
       return ReturnCode.ERROR;
    }
 
    /**
-    * This method is here for future functionality that is described in the DDS specification but has not been implemented or used.
+    * This method is here for future functionality that is described in the DDS specification but has not been
+    * implemented or used.
     */
    public ReturnCode endAccess() {
       // DONT_NEED This method has not been implemented, but is called out in the spec
-      if (true)
+      if (true) {
          throw new NotImplementedException();
+      }
 
       // Check that the Entity is enabled before proceeding (See description of enable on the Entity object in the DDS spec)
-      if (!isEnabled())
+      if (!isEnabled()) {
          return ReturnCode.NOT_ENABLED;
+      }
 
       return ReturnCode.ERROR;
    }
 
    /**
-    * This method is here for future functionality that is described in the DDS specification but has not been implemented or used.
+    * This method is here for future functionality that is described in the DDS specification but has not been
+    * implemented or used.
     */
    public ReturnCode getDataReaders(Collection<DataReader> dataReaders, Collection<?> sampleStateKind, Collection<?> viewStateKind, Collection<?> instanceStateKind) {
       // UNSURE This method has not been implemented, but is called out in the spec
-      if (true)
+      if (true) {
          throw new NotImplementedException();
+      }
 
       // Check that the Entity is enabled before proceeding (See description of enable on the Entity object in the DDS spec)
-      if (!isEnabled())
+      if (!isEnabled()) {
          return ReturnCode.NOT_ENABLED;
+      }
 
       return ReturnCode.ERROR;
    }
 
    /**
-    * This method is here for future functionality that is described in the DDS specification but has not been implemented or used.
+    * This method is here for future functionality that is described in the DDS specification but has not been
+    * implemented or used.
     */
    public void notifyDataReaders() {
       // UNSURE This method has not been implemented, but is called out in the spec
-      if (true)
+      if (true) {
          throw new NotImplementedException();
+      }
    }
 
    /**
-    * This method is here for future functionality that is described in the DDS specification but has not been implemented or used.
+    * This method is here for future functionality that is described in the DDS specification but has not been
+    * implemented or used.
     */
    public SampleLostStatus getSampleLostStatus() {
       // UNSURE This method has not been implemented, but is called out in the spec
-      if (true)
+      if (true) {
          throw new NotImplementedException();
+      }
       return null;
    }
 
@@ -250,26 +268,25 @@ public class Subscriber extends DomainEntity implements EntityFactory {
    /**
     * Deletes all of the <code>DataReader</code> objects currently in this <code>Subscriber</code>.
     * 
-    * @return {@link ReturnCode#OK}if the readers were successfully deleted, otherwise {@link ReturnCode#NOT_ENABLED}if this <code>Subscriber</code> is not
-    *         enabled.
+    * @return {@link ReturnCode#OK}if the readers were successfully deleted, otherwise {@link ReturnCode#NOT_ENABLED}if
+    * this <code>Subscriber</code> is not enabled.
     */
    public ReturnCode deleteContainedEntities() {
       /*
-       * PARTIAL per the DDS spec, this should also delete the ReadCondition and QueryCondition objects stored in the <code> DataReader </code> 's, however
-       * because we haven't implemented the conditions they are not deleted here.
+       * PARTIAL per the DDS spec, this should also delete the ReadCondition and QueryCondition objects stored in the
+       * <code> DataReader </code> 's, however because we haven't implemented the conditions they are not deleted here.
        */
 
       // Check that the Entity is enabled before proceeding (See description of enable on the Entity object in the DDS spec)
-      if (!isEnabled())
+      if (!isEnabled()) {
          return ReturnCode.NOT_ENABLED;
-
-
+      }
 
       for (CopyOnWriteArrayList<DataReader> readers : topicMap.values()) {
-    	  for (DataReader reader : readers) {
-    		  reader.markAsDeleted();
-    	  }
-    	  readers.clear();
+         for (DataReader reader : readers) {
+            reader.markAsDeleted();
+         }
+         readers.clear();
       }
       topicMap.clear();
       return ReturnCode.OK;
@@ -283,41 +300,38 @@ public class Subscriber extends DomainEntity implements EntityFactory {
    }
 
    /**
-    * Processes new data received. If this Subscriber has at least one DataReader who is interested in this data, and the <code>Subscriber</code> has an
-    * attached listener, notify it via {@link SubscriberListener#onDataOnReaders(CopyOfSubscriber)}. Otherwise, if there is no <code>SubscriberListener</code> then
-    * notify all of the interested <code>DataReader</code>'s via {@link DataReaderListener#onDataAvailable(DataReader)}. The data is stored so that it is
-    * available for a reader to read or take.
+    * Processes new data received. If this Subscriber has at least one DataReader who is interested in this data, and
+    * the <code>Subscriber</code> has an attached listener, notify it via
+    * {@link SubscriberListener#onDataOnReaders(CopyOfSubscriber)}. Otherwise, if there is no
+    * <code>SubscriberListener</code> then notify all of the interested <code>DataReader</code>'s via
+    * {@link DataReaderListener#onDataAvailable(DataReader)}. The data is stored so that it is available for a reader to
+    * read or take.
     * 
     * @param dataStoreItem The newly published data.
     */
    void processNewData(final DataStoreItem dataStoreItem) { // This has package scope since it is a system-level type call
-	   final Collection<DataReader> readers = topicMap.get(dataStoreItem.getTheTopicDescription());
-	   if (readers  !=null && !readers.isEmpty()) {
+      final Collection<DataReader> readers = topicMap.get(dataStoreItem.getTheTopicDescription());
+      if (readers != null && !readers.isEmpty()) {
 
-		   // SPEC NOTE: The following listener logic is based on paragraph "Listener access to Read Communication Status"
-		   //            in the DDS specification.
+         // SPEC NOTE: The following listener logic is based on paragraph "Listener access to Read Communication Status"
+         //            in the DDS specification.
 
-		   // Invoke the SubscriberListener if available
-		   SubscriberListener listener = getListener();
-		   if (listener != null) {
-			   listener.onDataOnReaders(this);
+         // Invoke the SubscriberListener if available
+         SubscriberListener listener = getListener();
+         if (listener != null) {
+            listener.onDataOnReaders(this);
 
-			   // Otherwise, invoke the DataReaderListeners
-		   } else {
-			   // Check all DataReader objects for listeners
-			   for (final DataReader reader : readers){
-				   reader.processNewData(dataStoreItem);
-				   /*
-				   threadService.submit(new Runnable() {
-					   public void run() {
-						   reader.processNewData(dataStoreItem);
-					   }
+            // Otherwise, invoke the DataReaderListeners
+         } else {
+            // Check all DataReader objects for listeners
+            for (final DataReader reader : readers) {
+               reader.processNewData(dataStoreItem);
+               /*
+                * threadService.submit(new Runnable() { public void run() { reader.processNewData(dataStoreItem); } });
+                */
 
-				   });
-				   */
-				   
-			   }
-		   }
-	   }
+            }
+         }
+      }
    }
 }

@@ -35,6 +35,7 @@ public class MessageTreeBuilder implements MessageSink {
       lastAddedMsgNode = null;
    }
 
+   @Override
    public void absorbElement(final String elementName) {
       if (lastAddedMsgNode == null) {
          throw new IllegalStateException("no message exists for " + elementName);
@@ -43,6 +44,7 @@ public class MessageTreeBuilder implements MessageSink {
       numElements++;
    }
 
+   @Override
    public void absorbMessage(String messageName) {
       lastAddedMsgNode = new ArrayList<String>(64);
       msgs.put(messageName, lastAddedMsgNode);

@@ -81,8 +81,8 @@ public class ArtifactItem extends DataItem implements IXViewerItem, IArtifactEve
       this.operator = new TestRunOperator(artifact);
       try {
          this.key =
-               String.format("%s:%s:%s", getOperator().getChecksum(), getOperator().isFromLocalWorkspace(),
-                     getOperator().hasNotBeenCommitted());
+            String.format("%s:%s:%s", getOperator().getChecksum(), getOperator().isFromLocalWorkspace(),
+               getOperator().hasNotBeenCommitted());
       } catch (Exception ex) {
          this.key = "";
       }
@@ -96,6 +96,7 @@ public class ArtifactItem extends DataItem implements IXViewerItem, IArtifactEve
       return operator;
    }
 
+   @Override
    public String getLabel(int index) {
       String toReturn = "";
       Artifact artifact = getData();
@@ -128,8 +129,8 @@ public class ArtifactItem extends DataItem implements IXViewerItem, IArtifactEve
                   if (name != "") {
                      try {
                         Artifact dispoArtifact =
-                              ArtifactQuery.getArtifactFromTypeAndAttribute("Test Run Disposition", "Name", name,
-                                    artifact.getBranch());
+                           ArtifactQuery.getArtifactFromTypeAndAttribute("Test Run Disposition", "Name", name,
+                              artifact.getBranch());
                         if (dispoArtifact != null) {
                            return dispoArtifact.getSoleAttributeValueAsString("Disposition", "");
                         }
@@ -177,9 +178,10 @@ public class ArtifactItem extends DataItem implements IXViewerItem, IArtifactEve
          name = qualifiers[qualifiers.length - 1];
       }
       return String.format("%s%s [%s]", getOperator().isFromLocalWorkspace() ? "> " : "", name,
-            getOperator().getChecksum());
+         getOperator().getChecksum());
    }
 
+   @Override
    public Image getImage() {
       Image toReturn = null;
       try {
@@ -219,26 +221,25 @@ public class ArtifactItem extends DataItem implements IXViewerItem, IArtifactEve
       DecorationOverlayIcon overlay = null;
       if (FROM_LOCAL_WS_COMMIT_ALLOWED_IMAGE == null) {
          OverlayImage overlayImage =
-               new OverlayImage(defaultImage, ImageManager.getImageDescriptor(OteDefineImage.ADDITION),
-                     Location.BOT_RIGHT);
+            new OverlayImage(defaultImage, ImageManager.getImageDescriptor(OteDefineImage.ADDITION), Location.BOT_RIGHT);
          FROM_LOCAL_WS_COMMIT_ALLOWED_IMAGE = overlayImage.createImage();
       }
       if (FROM_LOCAL_WS_COMMIT_NOT_ALLOWED_IMAGE == null) {
          overlay =
-               new DecorationOverlayIcon(defaultImage, ImageManager.getImageDescriptor(OteDefineImage.CONFAUTO_OV),
-                     IDecoration.BOTTOM_RIGHT);
+            new DecorationOverlayIcon(defaultImage, ImageManager.getImageDescriptor(OteDefineImage.CONFAUTO_OV),
+               IDecoration.BOTTOM_RIGHT);
          FROM_LOCAL_WS_COMMIT_NOT_ALLOWED_IMAGE = overlay.createImage();
       }
       if (FROM_DATABASE_IMAGE == null) {
          overlay =
-               new DecorationOverlayIcon(defaultImage,
-                     ImageManager.getImageDescriptor(OteDefineImage.VERSION_CONTROLLED), IDecoration.BOTTOM_RIGHT);
+            new DecorationOverlayIcon(defaultImage, ImageManager.getImageDescriptor(OteDefineImage.VERSION_CONTROLLED),
+               IDecoration.BOTTOM_RIGHT);
          FROM_DATABASE_IMAGE = overlay.createImage();
       }
       if (INVALID_SCRIPT_IMAGE == null) {
          overlay =
-               new DecorationOverlayIcon(defaultImage, ImageManager.getImageDescriptor(OteDefineImage.OBSTRUCTED),
-                     IDecoration.BOTTOM_RIGHT);
+            new DecorationOverlayIcon(defaultImage, ImageManager.getImageDescriptor(OteDefineImage.OBSTRUCTED),
+               IDecoration.BOTTOM_RIGHT);
          INVALID_SCRIPT_IMAGE = overlay.createImage();
       }
    }

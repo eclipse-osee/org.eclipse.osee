@@ -57,10 +57,10 @@ public class ExperimentalLookup implements ServiceDiscoveryListener, DiscoveryLi
       try {
          lookupDiscoveryManager = new LookupDiscoveryManager(new String[] {}, null, this, new OseeJiniConfiguration());
          serviceDiscoveryManager =
-               new ServiceDiscoveryManager(lookupDiscoveryManager, null, new OseeJiniConfiguration());
+            new ServiceDiscoveryManager(lookupDiscoveryManager, null, new OseeJiniConfiguration());
 
          lookupCache =
-               serviceDiscoveryManager.createLookupCache(new ServiceTemplate(null, new Class[] {}, null), null, this);
+            serviceDiscoveryManager.createLookupCache(new ServiceTemplate(null, new Class[] {}, null), null, this);
 
       } catch (RemoteException anRE) {
          System.err.println("Failed to setup cache - exiting");
@@ -85,6 +85,7 @@ public class ExperimentalLookup implements ServiceDiscoveryListener, DiscoveryLi
       return lookupDiscoveryManager.getGroups();
    }
 
+   @Override
    public synchronized void serviceAdded(ServiceDiscoveryEvent event) {
       try {
          ServiceItem item = event.getPostEventServiceItem();
@@ -113,6 +114,7 @@ public class ExperimentalLookup implements ServiceDiscoveryListener, DiscoveryLi
       }
    }
 
+   @Override
    public void serviceRemoved(ServiceDiscoveryEvent event) {
       ServiceItem item = event.getPreEventServiceItem();
       System.out.println("service removed:\n\tid = " + item.serviceID);
@@ -137,10 +139,12 @@ public class ExperimentalLookup implements ServiceDiscoveryListener, DiscoveryLi
       }
    }
 
+   @Override
    public void serviceChanged(ServiceDiscoveryEvent event) {
 
    }
 
+   @Override
    public synchronized void discovered(DiscoveryEvent event) {
       for (ServiceRegistrar registrar : event.getRegistrars()) {
          System.out.println("Lookup Discovered: Service ID= " + registrar.getServiceID());
@@ -155,6 +159,7 @@ public class ExperimentalLookup implements ServiceDiscoveryListener, DiscoveryLi
 
    }
 
+   @Override
    public void discarded(DiscoveryEvent arg0) {
 
    }

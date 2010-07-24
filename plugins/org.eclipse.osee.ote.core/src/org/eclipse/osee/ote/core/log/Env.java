@@ -26,14 +26,16 @@ public class Env extends Logger {
    private static Env instance = null;
 
    public static Env getInstance() {
-      if (instance == null)
-         instance = new Env(null, Level.ALL);  // FileHandler was giving problems sometimes.
+      if (instance == null) {
+         instance = new Env(null, Level.ALL); // FileHandler was giving problems sometimes.
+      }
       return instance;
    }
 
    public static Env getInstance(Class<?> newClass, Level level) {
-      if (instance == null)
+      if (instance == null) {
          instance = new Env(newClass, level);
+      }
       return instance;
    }
 
@@ -47,13 +49,11 @@ public class Env extends Logger {
       if (handlerType == FileHandler.class) {
          try {
             handler = new FileHandler("TestEnvLog_" + this.hashCode() + "%g.log");
-         }
-         catch (Exception e) {
-        	 OseeLog.log(TestEnvironment.class, Level.SEVERE, e);
+         } catch (Exception e) {
+            OseeLog.log(TestEnvironment.class, Level.SEVERE, e);
             handler = new ConsoleHandler();
          }
-      }
-      else {
+      } else {
          handler = new ConsoleHandler();
       }
       handler.setLevel(level);
@@ -64,27 +64,24 @@ public class Env extends Logger {
    public void debug(String message) {
       try {
          log(Level.FINE, message);
-      }
-      catch (Exception e) {
-    	  OseeLog.log(TestEnvironment.class, Level.SEVERE, e);
+      } catch (Exception e) {
+         OseeLog.log(TestEnvironment.class, Level.SEVERE, e);
       }
    }
 
    public void exception(Throwable ex) {
       try {
          throwing("", "", ex);
-      }
-      catch (Exception e) {
-    	  OseeLog.log(TestEnvironment.class, Level.SEVERE, e);
+      } catch (Exception e) {
+         OseeLog.log(TestEnvironment.class, Level.SEVERE, e);
       }
    }
 
    public void message(String message) {
       try {
          log(Level.INFO, message);
-      }
-      catch (Exception e) {
-    	  OseeLog.log(TestEnvironment.class, Level.SEVERE, e);
+      } catch (Exception e) {
+         OseeLog.log(TestEnvironment.class, Level.SEVERE, e);
       }
    }
 

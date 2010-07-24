@@ -30,7 +30,9 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 public class AttributeTypeCacheUpdateResponseTranslator implements ITranslator<AttributeTypeCacheUpdateResponse> {
 
    private static enum Fields {
-      ROW_COUNT, ROW, ATTR_TO_ENUM;
+      ROW_COUNT,
+      ROW,
+      ATTR_TO_ENUM;
    }
 
    private final IOseeModelFactoryServiceProvider provider;
@@ -77,9 +79,9 @@ public class AttributeTypeCacheUpdateResponseTranslator implements ITranslator<A
 
    private String[] toArray(AttributeType type) {
       return new String[] {type.getAttributeProviderId(), type.getBaseAttributeTypeId(), type.getDefaultValue(),
-            type.getDescription(), type.getFileTypeExtension(), type.getGuid(), String.valueOf(type.getId()),
-            String.valueOf(type.getMaxOccurrences()), String.valueOf(type.getMinOccurrences()),
-            type.getStorageState().name(), type.getName(), type.getTaggerId()};
+         type.getDescription(), type.getFileTypeExtension(), type.getGuid(), String.valueOf(type.getId()),
+         String.valueOf(type.getMaxOccurrences()), String.valueOf(type.getMinOccurrences()),
+         type.getStorageState().name(), type.getName(), type.getTaggerId()};
    }
 
    private AttributeType createfromArray(AttributeTypeFactory factory, String[] data) throws OseeCoreException {
@@ -97,8 +99,8 @@ public class AttributeTypeCacheUpdateResponseTranslator implements ITranslator<A
       String taggerId = data[11];
 
       AttributeType type =
-            factory.create(guid, name, baseAttributeTypeId, attributeProviderId, fileTypeExtension, defaultValue,
-                  minOccurrences, maxOccurrences, description, taggerId);
+         factory.create(guid, name, baseAttributeTypeId, attributeProviderId, fileTypeExtension, defaultValue,
+            minOccurrences, maxOccurrences, description, taggerId);
       type.setId(uniqueId);
       type.setStorageState(storageState);
       return type;

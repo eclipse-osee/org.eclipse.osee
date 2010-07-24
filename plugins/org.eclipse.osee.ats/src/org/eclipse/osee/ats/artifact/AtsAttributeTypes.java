@@ -17,18 +17,18 @@ import org.eclipse.osee.framework.core.data.NamedIdentity;
  * @author Ryan D. Brooks
  */
 public class AtsAttributeTypes extends NamedIdentity implements IAttributeType {
-   public static final AtsAttributeTypes LegacyPCRId =
-         new AtsAttributeTypes("AAMFEd3TakphMtQX1zgA", "ats.Legacy PCR Id");
+   public static final AtsAttributeTypes LegacyPCRId = new AtsAttributeTypes("AAMFEd3TakphMtQX1zgA",
+      "ats.Legacy PCR Id");
 
    public static final AtsAttributeTypes Active = new AtsAttributeTypes("AAMFEclQOVmzkIvzyWwA", "ats.Active");
    public static final AtsAttributeTypes Resolution = new AtsAttributeTypes("AAMFEdUMfV1KdbQNaKwA", "ats.Resolution");
-   public static final AtsAttributeTypes TeamDefinition =
-         new AtsAttributeTypes("AAMFEdd5bFEe18bd0lQA", "ats.Team Definition");
+   public static final AtsAttributeTypes TeamDefinition = new AtsAttributeTypes("AAMFEdd5bFEe18bd0lQA",
+      "ats.Team Definition");
 
    public static final AtsAttributeTypes AtsLog = new AtsAttributeTypes("AAMFEdgB1DX3eJSZb0wA", "ats.Log");
    public static final AtsAttributeTypes AtsState = new AtsAttributeTypes("AAMFEdMa3wzVvp60xLQA", "ats.State");
-   public static final AtsAttributeTypes AtsCurrentState =
-         new AtsAttributeTypes("AAMFEdOWL3u6hmX2VbwA", "ats.Current State");
+   public static final AtsAttributeTypes AtsCurrentState = new AtsAttributeTypes("AAMFEdOWL3u6hmX2VbwA",
+      "ats.Current State");
 
    private AtsAttributeTypes(String guid, String name) {
       super(guid, name);

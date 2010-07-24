@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.database.core;
 
 import org.eclipse.osee.framework.core.data.IDatabaseInfo;
 
-
 /**
  * @author Andrew M. Finkbeiner
  */

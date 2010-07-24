@@ -62,6 +62,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
       this.showArchivedBranches = false;
    }
 
+   @Override
    public Object[] getChildren(Object parentElement) {
       if (parentElement instanceof BranchManager) {
          return getBranchManagerChildren((BranchManager) parentElement);
@@ -80,7 +81,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
          if (showChildBranchesUnderParents) {
             List<Object> items = new LinkedList<Object>();
             Collection<Branch> childBrances =
-                  showArchivedBranches ? branch.getChildBranches(true) : branch.getChildBranches();
+               showArchivedBranches ? branch.getChildBranches(true) : branch.getChildBranches();
 
             items.addAll(childBrances);
             items.addAll(getTransactions(branch));
@@ -126,7 +127,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
             } else {
                branchTypes.add(BranchType.BASELINE);
                for (Branch branch : BranchManager.getBranches(branchState,
-                     branchTypes.toArray(new BranchType[branchTypes.size()]))) {
+                  branchTypes.toArray(new BranchType[branchTypes.size()]))) {
                   if (branch.hasParentBranch() && branch.getParentBranch().getBranchType().isSystemRootBranch()) {
                      branchesToReturn.add(branch);
                   }
@@ -134,7 +135,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
             }
          } else {
             branchesToReturn.addAll(BranchManager.getBranches(branchState,
-                  branchTypes.toArray(new BranchType[branchTypes.size()])));
+               branchTypes.toArray(new BranchType[branchTypes.size()])));
          }
          return branchesToReturn.toArray();
       } catch (OseeCoreException ex) {
@@ -143,6 +144,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
       return EMPTY_ARRAY;
    }
 
+   @Override
    public Object getParent(Object element) {
       return null;
    }
@@ -153,18 +155,20 @@ public class XBranchContentProvider implements ITreeContentProvider {
       }
       List<TransactionRecord> transactions = TransactionManager.getTransactionsForBranch(branch);
       Collections.sort(transactions, new Comparator<TransactionRecord>() {
+         @Override
          public int compare(TransactionRecord o1, TransactionRecord o2) {
             return o1.getId() - o2.getId();
          }
       });
       if (transactions != null) {
          return org.eclipse.osee.framework.jdk.core.util.Collections.getAggregateTree(new ArrayList<Object>(
-               transactions), 100);
+            transactions), 100);
       } else {
          return Collections.emptyList();
       }
    }
 
+   @Override
    public boolean hasChildren(Object element) {
       if (element instanceof BranchManager) {
          return true;
@@ -176,7 +180,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
             try {
                if (!showChildBranchesAtMainLevel) {
                   hasChildren =
-                        showArchivedBranches ? !((Branch) element).getChildBranches(true).isEmpty() : !((Branch) element).getChildBranches().isEmpty();
+                     showArchivedBranches ? !((Branch) element).getChildBranches(true).isEmpty() : !((Branch) element).getChildBranches().isEmpty();
                } else {
                   hasChildren = false;
                }
@@ -192,6 +196,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
       return false;
    }
 
+   @Override
    public Object[] getElements(Object inputElement) {
       return getChildren(inputElement);
    }
@@ -218,9 +223,11 @@ public class XBranchContentProvider implements ITreeContentProvider {
       return objects;
    }
 
+   @Override
    public void dispose() {
    }
 
+   @Override
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
    }
 

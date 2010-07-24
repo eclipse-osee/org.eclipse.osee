@@ -34,14 +34,13 @@ public class CheckBoxDialog extends MessageDialog {
 
    public CheckBoxDialog(Shell parentShell, String dialogTitle, Image dialogTitleImage, String dialogMessage, String checkBoxMessage, int dialogImageType, int defaultIndex) {
       super(parentShell, dialogTitle, dialogTitleImage, dialogMessage, dialogImageType, new String[] {"OK", "Cancel"},
-            defaultIndex);
+         defaultIndex);
       this.checkBoxMessage = checkBoxMessage;
       setBlockOnOpen(true);
    }
 
    public CheckBoxDialog(String dialogTitle, String dialogMessage, String checkBoxMessage) {
-      this(Displays.getActiveShell(), dialogTitle, null, dialogMessage, checkBoxMessage,
-            MessageDialog.QUESTION, 0);
+      this(Displays.getActiveShell(), dialogTitle, null, dialogMessage, checkBoxMessage, MessageDialog.QUESTION, 0);
    }
 
    @Override

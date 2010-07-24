@@ -17,8 +17,8 @@ import java.util.Vector;
 
 public class DbTaskList {
 
-   private Vector<DbModel> tasks = new Vector<DbModel>();
-   private Set<ITaskListViewer> changeListeners = new HashSet<ITaskListViewer>();
+   private final Vector<DbModel> tasks = new Vector<DbModel>();
+   private final Set<ITaskListViewer> changeListeners = new HashSet<ITaskListViewer>();
 
    /**
     * Constructor
@@ -40,8 +40,9 @@ public class DbTaskList {
    public void addTask(DbModel model) {
       tasks.add(tasks.size(), model);
       Iterator<ITaskListViewer> iterator = changeListeners.iterator();
-      while (iterator.hasNext())
+      while (iterator.hasNext()) {
          iterator.next().addTask(model);
+      }
    }
 
    /**
@@ -50,10 +51,12 @@ public class DbTaskList {
    public void removeTask(DbModel task) {
       tasks.remove(task);
       Iterator<ITaskListViewer> iterator = changeListeners.iterator();
-      while (iterator.hasNext())
+      while (iterator.hasNext()) {
          iterator.next().removeTask(task);
+      }
    }
 
+   @Override
    public String toString() {
       String str = "";
       for (int i = 0; i < tasks.size(); i++) {
@@ -68,8 +71,9 @@ public class DbTaskList {
     */
    public void taskChanged(DbModel task) {
       Iterator<ITaskListViewer> iterator = changeListeners.iterator();
-      while (iterator.hasNext())
+      while (iterator.hasNext()) {
          iterator.next().updateTask(task);
+      }
    }
 
    /**

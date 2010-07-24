@@ -30,7 +30,7 @@ public class ResourceFinder {
    private static final String PROJECT_SET_EXTENSION = "psf";
    private static final String TEST_BATCH_SET_EXTENSION = "xml";
 
-   private HashCollection<String, IFile> resourceMap;
+   private final HashCollection<String, IFile> resourceMap;
 
    public ResourceFinder() {
       this.resourceMap = new HashCollection<String, IFile>();
@@ -96,7 +96,7 @@ public class ResourceFinder {
       if (file != null && file.isAccessible() != false) {
          String extension = file.getFileExtension();
          result =
-               extension.equalsIgnoreCase(PROJECT_SET_EXTENSION) || extension.equalsIgnoreCase(TEST_BATCH_SET_EXTENSION);
+            extension.equalsIgnoreCase(PROJECT_SET_EXTENSION) || extension.equalsIgnoreCase(TEST_BATCH_SET_EXTENSION);
       }
       return result;
    }

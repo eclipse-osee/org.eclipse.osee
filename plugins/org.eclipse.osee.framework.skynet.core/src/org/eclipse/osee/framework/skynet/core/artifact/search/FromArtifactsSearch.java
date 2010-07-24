@@ -27,6 +27,7 @@ public class FromArtifactsSearch implements ISearchPrimitive {
    private final List<ISearchPrimitive> criteria;
    private final boolean all;
 
+   @Override
    public String getArtIdColName() {
       return "art_id";
    }
@@ -46,10 +47,12 @@ public class FromArtifactsSearch implements ISearchPrimitive {
       this.all = true;
    }
 
+   @Override
    public String getCriteriaSql(List<Object> dataList, Branch branch) {
       return "art_id in (" + ArtifactPersistenceManager.getIdSql(criteria, all, dataList, branch) + ")";
    }
 
+   @Override
    public String getTableSql(List<Object> dataList, Branch branch) {
       return "osee_artifact";
    }
@@ -69,6 +72,7 @@ public class FromArtifactsSearch implements ISearchPrimitive {
       return sb.toString();
    }
 
+   @Override
    public String getStorageString() {
       try {
          Document document = Jaxp.newDocument();

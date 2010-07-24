@@ -38,13 +38,13 @@ public class XViewerHridColumn extends XViewerValueColumn {
    /**
     * XViewer uses copies of column definitions so originals that are registered are not corrupted. Classes extending
     * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
-    *
+    * 
     * @param col
     */
    @Override
    public XViewerHridColumn copy() {
       return new XViewerHridColumn(getId(), getName(), getWidth(), getAlign(), isShow(), getSortDataType(),
-            isMultiColumnEditable(), getDescription());
+         isMultiColumnEditable(), getDescription());
    }
 
    @Override

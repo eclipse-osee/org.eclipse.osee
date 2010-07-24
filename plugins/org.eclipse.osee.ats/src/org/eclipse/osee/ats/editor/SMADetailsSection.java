@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.SectionPart;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
@@ -35,7 +36,7 @@ public class SMADetailsSection extends SectionPart {
    private boolean sectionCreated = false;
 
    public SMADetailsSection(SMAEditor editor, Composite parent, FormToolkit toolkit, int style) {
-      super(parent, toolkit, style | Section.TWISTIE | Section.TITLE_BAR);
+      super(parent, toolkit, style | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR);
       this.editor = editor;
    }
 
@@ -50,6 +51,7 @@ public class SMADetailsSection extends SectionPart {
       // Only load when users selects section
       section.addListener(SWT.Activate, new Listener() {
 
+         @Override
          public void handleEvent(Event e) {
             createSection();
          }

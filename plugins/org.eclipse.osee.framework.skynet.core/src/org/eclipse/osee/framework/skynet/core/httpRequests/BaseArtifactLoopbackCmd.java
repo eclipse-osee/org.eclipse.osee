@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
  */
 public abstract class BaseArtifactLoopbackCmd implements IClientLoopbackCmd {
 
+   @Override
    public void execute(final Map<String, String> parameters, final HttpResponse httpResponse) {
       final String branchId = parameters.get("branchId");
       final String guid = parameters.get("guid");
@@ -37,8 +38,8 @@ public abstract class BaseArtifactLoopbackCmd implements IClientLoopbackCmd {
       final String transactionIdStr = parameters.get("transactionId");
 
       if (!Strings.isValid(branchId) || !Strings.isValid(guid)) {
-         httpResponse.outputStandardError(HttpURLConnection.HTTP_BAD_REQUEST, String.format("Unable to process [%s]",
-               parameters));
+         httpResponse.outputStandardError(HttpURLConnection.HTTP_BAD_REQUEST,
+            String.format("Unable to process [%s]", parameters));
       } else {
          try {
             final Artifact artifact;
@@ -53,19 +54,21 @@ public abstract class BaseArtifactLoopbackCmd implements IClientLoopbackCmd {
                artifact = ArtifactQuery.getArtifactFromId(guid, branch, searchDeleted);
             }
             if (artifact == null) {
-               httpResponse.outputStandardError(HttpURLConnection.HTTP_NOT_FOUND, String.format(
-                     "Artifact can not be found in OSEE on branch [%s]", branch));
+               httpResponse.outputStandardError(HttpURLConnection.HTTP_NOT_FOUND,
+                  String.format("Artifact can not be found in OSEE on branch [%s]", branch));
             } else {
                process(artifact, parameters, httpResponse);
             }
          } catch (Exception ex) {
-            httpResponse.outputStandardError(HttpURLConnection.HTTP_INTERNAL_ERROR, String.format(
-                  "Unable to process [%s]", parameters), ex);
+            httpResponse.outputStandardError(HttpURLConnection.HTTP_INTERNAL_ERROR,
+               String.format("Unable to process [%s]", parameters), ex);
          }
       }
    }
 
+   @Override
    public abstract boolean isApplicable(String cmd);
 
+   @Override
    public abstract void process(final Artifact artifact, final Map<String, String> parameters, final HttpResponse httpResponse);
 }

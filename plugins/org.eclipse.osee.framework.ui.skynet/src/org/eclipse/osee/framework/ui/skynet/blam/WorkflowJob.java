@@ -33,7 +33,7 @@ public class WorkflowJob extends Job {
       try {
 
       } catch (Exception ex) {
-         return new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, Status.OK, ex.getMessage(), ex);
+         return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, IStatus.OK, ex.getMessage(), ex);
       }
       return Status.OK_STATUS;
    }

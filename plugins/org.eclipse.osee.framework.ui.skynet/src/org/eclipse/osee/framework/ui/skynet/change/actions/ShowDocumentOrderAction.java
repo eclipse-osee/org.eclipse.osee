@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.change.actions;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.change.IChangeReportPreferences;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -20,7 +21,7 @@ public class ShowDocumentOrderAction extends Action implements IChangeReportPref
    private final IChangeReportPreferences documentPreferences;
 
    public ShowDocumentOrderAction(IChangeReportPreferences documentPreferences) {
-      super("Show Changes in Document Order", Action.AS_CHECK_BOX);
+      super("Show Changes in Document Order", IAction.AS_CHECK_BOX);
       setId("show.change.report.in.document.order");
       this.documentPreferences = documentPreferences;
       setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.DOCUMENT));

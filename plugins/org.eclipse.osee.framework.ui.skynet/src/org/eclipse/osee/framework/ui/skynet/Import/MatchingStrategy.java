@@ -21,7 +21,9 @@ import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImpor
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.NewArtifactImportResolver;
 
 public enum MatchingStrategy {
-   ATTRIBUTE(), GUID(), NONE();
+   ATTRIBUTE(),
+   GUID(),
+   NONE();
 
    private MatchingStrategy() {
    }
@@ -29,11 +31,11 @@ public enum MatchingStrategy {
    public IArtifactImportResolver getResolver(ArtifactType primaryArtifactType, Collection<AttributeType> nonChangingAttributes, boolean createNewIfNotExist, boolean deleteUnmatchedArtifacts) throws OseeCoreException {
       ArtifactType secondaryArtifactType = ArtifactTypeManager.getType("Heading");
       if (this == ATTRIBUTE) {
-         return new AttributeBasedArtifactResolver(primaryArtifactType, secondaryArtifactType,
-               nonChangingAttributes, createNewIfNotExist, deleteUnmatchedArtifacts);
+         return new AttributeBasedArtifactResolver(primaryArtifactType, secondaryArtifactType, nonChangingAttributes,
+            createNewIfNotExist, deleteUnmatchedArtifacts);
       } else if (this == GUID) {
          return new GuidBasedArtifactResolver(primaryArtifactType, secondaryArtifactType, createNewIfNotExist,
-               deleteUnmatchedArtifacts);
+            deleteUnmatchedArtifacts);
       } else {
          return new NewArtifactImportResolver(primaryArtifactType, secondaryArtifactType);
       }

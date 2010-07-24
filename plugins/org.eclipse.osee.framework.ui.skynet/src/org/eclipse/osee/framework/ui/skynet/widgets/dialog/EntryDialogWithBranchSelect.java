@@ -52,13 +52,13 @@ public class EntryDialogWithBranchSelect extends MessageDialog {
    private final List<IShellCloseEvent> closeEventListeners = new ArrayList<IShellCloseEvent>();
 
    public EntryDialogWithBranchSelect(String dialogTitle, String dialogMessage) {
-      super(Displays.getActiveShell(), dialogTitle, null, dialogMessage, MessageDialog.QUESTION,
-            new String[] {"OK", "Cancel"}, 0);
+      super(Displays.getActiveShell(), dialogTitle, null, dialogMessage, MessageDialog.QUESTION, new String[] {"OK",
+         "Cancel"}, 0);
    }
 
    public EntryDialogWithBranchSelect(Shell parentShell, String dialogTitle, Image dialogTitleImage, String dialogMessage, int dialogImageType, String[] dialogButtonLabels, int defaultIndex) {
       super(parentShell, dialogTitle, dialogTitleImage, dialogMessage, dialogImageType, dialogButtonLabels,
-            defaultIndex);
+         defaultIndex);
    }
 
    @Override
@@ -70,6 +70,7 @@ public class EntryDialogWithBranchSelect extends MessageDialog {
 
       listener = new MouseMoveListener() {
 
+         @Override
          public void mouseMove(MouseEvent e) {
             setInitialButtonState();
          }
@@ -85,7 +86,9 @@ public class EntryDialogWithBranchSelect extends MessageDialog {
       text.setFillHorizontally(true);
       text.setFocus();
       text.setDisplayLabel(false);
-      if (!entryText.equals("")) text.set(entryText);
+      if (!entryText.equals("")) {
+         text.set(entryText);
+      }
       if (fillVertically) {
          text.setFillVertically(true);
          text.setHeight(200);
@@ -94,6 +97,7 @@ public class EntryDialogWithBranchSelect extends MessageDialog {
 
       ModifyListener modifyListener = new ModifyListener() {
 
+         @Override
          public void modifyText(ModifyEvent e) {
             handleModified();
          }
@@ -146,11 +150,13 @@ public class EntryDialogWithBranchSelect extends MessageDialog {
    }
 
    public void setEntry(String entry) {
-      if (text != null) text.set(entry);
+      if (text != null) {
+         text.set(entry);
+      }
       this.entryText = entry;
    }
-   
-   public Branch getBranch(){
+
+   public Branch getBranch() {
       return branchSelect.getSelectedBranch();
    }
 

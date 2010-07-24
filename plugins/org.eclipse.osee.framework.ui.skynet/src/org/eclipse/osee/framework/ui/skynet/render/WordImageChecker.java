@@ -40,7 +40,7 @@ public class WordImageChecker {
       } catch (UnsupportedEncodingException ex) {
       }
       String MODIFIED_STRING =
-            "<w:t>" + downArrow + " OSEE Detected Image Modification " + downArrow + "</w:t></w:r></w:p><w:p><w:r></w:r></w:p><w:p><w:r>";
+         "<w:t>" + downArrow + " OSEE Detected Image Modification " + downArrow + "</w:t></w:r></w:p><w:p><w:r></w:r></w:p><w:p><w:r>";
       if (oldAttr != null && newAttr != null) {
          String oldValue = oldAttr.getValue();
          String newValue = newAttr.getValue();
@@ -81,7 +81,7 @@ public class WordImageChecker {
          if (currentEndIndex > 0) {
             try {
                pictures.add(new WordmlPicture(currentStartIndex, wordml.substring(currentStartIndex, currentEndIndex),
-                     wordml, attribute));
+                  wordml, attribute));
             } catch (OseeCoreException ex) {
                OseeLog.log(WordImageChecker.class, Level.WARNING, ex);
             }

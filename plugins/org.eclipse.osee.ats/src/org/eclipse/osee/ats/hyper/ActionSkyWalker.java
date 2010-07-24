@@ -162,14 +162,17 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
       processWindowActivated();
    }
 
+   @Override
    public void partActivated(IWorkbenchPart part) {
       processWindowActivated();
    }
 
+   @Override
    public void partBroughtToTop(IWorkbenchPart part) {
       processWindowActivated();
    }
 
+   @Override
    public void partClosed(IWorkbenchPart part) {
       if (part.equals(this)) {
          dispose();
@@ -178,10 +181,12 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
       }
    }
 
+   @Override
    public void partDeactivated(IWorkbenchPart part) {
       processWindowActivated();
    }
 
+   @Override
    public void partOpened(IWorkbenchPart part) {
       processWindowActivated();
    }
@@ -190,7 +195,7 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
    public String getActionDescription() {
       if (getOptions() != null && getOptions().getArtifact() != null && getOptions().getArtifact().isDeleted()) {
          return String.format("Current Artifact - %s - %s", getOptions().getArtifact().getGuid(),
-               getOptions().getArtifact().getName());
+            getOptions().getArtifact().getName());
       }
       return "";
    }
@@ -228,14 +233,17 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
       }
    }
 
+   @Override
    public void perspectiveActivated(IWorkbenchPage page, IPerspectiveDescriptor perspective) {
       processWindowActivated();
    }
 
+   @Override
    public void perspectiveChanged(IWorkbenchPage page, IPerspectiveDescriptor perspective, String changeId) {
       processWindowActivated();
    }
 
+   @Override
    public void perspectiveChanged(IWorkbenchPage page, IPerspectiveDescriptor perspective, IWorkbenchPartReference partRef, String changeId) {
       processWindowActivated();
    }

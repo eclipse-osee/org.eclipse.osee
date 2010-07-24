@@ -61,6 +61,7 @@ public class ParseWindowsDirectoryListing extends AbstractBlam {
       return "<xWidgets><XWidget xwidgetType=\"XText\" displayName=\"Directory Listing File\" defaultValue=\"c:\\UserData\\cte.txt\" /></xWidgets>";
    }
 
+   @Override
    public Collection<String> getCategories() {
       return Arrays.asList("Util");
    }

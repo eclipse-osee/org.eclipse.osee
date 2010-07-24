@@ -39,7 +39,7 @@ public class ODMToXmlOperation {
    public void execute(IProgressMonitor monitor) throws OseeCoreException {
       try {
          monitor.beginTask(String.format("Writing [%s] types to xml [%s]", dataTypes.length, filePath),
-               ODMConstants.TOTAL_STEPS);
+            ODMConstants.TOTAL_STEPS);
          if (exportAsSingleFile) {
             writeToSingleFile(monitor);
          } else {

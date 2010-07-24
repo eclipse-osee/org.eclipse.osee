@@ -59,9 +59,9 @@ public class PeerToPeerWorkflowDefinition extends WorkFlowDefinition {
       workItems.add(new AtsPeerPrepareWorkPageDefinition());
       workItems.add(new AtsPeerReviewWorkPageDefinition());
       workItems.add(new WorkPageDefinition(DefaultTeamState.Completed.name(),
-            PeerToPeerWorkflowDefinition.PEER_REVIEW_COMPLETED_STATE_ID, AtsCompletedWorkPageDefinition.ID));
+         PeerToPeerWorkflowDefinition.PEER_REVIEW_COMPLETED_STATE_ID, AtsCompletedWorkPageDefinition.ID));
       workItems.add(new WorkPageDefinition(DefaultTeamState.Cancelled.name(),
-            PeerToPeerWorkflowDefinition.PEER_REVIEW_CANCELLED_STATE_ID, AtsCancelledWorkPageDefinition.ID));
+         PeerToPeerWorkflowDefinition.PEER_REVIEW_CANCELLED_STATE_ID, AtsCancelledWorkPageDefinition.ID));
       workItems.add(new PeerToPeerWorkflowDefinition());
 
       return workItems;
@@ -70,19 +70,19 @@ public class PeerToPeerWorkflowDefinition extends WorkFlowDefinition {
    private void addTransitions() {
       // Add default transitions
       addPageTransition(AtsPeerPrepareWorkPageDefinition.ID, AtsPeerReviewWorkPageDefinition.ID,
-            TransitionType.ToPageAsDefault);
+         TransitionType.ToPageAsDefault);
       addPageTransition(AtsPeerReviewWorkPageDefinition.ID, PEER_REVIEW_COMPLETED_STATE_ID,
-            TransitionType.ToPageAsDefault);
+         TransitionType.ToPageAsDefault);
 
       // Add return transitions
       addPageTransition(PEER_REVIEW_COMPLETED_STATE_ID, AtsPeerReviewWorkPageDefinition.ID,
-            TransitionType.ToPageAsReturn);
+         TransitionType.ToPageAsReturn);
       addPageTransition(AtsPeerReviewWorkPageDefinition.ID, AtsPeerPrepareWorkPageDefinition.ID,
-            TransitionType.ToPageAsReturn);
+         TransitionType.ToPageAsReturn);
       addPageTransition(PEER_REVIEW_CANCELLED_STATE_ID, AtsPeerReviewWorkPageDefinition.ID,
-            TransitionType.ToPageAsReturn);
+         TransitionType.ToPageAsReturn);
       addPageTransition(PEER_REVIEW_CANCELLED_STATE_ID, AtsPeerPrepareWorkPageDefinition.ID,
-            TransitionType.ToPageAsReturn);
+         TransitionType.ToPageAsReturn);
 
       // Add cancelled transitions
       addPageTransitionToPageAndReturn(AtsPeerPrepareWorkPageDefinition.ID, PEER_REVIEW_CANCELLED_STATE_ID);

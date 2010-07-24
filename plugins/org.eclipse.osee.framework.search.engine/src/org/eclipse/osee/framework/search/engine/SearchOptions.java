@@ -18,14 +18,18 @@ import java.util.Properties;
 public class SearchOptions {
 
    public enum SearchOptionsEnum {
-      include_deleted, match_word_order, as_xml, find_all_locations, case_sensitive;
+      include_deleted,
+      match_word_order,
+      as_xml,
+      find_all_locations,
+      case_sensitive;
 
       public String asStringOption() {
          return name().replaceAll("_", " ");
       }
    }
 
-   private Properties properties;
+   private final Properties properties;
 
    public SearchOptions() {
       this.properties = new Properties();

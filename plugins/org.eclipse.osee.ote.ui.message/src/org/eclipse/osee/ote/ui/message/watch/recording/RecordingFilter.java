@@ -159,7 +159,7 @@ public class RecordingFilter extends WizardPage {
 
                if (messageChild instanceof HeaderElements) {
                   headerElements =
-                        ((MessageRecordDetailContentProvider) viewer.getContentProvider()).getChildren(messageChild);
+                     ((MessageRecordDetailContentProvider) viewer.getContentProvider()).getChildren(messageChild);
                }
 
             }
@@ -210,7 +210,7 @@ public class RecordingFilter extends WizardPage {
 
    private class MessageDetailsTransform {
       private final Map<String, MessageRecordDetailsChecked> details =
-            new LinkedHashMap<String, MessageRecordDetailsChecked>();
+         new LinkedHashMap<String, MessageRecordDetailsChecked>();
 
       public void put(Object checkedWrapper) {
          if (checkedWrapper instanceof IElementPath) {
@@ -265,7 +265,7 @@ public class RecordingFilter extends WizardPage {
                   elements.add(path.getElementPath());
                } else {
                   System.out.println(String.format("unable to record [%s]",
-                        new ElementPath(path.getElementPath()).asString()));
+                     new ElementPath(path.getElementPath()).asString()));
                }
             }
          }

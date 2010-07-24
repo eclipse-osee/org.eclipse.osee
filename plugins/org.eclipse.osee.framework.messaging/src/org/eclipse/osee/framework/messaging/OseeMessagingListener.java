@@ -17,19 +17,19 @@ import java.util.Map;
  */
 public abstract class OseeMessagingListener {
 
-	private Class<?> clazz;
-	
-	public OseeMessagingListener() {
-		this.clazz = null;
-	}
+   private final Class<?> clazz;
 
-	public OseeMessagingListener(Class<?> clazz) {
-		this.clazz = clazz;
-	}
+   public OseeMessagingListener() {
+      this.clazz = null;
+   }
 
-	public Class<?> getClazz(){
-		return clazz;
-	}
-	
-	public abstract void process(Object message, Map<String, Object> headers, ReplyConnection replyConnection);
+   public OseeMessagingListener(Class<?> clazz) {
+      this.clazz = clazz;
+   }
+
+   public Class<?> getClazz() {
+      return clazz;
+   }
+
+   public abstract void process(Object message, Map<String, Object> headers, ReplyConnection replyConnection);
 }

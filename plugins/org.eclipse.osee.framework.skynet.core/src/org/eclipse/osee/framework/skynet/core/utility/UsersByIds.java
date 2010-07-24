@@ -31,8 +31,9 @@ public class UsersByIds {
 
    public static String getStorageString(Collection<User> users) throws OseeCoreException {
       StringBuffer sb = new StringBuffer();
-      for (User u : users)
+      for (User u : users) {
          sb.append("<" + u.getUserId() + ">");
+      }
       return sb.toString();
    }
 
@@ -41,7 +42,9 @@ public class UsersByIds {
       Matcher m = userPattern.matcher(sorageString);
       while (m.find()) {
          String userId = m.group(1);
-         if (userId == null || userId.equals("")) throw new IllegalArgumentException("Blank userId specified.");
+         if (userId == null || userId.equals("")) {
+            throw new IllegalArgumentException("Blank userId specified.");
+         }
          try {
             User u = UserManager.getUserByUserId(m.group(1));
             users.add(u);

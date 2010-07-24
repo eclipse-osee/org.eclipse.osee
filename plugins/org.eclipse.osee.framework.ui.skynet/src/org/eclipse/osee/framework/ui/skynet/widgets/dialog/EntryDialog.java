@@ -64,24 +64,26 @@ public class EntryDialog extends MessageDialog {
    private final String dialogTitle;
 
    public EntryDialog(String dialogTitle, String dialogMessage) {
-      super(Displays.getActiveShell(), dialogTitle, null, dialogMessage, MessageDialog.QUESTION,
-            new String[] {"OK", "Cancel"}, 0);
+      super(Displays.getActiveShell(), dialogTitle, null, dialogMessage, MessageDialog.QUESTION, new String[] {"OK",
+         "Cancel"}, 0);
       this.dialogTitle = dialogTitle;
    }
 
    public EntryDialog(Shell parentShell, String dialogTitle, Image dialogTitleImage, String dialogMessage, int dialogImageType, String[] dialogButtonLabels, int defaultIndex) {
       super(parentShell, dialogTitle, dialogTitleImage, dialogMessage, dialogImageType, dialogButtonLabels,
-            defaultIndex);
+         defaultIndex);
       this.dialogTitle = dialogTitle;
    }
 
    private final ModifyListener textModifyListener = new ModifyListener() {
+      @Override
       public void modifyText(ModifyEvent e) {
          handleModified();
       }
    };
 
    private final MouseMoveListener compListener = new MouseMoveListener() {
+      @Override
       public void mouseMove(MouseEvent e) {
          setInitialButtonState();
       }

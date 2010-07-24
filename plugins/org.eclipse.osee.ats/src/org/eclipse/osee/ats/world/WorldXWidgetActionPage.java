@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
@@ -42,6 +43,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
+import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -63,6 +65,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.Section;
 
 /**
@@ -73,7 +76,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
    private final WorldEditor worldEditor;
    private WorldComposite worldComposite;
    private Action filterCompletedAction, filterMyAssigneeAction, selectionMetricsAction, toAction, toGoal, toReview,
-         toWorkFlow, toTask;
+      toWorkFlow, toTask;
    private final WorldCompletedFilter worldCompletedFilter = new WorldCompletedFilter();
    private WorldAssigneeFilter worldAssigneeFilter = null;
    protected Label showReleaseMetricsLabel;
@@ -95,7 +98,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
       gd.widthHint = 200;
       parent.setLayoutData(gd);
 
-      Result result = AtsPlugin.areOSEEServicesAvailable();
+      Result result = OseeUiActivator.areOSEEServicesAvailable();
       if (result.isFalse()) {
          AWorkbench.popup("ERROR", "DB Connection Unavailable");
          return;
@@ -122,7 +125,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
       toolBarManager.add(new Separator());
       toolBarManager.add(new NewAction());
       toolBarManager.add(OseeUiActions.createBugAction(AtsPlugin.getInstance(), worldEditor, WorldEditor.EDITOR_ID,
-            "ATS World"));
+         "ATS World"));
       toolBarManager.add(new Separator());
 
       createDropDownMenuActions();
@@ -132,7 +135,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
    @Override
    public Section createResultsSection(Composite body) {
 
-      resultsSection = toolkit.createSection(body, Section.NO_TITLE);
+      resultsSection = toolkit.createSection(body, ExpandableComposite.NO_TITLE);
       resultsSection.setText("Results");
       resultsSection.setLayoutData(new GridData(GridData.FILL_BOTH));
 
@@ -203,6 +206,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
          addSelectionListener();
       }
 
+      @Override
       public Menu getMenu(Control parent) {
          if (fMenu != null) {
             fMenu.dispose();
@@ -224,6 +228,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
          return fMenu;
       }
 
+      @Override
       public void dispose() {
          if (fMenu != null) {
             fMenu.dispose();
@@ -231,6 +236,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
          }
       }
 
+      @Override
       public Menu getMenu(Menu parent) {
          return null;
       }
@@ -262,15 +268,17 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
          tree.setLinesVisible(true);
 
          worldComposite.getXViewer().getTree().addKeyListener(new KeyListener() {
+            @Override
             public void keyPressed(KeyEvent event) {
             }
 
+            @Override
             public void keyReleased(KeyEvent event) {
                // if CTRL key is already pressed
                if ((event.stateMask & SWT.MODIFIER_MASK) == SWT.CTRL) {
                   if (event.keyCode == 'a') {
                      worldComposite.getXViewer().getTree().setSelection(
-                           worldComposite.getXViewer().getTree().getItems());
+                        worldComposite.getXViewer().getTree().getItems());
                   } else if (event.keyCode == 'x') {
                      selectionMetricsAction.setChecked(!selectionMetricsAction.isChecked());
                      selectionMetricsAction.run();
@@ -318,9 +326,9 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
       if (selectionMetricsAction != null && selectionMetricsAction.isChecked()) {
          if (worldComposite.getXViewer() != null && worldComposite.getXViewer().getSelectedSMAArtifacts() != null && !worldComposite.getXViewer().getSelectedSMAArtifacts().isEmpty()) {
             showReleaseMetricsLabel.setText(SMAMetrics.getEstRemainMetrics(
-                  worldComposite.getXViewer().getSelectedSMAArtifacts(), null,
-                  worldComposite.getXViewer().getSelectedSMAArtifacts().iterator().next().getManHrsPerDayPreference(),
-                  null));
+               worldComposite.getXViewer().getSelectedSMAArtifacts(), null,
+               worldComposite.getXViewer().getSelectedSMAArtifacts().iterator().next().getManHrsPerDayPreference(),
+               null));
          } else {
             showReleaseMetricsLabel.setText("");
          }
@@ -337,7 +345,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
 
-      selectionMetricsAction = new Action("Show Release Metrics by Selection - Ctrl-X", Action.AS_CHECK_BOX) {
+      selectionMetricsAction = new Action("Show Release Metrics by Selection - Ctrl-X", IAction.AS_CHECK_BOX) {
          @Override
          public void run() {
             try {
@@ -350,7 +358,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
       selectionMetricsAction.setToolTipText("Show Release Metrics by Selection - Ctrl-X");
       selectionMetricsAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.PAGE));
 
-      filterCompletedAction = new Action("Filter Out Completed/Cancelled - Ctrl-F", Action.AS_CHECK_BOX) {
+      filterCompletedAction = new Action("Filter Out Completed/Cancelled - Ctrl-F", IAction.AS_CHECK_BOX) {
 
          @Override
          public void run() {
@@ -366,7 +374,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
       filterCompletedAction.setToolTipText("Filter Out Completed/Cancelled - Ctrl-F");
       filterCompletedAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.GREEN_PLUS));
 
-      filterMyAssigneeAction = new Action("Filter My Assignee - Ctrl-G", Action.AS_CHECK_BOX) {
+      filterMyAssigneeAction = new Action("Filter My Assignee - Ctrl-G", IAction.AS_CHECK_BOX) {
 
          @Override
          public void run() {
@@ -382,7 +390,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
       filterMyAssigneeAction.setToolTipText("Filter My Assignee - Ctrl-G");
       filterMyAssigneeAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.USER));
 
-      toAction = new Action("Re-display as Actions", Action.AS_PUSH_BUTTON) {
+      toAction = new Action("Re-display as Actions", IAction.AS_PUSH_BUTTON) {
 
          @Override
          public void run() {
@@ -392,7 +400,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
       toAction.setToolTipText("Re-display as Actions");
       toAction.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.ACTION));
 
-      toGoal = new Action("Re-display as Goals", Action.AS_PUSH_BUTTON) {
+      toGoal = new Action("Re-display as Goals", IAction.AS_PUSH_BUTTON) {
 
          @Override
          public void run() {
@@ -402,7 +410,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
       toGoal.setToolTipText("Re-display as Goals");
       toGoal.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.GOAL));
 
-      toWorkFlow = new Action("Re-display as WorkFlows", Action.AS_PUSH_BUTTON) {
+      toWorkFlow = new Action("Re-display as WorkFlows", IAction.AS_PUSH_BUTTON) {
 
          @Override
          public void run() {
@@ -412,7 +420,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
       toWorkFlow.setToolTipText("Re-display as WorkFlows");
       toWorkFlow.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.WORKFLOW));
 
-      toTask = new Action("Re-display as Tasks", Action.AS_PUSH_BUTTON) {
+      toTask = new Action("Re-display as Tasks", IAction.AS_PUSH_BUTTON) {
 
          @Override
          public void run() {
@@ -422,7 +430,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
       toTask.setToolTipText("Re-display as Tasks");
       toTask.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.TASK));
 
-      toReview = new Action("Re-display as Reviews", Action.AS_PUSH_BUTTON) {
+      toReview = new Action("Re-display as Reviews", IAction.AS_PUSH_BUTTON) {
 
          @Override
          public void run() {
@@ -586,15 +594,15 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
    public void updateExtendedStatusString() {
       worldComposite.getXViewer().setExtendedStatusString(
       //
-            (filterCompletedAction.isChecked() ? "[Complete/Cancel Filter]" : "") +
-            //
-            (filterMyAssigneeAction.isChecked() ? "[My Assignee Filter]" : ""));
+         (filterCompletedAction.isChecked() ? "[Complete/Cancel Filter]" : "") +
+         //
+         (filterMyAssigneeAction.isChecked() ? "[My Assignee Filter]" : ""));
    }
 
    @Override
    public void handleSaveButtonPressed() {
       try {
-         if (isSaveButtonAvailable() && (worldEditor.getWorldEditorProvider() instanceof IWorldEditorParameterProvider)) {
+         if (isSaveButtonAvailable() && worldEditor.getWorldEditorProvider() instanceof IWorldEditorParameterProvider) {
             ((IWorldEditorParameterProvider) worldEditor.getWorldEditorProvider()).handleSaveButtonPressed();
          }
       } catch (OseeCoreException ex) {

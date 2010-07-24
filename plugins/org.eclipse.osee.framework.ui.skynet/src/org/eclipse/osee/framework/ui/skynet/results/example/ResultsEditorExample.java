@@ -18,7 +18,6 @@ import org.eclipse.birt.chart.model.ChartWithAxes;
 import org.eclipse.birt.chart.model.attribute.AxisType;
 import org.eclipse.birt.chart.model.attribute.IntersectionType;
 import org.eclipse.birt.chart.model.attribute.LegendItemType;
-import org.eclipse.birt.chart.model.attribute.Marker;
 import org.eclipse.birt.chart.model.attribute.MarkerType;
 import org.eclipse.birt.chart.model.attribute.TickStyle;
 import org.eclipse.birt.chart.model.attribute.impl.ColorDefinitionImpl;
@@ -65,18 +64,17 @@ public class ResultsEditorExample extends XNavigateItemAction {
 
    public static String TITLE = "Results Editor Example";
    private static enum Columns {
-      Date, Priority_123_Open_Bugs, Goal;
+      Date,
+      Priority_123_Open_Bugs,
+      Goal;
    };
-   List<String> chartDateStrs =
-         Arrays.asList("09/07/2008", "09/21/2008", "10/05/2008", "10/19/2008", "11/02/2008", "11/16/2008",
-               "11/30/2008", "12/14/2008", "12/28/2008", "01/11/2009", "01/25/2009", "02/08/2009", "02/22/2009",
-               "03/08/2009", "03/22/2009", "04/05/2009", "04/19/2009");
-   List<Double> chartValueStrs =
-         Arrays.asList(177.0, 174.0, 167.0, 161.0, 167.0, 167.0, 163.0, 165.0, 171.0, 179.0, 178.0, 177.0, 164.0,
-               159.0, 159.0, 157.0, 157.0);
-   List<Double> chartValueStrsGoal =
-         Arrays.asList(177.0, 174.0, 167.0, 161.0, 167.0, 167.0, 163.0, 165.0, 171.0, 179.0, 177.0, 175.0, 173.0,
-               171.0, 169.0, 167.0, 165.0);
+   List<String> chartDateStrs = Arrays.asList("09/07/2008", "09/21/2008", "10/05/2008", "10/19/2008", "11/02/2008",
+      "11/16/2008", "11/30/2008", "12/14/2008", "12/28/2008", "01/11/2009", "01/25/2009", "02/08/2009", "02/22/2009",
+      "03/08/2009", "03/22/2009", "04/05/2009", "04/19/2009");
+   List<Double> chartValueStrs = Arrays.asList(177.0, 174.0, 167.0, 161.0, 167.0, 167.0, 163.0, 165.0, 171.0, 179.0,
+      178.0, 177.0, 164.0, 159.0, 159.0, 157.0, 157.0);
+   List<Double> chartValueStrsGoal = Arrays.asList(177.0, 174.0, 167.0, 161.0, 167.0, 167.0, 163.0, 165.0, 171.0,
+      179.0, 177.0, 175.0, 173.0, 171.0, 169.0, 167.0, 165.0);
 
    /**
     * @param parent
@@ -91,10 +89,10 @@ public class ResultsEditorExample extends XNavigateItemAction {
       sb.append(AHTML.heading(3, TITLE));
       sb.append(AHTML.beginMultiColumnTable(100, 1));
       sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {Columns.Date.name(),
-            Columns.Priority_123_Open_Bugs.name(), Columns.Goal.name()}));
+         Columns.Priority_123_Open_Bugs.name(), Columns.Goal.name()}));
       for (int x = 0; x < chartDateStrs.size(); x++) {
          sb.append(AHTML.addRowMultiColumnTable(chartDateStrs.get(x), "" + chartValueStrs.get(x),
-               "" + chartValueStrsGoal.get(x)));
+            "" + chartValueStrsGoal.get(x)));
       }
       sb.append(AHTML.endMultiColumnTable());
       return sb.toString();
@@ -112,7 +110,7 @@ public class ResultsEditorExample extends XNavigateItemAction {
 
       // Title
       cwaLine.getTitle().getLabel().getCaption().setValue(
-            "Action Item Backlog - Priority 1-3 Bugs\nGoal: 50% Reduction - Baseline: YE 2008");//$NON-NLS-1$
+         "Action Item Backlog - Priority 1-3 Bugs\nGoal: 50% Reduction - Baseline: YE 2008");//$NON-NLS-1$
 
       // Legend
       Legend lg = cwaLine.getLegend();
@@ -132,7 +130,7 @@ public class ResultsEditorExample extends XNavigateItemAction {
       TextDataSet categoryValues = TextDataSetImpl.create(chartDateStrs.toArray(new String[chartDateStrs.size()]));
       NumberDataSet orthoValues1 = NumberDataSetImpl.create(chartValueStrs.toArray(new Double[chartValueStrs.size()]));
       NumberDataSet orthoValuesGoal =
-            NumberDataSetImpl.create(chartValueStrsGoal.toArray(new Double[chartValueStrsGoal.size()]));
+         NumberDataSetImpl.create(chartValueStrsGoal.toArray(new Double[chartValueStrsGoal.size()]));
 
       SampleData sd = DataFactory.eINSTANCE.createSampleData();
       BaseSampleData sdBase = DataFactory.eINSTANCE.createBaseSampleData();
@@ -165,7 +163,7 @@ public class ResultsEditorExample extends XNavigateItemAction {
       ls1.setSeriesIdentifier("Count");
       ls1.getLineAttributes().setColor(ColorDefinitionImpl.BLUE());
       for (int i = 0; i < ls1.getMarkers().size(); i++) {
-         ((Marker) ls1.getMarkers().get(i)).setType(MarkerType.TRIANGLE_LITERAL);
+         (ls1.getMarkers().get(i)).setType(MarkerType.TRIANGLE_LITERAL);
       }
       ls1.getLabel().setVisible(true);
 
@@ -174,7 +172,7 @@ public class ResultsEditorExample extends XNavigateItemAction {
       ls2.setSeriesIdentifier("Goal (100)");
       ls2.getLineAttributes().setColor(ColorDefinitionImpl.GREEN());
       for (int i = 0; i < ls2.getMarkers().size(); i++) {
-         ((Marker) ls2.getMarkers().get(i)).setType(MarkerType.TRIANGLE_LITERAL);
+         (ls2.getMarkers().get(i)).setType(MarkerType.TRIANGLE_LITERAL);
       }
       ls2.getLabel().setVisible(true);
 
@@ -202,17 +200,17 @@ public class ResultsEditorExample extends XNavigateItemAction {
             List<IResultsXViewerRow> rows = new ArrayList<IResultsXViewerRow>();
             for (int x = 0; x < chartDateStrs.size(); x++) {
                rows.add(new ResultsXViewerRow(new String[] {chartDateStrs.get(x),
-                     String.valueOf(chartValueStrs.get(x)), String.valueOf(chartValueStrsGoal.get(x))}));
+                  String.valueOf(chartValueStrs.get(x)), String.valueOf(chartValueStrsGoal.get(x))}));
             }
             List<XViewerColumn> columns =
-                  Arrays.asList(new XViewerColumn(Columns.Date.name(), Columns.Date.name(), 80, SWT.LEFT, true,
-                        SortDataType.Date, false, ""), new XViewerColumn(Columns.Priority_123_Open_Bugs.name(),
-                        Columns.Priority_123_Open_Bugs.name(), 80, SWT.LEFT, true, SortDataType.Integer, false, ""),
-                        new XViewerColumn(Columns.Goal.name(), Columns.Goal.name(), 80, SWT.LEFT, true,
-                              SortDataType.Integer, false, ""));
+               Arrays.asList(new XViewerColumn(Columns.Date.name(), Columns.Date.name(), 80, SWT.LEFT, true,
+                  SortDataType.Date, false, ""), new XViewerColumn(Columns.Priority_123_Open_Bugs.name(),
+                  Columns.Priority_123_Open_Bugs.name(), 80, SWT.LEFT, true, SortDataType.Integer, false, ""),
+                  new XViewerColumn(Columns.Goal.name(), Columns.Goal.name(), 80, SWT.LEFT, true, SortDataType.Integer,
+                     false, ""));
 
             return Arrays.asList(new ResultsEditorChartTab("Chart", createChart()), new ResultsEditorTableTab("Data",
-                  columns, rows), new ResultsEditorHtmlTab(TITLE, "Report", html));
+               columns, rows), new ResultsEditorHtmlTab(TITLE, "Report", html));
          }
 
       });

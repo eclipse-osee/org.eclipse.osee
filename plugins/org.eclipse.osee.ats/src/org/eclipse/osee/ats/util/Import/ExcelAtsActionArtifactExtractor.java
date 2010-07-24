@@ -73,7 +73,7 @@ public class ExcelAtsActionArtifactExtractor {
             for (String actionableItemName : aData.actionableItems) {
                try {
                   if (AtsCacheManager.getArtifactsByName(ArtifactTypeManager.getType(AtsArtifactTypes.ActionableItem),
-                        actionableItemName).size() > 0) {
+                     actionableItemName).size() > 0) {
                      rd.logError("Row " + rowNum + ": Couldn't find actionable item for \"" + actionableItemName + "\"");
                   }
                } catch (Exception ex) {
@@ -85,7 +85,7 @@ public class ExcelAtsActionArtifactExtractor {
          if (!aData.version.equals("")) {
             try {
                if (AtsCacheManager.getSoleArtifactByName(ArtifactTypeManager.getType(AtsArtifactTypes.Version),
-                     aData.version) == null) {
+                  aData.version) == null) {
                   rd.logError("Row " + rowNum + ": Can't find single version \"" + aData.version + "\"");
                }
             } catch (Exception ex) {
@@ -120,14 +120,14 @@ public class ExcelAtsActionArtifactExtractor {
       try {
          for (ActionData aData : actionDatas) {
             ActionArtifact actionArt =
-                  ActionManager.createAction(null, aData.title, aData.desc, ChangeType.getChangeType(aData.changeType),
-                        AtsPriority.PriorityType.getPriority(aData.priorityStr), false, null,
-                        ActionableItemArtifact.getActionableItems(aData.actionableItems), transaction);
+               ActionManager.createAction(null, aData.title, aData.desc, ChangeType.getChangeType(aData.changeType),
+                  AtsPriority.PriorityType.getPriority(aData.priorityStr), false, null,
+                  ActionableItemArtifact.getActionableItems(aData.actionableItems), transaction);
             actionArts.add(actionArt);
             if (!aData.version.equals("")) {
                VersionArtifact verArt =
-                     (VersionArtifact) AtsCacheManager.getSoleArtifactByName(
-                           ArtifactTypeManager.getType(AtsArtifactTypes.Version), aData.version);
+                  (VersionArtifact) AtsCacheManager.getSoleArtifactByName(
+                     ArtifactTypeManager.getType(AtsArtifactTypes.Version), aData.version);
 
                for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {
                   verArt.addRelation(AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow, team);
@@ -200,7 +200,14 @@ public class ExcelAtsActionArtifactExtractor {
    private final static class InternalRowProcessor implements RowProcessor {
 
       private static enum Columns {
-         Title, Description, ActionableItems, Assignees, Priority, ChangeType, UserCommunity, Version
+         Title,
+         Description,
+         ActionableItems,
+         Assignees,
+         Priority,
+         ChangeType,
+         UserCommunity,
+         Version
       };
 
       private String[] headerRow;

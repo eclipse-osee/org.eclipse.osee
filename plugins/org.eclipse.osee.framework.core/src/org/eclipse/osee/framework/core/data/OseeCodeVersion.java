@@ -24,7 +24,7 @@ public final class OseeCodeVersion {
 
    /**
     * Gets version
-    *
+    * 
     * @return the version
     */
    public static String getVersion() {
@@ -40,7 +40,7 @@ public final class OseeCodeVersion {
 
    public static String getBundleVersion() {
       return (String) Activator.getBundleContext().getBundle().getHeaders().get(
-            org.osgi.framework.Constants.BUNDLE_VERSION);
+         org.osgi.framework.Constants.BUNDLE_VERSION);
    }
 
    public static boolean isDevelopment() {

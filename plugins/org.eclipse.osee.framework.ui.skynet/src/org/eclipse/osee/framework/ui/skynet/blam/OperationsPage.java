@@ -25,7 +25,7 @@ import org.osgi.framework.Bundle;
 public class OperationsPage {
    public void findAllOperations() {
       IExtensionPoint point =
-            Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.framework.ui.skynet.BlamOperation");
+         Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.framework.ui.skynet.BlamOperation");
       IExtension[] extensions = point.getExtensions();
       for (IExtension extension : extensions) {
          extension.getUniqueIdentifier();
@@ -47,8 +47,7 @@ public class OperationsPage {
                OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             } catch (NoClassDefFoundError er) {
                OseeLog.log(SkynetGuiPlugin.class, Level.WARNING,
-                     "Failed to find a class definition for " + classname + ", registered from bundle " + bundleName,
-                     er);
+                  "Failed to find a class definition for " + classname + ", registered from bundle " + bundleName, er);
             }
          }
       }

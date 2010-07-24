@@ -28,6 +28,7 @@ public class CoverageContentProvider implements ITreeContentProvider {
       super();
    }
 
+   @Override
    @SuppressWarnings("unchecked")
    public Object[] getChildren(Object parentElement) {
       if (parentElement instanceof CoveragePackageBase) {
@@ -55,6 +56,7 @@ public class CoverageContentProvider implements ITreeContentProvider {
       return ArrayUtils.EMPTY_OBJECT_ARRAY;
    }
 
+   @Override
    public Object getParent(Object element) {
       if (element instanceof CoverageUnit) {
          return ((CoverageUnit) element).getParent();
@@ -65,19 +67,27 @@ public class CoverageContentProvider implements ITreeContentProvider {
       return null;
    }
 
+   @Override
    public boolean hasChildren(Object element) {
       return getChildren(element).length > 0;
    }
 
+   @Override
    public Object[] getElements(Object inputElement) {
-      if (inputElement instanceof MessageMergeItem) return new Object[] {inputElement};
-      if (inputElement instanceof MessageCoverageItem) return new Object[] {inputElement};
+      if (inputElement instanceof MessageMergeItem) {
+         return new Object[] {inputElement};
+      }
+      if (inputElement instanceof MessageCoverageItem) {
+         return new Object[] {inputElement};
+      }
       return getChildren(inputElement);
    }
 
+   @Override
    public void dispose() {
    }
 
+   @Override
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
    }
 

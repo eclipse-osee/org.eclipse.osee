@@ -35,10 +35,12 @@ public class BranchItem extends DataItem implements IXViewerItem {
       return branch.getName();
    }
 
+   @Override
    public Image getImage() {
       return ImageManager.getImage(OteDefineImage.CHILD_BRANCH);
    }
 
+   @Override
    public String getLabel(int index) {
       return index == 0 ? getData() : "";
    }

@@ -29,10 +29,10 @@ import org.eclipse.osee.framework.core.datastore.schema.data.ConstraintElement;
 import org.eclipse.osee.framework.core.datastore.schema.data.ForeignKey;
 import org.eclipse.osee.framework.core.datastore.schema.data.IndexElement;
 import org.eclipse.osee.framework.core.datastore.schema.data.ReferenceClause;
-import org.eclipse.osee.framework.core.datastore.schema.data.SchemaDataLookup;
-import org.eclipse.osee.framework.core.datastore.schema.data.TableElement;
 import org.eclipse.osee.framework.core.datastore.schema.data.ReferenceClause.OnDeleteEnum;
 import org.eclipse.osee.framework.core.datastore.schema.data.ReferenceClause.OnUpdateEnum;
+import org.eclipse.osee.framework.core.datastore.schema.data.SchemaDataLookup;
+import org.eclipse.osee.framework.core.datastore.schema.data.TableElement;
 import org.eclipse.osee.framework.core.datastore.schema.data.TableElement.ColumnFields;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
@@ -76,7 +76,7 @@ public abstract class SqlManager {
       }
 
       String toExecute =
-            "INSERT INTO " + formatQuotedString(tableMetadata.getFullyQualifiedTableName(), "\\.") + " (\n";
+         "INSERT INTO " + formatQuotedString(tableMetadata.getFullyQualifiedTableName(), "\\.") + " (\n";
       toExecute += StringUtils.join(columnNames, ",");
       toExecute += "\n) VALUES (\n";
       toExecute += StringUtils.join(placeHolders, ",");
@@ -222,14 +222,14 @@ public abstract class SqlManager {
 
                else {
                   OseeLog.log(Activator.class, Level.WARNING,
-                        "Skipping CONSTRAINT at Table: " + tableID + "\n\t " + fk.toString());
+                     "Skipping CONSTRAINT at Table: " + tableID + "\n\t " + fk.toString());
                }
 
             }
          }
       } else {
          OseeLog.log(Activator.class, Level.WARNING,
-               "Skipping CONSTRAINT at Table: " + tableID + "\n\t " + constraint.toString());
+            "Skipping CONSTRAINT at Table: " + tableID + "\n\t " + constraint.toString());
       }
       return toReturn.toString();
    }
@@ -284,8 +284,8 @@ public abstract class SqlManager {
             }
          }
          String toExecute =
-               String.format("%s %s INDEX %s ON %s (%s)", CREATE_STRING, iData.getIndexType(), indexId, tableName,
-                     appliesTo);
+            String.format("%s %s INDEX %s ON %s (%s)", CREATE_STRING, iData.getIndexType(), indexId, tableName,
+               appliesTo);
          toExecute = createIndexPostProcess(iData, toExecute);
          OseeLog.log(Activator.class, Level.FINE, toExecute);
          ConnectionHandler.runPreparedUpdate(toExecute);
@@ -300,8 +300,8 @@ public abstract class SqlManager {
       List<IndexElement> tableIndices = tableDef.getIndexData();
       String tableName = tableDef.getFullyQualifiedTableName();
       for (IndexElement iData : tableIndices) {
-         OseeLog.log(Activator.class, Level.FINE, String.format("Dropping Index: [%s] FROM [%s]\n",
-               iData.getId(), tableName));
+         OseeLog.log(Activator.class, Level.FINE,
+            String.format("Dropping Index: [%s] FROM [%s]\n", iData.getId(), tableName));
          ConnectionHandler.runPreparedUpdate(DROP_STRING + " INDEX " + iData.getId());
       }
    }

@@ -16,6 +16,6 @@ import org.eclipse.osee.ote.core.framework.command.ITestServerCommand;
 
 public interface ICommandContextFactory {
 
-	ITestContext getContext(TestEnvironment testEnvironment,	ITestServerCommand cmd);
+   ITestContext getContext(TestEnvironment testEnvironment, ITestServerCommand cmd);
 
 }

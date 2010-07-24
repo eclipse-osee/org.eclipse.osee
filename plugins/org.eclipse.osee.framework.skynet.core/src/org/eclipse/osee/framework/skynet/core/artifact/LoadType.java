@@ -14,5 +14,6 @@ package org.eclipse.osee.framework.skynet.core.artifact;
  * @author Ryan Schmitt
  */
 public enum LoadType {
-   INCLUDE_CACHE, RELOAD_CACHE;
+   INCLUDE_CACHE,
+   RELOAD_CACHE;
 }

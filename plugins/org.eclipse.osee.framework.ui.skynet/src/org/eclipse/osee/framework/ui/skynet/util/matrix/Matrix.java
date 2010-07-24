@@ -26,13 +26,13 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
  * @author Donald G. Dunne
  */
 public class Matrix {
-   private String title;
+   private final String title;
    private final ArrayList<MatrixItem> items;
-   private Map<String, MatrixItem> nameToItem = new HashMap<String, MatrixItem>();
-   private Set<String> values = new HashSet<String>();
-   private Map<String, Set<String>> nameToValues = new HashMap<String, Set<String>>();
+   private final Map<String, MatrixItem> nameToItem = new HashMap<String, MatrixItem>();
+   private final Set<String> values = new HashSet<String>();
+   private final Map<String, Set<String>> nameToValues = new HashMap<String, Set<String>>();
    // Names with no values will be listed at the bottom of the report so they don't take up space
-   private Set<String> noValueNames = new HashSet<String>();
+   private final Set<String> noValueNames = new HashSet<String>();
    private boolean useNameAsMark = false;
    private IProgressMonitor monitor;
 
@@ -57,8 +57,9 @@ public class Matrix {
             vals.addAll(item.getValues());
             nameToValues.remove(item.getName());
             nameToValues.put(item.getName(), vals);
-         } else
+         } else {
             nameToValues.put(item.getName(), item.getValues());
+         }
       }
    }
 
@@ -72,10 +73,11 @@ public class Matrix {
       // of them and print them at the end of the report
       for (String name : nameToItem.keySet()) {
          System.out.println("nameToValues.get(name) *" + nameToValues.get(name) + "*");
-         if (nameToValues.get(name) == null || nameToValues.get(name).isEmpty())
+         if (nameToValues.get(name) == null || nameToValues.get(name).isEmpty()) {
             noValueNames.add(name);
-         else
+         } else {
             names.add(name);
+         }
       }
       // Create sortedNames for use in looping through
       String[] sortedNames = names.toArray(new String[names.size()]);
@@ -93,20 +95,24 @@ public class Matrix {
       for (String value : sortedValues) {
          String str = String.format("Processing %s/%s \"%s\"", x++ + "", values.size(), value);
          System.out.println(str);
-         if (monitor != null) monitor.subTask(str);
+         if (monitor != null) {
+            monitor.subTask(str);
+         }
          List<String> marks = new ArrayList<String>();
          marks.add(value);
          for (String name : sortedNames) {
-            if (nameToValues.get(name) != null && nameToValues.get(name).contains(value))
+            if (nameToValues.get(name) != null && nameToValues.get(name).contains(value)) {
                marks.add(useNameAsMark ? name : "X");
-            else
+            } else {
                marks.add(".");
+            }
          }
          String[] colOptions = new String[marks.size()];
          int i = 0;
          colOptions[i] = "";
-         for (i = 1; i < marks.size(); i++)
+         for (i = 1; i < marks.size(); i++) {
             colOptions[i] = " align=center";
+         }
          sb.append(AHTML.addRowMultiColumnTable(marks.toArray(new String[marks.size()]), colOptions));
       }
       sb.append(AHTML.endMultiColumnTable());
@@ -114,8 +120,9 @@ public class Matrix {
          sb.append(AHTML.newline(2) + AHTML.bold("Items with no values: "));
          String[] sortedItems = noValueNames.toArray(new String[noValueNames.size()]);
          Arrays.sort(sortedItems);
-         for (String str : sortedItems)
+         for (String str : sortedItems) {
             sb.append(AHTML.newline() + str);
+         }
          sb.append(AHTML.newline());
       }
       return sb.toString();

@@ -20,6 +20,7 @@ public class TestManagerEditorInputFactory implements IElementFactory {
    public TestManagerEditorInputFactory() {
    }
 
+   @Override
    public IAdaptable createElement(IMemento memento) {
       String path = memento.getString("path");
       File file = new File(path);

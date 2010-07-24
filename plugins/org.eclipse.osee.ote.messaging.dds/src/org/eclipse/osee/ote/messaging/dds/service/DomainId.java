@@ -17,7 +17,7 @@ package org.eclipse.osee.ote.messaging.dds.service;
  * @author David Diepenbrock
  */
 public class DomainId {
-   private long id;
+   private final long id;
 
    /**
     * @param id - The id value for this <code>DomainId</code>.
@@ -34,20 +34,22 @@ public class DomainId {
       return id;
    }
 
+   @Override
    public boolean equals(Object obj) {
-     
+
       if (obj instanceof DomainId) {
-         DomainId domainId = (DomainId)obj;
+         DomainId domainId = (DomainId) obj;
          return domainId.id == this.id;
       }
-      
+
       return false;
    }
 
+   @Override
    public int hashCode() {
       int result = 17;
-      result = 1313723*result + (int)(id^(id>>>32));
-      
+      result = 1313723 * result + (int) (id ^ id >>> 32);
+
       return result;
    }
 }

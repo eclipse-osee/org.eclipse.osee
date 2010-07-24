@@ -10,10 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.message.condition;
 
-
 /**
  * @author Ken J. Aguilar
- *
  */
 public enum EqualityOperation {
    LESS_THAN("<") {
@@ -60,7 +58,7 @@ public enum EqualityOperation {
    };
 
    private final String toString;
-   
+
    EqualityOperation(String toString) {
       this.toString = toString;
    }

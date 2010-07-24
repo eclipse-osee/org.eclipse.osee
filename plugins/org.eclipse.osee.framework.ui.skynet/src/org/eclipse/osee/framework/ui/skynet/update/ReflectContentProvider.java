@@ -16,9 +16,8 @@ import org.eclipse.jface.viewers.Viewer;
 
 /**
  * @author Jeff C. Phillips
- *
  */
-public class ReflectContentProvider implements ITreeContentProvider{
+public class ReflectContentProvider implements ITreeContentProvider {
 
    @Override
    public Object[] getChildren(Object parentElement) {
@@ -40,10 +39,10 @@ public class ReflectContentProvider implements ITreeContentProvider{
       if (inputElement instanceof Object[]) {
          return (Object[]) inputElement;
       }
-        if (inputElement instanceof Collection) {
+      if (inputElement instanceof Collection) {
          return ((Collection<?>) inputElement).toArray();
       }
-        return new Object[0];
+      return new Object[0];
    }
 
    @Override

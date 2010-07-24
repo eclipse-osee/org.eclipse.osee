@@ -17,13 +17,13 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses( { //
+@Suite.SuiteClasses({ //
 Float32ElementTest.class,//
-      Float64ElementTest.class,//
-      IntegerElementTest.class,//
-      LongIntegerElementTest.class,//
-      SignedInteger16ElementTest.class,//
-      StringElementTest.class,//
+   Float64ElementTest.class,//
+   IntegerElementTest.class,//
+   LongIntegerElementTest.class,//
+   SignedInteger16ElementTest.class,//
+   StringElementTest.class,//
 })
 public class ElementTestSuite {
 

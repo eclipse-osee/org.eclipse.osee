@@ -64,7 +64,7 @@ public class HttpRequestDecoder {
 
    public static Pair<String, Boolean> fromGetRequest(HttpServletRequest request) {
       return new Pair<String, Boolean>(request.getParameter(URI),
-            Boolean.valueOf(request.getParameter(CHECK_AVAILABLE)));
+         Boolean.valueOf(request.getParameter(CHECK_AVAILABLE)));
    }
 
    public static Options getOptions(HttpServletRequest request) {

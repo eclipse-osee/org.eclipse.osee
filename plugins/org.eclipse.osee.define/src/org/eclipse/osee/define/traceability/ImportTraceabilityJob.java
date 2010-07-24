@@ -124,9 +124,9 @@ public class ImportTraceabilityJob extends Job {
             }
          }
       } catch (IOException ex) {
-         toReturn = new Status(Status.ERROR, DefinePlugin.PLUGIN_ID, -1, ex.getLocalizedMessage(), ex);
+         toReturn = new Status(IStatus.ERROR, DefinePlugin.PLUGIN_ID, -1, ex.getLocalizedMessage(), ex);
       } catch (OseeCoreException ex) {
-         toReturn = new Status(Status.ERROR, DefinePlugin.PLUGIN_ID, -1, ex.getLocalizedMessage(), ex);
+         toReturn = new Status(IStatus.ERROR, DefinePlugin.PLUGIN_ID, -1, ex.getLocalizedMessage(), ex);
       } finally {
          monitor.done();
       }
@@ -170,8 +170,8 @@ public class ImportTraceabilityJob extends Job {
       excelWriter.writeRow("% requirement coverage", null, "=1-COUNTIF(C2,&quot;0&quot;)/COUNTA(C2)");
 
       for (Artifact artifact : requirementData.getDirectSwRequirements()) {
-         excelWriter.writeRow(artifact.getName(), String.valueOf(reqsTraceCounts.get(artifact)), Collections.toString(
-               ",", artifact.getAttributesToStringList(Requirements.PARTITION)));
+         excelWriter.writeRow(artifact.getName(), String.valueOf(reqsTraceCounts.get(artifact)),
+            Collections.toString(",", artifact.getAttributesToStringList(Requirements.PARTITION)));
       }
 
       excelWriter.endSheet();
@@ -196,8 +196,7 @@ public class ImportTraceabilityJob extends Job {
                   // for local data and procedures search requirement text for traceMark
                   // example local data [{SUBSCRIBER}.ID] and example procedure {CURSOR_ACKNOWLEDGE}.NORMAL
                   String textContent =
-                        WordUtil.textOnly(
-                              reqArtifact.getSoleAttributeValue(CoreAttributeTypes.WORD_TEMPLATE_CONTENT, "")).toUpperCase();
+                     WordUtil.textOnly(reqArtifact.getSoleAttributeValue(CoreAttributeTypes.WORD_TEMPLATE_CONTENT, "")).toUpperCase();
                   if (textContent.contains(traceExtractor.getCanonicalRequirementName(structuredRequirement.getSecond()))) {
                      foundStr = "req body match";
                   } else {

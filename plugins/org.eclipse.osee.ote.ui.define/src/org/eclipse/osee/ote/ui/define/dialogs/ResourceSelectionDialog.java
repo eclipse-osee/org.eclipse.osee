@@ -33,6 +33,7 @@ public class ResourceSelectionDialog extends CheckedTreeSelectionDialog {
       super(parent, labelProvider, contentProvider);
    }
 
+   @Override
    protected Control createDialogArea(Composite parent) {
       Composite composite = new Composite(parent, SWT.NONE);
       GridLayout layout = new GridLayout();
@@ -52,6 +53,7 @@ public class ResourceSelectionDialog extends CheckedTreeSelectionDialog {
       Tree treeWidget = treeViewer.getTree();
       treeViewer.addCheckStateListener(new ICheckStateListener() {
 
+         @Override
          public void checkStateChanged(CheckStateChangedEvent event) {
             boolean wasChecked = event.getChecked();
             CheckboxTreeViewer viewer = getTreeViewer();

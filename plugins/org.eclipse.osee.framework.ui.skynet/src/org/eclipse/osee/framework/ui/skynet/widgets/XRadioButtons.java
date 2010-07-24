@@ -43,7 +43,7 @@ import org.eclipse.swt.widgets.Label;
 public class XRadioButtons extends XWidget {
 
    private Composite comp;
-   private ArrayList<XRadioButton> xButtons = new ArrayList<XRadioButton>();
+   private final ArrayList<XRadioButton> xButtons = new ArrayList<XRadioButton>();
    private boolean multiSelect;
    private boolean vertical;
    private int verticalColumns;
@@ -53,6 +53,7 @@ public class XRadioButtons extends XWidget {
       super(displayLabel, xmlRoot);
    }
 
+   @Override
    public void setFocus() {
    }
 
@@ -82,14 +83,18 @@ public class XRadioButtons extends XWidget {
    }
 
    public void selectAll(boolean selected) {
-      for (XRadioButton rb : xButtons)
+      for (XRadioButton rb : xButtons) {
          rb.setSelected(selected);
+      }
       refresh();
    }
 
    public XRadioButton getButton(String name) {
-      for (XRadioButton button : xButtons)
-         if (button.getLabel().equals(name)) return button;
+      for (XRadioButton button : xButtons) {
+         if (button.getLabel().equals(name)) {
+            return button;
+         }
+      }
       return null;
    }
 
@@ -99,24 +104,29 @@ public class XRadioButtons extends XWidget {
       // Set, selected items sent in
       for (String name : selected) {
          XRadioButton rb = getButton(name);
-         if (rb != null) rb.setSelected(true);
+         if (rb != null) {
+            rb.setSelected(true);
+         }
       }
       refresh();
    }
 
    public void setSelected(Collection<String> selected) {
-      if (selected != null) setSelected((String[]) selected.toArray(new String[selected.size()]));
+      if (selected != null) {
+         setSelected(selected.toArray(new String[selected.size()]));
+      }
    }
 
+   @Override
    public void setFromXml(String xml) throws IllegalStateException {
       selectAll(false);
-      if (!multiSelect)
+      if (!multiSelect) {
          super.setFromXml(xml);
-      else {
+      } else {
          Matcher m;
          m =
-               Pattern.compile("<" + getXmlRoot() + ">(.*?)</" + getXmlRoot() + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(
-                     xml);
+            Pattern.compile("<" + getXmlRoot() + ">(.*?)</" + getXmlRoot() + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(
+               xml);
          if (m.find()) {
             String str = m.group(1);
             String strs[] = str.split(",");
@@ -126,10 +136,12 @@ public class XRadioButtons extends XWidget {
       refresh();
    }
 
+   @Override
    public String getXmlData() {
       String sel = "";
-      for (String str : getSelectedNames())
+      for (String str : getSelectedNames()) {
          sel += str + ",";
+      }
       sel = sel.replaceFirst(",$", "");
       return sel;
    }
@@ -138,10 +150,12 @@ public class XRadioButtons extends XWidget {
       return getXmlData();
    }
 
+   @Override
    public String toString() {
       return getLabel() + ": " + Collections.toString(",", getSelectedNames());
    }
 
+   @Override
    public void setXmlData(String str) {
       setSelected(str);
    }
@@ -150,6 +164,7 @@ public class XRadioButtons extends XWidget {
     * Create radio Widgets. Widgets Created: Label: "text entry" horizonatalSpan takes up 2 columns; horizontalSpan must
     * be >=2
     */
+   @Override
    protected void createControls(Composite parent, int horizontalSpan) {
 
       Map<String, XRadioButton> nameToButton = new HashMap<String, XRadioButton>();
@@ -160,10 +175,12 @@ public class XRadioButtons extends XWidget {
          names[x++] = rb.getLabel().toLowerCase();
       }
 
-      int numColumns = (names.length * 2) + (isDisplayLabel() ? 1 : 0);
-      if (vertical && horizontalSpan == 1)
+      int numColumns = names.length * 2 + (isDisplayLabel() ? 1 : 0);
+      if (vertical && horizontalSpan == 1) {
          numColumns = 1;
-      else if (vertical) numColumns = (isDisplayLabel() ? 1 : 0) + 1; // only need label an composite
+      } else if (vertical) {
+         numColumns = (isDisplayLabel() ? 1 : 0) + 1; // only need label an composite
+      }
       // System.out.println("numColumns *" + numColumns + "*");
       comp = new Composite(parent, SWT.NONE);
       comp.setLayout(new GridLayout(numColumns, false));
@@ -181,13 +198,17 @@ public class XRadioButtons extends XWidget {
          labelWidget.setToolTipText(getToolTip());
       }
 
-      if (sortNames) Arrays.sort(names);
+      if (sortNames) {
+         Arrays.sort(names);
+      }
 
       int numRows = 1;
       if (vertical && xButtons.size() > verticalColumns) {
-         numRows = (int) (xButtons.size() / verticalColumns);
-         if ((xButtons.size() / verticalColumns) > 0) numRows++;
-         // System.out.println("numRows *" + numRows + "*");
+         numRows = (xButtons.size() / verticalColumns);
+         if (xButtons.size() / verticalColumns > 0) {
+            numRows++;
+            // System.out.println("numRows *" + numRows + "*");
+         }
       }
 
       Composite c = comp;
@@ -199,7 +220,9 @@ public class XRadioButtons extends XWidget {
       }
 
       Composite inComp = null;
-      if (!vertical) inComp = c;
+      if (!vertical) {
+         inComp = c;
+      }
       for (int i = 0; i < names.length; i++) {
          if (vertical && i % numRows == 0) {
             inComp = new Composite(c, SWT.NONE);
@@ -208,12 +231,15 @@ public class XRadioButtons extends XWidget {
             // inComp.setBackground(Displays.getSystemColor(SWT.COLOR_CYAN+i));
          }
          XRadioButton button = nameToButton.get(names[i]);
-         if (multiSelect) button.setButtonType(ButtonType.Check);
+         if (multiSelect) {
+            button.setButtonType(ButtonType.Check);
+         }
          button.setLabelAfter(true);
          button.createWidgets(inComp, 2);
          // Since each button has it's own listeners, pass the notification on to anyone listening
          // to XRadioButtons:w
          button.addXModifiedListener(new XModifiedListener() {
+            @Override
             public void widgetModified(XWidget widget) {
                notifyXModifiedListeners();
             }
@@ -224,10 +250,15 @@ public class XRadioButtons extends XWidget {
 
    @Override
    public void dispose() {
-      for (XRadioButton rb : xButtons)
+      for (XRadioButton rb : xButtons) {
          rb.dispose();
-      if (labelWidget != null) labelWidget.dispose();
-      if (comp != null && !comp.isDisposed()) comp.dispose();
+      }
+      if (labelWidget != null) {
+         labelWidget.dispose();
+      }
+      if (comp != null && !comp.isDisposed()) {
+         comp.dispose();
+      }
    }
 
    public void addSelectionListener(SelectionListener selectionListener) {
@@ -245,20 +276,26 @@ public class XRadioButtons extends XWidget {
    public Set<String> getSelectedNames() {
       Set<String> names = new HashSet<String>();
       for (XRadioButton rb : xButtons) {
-         if (rb.isSelected()) names.add(rb.getLabel());
+         if (rb.isSelected()) {
+            names.add(rb.getLabel());
+         }
       }
       return names;
    }
 
    public boolean isSelected(String name) {
       XRadioButton rb = getButton(name);
-      if (rb != null) return rb.isSelected();
+      if (rb != null) {
+         return rb.isSelected();
+      }
       return false;
    }
 
    public boolean isSelected() {
       for (XRadioButton rb : xButtons) {
-         if (rb.isSelected()) return true;
+         if (rb.isSelected()) {
+            return true;
+         }
       }
       return false;
    }
@@ -267,10 +304,12 @@ public class XRadioButtons extends XWidget {
       setSelected(new String[] {name});
    }
 
+   @Override
    public void refresh() {
       validate();
    }
 
+   @Override
    public IStatus isValid() {
       if (isRequiredEntry() && getSelectedNames().isEmpty()) {
          return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, getLabel() + " must have at least one selection.");
@@ -278,10 +317,12 @@ public class XRadioButtons extends XWidget {
       return Status.OK_STATUS;
    }
 
+   @Override
    public String getReportData() {
       return getXmlData();
    }
 
+   @Override
    public String toHTML(String labelFont) {
       return AHTML.getLabelStr(labelFont, getLabel() + ": ") + getDisplayStr();
    }

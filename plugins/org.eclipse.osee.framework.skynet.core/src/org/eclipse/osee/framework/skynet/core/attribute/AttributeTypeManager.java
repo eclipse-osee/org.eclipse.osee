@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -114,7 +113,7 @@ public class AttributeTypeManager {
 
    /**
     * Returns the attribute type with the given type id or throws an IllegalArgumentException if it does not exist.
-    *
+    * 
     * @param attrTypeId
     * @throws OseeCoreException
     */
@@ -140,17 +139,17 @@ public class AttributeTypeManager {
    }
 
    private static final String DELETE_VALID_ATTRIBUTE =
-         "delete from osee_artifact_type_attributes where attr_type_id = ?";
+      "delete from osee_artifact_type_attributes where attr_type_id = ?";
    private static final String COUNT_ATTRIBUTE_OCCURRENCE =
-         "select count(1) FROM osee_attribute where attr_type_id = ?";
+      "select count(1) FROM osee_attribute where attr_type_id = ?";
    private static final String DELETE_ATTRIBUTE_TYPE = "delete from osee_attribute_type where attr_type_id = ?";
 
    public static void purgeAttributeType(final AttributeType attributeType) throws OseeCoreException {
       int attributeCount =
-            ConnectionHandler.runPreparedQueryFetchInt(0, COUNT_ATTRIBUTE_OCCURRENCE, attributeType.getId());
+         ConnectionHandler.runPreparedQueryFetchInt(0, COUNT_ATTRIBUTE_OCCURRENCE, attributeType.getId());
       if (attributeCount != 0) {
          throw new OseeArgumentException(
-               "Can not delete attribute type " + attributeType.getName() + " because there are " + attributeCount + " existing attributes of this type.");
+            "Can not delete attribute type " + attributeType.getName() + " because there are " + attributeCount + " existing attributes of this type.");
       }
 
       new DbTransaction() {
@@ -172,8 +171,7 @@ public class AttributeTypeManager {
    }
 
    @SuppressWarnings("unchecked")
-	public static boolean isBaseTypeCompatible(
-			Class<? extends Attribute> baseType, String attributeTypeName) throws OseeCoreException {
+   public static boolean isBaseTypeCompatible(Class<? extends Attribute> baseType, String attributeTypeName) throws OseeCoreException {
       return baseType.isAssignableFrom(getAttributeBaseClass(getType(attributeTypeName)));
    }
 

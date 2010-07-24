@@ -54,14 +54,17 @@ public class SkynetArtifactEventBase extends SkynetEventBase implements ISkynetA
       return transactionId;
    }
 
+   @Override
    public int getArtId() {
       return artId;
    }
 
+   @Override
    public int getArtTypeId() {
       return artTypeId;
    }
 
+   @Override
    public String getFactoryName() {
       return factoryName;
    }

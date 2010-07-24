@@ -22,17 +22,19 @@ import org.eclipse.ui.PlatformUI;
  * @author Jeff C. Phillips
  */
 public class ReflectDecoratingLabelProvider extends DecoratingStyledCellLabelProvider implements ILabelProvider {
-   
+
    public ReflectDecoratingLabelProvider(RevertLabelProvider labelProvider) {
       super(labelProvider, PlatformUI.getWorkbench().getDecoratorManager().getLabelDecorator(), null);
    }
 
+   @Override
    public void initialize(ColumnViewer viewer, ViewerColumn column) {
       setOwnerDrawEnabled(true);
 
       super.initialize(viewer, column);
    }
 
+   @Override
    protected StyleRange prepareStyleRange(StyleRange styleRange, boolean applyColors) {
       if (!applyColors && styleRange.background != null) {
          styleRange = super.prepareStyleRange(styleRange, applyColors);
@@ -42,6 +44,7 @@ public class ReflectDecoratingLabelProvider extends DecoratingStyledCellLabelPro
       return super.prepareStyleRange(styleRange, applyColors);
    }
 
+   @Override
    public String getText(Object element) {
       return getStyledText(element).getString();
    }

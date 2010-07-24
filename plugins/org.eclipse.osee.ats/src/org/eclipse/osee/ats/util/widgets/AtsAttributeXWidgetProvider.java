@@ -26,12 +26,11 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemAttributes;
  */
 public class AtsAttributeXWidgetProvider extends DefaultAttributeXWidgetProvider {
 
-   List<String> attributeNames =
-         Arrays.asList(WorkItemAttributes.TRANSITION.getAttributeTypeName(),
-         WorkItemAttributes.WORK_DATA.getAttributeTypeName(), ATSAttributes.STATE_ATTRIBUTE.getStoreName(),
-         ATSAttributes.ACTIONABLE_ITEM_GUID_ATTRIBUTE.getStoreName(),
-         ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName(),
-         ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName());
+   List<String> attributeNames = Arrays.asList(WorkItemAttributes.TRANSITION.getAttributeTypeName(),
+      WorkItemAttributes.WORK_DATA.getAttributeTypeName(), ATSAttributes.STATE_ATTRIBUTE.getStoreName(),
+      ATSAttributes.ACTIONABLE_ITEM_GUID_ATTRIBUTE.getStoreName(),
+      ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName(),
+      ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName());
 
    @Override
    public List<DynamicXWidgetLayoutData> getDynamicXWidgetLayoutData(AttributeType attributeType) throws OseeCoreException {

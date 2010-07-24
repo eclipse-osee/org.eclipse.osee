@@ -13,13 +13,8 @@ package org.eclipse.osee.framework.messaging.internal;
 import org.eclipse.osee.framework.messaging.services.internal.TestMessageServices;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
- 
+
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
-  TestSendingAndRecieving.class,
-  TestBrokerServiceInterruptions.class,
-  TestMessageServices.class
-})
+@Suite.SuiteClasses({TestSendingAndRecieving.class, TestBrokerServiceInterruptions.class, TestMessageServices.class})
 public class IntegrationSuite {
 }
-

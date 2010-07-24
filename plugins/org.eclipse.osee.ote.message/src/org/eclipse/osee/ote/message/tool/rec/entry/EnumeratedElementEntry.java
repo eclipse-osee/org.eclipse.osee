@@ -15,33 +15,35 @@ import org.eclipse.osee.ote.message.data.MemoryResource;
 import org.eclipse.osee.ote.message.elements.EnumeratedElement;
 import org.eclipse.osee.ote.message.elements.IEnumValue;
 
-
 public class EnumeratedElementEntry implements IElementEntry {
 
-	private final byte[] nameAsBytes;
-	private final byte[][] valueToBytes;
-	private final EnumeratedElement<?> element;
-	private static final byte[] SPACE_LEFT_PAREN = new byte[]{' ', '('};
-	public EnumeratedElementEntry(EnumeratedElement<?> element) {
-		this.element = element;
-		nameAsBytes = element.getElementPathAsString().getBytes();
-		valueToBytes = new byte[element.getEnumValues().length][];
-		for (Enum<?> val : element.getEnumValues()) {
-			valueToBytes[val.ordinal()] = val.name().getBytes();
-		}
-	}
-	
-	public EnumeratedElement<?> getElement() {
-		return element;
-	}
+   private final byte[] nameAsBytes;
+   private final byte[][] valueToBytes;
+   private final EnumeratedElement<?> element;
+   private static final byte[] SPACE_LEFT_PAREN = new byte[] {' ', '('};
 
-	public void write(ByteBuffer buffer, MemoryResource mem, int limit) {
-		mem.setOffset(element.getMsgData().getMem().getOffset());
-		Enum<?> val = element.valueOf(mem);
-		byte[] bytes = Integer.toString(((IEnumValue)val).getIntValue()).getBytes();
-		buffer.put(nameAsBytes).put(COMMA).put(valueToBytes[val.ordinal()]);
-		buffer.put(SPACE_LEFT_PAREN).put(bytes).put(RIGHT_PAREN).put(COMMA);
+   public EnumeratedElementEntry(EnumeratedElement<?> element) {
+      this.element = element;
+      nameAsBytes = element.getElementPathAsString().getBytes();
+      valueToBytes = new byte[element.getEnumValues().length][];
+      for (Enum<?> val : element.getEnumValues()) {
+         valueToBytes[val.ordinal()] = val.name().getBytes();
+      }
+   }
 
-	}
+   @Override
+   public EnumeratedElement<?> getElement() {
+      return element;
+   }
+
+   @Override
+   public void write(ByteBuffer buffer, MemoryResource mem, int limit) {
+      mem.setOffset(element.getMsgData().getMem().getOffset());
+      Enum<?> val = element.valueOf(mem);
+      byte[] bytes = Integer.toString(((IEnumValue) val).getIntValue()).getBytes();
+      buffer.put(nameAsBytes).put(COMMA).put(valueToBytes[val.ordinal()]);
+      buffer.put(SPACE_LEFT_PAREN).put(bytes).put(RIGHT_PAREN).put(COMMA);
+
+   }
 
 }

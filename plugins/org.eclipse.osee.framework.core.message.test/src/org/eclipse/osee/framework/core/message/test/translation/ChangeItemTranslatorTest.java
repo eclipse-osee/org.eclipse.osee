@@ -30,7 +30,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Test Case For {@link ChangeItemTranslator}
- *
+ * 
  * @author Jeff C. Phillips
  */
 @RunWith(Parameterized.class)
@@ -49,8 +49,7 @@ public class ChangeItemTranslatorTest extends BaseTranslatorTest<ChangeItem> {
    @Parameters
    public static Collection<Object[]> data() throws OseeCoreException {
       DataTranslationService dataTranslationService = new DataTranslationService();
-      dataTranslationService.addTranslator(new ChangeVersionTranslator(),
-                                           CoreTranslatorId.CHANGE_VERSION);
+      dataTranslationService.addTranslator(new ChangeVersionTranslator(), CoreTranslatorId.CHANGE_VERSION);
 
       List<Object[]> data = new ArrayList<Object[]>();
       ITranslator<ChangeItem> translator = new ChangeItemTranslator(dataTranslationService);

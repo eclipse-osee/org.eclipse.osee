@@ -39,7 +39,7 @@ public final class ArtifactTypeAttributesField extends AbstractOseeField<Map<Bra
       return new HashMap<Branch, Collection<AttributeType>>(validityMap);
    }
 
-   public void put(Branch branch , Collection<AttributeType> attributes){
+   public void put(Branch branch, Collection<AttributeType> attributes) {
       Collection<AttributeType> current = validityMap.get(branch);
       validityMap.put(branch, attributes);
       if (Compare.isDifferent(current, attributes)) {

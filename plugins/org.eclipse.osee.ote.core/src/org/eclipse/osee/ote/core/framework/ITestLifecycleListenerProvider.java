@@ -15,11 +15,17 @@ import org.eclipse.osee.ote.core.TestScript;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
 
 public interface ITestLifecycleListenerProvider {
-	void clear();
-	boolean addListener(ITestLifecycleListener listener);
-	boolean removeListener(ITestLifecycleListener listener);
-	IMethodResult notifyPostDispose(IPropertyStore propertyStore, TestEnvironment env);
-	IMethodResult notifyPostInstantiation(IPropertyStore propertyStore, TestScript test, TestEnvironment env);
-	IMethodResult notifyPreDispose(IPropertyStore propertyStore, TestScript test, TestEnvironment env) ;
-	IMethodResult notifyPreInstantiation(IPropertyStore propertyStore, TestEnvironment env) ;
+   void clear();
+
+   boolean addListener(ITestLifecycleListener listener);
+
+   boolean removeListener(ITestLifecycleListener listener);
+
+   IMethodResult notifyPostDispose(IPropertyStore propertyStore, TestEnvironment env);
+
+   IMethodResult notifyPostInstantiation(IPropertyStore propertyStore, TestScript test, TestEnvironment env);
+
+   IMethodResult notifyPreDispose(IPropertyStore propertyStore, TestScript test, TestEnvironment env);
+
+   IMethodResult notifyPreInstantiation(IPropertyStore propertyStore, TestEnvironment env);
 }

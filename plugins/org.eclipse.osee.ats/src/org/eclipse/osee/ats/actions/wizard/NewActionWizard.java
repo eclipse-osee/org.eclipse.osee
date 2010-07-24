@@ -59,8 +59,8 @@ public class NewActionWizard extends Wizard implements INewWizard {
          }
          NewActionJob job = null;
          job =
-               new NewActionJob(getTitle(), getDescription(), getChangeType(), getPriority(), getNeedBy(),
-                     getValidation(), getSelectedActionableItemArtifacts(), this);
+            new NewActionJob(getTitle(), getDescription(), getChangeType(), getPriority(), getNeedBy(),
+               getValidation(), getSelectedActionableItemArtifacts(), this);
          job.setUser(true);
          job.setPriority(Job.LONG);
          job.schedule();
@@ -71,6 +71,7 @@ public class NewActionWizard extends Wizard implements INewWizard {
       return true;
    }
 
+   @Override
    public void init(IWorkbench workbench, IStructuredSelection selection) {
    }
 

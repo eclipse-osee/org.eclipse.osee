@@ -19,8 +19,8 @@ package org.eclipse.osee.framework.jini.event.old;
 public class ArtifactModifiedRemoteType extends OseeRemoteEventInstance {
 
    private static final long serialVersionUID = 1665518299340674326L;
-   private String guid;
-   private String type;
+   private final String guid;
+   private final String type;
 
    public ArtifactModifiedRemoteType(String eventGuid, String changedGuid, String type) {
       super(eventGuid);

@@ -23,31 +23,30 @@ import org.eclipse.osee.ote.core.environment.console.ICommandManager;
  * @author Ken J. Aguilar
  */
 public class StandardShell extends ConsoleShell {
-   
+
    private final Thread thread;
    private volatile boolean run = true;
-   
+
    public StandardShell(ICommandManager manager) {
       super(manager);
-      thread = new Thread(new Runnable(){
+      thread = new Thread(new Runnable() {
+         @Override
          public void run() {
             InputStreamReader stdin = new InputStreamReader(System.in);
             BufferedReader consoleIn = new BufferedReader(stdin);
-            while(run) {
+            while (run) {
                try {
                   final String line = consoleIn.readLine();
                   if (line == null) {
-                      OseeLog.log(StandardShell.class,
-                            Level.INFO,  
-                            "INput stream closed, standard shell closing...");
-                    run = false;
-                    break;
+                     OseeLog.log(StandardShell.class, Level.INFO, "INput stream closed, standard shell closing...");
+                     run = false;
+                     break;
                   }
                   if (line.equals("")) {
                      continue;
                   }
                   parseAndExecuteCmd(line);
-                  
+
                } catch (InterruptedIOException ioe) {
                   if (run) {
                      println("Command console interrupted abnormally");
@@ -57,20 +56,24 @@ public class StandardShell extends ConsoleShell {
                }
             }
          }
-      },"LBA Test Server Console"); {
+      }, "LBA Test Server Console");
+      {
 
-         
-      };
+      }
+      ;
    }
-   
+
+   @Override
    public void println(String string) {
-        System.out.println(string);
+      System.out.println(string);
    }
 
+   @Override
    public void print(String string) {
-        System.out.print(string);
+      System.out.print(string);
    }
 
+   @Override
    public void println() {
       System.out.println();
    }
@@ -78,16 +81,14 @@ public class StandardShell extends ConsoleShell {
    public void onCommandComplete(ConsoleCommand cmd) {
       System.out.flush();
    }
-   
+
    public void start() {
       thread.start();
-      OseeLog.log(StandardShell.class,
-   			 Level.INFO,  
-   			"The Standard Command Console has been started");
+      OseeLog.log(StandardShell.class, Level.INFO, "The Standard Command Console has been started");
    }
-   
+
    public void shutdown() {
-	   run = false;
-	   thread.interrupt();
+      run = false;
+      thread.interrupt();
    }
 }

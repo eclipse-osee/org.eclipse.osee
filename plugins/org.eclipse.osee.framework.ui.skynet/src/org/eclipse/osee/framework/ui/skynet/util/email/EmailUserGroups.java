@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.util.email;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -50,7 +51,7 @@ public class EmailUserGroups extends XNavigateItemAction {
    public static Set<Artifact> getEmailGroupsAndUserGroups(User user) throws OseeCoreException {
       Set<Artifact> artifacts = new HashSet<Artifact>();
       for (Artifact art : ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.UserGroup,
-            BranchManager.getCommonBranch())) {
+         BranchManager.getCommonBranch())) {
          // Only add group if have read permissions
          if (!art.getName().equals("Root Artifact") && AccessControlManager.hasPermission(art, PermissionEnum.READ)) {
             artifacts.add(art);
@@ -73,8 +74,8 @@ public class EmailUserGroups extends XNavigateItemAction {
                   for (Artifact userArt : artifact.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Members)) {
                      if (userArt instanceof User) {
                         if (!EmailUtil.isEmailValid((User) userArt)) {
-                           OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE, String.format(
-                                 "Invalid email [%s] for user [%s]; skipping", ((User) userArt).getEmail(), userArt));
+                           OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, String.format(
+                              "Invalid email [%s] for user [%s]; skipping", ((User) userArt).getEmail(), userArt));
                         } else {
                            emails.add(((User) userArt).getEmail());
                         }
@@ -83,8 +84,8 @@ public class EmailUserGroups extends XNavigateItemAction {
                } else if (artifact.isOfType(CoreArtifactTypes.UserGroup)) {
                   for (User user : artifact.getRelatedArtifacts(CoreRelationTypes.Users_User, User.class)) {
                      if (!EmailUtil.isEmailValid(user)) {
-                        OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE, String.format(
-                              "Invalid email [%s] for user [%s]; skipping", user.getEmail(), user));
+                        OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE,
+                           String.format("Invalid email [%s] for user [%s]; skipping", user.getEmail(), user));
                      } else {
                         emails.add(user.getEmail());
                      }

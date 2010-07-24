@@ -17,5 +17,5 @@ package org.eclipse.osee.ote.core.environment.interfaces;
 public interface IScriptInitializer {
 
    public void doScriptInitialProcessing() throws Exception;
-   
+
 }

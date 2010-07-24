@@ -369,8 +369,8 @@ public class ArtifactImportPage extends WizardDataTransferPage {
                   Artifact artifact = ArtifactQuery.getArtifactFromId(guid, BranchManager.getBranchByGuid(branch));
                   artifactSelectPanel.setDefaultItem(artifact);
                } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, String.format(
-                        "Unable to restore destination artifact- guid:[%s] branch guid:[%s]", guid, branch));
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE,
+                     String.format("Unable to restore destination artifact- guid:[%s] branch guid:[%s]", guid, branch));
                }
             }
          }
@@ -381,7 +381,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
          if (toUpdate) {
             try {
                attributeTypeSelectPanel.setAllowedAttributeTypes(getArtifactType().getAttributeTypes(
-                     getDestinationArtifact().getBranch()));
+                  getDestinationArtifact().getBranch()));
             } catch (OseeCoreException ex) {
                OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex.getLocalizedMessage());
             }
@@ -432,14 +432,14 @@ public class ArtifactImportPage extends WizardDataTransferPage {
          Collection<IOperation> ops = new ArrayList<IOperation>();
          ops.add(new SourceToRoughArtifactOperation(extractor, sourceFile, collector));
          ops.add(new FilterArtifactTypesByAttributeTypes(destinationArtifact.getBranch(), collector,
-               selectedArtifactTypes));
+            selectedArtifactTypes));
          selectedArtifactTypes.clear();
          if (executeOperation(new CompositeOperation("Extracting data from source", SkynetGuiPlugin.PLUGIN_ID, ops))) {
             artifactTypeSelectPanel.setAllowedArtifactTypes(selectedArtifactTypes);
             try {
                if (getArtifactType() != null) {
                   attributeTypeSelectPanel.setAllowedAttributeTypes(getArtifactType().getAttributeTypes(
-                        getDestinationArtifact().getBranch()));
+                     getDestinationArtifact().getBranch()));
                }
             } catch (Exception ex) {
             }
@@ -494,7 +494,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
 
       public void latch() {
          lastSelected.setValues(currentSelected.destinationArtifact, currentSelected.sourceFile,
-               currentSelected.extractor);
+            currentSelected.extractor);
       }
 
       public boolean areSelectionsValid() {

@@ -11,7 +11,6 @@
 package org.eclipse.osee.ote.message.elements;
 
 import java.util.Collection;
-
 import org.eclipse.osee.ote.core.MethodFormatter;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 import org.eclipse.osee.ote.core.testPoint.CheckPoint;
@@ -77,7 +76,7 @@ public class StringElement extends DiscreteElement<String> {
     * 
     * @param destination the destination array that will receive the char data
     * @return the actual number of characters copied. The destination array will contain undefined data starting at this
-    *         index until the end of the char array.
+    * index until the end of the char array.
     * @throws ArrayIndexOutOfBoundsException if the destination array is too small
     */
    public int getChars(char[] destination) throws ArrayIndexOutOfBoundsException {
@@ -108,13 +107,13 @@ public class StringElement extends DiscreteElement<String> {
       }
 
       accessor.getLogger().methodCalledOnObject(accessor, getFullName(),
-            (new MethodFormatter()).add(value).add(milliseconds), this.msg);
+         new MethodFormatter().add(value).add(milliseconds), this.msg);
       final StringTrimCondition c = new StringTrimCondition(this, value);
 
       MsgWaitResult result = msg.waitForCondition(accessor, c, false, milliseconds);
       CheckPoint passFail =
-            new CheckPoint(getFullName(), toString(value), toString(c.getLastCheckValue()), result.isPassed(),
-                  result.getElapsedTime());
+         new CheckPoint(getFullName(), toString(value), toString(c.getLastCheckValue()), result.isPassed(),
+            result.getElapsedTime());
 
       accessor.getLogger().testpoint(accessor, accessor.getTestScript(), accessor.getTestCase(), passFail);
 
@@ -140,12 +139,12 @@ public class StringElement extends DiscreteElement<String> {
 
    @Override
    public void zeroize() {
-      int sizeInBytes = ((lsb - msb) + 1) / 8;
+      int sizeInBytes = (lsb - msb + 1) / 8;
       getMsgData().getMem().zeroizeFromOffset(byteOffset, sizeInBytes);
    }
 
    public boolean isEmpty() {
-      return (new EmptyStringCondition(this)).check();
+      return new EmptyStringCondition(this).check();
    }
 
    public boolean checkEmpty(ITestAccessor accessor, int milliseconds) throws InterruptedException {
@@ -153,14 +152,14 @@ public class StringElement extends DiscreteElement<String> {
          throw new NullPointerException("The parameter accessor is null");
       }
 
-      accessor.getLogger().methodCalledOnObject(accessor, getFullName(), (new MethodFormatter()).add(milliseconds),
-            this.msg);
+      accessor.getLogger().methodCalledOnObject(accessor, getFullName(), new MethodFormatter().add(milliseconds),
+         this.msg);
       final EmptyStringCondition c = new EmptyStringCondition(this);
 
       MsgWaitResult result = msg.waitForCondition(accessor, c, false, milliseconds);
       CheckPoint passFail =
-            new CheckPoint(getFullName(), "Empty", result.isPassed() ? "Empty" : "Not Empty", result.isPassed(),
-                  result.getElapsedTime());
+         new CheckPoint(getFullName(), "Empty", result.isPassed() ? "Empty" : "Not Empty", result.isPassed(),
+            result.getElapsedTime());
 
       accessor.getLogger().testpoint(accessor, accessor.getTestScript(), accessor.getTestCase(), passFail);
 
@@ -173,14 +172,14 @@ public class StringElement extends DiscreteElement<String> {
          throw new NullPointerException("The parameter accessor is null");
       }
 
-      accessor.getLogger().methodCalledOnObject(accessor, getFullName(), (new MethodFormatter()).add(milliseconds),
-            this.msg);
+      accessor.getLogger().methodCalledOnObject(accessor, getFullName(), new MethodFormatter().add(milliseconds),
+         this.msg);
       final EmptyStringCondition c = new EmptyStringCondition(this);
 
       MsgWaitResult result = msg.waitForCondition(accessor, c, true, milliseconds);
       CheckPoint passFail =
-            new CheckPoint(getFullName(), "Empty", result.isPassed() ? "Empty" : "Not Empty", result.isPassed(),
-                  result.getElapsedTime());
+         new CheckPoint(getFullName(), "Empty", result.isPassed() ? "Empty" : "Not Empty", result.isPassed(),
+            result.getElapsedTime());
 
       accessor.getLogger().testpoint(accessor, accessor.getTestScript(), accessor.getTestCase(), passFail);
 

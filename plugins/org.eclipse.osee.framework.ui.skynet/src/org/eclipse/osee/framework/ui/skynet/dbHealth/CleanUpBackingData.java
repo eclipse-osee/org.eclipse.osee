@@ -51,7 +51,7 @@ public class CleanUpBackingData extends DatabaseHealthOperation {
       ResultsEditorTableTab resultsTab = new ResultsEditorTableTab(tableName + " gammas");
       getResultsProvider().addResultsTab(resultsTab);
       resultsTab.addColumn(new XViewerColumn("1", tableName + " gammas", 80, SWT.LEFT, true, SortDataType.Integer,
-            false, ""));
+         false, ""));
 
       try {
          chStmt.runPreparedQuery(sql);

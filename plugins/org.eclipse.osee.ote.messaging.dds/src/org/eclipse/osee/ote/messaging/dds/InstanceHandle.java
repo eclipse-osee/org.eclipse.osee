@@ -11,8 +11,8 @@
 package org.eclipse.osee.ote.messaging.dds;
 
 /**
- * This class is here for future functionality that is described in the DDS specification
- * but has not been implemented or used.
+ * This class is here for future functionality that is described in the DDS specification but has not been implemented
+ * or used.
  * 
  * @author Robert A. Fisher
  * @author David Diepenbrock

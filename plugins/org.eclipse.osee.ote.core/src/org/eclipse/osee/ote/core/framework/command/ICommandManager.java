@@ -14,5 +14,5 @@ import java.rmi.server.ExportException;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
 
 public interface ICommandManager {
-	public ICommandHandle addCommand(ITestServerCommand cmd, TestEnvironment context) throws ExportException;
+   public ICommandHandle addCommand(ITestServerCommand cmd, TestEnvironment context) throws ExportException;
 }

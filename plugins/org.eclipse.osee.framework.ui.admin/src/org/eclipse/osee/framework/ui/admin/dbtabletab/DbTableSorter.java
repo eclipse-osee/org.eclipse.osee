@@ -14,8 +14,8 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 
 /**
- * Sorter for the WorldTableViewer that displays items of type <code>ExampleTask</code>. The sorter supports three
- * sort criteria:
+ * Sorter for the WorldTableViewer that displays items of type <code>ExampleTask</code>. The sorter supports three sort
+ * criteria:
  * <p>
  * <code>DESCRIPTION</code>: Task description (String)
  * </p>
@@ -31,7 +31,7 @@ import org.eclipse.jface.viewers.ViewerSorter;
 public class DbTableSorter extends ViewerSorter {
 
    // Criteria that the instance uses
-   private int criteria;
+   private final int criteria;
 
    /**
     * Creates a resource sorter that will use the given sort criteria.
@@ -43,6 +43,7 @@ public class DbTableSorter extends ViewerSorter {
       this.criteria = criteria;
    }
 
+   @Override
    public int compare(Viewer viewer, Object o1, Object o2) {
 
       Object obj1 = ((DbModel) o1).getColumn(criteria);
@@ -58,8 +59,12 @@ public class DbTableSorter extends ViewerSorter {
 
    @SuppressWarnings("unchecked")
    protected int compareStrings(String str1, String str2) {
-      if (str1 == null) str1 = "";
-      if (str2 == null) str2 = "";
+      if (str1 == null) {
+         str1 = "";
+      }
+      if (str2 == null) {
+         str2 = "";
+      }
       return getComparator().compare(str1, str2);
    }
 

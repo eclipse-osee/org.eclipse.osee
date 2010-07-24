@@ -29,7 +29,10 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
 
    public XDecisionOptions decisionOptions;
    public static enum DecisionReviewState {
-      Prepare, Decision, Followup, Completed
+      Prepare,
+      Decision,
+      Followup,
+      Completed
    };
 
    public DecisionReviewArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
@@ -59,7 +62,9 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
 
    @Override
    public VersionArtifact getWorldViewTargetedVersion() throws OseeCoreException {
-      if (getParentSMA() == null) return null;
+      if (getParentSMA() == null) {
+         return null;
+      }
       return getParentSMA().getWorldViewTargetedVersion();
    }
 

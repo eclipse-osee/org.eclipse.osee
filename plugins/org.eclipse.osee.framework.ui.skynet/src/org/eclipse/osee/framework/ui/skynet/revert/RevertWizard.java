@@ -48,7 +48,7 @@ public class RevertWizard extends Wizard {
 
    @Override
    public IWizardPage getStartingPage() {
-      return getPage(revertWizardPage.TITLE);
+      return getPage(RevertWizardPage.TITLE);
    }
 
    @Override

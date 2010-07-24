@@ -19,8 +19,8 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.JoinUtility;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.JoinUtility.TagQueueJoinQuery;
+import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.search.engine.TagListenerAdapter;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeDataStore;
@@ -44,7 +44,7 @@ class TaggerAllWorker extends BaseServerCommand {
       IOseeStatement chStmt = ConnectionHandler.getStatement(connection);
       try {
          chStmt.runPreparedQuery(AttributeDataStore.getAllTaggableGammasByBranchQuery(branchId),
-               AttributeDataStore.getAllTaggableGammasByBranchQueryData(branchId));
+            AttributeDataStore.getAllTaggableGammasByBranchQueryData(branchId));
          TagQueueJoinQuery joinQuery = JoinUtility.createTagQueueJoinQuery();
          while (chStmt.next() && isExecutionAllowed()) {
             long gammaId = chStmt.getLong("gamma_id");
@@ -151,8 +151,7 @@ class TaggerAllWorker extends BaseServerCommand {
       public void printStats() {
          if (isVerbose()) {
             println(String.format("QueryIds: [ %d of %d] Attributes: [%d of %d] - Elapsed Time = %s.",
-                  queriesProcessed, totalQueries(), attributesProcessed, totalAttributes,
-                  Lib.getElapseString(startTime)));
+               queriesProcessed, totalQueries(), attributesProcessed, totalAttributes, Lib.getElapseString(startTime)));
          }
       }
 

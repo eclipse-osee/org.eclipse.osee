@@ -55,12 +55,12 @@ public class NewCoveragePackageAction extends Action {
          EntryDialog dialog = new EntryDialog(getText(), "Enter Coverage Package Name");
          if (dialog.open() == 0) {
             CoveragePackage coveragePackage =
-                  new CoveragePackage(dialog.getEntry(), CoverageOptionManagerDefault.instance());
+               new CoveragePackage(dialog.getEntry(), CoverageOptionManagerDefault.instance());
             SkynetTransaction transaction = new SkynetTransaction(branch, "Add Coverage Package");
             OseeCoveragePackageStore.get(coveragePackage, branch).save(transaction);
             transaction.execute();
             CoverageEditor.open(new CoverageEditorInput(dialog.getEntry(), OseeCoveragePackageStore.get(
-                  coveragePackage, branch).getArtifact(false), coveragePackage, false));
+               coveragePackage, branch).getArtifact(false), coveragePackage, false));
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

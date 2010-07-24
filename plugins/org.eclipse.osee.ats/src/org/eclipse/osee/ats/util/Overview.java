@@ -45,7 +45,13 @@ public class Overview {
    public final static String subscribedColor = "#FFCCAA";
    public final static String labelColor = "darkcyan";
    public static enum PreviewStyle {
-      NONE, MAP, TASKS, NOTES, LOG, HYPEROPEN, NO_SUBSCRIBE_OR_FAVORITE;
+      NONE,
+      MAP,
+      TASKS,
+      NOTES,
+      LOG,
+      HYPEROPEN,
+      NO_SUBSCRIBE_OR_FAVORITE;
 
       public static boolean contains(PreviewStyle[] styles, PreviewStyle style) {
          for (PreviewStyle st : styles) {
@@ -135,14 +141,14 @@ public class Overview {
       startBorderTable(100, false, "");
       addTable(getLabelValue("Title", sma.getName()));
       this.html.append(AHTML.multiColumnTable(new String[] {
-            AHTML.getLabelStr(labelFont, "State: ") + sma.getStateMgr().getCurrentStateName(),
-            AHTML.getLabelStr(labelFont, "Type: ") + sma.getArtifactTypeName(),
-            AHTML.getLabelStr(labelFont, "Id: ") + sma.getHumanReadableId()}));
-      addTable(getLabelValue("Originator", sma.getOriginator().getName()), getLabelValue("Creation Date",
-            XDate.getDateStr(sma.getLog().getCreationDate(), XDate.MMDDYYHHMM)));
+         AHTML.getLabelStr(labelFont, "State: ") + sma.getStateMgr().getCurrentStateName(),
+         AHTML.getLabelStr(labelFont, "Type: ") + sma.getArtifactTypeName(),
+         AHTML.getLabelStr(labelFont, "Id: ") + sma.getHumanReadableId()}));
+      addTable(getLabelValue("Originator", sma.getOriginator().getName()),
+         getLabelValue("Creation Date", XDate.getDateStr(sma.getLog().getCreationDate(), XDate.MMDDYYHHMM)));
       if (sma.isTeamWorkflow()) {
-         addTable(getLabelValue("Team", ((TeamWorkFlowArtifact) sma).getTeamName()), getLabelValue("Assignees",
-               Artifacts.toString("; ", sma.getStateMgr().getAssignees())));
+         addTable(getLabelValue("Team", ((TeamWorkFlowArtifact) sma).getTeamName()),
+            getLabelValue("Assignees", Artifacts.toString("; ", sma.getStateMgr().getAssignees())));
       } else {
          addTable(getLabelValue("Assignees", Artifacts.toString("; ", sma.getStateMgr().getAssignees())));
       }
@@ -159,7 +165,7 @@ public class Overview {
             this.html.append(AHTML.multiColumnTable(new String[] {AHTML.getLabelStr(labelFont, "Parent State: ") + ((TaskArtifact) sma).getStateMgr().getCurrentStateName()}));
          }
          this.html.append(AHTML.multiColumnTable(new String[] {AHTML.getLabelStr(labelFont, "Task Owner: ") + Artifacts.toString(
-               "; ", sma.getStateMgr().getAssignees())}));
+            "; ", sma.getStateMgr().getAssignees())}));
       }
       endBorderTable();
    }
@@ -260,7 +266,7 @@ public class Overview {
 
    public static String getOpenArtEditHyperlinkHtml(String name, String hrid) {
       return AHTML.getHyperlink(XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openArtifactEditor, hrid),
-            name);
+         name);
    }
 
    public static String getOpenHyperlinkHtml(String name, String guidOrHrid, int branchId) {
@@ -269,7 +275,7 @@ public class Overview {
 
    public static String getOpenHyperlinkHtml(String name, Artifact art) {
       return AHTML.getHyperlink(
-            XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openAction, art.getGuid()), name);
+         XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openAction, art.getGuid()), name);
    }
 
    public void addLog(StateMachineArtifact artifact) throws OseeCoreException {

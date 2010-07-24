@@ -113,7 +113,9 @@ public class MinicomConnection {
       try {
          int elapsedTime = 0;
          while (elapsedTime <= MAX_RESPONSE_TIME) {
-            if (inputBuffer.contains(matcher) >= 0) break;
+            if (inputBuffer.contains(matcher) >= 0) {
+               break;
+            }
 
             System.out.println("Input buffer did not contain " + matcher + " after " + elapsedTime + " milisecs");
             this.wait(ITERATION_TIME);
@@ -121,7 +123,7 @@ public class MinicomConnection {
          }
          if (elapsedTime > MAX_RESPONSE_TIME) {
             throw new InterruptedException(
-                  "Waiting for '" + matcher + "' took longer then " + MAX_RESPONSE_TIME + " miliseconds.");
+               "Waiting for '" + matcher + "' took longer then " + MAX_RESPONSE_TIME + " miliseconds.");
          }
          wait(4000);
 

@@ -29,33 +29,33 @@ import org.eclipse.osee.framework.manager.servlet.internal.Activator;
  */
 public class ChangeReportFunction extends AbstractOperation {
 
-	private final HttpServletRequest req;
-	private final HttpServletResponse resp;
-	private final IOseeBranchService branchService;
-	private final IDataTranslationService translationService;
+   private final HttpServletRequest req;
+   private final HttpServletResponse resp;
+   private final IOseeBranchService branchService;
+   private final IDataTranslationService translationService;
 
-	public ChangeReportFunction(HttpServletRequest req, HttpServletResponse resp, IOseeBranchService branchService, IDataTranslationService translationService) {
-		super("Branch Change Report", Activator.PLUGIN_ID);
-		this.req = req;
-		this.resp = resp;
-		this.branchService = branchService;
-		this.translationService = translationService;
-	}
+   public ChangeReportFunction(HttpServletRequest req, HttpServletResponse resp, IOseeBranchService branchService, IDataTranslationService translationService) {
+      super("Branch Change Report", Activator.PLUGIN_ID);
+      this.req = req;
+      this.resp = resp;
+      this.branchService = branchService;
+      this.translationService = translationService;
+   }
 
-	@Override
-	protected void doWork(IProgressMonitor monitor) throws Exception {
-		ChangeReportRequest request =
-					translationService.convert(req.getInputStream(), CoreTranslatorId.CHANGE_REPORT_REQUEST);
+   @Override
+   protected void doWork(IProgressMonitor monitor) throws Exception {
+      ChangeReportRequest request =
+         translationService.convert(req.getInputStream(), CoreTranslatorId.CHANGE_REPORT_REQUEST);
 
-		ChangeReportResponse response = new ChangeReportResponse();
-		IOperation subOp = branchService.getChanges(monitor, request, response);
-		doSubWork(subOp, monitor, 0.90);
+      ChangeReportResponse response = new ChangeReportResponse();
+      IOperation subOp = branchService.getChanges(monitor, request, response);
+      doSubWork(subOp, monitor, 0.90);
 
-		resp.setStatus(HttpServletResponse.SC_ACCEPTED);
-		resp.setContentType("text/xml");
-		resp.setCharacterEncoding("UTF-8");
-		InputStream inputStream = translationService.convertToStream(response, CoreTranslatorId.CHANGE_REPORT_RESPONSE);
-		Lib.inputStreamToOutputStream(inputStream, resp.getOutputStream());
-		monitor.worked(calculateWork(0.10));
-	}
+      resp.setStatus(HttpServletResponse.SC_ACCEPTED);
+      resp.setContentType("text/xml");
+      resp.setCharacterEncoding("UTF-8");
+      InputStream inputStream = translationService.convertToStream(response, CoreTranslatorId.CHANGE_REPORT_RESPONSE);
+      Lib.inputStreamToOutputStream(inputStream, resp.getOutputStream());
+      monitor.worked(calculateWork(0.10));
+   }
 }

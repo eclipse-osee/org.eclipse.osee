@@ -36,20 +36,20 @@ import org.eclipse.osee.framework.logging.OseeLog;
 public class DatabaseAttributeTypeAccessor extends AbstractDatabaseAccessor<AttributeType> {
 
    private static final String SELECT_ATTRIBUTE_TYPES =
-         "SELECT * FROM osee_attribute_type aty1, osee_attribute_base_type aby1, osee_attribute_provider_type apy1 WHERE aty1.attr_base_type_id = aby1.attr_base_type_id AND aty1.attr_provider_type_id = apy1.attr_provider_type_id";
+      "SELECT * FROM osee_attribute_type aty1, osee_attribute_base_type aby1, osee_attribute_provider_type apy1 WHERE aty1.attr_base_type_id = aby1.attr_base_type_id AND aty1.attr_provider_type_id = apy1.attr_provider_type_id";
    private static final String INSERT_ATTRIBUTE_TYPE =
-         "INSERT INTO osee_attribute_type (attr_type_id, attr_type_guid, attr_base_type_id, attr_provider_type_id, file_type_extension, name, default_value, enum_type_id, min_occurence, max_occurence, tip_text, tagger_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
+      "INSERT INTO osee_attribute_type (attr_type_id, attr_type_guid, attr_base_type_id, attr_provider_type_id, file_type_extension, name, default_value, enum_type_id, min_occurence, max_occurence, tip_text, tagger_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
    private static final String UPDATE_ATTRIBUTE_TYPE =
-         "update osee_attribute_type SET attr_base_type_id=?, attr_provider_type_id=?, file_type_extension=?, name=?, default_value=?, enum_type_id=?, min_occurence=?, max_occurence=?, tip_text=?, tagger_id=? where attr_type_id = ?";
+      "update osee_attribute_type SET attr_base_type_id=?, attr_provider_type_id=?, file_type_extension=?, name=?, default_value=?, enum_type_id=?, min_occurence=?, max_occurence=?, tip_text=?, tagger_id=? where attr_type_id = ?";
 
    private static final String INSERT_BASE_ATTRIBUTE_TYPE =
-         "INSERT INTO osee_attribute_base_type (attr_base_type_id, attribute_class) VALUES (?, ?)";
+      "INSERT INTO osee_attribute_base_type (attr_base_type_id, attribute_class) VALUES (?, ?)";
    private static final String INSERT_ATTRIBUTE_PROVIDER_TYPE =
-         "INSERT INTO osee_attribute_provider_type (attr_provider_type_id, attribute_provider_class) VALUES (?, ?)";
+      "INSERT INTO osee_attribute_provider_type (attr_provider_type_id, attribute_provider_class) VALUES (?, ?)";
    private static final String SELECT_ATTRIBUTE_BASE_TYPE =
-         "SELECT attr_base_type_id FROM osee_attribute_base_type WHERE attribute_class = ?";
+      "SELECT attr_base_type_id FROM osee_attribute_base_type WHERE attribute_class = ?";
    private static final String SELECT_ATTRIBUTE_PROVIDER_TYPE =
-         "SELECT attr_provider_type_id FROM osee_attribute_provider_type WHERE attribute_provider_class = ?";
+      "SELECT attr_provider_type_id FROM osee_attribute_provider_type WHERE attribute_provider_class = ?";
 
    private final OseeEnumTypeCache enumCache;
 
@@ -86,9 +86,9 @@ public class DatabaseAttributeTypeAccessor extends AbstractDatabaseAccessor<Attr
                OseeEnumType oseeEnumType = enumCache.getById(enumTypeId);
 
                AttributeType attributeType =
-                     factory.createOrUpdate(cache, attributeTypeId, StorageState.LOADED, guid, typeName,
-                           baseAttributeTypeId, attributeProviderNameId, fileTypeExtension, defaultValue, oseeEnumType,
-                           minOccurrences, maxOccurrences, description, taggerId);
+                  factory.createOrUpdate(cache, attributeTypeId, StorageState.LOADED, guid, typeName,
+                     baseAttributeTypeId, attributeProviderNameId, fileTypeExtension, defaultValue, oseeEnumType,
+                     minOccurrences, maxOccurrences, description, taggerId);
 
                attributeType.clearDirty();
             } catch (OseeCoreException ex) {
@@ -130,24 +130,24 @@ public class DatabaseAttributeTypeAccessor extends AbstractDatabaseAccessor<Attr
       int attrBaseTypeId = getOrCreateAttributeBaseType(type.getBaseAttributeTypeId());
       int attrProviderTypeId = getOrCreateAttributeProviderType(type.getAttributeProviderId());
       return new Object[] {type.getId(), type.getGuid(), attrBaseTypeId, attrProviderTypeId,
-            type.getFileTypeExtension() == null ? SQL3DataType.VARCHAR : type.getFileTypeExtension(),
-            type.getName() == null ? SQL3DataType.VARCHAR : type.getName(),
-            type.getDefaultValue() == null ? SQL3DataType.VARCHAR : type.getDefaultValue(), type.getOseeEnumTypeId(),
-            type.getMinOccurrences(), type.getMaxOccurrences(),
-            type.getDescription() == null ? SQL3DataType.VARCHAR : type.getDescription(),
-            type.getTaggerId() == null ? SQL3DataType.VARCHAR : type.getTaggerId()};
+         type.getFileTypeExtension() == null ? SQL3DataType.VARCHAR : type.getFileTypeExtension(),
+         type.getName() == null ? SQL3DataType.VARCHAR : type.getName(),
+         type.getDefaultValue() == null ? SQL3DataType.VARCHAR : type.getDefaultValue(), type.getOseeEnumTypeId(),
+         type.getMinOccurrences(), type.getMaxOccurrences(),
+         type.getDescription() == null ? SQL3DataType.VARCHAR : type.getDescription(),
+         type.getTaggerId() == null ? SQL3DataType.VARCHAR : type.getTaggerId()};
    }
 
    private Object[] toUpdateValues(AttributeType type) throws OseeDataStoreException {
       int attrBaseTypeId = getOrCreateAttributeBaseType(type.getBaseAttributeTypeId());
       int attrProviderTypeId = getOrCreateAttributeProviderType(type.getAttributeProviderId());
       return new Object[] {attrBaseTypeId, attrProviderTypeId,
-            type.getFileTypeExtension() == null ? SQL3DataType.VARCHAR : type.getFileTypeExtension(),
-            type.getName() == null ? SQL3DataType.VARCHAR : type.getName(),
-            type.getDefaultValue() == null ? SQL3DataType.VARCHAR : type.getDefaultValue(), type.getOseeEnumTypeId(),
-            type.getMinOccurrences(), type.getMaxOccurrences(),
-            type.getDescription() == null ? SQL3DataType.VARCHAR : type.getDescription(),
-            type.getTaggerId() == null ? SQL3DataType.VARCHAR : type.getTaggerId(), type.getId()};
+         type.getFileTypeExtension() == null ? SQL3DataType.VARCHAR : type.getFileTypeExtension(),
+         type.getName() == null ? SQL3DataType.VARCHAR : type.getName(),
+         type.getDefaultValue() == null ? SQL3DataType.VARCHAR : type.getDefaultValue(), type.getOseeEnumTypeId(),
+         type.getMinOccurrences(), type.getMaxOccurrences(),
+         type.getDescription() == null ? SQL3DataType.VARCHAR : type.getDescription(),
+         type.getTaggerId() == null ? SQL3DataType.VARCHAR : type.getTaggerId(), type.getId()};
    }
 
    @SuppressWarnings("unchecked")
@@ -161,7 +161,7 @@ public class DatabaseAttributeTypeAccessor extends AbstractDatabaseAccessor<Attr
          } else {
             attrBaseTypeId = getSequence().getNextAttributeProviderTypeId();
             getDatabaseService().runPreparedUpdate(INSERT_ATTRIBUTE_PROVIDER_TYPE, attrBaseTypeId,
-                  attrProviderExtension);
+               attrProviderExtension);
          }
       } finally {
          chStmt.close();

@@ -49,12 +49,24 @@ public class RelationDataTypeXml extends BaseXmlDataType<RelationDataType> {
    @Override
    protected void populateFromTextElement(RelationDataType dataType, String tag, String text) throws XMLStreamException {
       super.populateFromTextElement(dataType, tag, text);
-      if (ORDER.equals(tag)) dataType.setOrdered(Boolean.parseBoolean(text));
-      if (SIDE_A_NAME.equals(tag)) dataType.setSideAName(text);
-      if (SIDE_B_NAME.equals(tag)) dataType.setSideBName(text);
-      if (SHORT_NAME.equals(tag)) dataType.setShortName(text);
-      if (A_TO_B_PHRASE.equals(tag)) dataType.setAToBPhrase(text);
-      if (B_TO_A_PHRASE.equals(tag)) dataType.setBToAPhrase(text);
+      if (ORDER.equals(tag)) {
+         dataType.setOrdered(Boolean.parseBoolean(text));
+      }
+      if (SIDE_A_NAME.equals(tag)) {
+         dataType.setSideAName(text);
+      }
+      if (SIDE_B_NAME.equals(tag)) {
+         dataType.setSideBName(text);
+      }
+      if (SHORT_NAME.equals(tag)) {
+         dataType.setShortName(text);
+      }
+      if (A_TO_B_PHRASE.equals(tag)) {
+         dataType.setAToBPhrase(text);
+      }
+      if (B_TO_A_PHRASE.equals(tag)) {
+         dataType.setBToAPhrase(text);
+      }
    }
 
    @Override

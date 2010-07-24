@@ -30,8 +30,8 @@ public class AttributeXWidgetManager {
 
    private AttributeXWidgetManager() {
       this.extensionObjects =
-            new ExtensionDefinedObjects<IAttributeXWidgetProvider>(EXTENSION_POINT, EXTENSION_NAME,
-            CLASS_NAME_ATTRIBUTE, true);
+         new ExtensionDefinedObjects<IAttributeXWidgetProvider>(EXTENSION_POINT, EXTENSION_NAME, CLASS_NAME_ATTRIBUTE,
+            true);
    }
 
    private List<IAttributeXWidgetProvider> getProviders() {

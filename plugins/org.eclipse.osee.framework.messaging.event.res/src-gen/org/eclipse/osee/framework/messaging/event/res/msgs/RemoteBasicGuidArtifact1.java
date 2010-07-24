@@ -5,7 +5,6 @@
 // Generated on: 2010.05.13 at 02:00:51 PM MST 
 //
 
-
 package org.eclipse.osee.framework.messaging.event.res.msgs;
 
 import java.util.ArrayList;
@@ -16,11 +15,11 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
 
-
 /**
- * <p>Java class for RemoteBasicGuidArtifact1 complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for RemoteBasicGuidArtifact1 complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="RemoteBasicGuidArtifact1">
@@ -38,182 +37,135 @@ import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "RemoteBasicGuidArtifact1", propOrder = {
-    "modTypeGuid",
-    "branchGuid",
-    "artTypeGuid",
-    "artGuid",
-    "attributes",
-    "toArtTypeGuid"
-})
-public class RemoteBasicGuidArtifact1
-    extends RemoteEvent
-{
+@XmlType(name = "RemoteBasicGuidArtifact1", propOrder = {"modTypeGuid", "branchGuid", "artTypeGuid", "artGuid",
+   "attributes", "toArtTypeGuid"})
+public class RemoteBasicGuidArtifact1 extends RemoteEvent {
 
-    @XmlElement(required = true)
-    protected String modTypeGuid;
-    @XmlElement(required = true)
-    protected String branchGuid;
-    @XmlElement(required = true)
-    protected String artTypeGuid;
-    @XmlElement(required = true)
-    protected String artGuid;
-    @XmlElement(required = true)
-    protected List<RemoteAttributeChange1> attributes;
-    @XmlElement(required = true)
-    protected String toArtTypeGuid;
+   @XmlElement(required = true)
+   protected String modTypeGuid;
+   @XmlElement(required = true)
+   protected String branchGuid;
+   @XmlElement(required = true)
+   protected String artTypeGuid;
+   @XmlElement(required = true)
+   protected String artGuid;
+   @XmlElement(required = true)
+   protected List<RemoteAttributeChange1> attributes;
+   @XmlElement(required = true)
+   protected String toArtTypeGuid;
 
-    /**
-     * Gets the value of the modTypeGuid property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getModTypeGuid() {
-        return modTypeGuid;
-    }
+   /**
+    * Gets the value of the modTypeGuid property.
+    * 
+    * @return possible object is {@link String }
+    */
+   public String getModTypeGuid() {
+      return modTypeGuid;
+   }
 
-    /**
-     * Sets the value of the modTypeGuid property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setModTypeGuid(String value) {
-        this.modTypeGuid = value;
-    }
+   /**
+    * Sets the value of the modTypeGuid property.
+    * 
+    * @param value allowed object is {@link String }
+    */
+   public void setModTypeGuid(String value) {
+      this.modTypeGuid = value;
+   }
 
-    /**
-     * Gets the value of the branchGuid property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getBranchGuid() {
-        return branchGuid;
-    }
+   /**
+    * Gets the value of the branchGuid property.
+    * 
+    * @return possible object is {@link String }
+    */
+   public String getBranchGuid() {
+      return branchGuid;
+   }
 
-    /**
-     * Sets the value of the branchGuid property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setBranchGuid(String value) {
-        this.branchGuid = value;
-    }
+   /**
+    * Sets the value of the branchGuid property.
+    * 
+    * @param value allowed object is {@link String }
+    */
+   public void setBranchGuid(String value) {
+      this.branchGuid = value;
+   }
 
-    /**
-     * Gets the value of the artTypeGuid property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getArtTypeGuid() {
-        return artTypeGuid;
-    }
+   /**
+    * Gets the value of the artTypeGuid property.
+    * 
+    * @return possible object is {@link String }
+    */
+   public String getArtTypeGuid() {
+      return artTypeGuid;
+   }
 
-    /**
-     * Sets the value of the artTypeGuid property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setArtTypeGuid(String value) {
-        this.artTypeGuid = value;
-    }
+   /**
+    * Sets the value of the artTypeGuid property.
+    * 
+    * @param value allowed object is {@link String }
+    */
+   public void setArtTypeGuid(String value) {
+      this.artTypeGuid = value;
+   }
 
-    /**
-     * Gets the value of the artGuid property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getArtGuid() {
-        return artGuid;
-    }
+   /**
+    * Gets the value of the artGuid property.
+    * 
+    * @return possible object is {@link String }
+    */
+   public String getArtGuid() {
+      return artGuid;
+   }
 
-    /**
-     * Sets the value of the artGuid property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setArtGuid(String value) {
-        this.artGuid = value;
-    }
+   /**
+    * Sets the value of the artGuid property.
+    * 
+    * @param value allowed object is {@link String }
+    */
+   public void setArtGuid(String value) {
+      this.artGuid = value;
+   }
 
-    /**
-     * Gets the value of the attributes property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the attributes property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getAttributes().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link RemoteAttributeChange1 }
-     * 
-     * 
-     */
-    public List<RemoteAttributeChange1> getAttributes() {
-        if (attributes == null) {
-            attributes = new ArrayList<RemoteAttributeChange1>();
-        }
-        return this.attributes;
-    }
+   /**
+    * Gets the value of the attributes property.
+    * <p>
+    * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to
+    * the returned list will be present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for
+    * the attributes property.
+    * <p>
+    * For example, to add a new item, do as follows:
+    * 
+    * <pre>
+    * getAttributes().add(newItem);
+    * </pre>
+    * <p>
+    * Objects of the following type(s) are allowed in the list {@link RemoteAttributeChange1 }
+    */
+   public List<RemoteAttributeChange1> getAttributes() {
+      if (attributes == null) {
+         attributes = new ArrayList<RemoteAttributeChange1>();
+      }
+      return this.attributes;
+   }
 
-    /**
-     * Gets the value of the toArtTypeGuid property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getToArtTypeGuid() {
-        return toArtTypeGuid;
-    }
+   /**
+    * Gets the value of the toArtTypeGuid property.
+    * 
+    * @return possible object is {@link String }
+    */
+   public String getToArtTypeGuid() {
+      return toArtTypeGuid;
+   }
 
-    /**
-     * Sets the value of the toArtTypeGuid property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setToArtTypeGuid(String value) {
-        this.toArtTypeGuid = value;
-    }
+   /**
+    * Sets the value of the toArtTypeGuid property.
+    * 
+    * @param value allowed object is {@link String }
+    */
+   public void setToArtTypeGuid(String value) {
+      this.toArtTypeGuid = value;
+   }
 
 }

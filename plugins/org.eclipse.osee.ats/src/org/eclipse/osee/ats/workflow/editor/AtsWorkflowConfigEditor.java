@@ -321,8 +321,8 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
    private WorkPageShape getWorkPageShape(WorkPageDefinition page) {
       for (Object object : getModel().getChildren()) {
          if (object instanceof WorkPageShape) {
-            if (((WorkPageShape) object).getId().equals(page.getId()) || (page.getParentId() != null && ((WorkPageShape) object).getId().equals(
-               page.getParentId()))) {
+            if (((WorkPageShape) object).getId().equals(page.getId()) || page.getParentId() != null && ((WorkPageShape) object).getId().equals(
+               page.getParentId())) {
                return (WorkPageShape) object;
             }
          }

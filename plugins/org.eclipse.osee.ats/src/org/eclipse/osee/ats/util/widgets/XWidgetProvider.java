@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IXWidgetProvider;
  */
 public class XWidgetProvider implements IXWidgetProvider {
 
+   @Override
    public XWidget createXWidget(String widgetName, String name, DynamicXWidgetLayoutData widgetLayoutData) {
 
       if (widgetName.equals("XDefectViewer")) {

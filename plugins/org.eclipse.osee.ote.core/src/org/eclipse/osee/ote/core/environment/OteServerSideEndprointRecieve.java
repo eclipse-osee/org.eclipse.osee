@@ -16,10 +16,10 @@ import org.eclipse.osee.framework.messaging.Message;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public class OteServerSideEndprointRecieve extends EndpointReceive {
 
+   @Override
    public void start(Properties properties) {
    }
 

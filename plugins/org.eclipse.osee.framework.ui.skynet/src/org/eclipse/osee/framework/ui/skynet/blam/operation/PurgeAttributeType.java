@@ -27,9 +27,10 @@ public class PurgeAttributeType extends AbstractBlam {
       return "Purge Attribute Type";
    }
 
+   @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       Collection<AttributeType> purgeAttributeTypes =
-            variableMap.getCollection(AttributeType.class, "Attribute Type(s) to purge");
+         variableMap.getCollection(AttributeType.class, "Attribute Type(s) to purge");
 
       for (AttributeType attributeType : purgeAttributeTypes) {
          AttributeTypeManager.purgeAttributeType(attributeType);
@@ -46,6 +47,7 @@ public class PurgeAttributeType extends AbstractBlam {
       return "Purge an attribute type.";
    }
 
+   @Override
    public Collection<String> getCategories() {
       return Arrays.asList("Admin");
    }

@@ -22,14 +22,14 @@ public class CoverageMergeXViewerFactoryImport extends CoverageMergeXViewerFacto
 
    protected static String NAMESPACE = "osee.ats.CoverageMergeImport";
 
-   public static XViewerColumn Import =
-         new XViewerColumn(NAMESPACE + ".name", "Import", 65, SWT.LEFT, true, SortDataType.Check, false, "");
+   public static XViewerColumn Import = new XViewerColumn(NAMESPACE + ".name", "Import", 65, SWT.LEFT, true,
+      SortDataType.Check, false, "");
 
    public CoverageMergeXViewerFactoryImport() {
       super();
       clearColumnRegistration();
       registerColumns(Name, Method_Number, Execution_Number, Import, Parent_Coverage_Unit, Namespace, Coverage_Percent,
-            Coverage_Method, Line_Number, Coverage_Test_Units, Assignees_Col, Location, Full_Path, Guid);
+         Coverage_Method, Line_Number, Coverage_Test_Units, Assignees_Col, Location, Full_Path, Guid);
       for (XViewerColumn xCol : getColumns()) {
          overrideShowDefault(xCol.getId(), xCol.equals(CoverageXViewerFactory.Name) ||
          //

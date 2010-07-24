@@ -27,12 +27,15 @@ import org.w3c.dom.Element;
 public class IndexElement implements Xmlizable {
 
    public enum IndexFields {
-      id, mySqlIgnore, type, tablespace;
+      id,
+      mySqlIgnore,
+      type,
+      tablespace;
    }
 
    private String id;
    private String indexType;
-   private List<AppliesToClause> appliesToList;
+   private final List<AppliesToClause> appliesToList;
    private boolean ignoreMySql = false;
    private String tablespace;
 
@@ -59,6 +62,7 @@ public class IndexElement implements Xmlizable {
       return appliesToList;
    }
 
+   @Override
    public String toString() {
       StringBuilder toReturn = new StringBuilder();
       toReturn.append(" Index: " + id);
@@ -66,6 +70,7 @@ public class IndexElement implements Xmlizable {
       return toReturn.toString();
    }
 
+   @Override
    public Element toXml(Document doc) {
       Element element = doc.createElement(TableElement.TableSections.Index.name());
       element.setAttribute(IndexFields.id.name(), id);
@@ -93,7 +98,7 @@ public class IndexElement implements Xmlizable {
       }
       IndexElement that = (IndexElement) otherObject;
       return new EqualsBuilder().appendSuper(super.equals(otherObject)).append(this.appliesToList,
-            that.getAppliesToList()).append(this.id, that.getId()).isEquals();
+         that.getAppliesToList()).append(this.id, that.getId()).isEquals();
    }
 
    @Override

@@ -16,10 +16,10 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({//
 JdkCoreTestSuite.class, //
-			FrameworkCoreTestSuite.class, //
-			AllCoreModelTestSuite.class, //
-			AllCoreMessageTestSuite.class, //
-			AllLifecycleTestSuite.class,//
+   FrameworkCoreTestSuite.class, //
+   AllCoreModelTestSuite.class, //
+   AllCoreMessageTestSuite.class, //
+   AllLifecycleTestSuite.class,//
 })
 public class CoreRuntimeFeatureTestsSuite {
 

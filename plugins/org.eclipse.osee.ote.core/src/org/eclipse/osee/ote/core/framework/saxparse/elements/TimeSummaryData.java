@@ -12,38 +12,42 @@ package org.eclipse.osee.ote.core.framework.saxparse.elements;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public class TimeSummaryData {
 
-   private String elapsed;
+   private final String elapsed;
+
    /**
     * @return the elapsed
     */
    public String getElapsed() {
       return elapsed;
    }
+
    /**
     * @return the endDate
     */
    public String getEndDate() {
       return endDate;
    }
+
    /**
     * @return the milliseconds
     */
    public String getMilliseconds() {
       return milliseconds;
    }
+
    /**
     * @return the startDate
     */
    public String getStartDate() {
       return startDate;
    }
-   private String endDate;
-   private String milliseconds;
-   private String startDate;
+   private final String endDate;
+   private final String milliseconds;
+   private final String startDate;
+
    /**
     * @param elapsed
     * @param endDate

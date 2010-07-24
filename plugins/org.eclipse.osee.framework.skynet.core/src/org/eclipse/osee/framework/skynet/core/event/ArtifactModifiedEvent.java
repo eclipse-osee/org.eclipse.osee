@@ -79,11 +79,11 @@ public class ArtifactModifiedEvent extends ArtifactTransactionModifiedEvent {
          return Collections.singleton(new EventBasicGuidArtifact(eventModType, artifact));
       } else if (unloadedArtifact != null) {
          Artifact artifact =
-               ArtifactCache.getActive(unloadedArtifact.getArtifactId(),
-                     BranchManager.getBranchByGuid(unloadedArtifact.getBranchGuid()));
+            ArtifactCache.getActive(unloadedArtifact.getArtifactId(),
+               BranchManager.getBranchByGuid(unloadedArtifact.getBranchGuid()));
          if (artifact != null) {
             return Collections.singleton(new EventBasicGuidArtifact(eventModType, unloadedArtifact.getBranchGuid(),
-                  unloadedArtifact.getArtTypeGuid(), artifact.getGuid()));
+               unloadedArtifact.getArtTypeGuid(), artifact.getGuid()));
          }
       } else {
          throw new OseeStateException("unhandled artifact change state");

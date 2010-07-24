@@ -50,7 +50,9 @@ public class CreateGoalTestArtifacts extends XNavigateItemAction {
          AWorkbench.popup("Can't be run on production");
          return;
       }
-      if (!MessageDialog.openConfirm(Displays.getActiveShell(), getName(), getName())) return;
+      if (!MessageDialog.openConfirm(Displays.getActiveShell(), getName(), getName())) {
+         return;
+      }
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), getName());
       GoalArtifact oteGoal = GoalArtifact.createGoal("OTE");
       GoalArtifact atsGoal = GoalArtifact.createGoal("ATS");
@@ -58,21 +60,20 @@ public class CreateGoalTestArtifacts extends XNavigateItemAction {
       GoalArtifact msaGoal = GoalArtifact.createGoal("MSA Tools");
       GoalArtifact cdbGoal = GoalArtifact.createGoal("Integrate CDB signal diff into OSEE");
       ActionArtifact action =
-            ActionManager.createAction(null, "Fix this model", "Description", ChangeType.Problem,
-                  PriorityType.Priority_2, false, null,
-                  ActionableItemArtifact.getActionableItems(Arrays.asList("OTE_SW")), transaction);
+         ActionManager.createAction(null, "Fix this model", "Description", ChangeType.Problem, PriorityType.Priority_2,
+            false, null, ActionableItemArtifact.getActionableItems(Arrays.asList("OTE_SW")), transaction);
       action.persist(transaction);
       oteGoal.addMember(action.getTeamWorkFlowArtifacts().iterator().next());
       TeamWorkFlowArtifact teamArt = action.getTeamWorkFlowArtifacts().iterator().next();
       PeerToPeerReviewArtifact peerReviewArt =
-            ReviewManager.createNewPeerToPeerReview(teamArt, "New Review", "Implement", transaction);
+         ReviewManager.createNewPeerToPeerReview(teamArt, "New Review", "Implement", transaction);
       oteGoal.addMember(peerReviewArt);
       teamArt.persist(transaction);
 
       action =
-            ActionManager.createAction(null, "Add CDB Check Signals", "Description", ChangeType.Problem,
-                  PriorityType.Priority_4, false, null, ActionableItemArtifact.getActionableItems(Arrays.asList(
-                        "OTE_SW", "CDB")), transaction);
+         ActionManager.createAction(null, "Add CDB Check Signals", "Description", ChangeType.Problem,
+            PriorityType.Priority_4, false, null,
+            ActionableItemArtifact.getActionableItems(Arrays.asList("OTE_SW", "CDB")), transaction);
       action.persist(transaction);
       oteGoal.addMember(action.getTeamWorkFlowArtifacts().iterator().next());
       cdbGoal.addMember(action.getTeamWorkFlowArtifacts().iterator().next());
@@ -81,9 +82,9 @@ public class CreateGoalTestArtifacts extends XNavigateItemAction {
       }
 
       action =
-            ActionManager.createAction(null, "Remove Workflow button", "Description", ChangeType.Problem,
-                  PriorityType.Priority_4, false, null, ActionableItemArtifact.getActionableItems(Arrays.asList("ATS",
-                        "CDB")), transaction);
+         ActionManager.createAction(null, "Remove Workflow button", "Description", ChangeType.Problem,
+            PriorityType.Priority_4, false, null,
+            ActionableItemArtifact.getActionableItems(Arrays.asList("ATS", "CDB")), transaction);
       action.persist(transaction);
       atsGoal.addMember(action.getTeamWorkFlowArtifacts().iterator().next());
       cdbGoal.addMember(action.getTeamWorkFlowArtifacts().iterator().next());
@@ -91,9 +92,9 @@ public class CreateGoalTestArtifacts extends XNavigateItemAction {
 
       for (String msaTool : Arrays.asList("TRAX", "REQ", "RCS")) {
          action =
-               ActionManager.createAction(null, "Fix " + msaTool + " button", "Description", ChangeType.Problem,
-                     PriorityType.Priority_4, false, null,
-                     ActionableItemArtifact.getActionableItems(Arrays.asList(msaTool)), transaction);
+            ActionManager.createAction(null, "Fix " + msaTool + " button", "Description", ChangeType.Problem,
+               PriorityType.Priority_4, false, null, ActionableItemArtifact.getActionableItems(Arrays.asList(msaTool)),
+               transaction);
          action.persist(transaction);
          msaGoal.addMember(action.getTeamWorkFlowArtifacts().iterator().next());
          teamArt = action.getTeamWorkFlowArtifacts().iterator().next();
@@ -106,9 +107,9 @@ public class CreateGoalTestArtifacts extends XNavigateItemAction {
       }
 
       action =
-            ActionManager.createAction(null, "Add the Improvement", "Description", ChangeType.Improvement,
-                  PriorityType.Priority_4, false, null,
-                  ActionableItemArtifact.getActionableItems(Arrays.asList("REQ")), transaction);
+         ActionManager.createAction(null, "Add the Improvement", "Description", ChangeType.Improvement,
+            PriorityType.Priority_4, false, null, ActionableItemArtifact.getActionableItems(Arrays.asList("REQ")),
+            transaction);
       action.persist(transaction);
       msaGoal.addMember(action);
       msaGoal.persist(transaction);
@@ -123,7 +124,7 @@ public class CreateGoalTestArtifacts extends XNavigateItemAction {
 
       transaction.execute();
       WorldEditor.open(new WorldEditorSimpleProvider("Goals", Arrays.asList(oteGoal, atsGoal, defineGoal, msaGoal,
-            cdbGoal)));
+         cdbGoal)));
 
    }
 }

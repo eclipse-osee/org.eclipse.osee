@@ -22,12 +22,8 @@ import org.junit.runners.Suite;
  */
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
-	JdkCoreTypeTestSuite.class,
-	JdkCoreUtilTestSuite.class,
-	JdkCoreTextTestSuite.class,
-	JdkCoreRuleTestSuite.class,
-})
+@Suite.SuiteClasses({JdkCoreTypeTestSuite.class, JdkCoreUtilTestSuite.class, JdkCoreTextTestSuite.class,
+   JdkCoreRuleTestSuite.class,})
 public class JdkCoreTestSuite {
 
 }

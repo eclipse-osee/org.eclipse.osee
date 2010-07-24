@@ -121,8 +121,7 @@ public class ServiceItemHandler implements IRenderer {
             } else if (entries[i] instanceof GroupEntry) {
                String[] groups = ((GroupEntry) entries[i]).group;
                serviceRecords.add(new ItemRecord("Group",
-                     "{ " + (groups == null ? "" : StringUtils.join(groups, ",")) + " }", SWT.BOLD,
-                     SWT.COLOR_DARK_GREEN));
+                  "{ " + (groups == null ? "" : StringUtils.join(groups, ",")) + " }", SWT.BOLD, SWT.COLOR_DARK_GREEN));
             } else if (entries[i] instanceof FormmatedEntry) {
                additionalInfo += ((FormmatedEntry) entries[i]).getFormmatedString();
             } else if (entries[i] instanceof ServiceInfo) {
@@ -162,6 +161,7 @@ public class ServiceItemHandler implements IRenderer {
       return this.serviceRecords;
    }
 
+   @Override
    public Control renderInComposite(Composite parent) {
       if (parent instanceof FormattedText) {
          FormattedText textArea = (FormattedText) parent;

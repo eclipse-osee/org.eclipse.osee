@@ -12,7 +12,6 @@ package org.eclipse.osee.ote.client.msg.core.db;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.commands.SubscribeToMessage;
 import org.eclipse.osee.ote.message.commands.UnSubscribeToMessage;
@@ -60,7 +59,7 @@ public class MessageInstance {
 
    public Integer attachToService(IRemoteMessageService service, IMsgToolServiceClient client) throws Exception {
       SubscriptionDetails details =
-            service.subscribeToMessage(new SubscribeToMessage(msg.getClass().getName(), type, mode, client));
+         service.subscribeToMessage(new SubscribeToMessage(msg.getClass().getName(), type, mode, client));
       if (details == null) {
          supported = false;
          return null;
@@ -75,7 +74,8 @@ public class MessageInstance {
 
    public void detachService(IRemoteMessageService service, IMsgToolServiceClient client) throws Exception {
       if (service != null) {
-         service.unsubscribeToMessage(new UnSubscribeToMessage(msg.getClass().getName(), mode, type, client.getAddressByType(msg.getClass().getName(), type)));
+         service.unsubscribeToMessage(new UnSubscribeToMessage(msg.getClass().getName(), mode, type,
+            client.getAddressByType(msg.getClass().getName(), type)));
       }
       availableTypes.clear();
       serverSubscriptionKey = null;
@@ -116,6 +116,6 @@ public class MessageInstance {
    @Override
    public String toString() {
       return String.format("Message Instance(type=%s, mode=%s, ref=%d, supported=%b)", type.name(), mode.name(),
-            refcount, supported);
+         refcount, supported);
    }
 }

@@ -10,16 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.core.framework.saxparse.elements;
 
-
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public class StacktraceData {
 
    private String line;
    private String source;
-   
+
    /**
     * @param name
     */

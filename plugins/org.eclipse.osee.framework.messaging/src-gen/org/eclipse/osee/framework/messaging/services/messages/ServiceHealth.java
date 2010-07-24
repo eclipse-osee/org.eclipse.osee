@@ -5,7 +5,6 @@
 // Generated on: 2010.03.30 at 03:47:04 PM MST 
 //
 
-
 package org.eclipse.osee.framework.messaging.services.messages;
 
 import java.util.ArrayList;
@@ -15,11 +14,11 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for ServiceHealth complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for ServiceHealth complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="ServiceHealth">
@@ -38,189 +37,145 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ServiceHealth", propOrder = {
-    "serviceName",
-    "serviceVersion",
-    "serviceUniqueId",
-    "brokerURI",
-    "refreshRateInSeconds",
-    "stopping",
-    "serviceDescription"
-})
+@XmlType(name = "ServiceHealth", propOrder = {"serviceName", "serviceVersion", "serviceUniqueId", "brokerURI",
+   "refreshRateInSeconds", "stopping", "serviceDescription"})
 public class ServiceHealth {
 
-    @XmlElement(required = true)
-    protected String serviceName;
-    @XmlElement(required = true)
-    protected String serviceVersion;
-    @XmlElement(required = true)
-    protected String serviceUniqueId;
-    @XmlElement(required = true)
-    protected String brokerURI;
-    protected int refreshRateInSeconds;
-    protected boolean stopping;
-    @XmlElement(required = true)
-    protected List<ServiceDescriptionPair> serviceDescription;
+   @XmlElement(required = true)
+   protected String serviceName;
+   @XmlElement(required = true)
+   protected String serviceVersion;
+   @XmlElement(required = true)
+   protected String serviceUniqueId;
+   @XmlElement(required = true)
+   protected String brokerURI;
+   protected int refreshRateInSeconds;
+   protected boolean stopping;
+   @XmlElement(required = true)
+   protected List<ServiceDescriptionPair> serviceDescription;
 
-    /**
-     * Gets the value of the serviceName property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getServiceName() {
-        return serviceName;
-    }
+   /**
+    * Gets the value of the serviceName property.
+    * 
+    * @return possible object is {@link String }
+    */
+   public String getServiceName() {
+      return serviceName;
+   }
 
-    /**
-     * Sets the value of the serviceName property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setServiceName(String value) {
-        this.serviceName = value;
-    }
+   /**
+    * Sets the value of the serviceName property.
+    * 
+    * @param value allowed object is {@link String }
+    */
+   public void setServiceName(String value) {
+      this.serviceName = value;
+   }
 
-    /**
-     * Gets the value of the serviceVersion property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getServiceVersion() {
-        return serviceVersion;
-    }
+   /**
+    * Gets the value of the serviceVersion property.
+    * 
+    * @return possible object is {@link String }
+    */
+   public String getServiceVersion() {
+      return serviceVersion;
+   }
 
-    /**
-     * Sets the value of the serviceVersion property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setServiceVersion(String value) {
-        this.serviceVersion = value;
-    }
+   /**
+    * Sets the value of the serviceVersion property.
+    * 
+    * @param value allowed object is {@link String }
+    */
+   public void setServiceVersion(String value) {
+      this.serviceVersion = value;
+   }
 
-    /**
-     * Gets the value of the serviceUniqueId property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getServiceUniqueId() {
-        return serviceUniqueId;
-    }
+   /**
+    * Gets the value of the serviceUniqueId property.
+    * 
+    * @return possible object is {@link String }
+    */
+   public String getServiceUniqueId() {
+      return serviceUniqueId;
+   }
 
-    /**
-     * Sets the value of the serviceUniqueId property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setServiceUniqueId(String value) {
-        this.serviceUniqueId = value;
-    }
+   /**
+    * Sets the value of the serviceUniqueId property.
+    * 
+    * @param value allowed object is {@link String }
+    */
+   public void setServiceUniqueId(String value) {
+      this.serviceUniqueId = value;
+   }
 
-    /**
-     * Gets the value of the brokerURI property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getBrokerURI() {
-        return brokerURI;
-    }
+   /**
+    * Gets the value of the brokerURI property.
+    * 
+    * @return possible object is {@link String }
+    */
+   public String getBrokerURI() {
+      return brokerURI;
+   }
 
-    /**
-     * Sets the value of the brokerURI property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setBrokerURI(String value) {
-        this.brokerURI = value;
-    }
+   /**
+    * Sets the value of the brokerURI property.
+    * 
+    * @param value allowed object is {@link String }
+    */
+   public void setBrokerURI(String value) {
+      this.brokerURI = value;
+   }
 
-    /**
-     * Gets the value of the refreshRateInSeconds property.
-     * 
-     */
-    public int getRefreshRateInSeconds() {
-        return refreshRateInSeconds;
-    }
+   /**
+    * Gets the value of the refreshRateInSeconds property.
+    */
+   public int getRefreshRateInSeconds() {
+      return refreshRateInSeconds;
+   }
 
-    /**
-     * Sets the value of the refreshRateInSeconds property.
-     * 
-     */
-    public void setRefreshRateInSeconds(int value) {
-        this.refreshRateInSeconds = value;
-    }
+   /**
+    * Sets the value of the refreshRateInSeconds property.
+    */
+   public void setRefreshRateInSeconds(int value) {
+      this.refreshRateInSeconds = value;
+   }
 
-    /**
-     * Gets the value of the stopping property.
-     * 
-     */
-    public boolean isStopping() {
-        return stopping;
-    }
+   /**
+    * Gets the value of the stopping property.
+    */
+   public boolean isStopping() {
+      return stopping;
+   }
 
-    /**
-     * Sets the value of the stopping property.
-     * 
-     */
-    public void setStopping(boolean value) {
-        this.stopping = value;
-    }
+   /**
+    * Sets the value of the stopping property.
+    */
+   public void setStopping(boolean value) {
+      this.stopping = value;
+   }
 
-    /**
-     * Gets the value of the serviceDescription property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the serviceDescription property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getServiceDescription().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link ServiceDescriptionPair }
-     * 
-     * 
-     */
-    public List<ServiceDescriptionPair> getServiceDescription() {
-        if (serviceDescription == null) {
-            serviceDescription = new ArrayList<ServiceDescriptionPair>();
-        }
-        return this.serviceDescription;
-    }
+   /**
+    * Gets the value of the serviceDescription property.
+    * <p>
+    * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to
+    * the returned list will be present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for
+    * the serviceDescription property.
+    * <p>
+    * For example, to add a new item, do as follows:
+    * 
+    * <pre>
+    * getServiceDescription().add(newItem);
+    * </pre>
+    * <p>
+    * Objects of the following type(s) are allowed in the list {@link ServiceDescriptionPair }
+    */
+   public List<ServiceDescriptionPair> getServiceDescription() {
+      if (serviceDescription == null) {
+         serviceDescription = new ArrayList<ServiceDescriptionPair>();
+      }
+      return this.serviceDescription;
+   }
 
 }

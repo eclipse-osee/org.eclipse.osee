@@ -42,11 +42,11 @@ public class MessageRecordDetailLabelProvider extends LabelProvider {
       } else if (element instanceof WatchedElementNode) {
          WatchedElementNode node = (WatchedElementNode) element;
          return String.format("%s: byte=%d, msb=%d, lsb=%d", node.getElementName(), node.getByteOffset(),
-               node.getMsb(), node.getLsb());
+            node.getMsb(), node.getLsb());
       } else if (element instanceof HeaderElementNode) {
          HeaderElementNode node = (HeaderElementNode) element;
          return String.format("%s: byte=%d, msb=%d, lsb=%d", node.getElementName(), node.getByteOffset(),
-               node.getMsb(), node.getLsb());
+            node.getMsb(), node.getLsb());
       }
       return element.toString();
    }

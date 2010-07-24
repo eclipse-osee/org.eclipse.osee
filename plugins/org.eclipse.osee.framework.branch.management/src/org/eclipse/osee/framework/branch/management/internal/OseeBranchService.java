@@ -84,7 +84,7 @@ public class OseeBranchService implements IOseeBranchService {
 
       TransactionDelta txDelta = new TransactionDelta(sourceTx, destinationTx);
       TransactionRecord mergeTx =
-            mergeBranch != null ? transactionCache.getTransaction(mergeBranch, TransactionVersion.HEAD) : null;
+         mergeBranch != null ? transactionCache.getTransaction(mergeBranch, TransactionVersion.HEAD) : null;
 
       List<ChangeItem> changes = new ArrayList<ChangeItem>();
 
@@ -92,10 +92,10 @@ public class OseeBranchService implements IOseeBranchService {
       ops.add(new LoadDeltasBetweenBranches(oseeDatabaseProvider, txDelta, mergeTx, changes));
       ops.add(new ComputeNetChangeOperation(changes));
       ops.add(new CommitDbOperation(oseeDatabaseProvider, branchCache, userId, sourceBranch, destinationBranch,
-            mergeBranch, changes, response, modelFactory));
+         mergeBranch, changes, response, modelFactory));
 
       String opName =
-            String.format("Commit: [%s]->[%s]", sourceBranch.getShortName(), destinationBranch.getShortName());
+         String.format("Commit: [%s]->[%s]", sourceBranch.getShortName(), destinationBranch.getShortName());
       IOperation op = new CompositeOperation(opName, Activator.PLUGIN_ID, ops);
       Operations.executeWorkAndCheckStatus(op, monitor, -1);
 
@@ -139,7 +139,7 @@ public class OseeBranchService implements IOseeBranchService {
       BranchCache cache = cachingService.getOseeCachingService().getBranchCache();
       Branch mergeBranch = cache.findMergeBranch(sourceTx.getBranch(), destinationTx.getBranch());
       return mergeBranch != null ? cachingService.getOseeCachingService().getTransactionCache().getTransaction(
-            mergeBranch, TransactionVersion.HEAD) : null;
+         mergeBranch, TransactionVersion.HEAD) : null;
    }
 
    @Override
@@ -151,7 +151,7 @@ public class OseeBranchService implements IOseeBranchService {
    @Override
    public IOperation updateBranchArchiveState(IProgressMonitor monitor, ChangeBranchArchiveStateRequest request) throws OseeCoreException {
       return createBranchChangeOp(monitor, "Branch Archive State Change", request.getBranchId(), null, null,
-            request.getState());
+         request.getState());
    }
 
    @Override
@@ -196,9 +196,9 @@ public class OseeBranchService implements IOseeBranchService {
       final int NULL_PARENT_BRANCH_ID = -1;
       BranchCreationResponse response = new BranchCreationResponse(-1);
       BranchCreationRequest request =
-            new BranchCreationRequest(BranchType.SYSTEM_ROOT, 1, NULL_PARENT_BRANCH_ID,
-                  CoreBranches.SYSTEM_ROOT.getGuid(), CoreBranches.SYSTEM_ROOT.getName(), -1, -1,
-                  CoreBranches.SYSTEM_ROOT.getName() + " Creation", -1, -1);
+         new BranchCreationRequest(BranchType.SYSTEM_ROOT, 1, NULL_PARENT_BRANCH_ID,
+            CoreBranches.SYSTEM_ROOT.getGuid(), CoreBranches.SYSTEM_ROOT.getName(), -1, -1,
+            CoreBranches.SYSTEM_ROOT.getName() + " Creation", -1, -1);
       return createBranch(monitor, request, response);
    }
 }

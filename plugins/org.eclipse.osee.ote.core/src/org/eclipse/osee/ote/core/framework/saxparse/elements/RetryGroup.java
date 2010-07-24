@@ -15,9 +15,8 @@ import org.xml.sax.Attributes;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
-public class RetryGroup extends ElementHandlers{
+public class RetryGroup extends ElementHandlers {
 
    /**
     * @param name

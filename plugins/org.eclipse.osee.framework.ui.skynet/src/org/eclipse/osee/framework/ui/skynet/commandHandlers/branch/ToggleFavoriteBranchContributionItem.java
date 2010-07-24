@@ -34,55 +34,56 @@ import org.eclipse.ui.menus.CommandContributionItemParameter;
 
 /**
  * @author Jeff C. Phillips
- *
  */
-public class ToggleFavoriteBranchContributionItem extends CompoundContributionItem{
-   private ICommandService commandService;
-   
+public class ToggleFavoriteBranchContributionItem extends CompoundContributionItem {
+   private final ICommandService commandService;
+
    public ToggleFavoriteBranchContributionItem() {
       this.commandService = (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
    }
+
    @Override
    protected IContributionItem[] getContributionItems() {
       ISelectionProvider selectionProvider =
          AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
-   ArrayList<IContributionItem> contributionItems = new ArrayList<IContributionItem>(40);
+      ArrayList<IContributionItem> contributionItems = new ArrayList<IContributionItem>(40);
 
-   if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
-      IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
-      List<Branch> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
+      if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
+         IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
+         List<Branch> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
 
-      if (!branches.isEmpty()) {
-         Branch selectedBranch = branches.iterator().next();
-         if (selectedBranch != null) {
-            try {
-               String commandId = ToggleFavoriteBranchHandler.COMMAND_ID;
-               Command command = commandService.getCommand(commandId);
-               CommandContributionItem contributionItem = null;
-               String label = UserManager.getUser().isFavoriteBranch(selectedBranch) ? "Unmark as Favorite" : "Mark as Favorite";
-               contributionItem = createCommand(label, selectedBranch, commandId);
-               
-               if (command != null && command.isEnabled()) {
-                  contributionItems.add(contributionItem);
+         if (!branches.isEmpty()) {
+            Branch selectedBranch = branches.iterator().next();
+            if (selectedBranch != null) {
+               try {
+                  String commandId = ToggleFavoriteBranchHandler.COMMAND_ID;
+                  Command command = commandService.getCommand(commandId);
+                  CommandContributionItem contributionItem = null;
+                  String label =
+                     UserManager.getUser().isFavoriteBranch(selectedBranch) ? "Unmark as Favorite" : "Mark as Favorite";
+                  contributionItem = createCommand(label, selectedBranch, commandId);
+
+                  if (command != null && command.isEnabled()) {
+                     contributionItems.add(contributionItem);
+                  }
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                }
-            } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
          }
       }
+      return contributionItems.toArray(new IContributionItem[0]);
    }
-   return contributionItems.toArray(new IContributionItem[0]);
-}
 
-private CommandContributionItem createCommand(String label, Branch branch, String commandId) throws OseeCoreException {
-   CommandContributionItem contributionItem;
+   private CommandContributionItem createCommand(String label, Branch branch, String commandId) throws OseeCoreException {
+      CommandContributionItem contributionItem;
 
-   contributionItem =
+      contributionItem =
          new CommandContributionItem(new CommandContributionItemParameter(
-               PlatformUI.getWorkbench().getActiveWorkbenchWindow(), label, commandId, Collections.EMPTY_MAP, null,
-               null, null, label, null, null, SWT.NONE, null, false));
+            PlatformUI.getWorkbench().getActiveWorkbenchWindow(), label, commandId, Collections.EMPTY_MAP, null, null,
+            null, label, null, null, SWT.NONE, null, false));
 
-   return contributionItem;
-}
+      return contributionItem;
+   }
 
 }

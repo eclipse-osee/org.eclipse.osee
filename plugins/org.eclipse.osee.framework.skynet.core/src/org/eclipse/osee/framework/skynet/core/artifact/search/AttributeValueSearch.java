@@ -51,10 +51,12 @@ public class AttributeValueSearch implements ISearchPrimitive {
       }
    }
 
+   @Override
    public String getArtIdColName() {
       return "art_id";
    }
 
+   @Override
    public String getCriteriaSql(List<Object> dataList, Branch branch) {
       StringBuilder sql = new StringBuilder();
 
@@ -92,6 +94,7 @@ public class AttributeValueSearch implements ISearchPrimitive {
       return "Attribute value: " + attributeName + operator + "\"" + attributeValue + "\"";
    }
 
+   @Override
    public String getStorageString() {
       return attributeName + TOKEN + (attributeValue == null ? "" : attributeValue) + TOKEN + (operator == null ? "" : operator.name());
    }

@@ -21,7 +21,7 @@ public class TxModel extends Node implements Serializable, Comparable<TxModel> {
 
    private static final long serialVersionUID = -2246486595572509094L;
 
-   private TxData txData;
+   private final TxData txData;
    private BranchModel branchModel;
    private TxModel parentTxModel;
    private TxModel sourceTxModel;
@@ -74,6 +74,7 @@ public class TxModel extends Node implements Serializable, Comparable<TxModel> {
       return getTxData().getTxId();
    }
 
+   @Override
    public int compareTo(TxModel other) {
       return getRevision().compareTo(other.getRevision());
    }
@@ -81,7 +82,7 @@ public class TxModel extends Node implements Serializable, Comparable<TxModel> {
    @Override
    public boolean equals(Object obj) {
       if (obj instanceof TxModel) {
-         TxModel other = ((TxModel) obj);
+         TxModel other = (TxModel) obj;
          return other.getTxData().equals(getTxData());
       }
       return false;
@@ -92,6 +93,7 @@ public class TxModel extends Node implements Serializable, Comparable<TxModel> {
       return txData.hashCode();
    }
 
+   @Override
    public String toString() {
       return txData.toString();
    }

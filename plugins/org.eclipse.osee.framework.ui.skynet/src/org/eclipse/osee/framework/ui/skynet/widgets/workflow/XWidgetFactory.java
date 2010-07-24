@@ -111,7 +111,7 @@ public class XWidgetFactory {
          }
          try {
             List<Branch> branches =
-                  BranchManager.getBranches(BranchArchivedState.ALL, BranchType.WORKING, BranchType.BASELINE);
+               BranchManager.getBranches(BranchArchivedState.ALL, BranchType.WORKING, BranchType.BASELINE);
             Collections.sort(branches);
 
             multiBranchSelect.setSelectableItems(branches);
@@ -183,7 +183,7 @@ public class XWidgetFactory {
       } else if (xWidgetName.startsWith("XComboDam")) {
          if (xWidgetLayoutData.getDynamicXWidgetLayout() != null) {
             String values[] =
-                  xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
+               xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
             if (values.length > 0) {
                xWidget = new XComboDam(name);
                XComboDam combo = new XComboDam(name);
@@ -197,20 +197,20 @@ public class XWidgetFactory {
                xWidget = combo;
             } else {
                throw new OseeArgumentException(
-                     "Invalid XComboDam.  " + "Must be \"XComboDam(option1,option2,option3)\"");
+                  "Invalid XComboDam.  " + "Must be \"XComboDam(option1,option2,option3)\"");
             }
          }
       } else if (xWidgetName.startsWith("XSelectFromMultiChoiceDam")) {
          if (xWidgetLayoutData.getDynamicXWidgetLayout() != null) {
             String values[] =
-                  xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
+               xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
             if (values.length > 0) {
                XSelectFromMultiChoiceDam widget = new XSelectFromMultiChoiceDam(name);
                widget.setSelectableItems(Arrays.asList(values));
                xWidget = widget;
             } else {
                throw new OseeArgumentException(
-                     "Invalid XSelectFromMultiChoiceDam.  " + "Must be \"XSelectFromMultiChoiceDam(option1,option2,option3)\"");
+                  "Invalid XSelectFromMultiChoiceDam.  " + "Must be \"XSelectFromMultiChoiceDam(option1,option2,option3)\"");
             }
          }
       } else if (xWidgetName.startsWith("XStackedDam")) {
@@ -244,7 +244,7 @@ public class XWidgetFactory {
          xWidget = new XComboViewer(name);
       } else if (xWidgetName.startsWith("XCombo")) {
          String values[] =
-               xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
+            xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
          if (values.length > 0) {
             XCombo combo = new XCombo(name);
 
@@ -266,7 +266,7 @@ public class XWidgetFactory {
       } else if (xWidgetName.startsWith("XListDam")) {
          if (xWidgetLayoutData.getDynamicXWidgetLayout() != null) {
             String values[] =
-                  xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
+               xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
             if (values.length > 0) {
                XListDam list = new XListDam(name);
                list.add(values);
@@ -281,18 +281,18 @@ public class XWidgetFactory {
          xWidget = new XListDropViewer(name);
       } else if (xWidgetName.equals("XArtifactTypeListViewer")) {
          xWidget =
-               new XArtifactTypeListViewer(xWidgetLayoutData.getKeyedBranchName(), xWidgetLayoutData.getDefaultValue());
+            new XArtifactTypeListViewer(xWidgetLayoutData.getKeyedBranchName(), xWidgetLayoutData.getDefaultValue());
          ((XArtifactTypeListViewer) xWidget).setMultiSelect(xWidgetLayoutData.getXOptionHandler().contains(
-               XOption.MULTI_SELECT));
+            XOption.MULTI_SELECT));
       } else if (xWidgetName.equals("XAttributeTypeListViewer")) {
          xWidget =
-               new XAttributeTypeListViewer(xWidgetLayoutData.getKeyedBranchName(), xWidgetLayoutData.getDefaultValue());
+            new XAttributeTypeListViewer(xWidgetLayoutData.getKeyedBranchName(), xWidgetLayoutData.getDefaultValue());
          ((XAttributeTypeListViewer) xWidget).setMultiSelect(xWidgetLayoutData.getXOptionHandler().contains(
-               XOption.MULTI_SELECT));
+            XOption.MULTI_SELECT));
 
       } else if (xWidgetName.startsWith("XList")) {
          String values[] =
-               xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
+            xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
          if (values.length > 0) {
             XList list = new XList(name);
             list.add(values);
@@ -326,7 +326,7 @@ public class XWidgetFactory {
    private static Set<IXWidgetProvider> getXWidgetProviders() {
       widgetProviders = new HashSet<IXWidgetProvider>();
       IExtensionPoint point =
-            Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.framework.ui.skynet.XWidgetProvider");
+         Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.framework.ui.skynet.XWidgetProvider");
       if (point == null) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, "Can't access XWidgetProvider extension point");
          return null;
@@ -348,7 +348,7 @@ public class XWidgetFactory {
                      widgetProviders.add((IXWidgetProvider) obj);
                   } catch (Exception ex) {
                      OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP,
-                           "Error loading XWidgetProvider extension", ex);
+                        "Error loading XWidgetProvider extension", ex);
                   }
                }
 

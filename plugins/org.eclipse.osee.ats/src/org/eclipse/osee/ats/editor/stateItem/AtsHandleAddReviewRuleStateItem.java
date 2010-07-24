@@ -48,9 +48,10 @@ public class AtsHandleAddReviewRuleStateItem extends AtsStateItem {
 
    public static void runRule(StateMachineArtifact sma, String toState, String ruleId, SkynetTransaction transaction) throws OseeCoreException {
       for (WorkRuleDefinition workRuleDef : sma.getWorkRulesStartsWith(ruleId)) {
-         if (!(sma.isTeamWorkflow())) continue;
-         StateEventType eventType =
-               AtsAddDecisionReviewRule.getStateEventType((TeamWorkFlowArtifact) sma, workRuleDef);
+         if (!sma.isTeamWorkflow()) {
+            continue;
+         }
+         StateEventType eventType = AtsAddDecisionReviewRule.getStateEventType((TeamWorkFlowArtifact) sma, workRuleDef);
          String forState = workRuleDef.getWorkDataValue(DecisionParameter.forState.name());
          if (forState == null || forState.equals("")) {
             continue;
@@ -58,20 +59,25 @@ public class AtsHandleAddReviewRuleStateItem extends AtsStateItem {
          if (eventType != null && toState.equals(forState) && eventType == StateEventType.TransitionTo) {
             if (ruleId.startsWith(AtsAddDecisionReviewRule.ID)) {
                DecisionReviewArtifact decArt =
-                     AtsAddDecisionReviewRule.createNewDecisionReview(workRuleDef, transaction,
-                           (TeamWorkFlowArtifact) sma, DecisionRuleOption.TransitionToDecision);
-               if (decArt != null) decArt.persist(transaction);
+                  AtsAddDecisionReviewRule.createNewDecisionReview(workRuleDef, transaction,
+                     (TeamWorkFlowArtifact) sma, DecisionRuleOption.TransitionToDecision);
+               if (decArt != null) {
+                  decArt.persist(transaction);
+               }
             } else if (ruleId.startsWith(AtsAddPeerToPeerReviewRule.ID)) {
                PeerToPeerReviewArtifact peerArt =
-                     AtsAddPeerToPeerReviewRule.createNewPeerToPeerReview(workRuleDef,
-                           (TeamWorkFlowArtifact) sma, transaction);
-               if (peerArt != null) peerArt.persist(transaction);
+                  AtsAddPeerToPeerReviewRule.createNewPeerToPeerReview(workRuleDef, (TeamWorkFlowArtifact) sma,
+                     transaction);
+               if (peerArt != null) {
+                  peerArt.persist(transaction);
+               }
             }
          }
       }
 
    }
 
+   @Override
    public String getDescription() throws OseeCoreException {
       return "AtsHandleAddReviewRuleStateItem - If AddDecisionReviewRule or AddPeerToPeerReviewRule exists for this state, create review.";
    }

@@ -34,6 +34,7 @@ public class DemoTeamWorkflows implements IAtsTeamWorkflow {
    public DemoTeamWorkflows() {
    }
 
+   @Override
    public String getTeamWorkflowArtifactName(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems) throws OseeCoreException {
       if (teamDef.getName().contains("Code")) {
          return DemoCodeTeamWorkflowArtifact.ARTIFACT_NAME;
@@ -47,20 +48,23 @@ public class DemoTeamWorkflows implements IAtsTeamWorkflow {
       return AtsArtifactTypes.TeamWorkflow.getName();
    }
 
+   @Override
    public boolean isResponsibleForTeamWorkflowCreation(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems) throws OseeCoreException {
       return teamDef.getName().contains("SAW") || teamDef.getName().contains("CIS");
    }
 
+   @Override
    public void teamWorkflowCreated(TeamWorkFlowArtifact teamArt) {
       return;
    }
 
+   @Override
    public Collection<? extends IArtifactType> getTeamWorkflowArtifactNames() throws OseeCoreException {
       if (workflowArtifactTypes == null) {
          if (TestUtil.isDemoDb()) {
             workflowArtifactTypes =
-                  Arrays.asList(DemoArtifactTypes.DemoCodeTeamWorkflow, DemoArtifactTypes.DemoTestTeamWorkflow,
-                        DemoArtifactTypes.DemoReqTeamWorkflow);
+               Arrays.asList(DemoArtifactTypes.DemoCodeTeamWorkflow, DemoArtifactTypes.DemoTestTeamWorkflow,
+                  DemoArtifactTypes.DemoReqTeamWorkflow);
          } else {
             workflowArtifactTypes = Collections.emptyList();
          }

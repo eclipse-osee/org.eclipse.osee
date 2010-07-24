@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.action;
 
 import java.util.Iterator;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -56,7 +57,7 @@ public class ExpandAllAction extends Action {
    private void expandAll(IStructuredSelection selection) {
       Iterator<?> iter = selection.iterator();
       while (iter.hasNext()) {
-         treeViewer.expandToLevel(iter.next(), TreeViewer.ALL_LEVELS);
+         treeViewer.expandToLevel(iter.next(), AbstractTreeViewer.ALL_LEVELS);
       }
    }
 

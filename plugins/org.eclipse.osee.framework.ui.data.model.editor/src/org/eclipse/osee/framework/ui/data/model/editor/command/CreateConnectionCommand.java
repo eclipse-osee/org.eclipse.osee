@@ -25,8 +25,8 @@ import org.eclipse.osee.framework.ui.data.model.editor.model.InheritanceLinkMode
  */
 public class CreateConnectionCommand extends Command {
 
-   private ConnectionModel<ArtifactDataType> connectionModel;
-   private ArtifactDataType source;
+   private final ConnectionModel<ArtifactDataType> connectionModel;
+   private final ArtifactDataType source;
    private ArtifactDataType target;
    private ArtifactDataType oldAncestor;
 
@@ -37,12 +37,14 @@ public class CreateConnectionCommand extends Command {
       this.oldAncestor = null;
    }
 
+   @Override
    public boolean canExecute() {
       boolean result = source != null && target != null && connectionModel != null;
       result = result && !source.getSuperTypes().contains(target);
       return result;
    }
 
+   @Override
    public void execute() {
       redo();
    }
@@ -51,6 +53,7 @@ public class CreateConnectionCommand extends Command {
       this.target = target;
    }
 
+   @Override
    public void redo() {
       try {
          if (connectionModel instanceof InheritanceLinkModel) {
@@ -70,6 +73,7 @@ public class CreateConnectionCommand extends Command {
       }
    }
 
+   @Override
    public void undo() {
       try {
          connectionModel.setSource(null);

@@ -34,8 +34,11 @@ public class AtsStateItems {
    public List<IAtsStateItem> getStateItems(String stateId) throws OseeCoreException {
       loadAllStateItems();
       List<IAtsStateItem> items = new ArrayList<IAtsStateItem>();
-      for (IAtsStateItem item : stateItems)
-         if (item.getIds().contains(AtsStateItem.ALL_STATE_IDS) || item.getIds().contains(stateId)) items.add(item);
+      for (IAtsStateItem item : stateItems) {
+         if (item.getIds().contains(AtsStateItem.ALL_STATE_IDS) || item.getIds().contains(stateId)) {
+            items.add(item);
+         }
+      }
       return items;
    }
 
@@ -45,7 +48,9 @@ public class AtsStateItems {
 
    @SuppressWarnings({"rawtypes"})
    private void loadAllStateItems() {
-      if (stateItems.size() > 0) return;
+      if (stateItems.size() > 0) {
+         return;
+      }
       IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.ats.AtsStateItem");
       if (point == null) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't access AtsStateItem extension point");
@@ -67,7 +72,7 @@ public class AtsStateItems {
                      Object obj = taskClass.newInstance();
                      if (obj == null) {
                         OseeLog.log(AtsPlugin.class, Level.SEVERE,
-                              "Error Instantiating AtsStateItem extension \"" + classname + "\"", null);
+                           "Error Instantiating AtsStateItem extension \"" + classname + "\"", null);
                      } else {
                         stateItems.add((IAtsStateItem) obj);
                      }

@@ -50,6 +50,7 @@ public final class FileUtility {
 
    public static List<File> getFileList(File sourceDirectory, final String extension) {
       File[] listOfFiles = sourceDirectory.listFiles(new FilenameFilter() {
+         @Override
          public boolean accept(File directoryName, String filename) {
             return filename.endsWith(extension) && new File(directoryName + File.separator + filename).canRead();
          }

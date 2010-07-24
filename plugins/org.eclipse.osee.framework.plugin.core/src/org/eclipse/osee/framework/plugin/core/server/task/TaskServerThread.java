@@ -30,12 +30,12 @@ import java.util.HashMap;
  * @author Ryan D. Brooks
  */
 public class TaskServerThread implements Runnable {
-   private int magicNumber;
+   private final int magicNumber;
    private Socket socket = null;
    private ObjectInputStream inFromClient;
    private PrintWriter out;
-   private HashMap<Integer, Command> commands;
-   private boolean running;
+   private final HashMap<Integer, Command> commands;
+   private final boolean running;
 
    public TaskServerThread(int magicNumber, Socket socket) {
       this.socket = socket;
@@ -44,6 +44,7 @@ public class TaskServerThread implements Runnable {
       running = true;
    }
 
+   @Override
    public void run() {
       try {
          out = new PrintWriter(socket.getOutputStream(), true);
@@ -92,9 +93,7 @@ public class TaskServerThread implements Runnable {
    }
 
    /*
-    * Protocol 
-    *  2-byte       1-byte     1-byte     n-bytes
-    * <command_id> <n_params> [<type_id> <param_value>]
+    * Protocol 2-byte 1-byte 1-byte n-bytes <command_id> <n_params> [<type_id> <param_value>]
     */
    private Object[] parseParameters() throws IOException {
       int parametersCount = inFromClient.readUnsignedByte();

@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public class ServiceItem implements Comparable<ServiceItem> {
    public static final String EXEC_SEPARATOR = "@";
    public static final String JINI_GROUP_FIELD = "$JINI_GROUP";
-   private ArrayList<String> hosts;
+   private final ArrayList<String> hosts;
    private String standAloneExecution;
    private String eclipseAppExecution;
    private String remoteExecution;
@@ -26,7 +26,7 @@ public class ServiceItem implements Comparable<ServiceItem> {
    private boolean isStandAloneAllowed;
    private boolean isRemoteAllowed;
    private boolean isLocalAllowed;
-   private String serviceName;
+   private final String serviceName;
    private String zipFileName;
    private String unzipLocation;
    private String pluginId;
@@ -66,8 +66,8 @@ public class ServiceItem implements Comparable<ServiceItem> {
       String jiniVmArg = "";
       if (false != isJiniGroupRequired()) {
          jiniVmArg =
-               String.format("-D%s=\"%s\"", OseeProperties.getOseeJiniServiceGroups(),
-                     Strings.isValid(getJiniGroup()) ? getJiniGroup() : JINI_GROUP_FIELD);
+            String.format("-D%s=\"%s\"", OseeProperties.getOseeJiniServiceGroups(),
+               Strings.isValid(getJiniGroup()) ? getJiniGroup() : JINI_GROUP_FIELD);
       }
       return source.replace(JINI_GROUP_FIELD, jiniVmArg);
    }
@@ -92,6 +92,7 @@ public class ServiceItem implements Comparable<ServiceItem> {
       return hosts;
    }
 
+   @Override
    public String toString() {
       String hostList = "\n";
       for (String temp : hosts) {
@@ -117,17 +118,18 @@ public class ServiceItem implements Comparable<ServiceItem> {
       }
 
       return String.format(
-            "[ Class: %s\n Name: %s %s %s Destination: %s\n Zip Name: %s\n Plugin Directory: %s %s" + "\n JiniGroup: %s]\n",
-            this.getClass().getSimpleName(), getName(), localExecution, remoteExecution, getUnzipLocation(),
-            getZipName(), getPlugin(), hostList, isJiniGroupRequired() ? jiniGroup : "NOT REQUIRED");
+         "[ Class: %s\n Name: %s %s %s Destination: %s\n Zip Name: %s\n Plugin Directory: %s %s" + "\n JiniGroup: %s]\n",
+         this.getClass().getSimpleName(), getName(), localExecution, remoteExecution, getUnzipLocation(), getZipName(),
+         getPlugin(), hostList, isJiniGroupRequired() ? jiniGroup : "NOT REQUIRED");
    }
 
+   @Override
    public int compareTo(ServiceItem other) {
       if (other != null) {
          String name1 = this.getName();
          String name2 = other.getName();
-         name1 = (name1 != null ? name1 : "");
-         name2 = (name2 != null ? name2 : "");
+         name1 = name1 != null ? name1 : "";
+         name2 = name2 != null ? name2 : "";
          return name1.compareTo(name2);
       }
       return 0;

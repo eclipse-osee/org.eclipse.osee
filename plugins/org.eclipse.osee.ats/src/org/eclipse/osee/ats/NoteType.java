@@ -17,7 +17,10 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
  * @author Donald G. Dunne
  */
 public enum NoteType {
-   Comment, Question, Error, Other;
+   Comment,
+   Question,
+   Error,
+   Other;
 
    public static NoteType getType(String type) throws OseeArgumentException {
       for (NoteType e : NoteType.values()) {

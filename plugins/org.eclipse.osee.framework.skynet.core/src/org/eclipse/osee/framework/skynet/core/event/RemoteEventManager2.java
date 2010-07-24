@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.event;
 
 import java.rmi.RemoteException;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -23,7 +24,6 @@ import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.res.AttributeEventModificationType;
 import org.eclipse.osee.framework.messaging.event.res.IFrameworkEventListener;
@@ -76,56 +76,56 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
    @Override
    public void onEvent(final RemoteEvent remoteEvent) throws RemoteException {
       Job job =
-            new Job(String.format("[%s] - receiving [%s]", getClass().getSimpleName(),
-                  remoteEvent.getClass().getSimpleName())) {
+         new Job(String.format("[%s] - receiving [%s]", getClass().getSimpleName(),
+            remoteEvent.getClass().getSimpleName())) {
 
-               @Override
-               protected IStatus run(IProgressMonitor monitor) {
+            @Override
+            protected IStatus run(IProgressMonitor monitor) {
 
-                  Sender sender = null;
-                  try {
-                     sender = new Sender(remoteEvent.getNetworkSender());
-                     // If the sender's sessionId is the same as this client, then this event was
-                     // created in this client and returned by remote event manager; ignore and continue
-                     if (sender.isLocal()) {
-                        return Status.OK_STATUS;
-                     }
-                  } catch (OseeAuthenticationRequiredException ex1) {
-                     OseeEventManager.eventLog("REM2: authentication", ex1);
-                     new Status(Status.ERROR, Activator.PLUGIN_ID, -1, ex1.getLocalizedMessage(), ex1);
+               Sender sender = null;
+               try {
+                  sender = new Sender(remoteEvent.getNetworkSender());
+                  // If the sender's sessionId is the same as this client, then this event was
+                  // created in this client and returned by remote event manager; ignore and continue
+                  if (sender.isLocal()) {
+                     return Status.OK_STATUS;
                   }
-                  // Handles TransactionEvents, ArtifactChangeTypeEvents, ArtifactPurgeEvents
-                  if (remoteEvent instanceof RemotePersistEvent1) {
-                     try {
-                        RemotePersistEvent1 event1 = (RemotePersistEvent1) remoteEvent;
-                        ArtifactEvent transEvent = FrameworkEventUtil.getPersistEvent(event1);
-                        updateArtifacts(sender, transEvent);
-                        updateRelations(sender, transEvent);
-                        InternalEventManager2.kickPersistEvent(sender, transEvent);
-                     } catch (Exception ex) {
-                        OseeEventManager.eventLog("REM2: RemoteTransactionEvent1", ex);
-                     }
-                  } else if (remoteEvent instanceof RemoteBranchEvent1) {
-                     try {
-                        BranchEvent branchEvent = FrameworkEventUtil.getBranchEvent((RemoteBranchEvent1) remoteEvent);
-                        updateBranches(sender, branchEvent);
-                        InternalEventManager2.kickBranchEvent(sender, branchEvent);
-                     } catch (Exception ex) {
-                        OseeEventManager.eventLog("REM2: RemoteBranchEvent1", ex);
-                     }
-                  } else if (remoteEvent instanceof RemoteTransactionEvent1) {
-                     try {
-                        TransactionEvent transEvent =
-                              FrameworkEventUtil.getTransactionEvent((RemoteTransactionEvent1) remoteEvent);
-                        handleTransactionEvent(sender, transEvent);
-                     } catch (Exception ex) {
-                        OseeEventManager.eventLog("REM2: RemoteBranchEvent1", ex);
-                     }
-                  }
-                  monitor.done();
-                  return Status.OK_STATUS;
+               } catch (OseeAuthenticationRequiredException ex1) {
+                  OseeEventManager.eventLog("REM2: authentication", ex1);
+                  new Status(IStatus.ERROR, Activator.PLUGIN_ID, -1, ex1.getLocalizedMessage(), ex1);
                }
-            };
+               // Handles TransactionEvents, ArtifactChangeTypeEvents, ArtifactPurgeEvents
+               if (remoteEvent instanceof RemotePersistEvent1) {
+                  try {
+                     RemotePersistEvent1 event1 = (RemotePersistEvent1) remoteEvent;
+                     ArtifactEvent transEvent = FrameworkEventUtil.getPersistEvent(event1);
+                     updateArtifacts(sender, transEvent);
+                     updateRelations(sender, transEvent);
+                     InternalEventManager2.kickPersistEvent(sender, transEvent);
+                  } catch (Exception ex) {
+                     OseeEventManager.eventLog("REM2: RemoteTransactionEvent1", ex);
+                  }
+               } else if (remoteEvent instanceof RemoteBranchEvent1) {
+                  try {
+                     BranchEvent branchEvent = FrameworkEventUtil.getBranchEvent((RemoteBranchEvent1) remoteEvent);
+                     updateBranches(sender, branchEvent);
+                     InternalEventManager2.kickBranchEvent(sender, branchEvent);
+                  } catch (Exception ex) {
+                     OseeEventManager.eventLog("REM2: RemoteBranchEvent1", ex);
+                  }
+               } else if (remoteEvent instanceof RemoteTransactionEvent1) {
+                  try {
+                     TransactionEvent transEvent =
+                        FrameworkEventUtil.getTransactionEvent((RemoteTransactionEvent1) remoteEvent);
+                     handleTransactionEvent(sender, transEvent);
+                  } catch (Exception ex) {
+                     OseeEventManager.eventLog("REM2: RemoteBranchEvent1", ex);
+                  }
+               }
+               monitor.done();
+               return Status.OK_STATUS;
+            }
+         };
       job.setSystem(true);
       job.setUser(false);
       job.schedule();
@@ -186,7 +186,7 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
          // Unknown mod type
          else {
             OseeEventManager.eventLog(String.format("REM2: updateArtifacts - Unhandled mod type [%s]",
-                  guidArt.getModType()));
+               guidArt.getModType()));
          }
       }
    }
@@ -211,35 +211,35 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
             if (aArtifactLoaded || bArtifactLoaded) {
                if (eventType == RelationEventType.Added) {
                   RelationLink relation =
-                        RelationManager.getLoadedRelationById(guidArt.getRelationId(), guidArt.getArtAId(),
-                              guidArt.getArtBId(), branch, branch);
+                     RelationManager.getLoadedRelationById(guidArt.getRelationId(), guidArt.getArtAId(),
+                        guidArt.getArtBId(), branch, branch);
 
                   if (relation == null || relation.getModificationType() == ModificationType.DELETED || relation.getModificationType() == ModificationType.ARTIFACT_DELETED) {
                      relation =
-                           RelationLink.getOrCreate(guidArt.getArtAId(), guidArt.getArtBId(), branch, branch,
-                                 relationType, guidArt.getRelationId(), guidArt.getGammaId(), guidArt.getRationale(),
-                                 ModificationType.NEW);
+                        RelationLink.getOrCreate(guidArt.getArtAId(), guidArt.getArtBId(), branch, branch,
+                           relationType, guidArt.getRelationId(), guidArt.getGammaId(), guidArt.getRationale(),
+                           ModificationType.NEW);
 
                   }
                } else if (eventType == RelationEventType.Deleted || eventType == RelationEventType.Purged) {
                   RelationLink relation =
-                        RelationManager.getLoadedRelationById(guidArt.getRelationId(), guidArt.getArtAId(),
-                              guidArt.getArtBId(), branch, branch);
+                     RelationManager.getLoadedRelationById(guidArt.getRelationId(), guidArt.getArtAId(),
+                        guidArt.getArtBId(), branch, branch);
                   if (relation != null) {
                      relation.internalRemoteEventDelete();
                   }
                } else if (eventType == RelationEventType.ModifiedRationale) {
                   RelationLink relation =
-                        RelationManager.getLoadedRelationById(guidArt.getRelationId(), guidArt.getArtAId(),
-                              guidArt.getArtBId(), branch, branch);
+                     RelationManager.getLoadedRelationById(guidArt.getRelationId(), guidArt.getArtAId(),
+                        guidArt.getArtBId(), branch, branch);
                   if (relation != null) {
                      relation.internalSetRationale(guidArt.getRationale());
                      relation.setNotDirty();
                   }
                } else if (eventType == RelationEventType.Undeleted) {
                   RelationLink relation =
-                        RelationManager.getLoadedRelationById(guidArt.getRelationId(), guidArt.getArtAId(),
-                              guidArt.getArtBId(), branch, branch);
+                     RelationManager.getLoadedRelationById(guidArt.getRelationId(), guidArt.getArtAId(),
+                        guidArt.getArtBId(), branch, branch);
                   if (relation != null) {
                      relation.undelete();
                      relation.setNotDirty();
@@ -276,7 +276,7 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
             for (AttributeChange attrChange : guidArt.getAttributeChanges()) {
                if (!InternalEventManager.isEnableRemoteEventLoopback()) {
                   ModificationType modificationType =
-                        AttributeEventModificationType.getType(attrChange.getModTypeGuid()).getModificationType();
+                     AttributeEventModificationType.getType(attrChange.getModTypeGuid()).getModificationType();
                   AttributeType attributeType = AttributeTypeManager.getTypeByGuid(attrChange.getAttrTypeGuid());
                   try {
                      Attribute<?> attribute = artifact.getAttributeById(attrChange.getAttributeId(), true);
@@ -285,27 +285,27 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
                      if (attribute != null) {
                         if (attribute.isDirty()) {
                            OseeEventManager.eventLog(String.format("%s's attribute %d [/n%s/n] has been overwritten.",
-                                 artifact.getSafeName(), attribute.getId(), attribute.toString()));
+                              artifact.getSafeName(), attribute.getId(), attribute.toString()));
                         }
                         try {
                            if (modificationType == null) {
                               OseeEventManager.eventLog(String.format(
-                                    "REM2: updateModifiedArtifact - Can't get mod type for %s's attribute %d.",
-                                    artifact.getArtifactTypeName(), attrChange.getAttributeId()));
+                                 "REM2: updateModifiedArtifact - Can't get mod type for %s's attribute %d.",
+                                 artifact.getArtifactTypeName(), attrChange.getAttributeId()));
                               continue;
                            }
                            if (modificationType.isDeleted()) {
                               attribute.internalSetModificationType(modificationType);
                            } else {
                               attribute.getAttributeDataProvider().loadData(
-                                    attrChange.getData().toArray(new Object[attrChange.getData().size()]));
+                                 attrChange.getData().toArray(new Object[attrChange.getData().size()]));
                            }
                            attribute.internalSetGammaId(attrChange.getGammaId());
                            attribute.setNotDirty();
                         } catch (OseeCoreException ex) {
                            OseeEventManager.eventLog(
-                                 String.format("REM2: Exception updating %s's attribute %d [/n%s/n].",
-                                       artifact.getSafeName(), attribute.getId(), attribute.toString()), ex);
+                              String.format("REM2: Exception updating %s's attribute %d [/n%s/n].",
+                                 artifact.getSafeName(), attribute.getId(), attribute.toString()), ex);
                         }
                      }
                      // Otherwise, attribute needs creation
@@ -313,17 +313,17 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
                      else {
                         if (modificationType == null) {
                            OseeEventManager.eventLog(String.format("REM2: Can't get mod type for %s's attribute %d.",
-                                 artifact.getArtifactTypeName(), attrChange.getAttributeId()));
+                              artifact.getArtifactTypeName(), attrChange.getAttributeId()));
                            continue;
                         }
                         artifact.internalInitializeAttribute(attributeType, attrChange.getAttributeId(),
-                              attrChange.getGammaId(), modificationType, false,
-                              attrChange.getData().toArray(new Object[attrChange.getData().size()]));
+                           attrChange.getGammaId(), modificationType, false,
+                           attrChange.getData().toArray(new Object[attrChange.getData().size()]));
                      }
                   } catch (OseeCoreException ex) {
                      OseeEventManager.eventLog(String.format(
-                           "REM2: Exception updating %s's attribute change for attributeTypeId %d.",
-                           artifact.getSafeName(), attributeType.getId()), ex);
+                        "REM2: Exception updating %s's attribute change for attributeTypeId %d.",
+                        artifact.getSafeName(), attributeType.getId()), ex);
                   }
                }
             }
@@ -342,9 +342,9 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
       if (OseeEventManager.isNewEvents()) {
          ResEventManager.getInstance().start(this);
          OseeEventManager.kickLocalRemEvent(this, RemoteEventServiceEventType.Rem2_Connected);
-         OseeLog.log(Activator.class, OseeLevel.INFO, "REM2: Enabled");
+         OseeLog.log(Activator.class, Level.INFO, "REM2: Enabled");
       } else {
-         OseeLog.log(Activator.class, OseeLevel.INFO, "REM2: Disabled");
+         OseeLog.log(Activator.class, Level.INFO, "REM2: Disabled");
       }
    }
 
@@ -363,19 +363,19 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
       if (OseeEventManager.isNewEvents() && isConnected()) {
          OseeEventManager.eventLog(String.format("REM2: kick - [%s]", remoteEvent));
          Job job =
-               new Job(String.format("[%s] - sending [%s]", getClass().getSimpleName(),
-                     remoteEvent.getClass().getSimpleName())) {
-                  @Override
-                  protected IStatus run(IProgressMonitor monitor) {
-                     try {
-                        ResEventManager.getInstance().kick(remoteEvent);
-                     } catch (Exception ex) {
-                        OseeEventManager.eventLog("REM2: kick", ex);
-                        return new Status(Status.ERROR, Activator.PLUGIN_ID, -1, ex.getLocalizedMessage(), ex);
-                     }
-                     return Status.OK_STATUS;
+            new Job(String.format("[%s] - sending [%s]", getClass().getSimpleName(),
+               remoteEvent.getClass().getSimpleName())) {
+               @Override
+               protected IStatus run(IProgressMonitor monitor) {
+                  try {
+                     ResEventManager.getInstance().kick(remoteEvent);
+                  } catch (Exception ex) {
+                     OseeEventManager.eventLog("REM2: kick", ex);
+                     return new Status(IStatus.ERROR, Activator.PLUGIN_ID, -1, ex.getLocalizedMessage(), ex);
                   }
-               };
+                  return Status.OK_STATUS;
+               }
+            };
 
          job.schedule();
       }

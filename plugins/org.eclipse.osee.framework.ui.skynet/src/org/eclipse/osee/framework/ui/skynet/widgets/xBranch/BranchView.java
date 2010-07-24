@@ -101,6 +101,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
       MenuManager menuManager = new MenuManager();
       menuManager.setRemoveAllWhenShown(true);
       menuManager.addMenuListener(new IMenuListener() {
+         @Override
          public void menuAboutToShow(IMenuManager manager) {
             MenuManager menuManager = (MenuManager) manager;
             xBranchWidget.getXViewer().setColumnMultiEditEnabled(true);
@@ -130,6 +131,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
 
    }
 
+   @Override
    public String getActionDescription() {
       return "";
    }
@@ -150,6 +152,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
    @Override
    public void handleBranchEventREM1(Sender sender, final BranchEventType branchModType, final int branchId) {
       Displays.ensureInDisplayThread(new Runnable() {
+         @Override
          public void run() {
             try {
                if (branchModType.equals(BranchEventType.Renamed)) {
@@ -167,6 +170,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
    @Override
    public void handleBranchEvent(Sender sender, final BranchEvent branchEvent) {
       Displays.ensureInDisplayThread(new Runnable() {
+         @Override
          public void run() {
             try {
                if (branchEvent.getEventType() == BranchEventType.Renamed) {
@@ -189,6 +193,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
    public void handleTransactionEvent(Sender sender, TransactionEvent transEvent) {
       if (transEvent.getEventType() == TransactionEventType.Purged) {
          Displays.ensureInDisplayThread(new Runnable() {
+            @Override
             public void run() {
                try {
                   xBranchWidget.refresh();
@@ -203,6 +208,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
    @Override
    public void handleTransactionsDeletedEvent(Sender sender, int[] transactionIds) {
       Displays.ensureInDisplayThread(new Runnable() {
+         @Override
          public void run() {
             try {
                xBranchWidget.refresh();
@@ -216,35 +222,35 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
    public void changeBranchPresentation(boolean flat) {
       if (branchViewPresentationPreferences != null) {
          branchViewPresentationPreferences.getViewPreference().putBoolean(BranchViewPresentationPreferences.FLAT_KEY,
-               flat);
+            flat);
       }
    }
 
    public void changeTransactionPresentation(boolean showTransactions) {
       if (branchViewPresentationPreferences != null) {
          branchViewPresentationPreferences.getViewPreference().putBoolean(
-               BranchViewPresentationPreferences.SHOW_TRANSACTIONS, showTransactions);
+            BranchViewPresentationPreferences.SHOW_TRANSACTIONS, showTransactions);
       }
    }
 
    public void changeMergeBranchPresentation(boolean showMergeBranches) {
       if (branchViewPresentationPreferences != null) {
          branchViewPresentationPreferences.getViewPreference().putBoolean(
-               BranchViewPresentationPreferences.SHOW_MERGE_BRANCHES, showMergeBranches);
+            BranchViewPresentationPreferences.SHOW_MERGE_BRANCHES, showMergeBranches);
       }
    }
 
    public void changeArchivedBranchPresentation(boolean showArchivedBranches) {
       if (branchViewPresentationPreferences != null) {
          branchViewPresentationPreferences.getViewPreference().putBoolean(
-               BranchViewPresentationPreferences.SHOW_ARCHIVED_BRANCHES, showArchivedBranches);
+            BranchViewPresentationPreferences.SHOW_ARCHIVED_BRANCHES, showArchivedBranches);
       }
    }
 
    public void changeFavoritesFirstPresentation(boolean showArchivedBranches) {
       if (branchViewPresentationPreferences != null) {
          branchViewPresentationPreferences.getViewPreference().putBoolean(
-               BranchViewPresentationPreferences.FAVORITE_KEY, showArchivedBranches);
+            BranchViewPresentationPreferences.FAVORITE_KEY, showArchivedBranches);
       }
    }
 

@@ -19,6 +19,7 @@ public class GroupEntry extends FormmatedEntry {
       group = new String[] {"Public"};
    }
 
+   @Override
    public String getFormmatedString() {
       String groups = "";
       if (group != null) {
@@ -34,8 +35,11 @@ public class GroupEntry extends FormmatedEntry {
       return "Group(s): {" + groups + "}";
    }
 
+   @Override
    public boolean equals(Object other) {
-      if (!(other instanceof GroupEntry)) return false;
+      if (!(other instanceof GroupEntry)) {
+         return false;
+      }
       return group.equals(((GroupEntry) other).group);
    }
 }

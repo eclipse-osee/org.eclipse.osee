@@ -18,8 +18,8 @@ import java.util.Set;
  */
 public class SearchTag implements IAttributeLocator {
 
-   private AttributeVersion attributeVersion;
-   private Set<Long> codedTags;
+   private final AttributeVersion attributeVersion;
+   private final Set<Long> codedTags;
    private int runningTotal;
 
    public SearchTag(long gammaId) {
@@ -46,14 +46,19 @@ public class SearchTag implements IAttributeLocator {
       this.codedTags.clear();
    }
 
+   @Override
    public long getGammaId() {
       return attributeVersion.getGammaId();
    }
 
    @Override
    public boolean equals(Object object) {
-      if (this == object) return true;
-      if (!(object instanceof SearchTag)) return false;
+      if (this == object) {
+         return true;
+      }
+      if (!(object instanceof SearchTag)) {
+         return false;
+      }
       SearchTag other = (SearchTag) object;
       return other.getGammaId() == this.getGammaId();
    }
@@ -67,8 +72,9 @@ public class SearchTag implements IAttributeLocator {
       return this.codedTags;
    }
 
+   @Override
    public String toString() {
       return String.format("%s with %d tags cached - total [%d]", attributeVersion.toString(), cacheSize(),
-            getTotalTags());
+         getTotalTags());
    }
 }

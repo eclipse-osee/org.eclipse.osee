@@ -13,11 +13,12 @@ package org.eclipse.osee.ote.core.environment.console;
 import java.util.Collection;
 
 public interface ICommandManager {
-	
-	public void registerCommand(ConsoleCommand cmd);
-	public ConsoleCommand unregisterCommand(ConsoleCommand cmd);
-	
-	public ConsoleCommand getCommand(String name);
-	
-	public Collection<ConsoleCommand> getCommands();
+
+   public void registerCommand(ConsoleCommand cmd);
+
+   public ConsoleCommand unregisterCommand(ConsoleCommand cmd);
+
+   public ConsoleCommand getCommand(String name);
+
+   public Collection<ConsoleCommand> getCommands();
 }

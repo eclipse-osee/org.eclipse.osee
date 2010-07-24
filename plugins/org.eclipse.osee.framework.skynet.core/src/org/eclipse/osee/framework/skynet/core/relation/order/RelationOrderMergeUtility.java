@@ -34,7 +34,7 @@ public class RelationOrderMergeUtility {
       RelationOrderData leftData = factory.createRelationOrderData(left);
       RelationOrderData rightData = factory.createRelationOrderData(right);
       RelationOrderData mergedData =
-            new RelationOrderData(new ArtifactRelationOrderAccessor(new RelationOrderParser()), right);
+         new RelationOrderData(new ArtifactRelationOrderAccessor(new RelationOrderParser()), right);
 
       for (Pair<String, String> typeSide : getAllTypeSides(leftData, rightData)) {
          RelationType type = RelationTypeManager.getType(typeSide.getFirst());

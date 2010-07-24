@@ -87,8 +87,8 @@ final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
       }
 
       String options =
-            String.format(" - Options:[%s]", org.eclipse.osee.framework.jdk.core.util.Collections.toString(optionsList,
-                  ", "));
+         String.format(" - Options:[%s]",
+            org.eclipse.osee.framework.jdk.core.util.Collections.toString(optionsList, ", "));
       return String.format("%s%s", queryString, optionsList.size() > 0 ? options : "");
    }
 
@@ -103,8 +103,8 @@ final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
       int lineMatches = 0;
       try {
          List<ArtifactMatch> matches =
-               ArtifactQuery.getArtifactMatchesFromAttributeKeywords(branch, queryString, matchWordOrder,
-                     includeDeleted, findAllMatchLocations, isCaseSensitive, attributeTypes);
+            ArtifactQuery.getArtifactMatchesFromAttributeKeywords(branch, queryString, matchWordOrder, includeDeleted,
+               findAllMatchLocations, isCaseSensitive, attributeTypes);
 
          endOfloadTime = System.currentTimeMillis();
 
@@ -124,8 +124,8 @@ final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
                      }
                   }
                } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, String.format(
-                        "Error processing attribute line matches for [%s]", artifactMatch.getArtifact()), ex);
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE,
+                     String.format("Error processing attribute line matches for [%s]", artifactMatch.getArtifact()), ex);
                   resultCollector.acceptArtifactMatch(artifactMatch);
                }
             } else {
@@ -138,8 +138,8 @@ final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
          OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
       } finally {
          OseeLog.log(SkynetGuiPlugin.class, Level.INFO, String.format(
-               "Quick Search: [%s] artifacts with [%s] location matches loaded in [%s secs] collected in [%s]",
-               artifactCount, lineMatches, (endOfloadTime - startTime) / 1000.0, Lib.getElapseString(startCollectTime)));
+            "Quick Search: [%s] artifacts with [%s] location matches loaded in [%s secs] collected in [%s]",
+            artifactCount, lineMatches, (endOfloadTime - startTime) / 1000.0, Lib.getElapseString(startCollectTime)));
       }
       setIsDoneRunning(true);
       return new MultiStatus(NewSearchUI.PLUGIN_ID, IStatus.OK, "OK", null);

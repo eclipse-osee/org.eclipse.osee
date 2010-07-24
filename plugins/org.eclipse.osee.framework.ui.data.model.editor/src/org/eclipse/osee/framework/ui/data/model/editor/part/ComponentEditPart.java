@@ -30,10 +30,12 @@ public abstract class ComponentEditPart extends BaseEditPart {
    @Override
    protected DirectEditPolicy createDirectEditPolicy() {
       return new DirectEditPolicy() {
+         @Override
          protected Command getDirectEditCommand(DirectEditRequest request) {
             return new ChangeNameCommand(getModelAsDataType(), (String) request.getCellEditor().getValue());
          }
 
+         @Override
          protected void showCurrentEditValue(DirectEditRequest request) {
             ((Label) getFigure()).setText((String) request.getCellEditor().getValue());
             getFigure().getUpdateManager().performUpdate();
@@ -42,7 +44,7 @@ public abstract class ComponentEditPart extends BaseEditPart {
    }
 
    protected ContainerType getContainerType() {
-      ContainerEditPart internalArtifactEditPart = ((ContainerEditPart) getParent());
+      ContainerEditPart internalArtifactEditPart = (ContainerEditPart) getParent();
       return internalArtifactEditPart.getContainerType();
    }
 
@@ -55,6 +57,7 @@ public abstract class ComponentEditPart extends BaseEditPart {
       refreshVisuals();
    }
 
+   @Override
    protected String getDirectEditText() {
       return getModelAsDataType().getName();
    }

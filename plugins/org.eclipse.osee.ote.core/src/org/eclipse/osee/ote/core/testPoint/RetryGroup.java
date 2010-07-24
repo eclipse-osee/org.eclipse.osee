@@ -28,9 +28,10 @@ public class RetryGroup extends CheckGroup {
 
    }
 
+   @Override
    public Element toXml(Document doc) {
       Element retVal = buildXml(doc, "RetryGroup");
-      
+
       for (Xmlizable object : childElements) {
          retVal.appendChild(object.toXml(doc));
       }

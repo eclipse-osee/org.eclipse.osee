@@ -40,17 +40,18 @@ public class SubscribeByActionableItem extends XNavigateItemAction {
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
       final AICheckTreeDialog diag =
-            new AICheckTreeDialog(getName(),
-                  "Select Actionable Items\n\nEmail will be sent for every Action created against these AIs.",
-                  Active.Active);
+         new AICheckTreeDialog(getName(),
+            "Select Actionable Items\n\nEmail will be sent for every Action created against these AIs.", Active.Active);
       try {
          List<ActionableItemArtifact> objs =
-               Collections.castAll(UserManager.getUser().getRelatedArtifactsOfType(AtsRelationTypes.SubscribedUser_Artifact,
-                     ActionableItemArtifact.class));
+            Collections.castAll(UserManager.getUser().getRelatedArtifactsOfType(
+               AtsRelationTypes.SubscribedUser_Artifact, ActionableItemArtifact.class));
          diag.setInitialAias(objs);
-         if (diag.open() != 0) return;
-         UserManager.getUser().setRelationsOfTypeUseCurrentOrder(AtsRelationTypes.SubscribedUser_Artifact, diag.getChecked(),
-               ActionableItemArtifact.class);
+         if (diag.open() != 0) {
+            return;
+         }
+         UserManager.getUser().setRelationsOfTypeUseCurrentOrder(AtsRelationTypes.SubscribedUser_Artifact,
+            diag.getChecked(), ActionableItemArtifact.class);
          UserManager.getUser().persist();
          AWorkbench.popup(getName(), "Subscriptions updated.");
       } catch (Exception ex) {

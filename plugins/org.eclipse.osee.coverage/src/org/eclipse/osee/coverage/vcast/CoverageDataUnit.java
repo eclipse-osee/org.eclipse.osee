@@ -19,7 +19,8 @@ import java.util.List;
 public class CoverageDataUnit {
 
    public static enum CoverageDataType {
-      STATEMENT, BRANCH
+      STATEMENT,
+      BRANCH
    };
    public String name;
    public int index;

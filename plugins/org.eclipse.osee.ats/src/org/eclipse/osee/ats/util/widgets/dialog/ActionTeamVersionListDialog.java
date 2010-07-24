@@ -54,13 +54,17 @@ public class ActionTeamVersionListDialog extends ActionTeamListDialog {
 
       super.createDialogArea(container);
       getTableViewer().addSelectionChangedListener(new ISelectionChangedListener() {
+         @Override
          public void selectionChanged(SelectionChangedEvent event) {
             try {
                Collection<Object> objs = new HashSet<Object>();
-               if (getTableViewer().getSelection().isEmpty()) return;
+               if (getTableViewer().getSelection().isEmpty()) {
+                  return;
+               }
                IStructuredSelection sel = (IStructuredSelection) getTableViewer().getSelection();
-               for (Artifact art : ((TeamDefinitionArtifact) sel.iterator().next()).getVersionsFromTeamDefHoldingVersions(VersionReleaseType.Both))
+               for (Artifact art : ((TeamDefinitionArtifact) sel.iterator().next()).getVersionsFromTeamDefHoldingVersions(VersionReleaseType.Both)) {
                   objs.add(art);
+               }
                versionList.setInput(objs);
             } catch (Exception ex) {
                OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -79,15 +83,18 @@ public class ActionTeamVersionListDialog extends ActionTeamListDialog {
       versionList.setMultiSelect(false);
       versionList.createWidgets(comp, 2);
       versionList.addSelectionListener(new SelectionListener() {
+         @Override
          public void widgetDefaultSelected(SelectionEvent e) {
             widgetSelected(e);
          }
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
-            if (versionList.getSelected().isEmpty())
+            if (versionList.getSelected().isEmpty()) {
                selectedVersion = null;
-            else
+            } else {
                selectedVersion = (VersionArtifact) versionList.getSelected().iterator().next();
+            }
          };
       });
 

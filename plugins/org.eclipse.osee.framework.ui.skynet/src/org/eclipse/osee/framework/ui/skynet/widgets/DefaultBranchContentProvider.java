@@ -32,31 +32,39 @@ public class DefaultBranchContentProvider implements ITreeContentProvider, IBran
     * @param provider
     */
    public DefaultBranchContentProvider(final ITreeContentProvider provider, Branch branch) {
-      if (provider == null) throw new IllegalArgumentException("provider can not be null");
+      if (provider == null) {
+         throw new IllegalArgumentException("provider can not be null");
+      }
 
       this.branch = branch;
       this.provider = provider;
    }
 
+   @Override
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
    }
 
+   @Override
    public void dispose() {
       OseeEventManager.removeListener(this);
    }
 
+   @Override
    public Object[] getChildren(Object parentElement) {
       return provider.getChildren(parentElement);
    }
 
+   @Override
    public Object getParent(Object element) {
       return provider.getParent(element);
    }
 
+   @Override
    public boolean hasChildren(Object element) {
       return provider.hasChildren(element);
    }
 
+   @Override
    public Object[] getElements(Object inputElement) {
       return provider.getElements(branch);
    }

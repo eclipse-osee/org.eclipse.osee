@@ -39,13 +39,13 @@ public class DeleteArtifactHandler extends CommandHandler {
       if (!artifacts.isEmpty()) {
          try {
             MessageDialog dialog =
-                  new MessageDialog(Displays.getActiveShell(), "Confirm Artifact Deletion", null,
-                        " Are you sure you want to delete this artifact and all of the default hierarchy children?",
-                        MessageDialog.QUESTION, new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 1);
+               new MessageDialog(Displays.getActiveShell(), "Confirm Artifact Deletion", null,
+                  " Are you sure you want to delete this artifact and all of the default hierarchy children?",
+                  MessageDialog.QUESTION, new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 1);
             if (dialog.open() == 0) {
                Artifact[] artifactsArray = artifacts.toArray(new Artifact[artifacts.size()]);
                SkynetTransaction transaction =
-                     new SkynetTransaction(artifactsArray[0].getBranch(), "Delete artifact handler");
+                  new SkynetTransaction(artifactsArray[0].getBranch(), "Delete artifact handler");
                ArtifactPersistenceManager.deleteArtifact(transaction, false, artifactsArray);
                transaction.execute();
             }

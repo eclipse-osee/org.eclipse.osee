@@ -42,7 +42,7 @@ public class BranchCheckTreeDialog extends MinMaxOSEECheckedFilteredTreeDialog {
 
    public BranchCheckTreeDialog(String title, String message, int minSelectionRequired, int maxSelectionRequired) {
       super(title, message, patternFilter, new ArrayTreeContentProvider(), new BranchLabelProvider(),
-            new BranchNameSorter(), minSelectionRequired, maxSelectionRequired);
+         new BranchNameSorter(), minSelectionRequired, maxSelectionRequired);
    }
 
    public Collection<Branch> getChecked() {
@@ -61,7 +61,7 @@ public class BranchCheckTreeDialog extends MinMaxOSEECheckedFilteredTreeDialog {
       Control comp = super.createDialogArea(container);
       try {
          List<Branch> branches =
-               BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING, BranchType.BASELINE);
+            BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING, BranchType.BASELINE);
          Collections.sort(branches);
          getTreeViewer().getViewer().setInput(branches);
          if (getInitialBranches() != null) {

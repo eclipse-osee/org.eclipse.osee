@@ -41,7 +41,7 @@ public class RelationSorterProviderTest {
       List<IRelationSorterId> actual = provider.getAllRelationOrderIds();
 
       List<IRelationSorterId> expected =
-            Collections.castAll(IRelationSorterId.class, Arrays.asList(RelationOrderBaseTypes.values));
+         Collections.castAll(IRelationSorterId.class, Arrays.asList(RelationOrderBaseTypes.values));
       Assert.assertTrue(Collections.isEqual(expected, actual));
    }
 

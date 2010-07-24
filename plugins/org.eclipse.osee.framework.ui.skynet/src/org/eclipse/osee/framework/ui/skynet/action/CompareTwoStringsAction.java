@@ -37,7 +37,7 @@ public class CompareTwoStringsAction extends Action {
    public void run() {
       try {
          final EntryEntryDialog ed =
-               new EntryEntryDialog(getText(), "Enter Strings to Compare", "String 1", "String 2");
+            new EntryEntryDialog(getText(), "Enter Strings to Compare", "String 1", "String 2");
          ed.setModeless();
          ed.setFillVertically(true);
          ed.setOkListener(new Listener() {
@@ -45,8 +45,8 @@ public class CompareTwoStringsAction extends Action {
             @Override
             public void handleEvent(Event event) {
                CompareHandler compareHandler =
-                     new CompareHandler(new CompareItem("First", ed.getEntry(), System.currentTimeMillis()),
-                           new CompareItem("Second", ed.getEntry2(), System.currentTimeMillis()), null);
+                  new CompareHandler(new CompareItem("First", ed.getEntry(), System.currentTimeMillis()),
+                     new CompareItem("Second", ed.getEntry2(), System.currentTimeMillis()), null);
                compareHandler.compare();
             }
          });

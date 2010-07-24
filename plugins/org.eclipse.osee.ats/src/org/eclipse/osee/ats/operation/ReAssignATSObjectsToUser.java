@@ -48,6 +48,7 @@ public class ReAssignATSObjectsToUser extends AbstractBlam {
    @Override
    public void runOperation(final VariableMap variableMap, IProgressMonitor monitor) throws OseeCoreException {
       Displays.ensureInDisplayThread(new Runnable() {
+         @Override
          public void run() {
             try {
                final User fromUser = variableMap.getUser(FROM_ASSIGNEE);
@@ -77,7 +78,7 @@ public class ReAssignATSObjectsToUser extends AbstractBlam {
 
                // Show in list dialog and allow select for ones to change
                ArtifactCheckTreeDialog dialog =
-                     new ArtifactCheckTreeDialog(atsArts, new ArtifactTypeAndDescriptiveLabelProvider());
+                  new ArtifactCheckTreeDialog(atsArts, new ArtifactTypeAndDescriptiveLabelProvider());
                dialog.setTitle("ReAssign ATS Object to User");
                dialog.setMessage("Select to re-assign to user \"" + toUser);
                if (dialog.open() != 0) {
@@ -87,7 +88,7 @@ public class ReAssignATSObjectsToUser extends AbstractBlam {
 
                // Make the changes and persist
                SkynetTransaction transaction =
-                     new SkynetTransaction(AtsUtil.getAtsBranch(), "Re-Assign ATS Objects to User");
+                  new SkynetTransaction(AtsUtil.getAtsBranch(), "Re-Assign ATS Objects to User");
                for (Artifact artifact : artsToReAssign) {
                   if (artifact instanceof StateMachineArtifact) {
                      ((StateMachineArtifact) artifact).getStateMgr().removeAssignee(fromUser);

@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
  * @author Roberto E. Escobar
  */
 public abstract class AbstractAttributeDataProvider implements IAttributeDataProvider {
-   private Attribute<?> attribute;
+   private final Attribute<?> attribute;
 
    /**
     * @param attribute

@@ -45,7 +45,7 @@ import org.eclipse.swt.widgets.Widget;
 public class SearchComposite extends Composite implements Listener {
    private static final String SEARCH_BUTTON_TOOLTIP = "Executes search";
    private static final String SEARCH_COMBO_TOOLTIP =
-         "Enter word(s) to search for or select historical value from pull-down on the right.";
+      "Enter word(s) to search for or select historical value from pull-down on the right.";
 
    private final Set<Listener> listeners;
    private Combo searchArea;
@@ -191,6 +191,7 @@ public class SearchComposite extends Composite implements Listener {
       }
    }
 
+   @Override
    public void handleEvent(Event event) {
       updateWidgetEnablements();
       notifyListener(event);

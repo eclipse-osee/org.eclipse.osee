@@ -66,7 +66,7 @@ public class AtsQuickSearchOperation extends AbstractOperation implements IWorld
          }
       }
       for (Artifact art : ArtifactQuery.getArtifactListFromAttributeKeywords(AtsUtil.getAtsBranch(),
-            data.getSearchStr(), false, EXCLUDE_DELETED, false)) {
+         data.getSearchStr(), false, EXCLUDE_DELETED, false)) {
          // only ATS Artifacts
          if (art instanceof StateMachineArtifact) {
             StateMachineArtifact sma = (StateMachineArtifact) art;

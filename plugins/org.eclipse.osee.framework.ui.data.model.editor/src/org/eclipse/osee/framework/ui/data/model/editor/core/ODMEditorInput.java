@@ -35,31 +35,36 @@ public class ODMEditorInput implements IEditorInput {
    @Override
    public boolean equals(Object obj) {
       if (obj instanceof ODMEditorInput) {
-         ODMEditorInput otherEdInput = (ODMEditorInput) obj;
       }
       return false;
    }
 
+   @Override
    public boolean exists() {
       return true;
    }
 
+   @Override
    public ImageDescriptor getImageDescriptor() {
       return null;
    }
 
+   @Override
    public String getName() {
       return "No Data Types Provided";
    }
 
+   @Override
    public IPersistableElement getPersistable() {
       return null;
    }
 
+   @Override
    public String getToolTipText() {
       return getName();
    }
 
+   @Override
    @SuppressWarnings("unchecked")
    public Object getAdapter(Class adapter) {
       return null;

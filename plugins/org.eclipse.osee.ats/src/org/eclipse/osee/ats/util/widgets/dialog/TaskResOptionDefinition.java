@@ -51,18 +51,19 @@ public class TaskResOptionDefinition {
       for (int x = 0; x < element.getAttributes().getLength(); x++) {
          Node node = element.getAttributes().item(x);
          String nodeName = node.getNodeName();
-         if (nodeName.equals(Field.name.name()))
+         if (nodeName.equals(Field.name.name())) {
             name = node.getNodeValue();
-         else if (nodeName.equals(Field.desc.name()))
+         } else if (nodeName.equals(Field.desc.name())) {
             desc = node.getNodeValue();
-         else if (nodeName.equals(Field.complete.name()))
+         } else if (nodeName.equals(Field.complete.name())) {
             completeable = Boolean.parseBoolean(node.getNodeValue());
-         else if (nodeName.equals(Field.color.name()))
+         } else if (nodeName.equals(Field.color.name())) {
             color = node.getNodeValue();
-         else if (nodeName.equals(Field.percent.name()))
+         } else if (nodeName.equals(Field.percent.name())) {
             percent = node.getNodeValue();
-         else
+         } else {
             throw new OseeArgumentException("Unknow Task Resolution Option Attribute \"" + nodeName + "\"");
+         }
       }
    }
 
@@ -81,23 +82,57 @@ public class TaskResOptionDefinition {
    }
 
    public int getColorInt() {
-      if (color == null || color.equals("")) return SWT.COLOR_BLACK;
-      if (color.equals("WHITE")) return SWT.COLOR_WHITE;
-      if (color.equals("BLACK")) return SWT.COLOR_BLACK;
-      if (color.equals("RED")) return SWT.COLOR_RED;
-      if (color.equals("DARK_RED")) return SWT.COLOR_DARK_RED;
-      if (color.equals("GREEN")) return SWT.COLOR_GREEN;
-      if (color.equals("DARK_GREEN")) return SWT.COLOR_DARK_GREEN;
-      if (color.equals("YELLOW")) return SWT.COLOR_YELLOW;
-      if (color.equals("DARK_YELLOW")) return SWT.COLOR_DARK_YELLOW;
-      if (color.equals("BLUE")) return SWT.COLOR_BLUE;
-      if (color.equals("DARK_BLUE")) return SWT.COLOR_DARK_BLUE;
-      if (color.equals("MAGENTA")) return SWT.COLOR_MAGENTA;
-      if (color.equals("DARK_MAGENTA")) return SWT.COLOR_DARK_MAGENTA;
-      if (color.equals("CYAN")) return SWT.COLOR_CYAN;
-      if (color.equals("DARK_CYAN")) return SWT.COLOR_DARK_CYAN;
-      if (color.equals("GRAY")) return SWT.COLOR_GRAY;
-      if (color.equals("DARK_GRAY")) return SWT.COLOR_DARK_GRAY;
+      if (color == null || color.equals("")) {
+         return SWT.COLOR_BLACK;
+      }
+      if (color.equals("WHITE")) {
+         return SWT.COLOR_WHITE;
+      }
+      if (color.equals("BLACK")) {
+         return SWT.COLOR_BLACK;
+      }
+      if (color.equals("RED")) {
+         return SWT.COLOR_RED;
+      }
+      if (color.equals("DARK_RED")) {
+         return SWT.COLOR_DARK_RED;
+      }
+      if (color.equals("GREEN")) {
+         return SWT.COLOR_GREEN;
+      }
+      if (color.equals("DARK_GREEN")) {
+         return SWT.COLOR_DARK_GREEN;
+      }
+      if (color.equals("YELLOW")) {
+         return SWT.COLOR_YELLOW;
+      }
+      if (color.equals("DARK_YELLOW")) {
+         return SWT.COLOR_DARK_YELLOW;
+      }
+      if (color.equals("BLUE")) {
+         return SWT.COLOR_BLUE;
+      }
+      if (color.equals("DARK_BLUE")) {
+         return SWT.COLOR_DARK_BLUE;
+      }
+      if (color.equals("MAGENTA")) {
+         return SWT.COLOR_MAGENTA;
+      }
+      if (color.equals("DARK_MAGENTA")) {
+         return SWT.COLOR_DARK_MAGENTA;
+      }
+      if (color.equals("CYAN")) {
+         return SWT.COLOR_CYAN;
+      }
+      if (color.equals("DARK_CYAN")) {
+         return SWT.COLOR_DARK_CYAN;
+      }
+      if (color.equals("GRAY")) {
+         return SWT.COLOR_GRAY;
+      }
+      if (color.equals("DARK_GRAY")) {
+         return SWT.COLOR_DARK_GRAY;
+      }
       return SWT.COLOR_BLACK;
    }
 
@@ -117,24 +152,29 @@ public class TaskResOptionDefinition {
    }
 
    private enum Field {
-      name, desc, complete, percent, color
+      name,
+      desc,
+      complete,
+      percent,
+      color
    };
 
    public void setFromXml(String xml) throws OseeCoreException {
       for (Field field : Field.values()) {
          String data = AXml.getTagData(xml, field.name());
-         if (field == Field.name)
+         if (field == Field.name) {
             setName(data);
-         else if (field == Field.color)
+         } else if (field == Field.color) {
             setColor(data);
-         else if (field == Field.desc)
+         } else if (field == Field.desc) {
             setDesc(data);
-         else if (field == Field.percent)
+         } else if (field == Field.percent) {
             setPercent(data);
-         else if (field == Field.complete)
+         } else if (field == Field.complete) {
             setComplete(data.equals("true"));
-         else
+         } else {
             throw new OseeArgumentException("Unexpected field");
+         }
       }
    }
 
@@ -142,18 +182,19 @@ public class TaskResOptionDefinition {
       StringBuffer sb = new StringBuffer("<" + ATS_TASK_OPTION_TAG + ">");
       for (Field field : Field.values()) {
          String str = "";
-         if (field == Field.name)
+         if (field == Field.name) {
             str = getName();
-         else if (field == Field.color)
+         } else if (field == Field.color) {
             str = getColor();
-         else if (field == Field.desc)
+         } else if (field == Field.desc) {
             str = getDesc();
-         else if (field == Field.percent)
+         } else if (field == Field.percent) {
             str = getPercent();
-         else if (field == Field.complete)
-            str = (isCompleteable() ? "true" : "false");
-         else
+         } else if (field == Field.complete) {
+            str = isCompleteable() ? "true" : "false";
+         } else {
             throw new OseeCoreException("Unexpected field");
+         }
          sb.append(AXml.addTagData(field.name(), str));
       }
       sb.append("</" + ATS_TASK_OPTION_TAG + ">");

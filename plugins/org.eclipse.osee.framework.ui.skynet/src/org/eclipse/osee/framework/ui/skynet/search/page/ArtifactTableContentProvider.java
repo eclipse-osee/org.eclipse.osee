@@ -22,17 +22,19 @@ public class ArtifactTableContentProvider implements IStructuredContentProvider,
 
    private final Object[] EMPTY_ARR = new Object[0];
 
-   private ArtifactSearchPage fPage;
+   private final ArtifactSearchPage fPage;
    private AbstractArtifactSearchResult fResult;
 
    public ArtifactTableContentProvider(ArtifactSearchPage page) {
       fPage = page;
    }
 
+   @Override
    public void dispose() {
       // nothing to do
    }
 
+   @Override
    public Object[] getElements(Object inputElement) {
       if (inputElement instanceof AbstractArtifactSearchResult) {
          int elementLimit = getElementLimit();
@@ -47,25 +49,30 @@ public class ArtifactTableContentProvider implements IStructuredContentProvider,
       return EMPTY_ARR;
    }
 
+   @Override
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
       if (newInput instanceof AbstractArtifactSearchResult) {
          fResult = (AbstractArtifactSearchResult) newInput;
       }
    }
 
+   @Override
    public void elementsChanged(Object[] updatedElements) {
       TableViewer viewer = getViewer();
       int elementLimit = getElementLimit();
       boolean tableLimited = elementLimit != -1;
       for (int i = 0; i < updatedElements.length; i++) {
          if (fResult.getMatchCount(updatedElements[i]) > 0) {
-            if (viewer.testFindItem(updatedElements[i]) != null)
+            if (viewer.testFindItem(updatedElements[i]) != null) {
                viewer.update(updatedElements[i], null);
-            else {
-               if (!tableLimited || viewer.getTable().getItemCount() < elementLimit) viewer.add(updatedElements[i]);
+            } else {
+               if (!tableLimited || viewer.getTable().getItemCount() < elementLimit) {
+                  viewer.add(updatedElements[i]);
+               }
             }
-         } else
+         } else {
             viewer.remove(updatedElements[i]);
+         }
       }
    }
 
@@ -77,6 +84,7 @@ public class ArtifactTableContentProvider implements IStructuredContentProvider,
       return (TableViewer) fPage.getViewer();
    }
 
+   @Override
    public void clear() {
       getViewer().refresh();
    }

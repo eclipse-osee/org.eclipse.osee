@@ -68,27 +68,27 @@ public class HtmlExportTable {
    }
 
    public Result export(String speratorChar, String fileExtension) {
-      if (!popupConfirm || (popupConfirm && MessageDialog.openConfirm(Displays.getActiveShell(),
-            "Export Table", "Export Table to CSV?"))) {
+      if (!popupConfirm || popupConfirm && MessageDialog.openConfirm(Displays.getActiveShell(), "Export Table",
+         "Export Table to CSV?")) {
          StringBuilder sb = new StringBuilder();
          sb.append(title + "\n");
          String htmlStr = AHTML.htmlToText(html);
          Matcher m =
-               Pattern.compile("<table.*?</table>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher(
-                     htmlStr);
+            Pattern.compile("<table.*?</table>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher(
+               htmlStr);
          if (m.find()) {
             String csv = m.group();
             Matcher rowM =
-                  Pattern.compile("<tr.*?>(.*?)</tr>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher(
-                        csv);
+               Pattern.compile("<tr.*?>(.*?)</tr>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher(
+                  csv);
             while (rowM.find()) {
                String row = rowM.group(1);
                row = row.replaceAll("[\n\r]*", "");
                // Handle all the headers
                for (String tag : elementTags) {
                   Matcher thM =
-                        Pattern.compile("<" + tag + ".*?>(.*?)</" + tag + ">",
-                              Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher(row);
+                     Pattern.compile("<" + tag + ".*?>(.*?)</" + tag + ">",
+                        Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher(row);
                   String csvRow = "";
                   while (thM.find()) {
                      csvRow += "\"" + removeLeadTrailSpaces(thM.group(1)) + "\"" + speratorChar;
@@ -106,14 +106,17 @@ public class HtmlExportTable {
                dialog.setFilterPath(System.getProperty("user.home"));
                dialog.setFileName("table.csv");
                path = dialog.open();
-            } else
+            } else {
                path = System.getProperty("user.home") + File.separator + "table." + fileExtension;
+            }
 
             if (path != null) {
                try {
                   File file = new File(path);
                   Lib.writeStringToFile(sb.toString(), file);
-                  if (openInSystem) Program.launch(file.getAbsolutePath());
+                  if (openInSystem) {
+                     Program.launch(file.getAbsolutePath());
+                  }
                   return Result.TrueResult;
                } catch (IOException ex) {
                   OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);

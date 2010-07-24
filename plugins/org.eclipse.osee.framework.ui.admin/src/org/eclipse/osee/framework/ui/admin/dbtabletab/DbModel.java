@@ -17,18 +17,19 @@ import java.util.ArrayList;
  */
 public class DbModel {
 
-   private ArrayList<Object> columns = new ArrayList<Object>();
+   private final ArrayList<Object> columns = new ArrayList<Object>();
    private boolean needSave = false;
-   private ArrayList<String> changedColumns = new ArrayList<String>();
+   private final ArrayList<String> changedColumns = new ArrayList<String>();
 
    public DbModel() {
    }
 
    public Object getColumn(int num) {
-      if (columns.isEmpty() || num > columns.size())
+      if (columns.isEmpty() || num > columns.size()) {
          return "";
-      else
+      } else {
          return columns.get(num);
+      }
    }
 
    public void addColumn(int column, Object obj) {
@@ -48,7 +49,9 @@ public class DbModel {
    }
 
    public void setColumnChanged(String column) {
-      if (column == null) changedColumns.clear();
+      if (column == null) {
+         changedColumns.clear();
+      }
       changedColumns.add(column);
    }
 
@@ -60,11 +63,11 @@ public class DbModel {
       String[] values = new String[columns.size()];
       int x = 0;
       for (Object o : columns) {
-         if (o instanceof String)
+         if (o instanceof String) {
             values[x] = (String) o;
-         else if (o instanceof Long)
+         } else if (o instanceof Long) {
             values[x] = ((Long) o).toString();
-         else if (o == null) {
+         } else if (o == null) {
             values[x] = "";
          } else {
             System.err.println("Invalid value type");

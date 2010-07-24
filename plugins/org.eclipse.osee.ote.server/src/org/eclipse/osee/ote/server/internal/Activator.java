@@ -38,39 +38,39 @@ public class Activator implements BundleActivator {
    public void start(BundleContext context) throws Exception {
       instance = this;
       this.context = context;
-      
+
       oteStatusBoardTracker = new ServiceTracker(context, OTEStatusBoard.class.getName(), null);
       oteStatusBoardTracker.open(true);
-      
-      consoleCommandtracker =
-         new ServiceTracker(context, ICommandManager.class.getName(), null);
+
+      consoleCommandtracker = new ServiceTracker(context, ICommandManager.class.getName(), null);
       consoleCommandtracker.open(true);
-      
+
       runtimeManagerHandler = new ServiceDependencyTracker(context, new RuntimeManagerHandler());
       runtimeManagerHandler.open();
-      
+
       oteServiceStarterHandler = new ServiceDependencyTracker(context, new OteServiceStarterCreationHandler());
       oteServiceStarterHandler.open();
-      
+
       startServer();
    }
-   
-   public void startServer() throws ClassNotFoundException, SecurityException, NoSuchMethodException{
+
+   public void startServer() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
       String oteServerFactoryClass = System.getProperty("osee.ote.server.factory.class");
-      if(oteServerFactoryClass != null){
+      if (oteServerFactoryClass != null) {
          String outfileLocation = System.getProperty("osee.ote.outfiles");
-         if(outfileLocation == null){
+         if (outfileLocation == null) {
             outfileLocation = System.getProperty("java.io.tmpdir");
          }
          String title = System.getProperty("osee.ote.server.title");
          String name = System.getProperty("user.name");
          String keepEnvAliveWithNoUsersStr = System.getProperty("osee.ote.server.keepAlive");
          boolean keepEnvAliveWithNoUsers = true;
-         if(keepEnvAliveWithNoUsersStr != null){
-        	 keepEnvAliveWithNoUsers = Boolean.parseBoolean(keepEnvAliveWithNoUsersStr);
+         if (keepEnvAliveWithNoUsersStr != null) {
+            keepEnvAliveWithNoUsers = Boolean.parseBoolean(keepEnvAliveWithNoUsersStr);
          }
-         TestEnvironmentServiceConfigImpl config = new TestEnvironmentServiceConfigImpl(keepEnvAliveWithNoUsers, title, name, outfileLocation, null);
-        
+         TestEnvironmentServiceConfigImpl config =
+            new TestEnvironmentServiceConfigImpl(keepEnvAliveWithNoUsers, title, name, outfileLocation, null);
+
          String version = context.getBundle().getHeaders().get("Bundle-Version").toString();
          String comment = context.getBundle().getHeaders().get("Bundle-Description").toString();
          String station = "unknown";
@@ -81,12 +81,15 @@ public class Activator implements BundleActivator {
          }
          boolean useJiniLookup = System.getProperty("osee.ote.use.lookup") != null;
          boolean isLocalConnector = false;
-         
+
          int index = oteServerFactoryClass.indexOf('.');
-         String type = oteServerFactoryClass.substring(index > 0 ? index+1:0);
-         PropertyParamter propertyParameter = new PropertyParamter(version, comment, station, type, useJiniLookup, isLocalConnector);
-         
-         oteServiceTracker = new ServiceDependencyTracker(context, new OteServiceCreationHandler(config, propertyParameter, oteServerFactoryClass));
+         String type = oteServerFactoryClass.substring(index > 0 ? index + 1 : 0);
+         PropertyParamter propertyParameter =
+            new PropertyParamter(version, comment, station, type, useJiniLookup, isLocalConnector);
+
+         oteServiceTracker =
+            new ServiceDependencyTracker(context, new OteServiceCreationHandler(config, propertyParameter,
+               oteServerFactoryClass));
          oteServiceTracker.open();
       }
    }
@@ -94,7 +97,7 @@ public class Activator implements BundleActivator {
    @Override
    public void stop(BundleContext context) throws Exception {
       oteStatusBoardTracker.close();
-      if(oteServiceTracker != null){
+      if (oteServiceTracker != null) {
          oteServiceTracker.close();
       }
       runtimeManagerHandler.close();
@@ -102,20 +105,20 @@ public class Activator implements BundleActivator {
       this.context = null;
    }
 
-   static Activator getDefault(){
+   static Activator getDefault() {
       return instance;
    }
-   
+
    public BundleContext getContext() {
       return context;
    }
 
    public OTEStatusBoard getOteStatusBoard() {
-      return (OTEStatusBoard)oteStatusBoardTracker.getService();
+      return (OTEStatusBoard) oteStatusBoardTracker.getService();
    }
 
    public ICommandManager getCommandManager() {
-      return (ICommandManager)consoleCommandtracker.getService();
+      return (ICommandManager) consoleCommandtracker.getService();
    }
 
 }

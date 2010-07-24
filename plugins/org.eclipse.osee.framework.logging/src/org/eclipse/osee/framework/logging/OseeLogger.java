@@ -23,9 +23,9 @@ import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
  */
 public class OseeLogger {
 
-   private List<ILoggerListener> listeners;
-   private Map<String, Level> levelMap;
-   private Level defaultLevel;
+   private final List<ILoggerListener> listeners;
+   private final Map<String, Level> levelMap;
+   private final Level defaultLevel;
 
    public OseeLogger() {
       levelMap = new ConcurrentHashMap<String, Level>();

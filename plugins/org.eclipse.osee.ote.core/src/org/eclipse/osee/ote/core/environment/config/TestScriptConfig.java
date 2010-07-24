@@ -18,11 +18,11 @@ import java.io.Serializable;
 public class TestScriptConfig implements Serializable {
 
    private static final long serialVersionUID = 6791547338404192517L;
-   private String outFile;
-   private String fullScriptName;
-   private String[] classPathStrs;
-   private boolean isExe;
-   private ScriptVersionConfig scriptVersion;
+   private final String outFile;
+   private final String fullScriptName;
+   private final String[] classPathStrs;
+   private final boolean isExe;
+   private final ScriptVersionConfig scriptVersion;
 
    /**
     * TestScriptConfig Constructor.

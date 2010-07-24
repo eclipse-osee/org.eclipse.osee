@@ -56,7 +56,7 @@ public class AtsDeleteManager {
             delArts.add(art);
             if (selectedArts.size() < 30) {
                artBuilder.append(String.format("Name: %s  Type: %s\n", art.getHumanReadableId(),
-                     art.getArtifactTypeName()));
+                  art.getArtifactTypeName()));
             }
          }
       }
@@ -67,11 +67,11 @@ public class AtsDeleteManager {
       // Prompt for delete if specified in options
       if (deleteOptions.contains(DeleteOption.Prompt)) {
          MessageDialogWithToggle md =
-               MessageDialogWithToggle.openOkCancelConfirm(
-                     Displays.getActiveShell(),
-                     "Delete/Purge ATS Object",
-                     "Prepare to Delete/Purge ATS Object\n\n" + artBuilder.toString().replaceFirst("\n$", "") + "\n\nAnd ALL its ATS children.\n(Artifacts will be retrieved for confirmation)\nAre You Sure?",
-                     "Purge", false, null, null);
+            MessageDialogWithToggle.openOkCancelConfirm(
+               Displays.getActiveShell(),
+               "Delete/Purge ATS Object",
+               "Prepare to Delete/Purge ATS Object\n\n" + artBuilder.toString().replaceFirst("\n$", "") + "\n\nAnd ALL its ATS children.\n(Artifacts will be retrieved for confirmation)\nAre You Sure?",
+               "Purge", false, null, null);
          confirmDelete = md.getReturnCode() == 0;
          if (md.getToggleState()) {
             deleteOptions.add(DeleteOption.Purge);
@@ -88,12 +88,12 @@ public class AtsDeleteManager {
          allDeleteArts.add(deleteArt);
          final Set<Artifact> relatedArts = new HashSet<Artifact>(30);
          delBuilder.append(String.format("\n<b>Selected</b>:[%s][%s][%s]", deleteArt.getArtifactTypeName(),
-               deleteArt.getHumanReadableId(), deleteArt.getName()) + "\n");
+            deleteArt.getHumanReadableId(), deleteArt.getName()) + "\n");
          ((ATSArtifact) deleteArt).atsDelete(relatedArts, ignoredArts);
          for (Artifact loopArt : relatedArts) {
             if (!loopArt.equals(deleteArt)) {
                delBuilder.append(String.format(AHTML.addSpace(4) + "<b>Related</b>:[%s][%s][%s]",
-                     loopArt.getArtifactTypeName(), loopArt.getHumanReadableId(), loopArt.getName()) + "\n");
+                  loopArt.getArtifactTypeName(), loopArt.getHumanReadableId(), loopArt.getName()) + "\n");
             }
          }
          // check that if all team workflows are deleted, delete action
@@ -103,7 +103,7 @@ public class AtsDeleteManager {
                if (actionArt != null && !allDeleteArts.contains(actionArt) && allDeleteArts.containsAll(actionArt.getTeamWorkFlowArtifacts())) {
                   relatedArts.add(actionArt);
                   delBuilder.append(String.format(AHTML.addSpace(4) + "<b>Related</b>:[%s][%s][%s]",
-                        actionArt.getArtifactTypeName(), actionArt.getHumanReadableId(), actionArt.getName()) + "\n");
+                     actionArt.getArtifactTypeName(), actionArt.getHumanReadableId(), actionArt.getName()) + "\n");
                }
             }
          }
@@ -113,37 +113,36 @@ public class AtsDeleteManager {
       // Get final confirmation of all seleted and related items to delete/purge
       if (deleteOptions.contains(DeleteOption.Prompt)) {
          String results =
-               (purge ? "Purge" : "Delete") + " ATS objects and related children, Are You Sure?\n" + delBuilder.toString();
+            (purge ? "Purge" : "Delete") + " ATS objects and related children, Are You Sure?\n" + delBuilder.toString();
          results = results.replaceAll("\n", "<br>");
          HtmlDialog dialog =
-               new HtmlDialog((purge ? "Purge" : "Delete") + " ATS objects and related children", "",
-                     AHTML.simplePage(results));
+            new HtmlDialog((purge ? "Purge" : "Delete") + " ATS objects and related children", "",
+               AHTML.simplePage(results));
          dialog.open();
          if (dialog.getReturnCode() != 0) {
             return;
          }
       }
       AbstractOperation operation =
-            new AbstractOperation((purge ? "Purge" : "Delete") + " ATS Objects", AtsPlugin.PLUGIN_ID) {
+         new AbstractOperation((purge ? "Purge" : "Delete") + " ATS Objects", AtsPlugin.PLUGIN_ID) {
 
-               @Override
-               protected void doWork(IProgressMonitor monitor) throws Exception {
-                  // perform the delete/purge
-                  if (purge) {
-                     new PurgeArtifacts(allDeleteArts).execute();
-                  } else if (allDeleteArts.size() > 0) {
-                     SkynetTransaction transaction =
-                           new SkynetTransaction(AtsUtil.getAtsBranch(), "Delete ATS Objects");
-                     ArtifactPersistenceManager.deleteArtifact(transaction, false,
-                           allDeleteArts.toArray(new Artifact[allDeleteArts.size()]));
-                     transaction.execute();
-                  }
-                  if (deleteOptions.contains(DeleteOption.Prompt)) {
-                     AWorkbench.popup((purge ? "Purge" : "Delete") + " Completed",
-                           (purge ? "Purge" : "Delete") + " Completed");
-                  }
+            @Override
+            protected void doWork(IProgressMonitor monitor) throws Exception {
+               // perform the delete/purge
+               if (purge) {
+                  new PurgeArtifacts(allDeleteArts).execute();
+               } else if (allDeleteArts.size() > 0) {
+                  SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Delete ATS Objects");
+                  ArtifactPersistenceManager.deleteArtifact(transaction, false,
+                     allDeleteArts.toArray(new Artifact[allDeleteArts.size()]));
+                  transaction.execute();
                }
-            };
+               if (deleteOptions.contains(DeleteOption.Prompt)) {
+                  AWorkbench.popup((purge ? "Purge" : "Delete") + " Completed",
+                     (purge ? "Purge" : "Delete") + " Completed");
+               }
+            }
+         };
       if (forcePend) {
          Operations.executeAndPend(operation, true);
       } else {

@@ -145,7 +145,7 @@ public class ArtifactExtractorTest {
             }
             boolean actual = filter.accept(file);
             Assert.assertEquals(String.format("%s [%s]", testData.getMessage(), testData.getFile()),
-                  testData.getExpected(), actual);
+               testData.getExpected(), actual);
          } finally {
             success &= file.delete();
          }

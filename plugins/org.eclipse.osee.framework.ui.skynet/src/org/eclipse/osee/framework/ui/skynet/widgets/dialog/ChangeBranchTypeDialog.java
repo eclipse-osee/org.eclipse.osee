@@ -51,7 +51,7 @@ public class ChangeBranchTypeDialog extends ListDialog {
    @Override
    protected Control createDialogArea(Composite container) {
 
-      (new Label(container, SWT.NONE)).setText("     Select Branch Type:");
+      new Label(container, SWT.NONE).setText("     Select Branch Type:");
 
       Control c = super.createDialogArea(container);
       GridData gd = new GridData(GridData.FILL_BOTH);
@@ -81,25 +81,31 @@ public class ChangeBranchTypeDialog extends ListDialog {
 
    public class ChangeLabelProvider implements ILabelProvider {
 
+      @Override
       public Image getImage(Object arg0) {
          return null;
       }
 
+      @Override
       public String getText(Object arg0) {
          BranchType type = (BranchType) arg0;
          return type.name();
       }
 
+      @Override
       public void addListener(ILabelProviderListener arg0) {
       }
 
+      @Override
       public void dispose() {
       }
 
+      @Override
       public boolean isLabelProperty(Object arg0, String arg1) {
          return false;
       }
 
+      @Override
       public void removeListener(ILabelProviderListener arg0) {
       }
 

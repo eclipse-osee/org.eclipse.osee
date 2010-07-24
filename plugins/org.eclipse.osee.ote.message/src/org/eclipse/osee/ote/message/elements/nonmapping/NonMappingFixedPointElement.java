@@ -20,19 +20,19 @@ import org.eclipse.osee.ote.message.interfaces.ITestAccessor;
  */
 public class NonMappingFixedPointElement extends FixedPointElement {
 
-  /**
-   * Copy constructor.
-   * 
-   * @param element
-   */
+   /**
+    * Copy constructor.
+    * 
+    * @param element
+    */
    public NonMappingFixedPointElement(FixedPointElement element) {
-      super(element.getMessage(), element.getElementName(), element.getMsgData(), 
-            0, false, element.getByteOffset(), element.getMsb(), element.getLsb());
-      for(Object obj:element.getElementPath()){
+      super(element.getMessage(), element.getElementName(), element.getMsgData(), 0, false, element.getByteOffset(),
+         element.getMsb(), element.getLsb());
+      for (Object obj : element.getElementPath()) {
          this.getElementPath().add(obj);
       }
    }
-   
+
    /**
     * @param message
     * @param elementName
@@ -43,7 +43,7 @@ public class NonMappingFixedPointElement extends FixedPointElement {
     * @param msb
     * @param lsb
     */
-   public NonMappingFixedPointElement(Message<?,?,?> message, String elementName, MessageData messageData, double resolution, boolean signed, int byteOffset, int msb, int lsb) {
+   public NonMappingFixedPointElement(Message<?, ?, ?> message, String elementName, MessageData messageData, double resolution, boolean signed, int byteOffset, int msb, int lsb) {
       super(message, elementName, messageData, resolution, signed, byteOffset, msb, lsb);
    }
 
@@ -58,7 +58,7 @@ public class NonMappingFixedPointElement extends FixedPointElement {
     * @param msb
     * @param lsb
     */
-   public NonMappingFixedPointElement(Message<?,?,?> message, String elementName, MessageData messageData, double resolution, double minVal, boolean signed, int byteOffset, int msb, int lsb) {
+   public NonMappingFixedPointElement(Message<?, ?, ?> message, String elementName, MessageData messageData, double resolution, double minVal, boolean signed, int byteOffset, int msb, int lsb) {
       super(message, elementName, messageData, resolution, minVal, signed, byteOffset, msb, lsb);
    }
 
@@ -74,7 +74,7 @@ public class NonMappingFixedPointElement extends FixedPointElement {
     * @param originalLsb
     * @param originalMsb
     */
-   public NonMappingFixedPointElement(Message<?,?,?> message, String elementName, MessageData messageData, double resolution, boolean signed, int byteOffset, int msb, int lsb, int originalLsb, int originalMsb) {
+   public NonMappingFixedPointElement(Message<?, ?, ?> message, String elementName, MessageData messageData, double resolution, boolean signed, int byteOffset, int msb, int lsb, int originalLsb, int originalMsb) {
       super(message, elementName, messageData, resolution, signed, byteOffset, msb, lsb, originalLsb, originalMsb);
    }
 
@@ -91,9 +91,9 @@ public class NonMappingFixedPointElement extends FixedPointElement {
     * @param originalLsb
     * @param originalMsb
     */
-   public NonMappingFixedPointElement(Message<?,?,?> message, String elementName, MessageData messageData, double resolution, double minVal, boolean signed, int byteOffset, int msb, int lsb, int originalLsb,
-         int originalMsb) {
-      super(message, elementName, messageData, resolution, minVal, signed, byteOffset, msb, lsb, originalLsb, originalMsb);
+   public NonMappingFixedPointElement(Message<?, ?, ?> message, String elementName, MessageData messageData, double resolution, double minVal, boolean signed, int byteOffset, int msb, int lsb, int originalLsb, int originalMsb) {
+      super(message, elementName, messageData, resolution, minVal, signed, byteOffset, msb, lsb, originalLsb,
+         originalMsb);
    }
 
    /**
@@ -106,11 +106,11 @@ public class NonMappingFixedPointElement extends FixedPointElement {
     * @param bitOffset
     * @param bitLength
     */
-   public NonMappingFixedPointElement(Message<?,?,?> message, String elementName, MessageData messageData, double resolution, double minVal, boolean signed, int bitOffset, int bitLength) {
+   public NonMappingFixedPointElement(Message<?, ?, ?> message, String elementName, MessageData messageData, double resolution, double minVal, boolean signed, int bitOffset, int bitLength) {
       super(message, elementName, messageData, resolution, minVal, signed, bitOffset, bitLength);
    }
 
-
+   @Override
    public void checkForwarding(ITestAccessor accessor, FixedPointElement cause, double value) throws InterruptedException {
       throwNoMappingElementException();
    }
@@ -118,26 +118,30 @@ public class NonMappingFixedPointElement extends FixedPointElement {
    /**
     * @return Returns the minVal.
     */
+   @Override
    public double getMinVal() {
       throwNoMappingElementException();
       return 0;
-      }
+   }
+
    /**
     * @return Returns the resolution.
     */
+   @Override
    public double getResolution() {
       throwNoMappingElementException();
       return 0;
-      }
+   }
 
    /**
     * @return Returns the signed.
     */
+   @Override
    public boolean isSigned() {
       throwNoMappingElementException();
       return false;
-      }
-   
+   }
+
    @Override
    public boolean isNonMappingElement() {
       return true;

@@ -25,7 +25,7 @@ public class SimpleCheckFilteredTreeDialog extends MinMaxOSEECheckedFilteredTree
 
    public SimpleCheckFilteredTreeDialog(String title, String message, ITreeContentProvider contentProvider, LabelProvider labelProvider, ViewerSorter viewerSorter, int minSelectionRequired, int maxSelectionRequired) {
       super(title, message, patternFilter, contentProvider, labelProvider, viewerSorter, minSelectionRequired,
-            maxSelectionRequired);
+         maxSelectionRequired);
    }
 
 }

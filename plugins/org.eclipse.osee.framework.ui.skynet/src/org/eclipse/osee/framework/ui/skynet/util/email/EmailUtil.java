@@ -13,9 +13,9 @@ package org.eclipse.osee.framework.ui.skynet.util.email;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -46,7 +46,7 @@ public class EmailUtil {
                validUsers.add(user);
             }
          } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE, ex);
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
       }
       return validUsers;
@@ -54,8 +54,8 @@ public class EmailUtil {
 
    public static void emailHtml(Collection<String> emails, String subject, String htmlBody) throws OseeCoreException {
       OseeEmail emailMessage =
-            new OseeEmail(emails, UserManager.getUser().getEmail(), UserManager.getUser().getEmail(), subject,
-                  htmlBody, BodyType.Html);
+         new OseeEmail(emails, UserManager.getUser().getEmail(), UserManager.getUser().getEmail(), subject, htmlBody,
+            BodyType.Html);
       emailMessage.send();
    }
 

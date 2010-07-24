@@ -17,16 +17,19 @@ public class MessageViewLabelProvider extends LabelProvider {
 
    private final INodeVisitor<String> nodeVisitor = new INodeVisitor<String>() {
 
+      @Override
       public String elementNode(ElementNode node) {
          return node.getElementName();
       }
 
+      @Override
       public String messageNode(MessageNode node) {
          String type = node.getPackageName();
          type = type.substring(type.lastIndexOf('.') + 1);
          return String.format("%s [%s]", node.getName(), type);
       }
 
+      @Override
       public String rootNode(RootNode node) {
          return node.getName();
       }
@@ -35,14 +38,14 @@ public class MessageViewLabelProvider extends LabelProvider {
 
    @Override
    public Image getImage(Object element) {
-      assert (element instanceof AbstractTreeNode);
+      assert element instanceof AbstractTreeNode;
       final AbstractTreeNode node = (AbstractTreeNode) element;
       return node.getImage();
    }
 
    @Override
    public String getText(Object element) {
-      assert (element instanceof AbstractTreeNode);
+      assert element instanceof AbstractTreeNode;
       return ((AbstractTreeNode) element).visit(nodeVisitor);
    }
 }

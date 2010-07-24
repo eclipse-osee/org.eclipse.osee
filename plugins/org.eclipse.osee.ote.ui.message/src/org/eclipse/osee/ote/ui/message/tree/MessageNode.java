@@ -37,8 +37,8 @@ public class MessageNode extends AbstractTreeNode {
    @SuppressWarnings("unused")
    private static final Image wireAIUImg = ImageManager.getImage(OteMessageImage.WIRE_AIU);
    protected static final Image errorImg =
-         new OverlayImage(normalImg, ImageDescriptor.createFromImage(ImageManager.getImage(OteMessageImage.ERROR_SM)),
-               Location.BOT_RIGHT).createImage();
+      new OverlayImage(normalImg, ImageDescriptor.createFromImage(ImageManager.getImage(OteMessageImage.ERROR_SM)),
+         Location.BOT_RIGHT).createImage();
    private final String shortenedMessageName;
    private final String packageName;
    private final String type;

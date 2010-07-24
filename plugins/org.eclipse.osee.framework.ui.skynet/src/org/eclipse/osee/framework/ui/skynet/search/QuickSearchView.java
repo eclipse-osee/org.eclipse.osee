@@ -221,6 +221,7 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener {
       }
    }
 
+   @Override
    public String getActionDescription() {
       return "";
    }
@@ -233,6 +234,7 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener {
       }
    }
 
+   @Override
    public void handleEvent(Event event) {
       if (Widgets.isAccessible(branchLabel) && branchSelect != null) {
          branchLabel.setText("");
@@ -240,19 +242,18 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener {
          if (branch == null) {
             branchLabel.setText("Error: Must Select a Branch");
          } else if (Widgets.isAccessible(searchComposite) && searchComposite.isExecuteSearchEvent(event) && Widgets.isAccessible(optionsComposite)) {
-            DeletionFlag allowDeleted =
-                  optionsComposite.isIncludeDeletedEnabled() ? INCLUDE_DELETED : EXCLUDE_DELETED;
+            DeletionFlag allowDeleted = optionsComposite.isIncludeDeletedEnabled() ? INCLUDE_DELETED : EXCLUDE_DELETED;
             NewSearchUI.activateSearchResultView();
             if (optionsComposite.isSearchByIdEnabled()) {
                NewSearchUI.runQueryInBackground(new IdArtifactSearch(searchComposite.getQuery(), branch, allowDeleted));
             } else {
                NewSearchUI.runQueryInBackground(new RemoteArtifactSearch(searchComposite.getQuery(), //
-                     branch, //
-                     allowDeleted, //
-                     optionsComposite.isMatchWordOrderEnabled(), //
-                     optionsComposite.isMatchAllLocationsEnabled(),//
-                     optionsComposite.isCaseSensitiveEnabled(),//
-                     optionsComposite.getAttributeTypeFilter()));
+                  branch, //
+                  allowDeleted, //
+                  optionsComposite.isMatchWordOrderEnabled(), //
+                  optionsComposite.isMatchAllLocationsEnabled(),//
+                  optionsComposite.isCaseSensitiveEnabled(),//
+                  optionsComposite.getAttributeTypeFilter()));
             }
          } else {
             // branch has been selected; allow user to set up search string

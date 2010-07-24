@@ -11,7 +11,6 @@
 package org.eclipse.osee.ote.messaging.dds;
 
 import java.lang.ref.WeakReference;
-
 import org.eclipse.osee.ote.messaging.dds.entity.SampleInfo;
 
 /**
@@ -21,12 +20,11 @@ import org.eclipse.osee.ote.messaging.dds.entity.SampleInfo;
  * @author David Diepenbrock
  */
 public class DataSample {
-   private WeakReference<Data> data;
-   private SampleInfo sampleInfo;
+   private final WeakReference<Data> data;
+   private final SampleInfo sampleInfo;
 
    /**
-    * Create a data sample that is used for propogating data through
-    * the system.
+    * Create a data sample that is used for propogating data through the system.
     * 
     * @param data
     * @param sampleInfo
@@ -46,6 +44,7 @@ public class DataSample {
       this.data = new WeakReference<Data>(data);
       this.sampleInfo = new SampleInfo();
    }
+
    /**
     * @return Returns the data.
     */

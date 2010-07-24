@@ -11,7 +11,6 @@
 package org.eclipse.osee.ote.service;
 
 import java.io.IOException;
-
 import org.eclipse.osee.ote.message.Message;
 
 /**
@@ -21,7 +20,7 @@ import org.eclipse.osee.ote.message.Message;
  */
 public interface IMessageDictionary {
 
-	String getMessageLibraryVersion() throws IOException;
+   String getMessageLibraryVersion() throws IOException;
 
    /**
     * Generates a listing of all messages and associated elements defined in the message jar. The intent is to provide a

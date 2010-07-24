@@ -18,8 +18,8 @@ import java.util.Vector;
 
 public class ScriptTaskList {
 
-   private Set<ITaskListViewer> changeListeners = new HashSet<ITaskListViewer>();
-   private Vector<ScriptTask> tasks = new Vector<ScriptTask>();
+   private final Set<ITaskListViewer> changeListeners = new HashSet<ITaskListViewer>();
+   private final Vector<ScriptTask> tasks = new Vector<ScriptTask>();
    private boolean isConnected = false;
 
    /**
@@ -43,8 +43,9 @@ public class ScriptTaskList {
       inTask.updateStatusOnConnected(this.isConnected);
       tasks.add(tasks.size(), inTask);
       Iterator<ITaskListViewer> iterator = changeListeners.iterator();
-      while (iterator.hasNext())
-         (iterator.next()).addTask(inTask);
+      while (iterator.hasNext()) {
+         iterator.next().addTask(inTask);
+      }
    }
 
    public void addTasks(List<ScriptTask> inTasks) {
@@ -54,8 +55,9 @@ public class ScriptTaskList {
       ScriptTask[] array = new ScriptTask[inTasks.size()];
       this.tasks.addAll(inTasks);
       Iterator<ITaskListViewer> iterator = changeListeners.iterator();
-      while (iterator.hasNext())
-         (iterator.next()).addTasks(this.tasks.toArray(array));
+      while (iterator.hasNext()) {
+         iterator.next().addTasks(this.tasks.toArray(array));
+      }
    }
 
    /**
@@ -94,8 +96,9 @@ public class ScriptTaskList {
    public void removeTask(ScriptTask task) {
       tasks.remove(task);
       Iterator<ITaskListViewer> iterator = changeListeners.iterator();
-      while (iterator.hasNext())
-         (iterator.next()).removeTask(task);
+      while (iterator.hasNext()) {
+         iterator.next().removeTask(task);
+      }
    }
 
    /**
@@ -103,14 +106,16 @@ public class ScriptTaskList {
     */
    public void taskChanged(ScriptTask task) {
       Iterator<ITaskListViewer> iterator = changeListeners.iterator();
-      while (iterator.hasNext())
-         (iterator.next()).updateTask(task);
+      while (iterator.hasNext()) {
+         iterator.next().updateTask(task);
+      }
    }
 
+   @Override
    public String toString() {
       String str = "";
       for (int i = 0; i < tasks.size(); i++) {
-         ScriptTask task = (ScriptTask) tasks.get(i);
+         ScriptTask task = tasks.get(i);
          str += "\nTask " + task.getName() + " Status: " + task.getStatus();
       }
       return str + "\n\n";

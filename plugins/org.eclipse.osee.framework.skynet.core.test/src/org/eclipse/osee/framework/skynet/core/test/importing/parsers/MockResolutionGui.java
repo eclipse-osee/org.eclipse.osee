@@ -17,22 +17,22 @@ import org.eclipse.osee.framework.skynet.core.importing.parsers.WordOutlineExtra
 
 public final class MockResolutionGui implements IConflictResolvingGui {
 
-	private ContentType resultingEnum;
+   private ContentType resultingEnum;
 
-	public MockResolutionGui() {
-		this.resultingEnum = null;
-	}
+   public MockResolutionGui() {
+      this.resultingEnum = null;
+   }
 
-	public MockResolutionGui(ContentType resultingEnum) {
-		this.resultingEnum = resultingEnum;
-	}
+   public MockResolutionGui(ContentType resultingEnum) {
+      this.resultingEnum = resultingEnum;
+   }
 
-	public void setMockUserAnswer(ContentType resultingEnum) {
-		this.resultingEnum = resultingEnum;
-	}
+   public void setMockUserAnswer(ContentType resultingEnum) {
+      this.resultingEnum = resultingEnum;
+   }
 
-	@Override
-	public ContentType determineContentType(Collection<String> paramList) throws OseeCoreException {
-		return resultingEnum;
-	}
+   @Override
+   public ContentType determineContentType(Collection<String> paramList) throws OseeCoreException {
+      return resultingEnum;
+   }
 }

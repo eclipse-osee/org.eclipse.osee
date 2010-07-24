@@ -68,7 +68,7 @@ public class AttributeLocatorProviderTest {
             Assert.assertEquals(data.getId(), data.getShouldException(), true);
          }
          Assert.assertEquals(data.getId(), data.getExpected(),
-               locator != null ? locator.getLocation().toASCIIString() : null);
+            locator != null ? locator.getLocation().toASCIIString() : null);
       }
    }
 
@@ -98,7 +98,7 @@ public class AttributeLocatorProviderTest {
             Assert.assertEquals(data.getId(), data.getShouldException(), true);
          }
          Assert.assertEquals(data.getId(), data.getExpected(),
-               locator != null ? locator.getLocation().toASCIIString() : null);
+            locator != null ? locator.getLocation().toASCIIString() : null);
       }
    }
 

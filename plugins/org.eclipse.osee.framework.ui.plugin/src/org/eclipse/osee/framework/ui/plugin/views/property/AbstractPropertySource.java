@@ -26,10 +26,12 @@ public abstract class AbstractPropertySource implements IPropertySource2 {
 
    protected abstract void addPropertyDescriptors(List<IPropertyDescriptor> list);
 
+   @Override
    public Object getEditableValue() {
       return this;
    }
 
+   @Override
    public IPropertyDescriptor[] getPropertyDescriptors() {
       if (descriptors == null) {
          ArrayList<IPropertyDescriptor> list = new ArrayList<IPropertyDescriptor>();

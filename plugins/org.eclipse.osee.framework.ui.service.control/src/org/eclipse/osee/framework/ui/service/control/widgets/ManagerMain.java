@@ -132,10 +132,12 @@ public class ManagerMain extends Composite implements IConnectionListener, IServ
       stackedViewer = new StackedViewer(parent, SWT.BORDER);
    }
 
+   @Override
    public ServicesViewer getServicesViewer() {
       return servicesViewer;
    }
 
+   @Override
    public FormattedText getQuickViewer() {
       return textArea;
    }
@@ -144,6 +146,7 @@ public class ManagerMain extends Composite implements IConnectionListener, IServ
       return servicesManager;
    }
 
+   @Override
    public InputManager<TreeParent> getInputManager() {
       return servicesManager.getInputManager();
    }
@@ -152,6 +155,7 @@ public class ManagerMain extends Composite implements IConnectionListener, IServ
       return connectionManager;
    }
 
+   @Override
    public LookupViewer getLookupViewer() {
       return lookupViewer;
    }
@@ -171,6 +175,7 @@ public class ManagerMain extends Composite implements IConnectionListener, IServ
       lookupUpdater = new LookupUpdates(this);
    }
 
+   @Override
    public void dispose() {
       lookupUpdater.dispose();
       servicesViewer.dispose();
@@ -213,10 +218,10 @@ public class ManagerMain extends Composite implements IConnectionListener, IServ
                   stackedViewer.addControl(interfaceClass.getCanonicalName(), control);
                } catch (InstantiationException ex) {
                   OseeLog.log(ControlPlugin.class, Level.WARNING, "registerServiceRenderers: Instantiation Error.\n",
-                        ex);
+                     ex);
                } catch (IllegalAccessException ex) {
                   OseeLog.log(ControlPlugin.class, Level.WARNING, "registerServiceRenderers: IllegalAccess Error.\n",
-                        ex);
+                     ex);
                }
             } catch (ClassNotFoundException ex) {
                OseeLog.log(ControlPlugin.class, Level.WARNING, "registerServiceRenderers: ClassNotFound Error.\n", ex);
@@ -244,6 +249,7 @@ public class ManagerMain extends Composite implements IConnectionListener, IServ
       }
    }
 
+   @Override
    public void onConnectionChanged(ServiceNode serviceNode, boolean connected) {
       if (connected) {
          serviceAreaSash.setOrientation(SWT.VERTICAL);

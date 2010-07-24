@@ -33,10 +33,12 @@ public abstract class AtsStateItem implements IAtsStateItem {
 
    public static String ALL_STATE_IDS = "ALL";
 
+   @Override
    public Result committing(StateMachineArtifact sma) throws OseeCoreException {
       return Result.TrueResult;
    }
 
+   @Override
    public String getBranchShortName(StateMachineArtifact sma) throws OseeCoreException {
       return null;
    }
@@ -45,48 +47,62 @@ public abstract class AtsStateItem implements IAtsStateItem {
       return null;
    }
 
+   @Override
    public Collection<String> getIds() throws OseeCoreException {
-      if (getId() == null) return Collections.emptyList();
+      if (getId() == null) {
+         return Collections.emptyList();
+      }
       return Arrays.asList(getId());
    }
 
+   @Override
    public Collection<User> getOverrideTransitionToAssignees(SMAWorkFlowSection section) throws OseeCoreException {
       return null;
    }
 
+   @Override
    public String getOverrideTransitionToStateName(SMAWorkFlowSection section) throws OseeCoreException {
       return null;
    }
 
+   @Override
    public List<XWidget> getDynamicXWidgetsPostBody(StateMachineArtifact sma) throws OseeCoreException {
       return Collections.emptyList();
    }
 
+   @Override
    public List<XWidget> getDynamicXWidgetsPreBody(StateMachineArtifact sma) throws OseeCoreException {
       return Collections.emptyList();
    }
 
+   @Override
    public Result pageCreated(FormToolkit toolkit, AtsWorkPage page, StateMachineArtifact sma, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
       return Result.TrueResult;
    }
 
+   @Override
    public void transitioned(StateMachineArtifact sma, String fromState, String toState, Collection<User> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
    }
 
+   @Override
    public Result transitioning(StateMachineArtifact sma, String fromState, String toState, Collection<User> toAssignees) throws OseeCoreException {
       return Result.TrueResult;
    }
 
+   @Override
    public void widgetModified(SMAWorkFlowSection section, XWidget xWidget) throws OseeCoreException {
    }
 
+   @Override
    public void xWidgetCreated(XWidget xWidget, FormToolkit toolkit, AtsWorkPage page, Artifact art, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
    }
 
+   @Override
    public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, AtsWorkPage page, Artifact art, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
       return Result.TrueResult;
    }
 
+   @Override
    public boolean isAccessControlViaAssigneesEnabledForBranching() throws OseeCoreException {
       return false;
    }

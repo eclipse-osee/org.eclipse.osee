@@ -20,52 +20,52 @@ import org.eclipse.swt.widgets.Shell;
  */
 public final class Displays {
 
-	private Displays() {
-	}
+   private Displays() {
+   }
 
-	public static void ensureInDisplayThread(Runnable runnable) {
-		ensureInDisplayThread(runnable, false);
-	}
+   public static void ensureInDisplayThread(Runnable runnable) {
+      ensureInDisplayThread(runnable, false);
+   }
 
-	public static void pendInDisplayThread(Runnable runnable) {
-		ensureInDisplayThread(runnable, true);
-	}
+   public static void pendInDisplayThread(Runnable runnable) {
+      ensureInDisplayThread(runnable, true);
+   }
 
-	public static void ensureInDisplayThread(Runnable runnable, boolean forcePend) {
-		if (isDisplayThread()) {
-			// No need to check for force since this will always pend
-			runnable.run();
-		} else {
-			if (forcePend) {
-				Display.getDefault().syncExec(runnable);
-			} else {
-				Display.getDefault().asyncExec(runnable);
-			}
-		}
-	}
+   public static void ensureInDisplayThread(Runnable runnable, boolean forcePend) {
+      if (isDisplayThread()) {
+         // No need to check for force since this will always pend
+         runnable.run();
+      } else {
+         if (forcePend) {
+            Display.getDefault().syncExec(runnable);
+         } else {
+            Display.getDefault().asyncExec(runnable);
+         }
+      }
+   }
 
-	public static boolean isDisplayThread() {
-		boolean isDisplayTh = false;
-		Display currentDisplay = Display.getCurrent();
-		if (currentDisplay != null) {
-			isDisplayTh = currentDisplay.getThread() == Thread.currentThread();
-		}
-		return isDisplayTh;
-	}
+   public static boolean isDisplayThread() {
+      boolean isDisplayTh = false;
+      Display currentDisplay = Display.getCurrent();
+      if (currentDisplay != null) {
+         isDisplayTh = currentDisplay.getThread() == Thread.currentThread();
+      }
+      return isDisplayTh;
+   }
 
-	public static Shell getActiveShell() {
-		return Display.getDefault().getActiveShell();
-	}
+   public static Shell getActiveShell() {
+      return Display.getDefault().getActiveShell();
+   }
 
-	public static Color getSystemColor(int colorId) {
-		return Display.getDefault().getSystemColor(colorId);
-	}
+   public static Color getSystemColor(int colorId) {
+      return Display.getDefault().getSystemColor(colorId);
+   }
 
-	public static Color getColor(int red, int green, int blue) {
-		return new Color(Display.getDefault(), red, green, blue);
-	}
+   public static Color getColor(int red, int green, int blue) {
+      return new Color(Display.getDefault(), red, green, blue);
+   }
 
-	public static Image getSystemImage(int id) {
-		return Display.getDefault().getSystemImage(id);
-	}
+   public static Image getSystemImage(int id) {
+      return Display.getDefault().getSystemImage(id);
+   }
 }

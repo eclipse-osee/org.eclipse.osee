@@ -35,10 +35,10 @@ public class SearchTagDataStore {
    private static final String SELECT_TOTAL_TAGS = "select count(1) from osee_search_tags";
 
    private static final String SELECT_TOTAL_QUERY_IDS_IN_QUEUE =
-         "select count(DISTINCT query_id) from osee_tag_gamma_queue";
+      "select count(DISTINCT query_id) from osee_tag_gamma_queue";
 
    private static final String SELECT_SEARCH_TAGS =
-         "select ost1.gamma_id from osee_search_tags ost1 where ost1.coded_tag_id = ?";
+      "select ost1.gamma_id from osee_search_tags ost1 where ost1.coded_tag_id = ?";
 
    public static long getTotalQueryIdsInQueue() throws OseeDataStoreException {
       return ConnectionHandler.runPreparedQueryFetchLong(-1L, SELECT_TOTAL_QUERY_IDS_IN_QUEUE);

@@ -21,7 +21,7 @@ import org.junit.Test;
 
 /**
  * Resource Manager Test {@link ResourceManager}
- *
+ * 
  * @author Andrew M. Finkbeiner
  */
 public class ResourceManagerTest {

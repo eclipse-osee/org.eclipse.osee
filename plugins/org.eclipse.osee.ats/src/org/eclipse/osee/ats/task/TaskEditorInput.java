@@ -23,7 +23,7 @@ import org.eclipse.ui.IPersistableElement;
  */
 public class TaskEditorInput implements IEditorInput {
 
-   private ITaskEditorProvider itaskEditorProvider;
+   private final ITaskEditorProvider itaskEditorProvider;
 
    @Override
    public int hashCode() {
@@ -40,23 +40,29 @@ public class TaskEditorInput implements IEditorInput {
 
    @Override
    public boolean equals(Object obj) {
-      if (!(obj instanceof TaskEditorInput)) return false;
+      if (!(obj instanceof TaskEditorInput)) {
+         return false;
+      }
       TaskEditorInput castObj = (TaskEditorInput) obj;
       return castObj.itaskEditorProvider.equals(this.itaskEditorProvider);
    }
 
+   @Override
    public boolean exists() {
       return false;
    }
 
+   @Override
    public ImageDescriptor getImageDescriptor() {
       return null;
    }
 
+   @Override
    public IPersistableElement getPersistable() {
       return null;
    }
 
+   @Override
    public String getToolTipText() {
       try {
          return itaskEditorProvider.getName();

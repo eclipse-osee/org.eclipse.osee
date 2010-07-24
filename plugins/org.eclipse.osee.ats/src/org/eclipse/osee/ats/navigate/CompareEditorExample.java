@@ -35,7 +35,9 @@ public class CompareEditorExample extends XNavigateItemAction {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
-      if (!MessageDialog.openConfirm(Displays.getActiveShell(), getName(), getName())) return;
+      if (!MessageDialog.openConfirm(Displays.getActiveShell(), getName(), getName())) {
+         return;
+      }
       CompareHandler compareHandler = new CompareHandler("Now is the time", "Now was the time");
       compareHandler.compare();
    }

@@ -48,9 +48,9 @@ public class AuthenticationComposite extends Composite {
 
    private static final String LABEL_KEY = "label";
    private static final String WARNING_MESSAGE =
-         "Saved passwords are stored in your computer in a file that is difficult, but not impossible, for an intruder to read.";
-   private static final Image errorImage =
-         PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_ERROR_TSK);
+      "Saved passwords are stored in your computer in a file that is difficult, but not impossible, for an intruder to read.";
+   private static final Image errorImage = PlatformUI.getWorkbench().getSharedImages().getImage(
+      ISharedImages.IMG_OBJS_ERROR_TSK);
 
    private enum LabelEnum {
       UserId("Enter user name"),
@@ -220,6 +220,7 @@ public class AuthenticationComposite extends Composite {
                dataMap.put(labelEnum, field.getText());
                field.addModifyListener(new ModifyListener() {
 
+                  @Override
                   public void modifyText(ModifyEvent e) {
                      Object object = e.getSource();
                      if (object instanceof Text) {
@@ -387,7 +388,7 @@ public class AuthenticationComposite extends Composite {
 
    public boolean isStorageAllowed() {
       String value = dataMap.get(LabelEnum.Remember_My_Password);
-      return (value != null ? Boolean.parseBoolean(value) : false);
+      return value != null ? Boolean.parseBoolean(value) : false;
    }
 
    public String getProtocol() {

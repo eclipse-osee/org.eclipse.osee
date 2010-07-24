@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultData;
  */
 public class ValidateArtifactsToDelete extends AbstractBlam {
 
+   @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       processChange(variableMap.getArtifacts("artifact"));
    }
@@ -86,6 +87,7 @@ public class ValidateArtifactsToDelete extends AbstractBlam {
       return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"artifact\" /></xWidgets>";
    }
 
+   @Override
    public Collection<String> getCategories() {
       return Arrays.asList("Admin");
    }

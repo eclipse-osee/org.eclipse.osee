@@ -32,7 +32,10 @@ import org.junit.Test;
 public class DataTranslationServiceTest {
 
    private enum TxId implements ITranslatorId {
-      STRING_TX, INTEGER_TX, OBJECT_TX, DUMMY_TX;
+      STRING_TX,
+      INTEGER_TX,
+      OBJECT_TX,
+      DUMMY_TX;
 
       @Override
       public String getKey() {

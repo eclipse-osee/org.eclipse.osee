@@ -21,8 +21,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * A hash map implementation that uses two objects to form a single composite key. The thread safety of this class
- * is determined by the isThreadSafe of its constructors.
+ * A hash map implementation that uses two objects to form a single composite key. The thread safety of this class is
+ * determined by the isThreadSafe of its constructors.
  * 
  * @author Ken J. Aguilar
  * @param <KeyOne>
@@ -55,6 +55,7 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyO
       singleKeyMap = new HashCollection<KeyOne, KeyTwo>(isThreadSafe, HashSet.class);
    }
 
+   @Override
    public void clear() {
       map.clear();
       singleKeyMap.clear();
@@ -66,6 +67,7 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyO
     * @param keyOne
     * @return whether the map contains the key keyOne
     */
+   @Override
    @SuppressWarnings("unchecked")
    public boolean containsKey(Object key1) {
       return singleKeyMap.containsKey((KeyOne) key1);
@@ -86,14 +88,17 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyO
     * @param value
     * @return whether the map contains this value
     */
+   @Override
    public boolean containsValue(Object value) {
       return singleKeyMap.containsValue(value);
    }
 
+   @Override
    public Set<Map.Entry<Pair<KeyOne, KeyTwo>, Value>> entrySet() {
       return map.entrySet();
    }
 
+   @Override
    public Value get(Object key) {
       throw new UnsupportedOperationException("use getValues() instead");
    }
@@ -136,14 +141,17 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyO
       return toReturn;
    }
 
+   @Override
    public boolean isEmpty() {
       return map.isEmpty();
    }
 
+   @Override
    public Set<Pair<KeyOne, KeyTwo>> keySet() {
       return map.keySet();
    }
 
+   @Override
    public Value put(Pair<KeyOne, KeyTwo> key, Value value) {
       singleKeyMap.put(key.getFirst(), key.getSecond());
       return map.put(key, value);
@@ -154,6 +162,7 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyO
       return map.put(new Pair<KeyOne, KeyTwo>(key1, key2), value);
    }
 
+   @Override
    public void putAll(Map<? extends Pair<KeyOne, KeyTwo>, ? extends Value> copyMap) {
       map.putAll(copyMap);
 
@@ -162,6 +171,7 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyO
       }
    }
 
+   @Override
    public Value remove(Object key) {
       throw new UnsupportedOperationException("use removeValues() instead");
    }
@@ -189,10 +199,12 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyO
       return value;
    }
 
+   @Override
    public int size() {
       return map.size();
    }
 
+   @Override
    public Collection<Value> values() {
       return map.values();
    }

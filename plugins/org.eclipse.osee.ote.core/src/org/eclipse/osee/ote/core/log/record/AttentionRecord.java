@@ -25,9 +25,9 @@ public class AttentionRecord extends TestRecord {
    /**
 	 * 
 	 */
-	private static final long serialVersionUID = -6974833259038544176L;
+   private static final long serialVersionUID = -6974833259038544176L;
 
-/**
+   /**
     * AttentionRecord Constructor. Sets up generic message log message.
     * 
     * @param source The object requesting the logging.
@@ -47,12 +47,13 @@ public class AttentionRecord extends TestRecord {
    public AttentionRecord(ITestEnvironmentAccessor source, String msg) {
       this(source, msg, true);
    }
-   
+
    /**
     * Converts log element to XML format.
     * 
     * @return xml formated element.
     */
+   @Override
    public Element toXml(Document doc) {
       Element recordElement = doc.createElement(getLevel().getName());
       recordElement.appendChild(Jaxp.createElement(doc, "Message", getMessage()));

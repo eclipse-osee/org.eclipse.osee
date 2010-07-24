@@ -5,7 +5,6 @@
 // Generated on: 2010.03.30 at 03:47:04 PM MST 
 //
 
-
 package org.eclipse.osee.framework.messaging.services.messages;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,11 +12,11 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for Synch complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for Synch complex type.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="Synch">
@@ -31,67 +30,50 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Synch", propOrder = {
-    "topic",
-    "data"
-})
+@XmlType(name = "Synch", propOrder = {"topic", "data"})
 public class Synch {
 
-    @XmlElement(required = true)
-    protected String topic;
-    @XmlElement(required = true)
-    protected String data;
+   @XmlElement(required = true)
+   protected String topic;
+   @XmlElement(required = true)
+   protected String data;
 
-    /**
-     * Gets the value of the topic property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getTopic() {
-        return topic;
-    }
+   /**
+    * Gets the value of the topic property.
+    * 
+    * @return possible object is {@link String }
+    */
+   public String getTopic() {
+      return topic;
+   }
 
-    /**
-     * Sets the value of the topic property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setTopic(String value) {
-        this.topic = value;
-    }
+   /**
+    * Sets the value of the topic property.
+    * 
+    * @param value allowed object is {@link String }
+    */
+   public void setTopic(String value) {
+      this.topic = value;
+   }
 
-    /**
-     * Gets the value of the data property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getData() {
-        return data;
-    }
+   /**
+    * Gets the value of the data property.
+    * 
+    * @return possible object is {@link String }
+    */
+   public String getData() {
+      return data;
+   }
 
-    /**
-     * Sets the value of the data property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setData(String value) {
-        this.data = value;
-    }
+   /**
+    * Sets the value of the data property.
+    * 
+    * @param value allowed object is {@link String }
+    */
+   public void setData(String value) {
+      this.data = value;
+   }
 
 }

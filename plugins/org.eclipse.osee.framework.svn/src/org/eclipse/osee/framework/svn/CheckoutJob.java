@@ -38,13 +38,14 @@ public class CheckoutJob extends Job {
       IStatus toReturn = Status.OK_STATUS;
       try {
          ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
+            @Override
             public void run(IProgressMonitor monitor) throws CoreException {
                VersionControl.getInstance().checkOut(fileToCheckout, monitor);
             }
          }, this.getRule(), IWorkspace.AVOID_UPDATE, monitor);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
-         toReturn = new Status(Status.ERROR, Activator.PLUGIN_ID, "Unable to Checkout Files", ex);
+         toReturn = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Unable to Checkout Files", ex);
       }
       return toReturn;
    }

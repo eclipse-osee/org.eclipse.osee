@@ -51,162 +51,162 @@ import org.osgi.util.tracker.ServiceTracker;
  * @author Ryan D. Brooks
  */
 public class Activator implements BundleActivator, IOseeModelFactoryServiceProvider, IOseeDatabaseServiceProvider, ILifecycleServiceProvider {
-	public static final String PLUGIN_ID = "org.eclipse.osee.framework.skynet.core";
+   public static final String PLUGIN_ID = "org.eclipse.osee.framework.skynet.core";
 
-	private static Activator instance;
-	private final Map<OseeServiceTrackerId, ServiceTracker> mappedTrackers;
-	private final List<ServiceRegistration> services;
-	private BundleContext context;
-	private ServiceDependencyTracker dependencyTracker;
+   private static Activator instance;
+   private final Map<OseeServiceTrackerId, ServiceTracker> mappedTrackers;
+   private final List<ServiceRegistration> services;
+   private BundleContext context;
+   private ServiceDependencyTracker dependencyTracker;
 
-	public Activator() {
-		this.mappedTrackers = new HashMap<OseeServiceTrackerId, ServiceTracker>();
-		this.services = new ArrayList<ServiceRegistration>();
-	}
+   public Activator() {
+      this.mappedTrackers = new HashMap<OseeServiceTrackerId, ServiceTracker>();
+      this.services = new ArrayList<ServiceRegistration>();
+   }
 
-	public Bundle getBundle() {
-		return instance.context.getBundle();
-	}
+   public Bundle getBundle() {
+      return instance.context.getBundle();
+   }
 
-	@Override
-	public void start(BundleContext context) throws Exception {
-		instance = this;
-		this.context = context;
-		ClientSessionManager.class.getCanonicalName();
-		HttpAttributeTagger.getInstance();
+   @Override
+   public void start(BundleContext context) throws Exception {
+      instance = this;
+      this.context = context;
+      ClientSessionManager.class.getCanonicalName();
+      HttpAttributeTagger.getInstance();
 
-		IOseeCachingService cachingService = new ClientCachingServiceFactory().createService(this);
+      IOseeCachingService cachingService = new ClientCachingServiceFactory().createService(this);
 
-		createService(context, IOseeCachingService.class, cachingService);
-		createService(context, IWorkbenchUserService.class, new WorkbenchUserService());
+      createService(context, IOseeCachingService.class, cachingService);
+      createService(context, IWorkbenchUserService.class, new WorkbenchUserService());
 
-		createServiceTracker(context, IOseeCachingService.class, OseeServiceTrackerId.OSEE_CACHING_SERVICE);
-		createServiceTracker(context, IDataTranslationService.class, OseeServiceTrackerId.TRANSLATION_SERVICE);
-		createServiceTracker(context, IOseeModelFactoryService.class, OseeServiceTrackerId.OSEE_FACTORY_SERVICE);
-		createServiceTracker(context, IOseeDatabaseService.class, OseeServiceTrackerId.OSEE_DATABASE_SERVICE);
-		createServiceTracker(context, ILifecycleService.class, OseeServiceTrackerId.LIFECYCLE_SERVER);
-		createServiceTracker(context, IAccessControlService.class, OseeServiceTrackerId.OSEE_ACCESS_CONTROL_SERVICE);
+      createServiceTracker(context, IOseeCachingService.class, OseeServiceTrackerId.OSEE_CACHING_SERVICE);
+      createServiceTracker(context, IDataTranslationService.class, OseeServiceTrackerId.TRANSLATION_SERVICE);
+      createServiceTracker(context, IOseeModelFactoryService.class, OseeServiceTrackerId.OSEE_FACTORY_SERVICE);
+      createServiceTracker(context, IOseeDatabaseService.class, OseeServiceTrackerId.OSEE_DATABASE_SERVICE);
+      createServiceTracker(context, ILifecycleService.class, OseeServiceTrackerId.LIFECYCLE_SERVER);
+      createServiceTracker(context, IAccessControlService.class, OseeServiceTrackerId.OSEE_ACCESS_CONTROL_SERVICE);
 
-		dependencyTracker = new ServiceDependencyTracker(context, new TrackingHandler());
-		dependencyTracker.open();
+      dependencyTracker = new ServiceDependencyTracker(context, new TrackingHandler());
+      dependencyTracker.open();
 
-		RemoteEventManager2.getInstance().registerForRemoteEvents();
-		if (!OseeEventManager.isNewEvents() && !OseeEventManager.isOldEvents()) {
-			OseeLog.log(Activator.class, Level.SEVERE, "Neither Event System Enabled - This is a problem.");
-		}
-	}
+      RemoteEventManager2.getInstance().registerForRemoteEvents();
+      if (!OseeEventManager.isNewEvents() && !OseeEventManager.isOldEvents()) {
+         OseeLog.log(Activator.class, Level.SEVERE, "Neither Event System Enabled - This is a problem.");
+      }
+   }
 
-	@Override
-	public void stop(BundleContext context) throws Exception {
-		HttpAttributeTagger.getInstance().deregisterFromEventManager();
-		//      RemoteEventManager.deregisterFromRemoteEventManager();
+   @Override
+   public void stop(BundleContext context) throws Exception {
+      HttpAttributeTagger.getInstance().deregisterFromEventManager();
+      //      RemoteEventManager.deregisterFromRemoteEventManager();
 
-		if (dependencyTracker != null) {
-			dependencyTracker.close();
-		}
+      if (dependencyTracker != null) {
+         dependencyTracker.close();
+      }
 
-		for (ServiceRegistration service : services) {
-			service.unregister();
-		}
+      for (ServiceRegistration service : services) {
+         service.unregister();
+      }
 
-		for (ServiceTracker tracker : mappedTrackers.values()) {
-			tracker.close();
-		}
-		services.clear();
-		mappedTrackers.clear();
+      for (ServiceTracker tracker : mappedTrackers.values()) {
+         tracker.close();
+      }
+      services.clear();
+      mappedTrackers.clear();
 
-		instance = null;
-	}
+      instance = null;
+   }
 
-	public static Activator getInstance() {
-		return instance;
-	}
+   public static Activator getInstance() {
+      return instance;
+   }
 
-	public IOseeCachingService getOseeCacheService() {
-		return getTracker(OseeServiceTrackerId.OSEE_CACHING_SERVICE, IOseeCachingService.class);
-	}
+   public IOseeCachingService getOseeCacheService() {
+      return getTracker(OseeServiceTrackerId.OSEE_CACHING_SERVICE, IOseeCachingService.class);
+   }
 
-	public IDataTranslationService getTranslationService() {
-		return getTracker(OseeServiceTrackerId.TRANSLATION_SERVICE, IDataTranslationService.class);
-	}
+   public IDataTranslationService getTranslationService() {
+      return getTracker(OseeServiceTrackerId.TRANSLATION_SERVICE, IDataTranslationService.class);
+   }
 
-	@Override
-	public IOseeModelFactoryService getOseeFactoryService() throws OseeCoreException {
-		return getTracker(OseeServiceTrackerId.OSEE_FACTORY_SERVICE, IOseeModelFactoryService.class);
-	}
+   @Override
+   public IOseeModelFactoryService getOseeFactoryService() throws OseeCoreException {
+      return getTracker(OseeServiceTrackerId.OSEE_FACTORY_SERVICE, IOseeModelFactoryService.class);
+   }
 
-	private void createService(BundleContext context, Class<?> serviceInterface, Object serviceImplementation) {
-		services.add(context.registerService(serviceInterface.getName(), serviceImplementation, null));
-	}
+   private void createService(BundleContext context, Class<?> serviceInterface, Object serviceImplementation) {
+      services.add(context.registerService(serviceInterface.getName(), serviceImplementation, null));
+   }
 
-	private void createServiceTracker(BundleContext context, Class<?> clazz, OseeServiceTrackerId trackerId) {
-		ServiceTracker tracker = new ServiceTracker(context, clazz.getName(), null);
-		tracker.open();
-		mappedTrackers.put(trackerId, tracker);
-	}
+   private void createServiceTracker(BundleContext context, Class<?> clazz, OseeServiceTrackerId trackerId) {
+      ServiceTracker tracker = new ServiceTracker(context, clazz.getName(), null);
+      tracker.open();
+      mappedTrackers.put(trackerId, tracker);
+   }
 
-	@Override
-	public IOseeDatabaseService getOseeDatabaseService() throws OseeDataStoreException {
-		return getTracker(OseeServiceTrackerId.OSEE_DATABASE_SERVICE, IOseeDatabaseService.class);
-	}
+   @Override
+   public IOseeDatabaseService getOseeDatabaseService() throws OseeDataStoreException {
+      return getTracker(OseeServiceTrackerId.OSEE_DATABASE_SERVICE, IOseeDatabaseService.class);
+   }
 
-	@Override
-	public ILifecycleService getLifecycleServices() throws OseeCoreException {
-		return getTracker(OseeServiceTrackerId.LIFECYCLE_SERVER, ILifecycleService.class);
-	}
+   @Override
+   public ILifecycleService getLifecycleServices() throws OseeCoreException {
+      return getTracker(OseeServiceTrackerId.LIFECYCLE_SERVER, ILifecycleService.class);
+   }
 
-	private <T> T getTracker(OseeServiceTrackerId trackerId, Class<T> clazz) {
-		ServiceTracker tracker = mappedTrackers.get(trackerId);
-		Object service = tracker.getService();
-		return clazz.cast(service);
-	}
+   private <T> T getTracker(OseeServiceTrackerId trackerId, Class<T> clazz) {
+      ServiceTracker tracker = mappedTrackers.get(trackerId);
+      Object service = tracker.getService();
+      return clazz.cast(service);
+   }
 
-	public IAccessControlService getAccessControlService() throws OseeCoreException {
-		try {
-			Bundle bundle = Platform.getBundle("org.eclipse.osee.framework.access");
-			if (bundle.getState() != Bundle.ACTIVE) {
-				bundle.start();
-			}
-		} catch (BundleException ex) {
-			OseeLog.log(Activator.class, Level.SEVERE, ex);
-		}
-		return getTracker(OseeServiceTrackerId.OSEE_ACCESS_CONTROL_SERVICE, IAccessControlService.class);
-	}
+   public IAccessControlService getAccessControlService() throws OseeCoreException {
+      try {
+         Bundle bundle = Platform.getBundle("org.eclipse.osee.framework.access");
+         if (bundle.getState() != Bundle.ACTIVE) {
+            bundle.start();
+         }
+      } catch (BundleException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+      return getTracker(OseeServiceTrackerId.OSEE_ACCESS_CONTROL_SERVICE, IAccessControlService.class);
+   }
 
-	private static final class TrackingHandler extends AbstractTrackingHandler {
+   private static final class TrackingHandler extends AbstractTrackingHandler {
 
-		private static final Class<?>[] DEPENDENCIES = new Class[] {ILifecycleService.class, IAccessControlService.class};
+      private static final Class<?>[] DEPENDENCIES = new Class[] {ILifecycleService.class, IAccessControlService.class};
 
-		private SkynetTransactionHandler handler;
-		private ILifecycleService lifecycleService;
-		private IAccessControlService accessService;
+      private SkynetTransactionHandler handler;
+      private ILifecycleService lifecycleService;
+      private IAccessControlService accessService;
 
-		@Override
-		public Class<?>[] getDependencies() {
-			return DEPENDENCIES;
-		}
+      @Override
+      public Class<?>[] getDependencies() {
+         return DEPENDENCIES;
+      }
 
-		@Override
-		public void onActivate(BundleContext context, Map<Class<?>, Object> services) {
-			lifecycleService = (ILifecycleService) services.get(ILifecycleService.class);
-			accessService = (IAccessControlService) services.get(IAccessControlService.class);
-			try {
-				handler = new SkynetTransactionAccessHandler(accessService);
-				lifecycleService.addHandler(SkynetTransactionCheckPoint.TYPE, handler);
-			} catch (OseeCoreException ex) {
-				OseeLog.log(Activator.class, Level.SEVERE, ex);
-			}
-		}
+      @Override
+      public void onActivate(BundleContext context, Map<Class<?>, Object> services) {
+         lifecycleService = (ILifecycleService) services.get(ILifecycleService.class);
+         accessService = (IAccessControlService) services.get(IAccessControlService.class);
+         try {
+            handler = new SkynetTransactionAccessHandler(accessService);
+            lifecycleService.addHandler(SkynetTransactionCheckPoint.TYPE, handler);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
+      }
 
-		@Override
-		public void onDeActivate() {
-			if (handler != null) {
-				try {
-					lifecycleService.removeHandler(SkynetTransactionCheckPoint.TYPE, handler);
-				} catch (OseeCoreException ex) {
-					OseeLog.log(Activator.class, Level.SEVERE, ex);
-				}
-			}
-		}
-	}
+      @Override
+      public void onDeActivate() {
+         if (handler != null) {
+            try {
+               lifecycleService.removeHandler(SkynetTransactionCheckPoint.TYPE, handler);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
+         }
+      }
+   }
 }

@@ -89,6 +89,7 @@ public class DataType extends NodeModel {
       return super.hashCode();
    }
 
+   @Override
    public String toString() {
       return getName();
    }

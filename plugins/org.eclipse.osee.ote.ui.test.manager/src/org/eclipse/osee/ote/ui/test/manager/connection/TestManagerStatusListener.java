@@ -20,12 +20,13 @@ import org.eclipse.osee.ote.ui.test.manager.core.TestManagerEditor;
  */
 public final class TestManagerStatusListener implements IServiceStatusListener {
 
-   private TestManagerServiceStatusDataVisitor testManagerServiceDataVisitor;
+   private final TestManagerServiceStatusDataVisitor testManagerServiceDataVisitor;
 
    public TestManagerStatusListener(TestManagerEditor testManagerEditor, ScriptManager userEnvironment) {
       this.testManagerServiceDataVisitor = new TestManagerServiceStatusDataVisitor(userEnvironment, testManagerEditor);
    }
 
+   @Override
    public void statusBoardUpdated(IServiceStatusData statusData) throws RemoteException {
       statusData.accept(testManagerServiceDataVisitor);
    }

@@ -46,9 +46,11 @@ public class HierarchicalReportDialog extends SelectionDialog {
       recurseChildrenCheck.createWidgets(comp, 2);
       recurseChildrenCheck.set(recurseChildren);
       recurseChildrenCheck.addSelectionListener(new SelectionListener() {
+         @Override
          public void widgetDefaultSelected(SelectionEvent e) {
          }
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             recurseChildren = recurseChildrenCheck.isSelected();
          };

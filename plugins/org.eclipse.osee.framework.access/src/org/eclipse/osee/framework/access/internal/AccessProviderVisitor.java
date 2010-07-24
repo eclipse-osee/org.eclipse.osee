@@ -25,33 +25,33 @@ import org.eclipse.osee.framework.lifecycle.AbstractLifecycleVisitor;
  */
 public class AccessProviderVisitor extends AbstractLifecycleVisitor<IAccessProvider> {
 
-	public static final Type<IAccessProvider> TYPE = new Type<IAccessProvider>();
+   public static final Type<IAccessProvider> TYPE = new Type<IAccessProvider>();
 
-	private final IBasicArtifact<?> userArtifact;
-	private final Collection<?> artsToCheck;
-	private final AccessData mainAccessData;
+   private final IBasicArtifact<?> userArtifact;
+   private final Collection<?> artsToCheck;
+   private final AccessData mainAccessData;
 
-	public AccessProviderVisitor(IBasicArtifact<?> userArtifact, Collection<?> artsToCheck, AccessData mainAccessData) {
-		super();
-		this.userArtifact = userArtifact;
-		this.artsToCheck = artsToCheck;
-		this.mainAccessData = mainAccessData;
-	}
+   public AccessProviderVisitor(IBasicArtifact<?> userArtifact, Collection<?> artsToCheck, AccessData mainAccessData) {
+      super();
+      this.userArtifact = userArtifact;
+      this.artsToCheck = artsToCheck;
+      this.mainAccessData = mainAccessData;
+   }
 
-	@Override
-	public Type<IAccessProvider> getAssociatedType() {
-		return TYPE;
-	}
+   @Override
+   public Type<IAccessProvider> getAssociatedType() {
+      return TYPE;
+   }
 
-	@Override
-	protected IStatus dispatch(IProgressMonitor monitor, IAccessProvider accessProvider, String sourceId) {
-		IStatus status = Status.OK_STATUS;
-		try {
-			accessProvider.computeAccess(userArtifact, artsToCheck, mainAccessData);
-		} catch (OseeCoreException ex) {
-			status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error during access control computation", ex);
-		}
-		return status;
-	}
+   @Override
+   protected IStatus dispatch(IProgressMonitor monitor, IAccessProvider accessProvider, String sourceId) {
+      IStatus status = Status.OK_STATUS;
+      try {
+         accessProvider.computeAccess(userArtifact, artsToCheck, mainAccessData);
+      } catch (OseeCoreException ex) {
+         status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error during access control computation", ex);
+      }
+      return status;
+   }
 
 }

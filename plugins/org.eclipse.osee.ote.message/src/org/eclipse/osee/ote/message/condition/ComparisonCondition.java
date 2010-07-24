@@ -14,7 +14,6 @@ import org.eclipse.osee.ote.message.elements.DiscreteElement;
 
 /**
  * @author Ken J. Aguilar
- *
  */
 
 public class ComparisonCondition<T extends Comparable<T>> extends AbstractCondition implements IDiscreteElementCondition<T> {
@@ -40,7 +39,7 @@ public class ComparisonCondition<T extends Comparable<T>> extends AbstractCondit
       lastValue = element.getValue();
       return operation.evaluate(lastValue, value);
    }
-   
+
    public DiscreteElement<T> getElement() {
       return element;
    }

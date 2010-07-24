@@ -51,17 +51,20 @@ public class XTextResourceDropDam extends XTextDam {
       // Do not allow drop if default branch is not same as artifacts that reside in this table
       DropTarget target = new DropTarget(getStyledText(), DND.DROP_COPY);
       target.setTransfer(new Transfer[] {ResourceTransfer.getInstance(), FileTransfer.getInstance(),
-            TextTransfer.getInstance(), ArtifactTransfer.getInstance()});
+         TextTransfer.getInstance(), ArtifactTransfer.getInstance()});
       target.addDropListener(new DropTargetAdapter() {
 
+         @Override
          public void drop(DropTargetEvent event) {
             performDrop(event);
          }
 
+         @Override
          public void dragOver(DropTargetEvent event) {
             event.detail = DND.DROP_COPY;
          }
 
+         @Override
          public void dropAccept(DropTargetEvent event) {
          }
       });
@@ -72,8 +75,9 @@ public class XTextResourceDropDam extends XTextDam {
       if (e.data instanceof String) {
          strs.add((String) e.data);
       } else if (e.data instanceof String[]) {
-         for (String str : (String[]) e.data)
+         for (String str : (String[]) e.data) {
             strs.add(str);
+         }
       } else if (e.data instanceof IResource[]) {
          IResource res[] = (IResource[]) e.data;
          for (Object obj : res) {
@@ -84,19 +88,25 @@ public class XTextResourceDropDam extends XTextDam {
                   File file = AWorkspace.iFileToFile(iFile);
                   try {
                      String javaPkg = AJavaProject.getJavaPackage(file);
-                     if (javaPkg != null && !javaPkg.equals("")) sb.append(javaPkg + " - ");
+                     if (javaPkg != null && !javaPkg.equals("")) {
+                        sb.append(javaPkg + " - ");
+                     }
                   } catch (Exception ex) {
                      // do nothing
                   }
                   sb.append(iFile.getName());
                   String ver = "unknown";//TODO properly abstract out version control (team providers?) so that we can get the version - VersionControl.getInstance().getRepositoryEntry(file).getVersion();
                   if (ver != null) {
-                     if (ver.equals("unknown")) ver = "enter version here";
+                     if (ver.equals("unknown")) {
+                        ver = "enter version here";
+                     }
                      sb.append(" (" + ver + ")");
                   }
                }
             }
-            if (!sb.toString().equals("")) strs.add(sb.toString());
+            if (!sb.toString().equals("")) {
+               strs.add(sb.toString());
+            }
          }
       }
       for (String str : strs) {

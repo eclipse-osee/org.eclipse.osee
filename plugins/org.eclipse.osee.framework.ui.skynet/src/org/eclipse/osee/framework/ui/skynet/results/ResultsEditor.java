@@ -42,199 +42,200 @@ import org.eclipse.ui.part.MultiPageEditorPart;
  * @author Donald G. Dunne
  */
 public class ResultsEditor extends AbstractArtifactEditor implements IActionable {
-	public static final String EDITOR_ID = "org.eclipse.osee.framework.ui.skynet.results.ResultsEditor";
-	private Integer startPage = null;
+   public static final String EDITOR_ID = "org.eclipse.osee.framework.ui.skynet.results.ResultsEditor";
+   private Integer startPage = null;
 
-	@Override
-	protected void addPages() {
+   @Override
+   protected void addPages() {
 
-		try {
-			OseeContributionItem.addTo(this, true);
+      try {
+         OseeContributionItem.addTo(this, true);
 
-			IResultsEditorProvider provider = getResultsEditorProvider();
-			List<IResultsEditorTab> tabs = provider.getResultsEditorTabs();
-			if (tabs.isEmpty()) {
-				tabs.add(new ResultsEditorHtmlTab("Error", "Error",
-							AHTML.simplePage("Error: No tabs were defined for \"" + provider.getEditorName() + "\"")));
-			}
-			for (IResultsEditorTab tab : provider.getResultsEditorTabs()) {
-				addResultsTab(tab);
-			}
-			if (startPage == null) {
-				addResultsTab(new ResultsEditorHtmlTab(
-							"Error",
-							"Error",
-							AHTML.simplePage("Error: Pages creation error for \"" + provider.getEditorName() + "\"; StartPage == null")));
-			}
-			setPartName(provider.getEditorName());
-			setActivePage(startPage);
-		} catch (Exception ex) {
-			OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-		}
-	}
+         IResultsEditorProvider provider = getResultsEditorProvider();
+         List<IResultsEditorTab> tabs = provider.getResultsEditorTabs();
+         if (tabs.isEmpty()) {
+            tabs.add(new ResultsEditorHtmlTab("Error", "Error",
+               AHTML.simplePage("Error: No tabs were defined for \"" + provider.getEditorName() + "\"")));
+         }
+         for (IResultsEditorTab tab : provider.getResultsEditorTabs()) {
+            addResultsTab(tab);
+         }
+         if (startPage == null) {
+            addResultsTab(new ResultsEditorHtmlTab(
+               "Error",
+               "Error",
+               AHTML.simplePage("Error: Pages creation error for \"" + provider.getEditorName() + "\"; StartPage == null")));
+         }
+         setPartName(provider.getEditorName());
+         setActivePage(startPage);
+      } catch (Exception ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      }
+   }
 
-	public void addResultsTab(IResultsEditorTab tab) throws OseeCoreException {
-		Composite comp = tab.createTab(getContainer(), this);
-		int pageIndex = addPage(comp);
-		if (startPage == null) {
-			startPage = pageIndex;
-		}
-		setPageText(pageIndex, tab.getTabName());
-	}
+   public void addResultsTab(IResultsEditorTab tab) throws OseeCoreException {
+      Composite comp = tab.createTab(getContainer(), this);
+      int pageIndex = addPage(comp);
+      if (startPage == null) {
+         startPage = pageIndex;
+      }
+      setPageText(pageIndex, tab.getTabName());
+   }
 
-	public String getEditorId() {
-		return EDITOR_ID;
-	}
+   public String getEditorId() {
+      return EDITOR_ID;
+   }
 
-	public String getActionableItemName() {
-		return "Result View";
-	}
+   public String getActionableItemName() {
+      return "Result View";
+   }
 
-	public ToolBar createToolBar(Composite parent) {
-		ToolBar toolBar = ALayout.createCommonToolBar(parent);
+   public ToolBar createToolBar(Composite parent) {
+      ToolBar toolBar = ALayout.createCommonToolBar(parent);
 
-		OseeUiActions.addButtonToEditorToolBar(this, SkynetGuiPlugin.getInstance(), toolBar, getEditorId(),
-					getActionableItemName());
+      OseeUiActions.addButtonToEditorToolBar(this, SkynetGuiPlugin.getInstance(), toolBar, getEditorId(),
+         getActionableItemName());
 
-		return toolBar;
-	}
+      return toolBar;
+   }
 
-	public void setEditorTitle(final String str) {
-		Displays.ensureInDisplayThread(new Runnable() {
-			@Override
-			public void run() {
-				setPartName(str);
-				firePropertyChange(IWorkbenchPart.PROP_TITLE);
-			}
-		});
-	}
+   public void setEditorTitle(final String str) {
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            setPartName(str);
+            firePropertyChange(IWorkbenchPart.PROP_TITLE);
+         }
+      });
+   }
 
-	public IResultsEditorProvider getResultsEditorProvider() {
-		IEditorInput editorInput = getEditorInput();
-		if (!(editorInput instanceof ResultsEditorInput)) {
-			throw new IllegalArgumentException("Editor Input not WorldEditorInput");
-		}
-		ResultsEditorInput worldEditorInput = (ResultsEditorInput) editorInput;
-		return worldEditorInput.getIWorldEditorProvider();
-	}
+   public IResultsEditorProvider getResultsEditorProvider() {
+      IEditorInput editorInput = getEditorInput();
+      if (!(editorInput instanceof ResultsEditorInput)) {
+         throw new IllegalArgumentException("Editor Input not WorldEditorInput");
+      }
+      ResultsEditorInput worldEditorInput = (ResultsEditorInput) editorInput;
+      return worldEditorInput.getIWorldEditorProvider();
+   }
 
-	@Override
-	public void doSave(IProgressMonitor monitor) {
-	}
+   @Override
+   public void doSave(IProgressMonitor monitor) {
+   }
 
-	@Override
-	public boolean isSaveOnCloseNeeded() {
-		return isDirty();
-	}
+   @Override
+   public boolean isSaveOnCloseNeeded() {
+      return isDirty();
+   }
 
-	public void refreshTitle() {
-		firePropertyChange(IWorkbenchPart.PROP_TITLE);
-	}
+   public void refreshTitle() {
+      firePropertyChange(IWorkbenchPart.PROP_TITLE);
+   }
 
-	@Override
-	public void dispose() {
-		super.dispose();
-	}
+   @Override
+   public void dispose() {
+      super.dispose();
+   }
 
-	@Override
-	public boolean isDirty() {
-		return false;
-	}
+   @Override
+   public boolean isDirty() {
+      return false;
+   }
 
-	@Override
-	public String getActionDescription() {
-		return null;
-	}
+   @Override
+   public String getActionDescription() {
+      return null;
+   }
 
-	public static void open(final String tabName, final String title, final String html) throws OseeCoreException {
-		ResultsEditor.open(new IResultsEditorProvider() {
+   public static void open(final String tabName, final String title, final String html) throws OseeCoreException {
+      ResultsEditor.open(new IResultsEditorProvider() {
 
-			@Override
-			public String getEditorName() throws OseeCoreException {
-				return title;
-			}
+         @Override
+         public String getEditorName() throws OseeCoreException {
+            return title;
+         }
 
-			@Override
-			public List<IResultsEditorTab> getResultsEditorTabs() throws OseeCoreException {
-				List<IResultsEditorTab> tabs = new ArrayList<IResultsEditorTab>();
-				tabs.add(new ResultsEditorHtmlTab(title, tabName, html));
-				return tabs;
-			}
-		});
-	}
+         @Override
+         public List<IResultsEditorTab> getResultsEditorTabs() throws OseeCoreException {
+            List<IResultsEditorTab> tabs = new ArrayList<IResultsEditorTab>();
+            tabs.add(new ResultsEditorHtmlTab(title, tabName, html));
+            return tabs;
+         }
+      });
+   }
 
-	public static void open(final XResultPage xResultPage) throws OseeCoreException {
-		ResultsEditor.open(new IResultsEditorProvider() {
+   public static void open(final XResultPage xResultPage) throws OseeCoreException {
+      ResultsEditor.open(new IResultsEditorProvider() {
 
-			@Override
-			public String getEditorName() throws OseeCoreException {
-				return xResultPage.getTitle();
-			}
+         @Override
+         public String getEditorName() throws OseeCoreException {
+            return xResultPage.getTitle();
+         }
 
-			@Override
-			public List<IResultsEditorTab> getResultsEditorTabs() throws OseeCoreException {
-				List<IResultsEditorTab> tabs = new ArrayList<IResultsEditorTab>();
-				tabs.add(new ResultsEditorHtmlTab(xResultPage));
-				return tabs;
-			}
-		});
-	}
+         @Override
+         public List<IResultsEditorTab> getResultsEditorTabs() throws OseeCoreException {
+            List<IResultsEditorTab> tabs = new ArrayList<IResultsEditorTab>();
+            tabs.add(new ResultsEditorHtmlTab(xResultPage));
+            return tabs;
+         }
+      });
+   }
 
-	public static void open(final IResultsEditorProvider provider) throws OseeCoreException {
-		open(provider, false);
-	}
+   public static void open(final IResultsEditorProvider provider) throws OseeCoreException {
+      open(provider, false);
+   }
 
-	public static void open(final IResultsEditorProvider provider, boolean forcePend) throws OseeCoreException {
-		Displays.ensureInDisplayThread(new Runnable() {
-			public void run() {
-				IWorkbenchPage page = AWorkbench.getActivePage();
-				try {
-					ResultsEditorInput input = new ResultsEditorInput(provider);
-					//               try {
-					//                  Thread.sleep(5000);
-					//               } catch (InterruptedException ex) {
-					//                  ex.printStackTrace();
-					//               }
-					page.openEditor(input, EDITOR_ID);
-				} catch (PartInitException ex) {
-					OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-				}
-			}
-		}, forcePend);
-	}
+   public static void open(final IResultsEditorProvider provider, boolean forcePend) throws OseeCoreException {
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            IWorkbenchPage page = AWorkbench.getActivePage();
+            try {
+               ResultsEditorInput input = new ResultsEditorInput(provider);
+               //               try {
+               //                  Thread.sleep(5000);
+               //               } catch (InterruptedException ex) {
+               //                  ex.printStackTrace();
+               //               }
+               page.openEditor(input, EDITOR_ID);
+            } catch (PartInitException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+         }
+      }, forcePend);
+   }
 
-	public void closeEditor() {
-		final MultiPageEditorPart editor = this;
-		Displays.ensureInDisplayThread(new Runnable() {
-			@Override
-			public void run() {
-				AWorkbench.getActivePage().closeEditor(editor, false);
-			}
-		});
-	}
+   public void closeEditor() {
+      final MultiPageEditorPart editor = this;
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            AWorkbench.getActivePage().closeEditor(editor, false);
+         }
+      });
+   }
 
-	public static Collection<ResultsEditor> getEditors() {
-		final List<ResultsEditor> editors = new ArrayList<ResultsEditor>();
-		Displays.pendInDisplayThread(new Runnable() {
-			@Override
-			public void run() {
-				for (IEditorReference editor : AWorkbench.getEditors(EDITOR_ID)) {
-					editors.add((ResultsEditor) editor.getEditor(false));
-				}
-			}
-		});
-		return editors;
-	}
+   public static Collection<ResultsEditor> getEditors() {
+      final List<ResultsEditor> editors = new ArrayList<ResultsEditor>();
+      Displays.pendInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            for (IEditorReference editor : AWorkbench.getEditors(EDITOR_ID)) {
+               editors.add((ResultsEditor) editor.getEditor(false));
+            }
+         }
+      });
+      return editors;
+   }
 
-	public static void closeAll() {
-		Displays.ensureInDisplayThread(new Runnable() {
-			@Override
-			public void run() {
-				for (IEditorReference editor : AWorkbench.getEditors(EDITOR_ID)) {
-					AWorkbench.getActivePage().closeEditor(editor.getEditor(false), false);
-				}
-			}
-		});
-	}
+   public static void closeAll() {
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            for (IEditorReference editor : AWorkbench.getEditors(EDITOR_ID)) {
+               AWorkbench.getActivePage().closeEditor(editor.getEditor(false), false);
+            }
+         }
+      });
+   }
 
 }

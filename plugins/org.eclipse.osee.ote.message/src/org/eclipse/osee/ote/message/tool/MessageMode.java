@@ -15,7 +15,7 @@ import java.io.Serializable;
 /**
  * @author Ken J. Aguilar
  */
-public enum MessageMode implements Serializable{
+public enum MessageMode implements Serializable {
    READER,
    WRITER;
 }

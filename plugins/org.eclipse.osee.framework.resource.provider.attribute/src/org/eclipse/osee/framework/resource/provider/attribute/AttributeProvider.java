@@ -46,10 +46,12 @@ public class AttributeProvider implements IResourceProvider {
       return new File(builder.toString()).toURI();
    }
 
+   @Override
    public boolean isValid(IResourceLocator locator) {
       return locator != null && getSupportedProtocols().contains(locator.getProtocol());
    }
 
+   @Override
    public int delete(IResourceLocator locator) throws OseeCoreException {
       int toReturn = IResourceManager.FAIL;
       File file = new File(resolve(locator));

@@ -12,7 +12,6 @@ package org.eclipse.osee.ote.message.elements;
 
 import java.nio.ByteBuffer;
 import java.util.Collection;
-
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.data.MemoryResource;
 import org.eclipse.osee.ote.message.data.MessageData;
@@ -35,15 +34,16 @@ public class ArrayElement extends Element {
    protected Element getNonMappingElement() {
       return null;
    }
-   
+
    public void setValue(int index, byte value) {
       getMsgData().getMem().getData()[index + getMsgData().getMem().getOffset() + getArrayStartOffset()] = value;
    }
-   
+
    public ByteBuffer asByteBuffer() {
-	   return ByteBuffer.wrap(getMsgData().getMem().getData(), getMsgData().getMem().getOffset() + getArrayStartOffset(), getLength());
+      return ByteBuffer.wrap(getMsgData().getMem().getData(),
+         getMsgData().getMem().getOffset() + getArrayStartOffset(), getLength());
    }
-   
+
    public byte getValue(int index) {
       return getValue(getMsgData().getMem(), index);
    }
@@ -52,7 +52,8 @@ public class ArrayElement extends Element {
       return mem.getData()[index + mem.getOffset() + getArrayStartOffset()];
 
    }
-   
+
+   @Override
    public void zeroize() {
       MemoryResource mem = getMsgData().getMem();
       mem.zeroizeFromOffset(getArrayStartOffset(), getLength());
@@ -61,26 +62,26 @@ public class ArrayElement extends Element {
    public int getLength() {
       int currentMsgLength = getMsgData().getCurrentLength() - getMsgData().getOffset() - getArrayStartOffset();
       int length = getArrayEndOffset() - getArrayStartOffset();
-      length = currentMsgLength < length ? currentMsgLength : length; 
+      length = currentMsgLength < length ? currentMsgLength : length;
       return length;
    }
-   
+
    public int getArrayStartOffset() {
-      return byteOffset + (msb / 8);
+      return byteOffset + msb / 8;
    }
-   
+
    public int getArrayEndOffset() {
-      return ((lsb - msb + 1) / 8) + byteOffset;
+      return (lsb - msb + 1) / 8 + byteOffset;
    }
 
    @Override
    public void visit(IElementVisitor visitor) {
       visitor.asArrayElement(this);
    }
-   
+
    @Override
    public ArrayElement switchMessages(Collection<? extends Message<?, ?, ?>> messages) {
       return (ArrayElement) super.switchMessages(messages);
    }
-   
+
 }

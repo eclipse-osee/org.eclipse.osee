@@ -28,13 +28,11 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-
 /**
  * Base Class for all TestManagers
  */
 public class TestManagerModel {
 
-   
    final static String CONFIGURATION = "configuration";
    final static String CONTACT = "contact";
    final static String DESCRIPTION = "description";
@@ -45,10 +43,10 @@ public class TestManagerModel {
    private String contact = "";
    private String description = "";
    private String[] ofps = null;
-   private List<String> parseExceptions = new ArrayList<String>();
+   private final List<String> parseExceptions = new ArrayList<String>();
    private String rawXml = "";
    protected String filename = "";
-   private Map<String, String> defaultOfpExe = new HashMap<String,String>();
+   private final Map<String, String> defaultOfpExe = new HashMap<String, String>();
 
    public TestManagerModel() {
    }
@@ -134,24 +132,21 @@ public class TestManagerModel {
          DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
          // Call this to catch parse errors
-         
+
          Document document = factory.newDocumentBuilder().parse(new InputSource(new StringReader(xmlString)));
-         
+
          parseDocument(xmlString, document);
 
-      }
-      catch (ParserConfigurationException e) {
+      } catch (ParserConfigurationException e) {
          OseeLog.log(TestManagerPlugin.class, Level.SEVERE, e.toString());
          parseExceptions.add(e.toString());
          return false;
-      }
-      catch (SAXException e) {
+      } catch (SAXException e) {
          OseeLog.log(TestManagerPlugin.class, Level.SEVERE, e.toString());
          OseeLog.log(TestManagerPlugin.class, Level.SEVERE, "xmlText *" + xmlString + "*");
          parseExceptions.add(e.toString());
          return false;
-      }
-      catch (IOException e) {
+      } catch (IOException e) {
          OseeLog.log(TestManagerPlugin.class, Level.SEVERE, e.toString());
          parseExceptions.add(e.toString());
          return false;
@@ -181,22 +176,22 @@ public class TestManagerModel {
       NodeList nodeList = document.getFirstChild().getChildNodes();
       List<String> ofpList = new ArrayList<String>();
       defaultOfpExe.clear();
-      for(int i = 0; i < nodeList.getLength(); i++){
+      for (int i = 0; i < nodeList.getLength(); i++) {
          Node node = nodeList.item(i);
-         if(node.getNodeName().equals(DESCRIPTION)){
+         if (node.getNodeName().equals(DESCRIPTION)) {
             description = node.getTextContent();
-         } else if(node.getNodeName().equals(CONTACT)){
+         } else if (node.getNodeName().equals(CONTACT)) {
             contact = node.getTextContent();
-         } else if(node.getNodeName().equals(OFP)){
+         } else if (node.getNodeName().equals(OFP)) {
             Node defaultType = node.getAttributes().getNamedItem("default");
-            if(defaultType != null){
+            if (defaultType != null) {
                String defaultTypeAsString = defaultType.getNodeValue();
                defaultOfpExe.put("default_" + defaultTypeAsString, node.getTextContent().trim());
             }
             ofpList.add(node.getTextContent().trim());
          }
       }
-      
+
       ofps = ofpList.toArray(new String[ofpList.size()]);// AXml.getTagDataArray(xmlString, OFP);
       OseeLog.log(TestManagerPlugin.class, Level.INFO, "description *" + description + "*");
       OseeLog.log(TestManagerPlugin.class, Level.INFO, "contact *" + contact + "*");

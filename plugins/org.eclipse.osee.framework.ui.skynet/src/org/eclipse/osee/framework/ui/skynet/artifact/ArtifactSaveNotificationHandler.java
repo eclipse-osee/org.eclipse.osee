@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.artifact;
 
 import java.util.Collection;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -31,7 +32,7 @@ import org.eclipse.ui.IWorkbenchListener;
 
 /**
  * This handler will find any artifacts in the artifact cache that were dirty and allow user to persist before shutdown.
- *
+ * 
  * @author Donald G. Dunne
  */
 public class ArtifactSaveNotificationHandler implements IWorkbenchListener {
@@ -47,7 +48,7 @@ public class ArtifactSaveNotificationHandler implements IWorkbenchListener {
       if (noPopUp) {
          return true;
       }
-      OseeLog.log(SkynetGuiPlugin.class, OseeLevel.INFO, "Verifying Artifact Persistence");
+      OseeLog.log(SkynetGuiPlugin.class, Level.INFO, "Verifying Artifact Persistence");
       try {
          Collection<Artifact> dirtyArts = ArtifactCache.getDirtyArtifacts();
          if (dirtyArts.isEmpty()) {
@@ -57,11 +58,11 @@ public class ArtifactSaveNotificationHandler implements IWorkbenchListener {
          preferences.setShowArtBranch(true);
          preferences.setShowArtType(true);
          SimpleCheckFilteredTreeDialog dialog =
-               new SimpleCheckFilteredTreeDialog(
-                     "Unsaved Artifacts Detected",
-                     "Some artifacts have not been saved.\n\nSelect any artifact to save (if any) and select Ok or Cancel to stop shutdown.",
-                     new ArrayTreeContentProvider(), new ArtifactLabelProvider(preferences),
-                     new ArtifactViewerSorter(), 0, Integer.MAX_VALUE);
+            new SimpleCheckFilteredTreeDialog(
+               "Unsaved Artifacts Detected",
+               "Some artifacts have not been saved.\n\nSelect any artifact to save (if any) and select Ok or Cancel to stop shutdown.",
+               new ArrayTreeContentProvider(), new ArtifactLabelProvider(preferences), new ArtifactViewerSorter(), 0,
+               Integer.MAX_VALUE);
          dialog.setInput(dirtyArts);
          if (dialog.open() == 0) {
             if (dialog.getResult().length == 0) {
@@ -69,8 +70,8 @@ public class ArtifactSaveNotificationHandler implements IWorkbenchListener {
             }
             HashCollection<Branch, Artifact> branchMap = Artifacts.getBranchArtifactMap(dirtyArts);
             for (Branch branch : branchMap.keySet()) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.INFO, String.format(
-                     "Persisting [%d] unsaved artifacts for branch [%s]", branchMap.getValues().size(), branch));
+               OseeLog.log(SkynetGuiPlugin.class, Level.INFO, String.format(
+                  "Persisting [%d] unsaved artifacts for branch [%s]", branchMap.getValues().size(), branch));
                Artifacts.persistInTransaction(branchMap.getValues(branch));
             }
             return true;
@@ -78,7 +79,7 @@ public class ArtifactSaveNotificationHandler implements IWorkbenchListener {
             HashCollection<Branch, Artifact> branchMap = Artifacts.getBranchArtifactMap(dirtyArts);
             for (Branch branch : branchMap.keySet()) {
                MassArtifactEditor.editArtifacts(String.format("Unsaved Artifacts for Branch [%s]", branch),
-                     branchMap.getValues(branch));
+                  branchMap.getValues(branch));
             }
          }
       } catch (OseeCoreException ex) {

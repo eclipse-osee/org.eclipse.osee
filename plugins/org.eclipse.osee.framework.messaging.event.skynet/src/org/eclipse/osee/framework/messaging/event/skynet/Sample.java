@@ -13,16 +13,16 @@ package org.eclipse.osee.framework.messaging.event.skynet;
 import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.Date;
+import net.jini.core.lookup.ServiceItem;
 import org.eclipse.osee.framework.jini.discovery.IServiceLookupListener;
 import org.eclipse.osee.framework.jini.discovery.ServiceDataStore;
 import org.eclipse.osee.framework.jini.util.OseeJini;
-import net.jini.core.lookup.ServiceItem;
 
 public class Sample implements IServiceLookupListener, Serializable {
    private static final long serialVersionUID = 8195127334711471268L;
 
    private ISkynetEventService ses;
-   private ASkynetEventListener listener;
+   private final ASkynetEventListener listener;
 
    public Sample() {
       super();
@@ -54,6 +54,7 @@ public class Sample implements IServiceLookupListener, Serializable {
       }
    }
 
+   @Override
    public void serviceAdded(ServiceItem serviceItem) {
       ses = (ISkynetEventService) serviceItem.service;
       try {
@@ -63,12 +64,14 @@ public class Sample implements IServiceLookupListener, Serializable {
       }
    }
 
+   @Override
    public void serviceChanged(ServiceItem serviceItem) {
       // like when the Entry[] changes
       System.out.println("***Service changed");
       serviceAdded(serviceItem);
    }
 
+   @Override
    public void serviceRemoved(ServiceItem serviceItem) {
       // Ensure the lookup server didn't just lose contact
       //      try {
@@ -90,8 +93,9 @@ public class Sample implements IServiceLookupListener, Serializable {
       public void onEvent(ISkynetEvent[] events) throws RemoteException {
          System.out.println("Events received at " + new Date());
 
-         for (ISkynetEvent event : events)
+         for (ISkynetEvent event : events) {
             System.out.println("\t" + event);
+         }
       }
    }
 }

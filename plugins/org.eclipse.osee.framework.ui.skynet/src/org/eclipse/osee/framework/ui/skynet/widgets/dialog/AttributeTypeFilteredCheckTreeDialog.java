@@ -37,11 +37,13 @@ public class AttributeTypeFilteredCheckTreeDialog extends OSEECheckedFilteredTre
 
    public AttributeTypeFilteredCheckTreeDialog(String title, String message) {
       super(title, message, patternFilter, new AttributeContentProvider(), new AttributeTypeLabelProvider(),
-            new ArtifactNameSorter());
+         new ArtifactNameSorter());
    }
 
    public Collection<AttributeType> getChecked() {
-      if (super.getTreeViewer() == null) return Collections.emptyList();
+      if (super.getTreeViewer() == null) {
+         return Collections.emptyList();
+      }
       Set<AttributeType> checked = new HashSet<AttributeType>();
       for (Object obj : super.getTreeViewer().getChecked()) {
          checked.add((AttributeType) obj);
@@ -54,7 +56,7 @@ public class AttributeTypeFilteredCheckTreeDialog extends OSEECheckedFilteredTre
       Control comp = super.createDialogArea(container);
       try {
          getTreeViewer().getViewer().setInput(
-               selectableTypes == null ? AttributeTypeManager.getAllTypes() : selectableTypes);
+            selectableTypes == null ? AttributeTypeManager.getAllTypes() : selectableTypes);
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }

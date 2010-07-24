@@ -29,12 +29,14 @@ public class InRangeCondition<T extends Comparable<T>> extends AbstractCondition
       this.minInclusive = minInclusive;
    }
 
+   @Override
    public boolean check() {
       actualValue = element.getValue();
       boolean result = minInclusive ? actualValue.compareTo(minValue) >= 0 : actualValue.compareTo(minValue) > 0;
-      return result && (maxInclusive ? (actualValue.compareTo(maxValue) <= 0) : (actualValue.compareTo(maxValue) < 0));
+      return result && (maxInclusive ? actualValue.compareTo(maxValue) <= 0 : actualValue.compareTo(maxValue) < 0);
    }
 
+   @Override
    public T getLastCheckValue() {
       return actualValue;
    }
@@ -58,6 +60,5 @@ public class InRangeCondition<T extends Comparable<T>> extends AbstractCondition
    public boolean isMaxInclusive() {
       return maxInclusive;
    }
-
 
 }

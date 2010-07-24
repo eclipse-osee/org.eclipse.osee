@@ -21,6 +21,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
@@ -118,8 +119,8 @@ public class AtsExportManager extends Action {
       if (exportOptions.contains(ExportOption.POPUP_DIALOG)) {
          AtsExportWizard exportWizard = new AtsExportWizard(getSmaArts(artifacts));
          WizardDialog dialog =
-               new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), exportWizard);
-         if (dialog.open() == WizardDialog.OK) {
+            new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), exportWizard);
+         if (dialog.open() == Window.OK) {
             Collection<ExportOption> selectedExportOptions = exportWizard.getSelectedExportOptions();
             boolean singleFile = selectedExportOptions.contains(ExportOption.MERGE_INTO_SINGLE_FILE);
             boolean asHtmlToFile = selectedExportOptions.contains(ExportOption.AS_HTML_TO_FILE);
@@ -137,8 +138,8 @@ public class AtsExportManager extends Action {
                         try {
                            if (asHtmlToFile) {
                               File file =
-                                    new File(
-                                          exportWizard.getFileLocation() + "\\" + artifact.getHumanReadableId() + ".html");
+                                 new File(
+                                    exportWizard.getFileLocation() + "\\" + artifact.getHumanReadableId() + ".html");
                               Lib.writeStringToFile(html, file);
                            }
                            if (asHtmlToResultEditor) {

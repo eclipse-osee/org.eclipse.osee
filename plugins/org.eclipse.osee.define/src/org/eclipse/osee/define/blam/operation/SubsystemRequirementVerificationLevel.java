@@ -44,9 +44,8 @@ public class SubsystemRequirementVerificationLevel extends AbstractBlam {
    private Collection<Artifact> subsystemRequirements;
    private StringBuilder report;
    private SkynetTransaction transaction;
-   private final String[] columnHeaders =
-         {"Requirement", "Subsystem", CoreAttributeTypes.PARAGRAPH_NUMBER.getName(), "Current Verification Level",
-               "Changed"};
+   private final String[] columnHeaders = {"Requirement", "Subsystem", CoreAttributeTypes.PARAGRAPH_NUMBER.getName(),
+      "Current Verification Level", "Changed"};
 
    @SuppressWarnings("unused")
    private Collection<Artifact> bulkRequirements;
@@ -55,8 +54,7 @@ public class SubsystemRequirementVerificationLevel extends AbstractBlam {
       branch = variableMap.getBranch("Branch");
       subsystemRequirements = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SubsystemRequirement, branch);
       bulkRequirements =
-            RelationManager.getRelatedArtifacts(subsystemRequirements, 1,
-                  CoreRelationTypes.Requirement_Trace__Lower_Level);
+         RelationManager.getRelatedArtifacts(subsystemRequirements, 1, CoreRelationTypes.Requirement_Trace__Lower_Level);
       report = new StringBuilder(AHTML.beginMultiColumnTable(100, 1));
       transaction = new SkynetTransaction(branch, "Set Verification Level for Subsystem Requirements");
    }
@@ -130,7 +128,7 @@ public class SubsystemRequirementVerificationLevel extends AbstractBlam {
 
       private int getSoftwareRequirementCount() throws OseeCoreException {
          Collection<Artifact> traceCollection =
-               RelationManager.getRelatedArtifacts(req, CoreRelationTypes.Requirement_Trace__Lower_Level);
+            RelationManager.getRelatedArtifacts(req, CoreRelationTypes.Requirement_Trace__Lower_Level);
          int ret = 0;
          for (Artifact trace : traceCollection) {
             if (trace.isOfType(CoreArtifactTypes.AbstractSoftwareRequirement)) {
@@ -151,7 +149,7 @@ public class SubsystemRequirementVerificationLevel extends AbstractBlam {
 
       public void report() {
          SubsystemRequirementVerificationLevel.this.addReportRow(req.getName(), subsystem, paragraphNumber,
-               verificationLevel, String.valueOf(isUnspecified()));
+            verificationLevel, String.valueOf(isUnspecified()));
       }
 
       private boolean isUnspecified() {

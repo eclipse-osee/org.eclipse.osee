@@ -18,7 +18,6 @@ public class SupportedScriptTypes implements Serializable {
    private static final long serialVersionUID = 8403281090133318485L;
    public EnumSet<ScriptTypeEnum> supportedClasses = EnumSet.noneOf(ScriptTypeEnum.class);
 
-
    public void add(ScriptTypeEnum scriptType) {
       supportedClasses.add(scriptType);
    }

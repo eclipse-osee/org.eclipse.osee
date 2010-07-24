@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
  */
 public class ArtifactTransactionData extends BaseTransactionData {
    private static final String INSERT_ARTIFACT =
-         "INSERT INTO osee_artifact (gamma_id, art_id, art_type_id, guid, human_readable_id) VALUES (?,?,?,?,?)";
+      "INSERT INTO osee_artifact (gamma_id, art_id, art_type_id, guid, human_readable_id) VALUES (?,?,?,?,?)";
 
    private final Artifact artifact;
 
@@ -46,7 +46,7 @@ public class ArtifactTransactionData extends BaseTransactionData {
       super.addInsertToBatch(transaction);
       if (!useExistingBackingData()) {
          internalAddInsertToBatch(transaction, 1, INSERT_ARTIFACT, getGammaId(), artifact.getArtId(),
-               artifact.getArtTypeId(), artifact.getGuid(), artifact.getHumanReadableId());
+            artifact.getArtTypeId(), artifact.getGuid(), artifact.getHumanReadableId());
       }
    }
 
@@ -82,16 +82,16 @@ public class ArtifactTransactionData extends BaseTransactionData {
          case DELETED:
             artifactModType = ArtifactModType.Deleted;
             artifactEvent.getArtifacts().add(
-                  new EventBasicGuidArtifact(EventModType.Deleted, artifact.getBasicGuidArtifact()));
+               new EventBasicGuidArtifact(EventModType.Deleted, artifact.getBasicGuidArtifact()));
             break;
          default:
             artifactModType = ArtifactModType.Added;
             artifactEvent.getArtifacts().add(
-                  new EventBasicGuidArtifact(EventModType.Added, artifact.getBasicGuidArtifact()));
+               new EventBasicGuidArtifact(EventModType.Added, artifact.getBasicGuidArtifact()));
             break;
       }
       artifactEvent.getSkynetTransactionDetails().add(
-            new ArtifactModifiedEvent(new Sender(this.getClass().getName()), artifactModType, artifact,
-                  artifact.getTransactionNumber(), artifact.getDirtySkynetAttributeChanges()));
+         new ArtifactModifiedEvent(new Sender(this.getClass().getName()), artifactModType, artifact,
+            artifact.getTransactionNumber(), artifact.getDirtySkynetAttributeChanges()));
    }
 }

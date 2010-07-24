@@ -25,8 +25,8 @@ public class DataStoreItem {
    private final DataWriter theWriter;
 
    /**
-    * Create a new <code>DataStoreItem</code> that stores references to all of the necessary information
-    * for the system to propogate the data.
+    * Create a new <code>DataStoreItem</code> that stores references to all of the necessary information for the system
+    * to propogate the data.
     * 
     * @param theData
     * @param theTopicDescription

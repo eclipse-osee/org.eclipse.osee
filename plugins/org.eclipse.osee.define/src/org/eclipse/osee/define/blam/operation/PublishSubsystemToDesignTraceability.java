@@ -99,7 +99,7 @@ public class PublishSubsystemToDesignTraceability extends AbstractBlam {
                if (subsystemDesign.isOfType(CoreArtifactTypes.SubsystemDesign)) {
                   loopNeverRan = false;
                   excelWriter.writeCell(subsystemDesign.getSoleAttributeValue(CoreAttributeTypes.PARAGRAPH_NUMBER, ""),
-                        2);
+                     2);
                   excelWriter.writeCell(subsystemDesign.getName(), 3);
                   excelWriter.endRow();
                }

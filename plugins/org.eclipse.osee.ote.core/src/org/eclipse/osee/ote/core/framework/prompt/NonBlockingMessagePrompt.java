@@ -40,6 +40,7 @@ public class NonBlockingMessagePrompt extends AbstractRemotePrompt implements IR
 
    }
 
+   @Override
    public void resume() throws RemoteException {
 
    }

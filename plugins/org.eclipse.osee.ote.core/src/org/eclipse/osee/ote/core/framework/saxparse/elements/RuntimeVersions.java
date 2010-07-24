@@ -15,9 +15,8 @@ import org.xml.sax.Attributes;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
-public class RuntimeVersions extends ElementHandlers{
+public class RuntimeVersions extends ElementHandlers {
 
    /**
     * @param name

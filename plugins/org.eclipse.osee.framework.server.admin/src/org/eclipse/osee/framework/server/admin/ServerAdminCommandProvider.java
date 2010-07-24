@@ -100,10 +100,10 @@ public class ServerAdminCommandProvider implements CommandProvider {
       sb.append("        osee_shutdown [-oseeOnly] - immediately release the listening port then waits for all existing operations to finish. \n");
       sb.append("        gc - run java garbage collecction\n");
       sb.append("        schedule <delay seconds> <iterations> <command> - runs the command after the specified delay and repeat given number of times\n");
-      sb.append(String.format("        reload_cache %s? - reloads server caches\n", Arrays.deepToString(
-            OseeCacheEnum.values()).replaceAll(",", " | ")));
+      sb.append(String.format("        reload_cache %s? - reloads server caches\n",
+         Arrays.deepToString(OseeCacheEnum.values()).replaceAll(",", " | ")));
       sb.append(String.format("        clear_cache %s? - decaches all objects from the specified caches\n",
-            Arrays.deepToString(OseeCacheEnum.values()).replaceAll(",", " |")));
+         Arrays.deepToString(OseeCacheEnum.values()).replaceAll(",", " |")));
       return sb.toString();
    }
 }

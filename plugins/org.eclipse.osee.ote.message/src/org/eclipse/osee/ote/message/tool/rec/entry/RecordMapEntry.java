@@ -16,7 +16,6 @@ import org.eclipse.osee.ote.message.elements.Element;
 import org.eclipse.osee.ote.message.elements.RecordElement;
 import org.eclipse.osee.ote.message.elements.RecordMap;
 
-
 /**
  * @author Ken J. Aguilar
  */
@@ -24,7 +23,7 @@ public class RecordMapEntry implements IElementEntry {
 
    private final RecordMap<? extends RecordElement> element;
    private final RecordElementEntry[] entries;
-   
+
    public RecordMapEntry(final RecordMap<? extends RecordElement> element) {
       this.element = element;
       entries = new RecordElementEntry[element.length()];
@@ -34,18 +33,20 @@ public class RecordMapEntry implements IElementEntry {
       }
    }
 
+   @Override
    public Element getElement() {
       return element;
    }
 
+   @Override
    public void write(ByteBuffer buffer, MemoryResource mem, int limit) {
-//      for (int i = 0; i < element.length(); i++) {
-//    	  if (entries[i].getElement().getByteOffset() < limit) {
-//    		  final byte[] prefix = String.format("[%d]", i).getBytes();
-//    		  entries[i].write(prefix, buffer, mem, limit);
-//    		  buffer.put(COMMA);
-//    	  }
-//      }
+      //      for (int i = 0; i < element.length(); i++) {
+      //    	  if (entries[i].getElement().getByteOffset() < limit) {
+      //    		  final byte[] prefix = String.format("[%d]", i).getBytes();
+      //    		  entries[i].write(prefix, buffer, mem, limit);
+      //    		  buffer.put(COMMA);
+      //    	  }
+      //      }
    }
 
 }

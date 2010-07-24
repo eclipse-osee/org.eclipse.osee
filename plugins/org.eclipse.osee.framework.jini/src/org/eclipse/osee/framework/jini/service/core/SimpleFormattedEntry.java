@@ -34,6 +34,7 @@ public class SimpleFormattedEntry extends FormmatedEntry {
       this.value = value;
    }
 
+   @Override
    public final String getFormmatedString() {
       return name + " : " + value + "\n";
    }

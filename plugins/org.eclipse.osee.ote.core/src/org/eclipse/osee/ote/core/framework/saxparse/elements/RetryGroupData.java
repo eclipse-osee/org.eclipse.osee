@@ -10,15 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.core.framework.saxparse.elements;
 
-
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public class RetryGroupData {
 
-   private String mode;
-   
+   private final String mode;
+
    /**
     * @return the mode
     */

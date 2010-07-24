@@ -45,8 +45,8 @@ public class BranchManagerTest {
 
       // create a new working branch
       Branch branch =
-            BranchManager.createWorkingBranch(BranchManager.getCommonBranch(), branchName,
-                  UserManager.getUser(SystemUser.OseeSystem));
+         BranchManager.createWorkingBranch(BranchManager.getCommonBranch(), branchName,
+            UserManager.getUser(SystemUser.OseeSystem));
 
       Assert.assertNotNull(BranchManager.getBranch(branchName));
       Assert.assertEquals("Branch should not exist", 0, BranchManager.getBranchesByName(branchReNamed).size());

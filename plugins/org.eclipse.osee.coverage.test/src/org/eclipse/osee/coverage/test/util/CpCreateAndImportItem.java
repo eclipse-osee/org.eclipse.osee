@@ -18,9 +18,9 @@ import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.utility.IncrementingNum;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 
 /**
  * @author Donald G. Dunne
@@ -38,17 +38,17 @@ public class CpCreateAndImportItem extends XNavigateItemAction {
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
       coveragePackage =
-            new CoveragePackage(getName() + " - #" + IncrementingNum.get(), CoverageOptionManagerDefault.instance());
+         new CoveragePackage(getName() + " - #" + IncrementingNum.get(), CoverageOptionManagerDefault.instance());
       OseeCoveragePackageStore store = new OseeCoveragePackageStore(coveragePackage, BranchManager.getCommonBranch());
       store.save();
       CoverageEditor.open(new CoverageEditorInput(coveragePackage.getName(), store.getArtifact(false), coveragePackage,
-            true));
+         true));
       // Process Import 1
       CoverageEditor editor = null;
       for (CoverageEditor coverageEditor : CoverageEditor.getEditors()) {
          if (coverageEditor.getCoverageEditorInput().getCoveragePackageBase() instanceof CoveragePackage) {
             CoveragePackage editorPackage =
-                  (CoveragePackage) coverageEditor.getCoverageEditorInput().getCoveragePackageBase();
+               (CoveragePackage) coverageEditor.getCoverageEditorInput().getCoveragePackageBase();
             if (editorPackage.getGuid().equals(coveragePackage.getGuid())) {
                editor = coverageEditor;
             }

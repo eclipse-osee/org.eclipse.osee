@@ -24,8 +24,8 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 public class ClientLoopbackHandler implements IHttpServerRequest {
 
    private static final ExtensionDefinedObjects<IClientLoopbackCmd> commands =
-         new ExtensionDefinedObjects<IClientLoopbackCmd>(Activator.PLUGIN_ID + ".ClientLoopbackCmd",
-               "ClientLoopbackCmd", "className");
+      new ExtensionDefinedObjects<IClientLoopbackCmd>(Activator.PLUGIN_ID + ".ClientLoopbackCmd", "ClientLoopbackCmd",
+         "className");
 
    @Override
    public String getRequestType() {
@@ -44,12 +44,12 @@ public class ClientLoopbackHandler implements IHttpServerRequest {
             }
          }
          if (!wasProcessed) {
-            httpResponse.outputStandardError(HttpURLConnection.HTTP_NOT_FOUND, String.format(
-                  "Unable to process request: [%s]", httpRequest.getRawRequest()));
+            httpResponse.outputStandardError(HttpURLConnection.HTTP_NOT_FOUND,
+               String.format("Unable to process request: [%s]", httpRequest.getRawRequest()));
          }
       } else {
-         httpResponse.outputStandardError(HttpURLConnection.HTTP_BAD_REQUEST, String.format(
-               "Unable to process request: [%s]", httpRequest.getRawRequest()));
+         httpResponse.outputStandardError(HttpURLConnection.HTTP_BAD_REQUEST,
+            String.format("Unable to process request: [%s]", httpRequest.getRawRequest()));
       }
    }
 }

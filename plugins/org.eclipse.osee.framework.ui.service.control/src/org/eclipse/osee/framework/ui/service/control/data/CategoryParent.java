@@ -29,6 +29,7 @@ public class CategoryParent extends TreeParent implements IRenderer {
       super(name);
    }
 
+   @Override
    public Control renderInComposite(Composite parent) {
       if (parent instanceof FormattedText) {
          ((FormattedText) parent).clearTextArea();

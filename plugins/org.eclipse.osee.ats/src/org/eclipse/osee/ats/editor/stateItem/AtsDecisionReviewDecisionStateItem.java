@@ -42,15 +42,20 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
 
    @Override
    public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, AtsWorkPage page, Artifact art, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
-      if (xWidget == null) throw new OseeStateException("Can't retrieve decision review combo widget to set.");
-      if (!(art instanceof StateMachineArtifact)) throw new OseeCoreException(
+      if (xWidget == null) {
+         throw new OseeStateException("Can't retrieve decision review combo widget to set.");
+      }
+      if (!(art instanceof StateMachineArtifact)) {
+         throw new OseeCoreException(
             "AtsDecisionReviewDecisionStateItem.xWidgetCreating expected a StateMachineArtifact");
+      }
       if (xWidget.getLabel().equals(ATSAttributes.DECISION_ATTRIBUTE.getDisplayName())) {
          XComboDam decisionComboDam = (XComboDam) xWidget;
          List<String> options = new ArrayList<String>();
          XDecisionOptions xDecOptions = new XDecisionOptions((StateMachineArtifact) art);
-         for (DecisionOption opt : xDecOptions.getDecisionOptions())
+         for (DecisionOption opt : xDecOptions.getDecisionOptions()) {
             options.add(opt.getName());
+         }
          decisionComboDam.setDataStrings(options.toArray(new String[options.size()]));
       }
       return Result.TrueResult;
@@ -59,19 +64,26 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
    @Override
    public String getOverrideTransitionToStateName(SMAWorkFlowSection section) throws OseeCoreException {
       DecisionOption decisionOption = getDecisionOption(section);
-      if (decisionOption == null) return null;
+      if (decisionOption == null) {
+         return null;
+      }
       boolean followUpRequired = decisionOption.isFollowupRequired();
-      if (section.getTransitionToStateCombo() == null || section.getTransitionToStateCombo().getSelected() == null) return null;
-      if (followUpRequired)
+      if (section.getTransitionToStateCombo() == null || section.getTransitionToStateCombo().getSelected() == null) {
+         return null;
+      }
+      if (followUpRequired) {
          return DecisionReviewArtifact.DecisionReviewState.Followup.name();
-      else
+      } else {
          return DecisionReviewArtifact.DecisionReviewState.Completed.name();
+      }
    }
 
    @Override
    public Collection<User> getOverrideTransitionToAssignees(SMAWorkFlowSection section) throws OseeCoreException {
       DecisionOption decisionOption = getDecisionOption(section);
-      if (decisionOption == null) return null;
+      if (decisionOption == null) {
+         return null;
+      }
       return decisionOption.getAssignees();
    }
 
@@ -79,12 +91,15 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
       XWidget xWidget = section.getPage().getLayoutData(ATSAttributes.DECISION_ATTRIBUTE.getStoreName()).getXWidget();
       XComboDam decisionComboDam = (XComboDam) xWidget;
       String decision = decisionComboDam.get();
-      if (decision.equals("")) return null;
+      if (decision.equals("")) {
+         return null;
+      }
       DecisionReviewArtifact decArt = (DecisionReviewArtifact) section.getSma();
       DecisionOption decisionOption = decArt.decisionOptions.getDecisionOption(decision);
       return decisionOption;
    }
 
+   @Override
    public String getDescription() throws OseeCoreException {
       return "AtsDecisionReviewDecisionStateItem - Add decision options to review state based on prepare state's entries.";
    }

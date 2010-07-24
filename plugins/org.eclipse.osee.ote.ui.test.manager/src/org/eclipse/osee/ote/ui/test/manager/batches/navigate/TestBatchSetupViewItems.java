@@ -24,8 +24,8 @@ public class TestBatchSetupViewItems implements IXNavigateContainer {
    private static final String PARENT_FOLDER_NAME = "Test Batch Setup";
 
    private static TestBatchSetupViewItems instance = null;
-   private TestBatchRegistry registry;
-   private XNavigateItem parentFolder;
+   private final TestBatchRegistry registry;
+   private final XNavigateItem parentFolder;
 
    public TestBatchSetupViewItems() {
       this.parentFolder = new XNavigateItem(null, PARENT_FOLDER_NAME, PluginUiImage.FOLDER);
@@ -42,6 +42,7 @@ public class TestBatchSetupViewItems implements IXNavigateContainer {
       return instance;
    }
 
+   @Override
    public List<XNavigateItem> getNavigateItems() {
       List<XNavigateItem> items = new ArrayList<XNavigateItem>();
       items.add(parentFolder);

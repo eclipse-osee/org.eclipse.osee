@@ -51,6 +51,7 @@ public final class Conflict implements IOseeStorable {
       return destinationGammaId;
    }
 
+   @Override
    public int getId() {
       return itemId;
    }

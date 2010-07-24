@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.plugin.core.IActionReportingService;
  */
 public class AtsActionReportingServiceImpl implements IActionReportingService {
 
+   @Override
    public void report(String actionableItem, String desc) throws Exception {
       AtsUtil.createATSAction(desc, actionableItem);
    }

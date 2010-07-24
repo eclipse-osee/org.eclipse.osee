@@ -21,9 +21,9 @@ import org.eclipse.osee.framework.ui.data.model.editor.model.ConnectionModel;
  */
 public class MoveBendpointCommand extends Command {
 
-   private ConnectionModel connectionModel;
-   private int index;
-   private Bendpoint oldBendpoint, newBendpoint;
+   private final ConnectionModel connectionModel;
+   private final int index;
+   private final Bendpoint oldBendpoint, newBendpoint;
 
    public MoveBendpointCommand(ConnectionModel connectionModel, Point location, int index) {
       super("Move Bendpoint");
@@ -33,14 +33,17 @@ public class MoveBendpointCommand extends Command {
       oldBendpoint = (Bendpoint) connectionModel.getBendpoints().get(index);
    }
 
+   @Override
    public boolean canExecute() {
       return connectionModel != null && index >= 0 && newBendpoint != null && oldBendpoint != null;
    }
 
+   @Override
    public void execute() {
       connectionModel.getBendpoints().set(index, newBendpoint);
    }
 
+   @Override
    public void undo() {
       connectionModel.getBendpoints().set(index, oldBendpoint);
    }

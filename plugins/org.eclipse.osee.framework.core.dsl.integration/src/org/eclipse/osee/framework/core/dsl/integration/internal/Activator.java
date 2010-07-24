@@ -17,18 +17,18 @@ import org.osgi.framework.BundleContext;
 
 public class Activator implements BundleActivator {
 
-	public static final String PLUGIN_ID = "org.eclipse.osee.framework.core.dsl.integration";
+   public static final String PLUGIN_ID = "org.eclipse.osee.framework.core.dsl.integration";
 
-	private ServiceDependencyTracker dependencyTracker;
+   private ServiceDependencyTracker dependencyTracker;
 
-	@Override
-	public void start(BundleContext context) throws Exception {
-		dependencyTracker = new ServiceDependencyTracker(context, new OseeModelingServiceRegHandler());
-		dependencyTracker.open();
-	}
+   @Override
+   public void start(BundleContext context) throws Exception {
+      dependencyTracker = new ServiceDependencyTracker(context, new OseeModelingServiceRegHandler());
+      dependencyTracker.open();
+   }
 
-	@Override
-	public void stop(BundleContext context) throws Exception {
-		Lib.close(dependencyTracker);
-	}
+   @Override
+   public void stop(BundleContext context) throws Exception {
+      Lib.close(dependencyTracker);
+   }
 }

@@ -28,84 +28,84 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class BasicHexTable extends HexTable {
 
-	/**
-	 * @param shell
-	 * @param array
-	 * @param bytesPerRow
-	 */
-	public BasicHexTable(Composite parent, byte[] array, int bytesPerRow) {
-		super(parent, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL, array, bytesPerRow);
-	}
+   /**
+    * @param shell
+    * @param array
+    * @param bytesPerRow
+    */
+   public BasicHexTable(Composite parent, byte[] array, int bytesPerRow) {
+      super(parent, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL, array, bytesPerRow);
+   }
 
-	@Override
-	protected void createAndConfigureColumns(TableViewer v, TableColumnLayout layout, int bytesPerRow) {
-		ColumnViewerToolTipSupport.enableFor(v, ToolTip.NO_RECREATE);
-		TableViewerColumn column = new TableViewerColumn(v, SWT.RIGHT);
+   @Override
+   protected void createAndConfigureColumns(TableViewer v, TableColumnLayout layout, int bytesPerRow) {
+      ColumnViewerToolTipSupport.enableFor(v, ToolTip.NO_RECREATE);
+      TableViewerColumn column = new TableViewerColumn(v, SWT.RIGHT);
 
-		column.setLabelProvider(new OffsetColumnLabelProvider());
-		column.getColumn().setText("Offset");
-		column.getColumn().setResizable(false);
-		column.getColumn().setMoveable(false);
-		layout.setColumnData(column.getColumn(), new ColumnPixelData(50));
-		for (int i = 0; i < bytesPerRow; i++) {
-			TableViewerColumn c = new TableViewerColumn(v, SWT.LEFT);
-			c.setLabelProvider(createByteColumnLabelProvider(i));
-			c.getColumn().setText(Integer.toHexString(i));
-			c.getColumn().setResizable(false);
-			c.getColumn().setMoveable(false);
-			c.setEditingSupport(createHexEditingSupport(i));
-			layout.setColumnData(c.getColumn(), new ColumnPixelData(26));
-		}
+      column.setLabelProvider(new OffsetColumnLabelProvider());
+      column.getColumn().setText("Offset");
+      column.getColumn().setResizable(false);
+      column.getColumn().setMoveable(false);
+      layout.setColumnData(column.getColumn(), new ColumnPixelData(50));
+      for (int i = 0; i < bytesPerRow; i++) {
+         TableViewerColumn c = new TableViewerColumn(v, SWT.LEFT);
+         c.setLabelProvider(createByteColumnLabelProvider(i));
+         c.getColumn().setText(Integer.toHexString(i));
+         c.getColumn().setResizable(false);
+         c.getColumn().setMoveable(false);
+         c.setEditingSupport(createHexEditingSupport(i));
+         layout.setColumnData(c.getColumn(), new ColumnPixelData(26));
+      }
 
-		TableViewerColumn divider = new TableViewerColumn(v, SWT.LEFT);
-		divider.getColumn().setResizable(false);
-		divider.setLabelProvider(new DividerLabel());
-		layout.setColumnData(divider.getColumn(), new ColumnPixelData(1));
-		for (int i = 0; i < bytesPerRow; i++) {
-			TableViewerColumn c = new TableViewerColumn(v, SWT.LEFT);
+      TableViewerColumn divider = new TableViewerColumn(v, SWT.LEFT);
+      divider.getColumn().setResizable(false);
+      divider.setLabelProvider(new DividerLabel());
+      layout.setColumnData(divider.getColumn(), new ColumnPixelData(1));
+      for (int i = 0; i < bytesPerRow; i++) {
+         TableViewerColumn c = new TableViewerColumn(v, SWT.LEFT);
 
-			c.setLabelProvider(new AsciiColumnLabelProvider(i));
-			c.getColumn().setResizable(false);
-			c.getColumn().setMoveable(false);
-			layout.setColumnData(c.getColumn(), new ColumnPixelData(20));
-		}
-	}
+         c.setLabelProvider(new AsciiColumnLabelProvider(i));
+         c.getColumn().setResizable(false);
+         c.getColumn().setMoveable(false);
+         layout.setColumnData(c.getColumn(), new ColumnPixelData(20));
+      }
+   }
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		Display display = new Display();
-		Shell shell = new Shell(display);
-		shell.setSize(500, 400);
-		shell.setLayout(new FillLayout());
-		byte[] array = new byte[702];
-		for (int i = 0; i < array.length; i++) {
-			array[i] = (byte) i;
-		}
-		int index = 50;
-		String str = "this is a test";
-		array[48] = 3;
-		array[49] = 3;
-		for (byte b : str.getBytes()) {
-			array[index] = b;
-			index++;
-		}
-		array[index] = 3;
-		array[index + 1] = 3;
-		BasicHexTable t = new BasicHexTable(shell, array, 16);
-		shell.open();
-		IHexTblHighlighter yellowHL = t.createHighlighter(30, 3, Displays.getSystemColor(SWT.COLOR_YELLOW));
-		IHexTblHighlighter blueHL = t.createHighlighter(50, str.length(), Displays.getSystemColor(SWT.COLOR_BLUE));
-		yellowHL.highlight();
-		blueHL.highlight();
-		while (!shell.isDisposed()) {
-			if (!display.readAndDispatch()) {
-				display.sleep();
-			}
-		}
+   /**
+    * @param args
+    */
+   public static void main(String[] args) {
+      Display display = new Display();
+      Shell shell = new Shell(display);
+      shell.setSize(500, 400);
+      shell.setLayout(new FillLayout());
+      byte[] array = new byte[702];
+      for (int i = 0; i < array.length; i++) {
+         array[i] = (byte) i;
+      }
+      int index = 50;
+      String str = "this is a test";
+      array[48] = 3;
+      array[49] = 3;
+      for (byte b : str.getBytes()) {
+         array[index] = b;
+         index++;
+      }
+      array[index] = 3;
+      array[index + 1] = 3;
+      BasicHexTable t = new BasicHexTable(shell, array, 16);
+      shell.open();
+      IHexTblHighlighter yellowHL = t.createHighlighter(30, 3, Displays.getSystemColor(SWT.COLOR_YELLOW));
+      IHexTblHighlighter blueHL = t.createHighlighter(50, str.length(), Displays.getSystemColor(SWT.COLOR_BLUE));
+      yellowHL.highlight();
+      blueHL.highlight();
+      while (!shell.isDisposed()) {
+         if (!display.readAndDispatch()) {
+            display.sleep();
+         }
+      }
 
-		display.dispose();
+      display.dispose();
 
-	}
+   }
 }

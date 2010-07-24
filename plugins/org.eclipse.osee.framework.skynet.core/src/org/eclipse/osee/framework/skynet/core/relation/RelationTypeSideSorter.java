@@ -145,6 +145,6 @@ public class RelationTypeSideSorter extends RelationTypeSide {
          // Do Nothing;
       }
       return String.format("Relation Sorter {relationType=%s, relationSide=[%s,%s], artifact=%s, sorterId=%s}",
-            getRelationType(), getSide(), getSideName(), getIArtifact(), sorterId);
+         getRelationType(), getSide(), getSideName(), getIArtifact(), sorterId);
    }
 }

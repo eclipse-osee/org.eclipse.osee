@@ -32,7 +32,7 @@ public final class SendEmailCall implements Callable<String> {
          emailMessage.sendLocalThread();
       } catch (MessagingException ex) {
          return String.format("An exception occured with sending the email for address \"%s\" for user %s.  %s",
-                  emailAddress, user.getName(), ex);
+            emailAddress, user.getName(), ex);
       }
       return null;
    }

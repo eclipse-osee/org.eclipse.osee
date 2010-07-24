@@ -17,7 +17,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ //
 BuildTypeIdentifierTest.class, //
-			SessionTestSuite.class, //
+   SessionTestSuite.class, //
 })
 /**
  * @author Roberto E. Escobar

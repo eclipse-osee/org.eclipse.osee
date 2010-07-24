@@ -24,9 +24,9 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 public class CleanUpAddressingData extends DatabaseHealthOperation {
 
    private static final String NOT_BACKED_GAMMAS =
-         "SELECT gamma_id from osee_txs Union Select rem_gamma_id as gamma_id FROM osee_removed_txs %s " + HealthHelper.ALL_BACKING_GAMMAS;
+      "SELECT gamma_id from osee_txs Union Select rem_gamma_id as gamma_id FROM osee_removed_txs %s " + HealthHelper.ALL_BACKING_GAMMAS;
    private static final String NOT_BACKED_TRANSACTIONS =
-         "SELECT transaction_id from osee_txs UNION SELECT rem_transaction_id as transaction_id FROM osee_removed_txs UNION SELECT DISTINCT transaction_id FROM osee_removed_txs %s SELECT transaction_id from osee_tx_details";
+      "SELECT transaction_id from osee_txs UNION SELECT rem_transaction_id as transaction_id FROM osee_removed_txs UNION SELECT DISTINCT transaction_id FROM osee_removed_txs %s SELECT transaction_id from osee_tx_details";
    private static final String REMOVE_NOT_ADDRESSED_GAMMAS = "DELETE FROM osee_txs WHERE gamma_id = ?";
    private static final String REMOVE_NOT_ADDRESSED_TRANSACTIONS = "DELETE FROM osee_txs WHERE transaction_id = ?";
 
@@ -45,16 +45,16 @@ public class CleanUpAddressingData extends DatabaseHealthOperation {
       try {
          if (verify || gammas == null) {
             gammas =
-                  HealthHelper.runSingleResultQuery(String.format(NOT_BACKED_GAMMAS, chStmt.getComplementSql()),
-                        "gamma_id");
+               HealthHelper.runSingleResultQuery(String.format(NOT_BACKED_GAMMAS, chStmt.getComplementSql()),
+                  "gamma_id");
          }
          checkForCancelledStatus(monitor);
          monitor.worked(calculateWork(0.25));
 
          if (verify || transactions == null) {
             transactions =
-                  HealthHelper.runSingleResultQuery(String.format(NOT_BACKED_TRANSACTIONS, chStmt.getComplementSql()),
-                        "transaction_id");
+               HealthHelper.runSingleResultQuery(String.format(NOT_BACKED_TRANSACTIONS, chStmt.getComplementSql()),
+                  "transaction_id");
          }
       } finally {
          chStmt.close();
@@ -64,9 +64,9 @@ public class CleanUpAddressingData extends DatabaseHealthOperation {
 
       appendToDetails(AHTML.beginMultiColumnTable(100, 1));
       HealthHelper.displayForCleanUp("Gamma Id", getDetailedReport(), getSummary(), verify, gammas,
-            "'s with no backing data\n");
+         "'s with no backing data\n");
       HealthHelper.displayForCleanUp("Transaction Id", getDetailedReport(), getSummary(), verify, transactions,
-            "'s with no backing data\n");
+         "'s with no backing data\n");
 
       checkForCancelledStatus(monitor);
       monitor.worked(calculateWork(0.25));

@@ -52,7 +52,7 @@ final class ArtifactEditFileWatcher extends FileWatcher {
                   public void done(IJobChangeEvent event) {
                      if (event.getResult().isOK()) {
                         OseeLog.log(SkynetGuiPlugin.class, Level.INFO,
-                              "Updated artifact linked to: " + file.getAbsolutePath());
+                           "Updated artifact linked to: " + file.getAbsolutePath());
                      }
                   }
                });

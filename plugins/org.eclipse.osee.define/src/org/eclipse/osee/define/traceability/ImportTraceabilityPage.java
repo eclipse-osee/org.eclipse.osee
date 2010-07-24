@@ -79,6 +79,7 @@ public class ImportTraceabilityPage extends WizardDataTransferPage {
     * 
     * @param event Event
     */
+   @Override
    public void handleEvent(Event event) {
       setPageComplete(determinePageCompletion());
    }

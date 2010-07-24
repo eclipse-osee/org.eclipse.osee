@@ -32,8 +32,7 @@ public class UserCommunity {
    public Set<String> getUserCommunityNames() {
       Set<String> communities;
       try {
-         communities =
-               AttributeTypeManager.getEnumerationValues("ats.User Community");
+         communities = AttributeTypeManager.getEnumerationValues("ats.User Community");
       } catch (OseeCoreException ex) {
          communities = new HashSet<String>();
          communities.add(ex.getLocalizedMessage());
@@ -43,8 +42,9 @@ public class UserCommunity {
 
    public String getUserCommunityCommaDelim() {
       StringBuffer sb = new StringBuffer();
-      for (String name : getUserCommunityNames())
+      for (String name : getUserCommunityNames()) {
          sb.append(name + ",");
+      }
       return sb.toString().replaceFirst(",$", "");
    }
 

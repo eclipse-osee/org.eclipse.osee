@@ -15,60 +15,63 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 
 class HexTableContentProvider implements ILazyContentProvider {
-	private TableViewer viewer;
-	private byte[] array;
-	private int bytesPerRow;
-	private HexTableRow[] elements;
+   private final TableViewer viewer;
+   private byte[] array;
+   private final int bytesPerRow;
+   private HexTableRow[] elements;
 
-	HexTableContentProvider(TableViewer viewer, int bytesPerRow) {
-		this.viewer = viewer;
-		this.bytesPerRow = bytesPerRow;
-	}
+   HexTableContentProvider(TableViewer viewer, int bytesPerRow) {
+      this.viewer = viewer;
+      this.bytesPerRow = bytesPerRow;
+   }
 
-	HexTableRow[] getElements() {
-		return elements;
-	}
+   HexTableRow[] getElements() {
+      return elements;
+   }
 
-	int getBytesPerRow() {
-		return bytesPerRow;
-	}
+   int getBytesPerRow() {
+      return bytesPerRow;
+   }
 
-	public void dispose() {
+   @Override
+   public void dispose() {
 
-	}
+   }
 
-	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-		if (oldInput != null && newInput != null) {
-			byte[] oldArray = (byte[]) oldInput;
-			byte[] newArray = (byte[]) newInput;
-			if (oldArray.length == newArray.length) {
-				// same array length so we are done
-				this.array = newArray;
-				return;
-			}
-		}
-		if (newInput != null) {
-			this.array = (byte[]) newInput;
-			int rowCOunt = (array.length + bytesPerRow - 1) / bytesPerRow;
-			elements = new HexTableRow[rowCOunt];
-			int offset = 0;
-			int bytesLeft = array.length;
-			for (int i = 0; i < rowCOunt; i++) {
-				elements[i] = new HexTableRow(offset, bytesLeft >= bytesPerRow ? bytesPerRow : bytesLeft, array);
-				offset += bytesPerRow;
-				bytesLeft -= bytesPerRow;
-			}
-		}
-	}
+   @Override
+   public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+      if (oldInput != null && newInput != null) {
+         byte[] oldArray = (byte[]) oldInput;
+         byte[] newArray = (byte[]) newInput;
+         if (oldArray.length == newArray.length) {
+            // same array length so we are done
+            this.array = newArray;
+            return;
+         }
+      }
+      if (newInput != null) {
+         this.array = (byte[]) newInput;
+         int rowCOunt = (array.length + bytesPerRow - 1) / bytesPerRow;
+         elements = new HexTableRow[rowCOunt];
+         int offset = 0;
+         int bytesLeft = array.length;
+         for (int i = 0; i < rowCOunt; i++) {
+            elements[i] = new HexTableRow(offset, bytesLeft >= bytesPerRow ? bytesPerRow : bytesLeft, array);
+            offset += bytesPerRow;
+            bytesLeft -= bytesPerRow;
+         }
+      }
+   }
 
-	/**
-	 * @return the viewer
-	 */
-	TableViewer getViewer() {
-		return viewer;
-	}
+   /**
+    * @return the viewer
+    */
+   TableViewer getViewer() {
+      return viewer;
+   }
 
-	public void updateElement(int index) {
-		viewer.replace(elements[index], index);
-	}
+   @Override
+   public void updateElement(int index) {
+      viewer.replace(elements[index], index);
+   }
 }

@@ -51,15 +51,15 @@ public class UpdateArtifactTypeImage extends AbstractBlam {
          if (!imageFile.exists()) {
             throw new OseeArgumentException("Invalid image filename.");
          }
-         ArtifactImageManager.setArtifactTypeImageInDb(artifactSubtypeDescriptor, new ByteArrayInputStream(
-               Lib.inputStreamToBytes(new FileInputStream(imageFile))));
+         ArtifactImageManager.setArtifactTypeImageInDb(artifactSubtypeDescriptor,
+            new ByteArrayInputStream(Lib.inputStreamToBytes(new FileInputStream(imageFile))));
       } else {
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
             public void run() {
                try {
                   if (MessageDialog.openConfirm(Displays.getActiveShell(), "Clear Database Image?",
-                        "No Image File Selected.\n\nSelect \"Ok\" to clear image from database (default image will be used).")) {
+                     "No Image File Selected.\n\nSelect \"Ok\" to clear image from database (default image will be used).")) {
                      ArtifactImageManager.setArtifactTypeImageInDb(artifactSubtypeDescriptor, null);
                   }
                } catch (Exception ex) {

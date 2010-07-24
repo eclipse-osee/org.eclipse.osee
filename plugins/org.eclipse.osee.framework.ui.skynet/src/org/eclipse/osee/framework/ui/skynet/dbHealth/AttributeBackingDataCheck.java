@@ -40,7 +40,7 @@ public class AttributeBackingDataCheck extends DatabaseHealthOperation {
    private static final String FIX_DETAILS = "No fix Available";
 
    private static final String READ_VALID_ATTRIBUTES =
-         "select oa.attr_id, oa.gamma_id, oa.art_id, oa.uri from osee_attribute oa where oa.uri is not null";
+      "select oa.attr_id, oa.gamma_id, oa.art_id, oa.uri from osee_attribute oa where oa.uri is not null";
 
    public AttributeBackingDataCheck() {
       super("Attribute Binary Data Availability");
@@ -61,8 +61,8 @@ public class AttributeBackingDataCheck extends DatabaseHealthOperation {
       appendToDetails(AHTML.addHeaderRowMultiColumnTable(new String[] {"URI", "GAMMA ID", "ATTR ID", "ART ID", "REASON"}));
       for (AttrData attrData : errors) {
          appendToDetails(AHTML.addRowMultiColumnTable(new String[] {attrData.getUri(),
-               String.valueOf(attrData.getGammaId()), String.valueOf(attrData.getAttrId()),
-               String.valueOf(attrData.getArtId()), attrData.getReason()}));
+            String.valueOf(attrData.getGammaId()), String.valueOf(attrData.getAttrId()),
+            String.valueOf(attrData.getArtId()), attrData.getReason()}));
       }
       appendToDetails(AHTML.endMultiColumnTable());
       monitor.worked(calculateWork(0.10));
@@ -83,7 +83,7 @@ public class AttributeBackingDataCheck extends DatabaseHealthOperation {
             String uri = chStmt.getString("uri");
             if (Strings.isValid(uri)) {
                AttrData attrData =
-                     new AttrData(uri, chStmt.getLong("gamma_id"), chStmt.getInt("attr_id"), chStmt.getInt("art_id"));
+                  new AttrData(uri, chStmt.getLong("gamma_id"), chStmt.getInt("attr_id"), chStmt.getInt("art_id"));
                if (!isAttrDataValid(attrData)) {
                   data.add(attrData);
                }
@@ -104,7 +104,7 @@ public class AttributeBackingDataCheck extends DatabaseHealthOperation {
          parameters.put("uri", attrData.getUri());
          parameters.put("check.available", "true");
          String url =
-               HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.RESOURCE_CONTEXT, parameters);
+            HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.RESOURCE_CONTEXT, parameters);
          ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
          AcquireResult acquireResult = HttpProcessor.acquire(new URL(url), outputStream);
          if (acquireResult.wasSuccessful()) {

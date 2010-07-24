@@ -17,13 +17,16 @@ import org.eclipse.ui.IEditorPart;
 
 public class TMBugAction implements IEditorActionDelegate {
 
+   @Override
    public void run(IAction action) {
 
    }
 
+   @Override
    public void selectionChanged(IAction action, ISelection selection) {
    }
 
+   @Override
    public void setActiveEditor(IAction action, IEditorPart targetEditor) {
    }
 }

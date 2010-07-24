@@ -14,8 +14,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import java.util.logging.Level;
-import org.eclipse.osee.client.integration.tests.Activator;
 import org.eclipse.osee.ats.config.demo.PopulateDemoActions;
+import org.eclipse.osee.client.integration.tests.Activator;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -35,14 +35,14 @@ public class MasterTestSuite_DemoDbPopulate {
    public void setUp() throws Exception {
       try {
          assertTrue("Demo Application Server must be running",
-               ClientSessionManager.getAuthenticationProtocols().contains("demo"));
+            ClientSessionManager.getAuthenticationProtocols().contains("demo"));
          // Confirm user is Joe Smith
          assertTrue("User \"Joe Smith\" does not exist in DB.  Run Demo DBInit prior to this test.",
-               UserManager.getUserByUserId("Joe Smith") != null);
+            UserManager.getUserByUserId("Joe Smith") != null);
          // Confirm user is Joe Smith
          assertTrue(
-               "Authenticated user should be \"Joe Smith\" and is not.  Check that Demo Application Server is being run.",
-               UserManager.getUser().getUserId().equals("Joe Smith"));
+            "Authenticated user should be \"Joe Smith\" and is not.  Check that Demo Application Server is being run.",
+            UserManager.getUser().getUserId().equals("Joe Smith"));
       } catch (OseeAuthenticationException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          fail("Can't authenticate, either Demo Application Server is not running or Demo DbInit has not been performed");

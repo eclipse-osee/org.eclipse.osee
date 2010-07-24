@@ -15,8 +15,8 @@ package org.eclipse.osee.framework.skynet.core.relation;
  */
 public class LinkSideRestriction {
 
-   private int sideALinkMax;
-   private int sideBLinkMax;
+   private final int sideALinkMax;
+   private final int sideBLinkMax;
 
    /**
     * 

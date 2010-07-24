@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.ui.branch.graph.utility.GraphFigureConstants;
  */
 public class BranchDataEditPart extends AbstractGraphicalEditPart {
 
+   @Override
    protected IFigure createFigure() {
       Branch branch = (Branch) getModel();
       GraphEditPart graphEditPart = (GraphEditPart) getParent().getParent();
@@ -55,11 +56,13 @@ public class BranchDataEditPart extends AbstractGraphicalEditPart {
       return figure;
    }
 
+   @Override
    protected void refreshVisuals() {
       getFigure().setSize(220, 30);
       super.refreshVisuals();
    }
 
+   @Override
    protected void createEditPolicies() {
    }
 

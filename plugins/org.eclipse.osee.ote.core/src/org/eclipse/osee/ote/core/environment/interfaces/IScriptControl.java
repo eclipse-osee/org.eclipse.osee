@@ -10,19 +10,29 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.core.environment.interfaces;
 
-
 public interface IScriptControl {
-   
+
    boolean isExecutionUnitPaused();
+
    boolean isScriptPaused();
+
    boolean isScriptReady();
+
    boolean isLocked();
+
    void lock();
+
    void setExecutionUnitPause(boolean pause);
+
    void setScriptPause(boolean pause);
+
    void setScriptReady(boolean ready);
+
    boolean shouldStep();
+
    void unlock();
+
    boolean hasLock();
+
    boolean isHeldByCurrentThread();
 }

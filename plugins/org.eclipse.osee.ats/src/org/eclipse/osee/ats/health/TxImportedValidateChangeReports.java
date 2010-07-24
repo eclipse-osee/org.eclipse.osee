@@ -61,9 +61,8 @@ public class TxImportedValidateChangeReports extends AbstractBlam {
    private static final String VCR_DB_GUID = ValidateChangeReports.VCR_DB_GUID;
 
    private static final Matcher NUMERICAL_MATCH = Pattern.compile("\\d+").matcher(EMPTY_STRING);
-   private static final Matcher SOURCE_DB_GUID_MATCHER =
-         Pattern.compile("\\s*<" + VCR_ROOT_ELEMENT_TAG + "\\s*" + VCR_DB_GUID + "=\"(.*?)\"\\s*>").matcher(
-               EMPTY_STRING);
+   private static final Matcher SOURCE_DB_GUID_MATCHER = Pattern.compile(
+      "\\s*<" + VCR_ROOT_ELEMENT_TAG + "\\s*" + VCR_DB_GUID + "=\"(.*?)\"\\s*>").matcher(EMPTY_STRING);
    private static final Matcher XML_TAGGED_IDS_MATCHER = Pattern.compile("<(.*?)>(\\d+)</(.*?)>").matcher(EMPTY_STRING);
 
    private Map<String, ImportedId> translatorMap;
@@ -150,7 +149,7 @@ public class TxImportedValidateChangeReports extends AbstractBlam {
 
          SkynetTransaction transaction = new SkynetTransaction(branch, "Import Validate Change Reports");
          List<Artifact> artifacts =
-               ArtifactQuery.getArtifactListFromTypeAndName(CoreArtifactTypes.GeneralData, "VCR_%", branch);
+            ArtifactQuery.getArtifactListFromTypeAndName(CoreArtifactTypes.GeneralData, "VCR_%", branch);
          for (Artifact artifact : artifacts) {
             String data = artifact.getSoleAttributeValue(CoreAttributeTypes.GENERAL_STRING_DATA);
             String name = artifact.getName();
@@ -207,7 +206,7 @@ public class TxImportedValidateChangeReports extends AbstractBlam {
             long newValue = translate(tag, original);
             if (original != newValue) {
                changeSet.replace(XML_TAGGED_IDS_MATCHER.start(2), XML_TAGGED_IDS_MATCHER.end(2),
-                     Long.toString(newValue));
+                  Long.toString(newValue));
             }
          }
       }
@@ -229,8 +228,8 @@ public class TxImportedValidateChangeReports extends AbstractBlam {
       } else {
          if (!data.contains(VCR_ROOT_ELEMENT_TAG)) {
             toReturn =
-                  String.format("<%s dbGuid=\"%s\">%s</%s>", VCR_ROOT_ELEMENT_TAG, currentDbGuid, data,
-                        VCR_ROOT_ELEMENT_TAG);
+               String.format("<%s dbGuid=\"%s\">%s</%s>", VCR_ROOT_ELEMENT_TAG, currentDbGuid, data,
+                  VCR_ROOT_ELEMENT_TAG);
          } else {
             throw new OseeStateException("Error updating dbId");
          }
@@ -239,7 +238,7 @@ public class TxImportedValidateChangeReports extends AbstractBlam {
    }
    private static final class ImportedId {
       private static final String SELECT_IDS_BY_DB_SOURCE_AND_SEQ_NAME =
-            "SELECT original_id, mapped_id FROM osee_import_source ois, osee_import_map oim, osee_import_index_map oiim WHERE ois.import_id = oim.import_id AND oim.sequence_id = oiim.sequence_id AND oiim.sequence_id = oiim.sequence_id AND ois.db_source_guid = ?  AND oim.sequence_name = ?";
+         "SELECT original_id, mapped_id FROM osee_import_source ois, osee_import_map oim, osee_import_index_map oiim WHERE ois.import_id = oim.import_id AND oim.sequence_id = oiim.sequence_id AND oiim.sequence_id = oiim.sequence_id AND ois.db_source_guid = ?  AND oim.sequence_name = ?";
 
       private final String sequenceName;
       private final Map<Long, Long> originalToMapped;

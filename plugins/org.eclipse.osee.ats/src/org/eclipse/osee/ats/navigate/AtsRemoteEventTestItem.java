@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.navigate;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsOpenOption;
@@ -31,7 +32,6 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -63,9 +63,9 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
          return;
       }
       MessageDialog dialog =
-            new MessageDialog(Displays.getActiveShell(), getName(), null,
-                  getName() + "\n\nSelect Source or Destination Client", MessageDialog.QUESTION, new String[] {
-                        "Source Client", "Destination Client - Start", "Destination Client - End", "Cancel"}, 2);
+         new MessageDialog(Displays.getActiveShell(), getName(), null,
+            getName() + "\n\nSelect Source or Destination Client", MessageDialog.QUESTION, new String[] {
+               "Source Client", "Destination Client - Start", "Destination Client - End", "Cancel"}, 2);
       int result = dialog.open();
       resultData = new XResultData();
       if (result == 0) {
@@ -88,15 +88,15 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       resultData.log("Running " + title);
       NewActionJob job = null;
       job =
-            new NewActionJob("tt", "description", ChangeType.Improvement, PriorityType.Priority_1, null, false,
-                  ActionableItemArtifact.getActionableItems(Arrays.asList("ATS")), null);
+         new NewActionJob("tt", "description", ChangeType.Improvement, PriorityType.Priority_1, null, false,
+            ActionableItemArtifact.getActionableItems(Arrays.asList("ATS")), null);
       job.setUser(true);
       job.setPriority(Job.LONG);
       job.schedule();
       try {
          job.join();
       } catch (InterruptedException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
 
       ActionArtifact actionArt = job.getActionArt();
@@ -111,9 +111,9 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
 
       // Wait for destination client to start
       if (!MessageDialog.openConfirm(
-            Displays.getActiveShell(),
-            getName(),
-            "Launch \"Destination Client - Start\" test, enter \"" + actionArt.getName().replaceFirst("tt ", "") + "\" and press Ok")) {
+         Displays.getActiveShell(),
+         getName(),
+         "Launch \"Destination Client - Start\" test, enter \"" + actionArt.getName().replaceFirst("tt ", "") + "\" and press Ok")) {
          return;
       }
 
@@ -122,7 +122,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       teamArt.setSoleAttributeFromString(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "description 2");
       teamArt.setSoleAttributeFromString(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), ChangeType.Problem.name());
       teamArt.setSoleAttributeFromString(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(),
-            PriorityType.Priority_2.getShortName());
+         PriorityType.Priority_2.getShortName());
       teamArt.setSoleAttributeFromString(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), "yes");
       teamArt.addRelation(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, getVersion256());
       teamArt.persist(transaction);
@@ -131,7 +131,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       // Make changes and persist
       teamArt.setSoleAttributeFromString(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "description 3");
       teamArt.setSoleAttributeFromString(ATSAttributes.PROPOSED_RESOLUTION_ATTRIBUTE.getStoreName(),
-            "this is resolution");
+         "this is resolution");
       teamArt.persist();
 
       // Make changes and persist
@@ -147,9 +147,9 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       teamArt.setSoleAttributeFromString(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "description 4");
       teamArt.setSoleAttributeFromString(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), ChangeType.Support.name());
       teamArt.setSoleAttributeFromString(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(),
-            PriorityType.Priority_3.getShortName());
+         PriorityType.Priority_3.getShortName());
       teamArt.setRelations(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version,
-            Collections.singleton(getVersion258()));
+         Collections.singleton(getVersion258()));
       teamArt.persist(transaction);
       transaction.execute();
 
@@ -160,14 +160,14 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       // Make changes and transition
       transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Remote Event Test");
       teamArt.setRelations(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version,
-            Collections.singleton(getVersion257()));
+         Collections.singleton(getVersion257()));
       teamArt.setSoleAttributeFromString(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), "no");
       teamArt.persist(transaction);
       transaction.execute();
 
       transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Remote Event Test");
       teamArt.transition(DefaultTeamState.Analyze.name(), Collections.singleton(UserManager.getUser()), transaction,
-            TransitionOption.Persist);
+         TransitionOption.Persist);
       teamArt.persist(transaction);
       transaction.execute();
 
@@ -175,9 +175,9 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
 
       // Wait for destination client to end
       if (!MessageDialog.openConfirm(
-            Displays.getActiveShell(),
-            getName(),
-            "Launch \"Destination Client - End\" test, enter \"" + actionArt.getName().replaceFirst("tt ", "") + "\" and press Ok")) {
+         Displays.getActiveShell(),
+         getName(),
+         "Launch \"Destination Client - End\" test, enter \"" + actionArt.getName().replaceFirst("tt ", "") + "\" and press Ok")) {
          return;
       }
 
@@ -186,17 +186,17 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
 
    private VersionArtifact getVersion256() throws OseeCoreException {
       return (VersionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Version, "2.5.6",
-            AtsUtil.getAtsBranch());
+         AtsUtil.getAtsBranch());
    }
 
    private VersionArtifact getVersion257() throws OseeCoreException {
       return (VersionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Version, "2.5.7",
-            AtsUtil.getAtsBranch());
+         AtsUtil.getAtsBranch());
    }
 
    private VersionArtifact getVersion258() throws OseeCoreException {
       return (VersionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Version, "2.5.8",
-            AtsUtil.getAtsBranch());
+         AtsUtil.getAtsBranch());
    }
 
    private void validateActionAtStart(ActionArtifact actionArt) throws OseeCoreException {
@@ -211,11 +211,11 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       // Validate values
       TeamWorkFlowArtifact teamArt = actionArt.getTeamWorkFlowArtifacts().iterator().next();
       testEquals("Description", "description",
-            teamArt.getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), null));
+         teamArt.getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), null));
       testEquals("Change Type", ChangeType.Improvement.name(),
-            teamArt.getSoleAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), null));
+         teamArt.getSoleAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), null));
       testEquals("Priority", PriorityType.Priority_1.getShortName(),
-            teamArt.getSoleAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(), null));
+         teamArt.getSoleAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(), null));
    }
 
    private void validateActionAtEnd(ActionArtifact actionArt) throws OseeCoreException {
@@ -230,15 +230,17 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       // Validate values
       TeamWorkFlowArtifact teamArt = actionArt.getTeamWorkFlowArtifacts().iterator().next();
       testEquals("Description", "description 4",
-            teamArt.getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), null));
+         teamArt.getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), null));
       testEquals("Change Type", ChangeType.Support.name(),
-            teamArt.getSoleAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), null));
+         teamArt.getSoleAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), null));
       testEquals("Priority", PriorityType.Priority_3.getShortName(),
-            teamArt.getSoleAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(), null));
-      testEquals("Validation Required", "false", String.valueOf(teamArt.getSoleAttributeValue(
-            ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), null)));
+         teamArt.getSoleAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(), null));
+      testEquals(
+         "Validation Required",
+         "false",
+         String.valueOf(teamArt.getSoleAttributeValue(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), null)));
       testEquals("Targeted Version",
-            (teamArt.getTargetedForVersion() != null ? teamArt.getTargetedForVersion().toString() : "not set"), "2.5.7");
+         (teamArt.getTargetedForVersion() != null ? teamArt.getTargetedForVersion().toString() : "not set"), "2.5.7");
       testEquals("State", DefaultTeamState.Analyze.name(), teamArt.getStateMgr().getCurrentStateName());
    }
 
@@ -256,8 +258,8 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       resultData.log("Running " + title);
 
       ActionArtifact actionArt =
-            (ActionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Action, actionTitle,
-                  AtsUtil.getAtsBranch());
+         (ActionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Action, actionTitle,
+            AtsUtil.getAtsBranch());
 
       if (actionArt == null) {
          resultData.logError(String.format("Couldn't load Action named [%s]", actionTitle));
@@ -275,8 +277,8 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       resultData.log("Running " + title);
 
       ActionArtifact actionArt =
-            (ActionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Action, actionTitle,
-                  AtsUtil.getAtsBranch());
+         (ActionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Action, actionTitle,
+            AtsUtil.getAtsBranch());
 
       if (actionArt == null) {
          resultData.logError(String.format("Couldn't load Action named [%s]", actionTitle));

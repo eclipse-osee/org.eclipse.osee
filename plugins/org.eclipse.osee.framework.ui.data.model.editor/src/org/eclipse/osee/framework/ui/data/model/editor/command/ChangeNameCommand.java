@@ -18,8 +18,8 @@ import org.eclipse.osee.framework.ui.data.model.editor.model.DataType;
  */
 public class ChangeNameCommand extends Command {
 
-   private DataType element;
-   private String newName, oldName;
+   private final DataType element;
+   private final String newName, oldName;
 
    public ChangeNameCommand(DataType dataType, String newName) {
       super("Change Name");
@@ -28,18 +28,22 @@ public class ChangeNameCommand extends Command {
       this.newName = newName.trim();
    }
 
+   @Override
    public boolean canExecute() {
       return element != null;
    }
 
+   @Override
    public void execute() {
       redo();
    }
 
+   @Override
    public void redo() {
       element.setName(newName);
    }
 
+   @Override
    public void undo() {
       element.setName(oldName);
    }

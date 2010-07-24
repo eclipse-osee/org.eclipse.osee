@@ -21,21 +21,20 @@ import org.eclipse.swt.SWT;
 public class UserRoleXViewerFactory extends SkynetXViewerFactory {
 
    private static String NAMESPACE = "osee.ats.UserRoleXViewer";
-   public static XViewerColumn Role_Col =
-         new XViewerColumn("osee.userRole.role", "Role", 100, SWT.LEFT, true, SortDataType.String, false, null);
-   public static XViewerColumn User_Col =
-         new XViewerColumn("osee.userRole.user", "User", 150, SWT.LEFT, true, SortDataType.String, false, null);
-   public static XViewerColumn Hours_Spent_Col =
-         new XViewerColumn("osee.userRole.hoursSpent", "Hours Spent", 80, SWT.LEFT, true, SortDataType.Float, false,
-               null);
-   public static XViewerColumn Completed_Col =
-         new XViewerColumn("osee.userRole.completed", "Completed", 80, SWT.LEFT, true, SortDataType.String, false, null);
-   public static XViewerColumn Num_Major_Col =
-         new XViewerColumn("osee.userRole.major", "Major", 60, SWT.CENTER, true, SortDataType.Integer, false, null);
-   public static XViewerColumn Num_Minor_Col =
-         new XViewerColumn("osee.userRole.minor", "Minor", 60, SWT.CENTER, true, SortDataType.Integer, false, null);
-   public static XViewerColumn Num_Issues_Col =
-         new XViewerColumn("osee.userRole.issues", "Issues", 60, SWT.CENTER, true, SortDataType.Integer, false, null);
+   public static XViewerColumn Role_Col = new XViewerColumn("osee.userRole.role", "Role", 100, SWT.LEFT, true,
+      SortDataType.String, false, null);
+   public static XViewerColumn User_Col = new XViewerColumn("osee.userRole.user", "User", 150, SWT.LEFT, true,
+      SortDataType.String, false, null);
+   public static XViewerColumn Hours_Spent_Col = new XViewerColumn("osee.userRole.hoursSpent", "Hours Spent", 80,
+      SWT.LEFT, true, SortDataType.Float, false, null);
+   public static XViewerColumn Completed_Col = new XViewerColumn("osee.userRole.completed", "Completed", 80, SWT.LEFT,
+      true, SortDataType.String, false, null);
+   public static XViewerColumn Num_Major_Col = new XViewerColumn("osee.userRole.major", "Major", 60, SWT.CENTER, true,
+      SortDataType.Integer, false, null);
+   public static XViewerColumn Num_Minor_Col = new XViewerColumn("osee.userRole.minor", "Minor", 60, SWT.CENTER, true,
+      SortDataType.Integer, false, null);
+   public static XViewerColumn Num_Issues_Col = new XViewerColumn("osee.userRole.issues", "Issues", 60, SWT.CENTER,
+      true, SortDataType.Integer, false, null);
 
    public UserRoleXViewerFactory() {
       super(NAMESPACE);

@@ -18,12 +18,12 @@ import org.xml.sax.Attributes;
 
 public class SaxChunkCollector {
 
-   private Set<String> collectionElement;
+   private final Set<String> collectionElement;
    private int currentDepth = 0;
    private boolean isCollecting = false;
-   private StringBuilder builder;
-   private List<String> collectionChunks;
-   private ISaxElementHandler handler;
+   private final StringBuilder builder;
+   private final List<String> collectionChunks;
+   private final ISaxElementHandler handler;
    private String currentLocalName;
 
    public SaxChunkCollector(ISaxElementHandler handler, String... collect) {

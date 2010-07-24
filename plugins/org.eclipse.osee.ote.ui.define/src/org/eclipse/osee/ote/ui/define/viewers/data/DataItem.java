@@ -20,7 +20,7 @@ import java.util.Map;
 public abstract class DataItem {
 
    private DataItem parentItem;
-   private Map<Object, DataItem> childrenMap;
+   private final Map<Object, DataItem> childrenMap;
 
    public DataItem(DataItem parentItem) {
       this.parentItem = parentItem;

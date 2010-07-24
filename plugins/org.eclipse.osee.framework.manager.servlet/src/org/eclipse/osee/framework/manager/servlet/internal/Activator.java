@@ -20,19 +20,19 @@ import org.osgi.framework.BundleContext;
  * @author Donald G. Dunne
  */
 public class Activator implements BundleActivator {
-	public static final String PLUGIN_ID = "org.eclipse.osee.framework.manager.servlet";
+   public static final String PLUGIN_ID = "org.eclipse.osee.framework.manager.servlet";
 
-	private ServiceDependencyTracker dependencyTracker;
+   private ServiceDependencyTracker dependencyTracker;
 
-	@Override
-	public void start(BundleContext context) throws Exception {
-		dependencyTracker = new ServiceDependencyTracker(context, new ServletRegistrationHandler());
-		dependencyTracker.open();
-	}
+   @Override
+   public void start(BundleContext context) throws Exception {
+      dependencyTracker = new ServiceDependencyTracker(context, new ServletRegistrationHandler());
+      dependencyTracker.open();
+   }
 
-	@Override
-	public void stop(BundleContext context) throws Exception {
-		Lib.close(dependencyTracker);
-	}
+   @Override
+   public void stop(BundleContext context) throws Exception {
+      Lib.close(dependencyTracker);
+   }
 
 }

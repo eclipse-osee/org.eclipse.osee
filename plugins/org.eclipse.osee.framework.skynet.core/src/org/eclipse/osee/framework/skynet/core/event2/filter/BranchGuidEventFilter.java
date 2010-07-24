@@ -28,9 +28,12 @@ public class BranchGuidEventFilter implements IEventFilter {
       this.branchToken = branchToken;
    }
 
+   @Override
    public boolean isMatch(String branchGuid) {
       if (branchToken != null) {
-         if (branchToken.getGuid().equals(branchGuid)) return true;
+         if (branchToken.getGuid().equals(branchGuid)) {
+            return true;
+         }
       }
       return false;
    }

@@ -46,7 +46,7 @@ public interface ITransactionDataAccessor {
     * @param cache to populate
     * @param branch to load
     * @param transactionType transaction type to load, can be {@link TransactionVersion#HEAD} or
-    *           {@link TransactionVersion#BASE}
+    * {@link TransactionVersion#BASE}
     * @throws OseeCoreException
     */
    public TransactionRecord loadTransactionRecord(TransactionCache cache, Branch branch, TransactionVersion transactionType) throws OseeCoreException;

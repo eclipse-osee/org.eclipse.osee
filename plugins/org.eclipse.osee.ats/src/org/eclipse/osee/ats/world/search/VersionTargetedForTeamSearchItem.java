@@ -44,7 +44,7 @@ public class VersionTargetedForTeamSearchItem extends WorldUISearchItem {
 
    public VersionTargetedForTeamSearchItem(String name, TeamDefinitionArtifact teamDef, VersionArtifact versionArt, boolean returnAction, LoadView loadView) {
       super(name != null ? name : (returnAction ? "Actions" : "Workflows") + " Targeted-For Version", loadView,
-            FrameworkImage.VERSION);
+         FrameworkImage.VERSION);
       this.teamDef = teamDef;
       this.versionArt = versionArt;
       this.returnAction = returnAction;
@@ -59,35 +59,49 @@ public class VersionTargetedForTeamSearchItem extends WorldUISearchItem {
 
    @Override
    public String getSelectedName(SearchType searchType) throws OseeCoreException {
-      if (getSearchVersionArtifact() != null) return super.getName() + " - " + getSearchVersionArtifact();
+      if (getSearchVersionArtifact() != null) {
+         return super.getName() + " - " + getSearchVersionArtifact();
+      }
       return "";
    }
 
    public VersionArtifact getSearchVersionArtifact() {
-      if (versionArt != null) return versionArt;
+      if (versionArt != null) {
+         return versionArt;
+      }
       return selectedVersionArt;
    }
 
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
 
-      if (getSearchVersionArtifact() == null) throw new OseeArgumentException("Invalid release version");
+      if (getSearchVersionArtifact() == null) {
+         throw new OseeArgumentException("Invalid release version");
+      }
 
       ArrayList<Artifact> arts = new ArrayList<Artifact>();
-      for (Artifact art : getSearchVersionArtifact().getTargetedForTeamArtifacts())
-         if (returnAction)
+      for (Artifact art : getSearchVersionArtifact().getTargetedForTeamArtifacts()) {
+         if (returnAction) {
             arts.add(((TeamWorkFlowArtifact) art).getParentActionArtifact());
-         else
+         } else {
             arts.add(art);
-      if (isCancelled()) return EMPTY_SET;
+         }
+      }
+      if (isCancelled()) {
+         return EMPTY_SET;
+      }
       return arts;
    }
 
    @Override
    public void performUI(SearchType searchType) throws OseeCoreException {
       super.performUI(searchType);
-      if (searchType == SearchType.ReSearch && selectedVersionArt != null) return;
-      if (versionArt != null) return;
+      if (searchType == SearchType.ReSearch && selectedVersionArt != null) {
+         return;
+      }
+      if (versionArt != null) {
+         return;
+      }
       try {
          selectedTeamDef = teamDef;
          if (versionArt == null && selectedTeamDef == null) {
@@ -96,13 +110,14 @@ public class VersionTargetedForTeamSearchItem extends WorldUISearchItem {
             int result = ld.open();
             if (result == 0) {
                selectedTeamDef = (TeamDefinitionArtifact) ld.getResult()[0];
-            } else
+            } else {
                cancelled = true;
+            }
          }
          if (versionArt == null && selectedTeamDef != null) {
             final VersionListDialog vld =
-                  new VersionListDialog("Select Version", "Select Version",
-                        selectedTeamDef.getVersionsArtifacts(VersionReleaseType.Both));
+               new VersionListDialog("Select Version", "Select Version",
+                  selectedTeamDef.getVersionsArtifacts(VersionReleaseType.Both));
             if (vld.open() == 0) {
                selectedVersionArt = (VersionArtifact) vld.getResult()[0];
                return;

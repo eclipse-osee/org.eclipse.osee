@@ -49,7 +49,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       if (xCol.equals(CommitXManagerFactory.Status_Col)) {
          try {
             CommitStatus commitStatus =
-                  commitXManager.getXCommitViewer().getTeamArt().getBranchMgr().getCommitStatus(configArt);
+               commitXManager.getXCommitViewer().getTeamArt().getBranchMgr().getCommitStatus(configArt);
             if (commitStatus == CommitStatus.Branch_Not_Configured ||
             //
             commitStatus == CommitStatus.Branch_Commit_Disabled ||
@@ -76,7 +76,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       } else if (xCol.equals(CommitXManagerFactory.Merge_Col)) {
          try {
             CommitStatus commitStatus =
-                  commitXManager.getXCommitViewer().getTeamArt().getBranchMgr().getCommitStatus(configArt);
+               commitXManager.getXCommitViewer().getTeamArt().getBranchMgr().getCommitStatus(configArt);
             if (commitStatus == CommitStatus.Merge_In_Progress || commitStatus == CommitStatus.Committed_With_Merge) {
                return ImageManager.getImage(FrameworkImage.OUTGOING_MERGED);
             }
@@ -103,14 +103,14 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
          return ((Artifact) element).getArtifactTypeName();
       } else if (xCol.equals(CommitXManagerFactory.Commit_Date)) {
          TransactionRecord transactionRecord =
-               commitXManager.getXCommitViewer().getTeamArt().getBranchMgr().getCommitTransactionRecord(configArt);
+            commitXManager.getXCommitViewer().getTeamArt().getBranchMgr().getCommitTransactionRecord(configArt);
          if (transactionRecord != null) {
             return new XDate(transactionRecord.getTimeStamp()).getMMDDYYHHMM();
          }
          return "Not Committed";
       } else if (xCol.equals(CommitXManagerFactory.Commit_Comment)) {
          TransactionRecord transactionRecord =
-               commitXManager.getXCommitViewer().getTeamArt().getBranchMgr().getCommitTransactionRecord(configArt);
+            commitXManager.getXCommitViewer().getTeamArt().getBranchMgr().getCommitTransactionRecord(configArt);
          if (transactionRecord != null) {
             return transactionRecord.getComment();
          }
@@ -123,7 +123,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
          }
       } else if (xCol.equals(CommitXManagerFactory.Action_Col)) {
          CommitStatus commitStatus =
-               commitXManager.getXCommitViewer().getTeamArt().getBranchMgr().getCommitStatus(configArt);
+            commitXManager.getXCommitViewer().getTeamArt().getBranchMgr().getCommitStatus(configArt);
          if (commitStatus == CommitStatus.Branch_Not_Configured) {
             return "Configure Branch";
          } else if (commitStatus == CommitStatus.Branch_Commit_Disabled) {
@@ -144,16 +144,20 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       return "unhandled column";
    }
 
+   @Override
    public void dispose() {
    }
 
+   @Override
    public boolean isLabelProperty(Object element, String property) {
       return false;
    }
 
+   @Override
    public void addListener(ILabelProviderListener listener) {
    }
 
+   @Override
    public void removeListener(ILabelProviderListener listener) {
    }
 

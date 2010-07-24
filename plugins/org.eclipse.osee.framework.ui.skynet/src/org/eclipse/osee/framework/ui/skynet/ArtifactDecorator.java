@@ -56,7 +56,7 @@ import org.eclipse.ui.progress.UIJob;
 public class ArtifactDecorator implements IArtifactDecoratorPreferences {
 
    private static final Collection<WeakReference<ArtifactDecorator>> DECORATOR_INSTANCES =
-         new CopyOnWriteArrayList<WeakReference<ArtifactDecorator>>();
+      new CopyOnWriteArrayList<WeakReference<ArtifactDecorator>>();
 
    private DecoratorAction showArtIds;
    private DecoratorAction showArtType;
@@ -199,6 +199,7 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
       loadState();
    }
 
+   @Override
    public String getSelectedAttributeData(Artifact artifact) throws OseeCoreException {
       String toReturn = null;
       if (attributesAction != null) {
@@ -223,18 +224,22 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
       return toReturn != null ? toReturn : "";
    }
 
+   @Override
    public boolean showArtIds() {
       return showArtIds != null && showArtIds.isChecked();
    }
 
+   @Override
    public boolean showArtType() {
       return showArtType != null && showArtType.isChecked();
    }
 
+   @Override
    public boolean showArtBranch() {
       return showArtBranch != null && showArtBranch.isChecked();
    }
 
+   @Override
    public boolean showArtVersion() {
       return showArtVersion != null && showArtVersion.isChecked();
    }
@@ -323,8 +328,8 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
                      } else {
                         Collection<AttributeType> selectableTypes = AttributeTypeManager.getValidAttributeTypes(branch);
                         AttributeTypeFilteredCheckTreeDialog dialog =
-                              new AttributeTypeFilteredCheckTreeDialog("Select Attribute Types",
-                                    "Select attribute types to display.");
+                           new AttributeTypeFilteredCheckTreeDialog("Select Attribute Types",
+                              "Select attribute types to display.");
                         dialog.setSelectableTypes(selectableTypes);
 
                         List<IAttributeType> initSelection = new ArrayList<IAttributeType>();
@@ -350,8 +355,7 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
                      }
                   } catch (OseeCoreException ex) {
                      status =
-                           new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "Error opening attribute types dialog",
-                                 ex);
+                        new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "Error opening attribute types dialog", ex);
                   }
                   return status;
                }

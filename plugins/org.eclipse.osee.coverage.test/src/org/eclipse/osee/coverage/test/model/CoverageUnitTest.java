@@ -29,7 +29,7 @@ public class CoverageUnitTest {
    public static CoverageUnit cu = null, childCu = null;
    public static CoverageItem ci1 = null;
    public static SimpleCoverageUnitFileContentsProvider fileContentsProvider =
-         new SimpleCoverageUnitFileContentsProvider();
+      new SimpleCoverageUnitFileContentsProvider();
 
    @Before
    public void testSetup() {

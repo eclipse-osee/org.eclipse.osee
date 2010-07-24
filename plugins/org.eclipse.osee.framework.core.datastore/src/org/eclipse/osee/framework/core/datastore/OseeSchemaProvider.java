@@ -21,12 +21,13 @@ import org.osgi.util.tracker.ServiceTracker;
  */
 public class OseeSchemaProvider implements IOseeSchemaProvider {
 
+   @Override
    public Collection<IOseeSchemaResource> getSchemaResources() {
       Collection<IOseeSchemaResource> providers = new ArrayList<IOseeSchemaResource>();
 
       Bundle bundle = Platform.getBundle("org.eclipse.osee.framework.core.datastore");
       ServiceTracker serviceTracker =
-            new ServiceTracker(bundle.getBundleContext(), IOseeSchemaResource.class.getName(), null);
+         new ServiceTracker(bundle.getBundleContext(), IOseeSchemaResource.class.getName(), null);
       serviceTracker.open(true);
       Object[] services = serviceTracker.getServices();
       if (services != null) {

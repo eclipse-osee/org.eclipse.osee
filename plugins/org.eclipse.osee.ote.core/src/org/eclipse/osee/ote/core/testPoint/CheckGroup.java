@@ -11,7 +11,6 @@
 package org.eclipse.osee.ote.core.testPoint;
 
 import java.util.ArrayList;
-
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestGroup;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestPoint;
@@ -23,17 +22,16 @@ import org.w3c.dom.Element;
  * @author Charles Shaw
  */
 public class CheckGroup implements ITestGroup {
-   private String groupName;
-   private ArrayList<ITestPoint> testPoints;
-   private Operation operation;
+   private final String groupName;
+   private final ArrayList<ITestPoint> testPoints;
+   private final Operation operation;
 
    /**
-    * CheckGroup objects are used to setup complex TestPoint structures where the pass/fail behavior
-    * can be an <b>And </b>'ing or an <b>Or </b>'ing of the <b>getPass() </b> values of all the
-    * immediate children.
+    * CheckGroup objects are used to setup complex TestPoint structures where the pass/fail behavior can be an <b>And
+    * </b>'ing or an <b>Or </b>'ing of the <b>getPass() </b> values of all the immediate children.
     * <p>
-    * More complex TestPoint syntax can be obtained using the CheckGroup as a parent of other
-    * CheckGroup objects, of which the <b>And </b> or <b>Or </b> setting can be set differently.
+    * More complex TestPoint syntax can be obtained using the CheckGroup as a parent of other CheckGroup objects, of
+    * which the <b>And </b> or <b>Or </b> setting can be set differently.
     * 
     * @param operation The logical operation used for combining items within this CheckGroup.
     */
@@ -51,6 +49,7 @@ public class CheckGroup implements ITestGroup {
       return this;
    }
 
+   @Override
    public ArrayList<ITestPoint> getTestPoints() {
       return testPoints;
    }
@@ -58,18 +57,20 @@ public class CheckGroup implements ITestGroup {
    public Operation getOperation() {
       return operation;
    }
-   
+
    public String getGroupName() {
       return groupName;
    }
-   
+
    /**
     * @return The number of test points added to this check group so far
     */
+   @Override
    public int size() {
       return this.testPoints.size();
    }
 
+   @Override
    public boolean isPass() {
       boolean passFail;
 
@@ -82,26 +83,24 @@ public class CheckGroup implements ITestGroup {
             passFail = true;
             // Else the group is using OR logic, so assume fail until find a
             // pass
-         }
-         else {
+         } else {
             passFail = false;
          }
-         
+
          for (ITestPoint testPoint : testPoints) {
             if (operation == Operation.AND) {
                passFail &= testPoint.isPass();
-            }
-            else {
+            } else {
                passFail |= testPoint.isPass();
             }
          }
-      }
-      else {
+      } else {
          passFail = false;
       }
       return passFail;
    }
 
+   @Override
    public Element toXml(Document doc) {
       return buildXml(doc, "CheckGroup");
    }
@@ -114,8 +113,7 @@ public class CheckGroup implements ITestGroup {
 
       if (this.isPass()) {
          checkGroupElement.appendChild(Jaxp.createElement(doc, "Result", "PASSED"));
-      }
-      else {
+      } else {
          checkGroupElement.appendChild(Jaxp.createElement(doc, "Result", "FAILED"));
       }
 

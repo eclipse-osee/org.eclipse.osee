@@ -158,7 +158,7 @@ public class EasyGridConstraint extends GridBagConstraints {
     * A wrapper for setting the constraints of a GridBag object.
     * 
     * @param gridx Specifies the cell at the left of the component's display area, where the leftmost cell has gridx =
-    *           0.
+    * 0.
     * @param gridy Specifies the cell at the top of the component's display area, where the topmost cell has gridy = 0.
     * @param weightx Specifies how to distribute extra horizontal space.
     * @param weighty Specifies how to distribute extra vertical space.
@@ -167,7 +167,7 @@ public class EasyGridConstraint extends GridBagConstraints {
     * @param fill This field is used when the component's display area is larger than the component's requested size.
     * @param anchor This field is used when the component is smaller than its display area.
     * @param insets Specifies the external padding of the component -- the minimum amount of space between the component
-    *           and the edges of its display area.
+    * and the edges of its display area.
     * @param ipadx Specifies the component's horizontal internal padding
     * @param ipady Specifies the component's vertical internal padding
     * @return java.awt.GridBagConstraints

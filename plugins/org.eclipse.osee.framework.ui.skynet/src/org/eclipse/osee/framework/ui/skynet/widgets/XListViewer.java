@@ -54,10 +54,12 @@ public class XListViewer extends XWidget {
 
    protected SelectionListener listListener = new SelectionListener() {
 
+      @Override
       public void widgetSelected(SelectionEvent e) {
          handleSelection();
       }
 
+      @Override
       public void widgetDefaultSelected(SelectionEvent e) {
          widgetSelected(e);
       }
@@ -157,7 +159,7 @@ public class XListViewer extends XWidget {
       this.parent = parent;
       composite = null;
 
-      if (!verticalLabel && (horizontalSpan < 2)) {
+      if (!verticalLabel && horizontalSpan < 2) {
          horizontalSpan = 2;
       } else if (verticalLabel) {
          horizontalSpan = 1;
@@ -186,8 +188,7 @@ public class XListViewer extends XWidget {
       }
 
       listViewer =
-            new TableViewer(composite,
-                  (multiSelect ? SWT.MULTI : SWT.SINGLE) | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
+         new TableViewer(composite, (multiSelect ? SWT.MULTI : SWT.SINGLE) | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
       listViewer.setContentProvider(contentProvider);
       listViewer.setLabelProvider(labelProvider);
       if (sorter != null) {
@@ -196,9 +197,11 @@ public class XListViewer extends XWidget {
       listViewer.setInput(input);
       listViewer.getTable().setMenu(listMenu);
       listViewer.getTable().addSelectionListener(new SelectionListener() {
+         @Override
          public void widgetDefaultSelected(SelectionEvent e) {
          }
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             handleSelection();
          }
@@ -339,14 +342,14 @@ public class XListViewer extends XWidget {
       }
       int size = getSelected().size();
       if (requiredMaxSelected != 0) {
-         if ((size >= requiredMinSelected) && (size <= requiredMaxSelected)) {
+         if (size >= requiredMinSelected && size <= requiredMaxSelected) {
             return Status.OK_STATUS;
          } else if (size < requiredMinSelected) {
             return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID,
-                  getLabel() + " must have at least " + requiredMinSelected + " selected.");
+               getLabel() + " must have at least " + requiredMinSelected + " selected.");
          } else if (size < requiredMaxSelected) {
             return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID,
-                  getLabel() + " should only have " + requiredMaxSelected + " selected.");
+               getLabel() + " should only have " + requiredMaxSelected + " selected.");
          } else {
             return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, getLabel());
          }

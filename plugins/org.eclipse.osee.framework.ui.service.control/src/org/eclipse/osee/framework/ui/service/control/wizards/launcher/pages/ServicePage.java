@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Group;
 public class ServicePage extends DynamicWizardPage {
 
    private ListViewer listViewer;
-   private ServiceLaunchingInformation serviceInfo;
+   private final ServiceLaunchingInformation serviceInfo;
    private Collection<ServiceItem> localList;
    private Collection<ServiceItem> remoteList;
    private Group group;
@@ -53,6 +53,7 @@ public class ServicePage extends DynamicWizardPage {
       manageInputList();
    }
 
+   @Override
    public void createControl(Composite parent) {
       group = new Group(parent, SWT.NONE);
       group.setLayout(new GridLayout());
@@ -67,6 +68,7 @@ public class ServicePage extends DynamicWizardPage {
       listViewer.setSorter(new ListSorter());
 
       listViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+         @Override
          public void selectionChanged(SelectionChangedEvent event) {
             IStructuredSelection selection = (IStructuredSelection) event.getSelection();
             if (selection != null && !selection.isEmpty()) {
@@ -98,29 +100,35 @@ public class ServicePage extends DynamicWizardPage {
    }
 
    private class ListLabelProvider extends LabelProvider {
+      @Override
       public Image getImage(Object element) {
          return null;
       }
 
+      @Override
       public String getText(Object element) {
          return ((ServiceItem) element).getName();
       }
    }
 
    private class ListContentProvider implements IStructuredContentProvider {
+      @Override
       public Object[] getElements(Object inputElement) {
          Collection<?> collection = (Collection<?>) inputElement;
          return collection.toArray();
       }
 
+      @Override
       public void dispose() {
       }
 
+      @Override
       public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
       }
    }
 
    public class ListSorter extends ViewerSorter {
+      @Override
       public int compare(Viewer viewer, Object e1, Object e2) {
          ServiceItem item1 = (ServiceItem) e1;
          ServiceItem item2 = (ServiceItem) e2;

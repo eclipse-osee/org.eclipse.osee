@@ -106,11 +106,11 @@ public class OseeSessionGrant extends BaseExchangeData {
       return grantedOseeUserInfo;
    }
 
-   public String getClientBuildDesignation(){
+   public String getClientBuildDesignation() {
       return getString(OSEE_CLIENT_BUILD_DESIGNATION);
    }
 
-   public void setClientBuildDesination(String designation){
+   public void setClientBuildDesination(String designation) {
       this.backingData.put(OSEE_CLIENT_BUILD_DESIGNATION, designation);
    }
 

@@ -12,8 +12,8 @@ package org.eclipse.osee.framework.jdk.core.type;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * @author Ryan D. Brooks

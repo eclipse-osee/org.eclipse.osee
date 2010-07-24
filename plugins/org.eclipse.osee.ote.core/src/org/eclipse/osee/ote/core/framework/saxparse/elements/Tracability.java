@@ -15,9 +15,8 @@ import org.xml.sax.Attributes;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
-public class Tracability extends ElementHandlers{
+public class Tracability extends ElementHandlers {
 
    /**
     * @param name

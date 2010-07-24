@@ -26,32 +26,32 @@ import org.eclipse.osee.framework.manager.servlet.internal.Activator;
  */
 public class ChangeBranchStateFunction extends AbstractOperation {
 
-	private final HttpServletRequest req;
-	private final HttpServletResponse resp;
-	private final IOseeBranchService branchService;
-	private final IDataTranslationService translationService;
+   private final HttpServletRequest req;
+   private final HttpServletResponse resp;
+   private final IOseeBranchService branchService;
+   private final IDataTranslationService translationService;
 
-	public ChangeBranchStateFunction(HttpServletRequest req, HttpServletResponse resp, IOseeBranchService branchService, IDataTranslationService translationService) {
-		super("Update Branch State", Activator.PLUGIN_ID);
-		this.req = req;
-		this.resp = resp;
-		this.branchService = branchService;
-		this.translationService = translationService;
-	}
+   public ChangeBranchStateFunction(HttpServletRequest req, HttpServletResponse resp, IOseeBranchService branchService, IDataTranslationService translationService) {
+      super("Update Branch State", Activator.PLUGIN_ID);
+      this.req = req;
+      this.resp = resp;
+      this.branchService = branchService;
+      this.translationService = translationService;
+   }
 
-	@Override
-	protected void doWork(IProgressMonitor monitor) throws Exception {
-		ChangeBranchStateRequest request =
-					translationService.convert(req.getInputStream(), CoreTranslatorId.CHANGE_BRANCH_STATE);
+   @Override
+   protected void doWork(IProgressMonitor monitor) throws Exception {
+      ChangeBranchStateRequest request =
+         translationService.convert(req.getInputStream(), CoreTranslatorId.CHANGE_BRANCH_STATE);
 
-		IOperation subOp = branchService.updateBranchState(monitor, request);
-		doSubWork(subOp, monitor, 0.90);
+      IOperation subOp = branchService.updateBranchState(monitor, request);
+      doSubWork(subOp, monitor, 0.90);
 
-		resp.setStatus(HttpServletResponse.SC_ACCEPTED);
-		resp.setContentType("text/plain");
-		resp.setCharacterEncoding("UTF-8");
-		resp.getWriter().write("Purge was successful");
-		resp.getWriter().flush();
-		monitor.worked(calculateWork(0.10));
-	}
+      resp.setStatus(HttpServletResponse.SC_ACCEPTED);
+      resp.setContentType("text/plain");
+      resp.setCharacterEncoding("UTF-8");
+      resp.getWriter().write("Purge was successful");
+      resp.getWriter().flush();
+      monitor.worked(calculateWork(0.10));
+   }
 }

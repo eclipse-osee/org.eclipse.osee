@@ -35,22 +35,27 @@ public class BranchGraphEditorInput implements IEditorInput {
       this(BranchManager.getSystemRootBranch());
    }
 
+   @Override
    public boolean exists() {
       return false;
    }
 
+   @Override
    public ImageDescriptor getImageDescriptor() {
       return PlatformUI.getWorkbench().getEditorRegistry().getImageDescriptor(getName());
    }
 
+   @Override
    public String getName() {
       return branch != null ? branch.getName() : "Branch was Null";
    }
 
+   @Override
    public IPersistableElement getPersistable() {
       return null;
    }
 
+   @Override
    public String getToolTipText() {
       return getName();
    }

@@ -59,7 +59,7 @@ public abstract class InternalOseeHttpServlet extends HttpServlet {
 
    String getCurrentRequest() {
       return request != null ? String.format("[%s] [%s - %s]", request.getMethod(), request.getContextPath(),
-            request.getQueryString()) : "";
+         request.getQueryString()) : "";
    }
 
    protected abstract void checkAccessControl(HttpServletRequest request) throws OseeCoreException;
@@ -90,7 +90,7 @@ public abstract class InternalOseeHttpServlet extends HttpServlet {
          if (areLogsAllowed()) {
             long elapsed = System.currentTimeMillis() - start;
             OseeLog.log(this.getClass(), Level.INFO, String.format("[%s] [%s - %s] serviced in [%s] ms",
-                  request.getMethod(), request.getContextPath(), request.getQueryString(), elapsed));
+               request.getMethod(), request.getContextPath(), request.getQueryString(), elapsed));
          }
          this.processingState = ProcessingStateEnum.IDLE;
          this.request = null;

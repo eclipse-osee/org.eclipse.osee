@@ -31,11 +31,13 @@ public class TestManagerPreferencePage extends PreferencePage implements IWorkbe
    public static final String TEST_MANAGER_KEY = "org.eclipse.osee.ote.ui.test.manager.PreferencePage";
    private EnvironmentPreferencePage environmentPreferencePage;
 
+   @Override
    public void init(IWorkbench workbench) {
       // Initialize the preference store we wish to use
       setPreferenceStore(TestManagerPlugin.getInstance().getPreferenceStore());
    }
 
+   @Override
    public boolean performOk() {
       environmentPreferencePage.storeVariables();
 
@@ -72,9 +74,10 @@ public class TestManagerPreferencePage extends PreferencePage implements IWorkbe
    }
 
    private void createPageDescription(Composite parent) {
-      (new Label(parent, SWT.NONE)).setText("Test Manager Settings:");
+      new Label(parent, SWT.NONE).setText("Test Manager Settings:");
    }
 
+   @Override
    protected Control createContents(Composite parent) {
 
       createPageDescription(parent);
@@ -85,10 +88,12 @@ public class TestManagerPreferencePage extends PreferencePage implements IWorkbe
       return parent;
    }
 
+   @Override
    protected void performApply() {
       performOk();
    }
 
+   @Override
    protected void performDefaults() {
 
    }

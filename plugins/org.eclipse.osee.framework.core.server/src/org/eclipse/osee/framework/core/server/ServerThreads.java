@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.server.internal.ServerActivator;
  */
 public final class ServerThreads {
 
-	public static ThreadFactory createNewThreadFactory(String name) {
-		return ServerActivator.getApplicationServerManager().createNewThreadFactory(name, Thread.NORM_PRIORITY);
-	}
+   public static ThreadFactory createNewThreadFactory(String name) {
+      return ServerActivator.getApplicationServerManager().createNewThreadFactory(name, Thread.NORM_PRIORITY);
+   }
 }

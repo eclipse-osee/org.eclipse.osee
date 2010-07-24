@@ -17,54 +17,52 @@ import org.eclipse.osee.framework.logging.OseeLog;
 
 public class AsynchRemoteJobs implements Runnable {
 
-	private LinkedList<Runnable> jobs;
-	   private static WeakHashMap<Object, AsynchRemoteJobs> map = new WeakHashMap<Object, AsynchRemoteJobs>();
-	   
-	   public static AsynchRemoteJobs getInstance(Object obj){
-		   AsynchRemoteJobs asynchRemoteJobs = null;
-		   asynchRemoteJobs = map.get(obj);
-		   if(asynchRemoteJobs == null){
-			   asynchRemoteJobs = new AsynchRemoteJobs();
-			   map.put(obj, asynchRemoteJobs);
-		   }
-		   return asynchRemoteJobs;
-	   }
-	   
-	   
-	   
-	   
-	public AsynchRemoteJobs(){
-		jobs = new LinkedList<Runnable>();
-		Thread th = new Thread(this);
-		th.setName("AsynchRemoteJobs[Test Environment]");
-		th.start();
-	}	
-	
-	public void addJob(Runnable job){
-		synchronized(jobs){
-			jobs.addLast(job);
-		}
-		synchronized(this){
-			this.notify();
-		}
-	}
-	
-	public void run() {
-		while(true){
-			while(jobs.size() > 0){
-				Runnable run = null;
-				synchronized(jobs){
-					 run = jobs.removeFirst();
-				}
-				run.run();				
-			}
-			try {
-				synchronized(this){
-					this.wait();
-				}
-			} catch (InterruptedException e) {
-				OseeLog.log(TestEnvironment.class, Level.SEVERE, e);
-			}
-		}
-	}
+   private final LinkedList<Runnable> jobs;
+   private static WeakHashMap<Object, AsynchRemoteJobs> map = new WeakHashMap<Object, AsynchRemoteJobs>();
+
+   public static AsynchRemoteJobs getInstance(Object obj) {
+      AsynchRemoteJobs asynchRemoteJobs = null;
+      asynchRemoteJobs = map.get(obj);
+      if (asynchRemoteJobs == null) {
+         asynchRemoteJobs = new AsynchRemoteJobs();
+         map.put(obj, asynchRemoteJobs);
+      }
+      return asynchRemoteJobs;
+   }
+
+   public AsynchRemoteJobs() {
+      jobs = new LinkedList<Runnable>();
+      Thread th = new Thread(this);
+      th.setName("AsynchRemoteJobs[Test Environment]");
+      th.start();
+   }
+
+   public void addJob(Runnable job) {
+      synchronized (jobs) {
+         jobs.addLast(job);
+      }
+      synchronized (this) {
+         this.notify();
+      }
+   }
+
+   @Override
+   public void run() {
+      while (true) {
+         while (jobs.size() > 0) {
+            Runnable run = null;
+            synchronized (jobs) {
+               run = jobs.removeFirst();
+            }
+            run.run();
+         }
+         try {
+            synchronized (this) {
+               this.wait();
+            }
+         } catch (InterruptedException e) {
+            OseeLog.log(TestEnvironment.class, Level.SEVERE, e);
+         }
+      }
+   }
 }

@@ -30,117 +30,117 @@ import org.eclipse.osee.ote.ui.test.manager.pages.scriptTable.ScriptTask;
  * @author Roberto E. Escobar
  */
 public class ScriptRunJob extends Job {
-	private static final String JOB_NAME = "Script Run Job";
+   private static final String JOB_NAME = "Script Run Job";
 
-	private final TestManagerEditor testManagerEditor;
-	private final List<ScriptTask> runTasks;
+   private final TestManagerEditor testManagerEditor;
+   private final List<ScriptTask> runTasks;
 
-	public ScriptRunJob(TestManagerEditor testManagerEditor) {
-		super(JOB_NAME);
-		this.testManagerEditor = testManagerEditor;
-		this.testManagerEditor.doSave();
-		ScriptPage scriptPage = getScriptPage();
-		scriptPage.getScriptTableViewer().refresh();
-		this.runTasks = scriptPage.getScriptTableViewer().getRunTasks();
-	}
+   public ScriptRunJob(TestManagerEditor testManagerEditor) {
+      super(JOB_NAME);
+      this.testManagerEditor = testManagerEditor;
+      this.testManagerEditor.doSave();
+      ScriptPage scriptPage = getScriptPage();
+      scriptPage.getScriptTableViewer().refresh();
+      this.runTasks = scriptPage.getScriptTableViewer().getRunTasks();
+   }
 
-	public IStatus verifyOutfileLocations() {
-		final LinkedList<IStatus> failedLocations = new LinkedList<IStatus>();
-		for (ScriptTask task : runTasks) {
-			final String fileName = task.getScriptModel().getOutputModel().getRawFilename();
-			final File file = new File(fileName);
-			if (file.exists() && (!file.canWrite() || !file.canRead())) {
-				failedLocations.add(new Status(Status.ERROR, TestManagerPlugin.PLUGIN_ID, "could not access " + fileName));
-			} else if (!file.getParentFile().canWrite()) {
-				failedLocations.add(new Status(Status.ERROR, TestManagerPlugin.PLUGIN_ID, "could not access " + fileName));
-			}
-		}
-		if (failedLocations.isEmpty()) {
-			return Status.OK_STATUS;
-		} else {
-			return new Status(Status.ERROR, TestManagerPlugin.PLUGIN_ID, "unable to access out files") {
+   public IStatus verifyOutfileLocations() {
+      final LinkedList<IStatus> failedLocations = new LinkedList<IStatus>();
+      for (ScriptTask task : runTasks) {
+         final String fileName = task.getScriptModel().getOutputModel().getRawFilename();
+         final File file = new File(fileName);
+         if (file.exists() && (!file.canWrite() || !file.canRead())) {
+            failedLocations.add(new Status(IStatus.ERROR, TestManagerPlugin.PLUGIN_ID, "could not access " + fileName));
+         } else if (!file.getParentFile().canWrite()) {
+            failedLocations.add(new Status(IStatus.ERROR, TestManagerPlugin.PLUGIN_ID, "could not access " + fileName));
+         }
+      }
+      if (failedLocations.isEmpty()) {
+         return Status.OK_STATUS;
+      } else {
+         return new Status(IStatus.ERROR, TestManagerPlugin.PLUGIN_ID, "unable to access out files") {
 
-				@Override
-				public boolean isMultiStatus() {
-					return true;
-				}
+            @Override
+            public boolean isMultiStatus() {
+               return true;
+            }
 
-				@Override
-				public IStatus[] getChildren() {
-					return failedLocations.toArray(new IStatus[failedLocations.size()]);
-				}
+            @Override
+            public IStatus[] getChildren() {
+               return failedLocations.toArray(new IStatus[failedLocations.size()]);
+            }
 
-			};
-		}
-	}
+         };
+      }
+   }
 
-	@Override
-	public IStatus run(IProgressMonitor monitor) {
-		IStatus toReturn = Status.CANCEL_STATUS;
-		final IStatus status = verifyOutfileLocations();
+   @Override
+   public IStatus run(IProgressMonitor monitor) {
+      IStatus toReturn = Status.CANCEL_STATUS;
+      final IStatus status = verifyOutfileLocations();
 
-		if (status != Status.OK_STATUS) {
-			Displays.pendInDisplayThread(new Runnable() {
-				@Override
-				public void run() {
-					ErrorDialog.openError(
-								Displays.getActiveShell(),
-								"Script Run Error",
-								"Could not access some out file locations. Check access permissions. Click Details to see a list of failed locations",
-								status, -1);
-				}
+      if (status != Status.OK_STATUS) {
+         Displays.pendInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               ErrorDialog.openError(
+                  Displays.getActiveShell(),
+                  "Script Run Error",
+                  "Could not access some out file locations. Check access permissions. Click Details to see a list of failed locations",
+                  status, -1);
+            }
 
-			});
+         });
 
-			return Status.OK_STATUS;
-		}
+         return Status.OK_STATUS;
+      }
 
-		long time = System.currentTimeMillis();
+      long time = System.currentTimeMillis();
 
-		clearMarkers();
-		getScriptPage().onScriptRunning(true);
+      clearMarkers();
+      getScriptPage().onScriptRunning(true);
 
-		long elapsed = System.currentTimeMillis() - time;
-		OseeLog.log(TestManagerPlugin.class, Level.FINE,
-					String.format("%d milliseconds to initialize the running of scripts.", elapsed));
-		OseeLog.log(TestManagerPlugin.class, Level.INFO, String.format("%d scripts have been batched.", runTasks.size()));
+      long elapsed = System.currentTimeMillis() - time;
+      OseeLog.log(TestManagerPlugin.class, Level.FINE,
+         String.format("%d milliseconds to initialize the running of scripts.", elapsed));
+      OseeLog.log(TestManagerPlugin.class, Level.INFO, String.format("%d scripts have been batched.", runTasks.size()));
 
-		Displays.pendInDisplayThread(new Runnable() {
-			@Override
-			public void run() {
-				getScriptPage().getScriptManager().addTestsToQueue(runTasks);
-			}
+      Displays.pendInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            getScriptPage().getScriptManager().addTestsToQueue(runTasks);
+         }
 
-		});
-		toReturn = Status.OK_STATUS;
-		return toReturn;
-	}
+      });
+      toReturn = Status.OK_STATUS;
+      return toReturn;
+   }
 
-	private ScriptPage getScriptPage() {
-		return this.testManagerEditor.getPageManager().getScriptPage();
-	}
+   private ScriptPage getScriptPage() {
+      return this.testManagerEditor.getPageManager().getScriptPage();
+   }
 
-	public boolean isRunAllowed() {
+   public boolean isRunAllowed() {
 
-		return this.testManagerEditor.getPageManager().areSettingsValidForRun();
+      return this.testManagerEditor.getPageManager().areSettingsValidForRun();
 
-	}
+   }
 
-	private void clearMarkers() {
-		// TODO can we somehow wait until the script is actually run to remove
-		// the markers? Otherwise if the run is aborted before the script
-		// runs...
+   private void clearMarkers() {
+      // TODO can we somehow wait until the script is actually run to remove
+      // the markers? Otherwise if the run is aborted before the script
+      // runs...
 
-		// Remove markers from scripts to be run
-		// for (ScriptTask task : runTasks) {
-		// try {
-		// MarkerSupport.deleteMarkersFromInputFile(task.getScriptModel().getIFile());
-		// }
-		// catch (Exception ex) {
-		// OseeLog.log(Activator.class, Level.SEVERE, "Unable to clear the tests markers before
-		// running the test.", ex);
-		// }
-		// }
-	}
+      // Remove markers from scripts to be run
+      // for (ScriptTask task : runTasks) {
+      // try {
+      // MarkerSupport.deleteMarkersFromInputFile(task.getScriptModel().getIFile());
+      // }
+      // catch (Exception ex) {
+      // OseeLog.log(Activator.class, Level.SEVERE, "Unable to clear the tests markers before
+      // running the test.", ex);
+      // }
+      // }
+   }
 
 }

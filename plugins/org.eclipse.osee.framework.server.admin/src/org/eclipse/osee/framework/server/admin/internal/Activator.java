@@ -29,88 +29,90 @@ import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
 
 public class Activator implements BundleActivator, IOseeDatabaseServiceProvider {
-	public static final String PLUGIN_ID = "org.eclipse.osee.framework.server.admin";
-	private static Activator instance;
+   public static final String PLUGIN_ID = "org.eclipse.osee.framework.server.admin";
+   private static Activator instance;
 
-	private final Map<OseeServiceTrackerId, ServiceTracker> mappedTrackers;
+   private final Map<OseeServiceTrackerId, ServiceTracker> mappedTrackers;
 
-	public Activator() {
-		this.mappedTrackers = new HashMap<OseeServiceTrackerId, ServiceTracker>();
-	}
+   public Activator() {
+      this.mappedTrackers = new HashMap<OseeServiceTrackerId, ServiceTracker>();
+   }
 
-	public void start(BundleContext context) throws Exception {
-		instance = this;
+   @Override
+   public void start(BundleContext context) throws Exception {
+      instance = this;
 
-		createServiceTracker(context, IResourceManager.class, OseeServiceTrackerId.RESOURCE_MANAGER);
-		createServiceTracker(context, IResourceLocatorManager.class, OseeServiceTrackerId.RESOURCE_LOCATOR);
-		createServiceTracker(context, ISearchEngineTagger.class, OseeServiceTrackerId.SEARCH_TAGGER);
-		createServiceTracker(context, ISearchEngine.class, OseeServiceTrackerId.SEARCH_ENGINE);
-		createServiceTracker(context, IBranchExchange.class, OseeServiceTrackerId.BRANCH_EXCHANGE);
-		createServiceTracker(context, IOseeCachingService.class, OseeServiceTrackerId.OSEE_CACHING_SERVICE);
-		createServiceTracker(context, IOseeDatabaseService.class, OseeServiceTrackerId.OSEE_DATABASE_SERVICE);
-		createServiceTracker(context, IApplicationServerManager.class, OseeServiceTrackerId.APPLICATION_MANAGER);
-		createServiceTracker(context, ISessionManager.class, OseeServiceTrackerId.SESSION_MANAGER);
-	}
+      createServiceTracker(context, IResourceManager.class, OseeServiceTrackerId.RESOURCE_MANAGER);
+      createServiceTracker(context, IResourceLocatorManager.class, OseeServiceTrackerId.RESOURCE_LOCATOR);
+      createServiceTracker(context, ISearchEngineTagger.class, OseeServiceTrackerId.SEARCH_TAGGER);
+      createServiceTracker(context, ISearchEngine.class, OseeServiceTrackerId.SEARCH_ENGINE);
+      createServiceTracker(context, IBranchExchange.class, OseeServiceTrackerId.BRANCH_EXCHANGE);
+      createServiceTracker(context, IOseeCachingService.class, OseeServiceTrackerId.OSEE_CACHING_SERVICE);
+      createServiceTracker(context, IOseeDatabaseService.class, OseeServiceTrackerId.OSEE_DATABASE_SERVICE);
+      createServiceTracker(context, IApplicationServerManager.class, OseeServiceTrackerId.APPLICATION_MANAGER);
+      createServiceTracker(context, ISessionManager.class, OseeServiceTrackerId.SESSION_MANAGER);
+   }
 
-	public void stop(BundleContext context) throws Exception {
-		for (ServiceTracker tracker : mappedTrackers.values()) {
-			tracker.close();
-		}
-		mappedTrackers.clear();
+   @Override
+   public void stop(BundleContext context) throws Exception {
+      for (ServiceTracker tracker : mappedTrackers.values()) {
+         tracker.close();
+      }
+      mappedTrackers.clear();
 
-		instance = null;
-	}
+      instance = null;
+   }
 
-	@Override
-	public IOseeDatabaseService getOseeDatabaseService() throws OseeDataStoreException {
-		return getTracker(OseeServiceTrackerId.OSEE_DATABASE_SERVICE, IOseeDatabaseService.class);
-	}
+   @Override
+   public IOseeDatabaseService getOseeDatabaseService() throws OseeDataStoreException {
+      return getTracker(OseeServiceTrackerId.OSEE_DATABASE_SERVICE, IOseeDatabaseService.class);
+   }
 
-	private void createServiceTracker(BundleContext context, Class<?> clazz, OseeServiceTrackerId trackerId) {
-		ServiceTracker tracker = new ServiceTracker(context, clazz.getName(), null);
-		tracker.open();
-		mappedTrackers.put(trackerId, tracker);
-	}
+   private void createServiceTracker(BundleContext context, Class<?> clazz, OseeServiceTrackerId trackerId) {
+      ServiceTracker tracker = new ServiceTracker(context, clazz.getName(), null);
+      tracker.open();
+      mappedTrackers.put(trackerId, tracker);
+   }
 
-	public IBranchExchange getBranchExchange() {
-		return getTracker(OseeServiceTrackerId.BRANCH_EXCHANGE, IBranchExchange.class);
-	}
+   public IBranchExchange getBranchExchange() {
+      return getTracker(OseeServiceTrackerId.BRANCH_EXCHANGE, IBranchExchange.class);
+   }
 
-	public IResourceManager getResourceManager() {
-		return getTracker(OseeServiceTrackerId.RESOURCE_MANAGER, IResourceManager.class);
-	}
+   public IResourceManager getResourceManager() {
+      return getTracker(OseeServiceTrackerId.RESOURCE_MANAGER, IResourceManager.class);
+   }
 
-	public IResourceLocatorManager getResourceLocatorManager() {
-		return getTracker(OseeServiceTrackerId.RESOURCE_LOCATOR, IResourceLocatorManager.class);
-	}
+   public IResourceLocatorManager getResourceLocatorManager() {
+      return getTracker(OseeServiceTrackerId.RESOURCE_LOCATOR, IResourceLocatorManager.class);
+   }
 
-	public ISearchEngineTagger getSearchTagger() {
-		return getTracker(OseeServiceTrackerId.SEARCH_TAGGER, ISearchEngineTagger.class);
-	}
+   public ISearchEngineTagger getSearchTagger() {
+      return getTracker(OseeServiceTrackerId.SEARCH_TAGGER, ISearchEngineTagger.class);
+   }
 
-	public ISearchEngine getSearchEngine() {
-		return getTracker(OseeServiceTrackerId.SEARCH_ENGINE, ISearchEngine.class);
-	}
+   public ISearchEngine getSearchEngine() {
+      return getTracker(OseeServiceTrackerId.SEARCH_ENGINE, ISearchEngine.class);
+   }
 
-	public IOseeCachingService getOseeCachingService() {
-		return getTracker(OseeServiceTrackerId.OSEE_CACHING_SERVICE, IOseeCachingService.class);
-	}
+   public IOseeCachingService getOseeCachingService() {
+      return getTracker(OseeServiceTrackerId.OSEE_CACHING_SERVICE, IOseeCachingService.class);
+   }
 
-	public IApplicationServerManager getApplicationServerManager() {
-		return getTracker(OseeServiceTrackerId.APPLICATION_MANAGER, IApplicationServerManager.class);
-	}
+   public IApplicationServerManager getApplicationServerManager() {
+      return getTracker(OseeServiceTrackerId.APPLICATION_MANAGER, IApplicationServerManager.class);
+   }
 
-	public ISessionManager getSessionManager() {
-		return getTracker(OseeServiceTrackerId.SESSION_MANAGER, ISessionManager.class);
-	}
+   public ISessionManager getSessionManager() {
+      return getTracker(OseeServiceTrackerId.SESSION_MANAGER, ISessionManager.class);
+   }
 
-	private <T> T getTracker(OseeServiceTrackerId trackerId, Class<T> clazz) {
-		ServiceTracker tracker = mappedTrackers.get(trackerId);
-		Object service = tracker.getService();
-		return clazz.cast(service);
-	}
+   private <T> T getTracker(OseeServiceTrackerId trackerId, Class<T> clazz) {
+      ServiceTracker tracker = mappedTrackers.get(trackerId);
+      Object service = tracker.getService();
+      return clazz.cast(service);
+   }
 
-	public static Activator getInstance() {
-		return Activator.instance;
-	}
+   public static Activator getInstance() {
+      return Activator.instance;
+   }
 }

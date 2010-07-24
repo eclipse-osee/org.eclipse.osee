@@ -35,7 +35,8 @@ public class MyReviewWorkflowItem extends UserSearchItem {
    private final ReviewState reviewState;
 
    public enum ReviewState {
-      InWork, All
+      InWork,
+      All
    };
 
    public MyReviewWorkflowItem(String name, User user, ReviewState reviewState) {
@@ -61,13 +62,13 @@ public class MyReviewWorkflowItem extends UserSearchItem {
          artifacts.addAll(RelationManager.getRelatedArtifacts(assigned, 1, AtsRelationTypes.SmaToTask_Sma));
       } else {
          artifacts.addAll(ArtifactQuery.getArtifactListFromAttribute(ATSAttributes.STATE_ATTRIBUTE.getStoreName(),
-               "%<" + user.getUserId() + ">%", AtsUtil.getAtsBranch()));
+            "%<" + user.getUserId() + ">%", AtsUtil.getAtsBranch()));
       }
 
       List<Artifact> artifactsToReturn = new ArrayList<Artifact>(artifacts.size());
       for (Artifact artifact : artifacts) {
          if (artifact instanceof ReviewSMArtifact) {
-            if (reviewState == ReviewState.All || (reviewState == ReviewState.InWork && !((StateMachineArtifact) artifact).isCancelledOrCompleted())) {
+            if (reviewState == ReviewState.All || reviewState == ReviewState.InWork && !((StateMachineArtifact) artifact).isCancelledOrCompleted()) {
                artifactsToReturn.add(artifact);
             }
          }

@@ -22,12 +22,12 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.branch.management.ImportOptions;
 import org.eclipse.osee.framework.branch.management.exchange.handler.BaseDbSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.BranchDataSaxHandler;
+import org.eclipse.osee.framework.branch.management.exchange.handler.DbTableSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.handler.IExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ManifestSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.MetaData;
 import org.eclipse.osee.framework.branch.management.exchange.handler.MetaDataSaxHandler;
-import org.eclipse.osee.framework.branch.management.exchange.handler.DbTableSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.transform.ExchangeDataProcessor;
 import org.eclipse.osee.framework.branch.management.exchange.transform.ExchangeTransformProvider;
 import org.eclipse.osee.framework.branch.management.exchange.transform.ExchangeTransformer;
@@ -52,13 +52,13 @@ public final class ImportController {
    private static final String SAVE_POINT_PREFIX = "save.point.";
 
    private static final String INSERT_INTO_IMPORT_SOURCES =
-         "INSERT INTO osee_import_source (import_id, db_source_guid, source_export_date, date_imported) VALUES (?, ?, ?, ?)";
+      "INSERT INTO osee_import_source (import_id, db_source_guid, source_export_date, date_imported) VALUES (?, ?, ?, ?)";
 
    private static final String INSERT_INTO_IMPORT_SAVE_POINT =
-         "INSERT INTO osee_import_save_point (import_id, save_point_name, status, state_error) VALUES (?, ?, ?, ?)";
+      "INSERT INTO osee_import_save_point (import_id, save_point_name, status, state_error) VALUES (?, ?, ?, ?)";
 
    private static final String QUERY_SAVE_POINTS_FROM_IMPORT_MAP =
-         "SELECT save_point_name from osee_import_save_point oisp, osee_import_source ois WHERE ois.import_id = oisp.import_id AND oisp.status = 1 AND ois.db_source_guid = ? AND ois.source_export_date = ?";
+      "SELECT save_point_name from osee_import_save_point oisp, osee_import_source ois WHERE ois.import_id = oisp.import_id AND oisp.status = 1 AND ois.db_source_guid = ? AND ois.source_export_date = ?";
 
    private final OseeServices oseeServices;
    private final IOseeExchangeDataProvider exportDataProvider;
@@ -126,7 +126,7 @@ public final class ImportController {
          saveImportState.execute();
       } catch (Exception ex) {
          OseeLog.log(this.getClass(), Level.WARNING,
-               "Error during save point save - you will not be able to reimport from last source again.");
+            "Error during save point save - you will not be able to reimport from last source again.");
          throw ex;
       } finally {
          exchangeDataProcessor.cleanUp();
@@ -180,7 +180,7 @@ public final class ImportController {
       boolean cleanDataTable = options.getBoolean(ImportOptions.CLEAN_BEFORE_IMPORT.name());
       cleanDataTable &= !doesSavePointExist(currentSavePoint);
       OseeLog.log(this.getClass(), Level.INFO, String.format("Importing: [%s] %s Meta: %s", exportItem.getSource(),
-            cleanDataTable ? "clean before import" : "", metadata.getColumnNames()));
+         cleanDataTable ? "clean before import" : "", metadata.getColumnNames()));
       if (cleanDataTable) {
          handler.clearDataTable();
       }
@@ -204,7 +204,7 @@ public final class ImportController {
 
    private void processImportFiles(Collection<IExportItem> importItems) throws Exception {
       final DbTableSaxHandler handler =
-            DbTableSaxHandler.createWithLimitedCache(oseeServices, exportDataProvider, 50000);
+         DbTableSaxHandler.createWithLimitedCache(oseeServices, exportDataProvider, 50000);
       handler.setSelectedBranchIds(branchesToImport);
 
       for (final IExportItem item : importItems) {
@@ -223,8 +223,8 @@ public final class ImportController {
             };
             importTx.execute();
          } else {
-            OseeLog.log(Activator.class, Level.INFO, String.format("Save point found for: [%s] - skipping",
-                  item.getSource()));
+            OseeLog.log(Activator.class, Level.INFO,
+               String.format("Save point found for: [%s] - skipping", item.getSource()));
          }
       }
    }
@@ -233,8 +233,8 @@ public final class ImportController {
       IOseeStatement chStmt = oseeServices.getDatabaseService().getStatement();
       try {
          currentSavePoint = "load.save.points";
-         chStmt.runPreparedQuery(QUERY_SAVE_POINTS_FROM_IMPORT_MAP, sourceDatabaseId, new Timestamp(
-               sourceExportDate.getTime()));
+         chStmt.runPreparedQuery(QUERY_SAVE_POINTS_FROM_IMPORT_MAP, sourceDatabaseId,
+            new Timestamp(sourceExportDate.getTime()));
          while (chStmt.next()) {
             String key = chStmt.getString("save_point_name");
             savePoints.put(key, new SavePoint(key));
@@ -290,8 +290,8 @@ public final class ImportController {
                branchHandler.updateParentTransactionId(branchesStored);
             }
          } else {
-            OseeLog.log(this.getClass(), Level.INFO, String.format("Save point found for: [%s] - skipping",
-                  currentSavePoint));
+            OseeLog.log(this.getClass(), Level.INFO,
+               String.format("Save point found for: [%s] - skipping", currentSavePoint));
          }
       }
 
@@ -306,8 +306,8 @@ public final class ImportController {
             addSavePoint(currentSavePoint);
          } else {
             // This step has already been performed - only get branches needed for remaining operations
-            OseeLog.log(this.getClass(), Level.INFO, String.format("Save point found for: [%s] - skipping",
-                  currentSavePoint));
+            OseeLog.log(this.getClass(), Level.INFO,
+               String.format("Save point found for: [%s] - skipping", currentSavePoint));
             branchesStored = branchHandler.store(false, branchesToImport);
          }
       }
@@ -328,7 +328,7 @@ public final class ImportController {
             Timestamp importDate = new Timestamp(new Date().getTime());
             Timestamp exportDate = new Timestamp(manifestHandler.getSourceExportDate().getTime());
             oseeServices.getDatabaseService().runPreparedUpdate(connection, INSERT_INTO_IMPORT_SOURCES, importIdIndex,
-                  sourceDatabaseId, exportDate, importDate);
+               sourceDatabaseId, exportDate, importDate);
 
             translator.store(connection, importIdIndex);
 

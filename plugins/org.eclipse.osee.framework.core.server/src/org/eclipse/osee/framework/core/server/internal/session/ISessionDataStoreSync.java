@@ -14,7 +14,7 @@ package org.eclipse.osee.framework.core.server.internal.session;
  * @author Roberto E. Escobar
  */
 public interface ISessionDataStoreSync {
-	void start();
+   void start();
 
-	void stop();
+   void stop();
 }

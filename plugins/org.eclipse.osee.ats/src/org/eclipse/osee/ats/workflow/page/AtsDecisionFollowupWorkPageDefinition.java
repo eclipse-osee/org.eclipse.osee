@@ -20,7 +20,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
  */
 public class AtsDecisionFollowupWorkPageDefinition extends WorkPageDefinition {
 
-   public static String ID = DecisionWorkflowDefinition.ID + "." + DecisionReviewArtifact.DecisionReviewState.Followup.name();
+   public static String ID =
+      DecisionWorkflowDefinition.ID + "." + DecisionReviewArtifact.DecisionReviewState.Followup.name();
 
    public AtsDecisionFollowupWorkPageDefinition() {
       this(DecisionReviewArtifact.DecisionReviewState.Followup.name(), ID, null);

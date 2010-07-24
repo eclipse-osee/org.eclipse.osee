@@ -114,7 +114,7 @@ public class OseePreferencePage extends PreferencePage implements IWorkbenchPref
    private void setupWordWrapChkButton() {
       IPreferenceStore prefStore = SkynetGuiPlugin.getInstance().getPreferenceStore();
       wordWrapChkBox.setSelection(prefStore.getString(PreferenceConstants.WORDWRAP_KEY) != null && prefStore.getString(
-            PreferenceConstants.WORDWRAP_KEY).equals(IPreferenceStore.TRUE));
+         PreferenceConstants.WORDWRAP_KEY).equals(IPreferenceStore.TRUE));
    }
 
    private void createBlankArea(Composite parent, int height, boolean allVertical) {
@@ -128,6 +128,7 @@ public class OseePreferencePage extends PreferencePage implements IWorkbenchPref
       blank.setLayoutData(gd);
    }
 
+   @Override
    protected Control createContents(Composite parent) {
       createNetworkAdapterArea(parent);
       createBlankArea(parent, 300, true);
@@ -138,18 +139,22 @@ public class OseePreferencePage extends PreferencePage implements IWorkbenchPref
    /**
     * initialize the preference store to use with the workbench
     */
+   @Override
    public void init(IWorkbench workbench) {
       // Initialize the preference store we wish to use
       setPreferenceStore(SkynetGuiPlugin.getInstance().getPreferenceStore());
    }
 
+   @Override
    protected void performDefaults() {
    }
 
+   @Override
    protected void performApply() {
       performOk();
    }
 
+   @Override
    public boolean performOk() {
       Preferences prefStore = CoreClientActivator.getInstance().getPluginPreferences();
       prefStore.setValue(CorePreferences.INETADDRESS_KEY, "");
@@ -161,7 +166,7 @@ public class OseePreferencePage extends PreferencePage implements IWorkbenchPref
       }
 
       SkynetGuiPlugin.getInstance().getPreferenceStore().putValue(PreferenceConstants.WORDWRAP_KEY,
-            wordWrapChkBox.getSelection() ? IPreferenceStore.TRUE : IPreferenceStore.FALSE);
+         wordWrapChkBox.getSelection() ? IPreferenceStore.TRUE : IPreferenceStore.FALSE);
 
       return super.performOk();
    }

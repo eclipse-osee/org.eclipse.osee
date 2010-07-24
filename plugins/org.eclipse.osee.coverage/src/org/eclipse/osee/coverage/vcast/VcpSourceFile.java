@@ -87,12 +87,13 @@ public class VcpSourceFile {
    public CoverageDataFile getCoverageDataFile() throws OseeCoreException {
       if (coverageDataFile == null) {
          coverageDataFile =
-               new CoverageDataFile(vcastDirectory + "/vcast/" + getValue(SourceValue.SOURCE_FILENAME).replaceAll(
-                     "\\.(ada|adb|c)$", "\\.xml"));
+            new CoverageDataFile(vcastDirectory + "/vcast/" + getValue(SourceValue.SOURCE_FILENAME).replaceAll(
+               "\\.(ada|adb|c)$", "\\.xml"));
       }
       return coverageDataFile;
    }
 
+   @Override
    public String toString() {
       return getValue(SourceValue.SOURCE_FILENAME);
    }

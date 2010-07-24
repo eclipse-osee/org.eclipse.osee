@@ -84,7 +84,7 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
          }
       } else {
          columnText =
-               "Unexpected aggregation of " + headCursor.getClass().getSimpleName() + " and " + tailCursor.getClass().getSimpleName();
+            "Unexpected aggregation of " + headCursor.getClass().getSimpleName() + " and " + tailCursor.getClass().getSimpleName();
       }
       return columnText;
    }
@@ -166,13 +166,16 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
       return columnText;
    }
 
+   @Override
    public boolean isLabelProperty(Object element, String property) {
       return false;
    }
 
+   @Override
    public void addListener(ILabelProviderListener listener) {
    }
 
+   @Override
    public void removeListener(ILabelProviderListener listener) {
    }
 
@@ -197,8 +200,8 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
                   return null;
                }
                Artifact artifact =
-                     ArtifactQuery.getArtifactFromId(((TransactionRecord) element).getCommit(),
-                           BranchManager.getCommonBranch());
+                  ArtifactQuery.getArtifactFromId(((TransactionRecord) element).getCommit(),
+                     BranchManager.getCommonBranch());
                if (artifact != null) {
                   return ArtifactImageManager.getImage(artifact);
                }

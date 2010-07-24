@@ -93,11 +93,12 @@ public class BlamEditor extends FormEditor implements IDirtiableEditor {
 
    public void executeBlam() throws OseeArgumentException {
       getEditorInput().getBlamOperation().execute(getPartName(), overviewPage.getOutput(), getBlamVariableMap(),
-            new BlamEditorExecutionAdapter());
+         new BlamEditorExecutionAdapter());
    }
 
    public static void edit(final BlamEditorInput blamEditorInput) {
       Displays.ensureInDisplayThread(new Runnable() {
+         @Override
          public void run() {
             try {
                AWorkbench.getActivePage().openEditor(blamEditorInput, EDITOR_ID);

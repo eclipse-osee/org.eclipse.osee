@@ -44,12 +44,13 @@ public abstract class ArtifactOperation extends Artifact implements WorkflowStep
    /**
     * @param operation
     * @return returns PROVIDES_ACCEPTABLE_INPUT if this operation can run after, i.e. accept input from, the given
-    *         operation, otherwise returns a human readable reason why the input can not be accepted
+    * operation, otherwise returns a human readable reason why the input can not be accepted
     */
    public String canAcceptInputFrom(ArtifactOperation operation) {
       return PROVIDES_ACCEPTABLE_INPUT;
    }
 
+   @Override
    public List<Artifact> perform(List<Artifact> artifacts, IProgressMonitor monitor) throws IllegalArgumentException, Exception {
       return applyToArtifacts(artifacts, monitor);
    }

@@ -64,7 +64,7 @@ public class ChangePointDialog extends ListDialog {
    @Override
    protected Control createDialogArea(Composite container) {
 
-      (new Label(container, SWT.NONE)).setText("     Select Point:");
+      new Label(container, SWT.NONE).setText("     Select Point:");
 
       Control c = super.createDialogArea(container);
       GridData gd = new GridData(GridData.FILL_BOTH);
@@ -104,24 +104,30 @@ public class ChangePointDialog extends ListDialog {
 
    public class PointLabelProvider implements ILabelProvider {
 
+      @Override
       public Image getImage(Object arg0) {
          return null;
       }
 
+      @Override
       public String getText(Object arg0) {
          return arg0.toString();
       }
 
+      @Override
       public void addListener(ILabelProviderListener arg0) {
       }
 
+      @Override
       public void dispose() {
       }
 
+      @Override
       public boolean isLabelProperty(Object arg0, String arg1) {
          return false;
       }
 
+      @Override
       public void removeListener(ILabelProviderListener arg0) {
       }
 

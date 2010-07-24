@@ -22,19 +22,19 @@ public class CoverageImport1TestBlam extends CoverageImportTestBlam {
 
    public CoverageImport1TestBlam() {
       super(NAME, Arrays.asList(
-            //
-            "import1/com/screenA/ComScrnAButton1.java",
-            "import1/com/screenA/ComScrnAButton2.java",
-            //
-            "import1/com/screenB/ScreenBButton1.java", "import1/com/screenB/ScreenBButton2.java",
-            "import1/com/screenB/ScreenBButton3.java",
-            //
-            "import1/epu/PowerUnit1.java", "import1/epu/PowerUnit2.java",
-            //
-            "import1/apu/AuxPowerUnit1.java", "import1/apu/AuxPowerUnit2.java",
-            //
-            "import1/nav/NavigationButton1.java", "import1/nav/NavigationButton2.java",
-            "import1/nav/NavigationButton3.java"
+         //
+         "import1/com/screenA/ComScrnAButton1.java",
+         "import1/com/screenA/ComScrnAButton2.java",
+         //
+         "import1/com/screenB/ScreenBButton1.java", "import1/com/screenB/ScreenBButton2.java",
+         "import1/com/screenB/ScreenBButton3.java",
+         //
+         "import1/epu/PowerUnit1.java", "import1/epu/PowerUnit2.java",
+         //
+         "import1/apu/AuxPowerUnit1.java", "import1/apu/AuxPowerUnit2.java",
+         //
+         "import1/nav/NavigationButton1.java", "import1/nav/NavigationButton2.java",
+         "import1/nav/NavigationButton3.java"
       //
       ));
    }

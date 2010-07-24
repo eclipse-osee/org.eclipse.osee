@@ -13,7 +13,6 @@ package org.eclipse.osee.ote.message.elements;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.data.MessageData;
 import org.eclipse.osee.ote.message.elements.nonmapping.NonMappingRecordElement;
@@ -24,29 +23,29 @@ import org.eclipse.osee.ote.message.elements.nonmapping.NonMappingRecordElement;
  */
 public abstract class RecordElement extends Element {
 
-   private Map<String, Element> elementMap;
-   private int recordBitSize;
+   private final Map<String, Element> elementMap;
+   private final int recordBitSize;
 
    private int bitOffset;
-   private int index;
+   private final int index;
    private boolean isPartOfMap = true;
-   private int firstRecordBitOffset;
+   private final int firstRecordBitOffset;
    public int BIT_OFFSET;
 
    /**
     * @param message -
     * @param elementName -
     */
-   public RecordElement(Message<?,?,?> message, String elementName, int index, MessageData messageData, int firstRecordBitOffset, int recordBitSize) {
-      super(message, elementName, messageData, firstRecordBitOffset + (index * recordBitSize), recordBitSize);
+   public RecordElement(Message<?, ?, ?> message, String elementName, int index, MessageData messageData, int firstRecordBitOffset, int recordBitSize) {
+      super(message, elementName, messageData, firstRecordBitOffset + index * recordBitSize, recordBitSize);
       elementMap = new LinkedHashMap<String, Element>();
-      BIT_OFFSET = this.bitOffset = firstRecordBitOffset + (index * recordBitSize);
+      BIT_OFFSET = this.bitOffset = firstRecordBitOffset + index * recordBitSize;
       this.recordBitSize = recordBitSize;
       this.firstRecordBitOffset = firstRecordBitOffset;
       this.index = index;
    }
 
-   public RecordElement(Message<?,?,?> message, String elementName, MessageData messageData, int firstRecordBitOffset, int recordBitSize) {
+   public RecordElement(Message<?, ?, ?> message, String elementName, MessageData messageData, int firstRecordBitOffset, int recordBitSize) {
       this(message, elementName, 0, messageData, firstRecordBitOffset, recordBitSize);
       isPartOfMap = false;
    }
@@ -57,14 +56,14 @@ public abstract class RecordElement extends Element {
       }
    }
 
+   @Override
    public void addPath(Object... objs) {
       for (Object obj : objs) {
          getElementPath().add(obj);
       }
       if (isPartOfMap) {
          getElementPath().add(index);
-      }
-      else {
+      } else {
          getElementPath().add(getElementName());
       }
       Object[] myPath = getElementPath().toArray();
@@ -84,14 +83,14 @@ public abstract class RecordElement extends Element {
 
    @Override
    protected NonMappingRecordElement getNonMappingElement() {
-      return (NonMappingRecordElement) new NonMappingRecordElement(this);
+      return new NonMappingRecordElement(this);
    }
 
-   public  RecordElement switchMessages(Collection<? extends Message<?,?,?>> messages) {
-		return (RecordElement) super.switchMessages(messages);
+   @Override
+   public RecordElement switchMessages(Collection<? extends Message<?, ?, ?>> messages) {
+      return (RecordElement) super.switchMessages(messages);
    }
 
-   
    public void put(int index, RecordElement newRecord) {
       // records.put(index, (T)newRecord);
    }
@@ -101,14 +100,14 @@ public abstract class RecordElement extends Element {
    }
 
    public RecordElement get(int index) {
-       // T val = records.get(index);
-       // if(val == null){
-       // val = (T)factory.create(index);
-       // records.put(index, val);
-       // }
-       return null;
-    }
-   
+      // T val = records.get(index);
+      // if(val == null){
+      // val = (T)factory.create(index);
+      // records.put(index, val);
+      // }
+      return null;
+   }
+
    /**
     * @return the firstRecordBitOffset
     */
@@ -136,20 +135,21 @@ public abstract class RecordElement extends Element {
    }
 
    @Override
-   public void zeroize(){
-	   for(Element el:elementMap.values()){
-		   el.zeroize();
-	   }
+   public void zeroize() {
+      for (Element el : elementMap.values()) {
+         el.zeroize();
+      }
    }
-   
-   public String getDescriptiveName(){
-      if(isPartOfMap){
+
+   @Override
+   public String getDescriptiveName() {
+      if (isPartOfMap) {
          return String.format("%s[%d]", getName(), index);
       }
       return getName();
    }
-   
+
    public int getIndex() {
-	   return index;
+      return index;
    }
 }

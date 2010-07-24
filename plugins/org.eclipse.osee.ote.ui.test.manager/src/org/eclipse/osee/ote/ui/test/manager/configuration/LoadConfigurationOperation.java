@@ -11,8 +11,8 @@
 package org.eclipse.osee.ote.ui.test.manager.configuration;
 
 import java.io.File;
+import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.ote.ui.test.manager.core.TestManagerEditor;
-import org.eclipse.osee.ote.ui.test.manager.internal.TestManagerPlugin;
 import org.eclipse.osee.ote.ui.test.manager.pages.ScriptPage;
 import org.eclipse.osee.ote.ui.test.manager.pages.StatusWindowWidget;
 import org.eclipse.osee.ote.ui.test.manager.util.Dialogs;
@@ -51,13 +51,13 @@ public class LoadConfigurationOperation {
       String configFile = testManager.loadValue(testManager.configFileName);
 
       ILoadConfig loadConfig =
-            ConfigFactory.getInstance().getLoadConfigHandler(testManager.getPageManager().getScriptPage());
+         ConfigFactory.getInstance().getLoadConfigHandler(testManager.getPageManager().getScriptPage());
       try {
          loadConfig.loadConfiguration(new File(configFile));
          result = true;
       } catch (Exception ex) {
-         Dialogs.popupError("Error Loading File", String.format("Error loading file: [%s]\n%s", configFile,
-               TestManagerPlugin.getStackMessages(ex)));
+         Dialogs.popupError("Error Loading File",
+            String.format("Error loading file: [%s]\n%s", configFile, OseeUiActivator.getStackMessages(ex)));
       }
       return result;
    }

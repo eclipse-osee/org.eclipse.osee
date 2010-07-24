@@ -26,8 +26,8 @@ import org.eclipse.swt.widgets.Control;
  * @author Ryan D. Brooks
  */
 public class InRelationFilter extends SearchFilter {
-   private ComboViewer relationTypeList;
-   private ComboViewer relationSideList;
+   private final ComboViewer relationTypeList;
+   private final ComboViewer relationSideList;
 
    public InRelationFilter(Control optionsControl, ComboViewer relationTypeList, ComboViewer relationSideList) {
       super("Artifact in Relation", optionsControl);
@@ -43,7 +43,9 @@ public class InRelationFilter extends SearchFilter {
       RelationType linkDescriptor = (RelationType) relationTypeList.getData(relationTypeList.getCombo().getText());
       try {
          ISearchPrimitive primitive = new InRelationSearch(type, linkDescriptor.isSideAName(sideName));
-         if (not) primitive = new NotSearch(primitive);
+         if (not) {
+            primitive = new NotSearch(primitive);
+         }
 
          filterViewer.addItem(primitive, getFilterName(), type, sideName);
       } catch (OseeArgumentException ex) {
@@ -59,7 +61,9 @@ public class InRelationFilter extends SearchFilter {
    @Override
    public void loadFromStorageString(FilterTableViewer filterViewer, String type, String value, String storageString, boolean isNotEnabled) {
       ISearchPrimitive primitive = InRelationSearch.getPrimitive(storageString);
-      if (isNotEnabled) primitive = new NotSearch(primitive);
+      if (isNotEnabled) {
+         primitive = new NotSearch(primitive);
+      }
       filterViewer.addItem(primitive, getFilterName(), type, value);
    }
 }

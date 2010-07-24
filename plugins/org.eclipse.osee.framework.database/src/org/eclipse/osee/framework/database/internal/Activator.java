@@ -34,12 +34,13 @@ public class Activator implements BundleActivator, IOseeDatabaseServiceProvider 
    public Activator() {
    }
 
+   @Override
    public void start(BundleContext bundleContext) throws Exception {
       instance = this;
       databaseInfoProvider = new DatabaseInfoProvider(bundleContext);
 
       databaseServiceTracker =
-            new ServiceDependencyTracker(bundleContext, new OseeDatabaseServiceRegistrationHandler());
+         new ServiceDependencyTracker(bundleContext, new OseeDatabaseServiceRegistrationHandler());
       databaseServiceTracker.open();
 
       dbTracker = new ServiceTracker(bundleContext, IOseeDatabaseService.class.getName(), null);
@@ -59,6 +60,7 @@ public class Activator implements BundleActivator, IOseeDatabaseServiceProvider 
       return databaseService;
    }
 
+   @Override
    public void stop(BundleContext context) throws Exception {
       databaseServiceTracker.close();
       dbTracker.close();

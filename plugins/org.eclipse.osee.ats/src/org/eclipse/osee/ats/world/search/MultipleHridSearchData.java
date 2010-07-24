@@ -76,6 +76,7 @@ public class MultipleHridSearchData implements IWorldEditorConsumer {
       this.worldEditor = worldEditor;
    }
 
+   @Override
    public WorldEditor getWorldEditor() {
       return worldEditor;
    }

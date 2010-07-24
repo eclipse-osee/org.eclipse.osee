@@ -24,24 +24,23 @@ import org.eclipse.osee.framework.database.core.IOseeStatement;
 public class ConflictStatusManager {
 
    private static final String MERGE_UPDATE_STATUS =
-         "UPDATE osee_conflict SET status = ? WHERE source_gamma_id = ? AND dest_gamma_id = ? AND merge_branch_id = ?";
+      "UPDATE osee_conflict SET status = ? WHERE source_gamma_id = ? AND dest_gamma_id = ? AND merge_branch_id = ?";
    private static final String MERGE_INSERT_STATUS =
       "INSERT INTO osee_conflict ( conflict_id, merge_branch_id, source_gamma_id, dest_gamma_id, status, conflict_type) VALUES ( ?, ?, ?, ?, ?, ?)";
 
    private static final String MERGE_ATTRIBUTE_STATUS =
-         "SELECT source_gamma_id, dest_gamma_id, status FROM osee_conflict WHERE merge_branch_id = ? AND conflict_id = ? AND conflict_type = ?";
+      "SELECT source_gamma_id, dest_gamma_id, status FROM osee_conflict WHERE merge_branch_id = ? AND conflict_id = ? AND conflict_type = ?";
    private static final String MERGE_UPDATE_GAMMAS =
-         "UPDATE osee_conflict SET source_gamma_id = ?, dest_gamma_id = ?, status = ? WHERE merge_branch_id = ? AND conflict_id = ? AND conflict_type = ?";
+      "UPDATE osee_conflict SET source_gamma_id = ?, dest_gamma_id = ?, status = ? WHERE merge_branch_id = ? AND conflict_id = ? AND conflict_type = ?";
    private static final String MERGE_BRANCH_GAMMAS =
-         "UPDATE osee_txs SET gamma_id = ? where (transaction_id, gamma_id) = (SELECT tx.transaction_id, tx.gamma_id FROM osee_txs tx, osee_attribute atr WHERE tx.transaction_id = ? AND atr.gamma_id = tx.gamma_id AND atr.attr_id = ? )";
-
+      "UPDATE osee_txs SET gamma_id = ? where (transaction_id, gamma_id) = (SELECT tx.transaction_id, tx.gamma_id FROM osee_txs tx, osee_attribute atr WHERE tx.transaction_id = ? AND atr.gamma_id = tx.gamma_id AND atr.attr_id = ? )";
 
    public static void setStatus(ConflictStatus status, int sourceGamma, int destGamma, int mergeBranchId) throws OseeDataStoreException {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       //Gammas should be up to date so you can use them to get entry just update the status field.
       try {
          ConnectionHandler.runPreparedUpdate(MERGE_UPDATE_STATUS, status.getValue(), sourceGamma, destGamma,
-               mergeBranchId);
+            mergeBranchId);
       } finally {
          chStmt.close();
       }
@@ -67,7 +66,7 @@ public class ConflictStatusManager {
                   intStatus = ConflictStatus.OUT_OF_DATE.getValue();
                }
                ConnectionHandler.runPreparedUpdate(MERGE_UPDATE_GAMMAS, sourceGamma, destGamma, intStatus, branchID,
-                     objectID, conflictType);
+                  objectID, conflictType);
                if (conflictType == ConflictType.ATTRIBUTE.getValue()) {
                   ConnectionHandler.runPreparedUpdate(MERGE_BRANCH_GAMMAS, sourceGamma, transactionId, objectID);
                }
@@ -82,7 +81,7 @@ public class ConflictStatusManager {
          chStmt.close();
       }
       ConnectionHandler.runPreparedUpdate(MERGE_INSERT_STATUS, objectID, branchID, sourceGamma, destGamma,
-            passedStatus.getValue(), conflictType);
+         passedStatus.getValue(), conflictType);
 
       return passedStatus;
    }

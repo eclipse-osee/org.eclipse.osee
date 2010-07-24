@@ -12,7 +12,6 @@ package org.eclipse.osee.coverage.test.navigate;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.navigate.ICoverageNavigateItem;
 import org.eclipse.osee.coverage.test.import1.CoveragePackage1Import1;
 import org.eclipse.osee.coverage.test.import1.CoveragePackage1Import1B;
@@ -26,6 +25,7 @@ import org.eclipse.osee.coverage.test.import8.CoveragePackage1Import8;
 import org.eclipse.osee.coverage.test.import9.CoveragePackage1Import9;
 import org.eclipse.osee.coverage.test.package1.CoveragePackage1;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 
 /**
@@ -37,11 +37,12 @@ public class CoverageTestNavigateViews implements ICoverageNavigateItem {
       super();
    }
 
+   @Override
    public List<XNavigateItem> getNavigateItems() throws OseeCoreException {
 
       List<XNavigateItem> items = new ArrayList<XNavigateItem>();
 
-      if (Activator.areOSEEServicesAvailable().isFalse()) {
+      if (OseeUiActivator.areOSEEServicesAvailable().isFalse()) {
          return items;
       }
 

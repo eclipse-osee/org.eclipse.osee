@@ -32,19 +32,19 @@ public interface IHostTestEnvironment extends Remote {
    ConnectionRequestResult requestEnvironment(IRemoteUserSession session, TestEnvironmentConfig config) throws RemoteException;
 
    EnhancedProperties getProperties() throws RemoteException;
-   
+
    boolean isBundleAvailable(String symbolicName, String version, byte[] md5Digest) throws RemoteException;
 
-   void sendRuntimeBundle(Collection<BundleDescription> bundles) throws RemoteException; 
-   
-   void updateRuntimeBundle(Collection<BundleDescription> bundles) throws RemoteException; 
-   
-   BundleConfigurationReport checkBundleConfiguration(Collection<BundleDescription> bundles) throws RemoteException; 
-   
-   void cleanupRuntimeBundles() throws RemoteException; 
+   void sendRuntimeBundle(Collection<BundleDescription> bundles) throws RemoteException;
+
+   void updateRuntimeBundle(Collection<BundleDescription> bundles) throws RemoteException;
+
+   BundleConfigurationReport checkBundleConfiguration(Collection<BundleDescription> bundles) throws RemoteException;
+
+   void cleanupRuntimeBundles() throws RemoteException;
 
    void disconnect(UserTestSessionKey key) throws RemoteException;
-   
+
    void disconnectAll() throws RemoteException;
-   
+
 }

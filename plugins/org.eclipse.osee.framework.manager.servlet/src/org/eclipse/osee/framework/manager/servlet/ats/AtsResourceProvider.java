@@ -23,13 +23,14 @@ import org.eclipse.osee.framework.resource.management.IResourceProvider;
 import org.eclipse.osee.framework.resource.management.Options;
 import org.eclipse.osee.framework.resource.management.exception.MalformedLocatorException;
 import org.eclipse.osee.framework.resource.management.util.OptionsProcessor;
+
 /**
  * @author Roberto E. Escobar
  */
 public class AtsResourceProvider implements IResourceProvider {
    private static final String BASE_PATH = OseeServerProperties.getOseeApplicationServerData();
    private static final String RESOLVED_PATH =
-         BASE_PATH + File.separator + AtsResourceLocatorProvider.PROTOCOL + File.separator;
+      BASE_PATH + File.separator + AtsResourceLocatorProvider.PROTOCOL + File.separator;
 
    public AtsResourceProvider() {
    }

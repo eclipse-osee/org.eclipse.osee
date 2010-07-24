@@ -55,6 +55,7 @@ public class AtsPriorityDialog extends ListDialog {
    protected Label createMessageArea(Composite composite) {
       Label label = super.createMessageArea(composite);
       label.addListener(SWT.MouseUp, new Listener() {
+         @Override
          public void handleEvent(Event event) {
             AtsPriority.openHelp();
          }
@@ -74,7 +75,7 @@ public class AtsPriorityDialog extends ListDialog {
          getTableViewer().getTable().setFocus();
       }
       AtsPlugin.getInstance().setHelp(getTableViewer().getControl(), AtsPriority.PRIORITY_HELP_CONTEXT_ID,
-            "org.eclipse.osee.ats.help.ui");
+         "org.eclipse.osee.ats.help.ui");
       return c;
    }
 
@@ -89,27 +90,34 @@ public class AtsPriorityDialog extends ListDialog {
 
    public static class PriorityLabelProvider implements ILabelProvider {
 
+      @Override
       public Image getImage(Object arg0) {
          return null;
       }
 
+      @Override
       public String getText(Object arg0) {
          PriorityType type = (PriorityType) arg0;
-         if (type == PriorityType.None)
+         if (type == PriorityType.None) {
             return type.name();
+         }
          return type.getShortName();
       }
 
+      @Override
       public void addListener(ILabelProviderListener arg0) {
       }
 
+      @Override
       public void dispose() {
       }
 
+      @Override
       public boolean isLabelProperty(Object arg0, String arg1) {
          return false;
       }
 
+      @Override
       public void removeListener(ILabelProviderListener arg0) {
       }
 

@@ -44,7 +44,9 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 public class ClientDashboardRequestHandler implements IHttpServerRequest {
 
    private enum RequestCmd {
-      log, info, pingId
+      log,
+      info,
+      pingId
    }
 
    @Override
@@ -72,12 +74,14 @@ public class ClientDashboardRequestHandler implements IHttpServerRequest {
                   break;
             }
          } else {
-            httpResponse.outputStandardError(HttpURLConnection.HTTP_BAD_REQUEST, String.format(
-                  "Unable to process request: [%s]", httpRequest.getRawRequest()));
+            httpResponse.outputStandardError(HttpURLConnection.HTTP_BAD_REQUEST,
+               String.format("Unable to process request: [%s]", httpRequest.getRawRequest()));
          }
       } catch (Exception ex) {
-         httpResponse.outputStandardError(HttpURLConnection.HTTP_BAD_REQUEST, String.format(
-               "Unable to process request: [%s]", "Exception processing request: " + ex.getLocalizedMessage()));
+         httpResponse.outputStandardError(
+            HttpURLConnection.HTTP_BAD_REQUEST,
+            String.format("Unable to process request: [%s]",
+               "Exception processing request: " + ex.getLocalizedMessage()));
       }
    }
 
@@ -156,8 +160,8 @@ public class ClientDashboardRequestHandler implements IHttpServerRequest {
                }
             }
          } catch (Exception ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, String.format("Error processing request for [%s]",
-                  httpRequest.toString()), ex);
+            OseeLog.log(Activator.class, Level.SEVERE,
+               String.format("Error processing request for [%s]", httpRequest.toString()), ex);
             httpResponse.getPrintStream().println(Lib.exceptionToString(ex));
          } finally {
             httpResponse.getOutputStream().flush();
@@ -173,8 +177,8 @@ public class ClientDashboardRequestHandler implements IHttpServerRequest {
          httpResponse.sendResponseHeaders(HttpURLConnection.HTTP_OK, results.length());
          httpResponse.getPrintStream().println(results);
       } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, String.format("Error processing request for [%s]",
-               httpRequest.toString()), ex);
+         OseeLog.log(Activator.class, Level.SEVERE,
+            String.format("Error processing request for [%s]", httpRequest.toString()), ex);
          httpResponse.getPrintStream().println(Lib.exceptionToString(ex));
       } finally {
          httpResponse.getOutputStream().flush();

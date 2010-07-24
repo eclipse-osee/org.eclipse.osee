@@ -43,12 +43,15 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
 
    private static final Pattern guidPattern = Pattern.compile("(\\d*);(.*)");
 
+   @Override
    public String getDescription() {
       return "Extract each row as an artifact, with header format <Attribute Type 1, Attribute Type 2, ...>";
    }
 
+   @Override
    public FileFilter getFileFilter() {
       return new FileFilter() {
+         @Override
          public boolean accept(File file) {
             return file.isDirectory() || file.isFile() && file.getName().endsWith(".xml");
          }
@@ -75,7 +78,7 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
    private static final class ExcelRowProcessor implements RowProcessor {
 
       private final DoubleKeyHashMap<String, Integer, RoughArtifact> relationHelper =
-            new DoubleKeyHashMap<String, Integer, RoughArtifact>();
+         new DoubleKeyHashMap<String, Integer, RoughArtifact>();
 
       private final Matcher guidMatcher;
       private final RoughArtifactCollector collector;
@@ -110,7 +113,7 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
             }
          } catch (OseeCoreException ex) {
             throw new IllegalArgumentException("The sheet name: " + sheetName + " is not a valid artifact type name: ",
-                  ex);
+               ex);
          }
       }
 
@@ -150,7 +153,7 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
 
             if (guida == null || guidb == null) {
                OseeLog.log(Activator.class, Level.WARNING,
-                     "we failed to add a relation because at least on of its guids are null");
+                  "we failed to add a relation because at least on of its guids are null");
             }
             collector.addRoughRelation(new RoughRelation(row[0], guida, guidb, row[5]));
          } else {

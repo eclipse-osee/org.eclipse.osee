@@ -12,10 +12,8 @@ package org.eclipse.osee.framework.ui.plugin.workspace;
 
 import org.eclipse.core.resources.IWorkspace;
 
-
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public interface SafeWorkspaceAccess {
    IWorkspace getWorkspace();

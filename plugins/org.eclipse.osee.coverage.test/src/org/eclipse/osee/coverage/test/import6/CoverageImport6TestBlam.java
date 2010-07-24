@@ -25,7 +25,7 @@ public class CoverageImport6TestBlam extends CoverageImportTestBlam {
    public CoverageImport6TestBlam() {
       super(NAME, Arrays.asList(
       //
-            "import4/epu/PowerUnit1.java", "import6/epu/PowerUnit2.java", "import2/epu/PowerUnit3.java"
+         "import4/epu/PowerUnit1.java", "import6/epu/PowerUnit2.java", "import2/epu/PowerUnit3.java"
       //
       ));
    }

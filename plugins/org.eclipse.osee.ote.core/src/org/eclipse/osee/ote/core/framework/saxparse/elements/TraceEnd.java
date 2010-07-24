@@ -15,9 +15,8 @@ import org.xml.sax.Attributes;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
-public class TraceEnd extends ElementHandlers{
+public class TraceEnd extends ElementHandlers {
 
    public TraceEnd() {
       super("TraceEnd");

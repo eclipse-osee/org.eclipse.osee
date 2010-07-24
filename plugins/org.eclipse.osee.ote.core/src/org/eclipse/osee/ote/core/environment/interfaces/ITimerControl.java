@@ -15,17 +15,30 @@ import org.eclipse.osee.ote.core.environment.TestEnvironment;
 
 public interface ITimerControl {
    void addTask(EnvironmentTask task, TestEnvironment environment);
-   void removeTask( EnvironmentTask task);
+
+   void removeTask(EnvironmentTask task);
+
    void cancelTimers();
+
    long getEnvTime();
+
    ICancelTimer setTimerFor(ITimeout objToNotify, int milliseconds);
+
    void envWait(ITimeout obj, int milliseconds) throws InterruptedException;
+
    void envWait(int milliseconds) throws InterruptedException;
+
    int getCycleCount();
+
    void incrementCycleCount();
+
    void setCycleCount(int cycle);
+
    void dispose();
+
    public void cancelAllTasks();
+
    public void step();
+
    long getTimeOfDay();
 }

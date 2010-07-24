@@ -26,6 +26,7 @@ public class ConsoleLogger implements ILoggerListener {
       initializedLoggers = new HashSet<Logger>(64);
    }
 
+   @Override
    public void log(String loggerName, Level level, String message, Throwable th) {
       Logger logger = Logger.getLogger(loggerName);
       if (initializedLoggers.add(logger)) {

@@ -15,13 +15,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.ITestUnitProvider;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -36,7 +36,7 @@ public class DbTestUnitProvider implements ITestUnitProvider {
    private static DbTestUnitProvider instance = new DbTestUnitProvider();
    // This structure will store the nameIds that map to DB name table
    final HashCollection<CoverageItem, Integer> coverageItemToTestUnits =
-         new HashCollection<CoverageItem, Integer>(1000);
+      new HashCollection<CoverageItem, Integer>(1000);
 
    private DbTestUnitProvider() {
       instance = this;
@@ -103,7 +103,7 @@ public class DbTestUnitProvider implements ITestUnitProvider {
             return names;
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return Collections.emptyList();
    }
@@ -115,7 +115,7 @@ public class DbTestUnitProvider implements ITestUnitProvider {
          try {
             coverageItemToTestUnits.put(coverageItem, new Integer(nameIdStr));
          } catch (NumberFormatException ex) {
-            OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
    }

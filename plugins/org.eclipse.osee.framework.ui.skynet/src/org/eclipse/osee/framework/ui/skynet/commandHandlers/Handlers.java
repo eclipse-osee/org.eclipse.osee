@@ -37,7 +37,7 @@ public class Handlers {
    public static List<Change> getArtifactChangesFromStructuredSelection(IStructuredSelection structuredSelection) {
       return processSelectionObjects(Change.class, structuredSelection);
    }
-   
+
    /**
     * Populates a list of TransactionIds from a IStructuredSelection. Returns an empty list if no TransactionIds were
     * found.

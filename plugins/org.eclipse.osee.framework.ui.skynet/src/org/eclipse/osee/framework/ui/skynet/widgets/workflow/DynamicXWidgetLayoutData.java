@@ -25,207 +25,207 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
  * @author Donald G. Dunne
  */
 public class DynamicXWidgetLayoutData implements Cloneable {
-	private static final XWidgetFactory xWidgetFactory = XWidgetFactory.getInstance();
-	private static final int DEFAULT_HEIGHT = 9999;
-	private String name = "Unknown";
-	private String id = "";
-	private String storageName = "";
-	private String xWidgetName = UNKNOWN;
-	private static String UNKNOWN = "Unknown";
-	private XWidget xWidget;
-	private int beginComposite = 0; // If >0, indicates new child composite with columns == value
-	private int beginGroupComposite = 0; // If >0, indicates new child composite with columns == value
-	private boolean endComposite, endGroupComposite; // indicated end of child composite
-	private int height = DEFAULT_HEIGHT;
-	private String toolTip;
-	private DynamicXWidgetLayout dynamicXWidgetLayout;
-	private String defaultValue;
-	private String keyedBranchName;
-	private final XOptionHandler xOptionHandler = new XOptionHandler();
-	private Artifact artifact;
+   private static final XWidgetFactory xWidgetFactory = XWidgetFactory.getInstance();
+   private static final int DEFAULT_HEIGHT = 9999;
+   private String name = "Unknown";
+   private String id = "";
+   private String storageName = "";
+   private String xWidgetName = UNKNOWN;
+   private static String UNKNOWN = "Unknown";
+   private XWidget xWidget;
+   private int beginComposite = 0; // If >0, indicates new child composite with columns == value
+   private int beginGroupComposite = 0; // If >0, indicates new child composite with columns == value
+   private boolean endComposite, endGroupComposite; // indicated end of child composite
+   private int height = DEFAULT_HEIGHT;
+   private String toolTip;
+   private DynamicXWidgetLayout dynamicXWidgetLayout;
+   private String defaultValue;
+   private String keyedBranchName;
+   private final XOptionHandler xOptionHandler = new XOptionHandler();
+   private Artifact artifact;
 
-	public DynamicXWidgetLayoutData(DynamicXWidgetLayout dynamicXWidgetLayout, XOption... xOption) {
-		this.dynamicXWidgetLayout = dynamicXWidgetLayout;
-		xOptionHandler.add(XOption.EDITABLE);
-		xOptionHandler.add(XOption.ALIGN_LEFT);
-		xOptionHandler.add(xOption);
-	}
+   public DynamicXWidgetLayoutData(DynamicXWidgetLayout dynamicXWidgetLayout, XOption... xOption) {
+      this.dynamicXWidgetLayout = dynamicXWidgetLayout;
+      xOptionHandler.add(XOption.EDITABLE);
+      xOptionHandler.add(XOption.ALIGN_LEFT);
+      xOptionHandler.add(xOption);
+   }
 
-	@Override
-	public Object clone() throws CloneNotSupportedException {
-		return super.clone();
-	}
+   @Override
+   public Object clone() throws CloneNotSupportedException {
+      return super.clone();
+   }
 
-	public boolean isHeightSet() {
-		return height != DEFAULT_HEIGHT;
-	}
+   public boolean isHeightSet() {
+      return height != DEFAULT_HEIGHT;
+   }
 
-	@Override
-	public String toString() {
-		return getName();
-	}
+   @Override
+   public String toString() {
+      return getName();
+   }
 
-	public String getName() {
-		return name.replaceFirst("^.*?\\.", "");
-	}
+   public String getName() {
+      return name.replaceFirst("^.*?\\.", "");
+   }
 
-	public String getStorageName() {
-		return storageName;
-	}
+   public String getStorageName() {
+      return storageName;
+   }
 
-	public void setStorageName(String storageName) {
-		this.storageName = storageName;
-	}
+   public void setStorageName(String storageName) {
+      this.storageName = storageName;
+   }
 
-	public boolean isRequired() {
-		return xOptionHandler.contains(XOption.REQUIRED) || dynamicXWidgetLayout.isOrRequired(storageName) || dynamicXWidgetLayout.isXOrRequired(storageName);
-	}
+   public boolean isRequired() {
+      return xOptionHandler.contains(XOption.REQUIRED) || dynamicXWidgetLayout.isOrRequired(storageName) || dynamicXWidgetLayout.isXOrRequired(storageName);
+   }
 
-	public String getXWidgetName() {
-		return xWidgetName;
-	}
+   public String getXWidgetName() {
+      return xWidgetName;
+   }
 
-	public void setXWidgetName(String widget) {
-		xWidgetName = widget;
-	}
+   public void setXWidgetName(String widget) {
+      xWidgetName = widget;
+   }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+   public void setName(String name) {
+      this.name = name;
+   }
 
-	// TODO This method will need to be removed
-	public XWidget getXWidget() throws OseeArgumentException {
-		if (xWidget == null) {
-			xWidget = xWidgetFactory.createXWidget(this);
-			if (artifact != null) {
-				try {
-					if (xWidget instanceof IAttributeWidget) {
-						((IAttributeWidget) xWidget).setAttributeType(artifact, getStorageName());
-					} else if (xWidget instanceof IArtifactWidget) {
-						((IArtifactWidget) xWidget).setArtifact(artifact);
-					}
-				} catch (Exception ex) {
-					OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-				}
-			}
-		}
-		return xWidget;
-	}
+   // TODO This method will need to be removed
+   public XWidget getXWidget() throws OseeArgumentException {
+      if (xWidget == null) {
+         xWidget = xWidgetFactory.createXWidget(this);
+         if (artifact != null) {
+            try {
+               if (xWidget instanceof IAttributeWidget) {
+                  ((IAttributeWidget) xWidget).setAttributeType(artifact, getStorageName());
+               } else if (xWidget instanceof IArtifactWidget) {
+                  ((IArtifactWidget) xWidget).setArtifact(artifact);
+               }
+            } catch (Exception ex) {
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+         }
+      }
+      return xWidget;
+   }
 
-	public void setDefaultValue(String defaultValue) {
-		this.defaultValue = defaultValue;
-	}
+   public void setDefaultValue(String defaultValue) {
+      this.defaultValue = defaultValue;
+   }
 
-	public int getHeight() {
-		return height;
-	}
+   public int getHeight() {
+      return height;
+   }
 
-	public void setHeight(int height) {
-		this.height = height;
-	}
+   public void setHeight(int height) {
+      this.height = height;
+   }
 
-	public int getBeginComposite() {
-		if (xOptionHandler.contains(XOption.BEGIN_COMPOSITE_10)) {
-			return 10;
-		}
-		if (xOptionHandler.contains(XOption.BEGIN_COMPOSITE_8)) {
-			return 8;
-		}
-		if (xOptionHandler.contains(XOption.BEGIN_COMPOSITE_6)) {
-			return 6;
-		}
-		if (xOptionHandler.contains(XOption.BEGIN_COMPOSITE_4)) {
-			return 4;
-		}
-		return beginComposite;
-	}
+   public int getBeginComposite() {
+      if (xOptionHandler.contains(XOption.BEGIN_COMPOSITE_10)) {
+         return 10;
+      }
+      if (xOptionHandler.contains(XOption.BEGIN_COMPOSITE_8)) {
+         return 8;
+      }
+      if (xOptionHandler.contains(XOption.BEGIN_COMPOSITE_6)) {
+         return 6;
+      }
+      if (xOptionHandler.contains(XOption.BEGIN_COMPOSITE_4)) {
+         return 4;
+      }
+      return beginComposite;
+   }
 
-	public int getBeginGroupComposite() {
-		if (xOptionHandler.contains(XOption.BEGIN_GROUP_COMPOSITE_10)) {
-			return 10;
-		}
-		if (xOptionHandler.contains(XOption.BEGIN_GROUP_COMPOSITE_8)) {
-			return 8;
-		}
-		if (xOptionHandler.contains(XOption.BEGIN_GROUP_COMPOSITE_6)) {
-			return 6;
-		}
-		if (xOptionHandler.contains(XOption.BEGIN_GROUP_COMPOSITE_4)) {
-			return 4;
-		}
-		return beginGroupComposite;
-	}
+   public int getBeginGroupComposite() {
+      if (xOptionHandler.contains(XOption.BEGIN_GROUP_COMPOSITE_10)) {
+         return 10;
+      }
+      if (xOptionHandler.contains(XOption.BEGIN_GROUP_COMPOSITE_8)) {
+         return 8;
+      }
+      if (xOptionHandler.contains(XOption.BEGIN_GROUP_COMPOSITE_6)) {
+         return 6;
+      }
+      if (xOptionHandler.contains(XOption.BEGIN_GROUP_COMPOSITE_4)) {
+         return 4;
+      }
+      return beginGroupComposite;
+   }
 
-	public void setBeginComposite(int beginComposite) {
-		this.beginComposite = beginComposite;
-	}
+   public void setBeginComposite(int beginComposite) {
+      this.beginComposite = beginComposite;
+   }
 
-	public void setBeginGroupComposite(int beginGroupComposite) {
-		this.beginGroupComposite = beginGroupComposite;
-	}
+   public void setBeginGroupComposite(int beginGroupComposite) {
+      this.beginGroupComposite = beginGroupComposite;
+   }
 
-	public boolean isEndComposite() {
-		return endComposite;
-	}
+   public boolean isEndComposite() {
+      return endComposite;
+   }
 
-	public boolean isEndGroupComposite() {
-		return endGroupComposite;
-	}
+   public boolean isEndGroupComposite() {
+      return endGroupComposite;
+   }
 
-	public void setEndComposite(boolean endComposite) {
-		this.endComposite = endComposite;
-	}
+   public void setEndComposite(boolean endComposite) {
+      this.endComposite = endComposite;
+   }
 
-	public void setEndGroupComposite(boolean endGroupComposite) {
-		this.endGroupComposite = endGroupComposite;
-	}
+   public void setEndGroupComposite(boolean endGroupComposite) {
+      this.endGroupComposite = endGroupComposite;
+   }
 
-	public String getToolTip() {
-		return toolTip;
-	}
+   public String getToolTip() {
+      return toolTip;
+   }
 
-	public void setToolTip(String toolTip) {
-		this.toolTip = toolTip;
-	}
+   public void setToolTip(String toolTip) {
+      this.toolTip = toolTip;
+   }
 
-	public DynamicXWidgetLayout getDynamicXWidgetLayout() {
-		return dynamicXWidgetLayout;
-	}
+   public DynamicXWidgetLayout getDynamicXWidgetLayout() {
+      return dynamicXWidgetLayout;
+   }
 
-	public String getDefaultValue() {
-		return defaultValue;
-	}
+   public String getDefaultValue() {
+      return defaultValue;
+   }
 
-	public void setKeyedBranchName(String keyedBranchName) {
-		this.keyedBranchName = keyedBranchName;
-	}
+   public void setKeyedBranchName(String keyedBranchName) {
+      this.keyedBranchName = keyedBranchName;
+   }
 
-	public String getKeyedBranchName() {
-		return keyedBranchName;
-	}
+   public String getKeyedBranchName() {
+      return keyedBranchName;
+   }
 
-	public void setDynamicXWidgetLayout(DynamicXWidgetLayout dynamicXWidgetLayout) {
-		this.dynamicXWidgetLayout = dynamicXWidgetLayout;
-	}
+   public void setDynamicXWidgetLayout(DynamicXWidgetLayout dynamicXWidgetLayout) {
+      this.dynamicXWidgetLayout = dynamicXWidgetLayout;
+   }
 
-	public String getId() {
-		return id;
-	}
+   public String getId() {
+      return id;
+   }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+   public void setId(String id) {
+      this.id = id;
+   }
 
-	public XOptionHandler getXOptionHandler() {
-		return xOptionHandler;
-	}
+   public XOptionHandler getXOptionHandler() {
+      return xOptionHandler;
+   }
 
-	public Artifact getArtifact() {
-		return artifact;
-	}
+   public Artifact getArtifact() {
+      return artifact;
+   }
 
-	public void setArtifact(Artifact artifact) {
-		this.artifact = artifact;
-	}
+   public void setArtifact(Artifact artifact) {
+      this.artifact = artifact;
+   }
 
 }

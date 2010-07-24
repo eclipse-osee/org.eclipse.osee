@@ -30,17 +30,23 @@ public class ActionableItemFilter extends ViewerFilter {
 
    @Override
    public boolean select(Viewer viewer, Object parentElement, Object element) {
-      if (!isFiltering()) return true;
+      if (!isFiltering()) {
+         return true;
+      }
       return checkItemAndChildren((ActionableItemArtifact) element);
    }
 
    private boolean checkItemAndChildren(ActionableItemArtifact item) {
       try {
          boolean show = item.getName().toLowerCase().contains(contains.toLowerCase());
-         if (show) return true;
+         if (show) {
+            return true;
+         }
          for (Artifact child : item.getChildren()) {
             show = checkItemAndChildren((ActionableItemArtifact) child);
-            if (show) return true;
+            if (show) {
+               return true;
+            }
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -53,10 +59,11 @@ public class ActionableItemFilter extends ViewerFilter {
     */
    public void setContains(String contains) {
       this.contains = contains;
-      if (contains.equals(""))
+      if (contains.equals("")) {
          treeViewer.getViewer().collapseAll();
-      else
+      } else {
          treeViewer.getViewer().expandAll();
+      }
    }
 
    /**

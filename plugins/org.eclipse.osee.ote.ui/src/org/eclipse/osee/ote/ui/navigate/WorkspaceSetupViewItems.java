@@ -15,7 +15,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
@@ -27,8 +26,8 @@ import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
 import org.eclipse.osee.framework.svn.CheckoutProjectSetJob;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateContainer;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 import org.eclipse.osee.ote.ui.OteImage;
 import org.eclipse.osee.ote.ui.internal.TestCoreGuiPlugin;
@@ -44,6 +43,7 @@ public class WorkspaceSetupViewItems implements IXNavigateContainer {
       super();
    }
 
+   @Override
    public List<XNavigateItem> getNavigateItems() {
       List<XNavigateItem> items = new ArrayList<XNavigateItem>();
       XNavigateItem parentFolder = new XNavigateItem(null, PARENT_FOLDER_NAME, PluginUiImage.FOLDER);
@@ -54,11 +54,11 @@ public class WorkspaceSetupViewItems implements IXNavigateContainer {
 
    private void workspaceSetupFactory(XNavigateItem parent) {
       List<IConfigurationElement> configurationElements =
-            ExtensionPoints.getExtensionElements("org.eclipse.osee.ote.ui.WorkspaceSetup", "WorkspaceConfig");
+         ExtensionPoints.getExtensionElements("org.eclipse.osee.ote.ui.WorkspaceSetup", "WorkspaceConfig");
       for (IConfigurationElement configElement : configurationElements) {
          IExtension extension = (IExtension) configElement.getParent();
          String shortCutName =
-               (extension.getLabel() == null || extension.getLabel().length() == 0) ? extension.getSimpleIdentifier() : extension.getLabel();
+            extension.getLabel() == null || extension.getLabel().length() == 0 ? extension.getSimpleIdentifier() : extension.getLabel();
          String resourceName = configElement.getAttribute("configFile");
          String bundleName = configElement.getContributor().getName();
          if (Strings.isValid(shortCutName) && Strings.isValid(bundleName) && Strings.isValid(resourceName)) {
@@ -68,8 +68,11 @@ public class WorkspaceSetupViewItems implements IXNavigateContainer {
                   new XNavigateItemRunnable(parent, shortCutName, OteImage.CHECKOUT, configPath);
                }
             } catch (Exception ex) {
-               OseeLog.log(TestCoreGuiPlugin.class, Level.WARNING, String.format("Unable to Load: [%s.%s - %s]",
-                     bundleName, resourceName,  OteImage.CHECKOUT.toString()), ex);
+               OseeLog.log(
+                  TestCoreGuiPlugin.class,
+                  Level.WARNING,
+                  String.format("Unable to Load: [%s.%s - %s]", bundleName, resourceName, OteImage.CHECKOUT.toString()),
+                  ex);
             }
          }
       }
@@ -87,8 +90,8 @@ public class WorkspaceSetupViewItems implements IXNavigateContainer {
    }
 
    private static final class XNavigateItemRunnable extends XNavigateItem {
-      private URL projectSetFile;
-      private String jobName;
+      private final URL projectSetFile;
+      private final String jobName;
 
       public XNavigateItemRunnable(XNavigateItem parent, String name, KeyedImage oseeImage, URL projectSetFile) {
          super(parent, name, oseeImage);
@@ -96,6 +99,7 @@ public class WorkspaceSetupViewItems implements IXNavigateContainer {
          this.projectSetFile = projectSetFile;
       }
 
+      @Override
       public void run(TableLoadOption... tableLoadOptions) {
          Job job = new CheckoutProjectSetJob(jobName, getName(), projectSetFile);
          job.setUser(true);

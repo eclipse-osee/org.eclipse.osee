@@ -88,7 +88,7 @@ public class PromptChangeUtil {
          selected.addAll(sma.getRelatedArtifacts(AtsRelationTypes.Goal_Goal));
       }
       Collection<Artifact> allGoals =
-            (new GoalSearchItem("", new ArrayList<TeamDefinitionArtifact>(), false, null)).performSearchGetResults();
+         new GoalSearchItem("", new ArrayList<TeamDefinitionArtifact>(), false, null).performSearchGetResults();
       ArtifactCheckTreeDialog dialog = new ArtifactCheckTreeDialog(allGoals);
       dialog.setTitle("Select Goals");
       dialog.setInitialSelections(selected.toArray());
@@ -112,11 +112,11 @@ public class PromptChangeUtil {
       for (StateMachineArtifact sma : smas) {
          if (sma.isCompleted()) {
             AWorkbench.popup("ERROR",
-                  "Can't assign completed " + sma.getArtifactTypeName() + " (" + sma.getHumanReadableId() + ")");
+               "Can't assign completed " + sma.getArtifactTypeName() + " (" + sma.getHumanReadableId() + ")");
             return false;
          } else if (sma.isCancelled()) {
             AWorkbench.popup("ERROR",
-                  "Can't assign cancelled " + sma.getArtifactTypeName() + " (" + sma.getHumanReadableId() + ")");
+               "Can't assign cancelled " + sma.getArtifactTypeName() + " (" + sma.getHumanReadableId() + ")");
             return false;
          }
       }
@@ -184,9 +184,9 @@ public class PromptChangeUtil {
          }
          if (teamArt.isReleased() || teamArt.isVersionLocked()) {
             String error =
-                  "Team Workflow\n \"" + teamArt.getName() + "\"\n targeted version is locked or already released.";
-            if (AtsUtil.isAtsAdmin() && !MessageDialog.openConfirm(Displays.getActiveShell(),
-                  "Change Version", error + "\n\nOverride?")) {
+               "Team Workflow\n \"" + teamArt.getName() + "\"\n targeted version is locked or already released.";
+            if (AtsUtil.isAtsAdmin() && !MessageDialog.openConfirm(Displays.getActiveShell(), "Change Version",
+               error + "\n\nOverride?")) {
                return false;
             } else if (!AtsUtil.isAtsAdmin()) {
                AWorkbench.popup("ERROR", error);
@@ -207,8 +207,8 @@ public class PromptChangeUtil {
          return false;
       }
       final VersionListDialog vld =
-            new VersionListDialog("Select Version", "Select Version",
-                  teamDefHoldingVersions.getVersionsArtifacts(versionReleaseType));
+         new VersionListDialog("Select Version", "Select Version",
+            teamDefHoldingVersions.getVersionsArtifacts(versionReleaseType));
       if (smas.size() == 1 && smas.iterator().next().getWorldViewTargetedVersion() != null) {
          Object[] objs = new Object[1];
          objs[0] = smas.iterator().next().getWorldViewTargetedVersion();
@@ -223,8 +223,8 @@ public class PromptChangeUtil {
       //now check selected version
       if (newVersion.isVersionLocked()) {
          String error = "Version \"" + newVersion.getFullDisplayName() + "\" is locked or already released.";
-         if (AtsUtil.isAtsAdmin() && !MessageDialog.openConfirm(Displays.getActiveShell(),
-               "Change Version", error + "\n\nOverride?")) {
+         if (AtsUtil.isAtsAdmin() && !MessageDialog.openConfirm(Displays.getActiveShell(), "Change Version",
+            error + "\n\nOverride?")) {
             return false;
          } else if (!AtsUtil.isAtsAdmin()) {
             AWorkbench.popup("ERROR", error);
@@ -233,7 +233,7 @@ public class PromptChangeUtil {
 
       for (TeamWorkFlowArtifact teamArt : smas) {
          teamArt.setRelations(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version,
-               java.util.Collections.singleton(newVersion));
+            java.util.Collections.singleton(newVersion));
       }
       if (persist) {
          SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Prompt Change Version");
@@ -257,7 +257,7 @@ public class PromptChangeUtil {
       for (TeamWorkFlowArtifact team : teams) {
          if (team.isReleased() || team.isVersionLocked()) {
             AWorkbench.popup("ERROR",
-                  "Team Workflow\n \"" + team.getName() + "\"\n version is locked or already released.");
+               "Team Workflow\n \"" + team.getName() + "\"\n version is locked or already released.");
             return false;
          }
       }
@@ -309,7 +309,7 @@ public class PromptChangeUtil {
                      team.deleteAttributes(ATSAttributes.POINTS_ATTRIBUTE.getStoreName());
                   } else {
                      team.setSoleAttributeFromString(ATSAttributes.POINTS_ATTRIBUTE.getStoreName(),
-                           dialog.getSelection());
+                        dialog.getSelection());
                   }
                   team.saveSMA(transaction);
                }
@@ -335,7 +335,7 @@ public class PromptChangeUtil {
       for (TeamWorkFlowArtifact team : teams) {
          if (team.isReleased() || team.isVersionLocked()) {
             AWorkbench.popup("ERROR",
-                  "Team Workflow\n \"" + team.getName() + "\"\n version is locked or already released.");
+               "Team Workflow\n \"" + team.getName() + "\"\n version is locked or already released.");
             return false;
          }
       }
@@ -365,7 +365,7 @@ public class PromptChangeUtil {
    public static boolean promptChangeFloatAttribute(StateMachineArtifact sma, ATSAttributes atsAttr, boolean persist) {
       try {
          return ArtifactPromptChange.promptChangeFloatAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
-               Arrays.asList(sma), persist);
+            Arrays.asList(sma), persist);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -375,7 +375,7 @@ public class PromptChangeUtil {
    public static boolean promptChangeIntegerAttribute(StateMachineArtifact sma, ATSAttributes atsAttr, boolean persist) {
       try {
          return ArtifactPromptChange.promptChangeIntegerAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
-               Arrays.asList(sma), persist);
+            Arrays.asList(sma), persist);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -385,7 +385,7 @@ public class PromptChangeUtil {
    public static boolean promptChangePercentAttribute(StateMachineArtifact sma, ATSAttributes atsAttr, boolean persist) {
       try {
          return ArtifactPromptChange.promptChangePercentAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
-               Arrays.asList(new Artifact[] {sma}), persist);
+            Arrays.asList(new Artifact[] {sma}), persist);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -395,7 +395,7 @@ public class PromptChangeUtil {
    public static boolean promptChangeBoolean(StateMachineArtifact sma, ATSAttributes atsAttr, String toggleMessage, boolean persist) {
       try {
          return ArtifactPromptChange.promptChangeBoolean(atsAttr.getStoreName(), atsAttr.getDisplayName(),
-               Arrays.asList(sma), toggleMessage, persist);
+            Arrays.asList(sma), toggleMessage, persist);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -404,13 +404,13 @@ public class PromptChangeUtil {
 
    public static boolean promptChangeAttribute(final Collection<? extends StateMachineArtifact> smas, ATSAttributes atsAttr, boolean persist, boolean multiLine) throws OseeCoreException {
       return ArtifactPromptChange.promptChangeStringAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(), smas,
-            persist, multiLine);
+         persist, multiLine);
    }
 
    public static boolean promptChangeAttribute(final Artifact sma, ATSAttributes atsAttr, boolean persist, boolean multiLine) {
       try {
          return ArtifactPromptChange.promptChangeStringAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
-               Arrays.asList(new Artifact[] {sma}), persist, multiLine);
+            Arrays.asList(new Artifact[] {sma}), persist, multiLine);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -420,7 +420,7 @@ public class PromptChangeUtil {
    public static boolean promptChangeAttribute(StateMachineArtifact sma, ATSAttributes atsAttr, final boolean persist, boolean multiLine) {
       try {
          return ArtifactPromptChange.promptChangeStringAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
-               Arrays.asList(sma), persist, multiLine);
+            Arrays.asList(sma), persist, multiLine);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -432,7 +432,7 @@ public class PromptChangeUtil {
          return ArtifactPromptChange.promptChangeDate(atsAttr.getStoreName(), atsAttr.getDisplayName(), sma, persist);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP,
-               "Can't save " + atsAttr.getDisplayName() + " date to artifact " + sma.getHumanReadableId(), ex);
+            "Can't save " + atsAttr.getDisplayName() + " date to artifact " + sma.getHumanReadableId(), ex);
       }
       return false;
    }
@@ -448,10 +448,10 @@ public class PromptChangeUtil {
             // prompt that this object is assigned to a version that is targeted
             // for release xxx - want to change?
             DateSelectionDialog diag =
-                  new DateSelectionDialog(
-                        "Select Release Date Date",
-                        "Warning: " + sma.getArtifactTypeName() + "'s release date is handled\n" + "by targeted for version \"" + verArt.getName() + "\"\n" + "changing the date here will change the\n" + "date for this entire release.\n\nSelect date to change.\n",
-                        verArt.getReleaseDate());
+               new DateSelectionDialog(
+                  "Select Release Date Date",
+                  "Warning: " + sma.getArtifactTypeName() + "'s release date is handled\n" + "by targeted for version \"" + verArt.getName() + "\"\n" + "changing the date here will change the\n" + "date for this entire release.\n\nSelect date to change.\n",
+                  verArt.getReleaseDate());
             if (verArt.getReleaseDate() != null) {
                diag.setSelectedDate(verArt.getReleaseDate());
             }
@@ -463,7 +463,7 @@ public class PromptChangeUtil {
          } else {
             // prompt that current release is (get from attribute) - want to change?
             DateSelectionDialog diag =
-                  new DateSelectionDialog("Select Release Date", "Select Release Date", sma.getWorldViewReleaseDate());
+               new DateSelectionDialog("Select Release Date", "Select Release Date", sma.getWorldViewReleaseDate());
             if (sma.getWorldViewReleaseDate() != null) {
                diag.setSelectedDate(sma.getWorldViewReleaseDate());
             }
@@ -486,16 +486,16 @@ public class PromptChangeUtil {
             // prompt that this object is assigned to a version that is targeted for release xxx -
             // want to change?
             DateSelectionDialog diag =
-                  new DateSelectionDialog(
-                        "Select Estimated Release Date Date",
-                        "Warning: " + sma.getArtifactTypeName() + "'s estimated release date is handled\n" + "by targeted for version \"" + verArt.getName() + "\"\n" + "changing the date here will change the\n" + "date for this entire release.\n\nSelect date to change.\n",
-                        verArt.getEstimatedReleaseDate());
+               new DateSelectionDialog(
+                  "Select Estimated Release Date Date",
+                  "Warning: " + sma.getArtifactTypeName() + "'s estimated release date is handled\n" + "by targeted for version \"" + verArt.getName() + "\"\n" + "changing the date here will change the\n" + "date for this entire release.\n\nSelect date to change.\n",
+                  verArt.getEstimatedReleaseDate());
             if (verArt.getEstimatedReleaseDate() != null) {
                diag.setSelectedDate(verArt.getEstimatedReleaseDate());
             }
             if (diag.open() == 0) {
                verArt.setSoleAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName(),
-                     diag.getSelectedDate());
+                  diag.getSelectedDate());
                verArt.persist();
                return true;
             }
@@ -503,21 +503,21 @@ public class PromptChangeUtil {
             // prompt that current est release is (get from attribute); want to
             // change
             DateSelectionDialog diag =
-                  new DateSelectionDialog("Select Estimate Release Date", "Select Estimated Release Date",
-                        sma.getWorldViewEstimatedReleaseDate());
+               new DateSelectionDialog("Select Estimate Release Date", "Select Estimated Release Date",
+                  sma.getWorldViewEstimatedReleaseDate());
             if (sma.getWorldViewEstimatedReleaseDate() != null) {
                diag.setSelectedDate(sma.getWorldViewEstimatedReleaseDate());
             }
             if (diag.open() == 0) {
                sma.setSoleAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName(),
-                     diag.getSelectedDate());
+                  diag.getSelectedDate());
                sma.persist();
                return true;
             }
          }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP,
-               "Can't save est release date " + sma.getHumanReadableId(), ex);
+            "Can't save est release date " + sma.getHumanReadableId(), ex);
       }
       return false;
    }

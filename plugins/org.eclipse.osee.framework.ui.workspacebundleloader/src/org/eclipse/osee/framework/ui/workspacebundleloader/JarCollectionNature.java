@@ -39,141 +39,141 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public class JarCollectionNature implements IProjectNature {
 
-	private final Name BUNDLE_PATH_ATTRIBUTE;
-	private boolean isClosing;
+   private final Name BUNDLE_PATH_ATTRIBUTE;
+   private boolean isClosing;
 
-	protected IProject project;
+   protected IProject project;
 
-	/**
-	 * @param BUNDLE_PATH_ATTRIBUTE the name of the attribute in the MANIFEST.MF to look at when looking for the path to
-	 * the jars being provided.
-	 */
-	public JarCollectionNature(String BUNDLE_PATH_ATTRIBUTE) {
-		super();
-		this.BUNDLE_PATH_ATTRIBUTE = new Name(BUNDLE_PATH_ATTRIBUTE);
-		this.isClosing = false;
-	}
+   /**
+    * @param BUNDLE_PATH_ATTRIBUTE the name of the attribute in the MANIFEST.MF to look at when looking for the path to
+    * the jars being provided.
+    */
+   public JarCollectionNature(String BUNDLE_PATH_ATTRIBUTE) {
+      super();
+      this.BUNDLE_PATH_ATTRIBUTE = new Name(BUNDLE_PATH_ATTRIBUTE);
+      this.isClosing = false;
+   }
 
-	/**
-	 * @return the isClosing
-	 */
-	public boolean isClosing() {
-		return isClosing;
-	}
+   /**
+    * @return the isClosing
+    */
+   public boolean isClosing() {
+      return isClosing;
+   }
 
-	/**
-	 * @param isClosing the isClosing to set
-	 */
-	public void setClosing(boolean isClosing) {
-		this.isClosing = isClosing;
-	}
+   /**
+    * @param isClosing the isClosing to set
+    */
+   public void setClosing(boolean isClosing) {
+      this.isClosing = isClosing;
+   }
 
-	@Override
-	public void configure() {
-	}
+   @Override
+   public void configure() {
+   }
 
-	@Override
-	public void deconfigure() {
-	}
+   @Override
+   public void deconfigure() {
+   }
 
-	@Override
-	public IProject getProject() {
-		return project;
-	}
+   @Override
+   public IProject getProject() {
+      return project;
+   }
 
-	@Override
-	public void setProject(IProject project) {
-		this.project = project;
-	}
+   @Override
+   public void setProject(IProject project) {
+      this.project = project;
+   }
 
-	public Collection<URL> getBundles() {
-		Collection<URL> urls = new ArrayList<URL>();
+   public Collection<URL> getBundles() {
+      Collection<URL> urls = new ArrayList<URL>();
 
-		if (isClosing) {
-			return urls;
-		}
+      if (isClosing) {
+         return urls;
+      }
 
-		IPath[] paths = getProjectRelativeBundlePaths();
-		for (IPath path : paths) {
-			IPath pluginsPath = project.getLocation().append(path);
-			File pluginDir = pluginsPath.toFile();
-			File[] jars = pluginDir.listFiles(new FilenameFilter() {
-				@Override
-				public boolean accept(File dir, String name) {
-					return name.endsWith(".jar");
-				}
-			});
+      IPath[] paths = getProjectRelativeBundlePaths();
+      for (IPath path : paths) {
+         IPath pluginsPath = project.getLocation().append(path);
+         File pluginDir = pluginsPath.toFile();
+         File[] jars = pluginDir.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+               return name.endsWith(".jar");
+            }
+         });
 
-			if (jars != null) {
-				for (File jar : jars) {
-					try {
-						urls.add(jar.toURI().toURL());
-					} catch (MalformedURLException ex) {
-						OseeLog.log(JarCollectionNature.class, Level.SEVERE, ex);
-					}
-				}
-			}
-		}
-		return urls;
-	}
+         if (jars != null) {
+            for (File jar : jars) {
+               try {
+                  urls.add(jar.toURI().toURL());
+               } catch (MalformedURLException ex) {
+                  OseeLog.log(JarCollectionNature.class, Level.SEVERE, ex);
+               }
+            }
+         }
+      }
+      return urls;
+   }
 
-	public IPath[] getProjectRelativeBundlePaths() {
-		Manifest manifest = getManifestFile();
-		Path[] paths;
-		Attributes mainAttributes = manifest.getMainAttributes();
-		String pathString;
-		if (mainAttributes.containsKey(BUNDLE_PATH_ATTRIBUTE)) {
-			pathString = mainAttributes.getValue(BUNDLE_PATH_ATTRIBUTE);
-			String[] tempPaths = pathString.split(",");
-			paths = new Path[tempPaths.length];
-			for (int i = 0; i < paths.length; i++) {
-				paths[i] = new Path(tempPaths[i].trim());
-			}
-		} else {
-			paths = new Path[1];
-			paths[0] = new Path("plugins");
-		}
-		return paths;
-	}
+   public IPath[] getProjectRelativeBundlePaths() {
+      Manifest manifest = getManifestFile();
+      Path[] paths;
+      Attributes mainAttributes = manifest.getMainAttributes();
+      String pathString;
+      if (mainAttributes.containsKey(BUNDLE_PATH_ATTRIBUTE)) {
+         pathString = mainAttributes.getValue(BUNDLE_PATH_ATTRIBUTE);
+         String[] tempPaths = pathString.split(",");
+         paths = new Path[tempPaths.length];
+         for (int i = 0; i < paths.length; i++) {
+            paths[i] = new Path(tempPaths[i].trim());
+         }
+      } else {
+         paths = new Path[1];
+         paths[0] = new Path("plugins");
+      }
+      return paths;
+   }
 
-	/**
-	 * @param manifestFile
-	 * @return
-	 * @throws IOException
-	 * @throws FileNotFoundException
-	 */
-	private Manifest getManifestFile() {
-		try {
-			File manifestFile = project.getLocation().append("META-INF").append("MANIFEST.MF").toFile();
-			if (manifestFile.exists()) {
-				return new Manifest(new FileInputStream(manifestFile));
-			} else {
-				return null;
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			return null;
-		}
-	}
+   /**
+    * @param manifestFile
+    * @return
+    * @throws IOException
+    * @throws FileNotFoundException
+    */
+   private Manifest getManifestFile() {
+      try {
+         File manifestFile = project.getLocation().append("META-INF").append("MANIFEST.MF").toFile();
+         if (manifestFile.exists()) {
+            return new Manifest(new FileInputStream(manifestFile));
+         } else {
+            return null;
+         }
+      } catch (Exception ex) {
+         ex.printStackTrace();
+         return null;
+      }
+   }
 
-	@SuppressWarnings("unchecked")
-	protected static <T extends JarCollectionNature> Collection<T> getWorkspaceProjects(String natureId, Class<T> clazz) throws CoreException {
-		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		IWorkspaceRoot workspaceRoot = workspace.getRoot();
-		IProject[] projects = workspaceRoot.getProjects();
+   @SuppressWarnings("unchecked")
+   protected static <T extends JarCollectionNature> Collection<T> getWorkspaceProjects(String natureId, Class<T> clazz) throws CoreException {
+      IWorkspace workspace = ResourcesPlugin.getWorkspace();
+      IWorkspaceRoot workspaceRoot = workspace.getRoot();
+      IProject[] projects = workspaceRoot.getProjects();
 
-		Collection<T> natures = new LinkedList<T>();
+      Collection<T> natures = new LinkedList<T>();
 
-		for (IProject project : projects) {
-			if (project.isOpen()) {
-				IProjectNature nature = project.getNature(natureId);
-				if (nature != null) {
-					JarCollectionNature jarNature = (JarCollectionNature) nature;
-					natures.add((T) jarNature);
-				}
-			}
-		}
+      for (IProject project : projects) {
+         if (project.isOpen()) {
+            IProjectNature nature = project.getNature(natureId);
+            if (nature != null) {
+               JarCollectionNature jarNature = (JarCollectionNature) nature;
+               natures.add((T) jarNature);
+            }
+         }
+      }
 
-		return natures;
-	}
+      return natures;
+   }
 }

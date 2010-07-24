@@ -76,20 +76,20 @@ public class StateHoursSpentXWidget extends XHyperlinkLabelValueSelection {
       }
       try {
          StringBuffer sb =
-               new StringBuffer(String.format("        State Hours: %5.2f", sma.getStateMgr().getHoursSpent(
-                     page.getName())));
+            new StringBuffer(String.format("        State Hours: %5.2f",
+               sma.getStateMgr().getHoursSpent(page.getName())));
          setEditable(isCurrentState && !sma.isReadOnly());
          boolean breakoutNeeded = false;
          if (sma instanceof TaskableStateMachineArtifact) {
             if (((TaskableStateMachineArtifact) sma).hasTaskArtifacts()) {
                sb.append(String.format("\n        Task  Hours: %5.2f",
-                     ((TaskableStateMachineArtifact) sma).getHoursSpentFromTasks(page.getName())));
+                  ((TaskableStateMachineArtifact) sma).getHoursSpentFromTasks(page.getName())));
                breakoutNeeded = true;
             }
          }
          if (sma.isTeamWorkflow() && ReviewManager.hasReviews((TeamWorkFlowArtifact) sma)) {
-            sb.append(String.format("\n     Review Hours: %5.2f", ReviewManager.getHoursSpent(
-                  (TeamWorkFlowArtifact) sma, page.getName())));
+            sb.append(String.format("\n     Review Hours: %5.2f",
+               ReviewManager.getHoursSpent((TeamWorkFlowArtifact) sma, page.getName())));
             breakoutNeeded = true;
          }
          if (breakoutNeeded) {

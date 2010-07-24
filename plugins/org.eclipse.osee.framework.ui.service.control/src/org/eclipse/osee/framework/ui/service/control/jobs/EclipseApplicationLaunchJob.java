@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.service.control.ControlPlugin;
 import org.eclipse.osee.framework.ui.service.control.wizards.launcher.ServiceLaunchDataPersist;
 import org.eclipse.osee.framework.ui.service.control.wizards.launcher.ServiceLaunchingInformation;
@@ -29,10 +30,10 @@ import org.eclipse.swt.SWT;
  * @author Roberto E. Escobar
  */
 public class EclipseApplicationLaunchJob extends Job {
-   private TextDisplayHelper display;
-   private ServiceLaunchingInformation serviceInfo;
-   private String javaCompiler;
-   private File latestPlugin;
+   private final TextDisplayHelper display;
+   private final ServiceLaunchingInformation serviceInfo;
+   private final String javaCompiler;
+   private final File latestPlugin;
 
    public EclipseApplicationLaunchJob(String name, String javaCompiler, File latestPlugin, ServiceLaunchingInformation serviceInfo, TextDisplayHelper display) {
       super(name);
@@ -73,11 +74,11 @@ public class EclipseApplicationLaunchJob extends Job {
             display.addText("\tExecuting:", SWT.BOLD, SWT.COLOR_DARK_BLUE, true);
             String tag = "-application";
             display.addText("\t" + temp.substring(temp.lastIndexOf(tag) + tag.length(), temp.length()) + "\n\n",
-                  SWT.BOLD, SWT.COLOR_BLACK, false);
+               SWT.BOLD, SWT.COLOR_BLACK, false);
 
             display.addText("\tRaw Command:", SWT.BOLD, SWT.COLOR_DARK_BLUE, true);
             display.addText("\t" + exec.replaceAll(ServiceItem.EXEC_SEPARATOR, " ") + "\n\n", SWT.BOLD,
-                  SWT.COLOR_BLACK, false);
+               SWT.COLOR_BLACK, false);
 
             File workingDir = new File(System.getProperty("user.home") + File.separator + "oseeservices");
             workingDir.mkdirs();
@@ -90,11 +91,11 @@ public class EclipseApplicationLaunchJob extends Job {
             display.startProcessHandling(process);
          } else {
             display.addText("\n" + serviceInfo.getServiceItem().getPlugin() + " could not be found." + "\n\n",
-                  SWT.NORMAL, SWT.COLOR_RED, false);
+               SWT.NORMAL, SWT.COLOR_RED, false);
             toReturn = Status.CANCEL_STATUS;
          }
       } catch (IOException ex) {
-         display.addText("\n" + ControlPlugin.getStackMessages(ex) + "\n\n", SWT.NORMAL, SWT.COLOR_RED, false);
+         display.addText("\n" + OseeUiActivator.getStackMessages(ex) + "\n\n", SWT.NORMAL, SWT.COLOR_RED, false);
          toReturn = Status.CANCEL_STATUS;
       }
       return toReturn;

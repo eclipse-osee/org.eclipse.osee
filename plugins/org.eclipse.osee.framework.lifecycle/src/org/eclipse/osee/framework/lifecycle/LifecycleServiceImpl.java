@@ -25,12 +25,13 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 public class LifecycleServiceImpl implements ILifecycleService {
 
    private final HashCollection<AbstractLifecycleVisitor.Type<?>, LifecycleHandler> handlersByType =
-         new HashCollection<AbstractLifecycleVisitor.Type<?>, LifecycleHandler>();
+      new HashCollection<AbstractLifecycleVisitor.Type<?>, LifecycleHandler>();
    private final HashCollection<String, LifecycleHandler> handlersById = new HashCollection<String, LifecycleHandler>();
 
    public LifecycleServiceImpl() {
    }
 
+   @Override
    public Collection<AbstractLifecycleVisitor.Type<?>> getHandlerTypes() {
       return handlersByType.keySet();
    }
@@ -40,6 +41,7 @@ public class LifecycleServiceImpl implements ILifecycleService {
       return (ArrayList<H>) handlersByType.getValues(type);
    }
 
+   @Override
    public <H extends LifecycleHandler> IStatus dispatch(IProgressMonitor monitor, AbstractLifecycleVisitor<H> visitor, String sourceId) {
       AbstractLifecycleVisitor.Type<H> type = visitor.getAssociatedType();
       IStatus status = null;
@@ -55,11 +57,13 @@ public class LifecycleServiceImpl implements ILifecycleService {
       return status;
    }
 
+   @Override
    public int getHandlerCount(AbstractLifecycleVisitor.Type<?> type) {
       ArrayList<?> handlers = get(type);
       return handlers == null ? 0 : handlers.size();
    }
 
+   @Override
    public <H extends LifecycleHandler> void addHandler(AbstractLifecycleVisitor.Type<H> type, final H handler) throws OseeCoreException {
       Conditions.checkNotNull(type, "handler type");
       Conditions.checkNotNull(handler, "handler");
@@ -68,6 +72,7 @@ public class LifecycleServiceImpl implements ILifecycleService {
       handlersById.put("", handler);
    }
 
+   @Override
    public <H extends LifecycleHandler> void removeHandler(AbstractLifecycleVisitor.Type<H> type, final H handler) throws OseeCoreException {
       Conditions.checkNotNull(type, "handler type");
       Conditions.checkNotNull(handler, "handler");

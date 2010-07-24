@@ -25,24 +25,27 @@ import org.eclipse.osee.ote.core.IUserSession;
  */
 public class OteServerSideEndpointSender implements EndpointSend {
 
-   public static final ProtocolId OTE_SERVER_SIDE_SEND_PROTOCOL = new StringProtocolId(new StringNamespace("org.eclipse.osee.ote.core.environment"), new StringName("OteServerSideEndpointSender"));
-   
-   private TestEnvironment testEnvironment;
+   public static final ProtocolId OTE_SERVER_SIDE_SEND_PROTOCOL = new StringProtocolId(new StringNamespace(
+      "org.eclipse.osee.ote.core.environment"), new StringName("OteServerSideEndpointSender"));
+
+   private final TestEnvironment testEnvironment;
 
    public OteServerSideEndpointSender(TestEnvironment testEnvironment) {
       this.testEnvironment = testEnvironment;
    }
 
+   @Override
    public void send(Message message, ExceptionHandler exceptionHandler) {
-      try{
-         for(IUserSession session : testEnvironment.getUserSessions()){
+      try {
+         for (IUserSession session : testEnvironment.getUserSessions()) {
             session.sendMessageToClient(message);
          }
-      } catch(Throwable th){
+      } catch (Throwable th) {
          exceptionHandler.handleException(th);
       }
    }
 
+   @Override
    public void start(Properties properties) {
    }
 

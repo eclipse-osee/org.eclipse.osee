@@ -115,16 +115,16 @@ public class DbTableExportItem extends AbstractDbExportItem {
                handleBinaryContent(binaryContentBuffer, getWriteLocation(), chStmt.getString(name));
             } else if (name.equals("value")) {
                handleStringContent(stringContentBuffer, getWriteLocation(), chStmt.getString(name),
-                     ExportImportXml.STRING_CONTENT);
+                  ExportImportXml.STRING_CONTENT);
             } else if (name.equals(ExportImportXml.OSEE_COMMENT)) {
                handleStringContent(oseeCommentBuffer, getWriteLocation(), chStmt.getString(name),
-                     ExportImportXml.OSEE_COMMENT);
+                  ExportImportXml.OSEE_COMMENT);
             } else if (name.equals(ExportImportXml.BRANCH_NAME)) {
                handleStringContent(branchNameBuffer, getWriteLocation(), chStmt.getString(name),
-                     ExportImportXml.BRANCH_NAME);
+                  ExportImportXml.BRANCH_NAME);
             } else if (name.equals(ExportImportXml.RATIONALE)) {
                handleStringContent(rationaleBuffer, getWriteLocation(), chStmt.getString(name),
-                     ExportImportXml.RATIONALE);
+                  ExportImportXml.RATIONALE);
             } else if (name.equals(ExportImportXml.ART_TYPE_ID)) {
                int typeId = chStmt.getInt(name);
                String guid = services.getCachingService().getArtifactTypeCache().getById(typeId).getGuid();
@@ -149,7 +149,7 @@ public class DbTableExportItem extends AbstractDbExportItem {
                         ExportImportXml.addXmlAttribute(appendable, name, value);
                      } catch (Exception ex) {
                         throw new Exception(String.format("Unable to convert [%s] of raw type [%s] to string.", name,
-                              chStmt.getColumnTypeName(columnIndex)), ex);
+                           chStmt.getColumnTypeName(columnIndex)), ex);
                      }
                      break;
                }

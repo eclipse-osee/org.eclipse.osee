@@ -13,22 +13,20 @@ package org.eclipse.osee.ote.runtimemanager.internal;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Collection;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.plugin.core.server.ResourceFinder;
 import org.eclipse.osee.ote.core.BundleInfo;
 import org.eclipse.osee.ote.runtimemanager.SafeWorkspaceTracker;
 
-/** 
+/**
  * @author Robert A. Fisher
- *
  */
 public class RuntimeLibResourceFinder extends ResourceFinder {
-   private SafeWorkspaceTracker safeWorkspaceTracker;
+   private final SafeWorkspaceTracker safeWorkspaceTracker;
 
    /**
-    * @param safeWorkspaceTracker 
+    * @param safeWorkspaceTracker
     * @param runtimeManager
     */
    public RuntimeLibResourceFinder(SafeWorkspaceTracker safeWorkspaceTracker) {
@@ -42,7 +40,7 @@ public class RuntimeLibResourceFinder extends ResourceFinder {
          Collection<BundleInfo> runtimeLibs = safeWorkspaceTracker.getRuntimeLibs();
          for (BundleInfo info : runtimeLibs) {
             if (info.getSymbolicName().equals(path)) {
-               return Lib.inputStreamToBytes(new FileInputStream(info.getFile()));	
+               return Lib.inputStreamToBytes(new FileInputStream(info.getFile()));
             }
          }
       } catch (CoreException ex) {
@@ -51,7 +49,7 @@ public class RuntimeLibResourceFinder extends ResourceFinder {
       }
       return null;
    }
-   
+
    @Override
    public void dispose() {
    }

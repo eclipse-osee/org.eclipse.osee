@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
 public class CoverageParameters {
 
    private final CoveragePackageBase coveragePackageBase;
-   private List<CoverageOption> coverageMethods = new ArrayList<CoverageOption>();
+   private final List<CoverageOption> coverageMethods = new ArrayList<CoverageOption>();
    private String name;
    private String namespace;
    private String rationale;
@@ -123,7 +123,9 @@ public class CoverageParameters {
     * @throws OseeCoreException
     */
    public boolean isAssigneeMatch(ICoverage coverage) throws OseeCoreException {
-      if (assignee == null || !(coverage instanceof CoverageUnit)) return true;
+      if (assignee == null || !(coverage instanceof CoverageUnit)) {
+         return true;
+      }
       if (OseeCoverageUnitStore.getAssignees((CoverageUnit) coverage).contains(assignee)) {
          return true;
       }
@@ -136,8 +138,12 @@ public class CoverageParameters {
     * CoverageUnit notes contains search string
     */
    public boolean isNotesMatch(ICoverage coverage) {
-      if (!Strings.isValid(notes) || !(coverage instanceof CoverageUnit)) return true;
-      if (!Strings.isValid(((CoverageUnit) coverage).getNotes())) return false;
+      if (!Strings.isValid(notes) || !(coverage instanceof CoverageUnit)) {
+         return true;
+      }
+      if (!Strings.isValid(((CoverageUnit) coverage).getNotes())) {
+         return false;
+      }
       if (((CoverageUnit) coverage).getNotes().contains(notes)) {
          return true;
       }
@@ -149,8 +155,12 @@ public class CoverageParameters {
     * item name contains search string
     */
    public boolean isNameMatch(ICoverage coverage) {
-      if (!Strings.isValid(name)) return true;
-      if (!Strings.isValid(coverage.getName())) return false;
+      if (!Strings.isValid(name)) {
+         return true;
+      }
+      if (!Strings.isValid(coverage.getName())) {
+         return false;
+      }
       if (coverage.getName().contains(name)) {
          return true;
       }
@@ -162,8 +172,12 @@ public class CoverageParameters {
     * item namespace contains search string
     */
    public boolean isNamespaceMatch(ICoverage coverage) {
-      if (!Strings.isValid(namespace)) return true;
-      if (!Strings.isValid(coverage.getNamespace())) return false;
+      if (!Strings.isValid(namespace)) {
+         return true;
+      }
+      if (!Strings.isValid(coverage.getNamespace())) {
+         return false;
+      }
       if (coverage.getNamespace().contains(namespace)) {
          return true;
       }
@@ -176,8 +190,12 @@ public class CoverageParameters {
     * CoverageItem rationale contains search string
     */
    public boolean isRationaleMatch(ICoverage coverage) {
-      if (!Strings.isValid(rationale) || !(coverage instanceof CoverageItem)) return true;
-      if (!Strings.isValid(((CoverageItem) coverage).getRationale())) return false;
+      if (!Strings.isValid(rationale) || !(coverage instanceof CoverageItem)) {
+         return true;
+      }
+      if (!Strings.isValid(((CoverageItem) coverage).getRationale())) {
+         return false;
+      }
       if (((CoverageItem) coverage).getRationale().contains(rationale)) {
          return true;
       }
@@ -190,14 +208,16 @@ public class CoverageParameters {
     * CoverageItem is method specified
     */
    public boolean isCoverageMethodMatch(ICoverage coverage) {
-      if (coverageMethods.isEmpty() || !(coverage instanceof CoverageItem)) return true;
+      if (coverageMethods.isEmpty() || !(coverage instanceof CoverageItem)) {
+         return true;
+      }
       if (coverageMethods.contains(((CoverageItem) coverage).getCoverageMethod())) {
          return true;
       }
       return false;
    }
 
-   public String getSelectedName(/*SearchType searchType*/) throws OseeCoreException {
+   public String getSelectedName(/* SearchType searchType */) throws OseeCoreException {
       StringBuffer sb = new StringBuffer();
       if (getAssignee() != null) {
          sb.append(" - Assignee: " + getAssignee());
@@ -216,7 +236,7 @@ public class CoverageParameters {
       }
       if (getSelectedCoverageMethods().size() > 1) {
          sb.append(" - Coverage Method: " + org.eclipse.osee.framework.jdk.core.util.Collections.toString(", ",
-               getSelectedCoverageMethods()));
+            getSelectedCoverageMethods()));
       }
       return "Coverage Items " + sb.toString();
    }
@@ -279,7 +299,7 @@ public class CoverageParameters {
 
    private void updateShowAll() {
       this.showAll =
-            getSelectedCoverageMethods().isEmpty() && getAssignee() == null && !Strings.isValid(getNotesStr()) && !Strings.isValid(getNamespace()) && !Strings.isValid(getRationale()) && !Strings.isValid(getName());
+         getSelectedCoverageMethods().isEmpty() && getAssignee() == null && !Strings.isValid(getNotesStr()) && !Strings.isValid(getNamespace()) && !Strings.isValid(getRationale()) && !Strings.isValid(getName());
    }
 
    public boolean isShowAll() {

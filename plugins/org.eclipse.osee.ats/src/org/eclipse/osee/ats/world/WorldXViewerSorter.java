@@ -35,20 +35,22 @@ public class WorldXViewerSorter extends XViewerSorter {
    @Override
    public int compare(Viewer viewer, Object o1, Object o2, int sortXColIndex) {
       try {
-         if (xViewer == null || !xViewer.getCustomizeMgr().isSorting()) return 0;
+         if (xViewer == null || !xViewer.getCustomizeMgr().isSorting()) {
+            return 0;
+         }
          XViewerColumn sortXCol = xViewer.getCustomizeMgr().getSortXCols().get(sortXColIndex);
-         IWorldViewArtifact m1 = (IWorldViewArtifact) ((Artifact) o1);
-         IWorldViewArtifact m2 = (IWorldViewArtifact) ((Artifact) o2);
+         IWorldViewArtifact m1 = (IWorldViewArtifact) (Artifact) o1;
+         IWorldViewArtifact m2 = (IWorldViewArtifact) (Artifact) o2;
 
          if (sortXCol.equals(WorldXViewerFactory.Assignees_Col)) {
             int compareInt =
-                  getComparator().compare(m1.getWorldViewActivePoc().replaceFirst("\\(", ""),
-                        m2.getWorldViewActivePoc().replaceFirst("\\(", ""));
+               getComparator().compare(m1.getWorldViewActivePoc().replaceFirst("\\(", ""),
+                  m2.getWorldViewActivePoc().replaceFirst("\\(", ""));
             return getCompareBasedOnDirection(sortXCol, compareInt, viewer, o1, o2, sortXColIndex);
          } else if (sortXCol.equals(WorldXViewerFactory.Change_Type_Col)) {
             int compareInt =
-                  getComparator().compare(m1.getWorldViewChangeType().ordinal() + "",
-                        m2.getWorldViewChangeType().ordinal() + "");
+               getComparator().compare(m1.getWorldViewChangeType().ordinal() + "",
+                  m2.getWorldViewChangeType().ordinal() + "");
             return getCompareBasedOnDirection(sortXCol, compareInt, viewer, o1, o2, sortXColIndex);
          }
 

@@ -55,19 +55,19 @@ public class ExtendedStatusReportJob extends Job {
    public static IStatus runIt(IProgressMonitor monitor, final String jobName, Collection<? extends Artifact> teamArts) {
       if (teamArts.isEmpty()) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, "No Artifacts Returned");
-         return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, "No Artifacts Returned", null);
+         return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, -1, "No Artifacts Returned", null);
       }
       try {
 
          final String html = AHTML.simplePage(getStatusReport(monitor, jobName, teamArts));
          ResultsEditor.open(new XResultPage(jobName + " - " + XDate.getDateNow(XDate.MMDDYYHHMM), html,
-               Manipulations.HTML_MANIPULATIONS));
+            Manipulations.HTML_MANIPULATIONS));
          AWorkbench.popup("Complete", jobName + " Complete...Results in ATS Results");
          monitor.done();
          return Status.OK_STATUS;
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-         return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
+         return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
       }
    }
 
@@ -135,57 +135,62 @@ public class ExtendedStatusReportJob extends Job {
       List<String> values = new ArrayList<String>();
       for (Columns col : Columns.values()) {
          // System.out.println("col *" + col + "*");
-         if (col == Columns.ActionId)
+         if (col == Columns.ActionId) {
             values.add(sma.getParentActionArtifact().getHumanReadableId());
-         else if (col == Columns.TeamId) {
-            if (sma.isTeamWorkflow())
+         } else if (col == Columns.TeamId) {
+            if (sma.isTeamWorkflow()) {
                values.add(sma.getHumanReadableId());
-            else
+            } else {
                values.add(".");
+            }
          } else if (col == Columns.TaskId) {
-            if (sma instanceof TaskArtifact)
+            if (sma instanceof TaskArtifact) {
                values.add(((TaskArtifact) sma).getHumanReadableId());
-            else
+            } else {
                values.add(".");
+            }
          } else if (col == Columns.Team) {
-            if (sma.isTeamWorkflow())
+            if (sma.isTeamWorkflow()) {
                values.add(((TeamWorkFlowArtifact) sma).getTeamName());
-            else
+            } else {
                values.add(".");
-         } else if (col == Columns.Type)
+            }
+         } else if (col == Columns.Type) {
             values.add(sma.getArtifactTypeName());
-         else if (col == Columns.Priority) {
+         } else if (col == Columns.Priority) {
             values.add((sma.getWorldViewPriority().equals("") ? "." : sma.getWorldViewPriority()));
          } else if (col == Columns.Change_Type) {
             values.add((sma.getWorldViewChangeType().name().equals("") ? "." : sma.getWorldViewChangeType().name()));
-         } else if (col == Columns.Title)
+         } else if (col == Columns.Title) {
             values.add(sma.getName());
-         else if (col == Columns.Analysis) {
+         } else if (col == Columns.Analysis) {
             String desc = sma.getDescription();
             if (sma instanceof TaskArtifact) {
                TaskArtifact taskArt = (TaskArtifact) sma;
                desc =
-                     taskArt.getDescription() + " " + taskArt.getSoleAttributeValue(
-                           ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(), "");
+                  taskArt.getDescription() + " " + taskArt.getSoleAttributeValue(
+                     ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(), "");
             }
-            if (desc.matches("^ *$"))
+            if (desc.matches("^ *$")) {
                values.add(".");
-            else
+            } else {
                values.add(desc);
+            }
          } else if (col == Columns.Originator) {
             if (sma.getOriginator() == null) {
                OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP,
-                     "Can't retrieve orig for " + sma.getHumanReadableId());
+                  "Can't retrieve orig for " + sma.getHumanReadableId());
                values.add(".");
-            } else
+            } else {
                values.add(sma.getOriginator().getName());
-         } else if (col == Columns.Assignees)
+            }
+         } else if (col == Columns.Assignees) {
             values.add(Artifacts.toString("; ", sma.getStateMgr().getAssignees()));
-         else if (col == Columns.Status_State)
+         } else if (col == Columns.Status_State) {
             values.add(sma.getStateMgr().getCurrentStateName());
-         else if (col == Columns.Date_Created)
+         } else if (col == Columns.Date_Created) {
             values.add(sma.getWorldViewCreatedDateStr());
-         else if (col == Columns.Version) {
+         } else if (col == Columns.Version) {
             values.add((sma.getWorldViewTargetedVersionStr() == null || sma.getWorldViewTargetedVersionStr().equals("") ? "." : sma.getWorldViewTargetedVersionStr()));
          }
       }

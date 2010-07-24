@@ -49,8 +49,8 @@ public class BlamContributionManager {
 
    public static Collection<AbstractBlam> getBlamOperations() {
       ExtensionDefinedObjects<AbstractBlam> definedObjects =
-            new ExtensionDefinedObjects<AbstractBlam>("org.eclipse.osee.framework.ui.skynet.BlamOperation",
-                  "Operation", "className");
+         new ExtensionDefinedObjects<AbstractBlam>("org.eclipse.osee.framework.ui.skynet.BlamOperation", "Operation",
+            "className");
       return definedObjects.getObjects();
    }
 

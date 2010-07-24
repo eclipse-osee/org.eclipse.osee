@@ -14,7 +14,6 @@ import org.eclipse.core.resources.IResourceChangeEvent;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public interface WrapResourceChangeListener {
    public void resourceChanged(IResourceChangeEvent event);

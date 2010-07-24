@@ -353,6 +353,7 @@ public class WorldLabelProvider extends XViewerLabelProvider {
       }
    }
 
+   @Override
    public void dispose() {
       if (font != null) {
          font.dispose();
@@ -360,13 +361,16 @@ public class WorldLabelProvider extends XViewerLabelProvider {
       font = null;
    }
 
+   @Override
    public boolean isLabelProperty(Object element, String property) {
       return false;
    }
 
+   @Override
    public void addListener(ILabelProviderListener listener) {
    }
 
+   @Override
    public void removeListener(ILabelProviderListener listener) {
    }
 

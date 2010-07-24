@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.exception;
 
-
 /**
  * @author Roberto E. Escobar
  */

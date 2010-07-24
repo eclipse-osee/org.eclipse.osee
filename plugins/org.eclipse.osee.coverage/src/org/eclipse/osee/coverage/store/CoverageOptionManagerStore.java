@@ -31,7 +31,9 @@ public class CoverageOptionManagerStore {
 
    private final OseeCoveragePackageStore oseeCoveragePackageStore;
    public static enum StoreLocation {
-      Local, Global, None
+      Local,
+      Global,
+      None
    };
 
    public CoverageOptionManagerStore(OseeCoveragePackageStore oseeCoveragePackageStore) {
@@ -40,18 +42,18 @@ public class CoverageOptionManagerStore {
 
    public String getCoverageOptions() throws MultipleAttributesExist, OseeCoreException {
       String coverageOptions =
-            oseeCoveragePackageStore.getArtifact(true).getSoleAttributeValueAsString(
-                  CoverageAttributes.COVERAGE_OPTIONS.getStoreName(), null);
+         oseeCoveragePackageStore.getArtifact(true).getSoleAttributeValueAsString(
+            CoverageAttributes.COVERAGE_OPTIONS.getStoreName(), null);
       if (!Strings.isValid(coverageOptions)) {
          coverageOptions =
-               new CoveragePreferences(oseeCoveragePackageStore.getArtifact(true).getBranch()).getCoverageOptions();
+            new CoveragePreferences(oseeCoveragePackageStore.getArtifact(true).getBranch()).getCoverageOptions();
       }
       return coverageOptions;
    }
 
    private String getLocalCoverageOptions() throws OseeCoreException {
       return oseeCoveragePackageStore.getArtifact(true).getSoleAttributeValueAsString(
-            CoverageAttributes.COVERAGE_OPTIONS.getStoreName(), null);
+         CoverageAttributes.COVERAGE_OPTIONS.getStoreName(), null);
    }
 
    private String getGlobalCoverageOptions() throws OseeCoreException {
@@ -65,14 +67,14 @@ public class CoverageOptionManagerStore {
       } else if (location == StoreLocation.Local) {
          if (!AccessControlManager.hasPermission(oseeCoveragePackageStore.getArtifact(true), PermissionEnum.WRITE)) {
             return new Result(String.format("You do not have permissions to change coverage options on [%s]",
-                  oseeCoveragePackageStore.getArtifact(true)));
+               oseeCoveragePackageStore.getArtifact(true)));
          }
          return Result.TrueResult;
       } else if (location == StoreLocation.Global) {
          CoveragePreferences prefs = new CoveragePreferences(oseeCoveragePackageStore.getArtifact(true).getBranch());
          if (prefs.isSaveable().isFalse()) {
             return new Result(String.format("You do not have permissions to change coverage options on [%s]",
-                  oseeCoveragePackageStore.getArtifact(true)));
+               oseeCoveragePackageStore.getArtifact(true)));
          }
          return Result.TrueResult;
       } else {
@@ -102,8 +104,7 @@ public class CoverageOptionManagerStore {
 
    public void store(CoverageOptionManager coverageOptionManager, StoreLocation storeLocation) throws OseeCoreException {
       if (storeLocation == StoreLocation.None) {
-         throw new OseeArgumentException(
-               "No Valid Store Location selected for Coverage Options");
+         throw new OseeArgumentException("No Valid Store Location selected for Coverage Options");
       }
       store(coverageOptionManager.toXml(), storeLocation);
    }
@@ -111,7 +112,7 @@ public class CoverageOptionManagerStore {
    public void store(String coverageOptions, StoreLocation storeLocation) throws OseeCoreException {
       if (storeLocation == StoreLocation.Local) {
          oseeCoveragePackageStore.getArtifact(true).setSoleAttributeFromString(
-               CoverageAttributes.COVERAGE_OPTIONS.getStoreName(), coverageOptions);
+            CoverageAttributes.COVERAGE_OPTIONS.getStoreName(), coverageOptions);
          oseeCoveragePackageStore.getArtifact(true).persist();
       } else if (storeLocation == StoreLocation.Global) {
          new CoveragePreferences(oseeCoveragePackageStore.getArtifact(true).getBranch()).setCoverageOptions(coverageOptions);

@@ -19,17 +19,17 @@ import org.osgi.framework.BundleContext;
  */
 public abstract class AbstractTrackingHandler {
 
-	protected AbstractTrackingHandler() {
-	}
+   protected AbstractTrackingHandler() {
+   }
 
-	protected <T> T getService(Class<T> clazz, Map<Class<?>, Object> objectMap) {
-		return clazz.cast(objectMap.get(clazz));
-	}
+   protected <T> T getService(Class<T> clazz, Map<Class<?>, Object> objectMap) {
+      return clazz.cast(objectMap.get(clazz));
+   }
 
-	public abstract Class<?>[] getDependencies();
+   public abstract Class<?>[] getDependencies();
 
-	public abstract void onActivate(BundleContext context, Map<Class<?>, Object> services);
+   public abstract void onActivate(BundleContext context, Map<Class<?>, Object> services);
 
-	public abstract void onDeActivate();
+   public abstract void onDeActivate();
 
 }

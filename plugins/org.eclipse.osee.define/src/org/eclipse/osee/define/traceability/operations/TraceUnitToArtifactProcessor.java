@@ -136,8 +136,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       Artifact traceUnitArtifact = getArtifactFromCache(monitor, traceUnitType, traceUnit.getName());
       if (traceUnitArtifact == null) {
          traceUnitArtifact =
-               ArtifactTypeManager.addArtifact(traceUnit.getTraceUnitType(), transaction.getBranch(),
-                     traceUnit.getName());
+            ArtifactTypeManager.addArtifact(traceUnit.getTraceUnitType(), transaction.getBranch(), traceUnit.getName());
          artifactWasCreated = true;
       }
 
@@ -199,7 +198,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       Artifact toReturn = requirementData.getRequirementFromTraceMark(traceMark);
       if (toReturn == null) {
          Pair<String, String> structuredRequirement =
-               TraceabilityExtractor.getInstance().getStructuredRequirement(traceMark);
+            TraceabilityExtractor.getInstance().getStructuredRequirement(traceMark);
          if (structuredRequirement != null) {
             toReturn = requirementData.getRequirementFromTraceMark(structuredRequirement.getFirst());
          }
@@ -243,8 +242,8 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       public static void linkWithTestUnit(SkynetTransaction transaction, Artifact testCase) throws OseeCoreException {
          if (testCase.isOfType(CoreArtifactTypes.TestCase)) {
             List<Artifact> testRuns =
-                  ArtifactQuery.getArtifactListFromTypeAndName(CoreArtifactTypes.TestRun, testCase.getName(),
-                        transaction.getBranch());
+               ArtifactQuery.getArtifactListFromTypeAndName(CoreArtifactTypes.TestRun, testCase.getName(),
+                  transaction.getBranch());
 
             for (Artifact testRun : testRuns) {
                createGuidLink(testCase, testRun);
@@ -349,14 +348,14 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       private void addTraceNotFoundTab(List<IResultsEditorTab> toReturn) {
          if (!reportTraceNotFound.isEmpty()) {
             List<XViewerColumn> columns =
-                  createColumns("Trace Unit Name", "Trace Unit Type", "Trace Mark Type", "Trace Mark");
+               createColumns("Trace Unit Name", "Trace Unit Type", "Trace Mark Type", "Trace Mark");
 
             List<IResultsXViewerRow> rows = new ArrayList<IResultsXViewerRow>();
             for (TraceUnit unit : reportTraceNotFound.keySet()) {
                Collection<TraceMark> traceMarks = reportTraceNotFound.getValues(unit);
                for (TraceMark traceMark : traceMarks) {
                   rows.add(new ResultsXViewerRow(new String[] {unit.getName(), unit.getTraceUnitType(),
-                        traceMark.getTraceType(), traceMark.getRawTraceMark()}));
+                     traceMark.getTraceType(), traceMark.getRawTraceMark()}));
                }
             }
             toReturn.add(new ResultsEditorTableTab("Trace Marks Not Found", columns, rows));

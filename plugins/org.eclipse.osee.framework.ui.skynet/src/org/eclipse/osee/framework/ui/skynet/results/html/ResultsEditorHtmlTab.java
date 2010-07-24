@@ -80,6 +80,7 @@ public class ResultsEditorHtmlTab implements IResultsEditorHtmlTab, IBrowserActi
       return tabName;
    }
 
+   @Override
    public Composite createTab(Composite parent, ResultsEditor resultsEditor) throws OseeCoreException {
       this.resultsEditor = resultsEditor;
 
@@ -94,7 +95,7 @@ public class ResultsEditorHtmlTab implements IResultsEditorHtmlTab, IBrowserActi
 
       SkynetGuiPlugin.getInstance().setHelp(xResultsComposite, HELP_CONTEXT_ID, "org.eclipse.osee.ats.help.ui");
       SkynetGuiPlugin.getInstance().setHelp(xResultsComposite.getBrowser(), HELP_CONTEXT_ID,
-            "org.eclipse.osee.ats.help.ui");
+         "org.eclipse.osee.ats.help.ui");
       return comp;
    }
 
@@ -159,7 +160,7 @@ public class ResultsEditorHtmlTab implements IResultsEditorHtmlTab, IBrowserActi
                   throw new IllegalStateException("Empty file");
                }
                resultsEditor.addResultsTab(new ResultsEditorHtmlTab(new XResultPage(filename, html,
-                     Manipulations.RAW_HTML)));
+                  Manipulations.RAW_HTML)));
             } catch (Exception ex) {
                OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }

@@ -19,30 +19,30 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 public class Activator implements BundleActivator {
-	public static final String PLUGIN_ID = "org.eclipse.osee.framework.branch.management";
+   public static final String PLUGIN_ID = "org.eclipse.osee.framework.branch.management";
 
-	private final List<ServiceDependencyTracker> services;
+   private final List<ServiceDependencyTracker> services;
 
-	public Activator() {
-		this.services = new ArrayList<ServiceDependencyTracker>();
-	}
+   public Activator() {
+      this.services = new ArrayList<ServiceDependencyTracker>();
+   }
 
-	@Override
-	public void start(BundleContext context) throws Exception {
-		services.add(new ServiceDependencyTracker(context, new OseeBranchServiceRegistrationHandler()));
-		services.add(new ServiceDependencyTracker(context, new OseeBranchExchangeServiceRegistrationHandler()));
+   @Override
+   public void start(BundleContext context) throws Exception {
+      services.add(new ServiceDependencyTracker(context, new OseeBranchServiceRegistrationHandler()));
+      services.add(new ServiceDependencyTracker(context, new OseeBranchExchangeServiceRegistrationHandler()));
 
-		for (ServiceDependencyTracker service : services) {
-			service.open();
-		}
-	}
+      for (ServiceDependencyTracker service : services) {
+         service.open();
+      }
+   }
 
-	@Override
-	public void stop(BundleContext context) throws Exception {
-		for (ServiceDependencyTracker service : services) {
-			service.close();
-		}
-		services.clear();
-	}
+   @Override
+   public void stop(BundleContext context) throws Exception {
+      for (ServiceDependencyTracker service : services) {
+         service.close();
+      }
+      services.clear();
+   }
 
 }

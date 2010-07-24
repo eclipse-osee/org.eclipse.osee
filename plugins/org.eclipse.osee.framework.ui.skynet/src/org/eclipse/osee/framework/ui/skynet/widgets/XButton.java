@@ -68,7 +68,9 @@ public class XButton extends XWidget {
       bComp = new Composite(parent, SWT.NONE);
       bComp.setLayout(ALayout.getZeroMarginLayout(2, false));
       bComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-      if (toolkit != null) toolkit.adapt(bComp);
+      if (toolkit != null) {
+         toolkit.adapt(bComp);
+      }
 
       // Create Text Widgets
       if (!labelAfter) {
@@ -76,10 +78,11 @@ public class XButton extends XWidget {
          labelWidget.setText(getLabel() + ":");
       }
 
-      if (toolkit != null)
+      if (toolkit != null) {
          button = toolkit.createLabel(bComp, "");
-      else
+      } else {
          button = new Label(bComp, SWT.PUSH);
+      }
       GridData gd2 = new GridData(GridData.BEGINNING);
       button.setLayoutData(gd2);
       button.addListener(SWT.MouseUp, new Listener() {
@@ -115,7 +118,9 @@ public class XButton extends XWidget {
       button.setLayoutData(gd);
       updateCheckWidget();
       button.setEnabled(isEditable());
-      if (image != null) button.setImage(image);
+      if (image != null) {
+         button.setImage(image);
+      }
       button.setCursor(new Cursor(null, SWT.CURSOR_HAND));
 
    }
@@ -125,7 +130,9 @@ public class XButton extends XWidget {
       labelWidget.dispose();
       button.dispose();
       bComp.dispose();
-      if (parent != null && !parent.isDisposed()) parent.layout();
+      if (parent != null && !parent.isDisposed()) {
+         parent.layout();
+      }
    }
 
    @Override
@@ -145,10 +152,11 @@ public class XButton extends XWidget {
 
    @Override
    public void setXmlData(String set) {
-      if (set.equals("true"))
+      if (set.equals("true")) {
          set(true);
-      else
+      } else {
          set(false);
+      }
    }
 
    private void updateCheckWidget() {

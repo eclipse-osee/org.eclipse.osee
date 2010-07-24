@@ -21,10 +21,10 @@ import java.net.Socket;
  * @author Ryan D. Brooks
  */
 public class TaskRequester {
-   private NativeCommand nativeCommand;
-   private Socket taskSocket;
-   private BufferedReader fromServer;
-   private ObjectOutputStream toServer;
+   private final NativeCommand nativeCommand;
+   private final Socket taskSocket;
+   private final BufferedReader fromServer;
+   private final ObjectOutputStream toServer;
 
    public TaskRequester(String machine, int port) throws IOException {
       if (port < 1) {

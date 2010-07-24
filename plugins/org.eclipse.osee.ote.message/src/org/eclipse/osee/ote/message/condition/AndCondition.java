@@ -14,8 +14,8 @@ import java.util.Collection;
 
 /**
  * Checks that atleast one condition of a series of conditions is true
+ * 
  * @author Ken J. Aguilar
- *
  */
 public class AndCondition extends AbstractCondition {
 
@@ -29,6 +29,7 @@ public class AndCondition extends AbstractCondition {
       this.conditions = conditions.toArray(new ICondition[conditions.size()]);
    }
 
+   @Override
    public boolean check() {
       for (ICondition condition : conditions) {
          if (condition.check()) {

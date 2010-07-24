@@ -24,22 +24,21 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 public class RunCSVConversion implements IApplication {
 
+   @Override
    public Object start(IApplicationContext context) throws Exception {
       String filepath = System.getProperty("csvprocess");
 
       if (filepath == null) {
-         OseeLog.log(
-               Activator.class,
-               Level.SEVERE,
-               "Java Property 'csvprocess' was not set, the program will exit.  Use '-vmargs -Dcsvprocess=<filetoprocess>' ");
+         OseeLog.log(Activator.class, Level.SEVERE,
+            "Java Property 'csvprocess' was not set, the program will exit.  Use '-vmargs -Dcsvprocess=<filetoprocess>' ");
          return null;
       }
 
       File file = new File(filepath);
       File csvFile = new File(filepath + ".csv");
       if (!file.exists()) {
-         OseeLog.log(Activator.class, Level.SEVERE, String.format("[%s] does not exist.  Exiting the csv processor.",
-               file.toString()));
+         OseeLog.log(Activator.class, Level.SEVERE,
+            String.format("[%s] does not exist.  Exiting the csv processor.", file.toString()));
          return null;
       }
 
@@ -58,6 +57,7 @@ public class RunCSVConversion implements IApplication {
       return IApplication.EXIT_OK;
    }
 
+   @Override
    public void stop() {
    }
 

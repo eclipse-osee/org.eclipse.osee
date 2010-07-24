@@ -20,7 +20,7 @@ public class CoveragePackage1Import5 extends CpSelectAndImportItem {
 
    public CoveragePackage1Import5(XNavigateItem parent) {
       super(parent, "Open CP 1 - Import 5 - Add NavigationButton.setImage.line 2,3 items to end",
-            CoverageImport5TestBlam.NAME);
+         CoverageImport5TestBlam.NAME);
    }
 
 }

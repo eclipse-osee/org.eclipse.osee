@@ -30,7 +30,7 @@ public class XViewerAtsAttributeColumn extends XViewerColumn {
    @Override
    public XViewerAtsAttributeColumn copy() {
       return new XViewerAtsAttributeColumn(getId(), getName(), getAttributeTypeName(), getWidth(), getAlign(),
-            isShow(), getSortDataType(), isMultiColumnEditable(), getDescription());
+         isShow(), getSortDataType(), isMultiColumnEditable(), getDescription());
    }
 
    public XViewerAtsAttributeColumn(String id, ATSAttributes atsAttribute, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable) {
@@ -39,7 +39,7 @@ public class XViewerAtsAttributeColumn extends XViewerColumn {
 
    public XViewerAtsAttributeColumn(String id, ATSAttributes atsAttribute, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
       this(id, atsAttribute.getDisplayName(), atsAttribute.getStoreName(), width, align, show, sortDataType,
-            multiColumnEditable, description);
+         multiColumnEditable, description);
    }
 
    public XViewerAtsAttributeColumn(ATSAttributes atsAttribute, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable) {
@@ -48,10 +48,10 @@ public class XViewerAtsAttributeColumn extends XViewerColumn {
 
    public XViewerAtsAttributeColumn(ATSAttributes atsAttribute, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
       this(
-            WorldXViewerFactory.COLUMN_NAMESPACE + "." + (atsAttribute.getDisplayName().replaceAll(" ", "").toLowerCase()),
-            atsAttribute.getDisplayName(), atsAttribute.getStoreName(), width, align, show, sortDataType,
-            multiColumnEditable,
-            description == null || description.equals("") ? atsAttribute.getDescription() : description);
+         WorldXViewerFactory.COLUMN_NAMESPACE + "." + atsAttribute.getDisplayName().replaceAll(" ", "").toLowerCase(),
+         atsAttribute.getDisplayName(), atsAttribute.getStoreName(), width, align, show, sortDataType,
+         multiColumnEditable,
+         description == null || description.equals("") ? atsAttribute.getDescription() : description);
    }
 
    public XViewerAtsAttributeColumn(String id, String name, String attributeTypeName, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {

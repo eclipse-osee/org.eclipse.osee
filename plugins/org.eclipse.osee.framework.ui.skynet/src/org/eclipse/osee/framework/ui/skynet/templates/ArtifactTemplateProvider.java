@@ -59,11 +59,11 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
                      templateMap.put(matchCriteria, art);
                   }
                   OseeLog.log(
-                        SkynetGuiPlugin.class,
-                        Level.SEVERE,
-                        String.format(
-                              "ArtifactTemplateProvider has detected a conflict with 'Template Match Criteria' [%s].  Artifact [%s] will supply the template for all requests with this match criteria.",
-                              matchCriteria, templateMap.get(matchCriteria).getName()));
+                     SkynetGuiPlugin.class,
+                     Level.SEVERE,
+                     String.format(
+                        "ArtifactTemplateProvider has detected a conflict with 'Template Match Criteria' [%s].  Artifact [%s] will supply the template for all requests with this match criteria.",
+                        matchCriteria, templateMap.get(matchCriteria).getName()));
 
                }
             }
@@ -79,7 +79,7 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
 
       if (template == null) {
          List<String> possibleTemplateNames =
-               getPossibleTemplateNamesOrderedBySpecialization(renderer, artifact, presentationType, option);
+            getPossibleTemplateNamesOrderedBySpecialization(renderer, artifact, presentationType, option);
 
          for (String name : possibleTemplateNames) {
             template = templateMap.get(name);
@@ -91,7 +91,7 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
          return template;
       }
       throw new OseeArgumentException(String.format("Unable to find a valid template match for [%s, %s, %s, %s].",
-            renderer.toString(), artifact.toString(), presentationType, option));
+         renderer.toString(), artifact.toString(), presentationType, option));
    }
 
    private Artifact getArtifactFromOptionName(String name) throws OseeCoreException {
@@ -101,7 +101,7 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
          return toReturn;
       }
       List<Artifact> artifacts =
-            ArtifactQuery.getArtifactListFromName(name, BranchManager.getCommonBranch(), EXCLUDE_DELETED);
+         ArtifactQuery.getArtifactListFromName(name, BranchManager.getCommonBranch(), EXCLUDE_DELETED);
 
       if (!artifacts.isEmpty()) {
          toReturn = artifacts.iterator().next();
@@ -112,7 +112,7 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
    private List<String> getPossibleTemplateNamesOrderedBySpecialization(IRenderer renderer, Artifact artifact, String presentationType, String option) throws OseeArgumentException {
       if (renderer == null || presentationType == null) {
          throw new OseeArgumentException(String.format("Invalid renderer[%s] or presentationType[%s]",
-               renderer.toString(), presentationType.toString()));
+            renderer.toString(), presentationType.toString()));
       }
       List<String> list = new ArrayList<String>();
 
@@ -131,10 +131,12 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
       return list;
    }
 
+   @Override
    public int getApplicabilityRating(IRenderer rendererId, Artifact artifact, String presentationType, String option) {
       return ITemplateProvider.DEFAULT_MATCH;
    }
 
+   @Override
    public List<Artifact> getAllTemplates() throws OseeCoreException {
       if (templates == null) {
          templates = ArtifactQuery.getArtifactListFromType("Renderer Template", BranchManager.getCommonBranch());

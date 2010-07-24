@@ -72,16 +72,20 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
       return "unhandled column";
    }
 
+   @Override
    public void dispose() {
    }
 
+   @Override
    public boolean isLabelProperty(Object element, String property) {
       return false;
    }
 
+   @Override
    public void addListener(ILabelProviderListener listener) {
    }
 
+   @Override
    public void removeListener(ILabelProviderListener listener) {
    }
 

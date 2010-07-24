@@ -30,7 +30,7 @@ public class DuplicateWorkflowAction extends Action {
 
    public DuplicateWorkflowAction(Collection<TeamWorkFlowArtifact> teams) {
       super(
-            teams.size() == 1 ? "Duplicate this \"" + teams.iterator().next().getArtifactTypeName() + "\" Workflow" : "Duplicate Workflows");
+         teams.size() == 1 ? "Duplicate this \"" + teams.iterator().next().getArtifactTypeName() + "\" Workflow" : "Duplicate Workflows");
       this.teams = teams;
       setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.DUPLICATE));
    }

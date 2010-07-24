@@ -70,16 +70,16 @@ public abstract class AbstractEventArtifactEditor extends AbstractArtifactEditor
 
    protected abstract void checkEnabledTooltems();
 
-	@Override
+   @Override
    public abstract void refreshDirtyArtifact();
 
-	@Override
+   @Override
    public abstract void closeEditor();
 
-	@Override
+   @Override
    public abstract void refreshRelations();
 
-	@Override
+   @Override
    public void setMainImage(Image titleImage) {
       super.setTitleImage(titleImage);
    }
@@ -122,7 +122,7 @@ public abstract class AbstractEventArtifactEditor extends AbstractArtifactEditor
       }
 
       @Override
-		public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) {
+      public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) {
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
             public void run() {
@@ -145,7 +145,7 @@ public abstract class AbstractEventArtifactEditor extends AbstractArtifactEditor
       }
 
       @Override
-		public void handleArtifactsPurgedEvent(Sender sender, final LoadedArtifacts loadedArtifacts) {
+      public void handleArtifactsPurgedEvent(Sender sender, final LoadedArtifacts loadedArtifacts) {
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
             public void run() {

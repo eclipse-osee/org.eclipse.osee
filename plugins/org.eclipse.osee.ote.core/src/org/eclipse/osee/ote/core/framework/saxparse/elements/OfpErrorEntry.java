@@ -15,9 +15,8 @@ import org.xml.sax.Attributes;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
-public class OfpErrorEntry extends ElementHandlers{
+public class OfpErrorEntry extends ElementHandlers {
 
    /**
     * @param name
@@ -28,7 +27,8 @@ public class OfpErrorEntry extends ElementHandlers{
 
    @Override
    public Object createStartElementFoundObject(String uri, String localName, String name, Attributes attributes) {
-      return new OfpErrorEntryData(attributes.getValue("NODE_ID"), attributes.getValue("count"), attributes.getValue("severity"), attributes.getValue("version"));
+      return new OfpErrorEntryData(attributes.getValue("NODE_ID"), attributes.getValue("count"),
+         attributes.getValue("severity"), attributes.getValue("version"));
    }
 
 }

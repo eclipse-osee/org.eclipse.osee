@@ -26,6 +26,6 @@ public interface ITestRunListenerProvider {
    IMethodResult notifyPostTestCase(IEventData eventData);
 
    IMethodResult notifyPostRun(IEventData eventData);
-   
+
    void clear();
 }

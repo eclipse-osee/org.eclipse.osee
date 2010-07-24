@@ -33,8 +33,8 @@ public class TestPlanComplianceReport extends AbstractBlam {
    private static final String MISSING = "?";
    private static final String EMPTY = "&nbsp;";
    private String[] previousCells = {MISSING, MISSING, MISSING, MISSING, MISSING};
-   private final String[] columnHeaders =
-         {"Test Plan & Paragraph", "Perf Spec Requirement(s)", "Test Procedure", "Test Status", "Test Result"};
+   private final String[] columnHeaders = {"Test Plan & Paragraph", "Perf Spec Requirement(s)", "Test Procedure",
+      "Test Status", "Test Result"};
    private Collection<Artifact> inputArtifacts;
    private Collection<Artifact> testPlans;
    private StringBuilder report;
@@ -138,7 +138,7 @@ public class TestPlanComplianceReport extends AbstractBlam {
 
    private String getRequirementsAsString(Artifact testPlan) throws OseeCoreException {
       Collection<Artifact> requirementArtifacts =
-            testPlan.getRelatedArtifacts(CoreRelationTypes.Verification_Plan__Requirement);
+         testPlan.getRelatedArtifacts(CoreRelationTypes.Verification_Plan__Requirement);
       Collection<String> requirementNames = new ArrayList<String>();
       for (Artifact req : requirementArtifacts) {
          String paragraphNumber = req.getSoleAttributeValue(CoreAttributeTypes.PARAGRAPH_NUMBER, "");
@@ -193,7 +193,7 @@ public class TestPlanComplianceReport extends AbstractBlam {
       }
       RelationManager.getRelatedArtifacts(testPlans, 1, CoreRelationTypes.Verification_Plan__Requirement);
       Collection<Artifact> temp =
-            RelationManager.getRelatedArtifacts(testPlans, 1, CoreRelationTypes.Executes__Test_Procedure);
+         RelationManager.getRelatedArtifacts(testPlans, 1, CoreRelationTypes.Executes__Test_Procedure);
       RelationManager.getRelatedArtifacts(temp, 1, CoreRelationTypes.Test_Unit_Result__Test_Result);
    }
 

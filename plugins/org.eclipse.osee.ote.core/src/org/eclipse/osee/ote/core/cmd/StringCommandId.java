@@ -14,24 +14,22 @@ import java.io.Serializable;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public class StringCommandId implements CommandId, Serializable {
 
    private static final long serialVersionUID = 2236967568467058971L;
-   private Namespace namespace;
-   private Name name;
-   
-   public StringCommandId(Namespace namespace, Name name){
+   private final Namespace namespace;
+   private final Name name;
+
+   public StringCommandId(Namespace namespace, Name name) {
       this.namespace = namespace;
       this.name = name;
    }
 
    @Override
    public boolean equals(Object obj) {
-      if(obj instanceof StringCommandId){
-         return namespace.equals(((StringCommandId)obj).namespace) && 
-         name.equals(((StringCommandId)obj).name);
+      if (obj instanceof StringCommandId) {
+         return namespace.equals(((StringCommandId) obj).namespace) && name.equals(((StringCommandId) obj).name);
       } else {
          return false;
       }
@@ -45,10 +43,12 @@ public class StringCommandId implements CommandId, Serializable {
       return hash;
    }
 
+   @Override
    public Name getName() {
       return name;
    }
 
+   @Override
    public Namespace getNamespace() {
       return namespace;
    }

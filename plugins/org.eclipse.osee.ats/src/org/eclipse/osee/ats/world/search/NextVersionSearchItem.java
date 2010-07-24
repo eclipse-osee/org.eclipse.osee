@@ -85,8 +85,8 @@ public class NextVersionSearchItem extends WorldUISearchItem {
          return EMPTY_SET;
       }
       List<Artifact> arts =
-            getTeamDefinition(searchType).getNextReleaseVersion().getRelatedArtifacts(
-                  AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow);
+         getTeamDefinition(searchType).getNextReleaseVersion().getRelatedArtifacts(
+            AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow);
       if (isCancelled()) {
          return EMPTY_SET;
       }

@@ -43,8 +43,9 @@ public class TransactionMonitor {
          // use the same transaction.
          // This case may happens legitimately if an exception occurs outside this API before transaction.execute() is called,
          // so it is only notification that this is occurring.
-         OseeLog.log(Activator.class, Level.SEVERE, String.format(
-               "New transaction [%s] created over Last transaction [%s]", comment, lastComment), currentTx.getError());
+         OseeLog.log(Activator.class, Level.SEVERE,
+            String.format("New transaction [%s] created over Last transaction [%s]", comment, lastComment),
+            currentTx.getError());
       }
       lastComment = comment;
       txMap.put(key, new TxOperation(transaction));
@@ -54,7 +55,7 @@ public class TransactionMonitor {
       TxOperation currentTx = txMap.get(key);
       if (currentTx == null) {
          throw new OseeStateException(
-               "reportTxStart called for key: " + key + " but reportTxCreation had not been called.");
+            "reportTxStart called for key: " + key + " but reportTxCreation had not been called.");
       } else if (currentTx.getState() != TxState.CREATED) {
          throw new OseeWrappedException(currentTx.getError());
       }
@@ -63,7 +64,7 @@ public class TransactionMonitor {
          currentTx.setState(TxState.RUNNING);
       } else {
          throw new OseeStateException(
-               "reportTxStart called for key: " + key + " but was called for incorrect transaction");
+            "reportTxStart called for key: " + key + " but was called for incorrect transaction");
       }
    }
 
@@ -71,7 +72,7 @@ public class TransactionMonitor {
       TxOperation currentTx = txMap.get(key);
       if (currentTx == null) {
          throw new OseeStateException(
-               "reportTxEnd called for key: " + key + " but reportTxCreation had not been called.");
+            "reportTxEnd called for key: " + key + " but reportTxCreation had not been called.");
       } else if (currentTx.getState() != TxState.RUNNING) {
          // This is a valid case -- can add a log to detect when a reportTxEnd is called before a transaction has a chance to run 
       }

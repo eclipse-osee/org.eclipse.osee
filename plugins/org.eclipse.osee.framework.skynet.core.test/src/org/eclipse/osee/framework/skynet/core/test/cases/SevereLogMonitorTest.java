@@ -41,7 +41,7 @@ public class SevereLogMonitorTest {
       }
       assertTrue(madeItInException);
       assertTrue(String.format("%d SevereLogs during test.", monitorLog.getAllLogs().size()),
-            monitorLog.getAllLogs().size() == 1);
+         monitorLog.getAllLogs().size() == 1);
    }
 
 }

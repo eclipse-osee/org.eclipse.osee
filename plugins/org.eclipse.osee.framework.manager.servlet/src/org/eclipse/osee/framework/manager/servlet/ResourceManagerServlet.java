@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.manager.servlet;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
+import java.net.URLConnection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
@@ -42,160 +42,159 @@ import org.eclipse.osee.framework.resource.management.exception.MalformedLocator
  * @author Robeto E. Escobar
  */
 public class ResourceManagerServlet extends SecureOseeHttpServlet {
-	private static final long serialVersionUID = 3777506351978711657L;
+   private static final long serialVersionUID = 3777506351978711657L;
 
-	private final IResourceLocatorManager locatorManager;
-	private final IResourceManager resourceManager;
+   private final IResourceLocatorManager locatorManager;
+   private final IResourceManager resourceManager;
 
-	public ResourceManagerServlet(ISessionManager sessionManager, IResourceLocatorManager locatorManager, IResourceManager resourceManager) {
-		super(sessionManager);
-		this.locatorManager = locatorManager;
-		this.resourceManager = resourceManager;
-	}
+   public ResourceManagerServlet(ISessionManager sessionManager, IResourceLocatorManager locatorManager, IResourceManager resourceManager) {
+      super(sessionManager);
+      this.locatorManager = locatorManager;
+      this.resourceManager = resourceManager;
+   }
 
-	private void handleError(HttpServletResponse response, String message, Throwable ex) {
-		OseeLog.log(this.getClass(), Level.SEVERE, message, ex);
-		try {
-			response.getWriter().println(message);
-		} catch (IOException ex1) {
-			OseeLog.log(this.getClass(), Level.SEVERE, message, ex);
-		}
-	}
+   private void handleError(HttpServletResponse response, String message, Throwable ex) {
+      OseeLog.log(this.getClass(), Level.SEVERE, message, ex);
+      try {
+         response.getWriter().println(message);
+      } catch (IOException ex1) {
+         OseeLog.log(this.getClass(), Level.SEVERE, message, ex);
+      }
+   }
 
-	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		InputStream inputStream = null;
-		try {
-			Pair<String, Boolean> parameters = HttpRequestDecoder.fromGetRequest(request);
-			String path = parameters.getFirst();
-			boolean isCheckExistance = parameters.getSecond();
-			Options options = HttpRequestDecoder.getOptions(request);
+   @Override
+   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+      InputStream inputStream = null;
+      try {
+         Pair<String, Boolean> parameters = HttpRequestDecoder.fromGetRequest(request);
+         String path = parameters.getFirst();
+         boolean isCheckExistance = parameters.getSecond();
+         Options options = HttpRequestDecoder.getOptions(request);
 
-			IResourceLocator locator = locatorManager.getResourceLocator(path);
+         IResourceLocator locator = locatorManager.getResourceLocator(path);
 
-			if (isCheckExistance) {
-				boolean exists = resourceManager.exists(locator);
-				response.setStatus(exists ? HttpServletResponse.SC_OK : HttpServletResponse.SC_NOT_FOUND);
-				response.setContentType("text/plain");
-				response.setCharacterEncoding("UTF-8");
-				response.getWriter().println(String.format("[%s] was %sfound.", path, exists ? "" : "not "));
-			} else {
-				IResource resource = resourceManager.acquire(locator, options);
-				if (resource != null) {
-					inputStream = resource.getContent();
+         if (isCheckExistance) {
+            boolean exists = resourceManager.exists(locator);
+            response.setStatus(exists ? HttpServletResponse.SC_OK : HttpServletResponse.SC_NOT_FOUND);
+            response.setContentType("text/plain");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().println(String.format("[%s] was %sfound.", path, exists ? "" : "not "));
+         } else {
+            IResource resource = resourceManager.acquire(locator, options);
+            if (resource != null) {
+               inputStream = resource.getContent();
 
-					response.setStatus(HttpServletResponse.SC_OK);
-					response.setContentLength(inputStream.available());
-					response.setCharacterEncoding("ISO-8859-1");
-					String mimeType = HttpURLConnection.guessContentTypeFromStream(inputStream);
-					if (mimeType == null) {
-						mimeType = HttpURLConnection.guessContentTypeFromName(resource.getLocation().toString());
-						if (mimeType == null) {
-							mimeType = "application/*";
-						}
-					}
-					response.setContentType(mimeType);
-					response.setHeader("Content-Disposition", "attachment; filename=" + resource.getName());
+               response.setStatus(HttpServletResponse.SC_OK);
+               response.setContentLength(inputStream.available());
+               response.setCharacterEncoding("ISO-8859-1");
+               String mimeType = URLConnection.guessContentTypeFromStream(inputStream);
+               if (mimeType == null) {
+                  mimeType = URLConnection.guessContentTypeFromName(resource.getLocation().toString());
+                  if (mimeType == null) {
+                     mimeType = "application/*";
+                  }
+               }
+               response.setContentType(mimeType);
+               response.setHeader("Content-Disposition", "attachment; filename=" + resource.getName());
 
-					Lib.inputStreamToOutputStream(inputStream, response.getOutputStream());
-				} else {
-					response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-					response.flushBuffer();
-				}
-			}
-		} catch (MalformedLocatorException ex) {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			response.setContentType("text/plain");
-			response.setCharacterEncoding("UTF-8");
-			handleError(response, String.format("Unable to locate resource: [%s]", request.getRequestURI()), ex);
-		} catch (Exception ex) {
-			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			response.setContentType("text/plain");
-			response.setCharacterEncoding("UTF-8");
-			handleError(response, String.format("Unable to acquire resource: [%s]", request.getRequestURI()), ex);
-		} finally {
-			if (inputStream != null) {
-				inputStream.close();
-			}
-		}
-	}
+               Lib.inputStreamToOutputStream(inputStream, response.getOutputStream());
+            } else {
+               response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+               response.flushBuffer();
+            }
+         }
+      } catch (MalformedLocatorException ex) {
+         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+         response.setContentType("text/plain");
+         response.setCharacterEncoding("UTF-8");
+         handleError(response, String.format("Unable to locate resource: [%s]", request.getRequestURI()), ex);
+      } catch (Exception ex) {
+         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+         response.setContentType("text/plain");
+         response.setCharacterEncoding("UTF-8");
+         handleError(response, String.format("Unable to acquire resource: [%s]", request.getRequestURI()), ex);
+      } finally {
+         if (inputStream != null) {
+            inputStream.close();
+         }
+      }
+   }
 
-	@Override
-	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		int result = HttpServletResponse.SC_BAD_REQUEST;
-		try {
-			String[] args = HttpRequestDecoder.fromPutRequest(request);
-			Options options = HttpRequestDecoder.getOptions(request);
+   @Override
+   protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+      int result = HttpServletResponse.SC_BAD_REQUEST;
+      try {
+         String[] args = HttpRequestDecoder.fromPutRequest(request);
+         Options options = HttpRequestDecoder.getOptions(request);
 
-			IResourceLocator locator = locatorManager.generateResourceLocator(args[0], args[1], args[2]);
-			IResource tempResource = new ServletResourceBridge(request, locator);
+         IResourceLocator locator = locatorManager.generateResourceLocator(args[0], args[1], args[2]);
+         IResource tempResource = new ServletResourceBridge(request, locator);
 
-			IResourceLocator actualLocator = resourceManager.save(locator, tempResource, options);
-			result = HttpServletResponse.SC_CREATED;
-			response.setStatus(result);
-			response.setContentType("text/plain");
-			response.getWriter().write(actualLocator.toString());
-		} catch (MalformedLocatorException ex) {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			response.setContentType("text/plain");
-			handleError(
-						response,
-						String.format("Unable to locate resource: [%s] - %s", request.getRequestURI(),
-									ex.getLocalizedMessage()), ex);
-		} catch (EmptyResourceException ex) {
-			response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-			response.setContentType("text/plain");
-			handleError(
-						response,
-						String.format("Unable to store empty resource: [%s] - %s", request.getRequestURI(),
-									ex.getLocalizedMessage()), ex);
-		} catch (Exception ex) {
-			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			response.setContentType("text/plain");
-			handleError(response, String.format("Error saving resource: [%s]", ex.getLocalizedMessage()), ex);
-		}
-	}
+         IResourceLocator actualLocator = resourceManager.save(locator, tempResource, options);
+         result = HttpServletResponse.SC_CREATED;
+         response.setStatus(result);
+         response.setContentType("text/plain");
+         response.getWriter().write(actualLocator.toString());
+      } catch (MalformedLocatorException ex) {
+         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+         response.setContentType("text/plain");
+         handleError(response,
+            String.format("Unable to locate resource: [%s] - %s", request.getRequestURI(), ex.getLocalizedMessage()),
+            ex);
+      } catch (EmptyResourceException ex) {
+         response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+         response.setContentType("text/plain");
+         handleError(
+            response,
+            String.format("Unable to store empty resource: [%s] - %s", request.getRequestURI(),
+               ex.getLocalizedMessage()), ex);
+      } catch (Exception ex) {
+         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+         response.setContentType("text/plain");
+         handleError(response, String.format("Error saving resource: [%s]", ex.getLocalizedMessage()), ex);
+      }
+   }
 
-	@Override
-	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		int result = HttpServletResponse.SC_BAD_REQUEST;
-		try {
-			String path = HttpRequestDecoder.fromDeleteRequest(request);
-			IResourceLocator locator = locatorManager.getResourceLocator(path);
-			int status = IResourceManager.OK;
-			//Activator.getInstance().getResourceManager().delete(locator);
-			if (status == IResourceManager.OK) {
-				result = HttpServletResponse.SC_ACCEPTED;
-			} else {
-				result = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
-			}
-			response.setStatus(result);
-			response.setContentType("text/plain");
-			response.getWriter().write("Deleted: " + locator.toString());
-			response.flushBuffer();
-		} catch (MalformedLocatorException ex) {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			response.setContentType("text/plain");
-			handleError(response, String.format("Unable to locate resource: [%s]", request.getRequestURI()), ex);
-		} catch (Exception ex) {
-			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			response.setContentType("text/plain");
-			handleError(response, String.format("Unable to delete resource: [%s]", request.getRequestURI()), ex);
-		}
-	}
+   @Override
+   protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+      int result = HttpServletResponse.SC_BAD_REQUEST;
+      try {
+         String path = HttpRequestDecoder.fromDeleteRequest(request);
+         IResourceLocator locator = locatorManager.getResourceLocator(path);
+         int status = IResourceManager.OK;
+         //Activator.getInstance().getResourceManager().delete(locator);
+         if (status == IResourceManager.OK) {
+            result = HttpServletResponse.SC_ACCEPTED;
+         } else {
+            result = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+         }
+         response.setStatus(result);
+         response.setContentType("text/plain");
+         response.getWriter().write("Deleted: " + locator.toString());
+         response.flushBuffer();
+      } catch (MalformedLocatorException ex) {
+         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+         response.setContentType("text/plain");
+         handleError(response, String.format("Unable to locate resource: [%s]", request.getRequestURI()), ex);
+      } catch (Exception ex) {
+         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+         response.setContentType("text/plain");
+         handleError(response, String.format("Unable to delete resource: [%s]", request.getRequestURI()), ex);
+      }
+   }
 
-	// TODO Allow for bulk loading of resources
-	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		super.doPost(req, resp); // Remove this line once implemented
+   // TODO Allow for bulk loading of resources
+   @Override
+   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+      super.doPost(req, resp); // Remove this line once implemented
 
-		Set<IResourceLocator> locators = new HashSet<IResourceLocator>();
-		for (IResourceLocator locator : locators) {
-			try {
-				Options options = new Options();
-				resourceManager.acquire(locator, options);
-			} catch (OseeCoreException ex) {
-			}
-		}
-	}
+      Set<IResourceLocator> locators = new HashSet<IResourceLocator>();
+      for (IResourceLocator locator : locators) {
+         try {
+            Options options = new Options();
+            resourceManager.acquire(locator, options);
+         } catch (OseeCoreException ex) {
+         }
+      }
+   }
 }

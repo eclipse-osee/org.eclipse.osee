@@ -23,10 +23,12 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
  */
 public class AtsDecisionReviewPrepareStateItem extends AtsStateItem {
 
+   @Override
    public String getId() {
       return "osee.ats.decisionReview.Prepare";
    }
 
+   @Override
    public Result transitioning(StateMachineArtifact sma, String fromState, String toState, Collection<User> toAssignees) throws OseeCoreException {
       if (fromState.equals(DecisionReviewArtifact.DecisionReviewState.Prepare.name()) && toState.equals(DecisionReviewArtifact.DecisionReviewState.Decision.name())) {
          XDecisionOptions decOptions = new XDecisionOptions(sma);
@@ -35,6 +37,7 @@ public class AtsDecisionReviewPrepareStateItem extends AtsStateItem {
       return Result.TrueResult;
    }
 
+   @Override
    public String getDescription() throws OseeCoreException {
       return "AtsDecisionReviewPrepareStateItem - Add validation of decision options prior to transitioning.";
    }

@@ -33,7 +33,7 @@ import org.eclipse.osee.ats.workflow.editor.model.TransitionConnection;
  * </ol>
  * 
  * @see org.eclipse.osee.ats.workflow.editor.parts.ShapeEditPart#createEditPolicies() for an example of the above
- *      procedure.
+ * procedure.
  * @see org.eclipse.gef.editpolicies.GraphicalNodeEditPolicy
  * @author Donald G. Dunne
  */

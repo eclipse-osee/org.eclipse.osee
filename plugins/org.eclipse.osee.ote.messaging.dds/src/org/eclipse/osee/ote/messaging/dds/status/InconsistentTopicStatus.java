@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.messaging.dds.status;
 
-
 /**
  * Maintains counts of Topics whose name match the topic this <code>Status</code> is attached to, but type differs.
  * 
@@ -26,5 +25,5 @@ public class InconsistentTopicStatus extends CountedStatus {
    public InconsistentTopicStatus(long totalCount, long totalCountChange) {
       super(totalCount, totalCountChange);
    }
-   
+
 }

@@ -52,8 +52,10 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
       return "Import Tasks From Simple List";
    }
 
+   @Override
    public void runOperation(final VariableMap variableMap, IProgressMonitor monitor) throws OseeCoreException {
       Displays.ensureInDisplayThread(new Runnable() {
+         @Override
          public void run() {
             try {
                List<Artifact> artifacts = variableMap.getArtifacts(TEAM_WORKFLOW);
@@ -61,7 +63,9 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
                final List<String> titles = new ArrayList<String>();
                for (String title : variableMap.getString(TASK_IMPORT_TITLES).split("\n")) {
                   title = title.replaceAll("\r", "");
-                  if (!title.equals("")) titles.add(title);
+                  if (!title.equals("")) {
+                     titles.add(title);
+                  }
                }
 
                if (artifacts.isEmpty()) {
@@ -84,7 +88,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
                try {
                   final TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
                   SkynetTransaction transaction =
-                        new SkynetTransaction(AtsUtil.getAtsBranch(), "Import Tasks from Simple List");
+                     new SkynetTransaction(AtsUtil.getAtsBranch(), "Import Tasks from Simple List");
                   teamArt.createTasks(titles, assignees, transaction);
                   teamArt.persist(transaction);
                   transaction.execute();
@@ -139,6 +143,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
       this.taskableStateMachineArtifact = taskableStateMachineArtifact;
    }
 
+   @Override
    public Collection<String> getCategories() {
       return Arrays.asList("ATS");
    }

@@ -43,6 +43,7 @@ public class ProgressMonitorTask extends ScheduledTask {
 
    private void unscheduleTask() {
       Thread stopThread = new Thread() {
+         @Override
          public void run() {
             Scheduler.cancelTask(ProgressMonitorTask.this);
          }

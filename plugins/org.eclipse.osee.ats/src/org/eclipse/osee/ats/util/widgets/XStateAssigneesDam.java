@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.StateManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -34,7 +33,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
 public abstract class XStateAssigneesDam extends XTextDam {
 
    protected final String attributeTypeName;
-   private WeakReference<StateMachineArtifact> smaRef;
+   private final WeakReference<StateMachineArtifact> smaRef;
 
    public XStateAssigneesDam(StateMachineArtifact sma, String attributeName) {
       super(attributeName);
@@ -65,7 +64,7 @@ public abstract class XStateAssigneesDam extends XTextDam {
          try {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, "Error parsing state data for " + getSma().getGuid(), ex);
          } catch (OseeStateException ex1) {
-            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          }
       }
       return null;
@@ -78,8 +77,7 @@ public abstract class XStateAssigneesDam extends XTextDam {
       setState(currState);
       if (logMetrics) {
          XCurrentStateDam.logMetrics(getSma(), getSma().getPercentCompleteSMATotal() + "",
-               AtsUtil.doubleToI18nString(getSma().getHoursSpentSMATotal()), stateName, UserManager.getUser(),
-               new Date());
+            AtsUtil.doubleToI18nString(getSma().getHoursSpentSMATotal()), stateName, UserManager.getUser(), new Date());
       }
    }
 
@@ -90,8 +88,7 @@ public abstract class XStateAssigneesDam extends XTextDam {
       setState(currState);
       if (logMetrics) {
          XCurrentStateDam.logMetrics(getSma(), getSma().getPercentCompleteSMATotal() + "",
-               AtsUtil.doubleToI18nString(getSma().getHoursSpentSMATotal()), stateName, UserManager.getUser(),
-               new Date());
+            AtsUtil.doubleToI18nString(getSma().getHoursSpentSMATotal()), stateName, UserManager.getUser(), new Date());
       }
    }
 
@@ -107,7 +104,7 @@ public abstract class XStateAssigneesDam extends XTextDam {
          try {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, "Error parsing state data for " + getSma().getGuid(), ex);
          } catch (OseeStateException ex1) {
-            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          }
       }
       return states;

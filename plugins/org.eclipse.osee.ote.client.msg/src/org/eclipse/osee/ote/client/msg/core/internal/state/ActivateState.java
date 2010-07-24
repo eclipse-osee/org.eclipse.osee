@@ -20,79 +20,77 @@ import org.eclipse.osee.ote.message.enums.DataType;
 
 /**
  * @author Ken J. Aguilar
- *
  */
 public class ActivateState extends AbstractSubscriptionState {
 
+   private final MessageInstance instance;
+   private final AbstractMessageDataBase msgDb;
 
-	private final MessageInstance instance;
-	private final AbstractMessageDataBase msgDb;
+   public ActivateState(MessageInstance instance, AbstractMessageDataBase msgDb, AbstractSubscriptionState otherState) {
+      super(otherState);
+      this.instance = instance;
+      this.msgDb = msgDb;
+   }
 
-	public ActivateState(MessageInstance instance, AbstractMessageDataBase msgDb, AbstractSubscriptionState otherState) {
-		super(otherState);
-		this.instance = instance;
-		this.msgDb = msgDb;
-	}
+   @Override
+   public Message getMessage() {
+      return instance.getMessage();
+   }
 
-	@Override
-	public Message getMessage() {
-		return instance.getMessage();
-	}
+   @Override
+   public String getMsgClassName() {
+      return instance.getMessage().getClass().getName();
+   }
 
-	@Override
-	public String getMsgClassName() {
-		return instance.getMessage().getClass().getName();
-	}
+   @Override
+   public ISubscriptionState onMessageDbClosing(AbstractMessageDataBase msgDb) {
+      getSubscription().notifyUnresolved();
+      try {
+         msgDb.releaseInstance(instance);
+      } catch (Exception e) {
+         OseeLog.log(ActivateState.class, Level.SEVERE, "problem releasing instance of " + getMsgClassName());
+      }
+      return new UnresolvedState(instance.getMessage().getName(), this);
+   }
 
-	@Override
-	public ISubscriptionState onMessageDbClosing(AbstractMessageDataBase msgDb) {
-		getSubscription().notifyUnresolved();
-		try {
-			msgDb.releaseInstance(instance);
-		} catch (Exception e) {
-			OseeLog.log(ActivateState.class, Level.SEVERE, "problem releasing instance of " + getMsgClassName());
-		}
-		return new UnresolvedState(instance.getMessage().getName(), this);
-	}
+   @Override
+   public ISubscriptionState onMessageDbFound(AbstractMessageDataBase msgDB) {
+      throw new Error("Unexpected input for this state");
+   }
 
-	@Override
-	public ISubscriptionState onMessageDbFound(AbstractMessageDataBase msgDB) {
-		throw new Error("Unexpected input for this state");
-	}
+   @Override
+   public ISubscriptionState onActivated() {
+      throw new Error("Unexpected input for this state");
+   }
 
-	@Override
-	public ISubscriptionState onActivated() {
-		throw new Error("Unexpected input for this state");
-	}
+   @Override
+   public ISubscriptionState onDeactivated() {
+      return new InactiveState(instance, msgDb, this);
+   }
 
-	@Override
-	public ISubscriptionState onDeactivated() {
-		return new InactiveState(instance, msgDb, this);
-	}
-	
-	@Override
-	public void onCanceled() {
-		super.onCanceled();
-		try {
-			msgDb.releaseInstance(instance);
-		} catch (Exception e) {
-			OseeLog.log(ActivateState.class, Level.SEVERE, "problem releasing instance of " + getMsgClassName());
-		}
-	}
-	
-	@Override
-	public Set<DataType> getAvailableTypes() {
-		return instance.getAvailableTypes();
-	}
+   @Override
+   public void onCanceled() {
+      super.onCanceled();
+      try {
+         msgDb.releaseInstance(instance);
+      } catch (Exception e) {
+         OseeLog.log(ActivateState.class, Level.SEVERE, "problem releasing instance of " + getMsgClassName());
+      }
+   }
 
-	@Override
-	public boolean isActive() {
-		return true;
-	}
+   @Override
+   public Set<DataType> getAvailableTypes() {
+      return instance.getAvailableTypes();
+   }
 
-	@Override
-	public boolean isResolved() {
-		return true;
-	}
+   @Override
+   public boolean isActive() {
+      return true;
+   }
+
+   @Override
+   public boolean isResolved() {
+      return true;
+   }
 
 }

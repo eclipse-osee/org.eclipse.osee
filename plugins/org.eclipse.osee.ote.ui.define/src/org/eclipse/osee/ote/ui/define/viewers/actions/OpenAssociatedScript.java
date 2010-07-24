@@ -60,7 +60,7 @@ public class OpenAssociatedScript extends AbstractActionHandler {
 
    private void handleException() {
       MessageDialog.openError(PlatformUI.getWorkbench().getDisplay().getActiveShell(), "Open Script",
-            "Unable to open script with invalid url.");
+         "Unable to open script with invalid url.");
    }
 
    private void openRemoteScript(String scriptUrl, String revision) {
@@ -71,8 +71,8 @@ public class OpenAssociatedScript extends AbstractActionHandler {
          if (urlToOpen != null) {
             IWorkbenchBrowserSupport browserSupport = PlatformUI.getWorkbench().getBrowserSupport();
             IWebBrowser browser =
-                  browserSupport.createBrowser(IWorkbenchBrowserSupport.AS_EDITOR, "org.eclipse.ui.browser.editor",
-                        scriptUrl, "");
+               browserSupport.createBrowser(IWorkbenchBrowserSupport.AS_EDITOR, "org.eclipse.ui.browser.editor",
+                  scriptUrl, "");
             browser.openURL(urlToOpen);
          }
       } catch (Exception ex) {

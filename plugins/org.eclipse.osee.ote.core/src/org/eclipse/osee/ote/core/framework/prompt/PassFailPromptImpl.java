@@ -33,6 +33,7 @@ public class PassFailPromptImpl extends AbstractInteractivePrompt<PassFailPrompt
       getScript().getUserSession().initiatePassFailPrompt(createRemoteReference(IPassFailPromptResponse.class));
    }
 
+   @Override
    public void respond(boolean pass, String text) throws RemoteException {
       endPrompt(new PassFailPromptResult(pass, text), null);
    }

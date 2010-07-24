@@ -36,6 +36,7 @@ public class CompartmentFigure extends Figure {
       setBorder(new CompoundBorder(new CompartmentFigureBorder(), new MarginBorder(1)));
    }
 
+   @Override
    public Dimension getPreferredSize(int wHint, int hHint) {
       Dimension size = super.getPreferredSize(wHint, hHint);
       size.height = Math.max(size.height, 10);
@@ -45,10 +46,12 @@ public class CompartmentFigure extends Figure {
    private final static class CompartmentFigureBorder extends AbstractBorder {
       private static final Insets INSETS = new Insets(2, 0, 0, 1);
 
+      @Override
       public Insets getInsets(IFigure figure) {
          return INSETS;
       }
 
+      @Override
       public void paint(IFigure figure, Graphics graphics, Insets insets) {
          graphics.setForegroundColor(ColorConstants.black);
          Rectangle rect = getPaintRectangle(figure, insets);

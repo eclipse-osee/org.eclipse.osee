@@ -18,13 +18,11 @@ import org.osgi.service.packageadmin.PackageAdmin;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public class RuntimeManagerHandler extends AbstractTrackingHandler {
-   private final static Class<?>[] SERVICE_DEPENDENCIES =
-      new Class<?>[] {PackageAdmin.class};
+   private final static Class<?>[] SERVICE_DEPENDENCIES = new Class<?>[] {PackageAdmin.class};
    private ServiceRegistration serviceRegistration;
-   
+
    @Override
    public Class<?>[] getDependencies() {
       return SERVICE_DEPENDENCIES;

@@ -30,7 +30,7 @@ public class VersionArtifactLabelProvider extends LabelProvider {
    @Override
    public String getText(Object element) {
       if (element instanceof VersionArtifact) {
-         VersionArtifact verArt = ((VersionArtifact) element);
+         VersionArtifact verArt = (VersionArtifact) element;
          String str = verArt.getName();
          try {
             if (verArt.getEstimatedReleaseDate() != null) {

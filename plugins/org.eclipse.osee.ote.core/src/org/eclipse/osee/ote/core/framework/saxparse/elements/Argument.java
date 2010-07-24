@@ -15,9 +15,8 @@ import org.xml.sax.Attributes;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
-public class Argument extends ElementHandlers{
+public class Argument extends ElementHandlers {
 
    /**
     * @param name
@@ -25,7 +24,6 @@ public class Argument extends ElementHandlers{
    public Argument() {
       super("Argument");
    }
-
 
    @Override
    public Object createStartElementFoundObject(String uri, String localName, String name, Attributes attributes) {

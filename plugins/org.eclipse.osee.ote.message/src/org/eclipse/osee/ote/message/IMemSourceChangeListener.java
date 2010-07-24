@@ -16,5 +16,5 @@ import org.eclipse.osee.ote.message.enums.DataType;
  * @author Andrew M. Finkbeiner
  */
 public interface IMemSourceChangeListener {
-   void onChange(DataType oldtype, DataType newType, Message<?,?,?> message);
+   void onChange(DataType oldtype, DataType newType, Message<?, ?, ?> message);
 }

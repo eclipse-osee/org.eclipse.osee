@@ -30,6 +30,7 @@ public class AttributeContentProvider implements IStructuredContentProvider {
       super();
    }
 
+   @Override
    public Object[] getElements(Object inputElement) {
       if (inputElement instanceof Artifact) {
          try {
@@ -41,9 +42,11 @@ public class AttributeContentProvider implements IStructuredContentProvider {
       return dummyArray;
    }
 
+   @Override
    public void dispose() {
    }
 
+   @Override
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 
    }

@@ -28,10 +28,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {ResultsEditorConverterTest.class, ArtifactPasteConfigurationTest.class,
-      ArtifactPasteOperationTest.class, RelationOrderRendererTest.class, InterArtifactDropTest.class,
-      WordEditTest.class, WordTrackedChangesTest.class, PreviewAndMultiPreviewTest.class,
-      ViewWordChangeAndDiffTest.class, WordArtifactElementExtractorTest.class, AttributeTypeEditPresenterTest.class})
+@Suite.SuiteClasses({ResultsEditorConverterTest.class, ArtifactPasteConfigurationTest.class,
+   ArtifactPasteOperationTest.class, RelationOrderRendererTest.class, InterArtifactDropTest.class, WordEditTest.class,
+   WordTrackedChangesTest.class, PreviewAndMultiPreviewTest.class, ViewWordChangeAndDiffTest.class,
+   WordArtifactElementExtractorTest.class, AttributeTypeEditPresenterTest.class})
 /**
  * @author Donald G. Dunne
  */
@@ -39,8 +39,8 @@ public class FrameworkUi_Demo_Suite {
    @BeforeClass
    public static void setUp() throws Exception {
       assertTrue("Demo Application Server must be running.",
-            ClientSessionManager.getAuthenticationProtocols().contains("demo"));
+         ClientSessionManager.getAuthenticationProtocols().contains("demo"));
       assertTrue("Client must authenticate using demo protocol",
-            ClientSessionManager.getSession().getAuthenticationProtocol().equals("demo"));
+         ClientSessionManager.getSession().getAuthenticationProtocol().equals("demo"));
    }
 }

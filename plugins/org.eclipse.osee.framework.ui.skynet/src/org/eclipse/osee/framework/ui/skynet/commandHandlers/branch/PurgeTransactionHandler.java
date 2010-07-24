@@ -35,43 +35,43 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  */
 public class PurgeTransactionHandler extends CommandHandler {
 
-	@Override
-	public Object execute(ExecutionEvent arg0) throws ExecutionException {
-		IStructuredSelection selection =
-					(IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+   @Override
+   public Object execute(ExecutionEvent arg0) throws ExecutionException {
+      IStructuredSelection selection =
+         (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
 
-		List<TransactionRecord> transactions = Handlers.getTransactionsFromStructuredSelection(selection);
-		TransactionRecord selectedTransaction = transactions.iterator().next();
+      List<TransactionRecord> transactions = Handlers.getTransactionsFromStructuredSelection(selection);
+      TransactionRecord selectedTransaction = transactions.iterator().next();
 
-		if (MessageDialog.openConfirm(Displays.getActiveShell(), "Purge Transaction",
-					"Are you sure you want to purge the transaction: " + selectedTransaction.getId())) {
-			BranchManager.purgeTransactions(new JobChangeAdapter() {
+      if (MessageDialog.openConfirm(Displays.getActiveShell(), "Purge Transaction",
+         "Are you sure you want to purge the transaction: " + selectedTransaction.getId())) {
+         BranchManager.purgeTransactions(new JobChangeAdapter() {
 
-				@Override
-				public void done(IJobChangeEvent event) {
-					if (event.getResult().getSeverity() == IStatus.OK) {
-						Displays.ensureInDisplayThread(new Runnable() {
-							@Override
-							public void run() {
-								try {
-									BranchManager.refreshBranches();
-								} catch (OseeCoreException ex) {
-									OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-								}
-							}
-						});
-					}
-				}
+            @Override
+            public void done(IJobChangeEvent event) {
+               if (event.getResult().getSeverity() == IStatus.OK) {
+                  Displays.ensureInDisplayThread(new Runnable() {
+                     @Override
+                     public void run() {
+                        try {
+                           BranchManager.refreshBranches();
+                        } catch (OseeCoreException ex) {
+                           OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                        }
+                     }
+                  });
+               }
+            }
 
-			}, selectedTransaction.getId());
-		}
+         }, selectedTransaction.getId());
+      }
 
-		return null;
-	}
+      return null;
+   }
 
-	@Override
-	public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
-		List<TransactionRecord> transactions = Handlers.getTransactionsFromStructuredSelection(structuredSelection);
-		return transactions.size() == 1 && AccessControlManager.isOseeAdmin();
-	}
+   @Override
+   public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
+      List<TransactionRecord> transactions = Handlers.getTransactionsFromStructuredSelection(structuredSelection);
+      return transactions.size() == 1 && AccessControlManager.isOseeAdmin();
+   }
 }

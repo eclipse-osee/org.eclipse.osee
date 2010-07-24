@@ -26,6 +26,7 @@ public final class BranchChangeArchivedStateRequestTranslator implements ITransl
       BRANCH_ARCHIVED_STATE,
    }
 
+   @Override
    public ChangeBranchArchiveStateRequest convert(PropertyStore propertyStore) throws OseeCoreException {
       int branchId = propertyStore.getInt(Entry.BRANCH_ID.name());
       BranchArchivedState state = BranchArchivedState.valueOf(propertyStore.get(Entry.BRANCH_ARCHIVED_STATE.name()));
@@ -33,6 +34,7 @@ public final class BranchChangeArchivedStateRequestTranslator implements ITransl
       return data;
    }
 
+   @Override
    public PropertyStore convert(ChangeBranchArchiveStateRequest data) throws OseeCoreException {
       PropertyStore store = new PropertyStore();
       store.put(Entry.BRANCH_ID.name(), data.getBranchId());

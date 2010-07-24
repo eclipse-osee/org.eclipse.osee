@@ -15,26 +15,25 @@ import org.eclipse.osee.ote.ui.message.watch.ElementPath;
 
 /**
  * @author Ken J. Aguilar
- *
  */
 public class HeaderElementNode extends ElementNode {
 
-	private final Element headerElement;
-	
-	public HeaderElementNode(Element headerElement) {
-		super(new ElementPath(true, headerElement.getElementPath()));
-		this.headerElement = headerElement;
-	}
+   private final Element headerElement;
 
-	public int getByteOffset() {
-		return headerElement.getByteOffset();
-	}
+   public HeaderElementNode(Element headerElement) {
+      super(new ElementPath(true, headerElement.getElementPath()));
+      this.headerElement = headerElement;
+   }
 
-	public int getMsb() {
-		return headerElement.getMsb();
-	}
+   public int getByteOffset() {
+      return headerElement.getByteOffset();
+   }
 
-	public int getLsb() {
-		return headerElement.getLsb();
-	}
+   public int getMsb() {
+      return headerElement.getMsb();
+   }
+
+   public int getLsb() {
+      return headerElement.getLsb();
+   }
 }

@@ -33,69 +33,69 @@ import org.eclipse.ui.IEditorPart;
  */
 public class OpenArtifactEditorLoopbackCmd extends BaseArtifactLoopbackCmd {
 
-	@Override
-	public boolean isApplicable(String cmd) {
-		return cmd != null && cmd.equalsIgnoreCase("open.artifact");
-	}
+   @Override
+   public boolean isApplicable(String cmd) {
+      return cmd != null && cmd.equalsIgnoreCase("open.artifact");
+   }
 
-	@Override
-	public void process(final Artifact artifact, final Map<String, String> parameters, final HttpResponse httpResponse) {
-		if (artifact != null) {
-			try {
-				boolean hasPermissionToRead = false;
-				try {
-					hasPermissionToRead = AccessControlManager.hasPermission(artifact, PermissionEnum.READ);
-				} catch (Exception ex) {
-					OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-				}
+   @Override
+   public void process(final Artifact artifact, final Map<String, String> parameters, final HttpResponse httpResponse) {
+      if (artifact != null) {
+         try {
+            boolean hasPermissionToRead = false;
+            try {
+               hasPermissionToRead = AccessControlManager.hasPermission(artifact, PermissionEnum.READ);
+            } catch (Exception ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            }
 
-				if (!hasPermissionToRead) {
-					httpResponse.outputStandardError(HttpURLConnection.HTTP_UNAUTHORIZED,
-								String.format("Access denied - User does not have read access to [%s]", artifact));
-				} else {
-					final MutableBoolean isDone = new MutableBoolean(false);
+            if (!hasPermissionToRead) {
+               httpResponse.outputStandardError(HttpURLConnection.HTTP_UNAUTHORIZED,
+                  String.format("Access denied - User does not have read access to [%s]", artifact));
+            } else {
+               final MutableBoolean isDone = new MutableBoolean(false);
 
-					Displays.ensureInDisplayThread(new Runnable() {
-						@Override
-						public void run() {
-							try {
-								IEditorPart part =
-											AWorkbench.getActivePage().openEditor(new ArtifactEditorInput(artifact),
-														ArtifactEditor.EDITOR_ID, true);
-								if (part != null) {
-									String html =
-												AHTML.simplePage(artifact.getName() + " has been opened in OSEE on branch " + artifact.getBranch() + "<br><br>" + "<form><input type=button onClick='window.opener=self;window.close()' value='Close'></form>");
-									httpResponse.getPrintStream().println(html);
-								} else {
-									httpResponse.outputStandardError(HttpURLConnection.HTTP_INTERNAL_ERROR,
-												String.format("Unable to open: [%s]", artifact.getName()));
-								}
-							} catch (Exception ex) {
-								OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-								httpResponse.outputStandardError(HttpURLConnection.HTTP_INTERNAL_ERROR,
-											String.format("Unable to open: [%s]", artifact.getName()), ex);
-							} finally {
-								isDone.setValue(true);
-							}
-						}
-					});
+               Displays.ensureInDisplayThread(new Runnable() {
+                  @Override
+                  public void run() {
+                     try {
+                        IEditorPart part =
+                           AWorkbench.getActivePage().openEditor(new ArtifactEditorInput(artifact),
+                              ArtifactEditor.EDITOR_ID, true);
+                        if (part != null) {
+                           String html =
+                              AHTML.simplePage(artifact.getName() + " has been opened in OSEE on branch " + artifact.getBranch() + "<br><br>" + "<form><input type=button onClick='window.opener=self;window.close()' value='Close'></form>");
+                           httpResponse.getPrintStream().println(html);
+                        } else {
+                           httpResponse.outputStandardError(HttpURLConnection.HTTP_INTERNAL_ERROR,
+                              String.format("Unable to open: [%s]", artifact.getName()));
+                        }
+                     } catch (Exception ex) {
+                        OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+                        httpResponse.outputStandardError(HttpURLConnection.HTTP_INTERNAL_ERROR,
+                           String.format("Unable to open: [%s]", artifact.getName()), ex);
+                     } finally {
+                        isDone.setValue(true);
+                     }
+                  }
+               });
 
-					int count = 1;
-					while (!isDone.getValue() && count < 30) {
-						try {
-							Thread.sleep(350);
-						} catch (InterruptedException ex) {
-						}
-						count++;
-					}
-				}
-			} catch (Exception ex) {
-				OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-				httpResponse.outputStandardError(HttpURLConnection.HTTP_INTERNAL_ERROR,
-							String.format("Unable to open: [%s]", artifact.getName()), ex);
-			}
-		} else {
-			httpResponse.outputStandardError(HttpURLConnection.HTTP_BAD_REQUEST, "Unable to open null artifact");
-		}
-	}
+               int count = 1;
+               while (!isDone.getValue() && count < 30) {
+                  try {
+                     Thread.sleep(350);
+                  } catch (InterruptedException ex) {
+                  }
+                  count++;
+               }
+            }
+         } catch (Exception ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            httpResponse.outputStandardError(HttpURLConnection.HTTP_INTERNAL_ERROR,
+               String.format("Unable to open: [%s]", artifact.getName()), ex);
+         }
+      } else {
+         httpResponse.outputStandardError(HttpURLConnection.HTTP_BAD_REQUEST, "Unable to open null artifact");
+      }
+   }
 }

@@ -45,7 +45,7 @@ public class DemoDbReviews {
 
    public static void createReviews() throws Exception {
       SkynetTransaction transaction =
-            new SkynetTransaction(AtsUtil.getAtsBranch(), "Demo Database Config - Create Reviews");
+         new SkynetTransaction(AtsUtil.getAtsBranch(), "Demo Database Config - Create Reviews");
       createPeerToPeerReviews(transaction);
       createDecisionReviews(transaction);
       transaction.execute();
@@ -57,7 +57,7 @@ public class DemoDbReviews {
     * 2) Decision in ReWork state w Joe Smith assignee and 2 reviewers<br>
     * 3) Decision in Complete state w Joe Smith assignee and completed<br>
     * <br>
-    *
+    * 
     * @param transaction
     * @param codeWorkflows
     * @throws Exception
@@ -71,8 +71,8 @@ public class DemoDbReviews {
       // Create a Decision review and transition to ReWork
       DecisionReviewArtifact reviewArt = ReviewManager.createValidateReview(firstTestArt, true, transaction);
       Result result =
-            DecisionReviewWorkflowManager.transitionTo(reviewArt, DecisionReviewArtifact.DecisionReviewState.Followup,
-                  UserManager.getUser(), false, transaction);
+         DecisionReviewWorkflowManager.transitionTo(reviewArt, DecisionReviewArtifact.DecisionReviewState.Followup,
+            UserManager.getUser(), false, transaction);
       if (result.isFalse()) {
          throw new IllegalStateException("Failed transitioning review to Followup: " + result.getText());
       }
@@ -81,7 +81,7 @@ public class DemoDbReviews {
       // Create a Decision review and transition to Completed
       reviewArt = ReviewManager.createValidateReview(secondTestArt, true, transaction);
       DecisionReviewWorkflowManager.transitionTo(reviewArt, DecisionReviewArtifact.DecisionReviewState.Completed,
-            UserManager.getUser(), false, transaction);
+         UserManager.getUser(), false, transaction);
       if (result.isFalse()) {
          throw new IllegalStateException("Failed transitioning review to Completed: " + result.getText());
       }
@@ -97,7 +97,7 @@ public class DemoDbReviews {
          for (String actionName : new String[] {"Button W doesn't work on%", "%Diagram Tree"}) {
             DemoTestTeamWorkflowArtifact testArt = null;
             for (Artifact art : ArtifactQuery.getArtifactListFromName(actionName, AtsUtil.getAtsBranch(),
-                  EXCLUDE_DELETED)) {
+               EXCLUDE_DELETED)) {
                if (art instanceof DemoTestTeamWorkflowArtifact) {
                   testArt = (DemoTestTeamWorkflowArtifact) art;
                   reviewTestArts.add(testArt);
@@ -114,7 +114,7 @@ public class DemoDbReviews {
     * 2) PeerToPeer in Review state w Joe Smith assignee and 2 reviewers<br>
     * 3) PeerToPeer in Prepare state w Joe Smith assignee and completed<br>
     * <br>
-    *
+    * 
     * @param transaction
     * @param codeWorkflows
     * @throws Exception
@@ -127,22 +127,21 @@ public class DemoDbReviews {
 
       // Create a PeerToPeer review and leave in Prepare state
       PeerToPeerReviewArtifact reviewArt =
-            ReviewManager.createNewPeerToPeerReview(firstCodeArt, "Peer Review first set of code changes",
-                  firstCodeArt.getStateMgr().getCurrentStateName(), transaction);
+         ReviewManager.createNewPeerToPeerReview(firstCodeArt, "Peer Review first set of code changes",
+            firstCodeArt.getStateMgr().getCurrentStateName(), transaction);
       reviewArt.persist(transaction);
 
       // Create a PeerToPeer review and transition to Review state
       reviewArt =
-            ReviewManager.createNewPeerToPeerReview(firstCodeArt, "Peer Review algorithm used in code",
-                  firstCodeArt.getStateMgr().getCurrentStateName(), transaction);
+         ReviewManager.createNewPeerToPeerReview(firstCodeArt, "Peer Review algorithm used in code",
+            firstCodeArt.getStateMgr().getCurrentStateName(), transaction);
       List<UserRole> roles = new ArrayList<UserRole>();
       roles.add(new UserRole(Role.Author, DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith)));
       roles.add(new UserRole(Role.Reviewer, DemoDbUtil.getDemoUser(DemoUsers.Kay_Jones)));
       roles.add(new UserRole(Role.Reviewer, DemoDbUtil.getDemoUser(DemoUsers.Alex_Kay), 2.0, true));
       Result result =
-            PeerToPeerReviewWorkflowManager.transitionTo(reviewArt,
-                  PeerToPeerReviewArtifact.PeerToPeerReviewState.Review, roles, null, UserManager.getUser(), false,
-                  transaction);
+         PeerToPeerReviewWorkflowManager.transitionTo(reviewArt, PeerToPeerReviewArtifact.PeerToPeerReviewState.Review,
+            roles, null, UserManager.getUser(), false, transaction);
       if (result.isFalse()) {
          throw new IllegalStateException("Failed transitioning review to Review: " + result.getText());
       }
@@ -150,9 +149,9 @@ public class DemoDbReviews {
 
       // Create a PeerToPeer review and transition to Completed
       reviewArt =
-            ReviewManager.createNewPeerToPeerReview(secondCodeArt, "Review new logic",
-                  firstCodeArt.getStateMgr().getCurrentStateName(), DemoDbUtil.getDemoUser(DemoUsers.Kay_Jones),
-                  new Date(), transaction);
+         ReviewManager.createNewPeerToPeerReview(secondCodeArt, "Review new logic",
+            firstCodeArt.getStateMgr().getCurrentStateName(), DemoDbUtil.getDemoUser(DemoUsers.Kay_Jones), new Date(),
+            transaction);
       roles = new ArrayList<UserRole>();
       roles.add(new UserRole(Role.Author, DemoDbUtil.getDemoUser(DemoUsers.Kay_Jones), 2.3, true));
       roles.add(new UserRole(Role.Reviewer, DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith), 4.5, true));
@@ -160,19 +159,19 @@ public class DemoDbReviews {
 
       List<DefectItem> defects = new ArrayList<DefectItem>();
       defects.add(new DefectItem(DemoDbUtil.getDemoUser(DemoUsers.Alex_Kay), Severity.Issue, Disposition.Accept,
-            InjectionActivity.Code, "Problem with logic", "Fixed", "Line 234", new Date()));
+         InjectionActivity.Code, "Problem with logic", "Fixed", "Line 234", new Date()));
       defects.add(new DefectItem(DemoDbUtil.getDemoUser(DemoUsers.Alex_Kay), Severity.Issue, Disposition.Accept,
-            InjectionActivity.Code, "Using getInteger instead", "Fixed", "MyWorld.java:Line 33", new Date()));
+         InjectionActivity.Code, "Using getInteger instead", "Fixed", "MyWorld.java:Line 33", new Date()));
       defects.add(new DefectItem(DemoDbUtil.getDemoUser(DemoUsers.Alex_Kay), Severity.Major, Disposition.Reject,
-            InjectionActivity.Code, "Spelling incorrect", "Is correct", "MyWorld.java:Line 234", new Date()));
+         InjectionActivity.Code, "Spelling incorrect", "Is correct", "MyWorld.java:Line 234", new Date()));
       defects.add(new DefectItem(DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith), Severity.Minor, Disposition.Reject,
-            InjectionActivity.Code, "Remove unused code", "", "Here.java:Line 234", new Date()));
+         InjectionActivity.Code, "Remove unused code", "", "Here.java:Line 234", new Date()));
       defects.add(new DefectItem(DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith), Severity.Major, Disposition.Accept,
-            InjectionActivity.Code, "Negate logic", "Fixed", "There.java:Line 234", new Date()));
+         InjectionActivity.Code, "Negate logic", "Fixed", "There.java:Line 234", new Date()));
       result =
-            PeerToPeerReviewWorkflowManager.transitionTo(reviewArt,
-                  PeerToPeerReviewArtifact.PeerToPeerReviewState.Completed, roles, defects, UserManager.getUser(),
-                  false, transaction);
+         PeerToPeerReviewWorkflowManager.transitionTo(reviewArt,
+            PeerToPeerReviewArtifact.PeerToPeerReviewState.Completed, roles, defects, UserManager.getUser(), false,
+            transaction);
       reviewArt.persist(transaction);
       if (result.isFalse()) {
          throw new IllegalStateException("Failed transitioning review to Completed: " + result.getText());

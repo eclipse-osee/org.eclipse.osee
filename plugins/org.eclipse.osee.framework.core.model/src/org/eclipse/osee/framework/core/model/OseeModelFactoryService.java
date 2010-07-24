@@ -37,26 +37,32 @@ public class OseeModelFactoryService implements IOseeModelFactoryService {
       this.oseEnumTypeFactory = oseEnumTypeFactory;
    }
 
+   @Override
    public BranchFactory getBranchFactory() {
       return branchFactory;
    }
 
+   @Override
    public TransactionRecordFactory getTransactionFactory() {
       return txFactory;
    }
 
+   @Override
    public ArtifactTypeFactory getArtifactTypeFactory() {
       return artTypeFactory;
    }
 
+   @Override
    public AttributeTypeFactory getAttributeTypeFactory() {
       return attrTypeFactory;
    }
 
+   @Override
    public RelationTypeFactory getRelationTypeFactory() {
       return relTypeFactory;
    }
 
+   @Override
    public OseeEnumTypeFactory getOseeEnumTypeFactory() {
       return oseEnumTypeFactory;
    }

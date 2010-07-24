@@ -15,6 +15,7 @@ import org.eclipse.osee.ote.core.framework.command.ITestContext;
 import org.eclipse.osee.ote.core.framework.command.ITestServerCommand;
 
 public class BaseCommandContextFactory implements ICommandContextFactory {
+   @Override
    public ITestContext getContext(final TestEnvironment testEnvironment, final ITestServerCommand cmd) {
       return testEnvironment;
    }

@@ -50,6 +50,7 @@ public class DbCellModifier implements ICellModifier {
    /**
     * @see org.eclipse.jface.viewers.ICellModifier#canModify(java.lang.Object, java.lang.String)
     */
+   @Override
    public boolean canModify(Object element, String property) {
       return true;
    }
@@ -57,6 +58,7 @@ public class DbCellModifier implements ICellModifier {
    /**
     * @see org.eclipse.jface.viewers.ICellModifier#getValue(java.lang.Object, java.lang.String)
     */
+   @Override
    public Object getValue(Object element, String property) {
 
       int columnIndex = dbTableViewer.getColumnNames().indexOf(property);
@@ -70,7 +72,9 @@ public class DbCellModifier implements ICellModifier {
             enumeratedValue.setChoices(UserManager.getUserNames());
             User u = null;
             u = UserManager.getUserByUserId((String) obj);
-            if (u != null) enumeratedValue.setValue(u.getName());
+            if (u != null) {
+               enumeratedValue.setValue(u.getName());
+            }
          } catch (Exception ex) {
             OseeLog.log(AdminPlugin.class, Level.SEVERE, ex);
          }
@@ -79,7 +83,7 @@ public class DbCellModifier implements ICellModifier {
          stringValue.setValue(((String) obj));
          return stringValue;
       } else if (obj == null) {
-         stringValue.setValue((""));
+         stringValue.setValue("");
          return stringValue;
       }
       return null;
@@ -88,6 +92,7 @@ public class DbCellModifier implements ICellModifier {
    /**
     * @see org.eclipse.jface.viewers.ICellModifier#modify(java.lang.Object, java.lang.String, java.lang.Object)
     */
+   @Override
    public void modify(Object element, String property, Object value) {
 
       // Find the index of the column

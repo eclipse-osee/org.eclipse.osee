@@ -19,12 +19,16 @@ public class VersionEntry extends FormmatedEntry {
       version = "1.0.0";
    }
 
+   @Override
    public String getFormmatedString() {
       return "Version: " + version;
    }
 
+   @Override
    public boolean equals(Object other) {
-      if (!(other instanceof VersionEntry)) return false;
+      if (!(other instanceof VersionEntry)) {
+         return false;
+      }
       return version.equals(((VersionEntry) other).version);
    }
 

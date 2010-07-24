@@ -24,13 +24,13 @@ public class ValidateChangeReportParser {
    private static final String REL = "(<RelChg>.*?</RelChg>)";
 
    /**
-    * @param changeReportString 
+    * @param changeReportString
     * @return Returns Three ArrayLists. 0 index for artifact changes, 1 index for attribute changes and 2 index for
-    *         relation changes.
+    * relation changes.
     */
    public ArrayList<ArrayList<DataChangeReportComparer>> parse(String changeReportString) {
       ArrayList<ArrayList<DataChangeReportComparer>> changeLists =
-            new ArrayList<ArrayList<DataChangeReportComparer>>(3);
+         new ArrayList<ArrayList<DataChangeReportComparer>>(3);
       ArrayList<DataChangeReportComparer> artifactChanges = new ArrayList<DataChangeReportComparer>();
       ArrayList<DataChangeReportComparer> attrChanges = new ArrayList<DataChangeReportComparer>();
       ArrayList<DataChangeReportComparer> relChanges = new ArrayList<DataChangeReportComparer>();

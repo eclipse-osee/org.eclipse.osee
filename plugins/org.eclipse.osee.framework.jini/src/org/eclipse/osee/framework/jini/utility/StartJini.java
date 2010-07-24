@@ -28,11 +28,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import net.jini.core.entry.Entry;
 import net.jini.lookup.entry.Comment;
 import net.jini.lookup.entry.ServiceInfo;
-
 import org.eclipse.osee.framework.jdk.core.util.CmdLineArgs;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
@@ -73,9 +71,9 @@ public class StartJini extends JiniService {
             allowedGroups = Arrays.toString(groups);
          } else {
             OseeLog.log(
-                  StartJini.class,
-                  Level.SEVERE,
-                  "[-D" + OseeProperties.getOseeJiniServiceGroups() + "] was not set.\nPlease enter the Group(s) this Lookup Server will register with.");
+               StartJini.class,
+               Level.SEVERE,
+               "[-D" + OseeProperties.getOseeJiniServiceGroups() + "] was not set.\nPlease enter the Group(s) this Lookup Server will register with.");
             return;
          }
          String quote = null;
@@ -89,7 +87,7 @@ public class StartJini extends JiniService {
          System.out.println("Host Address: " + host);
          String javaexeBigMem = quote + javaHome + fs + "bin" + fs + "java" + quote + " -Xmx512M ";
          String startServices =
-               javaexeBigMem + " -Dlookupcomponent " + " -Dosee.jini.lookup.groups=" + allowedGroups + " " + " -Dosee.jini.install=" + quote + jiniHome + "/jini2_1" + quote + " " + " -Dosee.jini.config=" + quote + jiniHome + "/jini_config" + quote + " " + " -Dosee.classserver.host=" + host + " " + " -Dosee.classserver.port=" + port + " " + " -Djava.security.policy=" + quote + jiniHome + "/jini_config/jsk-all.policy" + quote + " " + " -jar " + quote + jiniHome + "/jini2_1/lib/start.jar" + quote + " " + quote + jiniHome + "/jini_config/start-transient-jeri-services.config" + quote;
+            javaexeBigMem + " -Dlookupcomponent " + " -Dosee.jini.lookup.groups=" + allowedGroups + " " + " -Dosee.jini.install=" + quote + jiniHome + "/jini2_1" + quote + " " + " -Dosee.jini.config=" + quote + jiniHome + "/jini_config" + quote + " " + " -Dosee.classserver.host=" + host + " " + " -Dosee.classserver.port=" + port + " " + " -Djava.security.policy=" + quote + jiniHome + "/jini_config/jsk-all.policy" + quote + " " + " -jar " + quote + jiniHome + "/jini2_1/lib/start.jar" + quote + " " + quote + jiniHome + "/jini_config/start-transient-jeri-services.config" + quote;
 
          OseeLog.log(StartJini.class, Level.INFO, "RUN REGGIE ***************************************************");
          OseeLog.log(StartJini.class, Level.INFO, startServices);
@@ -115,8 +113,8 @@ public class StartJini extends JiniService {
          String description = "Provides means to shutdown spawned Jini Lookup Services";
 
          this.registerService(new Entry[] {new ServiceInfo("", "", "", "", model, ""), new Comment(description),
-               new SimpleFormattedEntry(SPAWNED_REGGIE_SERVICE_ID, reggieServiceId),
-               new SimpleFormattedEntry(SPAWNED_REGGIE_ON_HOST, getHostName())}, getHeaders(manifestFile));
+            new SimpleFormattedEntry(SPAWNED_REGGIE_SERVICE_ID, reggieServiceId),
+            new SimpleFormattedEntry(SPAWNED_REGGIE_ON_HOST, getHostName())}, getHeaders(manifestFile));
 
          OseeLog.log(StartJini.class, Level.INFO, "....................Core Jini Service is Alive....................");
          this.stayAlive();
@@ -218,7 +216,7 @@ public class StartJini extends JiniService {
          new StartJini(args[0], nohup, browser, null, manifestFile);
       } else {
          OseeLog.log(StartJini.class, Level.INFO,
-               "USAGE: -Dosee.jini.lookup.groups=<groups> StartJini <port> ?<-nohup> ?<-browser>");
+            "USAGE: -Dosee.jini.lookup.groups=<groups> StartJini <port> ?<-nohup> ?<-browser>");
       }
 
       OseeLog.log(StartJini.class, Level.INFO, "Exiting...");
@@ -234,6 +232,7 @@ public class StartJini extends JiniService {
       }
    }
 
+   @Override
    public void kill() throws RemoteException {
       OseeLog.log(StartJini.class, Level.INFO, "De-registering Core Jini Service...");
       deregisterService();

@@ -23,7 +23,7 @@ import org.eclipse.swt.graphics.Color;
  */
 public class TxFigure extends Ellipse {
 
-   private Color bgcolor;
+   private final Color bgcolor;
    private boolean selected;
    private final long txNumber;
 

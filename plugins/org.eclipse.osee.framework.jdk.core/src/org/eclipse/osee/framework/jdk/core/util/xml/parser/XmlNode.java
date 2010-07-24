@@ -19,15 +19,16 @@ import org.xml.sax.Attributes;
  */
 public class XmlNode {
 
-   private String name;
+   private final String name;
    private String textContent;
-   private Map<String, String> attributes;
+   private final Map<String, String> attributes;
 
    public XmlNode(String name, Attributes attributes) {
       this.name = name;
       this.attributes = new HashMap<String, String>(attributes.getLength());
-      for (int i = 0; i < attributes.getLength(); i++)
+      for (int i = 0; i < attributes.getLength(); i++) {
          this.attributes.put(attributes.getQName(i), attributes.getValue(i));
+      }
       this.textContent = "";
    }
 

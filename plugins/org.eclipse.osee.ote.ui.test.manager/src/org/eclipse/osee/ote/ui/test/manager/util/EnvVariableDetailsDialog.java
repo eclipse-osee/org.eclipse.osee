@@ -74,10 +74,12 @@ public class EnvVariableDetailsDialog extends MessageDialog {
 
       okButton.addSelectionListener(new SelectionListener() {
 
+         @Override
          public void widgetDefaultSelected(SelectionEvent e) {
             widgetSelected(e);
          }
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             selectionOk = true;
 
@@ -86,10 +88,12 @@ public class EnvVariableDetailsDialog extends MessageDialog {
 
       cancelButton.addSelectionListener(new SelectionListener() {
 
+         @Override
          public void widgetDefaultSelected(SelectionEvent e) {
             widgetSelected(e);
          }
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             selectionOk = false;
          }
@@ -150,6 +154,7 @@ public class EnvVariableDetailsDialog extends MessageDialog {
       textArea.setText((selection != null ? selection : ""));
 
       textArea.addModifyListener(new ModifyListener() {
+         @Override
          public void modifyText(ModifyEvent e) {
             selection = textArea.getText();
          }

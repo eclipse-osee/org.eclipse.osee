@@ -172,6 +172,7 @@ public class TransactionCache implements IOseeCache<TransactionRecord> {
       }
    }
 
+   @Override
    public long getLastLoaded() {
       return lastLoaded;
    }
@@ -180,12 +181,14 @@ public class TransactionCache implements IOseeCache<TransactionRecord> {
       this.lastLoaded = lastLoaded;
    }
 
+   @Override
    public synchronized boolean reloadCache() throws OseeCoreException {
       getDataAccessor().load(this);
       setLastLoaded(System.currentTimeMillis());
       return true;
    }
 
+   @Override
    public void decacheAll() {
    }
 }

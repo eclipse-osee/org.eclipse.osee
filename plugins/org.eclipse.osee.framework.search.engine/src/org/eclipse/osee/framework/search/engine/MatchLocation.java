@@ -31,6 +31,7 @@ public class MatchLocation {
       endPosition = 0;
    }
 
+   @Override
    public String toString() {
       return String.format("startAt: [%s] endAt: [%s] ", startPosition, endPosition);
    }

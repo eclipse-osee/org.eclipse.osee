@@ -32,9 +32,10 @@ public class WorkPageButton {
          String names[] = name.split(":");
          name = names[0];
          attrName = names[1];
-      } else
+      } else {
          attrName = name;
-      required = (values[1].equals("Required") ? true : false);
+      }
+      required = values[1].equals("Required") ? true : false;
       xWidget = values[2];
    }
 

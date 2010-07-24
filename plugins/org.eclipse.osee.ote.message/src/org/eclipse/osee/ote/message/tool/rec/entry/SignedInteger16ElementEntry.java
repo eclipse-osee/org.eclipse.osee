@@ -14,25 +14,25 @@ import java.nio.ByteBuffer;
 import org.eclipse.osee.ote.message.data.MemoryResource;
 import org.eclipse.osee.ote.message.elements.SignedInteger16Element;
 
-
 public class SignedInteger16ElementEntry implements IElementEntry {
 
-	private final SignedInteger16Element element;
-	private final byte[] nameAsBytes;
+   private final SignedInteger16Element element;
+   private final byte[] nameAsBytes;
 
+   public SignedInteger16ElementEntry(SignedInteger16Element element) {
+      this.element = element;
+      nameAsBytes = element.getName().getBytes();
+   }
 
-	public SignedInteger16ElementEntry(SignedInteger16Element element) {
-		this.element = element;
-		nameAsBytes = element.getName().getBytes();
-	}
+   @Override
+   public SignedInteger16Element getElement() {
+      return element;
+   }
 
-	public SignedInteger16Element getElement() {
-		return element;
-	}
-
-	public void write(ByteBuffer buffer, MemoryResource mem, int limit) {
-		mem.setOffset(element.getMsgData().getMem().getOffset());
-		buffer.put(nameAsBytes).put(COMMA).put(element.valueOf(mem).toString().getBytes()).put(COMMA);
-	}
+   @Override
+   public void write(ByteBuffer buffer, MemoryResource mem, int limit) {
+      mem.setOffset(element.getMsgData().getMem().getOffset());
+      buffer.put(nameAsBytes).put(COMMA).put(element.valueOf(mem).toString().getBytes()).put(COMMA);
+   }
 
 }

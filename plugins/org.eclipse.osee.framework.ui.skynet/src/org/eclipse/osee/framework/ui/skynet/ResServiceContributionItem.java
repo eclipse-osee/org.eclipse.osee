@@ -30,8 +30,8 @@ public class ResServiceContributionItem extends OseeContributionItem implements 
 
    public static final String ID = "res.service";
    private static final Image ENABLED_IMAGE = ImageManager.getImageDescriptor(FrameworkImage.RES).createImage();
-   private static final Image DISABLED_IMAGE =
-         new OverlayImage(ENABLED_IMAGE, ImageManager.getImageDescriptor(FrameworkImage.SLASH_RED_OVERLAY)).createImage();
+   private static final Image DISABLED_IMAGE = new OverlayImage(ENABLED_IMAGE,
+      ImageManager.getImageDescriptor(FrameworkImage.SLASH_RED_OVERLAY)).createImage();
    private static final String ENABLED_TOOLTIP = "New RES is connected.";
    private static final String DISABLED_TOOLTIP = "New RES is disconnected.";
    private static Thread updateThread = null;
@@ -41,7 +41,8 @@ public class ResServiceContributionItem extends OseeContributionItem implements 
       @Override
       public void run() {
          do {
-            boolean status = RemoteEventManager2.getInstance().isConnected();
+            RemoteEventManager2.getInstance();
+            boolean status = RemoteEventManager2.isConnected();
             for (ResServiceContributionItem icon : icons) {
                icon.updateStatus(status);
             }

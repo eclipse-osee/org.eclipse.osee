@@ -41,12 +41,14 @@ public class FilterModelList {
     * Add a new task to the collection of tasks
     */
    public void addFilter(FilterModel filter, boolean top) {
-      if (top)
+      if (top) {
          filters.add(0, filter);
-      else
+      } else {
          filters.add(filter);
-      for (IFilterListViewer flv : changeListeners)
+      }
+      for (IFilterListViewer flv : changeListeners) {
          flv.addFilter(filter);
+      }
    }
 
    /**
@@ -54,10 +56,12 @@ public class FilterModelList {
     */
    public void removeFilter(FilterModel filter) {
       filters.remove(filter);
-      for (IFilterListViewer flv : changeListeners)
+      for (IFilterListViewer flv : changeListeners) {
          flv.removeFilter(filter);
+      }
    }
 
+   @Override
    public String toString() {
       String str = "";
       for (int i = 0; i < filters.size(); i++) {
@@ -71,8 +75,9 @@ public class FilterModelList {
     * @param filter
     */
    public void filterChanged(FilterModel filter) {
-      for (IFilterListViewer flv : changeListeners)
+      for (IFilterListViewer flv : changeListeners) {
          flv.updateFilter(filter);
+      }
    }
 
    /**

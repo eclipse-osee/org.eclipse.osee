@@ -25,8 +25,11 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 public class OseeMainDictionary implements IOseeDictionary {
    Set<String> dictionary;
 
+   @Override
    public boolean isWord(String word) {
-      if (dictionary == null) loadDictionary();
+      if (dictionary == null) {
+         loadDictionary();
+      }
       boolean contains = dictionary.contains(word);
       return contains;
    }

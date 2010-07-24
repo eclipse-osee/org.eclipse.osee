@@ -43,7 +43,9 @@ public class AtsPreSaveCacheRemoteEventHandler implements IArtifactEventListener
    }
 
    private AtsPreSaveCacheRemoteEventHandler() {
-      if (DbUtil.isDbInit()) return;
+      if (DbUtil.isDbInit()) {
+         return;
+      }
       OseeLog.log(AtsPlugin.class, Level.INFO, "Starting ATS Pre-Save Remote Event Handler");
       OseeEventManager.addListener(this);
    }
@@ -54,8 +56,12 @@ public class AtsPreSaveCacheRemoteEventHandler implements IArtifactEventListener
 
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
-      if (DbUtil.isDbInit()) return;
-      if (transData.branchId != AtsUtil.getAtsBranch().getId()) return;
+      if (DbUtil.isDbInit()) {
+         return;
+      }
+      if (transData.branchId != AtsUtil.getAtsBranch().getId()) {
+         return;
+      }
       for (Artifact artifact : transData.cacheChangedArtifacts) {
          if (artifact instanceof StateMachineArtifact) {
             ((StateMachineArtifact) artifact).initalizePreSaveCache();
@@ -70,7 +76,9 @@ public class AtsPreSaveCacheRemoteEventHandler implements IArtifactEventListener
 
    @Override
    public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
-      if (DbUtil.isDbInit()) return;
+      if (DbUtil.isDbInit()) {
+         return;
+      }
       for (Artifact artifact : artifactEvent.getCacheArtifacts(EventModType.Modified, EventModType.Reloaded)) {
          if (artifact instanceof StateMachineArtifact) {
             ((StateMachineArtifact) artifact).initalizePreSaveCache();

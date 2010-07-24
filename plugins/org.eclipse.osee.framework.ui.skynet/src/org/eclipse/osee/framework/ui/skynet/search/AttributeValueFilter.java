@@ -22,8 +22,8 @@ import org.eclipse.swt.widgets.Text;
  * @author Ryan D. Brooks
  */
 public class AttributeValueFilter extends SearchFilter {
-   private ComboViewer attributeTypeList;
-   private Text attributeValue;
+   private final ComboViewer attributeTypeList;
+   private final Text attributeValue;
 
    public AttributeValueFilter(Control optionsControl, ComboViewer attributeTypeList, Text attributeValue) {
       super("Attribute Value", optionsControl);
@@ -38,7 +38,9 @@ public class AttributeValueFilter extends SearchFilter {
 
       OperatorAndValue result = handleWildCard(value);
       ISearchPrimitive primitive = new AttributeValueSearch(type, result.value, result.operator);
-      if (not) primitive = new NotSearch(primitive);
+      if (not) {
+         primitive = new NotSearch(primitive);
+      }
       filterViewer.addItem(primitive, getFilterName(), type, result.value);
    }
 
@@ -50,7 +52,9 @@ public class AttributeValueFilter extends SearchFilter {
    @Override
    public void loadFromStorageString(FilterTableViewer filterViewer, String type, String value, String storageString, boolean isNotEnabled) {
       ISearchPrimitive primitive = AttributeValueSearch.getPrimitive(storageString);
-      if (isNotEnabled) primitive = new NotSearch(primitive);
+      if (isNotEnabled) {
+         primitive = new NotSearch(primitive);
+      }
       filterViewer.addItem(primitive, getFilterName(), type, value);
    }
 

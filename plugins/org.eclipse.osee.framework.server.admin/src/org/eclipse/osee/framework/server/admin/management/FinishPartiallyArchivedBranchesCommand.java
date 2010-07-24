@@ -37,7 +37,7 @@ public class FinishPartiallyArchivedBranchesCommand extends BaseServerCommand {
    @Override
    protected void doCommandWork(IProgressMonitor monitor) throws Exception {
       String sql =
-            "select branch_id from osee_branch br where exists (select 1 from osee_txs txs where txs.branch_id = br.branch_id and br.archived = " + BranchArchivedState.ARCHIVED.getValue() + ")";
+         "select branch_id from osee_branch br where exists (select 1 from osee_txs txs where txs.branch_id = br.branch_id and br.archived = " + BranchArchivedState.ARCHIVED.getValue() + ")";
       IOseeStatement chStmt = null;
       try {
          IOseeDatabaseService databaseService = Activator.getInstance().getOseeDatabaseService();
@@ -51,7 +51,7 @@ public class FinishPartiallyArchivedBranchesCommand extends BaseServerCommand {
          }
          for (Branch branch : branches) {
             Operations.executeWorkAndCheckStatus(new BranchMoveOperation(Activator.getInstance(), true, branch),
-                  monitor, 0);
+               monitor, 0);
          }
       } catch (OseeCoreException ex) {
          printStackTrace(ex);

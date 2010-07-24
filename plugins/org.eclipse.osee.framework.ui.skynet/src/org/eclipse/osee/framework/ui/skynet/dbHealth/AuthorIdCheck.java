@@ -71,30 +71,30 @@ public class AuthorIdCheck extends DatabaseHealthOperation {
             System.out.println(String.format("Processing [%d] %d/%d...", author, num++, authors.size()));
             if (author == 0) {
                rd.addRaw(AHTML.addRowMultiColumnTable("TX_DETAILS", String.valueOf(author),
-                     "Warning: Skipping author == 0; this is ok, but may want to change in future"));
+                  "Warning: Skipping author == 0; this is ok, but may want to change in future"));
                continue;
             }
             try {
                Artifact artifact = ArtifactQuery.getArtifactFromId(author, BranchManager.getCommonBranch());
                if (artifact == null) {
                   rd.addRaw(AHTML.addRowMultiColumnTable("TX_DETAILS", String.valueOf(author),
-                        "Error: Artifact Not Found"));
+                     "Error: Artifact Not Found"));
                   if (isFixOperationEnabled()) {
                      rd.addRaw("Fix needed here");
                   }
                } else if (artifact.isDeleted()) {
                   rd.addRaw(AHTML.addRowMultiColumnTable("TX_DETAILS", String.valueOf(author),
-                        "Error: Artifact marked as deleted"));
+                     "Error: Artifact marked as deleted"));
                   if (isFixOperationEnabled()) {
                      rd.addRaw("Fix needed here");
                   }
                } else {
                   infoSb.append(String.format("Successfully found author [%s] as [%s]\n", String.valueOf(author),
-                        artifact.getName()));
+                     artifact.getName()));
                }
             } catch (Exception ex) {
                rd.addRaw(AHTML.addRowMultiColumnTable("TX_DETAILS", String.valueOf(author),
-                     "Error: " + ex.getLocalizedMessage()));
+                  "Error: " + ex.getLocalizedMessage()));
                if (isFixOperationEnabled() && ex.getLocalizedMessage().contains("No artifact found with id")) {
                   updateTxAuthor(author);
                   rd.addRaw(String.format("Fix: Updated author [%s] to OSEE System", author));
@@ -112,7 +112,7 @@ public class AuthorIdCheck extends DatabaseHealthOperation {
 
    private static void updateTxAuthor(int author) throws Exception {
       ConnectionHandler.runPreparedUpdate(UPDATE_AUTHOR_IDS, UserManager.getUser(SystemUser.OseeSystem).getArtId(),
-            author);
+         author);
    }
 
    @Override

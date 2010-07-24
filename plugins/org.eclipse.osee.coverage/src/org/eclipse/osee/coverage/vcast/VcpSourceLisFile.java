@@ -34,12 +34,12 @@ public class VcpSourceLisFile {
 
    public VcpSourceLisFile(String vcastDirectory, VcpSourceFile vcpSourceFile) throws OseeCoreException {
       lisFilename =
-            vcastDirectory + "/vcast/" + vcpSourceFile.getValue(SourceValue.SOURCE_FILENAME).replaceFirst("(.*)\\..*",
-                  "$1") + ".LIS";
+         vcastDirectory + "/vcast/" + vcpSourceFile.getValue(SourceValue.SOURCE_FILENAME).replaceFirst("(.*)\\..*",
+            "$1") + ".LIS";
       listFile = getFile();
       if (!listFile.exists()) {
          throw new OseeArgumentException(
-               String.format("VectorCast <filename>.LIS file doesn't exist [%s]", lisFilename));
+            String.format("VectorCast <filename>.LIS file doesn't exist [%s]", lisFilename));
       }
       text = AFile.readFile(listFile);
       lines = text.split("\n");

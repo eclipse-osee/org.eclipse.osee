@@ -33,23 +33,23 @@ import org.eclipse.osee.framework.logging.OseeLog;
 public class ApplicationServerDataStore {
 
    private static final String INSERT_LOOKUP_TABLE =
-         "INSERT INTO osee_server_lookup (server_id, version_id, server_address, port, start_time, accepts_requests) VALUES (?,?,?,?,?,?)";
+      "INSERT INTO osee_server_lookup (server_id, version_id, server_address, port, start_time, accepts_requests) VALUES (?,?,?,?,?,?)";
 
    private static final String UPDATE_LOOKUP_TABLE =
-         "UPDATE osee_server_lookup SET accepts_requests = ? WHERE server_address = ? AND port = ?";
+      "UPDATE osee_server_lookup SET accepts_requests = ? WHERE server_address = ? AND port = ?";
 
    private static final String DELETE_FROM_LOOKUP_TABLE =
-         "DELETE FROM osee_server_lookup WHERE server_address = ? AND port = ? AND version_id=?";
+      "DELETE FROM osee_server_lookup WHERE server_address = ? AND port = ? AND version_id=?";
 
    private static final String DELETE_FROM_LOOKUP_TABLE_BY_ID = "DELETE FROM osee_server_lookup WHERE server_id = ?";
 
    private static final String GET_NUMBER_OF_SESSIONS =
-         "SELECT count(1) FROM osee_session WHERE managed_by_server_id = ?";
+      "SELECT count(1) FROM osee_session WHERE managed_by_server_id = ?";
 
    private static final String SELECT_FROM_LOOKUP_TABLE = "SELECT * FROM osee_server_lookup";
 
    private static final String SELECT_SUPPORTED_VERSIONS_FROM_LOOKUP_TABLE_BY_SERVER_ID =
-         "SELECT version_id FROM osee_server_lookup where server_id = ?";
+      "SELECT version_id FROM osee_server_lookup where server_id = ?";
 
    static void removeByServerId(Collection<OseeServerInfo> infos) throws OseeDataStoreException {
       if (!infos.isEmpty()) {
@@ -101,7 +101,7 @@ public class ApplicationServerDataStore {
    @SuppressWarnings("unchecked")
    static boolean updateServerState(OseeServerInfo applicationServerInfo, boolean state) throws OseeDataStoreException {
       ConnectionHandler.runPreparedUpdate(UPDATE_LOOKUP_TABLE, state ? 1 : 0, applicationServerInfo.getServerAddress(),
-            applicationServerInfo.getPort());
+         applicationServerInfo.getPort());
       return true;
    }
 
@@ -120,7 +120,7 @@ public class ApplicationServerDataStore {
 
    static Collection<OseeServerInfo> getApplicationServerInfos(String clientVersion) throws OseeDataStoreException {
       CompositeKeyHashMap<String, Integer, OseeServerInfo> servers =
-            new CompositeKeyHashMap<String, Integer, OseeServerInfo>();
+         new CompositeKeyHashMap<String, Integer, OseeServerInfo>();
       if (Strings.isValid(clientVersion)) {
          IOseeStatement chStmt = ConnectionHandler.getStatement();
          try {
@@ -134,19 +134,18 @@ public class ApplicationServerDataStore {
                      OseeServerInfo info = servers.get(serverAddress, port);
                      if (info == null) {
                         info =
-                              new OseeServerInfo(chStmt.getString("server_id"), serverAddress, port,
-                                    new String[] {serverVersion}, chStmt.getTimestamp("start_time"),
-                                    chStmt.getInt("accepts_requests") != 0 ? true : false);
+                           new OseeServerInfo(chStmt.getString("server_id"), serverAddress, port,
+                              new String[] {serverVersion}, chStmt.getTimestamp("start_time"),
+                              chStmt.getInt("accepts_requests") != 0 ? true : false);
                         servers.put(serverAddress, port, info);
                      } else {
                         Set<String> versions = new HashSet<String>(Arrays.asList(info.getVersion()));
                         if (!versions.contains(serverVersion)) {
                            versions.add(serverVersion);
                            info =
-                                 new OseeServerInfo(chStmt.getString("server_id"), serverAddress, port,
-                                       versions.toArray(new String[versions.size()]),
-                                       chStmt.getTimestamp("start_time"),
-                                       chStmt.getInt("accepts_requests") != 0 ? true : false);
+                              new OseeServerInfo(chStmt.getString("server_id"), serverAddress, port,
+                                 versions.toArray(new String[versions.size()]), chStmt.getTimestamp("start_time"),
+                                 chStmt.getInt("accepts_requests") != 0 ? true : false);
                            servers.put(serverAddress, port, info);
                         }
                      }
@@ -170,8 +169,8 @@ public class ApplicationServerDataStore {
             String serverAddress = chStmt.getString("server_address");
             int port = chStmt.getInt("port");
             OseeServerInfo info =
-                  new OseeServerInfo(chStmt.getString("server_id"), serverAddress, port, new String[] {serverVersion},
-                        chStmt.getTimestamp("start_time"), chStmt.getInt("accepts_requests") != 0 ? true : false);
+               new OseeServerInfo(chStmt.getString("server_id"), serverAddress, port, new String[] {serverVersion},
+                  chStmt.getTimestamp("start_time"), chStmt.getInt("accepts_requests") != 0 ? true : false);
             infos.add(info);
          }
       } finally {

@@ -43,19 +43,22 @@ public class RelationInTransactionSearch implements ISearchPrimitive {
       this.branchId = fromTransactionId.getBranchId();
    }
 
+   @Override
    public String getArtIdColName() {
       return "t1.art_id";
    }
 
+   @Override
    public String getCriteriaSql(List<Object> dataList, Branch branch) {
       return sql;
    }
 
+   @Override
    public String getTableSql(List<Object> dataList, Branch branch) {
       String transactionCheck =
-            fromTransactionNumber.equals(toTransactionNumber) ? "txs.transaction_id = ?" : "txs.transaction_id > ? AND txs.transaction_id <= ?";
+         fromTransactionNumber.equals(toTransactionNumber) ? "txs.transaction_id = ?" : "txs.transaction_id > ? AND txs.transaction_id <= ?";
       String tables =
-            "(SELECT rel.a_art_id AS art_id FROM osee_relation_link rel, osee_txs txs WHERE rel.gamma_id = txs.gamma_id AND " + transactionCheck + " AND txs.branch_id = ? UNION ALL SELECT rel.b_art_id AS art_id FROM osee_relation_link rel, osee_txs txs WHERE rel.gamma_id = txs.gamma_id AND " + transactionCheck + " AND txs.branch_id=?) t1";
+         "(SELECT rel.a_art_id AS art_id FROM osee_relation_link rel, osee_txs txs WHERE rel.gamma_id = txs.gamma_id AND " + transactionCheck + " AND txs.branch_id = ? UNION ALL SELECT rel.b_art_id AS art_id FROM osee_relation_link rel, osee_txs txs WHERE rel.gamma_id = txs.gamma_id AND " + transactionCheck + " AND txs.branch_id=?) t1";
       if (!fromTransactionNumber.equals(toTransactionNumber)) {
          dataList.add(fromTransactionNumber);
       }
@@ -86,9 +89,10 @@ public class RelationInTransactionSearch implements ISearchPrimitive {
       }
 
       return new RelationInTransactionSearch(TransactionManager.getTransactionId(Integer.parseInt(values[0])),
-            TransactionManager.getTransactionId(Integer.parseInt(values[1])));
+         TransactionManager.getTransactionId(Integer.parseInt(values[1])));
    }
 
+   @Override
    public String getStorageString() {
       return fromTransactionNumber + TOKEN + toTransactionNumber;
    }

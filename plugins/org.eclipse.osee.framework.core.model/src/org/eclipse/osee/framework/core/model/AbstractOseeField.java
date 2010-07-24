@@ -23,14 +23,18 @@ public abstract class AbstractOseeField<T> implements IOseeField<T> {
       isDirty = false;
    }
 
+   @Override
    public abstract void set(T value) throws OseeCoreException;
 
+   @Override
    public abstract T get() throws OseeCoreException;
 
+   @Override
    public void clearDirty() {
       this.isDirty = false;
    }
 
+   @Override
    public boolean isDirty() {
       return isDirty;
    }

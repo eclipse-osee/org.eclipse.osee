@@ -49,9 +49,9 @@ public class GoalWorkflowDefinition extends WorkFlowDefinition {
       // Add Task Page and Workflow Definition
       workItems.add(new AtsGoalInWorkPageDefinition());
       workItems.add(new WorkPageDefinition(GoalState.Completed.name(), ID + "." + GoalState.Completed.name(),
-            AtsCompletedWorkPageDefinition.ID));
+         AtsCompletedWorkPageDefinition.ID));
       workItems.add(new WorkPageDefinition(GoalState.Cancelled.name(), ID + "." + GoalState.Cancelled.name(),
-            AtsCancelledWorkPageDefinition.ID));
+         AtsCancelledWorkPageDefinition.ID));
       workItems.add(new GoalWorkflowDefinition());
 
       return workItems;

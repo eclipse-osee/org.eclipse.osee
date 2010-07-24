@@ -38,7 +38,7 @@ public class MyFavoritesAction extends Action {
    public void run() {
       try {
          WorldEditor.open(new WorldEditorUISearchItemProvider(new MyFavoritesSearchItem("My Favorites",
-               UserManager.getUser()), null, TableLoadOption.None));
+            UserManager.getUser()), null, TableLoadOption.None));
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }

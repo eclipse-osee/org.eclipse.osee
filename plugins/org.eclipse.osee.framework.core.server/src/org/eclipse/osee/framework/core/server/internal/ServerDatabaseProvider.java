@@ -30,7 +30,7 @@ public class ServerDatabaseProvider implements IDatabaseInfoProvider {
       IDatabaseInfo databaseInfo = null;
       databaseInfo = DatabaseInfoManager.getDefault();
       OseeLog.reportStatus(new BaseStatus(NAME, Level.INFO, "%s [%s as %s]", databaseInfo.getDriver(),
-            databaseInfo.getDatabaseName(), databaseInfo.getDatabaseLoginName()));
+         databaseInfo.getDatabaseName(), databaseInfo.getDatabaseLoginName()));
       return databaseInfo;
    }
 

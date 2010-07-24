@@ -15,34 +15,34 @@ package org.eclipse.osee.framework.messaging;
  */
 public enum SystemTopic implements MessageID {
 
-	JMS_HEALTH_STATUS("jms.health.status"),
-	KILL_TEST_JMS_BROKER("jms.kill.broker");
+   JMS_HEALTH_STATUS("jms.health.status"),
+   KILL_TEST_JMS_BROKER("jms.kill.broker");
 
-	private String name;
+   private String name;
 
-	SystemTopic(String name) {
-		this.name = name;
-	}
+   SystemTopic(String name) {
+      this.name = name;
+   }
 
-	@Override
-	public String getName() {
-		return name;
-	}
+   @Override
+   public String getName() {
+      return name;
+   }
 
-	@Override
-	public Class<?> getSerializationClass() {
-		return null;
-	}
+   @Override
+   public Class<?> getSerializationClass() {
+      return null;
+   }
 
-	@Override
-	public boolean isReplyRequired() {
-		return false;
-	}
+   @Override
+   public boolean isReplyRequired() {
+      return false;
+   }
 
-	@Override
-	public String getId() {
-		return name;
-	}
+   @Override
+   public String getId() {
+      return name;
+   }
 
    @Override
    public boolean isTopic() {

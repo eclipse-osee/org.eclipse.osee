@@ -27,6 +27,7 @@ public final class BranchCommitRequestTranslator implements ITranslator<BranchCo
       IS_ARCHIVE_ALLOWED;
    }
 
+   @Override
    public BranchCommitRequest convert(PropertyStore propertyStore) throws OseeCoreException {
       int srcBranchId = propertyStore.getInt(Entry.SRC_BRANCH_ID.name());
       int destBranchId = propertyStore.getInt(Entry.DEST_BRANCH_ID.name());
@@ -37,6 +38,7 @@ public final class BranchCommitRequestTranslator implements ITranslator<BranchCo
       return data;
    }
 
+   @Override
    public PropertyStore convert(BranchCommitRequest data) throws OseeCoreException {
       PropertyStore store = new PropertyStore();
       store.put(Entry.IS_ARCHIVE_ALLOWED.name(), data.isArchiveAllowed());

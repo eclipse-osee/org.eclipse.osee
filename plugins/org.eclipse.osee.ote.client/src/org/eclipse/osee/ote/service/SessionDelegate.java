@@ -39,6 +39,8 @@ public interface SessionDelegate {
     * @throws Exception
     */
    byte[] getFile(String path) throws Exception;
+
    long getFileDate(String path) throws Exception;
+
    String getFileVersion(String path) throws Exception;
 }

@@ -19,25 +19,26 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  * @author Ryan D. Brooks
  */
 public class MaxMatchCountConfirmer implements ISearchConfirmer {
-	private static final int MAX_RESULTS = 2000;
-	final MutableBoolean result = new MutableBoolean(false);
+   private static final int MAX_RESULTS = 2000;
+   final MutableBoolean result = new MutableBoolean(false);
 
-	public boolean canProceed(final int count) {
-		if (count < MAX_RESULTS) {
-			result.setValue(true);
-		} else {
-			Displays.pendInDisplayThread(new Runnable() {
-				@Override
-				public void run() {
-					result.setValue(MessageDialog.openConfirm(Displays.getActiveShell(), "Confirm Search",
-								"The search returned " + count + " results and may take a long time to load, continue?"));
-				}
-			});
-		}
-		return result.getValue();
-	}
+   @Override
+   public boolean canProceed(final int count) {
+      if (count < MAX_RESULTS) {
+         result.setValue(true);
+      } else {
+         Displays.pendInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               result.setValue(MessageDialog.openConfirm(Displays.getActiveShell(), "Confirm Search",
+                  "The search returned " + count + " results and may take a long time to load, continue?"));
+            }
+         });
+      }
+      return result.getValue();
+   }
 
-	public boolean isConfirmed() {
-		return result.getValue();
-	}
+   public boolean isConfirmed() {
+      return result.getValue();
+   }
 }

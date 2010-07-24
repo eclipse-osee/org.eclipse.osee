@@ -20,7 +20,7 @@ import org.eclipse.ui.IViewSite;
  * @author Robert A. Fisher
  */
 public class SelectionCountChangeListener implements ISelectionChangedListener {
-   private IStatusLineManager statusLineManager;
+   private final IStatusLineManager statusLineManager;
 
    /**
     * @param viewSite
@@ -36,13 +36,15 @@ public class SelectionCountChangeListener implements ISelectionChangedListener {
       this.statusLineManager = statusLineManager;
    }
 
+   @Override
    public void selectionChanged(SelectionChangedEvent event) {
       IStructuredSelection selection = (IStructuredSelection) event.getSelection();
 
       IStatusLineManager lineManager = statusLineManager;
-      if (selection.size() > 1)
+      if (selection.size() > 1) {
          lineManager.setMessage(selection.size() + " items selected");
-      else
+      } else {
          lineManager.setMessage("");
+      }
    }
 }

@@ -35,21 +35,21 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({EventBasicGuidArtifactTest.class, EventBasicGuidRelationTest.class,
-			EventChangeTypeBasicGuidArtifactTest.class, ArtifactQueryTestDemo.class, TransactionManagerTest.class,
-			BranchTestSuite.class, RelationTestSuite.class, ArtifactTypeInheritanceTest.class,
-			Artifact_setAttributeValues.class, Artifact_getLastModified.class, CsvArtifactTest.class,
-			SevereLogMonitorTest.class, RelationDeletionTest.class, StaticIdManagerTest.class, DuplicateHridTest.class,
-			RelationOrderingTest.class, ParsersSuite.class})
+   EventChangeTypeBasicGuidArtifactTest.class, ArtifactQueryTestDemo.class, TransactionManagerTest.class,
+   BranchTestSuite.class, RelationTestSuite.class, ArtifactTypeInheritanceTest.class,
+   Artifact_setAttributeValues.class, Artifact_getLastModified.class, CsvArtifactTest.class,
+   SevereLogMonitorTest.class, RelationDeletionTest.class, StaticIdManagerTest.class, DuplicateHridTest.class,
+   RelationOrderingTest.class, ParsersSuite.class})
 /**
  * @author Donald G. Dunne
  */
 public class FrameworkCore_Demo_Fast_Suite {
-	@BeforeClass
-	public static void setUp() throws Exception {
-		assertTrue("Demo Application Server must be running.",
-					ClientSessionManager.getAuthenticationProtocols().contains("demo"));
-		assertTrue("Client must authenticate using demo protocol",
-					ClientSessionManager.getSession().getAuthenticationProtocol().equals("demo"));
-	}
+   @BeforeClass
+   public static void setUp() throws Exception {
+      assertTrue("Demo Application Server must be running.",
+         ClientSessionManager.getAuthenticationProtocols().contains("demo"));
+      assertTrue("Client must authenticate using demo protocol",
+         ClientSessionManager.getSession().getAuthenticationProtocol().equals("demo"));
+   }
 
 }

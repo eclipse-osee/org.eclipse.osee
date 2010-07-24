@@ -49,16 +49,16 @@ public class InspectReggieDialog extends MessageDialog implements IServiceManage
    private Button cancelButton;
    private boolean selectionOk;
 
-   private ServiceRegistrar reggie;
+   private final ServiceRegistrar reggie;
    private ServicesViewer servicesViewer;
 
    private FormattedText quickViewer;
-   private ServiceTreeBuilder serviceTreeBuilder;
-   private ReggieItemHandler reggieParser;
+   private final ServiceTreeBuilder serviceTreeBuilder;
+   private final ReggieItemHandler reggieParser;
 
    public InspectReggieDialog(Shell parentShell, ServiceRegistrar reggie, ReggieItemHandler reggieParser, String dialogTitle, Image dialogTitleImage, String dialogMessage, int dialogImageType, String[] dialogButtonLabels, int defaultIndex) {
       super(parentShell, dialogTitle, dialogTitleImage, dialogMessage, dialogImageType, dialogButtonLabels,
-            defaultIndex);
+         defaultIndex);
       this.reggie = reggie;
       this.reggieParser = reggieParser;
       this.serviceTreeBuilder = new ServiceTreeBuilder();
@@ -107,6 +107,7 @@ public class InspectReggieDialog extends MessageDialog implements IServiceManage
       MenuManager menuManager = new MenuManager("#PopupMenu");
       menuManager.setRemoveAllWhenShown(true);
       menuManager.addMenuListener(new IMenuListener() {
+         @Override
          public void menuAboutToShow(IMenuManager manager) {
             manager.add(new KillServiceAction(InspectReggieDialog.this));
          }
@@ -135,6 +136,7 @@ public class InspectReggieDialog extends MessageDialog implements IServiceManage
 
       okButton.addSelectionListener(new SelectionAdapter() {
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             selectionOk = true;
          }
@@ -142,6 +144,7 @@ public class InspectReggieDialog extends MessageDialog implements IServiceManage
 
       cancelButton.addSelectionListener(new SelectionAdapter() {
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             selectionOk = false;
          }
@@ -153,18 +156,22 @@ public class InspectReggieDialog extends MessageDialog implements IServiceManage
       return selectionOk;
    }
 
+   @Override
    public FormattedText getQuickViewer() {
       return quickViewer;
    }
 
+   @Override
    public ServicesViewer getServicesViewer() {
       return servicesViewer;
    }
 
+   @Override
    public InputManager<TreeParent> getInputManager() {
       return serviceTreeBuilder.getInputManager();
    }
 
+   @Override
    public LookupViewer getLookupViewer() {
       return null;
    }

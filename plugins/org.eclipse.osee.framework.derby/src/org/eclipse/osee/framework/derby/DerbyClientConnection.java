@@ -25,6 +25,7 @@ public class DerbyClientConnection implements IConnectionFactory {
    private static final String driver = "org.apache.derby.jdbc.ClientDriver";
    private boolean firstTime = true;
 
+   @Override
    public Connection getConnection(Properties properties, String connectionURL) throws Exception {
       Class.forName(driver);
 
@@ -39,6 +40,7 @@ public class DerbyClientConnection implements IConnectionFactory {
       return connection;
    }
 
+   @Override
    public String getDriver() {
       return driver;
    }

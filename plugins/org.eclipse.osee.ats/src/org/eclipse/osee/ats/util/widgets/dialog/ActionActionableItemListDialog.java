@@ -42,8 +42,7 @@ public class ActionActionableItemListDialog extends CheckedTreeSelectionDialog {
    boolean showAction = false;
 
    public ActionActionableItemListDialog(Active active) {
-      super(Displays.getActiveShell(), new ArtifactDescriptiveLabelProvider(), new AITreeContentProvider(
-            active));
+      super(Displays.getActiveShell(), new ArtifactDescriptiveLabelProvider(), new AITreeContentProvider(active));
       setTitle("Select Actionable Items");
       setMessage("Select Actionable Items");
       setComparator(new ArtifactNameSorter());
@@ -65,18 +64,22 @@ public class ActionActionableItemListDialog extends CheckedTreeSelectionDialog {
       recurseChildrenCheck.createWidgets(comp, 2);
       recurseChildrenCheck.set(recurseChildren);
       recurseChildrenCheck.addSelectionListener(new SelectionListener() {
+         @Override
          public void widgetDefaultSelected(SelectionEvent e) {
          }
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             recurseChildren = recurseChildrenCheck.isSelected();
          };
       });
       showFinishedCheck.createWidgets(comp, 2);
       showFinishedCheck.addSelectionListener(new SelectionListener() {
+         @Override
          public void widgetDefaultSelected(SelectionEvent e) {
          }
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             showFinished = showFinishedCheck.isSelected();
          };
@@ -84,9 +87,11 @@ public class ActionActionableItemListDialog extends CheckedTreeSelectionDialog {
       showActionCheck.createWidgets(comp, 2);
       showActionCheck.set(showAction);
       showActionCheck.addSelectionListener(new SelectionListener() {
+         @Override
          public void widgetDefaultSelected(SelectionEvent e) {
          }
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             showAction = showActionCheck.isSelected();
          };

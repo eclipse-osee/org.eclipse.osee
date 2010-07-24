@@ -22,26 +22,26 @@ public class QuadTest {
    private final Integer b = 233;
    private final Integer c = 433;
    private final Integer d = 555;
-   private final Quad<Integer, Integer, Integer, Integer> mapToPi =
-         new Quad<Integer, Integer, Integer, Integer>(a, b, c, d);
-   private final Quad<Integer, Integer, Integer, Integer> mapToE =
-         new Quad<Integer, Integer, Integer, Integer>(b, c, d, a);
+   private final Quad<Integer, Integer, Integer, Integer> mapToPi = new Quad<Integer, Integer, Integer, Integer>(a, b,
+      c, d);
+   private final Quad<Integer, Integer, Integer, Integer> mapToE = new Quad<Integer, Integer, Integer, Integer>(b, c,
+      d, a);
 
-   private final Quad<Integer, Integer, Integer, Integer> alsoMapToPi =
-         new Quad<Integer, Integer, Integer, Integer>(a, b, c, d);
-   private final Quad<Integer, Integer, Integer, Integer> alsoMapToE =
-         new Quad<Integer, Integer, Integer, Integer>(b, c, d, a);
+   private final Quad<Integer, Integer, Integer, Integer> alsoMapToPi = new Quad<Integer, Integer, Integer, Integer>(a,
+      b, c, d);
+   private final Quad<Integer, Integer, Integer, Integer> alsoMapToE = new Quad<Integer, Integer, Integer, Integer>(b,
+      c, d, a);
 
    private final Quad<Integer, Integer, Integer, Integer> firstEntryNull =
-         new Quad<Integer, Integer, Integer, Integer>(null, 222, 333, 444);
+      new Quad<Integer, Integer, Integer, Integer>(null, 222, 333, 444);
    private final Quad<Integer, Integer, Integer, Integer> secondEntryNull =
-         new Quad<Integer, Integer, Integer, Integer>(111, null, 333, 444);
+      new Quad<Integer, Integer, Integer, Integer>(111, null, 333, 444);
    private final Quad<Integer, Integer, Integer, Integer> thirdEntryNull =
-         new Quad<Integer, Integer, Integer, Integer>(111, 222, null, 444);
+      new Quad<Integer, Integer, Integer, Integer>(111, 222, null, 444);
    private final Quad<Integer, Integer, Integer, Integer> fourthEntryNull =
-         new Quad<Integer, Integer, Integer, Integer>(111, 222, 333, null);
-   private final Quad<Integer, Integer, Integer, Integer> nonNull =
-         new Quad<Integer, Integer, Integer, Integer>(111, 222, 333, 444);
+      new Quad<Integer, Integer, Integer, Integer>(111, 222, 333, null);
+   private final Quad<Integer, Integer, Integer, Integer> nonNull = new Quad<Integer, Integer, Integer, Integer>(111,
+      222, 333, 444);
 
    @org.junit.Test
    public void testConstructor() {
@@ -131,7 +131,7 @@ public class QuadTest {
    @org.junit.Test
    public void testHashCorrectness() {
       HashMap<Quad<Integer, Integer, Integer, Integer>, Double> hash =
-            new HashMap<Quad<Integer, Integer, Integer, Integer>, Double>();
+         new HashMap<Quad<Integer, Integer, Integer, Integer>, Double>();
       hash.put(mapToPi, Math.PI);
       hash.put(mapToE, Math.E);
       Assert.assertTrue(hash.get(mapToPi).equals(Math.PI));

@@ -21,8 +21,8 @@ public class JiniClassServer {
 
    private static JiniClassServer myself;
    private final ClassServer classServer;
-   private String hostName;
-   private String url;
+   private final String hostName;
+   private final String url;
 
    private JiniClassServer() throws Exception {
       hostName = InetAddress.getLocalHost().getHostAddress();
@@ -48,7 +48,9 @@ public class JiniClassServer {
     * @throws Exception If there was an error creating a socket on localhost.
     */
    public static JiniClassServer getInstance() throws Exception {
-      if (myself == null || myself.classServer == null) myself = new JiniClassServer();
+      if (myself == null || myself.classServer == null) {
+         myself = new JiniClassServer();
+      }
       return myself;
    }
 
@@ -74,7 +76,9 @@ public class JiniClassServer {
     * Stops the class server, if one was started
     */
    public static void stopServer() {
-      if (myself != null && myself.classServer != null) myself.classServer.terminate();
+      if (myself != null && myself.classServer != null) {
+         myself.classServer.terminate();
+      }
    }
 
    /**

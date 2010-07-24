@@ -29,6 +29,6 @@ public interface IRunManager {
    public boolean abort(Throwable th, boolean wait);
 
    public boolean isAborted();
-   
+
    public TestScript getCurrentScript();
 }

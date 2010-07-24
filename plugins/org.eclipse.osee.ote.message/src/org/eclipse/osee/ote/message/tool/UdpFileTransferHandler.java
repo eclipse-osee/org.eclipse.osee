@@ -45,7 +45,7 @@ public class UdpFileTransferHandler {
 
    private final class Handle implements IFileTransferHandle {
       private final CopyOnWriteArrayList<IUdpTransferListener> listeners =
-            new CopyOnWriteArrayList<IUdpTransferListener>();
+         new CopyOnWriteArrayList<IUdpTransferListener>();
       private final SelectionKey key;
       private final TransferConfig config;
       private final FileLock lock;
@@ -70,12 +70,14 @@ public class UdpFileTransferHandler {
          this.lock = lock;
       }
 
+      @Override
       public void addListener(IUdpTransferListener listener) {
          if (!listeners.contains(listener)) {
             listeners.add(listener);
          }
       }
 
+      @Override
       public void stop() throws IOException {
          synchronized (gate) {
             handles.remove(key);
@@ -98,6 +100,7 @@ public class UdpFileTransferHandler {
       selector = Selector.open();
       thread = new Thread(new Runnable() {
 
+         @Override
          public void run() {
             try {
                while (!done) {
@@ -246,11 +249,11 @@ public class UdpFileTransferHandler {
             System.out.printf("Transfering %s to %s via local port %d\n", file, address.toString(), localPort);
          } else {
             System.out.printf("Writing to %s data recieved from %s via local port %d\n", file, address.toString(),
-                  localPort);
+               localPort);
          }
          TransferConfig config =
-               new TransferConfig(file, address, new InetSocketAddress(InetAddress.getLocalHost(), localPort),
-                     direction, 7 * 188);
+            new TransferConfig(file, address, new InetSocketAddress(InetAddress.getLocalHost(), localPort), direction,
+               7 * 188);
          rec.registerTransfer(config);
          System.in.read();
          rec.stop(2500);

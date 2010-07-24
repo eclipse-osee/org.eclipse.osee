@@ -52,8 +52,9 @@ public class Float64ElementTest {
          el.setValue(val);
          expectedVals[i] = val;
          if (el.getValue() != expectedVals[i]) {
-            Assert.failNotEquals(String.format("set/get fail on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(),
-                  el.getLsb()), expectedVals[i], el.getValue());
+            Assert.failNotEquals(
+               String.format("set/get fail on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(), el.getLsb()),
+               expectedVals[i], el.getValue());
          }
 
       }
@@ -66,8 +67,9 @@ public class Float64ElementTest {
          el.setValue(val);
          expectedVals[i] = val;
          if (el.getValue() != expectedVals[i]) {
-            Assert.failNotEquals(String.format("set/get fail on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(),
-                  el.getLsb()), Double.toHexString(expectedVals[i]), Double.toHexString(el.getValue()));
+            Assert.failNotEquals(
+               String.format("set/get fail on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(), el.getLsb()),
+               Double.toHexString(expectedVals[i]), Double.toHexString(el.getValue()));
          }
       }
    }
@@ -76,14 +78,16 @@ public class Float64ElementTest {
       for (int i = 0; i < length; i++) {
          Float64Element el = e[i];
          if (el.getValue() != expectedVals[i]) {
-            Assert.failNotEquals(String.format("corruption detect on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(),
-                  el.getLsb()), expectedVals[i], e[i].getValue());
+            Assert.failNotEquals(
+               String.format("corruption detect on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(), el.getLsb()),
+               expectedVals[i], e[i].getValue());
          }
 
          String v = Double.toString(expectedVals[i]);
          if (!el.valueOf().equals(v)) {
-            Assert.failNotEquals(String.format("set/get fail on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(),
-                  el.getLsb()), v, el.valueOf());
+            Assert.failNotEquals(
+               String.format("set/get fail on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(), el.getLsb()), v,
+               el.valueOf());
          }
       }
    }

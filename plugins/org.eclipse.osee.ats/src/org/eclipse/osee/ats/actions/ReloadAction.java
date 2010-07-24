@@ -55,9 +55,9 @@ public class ReloadAction extends Action {
             relatedArts.addAll(((TaskableStateMachineArtifact) sma).getTaskArtifacts());
          }
          if (!MessageDialog.openConfirm(
-               Displays.getActiveShell(),
-               "Reload Action (Experimental)",
-               "Experimental Only...Use at own risk!\n\nThis operation will remove artifacts from cache and reload.\nUnsaved changes will be lost.\n\nReload [" + relatedArts.size() + "] artifacts?")) {
+            Displays.getActiveShell(),
+            "Reload Action (Experimental)",
+            "Experimental Only...Use at own risk!\n\nThis operation will remove artifacts from cache and reload.\nUnsaved changes will be lost.\n\nReload [" + relatedArts.size() + "] artifacts?")) {
             return;
          }
          ArtifactQuery.reloadArtifacts(relatedArts);

@@ -13,8 +13,6 @@ package org.eclipse.osee.ote.core.log.record;
 import java.util.logging.Level;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 
-
-
 /**
  * @author Ryan D. Brooks
  * @author Andrew M. Finkbeiner
@@ -24,9 +22,9 @@ public class SevereRecord extends TestRecord {
    /**
 	 * 
 	 */
-	private static final long serialVersionUID = -2717539209163922501L;
+   private static final long serialVersionUID = -2717539209163922501L;
 
-/**
+   /**
     * SevereRecord Constructor. Sets up a Severe log message.
     * 
     * @param source The object requesting the logging.

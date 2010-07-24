@@ -23,9 +23,9 @@ import org.eclipse.swt.widgets.Shell;
 public class InspectReggieDialogHelper implements Runnable {
 
    private int result;
-   private Shell shell;
-   private ServiceRegistrar reggie;
-   private ReggieItemHandler reggieParser;
+   private final Shell shell;
+   private final ServiceRegistrar reggie;
+   private final ReggieItemHandler reggieParser;
 
    public InspectReggieDialogHelper(ManagerMain mainWindow, ServiceRegistrar reggie) {
       this.shell = mainWindow.getShell();
@@ -33,11 +33,12 @@ public class InspectReggieDialogHelper implements Runnable {
       this.reggieParser = new ReggieItemHandler(reggie);
    }
 
+   @Override
    public void run() {
       InspectReggieDialog dlg =
-            new InspectReggieDialog(shell, reggie, reggieParser, "Inspect Lookup Server", null, String.format(
-                  "Services Registered on %s:%s", reggieParser.getHost(), reggieParser.getPort()),
-                  MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
+         new InspectReggieDialog(shell, reggie, reggieParser, "Inspect Lookup Server", null, String.format(
+            "Services Registered on %s:%s", reggieParser.getHost(), reggieParser.getPort()), MessageDialog.QUESTION,
+            new String[] {"OK", "Cancel"}, 0);
 
       result = dlg.open();
       if (result == Window.OK) {

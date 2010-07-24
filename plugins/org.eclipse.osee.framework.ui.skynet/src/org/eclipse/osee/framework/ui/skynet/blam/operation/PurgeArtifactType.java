@@ -29,9 +29,10 @@ public class PurgeArtifactType extends AbstractBlam {
       return "Purge Artifact Type";
    }
 
+   @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       Collection<ArtifactType> purgeArtifactTypes =
-            variableMap.getCollection(ArtifactType.class, "Artifact Type(s) to purge");
+         variableMap.getCollection(ArtifactType.class, "Artifact Type(s) to purge");
       convertArtifacts = variableMap.getBoolean("Convert Artifacts");
       ArtifactType newArtifactType = convertArtifacts ? variableMap.getArtifactType("New Artifact Type") : null;
 
@@ -48,6 +49,7 @@ public class PurgeArtifactType extends AbstractBlam {
       return "Purge an artifact type.  Will find artifacts (if any) of this type on all branches and switch their type to the specified type.  Then purge the artifact type ";
    }
 
+   @Override
    public Collection<String> getCategories() {
       return Arrays.asList("Admin");
    }

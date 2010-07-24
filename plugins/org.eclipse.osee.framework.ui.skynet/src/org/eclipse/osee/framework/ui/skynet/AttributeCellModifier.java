@@ -56,6 +56,7 @@ public class AttributeCellModifier implements ICellModifier {
       // pList.addPermission(Permission.PermissionEnum.EDITREQUIREMENT);
    }
 
+   @Override
    public boolean canModify(Object element, String property) {
       attrComp.updateLabel("");
       if (element != null) {
@@ -75,6 +76,7 @@ public class AttributeCellModifier implements ICellModifier {
       return property.equals("value");
    }
 
+   @Override
    public Object getValue(Object element, String property) {
       try {
          Attribute<?> attribute = (Attribute<?>) element;
@@ -83,7 +85,7 @@ public class AttributeCellModifier implements ICellModifier {
             enumeratedValue.setValue(attribute.getDisplayableString());
 
             String[] choices =
-                  AttributeTypeManager.getEnumerationValues(attribute.getAttributeType()).toArray(new String[0]);
+               AttributeTypeManager.getEnumerationValues(attribute.getAttributeType()).toArray(new String[0]);
             enumeratedValue.setChoices(choices);
             return enumeratedValue;
          } else if (attribute instanceof BooleanAttribute) {
@@ -102,6 +104,7 @@ public class AttributeCellModifier implements ICellModifier {
       }
    }
 
+   @Override
    public void modify(Object element, String property, Object value) {
       if (element != null) {
          // Note that it is possible for an SWT Item to be passed instead of the model element.

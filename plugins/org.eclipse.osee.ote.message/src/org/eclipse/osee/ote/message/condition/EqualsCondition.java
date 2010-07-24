@@ -37,11 +37,13 @@ public class EqualsCondition<T extends Comparable<T>> extends AbstractCondition 
       this.notEquals = notEquals;
    }
 
+   @Override
    public boolean check() {
       actualValue = element.getValue();
       return actualValue.equals(value) ^ notEquals;
    }
 
+   @Override
    public T getLastCheckValue() {
       return actualValue;
    }

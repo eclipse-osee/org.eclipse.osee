@@ -22,6 +22,7 @@ public class BranchSelectionEditPolicy extends NonResizableEditPolicy {
    /**
     * @see org.eclipse.gef.editpolicies.NonResizableEditPolicy#hideFocus()
     */
+   @Override
    protected void hideFocus() {
       //      getLabel().setFocus(false);
    }
@@ -29,6 +30,7 @@ public class BranchSelectionEditPolicy extends NonResizableEditPolicy {
    /**
     * @see org.eclipse.gef.editpolicies.SelectionHandlesEditPolicy#hideSelection()
     */
+   @Override
    protected void hideSelection() {
       //      getLabel().setSelected(false);
       //      getLabel().setFocus(false);
@@ -38,6 +40,7 @@ public class BranchSelectionEditPolicy extends NonResizableEditPolicy {
    /**
     * @see org.eclipse.gef.editpolicies.NonResizableEditPolicy#showFocus()
     */
+   @Override
    protected void showFocus() {
       //      getLabel().setFocus(true);
    }
@@ -45,6 +48,7 @@ public class BranchSelectionEditPolicy extends NonResizableEditPolicy {
    /**
     * @see org.eclipse.gef.editpolicies.SelectionHandlesEditPolicy#showSelection()
     */
+   @Override
    protected void showPrimarySelection() {
       //      getLabel().setSelected(true);
       //      getLabel().setFocus(true);
@@ -53,6 +57,7 @@ public class BranchSelectionEditPolicy extends NonResizableEditPolicy {
    /**
     * @see org.eclipse.gef.editpolicies.SelectionHandlesEditPolicy#showSelection()
     */
+   @Override
    protected void showSelection() {
       //      getLabel().setSelected(true);
       //      getLabel().setFocus(false);

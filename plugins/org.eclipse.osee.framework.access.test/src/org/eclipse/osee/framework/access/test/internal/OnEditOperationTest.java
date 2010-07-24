@@ -28,7 +28,7 @@ import org.junit.Test;
 
 /**
  * Test Case for {@link AbstractLifecycleOperation}
- *
+ * 
  * @author Roberto E. Escobar
  * @author Jeff C. Phillips
  */
@@ -38,7 +38,7 @@ public class OnEditOperationTest {
    public void testOperation() throws OseeCoreException {
       ILifecycleService service = new LifecycleServiceImpl();
 
-//      service.addHandler(ChangeMgmtChkPoint.TYPE, new ChangeMgmtHandler(new MockAccessCheckProvider()));
+      //      service.addHandler(ChangeMgmtChkPoint.TYPE, new ChangeMgmtHandler(new MockAccessCheckProvider()));
 
       Assert.assertEquals(1, service.getHandlerCount(SkynetTransactionCheckPoint.TYPE));
       Assert.assertFalse(service.getHandlerTypes().isEmpty());

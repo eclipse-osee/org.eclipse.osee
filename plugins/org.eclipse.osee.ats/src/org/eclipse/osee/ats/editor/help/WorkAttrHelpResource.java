@@ -31,16 +31,18 @@ public class WorkAttrHelpResource implements IHelpResource {
       this.layoutData = layoutData;
    }
 
+   @Override
    public String getHref() {
       if (layoutData != null) {
          File file = AtsPlugin.getInstance().getPluginStoreFile(layoutData.getStorageName() + ".html");
          String absFile = "file:\\/\\/" + file.getAbsolutePath();
          StringBuffer sb = new StringBuffer();
          sb.append(AHTML.heading(1, layoutData.getName()));
-         if (layoutData.getToolTip() != null)
+         if (layoutData.getToolTip() != null) {
             sb.append(AHTML.para(layoutData.getToolTip()));
-         else
+         } else {
             sb.append(AHTML.para("Enter the " + layoutData.getName()));
+         }
          String html = AHTML.simplePage(sb.toString());
 
          try {
@@ -54,8 +56,11 @@ public class WorkAttrHelpResource implements IHelpResource {
       return null;
    }
 
+   @Override
    public String getLabel() {
-      if (layoutData != null) return layoutData.getName();
+      if (layoutData != null) {
+         return layoutData.getName();
+      }
       return "";
    }
 

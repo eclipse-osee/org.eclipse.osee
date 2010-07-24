@@ -15,7 +15,6 @@ import org.eclipse.osee.ote.message.data.MemoryResource;
 import org.eclipse.osee.ote.message.elements.Element;
 import org.eclipse.osee.ote.message.elements.EmptyEnum_Element;
 
-
 /**
  * @author Ken J. Aguilar
  */
@@ -23,16 +22,18 @@ public class EmptyEnumEntry implements IElementEntry {
 
    private final EmptyEnum_Element element;
    private final byte[] nameAsBytes;
-   
+
    public EmptyEnumEntry(final EmptyEnum_Element element) {
       this.element = element;
       nameAsBytes = element.getName().getBytes();
    }
 
+   @Override
    public Element getElement() {
       return element;
    }
 
+   @Override
    public void write(ByteBuffer buffer, MemoryResource mem, int limit) {
       mem.setOffset(element.getMsgData().getMem().getOffset());
       buffer.put(nameAsBytes).put(COMMA).put(element.valueOf(mem).toString().getBytes()).put(COMMA);

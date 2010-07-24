@@ -30,14 +30,17 @@ public class DbConnectionData implements Serializable {
    }
 
    public enum ConnectionFields {
-      Url, Driver, UrlAttributes, Property;
+      Url,
+      Driver,
+      UrlAttributes,
+      Property;
    }
 
    private String id;
    private String databaseDriver;
    private String databaseUrl;
-   private ArrayList<String> attributesList;
-   private Properties properties;
+   private final ArrayList<String> attributesList;
+   private final Properties properties;
 
    public DbConnectionData() {
       attributesList = new ArrayList<String>();

@@ -23,7 +23,7 @@ public class PostDatabaseInitialization implements IDbInitializationTask {
 
    private static final String POSTGRESQL_VACUUM_AND_STATS = "VACUUM FULL VERBOSE ANALYZE";
    private static final String ORACLE_GATHER_STATS =
-         "begin DBMS_STATS.GATHER_SCHEMA_STATS (ownname => '', estimate_percent => 99," + " granularity => 'ALL', degree => NULL , cascade => TRUE); end;";
+      "begin DBMS_STATS.GATHER_SCHEMA_STATS (ownname => '', estimate_percent => 99," + " granularity => 'ALL', degree => NULL , cascade => TRUE); end;";
 
    @Override
    public void run() throws OseeCoreException {

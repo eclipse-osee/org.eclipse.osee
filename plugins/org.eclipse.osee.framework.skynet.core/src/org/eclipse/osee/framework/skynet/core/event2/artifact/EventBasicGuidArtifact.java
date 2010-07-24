@@ -43,7 +43,7 @@ public class EventBasicGuidArtifact extends DefaultBasicGuidArtifact {
 
    public EventBasicGuidArtifact(EventModType eventModType, IBasicGuidArtifact basicGuidArtifact) throws OseeCoreException {
       this(eventModType, basicGuidArtifact.getBranchGuid(), basicGuidArtifact.getArtTypeGuid(),
-            basicGuidArtifact.getGuid());
+         basicGuidArtifact.getGuid());
    }
 
    public EventModType getModType() {
@@ -51,7 +51,9 @@ public class EventBasicGuidArtifact extends DefaultBasicGuidArtifact {
    }
 
    public static Set<EventBasicGuidArtifact> get(EventModType eventModType, Collection<? extends IBasicGuidArtifact> basicGuidArtifacts) throws OseeCoreException {
-      if (eventModType == EventModType.ChangeType) throw new OseeArgumentException("Can't be used for ChangeType");
+      if (eventModType == EventModType.ChangeType) {
+         throw new OseeArgumentException("Can't be used for ChangeType");
+      }
       Set<EventBasicGuidArtifact> eventArts = new HashSet<EventBasicGuidArtifact>();
       for (IBasicGuidArtifact guidArt : basicGuidArtifacts) {
          eventArts.add(new EventBasicGuidArtifact(eventModType, guidArt));
@@ -60,11 +62,13 @@ public class EventBasicGuidArtifact extends DefaultBasicGuidArtifact {
    }
 
    public static Set<EventBasicGuidArtifact> getRemoteBasicGuidArtifact1(EventModType eventModType, Collection<? extends RemoteBasicGuidArtifact1> basicGuidArtifacts) throws OseeCoreException {
-      if (eventModType == EventModType.ChangeType) throw new OseeArgumentException("Can't be used for ChangeType");
+      if (eventModType == EventModType.ChangeType) {
+         throw new OseeArgumentException("Can't be used for ChangeType");
+      }
       Set<EventBasicGuidArtifact> eventArts = new HashSet<EventBasicGuidArtifact>();
       for (RemoteBasicGuidArtifact1 guidArt : basicGuidArtifacts) {
          eventArts.add(new EventBasicGuidArtifact(eventModType, guidArt.getBranchGuid(), guidArt.getArtTypeGuid(),
-               guidArt.getArtGuid()));
+            guidArt.getArtGuid()));
       }
       return eventArts;
    }
@@ -82,7 +86,9 @@ public class EventBasicGuidArtifact extends DefaultBasicGuidArtifact {
    @Override
    public boolean equals(Object obj) {
       boolean equals = false;
-      if (this == obj) equals = true;
+      if (this == obj) {
+         equals = true;
+      }
       if (!equals) {
          equals = super.equals(obj);
       }
@@ -95,13 +101,16 @@ public class EventBasicGuidArtifact extends DefaultBasicGuidArtifact {
       return equals;
    }
 
+   @Override
    public String toString() {
       return String.format("[%s - G:%s - B:%s - A:%s]", eventModType, getGuid(), getBranchGuid(), getArtTypeGuid());
    }
 
    public boolean is(EventModType... eventModTypes) {
       for (EventModType eventModType : eventModTypes) {
-         if (this.eventModType == eventModType) return true;
+         if (this.eventModType == eventModType) {
+            return true;
+         }
       }
       return false;
    }

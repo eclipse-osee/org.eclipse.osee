@@ -22,8 +22,8 @@ public class SystemInfoHandler extends AbstractParseHandler {
    protected void processSaxChunk(Element element) {
       /*
        * <RuntimeVersions> <Version>B3_V1_FTB1.PROPOSED.2007_08_28_14:12:23</Version>
-       * <Version>VER1__13-September-2007_03:19:29</Version> </RuntimeVersions> <SystemInfo
-       * osArch="i386" osName="Linux" osVersion="2.6.11.12" oseeVersion="Development"/>
+       * <Version>VER1__13-September-2007_03:19:29</Version> </RuntimeVersions> <SystemInfo osArch="i386" osName="Linux"
+       * osVersion="2.6.11.12" oseeVersion="Development"/>
        */
       notifyOnDataEvent(TestRunField.SYSTEM_OS_ARCH.toString(), element.getAttribute("osArch"));
       notifyOnDataEvent(TestRunField.SYSTEM_OS_NAME.toString(), element.getAttribute("osName"));

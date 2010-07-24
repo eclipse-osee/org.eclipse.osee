@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.utils.AbstractResourcePr
  * @author Roberto E. Escobar
  */
 public class DataStore {
-   private AbstractResourceProcessor resourceProcessor;
+   private final AbstractResourceProcessor resourceProcessor;
    private String locator;
    private byte[] rawContent;
    private String contentType;

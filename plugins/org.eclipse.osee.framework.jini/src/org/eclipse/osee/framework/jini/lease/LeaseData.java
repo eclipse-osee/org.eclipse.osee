@@ -26,7 +26,7 @@ public class LeaseData {
    }
 
    /* package */void setStartTime() {
-      this.startTime = (System.currentTimeMillis());
+      this.startTime = System.currentTimeMillis();
    }
 
    public long getDuration() {

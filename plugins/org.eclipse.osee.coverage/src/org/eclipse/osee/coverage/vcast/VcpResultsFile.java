@@ -30,7 +30,13 @@ public class VcpResultsFile {
    private final String vcastDirectory;
 
    public static enum ResultsValue {
-      FILENAME, DIRECTORY, DISPLAY_NAME, RESULT_TYPE, ADDITION_TIME, IS_SELECTED, HAD_COVERAGE_REMOVED
+      FILENAME,
+      DIRECTORY,
+      DISPLAY_NAME,
+      RESULT_TYPE,
+      ADDITION_TIME,
+      IS_SELECTED,
+      HAD_COVERAGE_REMOVED
    };
 
    public VcpResultsFile(String vcastDirectory) {

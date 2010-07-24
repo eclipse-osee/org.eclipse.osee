@@ -48,10 +48,12 @@ public class XComboViewer extends XWidget {
 
    protected SelectionListener listListener = new SelectionListener() {
 
+      @Override
       public void widgetSelected(SelectionEvent e) {
          handleSelection();
       }
 
+      @Override
       public void widgetDefaultSelected(SelectionEvent e) {
          widgetSelected(e);
       }
@@ -96,7 +98,9 @@ public class XComboViewer extends XWidget {
 
    public void setInput(Collection<Object> input) {
       this.input = input;
-      if (comboViewer != null) comboViewer.setInput(input);
+      if (comboViewer != null) {
+         comboViewer.setInput(input);
+      }
    }
 
    public void addSelectionChangedListener(ISelectionChangedListener listener) {
@@ -117,7 +121,7 @@ public class XComboViewer extends XWidget {
       this.parent = parent;
       composite = null;
 
-      if (!verticalLabel && (horizontalSpan < 2)) {
+      if (!verticalLabel && horizontalSpan < 2) {
          horizontalSpan = 2;
       } else if (verticalLabel) {
          horizontalSpan = 1;
@@ -148,20 +152,30 @@ public class XComboViewer extends XWidget {
       comboViewer = new ComboViewer(composite, SWT.NONE);
       comboViewer.setContentProvider(contentProvider);
       comboViewer.setLabelProvider(labelProvider);
-      if (sorter != null) comboViewer.setSorter(sorter);
+      if (sorter != null) {
+         comboViewer.setSorter(sorter);
+      }
       comboViewer.setInput(input);
       comboViewer.getCombo().addSelectionListener(new SelectionListener() {
+         @Override
          public void widgetDefaultSelected(SelectionEvent e) {
          }
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             handleSelection();
          }
       });
       GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
-      if (grabHorizontal) gd.grabExcessHorizontalSpace = true;
-      if (widthHint > 0) gd.widthHint = widthHint;
-      if (heightHint > 0) gd.heightHint = heightHint;
+      if (grabHorizontal) {
+         gd.grabExcessHorizontalSpace = true;
+      }
+      if (widthHint > 0) {
+         gd.widthHint = widthHint;
+      }
+      if (heightHint > 0) {
+         gd.heightHint = heightHint;
+      }
       comboViewer.getCombo().setLayoutData(gd);
       comboViewer.getCombo().addSelectionListener(listListener);
       updateListWidget();
@@ -171,8 +185,12 @@ public class XComboViewer extends XWidget {
    public void dispose() {
       labelWidget.dispose();
       comboViewer.getCombo().dispose();
-      if (composite != null && !composite.isDisposed()) composite.dispose();
-      if (parent != null && !parent.isDisposed()) parent.layout();
+      if (composite != null && !composite.isDisposed()) {
+         composite.dispose();
+      }
+      if (parent != null && !parent.isDisposed()) {
+         parent.layout();
+      }
    }
 
    @Override
@@ -213,7 +231,9 @@ public class XComboViewer extends XWidget {
    public Object getSelected() {
       IStructuredSelection selection = (IStructuredSelection) comboViewer.getSelection();
       Iterator iter = selection.iterator();
-      if (iter.hasNext()) return iter.next();
+      if (iter.hasNext()) {
+         return iter.next();
+      }
       return null;
    }
 
@@ -251,7 +271,9 @@ public class XComboViewer extends XWidget {
 
    @Override
    public IStatus isValid() {
-      if (!isRequiredEntry()) return Status.OK_STATUS;
+      if (!isRequiredEntry()) {
+         return Status.OK_STATUS;
+      }
       Object selected = getSelected();
       if (selected == null && isRequiredEntry()) {
          return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "Must select " + getLabel());

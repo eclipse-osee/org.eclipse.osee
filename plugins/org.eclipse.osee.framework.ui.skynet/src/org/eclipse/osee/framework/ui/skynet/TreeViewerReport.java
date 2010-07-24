@@ -96,8 +96,9 @@ public class TreeViewerReport {
          if (!ignoreCols.contains(x)) {
             str[colNum] = "";
             if (x == 0) {
-               for (int y = 0; y < level; y++)
+               for (int y = 0; y < level; y++) {
                   str[colNum] += "&nbsp;&nbsp;&nbsp;&nbsp;";
+               }
             }
             str[colNum++] += labelProv.getColumnText(item.getData(), x);
          }

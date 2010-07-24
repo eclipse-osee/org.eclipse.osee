@@ -15,7 +15,9 @@ package org.eclipse.osee.framework.skynet.core.artifact;
  */
 public enum ArtifactModType {
 
-   Deleted, Added, Changed,
+   Deleted,
+   Added,
+   Changed,
 
    // Dirtied artifact was reloaded to last saved state (not propagated remotely)
    // This is a Local modification type only and will not get transmitted as part of the transaction event

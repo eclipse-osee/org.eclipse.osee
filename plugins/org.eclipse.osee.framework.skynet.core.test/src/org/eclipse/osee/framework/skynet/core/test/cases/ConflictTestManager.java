@@ -43,10 +43,17 @@ import org.eclipse.osee.support.test.util.DemoSawBuilds;
  */
 public class ConflictTestManager {
    public static enum Type {
-      RELATION, ARTIFACT, ATTRIBUTE;
+      RELATION,
+      ARTIFACT,
+      ATTRIBUTE;
    };
    public static enum Modification {
-      CREATE, DELETE, CREATE_AND_MODIFY, CREATE_AND_DELETE, MODIFY, MODIFY_AND_DELETE;
+      CREATE,
+      DELETE,
+      CREATE_AND_MODIFY,
+      CREATE_AND_DELETE,
+      MODIFY,
+      MODIFY_AND_DELETE;
    };
 
    private static final boolean DEBUG = true;
@@ -161,11 +168,11 @@ public class ConflictTestManager {
          ArtifactType artType = ArtifactTypeManager.getType(conflictDefs[i].artifactType);
          if (conflictDefs[i].rootArtifact > 0 && conflictDefs[i].rootArtifact < i) {
             destArtifacts[i] =
-                  destArtifacts[conflictDefs[i].rootArtifact].addNewChild(RelationOrderBaseTypes.USER_DEFINED, artType,
-                        "Test Artifact Number " + i);
+               destArtifacts[conflictDefs[i].rootArtifact].addNewChild(RelationOrderBaseTypes.USER_DEFINED, artType,
+                  "Test Artifact Number " + i);
          } else {
             destArtifacts[i] =
-                  rootArtifact.addNewChild(RelationOrderBaseTypes.USER_DEFINED, artType, "Test Artifact Number " + i);
+               rootArtifact.addNewChild(RelationOrderBaseTypes.USER_DEFINED, artType, "Test Artifact Number " + i);
          }
          for (AttributeValue value : conflictDefs[i].newAttributes) {
             destArtifacts[i].addAttribute(value.attributeName, stringToObject(value.clas, value.sourceValue));
@@ -189,8 +196,8 @@ public class ConflictTestManager {
             } else {
                if (value.sourceValue != null) {
                   conflictDefs[i].sourceModified = true;
-                  sourceArtifacts[i].setSoleAttributeValue(value.attributeName, stringToObject(value.clas,
-                        value.sourceValue));
+                  sourceArtifacts[i].setSoleAttributeValue(value.attributeName,
+                     stringToObject(value.clas, value.sourceValue));
                }
                if (value.sourceValue != null && value.destValue != null) {
                   conflictDefs[i].numConflicts++;
@@ -241,11 +248,11 @@ public class ConflictTestManager {
                switch (modification.itemToChange) {
                   case ARTIFACT:
                      createArtifact(modification.rootArtifact, modification.branch, modification.type,
-                           modification.name);
+                        modification.name);
                      break;
                   case ATTRIBUTE:
                      createAttribute((Artifact) modification.object, modification.name, modification.clas,
-                           modification.value);
+                        modification.value);
                      break;
                   case RELATION:
                      createRelation((Artifact) modification.object, (Artifact) modification.object2);
@@ -260,18 +267,18 @@ public class ConflictTestManager {
                switch (modification.itemToChange) {
                   case ARTIFACT:
                      createArtifact(modification.rootArtifact, modification.branch, modification.type,
-                           modification.name).deleteAndPersist();
+                        modification.name).deleteAndPersist();
                      break;
                   case ATTRIBUTE:
                      createAttribute((Artifact) modification.object, modification.name, modification.clas,
-                           modification.value);
+                        modification.value);
                      ((Artifact) modification.object).deleteSoleAttribute(modification.name);
                      ((Artifact) modification.object).persist();
                      break;
                   case RELATION:
                      createRelation((Artifact) modification.object, (Artifact) modification.object2);
                      ((Artifact) modification.object).deleteRelation(CoreRelationTypes.Dependency__Dependency,
-                           (Artifact) modification.object2);
+                        (Artifact) modification.object2);
                      ((Artifact) modification.object).persist();
                      break;
                }
@@ -297,7 +304,7 @@ public class ConflictTestManager {
          }
       }
       Artifact child =
-            rootArtifact.addNewChild(RelationOrderBaseTypes.USER_DEFINED, ArtifactTypeManager.getType(type), name);
+         rootArtifact.addNewChild(RelationOrderBaseTypes.USER_DEFINED, ArtifactTypeManager.getType(type), name);
       child.persist();
       rootArtifact.persist();
       return child;
@@ -336,7 +343,7 @@ public class ConflictTestManager {
          return BranchManager.getBranch(branchName);
       } catch (BranchDoesNotExist e) {
          Collection<Branch> archivedBranches =
-               BranchManager.getBranches(BranchArchivedState.ARCHIVED, BranchType.WORKING, BranchType.BASELINE);
+            BranchManager.getBranches(BranchArchivedState.ARCHIVED, BranchType.WORKING, BranchType.BASELINE);
          for (Branch archivedBranch : archivedBranches) {
             if (archivedBranch.getName().equals(branchName)) {
                return archivedBranch;
@@ -408,7 +415,8 @@ public class ConflictTestManager {
       if (artNumber == -1) {
          // The relation order attribute of the parent folder will have a RelationOrder
          // conflict that is not relevant to this test. -- RS
-         if (conflict.getArtifactName().equals("System Requirements") && (conflict.getAttributeType().equals(CoreAttributeTypes.RELATION_ORDER))) {
+         if (conflict.getArtifactName().equals("System Requirements") && conflict.getAttributeType().equals(
+            CoreAttributeTypes.RELATION_ORDER)) {
             return;
          } else {
             throw new Exception("Source Artifact " + sourceArtifactId + " could not be found in the list of artifatcs");
@@ -422,7 +430,7 @@ public class ConflictTestManager {
       }
       if (aValue == null) {
          throw new Exception(
-               "Source Artifact " + sourceArtifactId + " does not have a conflict for the" + attributeName + " attribute");
+            "Source Artifact " + sourceArtifactId + " does not have a conflict for the" + attributeName + " attribute");
       }
       if (aValue.mergeValue == null) {
          throw new Exception("Merge Value has a null value so no resolution possible");
@@ -459,10 +467,10 @@ public class ConflictTestManager {
                      return false;
                   }
                } else if (!stringToObject(value.clas, expected).toString().equals(
-                     destArtifacts[i].getSoleAttributeValueAsString(value.attributeName, " ")) && !destArtifacts[i].isDeleted()) {
+                  destArtifacts[i].getSoleAttributeValueAsString(value.attributeName, " ")) && !destArtifacts[i].isDeleted()) {
                   System.err.println("Expected the " + value.attributeName + " attribute to have a value of " + stringToObject(
-                        value.clas, expected) + " but got " + destArtifacts[i].getSoleAttributeValueAsString(
-                        value.attributeName, " ") + " for Artifact " + destArtifacts[i].getArtId() + " conflict index: " + i);
+                     value.clas, expected) + " but got " + destArtifacts[i].getSoleAttributeValueAsString(
+                     value.attributeName, " ") + " for Artifact " + destArtifacts[i].getArtId() + " conflict index: " + i);
                   return false;
                }
             }
@@ -479,11 +487,11 @@ public class ConflictTestManager {
    public static void createModifications() throws OseeCoreException {
       modifications.clear();
       modifications.add(new ArtifactModification(Type.ARTIFACT, Modification.CREATE_AND_DELETE, 0,
-            sourceArtifacts[0].getBranch(), "Software Requirement", "Test create an Delete"));
+         sourceArtifacts[0].getBranch(), "Software Requirement", "Test create an Delete"));
       modifications.add(new ArtifactModification(Type.ATTRIBUTE, Modification.CREATE_AND_DELETE, sourceArtifacts[2],
-            "Page Type", StringAttribute.class, "Portrait"));
+         "Page Type", StringAttribute.class, "Portrait"));
       modifications.add(new ArtifactModification(Type.RELATION, Modification.CREATE_AND_DELETE, sourceArtifacts[6],
-            sourceArtifacts[7]));
+         sourceArtifacts[7]));
    }
 
    public static void createConflictDefinitions() {
@@ -497,23 +505,23 @@ public class ConflictTestManager {
       conflictDefs[2].setValues("Software Requirement", false, false, 0, 0);
       conflictDefs[2].values.add(new AttributeValue("CSCI", "Sights", "Navigation", "Source", StringAttribute.class));
       conflictDefs[2].values.add(new AttributeValue("Subsystem", "Electrical", "Sights", "Navigation",
-            StringAttribute.class));
+         StringAttribute.class));
       conflictDefs[2].values.add(new AttributeValue("Name", "Test Artifact Number 2 - Source",
-            "Test Artifact Number 2 - Destination", "Test Artifact Number 2 - Merge", StringAttribute.class));
+         "Test Artifact Number 2 - Destination", "Test Artifact Number 2 - Merge", StringAttribute.class));
 
       conflictDefs[3].setValues("Software Requirement", true, false, 0, 0);
       conflictDefs[3].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
       conflictDefs[3].values.add(new AttributeValue("Name", "Test Artifact Number 3 - Source", null, "Destination",
-            StringAttribute.class));
+         StringAttribute.class));
 
       conflictDefs[4].setValues("Software Requirement", false, false, 0, 0);
 
       conflictDefs[5].setValues("Software Requirement", false, true, 0, 0);
       conflictDefs[5].values.add(new AttributeValue("Page Type", "Landscape", "Portrait", "Destination",
-            StringAttribute.class));
+         StringAttribute.class));
       conflictDefs[5].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
       conflictDefs[5].values.add(new AttributeValue("Name", "Test Artifact Number 5 - Source", null, "Source",
-            StringAttribute.class));
+         StringAttribute.class));
 
       conflictDefs[6].setValues("Software Requirement", false, false, 0, 0);
 
@@ -521,110 +529,110 @@ public class ConflictTestManager {
 
       conflictDefs[8].setValues("Version", false, false, 0, 0);
       conflictDefs[8].values.add(new AttributeValue("ats.Release Date", "2000", "50000000", "Source",
-            DateAttribute.class));
+         DateAttribute.class));
 
       conflictDefs[9].setValues("Version", false, false, 0, 0);
 
       conflictDefs[10].setValues("Software Requirement", false, false, 0, DELETION_TEST_QUERY);
       conflictDefs[10].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
       conflictDefs[10].values.add(new AttributeValue("Name", "Test Artifact Number 10 - Parent", null, "Source",
-            StringAttribute.class));
+         StringAttribute.class));
       conflictDefs[11].setValues("Software Requirement", false, false, 10, 0);
       conflictDefs[11].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
       conflictDefs[11].values.add(new AttributeValue("Name", "Test Artifact Number 11 - Child", null, "Source",
-            StringAttribute.class));
+         StringAttribute.class));
       conflictDefs[12].setValues("Software Requirement", false, false, 10, 0);
       conflictDefs[12].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
       conflictDefs[12].values.add(new AttributeValue("Name", "Test Artifact Number 12 - Child/Parent", null, "Source",
-            StringAttribute.class));
+         StringAttribute.class));
       conflictDefs[13].setValues("Software Requirement", false, false, 12, 0);
       conflictDefs[13].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
       conflictDefs[13].values.add(new AttributeValue("Name", "Test Artifact Number 13 - Child", null, "Source",
-            StringAttribute.class));
+         StringAttribute.class));
 
       conflictDefs[14].setValues("Software Requirement", false, false, 0, 0);
       conflictDefs[14].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
       conflictDefs[14].values.add(new AttributeValue("Name", "Test Artifact Number 14 - Parent", null, "Source",
-            StringAttribute.class));
+         StringAttribute.class));
 
       conflictDefs[15].setValues("Software Requirement", false, false, 14, DELETION_TEST_QUERY);
       conflictDefs[15].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
       conflictDefs[15].values.add(new AttributeValue("Name", "Test Artifact Number 15 - Child", null, "Source",
-            StringAttribute.class));
+         StringAttribute.class));
       conflictDefs[16].setValues("Software Requirement", false, false, 14, 0);
       conflictDefs[16].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
       conflictDefs[16].values.add(new AttributeValue("Name", "Test Artifact Number 16 - Child/Parent", null, "Source",
-            StringAttribute.class));
+         StringAttribute.class));
       conflictDefs[17].setValues("Software Requirement", false, false, 15, 0);
       conflictDefs[17].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
       conflictDefs[17].values.add(new AttributeValue("Name", "Test Artifact Number 17 - Child", null, "Source",
-            StringAttribute.class));
+         StringAttribute.class));
 
       conflictDefs[18].setValues("Software Requirement", false, false, 0, 0);
       conflictDefs[18].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
       conflictDefs[18].values.add(new AttributeValue("Name", "Test Artifact Number 18 - Parent", null, "Source",
-            StringAttribute.class));
+         StringAttribute.class));
       conflictDefs[19].setValues("Software Requirement", false, false, 18, DELETION_ATTRIBUTE_TEST_QUERY);
       conflictDefs[19].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
       conflictDefs[19].values.add(new AttributeValue("Name", "Test Artifact Number 19 - Child", null, "Source",
-            StringAttribute.class));
+         StringAttribute.class));
 
       conflictDefs[20].setValues("Software Requirement", true, false, 0, REVERT_ARTIFACT_QUERY);
       conflictDefs[20].values.add(new AttributeValue("Subsystem", "Electrical", "Sights", "Source",
-            StringAttribute.class));
+         StringAttribute.class));
       conflictDefs[20].values.add(new AttributeValue("Name", "Test Artifact Number 20 - Parent", null, "Source",
-            StringAttribute.class));
+         StringAttribute.class));
       conflictDefs[21].setValues("Software Requirement", false, false, 20, 0);
       conflictDefs[21].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
       conflictDefs[21].values.add(new AttributeValue("Name", "Test Artifact Number 21 - Child", null, "Source",
-            StringAttribute.class));
+         StringAttribute.class));
       conflictDefs[22].setValues("Software Requirement", true, false, 20, 0);
       conflictDefs[22].values.add(new AttributeValue("Subsystem", "Electrical", "dest", "Source", StringAttribute.class));
       conflictDefs[22].values.add(new AttributeValue("Name", "Test Artifact Number 22 - Child/Parent", null, "Source",
-            StringAttribute.class));
+         StringAttribute.class));
       conflictDefs[23].setValues("Software Requirement", true, false, 22, 0);
       conflictDefs[23].values.add(new AttributeValue("Subsystem", "Electrical", "Sights", "Source",
-            StringAttribute.class));
+         StringAttribute.class));
       conflictDefs[23].values.add(new AttributeValue("Name", "Test Artifact Number 23 - Child", "The Other Name",
-            "Source", StringAttribute.class));
+         "Source", StringAttribute.class));
 
       conflictDefs[24].setValues("Software Requirement", false, false, 0, 0);
       conflictDefs[24].values.add(new AttributeValue("Subsystem", "Electrical", "Sights", "Source",
-            StringAttribute.class));
+         StringAttribute.class));
       conflictDefs[24].values.add(new AttributeValue("Name", "Test Artifact Number 24 - Parent", null, "Source",
-            StringAttribute.class));
+         StringAttribute.class));
       conflictDefs[25].setValues("Software Requirement", false, false, 24, 0);
       conflictDefs[25].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
       conflictDefs[25].values.add(new AttributeValue("Name", "Test Artifact Number 25 - Child", null, "Source",
-            StringAttribute.class));
+         StringAttribute.class));
       conflictDefs[26].setValues("Software Requirement", false, false, 24, REVERT_REL_LINK_QUERY);
       conflictDefs[26].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
       conflictDefs[26].values.add(new AttributeValue("Name", "Test Artifact Number 26 - Child/Parent", null, "Source",
-            StringAttribute.class));
+         StringAttribute.class));
       conflictDefs[27].setValues("Software Requirement", false, false, 26, REVERT_ATTRIBUTE_QUERY);
       conflictDefs[27].values.add(new AttributeValue("Subsystem", "Electrical", "Sights", "Source",
-            StringAttribute.class));
+         StringAttribute.class));
       conflictDefs[27].values.add(new AttributeValue("Name", "Test Artifact Number 27 - Child", "The Other Name",
-            "Source", StringAttribute.class));
+         "Source", StringAttribute.class));
 
       conflictDefs[28].setValues("Software Requirement", false, false, 0, UPDATE_PARENT_QUERY);
       conflictDefs[28].values.add(new AttributeValue("Subsystem", "Electrical", "Sights", "Source",
-            StringAttribute.class));
+         StringAttribute.class));
       conflictDefs[28].values.add(new AttributeValue("Name", "Test Artifact Number 28 Source",
-            "Test Artifact Number 28 Destination", "Source", StringAttribute.class));
+         "Test Artifact Number 28 Destination", "Source", StringAttribute.class));
       conflictDefs[29].setValues("Software Requirement", false, false, 28, 0);
       conflictDefs[29].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
       conflictDefs[29].values.add(new AttributeValue("Name", "Test Artifact Number 29 - Child", null, "Source",
-            StringAttribute.class));
+         StringAttribute.class));
       conflictDefs[30].setValues("Software Requirement", false, false, 28, 0);
       conflictDefs[30].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
       conflictDefs[30].values.add(new AttributeValue("Name", "Test Artifact Number 30 - Child/Parent", null, "Source",
-            StringAttribute.class));
+         StringAttribute.class));
       conflictDefs[31].setValues("Software Requirement", false, false, 30, 0);
       conflictDefs[31].values.add(new AttributeValue("Subsystem", "Electrical", "Sights", "Source",
-            StringAttribute.class));
+         StringAttribute.class));
       conflictDefs[31].values.add(new AttributeValue("Name", "Test Artifact Number 31 - Child", "The Other Name",
-            "Source", StringAttribute.class));
+         "Source", StringAttribute.class));
    }
 
    public static List<Artifact> getArtifacts(boolean sourceBranch, int queryId) {
@@ -641,7 +649,7 @@ public class ConflictTestManager {
       return queriedArtifacts;
    }
 
-   @SuppressWarnings( {"unchecked"})
+   @SuppressWarnings({"unchecked"})
    public static Object stringToObject(Class clas, String value) {
 
       if (clas.equals(BooleanAttribute.class)) {

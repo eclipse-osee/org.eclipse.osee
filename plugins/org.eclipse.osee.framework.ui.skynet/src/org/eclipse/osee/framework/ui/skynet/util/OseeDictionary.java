@@ -45,7 +45,9 @@ public class OseeDictionary extends AbstractOperation implements IDictionary {
    }
 
    public static void load() {
-      if (loaded || isLoadingDictionary) return;
+      if (loaded || isLoadingDictionary) {
+         return;
+      }
       Operations.executeAsJob(new OseeDictionary(), false);
    }
 
@@ -53,9 +55,12 @@ public class OseeDictionary extends AbstractOperation implements IDictionary {
       super("Loading Osee Dictionary", SkynetGuiPlugin.PLUGIN_ID);
    }
 
+   @Override
    public boolean isWord(String word) {
       // Just return true till dictionary loaded
-      if (!loaded && isLoadingDictionary) return true;
+      if (!loaded && isLoadingDictionary) {
+         return true;
+      }
       // If not loaded, kickoff operation to load and return true
       if (!loaded) {
          Operations.executeAsJob(new OseeDictionary(), false);
@@ -63,9 +68,13 @@ public class OseeDictionary extends AbstractOperation implements IDictionary {
       }
       //       System.out.println("Lookup => \""+word+"\"");
       String cleanWord = getCleanWord(word);
-      if (cleanWord.equals("") || cleanWord.length() == 1) return true;
+      if (cleanWord.equals("") || cleanWord.length() == 1) {
+         return true;
+      }
       for (IOseeDictionary dict : dictionaries) {
-         if (dict.isWord(cleanWord)) return true;
+         if (dict.isWord(cleanWord)) {
+            return true;
+         }
       }
       return false;
    }
@@ -80,7 +89,9 @@ public class OseeDictionary extends AbstractOperation implements IDictionary {
 
    public String getCleanWord(String w) {
       // Single character is a valid word
-      if (w.length() == 1) return w;
+      if (w.length() == 1) {
+         return w;
+      }
 
       // First, remove any non-word characters before and after string
       // eg. end. (now) it!
@@ -92,25 +103,31 @@ public class OseeDictionary extends AbstractOperation implements IDictionary {
       // If string not either all lowercase or first letter capitalized, not a
       // word
       Matcher m = pattern.matcher(w);
-      if (!m.find()) return "";
+      if (!m.find()) {
+         return "";
+      }
       return w.toLowerCase();
    }
 
    private synchronized void ensureLoaded() {
       if (!loaded && !isLoadingDictionary) {
          getIDictionaries();
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.INFO, "Loading Osee Dictionary");
+         OseeLog.log(SkynetGuiPlugin.class, Level.INFO, "Loading Osee Dictionary");
       }
    }
 
    private static void getIDictionaries() {
-      if (loaded) return;
+      if (loaded) {
+         return;
+      }
       isLoadingDictionary = true;
-      if (!Platform.isRunning()) return;
+      if (!Platform.isRunning()) {
+         return;
+      }
       IExtensionPoint point = null;
       try {
          point =
-               Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.framework.ui.skynet.OseeDictionary");
+            Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.framework.ui.skynet.OseeDictionary");
       } catch (NullPointerException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, "Can't access OseeDictionary extension point", ex);
          return;
@@ -136,7 +153,7 @@ public class OseeDictionary extends AbstractOperation implements IDictionary {
                      dictionaries.add((IOseeDictionary) obj);
                   } catch (Exception ex) {
                      OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP,
-                           "Error loading OseeDictionary extension", ex);
+                        "Error loading OseeDictionary extension", ex);
                   }
                }
 

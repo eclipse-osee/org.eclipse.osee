@@ -35,8 +35,7 @@ public class GenerateVersionReportItem extends XNavigateItemAction {
       int result = ld.open();
       if (result == 0) {
          VersionArtifact verArt = ld.getSelectedVersion();
-         String title =
-               ld.getSelectedTeamDef().getName() + " Version \"" + verArt.getName() + "\" Report";
+         String title = ld.getSelectedTeamDef().getName() + " Version \"" + verArt.getName() + "\" Report";
          VersionReportJob job = new VersionReportJob(title, verArt);
          job.setUser(true);
          job.setPriority(Job.LONG);

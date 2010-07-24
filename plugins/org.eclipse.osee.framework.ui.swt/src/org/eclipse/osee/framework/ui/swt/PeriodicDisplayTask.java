@@ -32,6 +32,7 @@ public abstract class PeriodicDisplayTask {
       /**
        * once the specified period has elapsed this method will be called in the {@link Display}'s thread.
        */
+      @Override
       public void run() {
          update();
          // the call to the update method may have set done to true
@@ -66,10 +67,10 @@ public abstract class PeriodicDisplayTask {
     * already in execution. This PeriodicDisplayTask can be started again.
     */
    final public synchronized void stop() {
-	   if (task != null) {
-		   display.timerExec(-1, task);
-		   task = null;
-	   }
+      if (task != null) {
+         display.timerExec(-1, task);
+         task = null;
+      }
    }
 
    /**

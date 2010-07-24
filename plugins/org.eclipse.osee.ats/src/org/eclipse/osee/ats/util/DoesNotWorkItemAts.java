@@ -130,8 +130,8 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
 
       ElapsedTime time = new ElapsedTime("My World via Attribute Search");
       List<Artifact> assignedList =
-            ArtifactQuery.getArtifactListFromAttribute(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
-                  "%727536%", AtsUtil.getAtsBranch());
+         ArtifactQuery.getArtifactListFromAttribute(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(), "%727536%",
+            AtsUtil.getAtsBranch());
       System.out.println("Returned " + assignedList.size() + " objects");
       time.end();
 
@@ -205,7 +205,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
       List<String> notRenamed = new ArrayList<String>();
       Map<String, Integer> commentToTransId = new HashMap<String, Integer>();
       String SEARCH_TRANSACTION_COMMENTS =
-            "select transaction_id, osee_comment from osee_tx_details where osee_comment like '%Commit%'";
+         "select transaction_id, osee_comment from osee_tx_details where osee_comment like '%Commit%'";
 
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
@@ -326,7 +326,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
       int artifactsCount = 0;
       boolean fix = true;
       SkynetTransaction transaction =
-            new SkynetTransaction(AtsUtil.getAtsBranch(), "Delete duplicate common branch relations");
+         new SkynetTransaction(AtsUtil.getAtsBranch(), "Delete duplicate common branch relations");
 
       // Break artifacts into blocks so don't run out of memory
       List<Collection<Integer>> artIdLists = ValidateAtsDatabase.loadAtsBranchArtifactIds(rd, null);
@@ -434,11 +434,10 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
    @SuppressWarnings("unused")
    private void convertAtsLogUserIds(SkynetTransaction transaction) throws OseeCoreException {
       List<String> hrids =
-            Arrays.asList("NKYBF", "J1Z48", "ZY4W5", "U9H58", "9713S", "83XVW", "59B9X", "TQD1J", "UVM7U", "HZT73",
-                  "C49Q5", "RHCPY", "MBCXV", "YJFKC", "2F461", "AGW15", "K6ZGD", "9W45V", "GG43L", "G2VTQ", "CVWFC",
-                  "EXMT0", "W1TS8", "JM3RD", "7Q0W3", "P9DKR", "BR2RN", "Z6B0Z", "6KT6U", "HPQJX", "QN2K3", "W0VTD",
-                  "LDJMH", "6PWYH", "T8B4K", "YTNLC", "9557A", "SQQ6T", "D82X9", "2P5GC", "YK58N", "LWVT1", "KCGSQ",
-                  "5X2WL", "C8HWW");
+         Arrays.asList("NKYBF", "J1Z48", "ZY4W5", "U9H58", "9713S", "83XVW", "59B9X", "TQD1J", "UVM7U", "HZT73",
+            "C49Q5", "RHCPY", "MBCXV", "YJFKC", "2F461", "AGW15", "K6ZGD", "9W45V", "GG43L", "G2VTQ", "CVWFC", "EXMT0",
+            "W1TS8", "JM3RD", "7Q0W3", "P9DKR", "BR2RN", "Z6B0Z", "6KT6U", "HPQJX", "QN2K3", "W0VTD", "LDJMH", "6PWYH",
+            "T8B4K", "YTNLC", "9557A", "SQQ6T", "D82X9", "2P5GC", "YK58N", "LWVT1", "KCGSQ", "5X2WL", "C8HWW");
       for (Artifact art : ArtifactQuery.getArtifactListFromIds(hrids, AtsUtil.getAtsBranch())) {
          String str = art.getSoleAttributeValue(ATSAttributes.LOG_ATTRIBUTE.getStoreName(), null);
          str = str.replaceAll("rj236c", "1779483");
@@ -451,12 +450,11 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
    private void fixTestTaskResolutions() throws OseeCoreException {
       System.out.println("Started fixTestTaskResolutions...");
       for (Artifact artifact : ArtifactQuery.getArtifactListFromAttributeType(AtsAttributeTypes.Resolution,
-            AtsUtil.getAtsBranch())) {
+         AtsUtil.getAtsBranch())) {
          if (artifact instanceof TaskArtifact) {
             TaskArtifact taskArt = (TaskArtifact) artifact;
             String resolution =
-                  ((TaskArtifact) artifact).getSoleAttributeValue(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(),
-                        null);
+               ((TaskArtifact) artifact).getSoleAttributeValue(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(), null);
             if (resolution == null) {
                System.err.println("Unexpected null resolution." + taskArt.getHumanReadableId());
                //               taskArt.deleteSoleAttribute(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName());

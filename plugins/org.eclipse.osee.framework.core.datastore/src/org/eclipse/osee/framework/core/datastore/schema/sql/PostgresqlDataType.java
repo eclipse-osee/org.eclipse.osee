@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.datastore.schema.sql;
 
-
 /**
  * @author Roberto E. Escobar
  */

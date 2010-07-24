@@ -36,14 +36,14 @@ import org.junit.Before;
  */
 public class WordTrackedChangesTest {
    private static final String TEST_PATH_NAME =
-         "../org.eclipse.osee.framework.ui.skynet.test/src/org/eclipse/osee/framework/ui/skynet/test/cases/support/";
+      "../org.eclipse.osee.framework.ui.skynet.test/src/org/eclipse/osee/framework/ui/skynet/test/cases/support/";
    private static final String TEST_WORD_EDIT_FILE_NAME = TEST_PATH_NAME + "WordTrackedChangesTest.xml";
 
    @Before
    public void setUp() throws Exception {
       assertFalse("Not to be run on production datbase.", TestUtil.isProductionDb());
       FrameworkTestUtil.cleanupSimpleTest(BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1),
-            WordTrackedChangesTest.class.getSimpleName());
+         WordTrackedChangesTest.class.getSimpleName());
       RenderingUtil.setPopupsAllowed(false);
    }
 
@@ -66,7 +66,7 @@ public class WordTrackedChangesTest {
       FileSystemRenderer.setWorkbenchSavePopUpDisabled(true);
       Branch branch = BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1);
       Artifact newArt =
-            ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestProcedureWML, branch, getClass().getSimpleName());
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestProcedureWML, branch, getClass().getSimpleName());
       newArt.persist();
       String unlinkedContent = WordMlLinkHandler.unlink(linkType, newArt, content);
 
@@ -80,7 +80,7 @@ public class WordTrackedChangesTest {
    @After
    public void tearDown() throws Exception {
       FrameworkTestUtil.cleanupSimpleTest(BranchManager.getBranchByGuid(DemoSawBuilds.SAW_Bld_1.getGuid()),
-            WordTrackedChangesTest.class.getSimpleName());
+         WordTrackedChangesTest.class.getSimpleName());
       FrameworkTestUtil.cleanupSimpleTest(BranchManager.getCommonBranch(), WordTrackedChangesTest.class.getSimpleName());
    }
 }

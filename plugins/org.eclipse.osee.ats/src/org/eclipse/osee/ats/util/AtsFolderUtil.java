@@ -64,8 +64,8 @@ public class AtsFolderUtil {
    public static Artifact getFolder(AtsFolder atsFolder) throws OseeCoreException {
       if (!folderMap.containsKey(atsFolder)) {
          Artifact artifact =
-               StaticIdManager.getSingletonArtifact(atsFolder.artifactType, atsFolder.staticId, AtsUtil.getAtsBranch(),
-                     true);
+            StaticIdManager.getSingletonArtifact(atsFolder.artifactType, atsFolder.staticId, AtsUtil.getAtsBranch(),
+               true);
          if (artifact == null) {
             throw new OseeStateException(String.format("Can't retrieve Ats folder [%s]", atsFolder.displayName));
          }
@@ -78,8 +78,8 @@ public class AtsFolderUtil {
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Create ATS Folders");
 
       Artifact headingArt =
-            OseeSystemArtifacts.getOrCreateArtifact(CoreArtifactTypes.Folder, AtsFolder.Ats_Heading.displayName,
-                  AtsUtil.getAtsBranch());
+         OseeSystemArtifacts.getOrCreateArtifact(CoreArtifactTypes.Folder, AtsFolder.Ats_Heading.displayName,
+            AtsUtil.getAtsBranch());
       if (!headingArt.hasParent()) {
          Artifact rootArt = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(AtsUtil.getAtsBranch());
          rootArt.addChild(headingArt);
@@ -92,8 +92,8 @@ public class AtsFolderUtil {
             continue;
          }
          Artifact art =
-               OseeSystemArtifacts.getOrCreateArtifact(atsFolder.artifactType, atsFolder.displayName,
-                     AtsUtil.getAtsBranch());
+            OseeSystemArtifacts.getOrCreateArtifact(atsFolder.artifactType, atsFolder.displayName,
+               AtsUtil.getAtsBranch());
          StaticIdManager.setSingletonAttributeValue(art, atsFolder.staticId);
          headingArt.addChild(art);
          art.persist(transaction);

@@ -45,7 +45,7 @@ public abstract class DynamicBlamOperation {
       Class<?>[] parameterTypes = mainMethod.getParameterTypes();
       if (parameterNames.length != parameterTypes.length) {
          throw new ActivationException(
-               "The method " + getMainMethodName() + " has " + parameterTypes.length + " parameters, but " + parameterNames.length + " parameter names.");
+            "The method " + getMainMethodName() + " has " + parameterTypes.length + " parameters, but " + parameterNames.length + " parameter names.");
       }
 
       parameters = new BlamParameter[parameterTypes.length];

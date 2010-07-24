@@ -14,29 +14,28 @@ import org.eclipse.osee.ote.message.IMessageHeader;
 
 public class HeaderData extends MessageData {
 
+   public HeaderData(String name, MemoryResource memoryResource) {
+      super(name, memoryResource);
+   }
 
-    public HeaderData(String name, MemoryResource memoryResource) {
-        super(name, memoryResource);
-    }
-    
-	public HeaderData(MemoryResource memoryResource) {
-		this("", memoryResource);
-	}
+   public HeaderData(MemoryResource memoryResource) {
+      this("", memoryResource);
+   }
 
-	@Override
-	public IMessageHeader getMsgHeader() {
-		return null;
-	}
+   @Override
+   public IMessageHeader getMsgHeader() {
+      return null;
+   }
 
-	@Override
-	public void initializeDefaultHeaderValues() {
-	}
+   @Override
+   public void initializeDefaultHeaderValues() {
+   }
 
-	@Override
-	public void visit(IMessageDataVisitor visitor) {
-	}
+   @Override
+   public void visit(IMessageDataVisitor visitor) {
+   }
 
-	@Override
-	public void zeroize() {
-	}
+   @Override
+   public void zeroize() {
+   }
 }

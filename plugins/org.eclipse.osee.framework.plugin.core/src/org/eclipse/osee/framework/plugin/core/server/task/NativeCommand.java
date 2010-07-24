@@ -32,6 +32,7 @@ public class NativeCommand extends Command {
       sendCommand(toServer, params);
    }
 
+   @Override
    public Object invoke(Object... parameters) throws IOException {
       String[] callAndArgs = new String[parameters.length];
       System.arraycopy(parameters, 0, callAndArgs, 0, parameters.length);

@@ -36,69 +36,69 @@ import org.eclipse.ui.progress.UIJob;
  * @author Roberto E. Escobar
  */
 public class CreateEditorReportOperation extends AbstractOperation {
-	private final Collection<TableData> tableData;
-	private final String reportName;
+   private final Collection<TableData> tableData;
+   private final String reportName;
 
-	public CreateEditorReportOperation(String reportName, Collection<TableData> tableData) {
-		super("Generate Report", Activator.PLUGIN_ID);
-		this.tableData = tableData;
-		this.reportName = reportName;
-	}
+   public CreateEditorReportOperation(String reportName, Collection<TableData> tableData) {
+      super("Generate Report", Activator.PLUGIN_ID);
+      this.tableData = tableData;
+      this.reportName = reportName;
+   }
 
-	@Override
-	protected void doWork(IProgressMonitor monitor) throws Exception {
-		List<IResultsEditorTab> tabs = new ArrayList<IResultsEditorTab>();
-		for (TableData data : tableData) {
-			List<XViewerColumn> columns = new ArrayList<XViewerColumn>();
-			for (String name : data.getColumns()) {
-				columns.add(new XViewerColumn(name, name, 80, SWT.LEFT, true, SortDataType.String, false, ""));
-			}
-			List<IResultsXViewerRow> rows = new ArrayList<IResultsXViewerRow>();
-			for (String[] row : data.getRows()) {
-				rows.add(new ResultsXViewerRow(row));
-			}
-			tabs.add(new ResultsEditorTableTab(data.getTitle(), columns, rows));
-		}
-		openReport(tabs);
-	}
+   @Override
+   protected void doWork(IProgressMonitor monitor) throws Exception {
+      List<IResultsEditorTab> tabs = new ArrayList<IResultsEditorTab>();
+      for (TableData data : tableData) {
+         List<XViewerColumn> columns = new ArrayList<XViewerColumn>();
+         for (String name : data.getColumns()) {
+            columns.add(new XViewerColumn(name, name, 80, SWT.LEFT, true, SortDataType.String, false, ""));
+         }
+         List<IResultsXViewerRow> rows = new ArrayList<IResultsXViewerRow>();
+         for (String[] row : data.getRows()) {
+            rows.add(new ResultsXViewerRow(row));
+         }
+         tabs.add(new ResultsEditorTableTab(data.getTitle(), columns, rows));
+      }
+      openReport(tabs);
+   }
 
-	private void openReport(final List<IResultsEditorTab> resultsTabs) {
-		Job job = new UIJob(reportName) {
+   private void openReport(final List<IResultsEditorTab> resultsTabs) {
+      Job job = new UIJob(reportName) {
 
-			@Override
-			public IStatus runInUIThread(IProgressMonitor monitor) {
-				IStatus status;
-				try {
-					ResultsEditor.open(new ReportProvider(getName(), resultsTabs));
-					status = Status.OK_STATUS;
-				} catch (Exception ex) {
-					status =
-								new Status(IStatus.ERROR, Activator.PLUGIN_ID, String.format("Error creating %s Report",
-											reportName), ex);
-				}
-				return status;
-			}
-		};
-		Operations.scheduleJob(job, true, Job.SHORT, null);
-	}
+         @Override
+         public IStatus runInUIThread(IProgressMonitor monitor) {
+            IStatus status;
+            try {
+               ResultsEditor.open(new ReportProvider(getName(), resultsTabs));
+               status = Status.OK_STATUS;
+            } catch (Exception ex) {
+               status =
+                  new Status(IStatus.ERROR, Activator.PLUGIN_ID, String.format("Error creating %s Report", reportName),
+                     ex);
+            }
+            return status;
+         }
+      };
+      Operations.scheduleJob(job, true, Job.SHORT, null);
+   }
 
-	private static final class ReportProvider implements IResultsEditorProvider {
-		private final List<IResultsEditorTab> resultsTabs;
-		private final String editorName;
+   private static final class ReportProvider implements IResultsEditorProvider {
+      private final List<IResultsEditorTab> resultsTabs;
+      private final String editorName;
 
-		public ReportProvider(String editorName, List<IResultsEditorTab> resultsTabs) {
-			this.resultsTabs = resultsTabs;
-			this.editorName = editorName;
-		}
+      public ReportProvider(String editorName, List<IResultsEditorTab> resultsTabs) {
+         this.resultsTabs = resultsTabs;
+         this.editorName = editorName;
+      }
 
-		@Override
-		public String getEditorName() {
-			return editorName;
-		}
+      @Override
+      public String getEditorName() {
+         return editorName;
+      }
 
-		@Override
-		public List<IResultsEditorTab> getResultsEditorTabs() {
-			return resultsTabs;
-		}
-	}
+      @Override
+      public List<IResultsEditorTab> getResultsEditorTabs() {
+         return resultsTabs;
+      }
+   }
 }

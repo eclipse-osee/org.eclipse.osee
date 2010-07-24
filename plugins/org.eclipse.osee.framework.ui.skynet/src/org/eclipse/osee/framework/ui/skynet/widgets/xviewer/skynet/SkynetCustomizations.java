@@ -14,13 +14,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.nebula.widgets.xviewer.customize.IXViewerCustomizations;
 import org.eclipse.nebula.widgets.xviewer.util.XViewerException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.GlobalXViewerSettings;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -68,6 +68,7 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
       globalCustomizationsArtifact = GlobalXViewerSettings.getCustomArtifact();
    }
 
+   @Override
    public List<CustomizeData> getSavedCustDatas() throws OseeCoreException {
       ensurePopulated(false);
       List<CustomizeData> thisCustDatas = new ArrayList<CustomizeData>();
@@ -84,7 +85,7 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
       Collection<Attribute<String>> attributes = saveArt.getAttributes(CUSTOMIZATION_ATTRIBUTE_NAME);
       for (Attribute<String> attribute : attributes) {
          if (attribute.getDisplayableString().contains("namespace=\"" + custData.getNameSpace() + "\"") && attribute.getDisplayableString().contains(
-               "name=\"" + custData.getName() + "\"")) {
+            "name=\"" + custData.getName() + "\"")) {
             attribute.setValue(custData.getXml(true));
             found = true;
             break;
@@ -96,11 +97,13 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
       saveArt.persist();
    }
 
+   @Override
    public void saveCustomization(CustomizeData custData) throws OseeCoreException {
-      if (custData.isPersonal())
+      if (custData.isPersonal()) {
          saveCustomization(custData, UserManager.getUser());
-      else
+      } else {
          saveCustomization(custData, globalCustomizationsArtifact);
+      }
       ensurePopulated(true);
    }
 
@@ -109,8 +112,12 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
     */
    public static synchronized void ensurePopulated(boolean force) throws OseeCoreException {
       if (custDatas == null || force) {
-         if (custDatas == null) custDatas = Collections.synchronizedList(new ArrayList<CustomizeData>());
-         if (force) custDatas.clear();
+         if (custDatas == null) {
+            custDatas = Collections.synchronizedList(new ArrayList<CustomizeData>());
+         }
+         if (force) {
+            custDatas.clear();
+         }
          User user = UserManager.getUser();
          if (user != null) {
             for (CustomizeData custData : getArtifactCustomizations(user)) {
@@ -137,12 +144,14 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
       SkynetCustomizations.globalCustomizationsArtifact = defaultCustomizationsArtifact;
    }
 
+   @Override
    public void deleteCustomization(CustomizeData custData) throws OseeCoreException {
       Artifact deleteArt = null;
-      if (custData.isPersonal())
+      if (custData.isPersonal()) {
          deleteArt = UserManager.getUser();
-      else
+      } else {
          deleteArt = getGlobalCustomizationsArtifact();
+      }
       deleteCustomization(custData, deleteArt);
       // Remove item as default if set
       if (userArtifactDefaults.isDefaultCustomization(custData)) {
@@ -165,6 +174,7 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
       }
    }
 
+   @Override
    public CustomizeData getUserDefaultCustData() throws XViewerException {
       try {
          for (CustomizeData custData : getSavedCustDatas()) {
@@ -178,14 +188,16 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
       }
    }
 
+   @Override
    public boolean isCustomizationUserDefault(CustomizeData custData) {
       try {
-         return (getUserDefaultCustData() != null && getUserDefaultCustData().getGuid().equals(custData.getGuid()));
+         return getUserDefaultCustData() != null && getUserDefaultCustData().getGuid().equals(custData.getGuid());
       } catch (Exception ex) {
          return false;
       }
    }
 
+   @Override
    public void setUserDefaultCustData(CustomizeData newCustData, boolean set) throws Exception {
       // Remove old defaults
       for (CustomizeData custData : getSavedCustDatas()) {
@@ -194,7 +206,9 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
          }
       }
       // Add new default
-      if (set) userArtifactDefaults.setDefaultCustomization(newCustData);
+      if (set) {
+         userArtifactDefaults.setDefaultCustomization(newCustData);
+      }
       // persist
       userArtifactDefaults.save();
    }
@@ -214,6 +228,7 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
       return custDatas;
    }
 
+   @Override
    public boolean isCustomizationPersistAvailable() {
       return true;
    }
@@ -240,7 +255,7 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
    @Override
    public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
       final Collection<Artifact> modifiedArts =
-            artifactEvent.getCacheArtifacts(EventModType.Modified, EventModType.Reloaded);
+         artifactEvent.getCacheArtifacts(EventModType.Modified, EventModType.Reloaded);
       try {
          if (!modifiedArts.isEmpty()) {
             if (modifiedArts.contains(getGlobalCustomizationsArtifact()) || modifiedArts.contains(UserManager.getUser())) {
@@ -248,7 +263,7 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
             }
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE, ex);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
    }
 

@@ -23,7 +23,7 @@ import org.junit.BeforeClass;
 
 /**
  * Test Case for {@link AttributeTypeCache}
- *
+ * 
  * @author Roberto E. Escobar
  */
 public class AttributeTypeCacheTest extends AbstractOseeCacheTest<AttributeType> {

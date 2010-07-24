@@ -55,7 +55,7 @@ public class NewAction extends Action {
             wizard.setInitialDescription(initialDescription);
          }
          WizardDialog dialog =
-               new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), wizard);
+            new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), wizard);
          dialog.create();
          dialog.open();
       } catch (Exception ex) {

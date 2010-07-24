@@ -38,24 +38,30 @@ public class UserGroupsCheckTreeDialog extends ArtifactCheckTreeDialog {
 
    public class ArtifactLabelProvider implements ILabelProvider {
 
+      @Override
       public Image getImage(Object arg0) {
          return ArtifactImageManager.getImage((Artifact) arg0);
       }
 
+      @Override
       public String getText(Object arg0) {
          return ((Artifact) arg0).getName() + " - (" + ((Artifact) arg0).getArtifactTypeName() + ")";
       }
 
+      @Override
       public void addListener(ILabelProviderListener arg0) {
       }
 
+      @Override
       public void dispose() {
       }
 
+      @Override
       public boolean isLabelProperty(Object arg0, String arg1) {
          return false;
       }
 
+      @Override
       public void removeListener(ILabelProviderListener arg0) {
       }
 

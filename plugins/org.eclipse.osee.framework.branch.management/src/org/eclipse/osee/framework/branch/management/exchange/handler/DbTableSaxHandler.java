@@ -79,16 +79,15 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
 
             String name = uriValue.substring(uriValue.lastIndexOf('\\') + 1, uriValue.length());
             IResourceLocator locatorHint =
-                  services.getResourceLocatorManager().generateResourceLocator("attr", gammaId, name);
+               services.getResourceLocatorManager().generateResourceLocator("attr", gammaId, name);
 
             IResourceLocator locator =
-                  services.getResourceManager().save(locatorHint, new ZipBinaryResource(entry, locatorHint),
-                        new Options());
+               services.getResourceManager().save(locatorHint, new ZipBinaryResource(entry, locatorHint), new Options());
             transferredBinaryContent.add(locator);
             return locator.getLocation().toASCIIString();
          } else {
             throw new OseeStateException(String.format(
-                  "Unable to locate resource in zip file - ZipEntry was null for [%s]", uriValue));
+               "Unable to locate resource in zip file - ZipEntry was null for [%s]", uriValue));
          }
       } else {
          throw new OseeStateException("Uncompressed folder was Null.");
@@ -123,19 +122,19 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
 
             if (exportItem.equals(ExportItem.OSEE_ARTIFACT_DATA)) {
                int typeId =
-                     services.getCachingService().getArtifactTypeCache().getByGuid(fieldMap.get(ExchangeDb.TYPE_GUID)).getId();
+                  services.getCachingService().getArtifactTypeCache().getByGuid(fieldMap.get(ExchangeDb.TYPE_GUID)).getId();
                fieldMap.put("art_type_id", String.valueOf(typeId));
             }
 
             if (exportItem.equals(ExportItem.OSEE_ATTRIBUTE_DATA)) {
                int typeId =
-                     services.getCachingService().getAttributeTypeCache().getByGuid(fieldMap.get(ExchangeDb.TYPE_GUID)).getId();
+                  services.getCachingService().getAttributeTypeCache().getByGuid(fieldMap.get(ExchangeDb.TYPE_GUID)).getId();
                fieldMap.put("attr_type_id", String.valueOf(typeId));
             }
 
             if (exportItem.equals(ExportItem.OSEE_RELATION_LINK_DATA)) {
                int typeId =
-                     services.getCachingService().getRelationTypeCache().getByGuid(fieldMap.get(ExchangeDb.TYPE_GUID)).getId();
+                  services.getCachingService().getRelationTypeCache().getByGuid(fieldMap.get(ExchangeDb.TYPE_GUID)).getId();
                fieldMap.put("rel_link_type_id", String.valueOf(typeId));
             }
 
@@ -176,7 +175,7 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
       } catch (OseeCoreException ex) {
          cleanUpBinaryContent();
          OseeLog.log(Activator.class, Level.SEVERE,
-               String.format("Error processing in [%s]", getMetaData().getTableName()), ex);
+            String.format("Error processing in [%s]", getMetaData().getTableName()), ex);
          throw ex;
       }
    }
@@ -200,9 +199,9 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
       }
       if (errorMessage.length() > 0) {
          OseeLog.log(
-               this.getClass(),
-               Level.SEVERE,
-               "Error deleting binary data after transfer error. Please delete all content manually. " + errorMessage.toString());
+            this.getClass(),
+            Level.SEVERE,
+            "Error deleting binary data after transfer error. Please delete all content manually. " + errorMessage.toString());
       }
    }
 

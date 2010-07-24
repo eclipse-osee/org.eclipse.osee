@@ -28,9 +28,8 @@ import org.osgi.framework.ServiceRegistration;
  */
 public class OseeBranchExchangeServiceRegistrationHandler extends AbstractTrackingHandler {
 
-   private final static Class<?>[] SERVICE_DEPENDENCIES =
-         new Class<?>[] {IResourceManager.class, IResourceLocatorManager.class, IOseeModelingService.class,
-               IOseeCachingService.class, IOseeDatabaseService.class};
+   private final static Class<?>[] SERVICE_DEPENDENCIES = new Class<?>[] {IResourceManager.class,
+      IResourceLocatorManager.class, IOseeModelingService.class, IOseeCachingService.class, IOseeDatabaseService.class};
 
    private ServiceRegistration serviceRegistration;
 
@@ -59,7 +58,7 @@ public class OseeBranchExchangeServiceRegistrationHandler extends AbstractTracki
       IOseeCachingService cachingService = getService(IOseeCachingService.class, services);
       IOseeDatabaseService databaseService = getService(IOseeDatabaseService.class, services);
       OseeServices oseeServices =
-            new OseeServices(resourceManager, resourceLocatorManager, cachingService, modelingService, databaseService);
+         new OseeServices(resourceManager, resourceLocatorManager, cachingService, modelingService, databaseService);
       return new BranchExchange(oseeServices);
    }
 }

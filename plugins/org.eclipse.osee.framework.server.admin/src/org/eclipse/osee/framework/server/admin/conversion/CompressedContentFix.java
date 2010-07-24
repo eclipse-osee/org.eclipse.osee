@@ -43,7 +43,7 @@ public class CompressedContentFix {
    private static CompressedContentFix instance = null;
 
    private static final String FIND_ALL_NATIVE_CONTENT_SQL =
-         "SELECT art1.art_id, art1.human_readable_id, art1.guid, attr1.uri FROM osee_attribute attr1, osee_attribute_type attyp1, osee_artifact art1 WHERE attyp1.NAME = 'Native Content' AND attyp1.attr_type_id = attr1.attr_type_id AND art1.ART_ID = attr1.ART_ID";
+      "SELECT art1.art_id, art1.human_readable_id, art1.guid, attr1.uri FROM osee_attribute attr1, osee_attribute_type attyp1, osee_artifact art1 WHERE attyp1.NAME = 'Native Content' AND attyp1.attr_type_id = attr1.attr_type_id AND art1.ART_ID = attr1.ART_ID";
 
    public static CompressedContentFix getInstance() {
       if (instance == null) {
@@ -140,12 +140,12 @@ public class CompressedContentFix {
 
             byte[] compressed = Lib.compressStream(new ByteArrayInputStream(outputStream.toByteArray()), newEntryName);
             IResource modifiedResource =
-                  Resources.createResourceFromBytes(compressed, locator.getLocation().toASCIIString(), true);
+               Resources.createResourceFromBytes(compressed, locator.getLocation().toASCIIString(), true);
             options.put(StandardOptions.Overwrite.name(), true);
             resourceManager.save(locator, modifiedResource, options);
 
             ci.println(String.format("hrid [%s] uri [%s] fileName[%s] newName[%s] extension[%s]", hrid, uri,
-                  oldEntryName, newEntryName, extension));
+               oldEntryName, newEntryName, extension));
          }
       }
 
@@ -216,7 +216,7 @@ public class CompressedContentFix {
                      long leftOverMinutes = minutes % 60;
                      long hours = minutes / 60;
                      ci.println(String.format("%d files processed, Elapsed Time = %d:%02d:%02d.", count, hours,
-                           leftOverMinutes, leftOverSeconds));
+                        leftOverMinutes, leftOverSeconds));
                   }
                }
             }

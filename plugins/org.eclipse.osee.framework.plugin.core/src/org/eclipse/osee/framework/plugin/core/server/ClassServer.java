@@ -46,6 +46,7 @@ public class ClassServer extends Thread {
       server = new ServerSocket(port, 50, address);
       socketThreads = Executors.newCachedThreadPool(new ThreadFactory() {
 
+         @Override
          public Thread newThread(Runnable arg0) {
             Thread th = new Thread(arg0, "ClassServer Task");
             th.setDaemon(true);
@@ -65,6 +66,7 @@ public class ClassServer extends Thread {
    /**
     * Spawn a thread for each connection requesting service
     */
+   @Override
    public void run() {
 
       String msg = "ClassServer started [";
@@ -116,14 +118,20 @@ public class ClassServer extends Thread {
    private static boolean readLine(InputStream in, StringBuffer buf) throws IOException {
       while (true) {
          int c = in.read();
-         if (c < 0) return buf.length() > 0;
+         if (c < 0) {
+            return buf.length() > 0;
+         }
          if (c == '\r') {
             in.mark(1);
             c = in.read();
-            if (c != '\n') in.reset();
+            if (c != '\n') {
+               in.reset();
+            }
             return true;
          }
-         if (c == '\n') return true;
+         if (c == '\n') {
+            return true;
+         }
          buf.append((char) c);
       }
    }
@@ -133,7 +141,9 @@ public class ClassServer extends Thread {
       BufferedInputStream in = new BufferedInputStream(sock.getInputStream(), 256);
       StringBuffer buf = new StringBuffer(80);
       do {
-         if (!readLine(in, buf)) return null;
+         if (!readLine(in, buf)) {
+            return null;
+         }
       } while (isRequest && buf.length() == 0);
       String initial = buf.toString();
       do {
@@ -156,7 +166,7 @@ public class ClassServer extends Thread {
 
    private class Task implements Runnable {// Thread {
 
-      private Socket sock;
+      private final Socket sock;
 
       public Task(Socket sock) {
          this.sock = sock;
@@ -188,10 +198,11 @@ public class ClassServer extends Thread {
          try {
             if (path.regionMatches(true, 0, "http://", 0, 7)) {
                int i = path.indexOf('/', 7);
-               if (i < 0)
+               if (i < 0) {
                   path = "/";
-               else
+               } else {
                   path = path.substring(i);
+               }
             }
             for (int i = path.indexOf('%'); i >= 0; i = path.indexOf('%', i + 1)) {
                char c = decode(path, i);
@@ -201,12 +212,11 @@ public class ClassServer extends Thread {
                      case 0xC:
                      case 0xD:
                         n = 6;
-                        c = (char) (((c & 0x1F) << 6) | (decode(path, i + 3) & 0x3F));
+                        c = (char) ((c & 0x1F) << 6 | decode(path, i + 3) & 0x3F);
                         break;
                      case 0xE:
                         n = 9;
-                        c =
-                              (char) (((c & 0x0f) << 12) | ((decode(path, i + 3) & 0x3F) << 6) | (decode(path, i + 6) & 0x3F));
+                        c = (char) ((c & 0x0f) << 12 | (decode(path, i + 3) & 0x3F) << 6 | decode(path, i + 6) & 0x3F);
                         break;
                      default:
                         return null;
@@ -217,10 +227,13 @@ public class ClassServer extends Thread {
          } catch (Exception e) {
             return null;
          }
-         if (path.length() == 0 || path.charAt(0) != '/') return null;
+         if (path.length() == 0 || path.charAt(0) != '/') {
+            return null;
+         }
          return path.substring(1);
       }
 
+      @Override
       public void run() {
          try {
             DataOutputStream out = new DataOutputStream(sock.getOutputStream());
@@ -231,7 +244,9 @@ public class ClassServer extends Thread {
                OseeLog.log(PluginCoreActivator.class, Level.INFO, "reading request", e);
                return;
             }
-            if (req == null) return;
+            if (req == null) {
+               return;
+            }
             if (req.startsWith("SHUTDOWN *")) {
                out.writeBytes("HTTP/1.0 403 Forbidden\r\n\r\n");
                out.flush();
@@ -247,7 +262,9 @@ public class ClassServer extends Thread {
             }
             String path = req.substring(get ? 4 : 5);
             int i = path.indexOf(' ');
-            if (i > 0) path = path.substring(0, i);
+            if (i > 0) {
+               path = path.substring(0, i);
+            }
             path = getCanonicalizedPath(path);
             if (path == null) {
                OseeLog.log(PluginCoreActivator.class, Level.FINE, "bad request \"{0}\" from {1}:{2}");
@@ -255,9 +272,11 @@ public class ClassServer extends Thread {
                out.flush();
                return;
             }
-            if (args != null) args[0] = path;
+            if (args != null) {
+               args[0] = path;
+            }
             OseeLog.log(PluginCoreActivator.class, Level.FINER,
-                  get ? "{0} requested from {1}:{2}" : "{0} probed from {1}:{2}");
+               get ? "{0} requested from {1}:{2}" : "{0} probed from {1}:{2}");
             byte[] bytes;
             try {
                bytes = getBytes(path);
@@ -276,9 +295,13 @@ public class ClassServer extends Thread {
             out.writeBytes("HTTP/1.0 200 OK\r\n");
             out.writeBytes("Content-Length: " + bytes.length + "\r\n");
             out.writeBytes("Content-Type: application/java\r\n\r\n");
-            if (get) out.write(bytes);
+            if (get) {
+               out.write(bytes);
+            }
             out.flush();
-            if (get) fileDownloaded(path, sock.getInetAddress());
+            if (get) {
+               fileDownloaded(path, sock.getInetAddress());
+            }
          } catch (Exception e) {
             OseeLog.log(PluginCoreActivator.class, Level.INFO, "writing response", e);
          } finally {

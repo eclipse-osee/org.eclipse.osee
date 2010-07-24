@@ -11,6 +11,7 @@
 package org.eclipse.osee.ote.core.environment.interfaces;
 
 public interface ITimeout {
-	   boolean isTimedOut();
-	   void setTimeout(boolean timeout);
+   boolean isTimedOut();
+
+   void setTimeout(boolean timeout);
 }

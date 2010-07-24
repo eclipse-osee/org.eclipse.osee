@@ -11,11 +11,9 @@
 package org.eclipse.osee.ote.message;
 
 import java.util.logging.Level;
-
 import org.eclipse.osee.ote.core.TestException;
 
-
-public class MessageSystemException extends TestException{
+public class MessageSystemException extends TestException {
 
    /**
     * 
@@ -25,7 +23,7 @@ public class MessageSystemException extends TestException{
    public MessageSystemException(String message, Level level) {
       this(message, level, null);
    }
-   
+
    public MessageSystemException(String message, Level level, Throwable cause) {
       super(message, level, cause);
    }

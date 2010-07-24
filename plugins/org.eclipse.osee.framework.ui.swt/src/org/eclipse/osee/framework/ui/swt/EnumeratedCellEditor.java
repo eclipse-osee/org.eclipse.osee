@@ -36,9 +36,10 @@ public abstract class EnumeratedCellEditor<T extends Enum<T>> extends CustomTabl
    private final Class<T> clazz;
    private final String[] comboItems;
    private boolean enabled;
-   private Color color;
+   private final Color color;
    private final class EditCellListener implements Listener {
 
+      @Override
       public void handleEvent(Event event) {
          final Point pt = new Point(event.x, event.y);
          int index = table.getTopIndex();
@@ -53,6 +54,7 @@ public abstract class EnumeratedCellEditor<T extends Enum<T>> extends CustomTabl
                combo.setItems(comboItems);
                combo.setToolTipText(toolTip);
                final Listener textListener = new Listener() {
+                  @Override
                   public void handleEvent(final Event e) {
                      final T value = clazz.getEnumConstants()[combo.getSelectionIndex()];
                      switch (e.type) {
@@ -100,7 +102,7 @@ public abstract class EnumeratedCellEditor<T extends Enum<T>> extends CustomTabl
     * @param comboStyle
     * @param toolTip
     * @param clazz the Class of the <CODE>Enum</CODE> whose enumerations will appear as options in the cell editor's
-    *           combo box
+    * combo box
     */
    public EnumeratedCellEditor(final Table table, final int columnIndex, final int comboStyle, final String toolTip, final Class<T> clazz) {
       this.table = table;
@@ -140,6 +142,7 @@ public abstract class EnumeratedCellEditor<T extends Enum<T>> extends CustomTabl
     * @param previousValue the value that was in the cell before the edit took place
     * @return the value that will be actually written into the table's cell
     */
+   @Override
    abstract protected T applyValue(final int itemIndex, final T value, final T previousValue);
 
    /**
@@ -150,6 +153,7 @@ public abstract class EnumeratedCellEditor<T extends Enum<T>> extends CustomTabl
     * @param previousValue the value of the cell before editing began
     * @return the value that cekk will be set to when focus is lost
     */
+   @Override
    abstract protected T focusLost(final int itemIndex, final T value, final T previousValue);
 
    /**
@@ -160,7 +164,9 @@ public abstract class EnumeratedCellEditor<T extends Enum<T>> extends CustomTabl
     */
    public void setEnabled(boolean enabled) {
       // do nothing if already enabled/disabled
-      if (this.enabled == enabled) return;
+      if (this.enabled == enabled) {
+         return;
+      }
 
       if (enabled) {
          table.addListener(SWT.MouseDown, tblListener);

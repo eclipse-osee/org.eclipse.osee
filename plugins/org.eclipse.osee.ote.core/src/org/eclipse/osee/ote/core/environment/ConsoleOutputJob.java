@@ -22,6 +22,7 @@ public class ConsoleOutputJob implements Runnable {
       this.message = message;
    }
 
+   @Override
    public void run() {
       try {
          callback.initiateInformationalPrompt(message);

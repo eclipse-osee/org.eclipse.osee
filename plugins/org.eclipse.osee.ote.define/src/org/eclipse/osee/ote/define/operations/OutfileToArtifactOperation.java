@@ -29,10 +29,10 @@ import org.eclipse.osee.ote.define.utilities.OutfileParserExtensionManager;
  * @author Roberto E. Escobar
  */
 public class OutfileToArtifactOperation {
-   private Branch branch;
-   private URI[] filesToImport;
-   private List<Artifact> results;
-   private List<URI> filesWithErrors;
+   private final Branch branch;
+   private final URI[] filesToImport;
+   private final List<Artifact> results;
+   private final List<URI> filesWithErrors;
 
    public OutfileToArtifactOperation(Branch branch, URI... filesToImport) {
       this.branch = branch;
@@ -64,7 +64,7 @@ public class OutfileToArtifactOperation {
          } catch (Exception ex) {
             if (operator.getTestRunArtifact() == null) {
                throw new Exception(
-                     "Unable to create Test Run Artifact. Make sure type information exists in the selected branch.");
+                  "Unable to create Test Run Artifact. Make sure type information exists in the selected branch.");
             }
             filesWithErrors.add(targetUri);
          }

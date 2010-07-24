@@ -24,6 +24,7 @@ public class BaseStyleSheetArtifact implements IStyleSheetArtifact {
       super();
    }
 
+   @Override
    public String getStyle() {
       return null;
    }

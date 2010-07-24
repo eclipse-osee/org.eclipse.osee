@@ -39,7 +39,7 @@ public class MergeManagerHandler extends CommandHandler {
    @Override
    public Object execute(ExecutionEvent arg0) throws ExecutionException {
       IStructuredSelection selection =
-            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+         (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
 
       if (!selection.isEmpty()) {
          List<Branch> branches = Handlers.getBranchesFromStructuredSelection(selection);
@@ -69,11 +69,11 @@ public class MergeManagerHandler extends CommandHandler {
             Branch selectedBranch = branches.iterator().next();
             try {
                if (selectedBranch != null && !ConflictManagerInternal.getDestinationBranchesMerged(
-                     selectedBranch.getId()).isEmpty()) {
+                  selectedBranch.getId()).isEmpty()) {
                   enabled = true;
                } else {
                   enabled =
-                        selectedBranch != null && !(BranchManager.getAssociatedArtifact(selectedBranch) instanceof IATSArtifact) && selectedBranch.hasParentBranch();
+                     selectedBranch != null && !(BranchManager.getAssociatedArtifact(selectedBranch) instanceof IATSArtifact) && selectedBranch.hasParentBranch();
                }
             } catch (OseeCoreException ex) {
                OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);

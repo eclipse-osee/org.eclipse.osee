@@ -10,30 +10,26 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.core.log;
 
-
 /**
  * @author John Butler
  */
 public interface ITestPointTally {
 
-	   /** 
-	    * Resets the test point pass and fail counts to zero.
-	    */
-	   public void reset();
-	   
-	   /**
-	    * Records test point result.
-	    * 
-	    * @param pass test point result.
-	    *           <b>True</b> for passing.
-	    *           <b>False</b> for failing.
-	    * 
-	    * @return The total number of test points recorded. 
-	    */
-	   public int tallyTestPoint(boolean pass);
-	   
-	   /**
-	    * @return The total number of test points recorded.
-	    */
-	   public int getTestPointTotal();
+   /**
+    * Resets the test point pass and fail counts to zero.
+    */
+   public void reset();
+
+   /**
+    * Records test point result.
+    * 
+    * @param pass test point result. <b>True</b> for passing. <b>False</b> for failing.
+    * @return The total number of test points recorded.
+    */
+   public int tallyTestPoint(boolean pass);
+
+   /**
+    * @return The total number of test points recorded.
+    */
+   public int getTestPointTotal();
 }

@@ -133,9 +133,8 @@ public class NonEclipseManifestHeader extends Dictionary<Object, Object> {
          while (true) {
             String line = br.readLine();
             /*
-             * The java.util.jar classes in JDK 1.3 use the value of the last encountered manifest
-             * header. So we do the same to emulate this behavior. We no longer throw a
-             * BundleException for duplicate manifest headers.
+             * The java.util.jar classes in JDK 1.3 use the value of the last encountered manifest header. So we do the
+             * same to emulate this behavior. We no longer throw a BundleException for duplicate manifest headers.
              */
 
             if (line == null || line.length() == 0) /* EOF or empty line */
@@ -223,10 +222,12 @@ public class NonEclipseManifestHeader extends Dictionary<Object, Object> {
          System.arraycopy(array, 0, this.array, 0, this.array.length);
       }
 
+      @Override
       public boolean hasMoreElements() {
          return cur < array.length;
       }
 
+      @Override
       public Object nextElement() {
          return array[cur++];
       }

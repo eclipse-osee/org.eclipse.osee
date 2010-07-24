@@ -15,7 +15,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {AtsImageTest.class})
+@Suite.SuiteClasses({AtsImageTest.class})
 /**
  * @author Donald G. Dunne
  */

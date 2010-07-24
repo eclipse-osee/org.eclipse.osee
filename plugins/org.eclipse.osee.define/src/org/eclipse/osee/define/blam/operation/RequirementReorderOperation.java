@@ -71,7 +71,7 @@ public class RequirementReorderOperation extends AbstractBlam {
          }
       }
    }
-   
+
    @Override
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"artifacts\" /></xWidgets>";

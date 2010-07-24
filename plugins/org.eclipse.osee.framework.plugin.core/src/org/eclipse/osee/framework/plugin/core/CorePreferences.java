@@ -29,7 +29,7 @@ public class CorePreferences {
    @SuppressWarnings("deprecation")
    public static InetAddress getDefaultInetAddress() throws UnknownHostException {
       String inetaddress =
-            PluginCoreActivator.getInstance().getPluginPreferences().getString(CorePreferences.INETADDRESS_KEY);
+         PluginCoreActivator.getInstance().getPluginPreferences().getString(CorePreferences.INETADDRESS_KEY);
       if (Strings.isValid(inetaddress)) {
          return InetAddress.getByName(inetaddress);
       }

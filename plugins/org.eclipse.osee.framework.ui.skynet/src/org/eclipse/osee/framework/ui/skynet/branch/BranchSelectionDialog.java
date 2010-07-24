@@ -45,8 +45,7 @@ public class BranchSelectionDialog extends MessageDialog {
    private final Collection<Branch> branches;
 
    public BranchSelectionDialog(String title, Collection<Branch> branches) {
-      super(Displays.getActiveShell(), title, null, null, MessageDialog.NONE,
-            new String[] {"Ok", "Cancel"}, 0);
+      super(Displays.getActiveShell(), title, null, null, MessageDialog.NONE, new String[] {"Ok", "Cancel"}, 0);
       this.allowOnlyWorkingBranches = false;
       this.selected = null;
       this.branches = branches;
@@ -76,7 +75,7 @@ public class BranchSelectionDialog extends MessageDialog {
             Collection<TreeItem> visibleItems = branchWidget.getXViewer().getVisibleItems();
             if (visibleItems.size() == 1) {
                branchWidget.getXViewer().setSelection(
-                     new StructuredSelection(new Object[] {visibleItems.iterator().next().getData()}));
+                  new StructuredSelection(new Object[] {visibleItems.iterator().next().getData()}));
                getButton(IDialogConstants.OK_ID).setEnabled(true);
                storeSelectedBranch();
             }

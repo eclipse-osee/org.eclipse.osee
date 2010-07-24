@@ -108,8 +108,7 @@ public class TraceUnitExtensionManager {
    private void checkObjectsLoaded() throws OseeCoreException {
       if (contributions.isEmpty()) {
          List<IConfigurationElement> elements =
-               ExtensionPoints.getExtensionElements(DefinePlugin.PLUGIN_ID + "." + TRACE_UNIT_HANDLER,
-                     TRACE_UNIT_HANDLER);
+            ExtensionPoints.getExtensionElements(DefinePlugin.PLUGIN_ID + "." + TRACE_UNIT_HANDLER, TRACE_UNIT_HANDLER);
          for (IConfigurationElement element : elements) {
             IExtension extension = (IExtension) element.getParent();
             String identifier = extension.getUniqueIdentifier();

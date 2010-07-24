@@ -36,9 +36,9 @@ public class ActionManager {
          monitor.subTask("Creating Action");
       }
       ActionArtifact actionArt =
-            (ActionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Action, AtsUtil.getAtsBranch());
+         (ActionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Action, AtsUtil.getAtsBranch());
       ActionArtifact.setArtifactIdentifyData(actionArt, title, desc, changeType, priority, validationRequired,
-            needByDate);
+         needByDate);
 
       // Retrieve Team Definitions corresponding to selected Actionable Items
       if (monitor != null) {

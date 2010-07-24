@@ -69,6 +69,7 @@ public class BranchGraphEditor extends GraphicalEditorWithFlyoutPalette {
       setEditDomain(new DefaultEditDomain(this));
    }
 
+   @Override
    public ActionRegistry getActionRegistry() {
       if (actionRegistry == null) {
          actionRegistry = new ActionRegistry();
@@ -76,13 +77,14 @@ public class BranchGraphEditor extends GraphicalEditorWithFlyoutPalette {
       return actionRegistry;
    }
 
+   @Override
    public void setFocus() {
    }
 
    public void showGraphFor(BranchGraphEditorInput editorInput) {
       setPartName(editorInput.getName() + " Graph");
       LoadGraphOperation task =
-            new LoadGraphOperation(getSite().getPart(), getGraphicalViewer(), this, editorInput.getBranch());
+         new LoadGraphOperation(getSite().getPart(), getGraphicalViewer(), this, editorInput.getBranch());
       Jobs.runInJob(task.getName(), task, BranchGraphActivator.class, BranchGraphActivator.PLUGIN_ID, true);
    }
 
@@ -104,21 +106,26 @@ public class BranchGraphEditor extends GraphicalEditorWithFlyoutPalette {
       showGraphFor((BranchGraphEditorInput) getEditorInput());
    }
 
+   @Override
    public void doSave(IProgressMonitor monitor) {
    }
 
+   @Override
    public void doSaveAs() {
    }
 
+   @Override
    public void init(IEditorSite site, IEditorInput input) throws PartInitException {
       setSite(site);
       setInput(input);
    }
 
+   @Override
    public boolean isDirty() {
       return false;
    }
 
+   @Override
    public boolean isSaveAsAllowed() {
       return false;
    }
@@ -137,6 +144,7 @@ public class BranchGraphEditor extends GraphicalEditorWithFlyoutPalette {
       return overviewOutlinePage;
    }
 
+   @Override
    protected void configureGraphicalViewer() {
       super.configureGraphicalViewer();
 
@@ -174,12 +182,12 @@ public class BranchGraphEditor extends GraphicalEditorWithFlyoutPalette {
       getSite().getKeyBindingService().registerAction(zoomIn);
       getSite().getKeyBindingService().registerAction(zoomOut);
       List<String> zoomContributions =
-            Arrays.asList(new String[] {ZoomManager.FIT_ALL, ZoomManager.FIT_HEIGHT, ZoomManager.FIT_WIDTH});
+         Arrays.asList(new String[] {ZoomManager.FIT_ALL, ZoomManager.FIT_HEIGHT, ZoomManager.FIT_WIDTH});
       zoomManager.setZoomLevelContributions(zoomContributions);
 
       try {
          PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
-               "org.eclipse.ui.views.ContentOutline");
+            "org.eclipse.ui.views.ContentOutline");
       } catch (PartInitException ex) {
          OseeLog.log(BranchGraphActivator.class, Level.SEVERE, ex);
       }
@@ -189,12 +197,13 @@ public class BranchGraphEditor extends GraphicalEditorWithFlyoutPalette {
    protected KeyHandler getCommonKeyHandler() {
       if (shareKeyHandler == null) {
          shareKeyHandler = new GraphicalViewerKeyHandler(getViewer());
-         shareKeyHandler.put(KeyStroke.getPressed(SWT.F2, 0), getActionRegistry().getAction(
-               GEFActionConstants.DIRECT_EDIT));
+         shareKeyHandler.put(KeyStroke.getPressed(SWT.F2, 0),
+            getActionRegistry().getAction(GEFActionConstants.DIRECT_EDIT));
       }
       return shareKeyHandler;
    }
 
+   @Override
    protected void initializeGraphicalViewer() {
    }
 
@@ -209,12 +218,15 @@ public class BranchGraphEditor extends GraphicalEditorWithFlyoutPalette {
    @Override
    protected PaletteViewerProvider createPaletteViewerProvider() {
       return new PaletteViewerProvider(getEditDomain()) {
+         @Override
          protected void configurePaletteViewer(PaletteViewer viewer) {
             super.configurePaletteViewer(viewer);
             viewer.setCustomizer(new PaletteCustomizer() {
+               @Override
                public void revertToSaved() {
                }
 
+               @Override
                public void save() {
                }
             });
@@ -226,6 +238,7 @@ public class BranchGraphEditor extends GraphicalEditorWithFlyoutPalette {
    @Override
    protected CustomPalettePage createPalettePage() {
       return new CustomPalettePage(getPaletteViewerProvider()) {
+         @Override
          public void init(IPageSite pageSite) {
             super.init(pageSite);
             IAction copy = getActionRegistry().getAction(ActionFactory.COPY.getId());

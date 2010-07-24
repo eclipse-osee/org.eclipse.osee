@@ -21,12 +21,12 @@ import org.eclipse.osee.framework.core.model.cache.IOseeDataAccessor;
  */
 public final class SessionCache extends AbstractOseeCache<Session> {
 
-	public SessionCache(IOseeDataAccessor<Session> dataAccessor) {
-		super(OseeCacheEnum.SESSION_CACHE, dataAccessor, true);
-	}
+   public SessionCache(IOseeDataAccessor<Session> dataAccessor) {
+      super(OseeCacheEnum.SESSION_CACHE, dataAccessor, true);
+   }
 
-	@Override
-	public synchronized Collection<Session> getRawValues() throws OseeCoreException {
-		return super.getRawValues();
-	}
+   @Override
+   public synchronized Collection<Session> getRawValues() throws OseeCoreException {
+      return super.getRawValues();
+   }
 }

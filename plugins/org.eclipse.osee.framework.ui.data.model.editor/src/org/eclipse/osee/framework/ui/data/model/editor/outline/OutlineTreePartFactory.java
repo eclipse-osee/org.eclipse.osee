@@ -23,6 +23,7 @@ public class OutlineTreePartFactory implements EditPartFactory {
       super();
    }
 
+   @Override
    public EditPart createEditPart(EditPart context, Object model) {
       EditPart toReturn = null;
       if (model instanceof String) {

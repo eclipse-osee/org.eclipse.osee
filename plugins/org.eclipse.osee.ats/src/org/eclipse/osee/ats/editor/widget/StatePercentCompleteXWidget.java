@@ -33,7 +33,7 @@ public class StatePercentCompleteXWidget extends XHyperlinkLabelValueSelection {
 
    private final StateMachineArtifact sma;
    private final AtsWorkPage page;
-   private boolean isCurrentState;
+   private final boolean isCurrentState;
 
    public StatePercentCompleteXWidget(IManagedForm managedForm, AtsWorkPage page, final StateMachineArtifact sma, Composite composite, int horizontalSpan, XModifiedListener xModListener, boolean isCurrentState) {
       super("\"" + page.getName() + "\"" + " State Percent Complete");
@@ -77,20 +77,20 @@ public class StatePercentCompleteXWidget extends XHyperlinkLabelValueSelection {
       try {
          setEditable(isCurrentState && !sma.isReadOnly());
          StringBuffer sb =
-               new StringBuffer(String.format("        State Percent: %d", sma.getStateMgr().getPercentComplete(
-                     page.getName())));
+            new StringBuffer(String.format("        State Percent: %d",
+               sma.getStateMgr().getPercentComplete(page.getName())));
          boolean breakoutNeeded = false;
          if (sma instanceof TaskableStateMachineArtifact) {
             if (((TaskableStateMachineArtifact) sma).hasTaskArtifacts()) {
                sb.append(String.format("\n        Task  Percent: %d",
-                     ((TaskableStateMachineArtifact) sma).getPercentCompleteFromTasks(page.getName())));
+                  ((TaskableStateMachineArtifact) sma).getPercentCompleteFromTasks(page.getName())));
                breakoutNeeded = true;
             }
          }
          if (sma.isTeamWorkflow()) {
             if (ReviewManager.hasReviews((TeamWorkFlowArtifact) sma)) {
-               sb.append(String.format("\n     Review Percent: %d", ReviewManager.getPercentComplete(
-                     (TeamWorkFlowArtifact) sma, page.getName())));
+               sb.append(String.format("\n     Review Percent: %d",
+                  ReviewManager.getPercentComplete((TeamWorkFlowArtifact) sma, page.getName())));
                breakoutNeeded = true;
             }
          }

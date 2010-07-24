@@ -29,58 +29,58 @@ public class EventBasicGuidRelationTest {
    public void testEqualsEventBasicGuidRelation() throws OseeCoreException {
       DefaultBasicGuidArtifact eventArt1 = new DefaultBasicGuidArtifact(GUID.create(), GUID.create(), GUID.create());
       DefaultBasicGuidArtifact eventArt2 =
-            new DefaultBasicGuidArtifact(eventArt1.getBranchGuid(), eventArt1.getArtTypeGuid(), eventArt1.getGuid());
+         new DefaultBasicGuidArtifact(eventArt1.getBranchGuid(), eventArt1.getArtTypeGuid(), eventArt1.getGuid());
 
       EventBasicGuidRelation eventRel1 =
-            new EventBasicGuidRelation(RelationEventType.Added, eventArt1.getBranchGuid(), GUID.create(), 234, 333, 34,
-                  eventArt1, 33, eventArt2);
+         new EventBasicGuidRelation(RelationEventType.Added, eventArt1.getBranchGuid(), GUID.create(), 234, 333, 34,
+            eventArt1, 33, eventArt2);
       EventBasicGuidRelation eventRel2 =
-            new EventBasicGuidRelation(RelationEventType.Added, eventRel1.getBranchGuid(), eventRel1.getRelTypeGuid(),
-                  eventRel1.getRelationId(), eventRel1.getGammaId(), eventRel1.getArtAId(), eventRel1.getArtA(),
-                  eventRel1.getArtBId(), eventRel1.getArtB());
+         new EventBasicGuidRelation(RelationEventType.Added, eventRel1.getBranchGuid(), eventRel1.getRelTypeGuid(),
+            eventRel1.getRelationId(), eventRel1.getGammaId(), eventRel1.getArtAId(), eventRel1.getArtA(),
+            eventRel1.getArtBId(), eventRel1.getArtB());
 
       Assert.assertEquals(eventRel1.hashCode(), eventRel2.hashCode());
       Assert.assertEquals(eventRel1, eventRel2);
 
       eventRel2 =
-            new EventBasicGuidRelation(RelationEventType.Deleted, eventRel1.getBranchGuid(),
-                  eventRel1.getRelTypeGuid(), eventRel1.getRelationId(), eventRel1.getGammaId(), eventRel1.getArtAId(),
-                  eventRel1.getArtA(), eventRel1.getArtBId(), eventRel1.getArtB());
+         new EventBasicGuidRelation(RelationEventType.Deleted, eventRel1.getBranchGuid(), eventRel1.getRelTypeGuid(),
+            eventRel1.getRelationId(), eventRel1.getGammaId(), eventRel1.getArtAId(), eventRel1.getArtA(),
+            eventRel1.getArtBId(), eventRel1.getArtB());
 
       Assert.assertNotSame(eventRel1, eventRel2);
 
       eventRel2 =
-            new EventBasicGuidRelation(RelationEventType.Deleted, GUID.create(), eventRel1.getRelTypeGuid(),
-                  eventRel1.getRelationId(), eventRel1.getGammaId(), eventRel1.getArtAId(), eventRel1.getArtA(),
-                  eventRel1.getArtBId(), eventRel1.getArtB());
+         new EventBasicGuidRelation(RelationEventType.Deleted, GUID.create(), eventRel1.getRelTypeGuid(),
+            eventRel1.getRelationId(), eventRel1.getGammaId(), eventRel1.getArtAId(), eventRel1.getArtA(),
+            eventRel1.getArtBId(), eventRel1.getArtB());
 
       Assert.assertNotSame(eventRel1, eventRel2);
 
       eventRel2 =
-            new EventBasicGuidRelation(RelationEventType.Added, eventRel1.getBranchGuid(), eventRel1.getRelTypeGuid(),
-                  99, eventRel1.getGammaId(), eventRel1.getArtAId(), eventRel1.getArtA(), eventRel1.getArtBId(),
-                  eventRel1.getArtB());
+         new EventBasicGuidRelation(RelationEventType.Added, eventRel1.getBranchGuid(), eventRel1.getRelTypeGuid(), 99,
+            eventRel1.getGammaId(), eventRel1.getArtAId(), eventRel1.getArtA(), eventRel1.getArtBId(),
+            eventRel1.getArtB());
 
       Assert.assertNotSame(eventRel1, eventRel2);
 
       eventRel2 =
-            new EventBasicGuidRelation(RelationEventType.Added, eventRel1.getBranchGuid(), eventRel1.getRelTypeGuid(),
-                  eventRel1.getRelationId(), 88, eventRel1.getArtAId(), eventRel1.getArtA(), eventRel1.getArtBId(),
-                  eventRel1.getArtB());
+         new EventBasicGuidRelation(RelationEventType.Added, eventRel1.getBranchGuid(), eventRel1.getRelTypeGuid(),
+            eventRel1.getRelationId(), 88, eventRel1.getArtAId(), eventRel1.getArtA(), eventRel1.getArtBId(),
+            eventRel1.getArtB());
 
       Assert.assertNotSame(eventRel1, eventRel2);
 
       eventRel2 =
-            new EventBasicGuidRelation(RelationEventType.Added, eventRel1.getBranchGuid(), eventRel1.getRelTypeGuid(),
-                  eventRel1.getRelationId(), eventRel1.getGammaId(), 77, eventRel1.getArtA(), eventRel1.getArtBId(),
-                  eventRel1.getArtB());
+         new EventBasicGuidRelation(RelationEventType.Added, eventRel1.getBranchGuid(), eventRel1.getRelTypeGuid(),
+            eventRel1.getRelationId(), eventRel1.getGammaId(), 77, eventRel1.getArtA(), eventRel1.getArtBId(),
+            eventRel1.getArtB());
 
       Assert.assertNotSame(eventRel1, eventRel2);
 
       eventRel2 =
-            new EventBasicGuidRelation(RelationEventType.Added, eventRel1.getBranchGuid(), eventRel1.getRelTypeGuid(),
-                  eventRel1.getRelationId(), eventRel1.getGammaId(), eventRel1.getArtAId(), eventRel1.getArtA(), 66,
-                  eventRel1.getArtB());
+         new EventBasicGuidRelation(RelationEventType.Added, eventRel1.getBranchGuid(), eventRel1.getRelTypeGuid(),
+            eventRel1.getRelationId(), eventRel1.getGammaId(), eventRel1.getArtAId(), eventRel1.getArtA(), 66,
+            eventRel1.getArtB());
 
       Assert.assertNotSame(eventRel1, eventRel2);
 
@@ -103,11 +103,11 @@ public class EventBasicGuidRelationTest {
    public void testEventBasicGuidRelationIs() throws OseeCoreException {
       DefaultBasicGuidArtifact eventArt1 = new DefaultBasicGuidArtifact(GUID.create(), GUID.create(), GUID.create());
       DefaultBasicGuidArtifact eventArt2 =
-            new DefaultBasicGuidArtifact(eventArt1.getBranchGuid(), eventArt1.getArtTypeGuid(), eventArt1.getGuid());
+         new DefaultBasicGuidArtifact(eventArt1.getBranchGuid(), eventArt1.getArtTypeGuid(), eventArt1.getGuid());
 
       EventBasicGuidRelation eventRel1 =
-            new EventBasicGuidRelation(RelationEventType.Added, eventArt1.getBranchGuid(), GUID.create(), 234, 333, 34,
-                  eventArt1, 33, eventArt2);
+         new EventBasicGuidRelation(RelationEventType.Added, eventArt1.getBranchGuid(), GUID.create(), 234, 333, 34,
+            eventArt1, 33, eventArt2);
       Assert.assertTrue(eventRel1.is(RelationEventType.Added));
       Assert.assertTrue(eventRel1.is(RelationEventType.Added, RelationEventType.Purged));
       Assert.assertFalse(eventRel1.is(RelationEventType.Purged));

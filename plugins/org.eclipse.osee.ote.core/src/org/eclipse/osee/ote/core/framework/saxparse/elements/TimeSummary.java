@@ -15,9 +15,8 @@ import org.xml.sax.Attributes;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
-public class TimeSummary extends ElementHandlers{
+public class TimeSummary extends ElementHandlers {
 
    /**
     * @param name
@@ -28,7 +27,8 @@ public class TimeSummary extends ElementHandlers{
 
    @Override
    public Object createStartElementFoundObject(String uri, String localName, String name, Attributes attributes) {
-      TimeSummaryData data = new TimeSummaryData(attributes.getValue("elapsed"), attributes.getValue("endDate"),
+      TimeSummaryData data =
+         new TimeSummaryData(attributes.getValue("elapsed"), attributes.getValue("endDate"),
             attributes.getValue("milliseconds"), attributes.getValue("startDate"));
       return data;
    }

@@ -39,8 +39,7 @@ public class TestManagerSelectDialog {
       };
       TestManagerEditor[] input = PluginUtil.getTestManagers();
       this.listSelectionDialog =
-            new ListSelectionDialog(Displays.getActiveShell(), input, new ArrayContentProvider(),
-                  labelProvider, MESSAGE);
+         new ListSelectionDialog(Displays.getActiveShell(), input, new ArrayContentProvider(), labelProvider, MESSAGE);
       this.listSelectionDialog.setTitle(MESSAGE);
       if (input.length > 0) {
          this.listSelectionDialog.setInitialSelections(new Object[] {input[0]});

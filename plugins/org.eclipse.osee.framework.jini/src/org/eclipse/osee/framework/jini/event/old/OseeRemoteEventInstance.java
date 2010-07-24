@@ -16,13 +16,17 @@ import java.io.Serializable;
  * This class provides all that is needed for sending RemoteEvents. It should be extended for each specific type of
  * event.
  * <p>
- * Listeners can subscribe using <code>&lt;SubClass&gt;.class.getCanonicalName()</code> as the event type ID (unless
- * the subclass overrides getEventType()).
+ * Listeners can subscribe using <code>&lt;SubClass&gt;.class.getCanonicalName()</code> as the event type ID (unless the
+ * subclass overrides getEventType()).
  * 
  * @author David Diepenbrock
  */
 public abstract class OseeRemoteEventInstance implements Serializable {
 
+   /**
+    * 
+    */
+   private static final long serialVersionUID = -2226670843874819289L;
    public final String eventGuid;
    private final Class<? extends OseeRemoteEventInstance> myClass;
 

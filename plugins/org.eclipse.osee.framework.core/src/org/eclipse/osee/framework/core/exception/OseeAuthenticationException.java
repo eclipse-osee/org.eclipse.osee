@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.exception;
 
-
 /**
  * @author Roberto E. Escobar
  */
@@ -19,7 +18,11 @@ public class OseeAuthenticationException extends OseeCoreException {
    private static final long serialVersionUID = 1890728724625261131L;
 
    public static enum AuthenticationErrorCode {
-      Success, UserNotFound, InvalidPassword, NoResponse, Unknown;
+      Success,
+      UserNotFound,
+      InvalidPassword,
+      NoResponse,
+      Unknown;
    }
 
    private final AuthenticationErrorCode errorCode;

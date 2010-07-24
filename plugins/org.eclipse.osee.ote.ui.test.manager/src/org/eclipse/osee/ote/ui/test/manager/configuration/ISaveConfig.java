@@ -17,6 +17,8 @@ import org.w3c.dom.Element;
 public abstract interface ISaveConfig {
 
    public abstract Element toXml(Document doc);
+
    public abstract void saveConfig(File fileName) throws Exception;
+
    public abstract void printXmlTree();
 }

@@ -17,5 +17,9 @@ package org.eclipse.osee.framework.skynet.core.artifact;
  * @author Ryan D. Brooks
  */
 public enum LoadLevel {
-   SHALLOW, FULL, RELATION, ATTRIBUTE, ALL_CURRENT;
+   SHALLOW,
+   FULL,
+   RELATION,
+   ATTRIBUTE,
+   ALL_CURRENT;
 }

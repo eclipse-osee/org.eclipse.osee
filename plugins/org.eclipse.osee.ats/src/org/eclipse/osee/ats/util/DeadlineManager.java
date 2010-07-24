@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
  */
 public class DeadlineManager {
 
-   private StateMachineArtifact sma;
+   private final StateMachineArtifact sma;
 
    public DeadlineManager(StateMachineArtifact sma) {
       this.sma = sma;
@@ -57,29 +57,50 @@ public class DeadlineManager {
    }
 
    public Result isDeadlineDateOverdue() throws OseeCoreException {
-      if (sma.isCompleted() || sma.isCancelled()) return Result.FalseResult;
-      if ((new Date()).after(getDeadlineDate())) return new Result(true, "Need By Date has passed.");
+      if (sma.isCompleted() || sma.isCancelled()) {
+         return Result.FalseResult;
+      }
+      if (new Date().after(getDeadlineDate())) {
+         return new Result(true, "Need By Date has passed.");
+      }
       return Result.FalseResult;
    }
 
    public Result isEcdDateOverdue() throws OseeCoreException {
-      if (sma.isCompleted() || sma.isCancelled()) return Result.FalseResult;
-      if (getEcdDate() == null) return Result.FalseResult;
-      if ((new Date()).after(getEcdDate())) return new Result(true, "Estimated Completion Date has passed.");
-      if (getDeadlineDate() == null) return Result.FalseResult;
-      if (getEcdDate().after(getDeadlineDate())) return new Result(true,
-            "Estimated Completion Date after Need By Date.");
+      if (sma.isCompleted() || sma.isCancelled()) {
+         return Result.FalseResult;
+      }
+      if (getEcdDate() == null) {
+         return Result.FalseResult;
+      }
+      if (new Date().after(getEcdDate())) {
+         return new Result(true, "Estimated Completion Date has passed.");
+      }
+      if (getDeadlineDate() == null) {
+         return Result.FalseResult;
+      }
+      if (getEcdDate().after(getDeadlineDate())) {
+         return new Result(true, "Estimated Completion Date after Need By Date.");
+      }
       return Result.FalseResult;
    }
 
    public Result isDeadlinePastRelease() {
       try {
-         if (sma.isCompleted() || sma.isCancelled()) return Result.FalseResult;
+         if (sma.isCompleted() || sma.isCancelled()) {
+            return Result.FalseResult;
+         }
          Date deadDate = getDeadlineDate();
-         if (deadDate == null) return Result.FalseResult;
+         if (deadDate == null) {
+            return Result.FalseResult;
+         }
          Date releaseDate = sma.getWorldViewEstimatedReleaseDate();
-         if (releaseDate == null) return Result.FalseResult;
-         if (releaseDate.after(deadDate)) return new Result(true, "Need By Date is past current Release Date.");
+         if (releaseDate == null) {
+            return Result.FalseResult;
+         }
+         if (releaseDate.after(deadDate)) {
+            return new Result(true, "Need By Date is past current Release Date.");
+         }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
@@ -87,18 +108,28 @@ public class DeadlineManager {
    }
 
    public Result isDeadlineDateAlerting() throws OseeCoreException {
-      if (!isDeadlineDateSet()) return Result.FalseResult;
+      if (!isDeadlineDateSet()) {
+         return Result.FalseResult;
+      }
       Result r = isDeadlineDateOverdue();
-      if (r.isTrue()) return r;
+      if (r.isTrue()) {
+         return r;
+      }
       r = isDeadlinePastRelease();
-      if (r.isTrue()) return r;
+      if (r.isTrue()) {
+         return r;
+      }
       return Result.FalseResult;
    }
 
    public Result isEcdDateAlerting() throws OseeCoreException {
-      if (!isEcdDateSet()) return Result.FalseResult;
+      if (!isEcdDateSet()) {
+         return Result.FalseResult;
+      }
       Result r = isEcdDateOverdue();
-      if (r.isTrue()) return r;
+      if (r.isTrue()) {
+         return r;
+      }
       return Result.FalseResult;
    }
 

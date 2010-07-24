@@ -45,7 +45,7 @@ public class ManifestExportItem extends AbstractExportItem {
       ExportImportXml.addXmlAttribute(appendable, ExportImportXml.EXPORT_VERSION, OseeCodeVersion.getBundleVersion());
 
       ExportImportXml.addXmlAttribute(appendable, ExportImportXml.EXPORT_DATE,
-            new Long(new Date().getTime()).toString());
+         new Long(new Date().getTime()).toString());
       ExportImportXml.closePartialXmlNode(appendable);
 
       for (AbstractExportItem relationalItem : exportItems) {

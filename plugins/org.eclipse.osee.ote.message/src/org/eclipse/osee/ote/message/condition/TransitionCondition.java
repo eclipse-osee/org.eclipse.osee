@@ -14,7 +14,6 @@ import org.eclipse.osee.ote.message.elements.DiscreteElement;
 
 /**
  * @author Ken J. Aguilar
- *
  */
 
 public class TransitionCondition<T extends Comparable<T>> extends AbstractCondition implements IDiscreteElementCondition<T> {

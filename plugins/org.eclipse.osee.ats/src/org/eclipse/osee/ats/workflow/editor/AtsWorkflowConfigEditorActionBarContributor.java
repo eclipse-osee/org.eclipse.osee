@@ -30,6 +30,7 @@ public class AtsWorkflowConfigEditorActionBarContributor extends ActionBarContri
     * 
     * @see org.eclipse.gef.ui.actions.ActionBarContributor#buildActions()
     */
+   @Override
    protected void buildActions() {
       addRetargetAction(new DeleteRetargetAction());
       addRetargetAction(new UndoRetargetAction());
@@ -41,11 +42,13 @@ public class AtsWorkflowConfigEditorActionBarContributor extends ActionBarContri
     * 
     * @see org.eclipse.ui.part.EditorActionBarContributor#contributeToToolBar(org.eclipse.jface.action.IToolBarManager)
     */
+   @Override
    public void contributeToToolBar(IToolBarManager toolBarManager) {
       toolBarManager.add(getAction(ActionFactory.UNDO.getId()));
       toolBarManager.add(getAction(ActionFactory.REDO.getId()));
    }
 
+   @Override
    protected void declareGlobalActionKeys() {
       // currently none
    }

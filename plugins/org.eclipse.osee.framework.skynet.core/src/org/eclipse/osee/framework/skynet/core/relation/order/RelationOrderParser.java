@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.relation.order;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;

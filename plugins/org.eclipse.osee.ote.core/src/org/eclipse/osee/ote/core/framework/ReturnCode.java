@@ -12,8 +12,9 @@ package org.eclipse.osee.ote.core.framework;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public enum ReturnCode {
-	OK, ERROR,ABORTED
+   OK,
+   ERROR,
+   ABORTED
 }

@@ -12,8 +12,8 @@ package org.eclipse.osee.framework.ui.skynet.util.email;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
@@ -35,9 +35,13 @@ public class EmailGroup {
    }
 
    public boolean hasEmails() {
-      if (emails.isEmpty()) return false;
+      if (emails.isEmpty()) {
+         return false;
+      }
       for (String str : emails) {
-         if (EmailUtil.isEmailValid(str)) return true;
+         if (EmailUtil.isEmailValid(str)) {
+            return true;
+         }
       }
       return false;
    }
@@ -57,7 +61,7 @@ public class EmailGroup {
          if (EmailUtil.isEmailValid(str)) {
             this.emails.add(str);
          } else {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE, String.format("Invalid Email [%s]", str));
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, String.format("Invalid Email [%s]", str));
          }
       }
    }

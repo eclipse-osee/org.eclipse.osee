@@ -17,92 +17,85 @@ import java.util.List;
 import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.message.interfaces.IMsgToolServiceClient;
 
-
-
 /**
  * @author Ken J. Aguilar
  */
 public class RecordCommand implements Serializable {
 
-	public static final class MessageRecordDetails implements Serializable {
+   public static final class MessageRecordDetails implements Serializable {
 
-		private static final long serialVersionUID = 2954398510075588584L;
-		private final String name;
-		private final DataType type;
-		private final List<List<Object>> headerElementNames;
-		private final List<List<Object>> bodyElementNames;
-		private final boolean headerDump;
-		private final boolean bodyDump;
-		
-		public MessageRecordDetails(final String name, final DataType type, boolean headerDump, final List<List<Object>> headerElementNames, boolean bodyDump, final List<List<Object>> bodyElementNames ) {
-			super();
-			this.name = name;
-			this.type = type;
-			this.headerDump = headerDump;
-			this.bodyDump = bodyDump;
-			this.headerElementNames = headerElementNames;
-			this.bodyElementNames = bodyElementNames;
-		}
+      private static final long serialVersionUID = 2954398510075588584L;
+      private final String name;
+      private final DataType type;
+      private final List<List<Object>> headerElementNames;
+      private final List<List<Object>> bodyElementNames;
+      private final boolean headerDump;
+      private final boolean bodyDump;
 
-		public static long getSerialVersionUID() {
-			return serialVersionUID;
-		}
+      public MessageRecordDetails(final String name, final DataType type, boolean headerDump, final List<List<Object>> headerElementNames, boolean bodyDump, final List<List<Object>> bodyElementNames) {
+         super();
+         this.name = name;
+         this.type = type;
+         this.headerDump = headerDump;
+         this.bodyDump = bodyDump;
+         this.headerElementNames = headerElementNames;
+         this.bodyElementNames = bodyElementNames;
+      }
 
-		public List<List<Object>> getBodyElementNames() {
-			return bodyElementNames;
-		}
-		
-	   public List<List<Object>> getHeaderElementNames() {
-	      return headerElementNames;
-	   }
+      public static long getSerialVersionUID() {
+         return serialVersionUID;
+      }
 
-	   public boolean getHeaderDump(){
-	      return this.headerDump;
-	   }
-	   
-	   public boolean getBodyDump(){
-	      return this.bodyDump;
-	   }
-	   
-		public String getName() {
-			return name;
-		}
+      public List<List<Object>> getBodyElementNames() {
+         return bodyElementNames;
+      }
 
-		public DataType getType() {
-			return type;
-		}
-		
-	}
-	private static final long serialVersionUID = -1000973301709084337L;
-	
-	private final List<MessageRecordDetails> list;
-	private final InetSocketAddress destAddress;
-	private final IMsgToolServiceClient client;
-	
-	public RecordCommand(
-			final IMsgToolServiceClient client, 
-			InetSocketAddress destAddress,
-			List<MessageRecordDetails> list) {
-		this.client = client;
-		this.list = list;
-		this.destAddress = destAddress;
-	}
+      public List<List<Object>> getHeaderElementNames() {
+         return headerElementNames;
+      }
 
-	/**
-	 * @return the destAddress
-	 */
-	public InetSocketAddress getDestAddress() {
-		return destAddress;
-	}
+      public boolean getHeaderDump() {
+         return this.headerDump;
+      }
 
-	public Collection<MessageRecordDetails> getMsgsToRecord() {
-		return list;
-	}
+      public boolean getBodyDump() {
+         return this.bodyDump;
+      }
 
+      public String getName() {
+         return name;
+      }
 
-	public IMsgToolServiceClient getClient() {
-		return client;
-	}
+      public DataType getType() {
+         return type;
+      }
 
+   }
+   private static final long serialVersionUID = -1000973301709084337L;
+
+   private final List<MessageRecordDetails> list;
+   private final InetSocketAddress destAddress;
+   private final IMsgToolServiceClient client;
+
+   public RecordCommand(final IMsgToolServiceClient client, InetSocketAddress destAddress, List<MessageRecordDetails> list) {
+      this.client = client;
+      this.list = list;
+      this.destAddress = destAddress;
+   }
+
+   /**
+    * @return the destAddress
+    */
+   public InetSocketAddress getDestAddress() {
+      return destAddress;
+   }
+
+   public Collection<MessageRecordDetails> getMsgsToRecord() {
+      return list;
+   }
+
+   public IMsgToolServiceClient getClient() {
+      return client;
+   }
 
 }

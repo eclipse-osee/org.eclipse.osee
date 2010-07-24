@@ -36,9 +36,9 @@ import org.eclipse.osee.framework.logging.OseeLog;
 public class DatabaseRelationTypeAccessor extends AbstractDatabaseAccessor<RelationType> {
    private static final String SELECT_LINK_TYPES = "SELECT * FROM osee_relation_link_type";
    private static final String INSERT_RELATION_TYPE =
-         "INSERT INTO osee_relation_link_type (rel_link_type_id, rel_link_type_guid, type_name, a_name, b_name, a_art_type_id, b_art_type_id, multiplicity, default_order_type_guid) VALUES (?,?,?,?,?,?,?,?,?)";
+      "INSERT INTO osee_relation_link_type (rel_link_type_id, rel_link_type_guid, type_name, a_name, b_name, a_art_type_id, b_art_type_id, multiplicity, default_order_type_guid) VALUES (?,?,?,?,?,?,?,?,?)";
    private static final String UPDATE_RELATION_TYPE =
-         "update osee_relation_link_type SET type_name=?, a_name=?, b_name=?, a_art_type_id=?, b_art_type_id=?, multiplicity=?, default_order_type_guid=? where rel_link_type_id = ?";
+      "update osee_relation_link_type SET type_name=?, a_name=?, b_name=?, a_art_type_id=?, b_art_type_id=?, multiplicity=?, default_order_type_guid=? where rel_link_type_id = ?";
 
    private final ArtifactTypeCache artifactCache;
 
@@ -66,21 +66,21 @@ public class DatabaseRelationTypeAccessor extends AbstractDatabaseAccessor<Relat
                ArtifactType artifactTypeSideA = artifactCache.getById(aArtTypeId);
                ArtifactType artifactTypeSideB = artifactCache.getById(bArtTypeId);
                RelationTypeMultiplicity multiplicity =
-                     RelationTypeMultiplicity.getRelationMultiplicity(multiplicityValue);
+                  RelationTypeMultiplicity.getRelationMultiplicity(multiplicityValue);
                String sideAName = chStmt.getString("a_name");
                String sideBName = chStmt.getString("b_name");
                String defaultOrderTypeGuid = chStmt.getString("default_order_type_guid");
                String guid = chStmt.getString("rel_link_type_guid");
 
                RelationType relationType =
-                     factory.createOrUpdate(cache, typeId, StorageState.LOADED, guid, typeName, sideAName, sideBName,
-                           artifactTypeSideA, artifactTypeSideB, multiplicity, defaultOrderTypeGuid);
+                  factory.createOrUpdate(cache, typeId, StorageState.LOADED, guid, typeName, sideAName, sideBName,
+                     artifactTypeSideA, artifactTypeSideB, multiplicity, defaultOrderTypeGuid);
                relationType.clearDirty();
             } catch (OseeCoreException ex) {
                String message =
-                     String.format(
-                           "Error loading relation type - name:[%s] id:[%s] aArtTypeId:[%s] bArtTypeid:[%s] multiplicity:[%s]",
-                           typeName, typeId, aArtTypeId, bArtTypeId, multiplicityValue);
+                  String.format(
+                     "Error loading relation type - name:[%s] id:[%s] aArtTypeId:[%s] bArtTypeid:[%s] multiplicity:[%s]",
+                     typeName, typeId, aArtTypeId, bArtTypeId, multiplicityValue);
                OseeLog.log(Activator.class, Level.SEVERE, message, ex);
             }
          }
@@ -122,13 +122,13 @@ public class DatabaseRelationTypeAccessor extends AbstractDatabaseAccessor<Relat
 
    private Object[] toInsertValues(RelationType type) throws OseeDataStoreException {
       return new Object[] {type.getId(), type.getGuid(), type.getName(), type.getSideAName(), type.getSideBName(),
-            type.getArtifactTypeSideA().getId(), type.getArtifactTypeSideB().getId(),
-            type.getMultiplicity().getValue(), type.getDefaultOrderTypeGuid()};
+         type.getArtifactTypeSideA().getId(), type.getArtifactTypeSideB().getId(), type.getMultiplicity().getValue(),
+         type.getDefaultOrderTypeGuid()};
    }
 
    private Object[] toUpdateValues(RelationType type) throws OseeDataStoreException {
       return new Object[] {type.getName(), type.getSideAName(), type.getSideBName(),
-            type.getArtifactTypeSideA().getId(), type.getArtifactTypeSideB().getId(),
-            type.getMultiplicity().getValue(), type.getDefaultOrderTypeGuid(), type.getId()};
+         type.getArtifactTypeSideA().getId(), type.getArtifactTypeSideB().getId(), type.getMultiplicity().getValue(),
+         type.getDefaultOrderTypeGuid(), type.getId()};
    }
 }

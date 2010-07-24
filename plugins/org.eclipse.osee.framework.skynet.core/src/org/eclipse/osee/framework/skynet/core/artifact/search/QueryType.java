@@ -12,9 +12,9 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 /**
  * @author Jeff C. Phillips
- * @author Ryan D. Brooks 
- *
+ * @author Ryan D. Brooks
  */
 public enum QueryType {
-   CHECK, GET;
+   CHECK,
+   GET;
 }

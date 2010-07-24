@@ -16,20 +16,20 @@ import org.eclipse.osee.ote.messaging.dds.service.TypeSupport;
 /**
  * @author Andrew M. Finkbeiner
  */
-public class DDSTypeSupport extends TypeSupport{
+public class DDSTypeSupport extends TypeSupport {
 
-   private Key key;
-   private String readerName;
-   private String writerName;
-   private int size;
-   
-   public DDSTypeSupport(Key key, String readerName, String writerName, int size){
+   private final Key key;
+   private final String readerName;
+   private final String writerName;
+   private final int size;
+
+   public DDSTypeSupport(Key key, String readerName, String writerName, int size) {
       this.key = key;
       this.readerName = readerName;
       this.writerName = writerName;
       this.size = size;
    }
-   
+
    @Override
    protected Key getKey() {
       return key;

@@ -43,15 +43,15 @@ public class ClientCachingServiceFactory {
       OseeEnumTypeCache oseeEnumTypeCache = new OseeEnumTypeCache(new ClientOseeEnumTypeAccessor(factoryProvider));
 
       AttributeTypeCache attributeTypeCache =
-            new AttributeTypeCache(new ClientAttributeTypeAccessor(factoryProvider, oseeEnumTypeCache));
+         new AttributeTypeCache(new ClientAttributeTypeAccessor(factoryProvider, oseeEnumTypeCache));
 
       ArtifactTypeCache artifactTypeCache =
-            new ArtifactTypeCache(new ClientArtifactTypeAccessor(factoryProvider, attributeTypeCache, branchCache));
+         new ArtifactTypeCache(new ClientArtifactTypeAccessor(factoryProvider, attributeTypeCache, branchCache));
 
       RelationTypeCache relationTypeCache =
-            new RelationTypeCache(new ClientRelationTypeAccessor(factoryProvider, artifactTypeCache));
+         new RelationTypeCache(new ClientRelationTypeAccessor(factoryProvider, artifactTypeCache));
 
       return new OseeCachingService(branchCache, transactionCache, artifactTypeCache, attributeTypeCache,
-            relationTypeCache, oseeEnumTypeCache);
+         relationTypeCache, oseeEnumTypeCache);
    }
 }

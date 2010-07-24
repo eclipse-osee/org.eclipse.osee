@@ -40,9 +40,9 @@ public class CommitDialog extends TitleAreaDialog {
    private static final String TITLE_BAR_TEXT = "OSEE Commit";
    private static final String COMMENT_GROUP_TEXT = "Comment";
    private static final String MESSAGE =
-         "You can specify a comment describing the changes in the area below. " + "Empty comments are allowed, but adding a comment would help others understand your changes. \n";
+      "You can specify a comment describing the changes in the area below. " + "Empty comments are allowed, but adding a comment would help others understand your changes. \n";
    private static final String CONFLICT_MESSAGE =
-         "NOTE: Exclamation marks denote items that already exist in the repository or are missing revision infromation. These items will not be committed. \n";
+      "NOTE: Exclamation marks denote items that already exist in the repository or are missing revision infromation. These items will not be committed. \n";
 
    private SelectionComposite selectionComposite;
    private CommentComposite commentComposite;
@@ -124,8 +124,8 @@ public class CommitDialog extends TitleAreaDialog {
       composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       selectionComposite =
-            new SelectionComposite(composite, SWT.BORDER, columnNames, tableLabelProvider, selectable, true, selected,
-                  unselectable, overrideHandler);
+         new SelectionComposite(composite, SWT.BORDER, columnNames, tableLabelProvider, selectable, true, selected,
+            unselectable, overrideHandler);
       selectionComposite.setLayout(new GridLayout());
       selectionComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
    }

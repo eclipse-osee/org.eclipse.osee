@@ -88,6 +88,7 @@ public class AttributeLineElement implements IAdaptable {
       return attribute;
    }
 
+   @Override
    @SuppressWarnings("unchecked")
    public Object getAdapter(Class adapter) {
       if (adapter == Artifact.class) {

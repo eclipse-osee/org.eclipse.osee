@@ -10,15 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.core.framework.saxparse.elements;
 
-
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public class CheckGroupData {
 
-   private String mode;
-   
+   private final String mode;
+
    /**
     * @return the mode
     */

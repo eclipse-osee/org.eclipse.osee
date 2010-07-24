@@ -147,6 +147,7 @@ public class ArtifactSelectionDialog extends SelectionStatusDialog {
    @Override
    public void create() {
       BusyIndicator.showWhile(null, new Runnable() {
+         @Override
          public void run() {
             access$superCreate();
             treeViewer.setSelection(new IStructuredSelection() {
@@ -183,10 +184,8 @@ public class ArtifactSelectionDialog extends SelectionStatusDialog {
             }, true);
 
             /*
-             * treeViewer.setCheckedElements(getInitialElementSelections().toArray());
-             * if (fExpandedElements != null) {
-             * fViewer.setExpandedElements(fExpandedElements);
-             * }
+             * treeViewer.setCheckedElements(getInitialElementSelections().toArray()); if (fExpandedElements != null) {
+             * fViewer.setExpandedElements(fExpandedElements); }
              */
             updateOKStatus();
          }

@@ -61,10 +61,13 @@ public class ReturnFormatter implements Xmlizable {
       variableValue = value.toString();
    }
 
+   @Override
    public String toString() {
       return variableValue;
    }
 
+   @Override
    public Element toXml(Document doc) {
-	   return Jaxp.createElement(doc, "ReturnValue", variableValue);   }
+      return Jaxp.createElement(doc, "ReturnValue", variableValue);
+   }
 }

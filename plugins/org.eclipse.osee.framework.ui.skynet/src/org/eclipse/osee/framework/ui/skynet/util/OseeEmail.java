@@ -55,7 +55,8 @@ public class OseeEmail extends MimeMessage {
    private String bodyType = null;
    private final Multipart mainMessage;
    public static enum BodyType {
-      Html, Text
+      Html,
+      Text
    };
 
    /**
@@ -107,7 +108,7 @@ public class OseeEmail extends MimeMessage {
     */
    public OseeEmail(String toAddress, String subject, String body, BodyType bodyType) throws OseeCoreException {
       this(Arrays.asList(toAddress), UserManager.getUser().getEmail(), UserManager.getUser().getEmail(), subject, body,
-            bodyType);
+         bodyType);
    }
 
    /**
@@ -311,7 +312,7 @@ public class OseeEmail extends MimeMessage {
 
          // Set class loader so can find the mail handlers
          Thread.currentThread().setContextClassLoader(
-               new ExportClassLoader(SkynetGuiPlugin.getInstance().getPackageAdmin()));
+            new ExportClassLoader(SkynetGuiPlugin.getInstance().getPackageAdmin()));
          if (bodyType == null) {
             bodyType = plainText;
             body = "";
@@ -335,8 +336,9 @@ public class OseeEmail extends MimeMessage {
     */
    private static Session getSession() throws OseeCoreException {
       Properties props = System.getProperties();
-      props.put(emailType, OseeSystemArtifacts.getGlobalPreferenceArtifact().getSoleAttributeValue(
-            CoreAttributeTypes.DEFAULT_MAIL_SERVER));
+      props.put(
+         emailType,
+         OseeSystemArtifacts.getGlobalPreferenceArtifact().getSoleAttributeValue(CoreAttributeTypes.DEFAULT_MAIL_SERVER));
 
       return Session.getDefaultInstance(props, null);
    }

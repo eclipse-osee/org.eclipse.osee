@@ -47,6 +47,7 @@ public class AtsConfigWizardPage1 extends WizardPage {
    }
 
    private final XModifiedListener xModListener = new XModifiedListener() {
+      @Override
       public void widgetModified(XWidget widget) {
          getContainer().updateButtons();
       }
@@ -94,6 +95,7 @@ public class AtsConfigWizardPage1 extends WizardPage {
    private static String VERSIONS = "Versions (comma delim)";
    private static String WORKFLOW_ID = "Workflow Id (blank to create default)";
 
+   @Override
    public void createControl(Composite parent) {
 
       try {

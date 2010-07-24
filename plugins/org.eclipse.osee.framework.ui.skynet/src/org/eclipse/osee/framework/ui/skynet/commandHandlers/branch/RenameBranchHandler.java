@@ -63,7 +63,7 @@ public class RenameBranchHandler extends CommandHandler {
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
       ISelectionProvider selectionProvider =
-            AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
+         AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
 
       if (selectionProvider instanceof TreeViewer) {
          final TreeViewer treeViewer = (TreeViewer) selectionProvider;
@@ -137,7 +137,7 @@ public class RenameBranchHandler extends CommandHandler {
    public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
       List<Branch> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
       return branches.size() == 1 && (AccessControlManager.isOseeAdmin() || branches.get(0).getBranchType().isWorkingBranch() || branches.get(
-            0).getBaseTransaction().getAuthor() == UserManager.getUser().getArtId());
+         0).getBaseTransaction().getAuthor() == UserManager.getUser().getArtId());
    }
 
 }

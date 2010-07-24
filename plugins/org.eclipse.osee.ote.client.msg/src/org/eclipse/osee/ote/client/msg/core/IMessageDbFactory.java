@@ -15,9 +15,8 @@ import org.eclipse.osee.ote.service.IMessageDictionary;
 
 /**
  * @author Ken J. Aguilar
- *
  */
 public interface IMessageDbFactory {
 
-	AbstractMessageDataBase createMessageDataBase(IMessageDictionary dictionary);
+   AbstractMessageDataBase createMessageDataBase(IMessageDictionary dictionary);
 }

@@ -29,11 +29,10 @@ import org.eclipse.swt.widgets.Composite;
  */
 
 /*
- * All of the instance of checks are needed to support both artifacts and
- * conflicts. The reason to support both is I created the classes for
- * artifacts so all of the work was already done for them. I then realized
- * that I needed to control the setting of values for conflicts and thus had to call
- * the conflict specific methods instead of simply setting the values.
+ * All of the instance of checks are needed to support both artifacts and conflicts. The reason to support both is I
+ * created the classes for artifacts so all of the work was already done for them. I then realized that I needed to
+ * control the setting of values for conflicts and thus had to call the conflict specific methods instead of simply
+ * setting the values.
  */
 public class EmbeddedDateAttributeEditor implements IEmbeddedAttributeEditor {
 
@@ -50,6 +49,7 @@ public class EmbeddedDateAttributeEditor implements IEmbeddedAttributeEditor {
       this.persist = persist;
    }
 
+   @Override
    public boolean create(Composite composite, GridData gd) {
       if (attributeHolder == null) {
          return false;
@@ -64,7 +64,7 @@ public class EmbeddedDateAttributeEditor implements IEmbeddedAttributeEditor {
             if (object instanceof Artifact) {
                if (!type.equals(((Artifact) object).getArtifactTypeName())) {
                   AWorkbench.popup("ERROR",
-                        "All artifacts must be of the same " + "type when edited in an date editor.");
+                     "All artifacts must be of the same " + "type when edited in an date editor.");
                   return false;
                }
             } else {
@@ -99,10 +99,12 @@ public class EmbeddedDateAttributeEditor implements IEmbeddedAttributeEditor {
       return true;
    }
 
+   @Override
    public void update(Object value) {
       editor.setSelectedDate((Date) value);
    }
 
+   @Override
    public boolean commit() {
       Date selected = editor.getSelectedDate();
       try {
@@ -137,10 +139,12 @@ public class EmbeddedDateAttributeEditor implements IEmbeddedAttributeEditor {
       return false;
    }
 
+   @Override
    public boolean canClear() {
       return false;
    }
 
+   @Override
    public boolean canFinish() {
       return true;
    }

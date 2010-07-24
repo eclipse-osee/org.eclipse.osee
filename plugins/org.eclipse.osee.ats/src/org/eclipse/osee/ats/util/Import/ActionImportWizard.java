@@ -34,6 +34,7 @@ public class ActionImportWizard extends Wizard implements IImportWizard {
       return mainPage.finish();
    }
 
+   @Override
    public void init(IWorkbench workbench, IStructuredSelection selection) {
       this.selection = selection;
    }

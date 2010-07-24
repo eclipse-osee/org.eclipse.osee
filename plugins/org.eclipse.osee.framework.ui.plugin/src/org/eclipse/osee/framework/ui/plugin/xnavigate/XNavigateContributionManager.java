@@ -32,7 +32,7 @@ public final class XNavigateContributionManager {
    public static Set<XNavigateExtensionPointData> getNavigateItems(String viewIdToMatch) {
       Set<XNavigateExtensionPointData> toReturn = new HashSet<XNavigateExtensionPointData>();
       List<IConfigurationElement> elements =
-            ExtensionPoints.getExtensionElements(OseePluginUiActivator.PLUGIN_ID + ".XNavigateItem", "XNavigateItem");
+         ExtensionPoints.getExtensionElements(OseePluginUiActivator.PLUGIN_ID + ".XNavigateItem", "XNavigateItem");
       for (IConfigurationElement element : elements) {
          String className = element.getAttribute("classname");
          String category = element.getAttribute("category");
@@ -54,7 +54,7 @@ public final class XNavigateContributionManager {
                   toReturn.add(new XNavigateExtensionPointData(viewId, category, (IXNavigateContainer) object));
                } catch (Exception ex) {
                   throw new IllegalArgumentException(String.format("Unable to Load: [%s - %s]", bundleName, className),
-                        ex);
+                     ex);
                }
             }
          }

@@ -36,13 +36,13 @@ public class CompareLists {
       }
 
       if (args.length == 4) {
-         writeDiff(Lib.readListFromDir(args[0], new MatchFilter(".*\\." + args[1])), Lib.readListFromDir(args[2],
-               new MatchFilter(".*\\." + args[3])), new File("list_diff.txt"),
-               "Directory \"" + args[0] + "\", files with extension \"" + args[1] + "\"",
-               "Directory \"" + args[2] + "\", files with extension \"" + args[3] + "\"");
+         writeDiff(Lib.readListFromDir(args[0], new MatchFilter(".*\\." + args[1])),
+            Lib.readListFromDir(args[2], new MatchFilter(".*\\." + args[3])), new File("list_diff.txt"),
+            "Directory \"" + args[0] + "\", files with extension \"" + args[1] + "\"",
+            "Directory \"" + args[2] + "\", files with extension \"" + args[3] + "\"");
       } else {
          writeDiff(Lib.readListFromFile(args[0]), Lib.readListFromFile(args[1]), new File("list_diff.txt"), args[0],
-               args[1]);
+            args[1]);
       }
    }
 

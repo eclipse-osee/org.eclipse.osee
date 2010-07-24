@@ -75,8 +75,8 @@ public abstract class ChangeItem {
    @Override
    public String toString() {
       return String.format(
-            "ChangeItem - itemId:[%s] artId:%s typeId:%s base:%s first:%s current:%s destination:%s net:%s", itemId,
-            getArtId(), getItemTypeId(), getBaselineVersion(), getFirstNonCurrentChange(), getCurrentVersion(),
-            getDestinationVersion(), getNetChange());
+         "ChangeItem - itemId:[%s] artId:%s typeId:%s base:%s first:%s current:%s destination:%s net:%s", itemId,
+         getArtId(), getItemTypeId(), getBaselineVersion(), getFirstNonCurrentChange(), getCurrentVersion(),
+         getDestinationVersion(), getNetChange());
    }
 }

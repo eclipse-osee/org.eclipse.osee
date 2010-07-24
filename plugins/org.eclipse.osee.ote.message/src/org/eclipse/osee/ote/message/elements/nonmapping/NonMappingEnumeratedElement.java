@@ -25,8 +25,8 @@ import org.eclipse.osee.ote.message.interfaces.ITestAccessor;
 public class NonMappingEnumeratedElement<T extends Enum<T> & IEnumValue<T>> extends EnumeratedElement<T> {
 
    public NonMappingEnumeratedElement(EnumeratedElement<T> element) {
-      this(element.getMessage(), element.getElementName(), element.getEnumClass(), element.getMsgData(), element.getByteOffset(),
-            element.getMsb(), element.getLsb());
+      this(element.getMessage(), element.getElementName(), element.getEnumClass(), element.getMsgData(),
+         element.getByteOffset(), element.getMsb(), element.getLsb());
 
       for (Object obj : element.getElementPath()) {
          this.getElementPath().add(obj);
@@ -79,13 +79,13 @@ public class NonMappingEnumeratedElement<T extends Enum<T> & IEnumValue<T>> exte
     * 
     * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    *           reference to the CheckGroup must be passed and this method will add the result of the check to the group
-    *           with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference should be passed and
-    *           this method will log the test point.
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param wantInList Determines if checking for the element's value to be in or not in the "list". Passing TRUE will
-    *           test for IN the "list".
+    * test for IN the "list".
     * @param list List of values to check for
     * @return if check passed
     */
@@ -101,18 +101,19 @@ public class NonMappingEnumeratedElement<T extends Enum<T> & IEnumValue<T>> exte
     * 
     * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    *           reference to the CheckGroup must be passed and this method will add the result of the check to the group
-    *           with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference should be passed and
-    *           this method will log the test point.
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param isInList Determines if checking for the element's value to be in or not in the "list". Passing TRUE will
-    *           test for IN the "list".
+    * test for IN the "list".
     * @param list List of values to check for
     * @param milliseconds Number of milliseconds to wait
     * @return if check passed
     * @throws InterruptedException
     */
+   @Override
    public boolean checkList(ITestAccessor accessor, CheckGroup checkGroup, boolean isInList, T[] list, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
       return false;
@@ -124,17 +125,18 @@ public class NonMappingEnumeratedElement<T extends Enum<T> & IEnumValue<T>> exte
     * 
     * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    *           reference to the CheckGroup must be passed and this method will add the result of the check to the group
-    *           with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference should be passed and
-    *           this method will log the test point.
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param list The list of values to check against
     * @param isInList If the value is expected to be in or not in the "list"
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
     * @throws InterruptedException
     */
+   @Override
    public T checkMaintainList(ITestAccessor accessor, CheckGroup checkGroup, T[] list, boolean isInList, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
       return null;
@@ -150,6 +152,7 @@ public class NonMappingEnumeratedElement<T extends Enum<T> & IEnumValue<T>> exte
     * @return last value observed
     * @throws InterruptedException
     */
+   @Override
    public T waitForList(ITestAccessor accessor, T[] list, boolean isInList, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
       return null;
@@ -164,6 +167,7 @@ public class NonMappingEnumeratedElement<T extends Enum<T> & IEnumValue<T>> exte
     * @return last value observed
     * @throws InterruptedException
     */
+   @Override
    public T waitForNotValue(ITestEnvironmentAccessor accessor, T enumeration, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
       return null;
@@ -374,6 +378,7 @@ public class NonMappingEnumeratedElement<T extends Enum<T> & IEnumValue<T>> exte
     * @param value The value to be checked
     * @throws InterruptedException
     */
+   @Override
    public void checkPulse(ITestAccessor accessor, T value) throws InterruptedException {
       throwNoMappingElementException();
    }
@@ -386,16 +391,19 @@ public class NonMappingEnumeratedElement<T extends Enum<T> & IEnumValue<T>> exte
     * @param milliseconds
     * @throws InterruptedException
     */
+   @Override
    public boolean checkPulse(ITestAccessor accessor, CheckGroup checkGroup, T pulsedValue, T nonPulsedValue, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
       return false;
    }
 
+   @Override
    protected T toEnum(int intValue) {
       throwNoMappingElementException();
       return null;
    }
 
+   @Override
    public T[] getEnumValues() {
       throwNoMappingElementException();
       return null;

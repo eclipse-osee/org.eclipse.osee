@@ -24,6 +24,7 @@ public class JiniClientSideConnector extends JiniConnector {
    public static final String TYPE = "jini.client-end";
    private final ServiceItem serviceItem;
    private final IJiniConnectorLink link;
+
    JiniClientSideConnector(ServiceItem serviceItem) {
       super();
       this.serviceItem = serviceItem;
@@ -33,7 +34,7 @@ public class JiniClientSideConnector extends JiniConnector {
 
    @Override
    public Object getService() {
-         return serviceItem.service;
+      return serviceItem.service;
    }
 
    @Override
@@ -46,18 +47,18 @@ public class JiniClientSideConnector extends JiniConnector {
       return null;
    }
 
-    @Override
-    public boolean ping() {
-	try {
-	    return link.ping();
-	} catch (RemoteException e) {
-	    return false;
-	}
-    }
+   @Override
+   public boolean ping() {
+      try {
+         return link.ping();
+      } catch (RemoteException e) {
+         return false;
+      }
+   }
 
    @Override
    public void init(Object service) throws UnknownHostException, ExportException {
-	   
+
    }
 
    @Override

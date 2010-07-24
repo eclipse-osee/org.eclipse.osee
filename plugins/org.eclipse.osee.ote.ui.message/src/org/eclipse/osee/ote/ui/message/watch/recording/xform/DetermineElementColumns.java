@@ -15,31 +15,31 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-
 /**
  * @author Andrew M. Finkbeiner
  */
 public class DetermineElementColumns extends AbstractSaxHandler {
 
-   private String[] pubSubHeaderElementsToStore = new String[]{"timeTag", "sequenceNum"};
-   private LinkedHashSet<String> elementNames = new LinkedHashSet<String>();
+   private final String[] pubSubHeaderElementsToStore = new String[] {"timeTag", "sequenceNum"};
+   private final LinkedHashSet<String> elementNames = new LinkedHashSet<String>();
    private String message;
+
    @Override
    public void endElementFound(String uri, String localName, String qName) throws SAXException {
    }
 
    @Override
    public void startElementFound(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-      
-      if("Update".equals(localName)){
+
+      if ("Update".equals(localName)) {
          message = attributes.getValue("message");
-      } else if ("PubSubHeaderInfo".equals(localName)){
-         for(String str:pubSubHeaderElementsToStore){
+      } else if ("PubSubHeaderInfo".equals(localName)) {
+         for (String str : pubSubHeaderElementsToStore) {
             elementNames.add(String.format("%s.PubSubHeader.%s", message, str));
          }
-      } else if ("Element".equals(localName)){
+      } else if ("Element".equals(localName)) {
          elementNames.add(String.format("%s.%s", message, attributes.getValue("name")));
-      }     
+      }
    }
 
    /**

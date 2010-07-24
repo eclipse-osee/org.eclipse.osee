@@ -104,7 +104,7 @@ public class CoverageItem implements ICoverage {
    @Override
    public String toString() {
       return String.format("[Item : [%s][M: %s][E: %s][%s][Name: %s][Path: %s]]", getCoverageMethod(),
-            getCoverageUnit().getOrderNumber(), getOrderNumber(), getGuid(), getName(), CoverageUtil.getFullPath(this));
+         getCoverageUnit().getOrderNumber(), getOrderNumber(), getGuid(), getName(), CoverageUtil.getFullPath(this));
    }
 
    @Override
@@ -116,6 +116,7 @@ public class CoverageItem implements ICoverage {
       return String.format("%s:%s [%s]", getCoverageUnit().getOrderNumber(), orderNumber, name);
    }
 
+   @Override
    public String getName() {
       return name;
    }
@@ -133,6 +134,7 @@ public class CoverageItem implements ICoverage {
       return !getCoverageMethod().getName().equals(CoverageOptionManager.Not_Covered.getName());
    }
 
+   @Override
    public String getGuid() {
       return guid;
    }
@@ -162,6 +164,7 @@ public class CoverageItem implements ICoverage {
       this.rationale = rationale;
    }
 
+   @Override
    public String getFileContents() throws OseeCoreException {
       return name;
    }

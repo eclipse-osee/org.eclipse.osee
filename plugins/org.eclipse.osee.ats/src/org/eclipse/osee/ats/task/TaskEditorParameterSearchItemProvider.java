@@ -63,7 +63,7 @@ public class TaskEditorParameterSearchItemProvider extends TaskEditorProvider {
    @Override
    public ITaskEditorProvider copyProvider() {
       return new TaskEditorParameterSearchItemProvider((TaskEditorParameterSearchItem) taskParameterSearchItem.copy(),
-            customizeData, tableLoadOptions);
+         customizeData, tableLoadOptions);
    }
 
 }

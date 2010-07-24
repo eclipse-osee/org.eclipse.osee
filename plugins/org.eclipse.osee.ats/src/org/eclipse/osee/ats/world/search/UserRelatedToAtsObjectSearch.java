@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * Return all ATS Objects that a user is related to through logs, review roles, defects and etc.
- *
+ * 
  * @author Donald G. Dunne
  */
 public class UserRelatedToAtsObjectSearch extends UserSearchItem {
@@ -53,11 +53,11 @@ public class UserRelatedToAtsObjectSearch extends UserSearchItem {
       List<Artifact> arts = new ArrayList<Artifact>();
       if (activeObjectsOnly) {
          arts.addAll(ArtifactQuery.getArtifactListFromAttributeKeywords(AtsUtil.getAtsBranch(), user.getUserId(),
-               false, EXCLUDE_DELETED, false, AtsAttributeTypes.AtsCurrentState));
+            false, EXCLUDE_DELETED, false, AtsAttributeTypes.AtsCurrentState));
       } else {
          arts.addAll(ArtifactQuery.getArtifactListFromAttributeKeywords(AtsUtil.getAtsBranch(), user.getUserId(),
-               false, EXCLUDE_DELETED, false, AtsAttributeTypes.AtsCurrentState, AtsAttributeTypes.AtsState,
-               AtsAttributeTypes.AtsLog));
+            false, EXCLUDE_DELETED, false, AtsAttributeTypes.AtsCurrentState, AtsAttributeTypes.AtsState,
+            AtsAttributeTypes.AtsLog));
       }
       arts.addAll(user.getRelatedArtifacts(AtsRelationTypes.TeamLead_Team));
       arts.addAll(user.getRelatedArtifacts(AtsRelationTypes.TeamMember_Team));

@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.core.framework.testrun;
 
-
 public interface ITestRunListenerProviderFactory {
-	ITestRunListenerProvider createRunListenerProvider();
-	ITestRunListenerDataProvider createListenerDataProvider();
+   ITestRunListenerProvider createRunListenerProvider();
+
+   ITestRunListenerDataProvider createListenerDataProvider();
 }

@@ -101,7 +101,7 @@ public final class ArtifactCache {
 
    /**
     * @returns the previous value associated with keys, or null if there was no mapping for key. (A null return can also
-    *          indicate that the map previously associated null with key, if the implementation supports null values.)
+    * indicate that the map previously associated null with key, if the implementation supports null values.)
     */
    public static Artifact cacheByTextId(String key, Artifact artifact) throws OseeCoreException {
       if (artifact.isHistorical()) {
@@ -113,7 +113,7 @@ public final class ArtifactCache {
    public static void cacheByStaticId(String staticId, Artifact artifact) throws OseeCoreException {
       if (artifact.isHistorical()) {
          throw new OseeArgumentException(String.format("historical artifact cannot be cached by staticId [%s]",
-               staticId));
+            staticId));
       }
       ACTIVE_CACHE.cacheByStaticId(staticId, artifact);
    }
@@ -146,7 +146,7 @@ public final class ArtifactCache {
 
    public static Artifact getActive(IBasicGuidArtifact basicGuidArtifact) throws OseeCoreException {
       return ACTIVE_CACHE.getByGuid(basicGuidArtifact.getGuid(),
-            BranchManager.getBranchByGuid(basicGuidArtifact.getBranchGuid()));
+         BranchManager.getBranchByGuid(basicGuidArtifact.getBranchGuid()));
    }
 
    public static Collection<Artifact> getActive(Collection<? extends IBasicGuidArtifact> basicGuidArtifacts) throws OseeCoreException {
@@ -191,11 +191,15 @@ public final class ArtifactCache {
       List<A> arts = new ArrayList<A>();
       Artifact artA = getActiveA(guidRel);
       if (artA != null) {
-         if (clazz == null || clazz.isInstance(artA)) arts.add((A) artA);
+         if (clazz == null || clazz.isInstance(artA)) {
+            arts.add((A) artA);
+         }
       }
       Artifact artB = getActiveB(guidRel);
       if (artB != null) {
-         if (clazz == null || clazz.isInstance(artB)) arts.add((A) artB);
+         if (clazz == null || clazz.isInstance(artB)) {
+            arts.add((A) artB);
+         }
       }
       return arts;
    }

@@ -23,9 +23,9 @@ public class EnumBaseBuilder extends JavaFileBuilder {
    protected PriorityQueue<EnumRecord> enums;
 
    private static final String stringTableMethod =
-         "\tprotected String[] getStringTable() {\n" + "\t\treturn stringTable;\n" + "\t}";
+      "\tprotected String[] getStringTable() {\n" + "\t\treturn stringTable;\n" + "\t}";
    private static final String enumTableMethod =
-         "\tprotected EnumSyntax[] getEnumValueTable() {\n" + "\t\treturn enumValueTable;\n" + "\t}";
+      "\tprotected EnumSyntax[] getEnumValueTable() {\n" + "\t\treturn enumValueTable;\n" + "\t}";
 
    public EnumBaseBuilder(String packageName, String className, String classJavaDoc) {
       super(packageName, className, classJavaDoc, "EnumBase");
@@ -33,6 +33,7 @@ public class EnumBaseBuilder extends JavaFileBuilder {
       // Place the enums in a priority queue based on their number value
       enums = new PriorityQueue<EnumRecord>(20, new Comparator<EnumRecord>() {
 
+         @Override
          public int compare(EnumRecord i, EnumRecord j) {
             return i.number - j.number;
          }

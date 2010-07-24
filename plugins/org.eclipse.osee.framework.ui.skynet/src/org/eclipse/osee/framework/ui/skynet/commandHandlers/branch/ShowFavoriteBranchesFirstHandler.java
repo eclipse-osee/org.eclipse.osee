@@ -30,11 +30,12 @@ import org.eclipse.ui.menus.UIElement;
 public class ShowFavoriteBranchesFirstHandler extends AbstractHandler implements IElementUpdater {
    public static String COMMAND_ID = "org.eclipse.osee.framework.ui.skynet.branch.BranchView.ShowFavoriteBranchesFirst";
    boolean itemChk;
-   private ICommandService service;
+   private final ICommandService service;
 
-   public ShowFavoriteBranchesFirstHandler(){
+   public ShowFavoriteBranchesFirstHandler() {
       this.service = (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
    }
+
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
       ((BranchView) HandlerUtil.getActivePartChecked(event)).changeFavoritesFirstPresentation(!itemChk);
@@ -43,7 +44,9 @@ public class ShowFavoriteBranchesFirstHandler extends AbstractHandler implements
 
    @Override
    public void updateElement(UIElement element, Map parameters) {
-      itemChk = Platform.getPreferencesService().getRootNode().node(InstanceScope.SCOPE).node(BranchView.VIEW_ID).getBoolean(BranchViewPresentationPreferences.FAVORITE_KEY, false);
+      itemChk =
+         Platform.getPreferencesService().getRootNode().node(InstanceScope.SCOPE).node(BranchView.VIEW_ID).getBoolean(
+            BranchViewPresentationPreferences.FAVORITE_KEY, false);
       element.setChecked(itemChk);
    }
 

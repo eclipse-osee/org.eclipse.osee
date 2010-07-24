@@ -11,7 +11,6 @@
 package org.eclipse.osee.ote.message.interfaces;
 
 import java.util.Set;
-
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 import org.eclipse.osee.ote.message.enums.DataType;
 
@@ -23,5 +22,6 @@ public interface ITestEnvironmentMessageSystemAccessor extends ITestEnvironmentA
    IMessageManager getMsgManager();
 
    boolean isPhysicalTypeAvailable(DataType physicalType);
+
    Set<? extends DataType> getDataTypes();
 }

@@ -724,6 +724,7 @@ public class AtsBranchManager {
       final String branchName = Strings.truncate(teamArt.getBranchName(), 195, true);
 
       IExceptionableRunnable runnable = new IExceptionableRunnable() {
+         @Override
          public IStatus run(IProgressMonitor monitor) throws OseeCoreException {
             BranchManager.createWorkingBranch(parentBranch, branchName, teamArt);
             // Create reviews as necessary

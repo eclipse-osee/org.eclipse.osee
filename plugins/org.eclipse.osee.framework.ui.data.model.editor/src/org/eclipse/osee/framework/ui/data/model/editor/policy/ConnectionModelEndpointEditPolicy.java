@@ -23,6 +23,7 @@ public class ConnectionModelEndpointEditPolicy extends ConnectionEndpointEditPol
 
    private static Font BOLD_FONT;
 
+   @Override
    protected void addSelectionHandles() {
       super.addSelectionHandles();
       getConnectionFigure().setLineWidth(2);
@@ -32,17 +33,20 @@ public class ConnectionModelEndpointEditPolicy extends ConnectionEndpointEditPol
       return (PolylineConnection) getHostFigure();
    }
 
+   @Override
    protected void hideSelection() {
       super.hideSelection();
       getHostFigure().setFont(null);
       getHostFigure().invalidateTree();
    }
 
+   @Override
    protected void removeSelectionHandles() {
       super.removeSelectionHandles();
       getConnectionFigure().setLineWidth(0);
    }
 
+   @Override
    protected void showSelection() {
       super.showSelection();
       if (BOLD_FONT == null) {

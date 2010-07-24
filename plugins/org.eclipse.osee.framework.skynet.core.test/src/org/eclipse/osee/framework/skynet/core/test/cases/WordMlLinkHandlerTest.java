@@ -65,11 +65,10 @@ public class WordMlLinkHandlerTest {
             // TODO this test will fail - add live artifact -- need to change test to use artifact instead of 
             // input files.
             if (source != null) {
-               String actual = null;
                if (isLinkTest) {
-                  actual = WordMlLinkHandler.link(docType, source, input);
+                  WordMlLinkHandler.link(docType, source, input);
                } else {
-                  actual = WordMlLinkHandler.unlink(docType, source, input);
+                  WordMlLinkHandler.unlink(docType, source, input);
                }
                String expected = Lib.inputStreamToString(expectedStream);
                expected = expected.replaceAll("#GUID#", guid);

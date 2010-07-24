@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.ui.skynet.blam;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -47,7 +48,7 @@ public class BlamEditorActionBarContributor implements IActionContributor {
       if (bugAction == null) {
          IEditorSite site = editor.getEditorSite();
          bugAction =
-               OseeUiActions.createBugAction(SkynetGuiPlugin.getInstance(), editor, site.getId(), site.getRegisteredName());
+            OseeUiActions.createBugAction(SkynetGuiPlugin.getInstance(), editor, site.getId(), site.getRegisteredName());
       }
       return bugAction;
    }
@@ -61,7 +62,7 @@ public class BlamEditorActionBarContributor implements IActionContributor {
 
    private final class ExecuteBlamAction extends Action {
       public ExecuteBlamAction() {
-         super("Run BLAM in Job", Action.AS_PUSH_BUTTON);
+         super("Run BLAM in Job", IAction.AS_PUSH_BUTTON);
          setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.RUN_EXC));
          setToolTipText("Executes the BLAM Operation");
       }

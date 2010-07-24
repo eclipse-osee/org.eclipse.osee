@@ -49,8 +49,9 @@ public class ResultsXViewer extends XViewer {
    public ArrayList<ResultsXViewerRow> getSelectedRows() {
       ArrayList<ResultsXViewerRow> arts = new ArrayList<ResultsXViewerRow>();
       TreeItem items[] = getTree().getSelection();
-      for (TreeItem item : items)
+      for (TreeItem item : items) {
          arts.add((ResultsXViewerRow) item.getData());
+      }
       return arts;
    }
 }

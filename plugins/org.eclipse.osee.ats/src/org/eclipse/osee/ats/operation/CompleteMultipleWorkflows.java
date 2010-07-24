@@ -62,7 +62,7 @@ public class CompleteMultipleWorkflows extends Action {
             try {
                AtsUtil.setEmailEnabled(enableEmail);
                SkynetTransaction transaction =
-                     new SkynetTransaction(AtsUtil.getAtsBranch(), "Complete Multiple Workflows");
+                  new SkynetTransaction(AtsUtil.getAtsBranch(), "Complete Multiple Workflows");
                for (StateMachineArtifact sma : smas) {
                   Result result = sma.transitionToCompleted(ed.getEntry(), transaction, TransitionOption.Persist);
                   if (result.isFalse()) {

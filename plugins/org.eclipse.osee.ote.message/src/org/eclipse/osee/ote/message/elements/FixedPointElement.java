@@ -11,7 +11,6 @@
 package org.eclipse.osee.ote.message.elements;
 
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.MethodFormatter;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
@@ -33,31 +32,26 @@ public class FixedPointElement extends RealElement {
    private final boolean signed;
    private final double offset;
 
-   public FixedPointElement(Message<?,?,?> message, String elementName, MessageData messageData, double resolution,
-         boolean signed, int byteOffset, int msb, int lsb) {
+   public FixedPointElement(Message<?, ?, ?> message, String elementName, MessageData messageData, double resolution, boolean signed, int byteOffset, int msb, int lsb) {
       this(message, elementName, messageData, resolution, 0, signed, byteOffset, msb, lsb, msb, lsb);
    }
 
-   public FixedPointElement(Message<?,?,?> message, String elementName, MessageData messageData, double resolution,
-         double offset, boolean signed, int byteOffset, int msb, int lsb) {
+   public FixedPointElement(Message<?, ?, ?> message, String elementName, MessageData messageData, double resolution, double offset, boolean signed, int byteOffset, int msb, int lsb) {
       this(message, elementName, messageData, resolution, offset, signed, byteOffset, msb, lsb, msb, lsb);
    }
 
-   public FixedPointElement(Message<?,?,?> message, String elementName, MessageData messageData, double resolution,
-         boolean signed, int byteOffset, int msb, int lsb, int originalLsb, int originalMsb) {
+   public FixedPointElement(Message<?, ?, ?> message, String elementName, MessageData messageData, double resolution, boolean signed, int byteOffset, int msb, int lsb, int originalLsb, int originalMsb) {
       this(message, elementName, messageData, resolution, 0, signed, byteOffset, msb, lsb, originalLsb, originalMsb);
    }
 
-   public FixedPointElement(Message<?,?,?> message, String elementName, MessageData messageData, double resolution,
-         double offset, boolean signed, int byteOffset, int msb, int lsb, int originalLsb, int originalMsb) {
+   public FixedPointElement(Message<?, ?, ?> message, String elementName, MessageData messageData, double resolution, double offset, boolean signed, int byteOffset, int msb, int lsb, int originalLsb, int originalMsb) {
       super(message, elementName, messageData, byteOffset, msb, lsb, originalLsb, originalMsb);
       this.resolution = resolution;
       this.signed = signed;
       this.offset = offset;
    }
 
-   public FixedPointElement(Message<?,?,?> message, String elementName, MessageData messageData, double resolution,
-         double offset, boolean signed, int bitOffset, int bitLength) {
+   public FixedPointElement(Message<?, ?, ?> message, String elementName, MessageData messageData, double resolution, double offset, boolean signed, int bitOffset, int bitLength) {
       super(message, elementName, messageData, bitOffset, bitLength);
       this.resolution = resolution;
       this.signed = signed;
@@ -74,7 +68,7 @@ public class FixedPointElement extends RealElement {
    public void set(ITestEnvironmentAccessor accessor, double value) {
       if (accessor != null) {
          accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(), new MethodFormatter().add(value),
-                                                   this.getMessage());
+            this.getMessage());
       }
       setValue(value);
 
@@ -144,17 +138,17 @@ public class FixedPointElement extends RealElement {
          value = value << shift;
          value = value >>> shift;
       }
-      return value * resolution + offset; 
+      return value * resolution + offset;
    }
 
    private long toFixedLong(double value, boolean signed, double resolution, double offset) {
       long returnValue = Math.round((value - offset) / resolution);
 
-      if(value > 0 && toFixed(returnValue, signed, resolution, offset) < 0){
+      if (value > 0 && toFixed(returnValue, signed, resolution, offset) < 0) {
          returnValue = Math.round((value - resolution - offset) / resolution);
-         if(value > 0 && toFixed(returnValue, signed, resolution, offset) < 0){
+         if (value > 0 && toFixed(returnValue, signed, resolution, offset) < 0) {
             returnValue = Math.round((value - resolution * 2 - offset) / resolution);
-            if(value > 0 && toFixed(returnValue, signed, resolution, offset) < 0){
+            if (value > 0 && toFixed(returnValue, signed, resolution, offset) < 0) {
                OseeLog.log(MessageSystemTestEnvironment.class, Level.INFO, getName());
             } else {
                OseeLog.log(MessageSystemTestEnvironment.class, Level.INFO, getName());
@@ -177,7 +171,7 @@ public class FixedPointElement extends RealElement {
 
    @Override
    public void setValue(Double obj) {
-      getMsgData().getMem().setLong(toFixedLong((obj), signed, resolution, offset), byteOffset, msb, lsb);
+      getMsgData().getMem().setLong(toFixedLong(obj, signed, resolution, offset), byteOffset, msb, lsb);
    }
 
    @Override
@@ -188,8 +182,7 @@ public class FixedPointElement extends RealElement {
    @Override
    public Double getValue() {
       return toFixed(getRaw(), signed, resolution, offset);
-   }  
-
+   }
 
    @Override
    public Double valueOf(MemoryResource mem) {
@@ -212,7 +205,7 @@ public class FixedPointElement extends RealElement {
    public double getMinVal() {
       return offset;
    }
-   
+
    /**
     * @return Returns the resolution.
     */
@@ -248,15 +241,12 @@ public class FixedPointElement extends RealElement {
    }
 
    @Override
-   public boolean checkList(ITestAccessor accessor, CheckGroup checkGroup,
-         boolean isInList, Double[] list, int milliseconds)
-   throws InterruptedException {
+   public boolean checkList(ITestAccessor accessor, CheckGroup checkGroup, boolean isInList, Double[] list, int milliseconds) throws InterruptedException {
       return super.checkList(accessor, checkGroup, isInList, adjust(list), milliseconds);
    }
 
    @Override
-   public boolean checkList(ITestAccessor accessor, CheckGroup checkGroup,
-         boolean wantInList, Double[] list) {
+   public boolean checkList(ITestAccessor accessor, CheckGroup checkGroup, boolean wantInList, Double[] list) {
       return super.checkList(accessor, checkGroup, wantInList, adjust(list));
    }
 
@@ -266,34 +256,25 @@ public class FixedPointElement extends RealElement {
    }
 
    @Override
-   public Double checkMaintainList(ITestAccessor accessor, CheckGroup checkGroup,
-         Double[] list, boolean isInList, int milliseconds)
-   throws InterruptedException {
-      return super.checkMaintainList(accessor, checkGroup, adjust(list), isInList,
-                                     milliseconds);
+   public Double checkMaintainList(ITestAccessor accessor, CheckGroup checkGroup, Double[] list, boolean isInList, int milliseconds) throws InterruptedException {
+      return super.checkMaintainList(accessor, checkGroup, adjust(list), isInList, milliseconds);
    }
 
    @Override
-   public Double checkMaintainNot(ITestAccessor accessor, CheckGroup checkGroup,
-         Double value, int milliseconds) throws InterruptedException {
+   public Double checkMaintainNot(ITestAccessor accessor, CheckGroup checkGroup, Double value, int milliseconds) throws InterruptedException {
       return super.checkMaintainNot(accessor, checkGroup, adjust(value), milliseconds);
    }
 
    @Override
-   public Double checkMaintainNotRange(ITestAccessor accessor,
-         CheckGroup checkGroup, Double minValue, boolean minInclusive,
-         Double maxValue, boolean maxInclusive, int milliseconds)
-   throws InterruptedException {
-      return super.checkMaintainNotRange(accessor, checkGroup, minValue,
-                                         minInclusive, maxValue, maxInclusive, milliseconds);
+   public Double checkMaintainNotRange(ITestAccessor accessor, CheckGroup checkGroup, Double minValue, boolean minInclusive, Double maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
+      return super.checkMaintainNotRange(accessor, checkGroup, minValue, minInclusive, maxValue, maxInclusive,
+         milliseconds);
    }
 
    @Override
-   public Double checkMaintainRange(ITestAccessor accessor, CheckGroup checkGroup,
-         Double minValue, boolean minInclusive, Double maxValue,
-         boolean maxInclusive, int milliseconds) throws InterruptedException {
-      return super.checkMaintainRange(accessor, checkGroup, minValue, minInclusive,
-                                      maxValue, maxInclusive, milliseconds);
+   public Double checkMaintainRange(ITestAccessor accessor, CheckGroup checkGroup, Double minValue, boolean minInclusive, Double maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
+      return super.checkMaintainRange(accessor, checkGroup, minValue, minInclusive, maxValue, maxInclusive,
+         milliseconds);
    }
 
    @Override
@@ -302,74 +283,52 @@ public class FixedPointElement extends RealElement {
    }
 
    @Override
-   public boolean checkNot(ITestAccessor accessor, CheckGroup checkGroup,
-         Double value) {
+   public boolean checkNot(ITestAccessor accessor, CheckGroup checkGroup, Double value) {
       return super.checkNot(accessor, checkGroup, adjust(value));
    }
 
    @Override
-   public boolean checkNotRange(ITestAccessor accessor, CheckGroup checkGroup,
-         Double minValue, boolean minInclusive, Double maxValue,
-         boolean maxInclusive, int milliseconds) throws InterruptedException {
-      return super.checkNotRange(accessor, checkGroup, minValue, minInclusive,
-                                 maxValue, maxInclusive, milliseconds);
+   public boolean checkNotRange(ITestAccessor accessor, CheckGroup checkGroup, Double minValue, boolean minInclusive, Double maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
+      return super.checkNotRange(accessor, checkGroup, minValue, minInclusive, maxValue, maxInclusive, milliseconds);
    }
 
    @Override
-   public boolean checkPulse(ITestAccessor accessor, CheckGroup checkGroup,
-         Double pulsedValue, Double nonPulsedValue, int milliseconds)
-   throws InterruptedException {
-      return super.checkPulse(accessor, checkGroup, adjust(pulsedValue), adjust(nonPulsedValue),
-                              milliseconds);
+   public boolean checkPulse(ITestAccessor accessor, CheckGroup checkGroup, Double pulsedValue, Double nonPulsedValue, int milliseconds) throws InterruptedException {
+      return super.checkPulse(accessor, checkGroup, adjust(pulsedValue), adjust(nonPulsedValue), milliseconds);
    }
 
    @Override
-   public boolean checkRange(ITestAccessor accessor, CheckGroup checkGroup,
-         Double minValue, boolean minInclusive, Double maxValue,
-         boolean maxInclusive, int milliseconds) throws InterruptedException {
-      return super.checkRange(accessor, checkGroup, minValue, minInclusive, maxValue,
-                              maxInclusive, milliseconds);
+   public boolean checkRange(ITestAccessor accessor, CheckGroup checkGroup, Double minValue, boolean minInclusive, Double maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
+      return super.checkRange(accessor, checkGroup, minValue, minInclusive, maxValue, maxInclusive, milliseconds);
    }
 
    @Override
-   public boolean checkRange(ITestAccessor accessor, CheckGroup checkGroup,
-         Double minValue, boolean minInclusive, Double maxValue,
-         boolean maxInclusive) {
-      return super.checkRange(accessor, checkGroup, minValue, minInclusive, maxValue,
-                              maxInclusive);
+   public boolean checkRange(ITestAccessor accessor, CheckGroup checkGroup, Double minValue, boolean minInclusive, Double maxValue, boolean maxInclusive) {
+      return super.checkRange(accessor, checkGroup, minValue, minInclusive, maxValue, maxInclusive);
    }
 
    @Override
-   public Double waitForList(ITestAccessor accessor, Double[] list,
-         boolean isInList, int milliseconds) throws InterruptedException {
+   public Double waitForList(ITestAccessor accessor, Double[] list, boolean isInList, int milliseconds) throws InterruptedException {
       return super.waitForList(accessor, adjust(list), isInList, milliseconds);
    }
 
    @Override
-   public Double waitForNotRange(ITestEnvironmentAccessor accessor,
-         Double minValue, boolean minInclusive, Double maxValue,
-         boolean maxInclusive, int milliseconds) throws InterruptedException {
-      return super.waitForNotRange(accessor, minValue, minInclusive, maxValue,
-                                   maxInclusive, milliseconds);
+   public Double waitForNotRange(ITestEnvironmentAccessor accessor, Double minValue, boolean minInclusive, Double maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
+      return super.waitForNotRange(accessor, minValue, minInclusive, maxValue, maxInclusive, milliseconds);
    }
 
    @Override
-   public Double waitForNotValue(ITestEnvironmentAccessor accessor, Double value,
-         int milliseconds) throws InterruptedException {
+   public Double waitForNotValue(ITestEnvironmentAccessor accessor, Double value, int milliseconds) throws InterruptedException {
       return super.waitForNotValue(accessor, adjust(value), milliseconds);
    }
 
    @Override
-   public Double waitForRange(ITestEnvironmentAccessor accessor, Double minValue,
-         boolean minInclusive, Double maxValue, boolean maxInclusive,
-         int milliseconds) throws InterruptedException {
-      return super.waitForRange(accessor, minValue, minInclusive, maxValue,
-                                maxInclusive, milliseconds);
+   public Double waitForRange(ITestEnvironmentAccessor accessor, Double minValue, boolean minInclusive, Double maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
+      return super.waitForRange(accessor, minValue, minInclusive, maxValue, maxInclusive, milliseconds);
    }
 
    @Override
-   public Double waitForValue(ITestEnvironmentAccessor accessor, Double value,
-         int milliseconds) throws InterruptedException {
+   public Double waitForValue(ITestEnvironmentAccessor accessor, Double value, int milliseconds) throws InterruptedException {
       return super.waitForValue(accessor, adjust(value), milliseconds);
    }
 

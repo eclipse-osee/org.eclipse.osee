@@ -18,6 +18,7 @@ public class TransmissionCountCondition extends AbstractCondition {
       this.max = max;
    }
 
+   @Override
    public boolean check() {
       return getCheckCount() >= max;
    }

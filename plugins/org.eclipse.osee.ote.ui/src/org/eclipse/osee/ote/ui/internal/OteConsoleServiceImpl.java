@@ -26,7 +26,6 @@ public class OteConsoleServiceImpl implements IOteConsoleService {
 
    }
 
-
    private OseeConsole getConsole() {
       return console;
    }
@@ -71,6 +70,6 @@ public class OteConsoleServiceImpl implements IOteConsoleService {
    }
 
    public void close() {
-	   getConsole().shutdown();
+      getConsole().shutdown();
    }
 }

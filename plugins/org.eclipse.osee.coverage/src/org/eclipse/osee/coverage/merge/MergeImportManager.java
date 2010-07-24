@@ -44,9 +44,15 @@ public class MergeImportManager {
 
    public XResultData importItems(ISaveable saveable, Collection<IMergeItem> mergeItems) throws OseeCoreException {
       XResultData rd = new XResultData(false);
-      if (!validateEditable(rd, saveable)) return rd;
-      if (!validateMergeTypes(rd, mergeItems)) return rd;
-      if (!validateChildren(rd, mergeItems)) return rd;
+      if (!validateEditable(rd, saveable)) {
+         return rd;
+      }
+      if (!validateMergeTypes(rd, mergeItems)) {
+         return rd;
+      }
+      if (!validateChildren(rd, mergeItems)) {
+         return rd;
+      }
 
       for (IMergeItem mergeItem : mergeItems) {
          if (mergeItem.getMergeType() == MergeType.CI_Changes) {
@@ -65,7 +71,7 @@ public class MergeImportManager {
                      updateCoverageItemMethod(childMergeItem, rd);
                   } else {
                      rd.logError(String.format("Coverage_Item_Changes Group: Unsupported merge type [%s]",
-                           childMergeItem.getMergeType()));
+                        childMergeItem.getMergeType()));
                   }
                }
             } else {
@@ -99,7 +105,7 @@ public class MergeImportManager {
                      updateOrder(mergeItem, childMergeItem, rd);
                   } else {
                      rd.logError(String.format("Add_With_Moves Group: Unsupported merge type [%s]",
-                           childMergeItem.getMergeType()));
+                        childMergeItem.getMergeType()));
                   }
                }
             } else {
@@ -119,7 +125,7 @@ public class MergeImportManager {
                      updateOrder(mergeItem, childMergeItem, rd);
                   } else {
                      rd.logError(String.format("Delete_And_Reorder Group: Unsupported merge type [%s]",
-                           childMergeItem.getMergeType()));
+                        childMergeItem.getMergeType()));
                   }
                }
             } else {
@@ -159,7 +165,7 @@ public class MergeImportManager {
       CoverageItem packageItem = (CoverageItem) ((MergeItem) childMergeItem).getPackageItem();
       ((CoverageUnit) packageItem.getParent()).removeCoverageItem(packageItem);
       updateFileContents((CoverageUnit) packageItem.getParent(),
-            (CoverageUnit) ((MergeItemGroup) mergeItem).getParent());
+         (CoverageUnit) ((MergeItemGroup) mergeItem).getParent());
    }
 
    private void renameCoverageItem(IMergeItem mergeItem, XResultData rd) throws OseeCoreException {
@@ -206,11 +212,11 @@ public class MergeImportManager {
       if (packageCoverage instanceof CoverageUnit) {
          ((CoverageUnit) packageCoverage).setOrderNumber(((CoverageUnit) importCoverage).getOrderNumber());
       } else if (packageCoverage instanceof CoverageItem) {
-         (((CoverageItem) packageCoverage)).setOrderNumber(((CoverageItem) importCoverage).getOrderNumber());
+         ((CoverageItem) packageCoverage).setOrderNumber(((CoverageItem) importCoverage).getOrderNumber());
          updateFileContents((CoverageItem) packageCoverage, (CoverageItem) importCoverage);
       } else {
          rd.logError(String.format("[%s] doesn't support merge item [%s] (1)", mergeItem.getClass().getSimpleName(),
-               MergeType.Add_With_Moves.toString(), mergeItem));
+            MergeType.Add_With_Moves.toString(), mergeItem));
       }
 
    }
@@ -226,7 +232,7 @@ public class MergeImportManager {
          //            rd.logError(String.format("[%s] invalid for Import; Only import CoverageUnits",
          //                  importItem.getClass().getSimpleName()));
          //         }
-         CoverageUnit importCoverageUnit = (CoverageUnit) importItem;
+         CoverageUnit importCoverageUnit = importItem;
 
          MatchItem matchItem = mergeManager.getPackageCoverageItem(importItem);
          // Determine if item already exists first
@@ -244,7 +250,7 @@ public class MergeImportManager {
             ICoverage parentImportItem = importItem.getParent();
             // If null, this is top level item, just add to package
             if (parentImportItem instanceof CoverageImport) {
-               coveragePackage.addCoverageUnit(((CoverageUnit) importItem).copy(true));
+               coveragePackage.addCoverageUnit((importItem).copy(true));
                rd.log(String.format("Added [%s] as top level CoverageUnit", importCoverageUnit));
                rd.log("");
             } else {
@@ -292,13 +298,19 @@ public class MergeImportManager {
       for (IMergeItem mergeItem : mergeItems) {
          if (mergeItem instanceof MergeItem && ((MergeItem) mergeItem).getImportItem() != null) {
             boolean isValid = validateChildrenAreUniqueRecurse(rd, ((MergeItem) mergeItem).getImportItem());
-            if (!isValid) valid = false;
+            if (!isValid) {
+               valid = false;
+            }
             isValid = validateChildrenFieldsRecurse(rd, ((MergeItem) mergeItem).getImportItem());
-            if (!isValid) valid = false;
+            if (!isValid) {
+               valid = false;
+            }
 
          } else if (mergeItem instanceof MergeItemGroup) {
             boolean isValid = validateChildren(rd, ((MergeItemGroup) mergeItem).getMergeItems());
-            if (!isValid) valid = false;
+            if (!isValid) {
+               valid = false;
+            }
          }
       }
       return valid;
@@ -310,17 +322,19 @@ public class MergeImportManager {
          for (ICoverage importItem2 : coverage.getChildren()) {
 
             MatchType matchType = MatchType.getMatchType(importItem1, importItem2);
-            if ((matchType == MatchType.Match__Name_And_Order_Num) && importItem1 != importItem2) {
+            if (matchType == MatchType.Match__Name_And_Order_Num && importItem1 != importItem2) {
                rd.logError(String.format("CoverageUnit [%s] has two equal children [%s][%s]; Can't import.", coverage,
-                     importItem1, importItem2));
+                  importItem1, importItem2));
                valid = false;
             }
          }
       }
       for (ICoverage childItem : coverage.getChildren()) {
          if (childItem instanceof CoverageUnit) {
-            boolean isValid = validateChildrenAreUniqueRecurse(rd, (CoverageUnit) childItem);
-            if (!isValid) valid = false;
+            boolean isValid = validateChildrenAreUniqueRecurse(rd, childItem);
+            if (!isValid) {
+               valid = false;
+            }
          }
       }
       return valid;
@@ -331,24 +345,26 @@ public class MergeImportManager {
       for (ICoverage childCoverage : coverage.getChildren()) {
          if (!Strings.isValid(childCoverage.getName())) {
             rd.logError(String.format("ICoverage [%s] has no valid name.  path [%s]; Can't import.", childCoverage,
-                  CoverageUtil.getFullPath(childCoverage)));
+               CoverageUtil.getFullPath(childCoverage)));
             valid = false;
          }
          if (!Strings.isValid(childCoverage.getNamespace())) {
             rd.logError(String.format("ICoverage [%s] has no valid namespace.  path [%s]; Can't import.",
-                  childCoverage, CoverageUtil.getFullPath(childCoverage)));
+               childCoverage, CoverageUtil.getFullPath(childCoverage)));
             valid = false;
          }
          if (childCoverage instanceof CoverageItem && !Strings.isValid(childCoverage.getOrderNumber())) {
             rd.logError(String.format("ICoverage [%s] has no valid orderNumber.  path [%s]; Can't import.",
-                  childCoverage, CoverageUtil.getFullPath(childCoverage)));
+               childCoverage, CoverageUtil.getFullPath(childCoverage)));
             valid = false;
          }
       }
       for (ICoverage childItem : coverage.getChildren()) {
          if (childItem instanceof CoverageUnit) {
-            boolean isValid = validateChildrenFieldsRecurse(rd, (CoverageUnit) childItem);
-            if (!isValid) valid = false;
+            boolean isValid = validateChildrenFieldsRecurse(rd, childItem);
+            if (!isValid) {
+               valid = false;
+            }
          }
       }
       return valid;

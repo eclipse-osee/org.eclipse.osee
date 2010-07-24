@@ -134,7 +134,7 @@ public class DoubleKeyCountingMap<KeyOne, KeyTwo> {
    }
 
    public boolean containsKey(KeyOne k1, KeyTwo k2) {
-      return (k1ToHashMap.containsKey(k1) && k1ToHashMap.get(k1).containsKey(k2));
+      return k1ToHashMap.containsKey(k1) && k1ToHashMap.get(k1).containsKey(k2);
    }
 
    public void clear() {

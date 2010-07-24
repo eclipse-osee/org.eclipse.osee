@@ -13,7 +13,6 @@ package org.eclipse.osee.ote.core;
 import java.io.Serializable;
 import org.eclipse.osee.ote.core.enums.PromptResponseType;
 
-
 /**
  * @author Ryan D. Brooks
  * @author Andrew M. Finkbeiner
@@ -24,34 +23,36 @@ public class TestPrompt implements Serializable {
 	 * 
 	 */
    private static final long serialVersionUID = 5960067878239875110L;
-   private String prompt;
-   private boolean waitForResponse;
-   private boolean ofpStep;
-   private PromptResponseType type;
+   private final String prompt;
+   private final boolean waitForResponse;
+   private final boolean ofpStep;
+   private final PromptResponseType type;
 
    public TestPrompt(String prompt) {
       this(prompt, PromptResponseType.NONE);
    }
-   
+
    /**
     *  
     */
    public TestPrompt(String prompt, PromptResponseType type) {
       super();
       this.prompt = prompt;
-      this.waitForResponse = (type == PromptResponseType.SCRIPT_PAUSE || type == PromptResponseType.PASS_FAIL || type == PromptResponseType.SCRIPT_STEP|| type == PromptResponseType.USER_INPUT) ? true : false;
-      this.ofpStep = (type == PromptResponseType.SCRIPT_STEP) ? true : false;
+      this.waitForResponse =
+         type == PromptResponseType.SCRIPT_PAUSE || type == PromptResponseType.PASS_FAIL || type == PromptResponseType.SCRIPT_STEP || type == PromptResponseType.USER_INPUT ? true : false;
+      this.ofpStep = type == PromptResponseType.SCRIPT_STEP ? true : false;
       this.type = type;
    }
-   
+
    public PromptResponseType getType() {
       return type;
    }
-   
+
    public boolean isWaiting() {
       return this.waitForResponse;
    }
 
+   @Override
    public String toString() {
       return this.prompt;
    }

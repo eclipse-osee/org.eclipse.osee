@@ -37,7 +37,7 @@ public class AtsXmlSearch {
 
    public Collection<Node> findWorkflowsByProgramAndBuild(IResource resource, String programId, String buildId) throws OseeCoreException {
       return XmlUtil.findInResource(resource,
-            "//workflow[workflowProgramId=\"" + programId + "\" and workflowBuildId=\"" + buildId + "\"]");
+         "//workflow[workflowProgramId=\"" + programId + "\" and workflowBuildId=\"" + buildId + "\"]");
    }
 
    public Collection<Node> findWorkflowsById(IResource resource, String id) throws OseeCoreException {

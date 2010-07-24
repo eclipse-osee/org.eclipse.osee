@@ -14,7 +14,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseTrackListener;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
@@ -49,8 +48,12 @@ public class HyperLinkLabel extends Label {
 
    public HyperLinkLabel(FormToolkit toolkit, Composite parent, int style, String text) {
       super(parent, style);
-      if (text != null) setText(text);
-      if (toolkit != null) toolkit.adapt(this, true, true);
+      if (text != null) {
+         setText(text);
+      }
+      if (toolkit != null) {
+         toolkit.adapt(this, true, true);
+      }
       refresh();
    }
 
@@ -58,14 +61,17 @@ public class HyperLinkLabel extends Label {
       label.setForeground(Displays.getSystemColor(SWT.COLOR_BLUE));
       label.addMouseTrackListener(new MouseTrackListener() {
 
+         @Override
          public void mouseEnter(MouseEvent e) {
             label.setCursor(CursorManager.getCursor(SWT.CURSOR_HAND));
          }
 
+         @Override
          public void mouseExit(MouseEvent e) {
             label.setCursor(null);
          };
 
+         @Override
          public void mouseHover(MouseEvent e) {
          }
       });
@@ -73,14 +79,17 @@ public class HyperLinkLabel extends Label {
 
    MouseTrackListener listener = new MouseTrackListener() {
 
+      @Override
       public void mouseEnter(MouseEvent e) {
          setCursor(CursorManager.getCursor(SWT.CURSOR_HAND));
       }
 
+      @Override
       public void mouseExit(MouseEvent e) {
          setCursor(null);
       };
 
+      @Override
       public void mouseHover(MouseEvent e) {
       }
    };

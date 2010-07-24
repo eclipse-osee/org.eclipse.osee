@@ -106,9 +106,10 @@ public class ActionImportPage extends WizardDataTransferPage {
    /**
     * The <code>WizardResourceImportPage</code> implementation of this <code>Listener</code> method handles all events
     * and enablements for controls on this page. Subclasses may extend.
-    *
+    * 
     * @param event Event
     */
+   @Override
    public void handleEvent(Event event) {
       setPageComplete(determinePageCompletion());
       updateWidgetEnablements();
@@ -117,7 +118,7 @@ public class ActionImportPage extends WizardDataTransferPage {
    private void createSourceGroup(Composite parent) {
       String defaultPath = ResourcesPlugin.getWorkspace().getRoot().getLocation().toOSString();
       fileSelector =
-            new FileSelector(parent, SWT.NONE, "Import Source (Excel saved as .xml", defaultPath, this, "*.xml");
+         new FileSelector(parent, SWT.NONE, "Import Source (Excel saved as .xml", defaultPath, this, "*.xml");
 
       if (currentResourceSelection != null) {
          fileSelector.setText(currentResourceSelection.getLocation().toString());
@@ -149,7 +150,7 @@ public class ActionImportPage extends WizardDataTransferPage {
       try {
 
          SkynetTransaction transaction =
-               new SkynetTransaction(AtsUtil.getAtsBranch(), "Import Actions from Spreadsheet");
+            new SkynetTransaction(AtsUtil.getAtsBranch(), "Import Actions from Spreadsheet");
          ExcelAtsActionArtifactExtractor extractor = new ExcelAtsActionArtifactExtractor(emailPocs.getSelection());
          extractor.process(file.toURI());
          if (extractor.dataIsValid()) {

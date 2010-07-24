@@ -10,27 +10,26 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.core.framework.saxparse.elements;
 
-
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public class InfoData {
 
-   private String title;
+   private final String title;
+
    /**
-    * @param string 
+    * @param string
     * @param name
     */
    InfoData(String title) {
       this.title = title;
    }
+
    /**
     * @return the title
     */
    public String getTitle() {
       return title;
    }
-
 
 }

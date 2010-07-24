@@ -57,21 +57,24 @@ public class SMATargetVersionInfoComposite extends Composite {
 
       if (!sma.isReleased() && !sma.isVersionLocked()) {
          link = toolkit.createHyperlink(this, "", SWT.NONE);
-         if (sma.isReadOnly())
+         if (sma.isReadOnly()) {
             link.addHyperlinkListener(new ReadOnlyHyperlinkListener(sma));
-         else
+         } else {
             link.addHyperlinkListener(new IHyperlinkListener() {
 
+               @Override
                public void linkEntered(HyperlinkEvent e) {
                }
 
+               @Override
                public void linkExited(HyperlinkEvent e) {
                }
 
+               @Override
                public void linkActivated(HyperlinkEvent e) {
                   try {
                      if (PromptChangeUtil.promptChangeVersion(sma,
-                           AtsUtil.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased, false)) {
+                        AtsUtil.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased, false)) {
                         refresh();
                      }
                   } catch (Exception ex) {
@@ -79,6 +82,7 @@ public class SMATargetVersionInfoComposite extends Composite {
                   }
                }
             });
+         }
       } else {
          label = toolkit.createLabel(this, "", SWT.NONE);
       }
@@ -95,8 +99,8 @@ public class SMATargetVersionInfoComposite extends Composite {
       String str = "";
       // Don't transition without targeted version if so configured
       boolean required =
-            sma.teamDefHasWorkRule(AtsWorkDefinitions.RuleWorkItemId.atsRequireTargetedVersion.name()) || sma.getWorkPageDefinition().hasWorkRule(
-                  AtsWorkDefinitions.RuleWorkItemId.atsRequireTargetedVersion.name());
+         sma.teamDefHasWorkRule(AtsWorkDefinitions.RuleWorkItemId.atsRequireTargetedVersion.name()) || sma.getWorkPageDefinition().hasWorkRule(
+            AtsWorkDefinitions.RuleWorkItemId.atsRequireTargetedVersion.name());
 
       if (sma.getTargetedForVersion() != null) {
          str = sma.getTargetedForVersion() + "";
@@ -106,7 +110,7 @@ public class SMATargetVersionInfoComposite extends Composite {
             IMessageManager messageManager = managedForm.getMessageManager();
             if (messageManager != null) {
                messageManager.addMessage("validation.error", "Workflow must be targeted for a version.", null,
-                     IMessageProvider.ERROR, label != null ? label : link);
+                  IMessageProvider.ERROR, label != null ? label : link);
             }
          }
       }

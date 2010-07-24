@@ -42,9 +42,13 @@ public class ConfigureDBForAts extends XNavigateItemAction {
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
       if (!MessageDialog.openConfirm(Displays.getActiveShell(), "Configure DB for ATS",
-            "Configure DB for ATS " + pluginId)) return;
+         "Configure DB for ATS " + pluginId)) {
+         return;
+      }
       if (!MessageDialog.openConfirm(Displays.getActiveShell(), "Configure DB for ATS",
-            "This will break things really bad if ATS is alread configured for this item.  Are you sure?")) return;
+         "This will break things really bad if ATS is alread configured for this item.  Are you sure?")) {
+         return;
+      }
 
       Jobs.startJob(new Report(getName()), true);
    }
@@ -60,12 +64,12 @@ public class ConfigureDBForAts extends XNavigateItemAction {
          try {
             monitor.subTask("Loading Work Item Definitions for " + pluginId);
             AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(WriteType.New, null,
-                  AtsWorkDefinitions.getAtsWorkDefinitions());
+               AtsWorkDefinitions.getAtsWorkDefinitions());
             monitor.subTask("Loading Actionable Items and Teams for " + pluginId);
             LoadAIsAndTeamsAction.executeForAtsRuntimeConfig(false, pluginId);
          } catch (Exception ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-            return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
+            return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
          }
          monitor.done();
          return Status.OK_STATUS;

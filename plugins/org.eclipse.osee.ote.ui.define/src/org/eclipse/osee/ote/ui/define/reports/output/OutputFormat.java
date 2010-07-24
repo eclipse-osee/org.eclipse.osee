@@ -17,7 +17,10 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public enum OutputFormat {
 
-   HTML, PDF, RTF, EXCEL;
+   HTML,
+   PDF,
+   RTF,
+   EXCEL;
 
    public static OutputFormat fromString(String value) {
       OutputFormat toReturn = OutputFormat.HTML;

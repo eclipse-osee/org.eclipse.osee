@@ -29,7 +29,7 @@ public abstract class CommandHandler extends AbstractHandler {
    public boolean isEnabled() {
       if (AWorkbench.getActivePage() != null && !PlatformUI.getWorkbench().isClosing()) {
          ISelectionProvider selectionProvider =
-               AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
+            AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
          if (selectionProvider != null) {
             ISelection selection = selectionProvider.getSelection();
             try {

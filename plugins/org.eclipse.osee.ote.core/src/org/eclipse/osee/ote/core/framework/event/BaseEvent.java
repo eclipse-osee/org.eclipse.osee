@@ -16,47 +16,50 @@ import org.eclipse.osee.ote.core.TestScript;
 
 public class BaseEvent implements IEventData {
 
-	private final IPropertyStore propertyStore;
-	private final TestScript test;
-	private final TestCase testCase;
+   private final IPropertyStore propertyStore;
+   private final TestScript test;
+   private final TestCase testCase;
 
-	public BaseEvent(IPropertyStore propertyStore, TestScript test) {
-		this.propertyStore = propertyStore;
-		this.test = test;
-		this.testCase = null;
-	}
+   public BaseEvent(IPropertyStore propertyStore, TestScript test) {
+      this.propertyStore = propertyStore;
+      this.test = test;
+      this.testCase = null;
+   }
 
-	public BaseEvent(IPropertyStore propertyStore, TestScript test, TestCase testCase) {
-		this.propertyStore = propertyStore;
-		this.test = test;
-		this.testCase = testCase;
-	}
-	
-	public BaseEvent(TestScript test, TestCase testCase) {
-	      this.propertyStore = null;
-	      this.test = test;
-	      this.testCase = testCase;
-	}
+   public BaseEvent(IPropertyStore propertyStore, TestScript test, TestCase testCase) {
+      this.propertyStore = propertyStore;
+      this.test = test;
+      this.testCase = testCase;
+   }
 
-	public BaseEvent(TestScript test) {
-		this.test = test;
-		this.testCase = null;
-		this.propertyStore = null;
-	}
+   public BaseEvent(TestScript test, TestCase testCase) {
+      this.propertyStore = null;
+      this.test = test;
+      this.testCase = testCase;
+   }
 
-	public TestScript getTest() {
-		return test;
-	}
+   public BaseEvent(TestScript test) {
+      this.test = test;
+      this.testCase = null;
+      this.propertyStore = null;
+   }
 
-	public TestCase getTestCase() {
-		return testCase;
-	}
+   @Override
+   public TestScript getTest() {
+      return test;
+   }
 
-	public IPropertyStore getProperties() {
-		return propertyStore;
-	}
+   @Override
+   public TestCase getTestCase() {
+      return testCase;
+   }
 
-	public String getScriptClass() {
-		return propertyStore.get("classname");
-	}
+   @Override
+   public IPropertyStore getProperties() {
+      return propertyStore;
+   }
+
+   public String getScriptClass() {
+      return propertyStore.get("classname");
+   }
 }

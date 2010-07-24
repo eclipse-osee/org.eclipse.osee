@@ -32,7 +32,7 @@ public class ArtifactURL {
       parameters.put("guid", artifact.getGuid());
       parameters.put("branchId", String.valueOf(artifact.getBranch().getId()));
       String urlString =
-            HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.ARTIFACT_CONTEXT, parameters);
+         HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.ARTIFACT_CONTEXT, parameters);
       URL url = null;
       try {
          url = new URL(urlString);
@@ -54,7 +54,8 @@ public class ArtifactURL {
       }
       parameters.put("cmd", cmd);
       String urlString =
-            HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.CLIENT_LOOPBACK_CONTEXT, parameters);
+         HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.CLIENT_LOOPBACK_CONTEXT,
+            parameters);
       URL url = null;
       try {
          url = new URL(urlString);

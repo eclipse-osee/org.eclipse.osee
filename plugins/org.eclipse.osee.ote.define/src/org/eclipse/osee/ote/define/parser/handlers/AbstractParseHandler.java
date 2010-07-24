@@ -26,18 +26,20 @@ import org.w3c.dom.Element;
  * @author Roberto E. Escobar
  */
 public abstract class AbstractParseHandler implements ISaxElementHandler {
-   private Set<IDataListener> listeners;
+   private final Set<IDataListener> listeners;
 
    protected AbstractParseHandler() {
       this.listeners = Collections.synchronizedSet(new HashSet<IDataListener>());
    }
 
+   @Override
    public void addListener(IDataListener listener) {
       if (!listeners.contains(listener)) {
          listeners.add(listener);
       }
    }
 
+   @Override
    public void removeListener(IDataListener listener) {
       if (listeners.contains(listener)) {
          listeners.remove(listener);
@@ -50,6 +52,7 @@ public abstract class AbstractParseHandler implements ISaxElementHandler {
       }
    }
 
+   @Override
    public void processSaxChunkCollectorData(String currentLocalName, String xmlData) {
       try {
          Document doc = Jaxp.readXmlDocument(xmlData);

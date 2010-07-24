@@ -28,46 +28,46 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public class OseeTypesViewerFilter extends ViewerFilter {
 
-	private boolean processIFile(Object resource) {
-		boolean toReturn = false;
-		if (resource instanceof IFile) {
-			IFile aFile = (IFile) resource;
-			String currentExtension = aFile.getFileExtension();
-			if (currentExtension.equalsIgnoreCase("osee")) {
-				toReturn = true;
-			}
-		}
-		return toReturn;
-	}
+   private boolean processIFile(Object resource) {
+      boolean toReturn = false;
+      if (resource instanceof IFile) {
+         IFile aFile = (IFile) resource;
+         String currentExtension = aFile.getFileExtension();
+         if (currentExtension.equalsIgnoreCase("osee")) {
+            toReturn = true;
+         }
+      }
+      return toReturn;
+   }
 
-	@Override
-	public boolean select(Viewer viewer, Object parentElement, Object element) {
-		if (element instanceof IProject) {
-			if (((IProject) element).isOpen()) {
-				return true;
-			}
-		} else if (element instanceof IContainer) {
-			IContainer container = (IContainer) element;
-			String name = container.getName();
-			if (!name.startsWith(".") && !name.equals("osee")) {
-				final MutableBoolean mutable = new MutableBoolean(false);
-				try {
-					container.accept(new IResourceVisitor() {
+   @Override
+   public boolean select(Viewer viewer, Object parentElement, Object element) {
+      if (element instanceof IProject) {
+         if (((IProject) element).isOpen()) {
+            return true;
+         }
+      } else if (element instanceof IContainer) {
+         IContainer container = (IContainer) element;
+         String name = container.getName();
+         if (!name.startsWith(".") && !name.equals("osee")) {
+            final MutableBoolean mutable = new MutableBoolean(false);
+            try {
+               container.accept(new IResourceVisitor() {
 
-						@Override
-						public boolean visit(IResource resource) {
-							mutable.setValue(processIFile(resource));
-							return mutable.getValue();
-						}
-					}, IResource.DEPTH_INFINITE, true);
-				} catch (CoreException ex) {
-					OseeLog.log(Activator.class, Level.SEVERE, ex);
-				}
-				return mutable.getValue();
-			}
-		} else {
-			return processIFile(element);
-		}
-		return false;
-	}
+                  @Override
+                  public boolean visit(IResource resource) {
+                     mutable.setValue(processIFile(resource));
+                     return mutable.getValue();
+                  }
+               }, IResource.DEPTH_INFINITE, true);
+            } catch (CoreException ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
+            return mutable.getValue();
+         }
+      } else {
+         return processIFile(element);
+      }
+      return false;
+   }
 }

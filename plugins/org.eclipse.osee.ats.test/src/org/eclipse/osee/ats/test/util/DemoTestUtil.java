@@ -16,15 +16,15 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
-import junit.framework.TestCase;
+import junit.framework.Assert;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.ActionManager;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -54,7 +54,7 @@ public class DemoTestUtil {
 
       if (ArtifactQuery.getArtifactListFromTypeAndName(CoreArtifactTypes.SoftwareRequirement, "%Robot%", branch).size() != 6) {
          return new Result(
-               "Expected at least 6 Software Requirements with word \"Robot\".  Database is not be populated with demo data.");
+            "Expected at least 6 Software Requirements with word \"Robot\".  Database is not be populated with demo data.");
       }
       return Result.TrueResult;
    }
@@ -63,11 +63,11 @@ public class DemoTestUtil {
       if (firstTaskWorkflow) {
          firstTaskWorkflow = false;
          return Arrays.asList("Look into Graph View.", "Redesign how view shows values.",
-               "Discuss new design with Senior Engineer", "Develop prototype", "Show prototype to management",
-               "Create development plan", "Create test plan", "Make changes");
+            "Discuss new design with Senior Engineer", "Develop prototype", "Show prototype to management",
+            "Create development plan", "Create test plan", "Make changes");
       } else {
          return Arrays.asList("Document how Graph View works", "Update help contents", "Review new documentation",
-               "Publish documentation to website", "Remove old viewer", "Deploy release");
+            "Publish documentation to website", "Remove old viewer", "Deploy release");
       }
    }
 
@@ -84,10 +84,9 @@ public class DemoTestUtil {
     */
    public static TeamWorkFlowArtifact createSimpleAction(String title, SkynetTransaction transaction) throws OseeCoreException {
       ActionArtifact actionArt =
-            ActionManager.createAction(null, title, "Description", ChangeType.Improvement, PriorityType.Priority_2,
-                  false, null,
-                  ActionableItemArtifact.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName())),
-                  transaction);
+         ActionManager.createAction(null, title, "Description", ChangeType.Improvement, PriorityType.Priority_2, false,
+            null, ActionableItemArtifact.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName())),
+            transaction);
 
       TeamWorkFlowArtifact teamArt = null;
       for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {
@@ -131,20 +130,20 @@ public class DemoTestUtil {
    public static void setUpTest() throws Exception {
       try {
          // This test should only be run on test db
-         TestCase.assertFalse(AtsUtil.isProductionDb());
+         Assert.assertFalse(AtsUtil.isProductionDb());
          // Confirm test setup with demo data
-         TestCase.assertTrue(isDbPopulatedWithDemoData().isTrue());
+         Assert.assertTrue(isDbPopulatedWithDemoData().isTrue());
          // Confirm user is Joe Smith
-         TestCase.assertTrue("User \"Joe Smith\" does not exist in DB.  Run Demo DBInit prior to this test.",
-               UserManager.getUserByUserId("Joe Smith") != null);
+         Assert.assertTrue("User \"Joe Smith\" does not exist in DB.  Run Demo DBInit prior to this test.",
+            UserManager.getUserByUserId("Joe Smith") != null);
          // Confirm user is Joe Smith
-         TestCase.assertTrue(
-               "Authenticated user should be \"Joe Smith\" and is not.  Check that Demo Application Server is being run.",
-               UserManager.getUser().getUserId().equals("Joe Smith"));
+         Assert.assertTrue(
+            "Authenticated user should be \"Joe Smith\" and is not.  Check that Demo Application Server is being run.",
+            UserManager.getUser().getUserId().equals("Joe Smith"));
          TestUtil.setIsInTest(true);
       } catch (OseeAuthenticationException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-         TestCase.fail("Can't authenticate, either Demo Application Server is not running or Demo DbInit has not been performed");
+         Assert.fail("Can't authenticate, either Demo Application Server is not running or Demo DbInit has not been performed");
       }
 
    }

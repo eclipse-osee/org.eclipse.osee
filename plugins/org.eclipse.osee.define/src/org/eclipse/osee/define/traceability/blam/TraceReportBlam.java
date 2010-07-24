@@ -198,10 +198,10 @@ public class TraceReportBlam extends AbstractBlam {
                excelInputStream = new CharBackedInputStream();
                writer = new ExcelXmlWriter(excelInputStream.getWriter());
             }
-            buildReport(reports, "Trace Unit <-> Requirement", output, writer, getTraceUnitToReqReport(codeUnit,
-                  testUnit, traceTypes));
+            buildReport(reports, "Trace Unit <-> Requirement", output, writer,
+               getTraceUnitToReqReport(codeUnit, testUnit, traceTypes));
             buildReport(reports, "Trace Unit with No Valid Traceability", output, writer,
-                  getDisconnectedTraceUnitReport(codeUnit, testUnit, traceTypes));
+               getDisconnectedTraceUnitReport(codeUnit, testUnit, traceTypes));
             buildReport(reports, "Requirement Trace Counts", output, writer, getTraceCountReport(reqData, traceTypes));
 
             subMonitor = new SubProgressMonitor(monitor, TASK_WORK);
@@ -331,7 +331,7 @@ public class TraceReportBlam extends AbstractBlam {
    private void addRelationToCheck(List<TraceTypeEnum> traceTypes, AbstractArtifactRelationReport report, boolean fromTraceUnit) {
       for (TraceTypeEnum traceTypeEnum : traceTypes) {
          IRelationEnumeration relation =
-               fromTraceUnit ? traceTypeEnum.getRelatedToRequirement() : traceTypeEnum.getRelatedToTraceUnit();
+            fromTraceUnit ? traceTypeEnum.getRelatedToRequirement() : traceTypeEnum.getRelatedToTraceUnit();
          report.addRelationToCheck(relation);
       }
    }
@@ -391,15 +391,9 @@ public class TraceReportBlam extends AbstractBlam {
 
    private enum TraceTypeEnum {
       Code_Unit_Trace(CoreRelationTypes.CodeRequirement_Requirement, CoreRelationTypes.CodeRequirement_CodeUnit, false),
-      Verified_By_Test_Unit_Trace(
-            CoreRelationTypes.Verification__Requirement,
-            CoreRelationTypes.Verification__Verifier,
-            true),
+      Verified_By_Test_Unit_Trace(CoreRelationTypes.Verification__Requirement, CoreRelationTypes.Verification__Verifier, true),
       Used_By_Test_Unit_Trace(CoreRelationTypes.Uses__Requirement, CoreRelationTypes.Uses__TestUnit, true),
-      Validation_By_TestProcedure(
-            CoreRelationTypes.Validation__Requirement,
-            CoreRelationTypes.Validation__Validator,
-            true);
+      Validation_By_TestProcedure(CoreRelationTypes.Validation__Requirement, CoreRelationTypes.Validation__Validator, true);
 
       private IRelationEnumeration toReq;
       private IRelationEnumeration toTraceUnit;

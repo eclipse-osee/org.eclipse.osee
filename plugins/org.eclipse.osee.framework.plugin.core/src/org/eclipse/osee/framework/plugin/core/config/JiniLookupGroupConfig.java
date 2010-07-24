@@ -45,7 +45,7 @@ public class JiniLookupGroupConfig {
 
       if (serviceGroups == null || serviceGroups.length == 0) {
          OseeLog.log(JiniLookupGroupConfig.class, Level.SEVERE,
-               "[-D" + filterGroups + "] was not set.\n" + "Please enter the Jini Group this service register with.");
+            "[-D" + filterGroups + "] was not set.\n" + "Please enter the Jini Group this service register with.");
          serviceGroups = new String[] {"NO_LOOKUP_GROUP_SPECIFIED"};
       } else {
          String toStore = "";

@@ -27,7 +27,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Test Case For {@link ChangeVersionTranslator}
- *
+ * 
  * @author Jeff C. Phillips
  */
 @RunWith(Parameterized.class)

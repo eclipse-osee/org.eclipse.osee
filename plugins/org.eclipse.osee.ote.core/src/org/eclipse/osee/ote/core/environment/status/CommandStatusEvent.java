@@ -13,34 +13,32 @@ package org.eclipse.osee.ote.core.environment.status;
 import java.io.Serializable;
 import org.eclipse.osee.ote.core.environment.command.CommandDescription;
 
-
-
 /**
  * @author Ryan D. Brooks
  * @author Andrew M. Finkbeiner
  */
-public class CommandStatusEvent implements Serializable{
+public class CommandStatusEvent implements Serializable {
 
-    /**
+   /**
     * 
     */
    private static final long serialVersionUID = -567005567921815848L;
-   private CommandDescription description;
+   private final CommandDescription description;
 
-	/**
-     * CommandStatusEvent Constructor.
-     * 
-	 * @param description The command description.
-	 */
-	public CommandStatusEvent(CommandDescription description) {
-		super();
-		this.description = description;
-	}
+   /**
+    * CommandStatusEvent Constructor.
+    * 
+    * @param description The command description.
+    */
+   public CommandStatusEvent(CommandDescription description) {
+      super();
+      this.description = description;
+   }
 
-	/**
-	 * @return Returns the description.
-	 */
-	public CommandDescription getDescription() {
-		return description;
-	}
+   /**
+    * @return Returns the description.
+    */
+   public CommandDescription getDescription() {
+      return description;
+   }
 }

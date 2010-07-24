@@ -43,7 +43,7 @@ public final class ArtifactImportOperationFactory {
    public static IOperation createOperation(File sourceFile, Artifact destinationArtifact, IArtifactExtractor extractor, IArtifactImportResolver resolver, boolean stopOnError) throws OseeCoreException {
       RoughArtifactCollector collector = new RoughArtifactCollector(new RoughArtifact(RoughArtifactKind.PRIMARY));
       SkynetTransaction transaction =
-            new SkynetTransaction(destinationArtifact.getBranch(), "Artifact Import Wizard transaction");
+         new SkynetTransaction(destinationArtifact.getBranch(), "Artifact Import Wizard transaction");
 
       List<IOperation> ops = new ArrayList<IOperation>();
       ops.add(new SourceToRoughArtifactOperation(extractor, sourceFile, collector));

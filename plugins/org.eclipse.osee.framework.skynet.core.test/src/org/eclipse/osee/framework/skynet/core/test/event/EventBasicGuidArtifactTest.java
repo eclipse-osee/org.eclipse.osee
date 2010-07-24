@@ -29,35 +29,33 @@ public class EventBasicGuidArtifactTest {
    @Test
    public void testEqualsEventBasicGuidArtifact() throws OseeCoreException {
       EventBasicGuidArtifact eventArt1 =
-            new EventBasicGuidArtifact(EventModType.Added, GUID.create(), GUID.create(), GUID.create());
+         new EventBasicGuidArtifact(EventModType.Added, GUID.create(), GUID.create(), GUID.create());
       EventBasicGuidArtifact eventArt2 =
-            new EventBasicGuidArtifact(EventModType.Added, eventArt1.getBranchGuid(), eventArt1.getArtTypeGuid(),
-                  eventArt1.getGuid());
+         new EventBasicGuidArtifact(EventModType.Added, eventArt1.getBranchGuid(), eventArt1.getArtTypeGuid(),
+            eventArt1.getGuid());
 
       Assert.assertEquals(eventArt1.hashCode(), eventArt2.hashCode());
       Assert.assertEquals(eventArt1, eventArt2);
 
       eventArt2 =
-            new EventBasicGuidArtifact(EventModType.Deleted, eventArt1.getBranchGuid(), eventArt1.getArtTypeGuid(),
-                  eventArt1.getGuid());
+         new EventBasicGuidArtifact(EventModType.Deleted, eventArt1.getBranchGuid(), eventArt1.getArtTypeGuid(),
+            eventArt1.getGuid());
 
       Assert.assertNotSame(eventArt1, eventArt2);
 
       eventArt2 =
-            new EventBasicGuidArtifact(EventModType.Added, GUID.create(), eventArt1.getArtTypeGuid(),
-                  eventArt1.getGuid());
+         new EventBasicGuidArtifact(EventModType.Added, GUID.create(), eventArt1.getArtTypeGuid(), eventArt1.getGuid());
 
       Assert.assertNotSame(eventArt1, eventArt2);
 
       eventArt2 =
-            new EventBasicGuidArtifact(EventModType.Added, eventArt1.getBranchGuid(), GUID.create(),
-                  eventArt1.getGuid());
+         new EventBasicGuidArtifact(EventModType.Added, eventArt1.getBranchGuid(), GUID.create(), eventArt1.getGuid());
 
       Assert.assertNotSame(eventArt1, eventArt2);
 
       eventArt2 =
-            new EventBasicGuidArtifact(EventModType.Added, eventArt1.getBranchGuid(), eventArt1.getArtTypeGuid(),
-                  GUID.create());
+         new EventBasicGuidArtifact(EventModType.Added, eventArt1.getBranchGuid(), eventArt1.getArtTypeGuid(),
+            GUID.create());
 
       Assert.assertNotSame(eventArt1, eventArt2);
 
@@ -79,34 +77,32 @@ public class EventBasicGuidArtifactTest {
    @Test
    public void testEqualsBasicGuidArtifact() throws OseeCoreException {
       EventBasicGuidArtifact eventArt1 =
-            new EventBasicGuidArtifact(EventModType.Added, GUID.create(), GUID.create(), GUID.create());
+         new EventBasicGuidArtifact(EventModType.Added, GUID.create(), GUID.create(), GUID.create());
       DefaultBasicGuidArtifact eventArt2 =
-            new DefaultBasicGuidArtifact(eventArt1.getBranchGuid(), eventArt1.getArtTypeGuid(), eventArt1.getGuid());
+         new DefaultBasicGuidArtifact(eventArt1.getBranchGuid(), eventArt1.getArtTypeGuid(), eventArt1.getGuid());
 
       Assert.assertEquals(eventArt1.hashCode(), eventArt2.hashCode());
       Assert.assertEquals(eventArt1, eventArt2);
 
       eventArt2 =
-            new EventBasicGuidArtifact(EventModType.Deleted, eventArt1.getBranchGuid(), eventArt1.getArtTypeGuid(),
-                  eventArt1.getGuid());
+         new EventBasicGuidArtifact(EventModType.Deleted, eventArt1.getBranchGuid(), eventArt1.getArtTypeGuid(),
+            eventArt1.getGuid());
 
       Assert.assertNotSame(eventArt1, eventArt2);
 
       eventArt2 =
-            new EventBasicGuidArtifact(EventModType.Added, GUID.create(), eventArt1.getArtTypeGuid(),
-                  eventArt1.getGuid());
+         new EventBasicGuidArtifact(EventModType.Added, GUID.create(), eventArt1.getArtTypeGuid(), eventArt1.getGuid());
 
       Assert.assertNotSame(eventArt1, eventArt2);
 
       eventArt2 =
-            new EventBasicGuidArtifact(EventModType.Added, eventArt1.getBranchGuid(), GUID.create(),
-                  eventArt1.getGuid());
+         new EventBasicGuidArtifact(EventModType.Added, eventArt1.getBranchGuid(), GUID.create(), eventArt1.getGuid());
 
       Assert.assertNotSame(eventArt1, eventArt2);
 
       eventArt2 =
-            new EventBasicGuidArtifact(EventModType.Added, eventArt1.getBranchGuid(), eventArt1.getArtTypeGuid(),
-                  GUID.create());
+         new EventBasicGuidArtifact(EventModType.Added, eventArt1.getBranchGuid(), eventArt1.getArtTypeGuid(),
+            GUID.create());
 
       Assert.assertNotSame(eventArt1, eventArt2);
 
@@ -128,7 +124,7 @@ public class EventBasicGuidArtifactTest {
    @Test
    public void testEventBasicGuidArtifactIs() throws OseeCoreException {
       EventBasicGuidArtifact eventArt1 =
-            new EventBasicGuidArtifact(EventModType.Added, GUID.create(), GUID.create(), GUID.create());
+         new EventBasicGuidArtifact(EventModType.Added, GUID.create(), GUID.create(), GUID.create());
       Assert.assertTrue(eventArt1.is(EventModType.Added));
       Assert.assertTrue(eventArt1.is(EventModType.Added, EventModType.ChangeType));
       Assert.assertFalse(eventArt1.is(EventModType.ChangeType));

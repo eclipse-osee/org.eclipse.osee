@@ -16,7 +16,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.CharBuffer;
 import java.util.List;
-
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -88,10 +87,11 @@ public abstract class OseeUiActivator extends AbstractUIPlugin {
 
       parentPlugin = OseePluginUiActivator.getInstance();
       /*
-       * parentPlugin will be the CorePlugin except in the case of CorePlugin itself when
-       * parentPlugin will be null
+       * parentPlugin will be the CorePlugin except in the case of CorePlugin itself when parentPlugin will be null
        */
-      if (parentPlugin == this) parentPlugin = null;
+      if (parentPlugin == this) {
+         parentPlugin = null;
+      }
 
       helper = new ActivatorHelper(context, this);
 
@@ -112,42 +112,24 @@ public abstract class OseeUiActivator extends AbstractUIPlugin {
     * @use ImageManager.getImage
     */
    /*
-   @Deprecated
-   public Image getImage(String imageName) {
-      Image image = getImageFromRegistry(imageName);
-      if (image == null) { // if image is not already cached
-         ImageDescriptor descriptor = getImageDescriptor(imageName);
-
-         // if image not found in this plug-in, then look in parent plug-in (if parent exists)
-         if (descriptor == null && parentPlugin != null) {
-            Image ret = parentPlugin.getImage(imageName);
-            if (ret != null) {
-               return ret;
-            }
-         }
-         if (descriptor == null) {
-            throw new IllegalArgumentException(String.format("The image %s does not exist", imageName));
-         }
-
-         image = descriptor.createImage(false);
-         if (image != null) { // cache image only if successfully returned
-            addImageToRegistry(imageName, image);
-         }
-      }
-      return image;
-   }
-   */
+    * @Deprecated public Image getImage(String imageName) { Image image = getImageFromRegistry(imageName); if (image ==
+    * null) { // if image is not already cached ImageDescriptor descriptor = getImageDescriptor(imageName); // if image
+    * not found in this plug-in, then look in parent plug-in (if parent exists) if (descriptor == null && parentPlugin
+    * != null) { Image ret = parentPlugin.getImage(imageName); if (ret != null) { return ret; } } if (descriptor ==
+    * null) { throw new IllegalArgumentException(String.format("The image %s does not exist", imageName)); } image =
+    * descriptor.createImage(false); if (image != null) { // cache image only if successfully returned
+    * addImageToRegistry(imageName, image); } } return image; }
+    */
    /**
     * Returns the ImageDiscriptor from images/ with the given icon name
     * 
     * @return the Image object
     * @use ImageManager.getImageDescriptor
     */
-   /*   @Deprecated
-      public ImageDescriptor getImageDescriptor(String name) {
-         return AbstractUIPlugin.imageDescriptorFromPlugin(getBundle().getSymbolicName(), imagePath + name);
-      }
-   */
+   /*
+    * @Deprecated public ImageDescriptor getImageDescriptor(String name) { return
+    * AbstractUIPlugin.imageDescriptorFromPlugin(getBundle().getSymbolicName(), imagePath + name); }
+    */
    public Object getBundleHeaderValue(String name) {
       return getBundle().getHeaders().get(name);
    }

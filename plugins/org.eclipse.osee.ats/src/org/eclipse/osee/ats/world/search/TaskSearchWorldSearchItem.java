@@ -114,7 +114,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
                workflows.add(art);
             }
             // Filter by team def if specified
-            else if (teamDefs.contains((((TeamWorkFlowArtifact) art).getTeamDefinition()))) {
+            else if (teamDefs.contains(((TeamWorkFlowArtifact) art).getTeamDefinition())) {
                workflows.add(art);
             }
          }
@@ -122,7 +122,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       // Else, get workflows from teamdefs
       else if (teamDefs.size() > 0) {
          TeamWorldSearchItem teamWorldSearchItem =
-               new TeamWorldSearchItem("", teamDefs, true, false, false, null, null, ReleasedOption.Both);
+            new TeamWorldSearchItem("", teamDefs, true, false, false, null, null, ReleasedOption.Both);
          workflows.addAll(teamWorldSearchItem.performSearchGetResults(false, SearchType.Search));
       } else if (groups.size() > 0) {
          Set<TaskArtifact> taskArts = new HashSet<TaskArtifact>();
@@ -140,7 +140,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
 
       // Bulk load tasks related to workflows
       Collection<Artifact> artifacts =
-            RelationManager.getRelatedArtifacts(workflows, 1, AtsRelationTypes.SmaToTask_Task);
+         RelationManager.getRelatedArtifacts(workflows, 1, AtsRelationTypes.SmaToTask_Task);
 
       // Apply the remaining criteria
       return filterByCompletedAndSelectedUser(artifacts);
@@ -168,7 +168,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
          }
          // If include completed and task is such and user not implementer, skip this task
          if (isIncludeCompletedCancelledCheckbox() && taskArt.isCancelledOrCompleted() && getSelectedUser() != null && taskArt.getImplementers().contains(
-               getSelectedUser())) {
+            getSelectedUser())) {
             tasks.add(taskArt);
             continue;
          }
@@ -264,13 +264,13 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
                         return;
                      }
                      TeamDefinitionArtifact teamDefHoldingVersions =
-                           teamDefArts.iterator().next().getTeamDefinitionHoldingVersions();
+                        teamDefArts.iterator().next().getTeamDefinitionHoldingVersions();
                      if (teamDefHoldingVersions == null) {
                         versionCombo.setDataStrings(new String[] {});
                         return;
                      }
                      Collection<String> names =
-                           Artifacts.artNames(teamDefHoldingVersions.getVersionsArtifacts(VersionReleaseType.Both));
+                        Artifacts.artNames(teamDefHoldingVersions.getVersionsArtifacts(VersionReleaseType.Both));
                      if (names.isEmpty()) {
                         versionCombo.setDataStrings(new String[] {});
                         return;
@@ -286,31 +286,45 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
    }
 
    private User getSelectedUser() {
-      if (assigneeCombo == null) return null;
+      if (assigneeCombo == null) {
+         return null;
+      }
       return assigneeCombo.getUser();
    }
 
    public void setSelectedUser(User user) {
-      if (assigneeCombo != null) assigneeCombo.set(user);
+      if (assigneeCombo != null) {
+         assigneeCombo.set(user);
+      }
    }
 
    private boolean isIncludeCompletedCancelledCheckbox() {
-      if (includeCompletedCancelledCheckbox == null) return false;
+      if (includeCompletedCancelledCheckbox == null) {
+         return false;
+      }
       return includeCompletedCancelledCheckbox.isSelected();
    }
 
    public void setIncludeCompletedCancelledCheckbox(boolean selected) {
-      if (includeCompletedCancelledCheckbox != null) includeCompletedCancelledCheckbox.set(selected);
+      if (includeCompletedCancelledCheckbox != null) {
+         includeCompletedCancelledCheckbox.set(selected);
+      }
    }
 
    private VersionArtifact getSelectedVersionArtifact() throws OseeCoreException {
-      if (versionCombo == null) return null;
+      if (versionCombo == null) {
+         return null;
+      }
       String versionStr = versionCombo.get();
-      if (versionStr == null || versionStr.equals("")) return null;
+      if (versionStr == null || versionStr.equals("")) {
+         return null;
+      }
       Collection<TeamDefinitionArtifact> teamDefs = getSelectedTeamDefinitions();
       if (teamDefs.size() > 0) {
          TeamDefinitionArtifact teamDefHoldingVersions = teamDefs.iterator().next().getTeamDefinitionHoldingVersions();
-         if (teamDefHoldingVersions == null) return null;
+         if (teamDefHoldingVersions == null) {
+            return null;
+         }
          for (VersionArtifact versionArtifact : teamDefHoldingVersions.getVersionsArtifacts(VersionReleaseType.Both)) {
             if (versionArtifact.getName().equals(versionStr)) {
                return versionArtifact;
@@ -345,11 +359,15 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
    }
 
    public void setSelectedGroups(Set<Artifact> selectedUsers) {
-      if (groupWidget != null) groupWidget.setSelectedGroups(selectedUsers);
+      if (groupWidget != null) {
+         groupWidget.setSelectedGroups(selectedUsers);
+      }
    }
 
    public void handleSelectedGroupsClear() {
-      if (groupWidget != null) groupWidget.handleClear();
+      if (groupWidget != null) {
+         groupWidget.handleClear();
+      }
    }
 
    @Override

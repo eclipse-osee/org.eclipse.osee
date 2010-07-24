@@ -27,7 +27,7 @@ public class ValidateDiagramToolEntry extends ToolEntry {
     */
    public ValidateDiagramToolEntry() {
       super("Validate Diagram", "Validate", ImageManager.getImageDescriptor(AtsImage.CHECK_BLUE),
-            ImageManager.getImageDescriptor(AtsImage.CHECK_BLUE), ValidateDiagramTool.class);
+         ImageManager.getImageDescriptor(AtsImage.CHECK_BLUE), ValidateDiagramTool.class);
    }
 
 }

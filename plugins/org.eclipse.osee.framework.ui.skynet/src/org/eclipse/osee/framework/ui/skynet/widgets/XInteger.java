@@ -41,16 +41,17 @@ public class XInteger extends XText {
       this.maxValue = maxValue;
    }
 
+   @Override
    public IStatus isValid() {
-      if (isRequiredEntry() || (super.get().compareTo("") != 0)) {
+      if (isRequiredEntry() || super.get().compareTo("") != 0) {
          IStatus result = super.isValid();
          if (!result.isOK()) {
             return result;
          } else if (!this.isInteger()) {
             return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "Must be an Integer");
-         } else if (minValueSet && (this.getInteger() < minValue)) {
+         } else if (minValueSet && this.getInteger() < minValue) {
             return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "Must be >= " + minValue);
-         } else if (maxValueSet && (this.getInteger() > maxValue)) {
+         } else if (maxValueSet && this.getInteger() > maxValue) {
             return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "Must be <= " + maxValue);
          }
       }

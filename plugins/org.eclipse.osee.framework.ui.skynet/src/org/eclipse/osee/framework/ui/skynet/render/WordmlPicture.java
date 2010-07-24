@@ -23,7 +23,7 @@ public class WordmlPicture {
    private String pictureDefinition;
    private Attribute attribute;
    private static final boolean DEBUG =
-         "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Word"));
+      "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Word"));
 
    public WordmlPicture() {
 
@@ -51,18 +51,18 @@ public class WordmlPicture {
                System.out.println(pictureDefinition);
             }
             throw new OseeCoreException(
-                  "This document is missing Image Data.  The Image can not be checked for modifications    Artifact =>" + attribute.getArtifact().getSafeName() + "  " + attribute.getArtifact().getArtId());
+               "This document is missing Image Data.  The Image can not be checked for modifications    Artifact =>" + attribute.getArtifact().getSafeName() + "  " + attribute.getArtifact().getArtId());
          }
          binaryData =
-               document.substring(document.indexOf(">", dataIndex) + 1, document.indexOf("<", document.indexOf(">",
-                     dataIndex) + 1));
+            document.substring(document.indexOf(">", dataIndex) + 1,
+               document.indexOf("<", document.indexOf(">", dataIndex) + 1));
       } else {
          if (!(pictureDefinition.contains("<v:formulas>") || pictureDefinition.contains("<v:path ") || pictureDefinition.contains("<v:textbox ") || pictureDefinition.contains("<v:rect ") || pictureDefinition.contains("<v:line "))) {
             if (DEBUG) {
                System.out.println(pictureDefinition);
             }
             throw new OseeCoreException(
-                  "This document contains undefined picture data.  Please report details to OSEE development team.    Artifact=> " + attribute.getArtifact().getSafeName() + "  " + attribute.getArtifact().getArtId());
+               "This document contains undefined picture data.  Please report details to OSEE development team.    Artifact=> " + attribute.getArtifact().getSafeName() + "  " + attribute.getArtifact().getArtId());
          }
       }
    }

@@ -80,7 +80,7 @@ public class DataTranslationServiceFactory {
       service.addTranslator(new BranchChangeTypeRequestTranslator(), CoreTranslatorId.CHANGE_BRANCH_TYPE);
       service.addTranslator(new BranchChangeStateRequestTranslator(), CoreTranslatorId.CHANGE_BRANCH_STATE);
       service.addTranslator(new BranchChangeArchivedStateRequestTranslator(),
-            CoreTranslatorId.CHANGE_BRANCH_ARCHIVE_STATE);
+         CoreTranslatorId.CHANGE_BRANCH_ARCHIVE_STATE);
 
       service.addTranslator(new ChangeVersionTranslator(), CoreTranslatorId.CHANGE_VERSION);
       service.addTranslator(new ChangeItemTranslator(service), CoreTranslatorId.CHANGE_ITEM);
@@ -93,19 +93,19 @@ public class DataTranslationServiceFactory {
       service.addTranslator(new BranchCacheUpdateResponseTranslator(), CoreTranslatorId.BRANCH_CACHE_UPDATE_RESPONSE);
       service.addTranslator(new BranchCacheStoreRequestTranslator(), CoreTranslatorId.BRANCH_CACHE_STORE_REQUEST);
       service.addTranslator(new TransactionCacheUpdateResponseTranslator(factoryProvider),
-            CoreTranslatorId.TX_CACHE_UPDATE_RESPONSE);
+         CoreTranslatorId.TX_CACHE_UPDATE_RESPONSE);
 
       service.addTranslator(new ArtifactTypeCacheUpdateResponseTranslator(),
-            CoreTranslatorId.ARTIFACT_TYPE_CACHE_UPDATE_RESPONSE);
+         CoreTranslatorId.ARTIFACT_TYPE_CACHE_UPDATE_RESPONSE);
 
       service.addTranslator(new AttributeTypeCacheUpdateResponseTranslator(factoryProvider),
-            CoreTranslatorId.ATTRIBUTE_TYPE_CACHE_UPDATE_RESPONSE);
+         CoreTranslatorId.ATTRIBUTE_TYPE_CACHE_UPDATE_RESPONSE);
 
       service.addTranslator(new RelationTypeCacheUpdateResponseTranslator(),
-            CoreTranslatorId.RELATION_TYPE_CACHE_UPDATE_RESPONSE);
+         CoreTranslatorId.RELATION_TYPE_CACHE_UPDATE_RESPONSE);
 
       service.addTranslator(new OseeEnumTypeCacheUpdateResponseTranslator(),
-            CoreTranslatorId.OSEE_ENUM_TYPE_CACHE_UPDATE_RESPONSE);
+         CoreTranslatorId.OSEE_ENUM_TYPE_CACHE_UPDATE_RESPONSE);
 
       service.addTranslator(new OseeImportModelRequestTranslator(), CoreTranslatorId.OSEE_IMPORT_MODEL_REQUEST);
       service.addTranslator(new OseeImportModelResponseTranslator(service), CoreTranslatorId.OSEE_IMPORT_MODEL_RESPONSE);

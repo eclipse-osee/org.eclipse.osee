@@ -40,7 +40,7 @@ public class ChangeReportTable implements EditorSection.IWidget {
 
    private ChangeXViewer xChangeViewer;
    private final ChangeUiData changeData;
-   private int defaultTableHeightHint = 100;
+   private final int defaultTableHeightHint = 100;
    private final int paddedTableHeightHint = 2;
 
    public ChangeReportTable(ChangeUiData changeData) {

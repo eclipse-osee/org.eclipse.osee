@@ -38,7 +38,7 @@ public class ChangeVersionTranslator implements ITranslator<ChangeVersion> {
       if (!propertyStore.get(Entry.IS_VALID.name()).isEmpty()) {
          String value = propertyStore.get(Entry.VALUE.name());
          ModificationType modificationType =
-               ModificationType.getMod(Integer.parseInt(propertyStore.get(Entry.MOD_TYPE.name())));
+            ModificationType.getMod(Integer.parseInt(propertyStore.get(Entry.MOD_TYPE.name())));
          Long gammaId = Long.parseLong(propertyStore.get(Entry.GAMMA_ID.name()));
 
          changeVersion.setGammaId(gammaId);

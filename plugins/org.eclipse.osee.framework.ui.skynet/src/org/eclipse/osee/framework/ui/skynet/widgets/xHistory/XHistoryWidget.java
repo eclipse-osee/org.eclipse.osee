@@ -153,7 +153,7 @@ public class XHistoryWidget extends XWidget implements IActionable {
       });
 
       OseeUiActions.addButtonToEditorToolBar(this, SkynetGuiPlugin.getInstance(), toolBar, HistoryView.VIEW_ID,
-            "Resource History");
+         "Resource History");
 
       new ActionContributionItem(xHistoryViewer.getCustomizeAction()).fill(toolBar, -1);
 
@@ -241,6 +241,7 @@ public class XHistoryWidget extends XWidget implements IActionable {
                }
 
                Displays.ensureInDisplayThread(new Runnable() {
+                  @Override
                   public void run() {
                      if (loadHistory) {
                         if (changes.isEmpty()) {
@@ -248,8 +249,8 @@ public class XHistoryWidget extends XWidget implements IActionable {
                            xHistoryViewer.setInput(changes);
                         } else {
                            String infoLabel =
-                                 String.format("History: %s on branch: %s", artifact.getName(),
-                                       artifact.getBranch().getShortName());
+                              String.format("History: %s on branch: %s", artifact.getName(),
+                                 artifact.getBranch().getShortName());
                            extraInfoLabel.setText(infoLabel);
                            xHistoryViewer.setInput(changes);
                         }

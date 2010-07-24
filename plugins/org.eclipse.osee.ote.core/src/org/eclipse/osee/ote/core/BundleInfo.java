@@ -18,12 +18,10 @@ import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
-
 import org.eclipse.osee.framework.jdk.core.util.ChecksumUtil;
 
-/** 
+/**
  * @author Robert A. Fisher
- *
  */
 public class BundleInfo {
    private final String symbolicName;
@@ -39,15 +37,15 @@ public class BundleInfo {
     * @param symbolicName
     * @param version
     * @param systemLocation
-    * @throws IOException 
+    * @throws IOException
     */
    public BundleInfo(URL systemLocation, String bundleServerBaseLocation, boolean systemLibrary) throws IOException {
       File tmpFile;
       try {
          tmpFile = new File(systemLocation.toURI());
-       } catch(URISyntaxException ex) {
+      } catch (URISyntaxException ex) {
          tmpFile = new File(systemLocation.getPath());
-       }
+      }
       this.file = tmpFile;
 
       JarFile jarFile = new JarFile(file);
@@ -60,25 +58,25 @@ public class BundleInfo {
       this.systemLibrary = systemLibrary;
       this.md5Digest = null;
    }
-   
+
    public BundleInfo(URL systemLocation) throws IOException {
-	   File tmpFile;
-	   try {
-		   tmpFile = new File(systemLocation.toURI());
-	   } catch(URISyntaxException ex) {
-		   tmpFile = new File(systemLocation.getPath());
-	   }
-	   this.file = tmpFile;
+      File tmpFile;
+      try {
+         tmpFile = new File(systemLocation.toURI());
+      } catch (URISyntaxException ex) {
+         tmpFile = new File(systemLocation.getPath());
+      }
+      this.file = tmpFile;
 
-	   JarFile jarFile = new JarFile(file);
-	   this.manifest = jarFile.getManifest();
-	   this.symbolicName = generateBundleName(manifest);
-	   this.version = manifest.getMainAttributes().getValue("Bundle-Version");
+      JarFile jarFile = new JarFile(file);
+      this.manifest = jarFile.getManifest();
+      this.symbolicName = generateBundleName(manifest);
+      this.version = manifest.getMainAttributes().getValue("Bundle-Version");
 
-	   this.systemLocation = systemLocation;
-	   this.bundleServerLocation = systemLocation;
-	   this.systemLibrary = true;
-	   this.md5Digest = null;
+      this.systemLocation = systemLocation;
+      this.bundleServerLocation = systemLocation;
+      this.systemLibrary = true;
+      this.md5Digest = null;
    }
 
    /**
@@ -87,13 +85,13 @@ public class BundleInfo {
     */
    public static String generateBundleName(Manifest jarManifest) {
       String nameEntry = jarManifest.getMainAttributes().getValue("Bundle-SymbolicName");
-      
+
       // Sometimes there's a semicolon then extra info - ignore this
       int index = nameEntry.indexOf(';');
       if (index != -1) {
          nameEntry = nameEntry.substring(0, index);
       }
-      
+
       return nameEntry;
    }
 
@@ -138,12 +136,12 @@ public class BundleInfo {
    public Manifest getManifest() {
       return manifest;
    }
-   
+
    @Override
    public String toString() {
       return getSymbolicName() + ":" + getVersion();
    }
-   
+
    /**
     * @return the systemLibrary
     */
@@ -160,9 +158,9 @@ public class BundleInfo {
       if (md5Digest == null) {
          try {
             InputStream in = systemLocation.openStream();
-            
+
             md5Digest = ChecksumUtil.createChecksum(in, "MD5");
-            
+
             in.close();
          } catch (NoSuchAlgorithmException ex) {
             throw new IllegalStateException("Always expect MD5 to be available", ex);

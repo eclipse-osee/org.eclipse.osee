@@ -12,18 +12,24 @@ package org.eclipse.osee.ote.core.environment.interfaces;
 
 import java.util.List;
 
-
 /**
  * @author Robert A. Fisher
  */
 public interface ITestStation {
-   
+
    public String getOutletIp();
+
    public void setOutletIp(String outletIp);
+
    public int getOutletPort();
+
    public void setOutletPort(int outletPort);
+
    public String getVmeConnectionName();
+
    public void turnPowerSupplyOnOff(boolean turnOn);
+
    public List<IOTypeHandlerDefinition> getSupportedDriverTypes();
+
    public boolean isPhysicalTypeAvailable(IOTypeDefinition physicalType);
 }

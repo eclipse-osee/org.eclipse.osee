@@ -33,13 +33,13 @@ public class DeleteBranchHandler extends CommandHandler {
    @Override
    public Object execute(ExecutionEvent arg0) throws ExecutionException {
       IStructuredSelection selection =
-            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+         (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
       Branch selectedBranch = Handlers.getBranchesFromStructuredSelection(selection).iterator().next();
 
       MessageDialog dialog =
-            new MessageDialog(Displays.getActiveShell(), "Delete Branch", null,
-                  "Are you sure you want to delete the branch: " + selectedBranch.getName(),
-                  MessageDialog.QUESTION, new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 1);
+         new MessageDialog(Displays.getActiveShell(), "Delete Branch", null,
+            "Are you sure you want to delete the branch: " + selectedBranch.getName(), MessageDialog.QUESTION,
+            new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 1);
 
       if (dialog.open() == 0) {
          BranchManager.deleteBranch(selectedBranch);

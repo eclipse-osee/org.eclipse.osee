@@ -53,7 +53,9 @@ public class CompressWordAttributesHandler extends AbstractHandler {
 
                for (Artifact artifact : artifacts) {
                   if (WordUtil.revertNonusefulWordChanges(artifact.getArtId(), artifact.getBranch(),
-                        "osee_compression_gammas")) count++;
+                     "osee_compression_gammas")) {
+                     count++;
+                  }
                   monitor.worked(1);
                   if (monitor.isCanceled()) {
                      monitor.done();
@@ -63,16 +65,17 @@ public class CompressWordAttributesHandler extends AbstractHandler {
 
                final int finalCount = count;
                Displays.ensureInDisplayThread(new Runnable() {
+                  @Override
                   public void run() {
                      MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                           "Compression Data", finalCount + " of the " + total + " artifacts need compression");
+                        "Compression Data", finalCount + " of the " + total + " artifacts need compression");
                   }
                });
 
                monitor.done();
                return Status.OK_STATUS;
             } catch (Exception ex) {
-               return new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, Status.OK, ex.getLocalizedMessage(), ex);
+               return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, IStatus.OK, ex.getLocalizedMessage(), ex);
             }
          }
 
@@ -88,15 +91,14 @@ public class CompressWordAttributesHandler extends AbstractHandler {
       }
       try {
          ISelectionProvider selectionProvider =
-               AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
+            AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
 
          if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
             IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
             artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
 
             if (!artifacts.isEmpty()) {
-               boolean writePermission =
-                     AccessControlManager.hasPermission(artifacts.get(0), PermissionEnum.WRITE);
+               boolean writePermission = AccessControlManager.hasPermission(artifacts.get(0), PermissionEnum.WRITE);
                enabled = writePermission && AccessControlManager.isOseeAdmin();
             }
          }

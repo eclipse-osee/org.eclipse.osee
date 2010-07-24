@@ -22,20 +22,20 @@ import org.osgi.framework.Bundle;
  */
 public class EarlyStartup implements IStartup {
 
-	@Override
-	public void earlyStartup() {
-		Displays.ensureInDisplayThread(new Runnable() {
-			@Override
-			public void run() {
-				registerWorkspaceAccessService();
-			}
-		});
-	}
+   @Override
+   public void earlyStartup() {
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            registerWorkspaceAccessService();
+         }
+      });
+   }
 
-	private void registerWorkspaceAccessService() {
-		Bundle bundle = Platform.getBundle(OseePluginUiActivator.PLUGIN_ID);
-		bundle.getBundleContext().registerService(SafeWorkspaceAccess.class.getName(), new SafeWorkspaceAccessImpl(),
-					null);
-	}
+   private void registerWorkspaceAccessService() {
+      Bundle bundle = Platform.getBundle(OseePluginUiActivator.PLUGIN_ID);
+      bundle.getBundleContext().registerService(SafeWorkspaceAccess.class.getName(), new SafeWorkspaceAccessImpl(),
+         null);
+   }
 
 }

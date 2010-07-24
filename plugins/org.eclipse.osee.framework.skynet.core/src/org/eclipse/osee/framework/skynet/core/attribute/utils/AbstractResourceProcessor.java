@@ -63,7 +63,7 @@ public abstract class AbstractResourceProcessor {
          dataStore.setContent(outputStream.toByteArray(), "", result.getContentType(), result.getEncoding());
       } else {
          throw new OseeDataStoreException(String.format("Error acquiring resource: [%s] - status code: [%s]; %s",
-               dataStore.getLocator(), code, new String(outputStream.toByteArray())));
+            dataStore.getLocator(), code, new String(outputStream.toByteArray())));
       }
    }
 
@@ -77,7 +77,7 @@ public abstract class AbstractResourceProcessor {
          }
       } catch (Exception ex) {
          throw new OseeDataStoreException(String.format("Error deleting resource: [%s] - status code: [%s]",
-               dataStore.getLocator(), code), ex);
+            dataStore.getLocator(), code), ex);
       }
    }
 

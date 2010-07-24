@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
@@ -73,6 +74,7 @@ public class DefectXViewer extends XViewer {
    protected void createSupportWidgets(Composite parent) {
       super.createSupportWidgets(parent);
       parent.addDisposeListener(new DisposeListener() {
+         @Override
          public void widgetDisposed(DisposeEvent e) {
             ((DefectContentProvider) getContentProvider()).clear();
          }
@@ -85,7 +87,7 @@ public class DefectXViewer extends XViewer {
       MenuManager mm = getMenuManager();
       mm.createContextMenu(getControl());
 
-      editSeverityAction = new Action("Edit Severity", Action.AS_PUSH_BUTTON) {
+      editSeverityAction = new Action("Edit Severity", IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
             boolean columnMultiEdit = false;
@@ -98,7 +100,7 @@ public class DefectXViewer extends XViewer {
          }
       };
 
-      editClosedAction = new Action("Edit Closed ", Action.AS_PUSH_BUTTON) {
+      editClosedAction = new Action("Edit Closed ", IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
             boolean columnMultiEdit = false;
@@ -111,7 +113,7 @@ public class DefectXViewer extends XViewer {
          }
       };
 
-      editCreatedDateAction = new Action("Edit Created Date ", Action.AS_PUSH_BUTTON) {
+      editCreatedDateAction = new Action("Edit Created Date ", IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
             boolean columnMultiEdit = false;
@@ -124,7 +126,7 @@ public class DefectXViewer extends XViewer {
          }
       };
 
-      editDescriptionAction = new Action("Edit Description ", Action.AS_PUSH_BUTTON) {
+      editDescriptionAction = new Action("Edit Description ", IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
             boolean columnMultiEdit = false;
@@ -137,7 +139,7 @@ public class DefectXViewer extends XViewer {
          }
       };
 
-      editDispositionAction = new Action("Edit Disposition ", Action.AS_PUSH_BUTTON) {
+      editDispositionAction = new Action("Edit Disposition ", IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
             boolean columnMultiEdit = false;
@@ -150,7 +152,7 @@ public class DefectXViewer extends XViewer {
          }
       };
 
-      editInjectionAction = new Action("Edit Injection ", Action.AS_PUSH_BUTTON) {
+      editInjectionAction = new Action("Edit Injection ", IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
             boolean columnMultiEdit = false;
@@ -163,7 +165,7 @@ public class DefectXViewer extends XViewer {
          }
       };
 
-      editLocationAction = new Action("Edit Location ", Action.AS_PUSH_BUTTON) {
+      editLocationAction = new Action("Edit Location ", IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
             boolean columnMultiEdit = false;
@@ -176,7 +178,7 @@ public class DefectXViewer extends XViewer {
          }
       };
 
-      editResolutionAction = new Action("Edit Resolution ", Action.AS_PUSH_BUTTON) {
+      editResolutionAction = new Action("Edit Resolution ", IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
             boolean columnMultiEdit = false;
@@ -189,7 +191,7 @@ public class DefectXViewer extends XViewer {
          }
       };
 
-      editUserAction = new Action("Edit User ", Action.AS_PUSH_BUTTON) {
+      editUserAction = new Action("Edit User ", IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
             boolean columnMultiEdit = false;
@@ -239,15 +241,21 @@ public class DefectXViewer extends XViewer {
    }
 
    public void add(Collection<DefectItem> defectItems) {
-      if (((DefectContentProvider) getContentProvider()) != null) ((DefectContentProvider) getContentProvider()).add(defectItems);
+      if ((DefectContentProvider) getContentProvider() != null) {
+         ((DefectContentProvider) getContentProvider()).add(defectItems);
+      }
    }
 
    public void set(Collection<? extends DefectItem> defectItems) {
-      if (((DefectContentProvider) getContentProvider()) != null) ((DefectContentProvider) getContentProvider()).set(defectItems);
+      if ((DefectContentProvider) getContentProvider() != null) {
+         ((DefectContentProvider) getContentProvider()).set(defectItems);
+      }
    }
 
    public void clear() {
-      if (((DefectContentProvider) getContentProvider()) != null) ((DefectContentProvider) getContentProvider()).clear();
+      if ((DefectContentProvider) getContentProvider() != null) {
+         ((DefectContentProvider) getContentProvider()).clear();
+      }
    }
 
    /**
@@ -263,8 +271,11 @@ public class DefectXViewer extends XViewer {
    public ArrayList<DefectItem> getSelectedDefectItems() {
       ArrayList<DefectItem> arts = new ArrayList<DefectItem>();
       TreeItem items[] = getTree().getSelection();
-      if (items.length > 0) for (TreeItem item : items)
-         arts.add((DefectItem) item.getData());
+      if (items.length > 0) {
+         for (TreeItem item : items) {
+            arts.add((DefectItem) item.getData());
+         }
+      }
       return arts;
    }
 
@@ -318,7 +329,9 @@ public class DefectXViewer extends XViewer {
          if (!defectItem.getInjectionActivity().equals(newInjectionActivity)) {
             defectItem.setInjectionActivity(newInjectionActivity);
             // at least one in the list has been changed.
-            if (!modified) modified = true;
+            if (!modified) {
+               modified = true;
+            }
          }
       }
       return modified;
@@ -330,7 +343,9 @@ public class DefectXViewer extends XViewer {
          if (!defectItem.getUser().equals(user)) {
             defectItem.setUser(user);
             // at least one in the list has been changed.
-            if (!modified) modified = true;
+            if (!modified) {
+               modified = true;
+            }
          }
       }
       return modified;
@@ -341,7 +356,9 @@ public class DefectXViewer extends XViewer {
       for (DefectItem defectItem : defectItems) {
          if (!defectItem.getLocation().equals(loc)) {
             defectItem.setLocation(loc);
-            if (!modified) modified = true;
+            if (!modified) {
+               modified = true;
+            }
          }
       }
       return modified;
@@ -352,7 +369,9 @@ public class DefectXViewer extends XViewer {
       for (DefectItem defectItem : defectItems) {
          if (!defectItem.toString().equals(desc)) {
             defectItem.setDescription(desc);
-            if (!modified) modified = true;
+            if (!modified) {
+               modified = true;
+            }
          }
 
       }
@@ -364,7 +383,9 @@ public class DefectXViewer extends XViewer {
       for (DefectItem defectItem : defectItems) {
          if (defectItem.isClosed() != closed) {
             defectItem.setClosed(closed);
-            if (!modified) modified = true;
+            if (!modified) {
+               modified = true;
+            }
          }
       }
       return modified;
@@ -375,7 +396,9 @@ public class DefectXViewer extends XViewer {
       for (DefectItem defectItem : defectItems) {
          if (!defectItem.getSeverity().equals(severity)) {
             defectItem.setSeverity(severity);
-            if (!modified) modified = true;
+            if (!modified) {
+               modified = true;
+            }
          }
       }
       return modified;
@@ -386,7 +409,9 @@ public class DefectXViewer extends XViewer {
       for (DefectItem defectItem : defectItems) {
          if (!defectItem.getDisposition().equals(disposition)) {
             defectItem.setDisposition(disposition);
-            if (!modified) modified = true;
+            if (!modified) {
+               modified = true;
+            }
          }
       }
       return modified;
@@ -397,7 +422,9 @@ public class DefectXViewer extends XViewer {
       for (DefectItem defectItem : defectItems) {
          if (!defectItem.getDate().equals(date)) {
             defectItem.setDate(date);
-            if (!modified) modified = true;
+            if (!modified) {
+               modified = true;
+            }
          }
       }
       return modified;
@@ -407,7 +434,9 @@ public class DefectXViewer extends XViewer {
       boolean modified = false;
       for (DefectItem defectItem : defectItems) {
          defectItem.setResolution(resolution);
-         if (!modified) modified = true;
+         if (!modified) {
+            modified = true;
+         }
       }
       return modified;
    }
@@ -418,49 +447,49 @@ public class DefectXViewer extends XViewer {
          DefectItem defectItem = (DefectItem) defectItems.toArray()[0];
          if (xCol.equals(DefectXViewerFactory.Severity_Col)) {
             EnumStringSingleSelectionDialog enumDialog =
-                  XPromptChange.promptChangeSingleSelectEnumeration(xCol.getName(), Severity.strValues(),
-                        ((columnMultiEdit) ? null : defectItem.getSeverity().name()));
+               XPromptChange.promptChangeSingleSelectEnumeration(xCol.getName(), Severity.strValues(),
+                  (columnMultiEdit ? null : defectItem.getSeverity().name()));
             if (enumDialog != null && enumDialog.getResult() != null) {
                modified = setSeverity(defectItems, Severity.valueOf((String) enumDialog.getResult()[0]));
             }
          } else if (xCol.equals(DefectXViewerFactory.Disposition_Col)) {
             EnumStringSingleSelectionDialog enumDialog =
-                  XPromptChange.promptChangeSingleSelectEnumeration(xCol.getName(), Disposition.strValues(),
-                        ((columnMultiEdit) ? null : defectItem.getDisposition().name()));
+               XPromptChange.promptChangeSingleSelectEnumeration(xCol.getName(), Disposition.strValues(),
+                  (columnMultiEdit ? null : defectItem.getDisposition().name()));
             if (enumDialog != null && enumDialog.getResult() != null) {
                modified = setDisposition(defectItems, Disposition.valueOf((String) enumDialog.getResult()[0]));
             }
          } else if (xCol.equals(DefectXViewerFactory.Created_Date_Col)) {
             Date selDate =
-                  XPromptChange.promptChangeDate(xCol.getName(), ((columnMultiEdit) ? defectItem.getDate() : null));
+               XPromptChange.promptChangeDate(xCol.getName(), (columnMultiEdit ? defectItem.getDate() : null));
             if (selDate != null) {
                modified = setDate(defectItems, selDate);
             }
          } else if (xCol.equals(DefectXViewerFactory.Closed_Col)) {
             Boolean closed =
-                  XPromptChange.promptChangeBoolean(xCol.getName(), xCol.getName(),
-                        ((columnMultiEdit) ? false : defectItem.isClosed()));
+               XPromptChange.promptChangeBoolean(xCol.getName(), xCol.getName(),
+                  (columnMultiEdit ? false : defectItem.isClosed()));
             if (closed != null) {
                modified = setClosed(defectItems, closed);
             }
          } else if (xCol.equals(DefectXViewerFactory.Description_Col)) {
             String desc =
-                  XPromptChange.promptChangeString(xCol.getName(),
-                        ((columnMultiEdit) ? null : defectItem.getDescription()), null, Option.MULTI_LINE);
+               XPromptChange.promptChangeString(xCol.getName(), (columnMultiEdit ? null : defectItem.getDescription()),
+                  null, Option.MULTI_LINE);
             if (desc != null) {
                modified = setDescription(defectItems, desc);
             }
          } else if (xCol.equals(DefectXViewerFactory.Resolution_Col)) {
             String resolution =
-                  XPromptChange.promptChangeString(xCol.getName(),
-                        (columnMultiEdit ? null : defectItem.getResolution()), null, Option.MULTI_LINE);
+               XPromptChange.promptChangeString(xCol.getName(), (columnMultiEdit ? null : defectItem.getResolution()),
+                  null, Option.MULTI_LINE);
             if (resolution != null) {
                modified = setResolution(defectItems, resolution);
             }
          } else if (xCol.equals(DefectXViewerFactory.Location_Col)) {
             String loc =
-                  XPromptChange.promptChangeString(xCol.getName(),
-                        ((columnMultiEdit) ? null : defectItem.getLocation()), null, Option.MULTI_LINE);
+               XPromptChange.promptChangeString(xCol.getName(), (columnMultiEdit ? null : defectItem.getLocation()),
+                  null, Option.MULTI_LINE);
             if (loc != null) {
                modified = setLocation(defectItems, loc);
             }
@@ -472,11 +501,11 @@ public class DefectXViewer extends XViewer {
             }
          } else if (xCol.equals(DefectXViewerFactory.Injection_Activity_Col)) {
             EnumStringSingleSelectionDialog enumDialog =
-                  XPromptChange.promptChangeSingleSelectEnumeration(xCol.getName(), InjectionActivity.strValues(),
-                        ((columnMultiEdit) ? null : defectItem.getInjectionActivity().name()));
+               XPromptChange.promptChangeSingleSelectEnumeration(xCol.getName(), InjectionActivity.strValues(),
+                  (columnMultiEdit ? null : defectItem.getInjectionActivity().name()));
             if (enumDialog != null && enumDialog.getResult() != null) {
                modified =
-                     setInjectionActivity(defectItems, InjectionActivity.valueOf((String) enumDialog.getResult()[0]));
+                  setInjectionActivity(defectItems, InjectionActivity.valueOf((String) enumDialog.getResult()[0]));
             }
          }
          if (modified) {
@@ -488,7 +517,7 @@ public class DefectXViewer extends XViewer {
 
    public boolean executeTransaction(Collection<DefectItem> defectItems) throws OseeCoreException {
       SkynetTransaction transaction =
-            new SkynetTransaction(xDefectViewer.getReviewArt().getArtifact().getBranch(), "Modify Review Defects");
+         new SkynetTransaction(xDefectViewer.getReviewArt().getArtifact().getBranch(), "Modify Review Defects");
       for (DefectItem defectItem : defectItems) {
          xDefectViewer.getReviewArt().getDefectManager().addOrUpdateDefectItem(defectItem, false, transaction);
          update(defectItem, null);

@@ -90,6 +90,7 @@ class DiagramTreeEditPart extends AbstractTreeEditPart implements PropertyChange
       return getCastedModel().getChildren(); // a list of shapes
    }
 
+   @Override
    public void propertyChange(PropertyChangeEvent evt) {
       String prop = evt.getPropertyName();
       if (WorkflowDiagram.CHILD_ADDED_PROP.equals(prop)) {

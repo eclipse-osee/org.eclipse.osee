@@ -12,8 +12,7 @@ package org.eclipse.osee.ote.core;
 
 import java.util.logging.Level;
 
-public class ExecutionUnitException extends TestException{
-
+public class ExecutionUnitException extends TestException {
 
    private static final long serialVersionUID = -9119275292591321042L;
 

@@ -29,10 +29,12 @@ public class ResourceLocator implements IResourceLocator {
       this.uri = uri;
    }
 
+   @Override
    public URI getLocation() {
       return uri;
    }
 
+   @Override
    public String getProtocol() {
       return uri.getScheme();
    }

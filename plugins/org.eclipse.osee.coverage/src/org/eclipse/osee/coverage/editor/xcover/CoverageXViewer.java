@@ -29,7 +29,6 @@ import org.eclipse.osee.coverage.action.IRefreshable;
 import org.eclipse.osee.coverage.action.ISelectedCoverageEditorItem;
 import org.eclipse.osee.coverage.action.ViewSourceAction;
 import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer.TableType;
-import org.eclipse.osee.coverage.editor.xmerge.CoverageMergeXViewerFactory;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageItem;
@@ -56,7 +55,7 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
 
    protected final XCoverageViewer xCoverageViewer;
    Action editRationaleAction, editMethodAction, viewSourceAction, editAssigneesAction, editCoverageStatusAction,
-         deleteCoverUnitAction;
+      deleteCoverUnitAction;
 
    public CoverageXViewer(Composite parent, int style, XCoverageViewer xCoverageViewer) {
       this(parent, style, new CoverageXViewerFactory(), xCoverageViewer);
@@ -89,7 +88,9 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
    }
 
    private boolean isEditRationaleEnabled() {
-      if (xCoverageViewer.getSelectedCoverageItems().isEmpty()) return false;
+      if (xCoverageViewer.getSelectedCoverageItems().isEmpty()) {
+         return false;
+      }
       for (ICoverage item : xCoverageViewer.getSelectedCoverageItems()) {
          if (!(item instanceof CoverageItem)) {
             return false;
@@ -99,7 +100,9 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
    }
 
    private boolean isEditMethodEnabled() {
-      if (xCoverageViewer.getSelectedCoverageItems().isEmpty()) return false;
+      if (xCoverageViewer.getSelectedCoverageItems().isEmpty()) {
+         return false;
+      }
       for (ICoverage item : xCoverageViewer.getSelectedCoverageItems()) {
          if (!(item instanceof CoverageItem)) {
             return false;
@@ -109,7 +112,9 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
    }
 
    private boolean isDeleteCoverageUnitEnabled() {
-      if (xCoverageViewer.getSelectedCoverageItems().isEmpty()) return false;
+      if (xCoverageViewer.getSelectedCoverageItems().isEmpty()) {
+         return false;
+      }
       for (ICoverage item : xCoverageViewer.getSelectedCoverageItems()) {
          if (!(item instanceof CoverageUnit)) {
             return false;
@@ -119,7 +124,9 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
    }
 
    private boolean isEditMetricsEnabled() {
-      if (xCoverageViewer.getSelectedCoverageItems().isEmpty()) return false;
+      if (xCoverageViewer.getSelectedCoverageItems().isEmpty()) {
+         return false;
+      }
       for (ICoverage item : xCoverageViewer.getSelectedCoverageItems()) {
          if (!(item instanceof CoverageUnit)) {
             return false;
@@ -157,8 +164,8 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
       MenuManager mm = getMenuManager();
       updateEditMenuActions();
       mm.insertBefore(MENU_GROUP_PRE, new Separator());
-      mm.insertBefore(MENU_GROUP_PRE, new org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction(
-            xCoverageViewer.getXViewer(), true));
+      mm.insertBefore(MENU_GROUP_PRE,
+         new org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction(xCoverageViewer.getXViewer(), true));
    }
 
    @Override
@@ -168,6 +175,7 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
       getLabelProvider().dispose();
    }
 
+   @Override
    public ArrayList<ICoverage> getSelectedCoverageEditorItems() {
       ArrayList<ICoverage> arts = new ArrayList<ICoverage>();
       TreeItem items[] = getTree().getSelection();
@@ -208,15 +216,15 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
       createMenuActions();
       try {
          XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
-         if (xCol.equals(CoverageMergeXViewerFactory.Assignees_Col)) {
+         if (xCol.equals(CoverageXViewerFactory.Assignees_Col)) {
             editAssigneesAction.run();
-         } else if (xCol.equals(CoverageMergeXViewerFactory.Notes_Col)) {
+         } else if (xCol.equals(CoverageXViewerFactory.Notes_Col)) {
             editCoverageStatusAction.run();
-         } else if (xCol.equals(CoverageMergeXViewerFactory.Coverage_Method)) {
+         } else if (xCol.equals(CoverageXViewerFactory.Coverage_Method)) {
             editMethodAction.run();
-         } else if (xCol.equals(CoverageMergeXViewerFactory.Coverage_Rationale)) {
+         } else if (xCol.equals(CoverageXViewerFactory.Coverage_Rationale)) {
             editRationaleAction.run();
-         } else if (xCol.equals(CoverageMergeXViewerFactory.Name)) {
+         } else if (xCol.equals(CoverageXViewerFactory.Name)) {
             viewSourceAction.run();
          }
       } catch (Exception ex) {
@@ -249,7 +257,7 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
 
          if (isEditable(coverageItems).isFalse()) {
             MessageDialog.openInformation(Displays.getActiveShell(), "Coverage Item",
-                  "Read-Only Field - One or more selected Coverage Items is Read-Only");
+               "Read-Only Field - One or more selected Coverage Items is Read-Only");
          }
       }
       if (modified) {

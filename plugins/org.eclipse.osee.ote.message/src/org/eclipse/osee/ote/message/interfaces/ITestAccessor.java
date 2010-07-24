@@ -17,7 +17,9 @@ import org.eclipse.osee.ote.core.TestScript;
  * @author Ryan D. Brooks
  * @author Andrew M. Finkbeiner
  */
-public interface ITestAccessor extends ITestEnvironmentMessageSystemAccessor{
+public interface ITestAccessor extends ITestEnvironmentMessageSystemAccessor {
    public TestCase getTestCase();
+
+   @Override
    public TestScript getTestScript();
 }

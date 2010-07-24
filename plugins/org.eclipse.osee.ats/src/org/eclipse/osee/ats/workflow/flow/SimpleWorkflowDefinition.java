@@ -34,7 +34,10 @@ public class SimpleWorkflowDefinition extends WorkFlowDefinition {
 
    public static String ID = "osee.ats.simpleTeamWorkflow";
    public static enum SimpleState {
-      Endorse, InWork, Completed, Cancelled
+      Endorse,
+      InWork,
+      Completed,
+      Cancelled
    };
    public static String ENDORSE_STATE_ID = ID + "." + SimpleState.Endorse.name();
    public static String INWORK_STATE_ID = ID + "." + SimpleState.InWork.name();
@@ -68,15 +71,15 @@ public class SimpleWorkflowDefinition extends WorkFlowDefinition {
 
    public static void addDefaultTransitions(WorkFlowDefinition teamWorkflowDefinition, String workflowId) {
       teamWorkflowDefinition.addPageTransition(SimpleState.Endorse.name(), SimpleState.InWork.name(),
-            TransitionType.ToPageAsDefault);
+         TransitionType.ToPageAsDefault);
       teamWorkflowDefinition.addPageTransition(SimpleState.InWork.name(), SimpleState.Completed.name(),
-            TransitionType.ToPageAsDefault);
+         TransitionType.ToPageAsDefault);
 
       // Add return transitions
       teamWorkflowDefinition.addPageTransition(SimpleState.InWork.name(), SimpleState.Endorse.name(),
-            TransitionType.ToPageAsReturn);
+         TransitionType.ToPageAsReturn);
       teamWorkflowDefinition.addPageTransition(SimpleState.Completed.name(), SimpleState.InWork.name(),
-            TransitionType.ToPageAsReturn);
+         TransitionType.ToPageAsReturn);
 
       // Add cancelled transitions
       teamWorkflowDefinition.addPageTransitionToPageAndReturn(SimpleState.Endorse.name(), SimpleState.Cancelled.name());
@@ -87,12 +90,12 @@ public class SimpleWorkflowDefinition extends WorkFlowDefinition {
       List<WorkItemDefinition> workItems = new ArrayList<WorkItemDefinition>();
 
       workItems.add(new WorkPageDefinition(SimpleState.Endorse.name(), SimpleWorkflowDefinition.ENDORSE_STATE_ID,
-            AtsEndorseWorkPageDefinition.ID));
+         AtsEndorseWorkPageDefinition.ID));
       workItems.add(new AtsSimpleInWorkWorkPageDefinition());
       workItems.add(new WorkPageDefinition(DefaultTeamState.Completed.name(),
-            SimpleWorkflowDefinition.COMPLETED_STATE_ID, AtsCompletedWorkPageDefinition.ID));
+         SimpleWorkflowDefinition.COMPLETED_STATE_ID, AtsCompletedWorkPageDefinition.ID));
       workItems.add(new WorkPageDefinition(DefaultTeamState.Cancelled.name(),
-            SimpleWorkflowDefinition.CANCELLED_STATE_ID, AtsCancelledWorkPageDefinition.ID));
+         SimpleWorkflowDefinition.CANCELLED_STATE_ID, AtsCancelledWorkPageDefinition.ID));
       workItems.add(new SimpleWorkflowDefinition());
 
       return workItems;

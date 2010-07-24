@@ -17,8 +17,8 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  */
 public interface ISessionQuery {
 
-	void selectServerManagedSessions(ISessionCollector collector) throws OseeCoreException;
+   void selectServerManagedSessions(ISessionCollector collector) throws OseeCoreException;
 
-	void selectNonServerManagedSessions(ISessionCollector collector) throws OseeCoreException;
+   void selectNonServerManagedSessions(ISessionCollector collector) throws OseeCoreException;
 
 }

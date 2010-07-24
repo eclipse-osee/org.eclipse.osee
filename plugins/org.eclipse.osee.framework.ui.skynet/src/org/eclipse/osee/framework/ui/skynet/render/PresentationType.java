@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.render;
 
-
 public enum PresentationType {
    GENERALIZED_EDIT,
    SPECIALIZED_EDIT,

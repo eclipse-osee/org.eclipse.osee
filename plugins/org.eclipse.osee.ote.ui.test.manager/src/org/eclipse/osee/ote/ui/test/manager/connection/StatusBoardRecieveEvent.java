@@ -17,7 +17,7 @@ import java.util.concurrent.Callable;
  */
 public abstract class StatusBoardRecieveEvent<V> implements Callable<V> {
 
-   private V data;
+   private final V data;
 
    /**
     * 

@@ -65,7 +65,7 @@ public class ExcelAtsTaskArtifactExtractor {
             monitor = new NullProgressMonitor();
          }
          xmlReader.setContentHandler(new ExcelSaxHandler(
-               new InternalRowProcessor(monitor, transaction, sma, emailPOCs), true));
+            new InternalRowProcessor(monitor, transaction, sma, emailPOCs), true));
          xmlReader.parse(new InputSource(new InputStreamReader(source.toURL().openStream(), "UTF-8")));
       } catch (Exception ex) {
          throw new OseeCoreException(ex);
@@ -107,25 +107,32 @@ public class ExcelAtsTaskArtifactExtractor {
          this.sma = sma;
       }
 
+      @Override
       public void processEmptyRow() {
       }
 
+      @Override
       public void processCommentRow(String[] row) {
       }
 
+      @Override
       public void reachedEndOfWorksheet() {
       }
 
+      @Override
       public void detectedRowAndColumnCounts(int rowCount, int columnCount) {
       }
 
+      @Override
       public void foundStartOfWorksheet(String sheetName) {
       }
 
+      @Override
       public void processHeaderRow(String[] headerRow) {
          this.headerRow = headerRow.clone();
       }
 
+      @Override
       public void processRow(String[] row) {
          try {
             rowNum++;
@@ -158,7 +165,7 @@ public class ExcelAtsTaskArtifactExtractor {
                   }
                   if (u == null) {
                      OseeLog.log(AtsPlugin.class, Level.SEVERE, String.format(
-                           "Invalid Originator \"%s\" for row %d\nSetting to current user.", userName, rowNum));
+                        "Invalid Originator \"%s\" for row %d\nSetting to current user.", userName, rowNum));
                   }
                   taskArt.getLog().setOriginator(u);
                } else if (headerRow[i].equalsIgnoreCase("Assignees")) {
@@ -177,8 +184,8 @@ public class ExcelAtsTaskArtifactExtractor {
                         }
                      }
                      if (user == null) {
-                        OseeLog.log(AtsPlugin.class, Level.SEVERE, String.format(
-                              "Invalid Assignee \"%s\" for row %d.  Using current user.", userName, rowNum));
+                        OseeLog.log(AtsPlugin.class, Level.SEVERE,
+                           String.format("Invalid Assignee \"%s\" for row %d.  Using current user.", userName, rowNum));
                         user = UserManager.getUser();
                      }
                      assignees.add(user);
@@ -221,7 +228,7 @@ public class ExcelAtsTaskArtifactExtractor {
                         }
                      } catch (Exception ex) {
                         throw new OseeArgumentException(String.format("Invalid Percent Complete \"%s\" for row %d",
-                              str, rowNum));
+                           str, rowNum));
                      }
                      int percentInt = percent.intValue();
                      sma.getStateMgr().updateMetrics(0, percentInt, true);
@@ -234,7 +241,7 @@ public class ExcelAtsTaskArtifactExtractor {
                         hours = new Double(str);
                      } catch (Exception ex) {
                         throw new OseeArgumentException(String.format("Invalid Hours Spent \"%s\" for row %d", str,
-                              rowNum));
+                           rowNum));
                      }
                      sma.getStateMgr().updateMetrics(hours, sma.getStateMgr().getPercentComplete(), true);
                   }
@@ -246,7 +253,7 @@ public class ExcelAtsTaskArtifactExtractor {
                         hours = new Double(str);
                      } catch (Exception ex) {
                         throw new OseeArgumentException(String.format("Invalid Estimated Hours \"%s\" for row %d", str,
-                              rowNum));
+                           rowNum));
                      }
                      taskArt.setSoleAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(), hours);
                   }

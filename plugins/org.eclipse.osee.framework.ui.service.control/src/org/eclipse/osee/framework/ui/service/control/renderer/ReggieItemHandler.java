@@ -63,6 +63,7 @@ public class ReggieItemHandler implements IRenderer {
       return port;
    }
 
+   @Override
    public Control renderInComposite(Composite parent) {
       if (parent instanceof FormattedText) {
          FormattedText textArea = (FormattedText) parent;
@@ -82,7 +83,7 @@ public class ReggieItemHandler implements IRenderer {
          if (groups != null) {
             for (int index = 0; index < groups.length; index++) {
                String group = groups[index];
-               groupsToDisplay += (group != null && group.length() > 0 ? group : "Public");
+               groupsToDisplay += group != null && group.length() > 0 ? group : "Public";
                if (index + 1 < groups.length) {
                   groupsToDisplay += ", ";
                }

@@ -12,5 +12,9 @@ package org.eclipse.osee.ote.core.environment.status;
 
 public enum CommandEndedStatusEnum {
 
-   UNDEFINED, ABORTED, HUNG, EXCEPTION, RAN_TO_COMPLETION;
+   UNDEFINED,
+   ABORTED,
+   HUNG,
+   EXCEPTION,
+   RAN_TO_COMPLETION;
 }

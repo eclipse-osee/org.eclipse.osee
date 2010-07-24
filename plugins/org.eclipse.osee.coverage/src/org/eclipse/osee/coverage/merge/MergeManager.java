@@ -39,7 +39,7 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 public class MergeManager {
    private final CoveragePackage coveragePackage;
    private final CoverageImport coverageImport;
-   private Set<ICoverage> processedImportCoverages = new HashSet<ICoverage>(1000);
+   private final Set<ICoverage> processedImportCoverages = new HashSet<ICoverage>(1000);
 
    public MergeManager(CoveragePackage coveragePackage, CoverageImport coverageImport) {
       this.coveragePackage = coveragePackage;
@@ -93,11 +93,11 @@ public class MergeManager {
          boolean sameNumberChildren = importItemChildren.size() == packageItemChildren.size();
          if (resultData != null) {
             resultData.log(String.format("Num Import Items: %d - Num Package Items: %d", importItemChildren.size(),
-                  packageItemChildren.size()));
+               packageItemChildren.size()));
             resultData.log(AHTML.getLabelValueStr("moreImportChildrenThanPackageChildren",
-                  String.valueOf(moreImportChildrenThanPackageChildren)));
+               String.valueOf(moreImportChildrenThanPackageChildren)));
             resultData.log(AHTML.getLabelValueStr("morePackageChildrenThanImportChildren",
-                  String.valueOf(morePackageChildrenThanImportChildren)));
+               String.valueOf(morePackageChildrenThanImportChildren)));
             resultData.log(AHTML.getLabelValueStr("sameNumberChildren", String.valueOf(sameNumberChildren)));
 
             resultData.log(AHTML.bold("Package Children:"));
@@ -144,7 +144,7 @@ public class MergeManager {
          // Action: process them separately
          if (CoverageUtil.isAllCoverageItems(importItemChildren)) {
             handleChildrenCoverageItems(mergeItems, packageItemChildren, importCoverage, importItemChildren,
-                  importItemToMatchItem, resultData);
+               importItemToMatchItem, resultData);
          }
 
          // Case: All match and package # children == import # children
@@ -187,7 +187,7 @@ public class MergeManager {
             // Action: Process children of Matches; Add ones that were not Name-Only; Move ones that were
             else {
                handleSomeAddedSomeMoved(mergeItems, nameOnlyImportToPackageCoverage, packageItemChildren,
-                     importCoverage, importItemChildren, importItemToMatchItem, resultData);
+                  importCoverage, importItemChildren, importItemToMatchItem, resultData);
             }
 
          }
@@ -230,7 +230,7 @@ public class MergeManager {
       List<IMergeItem> groupMergeItems = new ArrayList<IMergeItem>();
       boolean unMergeableExists = false;
       Entry<List<ICoverage>, List<ICoverage>> matchedUnMatchedEntry =
-            getMatchedAndUnMatchedImportCoverageItems(importItemToMatchItem);
+         getMatchedAndUnMatchedImportCoverageItems(importItemToMatchItem);
       // Get all Import CoverageItems that do not match package CoverageItems
       List<ICoverage> unMatchedImportCoverageItems = matchedUnMatchedEntry.getValue();
       // Get all Import CoverageItems that DO match package CoverageItems
@@ -264,7 +264,7 @@ public class MergeManager {
          // Check for method change
          if (childMatchItem != null && isCoverageItemMethodUpdate(childMatchItem)) {
             groupMergeItems.add(new MergeItem(MergeType.CI_Method_Update, childMatchItem.getPackageItem(),
-                  childICoverage, false));
+               childICoverage, false));
             unMatchedImportCoverageItems.remove(childICoverage);
          }
       }
@@ -274,7 +274,7 @@ public class MergeManager {
          for (ICoverage packageItemChild : packageItemChildren) {
             // name equals package item not yet processed
             if (!packageItemsProcessed.contains(packageItemChild) && packageItemChild.getName().equals(
-                  childICoverage.getName())) {
+               childICoverage.getName())) {
                groupMergeItems.add(new MergeItem(MergeType.CI_Moved, packageItemChild, childICoverage, false));
                packageItemsProcessed.add(packageItemChild);
                unMatchedImportCoverageItems.add(childICoverage);
@@ -311,7 +311,9 @@ public class MergeManager {
       ICoverage importItem = childMatchItem.getImportItem();
       ICoverage packageItem = childMatchItem.getPackageItem();
       // Only valid for coverage items
-      if (!(importItem instanceof CoverageItem)) return false;
+      if (!(importItem instanceof CoverageItem)) {
+         return false;
+      }
       if (!((CoverageItem) importItem).getCoverageMethod().equals(((CoverageItem) packageItem).getCoverageMethod())) {
          return true;
       }
@@ -320,7 +322,9 @@ public class MergeManager {
 
    private boolean isCoverageItemAdded(Collection<? extends ICoverage> packageItemChildren, ICoverage importItemChild) {
       // Only valid for coverage items
-      if (!(importItemChild instanceof CoverageItem)) return false;
+      if (!(importItemChild instanceof CoverageItem)) {
+         return false;
+      }
       // Make sure there is no package item with same order number
       for (ICoverage packageItemChild : packageItemChildren) {
          if (packageItemChild.getOrderNumber().equals(importItemChild.getOrderNumber())) {
@@ -332,10 +336,12 @@ public class MergeManager {
 
    private ICoverage isCoverageItemRenamed(Collection<? extends ICoverage> packageItemChildren, ICoverage importItemChild) {
       // Only valid for coverage items
-      if (!(importItemChild instanceof CoverageItem)) return null;
+      if (!(importItemChild instanceof CoverageItem)) {
+         return null;
+      }
       // Make sure there is a package item with same order number
       ICoverage packageItemChild =
-            CoverageUtil.getCoverageItemMatchingOrder(packageItemChildren, (CoverageItem) importItemChild);
+         CoverageUtil.getCoverageItemMatchingOrder(packageItemChildren, (CoverageItem) importItemChild);
       return packageItemChild;
    }
 
@@ -351,8 +357,8 @@ public class MergeManager {
          // This child is moved, mark as modified; process children cause they existed before
          else if (nameOnlyImportToPackageCoverage.keySet().contains(childCoverage)) {
             groupMergeItems.add(new MergeItem(MergeType.Moved_Due_To_Add,
-                  nameOnlyImportToPackageCoverage.get(childMatchItem.getImportItem()), childMatchItem.getImportItem(),
-                  false));
+               nameOnlyImportToPackageCoverage.get(childMatchItem.getImportItem()), childMatchItem.getImportItem(),
+               false));
             processedImportCoverages.add(childMatchItem.getImportItem());
             processChildrenItems.add(childCoverage);
          }
@@ -372,11 +378,15 @@ public class MergeManager {
 
    private boolean isOnlyAddNewOnes(Map<ICoverage, ICoverage> nameOnlyImportToPackageCoverage, Collection<? extends ICoverage> packageItemChildren, Map<ICoverage, MatchItem> importItemToMatchItem) {
       // If no items match name-only then potential add
-      if (nameOnlyImportToPackageCoverage.size() != 0) return false;
+      if (nameOnlyImportToPackageCoverage.size() != 0) {
+         return false;
+      }
       // If any of the No_Match import order number match package number, than not an addOnly
       for (Entry<ICoverage, MatchItem> pair : importItemToMatchItem.entrySet()) {
          ICoverage importChild = pair.getKey();
-         if (!Strings.isValid(importChild.getOrderNumber())) continue;
+         if (!Strings.isValid(importChild.getOrderNumber())) {
+            continue;
+         }
          if (pair.getValue().getMatchType() == MatchType.No_Match__Name_Or_Order_Num) {
             for (ICoverage packageItem : packageItemChildren) {
                if (packageItem.getOrderNumber().equals(importChild.getOrderNumber())) {
@@ -420,9 +430,9 @@ public class MergeManager {
     */
    private boolean isImportItemsAddedOrMoved(boolean moreImportChildrenThanPackageChildren, Map<ICoverage, MatchItem> importItemToMatchItem) {
       boolean result =
-            moreImportChildrenThanPackageChildren && MatchItem.isAllMatchType(Arrays.asList(
-                  MatchType.Match__Name_And_Order_Num, MatchType.No_Match__Name_Or_Order_Num, MatchType.Match__Folder),
-                  importItemToMatchItem.values());
+         moreImportChildrenThanPackageChildren && MatchItem.isAllMatchType(Arrays.asList(
+            MatchType.Match__Name_And_Order_Num, MatchType.No_Match__Name_Or_Order_Num, MatchType.Match__Folder),
+            importItemToMatchItem.values());
       return result;
    }
 
@@ -458,7 +468,7 @@ public class MergeManager {
          else {
             if (!packageItem.getOrderNumber().equals(matches.iterator().next().getOrderNumber())) {
                groupMergeItems.add(new MergeItem(MergeType.Moved_Due_To_Delete, packageItem, matches.iterator().next(),
-                     false));
+                  false));
             }
          }
       }
@@ -472,7 +482,7 @@ public class MergeManager {
     * continue and check children's children
     */
    private boolean isAllMatchCase(boolean sameNumberChildren, Map<ICoverage, MatchItem> importItemToMatchItem) {
-      return (sameNumberChildren && MatchItem.isAllMatchType(MatchType.FullMatches, importItemToMatchItem.values()));
+      return sameNumberChildren && MatchItem.isAllMatchType(MatchType.FullMatches, importItemToMatchItem.values());
    }
 
    /**
@@ -524,7 +534,7 @@ public class MergeManager {
       if (importItem.getNamespace().startsWith(packageItem.getNamespace())) {
          for (ICoverage childPackageItem : packageItem.getChildren(false)) {
             MatchItem childMatchItem = getPackageCoverageItemRecurse(childPackageItem, importItem);
-            if (childMatchItem != null && (MatchType.isMatch(childMatchItem.getMatchType()))) {
+            if (childMatchItem != null && MatchType.isMatch(childMatchItem.getMatchType())) {
                return childMatchItem;
             }
          }

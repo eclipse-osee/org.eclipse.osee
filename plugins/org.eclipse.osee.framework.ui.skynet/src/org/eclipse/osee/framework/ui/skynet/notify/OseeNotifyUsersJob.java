@@ -48,7 +48,7 @@ public class OseeNotifyUsersJob extends Job {
       this.notificationEvents = notificationEvents;
       if (testing) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE,
-               "OseeNotifyUsersJob: testing is enabled....turn off for production.");
+            "OseeNotifyUsersJob: testing is enabled....turn off for production.");
       }
    }
 
@@ -78,7 +78,7 @@ public class OseeNotifyUsersJob extends Job {
          return Status.OK_STATUS;
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-         return new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
+         return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
       }
    }
 
@@ -88,7 +88,7 @@ public class OseeNotifyUsersJob extends Job {
       sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Reason", "Description", "Id", "URL"}));
       for (OseeNotificationEvent notificationEvent : notificationEvents) {
          sb.append(AHTML.addRowMultiColumnTable(new String[] {notificationEvent.getType(),
-               notificationEvent.getDescription(), notificationEvent.getId(), getHyperlink(notificationEvent)}));
+            notificationEvent.getDescription(), notificationEvent.getId(), getHyperlink(notificationEvent)}));
       }
       sb.append(AHTML.endMultiColumnTable());
       return sb.toString().replaceAll("\n", "");
@@ -113,9 +113,8 @@ public class OseeNotifyUsersJob extends Job {
          return;
       } else {
          OseeEmail emailMessage =
-               new OseeEmail(Arrays.asList(user.getEmail()), UserManager.getUser().getEmail(),
-                     UserManager.getUser().getEmail(), getNotificationEmailSubject(notificationEvents), html,
-                     BodyType.Html);
+            new OseeEmail(Arrays.asList(user.getEmail()), UserManager.getUser().getEmail(),
+               UserManager.getUser().getEmail(), getNotificationEmailSubject(notificationEvents), html, BodyType.Html);
          emailMessage.send();
       }
    }

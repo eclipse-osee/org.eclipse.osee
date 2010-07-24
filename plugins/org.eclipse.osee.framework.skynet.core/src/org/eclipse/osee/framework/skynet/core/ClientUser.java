@@ -69,7 +69,7 @@ final class ClientUser {
             } else {
                if (ClientSessionManager.isUserCreationRequired()) {
                   SkynetTransaction transaction =
-                        new SkynetTransaction(BranchManager.getCommonBranch(), "Populate current user");
+                     new SkynetTransaction(BranchManager.getCommonBranch(), "Populate current user");
                   UserManager.createMainUser(ClientSessionManager.getCurrentUserInfo(), transaction);
                   setCurrentUser(UserManager.getUserByUserId(ClientSessionManager.getCurrentUserInfo().getUserID()));
                   Operations.executeWorkAndCheckStatus(transaction, new NullProgressMonitor(), -1.0);
@@ -96,7 +96,7 @@ final class ClientUser {
          if (isGuestNotificationAllowed && newUser.getName().equals(SystemUser.Guest.getName())) {
             isGuestNotificationAllowed = false;
             OseeLog.log(Activator.class, Level.INFO,
-                  "You are logged into OSEE as \"Guest\".  If this is unexpected notify your OSEE admin");
+               "You are logged into OSEE as \"Guest\".  If this is unexpected notify your OSEE admin");
          }
       }
       if (ClientSessionManager.isSessionValid()) {

@@ -45,7 +45,7 @@ public class MassEditDirtyArtifactOperation extends AbstractOperation implements
       HashCollection<Branch, Artifact> branchMap = Artifacts.getBranchArtifactMap(ArtifactCache.getDirtyArtifacts());
       for (Branch branch : branchMap.keySet()) {
          MassArtifactEditor.editArtifacts(String.format("Dirty Artifacts for Branch [%s]", branch),
-               branchMap.getValues(branch));
+            branchMap.getValues(branch));
       }
    }
 

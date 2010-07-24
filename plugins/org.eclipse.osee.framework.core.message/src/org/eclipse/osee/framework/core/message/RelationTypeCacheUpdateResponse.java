@@ -106,8 +106,8 @@ public class RelationTypeCacheUpdateResponse {
 
       public String[] toArray() {
          return new String[] {String.valueOf(getId()), getGuid(), getName(), getStorageState().name(), getSideAName(),
-               getSideBName(), String.valueOf(getArtifactTypeSideA()), String.valueOf(getArtifactTypeSideB()),
-               getMultiplicity().name(), getDefaultOrderTypeGuid()};
+            getSideBName(), String.valueOf(getArtifactTypeSideA()), String.valueOf(getArtifactTypeSideB()),
+            getMultiplicity().name(), getDefaultOrderTypeGuid()};
       }
 
       public static RelationTypeRow fromArray(String[] data) {
@@ -126,7 +126,7 @@ public class RelationTypeCacheUpdateResponse {
          String defaultOrderTypeGuid = data[index++];
 
          return new RelationTypeRow(id, name, guid, storageState, sideAName, sideBName, artifactTypeSideA,
-               artifactTypeSideB, multiplicity, defaultOrderTypeGuid);
+            artifactTypeSideB, multiplicity, defaultOrderTypeGuid);
       }
    }
 
@@ -134,8 +134,8 @@ public class RelationTypeCacheUpdateResponse {
       List<RelationTypeRow> rows = new ArrayList<RelationTypeRow>();
       for (RelationType item : types) {
          rows.add(new RelationTypeRow(item.getId(), item.getName(), item.getGuid(), item.getStorageState(),
-               item.getSideAName(), item.getSideBName(), item.getArtifactTypeSideA().getId(),
-               item.getArtifactTypeSideB().getId(), item.getMultiplicity(), item.getDefaultOrderTypeGuid()));
+            item.getSideAName(), item.getSideBName(), item.getArtifactTypeSideA().getId(),
+            item.getArtifactTypeSideB().getId(), item.getMultiplicity(), item.getDefaultOrderTypeGuid()));
       }
       return new RelationTypeCacheUpdateResponse(rows);
    }

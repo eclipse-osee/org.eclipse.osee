@@ -23,8 +23,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 class StatusManager {
    private final Map<String, IHealthStatus> services;
-   private List<IStatusListener> listeners;
-   private Map<IStatusListener, IStatusListenerFilter> filters;
+   private final List<IStatusListener> listeners;
+   private final Map<IStatusListener, IStatusListenerFilter> filters;
 
    public StatusManager() {
       this.services = Collections.synchronizedMap(new TreeMap<String, IHealthStatus>());

@@ -58,10 +58,10 @@ public class TestEnumElementOperations {
       TestMessage msg = new TestMessage();
       support.activateMsg(msg);
       support.genericTestCheckWaitForValue(msg.ENUM_ELEMENT_1, EnumSet.of(VAL_0, VAL_9).toArray(new TestEnum[] {}),
-            VAL_10);
+         VAL_10);
 
       support.genericTestCheckWaitForValue(msg.ENUM_ELEMENT_1, EnumSet.of(VAL_1, VAL_10).toArray(new TestEnum[] {}),
-            VAL_0);
+         VAL_0);
    }
 
    @Test
@@ -84,6 +84,6 @@ public class TestEnumElementOperations {
       support.activateMsg(msg);
 
       support.genericTestCheckList(msg.ENUM_ELEMENT_1, new TestEnum[] {VAL_0, VAL_2, VAL_4, VAL_6, VAL_8, VAL_10},
-            new TestEnum[] {VAL_1, VAL_3, VAL_5, VAL_7, VAL_9});
+         new TestEnum[] {VAL_1, VAL_3, VAL_5, VAL_7, VAL_9});
    }
 }

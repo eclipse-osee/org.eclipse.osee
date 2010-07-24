@@ -30,20 +30,20 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ //
-JdkCoreTestSuite.class, //
-			FrameworkCoreTestSuite.class, //
-			AllCoreModelTestSuite.class, //
-			AllCoreDatastoreTestSuite.class, //
-			AllCoreMessageTestSuite.class, //
-			CoreServerTestSuite.class, //
-			BranchManagementTestSuite.class, //
-			AllLifecycleTestSuite.class,//
-			ResourceManagementTestSuite.class, //
-			AttributeLocatorProviderTestSuite.class, //
-			AttributeProviderTestSuite.class, //
-			AllSearchEngineTestSuite.class, //
-			OseeTypesTestSuite.class, //
+@Suite.SuiteClasses({
+JdkCoreTestSuite.class,
+   FrameworkCoreTestSuite.class,
+   AllCoreModelTestSuite.class, 
+   AllCoreDatastoreTestSuite.class, 
+   AllCoreMessageTestSuite.class, 
+   CoreServerTestSuite.class, 
+   BranchManagementTestSuite.class, 
+   AllLifecycleTestSuite.class,
+   ResourceManagementTestSuite.class, 
+   AttributeLocatorProviderTestSuite.class, 
+   AttributeProviderTestSuite.class, 
+   AllSearchEngineTestSuite.class, 
+   OseeTypesTestSuite.class, 
 })
 public class AllServerTestsSuite {
 

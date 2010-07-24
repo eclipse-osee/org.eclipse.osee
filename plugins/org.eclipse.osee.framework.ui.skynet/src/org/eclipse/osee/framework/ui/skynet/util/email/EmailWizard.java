@@ -55,17 +55,17 @@ public class EmailWizard extends Wizard {
       try {
          if (UserManager.getUser().getEmail().equals("")) {
             AWorkbench.popup(String.format(
-                  "Current user [%s] has no email address configured.\n\nEmail can not be sent", UserManager.getUser()));
+               "Current user [%s] has no email address configured.\n\nEmail can not be sent", UserManager.getUser()));
             return true;
          }
          if (wizardPage.getToAddresses().length == 0) {
             AWorkbench.popup(String.format("Emails can not be resolved for recipients.\n\nEmail not be sent",
-                  UserManager.getUser()));
+               UserManager.getUser()));
             return true;
          }
          OseeEmail emailMessage =
-               new OseeEmail(Arrays.asList(wizardPage.getToAddresses()), UserManager.getUser().getEmail(),
-                     UserManager.getUser().getEmail(), subject, "", BodyType.Html);
+            new OseeEmail(Arrays.asList(wizardPage.getToAddresses()), UserManager.getUser().getEmail(),
+               UserManager.getUser().getEmail(), subject, "", BodyType.Html);
          emailMessage.setRecipients(Message.RecipientType.CC, wizardPage.getCcAddresses());
          emailMessage.setRecipients(Message.RecipientType.BCC, wizardPage.getBccAddresses());
          String otherText = wizardPage.getText();
@@ -77,7 +77,7 @@ public class EmailWizard extends Wizard {
          emailMessage.send();
       } catch (Exception e) {
          MessageDialog.openInformation(null, "Message Could Not Be Sent",
-               "Your Email Message could not be sent.\n\n" + e.getLocalizedMessage());
+            "Your Email Message could not be sent.\n\n" + e.getLocalizedMessage());
 
          return false;
       }

@@ -26,6 +26,7 @@ public final class BranchChangeStateRequestTranslator implements ITranslator<Cha
       BRANCH_STATE,
    }
 
+   @Override
    public ChangeBranchStateRequest convert(PropertyStore propertyStore) throws OseeCoreException {
       int branchId = propertyStore.getInt(Entry.BRANCH_ID.name());
       BranchState state = BranchState.valueOf(propertyStore.get(Entry.BRANCH_STATE.name()));
@@ -33,6 +34,7 @@ public final class BranchChangeStateRequestTranslator implements ITranslator<Cha
       return data;
    }
 
+   @Override
    public PropertyStore convert(ChangeBranchStateRequest data) throws OseeCoreException {
       PropertyStore store = new PropertyStore();
       store.put(Entry.BRANCH_ID.name(), data.getBranchId());

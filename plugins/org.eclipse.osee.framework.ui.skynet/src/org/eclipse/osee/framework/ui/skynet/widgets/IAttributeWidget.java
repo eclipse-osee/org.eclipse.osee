@@ -20,16 +20,16 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public interface IAttributeWidget extends IArtifactStoredWidget {
 
-	/**
-	 * Set attributeType used as storage for this widget
-	 * 
-	 * @throws OseeCoreException
-	 */
-	public void setAttributeType(Artifact artifact, String attributeTypeName) throws OseeCoreException;
+   /**
+    * Set attributeType used as storage for this widget
+    * 
+    * @throws OseeCoreException
+    */
+   public void setAttributeType(Artifact artifact, String attributeTypeName) throws OseeCoreException;
 
-	/**
-	 * Get attributeType used as storage for this widget
-	 */
-	public String getAttributeType();
+   /**
+    * Get attributeType used as storage for this widget
+    */
+   public String getAttributeType();
 
 }

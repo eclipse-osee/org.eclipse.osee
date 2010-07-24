@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.resource.management.Options;
 
 public class TranslationManager {
    private static final String INSERT_INTO_IMPORT_MAP =
-         "INSERT INTO osee_import_map (import_id, sequence_id, sequence_name) VALUES (?, ?, ?)";
+      "INSERT INTO osee_import_map (import_id, sequence_id, sequence_name) VALUES (?, ?, ?)";
 
    private final List<IdTranslator> translators;
    private final Map<String, IdTranslator> translatorMap;

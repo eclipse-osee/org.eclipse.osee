@@ -52,7 +52,9 @@ class InternalOseeServerInfo extends OseeServerInfo {
    }
 
    private void checkVersionArgument(String version) throws OseeCoreException {
-      if (!Strings.isValid(version)) throw new OseeArgumentException(String.format("Osee version argument is invalid"));
+      if (!Strings.isValid(version)) {
+         throw new OseeArgumentException(String.format("Osee version argument is invalid"));
+      }
    }
 
    private void updateVersionsFromDataStore() {
@@ -91,8 +93,9 @@ class InternalOseeServerInfo extends OseeServerInfo {
    void removeVersion(String version) throws OseeCoreException {
       synchronized (updateFromStore) {
          checkVersionArgument(version);
-         if (defaultVersions.contains(version)) throw new OseeArgumentException(String.format(
-               "Unable to remove default Osee version [%s]", version));
+         if (defaultVersions.contains(version)) {
+            throw new OseeArgumentException(String.format("Unable to remove default Osee version [%s]", version));
+         }
          Set<String> supportedVersions = new HashSet<String>(Arrays.asList(getVersion()));
          if (supportedVersions.contains(version)) {
             isRegistered = false;

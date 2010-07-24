@@ -13,5 +13,5 @@ package org.eclipse.osee.ote.message.tool.rec.entry;
 import org.eclipse.osee.ote.message.listener.IOSEEMessageListener;
 
 public interface IMessageEntry extends IOSEEMessageListener {
-	public void enable(boolean enable);
+   public void enable(boolean enable);
 }

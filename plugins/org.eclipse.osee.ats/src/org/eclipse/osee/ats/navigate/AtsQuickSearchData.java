@@ -36,8 +36,9 @@ public class AtsQuickSearchData {
       return searchStr;
    }
 
+   @Override
    public String toString() {
       return String.format("%s - [%s]%s", name, searchStr,
-            includeCompleteCancelled ? " - Include Completed/Cancelled" : "");
+         includeCompleteCancelled ? " - Include Completed/Cancelled" : "");
    }
 }

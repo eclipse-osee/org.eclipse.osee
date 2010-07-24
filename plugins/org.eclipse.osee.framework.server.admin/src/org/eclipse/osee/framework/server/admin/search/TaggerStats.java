@@ -28,7 +28,7 @@ class TaggerStats extends BaseServerCommand {
 
    private String toString(ITagItemStatistics task) {
       return String.format("id: [%d] - processed [%d] tags in [%d] ms", task.getGammaId(), task.getTotalTags(),
-            task.getProcessingTime());
+         task.getProcessingTime());
    }
 
    @Override
@@ -42,16 +42,16 @@ class TaggerStats extends BaseServerCommand {
       buffer.append("                  Tagger Stats                \n");
       buffer.append("----------------------------------------------\n");
       buffer.append(String.format("Query Id Processing Time  - avg: [%s] ms - longest: [%s] ms\n",
-            stats.getAverageQueryIdProcessingTime(), stats.getLongestQueryIdProcessingTime()));
+         stats.getAverageQueryIdProcessingTime(), stats.getLongestQueryIdProcessingTime()));
       buffer.append(String.format("Query Id Wait Time        - avg: [%s] ms - longest: [%s] ms\n",
-            stats.getAverageQueryIdWaitTime(), stats.getLongestQueryIdWaitTime()));
+         stats.getAverageQueryIdWaitTime(), stats.getLongestQueryIdWaitTime()));
 
       buffer.append(String.format("Attribute Processing Time - avg: [%s] ms - longest: [%s] ms\n",
-            stats.getAverageAttributeProcessingTime(), stats.getLongestAttributeProcessingTime()));
+         stats.getAverageAttributeProcessingTime(), stats.getLongestAttributeProcessingTime()));
       buffer.append(String.format("Attribute with longest processing time - %s\n", toString(stats.getLongestTask())));
       buffer.append(String.format("Attribute with most tags - %s\n", toString(stats.getMostTagsTask())));
       buffer.append(String.format("Total - QueryIds: [%d] Attributes: [%d] Tags: [%d]\n",
-            stats.getTotalQueryIdsProcessed(), stats.getTotalAttributesProcessed(), stats.getTotalTags()));
+         stats.getTotalQueryIdsProcessed(), stats.getTotalAttributesProcessed(), stats.getTotalTags()));
       buffer.append(String.format("Total Query Ids Waiting to be Processed - [%d]\n", tagger.getWorkersInQueue()));
       buffer.append(String.format("Total Query Ids in Tag Queue Table - [%d]\n", stats.getTotalQueryIdsInQueue()));
       buffer.append(String.format("Total Tags in System - [%d]\n\n", stats.getTagsInSystem()));

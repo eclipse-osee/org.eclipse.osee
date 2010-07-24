@@ -51,16 +51,16 @@ public class ArtifactIdWithoutVersionsCheck extends DatabaseHealthOperation {
       List<ItemEntry> itemsToDelete = new ArrayList<ItemEntry>();
 
       itemsToDelete.add(new ItemEntry("osee_relation_link", "rel_link_id", "a_art_id", //
-            getInvalidEntries(monitor, allInvalidArtIds, GET_INVALID_A_ART_IDS, true)));
+         getInvalidEntries(monitor, allInvalidArtIds, GET_INVALID_A_ART_IDS, true)));
 
       itemsToDelete.add(new ItemEntry("osee_relation_link", "rel_link_id", "b_art_id", //
-            getInvalidEntries(monitor, allInvalidArtIds, GET_INVALID_B_ART_IDS, true)));
+         getInvalidEntries(monitor, allInvalidArtIds, GET_INVALID_B_ART_IDS, true)));
 
       itemsToDelete.add(new ItemEntry("osee_attribute", "attr_id", "art_id", //
-            getInvalidEntries(monitor, allInvalidArtIds, GET_INVALID_ATTR_IDS_ART_IDS, true)));
+         getInvalidEntries(monitor, allInvalidArtIds, GET_INVALID_ATTR_IDS_ART_IDS, true)));
 
       itemsToDelete.add(new ItemEntry("osee_artifact_acl", "art_id", "art_id", //
-            getInvalidEntries(monitor, allInvalidArtIds, GET_INVALID_ACL_ART_IDS, false)));
+         getInvalidEntries(monitor, allInvalidArtIds, GET_INVALID_ACL_ART_IDS, false)));
 
       int beforeArtifactCheck = allInvalidArtIds.size();
 
@@ -89,7 +89,7 @@ public class ArtifactIdWithoutVersionsCheck extends DatabaseHealthOperation {
       appendToDetails(AHTML.addHeaderRowMultiColumnTable(new String[] {"TABLE", "REFERENCED_BY", "TOTAL INVALIDS"}));
       for (ItemEntry entry : itemsToDelete) {
          appendToDetails(AHTML.addRowMultiColumnTable(new String[] {entry.table, entry.invalidField,
-               String.valueOf(entry.invalids.size())}));
+            String.valueOf(entry.invalids.size())}));
       }
       appendToDetails(AHTML.endMultiColumnTable());
       monitor.worked(calculateWork(0.10));

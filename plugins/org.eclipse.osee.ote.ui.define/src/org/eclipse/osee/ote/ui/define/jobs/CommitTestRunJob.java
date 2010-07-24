@@ -34,7 +34,7 @@ public class CommitTestRunJob extends Job {
 
    private static final String JOB_NAME = "Commit Test Runs";
 
-   private CommitJobDialog jobDialog;
+   private final CommitJobDialog jobDialog;
    private Artifact[] committed;
 
    public CommitTestRunJob(Artifact[] allitems, Artifact[] preSelected, boolean isOverrideAllowed) {
@@ -50,6 +50,7 @@ public class CommitTestRunJob extends Job {
       return committed;
    }
 
+   @Override
    protected IStatus run(IProgressMonitor monitor) {
       IStatus toReturn = Status.CANCEL_STATUS;
       jobDialog.schedule();
@@ -71,7 +72,7 @@ public class CommitTestRunJob extends Job {
          } catch (Exception ex) {
             if (monitor.isCanceled() != true) {
                OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, "Error committing Artifacts.", ex);
-               toReturn = new Status(Status.ERROR, OteUiDefinePlugin.PLUGIN_ID, "Error committing Artifacts.", ex);
+               toReturn = new Status(IStatus.ERROR, OteUiDefinePlugin.PLUGIN_ID, "Error committing Artifacts.", ex);
             }
          }
       }

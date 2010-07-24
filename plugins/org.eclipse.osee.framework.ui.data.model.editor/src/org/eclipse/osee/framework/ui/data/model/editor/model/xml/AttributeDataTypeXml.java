@@ -54,18 +54,32 @@ public class AttributeDataTypeXml extends BaseXmlDataType<AttributeDataType> {
    @Override
    protected void populateFromTextElement(AttributeDataType dataType, String tag, String text) throws XMLStreamException {
       super.populateFromTextElement(dataType, tag, text);
-      if (ATTRIBUTE_BASE.equals(tag)) dataType.setBaseAttributeClass(text);
-      if (ATTRIBUTE_PROVIDER.equals(tag)) dataType.setProviderAttributeClass(text);
-      if (TAGGER.equals(tag)) dataType.setTaggerId(text);
-      if (EXTENSION.equals(tag)) dataType.setFileTypeExtension(text);
-      if (TOOL_TIP.equals(tag)) dataType.setToolTipText(text);
+      if (ATTRIBUTE_BASE.equals(tag)) {
+         dataType.setBaseAttributeClass(text);
+      }
+      if (ATTRIBUTE_PROVIDER.equals(tag)) {
+         dataType.setProviderAttributeClass(text);
+      }
+      if (TAGGER.equals(tag)) {
+         dataType.setTaggerId(text);
+      }
+      if (EXTENSION.equals(tag)) {
+         dataType.setFileTypeExtension(text);
+      }
+      if (TOOL_TIP.equals(tag)) {
+         dataType.setToolTipText(text);
+      }
    }
 
    @Override
    protected void populateFromCDataElement(AttributeDataType dataType, String tag, String text) throws XMLStreamException {
       super.populateFromCDataElement(dataType, tag, text);
-      if (DEFAULT_VALUE.equals(tag)) dataType.setDefaultValue(text);
-      if (ENUM_TYPE_ID.equals(tag)) dataType.setEnumTypeId(Integer.parseInt(text));
+      if (DEFAULT_VALUE.equals(tag)) {
+         dataType.setDefaultValue(text);
+      }
+      if (ENUM_TYPE_ID.equals(tag)) {
+         dataType.setEnumTypeId(Integer.parseInt(text));
+      }
    }
 
    @Override

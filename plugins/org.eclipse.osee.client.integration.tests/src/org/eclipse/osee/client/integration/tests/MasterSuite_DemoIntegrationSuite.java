@@ -27,43 +27,43 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({//
 MasterTestSuite_DemoDbInit.class, //
-			MasterTestSuite_DemoDbPopulate.class, //
-			MasterTestSuite_DemoDbTests.class, //
+   MasterTestSuite_DemoDbPopulate.class, //
+   MasterTestSuite_DemoDbTests.class, //
 })
 /**
  * @author Donald G. Dunne
  */
 public class MasterSuite_DemoIntegrationSuite {
 
-	@Rule
-	public TemporaryFolder tempFolder = new TemporaryFolder();
+   @Rule
+   public TemporaryFolder tempFolder = new TemporaryFolder();
 
-	@Rule
-	public ExternalResource appServerResource = new ExternalResource() {
-		private OseeAppServerUtil appServerTestUtil;
+   @Rule
+   public ExternalResource appServerResource = new ExternalResource() {
+      private OseeAppServerUtil appServerTestUtil;
 
-		@Override
-		protected void before() throws Throwable {
-			File file = tempFolder.newFolder("appData");
-			TestOseeAppServerConfig config = new TestOseeAppServerConfig(file.getAbsolutePath());
-			appServerTestUtil = new OseeAppServerUtil(config);
-			appServerTestUtil.start();
-		};
+      @Override
+      protected void before() throws Throwable {
+         File file = tempFolder.newFolder("appData");
+         TestOseeAppServerConfig config = new TestOseeAppServerConfig(file.getAbsolutePath());
+         appServerTestUtil = new OseeAppServerUtil(config);
+         appServerTestUtil.start();
+      };
 
-		@Override
-		protected void after() {
-			try {
-				appServerTestUtil.stop();
-			} catch (Exception ex) {
-				OseeLog.log(MasterSuite_DemoIntegrationSuite.class, Level.SEVERE, ex);
-			}
-		};
-	};
+      @Override
+      protected void after() {
+         try {
+            appServerTestUtil.stop();
+         } catch (Exception ex) {
+            OseeLog.log(MasterSuite_DemoIntegrationSuite.class, Level.SEVERE, ex);
+         }
+      };
+   };
 
-	@org.junit.Test
-	public void setup() throws Exception {
-		OseeLog.log(MasterSuite_DemoIntegrationSuite.class, Level.INFO, "Starting osee client integration test suite...");
-		Assert.assertTrue("Demo Application Server must be running",
-					ClientSessionManager.getAuthenticationProtocols().contains("demo"));
-	}
+   @org.junit.Test
+   public void setup() throws Exception {
+      OseeLog.log(MasterSuite_DemoIntegrationSuite.class, Level.INFO, "Starting osee client integration test suite...");
+      Assert.assertTrue("Demo Application Server must be running",
+         ClientSessionManager.getAuthenticationProtocols().contains("demo"));
+   }
 }

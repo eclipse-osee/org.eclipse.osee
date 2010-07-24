@@ -43,90 +43,103 @@ import org.eclipse.osee.ote.message.tool.rec.entry.StringElementEntry;
 
 public class ElementEntryFactory {
 
-	private static final class ElementVisitor implements IElementVisitor {
+   private static final class ElementVisitor implements IElementVisitor {
 
-		private IElementEntry entry = null;
-		
-		public IElementEntry getEntry() {
-			return entry;
-		}
-		
-		public void asCharElement(CharElement element) {
-           entry = new CharElementEntry(element);
-		}
+      private IElementEntry entry = null;
 
-		public void asEnumeratedElement(EnumeratedElement<?> element) {
-			entry = new EnumeratedElementEntry(element);
-		}
+      public IElementEntry getEntry() {
+         return entry;
+      }
 
-		public void asFixedPointElement(FixedPointElement element) {
-			entry = new RealElementEntry(element);
-		}
+      @Override
+      public void asCharElement(CharElement element) {
+         entry = new CharElementEntry(element);
+      }
 
-		public void asFloat32(Float32Element element) {
-			entry = new RealElementEntry(element);		
-		}
+      @Override
+      public void asEnumeratedElement(EnumeratedElement<?> element) {
+         entry = new EnumeratedElementEntry(element);
+      }
 
-		public void asFloat64(Float64Element element) {
-			entry = new RealElementEntry(element);
-		}
+      @Override
+      public void asFixedPointElement(FixedPointElement element) {
+         entry = new RealElementEntry(element);
+      }
 
-		public void asGenericElement(Element element) {
-		}
+      @Override
+      public void asFloat32(Float32Element element) {
+         entry = new RealElementEntry(element);
+      }
 
-		public void asIntegerElement(IntegerElement element) {
-			entry = new IntegerElementEntry(element);
-		}
+      @Override
+      public void asFloat64(Float64Element element) {
+         entry = new RealElementEntry(element);
+      }
 
-		public void asRealElement(RealElement element) {
-			entry = new RealElementEntry(element);
-		}
+      @Override
+      public void asGenericElement(Element element) {
+      }
 
-		public void asRecordElement(RecordElement element) {
-		   entry = new RecordElementEntry(element);
-		}
+      @Override
+      public void asIntegerElement(IntegerElement element) {
+         entry = new IntegerElementEntry(element);
+      }
 
-		public void asStringElement(StringElement element) {
-			entry = new StringElementEntry(element);
-		}
+      @Override
+      public void asRealElement(RealElement element) {
+         entry = new RealElementEntry(element);
+      }
 
+      @Override
+      public void asRecordElement(RecordElement element) {
+         entry = new RecordElementEntry(element);
+      }
 
-		public void asBooleanElement(BooleanElement element) {
-		   entry = new BooleanElementEntry(element);
-		}
+      @Override
+      public void asStringElement(StringElement element) {
+         entry = new StringElementEntry(element);
+      }
 
+      @Override
+      public void asBooleanElement(BooleanElement element) {
+         entry = new BooleanElementEntry(element);
+      }
+
+      @Override
       public void asRecordMap(RecordMap<? extends RecordElement> element) {
-           entry = new RecordMapEntry(element);
-		}
+         entry = new RecordMapEntry(element);
+      }
 
-		public void asEmptyEnumElement(EmptyEnum_Element element) {
-           entry = new EmptyEnumEntry(element);
-		}
+      @Override
+      public void asEmptyEnumElement(EmptyEnum_Element element) {
+         entry = new EmptyEnumEntry(element);
+      }
 
       @Override
       public void asArrayElement(ArrayElement element) {
          entry = new ArrayElementEntry(element);
       }
 
-		public void asLongIntegerElement(LongIntegerElement element) {
-			entry = new LongIntegerElementEntry(element);
-		}
+      @Override
+      public void asLongIntegerElement(LongIntegerElement element) {
+         entry = new LongIntegerElementEntry(element);
+      }
 
-		public void asSignedInteger16Element(SignedInteger16Element element) {
-		   entry = new SignedInteger16ElementEntry(element);
-		}
+      @Override
+      public void asSignedInteger16Element(SignedInteger16Element element) {
+         entry = new SignedInteger16ElementEntry(element);
+      }
 
-        
-	}
-	
-	public static IElementEntry createEntry(Element element) {
-		
-		ElementVisitor visitor = new ElementVisitor();
-		element.visit(visitor);
-		IElementEntry entry = visitor.getEntry();
-		if (entry != null) {
-			return entry;
-		}
-		throw new IllegalArgumentException("factory cannot generate an entry for class " + element.getClass().getName());
-	}
+   }
+
+   public static IElementEntry createEntry(Element element) {
+
+      ElementVisitor visitor = new ElementVisitor();
+      element.visit(visitor);
+      IElementEntry entry = visitor.getEntry();
+      if (entry != null) {
+         return entry;
+      }
+      throw new IllegalArgumentException("factory cannot generate an entry for class " + element.getClass().getName());
+   }
 }

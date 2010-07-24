@@ -25,8 +25,8 @@ import org.eclipse.osee.ote.messaging.dds.ViewStateKind;
  */
 
 /**
- * Provides information about a sample of data. This class is not fully implemented, but is passed
- * through the system with default values in the current implementation.
+ * Provides information about a sample of data. This class is not fully implemented, but is passed through the system
+ * with default values in the current implementation.
  * 
  * @author Robert A. Fisher
  * @author David Diepenbrock
@@ -48,10 +48,8 @@ public class SampleInfo {
 
    /**
     * Create a <code>SampleInfo</code> with particular values for all of the state date.
-    * 
     */
-   public SampleInfo(SampleStateKind sampleStateKind, ViewStateKind viewStateKind, InstanceStateKind instanceStateKind, long disposeGenerationCount,
-         long noWritersGenerationCount, long sampleRank, long generationRank, long absoluteGenerationRank, Time sourceTimestamp, InstanceHandle instanceHandle) {
+   public SampleInfo(SampleStateKind sampleStateKind, ViewStateKind viewStateKind, InstanceStateKind instanceStateKind, long disposeGenerationCount, long noWritersGenerationCount, long sampleRank, long generationRank, long absoluteGenerationRank, Time sourceTimestamp, InstanceHandle instanceHandle) {
       super();
       this.sampleStateKind = sampleStateKind;
       this.viewStateKind = viewStateKind;
@@ -67,129 +65,149 @@ public class SampleInfo {
 
    /**
     * Create a <code>SampleInfo</code> with default values for all of the state data.
-    *
     */
    public SampleInfo() {
-      this(SampleStateKind.NOT_READ, ViewStateKind.NEW, InstanceStateKind.ALIVE, 0, 0, 0, 0, 0, new Time(), new InstanceHandle());
+      this(SampleStateKind.NOT_READ, ViewStateKind.NEW, InstanceStateKind.ALIVE, 0, 0, 0, 0, 0, new Time(),
+         new InstanceHandle());
    }
 
    /**
-    * This method is here for future functionality that is described in the DDS specification
-    * but has not been implemented or used.
+    * This method is here for future functionality that is described in the DDS specification but has not been
+    * implemented or used.
     * 
     * @return Returns the absoluteGenerationRank.
     */
    public long getAbsoluteGenerationRank() {
       //DONT_NEED
-      if (true) throw new NotImplementedException();
+      if (true) {
+         throw new NotImplementedException();
+      }
       return absoluteGenerationRank;
    }
 
    /**
-    * This method is here for future functionality that is described in the DDS specification
-    * but has not been implemented or used.
+    * This method is here for future functionality that is described in the DDS specification but has not been
+    * implemented or used.
     * 
     * @return Returns the disposeGenerationCount.
     */
    public long getDisposeGenerationCount() {
       //DONT_NEED
-      if (true) throw new NotImplementedException();
+      if (true) {
+         throw new NotImplementedException();
+      }
       return disposeGenerationCount;
    }
 
    /**
-    * This method is here for future functionality that is described in the DDS specification
-    * but has not been implemented or used.
+    * This method is here for future functionality that is described in the DDS specification but has not been
+    * implemented or used.
     * 
     * @return Returns the generationRank.
     */
    public long getGenerationRank() {
       //DONT_NEED
-      if (true) throw new NotImplementedException();
+      if (true) {
+         throw new NotImplementedException();
+      }
       return generationRank;
    }
 
    /**
-    * This method is here for future functionality that is described in the DDS specification
-    * but has not been implemented or used.
+    * This method is here for future functionality that is described in the DDS specification but has not been
+    * implemented or used.
     * 
     * @return Returns the instanceHandle.
     */
    public InstanceHandle getInstanceHandle() {
       //DONT_NEED
-      if (true) throw new NotImplementedException();
+      if (true) {
+         throw new NotImplementedException();
+      }
       return instanceHandle;
    }
 
    /**
-    * This method is here for future functionality that is described in the DDS specification
-    * but has not been implemented or used.
+    * This method is here for future functionality that is described in the DDS specification but has not been
+    * implemented or used.
     * 
     * @return Returns the instanceStateKind.
     */
    public InstanceStateKind getInstanceStateKind() {
       //DONT_NEED
-      if (true) throw new NotImplementedException();
+      if (true) {
+         throw new NotImplementedException();
+      }
       return instanceStateKind;
    }
 
    /**
-    * This method is here for future functionality that is described in the DDS specification
-    * but has not been implemented or used.
+    * This method is here for future functionality that is described in the DDS specification but has not been
+    * implemented or used.
     * 
     * @return Returns the noWritersGenerationCount.
     */
    public long getNoWritersGenerationCount() {
       //DONT_NEED
-      if (true) throw new NotImplementedException();
+      if (true) {
+         throw new NotImplementedException();
+      }
       return noWritersGenerationCount;
    }
 
    /**
-    * This method is here for future functionality that is described in the DDS specification
-    * but has not been implemented or used.
+    * This method is here for future functionality that is described in the DDS specification but has not been
+    * implemented or used.
     * 
     * @return Returns the sampleRank.
     */
    public long getSampleRank() {
       //DONT_NEED
-      if (true) throw new NotImplementedException();
+      if (true) {
+         throw new NotImplementedException();
+      }
       return sampleRank;
    }
 
    /**
-    * This method is here for future functionality that is described in the DDS specification
-    * but has not been implemented or used.
+    * This method is here for future functionality that is described in the DDS specification but has not been
+    * implemented or used.
     * 
     * @return Returns the sampleStateKind.
     */
    public SampleStateKind getSampleStateKind() {
       //DONT_NEED
-      if (true) throw new NotImplementedException();
+      if (true) {
+         throw new NotImplementedException();
+      }
       return sampleStateKind;
    }
 
    /**
-    * This method is here for future functionality that is described in the DDS specification
-    * but has not been implemented or used.
+    * This method is here for future functionality that is described in the DDS specification but has not been
+    * implemented or used.
     * 
     * @return Returns the sourceTimestamp.
     */
    public Time getSourceTimestamp() {
       //DONT_NEED
-      if (true) throw new NotImplementedException();
+      if (true) {
+         throw new NotImplementedException();
+      }
       return sourceTimestamp;
    }
 
    /**
-    * This method is here for future functionality that is described in the DDS specification
-    * but has not been implemented or used.
+    * This method is here for future functionality that is described in the DDS specification but has not been
+    * implemented or used.
     * 
     * @return Returns the viewStateKind.
     */
    public ViewStateKind getViewStateKind() {
       //DONT_NEED
-      if (true) throw new NotImplementedException();
+      if (true) {
+         throw new NotImplementedException();
+      }
       return viewStateKind;
    }
 

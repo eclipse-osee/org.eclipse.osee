@@ -15,7 +15,6 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Map;
 import java.util.Set;
-
 import org.eclipse.osee.ote.message.commands.RecordCommand;
 import org.eclipse.osee.ote.message.commands.SetElementValue;
 import org.eclipse.osee.ote.message.commands.SubscribeToMessage;
@@ -44,7 +43,7 @@ public interface IRemoteMessageService extends Remote {
 
    void zeroizeElement(ZeroizeElement cmd) throws RemoteException;
 
- //  int changeSubscription(ChangeSubscription cmd) throws RemoteException;
+   //  int changeSubscription(ChangeSubscription cmd) throws RemoteException;
 
    /**
     * Notifies service to send message updates to the specified ip address
@@ -63,12 +62,12 @@ public interface IRemoteMessageService extends Remote {
    InetSocketAddress getMsgUpdateSocketAddress() throws RemoteException;
 
    void stopRecording() throws RemoteException;
-   
+
    void terminateService() throws RemoteException;
 
    void reset() throws RemoteException;
 
-   void setupRecorder(IMessageEntryFactory factory)throws RemoteException;
+   void setupRecorder(IMessageEntryFactory factory) throws RemoteException;
 
-   public Map<String, Throwable> getCancelledSubscriptions()throws RemoteException;
+   public Map<String, Throwable> getCancelledSubscriptions() throws RemoteException;
 }

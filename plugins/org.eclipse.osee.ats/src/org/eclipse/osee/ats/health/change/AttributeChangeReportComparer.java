@@ -13,43 +13,45 @@ package org.eclipse.osee.ats.health.change;
 /**
  * @author Jeff C. Phillips
  */
-public class AttributeChangeReportComparer extends DataChangeReportComparer{
+public class AttributeChangeReportComparer extends DataChangeReportComparer {
    private static String ATTR_START_TAG = "<attrId>";
    private static String ATTR_END_TAG = "</attrId>";
    private int artId;
    private int attrId;
-   
+
    public AttributeChangeReportComparer(String content) {
       super(content);
    }
 
    @Override
    public void processContent(String content) {
-      artId = Integer.parseInt(content.substring(content.indexOf(ArtifactChangeReportComparer.ART_START_TAG)
-                                                 + ArtifactChangeReportComparer.ART_START_TAG.length(), 
-                                                 content.indexOf(ArtifactChangeReportComparer.ART_END_TAG)));
-      
-      attrId = Integer.parseInt(content.substring(content.indexOf(ATTR_START_TAG)
-                                                 + ATTR_START_TAG.length(), content.indexOf(ATTR_END_TAG)));
+      artId =
+         Integer.parseInt(content.substring(
+            content.indexOf(ArtifactChangeReportComparer.ART_START_TAG) + ArtifactChangeReportComparer.ART_START_TAG.length(),
+            content.indexOf(ArtifactChangeReportComparer.ART_END_TAG)));
+
+      attrId =
+         Integer.parseInt(content.substring(content.indexOf(ATTR_START_TAG) + ATTR_START_TAG.length(),
+            content.indexOf(ATTR_END_TAG)));
    }
 
    @Override
    public int compareTo(Object obj) {
       int compareResults = -1;
-      
-      if(obj instanceof AttributeChangeReportComparer){
-         AttributeChangeReportComparer comparer = (AttributeChangeReportComparer)obj;
-         
-         if(this.artId == comparer.artId){
-            if(this.attrId == comparer.attrId){
+
+      if (obj instanceof AttributeChangeReportComparer) {
+         AttributeChangeReportComparer comparer = (AttributeChangeReportComparer) obj;
+
+         if (this.artId == comparer.artId) {
+            if (this.attrId == comparer.attrId) {
                compareResults = 0;
-            } else if(this.attrId > comparer.attrId){
+            } else if (this.attrId > comparer.attrId) {
                compareResults = 1;
             }
-         } else if(this.artId > comparer.artId){
-            compareResults = 1;            
+         } else if (this.artId > comparer.artId) {
+            compareResults = 1;
          }
       }
-      return compareResults ;
+      return compareResults;
    }
 }

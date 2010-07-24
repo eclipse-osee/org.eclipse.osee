@@ -9,6 +9,7 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 package org.eclipse.osee.ote.messaging.dds.test.data;
+
 import org.eclipse.osee.ote.messaging.dds.DataSample;
 import org.eclipse.osee.ote.messaging.dds.ReturnCode;
 import org.eclipse.osee.ote.messaging.dds.entity.DataReader;
@@ -30,7 +31,8 @@ import org.eclipse.osee.ote.messaging.dds.status.SubscriptionMatchStatus;
 public class IntMessageReader extends DataReader {
 
    DataSample dataSample;
-   private IntMessage intMessage;
+   private final IntMessage intMessage;
+
    /**
     * @param topicDescription
     * @param subscriber
@@ -40,32 +42,51 @@ public class IntMessageReader extends DataReader {
     */
    public IntMessageReader(TopicDescription topicDescription, Subscriber subscriber, Boolean enabled, DataReaderListener listener, EntityFactory parentFactory) {
       super(topicDescription, subscriber, enabled, listener, parentFactory);
-      
+
       intMessage = new IntMessage();
       dataSample = new DataSample(intMessage);
       this.setListener(new IntMessageListener(), null);
    }
-   
+
    public class IntMessageListener implements DataReaderListener {
 
-      public synchronized void  onDataAvailable(DataReader theReader) {
-         System.out.println ("onDataAvailable Called for " + theReader.getTopicDescription().getName());
+      @Override
+      public synchronized void onDataAvailable(DataReader theReader) {
+         System.out.println("onDataAvailable Called for " + theReader.getTopicDescription().getName());
       }
-      public void onSampleRejected(DataReader theReader, SampleRejectedStatus status) {      }
-      public void onLivelinessChanged(DataReader theReader, LivelinessChangedStatus status) {      }
-      public void onRequestedDeadlineMissed(DataReader theReader, RequestedDeadlineMissedStatus status) {      }
-      public void onRequestedIncompatibleQos(DataReader theReader, RequestedIncompatibleQosStatus status) {      }
-      public void onSubscriptionMatch(DataReader theReader, SubscriptionMatchStatus status) {      }
-      public void onSampleLost(DataReader theReader, SampleLostStatus status) {      }
+
+      @Override
+      public void onSampleRejected(DataReader theReader, SampleRejectedStatus status) {
+      }
+
+      @Override
+      public void onLivelinessChanged(DataReader theReader, LivelinessChangedStatus status) {
+      }
+
+      @Override
+      public void onRequestedDeadlineMissed(DataReader theReader, RequestedDeadlineMissedStatus status) {
+      }
+
+      @Override
+      public void onRequestedIncompatibleQos(DataReader theReader, RequestedIncompatibleQosStatus status) {
+      }
+
+      @Override
+      public void onSubscriptionMatch(DataReader theReader, SubscriptionMatchStatus status) {
+      }
+
+      @Override
+      public void onSampleLost(DataReader theReader, SampleLostStatus status) {
+      }
    }
 
    public IntegerData takeNextSample() {
       ReturnCode code = super.takeNextSample(dataSample);
-      
+
       System.out.println("Result of take is: " + code.getDescription());
       if (dataSample.getData() != null) {
-	      IntegerData data = (IntegerData)dataSample.getData();
-	      return data;
+         IntegerData data = (IntegerData) dataSample.getData();
+         return data;
       } else {
          return new IntegerData(-1);
       }

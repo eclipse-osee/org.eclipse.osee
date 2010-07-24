@@ -21,7 +21,7 @@ public class OteServiceProperties {
    private IServiceConnector connector;
 
    private static final String NA = "N.A.";
-   private boolean debug = false;
+   private final boolean debug = false;
 
    private EnhancedProperties properties;
 
@@ -33,15 +33,15 @@ public class OteServiceProperties {
       this.properties = properties;
    }
 
-   private String getLocalProperty(String name){
-      if(connector != null){
-         return (String)connector.getProperty(name, NA);
-      } else if(properties != null){
-         return (String)properties.getProperty(name, NA);
+   private String getLocalProperty(String name) {
+      if (connector != null) {
+         return (String) connector.getProperty(name, NA);
+      } else if (properties != null) {
+         return (String) properties.getProperty(name, NA);
       }
       return NA;
    }
-   
+
    /**
     * @return the name
     */
@@ -105,12 +105,12 @@ public class OteServiceProperties {
    public void printStats() {
       if (debug) {
          System.out.printf("test service found:\n\tname: %s\n\tstation: %s\n\ttype: %s\n\tcomment: %s\n\t%s\n",
-               getName(), getStation(), getType(), getComment(), getGroup());
+            getName(), getStation(), getType(), getComment(), getGroup());
       }
    }
-   
+
    public Serializable getProperty(String name) {
-	   return connector.getProperty(name, null);
+      return connector.getProperty(name, null);
    }
 
    public String getOwner() {

@@ -20,41 +20,46 @@ import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public class CommandDistributerImpl implements CommandDistributer {
    private final ExecutorService executor = Executors.newSingleThreadExecutor();
    private final Set<CommandHandler> handlers = new CopyOnWriteArraySet<CommandHandler>();
 
-   public CommandDistributerImpl(){
+   public CommandDistributerImpl() {
 
    }
 
+   @Override
    public void distribute(final Command command) {
       executor.submit(new Runnable() {
 
+         @Override
          public void run() {
-            for(CommandHandler handler:handlers){
+            for (CommandHandler handler : handlers) {
                try {
-                  if(handler.canHandle(command.getId())){
+                  if (handler.canHandle(command.getId())) {
                      handler.handle(command);
                   }
                } catch (RuntimeException e) {
-                  OseeLog.log(CommandDistributerImpl.class, Level.SEVERE, "Eception in handler for " + command.getId().toString(), e);
+                  OseeLog.log(CommandDistributerImpl.class, Level.SEVERE,
+                     "Eception in handler for " + command.getId().toString(), e);
                }
             }
          }
       });
    }
 
+   @Override
    public void registerHandler(CommandHandler commandHandler) {
       handlers.add(commandHandler);
    }
 
+   @Override
    public void unregisterHandler(CommandHandler commandHandler) {
       handlers.remove(commandHandler);
    }
 
+   @Override
    public void shutdown() {
       OseeLog.log(CommandDistributerImpl.class, Level.INFO, "Command distributor shutting down...");
       handlers.clear();
@@ -62,7 +67,8 @@ public class CommandDistributerImpl implements CommandDistributer {
       try {
          executor.awaitTermination(30000, TimeUnit.MILLISECONDS);
       } catch (InterruptedException ex) {
-         OseeLog.log(CommandDistributerImpl.class, Level.WARNING, "Interrupted while shutting down command distributor", ex);
+         OseeLog.log(CommandDistributerImpl.class, Level.WARNING,
+            "Interrupted while shutting down command distributor", ex);
       }
    }
 

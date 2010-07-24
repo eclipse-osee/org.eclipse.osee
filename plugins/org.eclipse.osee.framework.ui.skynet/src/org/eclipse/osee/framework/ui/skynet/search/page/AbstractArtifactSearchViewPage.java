@@ -18,6 +18,7 @@ import org.eclipse.search.ui.text.AbstractTextSearchViewPage;
  */
 public abstract class AbstractArtifactSearchViewPage extends AbstractTextSearchViewPage {
 
+   @Override
    public AbstractArtifactSearchResult getInput() {
       return (AbstractArtifactSearchResult) super.getInput();
    }

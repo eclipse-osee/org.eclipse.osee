@@ -52,20 +52,24 @@ public class ArtifactEditPart extends DataTypeEditPart {
       super((ArtifactDataType) model);
    }
 
+   @Override
    protected void createEditPolicies() {
       super.createEditPolicies();
       installEditPolicy(EditPolicy.LAYOUT_ROLE, new ArtifactLayoutEditPolicy());
       installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, new ArtifactGraphicalNodeEditPolicy());
    }
 
+   @Override
    protected IFigure createFigure() {
       return new ArtifactTypeFigure(new Label(), new SelectableLabel());
    }
 
+   @Override
    public IFigure getContentPane() {
       return ((ArtifactTypeFigure) getFigure()).getContentPane();
    }
 
+   @Override
    protected IFigure getDirectEditFigure() {
       return ((ArtifactTypeFigure) getFigure()).getNameFigure();
    }
@@ -74,10 +78,12 @@ public class ArtifactEditPart extends DataTypeEditPart {
       return (ArtifactDataType) getDataType();
    }
 
+   @Override
    public boolean canDeleteFromDiagram() {
       return true;
    }
 
+   @Override
    @SuppressWarnings("unchecked")
    protected List getModelChildren() {
       ArtifactDataType model = getArtifactDataType();
@@ -88,24 +94,25 @@ public class ArtifactEditPart extends DataTypeEditPart {
          children.add(new ContainerModel(model, ContainerType.INHERITED_RELATIONS));
          children.add(new ContainerModel(model, ContainerType.LOCAL_RELATIONS));
       }
-//      checkInheritance();
+      //      checkInheritance();
       return children;
    }
 
-//   private void checkInheritance() {
-//      ArtifactDataType model = getArtifactDataType();
-//
-//      for (ArtifactDataType key : toRemove) {
-//         InheritanceLinkModel link = inheritanceMap.remove(key);
-//         if (link != null) {
-//            children.remove(link);
-//         }
-//      }
-//   }
+   //   private void checkInheritance() {
+   //      ArtifactDataType model = getArtifactDataType();
+   //
+   //      for (ArtifactDataType key : toRemove) {
+   //         InheritanceLinkModel link = inheritanceMap.remove(key);
+   //         if (link != null) {
+   //            children.remove(link);
+   //         }
+   //      }
+   //   }
 
+   @Override
    protected void refreshVisuals() {
       super.refreshVisuals();
-      ArtifactTypeFigure artifactTypeFigure = ((ArtifactTypeFigure) getFigure());
+      ArtifactTypeFigure artifactTypeFigure = (ArtifactTypeFigure) getFigure();
       artifactTypeFigure.setHeaderIcon(getArtifactDataType().getImage());
       ((Label) artifactTypeFigure.getNameFigure()).setText(getArtifactDataType().getName());
 
@@ -115,42 +122,49 @@ public class ArtifactEditPart extends DataTypeEditPart {
       super.refreshChildren();
    }
 
+   @Override
    protected void handleModelEvent(Object msg) {
       refreshVisuals();
    }
 
    private final class ArtifactLayoutEditPolicy extends LayoutEditPolicy {
+      @Override
       protected EditPolicy createChildEditPolicy(EditPart child) {
          return null;
       }
 
+      @Override
       protected Command getCreateCommand(CreateRequest request) {
          if (request.getNewObject() instanceof AttributeDataType) {
             return new CreateAttributeCommand((AttributeDataType) request.getNewObject(),
-                  ((ArtifactEditPart) getHost()).getArtifactDataType());
+               ((ArtifactEditPart) getHost()).getArtifactDataType());
          } else if (request.getNewObject() instanceof RelationDataType) {
             return new CreateRelationCommand(((RelationDataType) request.getNewObject()),
-                  ((ArtifactEditPart) getHost()).getArtifactDataType());
+               ((ArtifactEditPart) getHost()).getArtifactDataType());
          }
          return UnexecutableCommand.INSTANCE;
       }
 
+      @Override
       protected Command getDeleteDependantCommand(Request request) {
          return null;
       }
 
+      @Override
       protected Command getMoveChildrenCommand(Request request) {
          return UnexecutableCommand.INSTANCE;
       }
    }
 
    private final class ArtifactGraphicalNodeEditPolicy extends GraphicalNodeEditPolicy {
+      @Override
       protected Command getConnectionCompleteCommand(CreateConnectionRequest request) {
          CreateConnectionCommand cmd = (CreateConnectionCommand) request.getStartCommand();
          cmd.setTarget((ArtifactDataType) getHost().getModel());
          return cmd;
       }
 
+      @Override
       protected Command getConnectionCreateCommand(CreateConnectionRequest request) {
          ConnectionModel connectionModel = (ConnectionModel) request.getNewObject();
          if (connectionModel instanceof RelationLinkModel || connectionModel instanceof InheritanceLinkModel) {
@@ -162,10 +176,11 @@ public class ArtifactEditPart extends DataTypeEditPart {
          return null;
       }
 
+      @Override
       @SuppressWarnings("unchecked")
       protected Command getReconnectSourceCommand(ReconnectRequest request) {
          ConnectionModel<ArtifactDataType> connectionModel =
-               (ConnectionModel<ArtifactDataType>) request.getConnectionEditPart().getModel();
+            (ConnectionModel<ArtifactDataType>) request.getConnectionEditPart().getModel();
          if (connectionModel instanceof RelationLinkModel || connectionModel instanceof InheritanceLinkModel) {
             ArtifactDataType source = (ArtifactDataType) getHost().getModel();
             ReconnectConnectionCommand cmd = new ReconnectConnectionCommand(connectionModel);
@@ -175,10 +190,11 @@ public class ArtifactEditPart extends DataTypeEditPart {
          return UnexecutableCommand.INSTANCE;
       }
 
+      @Override
       @SuppressWarnings("unchecked")
       protected Command getReconnectTargetCommand(ReconnectRequest request) {
          ConnectionModel<ArtifactDataType> connectionModel =
-               (ConnectionModel<ArtifactDataType>) request.getConnectionEditPart().getModel();
+            (ConnectionModel<ArtifactDataType>) request.getConnectionEditPart().getModel();
          if (connectionModel instanceof RelationLinkModel || connectionModel instanceof InheritanceLinkModel) {
             ArtifactDataType target = (ArtifactDataType) getHost().getModel();
             ReconnectConnectionCommand cmd = new ReconnectConnectionCommand(connectionModel);

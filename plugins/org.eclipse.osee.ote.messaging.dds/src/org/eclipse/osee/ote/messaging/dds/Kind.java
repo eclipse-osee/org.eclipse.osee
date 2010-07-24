@@ -11,16 +11,16 @@
 package org.eclipse.osee.ote.messaging.dds;
 
 /**
- * Base class for the various *Kind enumerations specified in the DDS specification. This provides
- * the basic structure and accessor methods that are common for these enumerations.
+ * Base class for the various *Kind enumerations specified in the DDS specification. This provides the basic structure
+ * and accessor methods that are common for these enumerations.
  * 
  * @author Robert A. Fisher
  * @author David Diepenbrock
  */
-public abstract class Kind{
-   private String kindName;
-   private long kindId;
-   
+public abstract class Kind {
+   private final String kindName;
+   private final long kindId;
+
    /**
     * @param kindName
     * @param kindId
@@ -30,11 +30,11 @@ public abstract class Kind{
       this.kindName = kindName;
       this.kindId = kindId;
    }
-   
+
    public String getKindName() {
       return kindName;
    }
-   
+
    public long getKindId() {
       return kindId;
    }

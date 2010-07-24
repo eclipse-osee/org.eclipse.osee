@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.plugin.core;
 
 import java.util.logging.Level;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.logging.ILoggerListener;
 import org.eclipse.osee.framework.plugin.core.internal.PluginCoreActivator;
@@ -20,14 +21,15 @@ public class EclipseErrorLogLogger implements ILoggerListener {
    public EclipseErrorLogLogger() {
    }
 
+   @Override
    public void log(String loggerName, Level level, String message, Throwable th) {
       int statusLevel = 0;
       if (level.intValue() >= Level.SEVERE.intValue()) {
-         statusLevel = Status.ERROR;
+         statusLevel = IStatus.ERROR;
       } else if (level.intValue() >= Level.WARNING.intValue()) {
-         statusLevel = Status.WARNING;
+         statusLevel = IStatus.WARNING;
       } else if (level.intValue() >= Level.INFO.intValue()) {
-         statusLevel = Status.INFO;
+         statusLevel = IStatus.INFO;
       } else {
          return;
       }

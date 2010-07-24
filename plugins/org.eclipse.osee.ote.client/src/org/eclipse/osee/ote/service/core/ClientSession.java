@@ -15,7 +15,6 @@ import java.rmi.RemoteException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
-
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -43,8 +42,7 @@ public class ClientSession extends AbstractRemoteSession {
    private SessionDelegate sessionDelegate = null;
    private final ReentrantLock lock = new ReentrantLock();
    private final OteClientEndpointReceive receive;
-   
-   
+
    /**
     * @param user
     */
@@ -52,8 +50,8 @@ public class ClientSession extends AbstractRemoteSession {
       super(user);
       this.address = address;
       this.receive = receive;
-      Activator.log(Level.INFO, String.format("Created OTE session for %s. Address=%s\n ", user.getName(),
-            address.toString()));
+      Activator.log(Level.INFO,
+         String.format("Created OTE session for %s. Address=%s\n ", user.getName(), address.toString()));
    }
 
    @Override
@@ -113,6 +111,7 @@ public class ClientSession extends AbstractRemoteSession {
       }
    }
 
+   @Override
    public void initiateInformationalPrompt(String message) throws RemoteException {
       assert sessionDelegate != null : "delegate is null";
       try {
@@ -122,6 +121,7 @@ public class ClientSession extends AbstractRemoteSession {
       }
    }
 
+   @Override
    public void initiatePassFailPrompt(IPassFailPromptResponse prompt) throws RemoteException {
       assert sessionDelegate != null : "delegate is null";
       try {
@@ -131,6 +131,7 @@ public class ClientSession extends AbstractRemoteSession {
       }
    }
 
+   @Override
    public void initiateResumePrompt(IResumeResponse prompt) throws RemoteException {
       assert sessionDelegate != null : "delegate is null";
       try {
@@ -140,6 +141,7 @@ public class ClientSession extends AbstractRemoteSession {
       }
    }
 
+   @Override
    public void initiateUserInputPrompt(IUserInputPromptResponse prompt) throws RemoteException {
       assert sessionDelegate != null : "delegate is null";
       try {
@@ -177,7 +179,7 @@ public class ClientSession extends AbstractRemoteSession {
                return new TestHostConnection(connector, testHost, result.getEnvironment(), result.getSessionKey());
             } else {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Error Connecting to the OTE Test Server.",
-                     new Exception(result.getStatus().getMessage()));
+                  new Exception(result.getStatus().getMessage()));
             }
             return null;
          } finally {

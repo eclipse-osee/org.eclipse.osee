@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
  */
 public class FileUiUtil {
    public static String FILENAME_WARNING_MESSAGE =
-         "\n\nis approaching a large size which may cause the opening application to error. " + "\nSuggest moving your workspace to avoid potential errors. ";
+      "\n\nis approaching a large size which may cause the opening application to error. " + "\nSuggest moving your workspace to avoid potential errors. ";
    public final static int FILENAME_LIMIT = 215;
    public static boolean showAgain = true;
 

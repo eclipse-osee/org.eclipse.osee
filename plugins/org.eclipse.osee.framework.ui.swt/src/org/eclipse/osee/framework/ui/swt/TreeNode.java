@@ -49,27 +49,32 @@ public class TreeNode implements ITreeNode, Serializable {
       this.backingData = backingData;
    }
 
+   @Override
    public Object[] getChildren() {
       return children;
    }
 
+   @Override
    public void setChildren(Object[] objChildren) {
       if (objChildren == null) {
          this.children = new Object[0];
       } else {
          Collection<Object> newChildren = new ArrayList<Object>(objChildren.length);
 
-         for (Object obj : objChildren)
-            newChildren.add((obj instanceof ITreeNode) ? obj : getChild(obj));
+         for (Object obj : objChildren) {
+            newChildren.add(obj instanceof ITreeNode ? obj : getChild(obj));
+         }
 
          this.children = newChildren.toArray();
       }
    }
 
+   @Override
    public Object getBackingData() {
       return backingData;
    }
 
+   @Override
    public ITreeNode getParent() {
       return parent;
    }
@@ -96,20 +101,21 @@ public class TreeNode implements ITreeNode, Serializable {
       try {
          node.setChildren(provider.run(node.getBackingData()));
 
-         for (Object child : node.getChildren())
+         for (Object child : node.getChildren()) {
             fillNode((ITreeNode) child, provider);
+         }
 
       } catch (Exception e) {
          node.setChildren(new Object[] {e});
       }
    }
 
+   @Override
    @SuppressWarnings("unchecked")
    public Object getAdapter(Class adapter) {
-      if (adapter == null)
+      if (adapter == null) {
          throw new IllegalArgumentException("adapter can not be null");
-
-      else if (backingData instanceof IAdaptable) {
+      } else if (backingData instanceof IAdaptable) {
          return ((IAdaptable) backingData).getAdapter(adapter);
       }
 

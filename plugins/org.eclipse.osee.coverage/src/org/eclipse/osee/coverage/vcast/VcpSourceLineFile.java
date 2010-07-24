@@ -47,8 +47,8 @@ public class VcpSourceLineFile {
       Matcher m = pattern.matcher(contents);
       while (m.find()) {
          CoverageUnit coverageUnit =
-               new CoverageUnit(parentCoverageUnit, m.group(1), m.group(2) + ":" + m.group(3) + "-" + m.group(4),
-                     fileContentsProvider);
+            new CoverageUnit(parentCoverageUnit, m.group(1), m.group(2) + ":" + m.group(3) + "-" + m.group(4),
+               fileContentsProvider);
          String source = Arrays.toString(vcpSourceLisFile.getSection(m.group(3), m.group(4)));
          coverageUnit.setFileContents(source);
          parentCoverageUnit.addCoverageUnit(coverageUnit);

@@ -89,7 +89,7 @@ public class RpcrSignalChanges {
 
    public boolean affectsLine(String line) {
       for (int i = 0; i < signals.size(); i++) {
-         if (line.indexOf((String) signals.get(i)) != -1) {
+         if (line.indexOf(signals.get(i)) != -1) {
             return true;
          }
       }

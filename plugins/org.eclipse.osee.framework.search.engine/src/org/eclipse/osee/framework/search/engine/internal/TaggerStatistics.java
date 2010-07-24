@@ -57,54 +57,67 @@ public class TaggerStatistics extends TagListenerAdapter implements Cloneable, I
       this.mostTags = DEFAULT_TASK_STATS;
    }
 
+   @Override
    public long getLongestQueryIdWaitTime() {
       return longestQueryIdWaitTime;
    }
 
+   @Override
    public long getLongestQueryIdProcessingTime() {
       return longestQueryIdProcessingTime;
    }
 
+   @Override
    public long getAverageQueryIdWaitTime() {
       return averageQueryIdWaitTime;
    }
 
+   @Override
    public int getTotalQueryIdsProcessed() {
       return this.totalQueryIdsProcessed;
    }
 
+   @Override
    public long getAverageQueryIdProcessingTime() {
       return averageQueryIdProcessingTime;
    }
 
+   @Override
    public long getAverageAttributeProcessingTime() {
       return averageAttributeProcessingTime;
    }
 
+   @Override
    public long getTotalTags() {
       return totalTags;
    }
 
+   @Override
    public int getTotalAttributesProcessed() {
       return totalAttributesProcessed;
    }
 
+   @Override
    public long getLongestAttributeProcessingTime() {
       return longestTask.getProcessingTime();
    }
 
+   @Override
    public ITagItemStatistics getLongestTask() {
       return longestTask;
    }
 
+   @Override
    public ITagItemStatistics getMostTagsTask() {
       return mostTags;
    }
 
+   @Override
    public long getTagsInSystem() throws OseeDataStoreException {
       return SearchTagDataStore.getTotalTags();
    }
 
+   @Override
    public long getTotalQueryIdsInQueue() throws OseeDataStoreException {
       return SearchTagDataStore.getTotalQueryIdsInQueue();
    }

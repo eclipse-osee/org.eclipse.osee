@@ -64,7 +64,12 @@ public class SkyWalkerOptions {
    public static String RADIAL_RIGHT_LAYOUT = "Radial - Right";
    public static String SPRING_LAYOUT = "Spring";
    public static enum LinkName {
-      None, Link_Name, Full_Link_Name, Phrasing_A_to_B, Phrasing_B_to_A, Other_Side_Name
+      None,
+      Link_Name,
+      Full_Link_Name,
+      Phrasing_A_to_B,
+      Phrasing_B_to_A,
+      Other_Side_Name
    };
    private LinkName linkName = LinkName.Link_Name;
 
@@ -141,12 +146,12 @@ public class SkyWalkerOptions {
       StringBuffer sb = new StringBuffer();
       sb.append(AXml.addTagData("guid", artifact.getGuid()));
       sb.append(AXml.addTagData("branchId", artifact.getBranch().getId() + ""));
-      sb.append(AXml.addTagData("artTypes", org.eclipse.osee.framework.jdk.core.util.Collections.toString(",",
-            getSelectedArtTypes())));
-      sb.append(AXml.addTagData("relTypes", org.eclipse.osee.framework.jdk.core.util.Collections.toString(",",
-            getSelectedRelTypes())));
-      sb.append(AXml.addTagData("showAttributes", org.eclipse.osee.framework.jdk.core.util.Collections.toString(",",
-            getSelectedShowAttributeTypes())));
+      sb.append(AXml.addTagData("artTypes",
+         org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", getSelectedArtTypes())));
+      sb.append(AXml.addTagData("relTypes",
+         org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", getSelectedRelTypes())));
+      sb.append(AXml.addTagData("showAttributes",
+         org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", getSelectedShowAttributeTypes())));
       sb.append(AXml.addTagData("layout", getLayoutName(getLayout())));
       sb.append(AXml.addTagData("levels", getLevels() + ""));
       sb.append(AXml.addTagData("linkName", getLinkName() + ""));
@@ -229,7 +234,7 @@ public class SkyWalkerOptions {
       }
 
       notifyListeners(ModType.ArtType, ModType.RelType, ModType.Level, ModType.Layout, ModType.Link_Name,
-            ModType.Show_Attribute);
+         ModType.Show_Attribute);
    }
 
    /**

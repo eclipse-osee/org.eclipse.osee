@@ -23,7 +23,8 @@ public class CoverageAttributes {
    private static Map<String, CoverageAttributes> attrNameToAttr = new HashMap<String, CoverageAttributes>();
 
    public enum Namespace {
-      Coverage("coverage."), None("");
+      Coverage("coverage."),
+      None("");
       private final String prefix;
 
       private Namespace(String prefix) {
@@ -44,8 +45,8 @@ public class CoverageAttributes {
    public static final CoverageAttributes LOCATION = new CoverageAttributes(Namespace.Coverage, "Location");
    public static final CoverageAttributes ORDER = new CoverageAttributes(Namespace.Coverage, "Order");
    public static final CoverageAttributes COVERAGE_ITEM = new CoverageAttributes(Namespace.Coverage, "Coverage Item");
-   public static final CoverageAttributes COVERAGE_OPTIONS =
-         new CoverageAttributes(Namespace.Coverage, "Coverage Options");
+   public static final CoverageAttributes COVERAGE_OPTIONS = new CoverageAttributes(Namespace.Coverage,
+      "Coverage Options");
 
    protected CoverageAttributes(String displayName, String storeName, String description) {
       this.displayName = displayName;

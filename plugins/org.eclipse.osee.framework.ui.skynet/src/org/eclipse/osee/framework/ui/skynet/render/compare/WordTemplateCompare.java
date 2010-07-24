@@ -61,7 +61,7 @@ public class WordTemplateCompare implements IComparator {
       if (!artifacts.isEmpty()) {
          if (RenderingUtil.arePopupsAllowed()) {
             WordUiUtil.displayWarningMessageDialog("Diff Artifacts Warning",
-                  "Detected tracked changes for some artifacts. Please refer to the results HTML report.");
+               "Detected tracked changes for some artifacts. Please refer to the results HTML report.");
             WordUiUtil.displayTrackedChangesOnArtifacts(artifacts);
          }
       } else {
@@ -83,7 +83,7 @@ public class WordTemplateCompare implements IComparator {
          WordImageChecker.restoreOriginalValue(newerContent, newAnnotationValue);
 
          return compare(baseArtifact, newerArtifact, compareFiles.getFirst(), compareFiles.getSecond(),
-               presentationType, show);
+            presentationType, show);
       }
       return "";
    }
@@ -97,11 +97,11 @@ public class WordTemplateCompare implements IComparator {
          if (baseVersion != null) {
             String baseFileStr = baseFile.getLocation().toOSString();
             diffPath =
-                  baseFileStr.substring(0, baseFileStr.lastIndexOf(')') + 1) + " to " + (newerVersion != null ? newerVersion.getTransactionNumber() : " deleted") + baseFileStr.substring(baseFileStr.lastIndexOf(')') + 1);
+               baseFileStr.substring(0, baseFileStr.lastIndexOf(')') + 1) + " to " + (newerVersion != null ? newerVersion.getTransactionNumber() : " deleted") + baseFileStr.substring(baseFileStr.lastIndexOf(')') + 1);
          } else {
             String baseFileStr = newerFile.getLocation().toOSString();
             diffPath =
-                  baseFileStr.substring(0, baseFileStr.lastIndexOf('(') + 1) + "new " + baseFileStr.substring(baseFileStr.lastIndexOf('(') + 1);
+               baseFileStr.substring(0, baseFileStr.lastIndexOf('(') + 1) + "new " + baseFileStr.substring(baseFileStr.lastIndexOf('(') + 1);
          }
       } else {
          IFolder folder = RenderingUtil.getRenderFolder(baseVersion.getBranch(), PresentationType.MERGE_EDIT);
@@ -110,7 +110,7 @@ public class WordTemplateCompare implements IComparator {
 
       VbaWordDiffGenerator diffGenerator = new VbaWordDiffGenerator();
       diffGenerator.initialize(presentationType == PresentationType.DIFF,
-            presentationType == PresentationType.MERGE_EDIT);
+         presentationType == PresentationType.MERGE_EDIT);
 
       if (presentationType == PresentationType.MERGE_EDIT && baseVersion != null) {
          IFolder folder = RenderingUtil.getRenderFolder(baseVersion.getBranch(), PresentationType.MERGE_EDIT);
@@ -145,7 +145,7 @@ public class WordTemplateCompare implements IComparator {
       boolean isSuppressWord = converter.getRenderer().getBooleanOption("suppressWord");
 
       IOperation operation =
-            new WordChangeReportOperation(artifactsToCompare, converter, reportDirName, fileName, isSuppressWord);
+         new WordChangeReportOperation(artifactsToCompare, converter, reportDirName, fileName, isSuppressWord);
       Operations.executeWorkAndCheckStatus(operation, monitor, 1.0);
    }
 }

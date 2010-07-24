@@ -29,13 +29,13 @@ public class CaseInsensitiveString implements CharSequence {
 
    @Override
    public int hashCode() {
-      return ((upperCaseString == null) ? 0 : upperCaseString.hashCode());
+      return upperCaseString == null ? 0 : upperCaseString.hashCode();
    }
 
    @Override
    public boolean equals(Object obj) {
       if (obj instanceof CaseInsensitiveString) {
-         CaseInsensitiveString other = ((CaseInsensitiveString) obj);
+         CaseInsensitiveString other = (CaseInsensitiveString) obj;
          if (upperCaseString == null) {
             return other.upperCaseString == null;
          } else {

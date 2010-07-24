@@ -28,64 +28,70 @@ public class BaseTestLifecycleListenerProvider implements ITestLifecycleListener
       listeners = new CopyOnWriteArrayList<ITestLifecycleListener>();
    }
 
+   @Override
    public void clear() {
       listeners.clear();
    }
 
+   @Override
    public boolean addListener(ITestLifecycleListener listener) {
       return listeners.add(listener);
    }
 
+   @Override
    public IMethodResult notifyPostDispose(IPropertyStore propertyStore, TestEnvironment env) {
       IEventData eventData = eventProvider.getEventData(propertyStore, null);
       MethodResultImpl result = new MethodResultImpl(ReturnCode.OK);
       for (ITestLifecycleListener listener : listeners) {
-    	  result = collectStatus(result, listener.postDispose(eventData, env));
+         result = collectStatus(result, listener.postDispose(eventData, env));
       }
       return result;
    }
 
-   public IMethodResult notifyPostInstantiation(IPropertyStore propertyStore, TestScript test, TestEnvironment env)  {
+   @Override
+   public IMethodResult notifyPostInstantiation(IPropertyStore propertyStore, TestScript test, TestEnvironment env) {
       IEventData eventData = eventProvider.getEventData(propertyStore, test);
       MethodResultImpl result = new MethodResultImpl(ReturnCode.OK);
       for (ITestLifecycleListener listener : listeners) {
-    	  result = collectStatus(result, listener.postInstantiation(eventData, env));
+         result = collectStatus(result, listener.postInstantiation(eventData, env));
       }
       return result;
    }
 
-   public IMethodResult notifyPreDispose(IPropertyStore propertyStore, TestScript test, TestEnvironment env)   {
+   @Override
+   public IMethodResult notifyPreDispose(IPropertyStore propertyStore, TestScript test, TestEnvironment env) {
       IEventData eventData = eventProvider.getEventData(propertyStore, test);
       MethodResultImpl result = new MethodResultImpl(ReturnCode.OK);
       for (ITestLifecycleListener listener : listeners) {
-    	  result = collectStatus(result, listener.preDispose(eventData, env));
+         result = collectStatus(result, listener.preDispose(eventData, env));
       }
       return result;
    }
 
-   public IMethodResult notifyPreInstantiation(IPropertyStore propertyStore, TestEnvironment env)   {
+   @Override
+   public IMethodResult notifyPreInstantiation(IPropertyStore propertyStore, TestEnvironment env) {
       IEventData eventData = eventProvider.getEventData(propertyStore, null);
       MethodResultImpl result = new MethodResultImpl(ReturnCode.OK);
 
       for (ITestLifecycleListener listener : listeners) {
-    	  result = collectStatus(result, listener.preInstantiation(eventData, env));
+         result = collectStatus(result, listener.preInstantiation(eventData, env));
       }
       return result;
    }
 
+   @Override
    public boolean removeListener(ITestLifecycleListener listener) {
       return listeners.remove(listener);
    }
 
-   private MethodResultImpl collectStatus(MethodResultImpl result,
-			IMethodResult listenerResult) {
-		if (listenerResult.getReturnCode() != ReturnCode.OK) {
-			if (result.getReturnCode() == ReturnCode.OK) {
-				result = new MethodResultImpl(ReturnCode.OK);
-			}
-			result.setReturnCode(listenerResult.getReturnCode());
-			result.addStatus(listenerResult.getStatus());
-		}
-		return result;
-	}
+   private MethodResultImpl collectStatus(MethodResultImpl result, IMethodResult listenerResult) {
+      if (listenerResult.getReturnCode() != ReturnCode.OK) {
+         if (result.getReturnCode() == ReturnCode.OK) {
+            result = new MethodResultImpl(ReturnCode.OK);
+         }
+         result.setReturnCode(listenerResult.getReturnCode());
+         result.addStatus(listenerResult.getStatus());
+      }
+      return result;
+   }
 }

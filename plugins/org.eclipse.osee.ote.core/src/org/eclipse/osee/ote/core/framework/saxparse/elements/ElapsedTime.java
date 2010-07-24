@@ -15,9 +15,8 @@ import org.xml.sax.Attributes;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
-public class ElapsedTime extends ElementHandlers{
+public class ElapsedTime extends ElementHandlers {
 
    /**
     * @param name

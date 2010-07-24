@@ -42,7 +42,7 @@ public class TaskOptionStatusDialog extends SMAStatusDialog {
    private TaskResOptionDefinition selectedOption;
    private static String MESSAGE = "Enter percent complete and number of hours you spent since last status.";
    private static String OPTION_MESSAGE =
-         "Select resolution, enter percent complete and number of hours you spent since last status.";
+      "Select resolution, enter percent complete and number of hours you spent since last status.";
 
    /**
     * @param parentShell
@@ -52,26 +52,28 @@ public class TaskOptionStatusDialog extends SMAStatusDialog {
     * @param options
     */
    public TaskOptionStatusDialog(Shell parentShell, String dialogTitle, String dialogMessage, boolean showPercent, List<TaskResOptionDefinition> options, Collection<? extends StateMachineArtifact> tasks) {
-      super(parentShell, dialogTitle, (options == null ? MESSAGE : OPTION_MESSAGE), showPercent, tasks);
+      super(parentShell, dialogTitle, options == null ? MESSAGE : OPTION_MESSAGE, showPercent, tasks);
       this.options = options;
       if (options != null) {
-         for (TaskResOptionDefinition trd : options)
+         for (TaskResOptionDefinition trd : options) {
             nameToResDef.put(trd.getName(), trd);
+         }
       }
    }
 
    @Override
    protected IStatus isComplete() {
       TaskResOptionDefinition trd = getSelectedOptionDef();
-      if (trd == null)
+      if (trd == null) {
          return Status.OK_STATUS;
+      }
       int percentComp = percent.getInt();
-      if (trd.isCompleteable() && (percentComp != 100)) {
+      if (trd.isCompleteable() && percentComp != 100) {
          return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, "Completed resolution must have %Complete == 100");
       }
       if (percentComp == 100 && !trd.isCompleteable()) {
          return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID,
-               "Can't have 100% complete with a non-Completed resolution");
+            "Can't have 100% complete with a non-Completed resolution");
       }
       return super.isComplete();
    }
@@ -88,8 +90,9 @@ public class TaskOptionStatusDialog extends SMAStatusDialog {
          resolutionCombo.setContentProvider(new ArrayContentProvider());
          resolutionCombo.setRequiredEntry(true);
          ArrayList<Object> objs = new ArrayList<Object>();
-         for (Object obj : options)
+         for (Object obj : options) {
             objs.add(obj);
+         }
          resolutionCombo.setInput(objs);
          resolutionCombo.createWidgets(parent, 2);
          try {
@@ -109,13 +112,15 @@ public class TaskOptionStatusDialog extends SMAStatusDialog {
          }
          resolutionCombo.getCombo().setVisibleItemCount(20);
          resolutionCombo.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                selectedOption = (TaskResOptionDefinition) resolutionCombo.getSelected();
                if (selectedOption != null && !selectedOption.getPercent().equals("")) {
-                  int newPercent = (new Integer(selectedOption.getPercent())).intValue();
+                  int newPercent = new Integer(selectedOption.getPercent()).intValue();
                   percent.set(newPercent + "");
                   updateStatusLabel();
                }
@@ -125,25 +130,31 @@ public class TaskOptionStatusDialog extends SMAStatusDialog {
    }
    public static class ResolutionLabelProvider implements ILabelProvider {
 
+      @Override
       public Image getImage(Object arg0) {
          return null;
       }
 
+      @Override
       public String getText(Object arg0) {
-         TaskResOptionDefinition trd = ((TaskResOptionDefinition) arg0);
+         TaskResOptionDefinition trd = (TaskResOptionDefinition) arg0;
          return trd.getName() + " - " + trd.getDesc() + (trd.isCompleteable() ? " (Completed)" : "");
       }
 
+      @Override
       public void addListener(ILabelProviderListener arg0) {
       }
 
+      @Override
       public void dispose() {
       }
 
+      @Override
       public boolean isLabelProperty(Object arg0, String arg1) {
          return false;
       }
 
+      @Override
       public void removeListener(ILabelProviderListener arg0) {
       }
 

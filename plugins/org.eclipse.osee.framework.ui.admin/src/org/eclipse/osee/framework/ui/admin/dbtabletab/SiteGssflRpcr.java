@@ -38,14 +38,16 @@ public class SiteGssflRpcr extends DbItem {
 
    @Override
    public int getColumnWidth(String columnName) {
-      if (columnName.equals("DIRECTORY")) return 400;
+      if (columnName.equals("DIRECTORY")) {
+         return 400;
+      }
       return 100;
    }
 
    public boolean exists(String program) {
       try {
          return ConnectionHandler.runPreparedQueryFetchInt(0,
-               "SELECT count(1) FROM " + getTableName() + " WHERE PROGRAM = ?", returnTic(program)) > 0;
+            "SELECT count(1) FROM " + getTableName() + " WHERE PROGRAM = ?", returnTic(program)) > 0;
       } catch (OseeDataStoreException ex) {
          OseeLog.log(AdminPlugin.class, Level.SEVERE, ex);
          return false;

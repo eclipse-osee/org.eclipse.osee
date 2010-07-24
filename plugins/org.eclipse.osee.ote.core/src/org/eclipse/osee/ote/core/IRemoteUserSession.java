@@ -21,26 +21,37 @@ import org.eclipse.osee.ote.core.framework.prompt.IUserInputPromptResponse;
  * @author Ken J. Aguilar
  */
 public interface IRemoteUserSession extends Remote, IUserSession {
+   @Override
    public String getAddress() throws RemoteException;
 
+   @Override
    public OSEEPerson1_4 getUser() throws RemoteException;
 
+   @Override
    public byte[] getFile(String workspacePath) throws RemoteException;
 
+   @Override
    public long getFileDate(String workspacePath) throws RemoteException;
 
+   @Override
    public String getFileVersion(String workspacePath) throws RemoteException;
 
+   @Override
    public void initiatePassFailPrompt(IPassFailPromptResponse prompt) throws RemoteException;
 
+   @Override
    public void initiateUserInputPrompt(IUserInputPromptResponse prompt) throws RemoteException;
 
+   @Override
    public void initiateResumePrompt(IResumeResponse prompt) throws RemoteException;
 
+   @Override
    public void initiateInformationalPrompt(String message) throws RemoteException;
 
+   @Override
    public boolean isAlive() throws RemoteException;
-   
-   public void sendMessageToClient(Message message)  throws RemoteException;
+
+   @Override
+   public void sendMessageToClient(Message message) throws RemoteException;
 
 }

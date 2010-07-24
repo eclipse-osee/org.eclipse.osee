@@ -46,20 +46,18 @@ import org.junit.BeforeClass;
  */
 public class ConflictTest {
    private static final boolean DEBUG =
-         "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core.test/debug/Junit"));
-   private static final String[] NO_TX_CURRENT_SET =
-         {"SELECT distinct t1.", ", txs1.branch_id FROM osee_txs txs1, ",
-               " t1 WHERE txs1.gamma_id = t1.gamma_id AND txs1.tx_current = 0 %s SELECT distinct t2.",
-               ", txs2.branch_id FROM osee_txs txs2, ",
-               " t2 WHERE txs2.gamma_id = t2.gamma_id AND txs2.tx_current != 0"};
+      "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core.test/debug/Junit"));
+   private static final String[] NO_TX_CURRENT_SET = {"SELECT distinct t1.", ", txs1.branch_id FROM osee_txs txs1, ",
+      " t1 WHERE txs1.gamma_id = t1.gamma_id AND txs1.tx_current = 0 %s SELECT distinct t2.",
+      ", txs2.branch_id FROM osee_txs txs2, ", " t2 WHERE txs2.gamma_id = t2.gamma_id AND txs2.tx_current != 0"};
 
    private static final String[] MULTIPLE_TX_CURRENT_SET =
-         {
-               "SELECT resulttable.branch_id, resulttable.",
-               ", COUNT(resulttable.branch_id) AS numoccurrences FROM (SELECT txs1.branch_id, t1.",
-               " FROM osee_txs txs1, ",
-               " t1 WHERE txs1.gamma_id = t1.gamma_id AND txs1.tx_current != 0) resulttable GROUP BY resulttable.branch_id, resulttable.",
-               " HAVING(COUNT(resulttable.branch_id) > 1) order by branch_id"};
+      {
+         "SELECT resulttable.branch_id, resulttable.",
+         ", COUNT(resulttable.branch_id) AS numoccurrences FROM (SELECT txs1.branch_id, t1.",
+         " FROM osee_txs txs1, ",
+         " t1 WHERE txs1.gamma_id = t1.gamma_id AND txs1.tx_current != 0) resulttable GROUP BY resulttable.branch_id, resulttable.",
+         " HAVING(COUNT(resulttable.branch_id) > 1) order by branch_id"};
 
    @BeforeClass
    public static void setUp() throws Exception {
@@ -94,17 +92,17 @@ public class ConflictTest {
       Collection<Conflict> conflicts = null;
       try {
          conflicts =
-               ConflictManagerInternal.getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
-                     ConflictTestManager.getDestBranch(), ConflictTestManager.getSourceBranch().getBaseTransaction(),
-                     new NullProgressMonitor());
+            ConflictManagerInternal.getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
+               ConflictTestManager.getDestBranch(), ConflictTestManager.getSourceBranch().getBaseTransaction(),
+               new NullProgressMonitor());
       } catch (Exception ex) {
          fail(Lib.exceptionToString(ex));
       }
       assertEquals(
-            "(Intermittent failures - needs re-write) - Number of conflicts found is not equal to the number of conflicts expected",
-            ConflictTestManager.numberOfConflicts(), conflicts.size());
+         "(Intermittent failures - needs re-write) - Number of conflicts found is not equal to the number of conflicts expected",
+         ConflictTestManager.numberOfConflicts(), conflicts.size());
       assertTrue(String.format("%d SevereLogs during test.", monitorLog.getSevereLogs().size()),
-            monitorLog.getSevereLogs().isEmpty());
+         monitorLog.getSevereLogs().isEmpty());
    }
 
    /**
@@ -124,9 +122,9 @@ public class ConflictTest {
       OseeLog.registerLoggerListener(monitorLog);
       try {
          Collection<Conflict> conflicts =
-               ConflictManagerInternal.getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
-                     ConflictTestManager.getDestBranch(), ConflictTestManager.getSourceBranch().getBaseTransaction(),
-                     new NullProgressMonitor());
+            ConflictManagerInternal.getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
+               ConflictTestManager.getDestBranch(), ConflictTestManager.getSourceBranch().getBaseTransaction(),
+               new NullProgressMonitor());
          int whichChange = 1;
 
          for (Conflict conflict : conflicts) {
@@ -142,21 +140,21 @@ public class ConflictTest {
          }
 
          conflicts =
-               ConflictManagerInternal.getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
-                     ConflictTestManager.getDestBranch(), ConflictTestManager.getSourceBranch().getBaseTransaction(),
-                     new NullProgressMonitor());
+            ConflictManagerInternal.getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
+               ConflictTestManager.getDestBranch(), ConflictTestManager.getSourceBranch().getBaseTransaction(),
+               new NullProgressMonitor());
 
          for (Conflict conflict : conflicts) {
             assertTrue(
-                  "This conflict was not found to be resolved ArtId = " + conflict.getArtId() + " " + conflict.getSourceDisplayData(),
-                  conflict.statusResolved() || conflict.statusInformational());
+               "This conflict was not found to be resolved ArtId = " + conflict.getArtId() + " " + conflict.getSourceDisplayData(),
+               conflict.statusResolved() || conflict.statusInformational());
 
          }
       } catch (Exception ex) {
          fail(Lib.exceptionToString(ex));
       }
       assertTrue(String.format("%d SevereLogs during test.", monitorLog.getAllLogs().size()),
-            monitorLog.getAllLogs().isEmpty());
+         monitorLog.getAllLogs().isEmpty());
    }
 
    public void checkCommitWithoutResolutionErrors() {
@@ -164,19 +162,19 @@ public class ConflictTest {
       OseeLog.registerLoggerListener(monitorLog);
       try {
          ConflictManagerExternal conflictManager =
-               new ConflictManagerExternal(ConflictTestManager.getDestBranch(), ConflictTestManager.getSourceBranch());
+            new ConflictManagerExternal(ConflictTestManager.getDestBranch(), ConflictTestManager.getSourceBranch());
          BranchManager.commitBranch(null, conflictManager, false, false);
          assertTrue("Commit did not complete as expected", ConflictTestManager.validateCommit());
 
          assertEquals("Source Branch state incorrect", BranchState.COMMITTED,
-               ConflictTestManager.getSourceBranch().getBranchState());
+            ConflictTestManager.getSourceBranch().getBranchState());
 
       } catch (Exception ex) {
          fail("No Exceptions should have been thrown. Not even the " + ex.getLocalizedMessage() + "Exception");
       }
 
       assertTrue(String.format("%d SevereLogs during test.", monitorLog.getSevereLogs().size()),
-            monitorLog.getSevereLogs().isEmpty());
+         monitorLog.getSevereLogs().isEmpty());
    }
 
    @org.junit.Test
@@ -243,14 +241,14 @@ public class ConflictTest {
       OseeLog.registerLoggerListener(monitorLog);
       try {
          Branch mergeBranch =
-               BranchManager.getMergeBranch(ConflictTestManager.getSourceBranch(), ConflictTestManager.getDestBranch());
+            BranchManager.getMergeBranch(ConflictTestManager.getSourceBranch(), ConflictTestManager.getDestBranch());
 
          assertTrue("The merge branch should be null as it hasn't been created yet", mergeBranch == null);
       } catch (Exception ex) {
          fail(ex.getMessage());
       }
       assertTrue(String.format("%d SevereLogs during test.", monitorLog.getSevereLogs().size()),
-            monitorLog.getSevereLogs().isEmpty());
+         monitorLog.getSevereLogs().isEmpty());
    }
 
    private void runMergeBranchCreated() throws Exception {
@@ -259,7 +257,7 @@ public class ConflictTest {
       OseeLog.registerLoggerListener(monitorLog);
       try {
          Branch mergeBranch =
-               BranchManager.getMergeBranch(ConflictTestManager.getSourceBranch(), ConflictTestManager.getDestBranch());
+            BranchManager.getMergeBranch(ConflictTestManager.getSourceBranch(), ConflictTestManager.getDestBranch());
          assertFalse(mergeBranch == null);
          Collection<Artifact> artifacts = ArtifactQuery.getArtifactListFromBranch(mergeBranch, INCLUDE_DELETED);
          if (DEBUG) {
@@ -271,13 +269,13 @@ public class ConflictTest {
             System.out.println("\n");
          }
          assertEquals(
-               "(Intermittent failures - needs re-write) - The merge Branch does not contain the expected number of artifacts: ",
-               ConflictTestManager.numberOfArtifactsOnMergeBranch(), artifacts.size());
+            "(Intermittent failures - needs re-write) - The merge Branch does not contain the expected number of artifacts: ",
+            ConflictTestManager.numberOfArtifactsOnMergeBranch(), artifacts.size());
       } catch (Exception ex) {
          fail(ex.getMessage());
       }
       assertTrue(String.format("%d SevereLogs during test.", monitorLog.getAllLogs().size()),
-            monitorLog.getAllLogs().isEmpty());
+         monitorLog.getAllLogs().isEmpty());
    }
 
 }

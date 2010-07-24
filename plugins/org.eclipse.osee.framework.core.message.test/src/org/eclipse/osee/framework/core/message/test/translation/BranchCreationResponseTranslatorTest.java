@@ -26,7 +26,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Test Case for {@link BranchCreationResponseTranslator}
- *
+ * 
  * @author Roberto E. Escobar
  */
 @RunWith(Parameterized.class)

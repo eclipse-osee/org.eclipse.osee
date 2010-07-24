@@ -35,7 +35,7 @@ public class LatLongBox extends Composite {
    private Color background;
 
    private boolean hasFocus = false;
-   private boolean[] boxTabFlag = new boolean[] {false, false, false};
+   private final boolean[] boxTabFlag = new boolean[] {false, false, false};
 
    private int maxDegrees = 360;
    private int minDegrees = -360;
@@ -177,7 +177,7 @@ public class LatLongBox extends Composite {
                if (value != prevValue.longValue()) {
                   double sign = value < 0 ? -1.0 : 1.0;
                   dValue =
-                        (double) value + sign * (Integer.parseInt(minutesTxt.getText()) / 60.0 + Integer.parseInt(secondsTxt.getText()) / 3600.0);
+                     value + sign * (Integer.parseInt(minutesTxt.getText()) / 60.0 + Integer.parseInt(secondsTxt.getText()) / 3600.0);
                   System.out.println("latlong degrees changed: degrees = " + value + ", dValue=" + dValue);
                }
             } catch (Throwable t) {
@@ -265,10 +265,10 @@ public class LatLongBox extends Composite {
                   double sign = degrees < 0 ? -1.0 : 1.0;
                   String sTxt = secondsTxt.getText();
                   if (sTxt.equals("")) {
-                     dValue = (double) degrees + sign * value / 60.0;
+                     dValue = degrees + sign * value / 60.0;
                      secondsTxt.setText("0");
                   } else {
-                     dValue = (double) degrees + sign * (value / 60.0 + Integer.parseInt(sTxt) / 3600.0);
+                     dValue = degrees + sign * (value / 60.0 + Integer.parseInt(sTxt) / 3600.0);
                   }
                   System.out.println("latlong minutes changed: minutes = " + value + ", dValue=" + dValue);
                }
@@ -347,10 +347,10 @@ public class LatLongBox extends Composite {
                   double sign = degrees < 0 ? -1.0 : 1.0;
                   String mTxt = minutesTxt.getText();
                   if (mTxt.equals("")) {
-                     dValue = (double) degrees + sign * value / 3600.0;
+                     dValue = degrees + sign * value / 3600.0;
                      minutesTxt.setText("0");
                   } else {
-                     dValue = (double) degrees + sign * (Integer.parseInt(mTxt) / 60.0 + value / 3600.0);
+                     dValue = degrees + sign * (Integer.parseInt(mTxt) / 60.0 + value / 3600.0);
                   }
                   System.out.println("latlong seconds changed: seconds = " + value + ", dValue=" + dValue);
                }
@@ -425,6 +425,7 @@ public class LatLongBox extends Composite {
       this.minDegrees = minDegrees;
    }
 
+   @Override
    public String toString() {
       return String.format(degreesTxt.getText() + (char) 0xb0 + minutesTxt.getText() + "' " + secondsTxt.getText() + "\"");
    }

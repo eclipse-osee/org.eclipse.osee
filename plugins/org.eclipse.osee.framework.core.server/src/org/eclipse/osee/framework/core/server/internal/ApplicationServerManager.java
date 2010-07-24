@@ -40,209 +40,209 @@ import org.eclipse.osee.framework.logging.OseeLog;
  * @author Roberto E. Escobar
  */
 public class ApplicationServerManager implements IApplicationServerManager {
-	private final Map<String, OseeServerThreadFactory> threadFactories;
-	private final Map<String, InternalOseeHttpServlet> oseeHttpServlets;
+   private final Map<String, OseeServerThreadFactory> threadFactories;
+   private final Map<String, InternalOseeHttpServlet> oseeHttpServlets;
 
-	private final InternalOseeServerInfo applicationServerInfo;
-	private final Timer timer;
+   private final InternalOseeServerInfo applicationServerInfo;
+   private final Timer timer;
 
-	public ApplicationServerManager() {
-		this.oseeHttpServlets = Collections.synchronizedMap(new HashMap<String, InternalOseeHttpServlet>());
-		this.threadFactories = Collections.synchronizedMap(new HashMap<String, OseeServerThreadFactory>());
-		this.applicationServerInfo = createOseeServerInfo();
-		applicationServerInfo.setAcceptingRequests(true);
+   public ApplicationServerManager() {
+      this.oseeHttpServlets = Collections.synchronizedMap(new HashMap<String, InternalOseeHttpServlet>());
+      this.threadFactories = Collections.synchronizedMap(new HashMap<String, OseeServerThreadFactory>());
+      this.applicationServerInfo = createOseeServerInfo();
+      applicationServerInfo.setAcceptingRequests(true);
 
-		timer = new Timer();
-		timer.schedule(new TimerTask() {
-			@Override
-			public void run() {
-				try {
-					executeLookupRegistration();
-				} catch (Exception ex) {
-					OseeLog.log(ServerActivator.class, Level.SEVERE, ex);
-				} finally {
-					timer.cancel();
-				}
-			}
-		}, 5 * 1000);
-	}
+      timer = new Timer();
+      timer.schedule(new TimerTask() {
+         @Override
+         public void run() {
+            try {
+               executeLookupRegistration();
+            } catch (Exception ex) {
+               OseeLog.log(ServerActivator.class, Level.SEVERE, ex);
+            } finally {
+               timer.cancel();
+            }
+         }
+      }, 5 * 1000);
+   }
 
-	private InternalOseeServerInfo createOseeServerInfo() {
-		String serverAddress = "127.0.0.1";
-		try {
-			serverAddress = InetAddress.getLocalHost().getCanonicalHostName();
-		} catch (UnknownHostException ex) {
-		}
-		int port = OseeServerProperties.getOseeApplicationServerPort();
+   private InternalOseeServerInfo createOseeServerInfo() {
+      String serverAddress = "127.0.0.1";
+      try {
+         serverAddress = InetAddress.getLocalHost().getCanonicalHostName();
+      } catch (UnknownHostException ex) {
+      }
+      int port = OseeServerProperties.getOseeApplicationServerPort();
 
-		String checkSum = "-1";
-		try {
-			String address = String.format("%s:%s", serverAddress, port);
-			ByteArrayInputStream inputStream = new ByteArrayInputStream(address.getBytes("UTF-8"));
-			checkSum = ChecksumUtil.createChecksumAsString(inputStream, ChecksumUtil.MD5);
-		} catch (Exception ex) {
-			OseeLog.log(ServerActivator.class, Level.SEVERE, "Error generating application server id", ex);
-		}
+      String checkSum = "-1";
+      try {
+         String address = String.format("%s:%s", serverAddress, port);
+         ByteArrayInputStream inputStream = new ByteArrayInputStream(address.getBytes("UTF-8"));
+         checkSum = ChecksumUtil.createChecksumAsString(inputStream, ChecksumUtil.MD5);
+      } catch (Exception ex) {
+         OseeLog.log(ServerActivator.class, Level.SEVERE, "Error generating application server id", ex);
+      }
 
-		return new InternalOseeServerInfo(checkSum, serverAddress, port, GlobalTime.GreenwichMeanTimestamp(), false);
-	}
+      return new InternalOseeServerInfo(checkSum, serverAddress, port, GlobalTime.GreenwichMeanTimestamp(), false);
+   }
 
-	@Override
-	public boolean executeLookupRegistration() {
-		boolean isRegistered = getApplicationServerInfo().updateRegistration();
-		if (isRegistered) {
-			OseeLog.log(ServerActivator.class, Level.INFO,
-						String.format("Application Server: [%s] registered.", getApplicationServerInfo().getServerId()));
-		}
-		return isRegistered;
-	}
+   @Override
+   public boolean executeLookupRegistration() {
+      boolean isRegistered = getApplicationServerInfo().updateRegistration();
+      if (isRegistered) {
+         OseeLog.log(ServerActivator.class, Level.INFO,
+            String.format("Application Server: [%s] registered.", getApplicationServerInfo().getServerId()));
+      }
+      return isRegistered;
+   }
 
-	@Override
-	public void register(String context, OseeHttpServlet servlet) {
-		InternalOseeHttpServlet internalServlet = servlet;
-		internalServlet.setRequestsAllowed(getApplicationServerInfo().isAcceptingRequests());
-		this.oseeHttpServlets.put(context, internalServlet);
-	}
+   @Override
+   public void register(String context, OseeHttpServlet servlet) {
+      InternalOseeHttpServlet internalServlet = servlet;
+      internalServlet.setRequestsAllowed(getApplicationServerInfo().isAcceptingRequests());
+      this.oseeHttpServlets.put(context, internalServlet);
+   }
 
-	@Override
-	public void unregister(String key) {
-		this.oseeHttpServlets.remove(key);
-		this.threadFactories.remove(key);
-	}
+   @Override
+   public void unregister(String key) {
+      this.oseeHttpServlets.remove(key);
+      this.threadFactories.remove(key);
+   }
 
-	@Override
-	public Collection<String> getRegisteredServlets() {
-		return oseeHttpServlets.keySet();
-	}
+   @Override
+   public Collection<String> getRegisteredServlets() {
+      return oseeHttpServlets.keySet();
+   }
 
-	private InternalOseeServerInfo getApplicationServerInfo() {
-		return applicationServerInfo;
-	}
+   private InternalOseeServerInfo getApplicationServerInfo() {
+      return applicationServerInfo;
+   }
 
-	@Override
-	public ThreadFactory createNewThreadFactory(String name, int priority) {
-		OseeServerThreadFactory factory = new OseeServerThreadFactory(name, priority);
-		this.threadFactories.put(name, factory);
-		return factory;
-	}
+   @Override
+   public ThreadFactory createNewThreadFactory(String name, int priority) {
+      OseeServerThreadFactory factory = new OseeServerThreadFactory(name, priority);
+      this.threadFactories.put(name, factory);
+      return factory;
+   }
 
-	private List<OseeServerThread> getThreadsFromFactory(String key) {
-		OseeServerThreadFactory factory = threadFactories.get(key);
-		return factory.getThreads();
-	}
+   private List<OseeServerThread> getThreadsFromFactory(String key) {
+      OseeServerThreadFactory factory = threadFactories.get(key);
+      return factory.getThreads();
+   }
 
-	/**
-	 * This method expects that one OSEE server job is running, namely the job calling this method, so it will return
-	 * true if 1 or less jobs are running.
-	 */
-	@Override
-	public boolean isSystemIdle() {
-		return Job.getJobManager().find(OperationJob.class).length <= 1;
-	}
+   /**
+    * This method expects that one OSEE server job is running, namely the job calling this method, so it will return
+    * true if 1 or less jobs are running.
+    */
+   @Override
+   public boolean isSystemIdle() {
+      return Job.getJobManager().find(OperationJob.class).length <= 1;
+   }
 
-	private void updateServletRequestsAllowed(final boolean value) {
-		for (String contexts : oseeHttpServlets.keySet()) {
-			InternalOseeHttpServlet servlets = oseeHttpServlets.get(contexts);
-			servlets.setRequestsAllowed(value);
-		}
-	}
+   private void updateServletRequestsAllowed(final boolean value) {
+      for (String contexts : oseeHttpServlets.keySet()) {
+         InternalOseeHttpServlet servlets = oseeHttpServlets.get(contexts);
+         servlets.setRequestsAllowed(value);
+      }
+   }
 
-	@Override
-	public synchronized void setServletRequestsAllowed(final boolean value) throws OseeDataStoreException {
-		if (getApplicationServerInfo().isAcceptingRequests() != value) {
-			boolean wasSuccessful = ApplicationServerDataStore.updateServerState(getApplicationServerInfo(), value);
-			if (wasSuccessful) {
-				getApplicationServerInfo().setAcceptingRequests(value);
-				updateServletRequestsAllowed(value);
-			}
-		}
-	}
+   @Override
+   public synchronized void setServletRequestsAllowed(final boolean value) throws OseeDataStoreException {
+      if (getApplicationServerInfo().isAcceptingRequests() != value) {
+         boolean wasSuccessful = ApplicationServerDataStore.updateServerState(getApplicationServerInfo(), value);
+         if (wasSuccessful) {
+            getApplicationServerInfo().setAcceptingRequests(value);
+            updateServletRequestsAllowed(value);
+         }
+      }
+   }
 
-	@Override
-	public void shutdown() throws OseeCoreException {
-		timer.cancel();
-		setServletRequestsAllowed(false);
-	}
+   @Override
+   public void shutdown() throws OseeCoreException {
+      timer.cancel();
+      setServletRequestsAllowed(false);
+   }
 
-	@Override
-	public List<String> getCurrentProcesses() {
-		List<String> processList = new ArrayList<String>();
-		for (String key : threadFactories.keySet()) {
-			for (OseeServerThread thread : getThreadsFromFactory(key)) {
-				State state = thread.getState();
-				if (!state.equals(State.TERMINATED)) {
-					processList.add(thread.getName());
-				}
-			}
-		}
-		for (String contexts : oseeHttpServlets.keySet()) {
-			InternalOseeHttpServlet servlets = oseeHttpServlets.get(contexts);
-			if (servlets.getState().equals(ProcessingStateEnum.BUSY)) {
-				processList.add(servlets.getCurrentRequest());
-			}
-		}
-		return processList;
-	}
+   @Override
+   public List<String> getCurrentProcesses() {
+      List<String> processList = new ArrayList<String>();
+      for (String key : threadFactories.keySet()) {
+         for (OseeServerThread thread : getThreadsFromFactory(key)) {
+            State state = thread.getState();
+            if (!state.equals(State.TERMINATED)) {
+               processList.add(thread.getName());
+            }
+         }
+      }
+      for (String contexts : oseeHttpServlets.keySet()) {
+         InternalOseeHttpServlet servlets = oseeHttpServlets.get(contexts);
+         if (servlets.getState().equals(ProcessingStateEnum.BUSY)) {
+            processList.add(servlets.getCurrentRequest());
+         }
+      }
+      return processList;
+   }
 
-	@Override
-	public int getNumberOfActiveThreads() {
-		int totalProcesses = 0;
-		for (String contexts : oseeHttpServlets.keySet()) {
-			InternalOseeHttpServlet servlet = oseeHttpServlets.get(contexts);
-			if (servlet.getState().isBusy()) {
-				totalProcesses++;
-			}
-		}
+   @Override
+   public int getNumberOfActiveThreads() {
+      int totalProcesses = 0;
+      for (String contexts : oseeHttpServlets.keySet()) {
+         InternalOseeHttpServlet servlet = oseeHttpServlets.get(contexts);
+         if (servlet.getState().isBusy()) {
+            totalProcesses++;
+         }
+      }
 
-		for (String key : threadFactories.keySet()) {
-			for (OseeServerThread thread : getThreadsFromFactory(key)) {
-				State state = thread.getState();
-				if (State.TERMINATED != state) {
-					totalProcesses++;
-				}
-			}
-		}
-		return totalProcesses;
-	}
+      for (String key : threadFactories.keySet()) {
+         for (OseeServerThread thread : getThreadsFromFactory(key)) {
+            State state = thread.getState();
+            if (State.TERMINATED != state) {
+               totalProcesses++;
+            }
+         }
+      }
+      return totalProcesses;
+   }
 
-	@Override
-	public String getId() {
-		return getApplicationServerInfo().getServerId();
-	}
+   @Override
+   public String getId() {
+      return getApplicationServerInfo().getServerId();
+   }
 
-	@Override
-	public String getServerAddress() {
-		return getApplicationServerInfo().getServerAddress();
-	}
+   @Override
+   public String getServerAddress() {
+      return getApplicationServerInfo().getServerAddress();
+   }
 
-	@Override
-	public int getPort() {
-		return getApplicationServerInfo().getPort();
-	}
+   @Override
+   public int getPort() {
+      return getApplicationServerInfo().getPort();
+   }
 
-	@Override
-	public Date getDateStarted() {
-		return getApplicationServerInfo().getDateStarted();
-	}
+   @Override
+   public Date getDateStarted() {
+      return getApplicationServerInfo().getDateStarted();
+   }
 
-	@Override
-	public boolean isAcceptingRequests() {
-		return getApplicationServerInfo().isAcceptingRequests();
-	}
+   @Override
+   public boolean isAcceptingRequests() {
+      return getApplicationServerInfo().isAcceptingRequests();
+   }
 
-	@Override
-	public String[] getSupportedVersions() {
-		return getApplicationServerInfo().getVersion();
-	}
+   @Override
+   public String[] getSupportedVersions() {
+      return getApplicationServerInfo().getVersion();
+   }
 
-	@Override
-	public void addSupportedVersion(String version) throws OseeCoreException {
-		getApplicationServerInfo().addVersion(version);
-	}
+   @Override
+   public void addSupportedVersion(String version) throws OseeCoreException {
+      getApplicationServerInfo().addVersion(version);
+   }
 
-	@Override
-	public void removeSupportedVersion(String version) throws OseeCoreException {
-		getApplicationServerInfo().removeVersion(version);
-	}
+   @Override
+   public void removeSupportedVersion(String version) throws OseeCoreException {
+      getApplicationServerInfo().removeVersion(version);
+   }
 
 }

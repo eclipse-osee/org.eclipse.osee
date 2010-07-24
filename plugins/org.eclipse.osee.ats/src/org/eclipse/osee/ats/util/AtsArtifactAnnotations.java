@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
  */
 public class AtsArtifactAnnotations implements IArtifactAnnotation {
 
+   @Override
    public void getAnnotations(Artifact artifact, Set<ArtifactAnnotation> annotations) {
       try {
          if (artifact instanceof StateMachineArtifact) {

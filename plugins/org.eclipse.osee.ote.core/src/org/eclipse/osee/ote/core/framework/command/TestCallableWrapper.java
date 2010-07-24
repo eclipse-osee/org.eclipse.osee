@@ -18,33 +18,34 @@ import org.eclipse.osee.ote.core.environment.status.OTEStatusBoard;
 
 public class TestCallableWrapper implements Callable<ITestCommandResult> {
 
-	private final ITestServerCommand cmd;
-	private final TestEnvironment context;
-	private final BaseCommandManager cmdManager;
-	private final OTEStatusBoard statusBoard;
-	
-	public TestCallableWrapper( BaseCommandManager cmdManager, ITestServerCommand cmd, TestEnvironment context, OTEStatusBoard statusBoard) {
-		this.cmd = cmd;
-		this.context = context;
-		this.cmdManager = cmdManager;
-		this.statusBoard = statusBoard;
-	}
+   private final ITestServerCommand cmd;
+   private final TestEnvironment context;
+   private final BaseCommandManager cmdManager;
+   private final OTEStatusBoard statusBoard;
 
-	public ITestCommandResult call() throws Exception {
-		ITestCommandResult result;
-		try{
-			context.setActiveUser(cmd.getUserSessionKey());
-			result = cmd.execute(context, statusBoard);
-			if(result.getThrowable() != null){
-	         OseeLog.log(TestCallableWrapper.class, Level.SEVERE, result.getThrowable());
-	      }
-		} catch(Throwable ex){
-			result = new TestCommandResult(TestCommandStatus.FAIL, ex);
-			OseeLog.log(TestCallableWrapper.class, Level.SEVERE, ex);
-		} finally {
-			cmdManager.commandComplete(cmd, context);
-		}
-		return result;
-	}
+   public TestCallableWrapper(BaseCommandManager cmdManager, ITestServerCommand cmd, TestEnvironment context, OTEStatusBoard statusBoard) {
+      this.cmd = cmd;
+      this.context = context;
+      this.cmdManager = cmdManager;
+      this.statusBoard = statusBoard;
+   }
+
+   @Override
+   public ITestCommandResult call() throws Exception {
+      ITestCommandResult result;
+      try {
+         context.setActiveUser(cmd.getUserSessionKey());
+         result = cmd.execute(context, statusBoard);
+         if (result.getThrowable() != null) {
+            OseeLog.log(TestCallableWrapper.class, Level.SEVERE, result.getThrowable());
+         }
+      } catch (Throwable ex) {
+         result = new TestCommandResult(TestCommandStatus.FAIL, ex);
+         OseeLog.log(TestCallableWrapper.class, Level.SEVERE, ex);
+      } finally {
+         cmdManager.commandComplete(cmd, context);
+      }
+      return result;
+   }
 
 }

@@ -81,7 +81,7 @@ public class OteRemoteConsole implements IConsoleInputListener, ITestConnectionL
          env = event.getEnvironment();
          remoteConsole = env.getCommandConsole();
          if (isOteConsoleServiceAvailable()) {
-        	 getOteConsole().addInputListener(this);
+            getOteConsole().addInputListener(this);
          }
       } catch (RemoteException e) {
          OseeLog.log(TestCoreGuiPlugin.class, Level.SEVERE, "exception acquiring remote console", e);

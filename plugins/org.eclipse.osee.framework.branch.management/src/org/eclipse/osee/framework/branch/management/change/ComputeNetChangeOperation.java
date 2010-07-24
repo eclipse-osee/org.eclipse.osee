@@ -95,7 +95,7 @@ public class ComputeNetChangeOperation extends AbstractOperation {
       // check for case where destination branch is missing an artifact that was modified (not new) on the source branch
       if (!change.getDestinationVersion().isValid() && change.getBaselineVersion().isValid()) {
          throw new OseeStateException(
-               "This should be supported in the future - destination branch is not the source's parent: " + change);
+            "This should be supported in the future - destination branch is not the source's parent: " + change);
       }
 
       if (change.getDestinationVersion().isValid() && ChangeItemUtil.isDeleted(change.getDestinationVersion())) {
@@ -103,9 +103,9 @@ public class ComputeNetChangeOperation extends AbstractOperation {
       }
 
       if ((ChangeItemUtil.isIntroduced(change.getCurrentVersion()) || ChangeItemUtil.isNew(change.getCurrentVersion())) //
-            && change.getDestinationVersion().isValid()) {
+         && change.getDestinationVersion().isValid()) {
          throw new OseeStateException(
-               "Source item marked as new/introduced but destination already has item: " + change);
+            "Source item marked as new/introduced but destination already has item: " + change);
       }
 
    }

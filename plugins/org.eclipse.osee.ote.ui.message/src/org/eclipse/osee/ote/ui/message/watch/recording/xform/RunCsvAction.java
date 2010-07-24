@@ -56,8 +56,8 @@ public class RunCsvAction extends Action {
          File file = new File(getter.getPath());
          File csvFile = new File(getter.getPath() + ".csv");
          if (!file.exists()) {
-            OseeLog.log(Activator.class, Level.SEVERE, String.format(
-                  "[%s] does not exist.  Exiting the csv processor.", file.toString()));
+            OseeLog.log(Activator.class, Level.SEVERE,
+               String.format("[%s] does not exist.  Exiting the csv processor.", file.toString()));
          }
 
          XMLReader reader;
@@ -90,6 +90,7 @@ public class RunCsvAction extends Action {
 
       String path;
 
+      @Override
       public void run() {
          FileDialog fd = new FileDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.OPEN);
          fd.setFilterExtensions(new String[] {"*.rec"});

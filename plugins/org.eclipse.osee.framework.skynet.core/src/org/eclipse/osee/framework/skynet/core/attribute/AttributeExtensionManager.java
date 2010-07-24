@@ -38,10 +38,10 @@ public class AttributeExtensionManager {
    private static final String ATTRIBUTE_TYPE = Activator.PLUGIN_ID + ".AttributeType";
    private static final String ATTRIBUTE_DATA_PROVIDER_TYPE = Activator.PLUGIN_ID + ".AttributeDataProvider";
 
-   private static final String[] attributeBaseTypes =
-         new String[] {"CharacterBackedAttributeType", "BinaryBackedAttributeType"};
-   private static final String[] attributeProviderBaseTypes =
-         new String[] {"CharacterAttributeDataProvider", "BinaryAttributeDataProvider"};
+   private static final String[] attributeBaseTypes = new String[] {"CharacterBackedAttributeType",
+      "BinaryBackedAttributeType"};
+   private static final String[] attributeProviderBaseTypes = new String[] {"CharacterAttributeDataProvider",
+      "BinaryAttributeDataProvider"};
 
    private static final AttributeExtensionManager instance = new AttributeExtensionManager();
 
@@ -81,7 +81,7 @@ public class AttributeExtensionManager {
    public static Class<? extends AbstractAttributeDataProvider> getAttributeProviderClassFor(String name) throws OseeCoreException {
       if (instance.attributeDataProviderClasses == null) {
          instance.attributeDataProviderClasses =
-               instance.loadExtensions(ATTRIBUTE_DATA_PROVIDER_TYPE, attributeProviderBaseTypes, CLASS_ID);
+            instance.loadExtensions(ATTRIBUTE_DATA_PROVIDER_TYPE, attributeProviderBaseTypes, CLASS_ID);
       }
       String resolved = resolveAttributeProviderTypeId(name);
       Pair<String, String> entry = instance.attributeDataProviderClasses.get(resolved);
@@ -120,8 +120,8 @@ public class AttributeExtensionManager {
       }
       if (toReturn.isEmpty()) {
          throw new OseeStateException(String.format(
-               "No Objects loaded for [%s] with element names %s and attribute [%s]", extensionPointId,
-               Arrays.asList(elementNames), classNameAttribute));
+            "No Objects loaded for [%s] with element names %s and attribute [%s]", extensionPointId,
+            Arrays.asList(elementNames), classNameAttribute));
       }
       return toReturn;
    }
@@ -134,7 +134,7 @@ public class AttributeExtensionManager {
    public static Set<String> getAttributeProviders() throws OseeStateException {
       if (instance.attributeDataProviderClasses == null) {
          instance.attributeDataProviderClasses =
-               instance.loadExtensions(ATTRIBUTE_DATA_PROVIDER_TYPE, attributeProviderBaseTypes, CLASS_ID);
+            instance.loadExtensions(ATTRIBUTE_DATA_PROVIDER_TYPE, attributeProviderBaseTypes, CLASS_ID);
       }
       return instance.attributeDataProviderClasses.keySet();
    }

@@ -14,16 +14,15 @@ import java.util.Collection;
 import java.util.Iterator;
 
 /**
- * Provides threading capability for the publication of data. The DDS system
- * makes use of this class internally and controls it as needed to control
- * the publication of data.
+ * Provides threading capability for the publication of data. The DDS system makes use of this class internally and
+ * controls it as needed to control the publication of data.
  * 
  * @author Robert A. Fisher
  * @author David Diepenbrock
  */
 class PublisherThread extends Thread {
-   private DomainParticipant domainParticipant;
-   
+   private final DomainParticipant domainParticipant;
+
    /**
     * Get a <code>PublisherThread</code> for a particular <code>DomainParticipant</code>
     * 
@@ -34,13 +33,14 @@ class PublisherThread extends Thread {
       this.domainParticipant = domainParticipant;
       setDaemon(true);
    }
-   
+
+   @Override
    public synchronized void run() {
-      
+
       try {
          while (true) {
             wait(); // Wait for a notify
-            
+
             // Once notified, call all the queue publishing
             Collection<Publisher> publishers = domainParticipant.getPublishers();
             synchronized (publishers) {
@@ -50,16 +50,15 @@ class PublisherThread extends Thread {
                }
             }
          }
-      }
-      catch (InterruptedException ex) {
+      } catch (InterruptedException ex) {
          // We do not expect to be interrupted, so print the error
          ex.printStackTrace();
       }
    }
-   
+
    /**
-    * Method to cause the thread to publish the queue'd information in each <code>Subscriber</code>
-    * then go back to sleep.
+    * Method to cause the thread to publish the queue'd information in each <code>Subscriber</code> then go back to
+    * sleep.
     */
    public synchronized void wakeUp() {
       notifyAll();

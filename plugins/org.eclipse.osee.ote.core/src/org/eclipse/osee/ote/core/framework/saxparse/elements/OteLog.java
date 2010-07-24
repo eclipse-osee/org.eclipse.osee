@@ -15,9 +15,8 @@ import org.xml.sax.Attributes;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
-public class OteLog extends ElementHandlers{
+public class OteLog extends ElementHandlers {
 
    /**
     * @param name

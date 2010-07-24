@@ -14,8 +14,7 @@ import org.eclipse.osee.ote.core.framework.command.ITestContext;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public interface IMessageTestContext extends ITestContext {
-	void resetScriptLoader(String[] strings) throws Exception;
+   void resetScriptLoader(String[] strings) throws Exception;
 }

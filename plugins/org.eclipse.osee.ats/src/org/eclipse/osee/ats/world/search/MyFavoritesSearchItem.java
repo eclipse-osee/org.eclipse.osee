@@ -45,7 +45,9 @@ public class MyFavoritesSearchItem extends UserSearchItem {
 
    @Override
    public void performUI(SearchType searchType) throws OseeCoreException {
-      if (user != null) return;
+      if (user != null) {
+         return;
+      }
       super.performUI(searchType);
    }
 

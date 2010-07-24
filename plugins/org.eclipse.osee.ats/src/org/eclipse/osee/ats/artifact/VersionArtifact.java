@@ -45,6 +45,7 @@ public class VersionArtifact extends Artifact implements ICommitConfigArtifact {
       super(parentFactory, guid, humandReadableId, branch, artifactType);
    }
 
+   @Override
    public Result isCreateBranchAllowed() throws OseeCoreException {
       if (getSoleAttributeValue(ATSAttributes.ALLOW_CREATE_BRANCH.getStoreName(), false) == false) {
          return new Result(false, "Branch creation disabled for Version [" + this + "]");
@@ -55,6 +56,7 @@ public class VersionArtifact extends Artifact implements ICommitConfigArtifact {
       return Result.TrueResult;
    }
 
+   @Override
    public Result isCommitBranchAllowed() throws OseeCoreException {
       if (getSoleAttributeValue(ATSAttributes.ALLOW_COMMIT_BRANCH.getStoreName(), false) == false) {
          return new Result(false, "Version [" + this + "] not configured to allow branch commit.");
@@ -65,6 +67,7 @@ public class VersionArtifact extends Artifact implements ICommitConfigArtifact {
       return Result.TrueResult;
    }
 
+   @Override
    public Branch getParentBranch() throws OseeCoreException {
       try {
          String guid = getSoleAttributeValue(ATSAttributes.BASELINE_BRANCH_GUID_ATTRIBUTE.getStoreName(), "");
@@ -137,6 +140,7 @@ public class VersionArtifact extends Artifact implements ICommitConfigArtifact {
       return getRelatedArtifacts(AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow, TeamWorkFlowArtifact.class);
    }
 
+   @Override
    public String getFullDisplayName() throws OseeCoreException {
       String str = "";
       if (!getName().equals(Artifact.UNNAMED)) {

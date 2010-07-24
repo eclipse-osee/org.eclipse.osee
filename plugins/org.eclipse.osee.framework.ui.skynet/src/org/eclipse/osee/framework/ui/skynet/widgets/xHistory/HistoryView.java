@@ -97,12 +97,13 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
          @Override
          protected IStatus run(final IProgressMonitor monitor) {
             Displays.ensureInDisplayThread(new Runnable() {
+               @Override
                public void run() {
                   try {
                      IWorkbenchPage page = AWorkbench.getActivePage();
                      HistoryView historyView =
-                           (HistoryView) page.showView(VIEW_ID, artifact.getGuid() + artifact.getBranch().getId(),
-                                 IWorkbenchPage.VIEW_ACTIVATE);
+                        (HistoryView) page.showView(VIEW_ID, artifact.getGuid() + artifact.getBranch().getId(),
+                           IWorkbenchPage.VIEW_ACTIVATE);
 
                      historyView.explore(artifact, loadHistory);
                   } catch (Exception ex) {
@@ -150,6 +151,7 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
       MenuManager menuManager = new MenuManager();
       menuManager.setRemoveAllWhenShown(true);
       menuManager.addMenuListener(new IMenuListener() {
+         @Override
          public void menuAboutToShow(IMenuManager manager) {
             MenuManager menuManager = (MenuManager) manager;
             menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
@@ -158,7 +160,7 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
 
       menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
       xHistoryWidget.getXViewer().getTree().setMenu(
-            menuManager.createContextMenu(xHistoryWidget.getXViewer().getTree()));
+         menuManager.createContextMenu(xHistoryWidget.getXViewer().getTree()));
       getSite().registerContextMenu(VIEW_ID, menuManager, xHistoryWidget.getXViewer());
 
       getSite().setSelectionProvider(xHistoryWidget.getXViewer());
@@ -248,6 +250,7 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
       }
    }
 
+   @Override
    public String getActionDescription() {
       return "";
    }
@@ -297,6 +300,7 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
    private void handleBranchEvent(BranchEventType branchModType) {
       if (branchModType == BranchEventType.Deleted || branchModType == BranchEventType.Purged) {
          Displays.ensureInDisplayThread(new Runnable() {
+            @Override
             public void run() {
                closeView();
             }
@@ -304,6 +308,7 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
          return;
       } else if (branchModType == BranchEventType.Committed) {
          Displays.ensureInDisplayThread(new Runnable() {
+            @Override
             public void run() {
                try {
                   explore(artifact, true);

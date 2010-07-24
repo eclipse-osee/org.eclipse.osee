@@ -61,7 +61,7 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
 
    public static String ATS_TITLE_ID = "ats.Title";
    public static String ATS_DESCRIPTION_NOT_REQUIRED_ID =
-         ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName() + ".notRequired";
+      ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName() + ".notRequired";
    public static String ATS_ESTIMATED_HOURS_NOT_REQUIRED_ID = ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE + ".notRequired";
    public static enum RuleWorkItemId {
       atsRequireStateHourSpentPrompt("Work Page Option: Will popup a dialog to prompt user for time spent in this state."),
@@ -117,66 +117,66 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
 
       // Create XWidget work items
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.LOCATION_ATTRIBUTE, "XTextDam", XOption.REQUIRED,
-            XOption.FILL_VERTICALLY));
+         XOption.FILL_VERTICALLY));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE, "XTextDam"));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.GOAL_ORDER_VOTE_ATTRIBUTE, "XTextDam"));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.CATEGORY_ATTRIBUTE, "XTextDam"));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE, "XTextDam"));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.SMA_NOTE_ATTRIBUTE, "XTextDam",
-            XOption.FILL_VERTICALLY));
+         XOption.FILL_VERTICALLY));
       workItems.add(new AtsAttributeXWidgetWorkItem("Title", "ats.Title", "Name", "XTextDam", XOption.REQUIRED));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.RESOLUTION_ATTRIBUTE, "XTextDam",
-            XOption.FILL_VERTICALLY));
+         XOption.FILL_VERTICALLY));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE, "XTextDam",
-            XOption.FILL_VERTICALLY));
+         XOption.FILL_VERTICALLY));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.PROBLEM_ATTRIBUTE, "XTextDam",
-            XOption.FILL_VERTICALLY));
+         XOption.FILL_VERTICALLY));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.WORK_PACKAGE_ATTRIBUTE, "XTextDam",
-            XOption.HORIZONTAL_LABEL));
+         XOption.HORIZONTAL_LABEL));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.WORKING_BRANCH_WIDGET, "XWorkingBranch", XOption.NONE));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.VALIDATE_REQ_CHANGES_WIDGET,
-            "XValidateReqChangesButton", XOption.NONE));
+         "XValidateReqChangesButton", XOption.NONE));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.CREATE_CODE_TEST_TASKS_OFF_REQUIREMENTS,
-            "XCreateCodeTestTasksButton", XOption.NONE));
+         "XCreateCodeTestTasksButton", XOption.NONE));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.CHECK_SIGNALS_VIA_CDB_WIDGET,
-            "XCheckSiganlsViaCDBButton", XOption.NONE));
+         "XCheckSiganlsViaCDBButton", XOption.NONE));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.SHOW_CDB_DIFF_REPORT_WIDGET,
-            "XShowCdbDiffReportButton", XOption.NONE));
+         "XShowCdbDiffReportButton", XOption.NONE));
       workItems.add(new AtsAttributeXWidgetWorkItem("Question",
-            AtsDecisionDecisionWorkPageDefinition.DECISION_QUESTION_LABEL, "Name", "XLabelDam"));
+         AtsDecisionDecisionWorkPageDefinition.DECISION_QUESTION_LABEL, "Name", "XLabelDam"));
       workItems.add(new AtsAttributeXWidgetWorkItem("Decision",
-            AtsDecisionDecisionWorkPageDefinition.DECISION_ANSWER_LABEL,
-            ATSAttributes.DECISION_ATTRIBUTE.getStoreName(), "XLabelDam"));
+         AtsDecisionDecisionWorkPageDefinition.DECISION_ANSWER_LABEL, ATSAttributes.DECISION_ATTRIBUTE.getStoreName(),
+         "XLabelDam"));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.PROPOSED_RESOLUTION_ATTRIBUTE, "XTextDam",
-            XOption.FILL_VERTICALLY));
+         XOption.FILL_VERTICALLY));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.DESCRIPTION_ATTRIBUTE, "XTextDam", XOption.REQUIRED,
-            XOption.FILL_VERTICALLY));
+         XOption.FILL_VERTICALLY));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.DESCRIPTION_ATTRIBUTE.getDisplayName(),
-            ATS_DESCRIPTION_NOT_REQUIRED_ID, ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "XTextDam",
-            XOption.NOT_REQUIRED, XOption.FILL_VERTICALLY));
+         ATS_DESCRIPTION_NOT_REQUIRED_ID, ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "XTextDam",
+         XOption.NOT_REQUIRED, XOption.FILL_VERTICALLY));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.BLOCKING_REVIEW_ATTRIBUTE, "XComboBooleanDam",
-            XOption.REQUIRED, XOption.HORIZONTAL_LABEL));
+         XOption.REQUIRED, XOption.HORIZONTAL_LABEL));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.REVIEW_BLOCKS_ATTRIBUTE,
-            "XComboDam(OPTIONS_FROM_ATTRIBUTE_VALIDITY)", XOption.REQUIRED, XOption.HORIZONTAL_LABEL));
+         "XComboDam(OPTIONS_FROM_ATTRIBUTE_VALIDITY)", XOption.REQUIRED, XOption.HORIZONTAL_LABEL));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.DECISION_ATTRIBUTE, "XComboDam(1,2,3)",
-            XOption.REQUIRED, XOption.HORIZONTAL_LABEL));
+         XOption.REQUIRED, XOption.HORIZONTAL_LABEL));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE, "XFloatDam",
-            XOption.REQUIRED));
+         XOption.REQUIRED));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getDisplayName(),
-            ATS_ESTIMATED_HOURS_NOT_REQUIRED_ID, ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(), "XFloatDam",
-            XOption.NOT_REQUIRED));
+         ATS_ESTIMATED_HOURS_NOT_REQUIRED_ID, ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(), "XFloatDam",
+         XOption.NOT_REQUIRED));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.ESTIMATED_COMPLETION_DATE_ATTRIBUTE, "XDateDam",
-            XOption.HORIZONTAL_LABEL));
+         XOption.HORIZONTAL_LABEL));
       workItems.add(new AtsAttributeSoleComboXWidgetWorkItem(ATSAttributes.CHANGE_TYPE_ATTRIBUTE,
-            "OPTIONS_FROM_ATTRIBUTE_VALIDITY", XOption.REQUIRED, XOption.BEGIN_COMPOSITE_6));
+         "OPTIONS_FROM_ATTRIBUTE_VALIDITY", XOption.REQUIRED, XOption.BEGIN_COMPOSITE_6));
       workItems.add(new AtsAttributeSoleComboXWidgetWorkItem(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE,
-            "OPTIONS_FROM_ATTRIBUTE_VALIDITY", XOption.REQUIRED));
+         "OPTIONS_FROM_ATTRIBUTE_VALIDITY", XOption.REQUIRED));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.NEED_BY_ATTRIBUTE, "XDateDam",
-            XOption.HORIZONTAL_LABEL, XOption.END_COMPOSITE));
+         XOption.HORIZONTAL_LABEL, XOption.END_COMPOSITE));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE, "XCheckBoxDam",
-            XOption.HORIZONTAL_LABEL, XOption.LABEL_BEFORE));
+         XOption.HORIZONTAL_LABEL, XOption.LABEL_BEFORE));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.USER_COMMUNITY_ATTRIBUTE,
-            "XListDam(OPTIONS_FROM_ATTRIBUTE_VALIDITY)", XOption.HORIZONTAL_LABEL));
+         "XListDam(OPTIONS_FROM_ATTRIBUTE_VALIDITY)", XOption.HORIZONTAL_LABEL));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.COMMIT_MANAGER_WIDGET, "XCommitManager"));
       workItems.add(new AtsAttributeReviewDefectXWidgetWorkItem(ATSAttributes.REVIEW_DEFECT_ATTRIBUTE));
       workItems.add(new AtsAttributeReviewRolesXWidgetWorkItem(ATSAttributes.ROLE_ATTRIBUTE));
@@ -246,7 +246,7 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
 
    public static void importWorkItemDefinitionsIntoDb(WriteType writeType, XResultData resultData, WorkItemDefinition workItemDefinition) throws OseeCoreException {
       importWorkItemDefinitionsIntoDb(writeType, resultData,
-            Arrays.asList(new WorkItemDefinition[] {workItemDefinition}));
+         Arrays.asList(new WorkItemDefinition[] {workItemDefinition}));
    }
 
    public static void importWorkItemDefinitionsIntoDb(final WriteType writeType, final XResultData resultData, final Collection<? extends WorkItemDefinition> workItemDefinitions) throws OseeCoreException {
@@ -254,7 +254,7 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Import ATS Work Item Definitions");
       // Items must be imported in order due to the relations that are created between items
       for (Class<?> clazz : new Class[] {WorkRuleDefinition.class, WorkWidgetDefinition.class,
-            WorkPageDefinition.class, WorkFlowDefinition.class}) {
+         WorkPageDefinition.class, WorkFlowDefinition.class}) {
          for (WorkItemDefinition wid : workItemDefinitions) {
             if (clazz.isInstance(wid)) {
                // System.out.println("Adding " + wid.getId() + " as class " + clazz);

@@ -37,6 +37,7 @@ public class BaseTestRunManager implements ITestRunManager {
       this.testRunListenerProviderFactory = testRunListenerProviderFactory;
    }
 
+   @Override
    public boolean abort() {
       if (test != null) {
          test.abort();
@@ -48,6 +49,7 @@ public class BaseTestRunManager implements ITestRunManager {
       return true;
    }
 
+   @Override
    public IMethodResult run(IPropertyStore propertyStore, TestEnvironment environment) {
       IMethodResult result = new MethodResultImpl(ReturnCode.OK);
       if (aborted) {
@@ -74,10 +76,12 @@ public class BaseTestRunManager implements ITestRunManager {
       return result;
    }
 
+   @Override
    public TestScript getTest() {
       return test;
    }
 
+   @Override
    public IMethodResult dispose() {
       MethodResultImpl result = new MethodResultImpl(ReturnCode.OK);
       try {
@@ -94,6 +98,7 @@ public class BaseTestRunManager implements ITestRunManager {
       return result;
    }
 
+   @Override
    public IMethodResult initialize(TestEnvironment env, IPropertyStore propertyStore) {
       MethodResultImpl result = new MethodResultImpl(ReturnCode.OK);
       try {
@@ -110,6 +115,7 @@ public class BaseTestRunManager implements ITestRunManager {
       return result;
    }
 
+   @Override
    public boolean abort(Throwable th, boolean wait) {
       if (test != null) {
          test.abort();
@@ -121,6 +127,7 @@ public class BaseTestRunManager implements ITestRunManager {
       return true;
    }
 
+   @Override
    public boolean isAborted() {
       return aborted;
    }

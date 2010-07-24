@@ -46,17 +46,17 @@ public class SMAWorkflowMetricsHeader extends Composite {
          setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
          percentLabel =
-               FormsUtil.createLabelValue(toolkit, this, "Total Percent: ", "",
-                     "Calculation: sum of percent for all states (including all tasks and reviews) / # statusable states");
+            FormsUtil.createLabelValue(toolkit, this, "Total Percent: ", "",
+               "Calculation: sum of percent for all states (including all tasks and reviews) / # statusable states");
          estHoursLabel =
-               FormsUtil.createLabelValue(toolkit, this, "Total Estimated Hours: ", "",
-                     "Calculation: sum estimated hours for workflow and all tasks and reviews");
+            FormsUtil.createLabelValue(toolkit, this, "Total Estimated Hours: ", "",
+               "Calculation: sum estimated hours for workflow and all tasks and reviews");
          hoursSpentLabel =
-               FormsUtil.createLabelValue(toolkit, this, "Total Hours Spent: ", "",
-                     "Calculation: sum of all hours spent for all tasks, reviews and in each state");
+            FormsUtil.createLabelValue(toolkit, this, "Total Hours Spent: ", "",
+               "Calculation: sum of all hours spent for all tasks, reviews and in each state");
          remainHoursLabel =
-               FormsUtil.createLabelValue(toolkit, this, "Remaining Hours: ", "",
-                     WorldXViewerFactory.Remaining_Hours_Col.getDescription());
+            FormsUtil.createLabelValue(toolkit, this, "Remaining Hours: ", "",
+               WorldXViewerFactory.Remaining_Hours_Col.getDescription());
 
          refresh();
       } catch (Exception ex) {
@@ -69,15 +69,22 @@ public class SMAWorkflowMetricsHeader extends Composite {
          return;
       }
       try {
-         if (!percentLabel.isDisposed()) percentLabel.setText(String.valueOf(sma.getPercentCompleteSMATotal()));
-         if (estHoursLabel != null && !estHoursLabel.isDisposed()) estHoursLabel.setText(String.valueOf(AtsUtil.doubleToI18nString(sma.getEstimatedHoursTotal())));
-         if (hoursSpentLabel != null && !hoursSpentLabel.isDisposed()) hoursSpentLabel.setText(String.valueOf(AtsUtil.doubleToI18nString(sma.getHoursSpentSMATotal())));
+         if (!percentLabel.isDisposed()) {
+            percentLabel.setText(String.valueOf(sma.getPercentCompleteSMATotal()));
+         }
+         if (estHoursLabel != null && !estHoursLabel.isDisposed()) {
+            estHoursLabel.setText(String.valueOf(AtsUtil.doubleToI18nString(sma.getEstimatedHoursTotal())));
+         }
+         if (hoursSpentLabel != null && !hoursSpentLabel.isDisposed()) {
+            hoursSpentLabel.setText(String.valueOf(AtsUtil.doubleToI18nString(sma.getHoursSpentSMATotal())));
+         }
          if (hoursSpentLabel != null && !hoursSpentLabel.isDisposed()) {
             Result result = sma.isWorldViewRemainHoursValid();
-            if (result.isFalse())
+            if (result.isFalse()) {
                remainHoursLabel.setText("Error" + result.getText());
-            else
+            } else {
                remainHoursLabel.setText(String.valueOf(AtsUtil.doubleToI18nString(sma.getWorldViewRemainHours())));
+            }
          }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);

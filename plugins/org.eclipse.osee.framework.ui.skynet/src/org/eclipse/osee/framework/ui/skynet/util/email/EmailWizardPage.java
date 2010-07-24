@@ -73,6 +73,7 @@ public class EmailWizardPage extends WizardPage {
       this.initialAddress = initialAddress;
    }
 
+   @Override
    @SuppressWarnings("unchecked")
    public void createControl(Composite parent) {
       setTitle("Email Action");
@@ -118,6 +119,7 @@ public class EmailWizardPage extends WizardPage {
       namesList.getViewer().getTree().setLinesVisible(false);
       namesList.getViewer().setInput(names);
       namesList.getViewer().getTree().addListener(SWT.MouseDoubleClick, new Listener() {
+         @Override
          public void handleEvent(Event event) {
             if (event.button == 1) {
                IStructuredSelection sel = (IStructuredSelection) namesList.getViewer().getSelection();
@@ -157,10 +159,12 @@ public class EmailWizardPage extends WizardPage {
       b.setSize(1000, 5);
       b.addSelectionListener(new SelectionListener() {
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             widgetDefaultSelected(e);
          }
 
+         @Override
          public void widgetDefaultSelected(SelectionEvent e) {
             IStructuredSelection sel = (IStructuredSelection) namesList.getViewer().getSelection();
             for (Object obj : sel.toList()) {
@@ -187,10 +191,12 @@ public class EmailWizardPage extends WizardPage {
       b.setText("  Cc->   ");
       b.addSelectionListener(new SelectionListener() {
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             widgetDefaultSelected(e);
          }
 
+         @Override
          public void widgetDefaultSelected(SelectionEvent e) {
             IStructuredSelection sel = (IStructuredSelection) namesList.getViewer().getSelection();
             for (Object obj : sel.toList()) {
@@ -214,10 +220,12 @@ public class EmailWizardPage extends WizardPage {
       b.setText("  Bcc->  ");
       b.addSelectionListener(new SelectionListener() {
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             widgetDefaultSelected(e);
          }
 
+         @Override
          public void widgetDefaultSelected(SelectionEvent e) {
             IStructuredSelection sel = (IStructuredSelection) namesList.getViewer().getSelection();
             for (Object obj : sel.toList()) {
@@ -330,10 +338,12 @@ public class EmailWizardPage extends WizardPage {
 
    public class NamesLabelProvider implements ILabelProvider {
 
+      @Override
       public Image getImage(Object arg0) {
          return null;
       }
 
+      @Override
       public String getText(Object element) {
          try {
             if (element instanceof User) {
@@ -344,21 +354,25 @@ public class EmailWizardPage extends WizardPage {
                return ((String) element).toString();
             }
          } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE, ex);
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
          return "";
       }
 
+      @Override
       public void addListener(ILabelProviderListener arg0) {
       }
 
+      @Override
       public void dispose() {
       }
 
+      @Override
       public boolean isLabelProperty(Object arg0, String arg1) {
          return false;
       }
 
+      @Override
       public void removeListener(ILabelProviderListener arg0) {
       }
    }

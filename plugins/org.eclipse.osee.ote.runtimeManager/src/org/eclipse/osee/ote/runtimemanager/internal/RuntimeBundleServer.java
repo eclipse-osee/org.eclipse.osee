@@ -27,14 +27,14 @@ public class RuntimeBundleServer {
 
    /**
     * Creates a new ClassServer which will serve all projects currently in the workspace
-    * @param safeWorkspaceTracker 
     * 
+    * @param safeWorkspaceTracker
     * @param testManager
     */
    public RuntimeBundleServer(SafeWorkspaceTracker safeWorkspaceTracker) {
       try {
          InetAddress useHostAddress = CorePreferences.getDefaultInetAddress();
-         classServer = new ClassServer(0, useHostAddress){
+         classServer = new ClassServer(0, useHostAddress) {
             @Override
             protected void fileDownloaded(String fp, InetAddress addr) {
                System.out.println("RuntimeBundleServer: File " + fp + " downloaded to " + addr);
@@ -48,10 +48,10 @@ public class RuntimeBundleServer {
 
       } catch (BindException ex) {
          OseeLog.log(
-               RuntimeManager.class,
-               Level.SEVERE,
-               "Class Server not started.  Likely the IP address used is not local.  Set your IP address in the advanced page.",
-               ex);
+            RuntimeManager.class,
+            Level.SEVERE,
+            "Class Server not started.  Likely the IP address used is not local.  Set your IP address in the advanced page.",
+            ex);
       } catch (Exception ex) {
          OseeLog.log(RuntimeManager.class, Level.SEVERE, "Class Server not started.", ex);
       }

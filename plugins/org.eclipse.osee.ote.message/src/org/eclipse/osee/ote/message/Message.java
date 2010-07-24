@@ -20,11 +20,10 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -56,7 +55,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    private static volatile AtomicLong constructed = new AtomicLong(0);
    private static volatile AtomicLong finalized = new AtomicLong(0);
    private final HashMap<String, Element> elementMap;
-   private String name;
+   private final String name;
    private final MessageSystemListener listenerHandler;
    protected final ArrayList<IMessageScheduleChangeListener> schedulingChangeListeners =
       new ArrayList<IMessageScheduleChangeListener>(10);
@@ -68,7 +67,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    private final int phase;
    protected double rate;
    protected final double defaultRate;
-   private boolean isScheduledFromStart;
+   private final boolean isScheduledFromStart;
    private boolean regularUnscheduleCalled = false;
    private boolean isTurnedOff = false;
 
@@ -78,15 +77,15 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
 
    private T defaultMessageData;
 
-   private List<IMemSourceChangeListener> preMemSourceChangeListeners = new ArrayList<IMemSourceChangeListener>();
-   private List<IMemSourceChangeListener> postMemSourceChangeListeners = new ArrayList<IMemSourceChangeListener>();
-   private List<IMessageDisposeListener> preMessageDisposeListeners = new ArrayList<IMessageDisposeListener>();
-   private List<IMessageDisposeListener> postMessageDisposeListeners = new ArrayList<IMessageDisposeListener>();
+   private final List<IMemSourceChangeListener> preMemSourceChangeListeners = new ArrayList<IMemSourceChangeListener>();
+   private final List<IMemSourceChangeListener> postMemSourceChangeListeners =
+      new ArrayList<IMemSourceChangeListener>();
+   private final List<IMessageDisposeListener> preMessageDisposeListeners = new ArrayList<IMessageDisposeListener>();
+   private final List<IMessageDisposeListener> postMessageDisposeListeners = new ArrayList<IMessageDisposeListener>();
 
    private final int defaultByteSize;
    private final int defaultOffset;
-   
-   
+
    protected final MessageSystemListener removableListenerHandler;
 
    public Message(String name, int defaultByteSize, int defaultOffset, boolean isScheduled, int phase, double rate) {
@@ -133,9 +132,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    }
 
    public void destroy() {
-      
-      
-      
+
       notifyPreDestroyListeners();
       destroyed = true;
       defaultMessageData.dispose();
@@ -151,7 +148,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       postMemSourceChangeListeners.clear();
       preMemSourceChangeListeners.clear();
       elementMap.clear();
-      
+
       if (messageRequestor != null) {
          messageRequestor.dispose();
       }
@@ -175,8 +172,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
          try {
             listener.onPreDispose(this);
          } catch (Exception e) {
-            OseeLog.log(MessageSystemTestEnvironment.class, Level.SEVERE,
-                  "exception during listener notification", e);
+            OseeLog.log(MessageSystemTestEnvironment.class, Level.SEVERE, "exception during listener notification", e);
          }
       }
    }
@@ -266,8 +262,8 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    }
 
    /*
-    * protected static final ThreadLocal current = new ThreadLocal() { protected Object
-    * initialValue() { return new MemMessageHolder(); } };
+    * protected static final ThreadLocal current = new ThreadLocal() { protected Object initialValue() { return new
+    * MemMessageHolder(); } };
     */
    public void send() throws MessageSystemException {
       checkState();
@@ -279,13 +275,11 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
             }
          } else {
             throw new MessageSystemException(
-                  "Message: " + name + " does not have the  physical type " + currentMemType + " available for this environment!!!!!",
-                  Level.SEVERE);
+               "Message: " + name + " does not have the  physical type " + currentMemType + " available for this environment!!!!!",
+               Level.SEVERE);
          }
       }
    }
-
-
 
    public void addSendListener(IMessageSendListener listener) {
       getActiveDataSource().addSendListener(listener);
@@ -311,12 +305,11 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
 
          } else {
             throw new MessageSystemException(
-                  "Message: " + name + " does not have a physical type available for this environment!!!!!",
-                  Level.SEVERE);
+               "Message: " + name + " does not have a physical type available for this environment!!!!!", Level.SEVERE);
          }
       } else {
-         OseeLog.log(MessageSystemTestEnvironment.class,
-               Level.WARNING, this.getMessageName() + " has attempted a send(), but is currently turned off.");
+         OseeLog.log(MessageSystemTestEnvironment.class, Level.WARNING,
+            this.getMessageName() + " has attempted a send(), but is currently turned off.");
       }
    }
 
@@ -348,7 +341,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       switchElementAssociation(getMessageTypeAssociation(memType));
    }
 
-//   public abstract void switchElementAssociation(Collection<U> messages);
+   //   public abstract void switchElementAssociation(Collection<U> messages);
 
    public void addMessageTypeAssociation(DataType memType, U messageToBeAdded) {
       checkState();
@@ -366,10 +359,11 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
 
    protected Collection<U> getMessageTypeAssociation(DataType type) {
       final ArrayList<U> list = memTypeToMessageMap.get(type);
-      if (list != null)
+      if (list != null) {
          return Collections.unmodifiableCollection(list);
-      else
+      } else {
          return new ArrayList<U>();
+      }
    }
 
    public void addMessageDataSource(T... dataList) {
@@ -401,10 +395,11 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    public Collection<T> getMemSource(DataType type) {
       checkState();
       final ArrayList<T> list = memToDataMap.get(type);
-      if (list != null)
+      if (list != null) {
          return Collections.unmodifiableCollection(list);
-      else
+      } else {
          return new ArrayList<T>();
+      }
    }
 
    public boolean getMemSource(DataType type, Collection<T> listToAddto) {
@@ -439,10 +434,10 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       checkState();
       IMessageHeader header = getActiveDataSource().getMsgHeader();
       if (header != null) {
-    	  Collections.addAll(elements, header.getElements());
+         Collections.addAll(elements, header.getElements());
       }
       elements.addAll(elementMap.values());
-      
+
    }
 
    public Collection<Element> getElements(DataType type) {
@@ -476,7 +471,8 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    /**
     * @param elementName the name of the element as defined in the message ( All caps ).
     * @return the element associated with the given name
-    * @throws IllegalArgumentException if an element doesn't exist with given name.  Use {@link #hasElement(String)} with any use of this function.
+    * @throws IllegalArgumentException if an element doesn't exist with given name. Use {@link #hasElement(String)} with
+    * any use of this function.
     */
    public Element getElement(String elementName) {
       return getElement(elementName, currentMemType);
@@ -502,21 +498,21 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       if (elementPath.size() == 1) {
          el = elementMap.get(elementPath.get(0));
       } else {
-    	 String string = (String) elementPath.get(1);
-    	 if (string.startsWith("HEADER(")) {
-	         Element[] elements = getActiveDataSource(currentMemType).getMsgHeader().getElements();
-	         for (Element element : elements) {
-	            if (element.getName().equals(elementPath.get(2))) {
-	               return element;
-	            }
-	         }
-	         return null;
-    	 } else {
-    		 el = this.elementMap.get(string);
-    		 if (el instanceof RecordElement) {
-    			 rel = (RecordElement) el;
-    		 } 
-    	 }
+         String string = (String) elementPath.get(1);
+         if (string.startsWith("HEADER(")) {
+            Element[] elements = getActiveDataSource(currentMemType).getMsgHeader().getElements();
+            for (Element element : elements) {
+               if (element.getName().equals(elementPath.get(2))) {
+                  return element;
+               }
+            }
+            return null;
+         } else {
+            el = this.elementMap.get(string);
+            if (el instanceof RecordElement) {
+               rel = (RecordElement) el;
+            }
+         }
          for (int i = 2; i < elementPath.size(); i++) {
             if (elementPath.get(i) instanceof String) {
                String name = (String) elementPath.get(i);
@@ -534,22 +530,21 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       return el;
    }
 
-
    public Element getElement(List<Object> elementPath, DataType type) {
       return getElement(elementPath).switchMessages(this.getMessageTypeAssociation(type));
    }
 
    /**
-    * 
     * @param elementName
     * @param type
     * @return the element associated with the given name
-    * @throws IllegalArgumentException if an element doesn't exist with given name.  Use {@link #hasElement(String)} with any use of this function.
+    * @throws IllegalArgumentException if an element doesn't exist with given name. Use {@link #hasElement(String)} with
+    * any use of this function.
     */
    public Element getElement(String elementName, DataType type) {
       checkState();
       Element retVal = elementMap.get(elementName);
-      if(retVal != null ) {
+      if (retVal != null) {
          return retVal.switchMessages(this.getMessageTypeAssociation(type));
       }
       return null;
@@ -592,7 +587,9 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    public void turnOn() {
       checkState();
       isTurnedOff = false;
-      if (isScheduledFromStart()) schedule();
+      if (isScheduledFromStart()) {
+         schedule();
+      }
    }
 
    /**
@@ -614,10 +611,10 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    }
 
    private void setSchedule(boolean newValue) {
-	  ArrayList<T> dataList = memToDataMap.get(currentMemType);
-	  for(T d:dataList){
-		  d.setScheduled(newValue);
-	  }
+      ArrayList<T> dataList = memToDataMap.get(currentMemType);
+      for (T d : dataList) {
+         d.setScheduled(newValue);
+      }
    }
 
    /**
@@ -629,8 +626,9 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       if (!isTurnedOff) {
          setSchedule(true);
          regularUnscheduleCalled = false;
-         for (IMessageScheduleChangeListener listener : schedulingChangeListeners)
+         for (IMessageScheduleChangeListener listener : schedulingChangeListeners) {
             listener.isScheduledChanged(true);
+         }
       }
    }
 
@@ -642,8 +640,9 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       checkState();
       setSchedule(false);
       regularUnscheduleCalled = true;
-      for (IMessageScheduleChangeListener listener : schedulingChangeListeners)
+      for (IMessageScheduleChangeListener listener : schedulingChangeListeners) {
          listener.isScheduledChanged(false);
+      }
    }
 
    /**
@@ -653,13 +652,13 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
     */
    @Deprecated
    public boolean isScheduled() {
-	  ArrayList<T> dataList = memToDataMap.get(currentMemType);
-	  for(T d:dataList){
-		  if(!d.isScheduled()){
-			  return false;
-		  }
-	  }
-	  return true;
+      ArrayList<T> dataList = memToDataMap.get(currentMemType);
+      for (T d : dataList) {
+         if (!d.isScheduled()) {
+            return false;
+         }
+      }
+      return true;
    }
 
    /**
@@ -727,6 +726,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
 
    private static final int TransmissionTimeoutDefault = 15000;
 
+   @Override
    public String toString() {
       return name;
    }
@@ -738,6 +738,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       return name;
    }
 
+   @Override
    public org.w3c.dom.Element toXml(Document doc) {
       org.w3c.dom.Element rootElement = doc.createElement("Message");
       rootElement.appendChild(Jaxp.createElement(doc, "Name", name));
@@ -806,12 +807,12 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    public boolean checkForTransmissions(ITestAccessor accessor, int numTransmissions, int milliseconds) throws InterruptedException {
       checkState();
       accessor.getLogger().methodCalledOnObject(accessor, getMessageName(),
-            (new MethodFormatter()).add(numTransmissions).add(milliseconds));
+         new MethodFormatter().add(numTransmissions).add(milliseconds));
       TransmissionCountCondition c = new TransmissionCountCondition(numTransmissions);
       MsgWaitResult result = waitForCondition(accessor, c, false, milliseconds);
       CheckPoint passFail =
          new CheckPoint(this.name, Integer.toString(numTransmissions), Integer.toString(result.getXmitCount()),
-               result.isPassed(), result.getXmitCount(), result.getElapsedTime());
+            result.isPassed(), result.getXmitCount(), result.getElapsedTime());
       accessor.getLogger().testpoint(accessor, accessor.getTestScript(), accessor.getTestCase(), passFail);
       accessor.getLogger().methodEnded(accessor);
       return passFail.isPass();
@@ -828,10 +829,10 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    public boolean checkForNoTransmissions(ITestEnvironmentMessageSystemAccessor accessor, int milliseconds) throws InterruptedException {
       checkState();
       if (accessor == null) {
-    	  throw new IllegalArgumentException("accessor cannot be null");
+         throw new IllegalArgumentException("accessor cannot be null");
       }
-      accessor.getLogger().methodCalledOnObject(accessor, getMessageName(),
-    		  (new MethodFormatter()).add(milliseconds), this);
+      accessor.getLogger().methodCalledOnObject(accessor, getMessageName(), new MethodFormatter().add(milliseconds),
+         this);
       long time = accessor.getEnvTime();
       org.eclipse.osee.ote.core.environment.interfaces.ICancelTimer cancelTimer =
          accessor.setTimerFor(listenerHandler, milliseconds);
@@ -846,11 +847,11 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       time = accessor.getEnvTime() - time;
 
       accessor.getLogger().testpoint(
-            accessor,
-            accessor.getTestScript(),
-            accessor.getTestScript().getTestCase(),
-            new CheckPoint(this.getMessageName(), "No Transmissions",
-                  (result) ? "No Transmissions" : "Transmissions Occurred", result, time));
+         accessor,
+         accessor.getTestScript(),
+         accessor.getTestScript().getTestCase(),
+         new CheckPoint(this.getMessageName(), "No Transmissions",
+            result ? "No Transmissions" : "Transmissions Occurred", result, time));
       if (accessor != null) {
          accessor.getLogger().methodEnded(accessor);
       }
@@ -903,7 +904,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    public boolean waitForTransmissions(ITestEnvironmentMessageSystemAccessor accessor, int numTransmissions, int milliseconds) throws InterruptedException {
       checkState();
       accessor.getLogger().methodCalledOnObject(accessor, getMessageName(),
-            (new MethodFormatter()).add(numTransmissions).add(milliseconds), this);
+         new MethodFormatter().add(numTransmissions).add(milliseconds), this);
       boolean pass = waitForTransmissionsNoLog(accessor, numTransmissions, milliseconds);
       accessor.getLogger().methodEnded(accessor);
       return pass;
@@ -936,7 +937,9 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       checkState();
       int size = 0;
       for (MessageData msgData : memToDataMap.get(type)) {
-         if (msgData != null && msgData.getPayloadSize() > size) size = msgData.getPayloadSize();
+         if (msgData != null && msgData.getPayloadSize() > size) {
+            size = msgData.getPayloadSize();
+         }
       }
       return size;
    }
@@ -1046,7 +1049,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
          try {
             listener.onChange(old, newtype, message);
          } catch (Exception e) {
-            OseeLog.log(MessageSystemTestEnvironment.class,Level.SEVERE, e);
+            OseeLog.log(MessageSystemTestEnvironment.class, Level.SEVERE, e);
          }
       }
    }
@@ -1141,7 +1144,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    protected void setDefaultMessageData(T defaultMessageData) {
       checkState();
       this.defaultMessageData = defaultMessageData;
-      addMessageDataSource((T) defaultMessageData);
+      addMessageDataSource(defaultMessageData);
       addMessageTypeAssociation(defaultMessageData.getType(), (U) this);
    }
 
@@ -1213,7 +1216,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
          return new IMessageHeader[0];
       }
    }
-   
+
    public long getActivityCount() {
       return getActiveDataSource().getActivityCount();
    }
@@ -1225,10 +1228,10 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    public void setActivityCount(long activityCount) {
       getActiveDataSource().setActivityCount(activityCount);
    }
-   
+
    public void switchElementAssociation(Collection<U> messages) {
    }
-   
+
    public Map<? extends DataType, Class<? extends Message>[]> getAssociatedMessages() {
       return new HashMap<DataType, Class<? extends Message>[]>();
    }
@@ -1237,22 +1240,22 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       Map<? extends DataType, Class<? extends Message>[]> o = getAssociatedMessages();
       messageRequestor = messageManager.createMessageRequestor(getName());
       for (Entry<? extends DataType, Class<? extends Message>[]> entry : o.entrySet()) {
-          if (messageManager.isPhysicalTypeAvailable(entry.getKey())) {
-             for (Class<? extends Message> clazz : entry.getValue()) {
-                final Message message;
-                   if (data.isWriter()) {
-                      message = messageRequestor.getMessageWriter(clazz);
-                   } else {
-                      message = messageRequestor.getMessageReader(clazz);
-                   }
-                this.addMessageDataSource((T)message.getDefaultMessageData());
-                this.addMessageTypeAssociation(entry.getKey(), (U)message);
-                setMemSource(entry.getKey());
-             }
-          }
-       }
+         if (messageManager.isPhysicalTypeAvailable(entry.getKey())) {
+            for (Class<? extends Message> clazz : entry.getValue()) {
+               final Message message;
+               if (data.isWriter()) {
+                  message = messageRequestor.getMessageWriter(clazz);
+               } else {
+                  message = messageRequestor.getMessageReader(clazz);
+               }
+               this.addMessageDataSource((T) message.getDefaultMessageData());
+               this.addMessageTypeAssociation(entry.getKey(), (U) message);
+               setMemSource(entry.getKey());
+            }
+         }
+      }
    }
-   
+
    /**
     * Changes the rate a message is being published at. NOTE: This is only going to be allowed to be used on periodic
     * message & users are not allowed to set rate to zero.
@@ -1263,14 +1266,15 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    public void changeRate(double newRate) {
       if (Math.abs(newRate - 0.0) < doubleTolerance) { //newRate == 0.0
          throw new IllegalArgumentException(
-               "Cannot change message rate to zero (" + getName() + ")!\n\tUse unschedule() to do that!");
+            "Cannot change message rate to zero (" + getName() + ")!\n\tUse unschedule() to do that!");
       }
       if (Math.abs(newRate - rate) > doubleTolerance) { //newRate != rate
          //         accessor.getMsgManager().changeMessageRate(this, newRate, rate);
          double oldRate = rate;
          rate = newRate;
-         for (IMessageScheduleChangeListener listener : schedulingChangeListeners)
+         for (IMessageScheduleChangeListener listener : schedulingChangeListeners) {
             listener.onRateChanged(this, oldRate, newRate);
+         }
       }
    }
 
@@ -1283,10 +1287,11 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       //      accessor.getMsgManager().changeMessageRate(this, defaultRate, rate);
       double oldRate = getRate();
       rate = defaultRate;
-      for (IMessageScheduleChangeListener listener : schedulingChangeListeners)
+      for (IMessageScheduleChangeListener listener : schedulingChangeListeners) {
          listener.onRateChanged(this, oldRate, defaultRate);
+      }
    }
-   
+
    public void sendWithLog(ITestAccessor accessor) {
       if (accessor != null) {
          accessor.getLogger().methodCalledOnObject(accessor, getMessageName(), new MethodFormatter(), this);
@@ -1296,7 +1301,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
          accessor.getLogger().methodEnded(accessor);
       }
    }
-   
+
    public int getDefaultByteSize() {
       return defaultByteSize;
    }
@@ -1304,21 +1309,21 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    public int getDefaultOffset() {
       return defaultOffset;
    }
-   
+
    public Element getElementByPath(ElementPath path) {
-	   return getElementByPath(path, currentMemType);
+      return getElementByPath(path, currentMemType);
    }
-   
+
    public Element getElementByPath(ElementPath path, DataType type) {
-	   if (path.isHeaderElement()) {
-	         Element[] elements = getActiveDataSource(type).getMsgHeader().getElements();
-	         for (Element element : elements) {
-	            if (element.getName().equals(path.getElementName())) {
-	               return element;
-	            }
-	         }
-	         return null;
-	   }
-	   return getElement(path.getList(), type);
+      if (path.isHeaderElement()) {
+         Element[] elements = getActiveDataSource(type).getMsgHeader().getElements();
+         for (Element element : elements) {
+            if (element.getName().equals(path.getElementName())) {
+               return element;
+            }
+         }
+         return null;
+      }
+      return getElement(path.getList(), type);
    }
 }

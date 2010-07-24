@@ -22,7 +22,7 @@ public class CoveragePackage1Import9 extends CpSelectAndImportItem {
 
    public CoveragePackage1Import9(XNavigateItem parent) {
       super(parent, "Open CP 1 - Import 9 - Method update for NavigationButton2.getImage.line2 and line5",
-            CoverageImport9TestBlam.NAME);
+         CoverageImport9TestBlam.NAME);
    }
 
 }

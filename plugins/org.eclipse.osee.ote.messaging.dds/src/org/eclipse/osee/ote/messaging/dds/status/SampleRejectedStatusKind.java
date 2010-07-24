@@ -11,17 +11,20 @@
 package org.eclipse.osee.ote.messaging.dds.status;
 
 /**
- * Enumeration class for the reasons a sample was rejected by a {@link org.eclipse.osee.ote.messaging.dds.entity.DataReader}.
+ * Enumeration class for the reasons a sample was rejected by a
+ * {@link org.eclipse.osee.ote.messaging.dds.entity.DataReader}.
  * 
  * @author Robert A. Fisher
  * @author David Diepenbrock
  */
 public class SampleRejectedStatusKind {
-   public static final SampleRejectedStatusKind REJECTED_BY_INSTANCE_LIMIT = new SampleRejectedStatusKind(1, "Rejected by instance limit");
-   public static final SampleRejectedStatusKind REJECTED_BY_TOPIC_LIMIT = new SampleRejectedStatusKind(2, "Rejected by topic limit");
+   public static final SampleRejectedStatusKind REJECTED_BY_INSTANCE_LIMIT = new SampleRejectedStatusKind(1,
+      "Rejected by instance limit");
+   public static final SampleRejectedStatusKind REJECTED_BY_TOPIC_LIMIT = new SampleRejectedStatusKind(2,
+      "Rejected by topic limit");
 
-   private int value;
-   private String description;
+   private final int value;
+   private final String description;
 
    private SampleRejectedStatusKind(int value, String description) {
       super();

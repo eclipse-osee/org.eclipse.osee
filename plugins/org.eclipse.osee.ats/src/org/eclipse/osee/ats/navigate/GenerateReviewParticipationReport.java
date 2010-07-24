@@ -63,7 +63,7 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
          }
          User selectedUser = ld.getSelection();
          ParticipationReportJob job =
-               new ParticipationReportJob("Review Participation Report - " + selectedUser, selectedUser);
+            new ParticipationReportJob("Review Participation Report - " + selectedUser, selectedUser);
          job.setUser(true);
          job.setPriority(Job.LONG);
          job.schedule();
@@ -85,11 +85,11 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
             MyReviewWorkflowItem srch = new MyReviewWorkflowItem("", user, ReviewState.All);
             Collection<Artifact> reviewArts = srch.performSearchGetResults();
             MassArtifactEditorInput input =
-                  new MassArtifactEditorInput(getName() + " as of " + XDate.getDateNow(), reviewArts,
-                        new ReviewParticipationXViewerFactory(user));
+               new MassArtifactEditorInput(getName() + " as of " + XDate.getDateNow(), reviewArts,
+                  new ReviewParticipationXViewerFactory(user));
             MassArtifactEditor.editArtifacts(input);
          } catch (Exception ex) {
-            return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.toString(), ex);
+            return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.toString(), ex);
          }
          monitor.done();
          return Status.OK_STATUS;

@@ -52,8 +52,9 @@ public class WorkflowDiagram extends ModelElement {
    @Override
    public Result doSave(SkynetTransaction transaction) throws OseeCoreException {
       Result result = validForSave();
-      if (result.isFalse())
+      if (result.isFalse()) {
          return result;
+      }
       try {
 
          List<WorkPageShape> workPageShapes = new ArrayList<WorkPageShape>();
@@ -77,8 +78,9 @@ public class WorkflowDiagram extends ModelElement {
          // Save new states and modifications to states
          for (WorkPageShape workPageShape : workPageShapes) {
             result = workPageShape.doSave(transaction);
-            if (result.isFalse())
+            if (result.isFalse()) {
                return result;
+            }
          }
 
          // Set start page
@@ -96,19 +98,19 @@ public class WorkflowDiagram extends ModelElement {
                TransitionConnection transConn = (TransitionConnection) connection;
                if (transConn instanceof DefaultTransitionConnection) {
                   workFlowDefinition.addPageTransition(
-                        ((WorkPageShape) transConn.getSource()).getWorkPageDefinition().getPageName(),
-                        ((WorkPageShape) transConn.getTarget()).getWorkPageDefinition().getPageName(),
-                        TransitionType.ToPageAsDefault);
+                     ((WorkPageShape) transConn.getSource()).getWorkPageDefinition().getPageName(),
+                     ((WorkPageShape) transConn.getTarget()).getWorkPageDefinition().getPageName(),
+                     TransitionType.ToPageAsDefault);
                } else if (transConn instanceof ReturnTransitionConnection) {
                   workFlowDefinition.addPageTransition(
-                        ((WorkPageShape) transConn.getSource()).getWorkPageDefinition().getPageName(),
-                        ((WorkPageShape) transConn.getTarget()).getWorkPageDefinition().getPageName(),
-                        TransitionType.ToPageAsReturn);
+                     ((WorkPageShape) transConn.getSource()).getWorkPageDefinition().getPageName(),
+                     ((WorkPageShape) transConn.getTarget()).getWorkPageDefinition().getPageName(),
+                     TransitionType.ToPageAsReturn);
                } else {
                   workFlowDefinition.addPageTransition(
-                        ((WorkPageShape) transConn.getSource()).getWorkPageDefinition().getPageName(),
-                        ((WorkPageShape) transConn.getTarget()).getWorkPageDefinition().getPageName(),
-                        TransitionType.ToPage);
+                     ((WorkPageShape) transConn.getSource()).getWorkPageDefinition().getPageName(),
+                     ((WorkPageShape) transConn.getTarget()).getWorkPageDefinition().getPageName(),
+                     TransitionType.ToPage);
                }
             }
          }
@@ -123,14 +125,16 @@ public class WorkflowDiagram extends ModelElement {
          // Validate saved workflows and all corresponding workItemDefinitions
          // prior to completion of save
          result = AtsWorkDefinitions.validateWorkItemDefinition(workFlowDefinition);
-         if (result.isFalse())
+         if (result.isFalse()) {
             return result;
+         }
          for (Shape shape : getChildren()) {
             if (WorkPageShape.class.isAssignableFrom(shape.getClass())) {
                WorkPageDefinition workPageDefinition = ((WorkPageShape) shape).getWorkPageDefinition();
                result = AtsWorkDefinitions.validateWorkItemDefinition(workPageDefinition);
-               if (result.isFalse())
+               if (result.isFalse()) {
                   return result;
+               }
             }
          }
 
@@ -146,52 +150,58 @@ public class WorkflowDiagram extends ModelElement {
       // Validate # Completed states
       int num = 0;
       for (Shape shape : getChildren()) {
-         num += (shape instanceof CompletedWorkPageShape) ? 1 : 0;
+         num += shape instanceof CompletedWorkPageShape ? 1 : 0;
       }
-      if (num > 1 || num == 0)
+      if (num > 1 || num == 0) {
          return new Result("Must have only 1 Completed state; Currently " + num);
+      }
 
       // Validate # Cancelled states
       num = 0;
       for (Shape shape : getChildren()) {
-         num += (shape instanceof CancelledWorkPageShape) ? 1 : 0;
+         num += shape instanceof CancelledWorkPageShape ? 1 : 0;
       }
-      if (num > 1 || num == 0)
+      if (num > 1 || num == 0) {
          return new Result("Must have only 1 Cancelled state; Currently " + num);
+      }
 
       // Validate # other states
       num = 0;
       for (Shape shape : getChildren()) {
-         num += (!(shape instanceof CompletedWorkPageShape) && !(shape instanceof CancelledWorkPageShape)) ? 1 : 0;
+         num += !(shape instanceof CompletedWorkPageShape) && !(shape instanceof CancelledWorkPageShape) ? 1 : 0;
       }
-      if (num == 0)
+      if (num == 0) {
          return new Result("Must have > 0 states; Currently " + num);
+      }
 
       // Validate # other states
       num = 0;
       for (Shape shape : getChildren()) {
          if (WorkPageShape.class.isAssignableFrom(shape.getClass())) {
             if (((WorkPageShape) shape).isStartPage()) {
-               if (((WorkPageShape) shape).isCancelledState())
+               if (((WorkPageShape) shape).isCancelledState()) {
                   return new Result("Cancelled state can not be start page");
-               if (((WorkPageShape) shape).isCompletedState())
+               }
+               if (((WorkPageShape) shape).isCompletedState()) {
                   return new Result("Completed state can not be start page");
+               }
                num++;
             }
          }
       }
-      if (num > 1 || num == 0)
+      if (num > 1 || num == 0) {
          return new Result("Must have 1 start page; Currently " + num);
+      }
 
       // Validate state names
       List<String> stateNames = new ArrayList<String>();
       for (Shape shape : getChildren()) {
          if (WorkPageShape.class.isAssignableFrom(shape.getClass())) {
             String name =
-                  (String) ((WorkPageShape) shape).getPropertyValue(WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName());
+               (String) ((WorkPageShape) shape).getPropertyValue(WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName());
             if (stateNames.contains(name)) {
                return new Result(
-                     "Workflow can not have more than one state of same name.  Multiples found of name " + name);
+                  "Workflow can not have more than one state of same name.  Multiples found of name " + name);
             }
             stateNames.add(name);
          }
@@ -209,8 +219,9 @@ public class WorkflowDiagram extends ModelElement {
       // Validate children shapes
       for (Shape shape : getChildren()) {
          Result result = shape.validForSave();
-         if (result.isFalse())
+         if (result.isFalse()) {
             return result;
+         }
       }
       return Result.TrueResult;
    }
@@ -239,8 +250,9 @@ public class WorkflowDiagram extends ModelElement {
    public boolean hasChild(Shape s) {
       for (Object obj : shapes) {
          Shape shape = (Shape) obj;
-         if (shape.equals(s))
+         if (shape.equals(s)) {
             return true;
+         }
       }
       return false;
    }

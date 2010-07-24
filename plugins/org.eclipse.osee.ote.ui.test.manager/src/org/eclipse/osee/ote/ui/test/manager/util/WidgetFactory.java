@@ -36,8 +36,7 @@ public class WidgetFactory {
    }
 
    /**
-    * Creates a <code>Label</code> for use on a GridLayout. The <code>Label</code> will only
-    * span 1 column in the grid.
+    * Creates a <code>Label</code> for use on a GridLayout. The <code>Label</code> will only span 1 column in the grid.
     * 
     * @param comp The composite this label will be on.
     * @param str The text for the label

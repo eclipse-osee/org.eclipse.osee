@@ -54,29 +54,30 @@ public class ServerOseeCachingServiceFactory implements IOseeCachingServiceFacto
       this.appManager = appManager;
    }
 
+   @Override
    public IOseeCachingService createCachingService() {
       OseeEnumTypeCache oseeEnumTypeCache =
-            new OseeEnumTypeCache(new DatabaseOseeEnumTypeAccessor(databaseProvider, factoryProvider));
+         new OseeEnumTypeCache(new DatabaseOseeEnumTypeAccessor(databaseProvider, factoryProvider));
 
       IOseeDataAccessor<AttributeType> attrAccessor =
-            new DatabaseAttributeTypeAccessor(databaseProvider, factoryProvider, oseeEnumTypeCache);
+         new DatabaseAttributeTypeAccessor(databaseProvider, factoryProvider, oseeEnumTypeCache);
 
       AttributeTypeCache attributeCache = new AttributeTypeCache(attrAccessor);
 
       TransactionCache txCache = new TransactionCache();
       IBranchUpdateEvent branchEventSender = new BranchUpdateEventImpl(txProvider, appManager, serverLookUpProvider);
       BranchCache branchCache =
-            new BranchCache(new DatabaseBranchAccessor(databaseProvider, factoryProvider, branchEventSender, txCache));
+         new BranchCache(new DatabaseBranchAccessor(databaseProvider, factoryProvider, branchEventSender, txCache));
       txCache.setAccessor(new DatabaseTransactionRecordAccessor(databaseProvider, factoryProvider, branchCache));
 
       ArtifactTypeCache artifactCache =
-            new ArtifactTypeCache(new DatabaseArtifactTypeAccessor(databaseProvider, factoryProvider, branchCache,
-                  attributeCache));
+         new ArtifactTypeCache(new DatabaseArtifactTypeAccessor(databaseProvider, factoryProvider, branchCache,
+            attributeCache));
 
       RelationTypeCache relationCache =
-            new RelationTypeCache(new DatabaseRelationTypeAccessor(databaseProvider, factoryProvider, artifactCache));
+         new RelationTypeCache(new DatabaseRelationTypeAccessor(databaseProvider, factoryProvider, artifactCache));
 
       return new OseeCachingService(branchCache, txCache, artifactCache, attributeCache, relationCache,
-            oseeEnumTypeCache);
+         oseeEnumTypeCache);
    }
 }

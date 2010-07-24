@@ -22,8 +22,8 @@ public class OseeLease implements Lease, Serializable {
 
    private static final long serialVersionUID = -2821773288662499183L;
 
-   private ILeaseGrantor leaseManager;
-   private Object myConsumer;
+   private final ILeaseGrantor leaseManager;
+   private final Object myConsumer;
 
    private int serialFormat = Lease.DURATION;
    private long duration;
@@ -36,10 +36,12 @@ public class OseeLease implements Lease, Serializable {
       leaseManager = manager;
    }
 
+   @Override
    public long getExpiration() {
       return duration + startTime;
    }
 
+   @Override
    public void cancel() throws UnknownLeaseException, RemoteException {
       leaseManager.cancelRequest(this, myConsumer);
    }
@@ -47,6 +49,7 @@ public class OseeLease implements Lease, Serializable {
    /**
     * Requests that the lease be renewed.
     */
+   @Override
    public void renew(long durationFromNow) throws LeaseDeniedException, UnknownLeaseException, RemoteException {
       System.out.println("Requesting Lease Renewal: @" + new Date());
       leaseManager.renewRequest(this, myConsumer, duration);
@@ -61,23 +64,28 @@ public class OseeLease implements Lease, Serializable {
       startTime = System.currentTimeMillis();
    }
 
+   @Override
    public void setSerialFormat(int leaseFormat) {
-      if (leaseFormat == Lease.DURATION)
+      if (leaseFormat == Lease.DURATION) {
          serialFormat = Lease.DURATION;
-      else if (leaseFormat == Lease.ABSOLUTE)
+      } else if (leaseFormat == Lease.ABSOLUTE) {
          serialFormat = Lease.ABSOLUTE;
-      else
+      } else {
          assert false : leaseFormat;
+      }
    }
 
+   @Override
    public int getSerialFormat() {
       return serialFormat;
    }
 
+   @Override
    public LeaseMap createLeaseMap(long duration) {
       return null;
    }
 
+   @Override
    public boolean canBatch(Lease lease) {
       return false;
    }

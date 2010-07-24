@@ -32,7 +32,7 @@ public class CoveragePreferencesTest {
    public static void setUp() throws OseeCoreException {
       SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch(), "delete");
       for (Artifact artifact : ArtifactQuery.getArtifactListFromTypeAndName(CoreArtifactTypes.GeneralData,
-            "Coverage Preferences", BranchManager.getCommonBranch())) {
+         "Coverage Preferences", BranchManager.getCommonBranch())) {
          artifact.deleteAndPersist(transaction);
       }
       transaction.execute();
@@ -41,8 +41,8 @@ public class CoveragePreferencesTest {
    private static Artifact getCoveragePrefArt() throws OseeCoreException {
       try {
          Artifact artifact =
-               ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.GeneralData, "Coverage Preferences",
-                     BranchManager.getCommonBranch());
+            ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.GeneralData, "Coverage Preferences",
+               BranchManager.getCommonBranch());
          return artifact;
       } catch (ArtifactDoesNotExist ex) {
          // do nothing

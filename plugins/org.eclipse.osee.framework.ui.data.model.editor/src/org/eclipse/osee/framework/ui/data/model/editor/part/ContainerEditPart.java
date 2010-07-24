@@ -27,14 +27,17 @@ public class ContainerEditPart extends AbstractGraphicalEditPart {
       setModel(model);
    }
 
+   @Override
    protected void createEditPolicies() {
    }
 
+   @Override
    protected IFigure createFigure() {
       IFigure figure = new CompartmentFigure();
       return figure;
    }
 
+   @Override
    @SuppressWarnings("unchecked")
    protected List getModelChildren() {
       if (getModel() instanceof ContainerModel) {
@@ -44,6 +47,7 @@ public class ContainerEditPart extends AbstractGraphicalEditPart {
       }
    }
 
+   @Override
    public boolean isSelectable() {
       return false;
    }

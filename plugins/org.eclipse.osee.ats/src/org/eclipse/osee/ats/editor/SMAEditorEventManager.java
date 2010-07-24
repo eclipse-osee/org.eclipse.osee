@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
@@ -24,7 +25,6 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
@@ -73,7 +73,7 @@ public class SMAEditorEventManager implements IArtifactEventListener {
       System.out.println("SMAEditor: handleArtifactEvent called [" + artifactEvent + "] - sender " + sender + "");
       try {
          if (artifactEvent.getBranchGuid() == null || !artifactEvent.getBranchGuid().equals(
-               AtsUtil.getAtsBranch().getGuid())) {
+            AtsUtil.getAtsBranch().getGuid())) {
             return;
          }
       } catch (OseeCoreException ex) {
@@ -84,7 +84,7 @@ public class SMAEditorEventManager implements IArtifactEventListener {
          ActionArtifact actionArt = null;
          boolean refreshed = false;
          try {
-            actionArt = (sma instanceof TeamWorkFlowArtifact) ? sma.getParentActionArtifact() : null;
+            actionArt = sma instanceof TeamWorkFlowArtifact ? sma.getParentActionArtifact() : null;
          } catch (OseeCoreException ex) {
             // do nothing
          }
@@ -184,16 +184,20 @@ public class SMAEditorEventManager implements IArtifactEventListener {
          }
          if (sma instanceof TaskableStateMachineArtifact) {
             for (TaskArtifact taskArt : ((TaskableStateMachineArtifact) sma).getTaskArtifacts()) {
-               if (artifactEvent.isReloaded(taskArt)) return true;
+               if (artifactEvent.isReloaded(taskArt)) {
+                  return true;
+               }
             }
          }
          if (sma.isTeamWorkflow()) {
             for (ReviewSMArtifact reviewArt : ReviewManager.getReviews((TeamWorkFlowArtifact) sma)) {
-               if (artifactEvent.isReloaded(reviewArt)) return true;
+               if (artifactEvent.isReloaded(reviewArt)) {
+                  return true;
+               }
             }
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          return false;
       }
       return false;

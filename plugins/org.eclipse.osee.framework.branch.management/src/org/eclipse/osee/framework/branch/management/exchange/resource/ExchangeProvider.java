@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.resource.management.util.OptionsProcessor;
 public class ExchangeProvider implements IResourceProvider {
    private static final String BASE_PATH = OseeServerProperties.getOseeApplicationServerData();
    private static final String RESOLVED_PATH =
-         BASE_PATH + File.separator + ExchangeLocatorProvider.PROTOCOL + File.separator;
+      BASE_PATH + File.separator + ExchangeLocatorProvider.PROTOCOL + File.separator;
 
    public ExchangeProvider() {
    }

@@ -1,13 +1,13 @@
 /*******************************************************************************
  * Copyright (c) 2004, 2005 Donald G. Dunne and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *    Donald G. Dunne - initial API and implementation
- *******************************************************************************/
+ï¿½* All rights reserved. This program and the accompanying materials
+ï¿½* are made available under the terms of the Eclipse Public License v1.0
+ï¿½* which accompanies this distribution, and is available at
+ï¿½* http://www.eclipse.org/legal/epl-v10.html
+ï¿½*
+ï¿½* Contributors:
+ï¿½*ï¿½ï¿½ï¿½ï¿½Donald G. Dunne - initial API and implementation
+ï¿½*******************************************************************************/
 package org.eclipse.osee.ats.workflow.editor.model;
 
 import java.util.ArrayList;
@@ -136,6 +136,7 @@ public abstract class Shape extends ModelElement {
       // use a custom cell editor validator for all four array entries
       for (IPropertyDescriptor descriptor : descriptorList) {
          ((PropertyDescriptor) descriptor).setValidator(new ICellEditorValidator() {
+            @Override
             public String isValid(Object value) {
                int intValue = -1;
                try {
@@ -143,7 +144,7 @@ public abstract class Shape extends ModelElement {
                } catch (NumberFormatException exc) {
                   return "Not a number";
                }
-               return (intValue >= 0) ? null : "Value must be >=  0";
+               return intValue >= 0 ? null : "Value must be >=  0";
             }
          });
       }

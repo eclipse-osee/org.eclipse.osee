@@ -36,6 +36,7 @@ public class NewNotePage extends WizardPage {
       this.wizard = wizard;
    }
 
+   @Override
    public void createControl(Composite parent) {
       typeList = new XList("Type");
       typeList.setRequiredEntry(true);
@@ -71,9 +72,11 @@ public class NewNotePage extends WizardPage {
 
       typeList.createWidgets(topCLeft, 2);
       typeList.addSelectionListener(new SelectionListener() {
+         @Override
          public void widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent e) {
          };
 
+         @Override
          public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
             update();
          };
@@ -86,9 +89,11 @@ public class NewNotePage extends WizardPage {
 
       artifactList.createWidgets(topCRight, 2);
       artifactList.addSelectionListener(new SelectionListener() {
+         @Override
          public void widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent e) {
          };
 
+         @Override
          public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
             update();
          };
@@ -104,6 +109,7 @@ public class NewNotePage extends WizardPage {
 
       noteText.createWidgets(bottomC, 2);
       noteText.addModifyListener(new ModifyListener() {
+         @Override
          public void modifyText(org.eclipse.swt.events.ModifyEvent e) {
             update();
          };

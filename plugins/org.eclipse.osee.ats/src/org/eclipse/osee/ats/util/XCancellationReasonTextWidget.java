@@ -24,41 +24,41 @@ import org.eclipse.osee.framework.ui.swt.Widgets;
  */
 public class XCancellationReasonTextWidget extends XText implements IArtifactWidget {
 
-	private StateMachineArtifact sma;
+   private StateMachineArtifact sma;
 
-	public XCancellationReasonTextWidget(StateMachineArtifact sma) throws OseeCoreException {
-		super("Cancallation Reason");
-		setArtifact(sma);
-	}
+   public XCancellationReasonTextWidget(StateMachineArtifact sma) throws OseeCoreException {
+      super("Cancallation Reason");
+      setArtifact(sma);
+   }
 
-	@Override
-	public Result isDirty() throws OseeCoreException {
-		if (!Widgets.isAccessible(getControl())) {
-			return Result.FalseResult;
-		}
-		if (!getText().equals(sma.getLog().getCancellationReason())) {
-			return new Result(true, "Cancallation Reason dirty");
-		}
-		return Result.FalseResult;
-	}
+   @Override
+   public Result isDirty() throws OseeCoreException {
+      if (!Widgets.isAccessible(getControl())) {
+         return Result.FalseResult;
+      }
+      if (!getText().equals(sma.getLog().getCancellationReason())) {
+         return new Result(true, "Cancallation Reason dirty");
+      }
+      return Result.FalseResult;
+   }
 
-	@Override
-	public void revert() {
-	}
+   @Override
+   public void revert() {
+   }
 
-	@Override
-	public void saveToArtifact() throws OseeCoreException {
-		if (Strings.isValid(getText())) {
-			sma.getLog().setCancellationReason(getText());
-		}
-	}
+   @Override
+   public void saveToArtifact() throws OseeCoreException {
+      if (Strings.isValid(getText())) {
+         sma.getLog().setCancellationReason(getText());
+      }
+   }
 
-	@Override
-	public void setArtifact(Artifact artifact) throws OseeCoreException {
-		if (artifact instanceof StateMachineArtifact) {
-			this.sma = (StateMachineArtifact) artifact;
-			setText(sma.getLog().getCancellationReason());
-		}
-	}
+   @Override
+   public void setArtifact(Artifact artifact) throws OseeCoreException {
+      if (artifact instanceof StateMachineArtifact) {
+         this.sma = (StateMachineArtifact) artifact;
+         setText(sma.getLog().getCancellationReason());
+      }
+   }
 
 }

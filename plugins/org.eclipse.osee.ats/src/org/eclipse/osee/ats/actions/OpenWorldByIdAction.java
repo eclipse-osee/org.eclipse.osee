@@ -32,7 +32,7 @@ public class OpenWorldByIdAction extends Action {
    @Override
    public void run() {
       Operations.executeAsJob(new MultipleHridSearchOperation(new MultipleHridSearchData(getText(),
-            AtsEditor.WorldEditor)), true);
+         AtsEditor.WorldEditor)), true);
    }
 
    @Override

@@ -15,7 +15,7 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
-import java.net.HttpURLConnection;
+import java.net.URLConnection;
 import java.util.Collection;
 import java.util.logging.Level;
 import javax.servlet.http.HttpServletResponse;
@@ -148,9 +148,9 @@ public class XmlMessage {
             mimeType = "text/css";
          }
          if (mimeType == null) {
-            mimeType = HttpURLConnection.guessContentTypeFromStream(inputStream);
+            mimeType = URLConnection.guessContentTypeFromStream(inputStream);
             if (mimeType == null) {
-               mimeType = HttpURLConnection.guessContentTypeFromName(resource.getLocation().toString());
+               mimeType = URLConnection.guessContentTypeFromName(resource.getLocation().toString());
                if (mimeType == null) {
                   mimeType = "application/*";
                }

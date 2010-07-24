@@ -135,7 +135,7 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
    private IArtifactSearchContentProvider fContentProvider;
    private ISelectionProvider selectionProvider;
    private final ArtifactDecorator artifactDecorator = new ArtifactDecorator(
-         SkynetGuiPlugin.ARTIFACT_SEARCH_RESULTS_ATTRIBUTES_PREF);
+      SkynetGuiPlugin.ARTIFACT_SEARCH_RESULTS_ATTRIBUTES_PREF);
 
    public ArtifactSearchPage() {
       setElementLimit(new Integer(DEFAULT_ELEMENT_LIMIT));
@@ -206,7 +206,7 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
          public void run() {
             Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
             PreferencesUtil.createPreferenceDialogOn(shell, "org.eclipse.search.preferences.SearchPreferencePage",
-                  null, null).open();
+               null, null).open();
          }
       });
    }
@@ -269,6 +269,7 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
       memento.putInteger(KEY_LIMIT, getElementLimit().intValue());
    }
 
+   @Override
    @SuppressWarnings("rawtypes")
    public Object getAdapter(Class adapter) {
       return null;
@@ -488,23 +489,28 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
    }
 
    private class SearchSelectionProvider implements ISelectionProvider {
+      @Override
       public void addSelectionChangedListener(ISelectionChangedListener listener) {
 
       }
 
+      @Override
       public ISelection getSelection() {
          return new ArtifactSelection(getSelectedArtifacts());
       }
 
+      @Override
       public void removeSelectionChangedListener(ISelectionChangedListener listener) {
 
       }
 
+      @Override
       public void setSelection(ISelection selection) {
 
       }
    }
 
+   @Override
    public Branch getBranch(IProgressMonitor monitor) {
       if (getInput() != null && getInput().getArtifactResults() != null && !getInput().getArtifactResults().isEmpty()) {
          return getInput().getArtifactResults().get(0).getBranch();
@@ -560,7 +566,7 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
    @Override
    public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
       final Collection<EventBasicGuidArtifact> deletedPurgedArts =
-            artifactEvent.get(EventModType.Deleted, EventModType.Purged);
+         artifactEvent.get(EventModType.Deleted, EventModType.Purged);
       if (deletedPurgedArts.isEmpty()) {
          return;
       }

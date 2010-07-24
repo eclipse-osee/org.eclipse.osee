@@ -19,16 +19,16 @@ import org.eclipse.osee.ote.message.instrumentation.IOInstrumentation;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public class IOInstrumentationDB {
-   
+
    private final Map<String, IOInstrumentation> ioInstrumentation = new ConcurrentHashMap<String, IOInstrumentation>();;
-   private final CopyOnWriteArraySet<IInstrumentationRegistrationListener> listeners = new CopyOnWriteArraySet<IInstrumentationRegistrationListener>();
-   
-   IOInstrumentationDB(){
+   private final CopyOnWriteArraySet<IInstrumentationRegistrationListener> listeners =
+      new CopyOnWriteArraySet<IInstrumentationRegistrationListener>();
+
+   IOInstrumentationDB() {
    }
-   
+
    public IOInstrumentation getIOInstrumentation(String name) {//, IOInstrumentation io){
       return ioInstrumentation.get(name);
    }
@@ -47,37 +47,41 @@ public class IOInstrumentationDB {
          notifyDeregistration(name);
       }
    }
-   
+
    public void addRegistrationListener(IInstrumentationRegistrationListener listener) {
       listeners.add(listener);
       for (Map.Entry<String, IOInstrumentation> entry : ioInstrumentation.entrySet()) {
          try {
             listener.onRegistered(entry.getKey(), entry.getValue());
          } catch (Exception e) {
-            OseeLog.log(IOInstrumentation.class, Level.SEVERE, "exception notifying listener of IO instrumentation registration", e);
+            OseeLog.log(IOInstrumentation.class, Level.SEVERE,
+               "exception notifying listener of IO instrumentation registration", e);
          }
       }
    }
-   
+
    public void removeRegistrationListener(IInstrumentationRegistrationListener listener) {
       listeners.remove(listener);
    }
-   
+
    private void notifyRegistration(String name, IOInstrumentation io) {
       for (IInstrumentationRegistrationListener listener : listeners) {
          try {
             listener.onRegistered(name, io);
          } catch (Exception e) {
-            OseeLog.log(IOInstrumentation.class, Level.SEVERE, "exception notifying listener of IO instrumentation registration", e);
+            OseeLog.log(IOInstrumentation.class, Level.SEVERE,
+               "exception notifying listener of IO instrumentation registration", e);
          }
       }
    }
+
    private void notifyDeregistration(String name) {
       for (IInstrumentationRegistrationListener listener : listeners) {
          try {
             listener.onDeregistered(name);
          } catch (Exception e) {
-            OseeLog.log(IOInstrumentation.class, Level.SEVERE, "exception notifying listener of IO instrumentation de-registration", e);
+            OseeLog.log(IOInstrumentation.class, Level.SEVERE,
+               "exception notifying listener of IO instrumentation de-registration", e);
          }
       }
    }

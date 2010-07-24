@@ -57,9 +57,11 @@ public final class ArtifactDiffMenu {
          this.viewer = viewer;
       }
 
+      @Override
       public void menuHidden(MenuEvent e) {
       }
 
+      @Override
       public void menuShown(MenuEvent e) {
          boolean isValidSelection = false;
 
@@ -126,15 +128,15 @@ public final class ArtifactDiffMenu {
             Change changeB = (Change) selectionB;
 
             Conditions.checkExpressionFailOnTrue(changeA.getArtId() != changeB.getArtId(),
-                  "Change art ids don't match [%s:%s]", changeA.getArtId(), changeB.getArtId());
+               "Change art ids don't match [%s:%s]", changeA.getArtId(), changeB.getArtId());
 
             int artId = changeA.getArtId();
             TransactionDelta txDelta = asTxDelta(changeA, changeB);
 
             Artifact startArtifact =
-                  ArtifactQuery.getHistoricalArtifactFromId(artId, txDelta.getStartTx(), INCLUDE_DELETED);
+               ArtifactQuery.getHistoricalArtifactFromId(artId, txDelta.getStartTx(), INCLUDE_DELETED);
             Artifact endArtifact =
-                  ArtifactQuery.getHistoricalArtifactFromId(artId, txDelta.getEndTx(), INCLUDE_DELETED);
+               ArtifactQuery.getHistoricalArtifactFromId(artId, txDelta.getEndTx(), INCLUDE_DELETED);
             toReturn = new ArtifactDelta(txDelta, startArtifact, endArtifact);
          }
          return toReturn;

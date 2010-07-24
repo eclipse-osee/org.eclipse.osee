@@ -39,11 +39,11 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStoreWriter;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.LoadLevel;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag;
 import org.eclipse.osee.framework.skynet.core.artifact.ISearchConfirmer;
+import org.eclipse.osee.framework.skynet.core.artifact.LoadLevel;
 import org.eclipse.osee.framework.skynet.core.artifact.LoadType;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactXmlQueryResultParser.MatchLocation;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactXmlQueryResultParser.XmlArtifactSearchResult;
@@ -116,8 +116,8 @@ final class HttpArtifactQuery {
             if (queryIdAndSize != null && queryIdAndSize.getSecond() > 0) {
                try {
                   toReturn =
-                        ArtifactLoader.loadArtifactsFromQueryId(queryIdAndSize.getFirst(), loadLevel, confirmer,
-                              queryIdAndSize.getSecond(), reload, historical, allowDeleted);
+                     ArtifactLoader.loadArtifactsFromQueryId(queryIdAndSize.getFirst(), loadLevel, confirmer,
+                        queryIdAndSize.getSecond(), reload, historical, allowDeleted);
                } finally {
                   JoinUtility.deleteQuery(JoinUtility.JoinItem.ARTIFACT, queryIdAndSize.getFirst().intValue());
                }
@@ -144,12 +144,12 @@ final class HttpArtifactQuery {
                   try {
                      result.getJoinQuery().store();
                      List<Artifact> artifacts =
-                           ArtifactLoader.loadArtifactsFromQueryId(result.getJoinQuery().getQueryId(), loadLevel,
-                                 confirmer, result.getJoinQuery().size(), reload, historical, allowDeleted);
+                        ArtifactLoader.loadArtifactsFromQueryId(result.getJoinQuery().getQueryId(), loadLevel,
+                           confirmer, result.getJoinQuery().size(), reload, historical, allowDeleted);
                      for (Artifact artifact : artifacts) {
                         ArtifactMatch artMatch = new ArtifactMatch(artifact);
                         HashCollection<Long, MatchLocation> attributeMatches =
-                              result.getAttributeMatches(artifact.getArtId());
+                           result.getAttributeMatches(artifact.getArtId());
                         if (attributeMatches != null) {
                            artMatch.addMatches(attributeMatches);
                         }
@@ -164,8 +164,8 @@ final class HttpArtifactQuery {
                if (queryIdAndSize != null && queryIdAndSize.getSecond() > 0) {
                   try {
                      List<Artifact> artifactList =
-                           ArtifactLoader.loadArtifactsFromQueryId(queryIdAndSize.getFirst(), loadLevel, confirmer,
-                                 queryIdAndSize.getSecond(), reload, historical, allowDeleted);
+                        ArtifactLoader.loadArtifactsFromQueryId(queryIdAndSize.getFirst(), loadLevel, confirmer,
+                           queryIdAndSize.getSecond(), reload, historical, allowDeleted);
                      for (Artifact artifact : artifactList) {
                         toReturn.add(new ArtifactMatch(artifact));
                      }
@@ -189,13 +189,12 @@ final class HttpArtifactQuery {
          inputStream = getSearchParameters(sessionId, withMatches, findAllMatchLocations);
          ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
          AcquireResult httpRequestResult =
-               HttpProcessor.post(new URL(getSearchUrl(sessionId)), inputStream, "application/xml", "UTF-8",
-                     outputStream);
+            HttpProcessor.post(new URL(getSearchUrl(sessionId)), inputStream, "application/xml", "UTF-8", outputStream);
          if (httpRequestResult.getCode() == HttpURLConnection.HTTP_ACCEPTED) {
             toReturn = new Pair<String, ByteArrayOutputStream>(httpRequestResult.getContentType(), outputStream);
          } else if (httpRequestResult.getCode() != HttpURLConnection.HTTP_NO_CONTENT) {
             throw new OseeCoreException(String.format("Search error due to bad request: url[%s] status code: [%s]",
-                  inputStream.toString(), httpRequestResult.getCode()));
+               inputStream.toString(), httpRequestResult.getCode()));
          }
       } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);

@@ -57,94 +57,94 @@ import org.osgi.service.http.HttpService;
  */
 public class ServletRegistrationHandler extends AbstractTrackingHandler {
 
-	private static final Class<?>[] SERVICE_DEPENDENCIES = new Class<?>[] {
-				//
-				ISessionManager.class, //
-				IApplicationServerLookup.class, // 
-				IApplicationServerManager.class, // 
-				IAuthenticationManager.class,// 
-				IDataTranslationService.class, // 
-				IOseeModelingService.class, // 
-				IOseeCachingService.class,// 
-				IOseeDatabaseService.class, // 
-				IOseeBranchService.class, // 
-				IBranchExchange.class, // 
-				ISearchEngine.class,// 
-				ISearchEngineTagger.class, // 
-				IOseeModelFactoryService.class, // 
-				IResourceLocatorManager.class,// 
-				IResourceManager.class, // 
-				HttpService.class, // 
-	};
+   private static final Class<?>[] SERVICE_DEPENDENCIES = new Class<?>[] {
+      //
+      ISessionManager.class, //
+      IApplicationServerLookup.class, // 
+      IApplicationServerManager.class, // 
+      IAuthenticationManager.class,// 
+      IDataTranslationService.class, // 
+      IOseeModelingService.class, // 
+      IOseeCachingService.class,// 
+      IOseeDatabaseService.class, // 
+      IOseeBranchService.class, // 
+      IBranchExchange.class, // 
+      ISearchEngine.class,// 
+      ISearchEngineTagger.class, // 
+      IOseeModelFactoryService.class, // 
+      IResourceLocatorManager.class,// 
+      IResourceManager.class, // 
+      HttpService.class, // 
+   };
 
-	private final Set<String> contexts = new HashSet<String>();
-	private HttpService httpService;
-	private IApplicationServerManager appServerManager;
+   private final Set<String> contexts = new HashSet<String>();
+   private HttpService httpService;
+   private IApplicationServerManager appServerManager;
 
-	@Override
-	public Class<?>[] getDependencies() {
-		return SERVICE_DEPENDENCIES;
-	}
+   @Override
+   public Class<?>[] getDependencies() {
+      return SERVICE_DEPENDENCIES;
+   }
 
-	@Override
-	public void onActivate(BundleContext context, Map<Class<?>, Object> services) {
-		ISessionManager sessionManager = getService(ISessionManager.class, services);
-		IApplicationServerLookup serverLookup = getService(IApplicationServerLookup.class, services);
-		appServerManager = getService(IApplicationServerManager.class, services);
-		IDataTranslationService translationService = getService(IDataTranslationService.class, services);
-		IOseeModelingService modeling = getService(IOseeModelingService.class, services);
-		IOseeCachingService caching = getService(IOseeCachingService.class, services);
-		IOseeDatabaseService databaseService = getService(IOseeDatabaseService.class, services);
-		IOseeBranchService branchService = getService(IOseeBranchService.class, services);
-		IBranchExchange branchExchangeService = getService(IBranchExchange.class, services);
-		ISearchEngine search = getService(ISearchEngine.class, services);
-		ISearchEngineTagger tagger = getService(ISearchEngineTagger.class, services);
-		IAuthenticationManager authenticationManager = getService(IAuthenticationManager.class, services);
-		IOseeModelFactoryService factoryService = getService(IOseeModelFactoryService.class, services);
-		IResourceLocatorManager locatorManager = getService(IResourceLocatorManager.class, services);
-		IResourceManager resourceManager = getService(IResourceManager.class, services);
+   @Override
+   public void onActivate(BundleContext context, Map<Class<?>, Object> services) {
+      ISessionManager sessionManager = getService(ISessionManager.class, services);
+      IApplicationServerLookup serverLookup = getService(IApplicationServerLookup.class, services);
+      appServerManager = getService(IApplicationServerManager.class, services);
+      IDataTranslationService translationService = getService(IDataTranslationService.class, services);
+      IOseeModelingService modeling = getService(IOseeModelingService.class, services);
+      IOseeCachingService caching = getService(IOseeCachingService.class, services);
+      IOseeDatabaseService databaseService = getService(IOseeDatabaseService.class, services);
+      IOseeBranchService branchService = getService(IOseeBranchService.class, services);
+      IBranchExchange branchExchangeService = getService(IBranchExchange.class, services);
+      ISearchEngine search = getService(ISearchEngine.class, services);
+      ISearchEngineTagger tagger = getService(ISearchEngineTagger.class, services);
+      IAuthenticationManager authenticationManager = getService(IAuthenticationManager.class, services);
+      IOseeModelFactoryService factoryService = getService(IOseeModelFactoryService.class, services);
+      IResourceLocatorManager locatorManager = getService(IResourceLocatorManager.class, services);
+      IResourceManager resourceManager = getService(IResourceManager.class, services);
 
-		httpService = getService(HttpService.class, services);
-		appServerManager = getService(IApplicationServerManager.class, services);
+      httpService = getService(HttpService.class, services);
+      appServerManager = getService(IApplicationServerManager.class, services);
 
-		register(new SystemManagerServlet(sessionManager), OseeServerContext.MANAGER_CONTEXT);
-		register(new ResourceManagerServlet(sessionManager, locatorManager, resourceManager),
-					OseeServerContext.RESOURCE_CONTEXT);
-		register(new ArtifactFileServlet(locatorManager, resourceManager), OseeServerContext.PROCESS_CONTEXT);
-		register(new ArtifactFileServlet(locatorManager, resourceManager), OseeServerContext.ARTIFACT_CONTEXT);
-		register(new ArtifactFileServlet(locatorManager, resourceManager), "index");
-		register(new BranchExchangeServlet(sessionManager, branchExchangeService, locatorManager, resourceManager),
-					OseeServerContext.BRANCH_EXCHANGE_CONTEXT);
-		register(new BranchManagerServlet(sessionManager, branchService, translationService),
-					OseeServerContext.BRANCH_CONTEXT);
-		register(new SearchEngineServlet(sessionManager, search, caching), OseeServerContext.SEARCH_CONTEXT);
-		register(new SearchEngineTaggerServlet(sessionManager, tagger), OseeServerContext.SEARCH_TAGGING_CONTEXT);
-		register(new ServerLookupServlet(serverLookup, appServerManager), OseeServerContext.LOOKUP_CONTEXT);
-		register(new SessionManagementServlet(sessionManager, authenticationManager), OseeServerContext.SESSION_CONTEXT);
-		register(new SessionClientLoopbackServlet(sessionManager), OseeServerContext.CLIENT_LOOPBACK_CONTEXT);
-		register(new ClientInstallInfoServlet(), "osee/install/info");
-		register(new OseeCacheServlet(sessionManager, translationService, caching, factoryService),
-					OseeServerContext.CACHE_CONTEXT);
-		register(new OseeModelServlet(sessionManager, translationService, modeling), OseeServerContext.OSEE_MODEL_CONTEXT);
-		register(new UnsubscribeServlet(context, databaseService, caching), "osee/unsubscribe");
+      register(new SystemManagerServlet(sessionManager), OseeServerContext.MANAGER_CONTEXT);
+      register(new ResourceManagerServlet(sessionManager, locatorManager, resourceManager),
+         OseeServerContext.RESOURCE_CONTEXT);
+      register(new ArtifactFileServlet(locatorManager, resourceManager), OseeServerContext.PROCESS_CONTEXT);
+      register(new ArtifactFileServlet(locatorManager, resourceManager), OseeServerContext.ARTIFACT_CONTEXT);
+      register(new ArtifactFileServlet(locatorManager, resourceManager), "index");
+      register(new BranchExchangeServlet(sessionManager, branchExchangeService, locatorManager, resourceManager),
+         OseeServerContext.BRANCH_EXCHANGE_CONTEXT);
+      register(new BranchManagerServlet(sessionManager, branchService, translationService),
+         OseeServerContext.BRANCH_CONTEXT);
+      register(new SearchEngineServlet(sessionManager, search, caching), OseeServerContext.SEARCH_CONTEXT);
+      register(new SearchEngineTaggerServlet(sessionManager, tagger), OseeServerContext.SEARCH_TAGGING_CONTEXT);
+      register(new ServerLookupServlet(serverLookup, appServerManager), OseeServerContext.LOOKUP_CONTEXT);
+      register(new SessionManagementServlet(sessionManager, authenticationManager), OseeServerContext.SESSION_CONTEXT);
+      register(new SessionClientLoopbackServlet(sessionManager), OseeServerContext.CLIENT_LOOPBACK_CONTEXT);
+      register(new ClientInstallInfoServlet(), "osee/install/info");
+      register(new OseeCacheServlet(sessionManager, translationService, caching, factoryService),
+         OseeServerContext.CACHE_CONTEXT);
+      register(new OseeModelServlet(sessionManager, translationService, modeling), OseeServerContext.OSEE_MODEL_CONTEXT);
+      register(new UnsubscribeServlet(context, databaseService, caching), "osee/unsubscribe");
 
-		register(new AtsServlet(locatorManager, resourceManager), "osee/ats");
-		register(new ConfigurationServlet(appServerManager, translationService, databaseService, branchService),
-					OseeServerContext.OSEE_CONFIGURE_CONTEXT);
-		register(new DataServlet(locatorManager, resourceManager), "osee/data");
-	}
+      register(new AtsServlet(locatorManager, resourceManager), "osee/ats");
+      register(new ConfigurationServlet(appServerManager, translationService, databaseService, branchService),
+         OseeServerContext.OSEE_CONFIGURE_CONTEXT);
+      register(new DataServlet(locatorManager, resourceManager), "osee/data");
+   }
 
-	private void register(OseeHttpServlet servlet, String... contexts) {
-		this.contexts.addAll(Arrays.asList(contexts));
-		ServletUtil.register(httpService, appServerManager, servlet, contexts);
-	}
+   private void register(OseeHttpServlet servlet, String... contexts) {
+      this.contexts.addAll(Arrays.asList(contexts));
+      ServletUtil.register(httpService, appServerManager, servlet, contexts);
+   }
 
-	@Override
-	public void onDeActivate() {
-		if (httpService != null && appServerManager != null) {
-			ServletUtil.unregister(httpService, appServerManager, contexts);
-		}
-		contexts.clear();
-	}
+   @Override
+   public void onDeActivate() {
+      if (httpService != null && appServerManager != null) {
+         ServletUtil.unregister(httpService, appServerManager, contexts);
+      }
+      contexts.clear();
+   }
 
 }

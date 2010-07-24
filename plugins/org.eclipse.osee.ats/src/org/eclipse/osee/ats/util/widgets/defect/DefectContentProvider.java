@@ -34,8 +34,11 @@ public class DefectContentProvider implements ITreeContentProvider {
 
    public void add(final Collection<? extends DefectItem> items) {
       Displays.ensureInDisplayThread(new Runnable() {
+         @Override
          public void run() {
-            if (xViewer.getInput() == null) xViewer.setInput(rootSet);
+            if (xViewer.getInput() == null) {
+               xViewer.setInput(rootSet);
+            }
             rootSet.addAll(items);
             xViewer.refresh();
          };
@@ -44,8 +47,11 @@ public class DefectContentProvider implements ITreeContentProvider {
 
    public void set(final Collection<? extends DefectItem> arts) {
       Displays.ensureInDisplayThread(new Runnable() {
+         @Override
          public void run() {
-            if (xViewer.getInput() == null) xViewer.setInput(rootSet);
+            if (xViewer.getInput() == null) {
+               xViewer.setInput(rootSet);
+            }
             clear();
             add(arts);
          };
@@ -54,14 +60,18 @@ public class DefectContentProvider implements ITreeContentProvider {
 
    public void clear() {
       Displays.ensureInDisplayThread(new Runnable() {
+         @Override
          public void run() {
-            if (xViewer.getInput() == null) xViewer.setInput(rootSet);
+            if (xViewer.getInput() == null) {
+               xViewer.setInput(rootSet);
+            }
             rootSet.clear();
             xViewer.refresh();
          };
       });
    }
 
+   @Override
    @SuppressWarnings("rawtypes")
    public Object[] getChildren(Object parentElement) {
       if (parentElement instanceof Object[]) {
@@ -73,22 +83,29 @@ public class DefectContentProvider implements ITreeContentProvider {
       return EMPTY_ARRAY;
    }
 
+   @Override
    public Object getParent(Object element) {
       return null;
    }
 
+   @Override
    public boolean hasChildren(Object element) {
       return false;
    }
 
+   @Override
    public Object[] getElements(Object inputElement) {
-      if (inputElement instanceof String) return new Object[] {inputElement};
+      if (inputElement instanceof String) {
+         return new Object[] {inputElement};
+      }
       return getChildren(inputElement);
    }
 
+   @Override
    public void dispose() {
    }
 
+   @Override
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
    }
 

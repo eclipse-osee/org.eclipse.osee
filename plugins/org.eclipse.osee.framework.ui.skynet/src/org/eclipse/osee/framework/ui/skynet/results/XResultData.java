@@ -46,7 +46,9 @@ public class XResultData {
    public static Pattern WarningPattern = Pattern.compile("Warning: ");
    StringBuffer sb = new StringBuffer();
    private static enum Type {
-      Severe, Warning, Info;
+      Severe,
+      Warning,
+      Info;
    }
    CountingMap<Type> count = new CountingMap<Type>();
    private boolean enableOseeLog;
@@ -75,7 +77,9 @@ public class XResultData {
 
    public void log(IProgressMonitor monitor, String str) {
       log(str);
-      if (monitor != null) monitor.setTaskName(str);
+      if (monitor != null) {
+         monitor.setTaskName(str);
+      }
    }
 
    public void log(String str) {
@@ -101,18 +105,20 @@ public class XResultData {
    public void logStr(Type type, final String str, final IProgressMonitor monitor) {
       count.put(type);
       String resultStr = "";
-      if (type == Type.Warning)
+      if (type == Type.Warning) {
          resultStr = "Warning: " + str;
-      else if (type == Type.Severe)
+      } else if (type == Type.Severe) {
          resultStr = "Error: " + str;
-      else
+      } else {
          resultStr = str;
+      }
       sb.append(resultStr);
       if (enableOseeLog) {
          OseeLog.log(SkynetGuiPlugin.class, Level.parse(type.name().toUpperCase()), resultStr);
       }
       if (monitor != null) {
          Displays.ensureInDisplayThread(new Runnable() {
+            @Override
             public void run() {
                monitor.subTask(str);
             }
@@ -144,44 +150,45 @@ public class XResultData {
 
    public XResultPage getReport(final String title, Manipulations... manipulations) {
       return new XResultPage(title + " - " + XDate.getDateNow(XDate.MMDDYYHHMM),
-            (sb.toString().equals("") ? "Nothing Logged" : sb.toString()), manipulations);
+         (sb.toString().equals("") ? "Nothing Logged" : sb.toString()), manipulations);
    }
 
-   /* 
-    * Creates hyperlink using hrid as name.  Default editor will open.
+   /*
+    * Creates hyperlink using hrid as name. Default editor will open.
     */
    public static String getHyperlink(Artifact art) {
       return getHyperlink(art.getHumanReadableId(), art.getHumanReadableId(), art.getBranch().getId());
    }
 
-   /* 
-    * Creates hyperlink using name.  Default editor will open.
+   /*
+    * Creates hyperlink using name. Default editor will open.
     */
    public static String getHyperlink(String name, Artifact art) {
       return getHyperlink(name, art.getHumanReadableId(), art.getBranch().getId());
    }
 
-   /* 
-    * Creates hyperlink using name.  Default editor will open hrid for branchId given
+   /*
+    * Creates hyperlink using name. Default editor will open hrid for branchId given
     */
    public static String getHyperlink(String name, String hrid, int branchId) {
-      return AHTML.getHyperlink(XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openArtifactBranch,
-            hrid + "(" + branchId + ")"), name);
+      return AHTML.getHyperlink(
+         XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openArtifactBranch, hrid + "(" + branchId + ")"),
+         name);
    }
 
    public static String getHyperlinkUrlExternal(String name, String url) {
       return AHTML.getHyperlink(XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.browserExternal, url),
-            name);
+         name);
    }
 
    public static String getHyperlinkUrlInternal(String name, String url) {
       return AHTML.getHyperlink(XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.browserInternal, url),
-            name);
+         name);
    }
 
    public static String getHyperlinkForArtifactEditor(String name, String hrid) {
       return AHTML.getHyperlink(XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openArtifactEditor, hrid),
-            name);
+         name);
    }
 
    public static String getHyperlinkForAction(String name, String hrid) {
@@ -194,7 +201,7 @@ public class XResultData {
 
    public static String getHyperlinkForAction(String name, Artifact art) {
       return AHTML.getHyperlink(
-            XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openAction, art.getGuid()), name);
+         XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openAction, art.getGuid()), name);
    }
 
    private int getCount(Type type) {
@@ -247,24 +254,25 @@ public class XResultData {
          rd.log("\n\nExample of hyperlinked hrid: " + XResultData.getHyperlink(UserManager.getUser()));
 
          rd.log("Example of hyperlinked artifact different hyperlink string: " + XResultData.getHyperlink(
-               "Different string", UserManager.getUser()));
+            "Different string", UserManager.getUser()));
 
          rd.log("Example of hyperlinked hrid on another branch: " + getHyperlink(
-               UserManager.getUser().getHumanReadableId(), UserManager.getUser().getHumanReadableId(),
-               BranchManager.getCommonBranch().getId()));
+            UserManager.getUser().getHumanReadableId(), UserManager.getUser().getHumanReadableId(),
+            BranchManager.getCommonBranch().getId()));
          rd.addRaw(AHTML.newline());
          rd.addRaw("Example of hyperlink that opens external browser " + getHyperlinkUrlExternal("Google",
-               "http://www.google.com") + AHTML.newline());
+            "http://www.google.com") + AHTML.newline());
          rd.addRaw("Example of hyperlink that opens internal browser " + getHyperlinkUrlInternal("Google",
-               "http://www.google.com") + AHTML.newline());
+            "http://www.google.com") + AHTML.newline());
 
          rd.log("\n\nHere is a nice table");
          rd.addRaw(AHTML.beginMultiColumnTable(95, 1));
          rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"Type", "Title", "Status"}));
-         for (int x = 0; x < 3; x++)
+         for (int x = 0; x < 3; x++) {
             rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {"Type " + x, "Title " + x, x + ""}));
+         }
          rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {"Error / Warning in table ", "Error: this is error",
-               "Warning: this is warning"}));
+            "Warning: this is warning"}));
          rd.addRaw(AHTML.endMultiColumnTable());
          rd.report("This is my report title");
       } catch (OseeCoreException ex) {

@@ -53,9 +53,9 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
 
    private static String TEAM_WORKFLOW = "Team Workflow (drop here)";
    private static String DUPLICATE_WORKFLOW =
-         "Duplicate Workflow - creates carbon copy with all fields and assignees intact.";
+      "Duplicate Workflow - creates carbon copy with all fields and assignees intact.";
    private static String CREATE_NEW_WORFLOW_IN_START_STATE =
-         "Create new Workflow - creates new workflow in start state with current assignees.";
+      "Create new Workflow - creates new workflow in start state with current assignees.";
    private static String DUPLICATE_TASKS = "Duplicate Tasks - only valid for Duplicate Workflow";
    private static String DUPLICATE_METHOD = "Duplicate Method";
    private static String TITLE = "New Title (blank for same title)";
@@ -67,12 +67,13 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
    @Override
    public void runOperation(final VariableMap variableMap, IProgressMonitor monitor) throws OseeCoreException {
       Displays.ensureInDisplayThread(new Runnable() {
+         @Override
          public void run() {
             try {
                List<Artifact> artifacts = variableMap.getArtifacts(TEAM_WORKFLOW);
                boolean duplicateTasks = variableMap.getBoolean(DUPLICATE_TASKS);
                boolean createNewWorkflow =
-                     variableMap.getString(DUPLICATE_METHOD).equals(CREATE_NEW_WORFLOW_IN_START_STATE);
+                  variableMap.getString(DUPLICATE_METHOD).equals(CREATE_NEW_WORFLOW_IN_START_STATE);
                boolean duplicateWorkflow = variableMap.getString(DUPLICATE_METHOD).equals(DUPLICATE_WORKFLOW);
                String title = variableMap.getString(TITLE);
 
@@ -124,9 +125,9 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
             assignees.add(UserManager.getUser());
          }
          TeamWorkFlowArtifact newTeamArt =
-               teamArt.getParentActionArtifact().createTeamWorkflow(teamArt.getTeamDefinition(),
-                     teamArt.getActionableItemsDam().getActionableItems(), assignees, transaction,
-                     CreateTeamOption.Duplicate_If_Exists);
+            teamArt.getParentActionArtifact().createTeamWorkflow(teamArt.getTeamDefinition(),
+               teamArt.getActionableItemsDam().getActionableItems(), assignees, transaction,
+               CreateTeamOption.Duplicate_If_Exists);
          if (title != null && !title.equals("")) {
             newTeamArt.setName(title);
          }
@@ -148,13 +149,11 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
             dupArt.setName(getDefaultTitle());
          }
          dupArt.addRelation(AtsRelationTypes.ActionToWorkflow_Action, teamArt.getParentActionArtifact());
-         dupArt.getLog().addLog(LogType.Note, null,
-               "Workflow duplicated from " + teamArt.getHumanReadableId());
+         dupArt.getLog().addLog(LogType.Note, null, "Workflow duplicated from " + teamArt.getHumanReadableId());
          if (duplicateTasks) {
             for (TaskArtifact taskArt : teamArt.getTaskArtifacts()) {
                TaskArtifact dupTaskArt = (TaskArtifact) taskArt.duplicate(AtsUtil.getAtsBranch());
-               dupTaskArt.getLog().addLog(LogType.Note, null,
-                     "Task duplicated from " + taskArt.getHumanReadableId());
+               dupTaskArt.getLog().addLog(LogType.Note, null, "Task duplicated from " + taskArt.getHumanReadableId());
                dupArt.addRelation(AtsRelationTypes.SmaToTask_Task, dupTaskArt);
                dupArt.persist(transaction);
             }

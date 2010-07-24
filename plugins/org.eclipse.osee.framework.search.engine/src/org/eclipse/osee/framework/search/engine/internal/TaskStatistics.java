@@ -27,14 +27,17 @@ public class TaskStatistics implements Cloneable, ITagItemStatistics {
       this.processingTime = processingTime;
    }
 
+   @Override
    public long getGammaId() {
       return gammaId;
    }
 
+   @Override
    public int getTotalTags() {
       return totalTags;
    }
 
+   @Override
    public long getProcessingTime() {
       return processingTime;
    }

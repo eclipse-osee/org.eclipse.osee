@@ -53,7 +53,9 @@ public class XResultPage {
       ALL
    };
    public enum HyperType {
-      ATS, ART, BOTH
+      ATS,
+      ART,
+      BOTH
    };
 
    /**
@@ -68,7 +70,7 @@ public class XResultPage {
     * 
     * @param title title of the page (include date/time due or something unique due to multi-page view of results)
     * @param html html to display (minus manipulations). this html MUST already handle new lines (eg
-    *           text.replaceAll("\n",AHTML.newLine())) or use the CONVERT_NEWLINES manipultion
+    * text.replaceAll("\n",AHTML.newLine())) or use the CONVERT_NEWLINES manipultion
     * @param manipulations manipulations desired for the input HTML
     */
    public XResultPage(String title, String html, Manipulations... manipulations) {
@@ -86,22 +88,35 @@ public class XResultPage {
             this.manipulations.add(Manipulations.HRID_CMD_HYPER);
             this.manipulations.add(Manipulations.ERROR_RED);
             this.manipulations.add(Manipulations.WARNING_YELLOW);
-         } else
+         } else {
             this.manipulations.add(man);
+         }
       }
    }
 
    public int getNumWarnings() {
-      if (numWarnings != Integer.MAX_VALUE) return numWarnings;
-      if (manipulations.contains(Manipulations.WARNING_YELLOW)) numWarnings = Lib.numOccurances(html, "Warning:");
-      if (numWarnings == Integer.MAX_VALUE) return 0;
+      if (numWarnings != Integer.MAX_VALUE) {
+         return numWarnings;
+      }
+      if (manipulations.contains(Manipulations.WARNING_YELLOW)) {
+         numWarnings = Lib.numOccurances(html, "Warning:");
+      }
+      if (numWarnings == Integer.MAX_VALUE) {
+         return 0;
+      }
       return numWarnings;
    }
 
    public int getNumErrors() {
-      if (numErrors != Integer.MAX_VALUE) return numErrors;
-      if (manipulations.contains(Manipulations.ERROR_RED)) numErrors = Lib.numOccurances(html, "Error:");
-      if (numErrors == Integer.MAX_VALUE) return 0;
+      if (numErrors != Integer.MAX_VALUE) {
+         return numErrors;
+      }
+      if (manipulations.contains(Manipulations.ERROR_RED)) {
+         numErrors = Lib.numOccurances(html, "Error:");
+      }
+      if (numErrors == Integer.MAX_VALUE) {
+         return 0;
+      }
       return numErrors;
    }
 
@@ -134,7 +149,7 @@ public class XResultPage {
    public String getManipulatedHtml(Collection<Manipulations> manipulations) {
       if (manipulatedHtml == null) {
          String str =
-               (manipulations.contains(Manipulations.ERROR_WARNING_HEADER) ? getErrorWarningHtml() : "") + getText();
+            (manipulations.contains(Manipulations.ERROR_WARNING_HEADER) ? getErrorWarningHtml() : "") + getText();
          if (manipulations.contains(Manipulations.RAW_HTML)) {
             str = AHTML.simplePage(str);
          } else {
@@ -147,8 +162,9 @@ public class XResultPage {
                // Retireve all ATS=WPN_PAGE:HSRID matches
                Matcher m = Pattern.compile("([A-Z]{3,4})=(.*?):([A-Z0-9]{5})").matcher(str);
                Set<String> cmdNameHrids = new HashSet<String>();
-               while (m.find())
+               while (m.find()) {
                   cmdNameHrids.add(m.group());
+               }
                // Retrieve all ATS=Name:HRSID matches and replace with hyperlinking
                for (String cmdNameHrid : cmdNameHrids) {
                   String value = cmdNameHrid;
@@ -171,8 +187,9 @@ public class XResultPage {
                // Retrieve all ATS=HRSID matches and replace with hyperlinking
                m = Pattern.compile("([A-Z]{3,4})=([A-Z0-9]{5})").matcher(str);
                Set<String> cmdHrids = new HashSet<String>();
-               while (m.find())
+               while (m.find()) {
                   cmdHrids.add(m.group());
+               }
                for (String cmdHrid : cmdHrids) {
                   String hrid = cmdHrid;
                   hrid = hrid.replaceAll("^.*?=", "");

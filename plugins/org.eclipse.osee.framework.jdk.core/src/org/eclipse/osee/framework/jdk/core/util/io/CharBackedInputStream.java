@@ -149,19 +149,22 @@ public class CharBackedInputStream extends InputStream implements Appendable {
       return writer;
    }
 
+   @Override
    public Appendable append(CharSequence csq) throws IOException {
       addBackingSource(csq);
       return this;
    }
 
+   @Override
    public Appendable append(CharSequence csq, int start, int end) throws IOException {
       addBackingSource(csq, start, end - start);
       return this;
    }
 
+   @Override
    public Appendable append(char c) throws IOException {
       throw new UnsupportedOperationException(
-            "doing this one character at a time would be so inefficient it would defeat the whole purpose of this class");
+         "doing this one character at a time would be so inefficient it would defeat the whole purpose of this class");
    }
 
    @Override

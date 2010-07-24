@@ -112,18 +112,18 @@ public class ExtensionDefinedObjects<T> {
                   objectsByID.put(identifier, object);
                }
             } catch (Exception ex) {
-               OseeLog.log(OseeActivator.class, Level.SEVERE, String.format("Unable to Load: [%s - %s]", bundleName,
-                     className), ex);
+               OseeLog.log(OseeActivator.class, Level.SEVERE,
+                  String.format("Unable to Load: [%s - %s]", bundleName, className), ex);
             } catch (LinkageError er) {
-               OseeLog.log(OseeActivator.class, Level.SEVERE, String.format("Unable to Load: [%s - %s]", bundleName,
-                     className), er);
+               OseeLog.log(OseeActivator.class, Level.SEVERE,
+                  String.format("Unable to Load: [%s - %s]", bundleName, className), er);
             }
          }
       }
       if (!allowsEmptyOnLoad && loadedObjects.isEmpty()) {
          OseeLog.log(OseeActivator.class, Level.WARNING, String.format(
-               "No Objects loaded for [%s] with element name [%s] and attribute [%s]", extensionPointId, elementName,
-               classNameAttribute));
+            "No Objects loaded for [%s] with element name [%s] and attribute [%s]", extensionPointId, elementName,
+            classNameAttribute));
       }
    }
 

@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
  */
 public class XActionableItemsDam extends XTextDam {
 
-   private WeakReference<Artifact> artifactRef;
+   private final WeakReference<Artifact> artifactRef;
 
    public XActionableItemsDam(Artifact artifact) {
       super(ATSAttributes.ACTIONABLE_ITEM_GUID_ATTRIBUTE.getStoreName());
@@ -52,10 +52,11 @@ public class XActionableItemsDam extends XTextDam {
       for (String guid : getActionableItemGuids()) {
          try {
             ActionableItemArtifact aia = AtsCacheManager.getActionableItemByGuid(guid);
-            if (aia == null)
+            if (aia == null) {
                OseeLog.log(AtsPlugin.class, Level.SEVERE, "Can't find Actionable Item for guid " + guid);
-            else
+            } else {
                ais.add(aia);
+            }
          } catch (OseeCoreException ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, "Error getting actionable item for guid " + guid, ex);
          }
@@ -72,8 +73,9 @@ public class XActionableItemsDam extends XTextDam {
    }
 
    public void addActionableItem(ActionableItemArtifact aia) throws OseeCoreException {
-      if (!getActionableItemGuids().contains(aia.getGuid())) getArtifact().addAttribute(
-            ATSAttributes.ACTIONABLE_ITEM_GUID_ATTRIBUTE.getStoreName(), aia.getGuid());
+      if (!getActionableItemGuids().contains(aia.getGuid())) {
+         getArtifact().addAttribute(ATSAttributes.ACTIONABLE_ITEM_GUID_ATTRIBUTE.getStoreName(), aia.getGuid());
+      }
    }
 
    public void removeActionableItem(ActionableItemArtifact aia) throws OseeCoreException {
@@ -84,12 +86,18 @@ public class XActionableItemsDam extends XTextDam {
       Set<ActionableItemArtifact> existingAias = getActionableItems();
 
       // Remove non-selected items
-      for (ActionableItemArtifact existingAia : existingAias)
-         if (!newItems.contains(existingAia)) removeActionableItem(existingAia);
+      for (ActionableItemArtifact existingAia : existingAias) {
+         if (!newItems.contains(existingAia)) {
+            removeActionableItem(existingAia);
+         }
+      }
 
       // Add newly-selected items
-      for (ActionableItemArtifact newItem : newItems)
-         if (!existingAias.contains(newItem)) addActionableItem(newItem);
+      for (ActionableItemArtifact newItem : newItems) {
+         if (!existingAias.contains(newItem)) {
+            addActionableItem(newItem);
+         }
+      }
 
       return Result.TrueResult;
    }

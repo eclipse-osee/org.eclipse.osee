@@ -26,73 +26,75 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  */
 public final class WordUiUtil {
 
-	private WordUiUtil() {
-	}
+   private WordUiUtil() {
+   }
 
-	public static void displayErrorMessageDialog(final String title, final String message) {
-		Displays.pendInDisplayThread(new Runnable() {
-			@Override
-			public void run() {
-				MessageDialog.openError(Displays.getActiveShell(), title, message);
-			}
-		});
-	}
+   public static void displayErrorMessageDialog(final String title, final String message) {
+      Displays.pendInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            MessageDialog.openError(Displays.getActiveShell(), title, message);
+         }
+      });
+   }
 
-	public static void displayWarningMessageDialog(final String title, final String message) {
-		Displays.pendInDisplayThread(new Runnable() {
-			@Override
-			public void run() {
-				MessageDialog.openWarning(Displays.getActiveShell(), title, message);
-			}
-		});
-	}
+   public static void displayWarningMessageDialog(final String title, final String message) {
+      Displays.pendInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            MessageDialog.openWarning(Displays.getActiveShell(), title, message);
+         }
+      });
+   }
 
-	public static void displayTrackedChangesOnArtifacts(final Collection<Artifact> artifacts) {
-		if (!artifacts.isEmpty()) {
-			Displays.ensureInDisplayThread(new Runnable() {
-				public void run() {
-					XResultData rd = new XResultData();
-					rd.logWarning("\nYou chose to diff changes and the following Artifacts were detected to have tracked changes on.");
-					rd.log("Please make sure to accept/reject all tracked changes and comment references.\n");
-					rd.addRaw(AHTML.beginMultiColumnTable(60, 1));
-					rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"Artifact Name", "HRID"}));
-					for (Artifact artifact : artifacts) {
-						rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {artifact.toString(),
-									XResultData.getHyperlink(artifact)}));
-					}
-					rd.addRaw(AHTML.endMultiColumnTable());
-					try {
-						rd.report("Artifacts With Tracked Changes");
-					} catch (OseeCoreException ex) {
-						OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-					}
-				}
-			});
-		}
-	}
+   public static void displayTrackedChangesOnArtifacts(final Collection<Artifact> artifacts) {
+      if (!artifacts.isEmpty()) {
+         Displays.ensureInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               XResultData rd = new XResultData();
+               rd.logWarning("\nYou chose to diff changes and the following Artifacts were detected to have tracked changes on.");
+               rd.log("Please make sure to accept/reject all tracked changes and comment references.\n");
+               rd.addRaw(AHTML.beginMultiColumnTable(60, 1));
+               rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"Artifact Name", "HRID"}));
+               for (Artifact artifact : artifacts) {
+                  rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {artifact.toString(),
+                     XResultData.getHyperlink(artifact)}));
+               }
+               rd.addRaw(AHTML.endMultiColumnTable());
+               try {
+                  rd.report("Artifacts With Tracked Changes");
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               }
+            }
+         });
+      }
+   }
 
-	public static void displayUnhandledArtifacts(final Collection<Artifact> artifacts, final String warningString) {
-		if (!artifacts.isEmpty()) {
-			Displays.ensureInDisplayThread(new Runnable() {
-				public void run() {
-					XResultData rd = new XResultData();
-					rd.logWarning("\nYou chose to preview/edit artifacts that could not be handled: ");
-					rd.log(warningString + "\n");
-					rd.addRaw(AHTML.beginMultiColumnTable(60, 1));
-					rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"Artifact Name", "HRID"}));
-					for (Artifact artifact : artifacts) {
-						rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {artifact.toString(),
-									XResultData.getHyperlink(artifact)}));
-					}
-					rd.addRaw(AHTML.endMultiColumnTable());
-					try {
-						rd.report("Unhandled Artifacts");
-					} catch (OseeCoreException ex) {
-						OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-					}
-				}
-			});
-		}
-	}
+   public static void displayUnhandledArtifacts(final Collection<Artifact> artifacts, final String warningString) {
+      if (!artifacts.isEmpty()) {
+         Displays.ensureInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               XResultData rd = new XResultData();
+               rd.logWarning("\nYou chose to preview/edit artifacts that could not be handled: ");
+               rd.log(warningString + "\n");
+               rd.addRaw(AHTML.beginMultiColumnTable(60, 1));
+               rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"Artifact Name", "HRID"}));
+               for (Artifact artifact : artifacts) {
+                  rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {artifact.toString(),
+                     XResultData.getHyperlink(artifact)}));
+               }
+               rd.addRaw(AHTML.endMultiColumnTable());
+               try {
+                  rd.report("Unhandled Artifacts");
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               }
+            }
+         });
+      }
+   }
 
 }

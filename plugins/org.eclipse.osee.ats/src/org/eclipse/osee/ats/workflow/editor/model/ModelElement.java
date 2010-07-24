@@ -96,6 +96,7 @@ public abstract class ModelElement implements IPropertySource {
     * 
     * @return this instance
     */
+   @Override
    public Object getEditableValue() {
       return this;
    }
@@ -103,6 +104,7 @@ public abstract class ModelElement implements IPropertySource {
    /**
     * Children should override this. The default implementation returns an empty array.
     */
+   @Override
    public IPropertyDescriptor[] getPropertyDescriptors() {
       return EMPTY_ARRAY;
    }
@@ -110,6 +112,7 @@ public abstract class ModelElement implements IPropertySource {
    /**
     * Children should override this. The default implementation returns null.
     */
+   @Override
    public Object getPropertyValue(Object id) {
       return propertyValues.get(id);
    }
@@ -117,6 +120,7 @@ public abstract class ModelElement implements IPropertySource {
    /**
     * Children should override this. The default implementation returns false.
     */
+   @Override
    public boolean isPropertySet(Object id) {
       return false;
    }
@@ -145,6 +149,7 @@ public abstract class ModelElement implements IPropertySource {
    /**
     * Children should override this. The default implementation does nothing.
     */
+   @Override
    public void resetPropertyValue(Object id) {
       // do nothing
    }
@@ -152,6 +157,7 @@ public abstract class ModelElement implements IPropertySource {
    /**
     * Children should override this. The default implementation does nothing.
     */
+   @Override
    public void setPropertyValue(Object id, Object value) {
       propertyValues.put(id, value);
    }

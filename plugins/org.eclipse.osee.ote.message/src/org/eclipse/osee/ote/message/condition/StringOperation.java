@@ -10,10 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.message.condition;
 
-
 /**
  * @author Ken J. Aguilar
- *
  */
 public enum StringOperation {
    LESS_THAN("<") {
@@ -40,14 +38,14 @@ public enum StringOperation {
    NOT_EQUAL("!=") {
 
       @Override
-      public  boolean evaluate(String currentValue, String targetValue) {
+      public boolean evaluate(String currentValue, String targetValue) {
          return currentValue.compareTo(targetValue) != 0;
       }
    },
    GREATER_THAN_OR_EQUAL(">=") {
 
       @Override
-      public  boolean evaluate(String currentValue, String targetValue) {
+      public boolean evaluate(String currentValue, String targetValue) {
          return currentValue.compareTo(targetValue) >= 0;
       }
    },
@@ -61,22 +59,22 @@ public enum StringOperation {
 
    SUBSTRING("SUB-STRING OF") {
 
-	   @Override
-	   public boolean evaluate(String currentValue, String targetValue) {
-		   return targetValue.contains(currentValue);
-	   }
+      @Override
+      public boolean evaluate(String currentValue, String targetValue) {
+         return targetValue.contains(currentValue);
+      }
    },
-   
+
    CONTAINS("CONTAINS") {
 
-	   @Override
-	   public boolean evaluate(String currentValue, String targetValue) {
-		   return currentValue.contains(targetValue);
-	   }
+      @Override
+      public boolean evaluate(String currentValue, String targetValue) {
+         return currentValue.contains(targetValue);
+      }
    };
-	   
+
    private final String toString;
-   
+
    StringOperation(String toString) {
       this.toString = toString;
    }

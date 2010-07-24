@@ -50,7 +50,7 @@ public class MyWorldSearchItem extends UserSearchItem {
 
       List<Artifact> artifactsToReturn = new ArrayList<Artifact>(assigned.size());
       for (Artifact artifact : assigned) {
-         if ((artifact instanceof TeamWorkFlowArtifact) || (artifact instanceof ReviewSMArtifact)) {
+         if (artifact instanceof TeamWorkFlowArtifact || artifact instanceof ReviewSMArtifact) {
             artifactsToReturn.add(artifact);
          }
          if (artifact instanceof TaskArtifact) {

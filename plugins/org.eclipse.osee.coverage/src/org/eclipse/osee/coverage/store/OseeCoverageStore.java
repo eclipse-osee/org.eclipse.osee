@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.store;
 
+import java.util.logging.Level;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.ICoverage;
@@ -17,7 +18,6 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -68,7 +68,7 @@ public abstract class OseeCoverageStore extends CoverageStore {
          save(transaction);
          transaction.execute();
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
          return new Result("Save Failed: " + ex.getLocalizedMessage());
       }
       return Result.TrueResult;

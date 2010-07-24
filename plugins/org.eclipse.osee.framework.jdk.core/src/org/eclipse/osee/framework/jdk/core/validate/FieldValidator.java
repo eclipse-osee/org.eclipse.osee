@@ -25,10 +25,12 @@ public abstract class FieldValidator implements IValidator {
       this.paramMap = new HashMap<String, Object>();
    }
 
+   @Override
    public String getFieldName() {
       return fieldName;
    }
 
+   @Override
    public String getMessage() {
       for (String key : paramMap.keySet()) {
          message = message.replaceAll("\\$\\{" + key + "\\}", paramMap.get(key).toString());
@@ -40,6 +42,7 @@ public abstract class FieldValidator implements IValidator {
       this.message = message;
    }
 
+   @Override
    public void setItemToValidate(Object object) {
       this.paramMap.put(fieldName, object);
    }

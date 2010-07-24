@@ -51,7 +51,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
@@ -102,7 +101,8 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
 
    private final HashCollection<String, Attribute<?>> attributes = new HashCollection<String, Attribute<?>>(false,
       LinkedList.class, 12);
-   private final Set<DefaultBasicGuidRelationReorder> relationOrderRecords = new HashSet<DefaultBasicGuidRelationReorder>();
+   private final Set<DefaultBasicGuidRelationReorder> relationOrderRecords =
+      new HashSet<DefaultBasicGuidRelationReorder>();
    private final Branch branch;
    private final String guid;
    private String humanReadableId;
@@ -174,7 +174,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
     * 
     * @param relationTypeName
     * @return the artifacts related to this artifact by relations of type relationTypeName
-	 * @throws OseeCoreException
+    * @throws OseeCoreException
     */
    public List<Artifact> getRelatedArtifacts(String relationTypeName) throws OseeCoreException {
       RelationType relationType = RelationTypeManager.getType(relationTypeName);
@@ -1332,8 +1332,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
     */
    public void setRelationsOfTypeUseCurrentOrder(IRelationEnumeration relationSide, Collection<? extends Artifact> artifacts, Class<?> clazz) throws OseeCoreException {
       RelationTypeSideSorter sorter =
-					RelationManager.createTypeSideSorter(this, RelationTypeManager.getType(relationSide),
-								relationSide.getSide());
+         RelationManager.createTypeSideSorter(this, RelationTypeManager.getType(relationSide), relationSide.getSide());
       Collection<Artifact> currentlyRelated = getRelatedArtifacts(relationSide, Artifact.class);
       // Add new relations if don't exist
       for (Artifact artifact : artifacts) {
@@ -1527,8 +1526,8 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
       for (Attribute<?> attribute : internalGetAttributes()) {
          if (attribute.isDirty()) {
             dirtyAttributes.add(new SkynetAttributeChange(attribute.getAttributeType().getId(),
-							attribute.getAttributeDataProvider().getData(), attribute.getModificationType(),
-							attribute.getId(), attribute.getGammaId()));
+               attribute.getAttributeDataProvider().getData(), attribute.getModificationType(), attribute.getId(),
+               attribute.getGammaId()));
          }
       }
       return dirtyAttributes;
@@ -1612,8 +1611,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
       }
       artifactAnnotationExtensions = new HashSet<IArtifactAnnotation>();
       IExtensionPoint point =
-					Platform.getExtensionRegistry().getExtensionPoint(
-								"org.eclipse.osee.framework.skynet.core.ArtifactAnnotation");
+         Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.framework.skynet.core.ArtifactAnnotation");
       if (point == null) {
          System.err.println("Can't access ArtifactAnnotation extension point");
          return artifactAnnotationExtensions;

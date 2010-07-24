@@ -50,8 +50,9 @@ public class KeyValueArtifact {
       if (keyValueMap.size() > 0) {
          Set<String> keyValues = new HashSet<String>();
          for (String key : keyValueMap.keySet()) {
-            for (String value : keyValueMap.getValues(key))
+            for (String value : keyValueMap.getValues(key)) {
                keyValues.add(key + "=" + value);
+            }
          }
          artifact.setAttributeValues(keyValueAttributeName, keyValues);
       } else {
@@ -79,8 +80,12 @@ public class KeyValueArtifact {
     * Gets first value even if there are more. Returns null if none.
     */
    public String getValue(String key) {
-      if (keyValueMap.getValues(key) == null) return null;
-      if (keyValueMap.getValues(key).size() > 0) return keyValueMap.getValues(key).iterator().next();
+      if (keyValueMap.getValues(key) == null) {
+         return null;
+      }
+      if (keyValueMap.getValues(key).size() > 0) {
+         return keyValueMap.getValues(key).iterator().next();
+      }
       return null;
    }
 

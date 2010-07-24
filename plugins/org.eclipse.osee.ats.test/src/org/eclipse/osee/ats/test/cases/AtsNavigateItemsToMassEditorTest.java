@@ -22,8 +22,8 @@ import org.eclipse.osee.ats.test.util.DemoTestUtil;
 import org.eclipse.osee.ats.test.util.NavigateTestUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPage;
@@ -48,7 +48,7 @@ public class AtsNavigateItemsToMassEditorTest {
       closeTaskEditors();
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Team Versions");
       ((MassEditTeamVersionItem) item).setSelectedTeamDef(TeamDefinitionArtifact.getTeamDefinitions(
-            Arrays.asList("SAW SW")).iterator().next());
+         Arrays.asList("SAW SW")).iterator().next());
       handleGeneralDoubleClickAndTestResults(item, VersionArtifact.class, 3);
    }
 

@@ -16,7 +16,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.environment.EnvironmentTask;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
@@ -34,140 +33,152 @@ import org.eclipse.osee.ote.message.MessageSystemTestEnvironment;
  */
 public class SimulatedTime extends TimerControl {
 
-	private static final class Task {
-		private final EnvironmentTask task;
-		private final TestEnvironment env;
-		public Task(EnvironmentTask task, TestEnvironment env) {
-			super();
-			this.task = task;
-			this.env = env;
-		}
+   private static final class Task {
+      private final EnvironmentTask task;
+      private final TestEnvironment env;
 
-		public void doTask(int cycleCount) {
-			try {
-				task.baseRunOneCycle(cycleCount);
-			} catch (Throwable ex) {
-				OseeLog.log(MessageSystemTestEnvironment.class, Level.SEVERE,
-						"Aborting the test script because an Environment Task is failing", ex);
-				env.getRunManager().abort(ex, false);
-			}
-		}
-	}
-	private final Collection<CycleCountDown> cycleCounters;
-	private final IScriptControl scriptControl;
-	private int cycleCount;
-	private final CopyOnWriteArrayList<Task> tasks = new CopyOnWriteArrayList<Task>();
+      public Task(EnvironmentTask task, TestEnvironment env) {
+         super();
+         this.task = task;
+         this.env = env;
+      }
 
-	private long sysTime;
-	/**
-	 * @param scriptControl -
-	 * @throws IOException
-	 */
-	public SimulatedTime(IScriptControl scriptControl) throws IOException {
-		super(3);
-		this.scriptControl = scriptControl;
-		this.cycleCounters = new HashSet<CycleCountDown>(32);
-		cycleCount = 0;
-		sysTime = System.currentTimeMillis();
-	}
+      public void doTask(int cycleCount) {
+         try {
+            task.baseRunOneCycle(cycleCount);
+         } catch (Throwable ex) {
+            OseeLog.log(MessageSystemTestEnvironment.class, Level.SEVERE,
+               "Aborting the test script because an Environment Task is failing", ex);
+            env.getRunManager().abort(ex, false);
+         }
+      }
+   }
+   private final Collection<CycleCountDown> cycleCounters;
+   private final IScriptControl scriptControl;
+   private int cycleCount;
+   private final CopyOnWriteArrayList<Task> tasks = new CopyOnWriteArrayList<Task>();
 
-	public long getEnvTime() {
-		return (long) (cycleCount * 1000.0 / EnvironmentTask.cycleResolution);
-	}
+   private final long sysTime;
 
-	public ICancelTimer setTimerFor(ITimeout objToNotify, int milliseconds) {
-		try {
+   /**
+    * @param scriptControl -
+    * @throws IOException
+    */
+   public SimulatedTime(IScriptControl scriptControl) throws IOException {
+      super(3);
+      this.scriptControl = scriptControl;
+      this.cycleCounters = new HashSet<CycleCountDown>(32);
+      cycleCount = 0;
+      sysTime = System.currentTimeMillis();
+   }
 
-			scriptControl.unlock();
-		} catch (IllegalMonitorStateException ex) {
-			if (!Thread.currentThread().getName().contains("(JSK) mux request dispatch") || !Thread.currentThread().getName().contains(
-			"(JSK) Mux request dispatch")) {
-				OseeLog.log(MessageSystemTestEnvironment.class, Level.SEVERE, ex);
-			}
-		}
-		CycleCountDown cycleCountDown =
-			new CycleCountDown(scriptControl, objToNotify,
-					(int) Math.rint(milliseconds / (1000.0 / EnvironmentTask.cycleResolution)) - 1);
-		synchronized (cycleCounters) {
-			cycleCounters.add(cycleCountDown);
-		}
-		return cycleCountDown;
-	}
+   @Override
+   public long getEnvTime() {
+      return (long) (cycleCount * 1000.0 / EnvironmentTask.cycleResolution);
+   }
 
-	public void addTask(EnvironmentTask envTask, TestEnvironment environment) {
-		for (Task task : tasks) {
-			if (task.task == envTask) {
-				return;
-			}
-		}
+   @Override
+   public ICancelTimer setTimerFor(ITimeout objToNotify, int milliseconds) {
+      try {
 
-		tasks.add(new Task(envTask, environment));
-	}
+         scriptControl.unlock();
+      } catch (IllegalMonitorStateException ex) {
+         if (!Thread.currentThread().getName().contains("(JSK) mux request dispatch") || !Thread.currentThread().getName().contains(
+            "(JSK) Mux request dispatch")) {
+            OseeLog.log(MessageSystemTestEnvironment.class, Level.SEVERE, ex);
+         }
+      }
+      CycleCountDown cycleCountDown =
+         new CycleCountDown(scriptControl, objToNotify,
+            (int) Math.rint(milliseconds / (1000.0 / EnvironmentTask.cycleResolution)) - 1);
+      synchronized (cycleCounters) {
+         cycleCounters.add(cycleCountDown);
+      }
+      return cycleCountDown;
+   }
 
-	public void removeTask(EnvironmentTask task) {
-		Task itemToRemove = null;
-		for (Task t : tasks) {
-			if (t.task == task) {
-				itemToRemove = t;
-				break;
-			}
-		}
-		if (itemToRemove != null) {
-			OseeLog.log(MessageSystemTestEnvironment.class, Level.FINE, "removing environment task " + task.toString());
-			tasks.remove(itemToRemove);
-		}
-	}
+   @Override
+   public void addTask(EnvironmentTask envTask, TestEnvironment environment) {
+      for (Task task : tasks) {
+         if (task.task == envTask) {
+            return;
+         }
+      }
 
-	public void step() {
+      tasks.add(new Task(envTask, environment));
+   }
 
-		for (Task t : tasks) {
-			t.doTask(cycleCount);
-		}
-		incrementCycleCount();
-	}
+   @Override
+   public void removeTask(EnvironmentTask task) {
+      Task itemToRemove = null;
+      for (Task t : tasks) {
+         if (t.task == task) {
+            itemToRemove = t;
+            break;
+         }
+      }
+      if (itemToRemove != null) {
+         OseeLog.log(MessageSystemTestEnvironment.class, Level.FINE, "removing environment task " + task.toString());
+         tasks.remove(itemToRemove);
+      }
+   }
 
-	public int getCycleCount() {
-		return cycleCount;
-	}
+   @Override
+   public void step() {
 
-	public Collection<CycleCountDown> getCycleCounters() {
-		return cycleCounters;
-	}
+      for (Task t : tasks) {
+         t.doTask(cycleCount);
+      }
+      incrementCycleCount();
+   }
 
-	public void incrementCycleCount() {
-		cycleCount++;
-	}
+   @Override
+   public int getCycleCount() {
+      return cycleCount;
+   }
 
-	public void setCycleCount(int cycle) {
-		cycleCount = cycle;
-	}
+   public Collection<CycleCountDown> getCycleCounters() {
+      return cycleCounters;
+   }
 
-	public void cancelAllTasks() {
-		for (Task t : tasks) {
-			t.task.cancel();
-		}
-		tasks.clear();
-	}
+   @Override
+   public void incrementCycleCount() {
+      cycleCount++;
+   }
 
-	public void removeOccurredCycleCounters() {
-		synchronized (cycleCounters) {
-			Iterator<CycleCountDown> iter = cycleCounters.iterator();
-			while (iter.hasNext()) {
-				CycleCountDown counter = iter.next();
-				if (counter.cycleOccurred()) {
-					iter.remove();
-				}
-			}
-		}
-	}
+   @Override
+   public void setCycleCount(int cycle) {
+      cycleCount = cycle;
+   }
 
-	public void dispose() {
-		cycleCounters.clear();
-		tasks.clear();
-	}
+   @Override
+   public void cancelAllTasks() {
+      for (Task t : tasks) {
+         t.task.cancel();
+      }
+      tasks.clear();
+   }
 
-	@Override
-	public long getTimeOfDay() {
-		return sysTime + getEnvTime();
-	}
+   public void removeOccurredCycleCounters() {
+      synchronized (cycleCounters) {
+         Iterator<CycleCountDown> iter = cycleCounters.iterator();
+         while (iter.hasNext()) {
+            CycleCountDown counter = iter.next();
+            if (counter.cycleOccurred()) {
+               iter.remove();
+            }
+         }
+      }
+   }
+
+   @Override
+   public void dispose() {
+      cycleCounters.clear();
+      tasks.clear();
+   }
+
+   @Override
+   public long getTimeOfDay() {
+      return sysTime + getEnvTime();
+   }
 }

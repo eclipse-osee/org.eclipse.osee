@@ -11,11 +11,11 @@
 package org.eclipse.osee.framework.ui.plugin.xnavigate;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * Used to perform a specific java action
@@ -56,13 +56,14 @@ public class XNavigateItemAction extends XNavigateItem {
       if (action != null) {
          if (promptFirst) {
             Displays.ensureInDisplayThread(new Runnable() {
+               @Override
                public void run() {
                   if (MessageDialog.openConfirm(Displays.getActiveShell(), getName(), getName())) {
                      action.run();
                   }
                }
             });
-         } else if (action.getStyle() == Action.AS_CHECK_BOX) {
+         } else if (action.getStyle() == IAction.AS_CHECK_BOX) {
             action.setChecked(!action.isChecked());
             if (action.isChecked()) {
                action.run();

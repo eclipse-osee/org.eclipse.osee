@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.attribute.utils;
 
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
+import java.net.URLConnection;
 import java.net.URLEncoder;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -32,7 +32,7 @@ public class BinaryContentUtils {
    public static String getContentType(String extension) {
       String contentType = null;
       if (Strings.isValid(extension)) {
-         contentType = HttpURLConnection.guessContentTypeFromName("dummy." + extension);
+         contentType = URLConnection.guessContentTypeFromName("dummy." + extension);
       } else {
          contentType = "application/*";
       }

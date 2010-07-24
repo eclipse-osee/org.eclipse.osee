@@ -50,17 +50,20 @@ public class CoverageMethodListDialog extends CheckedTreeSelectionDialog {
 
    public Set<CoverageOption> getSelected() {
       Set<CoverageOption> selected = new HashSet<CoverageOption>();
-      for (Object obj : getResult())
+      for (Object obj : getResult()) {
          selected.add((CoverageOption) obj);
+      }
       return selected;
    }
 
    static ILabelProvider labelProvider = new ILabelProvider() {
 
+      @Override
       public Image getImage(Object element) {
          return null;
       }
 
+      @Override
       public String getText(Object element) {
          if (element instanceof CoverageOption) {
             return ((CoverageOption) element).getNameDesc();
@@ -68,16 +71,20 @@ public class CoverageMethodListDialog extends CheckedTreeSelectionDialog {
          return "Unknown";
       }
 
+      @Override
       public void addListener(ILabelProviderListener listener) {
       }
 
+      @Override
       public void dispose() {
       }
 
+      @Override
       public boolean isLabelProperty(Object element, String property) {
          return false;
       }
 
+      @Override
       public void removeListener(ILabelProviderListener listener) {
       }
 

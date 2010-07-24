@@ -41,8 +41,8 @@ import org.xml.sax.SAXException;
  */
 @SuppressWarnings("restriction")
 public class CheckoutProjectSetJob extends Job {
-   private URL projectSetFile;
-   private String workingSetName;
+   private final URL projectSetFile;
+   private final String workingSetName;
 
    public CheckoutProjectSetJob(String jobName, String workingSetName, URL projectSetFile) {
       super(jobName);
@@ -74,8 +74,8 @@ public class CheckoutProjectSetJob extends Job {
       boolean result = false;
       try {
          Class<?> clazz =
-               Platform.getBundle("org.eclipse.team.ui").loadClass(
-                     "org.eclipse.team.internal.ui.wizards.ImportProjectSetOperation");
+            Platform.getBundle("org.eclipse.team.ui").loadClass(
+               "org.eclipse.team.internal.ui.wizards.ImportProjectSetOperation");
          Object object = null;
          if (EclipseVersion.isVersion("3.3")) {
             Constructor<?> constructor = clazz.getConstructor(IRunnableContext.class, String.class, String.class);
@@ -83,12 +83,12 @@ public class CheckoutProjectSetJob extends Job {
          } else if (EclipseVersion.isVersion("3.4")) {
             List<IWorkingSet> workingSets = new ArrayList<IWorkingSet>();
             IWorkingSet workingSetObject =
-                  PlatformUI.getWorkbench().getWorkingSetManager().getWorkingSet(workingSetName);
+               PlatformUI.getWorkbench().getWorkingSetManager().getWorkingSet(workingSetName);
             if (workingSetObject != null) {
                workingSets.add(workingSetObject);
             }
             Constructor<?> constructor =
-                  clazz.getConstructor(IRunnableContext.class, String.class, IWorkingSet[].class);
+               clazz.getConstructor(IRunnableContext.class, String.class, IWorkingSet[].class);
             object = constructor.newInstance(null, fileName, workingSets.toArray(new IWorkingSet[workingSets.size()]));
          } else {
             throw new UnsupportedOperationException();
@@ -115,20 +115,22 @@ public class CheckoutProjectSetJob extends Job {
          throw (Error) target;
       }
       String message =
-            target instanceof SAXException ? TeamUIMessages.ProjectSetImportWizard_2 : TeamUIMessages.ProjectSetImportWizard_3;
+         target instanceof SAXException ? TeamUIMessages.ProjectSetImportWizard_2 : TeamUIMessages.ProjectSetImportWizard_3;
       displayErrorMessage(false, message, target);
       return false;
    }
 
    private void displayErrorMessage(final boolean isTeamException, final String message, final Throwable target) {
       PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+         @Override
          public void run() {
             Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
             if (isTeamException) {
                ErrorDialog.openError(shell, null, null, ((TeamException) target).getStatus());
             } else {
-               ErrorDialog.openError(shell, null, null, new Status(IStatus.ERROR, TeamUIPlugin.ID, 0, NLS.bind(message,
-                     new String[] {target.getMessage()}), target));
+               ErrorDialog.openError(shell, null, null,
+                  new Status(IStatus.ERROR, TeamUIPlugin.ID, 0, NLS.bind(message, new String[] {target.getMessage()}),
+                     target));
             }
          }
       });

@@ -18,40 +18,40 @@ import org.eclipse.swt.graphics.Point;
 
 public class DividerLabel extends ColumnLabelProvider {
 
-	public DividerLabel() {
-		super();
-	}
+   public DividerLabel() {
+      super();
+   }
 
-	@Override
-	public String getToolTipText(Object element) {
+   @Override
+   public String getToolTipText(Object element) {
 
-		return null;
-	}
+      return null;
+   }
 
-	@Override
-	public Point getToolTipShift(Object object) {
-		return new Point(12, 12);
-	}
+   @Override
+   public Point getToolTipShift(Object object) {
+      return new Point(12, 12);
+   }
 
-	@Override
-	public int getToolTipDisplayDelayTime(Object object) {
-		return 125;
-	}
+   @Override
+   public int getToolTipDisplayDelayTime(Object object) {
+      return 125;
+   }
 
-	@Override
-	public int getToolTipTimeDisplayed(Object object) {
-		return 5000;
-	}
+   @Override
+   public int getToolTipTimeDisplayed(Object object) {
+      return 5000;
+   }
 
-	@Override
-	public Color getBackground(Object element) {
-		return Displays.getSystemColor(SWT.COLOR_BLACK);
-	}
+   @Override
+   public Color getBackground(Object element) {
+      return Displays.getSystemColor(SWT.COLOR_BLACK);
+   }
 
-	@Override
-	public String getText(Object element) {
+   @Override
+   public String getText(Object element) {
 
-		return null;
-	}
+      return null;
+   }
 
 }

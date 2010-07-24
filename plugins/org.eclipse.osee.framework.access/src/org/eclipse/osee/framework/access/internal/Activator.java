@@ -19,33 +19,33 @@ import org.osgi.framework.BundleContext;
 
 public class Activator implements BundleActivator {
 
-	public static final String PLUGIN_ID = "org.eclipse.osee.framework.access";
+   public static final String PLUGIN_ID = "org.eclipse.osee.framework.access";
 
-	private static AccessControlServiceRegHandler handler;
+   private static AccessControlServiceRegHandler handler;
 
-	private final Collection<ServiceDependencyTracker> trackers = new ArrayList<ServiceDependencyTracker>();
+   private final Collection<ServiceDependencyTracker> trackers = new ArrayList<ServiceDependencyTracker>();
 
-	@Override
-	public void start(BundleContext context) throws Exception {
-		handler = new AccessControlServiceRegHandler();
-		trackers.add(new ServiceDependencyTracker(context, handler));
-		trackers.add(new ServiceDependencyTracker(context, new ObjectAccessProviderRegistrationHandler()));
+   @Override
+   public void start(BundleContext context) throws Exception {
+      handler = new AccessControlServiceRegHandler();
+      trackers.add(new ServiceDependencyTracker(context, handler));
+      trackers.add(new ServiceDependencyTracker(context, new ObjectAccessProviderRegistrationHandler()));
 
-		for (ServiceDependencyTracker tracker : trackers) {
-			tracker.open();
-		}
-	}
+      for (ServiceDependencyTracker tracker : trackers) {
+         tracker.open();
+      }
+   }
 
-	@Override
-	public void stop(BundleContext context) throws Exception {
-		for (ServiceDependencyTracker tracker : trackers) {
-			Lib.close(tracker);
-		}
-	}
+   @Override
+   public void stop(BundleContext context) throws Exception {
+      for (ServiceDependencyTracker tracker : trackers) {
+         Lib.close(tracker);
+      }
+   }
 
-	// TODO Deprecate later
-	public static AccessControlService getAccessControlService() {
-		return handler.getService();
-	}
+   // TODO Deprecate later
+   public static AccessControlService getAccessControlService() {
+      return handler.getService();
+   }
 
 }

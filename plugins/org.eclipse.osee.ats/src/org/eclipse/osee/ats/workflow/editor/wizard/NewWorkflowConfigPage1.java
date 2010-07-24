@@ -41,6 +41,7 @@ public class NewWorkflowConfigPage1 extends WizardPage {
    }
 
    private final XModifiedListener xModListener = new XModifiedListener() {
+      @Override
       public void widgetModified(XWidget widget) {
          getContainer().updateButtons();
       }
@@ -54,17 +55,18 @@ public class NewWorkflowConfigPage1 extends WizardPage {
       return (String) getXWidget("Starting Workflow").getData();
    }
 
+   @Override
    public void createControl(Composite parent) {
 
       try {
          String xWidgetXml =
-               "<WorkPage>" +
-               //
-               "<XWidget displayName=\"Namespace\" required=\"true\" xwidgetType=\"XText\"/>" +
-               //
-               "<XWidget displayName=\"Starting Workflow\" required=\"true\" xwidgetType=\"XCombo(Simple: Implement-Complete,Default: Analyze-Authorize-Implement-Complete)\"/>" +
-               //
-               "</WorkPage>";
+            "<WorkPage>" +
+            //
+            "<XWidget displayName=\"Namespace\" required=\"true\" xwidgetType=\"XText\"/>" +
+            //
+            "<XWidget displayName=\"Starting Workflow\" required=\"true\" xwidgetType=\"XCombo(Simple: Implement-Complete,Default: Analyze-Authorize-Implement-Complete)\"/>" +
+            //
+            "</WorkPage>";
          Composite comp = new Composite(parent, SWT.NONE);
          comp.setLayout(new GridLayout(1, false));
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));

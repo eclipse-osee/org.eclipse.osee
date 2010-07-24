@@ -25,6 +25,7 @@ public class InheritanceEditPart extends ConnectionEditPart {
       super(connectionModel);
    }
 
+   @Override
    protected IFigure createFigure() {
       PolylineConnection connection = new PolylineConnection();
       PolygonDecoration decoration = new PolygonDecoration();

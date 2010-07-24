@@ -19,9 +19,9 @@ public interface ITestRunManager {
 
    IMethodResult initialize(TestEnvironment env, IPropertyStore propertyStore);
 
-   IMethodResult run(IPropertyStore propertyStore, TestEnvironment environment)  ;
+   IMethodResult run(IPropertyStore propertyStore, TestEnvironment environment);
 
-   IMethodResult dispose()  ;
+   IMethodResult dispose();
 
    TestScript getTest();
 

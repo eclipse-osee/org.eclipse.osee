@@ -60,7 +60,7 @@ public abstract class AbstractClientDataAccessor<T extends IOseeStorable> implem
       parameters.put("function", CacheOperation.UPDATE.name());
 
       return HttpClientMessage.send(OseeServerContext.CACHE_CONTEXT, parameters,
-            CoreTranslatorId.OSEE_CACHE_UPDATE_REQUEST, updateRequest, txId);
+         CoreTranslatorId.OSEE_CACHE_UPDATE_REQUEST, updateRequest, txId);
    }
 
    protected abstract Collection<T> updateCache(IOseeCache<T> cache) throws OseeCoreException;

@@ -12,7 +12,6 @@ package org.eclipse.osee.ote.core.framework.saxparse;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public interface IBaseSaxElementListener {
 

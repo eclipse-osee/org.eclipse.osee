@@ -162,7 +162,7 @@ public class BranchModel extends Node implements Serializable {
    @Override
    public boolean equals(Object obj) {
       if (obj instanceof BranchModel) {
-         BranchModel other = ((BranchModel) obj);
+         BranchModel other = (BranchModel) obj;
          return other.getBranch().equals(getBranch());
       }
       return false;
@@ -176,7 +176,7 @@ public class BranchModel extends Node implements Serializable {
    @Override
    public String toString() {
       return String.format("Branch:[%s] Type:[%s] Children:[%s] TxNodes:[%s]", branch.getName(),
-            branch.getBranchType().name(), children.size(), txs.size());
+         branch.getBranchType().name(), children.size(), txs.size());
    }
 
    public boolean areTxsVisible() {

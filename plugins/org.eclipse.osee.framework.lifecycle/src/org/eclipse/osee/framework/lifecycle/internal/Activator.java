@@ -27,18 +27,12 @@ public class Activator implements BundleActivator {
    public Activator() {
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
-    */
+   @Override
    public void start(BundleContext context) throws Exception {
       service = context.registerService(ILifecycleService.class.getName(), new LifecycleServiceImpl(), null);
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
-    */
+   @Override
    public void stop(BundleContext context) throws Exception {
       service.unregister();
    }

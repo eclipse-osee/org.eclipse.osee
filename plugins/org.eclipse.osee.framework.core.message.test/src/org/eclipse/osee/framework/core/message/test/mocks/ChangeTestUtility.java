@@ -40,7 +40,7 @@ public class ChangeTestUtility {
 
    public static ChangeItem createItem(int itemId, ChangeVersion base, ChangeVersion first, ChangeVersion current, ChangeVersion destination, ChangeVersion net) {
       MockChangeItem change =
-            new MockChangeItem(itemId, itemId * 10, itemId * 100, current.getGammaId(), current.getModType());
+         new MockChangeItem(itemId, itemId * 10, itemId * 100, current.getGammaId(), current.getModType());
       if (base != null) {
          change.getBaselineVersion().copy(base);
       }

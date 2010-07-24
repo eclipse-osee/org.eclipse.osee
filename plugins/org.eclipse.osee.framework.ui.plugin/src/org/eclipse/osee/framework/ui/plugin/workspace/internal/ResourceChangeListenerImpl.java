@@ -16,13 +16,12 @@ import org.eclipse.osee.framework.ui.plugin.workspace.WrapResourceChangeListener
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public class ResourceChangeListenerImpl implements IResourceChangeListener {
 
-   private WrapResourceChangeListener listener;
-   
-   public ResourceChangeListenerImpl(WrapResourceChangeListener listener){
+   private final WrapResourceChangeListener listener;
+
+   public ResourceChangeListenerImpl(WrapResourceChangeListener listener) {
       this.listener = listener;
    }
 
@@ -30,5 +29,5 @@ public class ResourceChangeListenerImpl implements IResourceChangeListener {
    public void resourceChanged(IResourceChangeEvent event) {
       listener.resourceChanged(event);
    }
-   
+
 }

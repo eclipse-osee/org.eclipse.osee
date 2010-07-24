@@ -33,7 +33,7 @@ public class AtsAttributeXWidgetWorkItem extends WorkWidgetDefinition {
 
    public AtsAttributeXWidgetWorkItem(ATSAttributes atsAttribute, String xWidgetName, XOption... xOption) {
       this(atsAttribute.getDisplayName(), atsAttribute.getStoreName(), atsAttribute.getStoreName(), xWidgetName,
-            xOption);
+         xOption);
    }
 
    public void setDefaultValue(String defaultValue) {

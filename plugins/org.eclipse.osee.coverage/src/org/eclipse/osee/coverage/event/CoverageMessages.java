@@ -49,6 +49,7 @@ public enum CoverageMessages implements MessageID {
       return guid;
    }
 
+   @Override
    public boolean isTopic() {
       return isTopic;
    }

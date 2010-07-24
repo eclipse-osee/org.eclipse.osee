@@ -14,48 +14,47 @@ import org.eclipse.osee.framework.messaging.MessageID;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public enum OteBaseMessages implements MessageID {
-	RequestOteHost(true, "ABjyjamBQRvvgsdgwers", "topic:lba.ote.get.host", null, true);
-	
-	private String name;
-	private Class<?> clazz;
-	boolean isReplyRequired;
-	private String guid;	
-	private String destination;
-	
-	OteBaseMessages(boolean isTopic, String guid, String name, Class<?> clazz, boolean isReplyRequired){
-		this.guid = guid;
-		this.name = name;
-		this.clazz = clazz;
-		this.isReplyRequired = isReplyRequired;
-		if(isTopic){
-			destination = "topic:"+guid;
-		} else {
-			destination = guid;
-		}
-	}
-	
-	@Override
-	public String getName() {
-		return name;
-	}
+   RequestOteHost(true, "ABjyjamBQRvvgsdgwers", "topic:lba.ote.get.host", null, true);
 
-	@Override
-	public Class<?> getSerializationClass() {
-		return clazz;
-	}
+   private String name;
+   private Class<?> clazz;
+   boolean isReplyRequired;
+   private String guid;
+   private String destination;
 
-	@Override
-	public boolean isReplyRequired() {
-		return isReplyRequired;
-	}
+   OteBaseMessages(boolean isTopic, String guid, String name, Class<?> clazz, boolean isReplyRequired) {
+      this.guid = guid;
+      this.name = name;
+      this.clazz = clazz;
+      this.isReplyRequired = isReplyRequired;
+      if (isTopic) {
+         destination = "topic:" + guid;
+      } else {
+         destination = guid;
+      }
+   }
 
-	@Override
-	public String getId() {
-		return guid;
-	}
+   @Override
+   public String getName() {
+      return name;
+   }
+
+   @Override
+   public Class<?> getSerializationClass() {
+      return clazz;
+   }
+
+   @Override
+   public boolean isReplyRequired() {
+      return isReplyRequired;
+   }
+
+   @Override
+   public String getId() {
+      return guid;
+   }
 
    @Override
    public boolean isTopic() {

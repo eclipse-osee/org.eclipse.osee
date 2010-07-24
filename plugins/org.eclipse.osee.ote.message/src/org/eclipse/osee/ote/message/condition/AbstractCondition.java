@@ -27,6 +27,7 @@ public abstract class AbstractCondition implements ICondition {
       checkCount++;
    }
 
+   @Override
    public int getCheckCount() {
       return checkCount;
    }

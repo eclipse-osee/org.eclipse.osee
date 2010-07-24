@@ -13,20 +13,18 @@ package org.eclipse.osee.ote.messaging.dds.listener;
 import org.eclipse.osee.ote.messaging.dds.entity.Subscriber;
 
 /**
- * The listener interface for receiving notification that data is available to
- * <code>DataReader</code> objects in a <code>Subscriber</code>.
+ * The listener interface for receiving notification that data is available to <code>DataReader</code> objects in a
+ * <code>Subscriber</code>.
  * 
  * @see org.eclipse.osee.ote.messaging.dds.entity.Subscriber
- * 
  * @author Robert A. Fisher
  * @author David Diepenbrock
  */
-public interface SubscriberListener extends DataReaderListener{
-   
+public interface SubscriberListener extends DataReaderListener {
+
    /**
-    * This is the first listener invoked when data becomes available. A
-    * reference to the <code>Subscriber</code> with available information
-    * is passed to the method.
+    * This is the first listener invoked when data becomes available. A reference to the <code>Subscriber</code> with
+    * available information is passed to the method.
     */
    public void onDataOnReaders(Subscriber theSubscriber);
 }

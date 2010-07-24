@@ -32,6 +32,7 @@ public class ColumnSorter extends ViewerSorter {
       this.ascending = true;
    }
 
+   @Override
    @SuppressWarnings("unchecked")
    public int compare(Viewer viewer, Object o1, Object o2) {
       int value;

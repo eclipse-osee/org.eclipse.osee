@@ -24,7 +24,7 @@ import org.w3c.dom.Element;
 public abstract class BaseTestRecord extends LogRecord implements BaseTestTags, Xmlizable {
    private Object source;
    private long timeStamp;
-   private boolean printTimeStamp;
+   private final boolean printTimeStamp;
 
    /**
     * TestRecord Constructor. This is an abstract class so this constructor is called via the super() call from the
@@ -44,16 +44,15 @@ public abstract class BaseTestRecord extends LogRecord implements BaseTestTags, 
          if (source != null) {
             if (source instanceof TestEnvironment) {
                TestEnvironment env = (TestEnvironment) source;
-               this.timeStamp = System.currentTimeMillis() - (env.getTestScript().getStartTime().getTime());
+               this.timeStamp = System.currentTimeMillis() - env.getTestScript().getStartTime().getTime();
             }
          } else {
-            this.timeStamp = (new Date()).getTime();
+            this.timeStamp = new Date().getTime();
             System.out.println("source was null?");
             try {
                throw new Exception("source was null");
             } catch (Exception e) {
-               OseeLog.log(TestEnvironment.class,
-                     Level.SEVERE, e.getMessage(), e);
+               OseeLog.log(TestEnvironment.class, Level.SEVERE, e.getMessage(), e);
             }
          }
       }
@@ -64,6 +63,7 @@ public abstract class BaseTestRecord extends LogRecord implements BaseTestTags, 
     * 
     * @return xml formated element.
     */
+   @Override
    public Element toXml(Document doc) {
       Element recordElement = doc.createElement(getLevel().getName());
 

@@ -65,7 +65,9 @@ public class MergeItemGroup extends MergeItemBase {
       Collection<? extends ICoverage> children = getChildren(true);
       Set<ICoverage> covered = new HashSet<ICoverage>();
       for (ICoverage coverage : children) {
-         if (coverage.isCovered()) covered.add(coverage);
+         if (coverage.isCovered()) {
+            covered.add(coverage);
+         }
       }
       return CoverageUtil.getPercent(covered.size(), children.size(), true).getFirst();
    }
@@ -75,7 +77,9 @@ public class MergeItemGroup extends MergeItemBase {
       Collection<? extends ICoverage> children = getChildren(true);
       Set<ICoverage> covered = new HashSet<ICoverage>();
       for (ICoverage coverage : children) {
-         if (coverage.isCovered()) covered.add(coverage);
+         if (coverage.isCovered()) {
+            covered.add(coverage);
+         }
       }
       return CoverageUtil.getPercent(covered.size(), children.size(), true).getSecond();
    }

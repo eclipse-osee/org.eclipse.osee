@@ -34,12 +34,15 @@ import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
  */
 public class EnumSelectionDialog extends CheckedTreeSelectionDialog {
 
-   private XRadioButton addSelectedRadioButton =
-         new XRadioButton("Add selected item(s) to existing if not already chosen.");
-   private XRadioButton replaceAllRadioButton = new XRadioButton("Replace all existing with selected item(s)");
-   private XRadioButton deleteSelectedRadioButton = new XRadioButton("Remove selected item(s) if already chosen.");
+   private final XRadioButton addSelectedRadioButton = new XRadioButton(
+      "Add selected item(s) to existing if not already chosen.");
+   private final XRadioButton replaceAllRadioButton = new XRadioButton("Replace all existing with selected item(s)");
+   private final XRadioButton deleteSelectedRadioButton =
+      new XRadioButton("Remove selected item(s) if already chosen.");
    public static enum Selection {
-      AddSelection, ReplaceAll, DeleteSelected
+      AddSelection,
+      ReplaceAll,
+      DeleteSelected
    };
    private Selection selected = Selection.AddSelection;
 
@@ -53,8 +56,7 @@ public class EnumSelectionDialog extends CheckedTreeSelectionDialog {
       setMessage("Select option(s) to add, delete or replace.");
       Set<String> options;
       try {
-         options =
-               AttributeTypeManager.getEnumerationValues(attributeName);
+         options = AttributeTypeManager.getEnumerationValues(attributeName);
       } catch (OseeCoreException ex) {
          options = new HashSet<String>();
          options.add(ex.getLocalizedMessage());
@@ -76,7 +78,9 @@ public class EnumSelectionDialog extends CheckedTreeSelectionDialog {
          @Override
          public void widgetSelected(SelectionEvent e) {
             super.widgetSelected(e);
-            if (addSelectedRadioButton.isSelected()) selected = Selection.AddSelection;
+            if (addSelectedRadioButton.isSelected()) {
+               selected = Selection.AddSelection;
+            }
          }
       });
 
@@ -85,7 +89,9 @@ public class EnumSelectionDialog extends CheckedTreeSelectionDialog {
          @Override
          public void widgetSelected(SelectionEvent e) {
             super.widgetSelected(e);
-            if (replaceAllRadioButton.isSelected()) selected = Selection.ReplaceAll;
+            if (replaceAllRadioButton.isSelected()) {
+               selected = Selection.ReplaceAll;
+            }
          }
       });
 
@@ -94,7 +100,9 @@ public class EnumSelectionDialog extends CheckedTreeSelectionDialog {
          @Override
          public void widgetSelected(SelectionEvent e) {
             super.widgetSelected(e);
-            if (deleteSelectedRadioButton.isSelected()) selected = Selection.DeleteSelected;
+            if (deleteSelectedRadioButton.isSelected()) {
+               selected = Selection.DeleteSelected;
+            }
          }
       });
       return c;

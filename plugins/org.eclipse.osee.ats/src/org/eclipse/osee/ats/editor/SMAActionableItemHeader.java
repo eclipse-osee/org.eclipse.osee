@@ -57,12 +57,15 @@ public class SMAActionableItemHeader extends Composite {
          link.setToolTipText("Edit Actionable Items for the parent Action (this may add Team Workflows)");
          link.addHyperlinkListener(new IHyperlinkListener() {
 
+            @Override
             public void linkEntered(HyperlinkEvent e) {
             }
 
+            @Override
             public void linkExited(HyperlinkEvent e) {
             }
 
+            @Override
             public void linkActivated(HyperlinkEvent e) {
                try {
                   AtsUtil.editActionableItems(teamWf.getParentActionArtifact());

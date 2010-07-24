@@ -100,6 +100,7 @@ public class BranchComboDialog extends TitleAreaDialog implements Listener {
       super.okPressed();
    }
 
+   @Override
    public void handleEvent(Event event) {
       checkState();
    }
@@ -153,7 +154,7 @@ public class BranchComboDialog extends TitleAreaDialog implements Listener {
    public static Branch getBranchFromUser() throws OseeCoreException {
       Branch toReturn = null;
       BranchComboDialog branchSelection =
-            new BranchComboDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell());
+         new BranchComboDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell());
       int result = branchSelection.open();
       if (result == Window.OK) {
          toReturn = branchSelection.getSelection();

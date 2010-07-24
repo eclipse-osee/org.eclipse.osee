@@ -33,8 +33,8 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 public class VersionTeamMetrics {
 
    private final TeamDefinitionArtifact verTeamDef;
-   private List<VersionMetrics> releasedOrderedVersions = new ArrayList<VersionMetrics>();
-   private Set<VersionMetrics> verMets = new HashSet<VersionMetrics>();
+   private final List<VersionMetrics> releasedOrderedVersions = new ArrayList<VersionMetrics>();
+   private final Set<VersionMetrics> verMets = new HashSet<VersionMetrics>();
    Map<Date, VersionMetrics> relDateToVerMet = new HashMap<Date, VersionMetrics>();
 
    public VersionTeamMetrics(TeamDefinitionArtifact verTeamDef) throws OseeCoreException {
@@ -49,9 +49,9 @@ public class VersionTeamMetrics {
 
    private void bulkLoadArtifacts() throws OseeCoreException {
       RelationManager.getRelatedArtifacts(Arrays.asList(this.verTeamDef), 6,
-            CoreRelationTypes.Default_Hierarchical__Child, AtsRelationTypes.TeamDefinitionToVersion_Version,
-            AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow, AtsRelationTypes.SmaToTask_Task,
-            AtsRelationTypes.ActionToWorkflow_Action);
+         CoreRelationTypes.Default_Hierarchical__Child, AtsRelationTypes.TeamDefinitionToVersion_Version,
+         AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow, AtsRelationTypes.SmaToTask_Task,
+         AtsRelationTypes.ActionToWorkflow_Action);
    }
 
    private Map<TeamWorkFlowArtifact, Date> teamWorkflowToOrigDate = null;

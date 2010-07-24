@@ -13,6 +13,7 @@ package org.eclipse.osee.coverage.editor.xmerge;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
@@ -40,7 +41,11 @@ public class CoverageMergeXViewer extends CoverageXViewer {
    Action toggleImport;
    private final MergeManager mergeManager;
    public static enum ImportType {
-      Add, Replace, Folder, Error, None
+      Add,
+      Replace,
+      Folder,
+      Error,
+      None
    };
 
    public CoverageMergeXViewer(MergeManager mergeManager, Composite parent, int style, IXViewerFactory xViewerFactory, XCoverageMergeViewer xCoverageMergeViewer) {
@@ -82,7 +87,9 @@ public class CoverageMergeXViewer extends CoverageXViewer {
    }
 
    private boolean isToggleImportEnabled() {
-      if (xCoverageViewer.getSelectedCoverageItems().isEmpty()) return false;
+      if (xCoverageViewer.getSelectedCoverageItems().isEmpty()) {
+         return false;
+      }
       for (ICoverage item : xCoverageViewer.getSelectedCoverageItems()) {
          if (item.isEditable().isFalse() || !(item instanceof IMergeItem) || !((IMergeItem) item).isImportAllowed()) {
             return false;
@@ -95,7 +102,7 @@ public class CoverageMergeXViewer extends CoverageXViewer {
    public void createMenuActions() {
       super.createMenuActions();
 
-      toggleImport = new Action("Toggle Import", Action.AS_PUSH_BUTTON) {
+      toggleImport = new Action("Toggle Import", IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
             try {

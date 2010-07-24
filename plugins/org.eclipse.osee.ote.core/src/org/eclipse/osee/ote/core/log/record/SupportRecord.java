@@ -22,9 +22,9 @@ public class SupportRecord extends TestRecord {
    /**
 	 * 
 	 */
-	private static final long serialVersionUID = 6889265206495780451L;
+   private static final long serialVersionUID = 6889265206495780451L;
 
-/**
+   /**
     * SupportRecord Constructor. Sets up a Support log message.
     * 
     * @param source The object requesting the logging.

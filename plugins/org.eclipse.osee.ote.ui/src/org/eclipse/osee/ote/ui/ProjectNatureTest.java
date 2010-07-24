@@ -18,34 +18,33 @@ import org.eclipse.core.runtime.CoreException;
 
 public class ProjectNatureTest implements IProjectNature {
 
-	public static final String TEST_NATURE = "org.eclipse.osee.ote.ui.testnature";
-	
-	private static List<IProject> testProjects = new ArrayList<IProject>();
-	
-	private IProject project;
-	
-	@Override
-	public void configure() throws CoreException {
-		testProjects.add(project);
-	}
+   public static final String TEST_NATURE = "org.eclipse.osee.ote.ui.testnature";
 
-	@Override
-	public void deconfigure() throws CoreException {
-		testProjects.remove(project);
-	}
+   private static List<IProject> testProjects = new ArrayList<IProject>();
 
-	@Override
-	public IProject getProject() {
-		return project;
-	}
+   private IProject project;
 
-	@Override
-	public void setProject(IProject project) {
-		this.project = project;
-	}
+   @Override
+   public void configure() throws CoreException {
+      testProjects.add(project);
+   }
 
-	
-	public static List<IProject> getTestProjects(){
-		return testProjects;
-	}
+   @Override
+   public void deconfigure() throws CoreException {
+      testProjects.remove(project);
+   }
+
+   @Override
+   public IProject getProject() {
+      return project;
+   }
+
+   @Override
+   public void setProject(IProject project) {
+      this.project = project;
+   }
+
+   public static List<IProject> getTestProjects() {
+      return testProjects;
+   }
 }

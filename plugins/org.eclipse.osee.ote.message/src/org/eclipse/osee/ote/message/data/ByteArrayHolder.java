@@ -18,26 +18,26 @@ import java.nio.ByteBuffer;
 public class ByteArrayHolder {
    private byte[] buffer;
    private ByteBuffer byteBuffer;
-   
-   public ByteArrayHolder(){
-      
+
+   public ByteArrayHolder() {
+
    }
-   
-   public ByteArrayHolder(byte[] buffer){
+
+   public ByteArrayHolder(byte[] buffer) {
       this.buffer = buffer;
       byteBuffer = ByteBuffer.wrap(buffer);
    }
-   
-   public void set(byte[] buffer){
+
+   public void set(byte[] buffer) {
       this.buffer = buffer;
       byteBuffer = ByteBuffer.wrap(buffer);
    }
-   
-   public byte[] get(){
+
+   public byte[] get() {
       return this.buffer;
    }
-   
-   public ByteBuffer getByteBuffer(){
-	   return byteBuffer;
+
+   public ByteBuffer getByteBuffer() {
+      return byteBuffer;
    }
 }

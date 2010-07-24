@@ -39,6 +39,7 @@ public class ArtifactGraphLabelProvider implements ILabelProvider {
 
    }
 
+   @Override
    public Image getImage(Object element) {
       if (element instanceof Artifact) {
          return ArtifactImageManager.getImage((Artifact) element);
@@ -46,6 +47,7 @@ public class ArtifactGraphLabelProvider implements ILabelProvider {
       return null;
    }
 
+   @Override
    public String getText(Object element) {
       try {
          if (element instanceof Artifact) {
@@ -73,19 +75,20 @@ public class ArtifactGraphLabelProvider implements ILabelProvider {
                      } else {
                         linkNames.add(source + " (" + link.getSidePhrasingFor(source) + ") " + dest);
                      }
-                  } else if (options.getLinkName() == LinkName.Link_Name)
+                  } else if (options.getLinkName() == LinkName.Link_Name) {
                      linkNames.add(link.getRelationType().getName());
-                  else if (options.getLinkName() == LinkName.Full_Link_Name)
+                  } else if (options.getLinkName() == LinkName.Full_Link_Name) {
                      linkNames.add(link.getRelationType().toString());
-                  else if (options.getLinkName() == LinkName.Other_Side_Name) {
+                  } else if (options.getLinkName() == LinkName.Other_Side_Name) {
                      if (link.getArtifactA().equals(source)) {
 
                         linkNames.add(source + " (" + link.getSideNameFor(source) + ")" + " <--> " + dest + " (" + link.getSideNameFor(dest) + ")");
                      } else {
                         linkNames.add(dest + " (" + link.getSideNameFor(dest) + ")" + " <--> " + source + " (" + link.getSideNameFor(source) + ")");
                      }
-                  } else
+                  } else {
                      linkNames.add("");
+                  }
                }
                return Collections.toString("\n", linkNames);
             }
@@ -97,16 +100,20 @@ public class ArtifactGraphLabelProvider implements ILabelProvider {
       return null;
    }
 
+   @Override
    public void addListener(ILabelProviderListener listener) {
    }
 
+   @Override
    public void dispose() {
    }
 
+   @Override
    public boolean isLabelProperty(Object element, String property) {
       return false;
    }
 
+   @Override
    public void removeListener(ILabelProviderListener listener) {
    }
 

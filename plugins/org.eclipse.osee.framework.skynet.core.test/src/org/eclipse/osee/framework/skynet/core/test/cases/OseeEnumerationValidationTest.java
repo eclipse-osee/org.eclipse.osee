@@ -59,13 +59,13 @@ public class OseeEnumerationValidationTest {
       data.add(new TestData("Test 1: Null", null, getErrorStatus("No enum const [GFE / CFE].[null]")));
       data.add(new TestData("Test 2: Empty String", "", getErrorStatus("No enum const [GFE / CFE].[]")));
       data.add(new TestData("Test 3: Invalid", "asbasdfasdfa",
-            getErrorStatus("No enum const [GFE / CFE].[asbasdfasdfa]")));
+         getErrorStatus("No enum const [GFE / CFE].[asbasdfasdfa]")));
       data.add(new TestData("Test 4: Valid", "CFE", Status.OK_STATUS));
       data.add(new TestData("Test 5: Valid", "GFE", Status.OK_STATUS));
       data.add(new TestData("Test 5: Valid", "Unspecified", Status.OK_STATUS));
       data.add(new TestData("Test 6: Valid", "cfe", getErrorStatus("No enum const [GFE / CFE].[cfe]")));
       data.add(new TestData("Test 7: Invalid Class", 0,
-            getErrorStatus("java.lang.Integer cannot be cast to java.lang.String")));
+         getErrorStatus("java.lang.Integer cannot be cast to java.lang.String")));
       return data;
    }
 
@@ -77,8 +77,8 @@ public class OseeEnumerationValidationTest {
    public void testEnumerationData() throws OseeCoreException {
       for (TestData data : getEnumerationCases()) {
          IStatus actual =
-               OseeValidator.getInstance().validate(IOseeValidator.SHORT, mockArtifact, enumeratedAttributeType,
-                     data.getValue());
+            OseeValidator.getInstance().validate(IOseeValidator.SHORT, mockArtifact, enumeratedAttributeType,
+               data.getValue());
          checkStatus(data.getMessage(), data.getExpected(), actual);
       }
    }

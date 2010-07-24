@@ -20,35 +20,37 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public class OteEnvironmentTrackerCustomizer implements ServiceTrackerCustomizer {
 
-   private EndpointReceive receive;
-   private EndpointSend send;
-   private BundleContext context;
-   private ProtocolId protocolId;
-   
-   public OteEnvironmentTrackerCustomizer(BundleContext context, EndpointReceive receive, EndpointSend send, ProtocolId protocolId){
+   private final EndpointReceive receive;
+   private final EndpointSend send;
+   private final BundleContext context;
+   private final ProtocolId protocolId;
+
+   public OteEnvironmentTrackerCustomizer(BundleContext context, EndpointReceive receive, EndpointSend send, ProtocolId protocolId) {
       this.context = context;
       this.receive = receive;
       this.send = send;
       this.protocolId = protocolId;
    }
-   
+
+   @Override
    public Object addingService(ServiceReference reference) {
-      MessagingGateway gateway = (MessagingGateway)context.getService(reference);
+      MessagingGateway gateway = (MessagingGateway) context.getService(reference);
       gateway.bind(receive);
       gateway.bind(send);
       gateway.bindSendProtocol(protocolId, send);
       return null;
    }
 
+   @Override
    public void modifiedService(ServiceReference reference, Object service) {
    }
 
+   @Override
    public void removedService(ServiceReference reference, Object service) {
-      MessagingGateway gateway = (MessagingGateway)context.getService(reference);
+      MessagingGateway gateway = (MessagingGateway) context.getService(reference);
       gateway.unbind(receive);
       gateway.unbindSendProtocol(protocolId, send);
       gateway.unbind(send);

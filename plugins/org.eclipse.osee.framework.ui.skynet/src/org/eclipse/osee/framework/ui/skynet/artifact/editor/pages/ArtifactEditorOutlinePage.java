@@ -58,12 +58,12 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
       setInput(editor != null ? editor : "No Input Available");
 
       getSite().getActionBars().getToolBarManager().add(
-            new Action("Refresh", ImageManager.getImageDescriptor(PluginUiImage.REFRESH)) {
-               @Override
-               public void run() {
-                  refresh();
-               }
-            });
+         new Action("Refresh", ImageManager.getImageDescriptor(PluginUiImage.REFRESH)) {
+            @Override
+            public void run() {
+               refresh();
+            }
+         });
       getSite().getActionBars().getToolBarManager().update(true);
    }
 
@@ -155,9 +155,9 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
                Artifact artifact = ((BaseArtifactEditorInput) element).getArtifact();
                boolean isEditable = !artifact.isReadOnly();
                items.add(new AttributeTypeContainer(isEditable ? "Editable" : "Readable", true,
-                     AttributeTypeUtil.getTypesWithData(artifact)));
+                  AttributeTypeUtil.getTypesWithData(artifact)));
                items.add(new AttributeTypeContainer(isEditable ? "Add to form before editing" : "Empty Types", false,
-                     AttributeTypeUtil.getEmptyTypes(artifact)));
+                  AttributeTypeUtil.getEmptyTypes(artifact)));
             } catch (OseeCoreException ex) {
                items.add(Lib.exceptionToString(ex));
             }

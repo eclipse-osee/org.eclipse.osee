@@ -31,20 +31,23 @@ public class OseeNotificationManager implements INotificationManager {
 
    private boolean emailEnabled = true;
    private static OseeNotificationManager instance = new OseeNotificationManager();
-   private List<OseeNotificationEvent> notificationEvents = new ArrayList<OseeNotificationEvent>();
+   private final List<OseeNotificationEvent> notificationEvents = new ArrayList<OseeNotificationEvent>();
 
    private OseeNotificationManager() {
       instance = this;
    }
 
+   @Override
    public void addNotificationEvent(OseeNotificationEvent notificationEvent) {
       notificationEvents.add(notificationEvent);
    }
 
+   @Override
    public void clear() {
       notificationEvents.clear();
    }
 
+   @Override
    public void sendNotifications() throws OseeCoreException {
       if (!emailEnabled) {
          OseeLog.log(SkynetGuiPlugin.class, Level.INFO, "Osee Notification Disabled");
@@ -66,6 +69,7 @@ public class OseeNotificationManager implements INotificationManager {
       this.emailEnabled = emailEnabled;
    }
 
+   @Override
    public List<OseeNotificationEvent> getNotificationEvents() {
       return notificationEvents;
    }

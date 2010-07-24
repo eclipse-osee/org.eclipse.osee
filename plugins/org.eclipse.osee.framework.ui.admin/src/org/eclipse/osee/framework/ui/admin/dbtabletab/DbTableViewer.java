@@ -177,8 +177,8 @@ public class DbTableViewer {
     */
    private void createTable(Composite parent, int numColumns) {
       table =
-            new Table(parent,
-                  SWT.MULTI | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.HIDE_SELECTION);
+         new Table(parent,
+            SWT.MULTI | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.HIDE_SELECTION);
       GridData gridData = new GridData(GridData.FILL_BOTH | GridData.GRAB_VERTICAL);
       gridData.horizontalSpan = numColumns;
       table.setLayoutData(gridData);
@@ -265,6 +265,7 @@ public class DbTableViewer {
       tableViewer.setSorter(new DbTableSorter(0));
 
       table.addListener(SWT.MouseDoubleClick, new Listener() {
+         @Override
          public void handleEvent(Event event) {
             TableItem[] items = table.getSelection();
             if (items != null && items.length > 0) {
@@ -273,8 +274,8 @@ public class DbTableViewer {
                   if (item.getBounds(index).contains(event.x, event.y)) {
                      Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
                      CellTextDialog dialog =
-                           new CellTextDialog(shell, getAdminView().getSelectedDbItem().getTableName(),
-                                 table.getColumn(index).getText(), item.getText(index));
+                        new CellTextDialog(shell, getAdminView().getSelectedDbItem().getTableName(), table.getColumn(
+                           index).getText(), item.getText(index));
                      dialog.open();
                      break;
                   }
@@ -301,6 +302,7 @@ public class DbTableViewer {
     */
    class ExampleContentProvider implements IStructuredContentProvider, ITaskListViewer {
 
+      @Override
       public void inputChanged(Viewer v, Object oldInput, Object newInput) {
          if (newInput != null) {
             ((DbTaskList) newInput).addChangeListener(this);
@@ -310,23 +312,28 @@ public class DbTableViewer {
          }
       }
 
+      @Override
       public void dispose() {
          dbTaskList.removeChangeListener(this);
       }
 
       // Return the tasks as an array of Objects
+      @Override
       public Object[] getElements(Object parent) {
          return dbTaskList.getTasks().toArray();
       }
 
+      @Override
       public void addTask(DbModel task) {
          tableViewer.add(task);
       }
 
+      @Override
       public void removeTask(DbModel task) {
          tableViewer.remove(task);
       }
 
+      @Override
       public void updateTask(DbModel task) {
          tableViewer.update(task, null);
       }
@@ -363,8 +370,8 @@ public class DbTableViewer {
 
       public CellTextDialog(Shell parentShell, String dialogTitle, String dialogMessage, String dialogText) {
          super(parentShell, dialogTitle, PlatformUI.getWorkbench().getSharedImages().getImage(
-               ISharedImages.IMG_OBJS_INFO_TSK), dialogMessage, MessageDialog.INFORMATION,
-               new String[] {IDialogConstants.OK_LABEL}, 0);
+            ISharedImages.IMG_OBJS_INFO_TSK), dialogMessage, MessageDialog.INFORMATION,
+            new String[] {IDialogConstants.OK_LABEL}, 0);
          this.dialogMessage = dialogText;
          this.setShellStyle(this.getShellStyle() | SWT.RESIZE);
       }

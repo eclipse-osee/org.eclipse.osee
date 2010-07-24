@@ -12,21 +12,24 @@ package org.eclipse.osee.ote.core.environment.interfaces;
 
 import org.eclipse.osee.ote.core.TestException;
 
-
 /**
- * This interface provides the basic abilities that must be able to 
- * be performed on any ExecutionUnit being run by the system. All 
- * classes which provide control over an ExecutionUnit should implement
- * at least this interface so the environments can make use of them.
+ * This interface provides the basic abilities that must be able to be performed on any ExecutionUnit being run by the
+ * system. All classes which provide control over an ExecutionUnit should implement at least this interface so the
+ * environments can make use of them.
  * 
  * @author Robert A. Fisher
  */
 public interface IExecutionUnitManagement {
    public void startExecutionUnit() throws Exception;
+
    public void setupExecutionUnit(Object execUnitConfig) throws Exception;
+
    public void runPrimaryOneCycle() throws InterruptedException, TestException;
+
    public void stopExecutionUnit() throws InterruptedException;
+
    public void init() throws Exception;
+
    /**
     * 
     */

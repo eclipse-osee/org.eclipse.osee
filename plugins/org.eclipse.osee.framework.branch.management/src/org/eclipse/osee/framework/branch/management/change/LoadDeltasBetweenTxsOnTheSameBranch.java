@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.database.core.JoinUtility.TransactionJoinQuery
 public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractOperation {
 
    private static final String SELECT_CHANGES_AT_TRANSACTION =
-         "select gamma_id, mod_type from osee_txs where branch_id = ? and transaction_id = ?";
+      "select gamma_id, mod_type from osee_txs where branch_id = ? and transaction_id = ?";
 
    private final HashMap<Long, ModificationType> changeByGammaId = new HashMap<Long, ModificationType>();
 
@@ -68,7 +68,7 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractOperation {
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       Conditions.checkExpressionFailOnTrue(!txDelta.areOnTheSameBranch(),
-            "Unable to compute deltas between transactions on different branches [%s]", txDelta);
+         "Unable to compute deltas between transactions on different branches [%s]", txDelta);
 
       TransactionJoinQuery txJoin = JoinUtility.createTransactionJoinQuery();
 
@@ -111,7 +111,7 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractOperation {
       idJoin.store();
 
       loadCurrentData(monitor, factory.getItemTableName(), factory.getItemIdColumnName(), idJoin.getQueryId(),
-            changesByItemId, getStartTx());
+         changesByItemId, getStartTx());
 
       idJoin.delete();
 
@@ -122,8 +122,8 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractOperation {
       IOseeStatement chStmt = oseeDatabaseProvider.getOseeDatabaseService().getStatement();
       try {
          String query = "select txs.gamma_id, txs.mod_type, item." + columnName + " from osee_join_id idj, " //
-               + tableName + " item, osee_txs txs where idj.query_id = ? and idj.id = item." + columnName + //
-               " and item.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id <= ?";
+            + tableName + " item, osee_txs txs where idj.query_id = ? and idj.id = item." + columnName + //
+            " and item.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id <= ?";
 
          chStmt.runPreparedQuery(10000, query, queryId, transactionLimit.getBranchId(), transactionLimit.getId());
 

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.artifact;
 
-
 /**
  * @author Donald G. Dunne
  */

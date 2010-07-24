@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.plugin.util;
 
-
-
 /**
  * @author Donald G. Dunne
  */
@@ -19,6 +17,7 @@ public class ResultRunnable implements Runnable {
 
    protected Result runnableResult = Result.TrueResult;
 
+   @Override
    public void run() {
    }
 

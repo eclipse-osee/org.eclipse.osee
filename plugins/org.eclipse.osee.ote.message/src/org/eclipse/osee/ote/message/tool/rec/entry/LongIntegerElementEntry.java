@@ -14,25 +14,25 @@ import java.nio.ByteBuffer;
 import org.eclipse.osee.ote.message.data.MemoryResource;
 import org.eclipse.osee.ote.message.elements.LongIntegerElement;
 
-
 public class LongIntegerElementEntry implements IElementEntry {
 
-	private final LongIntegerElement element;
-	private final byte[] nameAsBytes;
+   private final LongIntegerElement element;
+   private final byte[] nameAsBytes;
 
+   public LongIntegerElementEntry(LongIntegerElement element) {
+      this.element = element;
+      nameAsBytes = element.getElementPathAsString().getBytes();
+   }
 
-	public LongIntegerElementEntry(LongIntegerElement element) {
-		this.element = element;
-		nameAsBytes = element.getElementPathAsString().getBytes();
-	}
+   @Override
+   public LongIntegerElement getElement() {
+      return element;
+   }
 
-	public LongIntegerElement getElement() {
-		return element;
-	}
-
-	public void write(ByteBuffer buffer, MemoryResource mem, int limit) {
-		mem.setOffset(element.getMsgData().getMem().getOffset());
-		buffer.put(nameAsBytes).put(COMMA).put(element.valueOf(mem).toString().getBytes()).put(COMMA);
-	}
+   @Override
+   public void write(ByteBuffer buffer, MemoryResource mem, int limit) {
+      mem.setOffset(element.getMsgData().getMem().getOffset());
+      buffer.put(nameAsBytes).put(COMMA).put(element.valueOf(mem).toString().getBytes()).put(COMMA);
+   }
 
 }

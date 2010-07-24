@@ -23,9 +23,9 @@ import org.eclipse.swt.graphics.Image;
  */
 public class DataTypeFigure extends Figure {
 
-   private ImageFigure iconFigure;
-   private IFigure namespaceFigure;
-   private IFigure nameFigure;
+   private final ImageFigure iconFigure;
+   private final IFigure namespaceFigure;
+   private final IFigure nameFigure;
 
    public DataTypeFigure(IFigure namespaceFigure, IFigure nameFigure) {
       this.namespaceFigure = namespaceFigure;

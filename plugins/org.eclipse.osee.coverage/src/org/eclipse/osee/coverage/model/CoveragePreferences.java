@@ -47,8 +47,8 @@ public class CoveragePreferences {
       }
       if (artifact == null) {
          artifact =
-               ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, BranchManager.getCommonBranch(),
-                     ARTIFACT_NAME);
+            ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, BranchManager.getCommonBranch(),
+               ARTIFACT_NAME);
          artifact.persist("Coverage Preferences - creation");
       }
       return artifact;
@@ -69,13 +69,13 @@ public class CoveragePreferences {
          return null;
       }
       KeyValueArtifact keyValueArt =
-            new KeyValueArtifact(getArtifact(), CoreAttributeTypes.GENERAL_STRING_DATA.getName());
+         new KeyValueArtifact(getArtifact(), CoreAttributeTypes.GENERAL_STRING_DATA.getName());
       return keyValueArt.getValue("CoverageOptions");
    }
 
    public void setCoverageOptions(String options) throws OseeCoreException {
       KeyValueArtifact keyValueArt =
-            new KeyValueArtifact(getArtifact(), CoreAttributeTypes.GENERAL_STRING_DATA.getName());
+         new KeyValueArtifact(getArtifact(), CoreAttributeTypes.GENERAL_STRING_DATA.getName());
       keyValueArt.setValue("CoverageOptions", options);
       keyValueArt.save();
       getArtifact().persist("Coverage Preferences - save");

@@ -35,7 +35,7 @@ public class XViewerReviewRoleColumn extends XViewerValueColumn {
    @Override
    public XViewerReviewRoleColumn copy() {
       return new XViewerReviewRoleColumn(getUser(), getId(), getName(), getWidth(), getAlign(), isShow(),
-            getSortDataType(), isMultiColumnEditable(), getDescription());
+         getSortDataType(), isMultiColumnEditable(), getDescription());
    }
 
    public XViewerReviewRoleColumn(User user) {

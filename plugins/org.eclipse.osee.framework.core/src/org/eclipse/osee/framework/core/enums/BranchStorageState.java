@@ -12,11 +12,11 @@ package org.eclipse.osee.framework.core.enums;
 
 /**
  * @author Jeff C. Phillips
- *
  */
 public enum BranchStorageState {
-   
-   UN_ARCHIVED(0), ARCHIVED(1);
+
+   UN_ARCHIVED(0),
+   ARCHIVED(1);
    private final int value;
 
    BranchStorageState(int value) {

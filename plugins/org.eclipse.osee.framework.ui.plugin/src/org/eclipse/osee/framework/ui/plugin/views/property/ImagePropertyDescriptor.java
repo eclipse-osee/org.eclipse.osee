@@ -38,10 +38,12 @@ public class ImagePropertyDescriptor extends PropertyDescriptor {
       super(propertyId, propertyId.getDisplayName());
       setCategory(propertyId.getCategoryName());
       setLabelProvider(new ILabelProvider() {
+         @Override
          public Image getImage(Object element) {
             return null;
          }
 
+         @Override
          public String getText(Object element) {
             return "Image";
          }
@@ -73,9 +75,11 @@ public class ImagePropertyDescriptor extends PropertyDescriptor {
       return (Image) object;
    }
 
+   @Override
    public CellEditor createPropertyEditor(Composite parent) {
 
       CellEditor editor = new DialogCellEditor(parent) {
+         @Override
          protected Object openDialogBox(Control cellEditorWindow) {
             FileDialog dialog = new FileDialog(cellEditorWindow.getShell(), SWT.OPEN);
             dialog.setFilterExtensions(new String[] {"jpg", "bmp", "png"});
@@ -92,15 +96,22 @@ public class ImagePropertyDescriptor extends PropertyDescriptor {
             return null;
          }
 
+         @Override
          protected void updateContents(Object value) {
             Label label = getDefaultLabel();
-            if (label == null) return;
+            if (label == null) {
+               return;
+            }
             String text = "";//$NON-NLS-1$
-            if (value != null) text = getLabelProvider().getText(value);
+            if (value != null) {
+               text = getLabelProvider().getText(value);
+            }
             label.setText(text);
          }
       };
-      if (getValidator() != null) editor.setValidator(getValidator());
+      if (getValidator() != null) {
+         editor.setValidator(getValidator());
+      }
       return editor;
    }
 }

@@ -15,7 +15,9 @@ import java.io.Serializable;
 /**
  * @author Michael P. Masterson
  */
-public enum ModelState implements Serializable{
-   DISPOSED, PAUSED, RUNNING;
+public enum ModelState implements Serializable {
+   DISPOSED,
+   PAUSED,
+   RUNNING;
 
 }

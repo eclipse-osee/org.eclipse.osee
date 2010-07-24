@@ -33,9 +33,9 @@ import org.osgi.framework.ServiceRegistration;
  */
 public class OseeCachingServiceRegistrationHandler extends AbstractTrackingHandler {
 
-   private final static Class<?>[] SERVICE_DEPENDENCIES =
-         new Class<?>[] {IOseeDatabaseService.class, IOseeModelFactoryService.class, IDataTranslationService.class,
-               IApplicationServerLookup.class, IApplicationServerManager.class};
+   private final static Class<?>[] SERVICE_DEPENDENCIES = new Class<?>[] {IOseeDatabaseService.class,
+      IOseeModelFactoryService.class, IDataTranslationService.class, IApplicationServerLookup.class,
+      IApplicationServerManager.class};
 
    private ServiceRegistration factoryRegistration;
    private ServiceRegistration cachingServiceRegistration;

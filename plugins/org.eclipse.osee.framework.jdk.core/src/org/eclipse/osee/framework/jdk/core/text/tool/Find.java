@@ -31,13 +31,13 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
  * @author Ryan D. Brooks
  */
 public class Find {
-   private Collection<File> files;
-   private FindResults results;
-   private FileToBufferConvert converter;
+   private final Collection<File> files;
+   private final FindResults results;
+   private final FileToBufferConvert converter;
    private int precedingCount;
    private int trailingCount;
-   private Matcher[] matchers;
-   private boolean[] matcherUsed;
+   private final Matcher[] matchers;
+   private final boolean[] matcherUsed;
 
    /**
     * @param patterns a Collection of strings that are regular expressions
@@ -70,7 +70,7 @@ public class Find {
 
    public Find(String pattern, File topLevelSearchDir, String fileNamePattern) {
       this(toList(pattern), Lib.recursivelyListFiles(topLevelSearchDir, Pattern.compile(fileNamePattern)),
-            simpleToBuffer);
+         simpleToBuffer);
    }
 
    public static void main(String[] args) throws IOException {

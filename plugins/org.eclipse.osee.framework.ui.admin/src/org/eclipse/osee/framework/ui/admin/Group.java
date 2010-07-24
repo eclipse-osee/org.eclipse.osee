@@ -15,8 +15,8 @@ package org.eclipse.osee.framework.ui.admin;
  */
 public class Group {
 
-   private int groupId;
-   private String groupName;
+   private final int groupId;
+   private final String groupName;
    private int childrenSize;
    private int numChildrenChecked;
 
@@ -92,7 +92,9 @@ public class Group {
     * @return boolean, true if all the children are checked else false
     */
    public boolean isAllChecked() {
-      if (numChildrenChecked == childrenSize) return true;
+      if (numChildrenChecked == childrenSize) {
+         return true;
+      }
       return false;
    }
 
@@ -100,7 +102,9 @@ public class Group {
     * @return boolean, true if none of the children are checked else false
     */
    public boolean isAllEmpty() {
-      if (numChildrenChecked == 0) return true;
+      if (numChildrenChecked == 0) {
+         return true;
+      }
       return false;
    }
 

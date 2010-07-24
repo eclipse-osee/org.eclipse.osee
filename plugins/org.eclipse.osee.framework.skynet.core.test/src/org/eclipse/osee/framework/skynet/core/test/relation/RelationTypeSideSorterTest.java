@@ -103,7 +103,7 @@ public class RelationTypeSideSorterTest {
    @Test
    public void testGetSideName() {
       String expectedSideName =
-            relationSide == RelationSide.SIDE_A ? relationType.getSideAName() : relationType.getSideBName();
+         relationSide == RelationSide.SIDE_A ? relationType.getSideAName() : relationType.getSideBName();
       Assert.assertEquals(expectedSideName, sorter.getSideName());
    }
 
@@ -204,9 +204,9 @@ public class RelationTypeSideSorterTest {
       String sorterGuid = orderData.getCurrentSorterGuid(relationType, relationSide);
       IRelationSorterId expected = sorterProvider.getRelationOrder(sorterGuid).getSorterId();
       Assert.assertEquals(
-            "Relation Sorter {relationType=" + relationType.toString() + ", relationSide=[" + relationSide.toString() + //
-            "," + relationType.getSideName(relationSide) + "], artifact=[" + artGuid + "], sorterId=" + expected + "}",
-            sorter.toString());
+         "Relation Sorter {relationType=" + relationType.toString() + ", relationSide=[" + relationSide.toString() + //
+         "," + relationType.getSideName(relationSide) + "], artifact=[" + artGuid + "], sorterId=" + expected + "}",
+         sorter.toString());
    }
 
    @Parameters
@@ -217,9 +217,9 @@ public class RelationTypeSideSorterTest {
       RelationTypeCache cache = new RelationTypeCache(new MockOseeDataAccessor<RelationType>());
 
       RelationType relationType1 =
-            createRelationType(cache, "Rel 1", RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC.getGuid());
+         createRelationType(cache, "Rel 1", RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC.getGuid());
       RelationType relationType2 =
-            createRelationType(cache, "Rel 2", RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC.getGuid());
+         createRelationType(cache, "Rel 2", RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC.getGuid());
       IArtifact art1 = createArtifact("a", GUID.create());
       IArtifact art2 = createArtifact("b", GUID.create());
 
@@ -247,8 +247,8 @@ public class RelationTypeSideSorterTest {
       ArtifactType type1 = new ArtifactType(GUID.create(), "1", false);
       ArtifactType type2 = new ArtifactType(GUID.create(), "2", false);
       RelationType relationType =
-            new RelationType(GUID.create(), name, name + "_A", name + "_B", type1, type2,
-                  RelationTypeMultiplicity.MANY_TO_MANY, delationRelationOrderGuid);
+         new RelationType(GUID.create(), name, name + "_A", name + "_B", type1, type2,
+            RelationTypeMultiplicity.MANY_TO_MANY, delationRelationOrderGuid);
       Assert.assertNotNull(relationType);
       cache.cache(relationType);
       return relationType;
@@ -256,9 +256,9 @@ public class RelationTypeSideSorterTest {
 
    private static void addData(RelationTypeCache cache, RelationOrderData data, List<Object[]> expected) throws OseeCoreException {
       addData(data, expected, cache.getUniqueByName("Rel 1"), RelationSide.SIDE_A, //
-            RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC.getGuid(), "1", "2", "3");
+         RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC.getGuid(), "1", "2", "3");
       addData(data, expected, cache.getUniqueByName("Rel 2"), RelationSide.SIDE_B, //
-            RelationOrderBaseTypes.UNORDERED.getGuid(), "4", "5", "6");
+         RelationOrderBaseTypes.UNORDERED.getGuid(), "4", "5", "6");
 
       checkData(data, expected);
    }
@@ -268,8 +268,8 @@ public class RelationTypeSideSorterTest {
       Assert.assertEquals(expectedValues.size(), orderData.size());
       for (Entry<Pair<String, String>, Pair<String, List<String>>> entry : orderData.getOrderedEntrySet()) {
          Object[] actual =
-               new Object[] {entry.getKey().getFirst(), entry.getKey().getSecond(), entry.getValue().getFirst(),
-                     entry.getValue().getSecond()};
+            new Object[] {entry.getKey().getFirst(), entry.getKey().getSecond(), entry.getValue().getFirst(),
+               entry.getValue().getSecond()};
          Object[] expected = expectedValues.get(index++);
          Assert.assertEquals(expected.length, actual.length);
          for (int index2 = 0; index2 < expected.length; index2++) {

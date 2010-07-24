@@ -67,8 +67,8 @@ public class ArtifactTypeSelectPanel extends AbstractItemSelectPanel<ArtifactTyp
          dialog.setInput(artifactTypes);
       } catch (Exception ex) {
          ErrorDialog.openError(shell, title, null, // no special message
-               new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, 0,
-                     "Unable to create artifact type selectiong dialog", ex));
+            new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, 0, "Unable to create artifact type selectiong dialog",
+               ex));
       }
       return dialog;
    }

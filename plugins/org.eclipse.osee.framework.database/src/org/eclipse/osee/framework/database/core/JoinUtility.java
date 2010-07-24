@@ -27,24 +27,24 @@ import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 public class JoinUtility {
 
    private static final String INSERT_INTO_JOIN_ARTIFACT =
-         "INSERT INTO osee_join_artifact (query_id, insert_time, art_id, branch_id) VALUES (?, ?, ?, ?)";
+      "INSERT INTO osee_join_artifact (query_id, insert_time, art_id, branch_id) VALUES (?, ?, ?, ?)";
 
    private static final String INSERT_INTO_JOIN_TRANSACTION =
-         "INSERT INTO osee_join_transaction (query_id, insert_time, gamma_id, transaction_id) VALUES (?, ?, ?, ?)";
+      "INSERT INTO osee_join_transaction (query_id, insert_time, gamma_id, transaction_id) VALUES (?, ?, ?, ?)";
 
    private static final String INSERT_INTO_JOIN_SEARCH_TAGS =
-         "INSERT INTO osee_join_search_tags (query_id, insert_time, coded_tag_id) VALUES (?, ?, ?)";
+      "INSERT INTO osee_join_search_tags (query_id, insert_time, coded_tag_id) VALUES (?, ?, ?)";
 
    private static final String INSERT_INTO_TAG_GAMMA_QUEUE =
-         "INSERT INTO osee_tag_gamma_queue (query_id, insert_time, gamma_id) VALUES (?, ?, ?)";
+      "INSERT INTO osee_tag_gamma_queue (query_id, insert_time, gamma_id) VALUES (?, ?, ?)";
 
    private static final String INSERT_INTO_JOIN_EXPORT_IMPORT =
-         "INSERT INTO osee_join_export_import (query_id, insert_time, id1, id2) VALUES (?, ?, ?, ?)";
+      "INSERT INTO osee_join_export_import (query_id, insert_time, id1, id2) VALUES (?, ?, ?, ?)";
    private static final String INSERT_INTO_JOIN_ID =
-         "INSERT INTO osee_join_id (query_id, insert_time, id) VALUES (?, ?, ?)";
+      "INSERT INTO osee_join_id (query_id, insert_time, id) VALUES (?, ?, ?)";
 
    private static final String INSERT_INTO_JOIN_CLEANUP =
-         "INSERT INTO osee_join_cleanup (query_id, table_name, session_id) VALUES (?, ?, ?)";
+      "INSERT INTO osee_join_cleanup (query_id, table_name, session_id) VALUES (?, ?, ?)";
 
    private static final String INSERT_INTO_JOIN_CHAR_ID = "INSERT INTO osee_join_char_id (query_id, id) VALUES (?, ?)";
 
@@ -58,7 +58,7 @@ public class JoinUtility {
    private static final String DELETE_FROM_JOIN_CHAR_ID = "DELETE FROM osee_join_char_id WHERE query_id =?";
    private static final String SELECT_TAG_GAMMA_QUEUE_QUERIES = "select DISTINCT query_id from osee_tag_gamma_queue";
    private static final Random random = new Random();
-   
+
    public enum JoinItem {
       TRANSACTION(INSERT_INTO_JOIN_TRANSACTION, DELETE_FROM_JOIN_TRANSACTION),
       ARTIFACT(INSERT_INTO_JOIN_ARTIFACT, DELETE_FROM_JOIN_ARTIFACT),
@@ -181,7 +181,7 @@ public class JoinUtility {
             ConnectionHandler.runBatchUpdate(connection, joinItem.getInsertSql(), data);
             if (sessionId != null) {
                Activator.getInstance().getOseeDatabaseService().runPreparedUpdate(connection, INSERT_INTO_JOIN_CLEANUP,
-                     getQueryId(), getJoinTableName(), sessionId);
+                  getQueryId(), getJoinTableName(), sessionId);
             }
             this.storedSize = this.entries.size();
             this.wasStored = true;
@@ -232,6 +232,7 @@ public class JoinUtility {
    private interface IJoinRow {
       public Object[] toArray();
 
+      @Override
       public String toString();
    }
 
@@ -244,6 +245,7 @@ public class JoinUtility {
             this.id = id;
          }
 
+         @Override
          public Object[] toArray() {
             return new Object[] {getQueryId(), getInsertTime(), id};
          }
@@ -296,6 +298,7 @@ public class JoinUtility {
             this.transactionId = transactionId;
          }
 
+         @Override
          public Object[] toArray() {
             return new Object[] {getQueryId(), getInsertTime(), gammaId, transactionId};
          }
@@ -348,6 +351,7 @@ public class JoinUtility {
             this.branchId = branchId;
          }
 
+         @Override
          public Object[] toArray() {
             return new Object[] {getQueryId(), getInsertTime(), artId, branchId};
          }
@@ -398,6 +402,7 @@ public class JoinUtility {
             this.value = value;
          }
 
+         @Override
          public Object[] toArray() {
             return new Object[] {getQueryId(), getInsertTime(), value};
          }
@@ -448,6 +453,7 @@ public class JoinUtility {
             this.gammaId = gammaId;
          }
 
+         @Override
          public Object[] toArray() {
             return new Object[] {getQueryId(), getInsertTime(), gammaId};
          }
@@ -500,6 +506,7 @@ public class JoinUtility {
             this.id2 = id2;
          }
 
+         @Override
          public Object[] toArray() {
             return new Object[] {getQueryId(), getInsertTime(), id1, id2};
          }

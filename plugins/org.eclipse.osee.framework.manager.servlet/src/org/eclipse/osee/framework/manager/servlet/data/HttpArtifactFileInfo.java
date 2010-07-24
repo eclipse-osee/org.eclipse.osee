@@ -36,6 +36,7 @@ public class HttpArtifactFileInfo implements Identity {
       this(request.getParameter(GUID_KEY), request.getParameter(BRANCH_NAME_KEY), request.getParameter(BRANCH_ID_KEY));
    }
 
+   @Override
    public String getGuid() {
       return guid;
    }

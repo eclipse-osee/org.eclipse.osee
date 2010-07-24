@@ -51,10 +51,12 @@ public class TestMessageOperations {
       TestMessage msg = new TestMessage();
       final Benchmark bm = new Benchmark("transmission rate");
       msg.addListener(new IOSEEMessageListener() {
+         @Override
          public void onDataAvailable(MessageData data, DataType type) throws MessageSystemException {
             bm.samplePoint();
          }
 
+         @Override
          public void onInitListener() throws MessageSystemException {
 
          }
@@ -67,8 +69,8 @@ public class TestMessageOperations {
       Thread.sleep(time + 10);
       Assert.assertEquals(expectedXmits, bm.getTotalSamples());
       long avg = bm.getAverage() / 1000;
-      Assert.assertTrue("period is out of range:expected " + period + ", actual " + avg, support.inRange(period, 1,
-            (int) avg));
+      Assert.assertTrue("period is out of range:expected " + period + ", actual " + avg,
+         support.inRange(period, 1, (int) avg));
    }
 
    @Test

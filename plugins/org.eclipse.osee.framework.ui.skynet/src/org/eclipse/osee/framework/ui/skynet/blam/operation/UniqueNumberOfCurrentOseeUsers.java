@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
  */
 public class UniqueNumberOfCurrentOseeUsers extends AbstractBlam {
    private static final String SELECT_USER_COUNT =
-         "select count(*) from v$session t1 where t1.username='OSEE_CLIENT' and not exists (select null from v$session t2 where t1.machine=t2.machine and t2.sid < t1.sid)";
+      "select count(*) from v$session t1 where t1.username='OSEE_CLIENT' and not exists (select null from v$session t2 where t1.machine=t2.machine and t2.sid < t1.sid)";
 
    @Override
    public String getName() {

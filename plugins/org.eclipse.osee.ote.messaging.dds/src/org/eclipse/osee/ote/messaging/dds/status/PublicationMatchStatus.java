@@ -13,18 +13,20 @@ package org.eclipse.osee.ote.messaging.dds.status;
 import org.eclipse.osee.ote.messaging.dds.InstanceHandle;
 
 /**
- * Maintains counts of the number of {@link org.eclipse.osee.ote.messaging.dds.entity.DataReader}'s that the {@link org.eclipse.osee.ote.messaging.dds.entity.DataWriter} matched based upon <code>Topic</code> & Qos Policies.
+ * Maintains counts of the number of {@link org.eclipse.osee.ote.messaging.dds.entity.DataReader}'s that the
+ * {@link org.eclipse.osee.ote.messaging.dds.entity.DataWriter} matched based upon <code>Topic</code> & Qos Policies.
  * 
  * @author Robert A. Fisher
  * @author David Diepenbrock
  */
 public class PublicationMatchStatus extends CountedStatus {
-   private InstanceHandle lastSubscriptionHandle;
+   private final InstanceHandle lastSubscriptionHandle;
 
    /**
     * @param totalCount The cumulative count of <code>DataReader</code>'s whose Qos Policies match.
     * @param totalCountChange The change in count since the last time the listener was called or the status was read.
-    * @param lastSubscriptionHandle The last <code>DataReader</code> matching the <code>DataWriter</code> causing the status to change.
+    * @param lastSubscriptionHandle The last <code>DataReader</code> matching the <code>DataWriter</code> causing the
+    * status to change.
     */
    public PublicationMatchStatus(long totalCount, long totalCountChange, InstanceHandle lastSubscriptionHandle) {
       super(totalCount, totalCountChange);

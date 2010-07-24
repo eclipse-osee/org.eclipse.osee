@@ -43,10 +43,10 @@ public class PurgeDeletedAttributes extends AbstractBlam {
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       Branch branch = variableMap.getBranch("Branch");
       Collection<AttributeType> purgeAttributeTypes =
-            variableMap.getCollection(AttributeType.class, "Attribute Type(s) to purge");
+         variableMap.getCollection(AttributeType.class, "Attribute Type(s) to purge");
 
       List<Artifact> artifacts =
-            ArtifactQuery.getArtifactListFromBranch(branch, LoadLevel.ALL_CURRENT, INCLUDE_DELETED);
+         ArtifactQuery.getArtifactListFromBranch(branch, LoadLevel.ALL_CURRENT, INCLUDE_DELETED);
 
       StringBuilder strB = new StringBuilder();
 

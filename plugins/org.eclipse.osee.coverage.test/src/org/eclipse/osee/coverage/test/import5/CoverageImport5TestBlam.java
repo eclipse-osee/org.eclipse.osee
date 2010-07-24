@@ -24,9 +24,9 @@ public class CoverageImport5TestBlam extends CoverageImportTestBlam {
 
    public CoverageImport5TestBlam() {
       super(NAME, Arrays.asList(
-            //
-            "import5/nav/NavigationButton1.java", "import1/nav/NavigationButton2.java",
-            "import1/nav/NavigationButton3.java"
+         //
+         "import5/nav/NavigationButton1.java", "import1/nav/NavigationButton2.java",
+         "import1/nav/NavigationButton3.java"
       //
       ));
    }

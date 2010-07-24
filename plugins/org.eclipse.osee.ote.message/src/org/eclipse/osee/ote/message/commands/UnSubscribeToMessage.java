@@ -12,12 +12,8 @@ package org.eclipse.osee.ote.message.commands;
 
 import java.io.Serializable;
 import java.net.InetSocketAddress;
-
 import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.message.tool.MessageMode;
-
-
-
 
 /**
  * @author Ryan D. Brooks
@@ -33,28 +29,29 @@ public class UnSubscribeToMessage implements Serializable {
    private final MessageMode mode;
    private final InetSocketAddress address;
    private final DataType memTypeOrdinal;
+
    /**
     * Creates a new unsubscribe command.
-    * @param messageName the name of the message that the message manager service will no longer
-    * sent updates to for the specified client address
+    * 
+    * @param messageName the name of the message that the message manager service will no longer sent updates to for the
+    * specified client address
     * @param address the address of the client.
     */
-   public UnSubscribeToMessage(final String messageName, final MessageMode mode, 
-         final DataType memTypeOrdinal, InetSocketAddress address) {
+   public UnSubscribeToMessage(final String messageName, final MessageMode mode, final DataType memTypeOrdinal, InetSocketAddress address) {
       this.messageName = messageName;
       this.mode = mode;
       this.address = address;
       this.memTypeOrdinal = memTypeOrdinal;
    }
-   
+
    public String getMessage() {
       return messageName;
    }
-   
+
    public InetSocketAddress getAddress() {
       return address;
    }
-   
+
    public DataType getMemTypeOrdinal() {
       return memTypeOrdinal;
    }
@@ -65,7 +62,5 @@ public class UnSubscribeToMessage implements Serializable {
    public MessageMode getMode() {
       return mode;
    }
-   
-   
-   
+
 }

@@ -16,43 +16,41 @@ import org.eclipse.osee.ote.message.tool.MessageMode;
 
 /**
  * @author Ken J. Aguilar
- *
  */
 public abstract class AbstractSubscriptionState implements ISubscriptionState {
 
-	private final DataType type;
-	private final MessageMode mode;
-	private final MessageSubscription subscription;
-	
-	protected AbstractSubscriptionState(MessageSubscription subscription, DataType type, MessageMode mode) {
-		this.subscription = subscription;
-		this.type = type;
-		this.mode = mode;
-	}
-	
-	protected AbstractSubscriptionState(AbstractSubscriptionState otherState) {
-		this.subscription = otherState.getSubscription();
-		this.type = otherState.getMemType();
-		this.mode = otherState.getMode();
-	}
-	
+   private final DataType type;
+   private final MessageMode mode;
+   private final MessageSubscription subscription;
 
-	@Override
-	public DataType getMemType() {
-		return type;
-	}
+   protected AbstractSubscriptionState(MessageSubscription subscription, DataType type, MessageMode mode) {
+      this.subscription = subscription;
+      this.type = type;
+      this.mode = mode;
+   }
 
-	@Override
-	public MessageMode getMode() {
-		return mode;
-	}
-	
-	protected MessageSubscription getSubscription() {
-		return subscription;
-	}
-	
-	@Override
-	public void onCanceled() {
-	}
-	
+   protected AbstractSubscriptionState(AbstractSubscriptionState otherState) {
+      this.subscription = otherState.getSubscription();
+      this.type = otherState.getMemType();
+      this.mode = otherState.getMode();
+   }
+
+   @Override
+   public DataType getMemType() {
+      return type;
+   }
+
+   @Override
+   public MessageMode getMode() {
+      return mode;
+   }
+
+   protected MessageSubscription getSubscription() {
+      return subscription;
+   }
+
+   @Override
+   public void onCanceled() {
+   }
+
 }

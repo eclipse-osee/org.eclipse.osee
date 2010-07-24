@@ -47,13 +47,13 @@ public class WordAttribute extends StringAttribute {
 
          try {
             if ((Boolean) DebugPlugin.getDefault().getStatusHandler(promptStatus).handleStatus(
-                  promptStatus,
-                  "This document contains track changes and cannot be saved with them. Do you want OSEE to remove them?" + "\n\nNote:You will need to reopen this artifact in OSEE to see the final result.")) {
+               promptStatus,
+               "This document contains track changes and cannot be saved with them. Do you want OSEE to remove them?" + "\n\nNote:You will need to reopen this artifact in OSEE to see the final result.")) {
                returnValue = WordAnnotationHandler.removeAnnotations(value);
             } else {
                throw new OseeTrackedChangesException(String.format(
-                     "Artifact %s (%s), Branch %s (%s) contains track changes. Please remove them and save again.",
-                     art.getName(), art.getArtId(), branch.getName(), branch.getId()));
+                  "Artifact %s (%s), Branch %s (%s) contains track changes. Please remove them and save again.",
+                  art.getName(), art.getArtId(), branch.getName(), branch.getId()));
             }
          } catch (CoreException ex) {
             OseeExceptions.wrapAndThrow(ex);

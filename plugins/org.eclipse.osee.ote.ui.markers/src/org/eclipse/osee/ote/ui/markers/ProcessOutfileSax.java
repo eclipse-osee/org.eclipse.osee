@@ -55,11 +55,12 @@ public class ProcessOutfileSax implements IExceptionableRunnable {
       this.plugin = plugin;
    }
 
+   @Override
    public IStatus run(IProgressMonitor monitor) throws Exception {
       File outfile = AWorkspace.iFileToFile(file);
       if (outfile.length() > _20_MB) {
          OseeLog.log(MarkerPlugin.class, Level.WARNING, String.format(
-               "%s has a length of [%d], the max size processed is [%d].", file.getName(), outfile.length(), _20_MB));
+            "%s has a length of [%d], the max size processed is [%d].", file.getName(), outfile.length(), _20_MB));
          return Status.OK_STATUS;
       }
       if (!file.isSynchronized(0)) {

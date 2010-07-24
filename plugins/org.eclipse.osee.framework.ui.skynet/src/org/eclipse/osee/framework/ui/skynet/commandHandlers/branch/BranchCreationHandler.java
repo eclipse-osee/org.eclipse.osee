@@ -46,7 +46,7 @@ public class BranchCreationHandler extends CommandHandler {
    @Override
    public Object execute(ExecutionEvent arg0) throws ExecutionException {
       IStructuredSelection selection =
-            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+         (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
       Object backingData = selection.getFirstElement();
 
       final TransactionRecord parentTransactionId;
@@ -60,20 +60,21 @@ public class BranchCreationHandler extends CommandHandler {
 
          } else {
             throw new OseeStateException(
-                  "Backing data for the jobbed node in the branchview was not of the expected type");
+               "Backing data for the jobbed node in the branchview was not of the expected type");
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          return null;
       }
       final EntryDialog dialog =
-            new EntryDialog(Displays.getActiveShell(), "Branch", null, "Enter the name of the new Branch:",
-                  MessageDialog.INFORMATION, new String[] {"OK", "Cancel"}, 0);
+         new EntryDialog(Displays.getActiveShell(), "Branch", null, "Enter the name of the new Branch:",
+            MessageDialog.INFORMATION, new String[] {"OK", "Cancel"}, 0);
       int result = dialog.open();
 
       if (result == 0 && dialog.getEntry() != null) {
 
          IExceptionableRunnable runnable = new IExceptionableRunnable() {
+            @Override
             public IStatus run(IProgressMonitor monitor) throws Exception {
                Branch branch = parentTransactionId.getBranch();
                if (branch.equals(CoreBranches.SYSTEM_ROOT)) {

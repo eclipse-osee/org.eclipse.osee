@@ -195,8 +195,8 @@ public class UiToTestBlam extends AbstractBlam {
 
       List<Artifact> testUnits = requirement.getRelatedArtifacts(relationType);
       if (testUnits.isEmpty()) {
-         addRow(appendable, asArray(uiTitle, uiType, "NONE", "NONE", EMPTY_STRING, EMPTY_STRING, EMPTY_STRING,
-               EMPTY_STRING));
+         addRow(appendable,
+            asArray(uiTitle, uiType, "NONE", "NONE", EMPTY_STRING, EMPTY_STRING, EMPTY_STRING, EMPTY_STRING));
       } else {
          for (Artifact testUnit : testUnits) {
             String testUnitName = testUnit.getName();
@@ -208,8 +208,8 @@ public class UiToTestBlam extends AbstractBlam {
             String usesStr = org.eclipse.osee.framework.jdk.core.util.Collections.toString(used, ",");
             String validatesStr = org.eclipse.osee.framework.jdk.core.util.Collections.toString(validates, ",");
 
-            addRow(appendable, asArray(uiTitle, uiType, testType, testUnitName, testUnitType, verifyStr, validatesStr,
-                  usesStr));
+            addRow(appendable,
+               asArray(uiTitle, uiType, testType, testUnitName, testUnitType, verifyStr, validatesStr, usesStr));
          }
       }
    }
@@ -226,7 +226,13 @@ public class UiToTestBlam extends AbstractBlam {
    }
 
    private static enum Column {
-      UI_Title, Requirement_Type, Relates_To_Test_Unit, Test_Unit_Name, Test_Unit_Type, Verified_By, Validated_By,
+      UI_Title,
+      Requirement_Type,
+      Relates_To_Test_Unit,
+      Test_Unit_Name,
+      Test_Unit_Type,
+      Verified_By,
+      Validated_By,
       Used_By;
    }
 

@@ -23,34 +23,36 @@ import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 
 public class RunActiveMq implements IApplication {
-	private static String BROKER_URI;
-	private BrokerService broker;
-	
-	private boolean isKillable = true;
+   private static String BROKER_URI;
+   private BrokerService broker;
+
+   private final boolean isKillable = true;
    private Session session;
    private MessageConsumer replyToConsumer;
    private Connection connection;
-   
-	@Override
-	public Object start(IApplicationContext appContext) throws Exception {
-		broker = new BrokerService();
-		broker.setBrokerName("osee");
-		broker.setUseShutdownHook(true);
-		broker.setUseJmx(false);
-		String[] myArgs = (String[])appContext.getArguments().get(IApplicationContext.APPLICATION_ARGS);
-		BROKER_URI =  "tcp://localhost:"+myArgs[0];
-		broker.addConnector(BROKER_URI);
-		broker.start();
-		
-		if(isKillable){
-		   ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(ActiveMQConnection.DEFAULT_USER, ActiveMQConnection.DEFAULT_PASSWORD, BROKER_URI);
-	      connection = factory.createConnection();
-	      connection.start();
-	      session = connection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
-	      Topic destination = session.createTopic("jms.kill.broker");
-	      replyToConsumer = session.createConsumer(destination);
-	      replyToConsumer.setMessageListener(new MessageListener() {
-            
+
+   @Override
+   public Object start(IApplicationContext appContext) throws Exception {
+      broker = new BrokerService();
+      broker.setBrokerName("osee");
+      broker.setUseShutdownHook(true);
+      broker.setUseJmx(false);
+      String[] myArgs = (String[]) appContext.getArguments().get(IApplicationContext.APPLICATION_ARGS);
+      BROKER_URI = "tcp://localhost:" + myArgs[0];
+      broker.addConnector(BROKER_URI);
+      broker.start();
+
+      if (isKillable) {
+         ActiveMQConnectionFactory factory =
+            new ActiveMQConnectionFactory(ActiveMQConnection.DEFAULT_USER, ActiveMQConnection.DEFAULT_PASSWORD,
+               BROKER_URI);
+         connection = factory.createConnection();
+         connection.start();
+         session = connection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
+         Topic destination = session.createTopic("jms.kill.broker");
+         replyToConsumer = session.createConsumer(destination);
+         replyToConsumer.setMessageListener(new MessageListener() {
+
             @Override
             public void onMessage(Message arg0) {
                try {
@@ -62,43 +64,43 @@ public class RunActiveMq implements IApplication {
                }
             }
          });
-			while(broker.isStarted()){
-				Thread.sleep(1000);
-			}
-		} else {
-			while(broker.isStarted()){
-				Thread.sleep(60000);
-			}
-		}
-		return null;
-	}
+         while (broker.isStarted()) {
+            Thread.sleep(1000);
+         }
+      } else {
+         while (broker.isStarted()) {
+            Thread.sleep(60000);
+         }
+      }
+      return null;
+   }
 
-	@Override
-	public void stop() {
-		try {
-			broker.stop();
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-	}
+   @Override
+   public void stop() {
+      try {
+         broker.stop();
+      } catch (Exception ex) {
+         ex.printStackTrace();
+      }
+   }
 
-  void stopBrokerInNewThread() throws Exception {
-     new Thread(new StopIt()).start();
-  }
+   void stopBrokerInNewThread() throws Exception {
+      new Thread(new StopIt()).start();
+   }
 
-  private class StopIt implements Runnable {
-     @Override
-     public void run() {
-        try {
-           System.err.println("close the connection");
-           connection.close();
-           System.err.println("stop the broker");
-           broker.stop();
-           System.err.println("done");
-        } catch (Throwable th) {
-           th.printStackTrace();
-        }
-     }
-  }
-	
+   private class StopIt implements Runnable {
+      @Override
+      public void run() {
+         try {
+            System.err.println("close the connection");
+            connection.close();
+            System.err.println("stop the broker");
+            broker.stop();
+            System.err.println("done");
+         } catch (Throwable th) {
+            th.printStackTrace();
+         }
+      }
+   }
+
 }

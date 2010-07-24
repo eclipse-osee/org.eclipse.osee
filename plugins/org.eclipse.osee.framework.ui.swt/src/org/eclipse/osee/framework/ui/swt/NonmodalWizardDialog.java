@@ -38,8 +38,8 @@ public class NonmodalWizardDialog extends WizardDialog {
    private Button cancelButton;
    @SuppressWarnings("unused")
    private Button helpButton;
-   private IWizard wizard;
-   private SelectionAdapter cancelListener;
+   private final IWizard wizard;
+   private final SelectionAdapter cancelListener;
    private IWizardPage currentPage = null;
 
    public NonmodalWizardDialog(Shell shell, Wizard wizard) {
@@ -47,6 +47,7 @@ public class NonmodalWizardDialog extends WizardDialog {
       setShellStyle(SWT.MODELESS | SWT.SHELL_TRIM | SWT.CLOSE | SWT.TITLE | SWT.BORDER | SWT.RESIZE | SWT.ON_TOP | getDefaultOrientation());
 
       cancelListener = new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             cancelPressed();
          }
@@ -55,11 +56,14 @@ public class NonmodalWizardDialog extends WizardDialog {
       this.wizard = getWizard();
    }
 
+   @Override
    protected void createButtonsForButtonBar(Composite parent) {
       if (wizard.isHelpAvailable()) {
          helpButton = createButton(parent, IDialogConstants.HELP_ID, IDialogConstants.HELP_LABEL, false);
       }
-      if (wizard.needsPreviousAndNextButtons()) createPreviousAndNextButtons(parent);
+      if (wizard.needsPreviousAndNextButtons()) {
+         createPreviousAndNextButtons(parent);
+      }
       finishButton = createButton(parent, IDialogConstants.FINISH_ID, IDialogConstants.FINISH_LABEL, true);
       cancelButton = createCancelButton(parent);
    }
@@ -95,6 +99,7 @@ public class NonmodalWizardDialog extends WizardDialog {
       nextButton = createButton(composite, IDialogConstants.NEXT_ID, IDialogConstants.NEXT_LABEL, false);
       nextButton.addSelectionListener(new SelectionAdapter() {
 
+         @Override
          public void widgetSelected(SelectionEvent event) {
             //            System.out.println("the next button was pressed");
          }
@@ -102,22 +107,26 @@ public class NonmodalWizardDialog extends WizardDialog {
       return composite;
    }
 
+   @Override
    public void updateButtons() {
       boolean canFlipToNextPage = false;
       boolean canFinish = wizard.canFinish();
 
       this.currentPage = getCurrentPage();
 
-      if (backButton != null) backButton.setEnabled(currentPage.getPreviousPage() != null);
+      if (backButton != null) {
+         backButton.setEnabled(currentPage.getPreviousPage() != null);
+      }
       if (nextButton != null) {
          canFlipToNextPage = currentPage.canFlipToNextPage();
          nextButton.setEnabled(canFlipToNextPage);
       }
       finishButton.setEnabled(canFinish);
       // finish is default unless it is diabled and next is enabled
-      if (canFlipToNextPage && !canFinish)
+      if (canFlipToNextPage && !canFinish) {
          getShell().setDefaultButton(nextButton);
-      else
+      } else {
          getShell().setDefaultButton(finishButton);
+      }
    }
 }

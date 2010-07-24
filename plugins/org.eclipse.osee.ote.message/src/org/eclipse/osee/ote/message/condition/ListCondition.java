@@ -28,23 +28,25 @@ public class ListCondition<T extends Comparable<T>> extends AbstractCondition im
          list[i] = element.elementMask(list[i]);
       }
       this.set = new HashSet<T>(Arrays.asList(list));
-      
+
    }
+
    public ListCondition(DiscreteElement<T> element, boolean inList, Collection<T> list) {
       this.element = element;
       this.inList = inList;
       this.set = new HashSet<T>();
-      int i = 0;
       for (T item : list) {
          set.add(element.elementMask(item));
       }
 
    }
 
+   @Override
    public T getLastCheckValue() {
       return lastValue;
    }
 
+   @Override
    public boolean check() {
       lastValue = element.getValue();
       return !(inList ^ set.contains(lastValue));
@@ -61,6 +63,5 @@ public class ListCondition<T extends Comparable<T>> extends AbstractCondition im
    public boolean isInList() {
       return inList;
    }
-
 
 }

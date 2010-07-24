@@ -31,8 +31,8 @@ public class HTMLTransferFormatter {
 
    public static String getHtml(Artifact... artifacts) {
       boolean applyWordTagWrap =
-            prefStore.getString(PreferenceConstants.WORDWRAP_KEY) != null && prefStore.getString(
-                  PreferenceConstants.WORDWRAP_KEY).equals(IPreferenceStore.TRUE);
+         prefStore.getString(PreferenceConstants.WORDWRAP_KEY) != null && prefStore.getString(
+            PreferenceConstants.WORDWRAP_KEY).equals(IPreferenceStore.TRUE);
 
       if (artifacts != null) {
          StringBuilder sb = new StringBuilder();
@@ -48,10 +48,10 @@ public class HTMLTransferFormatter {
                link = ArtifactURL.getOpenInOseeLink(artifact).toString();
             } catch (OseeCoreException ex) {
                link =
-                     String.format("guid:[%s] branch:[%s] gammaId:[%s]", artifact.getGuid(),
-                           artifact.getBranch().getId(), artifact.getGammaId());
-               OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, String.format("Error creating link for: [%s]",
-                     artifact), ex);
+                  String.format("guid:[%s] branch:[%s] gammaId:[%s]", artifact.getGuid(), artifact.getBranch().getId(),
+                     artifact.getGammaId());
+               OseeLog.log(SkynetGuiPlugin.class, Level.WARNING,
+                  String.format("Error creating link for: [%s]", artifact), ex);
             }
             urls.add(link + "\">" + artifact.getName());
          }

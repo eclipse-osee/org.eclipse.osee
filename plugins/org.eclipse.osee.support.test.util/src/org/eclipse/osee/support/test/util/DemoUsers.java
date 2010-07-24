@@ -46,6 +46,7 @@ public enum DemoUsers implements IOseeUserInfo {
    /**
     * @return Returns the email.
     */
+   @Override
    public String getEmail() {
       return email;
    }
@@ -53,6 +54,7 @@ public enum DemoUsers implements IOseeUserInfo {
    /**
     * @return Returns the name.
     */
+   @Override
    public String getName() {
       return name;
    }
@@ -60,6 +62,7 @@ public enum DemoUsers implements IOseeUserInfo {
    /**
     * @return Returns the userID.
     */
+   @Override
    public String getUserID() {
       return userID;
    }
@@ -67,6 +70,7 @@ public enum DemoUsers implements IOseeUserInfo {
    /**
     * @return Returns the active.
     */
+   @Override
    public boolean isActive() {
       return active;
    }

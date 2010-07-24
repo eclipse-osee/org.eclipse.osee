@@ -50,7 +50,7 @@ public final class AttributeSearch implements ITagCollector {
       }
 
       OseeLog.log(AttributeSearch.class, Level.INFO, String.format("Attribute Search Query found [%d] in [%d] ms",
-            toReturn.size(), System.currentTimeMillis() - start));
+         toReturn.size(), System.currentTimeMillis() - start));
       return toReturn;
    }
 

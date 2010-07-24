@@ -18,16 +18,16 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
  * @author Andrew M. Finkbeiner
  */
 public class RelationOrderBaseTypes extends NamedIdentity implements IRelationSorterId {
-   public static final RelationOrderBaseTypes USER_DEFINED =
-         new RelationOrderBaseTypes("AAT0xogoMjMBhARkBZQA", "User Defined");
-   public static final RelationOrderBaseTypes LEXICOGRAPHICAL_ASC =
-         new RelationOrderBaseTypes("AAT1QW4eVE+YuzsoHFAA", "Lexicographical Ascending");
-   public static final RelationOrderBaseTypes LEXICOGRAPHICAL_DESC =
-         new RelationOrderBaseTypes("AAmATn6R9m7VCXQQwuQA", "Lexicographical Descending");
-   public static final RelationOrderBaseTypes UNORDERED =
-         new RelationOrderBaseTypes("AAT1uKZpeDQExlygoIAA", "Unordered");
-   public static final RelationOrderBaseTypes[] values =
-         new RelationOrderBaseTypes[] {USER_DEFINED, LEXICOGRAPHICAL_ASC, LEXICOGRAPHICAL_DESC, UNORDERED};
+   public static final RelationOrderBaseTypes USER_DEFINED = new RelationOrderBaseTypes("AAT0xogoMjMBhARkBZQA",
+      "User Defined");
+   public static final RelationOrderBaseTypes LEXICOGRAPHICAL_ASC = new RelationOrderBaseTypes("AAT1QW4eVE+YuzsoHFAA",
+      "Lexicographical Ascending");
+   public static final RelationOrderBaseTypes LEXICOGRAPHICAL_DESC = new RelationOrderBaseTypes("AAmATn6R9m7VCXQQwuQA",
+      "Lexicographical Descending");
+   public static final RelationOrderBaseTypes UNORDERED = new RelationOrderBaseTypes("AAT1uKZpeDQExlygoIAA",
+      "Unordered");
+   public static final RelationOrderBaseTypes[] values = new RelationOrderBaseTypes[] {USER_DEFINED,
+      LEXICOGRAPHICAL_ASC, LEXICOGRAPHICAL_DESC, UNORDERED};
 
    RelationOrderBaseTypes(String guid, String name) {
       super(guid, name);

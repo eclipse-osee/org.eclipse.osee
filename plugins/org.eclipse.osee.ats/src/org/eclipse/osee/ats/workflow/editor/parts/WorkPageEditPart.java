@@ -73,7 +73,7 @@ public class WorkPageEditPart extends ShapeEditPart {
       super.performRequest(req);
       System.out.println(req);
       if (req instanceof SelectionRequest) {
-         (new EditAction()).run();
+         new EditAction().run();
       }
    }
 

@@ -17,8 +17,8 @@ import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.store.CoverageArtifactTypes;
 import org.eclipse.osee.coverage.store.CoverageOptionManagerStore;
-import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.store.CoverageOptionManagerStore.StoreLocation;
+import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -41,12 +41,12 @@ public class CoverageOptionManagerStoreTest {
    public static void setUp() throws OseeCoreException {
       SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch(), "delete");
       for (Artifact artifact : ArtifactQuery.getArtifactListFromTypeAndName(CoverageArtifactTypes.CoveragePackage,
-            CoverageOptionManagerStoreTest.class.getSimpleName(), BranchManager.getCommonBranch())) {
+         CoverageOptionManagerStoreTest.class.getSimpleName(), BranchManager.getCommonBranch())) {
          artifact.deleteAndPersist(transaction);
       }
       Artifact artifact =
-            ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.GeneralData, "Coverage Preferences",
-                  BranchManager.getCommonBranch());
+         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.GeneralData, "Coverage Preferences",
+            BranchManager.getCommonBranch());
       if (artifact != null) {
          KeyValueArtifact kvArt = new KeyValueArtifact(artifact, CoreAttributeTypes.GENERAL_STRING_DATA.getName());
          kvArt.removeValues("CoverageOptions");
@@ -59,8 +59,8 @@ public class CoverageOptionManagerStoreTest {
    private static Artifact getCoveragePackageArt() throws OseeCoreException {
       try {
          Artifact artifact =
-               ArtifactQuery.getArtifactFromTypeAndName(CoverageArtifactTypes.CoveragePackage,
-                     CoverageOptionManagerStoreTest.class.getSimpleName(), BranchManager.getCommonBranch());
+            ArtifactQuery.getArtifactFromTypeAndName(CoverageArtifactTypes.CoveragePackage,
+               CoverageOptionManagerStoreTest.class.getSimpleName(), BranchManager.getCommonBranch());
          return artifact;
       } catch (ArtifactDoesNotExist ex) {
          // do nothing
@@ -72,8 +72,8 @@ public class CoverageOptionManagerStoreTest {
    public void testCoverageOptionManagerStore() throws OseeCoreException {
       CoverageUtil.setNavigatorSelectedBranch(BranchManager.getCommonBranch());
       CoveragePackage coveragePackage =
-            new CoveragePackage(CoverageOptionManagerStoreTest.class.getSimpleName(),
-                  CoverageOptionManagerDefault.instance());
+         new CoveragePackage(CoverageOptionManagerStoreTest.class.getSimpleName(),
+            CoverageOptionManagerDefault.instance());
       OseeCoveragePackageStore store = new OseeCoveragePackageStore(coveragePackage, BranchManager.getCommonBranch());
       store.save();
 
@@ -81,7 +81,7 @@ public class CoverageOptionManagerStoreTest {
       // Global option should not be created yet
       Assert.assertEquals(StoreLocation.None, optionStore.getStoreLocation());
       Assert.assertEquals(CoverageOptionManagerDefault.instance().toXml(),
-            optionStore.getCoverageOptionManager().toXml());
+         optionStore.getCoverageOptionManager().toXml());
 
       // add another coverage option and store globally
       CoverageOptionManager coverageOptionManager = coveragePackage.getCoverageOptionManager();

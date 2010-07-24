@@ -34,6 +34,7 @@ public class SkynetSpellModifyDictionary implements XTextSpellModifyDictionary, 
    private static Set<String> dictionary;
    private final boolean debug = false;
 
+   @Override
    public boolean addToGlobalDictionary(String word) {
       try {
          return updateArtifact("Global", word, OseeSystemArtifacts.getGlobalPreferenceArtifact());
@@ -43,6 +44,7 @@ public class SkynetSpellModifyDictionary implements XTextSpellModifyDictionary, 
       return false;
    }
 
+   @Override
    public boolean addToLocalDictionary(String word) {
       try {
          return updateArtifact("Local", word, UserManager.getUser());
@@ -54,7 +56,7 @@ public class SkynetSpellModifyDictionary implements XTextSpellModifyDictionary, 
 
    private boolean updateArtifact(String type, String word, Artifact art) {
       if (MessageDialog.openConfirm(Displays.getActiveShell(), "Add to " + type + " Dictionary",
-            "Add \"" + word + "\" to " + type + " Dictionary")) {
+         "Add \"" + word + "\" to " + type + " Dictionary")) {
          try {
             Set<String> words = new HashSet<String>();
             for (String str : art.getSoleAttributeValue(ATTRIBUTE_NAME, "").split(";")) {
@@ -72,6 +74,7 @@ public class SkynetSpellModifyDictionary implements XTextSpellModifyDictionary, 
       return false;
    }
 
+   @Override
    public boolean isWord(String word) {
       loadDictionary(false);
       boolean contains = dictionary.contains(word);
@@ -104,7 +107,7 @@ public class SkynetSpellModifyDictionary implements XTextSpellModifyDictionary, 
                   }
                }
                for (String str : OseeSystemArtifacts.getGlobalPreferenceArtifact().getSoleAttributeValue(
-                     ATTRIBUTE_NAME, "").split(";")) {
+                  ATTRIBUTE_NAME, "").split(";")) {
                   if (debug) {
                      System.out.println("Adding Global => \"" + str + "\"");
                   }

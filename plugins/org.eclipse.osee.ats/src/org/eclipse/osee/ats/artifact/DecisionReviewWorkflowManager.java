@@ -39,39 +39,49 @@ public class DecisionReviewWorkflowManager {
       Result result = Result.TrueResult;
       // If in Prepare state, set data and transition to Decision
       if (reviewArt.getStateMgr().getCurrentStateName().equals(
-            DecisionReviewArtifact.DecisionReviewState.Prepare.name())) {
+         DecisionReviewArtifact.DecisionReviewState.Prepare.name())) {
          result = setPrepareStateData(reviewArt, 100, 3, .2);
 
          if (result.isFalse()) {
-            if (popup) result.popup();
+            if (popup) {
+               result.popup();
+            }
             return result;
          }
          result =
-               reviewArt.transition(DecisionReviewArtifact.DecisionReviewState.Decision.name(),
-                     (user != null ? user : reviewArt.getStateMgr().getAssignees().iterator().next()),
-                     transaction, TransitionOption.None);
+            reviewArt.transition(DecisionReviewArtifact.DecisionReviewState.Decision.name(),
+               (user != null ? user : reviewArt.getStateMgr().getAssignees().iterator().next()), transaction,
+               TransitionOption.None);
       }
       if (result.isFalse()) {
-         if (popup) result.popup();
+         if (popup) {
+            result.popup();
+         }
          return result;
       }
-      if (toState == DecisionReviewArtifact.DecisionReviewState.Decision) return Result.TrueResult;
+      if (toState == DecisionReviewArtifact.DecisionReviewState.Decision) {
+         return Result.TrueResult;
+      }
 
       // If desired to transition to follow-up, then decision is false
-      boolean decision = (toState != DecisionReviewArtifact.DecisionReviewState.Followup);
+      boolean decision = toState != DecisionReviewArtifact.DecisionReviewState.Followup;
 
       result = setDecisionStateData(reviewArt, decision, 100, .2);
       if (result.isFalse()) {
-         if (popup) result.popup();
+         if (popup) {
+            result.popup();
+         }
          return result;
       }
 
       result =
-            reviewArt.transition(toState.name(),
-                  (user != null ? user : reviewArt.getStateMgr().getAssignees().iterator().next()),
-                  transaction, TransitionOption.None);
+         reviewArt.transition(toState.name(),
+            (user != null ? user : reviewArt.getStateMgr().getAssignees().iterator().next()), transaction,
+            TransitionOption.None);
       if (result.isFalse()) {
-         if (popup) result.popup();
+         if (popup) {
+            result.popup();
+         }
          return result;
       }
       return Result.TrueResult;
@@ -79,7 +89,9 @@ public class DecisionReviewWorkflowManager {
 
    public static Result setPrepareStateData(DecisionReviewArtifact reviewArt, int statePercentComplete, double estimateHours, double stateHoursSpent) throws OseeCoreException {
       if (!reviewArt.getStateMgr().getCurrentStateName().equals(
-            DecisionReviewArtifact.DecisionReviewState.Prepare.name())) return new Result("Action not in Prepare state");
+         DecisionReviewArtifact.DecisionReviewState.Prepare.name())) {
+         return new Result("Action not in Prepare state");
+      }
       reviewArt.setSoleAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(), estimateHours);
       reviewArt.getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
       return Result.TrueResult;
@@ -87,8 +99,9 @@ public class DecisionReviewWorkflowManager {
 
    public static Result setDecisionStateData(DecisionReviewArtifact reviewArt, boolean decision, int statePercentComplete, double stateHoursSpent) throws OseeCoreException {
       if (!reviewArt.getStateMgr().getCurrentStateName().equals(
-            DecisionReviewArtifact.DecisionReviewState.Decision.name())) return new Result(
-            "Action not in Decision state");
+         DecisionReviewArtifact.DecisionReviewState.Decision.name())) {
+         return new Result("Action not in Decision state");
+      }
       reviewArt.setSoleAttributeValue(ATSAttributes.DECISION_ATTRIBUTE.getStoreName(), decision ? "Yes" : "No");
       reviewArt.getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
       return Result.TrueResult;

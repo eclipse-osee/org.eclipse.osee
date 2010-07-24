@@ -14,5 +14,6 @@ package org.eclipse.osee.ote.message.listener;
  * @author Andrew M. Finkbeiner
  */
 public enum SPEED {
-FAST, SLOW
+   FAST,
+   SLOW
 }

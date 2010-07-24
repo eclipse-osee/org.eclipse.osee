@@ -63,7 +63,7 @@ public class CoverageNavigateViewItems extends XNavigateViewItems {
       items.add(new XNavigateItemAction(null, new OpenCoveragePackageAction(), OpenCoveragePackageAction.OSEE_IMAGE));
       items.add(new XNavigateItemAction(null, new DeleteCoveragePackageAction(), DeleteCoveragePackageAction.OSEE_IMAGE));
       items.add(new XNavigateItemAction(null, new ConfigureCoverageMethodsAction(),
-            ConfigureCoverageMethodsAction.OSEE_IMAGE));
+         ConfigureCoverageMethodsAction.OSEE_IMAGE));
       items.add(new XNavigateItemAction(null, new CompareTwoStringsAction(), FrameworkImage.EDIT));
 
       try {
@@ -92,8 +92,7 @@ public class CoverageNavigateViewItems extends XNavigateViewItems {
    private List<ICoverageNavigateItem> getExtensionPointNavigateItems() throws OseeCoreException {
       List<ICoverageNavigateItem> data = new ArrayList<ICoverageNavigateItem>();
       List<IConfigurationElement> elements =
-            ExtensionPoints.getExtensionElements("org.eclipse.osee.coverage.CoverageNavigateItem",
-                  "ICoverageNavigateItem");
+         ExtensionPoints.getExtensionElements("org.eclipse.osee.coverage.CoverageNavigateItem", "ICoverageNavigateItem");
       for (IConfigurationElement element : elements) {
          String className = element.getAttribute("classname");
          String bundleName = element.getContributor().getName();
@@ -112,7 +111,7 @@ public class CoverageNavigateViewItems extends XNavigateViewItems {
                data.add((ICoverageNavigateItem) object);
             } catch (Exception ex) {
                throw new OseeArgumentException(String.format("Unable to Load: [%s - %s]" + ex.getLocalizedMessage(),
-                     bundleName, className));
+                  bundleName, className));
             }
          }
       }

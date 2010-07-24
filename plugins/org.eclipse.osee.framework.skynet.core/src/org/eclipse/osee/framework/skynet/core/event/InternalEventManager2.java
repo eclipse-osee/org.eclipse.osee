@@ -346,7 +346,7 @@ public class InternalEventManager2 {
                // Kick LOCAL
                boolean normalOperation = !enableRemoteEventLoopback;
                boolean loopbackTestEnabledAndRemoteEventReturned = enableRemoteEventLoopback && sender.isRemote();
-               if ((normalOperation && sender.isLocal()) || loopbackTestEnabledAndRemoteEventReturned) {
+               if (normalOperation && sender.isLocal() || loopbackTestEnabledAndRemoteEventReturned) {
                   processAccessControlEvent(sender, accessControlEvent);
                }
                // Kick REMOTE
@@ -397,7 +397,7 @@ public class InternalEventManager2 {
                // Kick LOCAL
                boolean normalOperation = !enableRemoteEventLoopback;
                boolean loopbackTestEnabledAndRemoteEventReturned = enableRemoteEventLoopback && sender.isRemote();
-               if ((normalOperation && sender.isLocal()) || loopbackTestEnabledAndRemoteEventReturned) {
+               if (normalOperation && sender.isLocal() || loopbackTestEnabledAndRemoteEventReturned) {
                   processEventArtifactsAndRelations(sender, artifactEvent);
                }
 
@@ -435,7 +435,7 @@ public class InternalEventManager2 {
                // Kick LOCAL
                boolean normalOperation = !enableRemoteEventLoopback;
                boolean loopbackTestEnabledAndRemoteEventReturned = enableRemoteEventLoopback && sender.isRemote();
-               if ((normalOperation && sender.isLocal() && branchEventType.isLocalEventType()) || loopbackTestEnabledAndRemoteEventReturned) {
+               if (normalOperation && sender.isLocal() && branchEventType.isLocalEventType() || loopbackTestEnabledAndRemoteEventReturned) {
                   processBranchEvent(sender, branchEvent);
                }
 

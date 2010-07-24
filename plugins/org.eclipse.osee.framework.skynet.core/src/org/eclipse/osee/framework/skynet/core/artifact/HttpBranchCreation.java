@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -21,7 +22,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.BranchCreationRequest;
 import org.eclipse.osee.framework.core.message.BranchCreationResponse;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
@@ -51,20 +51,20 @@ public class HttpBranchCreation {
       parameters.put("function", Function.CREATE_BRANCH.name());
 
       BranchCreationRequest request =
-            new BranchCreationRequest(branchType, sourceTransactionId, parentBranchId, branchGuid, branchName,
-                  getAssociatedArtifactId(associatedArtifact), getAuthorId(), creationComment,
-                  populateBaseTxFromAddressingQueryId, destinationBranchId);
+         new BranchCreationRequest(branchType, sourceTransactionId, parentBranchId, branchGuid, branchName,
+            getAssociatedArtifactId(associatedArtifact), getAuthorId(), creationComment,
+            populateBaseTxFromAddressingQueryId, destinationBranchId);
 
       BranchCreationResponse response =
-            HttpClientMessage.send(OseeServerContext.BRANCH_CONTEXT, parameters,
-                  CoreTranslatorId.BRANCH_CREATION_REQUEST, request, CoreTranslatorId.BRANCH_CREATION_RESPONSE);
+         HttpClientMessage.send(OseeServerContext.BRANCH_CONTEXT, parameters, CoreTranslatorId.BRANCH_CREATION_REQUEST,
+            request, CoreTranslatorId.BRANCH_CREATION_RESPONSE);
 
       Branch branch = BranchManager.getBranch(response.getBranchId());
       try {
-         OseeEventManager.kickBranchEvent(HttpBranchCreation.class, new BranchEvent(BranchEventType.Added,
-               branch.getGuid()), branch.getId());
+         OseeEventManager.kickBranchEvent(HttpBranchCreation.class,
+            new BranchEvent(BranchEventType.Added, branch.getGuid()), branch.getId());
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return branch;
    }

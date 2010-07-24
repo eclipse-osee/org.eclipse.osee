@@ -41,19 +41,19 @@ public class PropertySourceFactory {
          toReturn = new ConnectionPropertySource(CATEGORY_LINK, model);
       } else if (model instanceof AttributeDataType) {
          toReturn =
-               new CompositePropertySource(new DataTypeElementPropertySource(CATEGORY_ATTRIBUTE, model),
-                     new AttributePropertySource(CATEGORY_ATTRIBUTE + CATEGORY_DATA, model), new EnumPropertySource(
-                           CATEGORY_ENUM + CATEGORY_DATA, model));//, new NodePropertySource(CATEGORY_WIDGET, model));
+            new CompositePropertySource(new DataTypeElementPropertySource(CATEGORY_ATTRIBUTE, model),
+               new AttributePropertySource(CATEGORY_ATTRIBUTE + CATEGORY_DATA, model), new EnumPropertySource(
+                  CATEGORY_ENUM + CATEGORY_DATA, model));//, new NodePropertySource(CATEGORY_WIDGET, model));
       } else if (model instanceof RelationDataType) {
          toReturn =
-               new CompositePropertySource(new DataTypeElementPropertySource(CATEGORY_RELATION, model),
-                     new RelationPropertySource(CATEGORY_RELATION + CATEGORY_DATA, model), new NodePropertySource(
-                           CATEGORY_WIDGET, model));
+            new CompositePropertySource(new DataTypeElementPropertySource(CATEGORY_RELATION, model),
+               new RelationPropertySource(CATEGORY_RELATION + CATEGORY_DATA, model), new NodePropertySource(
+                  CATEGORY_WIDGET, model));
       } else if (model instanceof ArtifactDataType) {
          toReturn =
-               new CompositePropertySource(new DataTypeElementPropertySource(CATEGORY_ARTIFACT, model),
-                     new ArtifactPropertySource(CATEGORY_ARTIFACT + CATEGORY_DATA, model), new NodePropertySource(
-                           CATEGORY_WIDGET, model));
+            new CompositePropertySource(new DataTypeElementPropertySource(CATEGORY_ARTIFACT, model),
+               new ArtifactPropertySource(CATEGORY_ARTIFACT + CATEGORY_DATA, model), new NodePropertySource(
+                  CATEGORY_WIDGET, model));
       } else if (model instanceof NodeModel) {
          toReturn = new NodePropertySource(CATEGORY_WIDGET, model);
       }

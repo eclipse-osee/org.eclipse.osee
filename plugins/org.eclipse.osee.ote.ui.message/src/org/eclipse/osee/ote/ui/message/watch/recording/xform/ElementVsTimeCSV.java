@@ -91,7 +91,7 @@ public class ElementVsTimeCSV extends AbstractSaxHandler {
          }
       } else if ("Element".equals(localName)) {
          storage.add(new Storage(time, String.format("%s.%s", message, attributes.getValue("name")),
-               attributes.getValue("value")));
+            attributes.getValue("value")));
       }
    }
 
@@ -106,6 +106,7 @@ public class ElementVsTimeCSV extends AbstractSaxHandler {
          this.value = value;
       }
 
+      @Override
       public int compareTo(Storage o) {
          if (time > o.time) {
             return 1;

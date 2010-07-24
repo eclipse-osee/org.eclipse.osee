@@ -33,6 +33,7 @@ public class CustomizeDemoTableTestUtil extends XViewerCustomizeDialog {
    /**
     * for testing purposes - simulate customization view
     */
+   @Override
    public Control createDialogArea(Composite parent) {
       OseeLog.log(AtsPlugin.class, Level.INFO, "===> Simulating CustomizationView " + "\"...");
       return super.createDialogArea(parent);

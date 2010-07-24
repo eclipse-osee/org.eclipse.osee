@@ -19,9 +19,9 @@ import org.eclipse.osee.framework.ui.data.model.editor.model.ConnectionModel;
  */
 public class DeleteBendpointCommand extends Command {
 
-   private ConnectionModel link;
-   private Bendpoint bendpoint;
-   private int index;
+   private final ConnectionModel link;
+   private final Bendpoint bendpoint;
+   private final int index;
 
    public DeleteBendpointCommand(ConnectionModel link, int index) {
       super("Delete Bendpoint");
@@ -30,18 +30,22 @@ public class DeleteBendpointCommand extends Command {
       bendpoint = (Bendpoint) link.getBendpoints().get(index);
    }
 
+   @Override
    public boolean canExecute() {
       return index >= 0 && bendpoint != null && link != null;
    }
 
+   @Override
    public void execute() {
       redo();
    }
 
+   @Override
    public void redo() {
       link.getBendpoints().remove(index);
    }
 
+   @Override
    public void undo() {
       link.getBendpoints().add(index, bendpoint);
    }

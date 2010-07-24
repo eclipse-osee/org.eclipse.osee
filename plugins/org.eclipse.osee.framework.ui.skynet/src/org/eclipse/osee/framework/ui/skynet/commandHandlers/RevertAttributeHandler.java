@@ -50,9 +50,9 @@ public class RevertAttributeHandler extends AbstractHandler {
    public Object execute(ExecutionEvent event) throws ExecutionException {
       // This is serious stuff, make sure the user understands the impact.
       if (MessageDialog.openConfirm(
-            Displays.getActiveShell(),
-            "Confirm Revert of " + attributes.size() + " attributes.",
-            "All attribute changes selected will be reverted." + "\n\nTHIS IS IRREVERSIBLE" + "\n\nOSEE must be restarted after all reverting is finished to see the results")) {
+         Displays.getActiveShell(),
+         "Confirm Revert of " + attributes.size() + " attributes.",
+         "All attribute changes selected will be reverted." + "\n\nTHIS IS IRREVERSIBLE" + "\n\nOSEE must be restarted after all reverting is finished to see the results")) {
 
          Jobs.startJob(new RevertJob());
       }
@@ -84,7 +84,7 @@ public class RevertAttributeHandler extends AbstractHandler {
 
             toReturn = Status.OK_STATUS;
          } catch (Exception ex) {
-            toReturn = new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
+            toReturn = new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
          } finally {
             monitor.done();
          }
@@ -101,7 +101,7 @@ public class RevertAttributeHandler extends AbstractHandler {
       boolean isEnabled = false;
       try {
          ISelectionProvider selectionProvider =
-               AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
+            AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
 
          if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
             IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();

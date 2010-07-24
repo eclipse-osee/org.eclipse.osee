@@ -55,14 +55,18 @@ public class MatchTypeTest {
 
    public CoverageUnit getCoverageUnit(CoveragePackageBase coveragePackageBase, boolean folder) {
       for (CoverageUnit coverageUnit : coveragePackageBase.getCoverageUnits()) {
-         if (coverageUnit.isFolder() == folder) return coverageUnit;
+         if (coverageUnit.isFolder() == folder) {
+            return coverageUnit;
+         }
       }
       return null;
    }
 
    public CoverageItem getCoverageItem(CoverageUnit coverageUnit, String orderNum) {
       for (CoverageItem coverageItem : coverageUnit.getCoverageItems()) {
-         if (coverageItem.getOrderNumber().equals(orderNum)) return coverageItem;
+         if (coverageItem.getOrderNumber().equals(orderNum)) {
+            return coverageItem;
+         }
       }
       return null;
    }
@@ -84,56 +88,56 @@ public class MatchTypeTest {
       // Test Coverage Units
       Assert.assertEquals(MatchType.No_Match__Class, MatchType.getMatchType(packageCoverageUnit, importCoverageItem));
 
-      Assert.assertEquals(MatchType.Match__Name_And_Order_Num, MatchType.getMatchType(packageCoverageUnit,
-            importCoverageUnit));
+      Assert.assertEquals(MatchType.Match__Name_And_Order_Num,
+         MatchType.getMatchType(packageCoverageUnit, importCoverageUnit));
 
       packageCoverageUnit.setName("hello");
-      Assert.assertEquals(MatchType.No_Match__Name_Or_Order_Num, MatchType.getMatchType(packageCoverageUnit,
-            importCoverageUnit));
+      Assert.assertEquals(MatchType.No_Match__Name_Or_Order_Num,
+         MatchType.getMatchType(packageCoverageUnit, importCoverageUnit));
       packageCoverageUnit.setName("Top");
-      Assert.assertEquals(MatchType.Match__Name_And_Order_Num, MatchType.getMatchType(packageCoverageUnit,
-            importCoverageUnit));
+      Assert.assertEquals(MatchType.Match__Name_And_Order_Num,
+         MatchType.getMatchType(packageCoverageUnit, importCoverageUnit));
 
       packageCoverageUnit.setNamespace("org.that");
       Assert.assertEquals(MatchType.No_Match__Namespace,
-            MatchType.getMatchType(packageCoverageUnit, importCoverageUnit));
+         MatchType.getMatchType(packageCoverageUnit, importCoverageUnit));
       packageCoverageUnit.setNamespace("org.this");
-      Assert.assertEquals(MatchType.Match__Name_And_Order_Num, MatchType.getMatchType(packageCoverageUnit,
-            importCoverageUnit));
+      Assert.assertEquals(MatchType.Match__Name_And_Order_Num,
+         MatchType.getMatchType(packageCoverageUnit, importCoverageUnit));
 
       // Test coverage items
       CoverageItem packageCoverageItem = getCoverageItem(packageCoverageUnit, "1");
       Assert.assertEquals(MatchType.No_Match__Class, MatchType.getMatchType(packageCoverageUnit, packageCoverageItem));
 
-      Assert.assertEquals(MatchType.Match__Name_And_Order_Num, MatchType.getMatchType(packageCoverageItem,
-            importCoverageItem));
+      Assert.assertEquals(MatchType.Match__Name_And_Order_Num,
+         MatchType.getMatchType(packageCoverageItem, importCoverageItem));
 
       importCoverageItem.setName("this isn't the text");
-      Assert.assertEquals(MatchType.No_Match__Name_Or_Order_Num, MatchType.getMatchType(packageCoverageItem,
-            importCoverageItem));
+      Assert.assertEquals(MatchType.No_Match__Name_Or_Order_Num,
+         MatchType.getMatchType(packageCoverageItem, importCoverageItem));
       importCoverageItem.setName("this is the text");
-      Assert.assertEquals(MatchType.Match__Name_And_Order_Num, MatchType.getMatchType(packageCoverageItem,
-            importCoverageItem));
+      Assert.assertEquals(MatchType.Match__Name_And_Order_Num,
+         MatchType.getMatchType(packageCoverageItem, importCoverageItem));
 
       importCoverageItem.setOrderNumber("2");
-      Assert.assertEquals(MatchType.No_Match__Name_Or_Order_Num, MatchType.getMatchType(packageCoverageItem,
-            importCoverageItem));
+      Assert.assertEquals(MatchType.No_Match__Name_Or_Order_Num,
+         MatchType.getMatchType(packageCoverageItem, importCoverageItem));
       importCoverageItem.setOrderNumber("1");
-      Assert.assertEquals(MatchType.Match__Name_And_Order_Num, MatchType.getMatchType(packageCoverageItem,
-            importCoverageItem));
+      Assert.assertEquals(MatchType.Match__Name_And_Order_Num,
+         MatchType.getMatchType(packageCoverageItem, importCoverageItem));
 
       // Test folders
       CoverageUnit packageCoverageUnitFolder = getCoverageUnit(coveragePackage, true);
       CoverageUnit importCoverageUnitFolder = getCoverageUnit(coverageImport, true);
       Assert.assertTrue(packageCoverageUnitFolder.isFolder());
       Assert.assertTrue(importCoverageUnitFolder.isFolder());
-      Assert.assertEquals(MatchType.Match__Folder, MatchType.getMatchType(packageCoverageUnitFolder,
-            importCoverageUnitFolder));
+      Assert.assertEquals(MatchType.Match__Folder,
+         MatchType.getMatchType(packageCoverageUnitFolder, importCoverageUnitFolder));
 
       importCoverageUnitFolder.setFolder(false);
       Assert.assertFalse(importCoverageUnitFolder.isFolder());
-      Assert.assertEquals(MatchType.No_Match__Class, MatchType.getMatchType(packageCoverageUnitFolder,
-            importCoverageUnitFolder));
+      Assert.assertEquals(MatchType.No_Match__Class,
+         MatchType.getMatchType(packageCoverageUnitFolder, importCoverageUnitFolder));
 
    }
 
@@ -149,18 +153,18 @@ public class MatchTypeTest {
       CoverageItem importCoverageItem = getCoverageItem(importCoverageUnit, "1");
 
       // Items with same name/order with same parents match
-      Assert.assertEquals(MatchType.Match__Name_And_Order_Num, MatchType.getMatchType(packageCoverageItem,
-            importCoverageItem));
+      Assert.assertEquals(MatchType.Match__Name_And_Order_Num,
+         MatchType.getMatchType(packageCoverageItem, importCoverageItem));
 
       // Items with same name/order but parents with different names don't match
       packageCoverageUnit.setName("Not Same");
-      Assert.assertEquals(MatchType.No_Match__Name_Or_Order_Num, MatchType.getMatchType(packageCoverageItem,
-            importCoverageItem));
+      Assert.assertEquals(MatchType.No_Match__Name_Or_Order_Num,
+         MatchType.getMatchType(packageCoverageItem, importCoverageItem));
 
       // Reset
       packageCoverageUnit.setName(importCoverageUnit.getName());
-      Assert.assertEquals(MatchType.Match__Name_And_Order_Num, MatchType.getMatchType(packageCoverageItem,
-            importCoverageItem));
+      Assert.assertEquals(MatchType.Match__Name_And_Order_Num,
+         MatchType.getMatchType(packageCoverageItem, importCoverageItem));
 
    }
 }

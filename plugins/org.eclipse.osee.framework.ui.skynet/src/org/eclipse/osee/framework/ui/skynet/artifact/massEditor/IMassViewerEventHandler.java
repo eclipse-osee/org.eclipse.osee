@@ -5,7 +5,6 @@
  */
 package org.eclipse.osee.framework.ui.skynet.artifact.massEditor;
 
-
 /**
  * @author Donald G. Dunne
  */

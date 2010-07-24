@@ -33,6 +33,7 @@ public class XWidgetPopulateExample extends AbstractBlam {
       return "XWidget Populate Example";
    }
 
+   @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       //      AWorkbench.popup("Execute", "Blam is an example only.  Nothing done.");
       print("Test Output Line\n");
@@ -67,6 +68,7 @@ public class XWidgetPopulateExample extends AbstractBlam {
       " selected value may come from another dynamic source such as a database query.";
    }
 
+   @Override
    public Collection<String> getCategories() {
       return Arrays.asList("Util");
    }

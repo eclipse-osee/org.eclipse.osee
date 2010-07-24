@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
  * @author Ryan D. Brooks
  */
 public class Unique extends Rule {
+   @Override
    public ChangeSet computeChanges(CharSequence seq) {
       LinkedHashSet<Object> set = new LinkedHashSet<Object>();
       int start = 0;

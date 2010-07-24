@@ -18,7 +18,15 @@ import org.eclipse.osee.ote.ui.test.manager.models.ScriptModel.ScriptInteraction
 public class ScriptTask {
 
    public enum ScriptStatusEnum {
-      CANCELLED, CANCELLING, COMPLETE, IN_QUEUE, INCOMPATIBLE, INVALID, NOT_CONNECTED, READY, RUNNING
+      CANCELLED,
+      CANCELLING,
+      COMPLETE,
+      IN_QUEUE,
+      INCOMPATIBLE,
+      INVALID,
+      NOT_CONNECTED,
+      READY,
+      RUNNING
    }
 
    private GUID guid = null;
@@ -72,11 +80,11 @@ public class ScriptTask {
       if (scriptModel.getOutputModel().isAborted()) {
          return "ABORTED";
       } else if (passTP > 0 || failTP > 0) {
-            if (failTP == 0) {
-               return "PASS (" + passTP + ")";
-            } else {
-               return "FAIL (" + failTP + "/" + (passTP + failTP) + ")";
-            }
+         if (failTP == 0) {
+            return "PASS (" + passTP + ")";
+         } else {
+            return "FAIL (" + failTP + "/" + (passTP + failTP) + ")";
+         }
       } else if (status == ScriptStatusEnum.RUNNING) {
          return "(0/0)";
       }
@@ -103,9 +111,9 @@ public class ScriptTask {
    public ScriptStatusEnum getStatus() {
       return status;
    }
-   
+
    public Boolean getRunStatus() {
-	  return run;
+      return run;
    }
 
    /**
@@ -116,9 +124,9 @@ public class ScriptTask {
 
    }
 
-//   public void computeExists() {
-//      exists = scriptModel.getOutputModel().exists();
-//   }
+   //   public void computeExists() {
+   //      exists = scriptModel.getOutputModel().exists();
+   //   }
 
    //   public boolean isOutputReadonly() {
    //      return !scriptModel.getOutputModel().getFile().canWrite();
@@ -132,7 +140,7 @@ public class ScriptTask {
    }
 
    public boolean isRunnable() {
-      return (isRun());// && status != ScriptStatusEnum.INCOMPATIBLE
+      return isRun();// && status != ScriptStatusEnum.INCOMPATIBLE
       // && status != ScriptStatusEnum.INVALID);
    }
 

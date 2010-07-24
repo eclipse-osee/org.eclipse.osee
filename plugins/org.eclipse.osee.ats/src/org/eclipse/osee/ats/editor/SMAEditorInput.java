@@ -32,7 +32,7 @@ public class SMAEditorInput extends BaseArtifactEditorInput {
    @Override
    public boolean equals(Object obj) {
       if (obj instanceof SMAEditorInput) {
-         return (getArtifact() == ((SMAEditorInput) obj).getArtifact());
+         return getArtifact() == ((SMAEditorInput) obj).getArtifact();
       }
       return false;
    }

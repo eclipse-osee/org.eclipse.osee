@@ -47,6 +47,7 @@ public class RevertWizardPage extends WizardPage {
    private Button revertAllButton;
    private Combo artifactSelectionBox;
    private final Listener listener = new Listener() {
+      @Override
       public void handleEvent(Event event) {
          try {
             if (event.widget == revertAllButton) {

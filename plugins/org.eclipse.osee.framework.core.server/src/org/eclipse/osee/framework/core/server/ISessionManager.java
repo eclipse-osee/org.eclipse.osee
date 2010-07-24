@@ -20,20 +20,20 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  */
 public interface ISessionManager {
 
-	public OseeSessionGrant createSession(OseeCredential credential) throws OseeCoreException;
+   public OseeSessionGrant createSession(OseeCredential credential) throws OseeCoreException;
 
-	public void releaseSession(String sessionId) throws OseeCoreException;
+   public void releaseSession(String sessionId) throws OseeCoreException;
 
-	public void updateSessionActivity(String sessionId, String interactionName) throws OseeCoreException;
+   public void updateSessionActivity(String sessionId, String interactionName) throws OseeCoreException;
 
-	public ISession getSessionById(String sessionId) throws OseeCoreException;
+   public ISession getSessionById(String sessionId) throws OseeCoreException;
 
-	public Collection<ISession> getSessionByClientAddress(String clientAddress) throws OseeCoreException;
+   public Collection<ISession> getSessionByClientAddress(String clientAddress) throws OseeCoreException;
 
-	public Collection<ISession> getSessionsByUserId(String userId, boolean includeNonServerManagedSessions) throws OseeCoreException;
+   public Collection<ISession> getSessionsByUserId(String userId, boolean includeNonServerManagedSessions) throws OseeCoreException;
 
-	public Collection<ISession> getAllSessions(boolean includeNonServerManagedSessions) throws OseeCoreException;
+   public Collection<ISession> getAllSessions(boolean includeNonServerManagedSessions) throws OseeCoreException;
 
-	public void releaseSessionImmediate(String... sessionId) throws OseeCoreException;
+   public void releaseSessionImmediate(String... sessionId) throws OseeCoreException;
 
 }

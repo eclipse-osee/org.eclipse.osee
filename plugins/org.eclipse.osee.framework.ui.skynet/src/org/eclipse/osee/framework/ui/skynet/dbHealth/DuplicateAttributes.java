@@ -26,15 +26,15 @@ import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulatio
 public class DuplicateAttributes extends DatabaseHealthOperation {
 
    private static final String GET_DUPLICATE_ATTRIBUTES =
-         "SELECT attr1.art_id, aty1.NAME, attr1.attr_id as attr_id_1, attr2.attr_id as attr_id_2, attr1.value as value_1, attr2.value as value_2, attr1.uri as uri_1, attr2.uri as uri_2, attr1.gamma_id as gamma_id_1, attr2.gamma_id as gamma_id_2 FROM osee_attribute attr1, osee_attribute attr2, osee_attribute_type  aty1 WHERE attr1.art_id = attr2.art_id AND attr1.attr_id < attr2.attr_id AND attr1.attr_type_id = attr2.attr_type_id AND attr1.attr_type_id = aty1.attr_type_id AND aty1.max_occurence = 1  AND EXISTS (SELECT 'x' FROM osee_txs txs1 WHERE txs1.gamma_id = attr1.gamma_id AND tx_current = 1) AND EXISTS (SELECT 'x' FROM osee_txs txs2 WHERE txs2.gamma_id = attr2.gamma_id and tx_current = 1) order by aty1.NAME, attr1.art_id";
+      "SELECT attr1.art_id, aty1.NAME, attr1.attr_id as attr_id_1, attr2.attr_id as attr_id_2, attr1.value as value_1, attr2.value as value_2, attr1.uri as uri_1, attr2.uri as uri_2, attr1.gamma_id as gamma_id_1, attr2.gamma_id as gamma_id_2 FROM osee_attribute attr1, osee_attribute attr2, osee_attribute_type  aty1 WHERE attr1.art_id = attr2.art_id AND attr1.attr_id < attr2.attr_id AND attr1.attr_type_id = attr2.attr_type_id AND attr1.attr_type_id = aty1.attr_type_id AND aty1.max_occurence = 1  AND EXISTS (SELECT 'x' FROM osee_txs txs1 WHERE txs1.gamma_id = attr1.gamma_id AND tx_current = 1) AND EXISTS (SELECT 'x' FROM osee_txs txs2 WHERE txs2.gamma_id = attr2.gamma_id and tx_current = 1) order by aty1.NAME, attr1.art_id";
 
    private static final String BRANCHES_WITH_ONLY_ATTR =
-         "SELECT DISTINCT txs1.branch_id FROM osee_txs txs1 WHERE EXISTS (SELECT 'x' FROM osee_txs txs2, osee_attribute att2 WHERE txs1.transaction_id = txs2.transaction_id AND txs2.gamma_id = att2.gamma_id AND att2.attr_id = ?) %s (SELECT DISTINCT txs3.branch_id FROM osee_txs txs3 WHERE EXISTS (SELECT 'x' FROM osee_txs txs4, osee_attribute att4 WHERE txs3.transaction_id = txs4.transaction_id AND txs4.gamma_id = att4.gamma_id AND att4.attr_id = ?))";
+      "SELECT DISTINCT txs1.branch_id FROM osee_txs txs1 WHERE EXISTS (SELECT 'x' FROM osee_txs txs2, osee_attribute att2 WHERE txs1.transaction_id = txs2.transaction_id AND txs2.gamma_id = att2.gamma_id AND att2.attr_id = ?) %s (SELECT DISTINCT txs3.branch_id FROM osee_txs txs3 WHERE EXISTS (SELECT 'x' FROM osee_txs txs4, osee_attribute att4 WHERE txs3.transaction_id = txs4.transaction_id AND txs4.gamma_id = att4.gamma_id AND att4.attr_id = ?))";
 
    private static final String DELETE_ATTR = "DELETE FROM osee_attribute WHERE attr_id = ?";
 
    private static final String FILTER_DELTED =
-         "SELECT * FROM osee_txs txs, osee_attribute atr WHERE txs.tx_current = 1 AND txs.gamma_id = atr.gamma_id AND atr.attr_id = ?";
+      "SELECT * FROM osee_txs txs, osee_attribute atr WHERE txs.tx_current = 1 AND txs.gamma_id = atr.gamma_id AND atr.attr_id = ?";
 
    public DuplicateAttributes() {
       super("Duplicate Attribute Errors");
@@ -42,13 +42,13 @@ public class DuplicateAttributes extends DatabaseHealthOperation {
 
    private DuplicateAttributeData createAttributeData(IOseeStatement chStmt) throws OseeDataStoreException {
       AttributeData attributeData1 =
-            new AttributeData(chStmt.getInt("attr_id_1"), chStmt.getInt("gamma_id_1"), chStmt.getString("value_1"),
-                  chStmt.getString("uri_1"));
+         new AttributeData(chStmt.getInt("attr_id_1"), chStmt.getInt("gamma_id_1"), chStmt.getString("value_1"),
+            chStmt.getString("uri_1"));
       AttributeData attributeData2 =
-            new AttributeData(chStmt.getInt("attr_id_2"), chStmt.getInt("gamma_id_2"), chStmt.getString("value_2"),
-                  chStmt.getString("uri_2"));
+         new AttributeData(chStmt.getInt("attr_id_2"), chStmt.getInt("gamma_id_2"), chStmt.getString("value_2"),
+            chStmt.getString("uri_2"));
       return new DuplicateAttributeData(chStmt.getInt("art_id"), chStmt.getString("name"), attributeData1,
-            attributeData2);
+         attributeData2);
    }
 
    private boolean isAttributeIdSetToCurrent(int attrId) throws OseeDataStoreException {
@@ -76,11 +76,11 @@ public class DuplicateAttributes extends DatabaseHealthOperation {
             checkForCancelledStatus(monitor);
 
             boolean isCurrentAtLeastOnceForAttrId1 =
-                  isAttributeIdSetToCurrent(duplicateAttribute.getAttributeData1().getAttrId());
+               isAttributeIdSetToCurrent(duplicateAttribute.getAttributeData1().getAttrId());
             checkForCancelledStatus(monitor);
 
             boolean isCurrentAtLeastOnceForAttrId2 =
-                  isAttributeIdSetToCurrent(duplicateAttribute.getAttributeData2().getAttrId());
+               isAttributeIdSetToCurrent(duplicateAttribute.getAttributeData2().getAttrId());
             checkForCancelledStatus(monitor);
 
             if (isCurrentAtLeastOnceForAttrId1 && isCurrentAtLeastOnceForAttrId2) {
@@ -104,8 +104,8 @@ public class DuplicateAttributes extends DatabaseHealthOperation {
          StringBuffer sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
          try {
             String[] columnHeaders =
-                  new String[] {"Art Id", "Attr id 1", "Attr id 2", "Name", "Value 1", "Value 2", "URI 1", "URI 2",
-                        "Gamma ID 1", "Gamma Id 2", "ID to Delete"};
+               new String[] {"Art Id", "Attr id 1", "Attr id 2", "Name", "Value 1", "Value 2", "URI 1", "URI 2",
+                  "Gamma ID 1", "Gamma Id 2", "ID to Delete"};
             sbFull.append(AHTML.beginMultiColumnTable(100, 1));
             sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
             sbFull.append(AHTML.addRowSpanMultiColumnTable("Attributes with the same values", columnHeaders.length));
@@ -159,10 +159,10 @@ public class DuplicateAttributes extends DatabaseHealthOperation {
          AttributeData attributeData1 = duplicate.getAttributeData1();
          AttributeData attributeData2 = duplicate.getAttributeData2();
          builder.append(AHTML.addRowMultiColumnTable(new String[] {String.valueOf(duplicate.getArtId()),
-               String.valueOf(attributeData1.getAttrId()), String.valueOf(attributeData2.getAttrId()),
-               duplicate.getName(), attributeData1.getValue(), attributeData2.getValue(), attributeData1.getUri(),
-               attributeData2.getUri(), String.valueOf(attributeData1.getGamma()),
-               String.valueOf(attributeData2.getGamma()), fixMessage}));
+            String.valueOf(attributeData1.getAttrId()), String.valueOf(attributeData2.getAttrId()),
+            duplicate.getName(), attributeData1.getValue(), attributeData2.getValue(), attributeData1.getUri(),
+            attributeData2.getUri(), String.valueOf(attributeData1.getGamma()),
+            String.valueOf(attributeData2.getGamma()), fixMessage}));
          count++;
       }
       return count;
@@ -173,7 +173,7 @@ public class DuplicateAttributes extends DatabaseHealthOperation {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(String.format(BRANCHES_WITH_ONLY_ATTR, chStmt.getComplementSql()),
-               attributeData.getAttrId(), otherAttrId);
+            attributeData.getAttrId(), otherAttrId);
          while (chStmt.next()) {
             attributeData.addBranchId(chStmt.getInt("branch_id"));
          }

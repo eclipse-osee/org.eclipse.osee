@@ -13,8 +13,6 @@ package org.eclipse.osee.ote.core.log.record;
 import java.util.logging.Level;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 
-
-
 /**
  * @author Ryan D. Brooks
  */
@@ -23,9 +21,9 @@ public class WarningRecord extends TestRecord {
    /**
 	 * 
 	 */
-	private static final long serialVersionUID = -3124953320400273382L;
+   private static final long serialVersionUID = -3124953320400273382L;
 
-/**
+   /**
     * WarningRecord Constructor. Sets up a Warning log message.
     * 
     * @param source The object requesting the logging.

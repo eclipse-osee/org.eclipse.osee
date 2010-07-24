@@ -28,18 +28,21 @@ public class SMAEditorContributor extends MultiPageEditorActionBarContributor {
    }
 
    protected IAction getAction(ITextEditor editor, String actionID) {
-      return (editor == null ? null : editor.getAction(actionID));
+      return editor == null ? null : editor.getAction(actionID);
    }
 
+   @Override
    public void setActivePage(IEditorPart part) {
-      if (activeEditorPart == part) return;
+      if (activeEditorPart == part) {
+         return;
+      }
 
       activeEditorPart = part;
 
       IActionBars actionBars = getActionBars();
       if (actionBars != null) {
 
-         SMAEditor editor = (part instanceof SMAEditor) ? (SMAEditor) part : null;
+         SMAEditor editor = part instanceof SMAEditor ? (SMAEditor) part : null;
 
          if (editor != null) {
             actionBars.setGlobalActionHandler(ActionFactory.PRINT.getId(), editor.getPrintAction());

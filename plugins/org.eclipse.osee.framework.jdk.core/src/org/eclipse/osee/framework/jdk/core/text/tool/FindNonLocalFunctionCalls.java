@@ -26,8 +26,8 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 public class FindNonLocalFunctionCalls {
    public static final Pattern functionCallPattern = Pattern.compile("\\W(\\w+)\\s*\\([^;{]*?\\)\\s*;");
    public static final Pattern functionDefPattern = Pattern.compile("\\W(\\w+)\\s*\\([^;{]*?\\)\\s*\\{");
-   private LinkedHashSet<String> set;
-   private File[] files;
+   private final LinkedHashSet<String> set;
+   private final File[] files;
 
    public FindNonLocalFunctionCalls(File[] files) {
       this.files = files;

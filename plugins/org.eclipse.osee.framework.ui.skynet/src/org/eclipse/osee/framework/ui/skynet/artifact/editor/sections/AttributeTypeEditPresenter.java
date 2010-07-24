@@ -26,7 +26,8 @@ public class AttributeTypeEditPresenter {
    public static interface Display {
 
       public static enum OperationType {
-         ADD_ITEM, REMOVE_ITEM,
+         ADD_ITEM,
+         REMOVE_ITEM,
       }
 
       void showInformation(String title, String message);
@@ -61,7 +62,7 @@ public class AttributeTypeEditPresenter {
       IAttributeType[] types = AttributeTypeUtil.getEmptyTypes(artifact);
       List<IAttributeType> input = new ArrayList<IAttributeType>(Arrays.asList(types));
       Collection<? extends IAttributeType> selectedItems =
-            selectItems(OperationType.ADD_ITEM, "Add Attribute Types", "add", input);
+         selectItems(OperationType.ADD_ITEM, "Add Attribute Types", "add", input);
       if (!selectedItems.isEmpty()) {
          handleDirtyEditor();
 
@@ -82,7 +83,7 @@ public class AttributeTypeEditPresenter {
          }
       }
       Collection<? extends IAttributeType> selectedItems =
-            selectItems(OperationType.REMOVE_ITEM, "Delete Attribute Types", "remove", input);
+         selectItems(OperationType.REMOVE_ITEM, "Delete Attribute Types", "remove", input);
       if (!selectedItems.isEmpty()) {
          handleDirtyEditor();
          for (IAttributeType attributeType : selectedItems) {

@@ -11,7 +11,6 @@
 package org.eclipse.osee.ote.message.elements;
 
 import java.util.Collection;
-
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.data.HeaderData;
@@ -112,7 +111,9 @@ public class IntegerElement extends NumericElement<Integer> {
    public void checkPulse(ITestAccessor accessor, Integer value) throws InterruptedException {
 
       int nonPulsedValue = 0;
-      if (value == 0) nonPulsedValue = 1;
+      if (value == 0) {
+         nonPulsedValue = 1;
+      }
 
       checkPulse(accessor, value, nonPulsedValue);
 
@@ -124,6 +125,7 @@ public class IntegerElement extends NumericElement<Integer> {
     * @param accessor
     * @param value The value to set.
     */
+   @Override
    public void set(ITestEnvironmentAccessor accessor, Integer value) {
       super.set(accessor, value);
    }
@@ -159,17 +161,17 @@ public class IntegerElement extends NumericElement<Integer> {
     * @param accessor
     * @param minValue The minimum value of the range.
     * @param minInclusive If the minumum value of the range is inclusive. If true the actual value must not < and not =
-    *           to the range value.
+    * to the range value.
     * @param maxValue The maximum value of the range.
     * @param maxInclusive If the maximum value of the range is inclusive. If true the actual value must not > and not =
-    *           to the range value.
+    * to the range value.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
     * @throws InterruptedException
     */
    public int waitForRange(ITestEnvironmentAccessor accessor, int minValue, boolean minInclusive, int maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
-      return (Integer) super.waitForRange(accessor, Integer.valueOf(minValue), minInclusive, Integer.valueOf(maxValue),
-            maxInclusive, milliseconds);
+      return super.waitForRange(accessor, Integer.valueOf(minValue), minInclusive, Integer.valueOf(maxValue),
+         maxInclusive, milliseconds);
    }
 
    /**
@@ -192,17 +194,17 @@ public class IntegerElement extends NumericElement<Integer> {
     * @param accessor
     * @param minValue The minimum value of the range.
     * @param minInclusive If the minumum value of the range is inclusive. If true the actual value must not < and not =
-    *           to the range value.
+    * to the range value.
     * @param maxValue The maximum value of the range.
     * @param maxInclusive If the maximum value of the range is inclusive. If true the actual value must not > and not =
-    *           to the range value.
+    * to the range value.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
     * @throws InterruptedException
     */
    public int waitForNotRange(ITestEnvironmentAccessor accessor, int minValue, boolean minInclusive, int maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
-      return (Integer) super.waitForNotRange(accessor, Integer.valueOf(minValue), minInclusive, Integer.valueOf(maxValue),
-            maxInclusive, milliseconds);
+      return super.waitForNotRange(accessor, Integer.valueOf(minValue), minInclusive, Integer.valueOf(maxValue),
+         maxInclusive, milliseconds);
    }
 
    @Override
@@ -212,14 +214,14 @@ public class IntegerElement extends NumericElement<Integer> {
 
    @Override
    protected Element getNonMappingElement() {
-      return (NonMappingIntegerElement) new NonMappingIntegerElement(this);
+      return new NonMappingIntegerElement(this);
    }
 
    @Override
    public Integer elementMask(Integer value) {
       return removeSign(value);
    }
-   
+
    public static void main(String[] args) {
       final HeaderData hd = new HeaderData("test_data", new MemoryResource(new byte[64], 2, 64));
       IntegerElement e1 = new IntegerElement(null, "e1", hd, 0, 0, 31);
@@ -236,6 +238,5 @@ public class IntegerElement extends NumericElement<Integer> {
    public long getNumericBitValue() {
       return getValue() & 0xFFFFFFFFL;
    }
-   
-   
+
 }

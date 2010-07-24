@@ -26,15 +26,15 @@ import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
  * @author Roberto E. Escobar
  */
 public class HighLevelSummary implements ITestRunReport {
-   private static final String[] HEADER =
-         new String[] {Requirements.PARTITION, Requirements.SUBSYSTEM, "ScriptCount", "RunTime Issues",
-               "Scripts with Failures", "Scripts Pass"};
-   private Map<String, CollectedData> dataMap;
+   private static final String[] HEADER = new String[] {Requirements.PARTITION, Requirements.SUBSYSTEM, "ScriptCount",
+      "RunTime Issues", "Scripts with Failures", "Scripts Pass"};
+   private final Map<String, CollectedData> dataMap;
 
    public HighLevelSummary() {
       this.dataMap = new HashMap<String, CollectedData>();
    }
 
+   @Override
    public void gatherData(IProgressMonitor monitor, TestRunOperator... items) throws Exception {
       clear();
       for (int index = 0; index < items.length; index++) {
@@ -59,6 +59,7 @@ public class HighLevelSummary implements ITestRunReport {
       }
    }
 
+   @Override
    public String[][] getBody() {
       int numRows = dataMap.size();
       List<String> keys = new ArrayList<String>(dataMap.keySet());
@@ -82,10 +83,12 @@ public class HighLevelSummary implements ITestRunReport {
       return values.toArray(new String[values.size()]);
    }
 
+   @Override
    public String[] getHeader() {
       return HEADER;
    }
 
+   @Override
    public String getTitle() {
       return "High Level Test Run Summary";
    }
@@ -110,8 +113,8 @@ public class HighLevelSummary implements ITestRunReport {
    }
 
    private final class CollectedData {
-      private String partition;
-      private String subsytem;
+      private final String partition;
+      private final String subsytem;
       private int scriptCount;
       private int runTimeIssues;
       private int scriptWithFailures;
@@ -167,6 +170,7 @@ public class HighLevelSummary implements ITestRunReport {
       }
    }
 
+   @Override
    public String getDescription() {
       return "Generates a summary report of all test runs.";
    }

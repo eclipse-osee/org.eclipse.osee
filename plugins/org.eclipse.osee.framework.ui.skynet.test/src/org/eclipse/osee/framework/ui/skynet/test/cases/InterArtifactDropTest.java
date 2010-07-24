@@ -54,24 +54,24 @@ public class InterArtifactDropTest {
       String updateTestSourceName = "updateTestSourceBranch" + GUID.create();
 
       sourceBranch =
-            BranchManager.createWorkingBranch(CoreBranches.SYSTEM_ROOT, sourceBranchName,
-                  UserManager.getUser(SystemUser.OseeSystem));
+         BranchManager.createWorkingBranch(CoreBranches.SYSTEM_ROOT, sourceBranchName,
+            UserManager.getUser(SystemUser.OseeSystem));
       sleep(5000);
 
       sourceArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, sourceBranch);
       sourceArtifact.persist();
 
       destinationBranch =
-            BranchManager.createWorkingBranch(CoreBranches.SYSTEM_ROOT, destinationBranchName,
-                  UserManager.getUser(SystemUser.OseeSystem));
+         BranchManager.createWorkingBranch(CoreBranches.SYSTEM_ROOT, destinationBranchName,
+            UserManager.getUser(SystemUser.OseeSystem));
 
       updateTestParentSourceBranch =
-            BranchManager.createWorkingBranch(sourceBranch, updateSourceBranchName,
-                  UserManager.getUser(SystemUser.OseeSystem));
+         BranchManager.createWorkingBranch(sourceBranch, updateSourceBranchName,
+            UserManager.getUser(SystemUser.OseeSystem));
 
       updateTestSourceBranch =
-            BranchManager.createWorkingBranch(updateTestParentSourceBranch, updateTestSourceName,
-                  UserManager.getUser(SystemUser.OseeSystem));
+         BranchManager.createWorkingBranch(updateTestParentSourceBranch, updateTestSourceName,
+            UserManager.getUser(SystemUser.OseeSystem));
 
       sleep(5000);
    }
@@ -83,8 +83,7 @@ public class InterArtifactDropTest {
 
       InterArtifactExplorerDropHandler dropHandler = new InterArtifactExplorerDropHandler();
       dropHandler.dropArtifactIntoDifferentBranch(
-            OseeSystemArtifacts.getDefaultHierarchyRootArtifact(destinationBranch), new Artifact[] {sourceArtifact},
-            false);
+         OseeSystemArtifacts.getDefaultHierarchyRootArtifact(destinationBranch), new Artifact[] {sourceArtifact}, false);
 
       sleep(5000);
       //Acquire the introduced artifact
@@ -108,7 +107,7 @@ public class InterArtifactDropTest {
       sleep(5000);
       //Acquire the updated artifact
       Artifact destArtifact =
-            ArtifactQuery.getArtifactFromId(updateTestArtifact.getArtId(), sourceArtifact.getBranch());
+         ArtifactQuery.getArtifactFromId(updateTestArtifact.getArtId(), sourceArtifact.getBranch());
       destArtifact.reloadAttributesAndRelations();
       assertTrue(updateTestArtifact.getName().equals(destArtifact.getName()));
    }

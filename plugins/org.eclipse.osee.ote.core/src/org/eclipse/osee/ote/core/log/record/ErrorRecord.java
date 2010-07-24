@@ -25,53 +25,54 @@ import org.w3c.dom.Element;
 public class ErrorRecord extends TestRecord {
 
    private static final long serialVersionUID = -9083013356154141017L;
-   private String executionResult;
-   private String executionMessage;
-   private boolean printTimeStamp;
+   private final String executionResult;
+   private final String executionMessage;
+   private final boolean printTimeStamp;
    private long timeStamp;
-   
-   public ErrorRecord(ITestEnvironmentAccessor source, Level level, 
-         String executionResult, Throwable throwable, boolean timeStamp) {
+
+   public ErrorRecord(ITestEnvironmentAccessor source, Level level, String executionResult, Throwable throwable, boolean timeStamp) {
       super(source, level, executionResult, false);
       this.executionResult = executionResult;
       this.executionMessage = getThrowbableMessage(throwable);
-      
+
       this.printTimeStamp = timeStamp;
-      
+
       if (timeStamp) {
-         if(source !=null) {
-            if(source instanceof TestEnvironment){
+         if (source != null) {
+            if (source instanceof TestEnvironment) {
                TestEnvironment env = (TestEnvironment) source;
-               if(env.getTestScript() != null){
-            	   this.timeStamp = System.currentTimeMillis() - (env.getTestScript().getStartTime().getTime());
+               if (env.getTestScript() != null) {
+                  this.timeStamp = System.currentTimeMillis() - env.getTestScript().getStartTime().getTime();
                } else {
-            	   this.timeStamp = (new Date()).getTime();
+                  this.timeStamp = new Date().getTime();
                }
-            	   
+
             }
          } else {
-            this.timeStamp = (new Date()).getTime();
-            try{ throw new Exception("source was null");}
-            catch(Exception e){
-            	OseeLog.log(TestEnvironment.class, Level.SEVERE, e);
+            this.timeStamp = new Date().getTime();
+            try {
+               throw new Exception("source was null");
+            } catch (Exception e) {
+               OseeLog.log(TestEnvironment.class, Level.SEVERE, e);
             }
          }
       }
-      
+
    }
-   
-   private String getThrowbableMessage(Throwable throwable){
+
+   private String getThrowbableMessage(Throwable throwable) {
       StringWriter sw = new StringWriter();
       PrintWriter pw = new PrintWriter(sw);
       pw.println("Exception " + throwable.getClass().getName() + ": " + throwable.getMessage());
       throwable.printStackTrace(new PrintWriter(sw));
-	  return sw.toString();
+      return sw.toString();
    }
-   
-   public Element toXml(Document doc){
+
+   @Override
+   public Element toXml(Document doc) {
       Element root = doc.createElement("ExecutionStatus");
 
-      if(this.printTimeStamp) {        
+      if (this.printTimeStamp) {
          root.appendChild(Jaxp.createElement(doc, "Time", Long.toString(timeStamp)));
       }
       root.appendChild(Jaxp.createElement(doc, "ExecutionResult", XmlSupport.sanitizeXMLContent(executionResult)));

@@ -18,10 +18,10 @@ import org.w3c.dom.Element;
 public class ConfigFileHandler {
 
    /**
-    * Writes the XML in sourceDoc to the test manager config file specified. If the destination file
-    * already exists, and contains the XML specified for the sourceDoc's root node, it will be
-    * replaced, otherwise it will be appended to the file. If the file does not exist, a new file
-    * will be created only containing the sourceDoc underneath a root TestManagerConfig node.
+    * Writes the XML in sourceDoc to the test manager config file specified. If the destination file already exists, and
+    * contains the XML specified for the sourceDoc's root node, it will be replaced, otherwise it will be appended to
+    * the file. If the file does not exist, a new file will be created only containing the sourceDoc underneath a root
+    * TestManagerConfig node.
     * 
     * @param sourceDoc
     * @param fileString
@@ -32,8 +32,7 @@ public class ConfigFileHandler {
       File file = new File(fileString);
       if (file.exists()) {
          doc = writeSectionToFile(sourceDoc, file);
-      }
-      else {
+      } else {
          doc = Jaxp.newDocument();
          Element root = doc.createElement("TestManagerConfig");
          root.appendChild(doc.importNode(sourceDoc.getDocumentElement(), true));
@@ -51,8 +50,7 @@ public class ConfigFileHandler {
       if (configNode != null) {
          root.removeChild(configNode);
          root.appendChild(doc.importNode(nodeToAdd, true));
-      }
-      else {
+      } else {
          root.appendChild(doc.importNode(nodeToAdd, true));
       }
       return doc;

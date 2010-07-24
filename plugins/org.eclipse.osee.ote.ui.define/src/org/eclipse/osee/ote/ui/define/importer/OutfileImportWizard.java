@@ -40,6 +40,7 @@ public class OutfileImportWizard extends Wizard implements IImportWizard {
       return mainPage.finish();
    }
 
+   @Override
    public void init(IWorkbench workbench, IStructuredSelection selection) {
       this.mainPage = new OutfileImportPage(selection);
       mainPage.setTitle(TITLE);

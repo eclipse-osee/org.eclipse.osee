@@ -146,6 +146,7 @@ public class MergeXWidget extends XWidget implements IAdaptable {
       mergeXViewer.setContentProvider(new XMergeContentProvider());
       mergeXViewer.setLabelProvider(new XMergeLabelProvider(mergeXViewer));
       mergeXViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+         @Override
          public void selectionChanged(SelectionChangedEvent event) {
             refreshActionEnablement();
          }
@@ -264,6 +265,7 @@ public class MergeXWidget extends XWidget implements IAdaptable {
 
    public void loadTable() {
       Displays.ensureInDisplayThread(new Runnable() {
+         @Override
          public void run() {
             refresh();
          }
@@ -408,6 +410,7 @@ public class MergeXWidget extends XWidget implements IAdaptable {
                }
 
                Displays.ensureInDisplayThread(new Runnable() {
+                  @Override
                   public void run() {
                      if (showConflicts) {
                         if (conflicts.length == 0) {
@@ -678,8 +681,8 @@ public class MergeXWidget extends XWidget implements IAdaptable {
                   }
                   if (selections.size() > 0) {
                      ListSelectionDialogNoSave dialog =
-                        new ListSelectionDialogNoSave(selections.toArray(),
-                           Displays.getActiveShell().getShell(), "Apply Prior Merge Resolution", null,
+                        new ListSelectionDialogNoSave(selections.toArray(), Displays.getActiveShell().getShell(),
+                           "Apply Prior Merge Resolution", null,
                            "Select the destination branch that the previous commit was appplied to", 2, new String[] {
                               "Apply", "Cancel"}, 1);
                      if (dialog.open() == 0) {
@@ -688,9 +691,8 @@ public class MergeXWidget extends XWidget implements IAdaptable {
                      }
                   }
                   if (selections.isEmpty()) {
-                     new MessageDialog(Displays.getActiveShell().getShell(),
-                        "Apply Prior Merge Resolution", null, "This Source Branch has had No Prior Merges", 2,
-                        new String[] {"OK"}, 1).open();
+                     new MessageDialog(Displays.getActiveShell().getShell(), "Apply Prior Merge Resolution", null,
+                        "This Source Branch has had No Prior Merges", 2, new String[] {"OK"}, 1).open();
                   }
                } catch (OseeCoreException ex) {
                   OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);

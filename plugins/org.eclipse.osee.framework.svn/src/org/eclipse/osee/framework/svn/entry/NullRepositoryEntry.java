@@ -13,26 +13,32 @@ package org.eclipse.osee.framework.svn.entry;
 
 public class NullRepositoryEntry implements IRepositoryEntry {
 
+   @Override
    public String getVersion() {
       return "-";
    }
 
+   @Override
    public String getURL() {
       return "-";
    }
 
+   @Override
    public String getVersionControlSystem() {
       return "-";
    }
 
+   @Override
    public String getModifiedFlag() {
       return "-";
    }
 
+   @Override
    public String getLastAuthor() {
       return "-";
    }
 
+   @Override
    public String getLastModificationDate() {
       return "-";
    }

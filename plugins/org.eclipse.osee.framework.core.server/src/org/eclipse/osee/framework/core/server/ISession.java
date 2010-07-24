@@ -17,29 +17,29 @@ import org.eclipse.osee.framework.core.enums.StorageState;
  * @author Roberto E. Escobar
  */
 public interface ISession {
-	String getUserId();
+   String getUserId();
 
-	Date getLastInteractionDate();
+   Date getLastInteractionDate();
 
-	String getManagedByServerId();
+   String getManagedByServerId();
 
-	String getLastInteractionDetails();
+   String getLastInteractionDetails();
 
-	String getClientMachineName();
+   String getClientMachineName();
 
-	String getClientVersion();
+   String getClientVersion();
 
-	String getClientAddress();
+   String getClientAddress();
 
-	Date getCreationDate();
+   Date getCreationDate();
 
-	int getClientPort();
+   int getClientPort();
 
-	void setLastInteractionDetails(String string);
+   void setLastInteractionDetails(String string);
 
-	void setLastInteractionDate(Date date);
+   void setLastInteractionDate(Date date);
 
-	String getGuid();
+   String getGuid();
 
-	StorageState getStorageState();
+   StorageState getStorageState();
 }

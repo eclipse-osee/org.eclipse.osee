@@ -17,33 +17,33 @@ import org.eclipse.osee.framework.messaging.test.msg.TestMessage;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public class BasicListener extends OseeMessagingListener {
 
-   private int id;
+   private final int id;
    private boolean received = false;
-   
+
    public BasicListener(int id) {
       this.id = id;
    }
-   
+
    @Override
    public Class<?> getClazz() {
       return TestMessage.class;
    }
-   
+
    @Override
    public void process(Object message, Map<String, Object> headers, ReplyConnection replyConnection) {
       System.out.println(message + "  -  " + id);
       received = true;
    }
 
-   public boolean isReceived(){
+   public boolean isReceived() {
       return received;
    }
-   
-   public String toString(){
+
+   @Override
+   public String toString() {
       return "BasicListener " + id;
    }
 }

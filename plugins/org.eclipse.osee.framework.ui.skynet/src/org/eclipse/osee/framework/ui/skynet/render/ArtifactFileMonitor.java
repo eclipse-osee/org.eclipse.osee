@@ -73,10 +73,10 @@ final class ArtifactFileMonitor {
                @Override
                public boolean preShutdown(IWorkbench workbench, boolean forced) {
                   boolean wasConfirmed =
-                        MessageDialog.openConfirm(
-                              PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                              "OSEE Edit",
-                              "OSEE artifacts were opened for edit. Please save all external work before continuing. Click OK to continue shutdown process or Cancel to abort.");
+                     MessageDialog.openConfirm(
+                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                        "OSEE Edit",
+                        "OSEE artifacts were opened for edit. Please save all external work before continuing. Click OK to continue shutdown process or Cancel to abort.");
                   return forced || wasConfirmed;
                }
             });

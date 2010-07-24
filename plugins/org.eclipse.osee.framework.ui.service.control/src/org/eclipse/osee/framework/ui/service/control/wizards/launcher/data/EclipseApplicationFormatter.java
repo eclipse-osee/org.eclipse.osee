@@ -24,9 +24,8 @@ public class EclipseApplicationFormatter extends ExecutionCommandFormatter {
    // "#ECLIPSE_INSTALL_HOME#" + (Lib.isWindows() ? "\\eclipse.exe" : "/eclipse"),
    // "org.eclipse.core.launcher.Main", "-application", "#APPLICATION_NAME#", "#APPLICATION_ARGS#"},
    // EXEC_SEPARATOR);
-   private final String baseExecString =
-         StringUtils.join(new String[] {"#ECLIPSE_INSTALL_HOME#", "-nosplash", "-application", "#APPLICATION_NAME#",
-               "#APPLICATION_ARGS#", "-vmargs", "#JVM_ARGS#"}, ServiceItem.EXEC_SEPARATOR);
+   private final String baseExecString = StringUtils.join(new String[] {"#ECLIPSE_INSTALL_HOME#", "-nosplash",
+      "-application", "#APPLICATION_NAME#", "#APPLICATION_ARGS#", "-vmargs", "#JVM_ARGS#"}, ServiceItem.EXEC_SEPARATOR);
 
    private final String applicationName;
 

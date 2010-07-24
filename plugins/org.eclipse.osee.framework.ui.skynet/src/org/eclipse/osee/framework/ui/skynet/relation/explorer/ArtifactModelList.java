@@ -40,13 +40,15 @@ public class ArtifactModelList {
     * Add a new task to the collection of tasks
     */
    public void addArtifact(ArtifactModel artifact, boolean top) {
-      if (top)
+      if (top) {
          artifacts.add(0, artifact);
-      else
+      } else {
          artifacts.add(artifacts.size(), artifact);
+      }
       Iterator<IArtifactListViewer> iterator = changeListeners.iterator();
-      while (iterator.hasNext())
+      while (iterator.hasNext()) {
          iterator.next().addArtifact(artifact);
+      }
    }
 
    /**
@@ -55,10 +57,12 @@ public class ArtifactModelList {
    public void removeArtifact(ArtifactModel artifact) {
       artifacts.remove(artifact);
       Iterator<IArtifactListViewer> iterator = changeListeners.iterator();
-      while (iterator.hasNext())
+      while (iterator.hasNext()) {
          iterator.next().removeArtifact(artifact);
+      }
    }
 
+   @Override
    public String toString() {
       String str = "";
       for (int i = 0; i < artifacts.size(); i++) {
@@ -73,8 +77,9 @@ public class ArtifactModelList {
     */
    public void artifactChanged(ArtifactModel artifact) {
       Iterator<IArtifactListViewer> iterator = changeListeners.iterator();
-      while (iterator.hasNext())
+      while (iterator.hasNext()) {
          iterator.next().updateArtifact(artifact);
+      }
    }
 
    /**

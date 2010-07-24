@@ -56,7 +56,7 @@ public class PostDbUserCleanUp implements IDbInitializationTask {
       } else {
          // This is an initialization for base import -- users are not available
          OseeLog.log(DatabaseInitActivator.class, Level.INFO,
-               "Post Initialization User Clean-up - Base Initialization - unable to set tx author id");
+            "Post Initialization User Clean-up - Base Initialization - unable to set tx author id");
       }
 
       if (authorArtId > 0) {

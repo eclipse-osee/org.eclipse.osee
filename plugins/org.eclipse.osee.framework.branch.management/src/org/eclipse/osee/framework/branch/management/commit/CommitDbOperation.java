@@ -49,19 +49,19 @@ public class CommitDbOperation extends AbstractDbTxOperation {
    private static final String COMMIT_COMMENT = "Commit Branch ";
 
    private static final String INSERT_COMMIT_TRANSACTION =
-         "insert into osee_tx_details(tx_type, branch_id, transaction_id, osee_comment, time, author, commit_art_id) values(?,?,?,?,?,?,?)";
+      "insert into osee_tx_details(tx_type, branch_id, transaction_id, osee_comment, time, author, commit_art_id) values(?,?,?,?,?,?,?)";
 
    private static final String INSERT_COMMIT_ADDRESSING =
-         "insert into osee_txs(transaction_id, branch_id, gamma_id, mod_type, tx_current) values(?,?,?,?,?)";
+      "insert into osee_txs(transaction_id, branch_id, gamma_id, mod_type, tx_current) values(?,?,?,?,?)";
 
    private static final String UPDATE_CONFLICT_STATUS =
-         "update osee_conflict SET status = ? WHERE status = ? AND merge_branch_id = ?";
+      "update osee_conflict SET status = ? WHERE status = ? AND merge_branch_id = ?";
 
    private static final String UPDATE_MERGE_COMMIT_TX =
-         "update osee_merge set commit_transaction_id = ? Where source_branch_id = ? and dest_branch_id = ?";
+      "update osee_merge set commit_transaction_id = ? Where source_branch_id = ? and dest_branch_id = ?";
 
    private static final String SELECT_SOURCE_BRANCH_STATE =
-         "select (1) from osee_branch where branch_id=? and branch_state=?";
+      "select (1) from osee_branch where branch_id=? and branch_state=?";
 
    private static final String UPDATE_SOURCE_BRANCH_STATE = "update osee_branch set branch_state=? where branch_id=?";
 
@@ -119,13 +119,13 @@ public class CommitDbOperation extends AbstractDbTxOperation {
 
    private void updateMergeBranchCommitTx() throws OseeDataStoreException {
       getDatabaseService().runPreparedUpdate(connection, UPDATE_MERGE_COMMIT_TX, txHolder.getTransaction().getId(),
-            sourceBranch.getId(), destinationBranch.getId());
+         sourceBranch.getId(), destinationBranch.getId());
    }
 
    public synchronized void checkPreconditions() throws OseeCoreException {
       int count =
-            getDatabaseService().runPreparedQueryFetchObject(0, SELECT_SOURCE_BRANCH_STATE, sourceBranch.getId(),
-                  BranchState.COMMIT_IN_PROGRESS.getValue());
+         getDatabaseService().runPreparedQueryFetchObject(0, SELECT_SOURCE_BRANCH_STATE, sourceBranch.getId(),
+            BranchState.COMMIT_IN_PROGRESS.getValue());
       if (sourceBranch.getBranchState().equals(BranchState.COMMIT_IN_PROGRESS) || sourceBranch.getArchiveState().isArchived() || count > 0) {
          throw new OseeStateException(String.format("Commit completed or in progress for [%s]", sourceBranch));
       }
@@ -164,12 +164,12 @@ public class CommitDbOperation extends AbstractDbTxOperation {
       String comment = COMMIT_COMMENT + sourceBranch.getName();
 
       getDatabaseService().runPreparedUpdate(connection, INSERT_COMMIT_TRANSACTION,
-            TransactionDetailsType.NonBaselined.getId(), destinationBranch.getId(), newTransactionNumber, comment,
-            timestamp, userArtId, sourceBranch.getAssociatedArtifactId());
+         TransactionDetailsType.NonBaselined.getId(), destinationBranch.getId(), newTransactionNumber, comment,
+         timestamp, userArtId, sourceBranch.getAssociatedArtifactId());
       TransactionRecord record =
-            modelFactory.getOseeFactoryService().getTransactionFactory().create(newTransactionNumber,
-                  destinationBranch.getId(), comment, timestamp, userArtId, sourceBranch.getAssociatedArtifactId(),
-                  TransactionDetailsType.NonBaselined);
+         modelFactory.getOseeFactoryService().getTransactionFactory().create(newTransactionNumber,
+            destinationBranch.getId(), comment, timestamp, userArtId, sourceBranch.getAssociatedArtifactId(),
+            TransactionDetailsType.NonBaselined);
 
       return record;
    }
@@ -179,7 +179,7 @@ public class CommitDbOperation extends AbstractDbTxOperation {
       for (ChangeItem change : changes) {
          ModificationType modType = change.getNetChange().getModType();
          insertData.add(new Object[] {txHolder.getTransaction().getId(), destinationBranch.getId(),
-               change.getNetChange().getGammaId(), modType.getValue(), TxChange.getCurrent(modType).getValue()});
+            change.getNetChange().getGammaId(), modType.getValue(), TxChange.getCurrent(modType).getValue()});
       }
       getDatabaseService().runBatchUpdate(connection, INSERT_COMMIT_ADDRESSING, insertData);
    }
@@ -219,7 +219,7 @@ public class CommitDbOperation extends AbstractDbTxOperation {
          // update conflict status, if necessary
          if (mergeBranch != null) {
             getDatabaseService().runPreparedUpdate(connection, UPDATE_CONFLICT_STATUS,
-                  ConflictStatus.COMMITTED.getValue(), ConflictStatus.RESOLVED.getValue(), mergeBranch.getId());
+               ConflictStatus.COMMITTED.getValue(), ConflictStatus.RESOLVED.getValue(), mergeBranch.getId());
          }
       }
    }

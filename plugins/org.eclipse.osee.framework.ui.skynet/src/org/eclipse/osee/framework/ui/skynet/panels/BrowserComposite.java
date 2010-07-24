@@ -24,8 +24,8 @@ import org.eclipse.swt.widgets.ToolBar;
  * @author Ryan D. Brooks
  */
 public class BrowserComposite extends Composite {
-   private Browser previewBrowser;
-   private ToolBar toolBar;
+   private final Browser previewBrowser;
+   private final ToolBar toolBar;
 
    public BrowserComposite(Composite parent, int style) {
       this(parent, style, null);
@@ -57,22 +57,30 @@ public class BrowserComposite extends Composite {
    }
 
    public boolean back() {
-      if (previewBrowser == null) return false;
+      if (previewBrowser == null) {
+         return false;
+      }
       return previewBrowser.back();
    }
 
    public boolean forward() {
-      if (previewBrowser == null) return false;
+      if (previewBrowser == null) {
+         return false;
+      }
       return previewBrowser.forward();
    }
 
    public boolean isBackEnabled() {
-      if (previewBrowser == null) return false;
+      if (previewBrowser == null) {
+         return false;
+      }
       return previewBrowser.isBackEnabled();
    }
 
    public boolean isForwardEnabled() {
-      if (previewBrowser == null) return false;
+      if (previewBrowser == null) {
+         return false;
+      }
       return previewBrowser.isForwardEnabled();
    }
 

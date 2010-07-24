@@ -18,17 +18,19 @@ import org.eclipse.osee.framework.svn.entry.IRepositoryEntry;
 
 public class ClearCaseInfo implements IRepositoryEntry {
 
-   private File file;
+   private final File file;
 
    public ClearCaseInfo(File tmpFile) {
       super();
       file = tmpFile;
    }
 
+   @Override
    public String getURL() {
       return file.getAbsolutePath();
    }
 
+   @Override
    public String getVersion() {
       try {
          Process ct = Runtime.getRuntime().exec("cleartool lshistory -last " + file.getAbsolutePath());
@@ -36,8 +38,9 @@ public class ClearCaseInfo implements IRepositoryEntry {
          String lineRead = null;
          if ((lineRead = reader.readLine()) != null) {
             return lineRead;
-         } else
+         } else {
             return "unknown";
+         }
       } catch (IOException ex) {
          System.out.println("ClearCase not found");
       }
@@ -45,18 +48,22 @@ public class ClearCaseInfo implements IRepositoryEntry {
       return "unknown";
    }
 
+   @Override
    public String getVersionControlSystem() {
       return "CLEARCASE";
    }
 
+   @Override
    public String getModifiedFlag() {
       return " ";
    }
 
+   @Override
    public String getLastAuthor() {
       return " ";
    }
 
+   @Override
    public String getLastModificationDate() {
       return " ";
    }

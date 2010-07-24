@@ -14,7 +14,7 @@ public class DialogSelectionHelper implements Runnable {
 
    private int selection = -1;
    private boolean saveSelection;
-   private Object[] availableSelections;
+   private final Object[] availableSelections;
 
    public DialogSelectionHelper(Object[] availableSelections) {
       this.availableSelections = availableSelections;
@@ -24,10 +24,11 @@ public class DialogSelectionHelper implements Runnable {
       this.availableSelections = availableSelections;
    }
 
+   @Override
    public void run() {
       ListSelectionDialog dlg =
-            new ListSelectionDialog(availableSelections, null, "File Selection", null, "String dialogMessage", 3,
-                  new String[] {"OK", "Cancel"}, 0);
+         new ListSelectionDialog(availableSelections, null, "File Selection", null, "String dialogMessage", 3,
+            new String[] {"OK", "Cancel"}, 0);
 
       int result = dlg.open();
       if (result == 0) {

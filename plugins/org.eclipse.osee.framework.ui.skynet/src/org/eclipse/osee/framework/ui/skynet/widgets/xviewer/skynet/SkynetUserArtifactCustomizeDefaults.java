@@ -47,7 +47,7 @@ public class SkynetUserArtifactCustomizeDefaults {
    }
 
    private static Pattern pattern =
-         Pattern.compile("<" + DEFAULT_CUST_GUID_TAG + ">(.*?)</" + DEFAULT_CUST_GUID_TAG + ">");
+      Pattern.compile("<" + DEFAULT_CUST_GUID_TAG + ">(.*?)</" + DEFAULT_CUST_GUID_TAG + ">");
 
    private void setDefaultCustomizationsFromXml(String xml) {
       defaultGuids.clear();
@@ -106,8 +106,9 @@ public class SkynetUserArtifactCustomizeDefaults {
 
    private String getDefaultCustomizationXml() {
       StringBuffer sb = new StringBuffer();
-      for (String guid : defaultGuids)
+      for (String guid : defaultGuids) {
          sb.append(AXml.addTagData(DEFAULT_CUST_GUID_TAG, guid));
+      }
       return sb.toString();
    }
 

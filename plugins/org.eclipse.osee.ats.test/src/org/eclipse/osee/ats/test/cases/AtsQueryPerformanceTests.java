@@ -48,16 +48,16 @@ public class AtsQueryPerformanceTests {
    @org.junit.Test
    public void testTeamWorldSearchItem() throws Exception {
       TeamWorldSearchItem searchItem =
-            new TeamWorldSearchItem("Show Open OSEE Actions", new String[] {"ATS", "Define", "OTE"}, false, true,
-                  false, null, null, null, null);
+         new TeamWorldSearchItem("Show Open OSEE Actions", new String[] {"ATS", "Define", "OTE"}, false, true, false,
+            null, null, null, null);
       long startTime = System.currentTimeMillis();
       Collection<Artifact> artifacts = searchItem.performSearch(SearchType.Search);
       long elapsedTime = System.currentTimeMillis() - startTime;
       System.out.println(String.format("testTeamWorldSearchItem took %dms for %d artifacts", elapsedTime,
-            artifacts.size()));
+         artifacts.size()));
       assertTrue("No artifacts found", artifacts.size() > 0);
       assertTrue("testTeamWorldSearchItem should take less than 20000ms; took " + elapsedTime + "ms",
-            elapsedTime < 20000);
+         elapsedTime < 20000);
    }
 
    private User getAUser() throws OseeCoreException {

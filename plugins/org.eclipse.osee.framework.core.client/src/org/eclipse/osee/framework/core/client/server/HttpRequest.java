@@ -32,18 +32,23 @@ import org.eclipse.osee.framework.logging.OseeLog;
 public class HttpRequest {
 
    public enum HttpMethod {
-      GET, POST, PUT, DELETE, RESOURCE_GET, INVALID;
+      GET,
+      POST,
+      PUT,
+      DELETE,
+      RESOURCE_GET,
+      INVALID;
    }
-   private Map<String, String> parameterMap;
+   private final Map<String, String> parameterMap;
    private String rawRequest;
    private String urlRequest;
-   private Map<String, String> httpHeader;
+   private final Map<String, String> httpHeader;
    private String httpProtocol;
-   private InputStream inputStream;
+   private final InputStream inputStream;
    private HttpMethod httpMethod;
-   private InetAddress remoteAddress;
-   private int remotePort;
-   private Socket socket;
+   private final InetAddress remoteAddress;
+   private final int remotePort;
+   private final Socket socket;
 
    protected HttpRequest(Socket socket) throws Exception {
       this.socket = socket;

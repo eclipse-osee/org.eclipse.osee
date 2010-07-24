@@ -50,7 +50,7 @@ public abstract class WorkItemWithChildrenDefinition extends WorkItemDefinition 
          Artifact widArt = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(wid.getId());
          if (widArt == null) {
             throw new IllegalStateException(
-                  "While processing Work Item \"" + getId() + "\":  No Artifact found for WorkItemDefinition \"" + wid.getId() + "\"");
+               "While processing Work Item \"" + getId() + "\":  No Artifact found for WorkItemDefinition \"" + wid.getId() + "\"");
          }
          children.add(widArt);
       }
@@ -72,8 +72,10 @@ public abstract class WorkItemWithChildrenDefinition extends WorkItemDefinition 
       workItemDefinitions.addAll(WorkItemDefinitionFactory.getWorkItemDefinition(workItemIds));
       if (includeInherited && getParentId() != null) {
          WorkItemWithChildrenDefinition widParent =
-               (WorkPageDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(getParentId());
-         if (widParent != null) widParent.getWorkItemsInherited(workItemDefinitions, includeInherited);
+            (WorkPageDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(getParentId());
+         if (widParent != null) {
+            widParent.getWorkItemsInherited(workItemDefinitions, includeInherited);
+         }
       }
    }
 

@@ -14,7 +14,6 @@ import java.util.Collection;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public interface IModelKeyFactory {
    @SuppressWarnings("unchecked")

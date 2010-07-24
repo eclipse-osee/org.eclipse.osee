@@ -93,7 +93,7 @@ public class ResultsEditorConverter {
       public void canConvert(IResultsEditorTab tab) throws OseeCoreException {
          if (!(tab instanceof IResultsEditorTableTab) && !(tab instanceof IResultsEditorHtmlTab)) {
             throw new OseeArgumentException(
-                  String.format("%s to type [%s] is not supported", tab.getClass(), getType()));
+               String.format("%s to type [%s] is not supported", tab.getClass(), getType()));
          }
       }
 
@@ -109,14 +109,14 @@ public class ResultsEditorConverter {
 
    private final static class HTMLEditorTabConverter extends AbstractEditorTabConverter {
       private final static String HTML_HEADER =
-            "<!DOCTYPE html PUBLIC \"-//W3C//DTD html 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\"><html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-1\">\n";
+         "<!DOCTYPE html PUBLIC \"-//W3C//DTD html 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\"><html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-1\">\n";
 
       private final static String PAGE_TITLE = "<title>%s</title>\n";
       private final static String STYLE_CSS =
-            "<style type=\"text/css\">\n" + //
-            " .blueBox { color: black; background-color:#999999; display: block; padding: 6px; margin-top: 8px; width:95%; cursor:pointer; border: solid;  border-color:black; border-width: thin; text-align: left; vertical-align: middle; }\n" + //
-            " .results { color: black; background-color:whitesmoke; display: block; padding: 6px; width:95%; cursor:pointer; border: solid; border-width: thin; text-align: left; vertical-align: middle; }\n" + //
-            "</style>\n";
+         "<style type=\"text/css\">\n" + //
+         " .blueBox { color: black; background-color:#999999; display: block; padding: 6px; margin-top: 8px; width:95%; cursor:pointer; border: solid;  border-color:black; border-width: thin; text-align: left; vertical-align: middle; }\n" + //
+         " .results { color: black; background-color:whitesmoke; display: block; padding: 6px; width:95%; cursor:pointer; border: solid; border-width: thin; text-align: left; vertical-align: middle; }\n" + //
+         "</style>\n";
       private final static String JAVASCRIPT = "<script type=\"text/javascript\">\n" + //
       "function opendiv(id){\n" + //
       "var divStyle = document.getElementById(id).style;\n" + //
@@ -154,7 +154,7 @@ public class ResultsEditorConverter {
                   writer.write(htmlString);
                } else {
                   throw new UnsupportedOperationException(String.format("%s to type %s is not supported",
-                        rawTab.getClass(), getType()));
+                     rawTab.getClass(), getType()));
                }
                writer.write("</div>\n");
             }
@@ -185,7 +185,7 @@ public class ResultsEditorConverter {
       public void canConvert(IResultsEditorTab tab) throws OseeCoreException {
          if (!(tab instanceof IResultsEditorTableTab)) {
             throw new OseeArgumentException(String.format("%s to type %s is not supported", tab.getClass(),
-                  getType().toUpperCase()));
+               getType().toUpperCase()));
          }
       }
 
@@ -206,7 +206,7 @@ public class ResultsEditorConverter {
                   sheetWriter.endSheet();
                } else {
                   throw new UnsupportedOperationException(String.format("%s to type %s is not supported",
-                        rawTab.getClass(), getType()));
+                     rawTab.getClass(), getType()));
                }
             }
             sheetWriter.endWorkbook();
@@ -235,7 +235,7 @@ public class ResultsEditorConverter {
       public void canConvert(IResultsEditorTab tab) throws OseeCoreException {
          if (!(tab instanceof IResultsEditorTableTab)) {
             throw new OseeArgumentException(String.format("%s to type %s is not supported", tab.getClass(),
-                  getType().toUpperCase()));
+               getType().toUpperCase()));
          }
       }
 
@@ -263,7 +263,7 @@ public class ResultsEditorConverter {
                   writerAdaptor.writeDocument();
                } else {
                   throw new UnsupportedOperationException(String.format("%s to type %s is not supported",
-                        rawTab.getClass(), getType()));
+                     rawTab.getClass(), getType()));
                }
             }
             writerAdaptor.close();

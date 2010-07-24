@@ -52,8 +52,8 @@ public class OpenNewAtsTaskEditorSelected extends Action {
             return;
          }
          TaskEditor.open(new TaskEditorSimpleProvider("Tasks",
-               openNewAtsTaskEditorSelectedHandler.getSelectedArtifacts(),
-               openNewAtsTaskEditorSelectedHandler.getCustomizeDataCopy()));
+            openNewAtsTaskEditorSelectedHandler.getSelectedArtifacts(),
+            openNewAtsTaskEditorSelectedHandler.getCustomizeDataCopy()));
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }

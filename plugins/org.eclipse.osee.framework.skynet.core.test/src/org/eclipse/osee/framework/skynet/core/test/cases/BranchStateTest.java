@@ -80,7 +80,7 @@ public class BranchStateTest {
          assertTrue(workingBranch.isEditable());
 
          Artifact change =
-               ArtifactTypeManager.addArtifact("Software Requirement", workingBranch, "Test Object on Working Branch");
+            ArtifactTypeManager.addArtifact("Software Requirement", workingBranch, "Test Object on Working Branch");
          change.persist();
 
          assertEquals(BranchState.MODIFIED, workingBranch.getBranchState());
@@ -135,7 +135,7 @@ public class BranchStateTest {
          assertTrue(workingBranch.isEditable());
 
          ConflictManagerExternal conflictManager =
-               new ConflictManagerExternal(BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1), workingBranch);
+            new ConflictManagerExternal(BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1), workingBranch);
          BranchManager.commitBranch(null, conflictManager, true, false);
 
          assertEquals(BranchState.COMMITTED, workingBranch.getBranchState());
@@ -160,14 +160,13 @@ public class BranchStateTest {
 
          // Update the branch
          ConflictResolverOperation resolverOperation =
-               new ConflictResolverOperation("Test 1 Resolver", BranchStateTest.class.getCanonicalName()) {
+            new ConflictResolverOperation("Test 1 Resolver", BranchStateTest.class.getCanonicalName()) {
 
-                  @Override
-                  protected void doWork(IProgressMonitor monitor) throws Exception {
-                     assertFalse("This code should not be executed since there shouldn't be any conflicts.",
-                           wasExecuted());
-                  }
-               };
+               @Override
+               protected void doWork(IProgressMonitor monitor) throws Exception {
+                  assertFalse("This code should not be executed since there shouldn't be any conflicts.", wasExecuted());
+               }
+            };
 
          Job job = BranchManager.updateBranch(workingBranch, resolverOperation);
          job.join();
@@ -204,7 +203,7 @@ public class BranchStateTest {
 
          // Add a new artifact on the working branch
          change =
-               ArtifactTypeManager.addArtifact("Software Requirement", workingBranch, "Test Object on Working Branch");
+            ArtifactTypeManager.addArtifact("Software Requirement", workingBranch, "Test Object on Working Branch");
          change.persist();
 
          // Make a change on the parent
@@ -213,14 +212,13 @@ public class BranchStateTest {
 
          // Update the branch
          ConflictResolverOperation resolverOperation =
-               new ConflictResolverOperation("Test 1 Resolver", BranchStateTest.class.getCanonicalName()) {
+            new ConflictResolverOperation("Test 1 Resolver", BranchStateTest.class.getCanonicalName()) {
 
-                  @Override
-                  protected void doWork(IProgressMonitor monitor) throws Exception {
-                     assertFalse("This code should not be executed since there shouldn't be any conflicts.",
-                           wasExecuted());
-                  }
-               };
+               @Override
+               protected void doWork(IProgressMonitor monitor) throws Exception {
+                  assertFalse("This code should not be executed since there shouldn't be any conflicts.", wasExecuted());
+               }
+            };
 
          Job job = BranchManager.updateBranch(workingBranch, resolverOperation);
          job.join();
@@ -252,8 +250,8 @@ public class BranchStateTest {
       Artifact sameArtifact = null;
       try {
          baseArtifact =
-               ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement,
-                     BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1), "Test Object");
+            ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement,
+               BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1), "Test Object");
          baseArtifact.setSoleAttributeFromString(CoreAttributeTypes.Annotation, "This is the base annotation");
          baseArtifact.persist();
 
@@ -263,7 +261,7 @@ public class BranchStateTest {
          // Modify same artifact on working branch
          sameArtifact = ArtifactQuery.getArtifactFromId(baseArtifact.getGuid(), workingBranch);
          sameArtifact.setSoleAttributeFromString(CoreAttributeTypes.Annotation,
-               "This is the working branch update annotation");
+            "This is the working branch update annotation");
          sameArtifact.persist();
 
          // Make a change on the parent
@@ -271,36 +269,36 @@ public class BranchStateTest {
          baseArtifact.persist();
 
          ConflictResolverOperation resolverOperation =
-               new ConflictResolverOperation("Test 2 Resolver", BranchStateTest.class.getCanonicalName()) {
+            new ConflictResolverOperation("Test 2 Resolver", BranchStateTest.class.getCanonicalName()) {
 
-                  @Override
-                  protected void doWork(IProgressMonitor monitor) throws Exception {
-                     assertTrue("This code should have been executed since there should be conflicts.", wasExecuted());
-                  }
-               };
+               @Override
+               protected void doWork(IProgressMonitor monitor) throws Exception {
+                  assertTrue("This code should have been executed since there should be conflicts.", wasExecuted());
+               }
+            };
 
          Job job = BranchManager.updateBranch(workingBranch, resolverOperation);
          job.join();
 
          IStatus status = getCauseStatus(job.getResult());
          String message =
-               String.format("UpdateBranch was not successful\n %s", status.getMessage(), status.getException());
+            String.format("UpdateBranch was not successful\n %s", status.getMessage(), status.getException());
          assertTrue(message, job.getResult().isOK());
          assertTrue("Resolver not executed", resolverOperation.wasExecuted());
 
          assertTrue("Branch was archived", !workingBranch.getArchiveState().isArchived());
          assertTrue("Branch was not marked as rebaseline in progress",
-               workingBranch.getBranchState().isRebaselineInProgress());
+            workingBranch.getBranchState().isRebaselineInProgress());
          assertTrue("Branch was not editable", workingBranch.isEditable());
          assertTrue("Branch state was set to rebaselined before complete",
-               !workingBranch.getBranchState().isRebaselined());
+            !workingBranch.getBranchState().isRebaselined());
 
          assertEquals("Branch name was changed before update was complete", originalBranchName, workingBranch.getName());
 
          // Check that a new destination branch exists
          Branch destinationBranch = resolverOperation.getConflictManager().getDestinationBranch();
          assertTrue("Branch name not set correctly",
-               destinationBranch.getName().startsWith(String.format("%s - for update -", originalBranchName)));
+            destinationBranch.getName().startsWith(String.format("%s - for update -", originalBranchName)));
          assertTrue("Branch was not editable", destinationBranch.isEditable());
 
          // Check that we have a merge branch
@@ -310,13 +308,12 @@ public class BranchStateTest {
 
          // Run FinishBranchUpdate and check
          FinishUpdateBranchOperation finishUpdateOperation =
-               new FinishUpdateBranchOperation("Update Branch Test 2", resolverOperation.getConflictManager(), true,
-                     true);
+            new FinishUpdateBranchOperation("Update Branch Test 2", resolverOperation.getConflictManager(), true, true);
          Operations.executeWork(finishUpdateOperation, new NullProgressMonitor(), -1);
 
          IStatus status1 = getCauseStatus(finishUpdateOperation.getStatus());
          message =
-               String.format("FinishUpdateBranch was not successful\n %s", status1.getMessage(), status1.getException());
+            String.format("FinishUpdateBranch was not successful\n %s", status1.getMessage(), status1.getException());
          assertTrue(message, status1.isOK());
 
          checkBranchWasRebaselined(originalBranchName, workingBranch);
@@ -384,7 +381,7 @@ public class BranchStateTest {
       assertTrue("Branch was still editable", !branchToCheck.isEditable());
       assertTrue("Branch state was not set as rebaselined", branchToCheck.getBranchState().isRebaselined());
       assertTrue("Branch name not set correctly",
-            branchToCheck.getName().startsWith(String.format("%s - moved by update on -", originalBranchName)));
+         branchToCheck.getName().startsWith(String.format("%s - moved by update on -", originalBranchName)));
    }
 
 }

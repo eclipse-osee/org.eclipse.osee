@@ -22,9 +22,9 @@ import org.eclipse.osee.ote.core.internal.Activator;
 
 public class BaseCommandManager implements ICommandManager {
 
-   private ExecutorService commands;
-   private ExecutorService commandResponse;
-   private Map<ITestServerCommand, Future<ITestCommandResult>> cmdMap;
+   private final ExecutorService commands;
+   private final ExecutorService commandResponse;
+   private final Map<ITestServerCommand, Future<ITestCommandResult>> cmdMap;
 
    public BaseCommandManager() {
       OteThreadManager threadManager = OteThreadManager.getInstance();
@@ -33,8 +33,10 @@ public class BaseCommandManager implements ICommandManager {
       cmdMap = new ConcurrentHashMap<ITestServerCommand, Future<ITestCommandResult>>();
    }
 
+   @Override
    public ICommandHandle addCommand(ITestServerCommand cmd, TestEnvironment context) throws ExportException {
-      Future<ITestCommandResult> result = commands.submit(new TestCallableWrapper(this, cmd, context, Activator.getInstance().getOteStatusBoard()));
+      Future<ITestCommandResult> result =
+         commands.submit(new TestCallableWrapper(this, cmd, context, Activator.getInstance().getOteStatusBoard()));
       cmdMap.put(cmd, result);
       return cmd.createCommandHandle(result, context);
    }

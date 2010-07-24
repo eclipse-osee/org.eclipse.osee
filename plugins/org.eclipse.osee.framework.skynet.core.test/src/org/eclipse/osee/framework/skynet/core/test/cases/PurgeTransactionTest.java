@@ -48,8 +48,8 @@ public class PurgeTransactionTest {
    private Map<String, Integer> preModifyCount;
    private Map<String, Integer> postModifyPurgeCount;
    private Map<String, Integer> postCreatePurgeCount;
-   private static final List<String> tables =
-         Arrays.asList("osee_attribute", "osee_artifact", "osee_relation_link", "osee_tx_details", "osee_txs");
+   private static final List<String> tables = Arrays.asList("osee_attribute", "osee_artifact", "osee_relation_link",
+      "osee_tx_details", "osee_txs");
 
    @org.junit.Test
    public void testPurgeTransaction() throws Exception {
@@ -80,9 +80,8 @@ public class PurgeTransactionTest {
       DbUtil.getTableRowCounts(preCreateCount, tables);
       createTransaction = new SkynetTransaction(branch, "Purge Transaction Test");
       softArts =
-            FrameworkTestUtil.createSimpleArtifacts(CoreArtifactTypes.SoftwareRequirement, 10,
-                  getClass().getSimpleName(),
-                  branch);
+         FrameworkTestUtil.createSimpleArtifacts(CoreArtifactTypes.SoftwareRequirement, 10, getClass().getSimpleName(),
+            branch);
       for (Artifact softArt : softArts) {
          softArt.persist(createTransaction);
       }

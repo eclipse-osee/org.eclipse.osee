@@ -51,7 +51,7 @@ public class SMAPromptChangeStatus {
       for (StateMachineArtifact sma : smas) {
          if (sma.isCancelled()) {
             String error =
-                  "Can not status a cancelled " + sma.getArtifactTypeName() + ".\n\nTransition out of cancelled first.";
+               "Can not status a cancelled " + sma.getArtifactTypeName() + ".\n\nTransition out of cancelled first.";
             return new Result(error);
          }
       }
@@ -59,16 +59,16 @@ public class SMAPromptChangeStatus {
       for (StateMachineArtifact sma : smas) {
          if (sma instanceof TaskArtifact) {
             TaskArtifact taskArt = (TaskArtifact) sma;
-            if (!(taskArt.isRelatedToParentWorkflowCurrentState())) {
+            if (!taskArt.isRelatedToParentWorkflowCurrentState()) {
                return new Result(
-                     String.format(
-                           "Task work must be done in \"Related to State\" of parent workflow for Task titled: \"%s\".\n\n" +
-                           //
-                           "Task work configured to be done in parent's \"%s\" state.\nParent workflow is currently in \"%s\" state.\n\n" +
-                           //
-                           "Either transition parent workflow or change Task's \"Related to State\" to perform task work.",
-                           taskArt.getName(), taskArt.getWorldViewRelatedToState(),
-                           taskArt.getParentSMA().getStateMgr().getCurrentStateName()));
+                  String.format(
+                     "Task work must be done in \"Related to State\" of parent workflow for Task titled: \"%s\".\n\n" +
+                     //
+                     "Task work configured to be done in parent's \"%s\" state.\nParent workflow is currently in \"%s\" state.\n\n" +
+                     //
+                     "Either transition parent workflow or change Task's \"Related to State\" to perform task work.",
+                     taskArt.getName(), taskArt.getWorldViewRelatedToState(),
+                     taskArt.getParentSMA().getStateMgr().getCurrentStateName()));
             }
          }
       }
@@ -90,13 +90,13 @@ public class SMAPromptChangeStatus {
          }
       }
       TaskOptionStatusDialog tsd =
-            new TaskOptionStatusDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                  "Enter State Status",
-                  "Select resolution, enter percent complete and number of hours you spent since last status.", true,
-                  options, smas);
+         new TaskOptionStatusDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+            "Enter State Status",
+            "Select resolution, enter percent complete and number of hours you spent since last status.", true,
+            options, smas);
       if (tsd.open() == 0) {
          performChangeStatus(options, tsd.getSelectedOptionDef() != null ? tsd.getSelectedOptionDef().getName() : null,
-               tsd.getHours().getFloat(), tsd.getPercent().getInt(), tsd.isSplitHours(), persist);
+            tsd.getHours().getFloat(), tsd.getPercent().getInt(), tsd.isSplitHours(), persist);
          return Result.TrueResult;
       }
       return Result.FalseResult;

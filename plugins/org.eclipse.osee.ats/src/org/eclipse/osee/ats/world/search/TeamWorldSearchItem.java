@@ -48,7 +48,9 @@ import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 public class TeamWorldSearchItem extends WorldUISearchItem {
 
    public enum ReleasedOption {
-      Released, UnReleased, Both
+      Released,
+      UnReleased,
+      Both
    };
    private Collection<TeamDefinitionArtifact> teamDefs;
    private final boolean recurseChildren;
@@ -126,8 +128,8 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
          teamDefs = new HashSet<TeamDefinitionArtifact>();
          for (String teamDefName : teamDefNames) {
             TeamDefinitionArtifact aia =
-                  (TeamDefinitionArtifact) AtsCacheManager.getSoleArtifactByName(
-                        ArtifactTypeManager.getType(AtsArtifactTypes.TeamDefinition), teamDefName);
+               (TeamDefinitionArtifact) AtsCacheManager.getSoleArtifactByName(
+                  ArtifactTypeManager.getType(AtsArtifactTypes.TeamDefinition), teamDefName);
             if (aia != null) {
                teamDefs.add(aia);
             }
@@ -160,7 +162,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
          cancelOrComplete.add(DefaultTeamState.Cancelled.name() + ";;;");
          cancelOrComplete.add(DefaultTeamState.Completed.name() + ";;;");
          criteria.add(new AttributeCriteria(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(), cancelOrComplete,
-               Operator.NOT_EQUAL));
+            Operator.NOT_EQUAL));
       }
       if (changeType != null) {
          criteria.add(new AttributeCriteria(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), changeType.name()));
@@ -179,7 +181,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
          if (versionArt != null) {
             TeamWorkFlowArtifact team = sma.getParentTeamWorkflow();
             if (team != null && (team.getWorldViewTargetedVersion() == null || !team.getWorldViewTargetedVersion().equals(
-                  versionArt))) {
+               versionArt))) {
                continue;
             }
          }

@@ -46,6 +46,7 @@ public interface IServiceConnector {
    Object export(Object callback) throws ExportException;
 
    void init(Object service) throws UnknownHostException, ExportException;
+
    /**
     * finds the matching exported representation of supplied object
     * 
@@ -71,6 +72,6 @@ public interface IServiceConnector {
    boolean ping();
 
    EnhancedProperties getProperties();
-   
+
    public String getUniqueServerId();
 }

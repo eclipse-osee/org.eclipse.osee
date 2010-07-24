@@ -15,9 +15,8 @@ import org.xml.sax.Attributes;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
-public class Trace extends ElementHandlers{
+public class Trace extends ElementHandlers {
 
    /**
     * @param name

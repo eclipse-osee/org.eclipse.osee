@@ -36,7 +36,7 @@ public class TeamDefinitionDialog extends org.eclipse.ui.dialogs.ListDialog {
          public Object[] getElements(Object inputElement) {
             if (inputElement instanceof Collection) {
                Collection list = (Collection) inputElement;
-               return (list.toArray(new TeamDefinitionArtifact[list.size()]));
+               return list.toArray(new TeamDefinitionArtifact[list.size()]);
             }
             return super.getElements(inputElement);
          }

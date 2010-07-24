@@ -14,10 +14,11 @@ import java.util.List;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public interface IOTypeHandlerDefinition {
    String getName();
+
    String getDescription();
+
    List<IOTypeDefinition> getIOTypesHandled();
 }

@@ -11,7 +11,6 @@
 package org.eclipse.osee.ote.message.elements;
 
 import java.util.Collection;
-
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 import org.eclipse.osee.ote.core.testPoint.CheckGroup;
 import org.eclipse.osee.ote.message.Message;
@@ -56,7 +55,7 @@ public class LongIntegerElement extends NumericElement<Long> {
 
    @Override
    public void setValue(Long value) {
-      getMsgData().getMem().setLong((Long) value, byteOffset, msb, lsb);
+      getMsgData().getMem().setLong(value, byteOffset, msb, lsb);
    }
 
    @Override
@@ -124,7 +123,9 @@ public class LongIntegerElement extends NumericElement<Long> {
     */
    public void checkPulse(ITestAccessor accessor, long value) throws InterruptedException {
       long nonPulsedValue = 0;
-      if (value == 0) nonPulsedValue = 1;
+      if (value == 0) {
+         nonPulsedValue = 1;
+      }
 
       checkPulse(accessor, value, nonPulsedValue);
 
@@ -181,5 +182,5 @@ public class LongIntegerElement extends NumericElement<Long> {
    public long getNumericBitValue() {
       return getValue();
    }
-   
+
 }

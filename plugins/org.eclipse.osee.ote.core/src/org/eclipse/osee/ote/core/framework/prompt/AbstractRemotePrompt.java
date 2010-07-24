@@ -22,6 +22,7 @@ public class AbstractRemotePrompt implements IPromptHandle {
    private final String id;
    private final String message;
    private final IServiceConnector connector;
+
    /**
     * @param id
     * @param message
@@ -32,10 +33,12 @@ public class AbstractRemotePrompt implements IPromptHandle {
       this.message = message;
    }
 
+   @Override
    public String getPromptId() throws RemoteException {
       return id;
    }
 
+   @Override
    public String getPromptMessage() throws RemoteException {
       return message;
    }

@@ -78,6 +78,7 @@ public class ODMImportPage extends WizardPage {
       stackedViewer.addControl(XML_FILE_OPTIONS, createXmlFileOptions(stackedViewer.getStackComposite()));
 
       SelectionAdapter listener = new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             Object object = e.getSource();
             if (object instanceof Button) {
@@ -128,8 +129,8 @@ public class ODMImportPage extends WizardPage {
          int majorVersion = meta.getDatabaseMajorVersion();
          int minorVersion = meta.getDatabaseMinorVersion();
          message =
-               String.format("%s %s.%s - %s as %s", product, majorVersion, minorVersion,
-                     ClientSessionManager.getDataStoreName(), ClientSessionManager.getDataStoreLoginName());
+            String.format("%s %s.%s - %s as %s", product, majorVersion, minorVersion,
+               ClientSessionManager.getDataStoreName(), ClientSessionManager.getDataStoreLoginName());
 
       } catch (Exception ex) {
          OseeLog.log(ODMEditorActivator.class, Level.WARNING, ex);

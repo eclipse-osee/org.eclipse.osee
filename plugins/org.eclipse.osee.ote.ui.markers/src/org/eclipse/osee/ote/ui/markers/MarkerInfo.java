@@ -11,9 +11,9 @@
 package org.eclipse.osee.ote.ui.markers;
 
 public class MarkerInfo {
-   private String file;
-   private int line;
-   private String message;
+   private final String file;
+   private final int line;
+   private final String message;
 
    public MarkerInfo(String file, int line, String message) {
       this.file = file;

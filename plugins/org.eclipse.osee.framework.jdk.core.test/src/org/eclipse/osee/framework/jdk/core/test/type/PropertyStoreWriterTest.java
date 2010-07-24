@@ -14,7 +14,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
-
 import org.eclipse.osee.framework.jdk.core.test.type.PropertyStoreTestUtil.MockPropertyStore;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStoreWriter;
 import org.junit.Before;
@@ -45,7 +44,7 @@ public class PropertyStoreWriterTest {
       store.put("key7", new String[] {"entry1", "entry2", "entry3"});
       store.put("key8", new String[] {"entry4", "entry5", "entry6"});
       nested = PropertyStoreTestUtil.createPropertyStore(System.getProperties());
-      nested.put("inner array 1", new String[]{"value1", "value2"});
+      nested.put("inner array 1", new String[] {"value1", "value2"});
       nested.put("inner store 1", PropertyStoreTestUtil.createPropertyStore(System.getProperties()));
       store.put("key9", nested);
    }
@@ -72,7 +71,7 @@ public class PropertyStoreWriterTest {
    @Test
    public void testLoadingXml() throws Exception {
       String value =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\" ?> <store id=\"coverage.item\"> <item value=\"68\" key=\"line\" /> <item value=\"\" key=\"testUnits\" /> <item value=\"4\" key=\"executeNum\" /> <item value=\"APc07YhpXgobKwrbROgA\" key=\"guid\" /> <item value=\"Not_Covered\" key=\"methodType\" /> <item value=\"4\" key=\"methodNum\" /> <item value=\"OseeLog.log(Activator.class, Level.SEVERE, ex);\" key=\"text\" /> </store>";
+         "<?xml version=\"1.0\" encoding=\"UTF-8\" ?> <store id=\"coverage.item\"> <item value=\"68\" key=\"line\" /> <item value=\"\" key=\"testUnits\" /> <item value=\"4\" key=\"executeNum\" /> <item value=\"APc07YhpXgobKwrbROgA\" key=\"guid\" /> <item value=\"Not_Covered\" key=\"methodType\" /> <item value=\"4\" key=\"methodNum\" /> <item value=\"OseeLog.log(Activator.class, Level.SEVERE, ex);\" key=\"text\" /> </store>";
       MockPropertyStore actual = PropertyStoreTestUtil.createPropertyStore();
       writer.load(actual, new StringReader(value));
       MockPropertyStore expected = PropertyStoreTestUtil.createPropertyStore("coverage.item");

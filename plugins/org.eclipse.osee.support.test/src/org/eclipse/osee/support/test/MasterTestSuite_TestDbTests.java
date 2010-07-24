@@ -24,8 +24,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {FrameworkCore_TestDb_Suite.class, FrameworkRes_TestDb_Suite.class, ArtifactQueryTestDemo.class,
-      AtsTest_TestDb_Suite.class, FrameworkUi_TestDb_Suite.class})
+@Suite.SuiteClasses({FrameworkCore_TestDb_Suite.class, FrameworkRes_TestDb_Suite.class, ArtifactQueryTestDemo.class,
+   AtsTest_TestDb_Suite.class, FrameworkUi_TestDb_Suite.class})
 /**
  * This Test Suite is to run against a postgres database with ATS Developer as the DbInit.<br>
  * <br>
@@ -38,8 +38,8 @@ public class MasterTestSuite_TestDbTests {
    @BeforeClass
    public static void setUp() throws Exception {
       assertTrue("Should be run on production datbase.", TestUtil.isTestDb());
-      assertTrue("Application Server must be running.", ClientSessionManager.getAuthenticationProtocols().contains(
-            "lba"));
+      assertTrue("Application Server must be running.",
+         ClientSessionManager.getAuthenticationProtocols().contains("lba"));
       TestUtil.setIsInTest(true);
    }
 

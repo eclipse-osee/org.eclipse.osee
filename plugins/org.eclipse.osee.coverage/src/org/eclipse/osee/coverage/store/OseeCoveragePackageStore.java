@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.logging.Level;
 import org.eclipse.osee.coverage.event.CoverageEventManager;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageImport;
@@ -31,7 +32,6 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -86,7 +86,7 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
          for (Artifact childArt : artifact.getChildren()) {
             if (childArt.isOfType(CoverageArtifactTypes.CoverageUnit) || childArt.isOfType(CoverageArtifactTypes.CoverageFolder)) {
                coveragePackage.addCoverageUnit(OseeCoverageUnitStore.get(coveragePackage, childArt,
-                     coverageOptionManager));
+                  coverageOptionManager));
             }
          }
       }
@@ -135,6 +135,7 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
       return Result.TrueResult;
    }
 
+   @Override
    public Result saveImportRecord(SkynetTransaction transaction, CoverageImport coverageImport) throws OseeCoreException {
       if (coverageImport == null) {
          return Result.FalseResult;
@@ -148,8 +149,7 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
       }
       if (importRecordArt == null) {
          importRecordArt =
-               ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, artifact.getBranch(),
-                     IMPORT_RECORD_NAME);
+            ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, artifact.getBranch(), IMPORT_RECORD_NAME);
          // must set the extension before setting content
          importRecordArt.setSoleAttributeFromString(CoreAttributeTypes.NATIVE_EXTENSION, "zip");
          getArtifact(false).addChild(importRecordArt);
@@ -164,10 +164,10 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
       try {
          File zipFile = OseeData.getFile("coverage.zip");
          Lib.compressFiles(coverageImport.getImportDirectory(), coverageImport.getImportRecordFiles(),
-               zipFile.getAbsolutePath());
+            zipFile.getAbsolutePath());
          return new FileInputStream(zipFile);
       } catch (Exception ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return null;
    }
@@ -195,13 +195,14 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
       return ArtifactQuery.getArtifactListFromType(CoverageArtifactTypes.CoveragePackage, branch);
    }
 
+   @Override
    public Result save(Collection<ICoverage> coverages) throws OseeCoreException {
       try {
          SkynetTransaction transaction = new SkynetTransaction(branch, "Coverage Save");
          save(transaction, coverages);
          transaction.execute();
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
          return new Result("Save Failed: " + ex.getLocalizedMessage());
       }
       return Result.TrueResult;

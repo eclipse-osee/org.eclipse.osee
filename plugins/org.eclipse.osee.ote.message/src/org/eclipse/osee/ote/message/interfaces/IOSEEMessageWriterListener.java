@@ -16,5 +16,5 @@ import org.eclipse.osee.ote.message.listener.IOSEEMessageListener;
  * @author Andrew M. Finkbeiner
  */
 public interface IOSEEMessageWriterListener extends IOSEEMessageListener {
-   
+
 }

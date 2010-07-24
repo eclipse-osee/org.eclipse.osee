@@ -15,9 +15,8 @@ import org.xml.sax.Attributes;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
-public class ScriptVersion extends ElementHandlers{
+public class ScriptVersion extends ElementHandlers {
 
    /**
     * @param name
@@ -28,7 +27,8 @@ public class ScriptVersion extends ElementHandlers{
 
    @Override
    public Object createStartElementFoundObject(String uri, String localName, String name, Attributes attributes) {
-      return new ScriptVersionData(attributes.getValue("lastAuthor"), attributes.getValue("lastModified"), attributes.getValue("modifiedFlag"),
-            attributes.getValue("repositoryType"), attributes.getValue("revision"), attributes.getValue("url"));
+      return new ScriptVersionData(attributes.getValue("lastAuthor"), attributes.getValue("lastModified"),
+         attributes.getValue("modifiedFlag"), attributes.getValue("repositoryType"), attributes.getValue("revision"),
+         attributes.getValue("url"));
    }
 }

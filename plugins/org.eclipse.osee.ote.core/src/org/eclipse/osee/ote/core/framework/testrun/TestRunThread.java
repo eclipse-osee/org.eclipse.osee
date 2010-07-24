@@ -13,7 +13,6 @@ package org.eclipse.osee.ote.core.framework.testrun;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.jdk.core.type.IPropertyStore;
 import org.eclipse.osee.framework.logging.BaseStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -62,15 +61,15 @@ public class TestRunThread extends OseeTestThread {
          if (rb.isReturnStatusOK()) {
             List<TestCase> testCases = test.getTestCases();
             for (TestCase testCase : testCases) {
-               if(testCase == null){
-            	   continue;
+               if (testCase == null) {
+                  continue;
                }
                if (abort) {
                   addAbortResult(null);
                   break;
                }
                rb.append(listenerProvider.notifyPreTestCase(dataProvider.createOnPreTestCase(propertyStore, test,
-                     testCase)));
+                  testCase)));
                lock.lock();
                try {
                   testCase.baseDoTestCase(getEnvironment());
@@ -88,24 +87,24 @@ public class TestRunThread extends OseeTestThread {
                      methodresult.addStatus(new BaseStatus(TestEnvironment.class.getName(), Level.SEVERE, ex));
                      rb.append(methodresult);
                      OseeLog.log(
-                           Activator.class,
-                           Level.SEVERE,
-                           "Exception running Test Case [" + testCase != null ? testCase.getClass().getName() : "uknown (null test case)" + "]",
-                           ex);
+                        Activator.class,
+                        Level.SEVERE,
+                        "Exception running Test Case [" + testCase != null ? testCase.getClass().getName() : "uknown (null test case)" + "]",
+                        ex);
                   }
                } finally {
                   lock.unlock();
                }
                rb.append(listenerProvider.notifyPostTestCase(dataProvider.createOnPostTestCase(propertyStore, test,
-                     testCase)));
+                  testCase)));
             }
          }
       } finally {
-    	  rb.append(listenerProvider.notifyPostRun(dataProvider.createOnPostRun(propertyStore, test)));
-    	  if (getEnvironment().getScriptCtrl().isLocked()) {
-    		  getEnvironment().getScriptCtrl().unlock();
-    	  }
-     }
+         rb.append(listenerProvider.notifyPostRun(dataProvider.createOnPostRun(propertyStore, test)));
+         if (getEnvironment().getScriptCtrl().isLocked()) {
+            getEnvironment().getScriptCtrl().unlock();
+         }
+      }
    }
 
    /**
@@ -139,12 +138,12 @@ public class TestRunThread extends OseeTestThread {
 
          if (this.isAlive()) {
             OseeLog.reportStatus(new BaseStatus(TestEnvironment.class.getName(), Level.SEVERE,
-                  "Waited 60s for test to abort but the thread did not die."));
+               "Waited 60s for test to abort but the thread did not die."));
             return false;
          }
       } catch (InterruptedException ex) {
          OseeLog.reportStatus(new BaseStatus(TestEnvironment.class.getName(), Level.SEVERE,
-               "Failed to wait for abort to complete successfully.", ex));
+            "Failed to wait for abort to complete successfully.", ex));
          return false;
       }
       return true;

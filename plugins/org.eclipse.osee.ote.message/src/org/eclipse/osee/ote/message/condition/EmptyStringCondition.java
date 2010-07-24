@@ -29,10 +29,12 @@ public class EmptyStringCondition extends AbstractCondition implements IDiscrete
       offset = element.getMsgData().getMem().getOffset() + element.getByteOffset();
    }
 
+   @Override
    public Character getLastCheckValue() {
       return lastValue;
    }
 
+   @Override
    public boolean check() {
       lastValue = (char) element.getMsgData().getMem().getData()[offset];
       return lastValue == (char) 0;

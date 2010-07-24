@@ -29,24 +29,26 @@ import org.xml.sax.SAXException;
 public class MergeEditArtifactElementExtractor implements IElementExtractor {
    private Element oleDataElement;
    private final Document document;
-   
+
    public MergeEditArtifactElementExtractor(Document document) {
       super();
       this.document = document;
    }
 
+   @Override
    public Element getOleDataElement() {
       return oleDataElement;
    }
 
-   public Collection<Element> extractElements() throws DOMException, ParserConfigurationException, SAXException, IOException, OseeCoreException{
+   @Override
+   public Collection<Element> extractElements() throws DOMException, ParserConfigurationException, SAXException, IOException, OseeCoreException {
       final Collection<Element> artifactElements = new LinkedList<Element>();
       Collection<Element> sectList = new LinkedList<Element>();
       Element rootElement = document.getDocumentElement();
       oleDataElement = null;
 
       NodeList nodeList = rootElement.getElementsByTagName("*");
-      
+
       for (int i = 0; i < nodeList.getLength(); i++) {
          Element element = (Element) nodeList.item(i);
          if (element.getNodeName().endsWith("wx:sect")) {
@@ -70,7 +72,7 @@ public class MergeEditArtifactElementExtractor implements IElementExtractor {
       }
       return artifactElements;
    }
-   
+
    private void handleMultiSectTags(Collection<Element> sectList) throws OseeCoreException {
       boolean containTag = false;
       // need to check all wx:sect for the listnum tag
@@ -81,7 +83,7 @@ public class MergeEditArtifactElementExtractor implements IElementExtractor {
          throw new OseeCoreException("This document does not contain the approporate tags to be correctly saved.");
       }
    }
-   
+
    //To handle the case of sub-sections
    private boolean cleanUpParagraph(Node rootNode) throws OseeCoreException {
       boolean worked = false;

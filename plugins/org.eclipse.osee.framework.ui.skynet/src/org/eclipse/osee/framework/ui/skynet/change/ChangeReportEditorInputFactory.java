@@ -34,6 +34,7 @@ public class ChangeReportEditorInputFactory implements IElementFactory {
    public ChangeReportEditorInputFactory() {
    }
 
+   @Override
    public IAdaptable createElement(IMemento memento) {
       ChangeReportEditorInput toReturn = null;
       try {

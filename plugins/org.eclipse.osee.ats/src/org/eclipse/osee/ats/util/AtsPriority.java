@@ -22,7 +22,12 @@ public class AtsPriority {
    public static String PRIORITY_HELP_CONTEXT_ID = "atsPriority";
 
    public static enum PriorityType {
-      None(""), Priority_1("1"), Priority_2("2"), Priority_3("3"), Priority_4("4"), Priority_5("5");
+      None(""),
+      Priority_1("1"),
+      Priority_2("2"),
+      Priority_3("3"),
+      Priority_4("4"),
+      Priority_5("5");
 
       private final String shortName;
 
@@ -37,16 +42,20 @@ public class AtsPriority {
       public static String[] getPriorities() {
          String priorities[] = new String[PriorityType.values().length];
          int x = 0;
-         for (PriorityType pri : PriorityType.values())
+         for (PriorityType pri : PriorityType.values()) {
             priorities[x++] = pri.toString();
+         }
          return priorities;
       }
 
       public static String[] getPrioritiesWithoutNone() {
          String priorities[] = new String[PriorityType.values().length - 1];
          int x = 0;
-         for (PriorityType pri : PriorityType.values())
-            if (pri != PriorityType.None) priorities[x++] = pri.toString();
+         for (PriorityType pri : PriorityType.values()) {
+            if (pri != PriorityType.None) {
+               priorities[x++] = pri.toString();
+            }
+         }
          return priorities;
       }
 
@@ -56,9 +65,13 @@ public class AtsPriority {
       }
 
       public static PriorityType getPriority(String type) throws OseeCoreException {
-         if (type == null || type.equals("")) return PriorityType.None;
+         if (type == null || type.equals("")) {
+            return PriorityType.None;
+         }
          for (PriorityType pri : PriorityType.values()) {
-            if (type.equals(pri.getShortName())) return pri;
+            if (type.equals(pri.getShortName())) {
+               return pri;
+            }
          }
          throw new OseeStateException("Invalid priority => " + type);
       }

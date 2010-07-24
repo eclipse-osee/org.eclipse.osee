@@ -12,7 +12,6 @@ package org.eclipse.osee.ote.server.internal;
 
 import java.io.Serializable;
 import java.rmi.server.ExportException;
-
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.messaging.NodeInfo;
 import org.eclipse.osee.framework.plugin.core.util.ExportClassLoader;
@@ -72,7 +71,7 @@ class EnvironmentCreationParameter {
       if (factory == null) {
          ExportClassLoader exportClassLoader = new ExportClassLoader(packageAdmin);
          Class<? extends TestEnvironmentFactory> clazz =
-               exportClassLoader.loadClass(environmentFactoryClass).asSubclass(TestEnvironmentFactory.class);
+            exportClassLoader.loadClass(environmentFactoryClass).asSubclass(TestEnvironmentFactory.class);
          factory = clazz.newInstance();
       }
       MessageSystemTestEnvironment testEnvironment = factory.createEnvironment(runtimeLibraryManager);
@@ -83,7 +82,7 @@ class EnvironmentCreationParameter {
 
    public ITestEnvironment createRemoteTestEnvironment(MessageSystemTestEnvironment currentEnvironment) throws ExportException {
       remoteTestEnvironment =
-            new RemoteTestEnvironment(currentEnvironment, serviceConnector, config.keepEnvAliveWithNoUsers());
+         new RemoteTestEnvironment(currentEnvironment, serviceConnector, config.keepEnvAliveWithNoUsers());
       exportedRemoteTestEnvironment = (ITestEnvironment) serviceConnector.export(remoteTestEnvironment);
       return exportedRemoteTestEnvironment;
    }
@@ -91,8 +90,8 @@ class EnvironmentCreationParameter {
    public IServiceConnector getServiceConnector() {
       return serviceConnector;
    }
-   
-   public boolean isKeepAliveWithNoUsers(){
-	   return config.keepEnvAliveWithNoUsers();
+
+   public boolean isKeepAliveWithNoUsers() {
+      return config.keepEnvAliveWithNoUsers();
    }
 }

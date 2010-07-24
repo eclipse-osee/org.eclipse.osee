@@ -20,7 +20,6 @@ import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.msgs.CoveragePackageSave;
 import org.eclipse.osee.coverage.store.CoverageArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.ConnectionNode;
 import org.eclipse.osee.framework.messaging.OseeMessagingListener;
@@ -42,7 +41,7 @@ import org.eclipse.ui.PlatformUI;
 public class CoverageEventManager implements IArtifactEventListener, OseeMessagingStatusCallback {
 
    private static CoverageEventManager instance;
-   private List<CoverageEditor> editors = new ArrayList<CoverageEditor>();
+   private final List<CoverageEditor> editors = new ArrayList<CoverageEditor>();
    private ArtifactTypeEventFilter artifactTypeEventFilter;
    private ConnectionNode connectionNode;
    private OseeMessagingTracker oseeMessagingTracker;
@@ -78,8 +77,8 @@ public class CoverageEventManager implements IArtifactEventListener, OseeMessagi
    private ArtifactTypeEventFilter createArtifactTypeEventFilter() {
       if (artifactTypeEventFilter == null) {
          artifactTypeEventFilter =
-               new ArtifactTypeEventFilter(CoverageArtifactTypes.CoverageFolder, CoverageArtifactTypes.CoverageUnit,
-                     CoverageArtifactTypes.CoveragePackage);
+            new ArtifactTypeEventFilter(CoverageArtifactTypes.CoverageFolder, CoverageArtifactTypes.CoverageUnit,
+               CoverageArtifactTypes.CoveragePackage);
       }
       return artifactTypeEventFilter;
    }
@@ -107,7 +106,7 @@ public class CoverageEventManager implements IArtifactEventListener, OseeMessagi
          try {
             connectionNode.send(CoverageMessages.CoveragePackageSave, packSave, instance);
          } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
    }
@@ -131,8 +130,12 @@ public class CoverageEventManager implements IArtifactEventListener, OseeMessagi
       for (CoverageEditor editor : editors) {
          try {
             for (EventBasicGuidArtifact eventArt : artifactEvent.getArtifacts()) {
-               if (editor.getCoverageEditorInput().getCoveragePackageArtifact() == null) return;
-               if (editor.getCoverageEditorInput().getCoveragePackageArtifact().getBranch().getGuid() != eventArt.getBranchGuid()) return;
+               if (editor.getCoverageEditorInput().getCoveragePackageArtifact() == null) {
+                  return;
+               }
+               if (editor.getCoverageEditorInput().getCoveragePackageArtifact().getBranch().getGuid() != eventArt.getBranchGuid()) {
+                  return;
+               }
                if (eventArt.getModType() == EventModType.Deleted || eventArt.getModType() == EventModType.ChangeType || eventArt.getModType() == EventModType.Purged) {
                   if (eventArt.getGuid().equals(editor.getCoverageEditorInput().getCoveragePackageArtifact().getGuid())) {
                      unregister(editor);
@@ -141,7 +144,7 @@ public class CoverageEventManager implements IArtifactEventListener, OseeMessagi
                }
             }
          } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
    }

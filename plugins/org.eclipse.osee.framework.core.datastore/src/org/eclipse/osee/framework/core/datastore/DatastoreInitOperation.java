@@ -34,58 +34,58 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public class DatastoreInitOperation extends AbstractOperation {
 
-	private static final String ADD_PERMISSION =
-				"INSERT INTO OSEE_PERMISSION (PERMISSION_ID, PERMISSION_NAME) VALUES (?,?)";
+   private static final String ADD_PERMISSION =
+      "INSERT INTO OSEE_PERMISSION (PERMISSION_ID, PERMISSION_NAME) VALUES (?,?)";
 
-	private final IOseeBranchService branchService;
-	private final IOseeDatabaseService dbService;
-	private final IOseeSchemaProvider schemaProvider;
-	private final SchemaCreationOptions options;
-	private final IApplicationServerManager appServerManager;
+   private final IOseeBranchService branchService;
+   private final IOseeDatabaseService dbService;
+   private final IOseeSchemaProvider schemaProvider;
+   private final SchemaCreationOptions options;
+   private final IApplicationServerManager appServerManager;
 
-	public DatastoreInitOperation(IApplicationServerManager appServerManager, IOseeDatabaseService dbService, IOseeBranchService branchService, IOseeSchemaProvider schemaProvider, SchemaCreationOptions options) {
-		super("Datastore Initialization", Activator.PLUGIN_ID);
-		this.appServerManager = appServerManager;
-		this.dbService = dbService;
-		this.branchService = branchService;
-		this.schemaProvider = schemaProvider;
-		this.options = options;
-	}
+   public DatastoreInitOperation(IApplicationServerManager appServerManager, IOseeDatabaseService dbService, IOseeBranchService branchService, IOseeSchemaProvider schemaProvider, SchemaCreationOptions options) {
+      super("Datastore Initialization", Activator.PLUGIN_ID);
+      this.appServerManager = appServerManager;
+      this.dbService = dbService;
+      this.branchService = branchService;
+      this.schemaProvider = schemaProvider;
+      this.options = options;
+   }
 
-	@Override
-	protected void doWork(IProgressMonitor monitor) throws Exception {
-		Conditions.checkExpressionFailOnTrue(dbService.isProduction(),
-					"Error - attempting to initialize a production datastore.");
+   @Override
+   protected void doWork(IProgressMonitor monitor) throws Exception {
+      Conditions.checkExpressionFailOnTrue(dbService.isProduction(),
+         "Error - attempting to initialize a production datastore.");
 
-		IOperation subOp = OperationFactory.createDbSchema(dbService, schemaProvider, options);
-		doSubWork(subOp, monitor, 0.30);
+      IOperation subOp = OperationFactory.createDbSchema(dbService, schemaProvider, options);
+      doSubWork(subOp, monitor, 0.30);
 
-		dbService.getSequence().clear();
+      dbService.getSequence().clear();
 
-		appServerManager.executeLookupRegistration();
+      appServerManager.executeLookupRegistration();
 
-		deleteBinaryBackingData();
-		String binaryDataPath = OseeServerProperties.getOseeApplicationServerData();
-		Lib.deleteDir(new File(binaryDataPath + File.separator + "attr"));
+      deleteBinaryBackingData();
+      String binaryDataPath = OseeServerProperties.getOseeApplicationServerData();
+      Lib.deleteDir(new File(binaryDataPath + File.separator + "attr"));
 
-		OseeInfo.putValue(OseeInfo.DB_ID_KEY, GUID.create());
-		addDefaultPermissions();
+      OseeInfo.putValue(OseeInfo.DB_ID_KEY, GUID.create());
+      addDefaultPermissions();
 
-		subOp = branchService.createSystemRootBranch(monitor);
-		doSubWork(subOp, monitor, 0.30);
-	}
+      subOp = branchService.createSystemRootBranch(monitor);
+      doSubWork(subOp, monitor, 0.30);
+   }
 
-	@SuppressWarnings("unchecked")
-	private void addDefaultPermissions() throws OseeDataStoreException {
-		for (PermissionEnum permission : PermissionEnum.values()) {
-			dbService.runPreparedUpdate(ADD_PERMISSION, permission.getPermId(), permission.getName());
-		}
-	}
+   @SuppressWarnings("unchecked")
+   private void addDefaultPermissions() throws OseeDataStoreException {
+      for (PermissionEnum permission : PermissionEnum.values()) {
+         dbService.runPreparedUpdate(ADD_PERMISSION, permission.getPermId(), permission.getName());
+      }
+   }
 
-	private static void deleteBinaryBackingData() {
-		String binaryDataPath = OseeServerProperties.getOseeApplicationServerData();
-		OseeLog.log(Activator.class, Level.INFO,
-					String.format("Deleting application server binary data [%s]...", binaryDataPath));
-		Lib.deleteDir(new File(binaryDataPath + File.separator + "attr"));
-	}
+   private static void deleteBinaryBackingData() {
+      String binaryDataPath = OseeServerProperties.getOseeApplicationServerData();
+      OseeLog.log(Activator.class, Level.INFO,
+         String.format("Deleting application server binary data [%s]...", binaryDataPath));
+      Lib.deleteDir(new File(binaryDataPath + File.separator + "attr"));
+   }
 }

@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 public class DemoArtifactFactory extends ArtifactFactory {
    public DemoArtifactFactory() {
       super(Arrays.asList(DemoCodeTeamWorkflowArtifact.ARTIFACT_NAME, DemoTestTeamWorkflowArtifact.ARTIFACT_NAME,
-            DemoReqTeamWorkflowArtifact.ARTIFACT_NAME));
+         DemoReqTeamWorkflowArtifact.ARTIFACT_NAME));
    }
 
    @Override

@@ -34,7 +34,7 @@ public class ArtifactConflictBuilder extends ConflictBuilder {
    @Override
    public Conflict getConflict(Branch mergeBranch, Set<Integer> artIdSet) throws OseeCoreException {
       return new ArtifactConflict(sourceGamma, destGamma, artId, toTransactionId, mergeBranch, sourceBranch,
-            destBranch, sourceModType, destModType, artTypeId);
+         destBranch, sourceModType, destModType, artTypeId);
    }
 
 }

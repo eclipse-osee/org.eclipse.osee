@@ -26,7 +26,7 @@ public class EventBasicGuidRelation extends DefaultBasicGuidRelation {
 
    public EventBasicGuidRelation(RelationEventType relationEventType, int artAId, int artBId, DefaultBasicGuidRelation guidRel) {
       this(relationEventType, guidRel.getBranchGuid(), guidRel.getRelTypeGuid(), guidRel.getRelationId(),
-            guidRel.getGammaId(), artAId, guidRel.getArtA(), artBId, guidRel.getArtB());
+         guidRel.getGammaId(), artAId, guidRel.getArtA(), artBId, guidRel.getArtB());
    }
 
    public EventBasicGuidRelation(RelationEventType relationEventType, String branchGuid, String relTypeGuid, int relationId, int gammaId, int artAId, DefaultBasicGuidArtifact artA, int artBId, DefaultBasicGuidArtifact artB) {
@@ -40,40 +40,63 @@ public class EventBasicGuidRelation extends DefaultBasicGuidRelation {
       return relationEventType;
    }
 
+   @Override
    public String toString() {
       return String.format("[%s - B:%s - TG:%s - GI:%d - RI:%d - A:%s - B:%s]", relationEventType, getBranchGuid(),
-            getBranchGuid(), getGammaId(), getRelationId(), getArtA(), getArtB());
+         getBranchGuid(), getGammaId(), getRelationId(), getArtA(), getArtB());
    }
 
    @Override
    public int hashCode() {
       final int prime = 31;
       int result = super.hashCode();
-      result = prime * result + ((relationEventType == null) ? 0 : relationEventType.hashCode());
+      result = prime * result + (relationEventType == null ? 0 : relationEventType.hashCode());
       result = prime * result + artAId;
-      result = prime * result + ((getArtA() == null) ? 0 : getArtA().hashCode());
+      result = prime * result + (getArtA() == null ? 0 : getArtA().hashCode());
       result = prime * result + artBId;
-      result = prime * result + ((getArtB() == null) ? 0 : getArtB().hashCode());
+      result = prime * result + (getArtB() == null ? 0 : getArtB().hashCode());
       return result;
    }
 
    @Override
    public boolean equals(Object obj) {
-      if (this == obj) return true;
-      if (!super.equals(obj)) return false;
-      if (getClass() != obj.getClass()) return false;
+      if (this == obj) {
+         return true;
+      }
+      if (!super.equals(obj)) {
+         return false;
+      }
+      if (getClass() != obj.getClass()) {
+         return false;
+      }
       EventBasicGuidRelation other = (EventBasicGuidRelation) obj;
       if (relationEventType == null) {
-         if (other.relationEventType != null) return false;
-      } else if (!relationEventType.equals(other.relationEventType)) return false;
-      if (artAId != other.artAId) return false;
+         if (other.relationEventType != null) {
+            return false;
+         }
+      } else if (!relationEventType.equals(other.relationEventType)) {
+         return false;
+      }
+      if (artAId != other.artAId) {
+         return false;
+      }
       if (getArtA() == null) {
-         if (other.getArtA() != null) return false;
-      } else if (!getArtA().equals(other.getArtA())) return false;
-      if (artBId != other.artBId) return false;
+         if (other.getArtA() != null) {
+            return false;
+         }
+      } else if (!getArtA().equals(other.getArtA())) {
+         return false;
+      }
+      if (artBId != other.artBId) {
+         return false;
+      }
       if (getArtB() == null) {
-         if (other.getArtB() != null) return false;
-      } else if (!getArtB().equals(other.getArtB())) return false;
+         if (other.getArtB() != null) {
+            return false;
+         }
+      } else if (!getArtB().equals(other.getArtB())) {
+         return false;
+      }
       return true;
    }
 
@@ -95,7 +118,9 @@ public class EventBasicGuidRelation extends DefaultBasicGuidRelation {
 
    public boolean is(RelationEventType... relationEventTypes) {
       for (RelationEventType eventModType : relationEventTypes) {
-         if (this.relationEventType == eventModType) return true;
+         if (this.relationEventType == eventModType) {
+            return true;
+         }
       }
       return false;
    }

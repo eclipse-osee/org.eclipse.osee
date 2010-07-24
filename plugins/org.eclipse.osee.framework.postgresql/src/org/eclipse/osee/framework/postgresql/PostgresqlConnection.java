@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.database.core.IConnectionFactory;
 public class PostgresqlConnection implements IConnectionFactory {
    private static final String driverName = "org.postgresql.Driver";
 
+   @Override
    public Connection getConnection(Properties properties, String connectionURL) throws Exception {
       Class.forName(driverName);
       return DriverManager.getConnection(connectionURL, properties);

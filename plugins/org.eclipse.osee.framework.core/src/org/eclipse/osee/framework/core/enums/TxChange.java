@@ -17,7 +17,10 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
  * @author Ryan D. Brooks
  */
 public enum TxChange {
-   NOT_CURRENT(0), CURRENT(1), DELETED(2), ARTIFACT_DELETED(3);
+   NOT_CURRENT(0),
+   CURRENT(1),
+   DELETED(2),
+   ARTIFACT_DELETED(3);
 
    private int value;
 

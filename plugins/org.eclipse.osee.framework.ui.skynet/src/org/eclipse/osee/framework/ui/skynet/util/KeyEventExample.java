@@ -44,10 +44,18 @@ public class KeyEventExample {
 
    static String stateMask(int stateMask) {
       String string = "";
-      if ((stateMask & SWT.CTRL) != 0) string += " CTRL";
-      if ((stateMask & SWT.ALT) != 0) string += " ALT";
-      if ((stateMask & SWT.SHIFT) != 0) string += " SHIFT";
-      if ((stateMask & SWT.COMMAND) != 0) string += " COMMAND";
+      if ((stateMask & SWT.CTRL) != 0) {
+         string += " CTRL";
+      }
+      if ((stateMask & SWT.ALT) != 0) {
+         string += " ALT";
+      }
+      if ((stateMask & SWT.SHIFT) != 0) {
+         string += " SHIFT";
+      }
+      if ((stateMask & SWT.COMMAND) != 0) {
+         string += " COMMAND";
+      }
       return string;
    }
 
@@ -225,6 +233,7 @@ public class KeyEventExample {
       Display display = new Display();
       Shell shell = new Shell(display);
       Listener listener = new Listener() {
+         @Override
          public void handleEvent(Event e) {
             printEvent(e);
          }
@@ -234,7 +243,9 @@ public class KeyEventExample {
       shell.setSize(200, 200);
       shell.open();
       while (!shell.isDisposed()) {
-         if (!display.readAndDispatch()) display.sleep();
+         if (!display.readAndDispatch()) {
+            display.sleep();
+         }
       }
       display.dispose();
    }

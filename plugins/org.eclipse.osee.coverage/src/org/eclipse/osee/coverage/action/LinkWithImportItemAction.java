@@ -11,6 +11,7 @@
 package org.eclipse.osee.coverage.action;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.coverage.editor.xmerge.XCoverageMergeViewer;
 import org.eclipse.osee.coverage.internal.Activator;
@@ -37,17 +38,17 @@ public class LinkWithImportItemAction extends Action {
    private CoveragePackage coveragePackage;
 
    public LinkWithImportItemAction() {
-      super("Link with Import Item", Action.AS_CHECK_BOX);
+      super("Link with Import Item", IAction.AS_CHECK_BOX);
    }
 
    private void updateSelection() throws OseeStateException {
       if (linkActionEnabled() && ((ISelectedCoverageEditorItem) importXViewer.getXViewer()).getSelectedCoverageEditorItems().size() == 1) {
          ICoverage importCoverageEditorItem =
-               ((ISelectedCoverageEditorItem) importXViewer.getXViewer()).getSelectedCoverageEditorItems().iterator().next();
+            ((ISelectedCoverageEditorItem) importXViewer.getXViewer()).getSelectedCoverageEditorItems().iterator().next();
          // If mergeitemgroup, want to link with parent of one of the children items
          if (importCoverageEditorItem instanceof MergeItemGroup) {
             importCoverageEditorItem =
-                  ((MergeItemGroup) importCoverageEditorItem).getMergeItems().iterator().next().getParent();
+               ((MergeItemGroup) importCoverageEditorItem).getMergeItems().iterator().next().getParent();
          }
          MatchItem matchItem = MergeManager.getPackageCoverageItem(coveragePackage, importCoverageEditorItem);
          if (matchItem != null && matchItem.getPackageItem() != null) {

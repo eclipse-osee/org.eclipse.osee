@@ -33,89 +33,89 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
  */
 public class BranchGraphPaletteProvider {
 
-	private static final String[] drawerNames = new String[] {"Filters"};
-	private PaletteRoot paletteRoot;
-	private final BranchGraphEditor editor;
+   private static final String[] drawerNames = new String[] {"Filters"};
+   private PaletteRoot paletteRoot;
+   private final BranchGraphEditor editor;
 
-	public BranchGraphPaletteProvider(BranchGraphEditor editor) {
-		this.paletteRoot = null;
-		this.editor = editor;
-	}
+   public BranchGraphPaletteProvider(BranchGraphEditor editor) {
+      this.paletteRoot = null;
+      this.editor = editor;
+   }
 
-	public PaletteRoot getPaletteRoot() {
-		if (paletteRoot == null) {
-			paletteRoot = new PaletteRoot();
-			paletteRoot.add(createToolsGroup(paletteRoot));
-			//         addDrawers(paletteRoot);
-		}
-		return paletteRoot;
-	}
+   public PaletteRoot getPaletteRoot() {
+      if (paletteRoot == null) {
+         paletteRoot = new PaletteRoot();
+         paletteRoot.add(createToolsGroup(paletteRoot));
+         //         addDrawers(paletteRoot);
+      }
+      return paletteRoot;
+   }
 
-	private void addDrawers(PaletteRoot paletteRoot) {
-		for (String drawerName : drawerNames) {
-			PaletteContainer container = new PaletteDrawer(drawerName);
+   private void addDrawers(PaletteRoot paletteRoot) {
+      for (String drawerName : drawerNames) {
+         PaletteContainer container = new PaletteDrawer(drawerName);
 
-			String name = "one";
-			String description = "example";
-			Class<?> clazz = Object.class;
+         String name = "one";
+         String description = "example";
+         Class<?> clazz = Object.class;
 
-			container.add(createComponent(name, description, clazz, FrameworkImage.RECTANGLE_16,
-						FrameworkImage.RECTANGLE_24));
-			paletteRoot.add(container);
-		}
-	}
+         container.add(createComponent(name, description, clazz, FrameworkImage.RECTANGLE_16,
+            FrameworkImage.RECTANGLE_24));
+         paletteRoot.add(container);
+      }
+   }
 
-	private ToolEntry createComponent(String label, String description, Class<?> clazz, KeyedImage smallImage, KeyedImage largeImage) {
-		ToolEntry toolEntry =
-					new ToolEntry(label, description, ImageManager.getImageDescriptor(smallImage),
-								ImageManager.getImageDescriptor(largeImage)) {
+   private ToolEntry createComponent(String label, String description, Class<?> clazz, KeyedImage smallImage, KeyedImage largeImage) {
+      ToolEntry toolEntry =
+         new ToolEntry(label, description, ImageManager.getImageDescriptor(smallImage),
+            ImageManager.getImageDescriptor(largeImage)) {
 
-					};
-		return toolEntry;
-	}
+         };
+      return toolEntry;
+   }
 
-	private PaletteContainer createToolsGroup(PaletteRoot palette) {
-		PaletteToolbar toolbar = new PaletteToolbar("Tools");
+   private PaletteContainer createToolsGroup(PaletteRoot palette) {
+      PaletteToolbar toolbar = new PaletteToolbar("Tools");
 
-		ToolEntry tool = new PanningSelectionToolEntry();
-		toolbar.add(tool);
-		palette.setDefaultEntry(tool);
+      ToolEntry tool = new PanningSelectionToolEntry();
+      toolbar.add(tool);
+      palette.setDefaultEntry(tool);
 
-		toolbar.add(new MarqueeToolEntry());
+      toolbar.add(new MarqueeToolEntry());
 
-		final Action action =
-					OseeUiActions.createBugAction(BranchGraphActivator.getInstance(), editor, BranchGraphEditor.EDITOR_ID,
-								"Branch Graph");
-		final ImageDescriptor img = action.getImageDescriptor();
+      final Action action =
+         OseeUiActions.createBugAction(BranchGraphActivator.getInstance(), editor, BranchGraphEditor.EDITOR_ID,
+            "Branch Graph");
+      final ImageDescriptor img = action.getImageDescriptor();
 
-		toolbar.add(new ToolEntry("", action.getText(), img, img, null) {
+      toolbar.add(new ToolEntry("", action.getText(), img, img, null) {
 
-			@Override
-			public Tool createTool() {
-				return new AbstractTool() {
+         @Override
+         public Tool createTool() {
+            return new AbstractTool() {
 
-					@Override
-					protected String getCommandName() {
-						return action.getText();
-					}
+               @Override
+               protected String getCommandName() {
+                  return action.getText();
+               }
 
-					@Override
-					public void activate() {
-						super.activate();
-						Displays.ensureInDisplayThread(new Runnable() {
-							@Override
-							public void run() {
-								deactivate();
-								action.run();
-							}
-						});
+               @Override
+               public void activate() {
+                  super.activate();
+                  Displays.ensureInDisplayThread(new Runnable() {
+                     @Override
+                     public void run() {
+                        deactivate();
+                        action.run();
+                     }
+                  });
 
-					}
-				};
-			}
+               }
+            };
+         }
 
-		});
+      });
 
-		return toolbar;
-	}
+      return toolbar;
+   }
 }

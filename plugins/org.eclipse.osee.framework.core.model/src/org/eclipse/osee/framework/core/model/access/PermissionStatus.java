@@ -17,37 +17,37 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  * @author Roberto E. Escobar
  */
 public final class PermissionStatus {
-	private final StringBuilder reason;
-	private boolean matchedPermission;
+   private final StringBuilder reason;
+   private boolean matchedPermission;
 
-	public PermissionStatus() {
-		this(true, null);
-	}
+   public PermissionStatus() {
+      this(true, null);
+   }
 
-	public PermissionStatus(boolean matched, String reason) {
-		this.reason = new StringBuilder();
-		this.matchedPermission = matched;
-		append(reason);
-	}
+   public PermissionStatus(boolean matched, String reason) {
+      this.reason = new StringBuilder();
+      this.matchedPermission = matched;
+      append(reason);
+   }
 
-	public boolean matches() {
-		return matchedPermission;
-	}
+   public boolean matches() {
+      return matchedPermission;
+   }
 
-	public String getReason() {
-		return reason.toString();
-	}
+   public String getReason() {
+      return reason.toString();
+   }
 
-	void append(String reason) {
-		if (Strings.isValid(reason)) {
-			this.reason.append(reason);
-		}
-	}
+   void append(String reason) {
+      if (Strings.isValid(reason)) {
+         this.reason.append(reason);
+      }
+   }
 
-	void setReason(String reason) {
-	}
+   void setReason(String reason) {
+   }
 
-	void setMatches(boolean matchedPermission) {
-		this.matchedPermission = matchedPermission;
-	}
+   void setMatches(boolean matchedPermission) {
+      this.matchedPermission = matchedPermission;
+   }
 }

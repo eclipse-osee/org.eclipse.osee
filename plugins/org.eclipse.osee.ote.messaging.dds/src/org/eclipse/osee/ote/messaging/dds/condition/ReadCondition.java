@@ -11,22 +11,21 @@
 package org.eclipse.osee.ote.messaging.dds.condition;
 
 import java.util.Collection;
-
 import org.eclipse.osee.ote.messaging.dds.NotImplementedException;
 import org.eclipse.osee.ote.messaging.dds.entity.DataReader;
 
 /**
- * This class is here for future functionality that is described in the DDS specification
- * but has not been implemented or used.
+ * This class is here for future functionality that is described in the DDS specification but has not been implemented
+ * or used.
  * 
  * @author Robert A. Fisher
  * @author David Diepenbrock
  */
 public class ReadCondition {
-   private DataReader dataReader;
-   private Collection<?> sampleStateKinds;
-   private Collection<?> viewStateKinds;
-   private Collection<?> instanceStateKinds;
+   private final DataReader dataReader;
+   private final Collection<?> sampleStateKinds;
+   private final Collection<?> viewStateKinds;
+   private final Collection<?> instanceStateKinds;
 
    /**
     * @param dataReader
@@ -40,7 +39,7 @@ public class ReadCondition {
       this.sampleStateKinds = sampleStateKinds;
       this.viewStateKinds = viewStateKinds;
       this.instanceStateKinds = instanceStateKinds;
-      
+
       // This class, and the use of it has not been implemented
       throw new NotImplementedException();
    }

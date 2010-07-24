@@ -12,7 +12,11 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 @Deprecated
 public enum DeprecatedOperator {
-   EQUAL("="), NOT_EQUAL("<>"), LIKE(" like "), CONTAINS(" like "), IS(" is ");
+   EQUAL("="),
+   NOT_EQUAL("<>"),
+   LIKE(" like "),
+   CONTAINS(" like "),
+   IS(" is ");
 
    private String expression;
 
@@ -20,6 +24,7 @@ public enum DeprecatedOperator {
       this.expression = expression;
    }
 
+   @Override
    public String toString() {
       return expression;
    }

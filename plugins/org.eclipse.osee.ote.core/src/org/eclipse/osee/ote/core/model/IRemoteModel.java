@@ -15,6 +15,6 @@ import java.rmi.Remote;
 /**
  * @author Andrew M. Finkbeiner
  */
-public interface IRemoteModel extends Remote{
+public interface IRemoteModel extends Remote {
 
 }

@@ -10,14 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.core.environment.interfaces;
 
-
 public interface ITimeTypeControl {
-   
-   void step();
-   ICancelTimer setTimerFor(Object objToNotify, int milliseconds);
-   long getEnvTime();
-   void singleStepEnv();
-   
 
+   void step();
+
+   ICancelTimer setTimerFor(Object objToNotify, int milliseconds);
+
+   long getEnvTime();
+
+   void singleStepEnv();
 
 }

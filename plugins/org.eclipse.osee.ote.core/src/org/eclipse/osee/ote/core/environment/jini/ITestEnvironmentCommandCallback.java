@@ -19,12 +19,19 @@ import org.eclipse.osee.ote.core.environment.status.ExceptionEvent;
  * @author Andrew M. Finkbeiner
  */
 public interface ITestEnvironmentCommandCallback extends Remote {
-	void initiatePrompt(TestPrompt prompt) throws RemoteException;
-	void exceptionReceived(ExceptionEvent event) throws RemoteException;
-	long getFileDate(String workspacePath) throws RemoteException;
-	byte[] getFile(String workspacePath) throws RemoteException;
-	Object[] getValues(String key) throws RemoteException;
-	boolean isAlive() throws RemoteException;
-	String getFileVersion(String workspacePath)throws RemoteException;
-	String getAddress() throws RemoteException;
+   void initiatePrompt(TestPrompt prompt) throws RemoteException;
+
+   void exceptionReceived(ExceptionEvent event) throws RemoteException;
+
+   long getFileDate(String workspacePath) throws RemoteException;
+
+   byte[] getFile(String workspacePath) throws RemoteException;
+
+   Object[] getValues(String key) throws RemoteException;
+
+   boolean isAlive() throws RemoteException;
+
+   String getFileVersion(String workspacePath) throws RemoteException;
+
+   String getAddress() throws RemoteException;
 }

@@ -26,9 +26,9 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
-import org.eclipse.ui.forms.widgets.Section;
 
 /**
  * @author Ryan D. Brooks
@@ -71,16 +71,16 @@ public class BlamOverviewPage extends FormPage {
       managedForm.getMessageManager().setAutoUpdate(false);
       PlatformUI.getWorkbench().getHelpSystem().setHelp(form.getBody(), IHelpContextIds.MAIN_WORKFLOW_PAGE);
 
-      int sectionStyle = Section.TITLE_BAR | Section.EXPANDED | Section.TWISTIE;
+      int sectionStyle = ExpandableComposite.TITLE_BAR | ExpandableComposite.EXPANDED | ExpandableComposite.TWISTIE;
 
       managedForm.addPart(new BlamUsageSection(getEditor(), getEditorInput().getBlamOperation(), form.getBody(),
-            managedForm.getToolkit(), sectionStyle));
+         managedForm.getToolkit(), sectionStyle));
       inputSection =
-            new BlamInputSection(getEditor(), getEditorInput().getBlamOperation(), form.getBody(),
-                  managedForm.getToolkit(), sectionStyle);
+         new BlamInputSection(getEditor(), getEditorInput().getBlamOperation(), form.getBody(),
+            managedForm.getToolkit(), sectionStyle);
       outputSection =
-            new BlamOutputSection(getEditor(), getEditorInput().getBlamOperation(), form.getBody(),
-                  managedForm.getToolkit(), sectionStyle, getEditor().getActionBarContributor().getExecuteBlamAction());
+         new BlamOutputSection(getEditor(), getEditorInput().getBlamOperation(), form.getBody(),
+            managedForm.getToolkit(), sectionStyle, getEditor().getActionBarContributor().getExecuteBlamAction());
 
       managedForm.addPart(inputSection);
       managedForm.addPart(outputSection);

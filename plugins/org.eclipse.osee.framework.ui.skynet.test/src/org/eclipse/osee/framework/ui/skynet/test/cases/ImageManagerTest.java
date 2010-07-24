@@ -103,7 +103,7 @@ public abstract class ImageManagerTest {
             continue;
          }
          assertNotNull(String.format("[%s] Image not defined for [%s]", imageClassName, oseeImage),
-               ImageManager.getImage(oseeImage));
+            ImageManager.getImage(oseeImage));
          if (ImageManager.getImage(oseeImage).equals(ImageManager.getImage(ImageManager.MISSING))) {
             sb.append(String.format("\n[%s] Image not defined for [%s]", imageClassName, oseeImage));
          }
@@ -113,37 +113,37 @@ public abstract class ImageManagerTest {
 
    @org.junit.Test
    public void testGetImageByType() throws Exception {
-      assertTrue("Image returned not a folder image.", ArtifactImageManager.getImage(CoreArtifactTypes.Folder).equals(
-            ImageManager.getImage(PluginUiImage.FOLDER)));
+      assertTrue("Image returned not a folder image.",
+         ArtifactImageManager.getImage(CoreArtifactTypes.Folder).equals(ImageManager.getImage(PluginUiImage.FOLDER)));
 
    }
 
    @org.junit.Test
    public void testGetImageByArtifact() throws Exception {
       Artifact folder =
-            StaticIdManager.getOrCreateSingletonArtifact(CoreArtifactTypes.Folder, "user.groups",
-                  BranchManager.getCommonBranch());
-      assertTrue("Image returned not a folder image.", ArtifactImageManager.getImage(folder).equals(
-            ImageManager.getImage(PluginUiImage.FOLDER)));
+         StaticIdManager.getOrCreateSingletonArtifact(CoreArtifactTypes.Folder, "user.groups",
+            BranchManager.getCommonBranch());
+      assertTrue("Image returned not a folder image.",
+         ArtifactImageManager.getImage(folder).equals(ImageManager.getImage(PluginUiImage.FOLDER)));
    }
 
    @org.junit.Test
    public void testSetArtifactTypeImageInDb() throws Exception {
 
       Artifact folder =
-            StaticIdManager.getOrCreateSingletonArtifact(CoreArtifactTypes.Folder, "user.groups",
-                  BranchManager.getCommonBranch());
+         StaticIdManager.getOrCreateSingletonArtifact(CoreArtifactTypes.Folder, "user.groups",
+            BranchManager.getCommonBranch());
 
       // Check folder image
-      assertTrue("Image returned not a \"Folder\" image.", ArtifactImageManager.getImage(folder).equals(
-            ImageManager.getImage(PluginUiImage.FOLDER)));
+      assertTrue("Image returned not a \"Folder\" image.",
+         ArtifactImageManager.getImage(folder).equals(ImageManager.getImage(PluginUiImage.FOLDER)));
 
       // Set different image for folder
       ArtifactImageManager.setArtifactTypeImageInDb(CoreArtifactTypes.Folder, getByteArrayInputStream("heading.gif"));
 
       // Test that different image overrides folder image
-      assertFalse("Image returned should be \"Heading\" image.", ArtifactImageManager.getImage(folder).equals(
-            ImageManager.getImage(PluginUiImage.FOLDER)));
+      assertFalse("Image returned should be \"Heading\" image.",
+         ArtifactImageManager.getImage(folder).equals(ImageManager.getImage(PluginUiImage.FOLDER)));
 
       // Clear db image
       ArtifactImageManager.setArtifactTypeImageInDb(CoreArtifactTypes.Folder, null);
@@ -153,8 +153,8 @@ public abstract class ImageManagerTest {
       TestUtil.sleep(2000);
 
       // Test that folder image is back
-      assertTrue("Image returned not a \"Folder\" image.", ArtifactImageManager.getImage(folder).equals(
-            ImageManager.getImage(PluginUiImage.FOLDER)));
+      assertTrue("Image returned not a \"Folder\" image.",
+         ArtifactImageManager.getImage(folder).equals(ImageManager.getImage(PluginUiImage.FOLDER)));
 
       // Cleanup folder artifact
       folder.purgeFromBranch();

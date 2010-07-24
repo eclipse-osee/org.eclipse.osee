@@ -27,9 +27,11 @@ public abstract class AbstractSelectionEnabledHandler extends CommandHandler imp
       menuManager.getMenu().addMenuListener(this);
    }
 
+   @Override
    public final void menuHidden(MenuEvent e) {
    }
 
+   @Override
    public final void menuShown(MenuEvent e) {
       fireHandlerChanged(enabledChangedEvent);
    }

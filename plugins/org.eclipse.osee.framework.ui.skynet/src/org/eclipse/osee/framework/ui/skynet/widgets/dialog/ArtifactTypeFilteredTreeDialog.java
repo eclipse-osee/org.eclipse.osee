@@ -50,13 +50,14 @@ public class ArtifactTypeFilteredTreeDialog extends OSEEFilteredTreeDialog<Colle
       try {
          getTreeViewer().getViewer().setSorter(new ArtifactTypeNameSorter());
          getTreeViewer().getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                IStructuredSelection sel = (IStructuredSelection) getTreeViewer().getViewer().getSelection();
                if (sel.isEmpty()) {
                   selection = null;
                } else {
                   selection =
-                        (ArtifactType) ((IStructuredSelection) getTreeViewer().getViewer().getSelection()).getFirstElement();
+                     (ArtifactType) ((IStructuredSelection) getTreeViewer().getViewer().getSelection()).getFirstElement();
                }
             }
          });

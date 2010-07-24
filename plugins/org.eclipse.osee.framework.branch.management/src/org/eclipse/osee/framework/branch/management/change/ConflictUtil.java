@@ -32,7 +32,7 @@ public final class ConflictUtil {
    public static Conflict createConflict(MergeBranch mergeBranch, ChangeItem changeItem, ConflictStatus conflictStatus) throws OseeCoreException {
       ConflictType conflictType = ConflictUtil.toConflictType(changeItem);
       return new Conflict(StorageState.CREATED, changeItem.getItemId(), conflictType, mergeBranch, conflictStatus,
-            changeItem.getCurrentVersion().getGammaId(), changeItem.getDestinationVersion().getGammaId());
+         changeItem.getCurrentVersion().getGammaId(), changeItem.getDestinationVersion().getGammaId());
    }
 
    public static boolean areGammasEqual(Conflict object1, Conflict object2) {
@@ -41,8 +41,8 @@ public final class ConflictUtil {
          result = true;
       } else if (object1 != null && object2 != null) {
          result =
-               object1.getSourceGammaId().equals(object2.getSourceGammaId()) && object1.getDestinationGammaId().equals(
-                     object2.getDestinationGammaId());
+            object1.getSourceGammaId().equals(object2.getSourceGammaId()) && object1.getDestinationGammaId().equals(
+               object2.getDestinationGammaId());
       }
       return result;
    }

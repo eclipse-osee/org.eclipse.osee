@@ -25,7 +25,7 @@ public class Search {
    /**
     * The list of items to present.
     */
-   private String[] items;
+   private final String[] items;
 
    /**
     * The multi character search string
@@ -55,10 +55,11 @@ public class Search {
    public String[] getItems() {
       int range;
 
-      if (lastIndex == -1 || firstIndex == -1)
+      if (lastIndex == -1 || firstIndex == -1) {
          return items;
-      else
+      } else {
          range = lastIndex - firstIndex;
+      }
       String[] temp = new String[range];
       System.arraycopy(items, firstIndex, temp, 0, range);
       return temp;
@@ -87,19 +88,21 @@ public class Search {
       int first = -1;
       int last = -1;
 
-      if (!Character.isISOControl(e.character)) // Looks for valid NON control character 0x20 - 0x7E
+      if (!Character.isISOControl(e.character)) {
          searchString = new String(searchString + e.character);
-      else if (e.character == SWT.BS) // Backspace Character
+      } else if (e.character == SWT.BS) // Backspace Character
       {
-         if (searchString.length() > 1)
+         if (searchString.length() > 1) {
             searchString = new String(searchString.substring(0, searchString.length() - 1));
-         else if (searchString.length() == 1) // No more characters in search string... reset string;
+         } else if (searchString.length() == 1) {
             this.reset();
-         else
+         } else {
             return;
-      } else
+         }
+      } else {
          // If invalid character.. do nothing
          return;
+      }
 
       // Look for first instance of substring
       for (int i = 0; i < items.length; i++) {
@@ -120,10 +123,13 @@ public class Search {
                }
             }
          }
-         if (last == -1) lastIndex = items.length;
-      } else
+         if (last == -1) {
+            lastIndex = items.length;
+         }
+      } else {
          // If substring is not found.. remove last character
          searchString = new String(searchString.substring(0, searchString.length() - 1));
+      }
 
       if (first != -1 && last != -1) {
          firstIndex = first;

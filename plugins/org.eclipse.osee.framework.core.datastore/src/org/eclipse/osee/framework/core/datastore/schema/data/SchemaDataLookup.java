@@ -18,7 +18,7 @@ import java.util.Map;
  */
 public class SchemaDataLookup {
 
-   private SchemaData schemaData;
+   private final SchemaData schemaData;
 
    public SchemaDataLookup(SchemaData schemaData) {
       this.schemaData = schemaData;

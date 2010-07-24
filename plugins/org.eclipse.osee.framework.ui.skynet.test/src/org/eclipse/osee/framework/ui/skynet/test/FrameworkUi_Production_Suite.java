@@ -16,7 +16,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {FrameworkImageTest.class, OseeEmailTest.class})
+@Suite.SuiteClasses({FrameworkImageTest.class, OseeEmailTest.class})
 /**
  * @author Donald G. Dunne
  */

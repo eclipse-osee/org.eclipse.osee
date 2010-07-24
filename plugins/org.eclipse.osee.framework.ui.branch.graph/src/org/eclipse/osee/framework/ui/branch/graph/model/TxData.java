@@ -117,11 +117,11 @@ public class TxData {
    @Override
    public String toString() {
       return String.format("Tx:[%s] Author:[%s] Branch:[%s] Comment:[%s]", getTxId(), getAuthor(),
-            getBranch().getName(), getComment());
+         getBranch().getName(), getComment());
    }
 
    protected static TxData createTxData(TransactionRecord txId) throws OseeCoreException {
       return new TxData(txId.getBranch(), txId.getAuthor(), txId.getTimeStamp(), txId.getComment(),
-            txId.getTxType().getId(), txId.getCommit(), txId.getId());
+         txId.getTxType().getId(), txId.getCommit(), txId.getId());
    }
 }

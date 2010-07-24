@@ -21,7 +21,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
-public class EmbeddedStringEditor{
+public class EmbeddedStringEditor {
 
    XText text;
    String entryText = "";
@@ -33,37 +33,38 @@ public class EmbeddedStringEditor{
    private Composite composite;
    boolean fillVertically = false;
 
-
    public EmbeddedStringEditor(String dialogMessage) {
       this.dialogMessage = dialogMessage;
    }
 
-
    public void createEditor(Composite composite) {
-	  this.composite = composite;
-	  
+      this.composite = composite;
+
       // Create error label
       errorLabel = new Label(composite, SWT.NONE);
       errorLabel.setSize(errorLabel.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-      errorLabel.setForeground(new Color(null,255,0,0));
+      errorLabel.setForeground(new Color(null, 255, 0, 0));
       errorLabel.setText("");
 
-	   new Label(composite, SWT.NONE).setText(dialogMessage);
+      new Label(composite, SWT.NONE).setText(dialogMessage);
       text = new XText();
       text.setFillHorizontally(true);
       text.setFocus();
       text.setDisplayLabel(false);
-      if (!entryText.equals("")) text.set(entryText);
+      if (!entryText.equals("")) {
+         text.set(entryText);
+      }
       if (fillVertically) {
          text.setFillVertically(true);
          text.setHeight(200);
       }
       text.createWidgets(composite, 2);
-      
+
       text.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				handleModified();
-			}
+         @Override
+         public void modifyText(ModifyEvent e) {
+            handleModified();
+         }
       });
 
       composite.layout();
@@ -91,7 +92,9 @@ public class EmbeddedStringEditor{
    }
 
    public void setEntry(String entry) {
-      if (text != null) text.set(entry);
+      if (text != null) {
+         text.set(entry);
+      }
       this.entryText = entry;
    }
 
@@ -116,6 +119,5 @@ public class EmbeddedStringEditor{
    public void setValidationErrorString(String errorText) {
       validationErrorString = errorText;
    }
-
 
 }

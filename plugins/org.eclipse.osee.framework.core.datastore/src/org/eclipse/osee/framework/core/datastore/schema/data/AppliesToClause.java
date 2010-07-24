@@ -24,11 +24,14 @@ public class AppliesToClause implements Xmlizable {
    public static final String APPLIES_TO_TAG = "AppliesTo";
 
    public enum OrderType {
-      Undefined, Ascending, Descending;
+      Undefined,
+      Ascending,
+      Descending;
    }
 
    public enum AppliesToEntries {
-      id, sort;
+      id,
+      sort;
    }
 
    private String columnName;
@@ -55,9 +58,10 @@ public class AppliesToClause implements Xmlizable {
       this.orderType = orderType;
    }
 
+   @Override
    public String toString() {
       return String.format("%s:[%s]\t%s:[%s]", AppliesToEntries.id.name(), columnName, AppliesToEntries.sort.name(),
-            orderType);
+         orderType);
    }
 
    @Override
@@ -70,7 +74,7 @@ public class AppliesToClause implements Xmlizable {
       }
       AppliesToClause that = (AppliesToClause) otherObject;
       return new EqualsBuilder().appendSuper(super.equals(otherObject)).append(this.columnName, that.getColumnName()).append(
-            this.orderType, that.getOrderType()).isEquals();
+         this.orderType, that.getOrderType()).isEquals();
    }
 
    @Override
@@ -78,6 +82,7 @@ public class AppliesToClause implements Xmlizable {
       return new HashCodeBuilder(23, 37).append(columnName).append(orderType).toHashCode();
    }
 
+   @Override
    public Element toXml(Document doc) {
       Element element = doc.createElement(APPLIES_TO_TAG);
       element.setAttribute(AppliesToEntries.id.name(), columnName);

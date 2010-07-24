@@ -64,8 +64,8 @@ public abstract class AbstractWordAttributeHealthOperation extends DatabaseHealt
       List<AttrData> attributesWithErrors = new ArrayList<AttrData>();
 
       IOperation operation =
-            new FindAllWordAttributesNeedingFix(String.format("Find all %s enabled", baseName),
-                  getStatus().getPlugin(), attributesWithErrors);
+         new FindAllWordAttributesNeedingFix(String.format("Find all %s enabled", baseName), getStatus().getPlugin(),
+            attributesWithErrors);
       doSubWork(operation, monitor, 0.40);
 
       setItemsToFix(attributesWithErrors.size());
@@ -74,7 +74,7 @@ public abstract class AbstractWordAttributeHealthOperation extends DatabaseHealt
       appendToDetails(AHTML.addHeaderRowMultiColumnTable(new String[] {"HRID", "GAMMA ID", "URI"}));
       for (AttrData attrData : attributesWithErrors) {
          appendToDetails(AHTML.addRowMultiColumnTable(new String[] {attrData.getHrid(), attrData.getGammaId(),
-               attrData.getUri()}));
+            attrData.getUri()}));
       }
       appendToDetails(AHTML.endMultiColumnTable());
       monitor.worked(calculateWork(0.10));
@@ -106,7 +106,7 @@ public abstract class AbstractWordAttributeHealthOperation extends DatabaseHealt
 
    private final class FindAllWordAttributesNeedingFix extends AbstractOperation {
       private static final String GET_ATTRS =
-            "SELECT DISTINCT(art.human_readable_id), attr.gamma_id, attr.uri FROM osee_attribute attr, osee_artifact art WHERE attr.attr_type_id = ? AND attr.art_id = art.art_id AND attr.uri is not null AND attr.uri != '' order by attr.gamma_id asc"; // and t1.attr_id = 1155574";
+         "SELECT DISTINCT(art.human_readable_id), attr.gamma_id, attr.uri FROM osee_attribute attr, osee_artifact art WHERE attr.attr_type_id = ? AND attr.art_id = art.art_id AND attr.uri is not null AND attr.uri != '' order by attr.gamma_id asc"; // and t1.attr_id = 1155574";
 
       private final List<AttrData> attributesWithErrors;
 
@@ -186,8 +186,8 @@ public abstract class AbstractWordAttributeHealthOperation extends DatabaseHealt
             parameterMap.put("sessionId", ClientSessionManager.getSessionId());
             parameterMap.put("uri", resourcePath);
             String urlString =
-                  HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.RESOURCE_CONTEXT,
-                        parameterMap);
+               HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.RESOURCE_CONTEXT,
+                  parameterMap);
 
             AcquireResult result = HttpProcessor.acquire(new URL(urlString), sourceOutputStream);
             if (result.getCode() == HttpURLConnection.HTTP_OK) {
@@ -227,10 +227,10 @@ public abstract class AbstractWordAttributeHealthOperation extends DatabaseHealt
          }
 
          String urlString =
-               HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.RESOURCE_CONTEXT,
-                     parameterMap);
+            HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.RESOURCE_CONTEXT,
+               parameterMap);
          HttpProcessor.put(new URL(urlString), new ByteArrayInputStream(toUpload), resource.result.getContentType(),
-               resource.result.getEncoding());
+            resource.result.getEncoding());
       }
 
       public static void backupResourceLocally(File backupFolder, Resource resource) throws IOException {

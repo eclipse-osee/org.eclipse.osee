@@ -89,7 +89,7 @@ public class CoverageImportTestBlam extends AbstractCoverageBlam implements ICov
             System.err.println(String.format("Importing [%s]", PATH + filename));
             URL url = CoverageImport1TestBlam.class.getResource(PATH + filename);
             CoverageUnit coverageUnit =
-                  SampleJavaFileParser.createCodeUnit(url, coverageImport.getCoverageUnitFileContentsProvider());
+               SampleJavaFileParser.createCodeUnit(url, coverageImport.getCoverageUnitFileContentsProvider());
             String namespace = coverageUnit.getNamespace().replaceFirst("org.eclipse.osee.coverage.test.import..", "");
             coverageUnit.setNamespace(namespace);
             CoverageUnit parentCoverageUnit = coverageImport.getOrCreateParent(namespace);

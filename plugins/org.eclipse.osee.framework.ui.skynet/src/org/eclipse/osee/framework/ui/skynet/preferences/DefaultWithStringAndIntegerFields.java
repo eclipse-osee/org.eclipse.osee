@@ -39,9 +39,9 @@ public class DefaultWithStringAndIntegerFields extends FieldEditor {
    private Label defaultLabel;
    private Text text1;
    private Text text2;
-   private String defaultValue;
-   private String labelText1;
-   private String labelText2;
+   private final String defaultValue;
+   private final String labelText1;
+   private final String labelText2;
    private Composite textComposite;
 
    public DefaultWithStringAndIntegerFields(String name, String defaultValue, String labelText1, String labelText2, Composite parent) {

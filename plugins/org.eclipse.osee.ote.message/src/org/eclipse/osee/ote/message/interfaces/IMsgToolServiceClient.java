@@ -13,14 +13,15 @@ package org.eclipse.osee.ote.message.interfaces;
 import java.net.InetSocketAddress;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-
 import org.eclipse.osee.ote.core.environment.UserTestSessionKey;
 import org.eclipse.osee.ote.message.enums.DataType;
 
-
 public interface IMsgToolServiceClient extends Remote {
-   InetSocketAddress getAddressByType(String messageName, DataType memType) throws RemoteException; 
+   InetSocketAddress getAddressByType(String messageName, DataType memType) throws RemoteException;
+
    void changeRate(String msgName, double rate) throws RemoteException;
+
    void changeIsScheduled(String msgName, boolean isScheduled) throws RemoteException;
+
    UserTestSessionKey getTestSessionKey() throws RemoteException;
 }

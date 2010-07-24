@@ -34,7 +34,7 @@ public class XViewerAttributeColumn extends XViewerValueColumn {
    @Override
    public XViewerAttributeColumn copy() {
       return new XViewerAttributeColumn(getId(), getName(), getAttributeTypeName(), getWidth(), getAlign(), isShow(),
-            getSortDataType(), isMultiColumnEditable(), getDescription());
+         getSortDataType(), isMultiColumnEditable(), getDescription());
    }
 
    public XViewerAttributeColumn(String id, String name, String attributeTypeName, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {

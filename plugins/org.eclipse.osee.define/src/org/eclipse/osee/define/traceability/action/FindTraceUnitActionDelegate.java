@@ -53,7 +53,7 @@ public class FindTraceUnitActionDelegate implements IWorkbenchWindowActionDelega
       ISelection selection = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getSelection();
       if (selection instanceof StructuredSelection) {
          List<IResource> selectedItems =
-               Handlers.processSelectionObjects(IResource.class, (StructuredSelection) selection);
+            Handlers.processSelectionObjects(IResource.class, (StructuredSelection) selection);
          List<IResource> toReturn = new ArrayList<IResource>();
          for (IResource resource : selectedItems) {
             if (resource instanceof IFile) {

@@ -77,6 +77,7 @@ public abstract class XHyperlinkLabelValueSelection extends XWidget {
          valueHyperlinkLabel.setToolTipText(Strings.isValid(getToolTip()) ? getToolTip() : "Select to Modify");
          valueHyperlinkLabel.setLayoutData(gd);
          valueHyperlinkLabel.addListener(SWT.MouseUp, new Listener() {
+            @Override
             public void handleEvent(Event event) {
                if (handleSelection()) {
                   refresh();
@@ -99,14 +100,20 @@ public abstract class XHyperlinkLabelValueSelection extends XWidget {
 
    @Override
    public void refresh() {
-      if (getControl() == null || getControl().isDisposed()) return;
+      if (getControl() == null || getControl().isDisposed()) {
+         return;
+      }
       if (Widgets.isAccessible(valueHyperlinkLabel)) {
-         if (getCurrentValue().equals(valueHyperlinkLabel.getText())) return;
+         if (getCurrentValue().equals(valueHyperlinkLabel.getText())) {
+            return;
+         }
          valueHyperlinkLabel.setText(getCurrentValue());
          valueHyperlinkLabel.update();
          valueHyperlinkLabel.getParent().update();
       } else if (Widgets.isAccessible(valueLabel)) {
-         if (getCurrentValue().equals(valueLabel.getText())) return;
+         if (getCurrentValue().equals(valueLabel.getText())) {
+            return;
+         }
          valueLabel.setText(getCurrentValue());
          valueLabel.update();
          valueLabel.getParent().update();

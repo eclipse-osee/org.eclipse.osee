@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.GroupMarker;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -77,8 +78,7 @@ public class TaskXViewer extends WorldXViewer {
    private void registerAdvancedSectionsFromExtensionPoints() {
 
       ExtensionDefinedObjects<ITaskAction> extensions =
-            new ExtensionDefinedObjects<ITaskAction>(AtsPlugin.PLUGIN_ID + ".AtsMenuAction", "AtsMenuAction",
-                  "classname");
+         new ExtensionDefinedObjects<ITaskAction>(AtsPlugin.PLUGIN_ID + ".AtsMenuAction", "AtsMenuAction", "classname");
       for (ITaskAction item : extensions.getObjects()) {
          try {
             showRelatedTasksAction = item;
@@ -153,7 +153,7 @@ public class TaskXViewer extends WorldXViewer {
    }
 
    Action editTaskTitleAction, editTaskAssigneesAction, editTaskStatusAction, editTaskResolutionAction,
-         editTaskEstimateAction, editTaskRelatedStateAction, editTaskNotesAction;
+      editTaskEstimateAction, editTaskRelatedStateAction, editTaskNotesAction;
    Action addNewTaskAction, deleteTasksAction;
    Action showRelatedAction;
 
@@ -161,13 +161,13 @@ public class TaskXViewer extends WorldXViewer {
    public void createMenuActions() {
       super.createMenuActions();
 
-      editTaskTitleAction = new Action("Edit Task Title", Action.AS_PUSH_BUTTON) {
+      editTaskTitleAction = new Action("Edit Task Title", IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
             try {
                boolean success =
-                     PromptChangeUtil.promptChangeAttribute(getSelectedTaskArtifact(), ATSAttributes.TITLE_ATTRIBUTE,
-                           false, false);
+                  PromptChangeUtil.promptChangeAttribute(getSelectedTaskArtifact(), ATSAttributes.TITLE_ATTRIBUTE,
+                     false, false);
                if (success) {
                   editor.onDirtied();
                   update(getSelectedTaskArtifacts().toArray(), null);
@@ -178,7 +178,7 @@ public class TaskXViewer extends WorldXViewer {
          }
       };
 
-      editTaskAssigneesAction = new Action("Edit Task Assignees", Action.AS_PUSH_BUTTON) {
+      editTaskAssigneesAction = new Action("Edit Task Assignees", IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
             try {
@@ -192,7 +192,7 @@ public class TaskXViewer extends WorldXViewer {
          }
       };
 
-      editTaskStatusAction = new Action("Edit Task Status", Action.AS_PUSH_BUTTON) {
+      editTaskStatusAction = new Action("Edit Task Status", IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
             try {
@@ -206,7 +206,7 @@ public class TaskXViewer extends WorldXViewer {
          }
       };
 
-      editTaskResolutionAction = new Action("Edit Task Resolution", Action.AS_PUSH_BUTTON) {
+      editTaskResolutionAction = new Action("Edit Task Resolution", IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
             try {
@@ -217,14 +217,14 @@ public class TaskXViewer extends WorldXViewer {
          }
       };
 
-      editTaskEstimateAction = new Action("Edit Task Estimate", Action.AS_PUSH_BUTTON) {
+      editTaskEstimateAction = new Action("Edit Task Estimate", IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
             try {
                boolean success =
-                     ArtifactPromptChange.promptChangeFloatAttribute(
-                           ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(),
-                           ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getDisplayName(), getSelectedTaskArtifacts(), false);
+                  ArtifactPromptChange.promptChangeFloatAttribute(
+                     ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(),
+                     ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getDisplayName(), getSelectedTaskArtifacts(), false);
                if (success) {
                   editor.onDirtied();
                   update(getSelectedTaskArtifacts().toArray(), null);
@@ -235,13 +235,13 @@ public class TaskXViewer extends WorldXViewer {
          }
       };
 
-      editTaskRelatedStateAction = new Action("Edit Task Related to State", Action.AS_PUSH_BUTTON) {
+      editTaskRelatedStateAction = new Action("Edit Task Related to State", IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
             try {
                boolean success =
-                     PromptChangeUtil.promptChangeAttribute(getSelectedTaskArtifacts(),
-                           ATSAttributes.RELATED_TO_STATE_ATTRIBUTE, false, true);
+                  PromptChangeUtil.promptChangeAttribute(getSelectedTaskArtifacts(),
+                     ATSAttributes.RELATED_TO_STATE_ATTRIBUTE, false, true);
                if (success) {
                   editor.onDirtied();
                   update(getSelectedTaskArtifacts().toArray(), null);
@@ -252,13 +252,13 @@ public class TaskXViewer extends WorldXViewer {
          }
       };
 
-      editTaskNotesAction = new Action("Edit Task Notes", Action.AS_PUSH_BUTTON) {
+      editTaskNotesAction = new Action("Edit Task Notes", IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
             try {
                boolean success =
-                     PromptChangeUtil.promptChangeAttribute(getSelectedTaskArtifacts(),
-                           ATSAttributes.SMA_NOTE_ATTRIBUTE, false, true);
+                  PromptChangeUtil.promptChangeAttribute(getSelectedTaskArtifacts(), ATSAttributes.SMA_NOTE_ATTRIBUTE,
+                     false, true);
                if (success) {
                   editor.onDirtied();
                   update(getSelectedTaskArtifacts().toArray(), null);
@@ -269,14 +269,14 @@ public class TaskXViewer extends WorldXViewer {
          }
       };
 
-      addNewTaskAction = new Action("New Task", Action.AS_PUSH_BUTTON) {
+      addNewTaskAction = new Action("New Task", IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
             xTaskViewer.handleNewTask();
          }
       };
 
-      deleteTasksAction = new Action("Delete Task", Action.AS_PUSH_BUTTON) {
+      deleteTasksAction = new Action("Delete Task", IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
             try {
@@ -359,7 +359,7 @@ public class TaskXViewer extends WorldXViewer {
             return true;
          }
       } else if (PromptChangeUtil.promptChangeAttribute(getSelectedTaskArtifacts(), ATSAttributes.RESOLUTION_ATTRIBUTE,
-            false, false)) {
+         false, false)) {
          editor.onDirtied();
          update(getSelectedTaskArtifacts().toArray(), null);
          return true;
@@ -380,13 +380,12 @@ public class TaskXViewer extends WorldXViewer {
 
          if (isSelectedTaskArtifactsAreInWork() && xCol.equals(WorldXViewerFactory.Estimated_Hours_Col)) {
             modified =
-                  PromptChangeUtil.promptChangeFloatAttribute(taskArt, ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE, false);
+               PromptChangeUtil.promptChangeFloatAttribute(taskArt, ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE, false);
          } else if (isSelectedTaskArtifactsAreInWork() && xCol.equals(WorldXViewerFactory.Title_Col)) {
             modified = PromptChangeUtil.promptChangeAttribute(taskArt, ATSAttributes.TITLE_ATTRIBUTE, false, false);
          } else if (isSelectedTaskArtifactsAreInWork() && xCol.equals(WorldXViewerFactory.Related_To_State_Col)) {
             modified =
-                  PromptChangeUtil.promptChangeAttribute(taskArt, ATSAttributes.RELATED_TO_STATE_ATTRIBUTE, false,
-                        false);
+               PromptChangeUtil.promptChangeAttribute(taskArt, ATSAttributes.RELATED_TO_STATE_ATTRIBUTE, false, false);
          } else if (isSelectedTaskArtifactsAreInWork() && xCol.equals(WorldXViewerFactory.Assignees_Col)) {
             modified = PromptChangeUtil.promptChangeAssignees(taskArt, false);
          } else if (isUsingTaskResolutionOptions() && (xCol.equals(WorldXViewerFactory.Hours_Spent_State_Col) || xCol.equals(WorldXViewerFactory.Hours_Spent_Total_Col) || xCol.equals(WorldXViewerFactory.Percent_Complete_State_Col) || xCol.equals(WorldXViewerFactory.Percent_Complete_Total_Col))) {
@@ -451,18 +450,18 @@ public class TaskXViewer extends WorldXViewer {
                if (parentSma != null) {
                   // Add any new tasks related to parent sma
                   Collection<TaskArtifact> artifacts =
-                        Collections.castMatching(TaskArtifact.class, transData.getRelatedArtifacts(
-                              parentSma.getArtId(), RelationTypeManager.getTypeId(AtsRelationTypes.SmaToTask_Task),
-                              AtsUtil.getAtsBranch().getId(), transData.cacheAddedRelations));
+                     Collections.castMatching(TaskArtifact.class, transData.getRelatedArtifacts(parentSma.getArtId(),
+                        RelationTypeManager.getTypeId(AtsRelationTypes.SmaToTask_Task), AtsUtil.getAtsBranch().getId(),
+                        transData.cacheAddedRelations));
                   if (artifacts.size() > 0) {
                      taskComposite.add(artifacts);
                   }
 
                   // Remove any tasks related to parent sma
                   artifacts =
-                        Collections.castMatching(TaskArtifact.class, transData.getRelatedArtifacts(
-                              parentSma.getArtId(), RelationTypeManager.getTypeId(AtsRelationTypes.SmaToTask_Task),
-                              AtsUtil.getAtsBranch().getId(), transData.cacheDeletedRelations));
+                     Collections.castMatching(TaskArtifact.class, transData.getRelatedArtifacts(parentSma.getArtId(),
+                        RelationTypeManager.getTypeId(AtsRelationTypes.SmaToTask_Task), AtsUtil.getAtsBranch().getId(),
+                        transData.cacheDeletedRelations));
                   if (artifacts.size() > 0) {
                      remove(artifacts.toArray(new Object[artifacts.size()]));
                   }

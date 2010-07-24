@@ -39,33 +39,36 @@ public class TestManagerEditorContributor extends MultiPageEditorActionBarContri
       createActions();
    }
 
+   @Override
    public void setActivePage(IEditorPart part) {
-      if (activeEditorPart == part) return;
+      if (activeEditorPart == part) {
+         return;
+      }
 
       activeEditorPart = part;
 
       IActionBars actionBars = getActionBars();
       if (actionBars != null) {
 
-         ITextEditor editor = (part instanceof ITextEditor) ? (ITextEditor) part : null;
+         ITextEditor editor = part instanceof ITextEditor ? (ITextEditor) part : null;
 
-         actionBars.setGlobalActionHandler(ActionFactory.DELETE.getId(), getAction(editor,
-               ITextEditorActionConstants.DELETE));
-         actionBars.setGlobalActionHandler(ActionFactory.UNDO.getId(), getAction(editor,
-               ITextEditorActionConstants.UNDO));
-         actionBars.setGlobalActionHandler(ActionFactory.REDO.getId(), getAction(editor,
-               ITextEditorActionConstants.REDO));
+         actionBars.setGlobalActionHandler(ActionFactory.DELETE.getId(),
+            getAction(editor, ITextEditorActionConstants.DELETE));
+         actionBars.setGlobalActionHandler(ActionFactory.UNDO.getId(),
+            getAction(editor, ITextEditorActionConstants.UNDO));
+         actionBars.setGlobalActionHandler(ActionFactory.REDO.getId(),
+            getAction(editor, ITextEditorActionConstants.REDO));
          actionBars.setGlobalActionHandler(ActionFactory.CUT.getId(), getAction(editor, ITextEditorActionConstants.CUT));
-         actionBars.setGlobalActionHandler(ActionFactory.COPY.getId(), getAction(editor,
-               ITextEditorActionConstants.COPY));
-         actionBars.setGlobalActionHandler(ActionFactory.PASTE.getId(), getAction(editor,
-               ITextEditorActionConstants.PASTE));
-         actionBars.setGlobalActionHandler(ActionFactory.SELECT_ALL.getId(), getAction(editor,
-               ITextEditorActionConstants.SELECT_ALL));
-         actionBars.setGlobalActionHandler(ActionFactory.FIND.getId(), getAction(editor,
-               ITextEditorActionConstants.FIND));
-         actionBars.setGlobalActionHandler(IDEActionFactory.BOOKMARK.getId(), getAction(editor,
-               IDEActionFactory.BOOKMARK.getId()));
+         actionBars.setGlobalActionHandler(ActionFactory.COPY.getId(),
+            getAction(editor, ITextEditorActionConstants.COPY));
+         actionBars.setGlobalActionHandler(ActionFactory.PASTE.getId(),
+            getAction(editor, ITextEditorActionConstants.PASTE));
+         actionBars.setGlobalActionHandler(ActionFactory.SELECT_ALL.getId(),
+            getAction(editor, ITextEditorActionConstants.SELECT_ALL));
+         actionBars.setGlobalActionHandler(ActionFactory.FIND.getId(),
+            getAction(editor, ITextEditorActionConstants.FIND));
+         actionBars.setGlobalActionHandler(IDEActionFactory.BOOKMARK.getId(),
+            getAction(editor, IDEActionFactory.BOOKMARK.getId()));
          actionBars.updateActionBars();
       }
    }
@@ -76,7 +79,7 @@ public class TestManagerEditorContributor extends MultiPageEditorActionBarContri
     * @return IAction or null if editor is null.
     */
    protected IAction getAction(ITextEditor editor, String actionID) {
-      return (editor == null ? null : editor.getAction(actionID));
+      return editor == null ? null : editor.getAction(actionID);
    }
 
    private void createActions() {
@@ -100,20 +103,13 @@ public class TestManagerEditorContributor extends MultiPageEditorActionBarContri
    public void contributeToStatusLine(final IStatusLineManager statusLineManager) {
       super.contributeToStatusLine(statusLineManager);
       try {
-         /*Job addStatusLineManager = new Job("TM contributing to the status line.") {
-
-            @Override
-            protected IStatus run(IProgressMonitor monitor) {
-               try {
-                  OseeContributionItem.addTo(statusLineManager);
-               } catch (Throwable th) {
-                  OseeLog.log(TestManagerPlugin.class, Level.SEVERE, th.getMessage(), th);
-                  return Status.CANCEL_STATUS;
-               }
-               return Status.OK_STATUS;
-            }
-         };
-         addStatusLineManager.schedule();*/
+         /*
+          * Job addStatusLineManager = new Job("TM contributing to the status line.") {
+          * @Override protected IStatus run(IProgressMonitor monitor) { try {
+          * OseeContributionItem.addTo(statusLineManager); } catch (Throwable th) { OseeLog.log(TestManagerPlugin.class,
+          * Level.SEVERE, th.getMessage(), th); return Status.CANCEL_STATUS; } return Status.OK_STATUS; } };
+          * addStatusLineManager.schedule();
+          */
 
       } catch (Throwable th) {
          OseeLog.log(TestManagerPlugin.class, Level.WARNING, "Unable to contribute to the status line.", th);

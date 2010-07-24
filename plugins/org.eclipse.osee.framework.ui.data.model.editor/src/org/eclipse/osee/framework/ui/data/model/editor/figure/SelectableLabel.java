@@ -40,6 +40,7 @@ public class SelectableLabel extends Label {
    /**
     * @see org.eclipse.draw2d.Label#paintFigure(org.eclipse.draw2d.Graphics)
     */
+   @Override
    protected void paintFigure(Graphics graphics) {
       if (isSelectable) {
          if (selected) {

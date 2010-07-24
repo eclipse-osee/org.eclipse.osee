@@ -23,23 +23,23 @@ import org.eclipse.osee.ote.ui.message.tree.WatchedMessageNode;
  */
 public class ZeroizeMessageAction extends Action {
 
-	private final WatchedMessageNode msgNode;
+   private final WatchedMessageNode msgNode;
 
-	public ZeroizeMessageAction(WatchedMessageNode msgNode) {
-		super("Zeroize " + msgNode.getName());
-		this.msgNode = msgNode;
-		setEnabled(msgNode.isEnabled() && msgNode.getSubscription().getMessageMode() == MessageMode.WRITER && msgNode.getSubscription().isActive());
-	}
+   public ZeroizeMessageAction(WatchedMessageNode msgNode) {
+      super("Zeroize " + msgNode.getName());
+      this.msgNode = msgNode;
+      setEnabled(msgNode.isEnabled() && msgNode.getSubscription().getMessageMode() == MessageMode.WRITER && msgNode.getSubscription().isActive());
+   }
 
-	@Override
-	public void run() {
-		try {
-			msgNode.getSubscription().zeroize(null);
-		} catch (Exception e) {
-			String message = "could not zeroize the message " + msgNode.getMessageClassName();
-			OseeLog.log(ZeroizeMessageAction.class, Level.SEVERE, message, e);
-			MessageDialog.openError(Displays.getActiveShell(), "Zeroize Error", message + ". See error log for trace");
-		}
-	}
+   @Override
+   public void run() {
+      try {
+         msgNode.getSubscription().zeroize(null);
+      } catch (Exception e) {
+         String message = "could not zeroize the message " + msgNode.getMessageClassName();
+         OseeLog.log(ZeroizeMessageAction.class, Level.SEVERE, message, e);
+         MessageDialog.openError(Displays.getActiveShell(), "Zeroize Error", message + ". See error log for trace");
+      }
+   }
 
 }

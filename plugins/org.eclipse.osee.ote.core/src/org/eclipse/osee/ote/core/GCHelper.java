@@ -59,7 +59,7 @@ public class GCHelper {
       System.gc();
       for (Map.Entry<String, WeakReference<Object>> entry : map.entrySet()) {
          if (entry.getValue().get() != null) {
-            Object objectToFind = entry.getValue().get();
+            entry.getValue().get();
             live.add(entry.getKey());
          }
       }
@@ -77,14 +77,14 @@ public class GCHelper {
       System.gc();
       for (Map.Entry<String, WeakReference<Object>> entry : map.entrySet()) {
          if (entry.getValue().get() != null) {
-            if (type.isInstance(entry.getValue().get())){
-               listOfObjects.add( entry.getValue().get());
+            if (type.isInstance(entry.getValue().get())) {
+               listOfObjects.add(entry.getValue().get());
             }
          }
       }
       return listOfObjects;
    }
-   
+
    public void collectGarbage() {
       long memBefore = Runtime.getRuntime().freeMemory();
       long timeBefore = System.currentTimeMillis();
@@ -96,6 +96,7 @@ public class GCHelper {
    public void collectGarbageAndPrintStats() {
       new Thread(new Runnable() {
 
+         @Override
          public void run() {
             try {
                Thread.sleep(5000);

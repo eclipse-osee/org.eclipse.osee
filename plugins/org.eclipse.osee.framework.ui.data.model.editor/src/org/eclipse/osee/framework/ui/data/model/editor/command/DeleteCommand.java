@@ -36,10 +36,12 @@ public class DeleteCommand extends Command {
       super("Delete");
    }
 
+   @Override
    public boolean canExecute() {
       return commandDelegate != null && commandDelegate.canExecute();
    }
 
+   @Override
    public void execute() {
       redo();
    }
@@ -59,33 +61,38 @@ public class DeleteCommand extends Command {
       return this;
    }
 
+   @Override
    public void redo() {
       commandDelegate.execute();
    }
 
+   @Override
    public void undo() {
       commandDelegate.undo();
    }
 
    private static class DeleteArtifactCommand extends Command {
-      private ArtifactDataType artifact;
-      private ODMDiagram container;
+      private final ArtifactDataType artifact;
+      private final ODMDiagram container;
 
       public DeleteArtifactCommand(Object model, Object parent) {
          artifact = (ArtifactDataType) model;
          container = (ODMDiagram) parent;
       }
 
+      @Override
       public void execute() {
          redo();
       }
 
+      @Override
       public void redo() {
          if (container != null) {
             container.remove(artifact);
          }
       }
 
+      @Override
       public void undo() {
          if (container != null) {
             container.add(artifact);
@@ -94,24 +101,27 @@ public class DeleteCommand extends Command {
    }
 
    private static class DeleteAttributeCommand extends Command {
-      private AttributeDataType attribute;
-      private ArtifactDataType container;
+      private final AttributeDataType attribute;
+      private final ArtifactDataType container;
 
       public DeleteAttributeCommand(Object model, Object parent) {
          attribute = (AttributeDataType) model;
          container = (ArtifactDataType) parent;
       }
 
+      @Override
       public void execute() {
          redo();
       }
 
+      @Override
       public void redo() {
          if (container != null) {
             container.remove(attribute);
          }
       }
 
+      @Override
       public void undo() {
          if (container != null) {
             container.add(attribute);
@@ -120,24 +130,27 @@ public class DeleteCommand extends Command {
    }
 
    private static class DeleteRelationCommand extends Command {
-      private RelationDataType relation;
-      private ArtifactDataType container;
+      private final RelationDataType relation;
+      private final ArtifactDataType container;
 
       public DeleteRelationCommand(Object model, Object parent) {
          relation = (RelationDataType) model;
          container = (ArtifactDataType) parent;
       }
 
+      @Override
       public void execute() {
          redo();
       }
 
+      @Override
       public void redo() {
          if (container != null) {
             container.remove(relation);
          }
       }
 
+      @Override
       public void undo() {
          if (container != null) {
             container.add(relation);
@@ -147,8 +160,8 @@ public class DeleteCommand extends Command {
 
    private static class DeleteConnectionCommand extends Command {
 
-      private ConnectionModel link;
-      private NodeModel src, target;
+      private final ConnectionModel link;
+      private final NodeModel src, target;
       private int srcIndex, targetIndex, superIndex, parentIndex;
       private ArtifactDataType superClass, subClass;
 
@@ -159,14 +172,17 @@ public class DeleteCommand extends Command {
          target = this.link.getTarget();
       }
 
+      @Override
       public boolean canExecute() {
          return link != null && src != null && target != null;
       }
 
+      @Override
       public void execute() {
          redo();
       }
 
+      @Override
       public void redo() {
          boolean removeConnection = true;
 
@@ -177,8 +193,8 @@ public class DeleteCommand extends Command {
             try {
                subClass.setSuperType(null);
             } catch (OseeStateException ex) {
-               OseeLog.log(ODMEditorActivator.class, Level.SEVERE, String.format(
-                     "Unable to remove inheritance link between [%s] - [%s]", superClass, subClass), ex);
+               OseeLog.log(ODMEditorActivator.class, Level.SEVERE,
+                  String.format("Unable to remove inheritance link between [%s] - [%s]", superClass, subClass), ex);
                removeConnection = false;
             }
          }
@@ -199,14 +215,15 @@ public class DeleteCommand extends Command {
          //         }
       }
 
+      @Override
       public void undo() {
          boolean addConnection = true;
          if (link instanceof InheritanceLinkModel) {
             try {
                subClass.setSuperType(superClass);
             } catch (OseeStateException ex) {
-               OseeLog.log(ODMEditorActivator.class, Level.SEVERE, String.format(
-                     "Unable to add inheritance link between [%s] - [%s]", superClass, subClass), ex);
+               OseeLog.log(ODMEditorActivator.class, Level.SEVERE,
+                  String.format("Unable to add inheritance link between [%s] - [%s]", superClass, subClass), ex);
                addConnection = false;
             }
          }

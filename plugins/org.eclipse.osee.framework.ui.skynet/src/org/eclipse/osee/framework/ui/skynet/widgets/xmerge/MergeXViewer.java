@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -78,12 +79,13 @@ public class MergeXViewer extends XViewer {
       MenuManager mm = getMenuManager();
       mm.createContextMenu(getControl());
       mm.addMenuListener(new IMenuListener() {
+         @Override
          public void menuAboutToShow(IMenuManager manager) {
             updateMenuActionsForTable();
          }
       });
 
-      openMergeViewAction = new Action("Open Merge View", Action.AS_PUSH_BUTTON) {
+      openMergeViewAction = new Action("Open Merge View", IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
             AWorkbench.popup("ERROR", "Not implemented yet");
@@ -151,9 +153,9 @@ public class MergeXViewer extends XViewer {
 
    private boolean hasInteractiveIcon(TreeColumn treeColumn) {
       return isXViewerColumn(treeColumn, MergeXViewerFactory.Source) //
-            || isXViewerColumn(treeColumn, MergeXViewerFactory.Destination) //
-            || isXViewerColumn(treeColumn, MergeXViewerFactory.Conflict_Resolved) //
-            || isXViewerColumn(treeColumn, MergeXViewerFactory.Merged);
+         || isXViewerColumn(treeColumn, MergeXViewerFactory.Destination) //
+         || isXViewerColumn(treeColumn, MergeXViewerFactory.Conflict_Resolved) //
+         || isXViewerColumn(treeColumn, MergeXViewerFactory.Merged);
    }
 
    private boolean isXViewerColumn(TreeColumn treeColumn, XViewerColumn expected) {
@@ -199,10 +201,10 @@ public class MergeXViewer extends XViewer {
          conflict.handleResolvedSelection();
          // old events
          OseeEventManager.kickMergeBranchEvent(HttpBranchCreation.class, MergeBranchEventType.ConflictResolved,
-               conflict.getMergeBranchID());
+            conflict.getMergeBranchID());
          // new events
          OseeEventManager.kickBranchEvent(HttpBranchCreation.class, new BranchEvent(
-               BranchEventType.MergeConflictResolved, conflict.getMergeBranch().getGuid()), conflict.getMergeBranchID());
+            BranchEventType.MergeConflictResolved, conflict.getMergeBranch().getGuid()), conflict.getMergeBranchID());
       } else if (isXViewerColumn(treeColumn, MergeXViewerFactory.Merged)) {
          if (!conflict.getConflictType().equals(ConflictType.ARTIFACT)) {
             AttributeConflict attributeConflict = (AttributeConflict) conflict;
@@ -223,27 +225,27 @@ public class MergeXViewer extends XViewer {
 
    private CompareHandler getCompareHandler(AttributeConflict attributeConflict) throws OseeCoreException {
       AttributeCompareItem leftContributionItem =
-            new AttributeCompareItem(attributeConflict,
-                  attributeConflict.getArtifactName() + " on Branch: " + attributeConflict.getSourceBranch().getName(),
-                  attributeConflict.getAttribute().getDisplayableString(), true,
-                  ArtifactImageManager.getImage(attributeConflict.getArtifact()));
+         new AttributeCompareItem(attributeConflict,
+            attributeConflict.getArtifactName() + " on Branch: " + attributeConflict.getSourceBranch().getName(),
+            attributeConflict.getAttribute().getDisplayableString(), true,
+            ArtifactImageManager.getImage(attributeConflict.getArtifact()));
       AttributeCompareItem rightContributionItem =
-            new AttributeCompareItem(attributeConflict,
-                  attributeConflict.getArtifactName() + " on Branch: " + attributeConflict.getDestBranch().getName(),
-                  attributeConflict.getDestDisplayData(), false,
-                  ArtifactImageManager.getImage(attributeConflict.getArtifact()));
+         new AttributeCompareItem(attributeConflict,
+            attributeConflict.getArtifactName() + " on Branch: " + attributeConflict.getDestBranch().getName(),
+            attributeConflict.getDestDisplayData(), false,
+            ArtifactImageManager.getImage(attributeConflict.getArtifact()));
 
       return new CompareHandler(leftContributionItem, rightContributionItem, null);
    }
 
    private static void nativeContentAlert(Shell shell) {
       MessageDialog dialog =
-            new MessageDialog(
-                  shell,
-                  "Artifact type not supported",
-                  null,
-                  "Native artifact types are not currently supported for the merge wizard.\n" + "You will need to populate the merge value with the source or destination values" + " and then merge by hand by right-clicking \"Edit Merge Artifact.\"",
-                  2, new String[] {"OK"}, 1);
+         new MessageDialog(
+            shell,
+            "Artifact type not supported",
+            null,
+            "Native artifact types are not currently supported for the merge wizard.\n" + "You will need to populate the merge value with the source or destination values" + " and then merge by hand by right-clicking \"Edit Merge Artifact.\"",
+            2, new String[] {"OK"}, 1);
       dialog.open();
    }
 

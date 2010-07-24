@@ -23,7 +23,7 @@ import org.junit.BeforeClass;
 
 /**
  * Test Case for {@link RelationTypeCache}
- *
+ * 
  * @author Roberto E. Escobar
  */
 public class RelationTypeCacheTest extends AbstractOseeCacheTest<RelationType> {

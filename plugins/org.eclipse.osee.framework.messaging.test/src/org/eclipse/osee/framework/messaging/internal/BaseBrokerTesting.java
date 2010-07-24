@@ -97,13 +97,15 @@ public class BaseBrokerTesting {
          } else {
             exe = "eclipse";
          }
-         ProcessBuilder builder = new ProcessBuilder(url.getPath() + exe, "-console", "-nosplash", "-application", "jms.activemq.launch.RunActiveMq", DefaultNodeInfos.OSEE_JMS_DEFAULT_PORT);
+         ProcessBuilder builder =
+            new ProcessBuilder(url.getPath() + exe, "-console", "-nosplash", "-application",
+               "jms.activemq.launch.RunActiveMq", DefaultNodeInfos.OSEE_JMS_DEFAULT_PORT);
          builder.directory(new File(url.getPath()));
          builder.redirectErrorStream(true);
          Process process = builder.start();
          Thread th = new Thread(new OutputReader(System.out, process.getInputStream()));
          th.start();
-//         threads = Lib.handleProcessNoWait(process, new PrintWriter(System.out));
+         //         threads = Lib.handleProcessNoWait(process, new PrintWriter(System.out));
          Thread.sleep(30000);
       } catch (MalformedURLException ex) {
          OseeLog.log(BaseBrokerTesting.class, Level.SEVERE, ex);
@@ -116,23 +118,24 @@ public class BaseBrokerTesting {
          fail(ex.getMessage());
       }
    }
-   
+
    public class OutputReader implements Runnable {
 
-      private PrintStream printStream;
-      private InputStream input;
+      private final PrintStream printStream;
+      private final InputStream input;
 
       public OutputReader(PrintStream printStream, InputStream input) {
          super();
          this.printStream = printStream;
          this.input = input;
-         
+
       }
 
+      @Override
       public void run() {
          try {
-           final byte[] buffer = new byte[4096];
-           int size;
+            final byte[] buffer = new byte[4096];
+            int size;
             while ((size = input.read(buffer)) != -1) {
                printStream.print(new String(buffer, 0, size, "UTF-8"));
                printStream.flush();
@@ -150,11 +153,10 @@ public class BaseBrokerTesting {
       }
    }
 
-   
-
    protected void stopBroker() {
       try {
-         getMessaging().get(DefaultNodeInfos.OSEE_JMS_DEFAULT).send(SystemTopic.KILL_TEST_JMS_BROKER, "kill", new MessageStatusTest(true));
+         getMessaging().get(DefaultNodeInfos.OSEE_JMS_DEFAULT).send(SystemTopic.KILL_TEST_JMS_BROKER, "kill",
+            new MessageStatusTest(true));
          Thread.sleep(10000);
       } catch (InterruptedException ex) {
          OseeLog.log(BaseBrokerTesting.class, Level.SEVERE, ex);
@@ -196,23 +198,20 @@ public class BaseBrokerTesting {
       status.waitForStatus(5000);
    }
 
-   protected void testJMSSubscribeShouldFail(MessageService messaging)
-			throws OseeCoreException {
-		MessageStatusTest status = new MessageStatusTest(false);
-		OseeMessagingListener listener = new OseeMessagingListener(TestMessage.class) {
+   protected void testJMSSubscribeShouldFail(MessageService messaging) throws OseeCoreException {
+      MessageStatusTest status = new MessageStatusTest(false);
+      OseeMessagingListener listener = new OseeMessagingListener(TestMessage.class) {
          @Override
-         public void process(Object message,
-               Map<String, Object> headers,
-               ReplyConnection replyConnection) {
+         public void process(Object message, Map<String, Object> headers, ReplyConnection replyConnection) {
             TestMessage msg = (TestMessage) message;
             System.out.println(msg.getMessage());
          }
       };
-      
-		messaging.get(DefaultNodeInfos.OSEE_JMS_DEFAULT).subscribe(TestMessages.test2, listener, status);
-		status.waitForStatus(5000);
-		messaging.get(DefaultNodeInfos.OSEE_JMS_DEFAULT).unsubscribe(TestMessages.test2, listener, status);//we have to remove so we don't get a false fail later on
-	}
+
+      messaging.get(DefaultNodeInfos.OSEE_JMS_DEFAULT).subscribe(TestMessages.test2, listener, status);
+      status.waitForStatus(5000);
+      messaging.get(DefaultNodeInfos.OSEE_JMS_DEFAULT).unsubscribe(TestMessages.test2, listener, status);//we have to remove so we don't get a false fail later on
+   }
 
    protected void testJMSSubscribeShouldPass(MessageService messaging) throws OseeCoreException {
       MessageStatusTest status = new MessageStatusTest(true);

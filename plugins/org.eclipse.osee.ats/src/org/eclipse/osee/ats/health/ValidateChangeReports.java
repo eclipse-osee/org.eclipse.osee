@@ -110,7 +110,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
             rd.report(getName());
          } catch (Exception ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-            return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
+            return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
          }
          monitor.done();
          return Status.OK_STATUS;
@@ -129,7 +129,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
          try {
             int x = 1;
             Collection<Artifact> artifacts =
-                  ArtifactQuery.getArtifactListFromType(artifactType, AtsUtil.getAtsBranch());
+               ArtifactQuery.getArtifactListFromType(artifactType, AtsUtil.getAtsBranch());
             for (Artifact artifact : artifacts) {
                String resultStr = "PASS";
                TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
@@ -152,12 +152,12 @@ public class ValidateChangeReports extends XNavigateItemAction {
                   resultStr = "Error: Exception Validating: " + ex.getLocalizedMessage();
                   OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
                }
-               sbFull.append(AHTML.addRowMultiColumnTable(teamArt.getHumanReadableId(), teamArt.getSoleAttributeValue(
-                     ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName(), ""), resultStr));
+               sbFull.append(AHTML.addRowMultiColumnTable(teamArt.getHumanReadableId(),
+                  teamArt.getSoleAttributeValue(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName(), ""), resultStr));
             }
          } catch (Exception ex) {
             sbFull.append(AHTML.addRowSpanMultiColumnTable("Exception: " + ex.getLocalizedMessage(),
-                  columnHeaders.length));
+               columnHeaders.length));
          }
       }
       sbFull.append(AHTML.endMultiColumnTable());
@@ -181,7 +181,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
    static Result changeReportValidated(final String currentDbGuid, final TeamWorkFlowArtifact teamArt, XResultData resultData, boolean displayWasIs) throws OseeCoreException, ParserConfigurationException {
       String name = "VCR_" + teamArt.getHumanReadableId();
       List<Artifact> arts =
-            ArtifactQuery.getArtifactListFromTypeAndName(CoreArtifactTypes.GeneralData, name, AtsUtil.getAtsBranch());
+         ArtifactQuery.getArtifactListFromTypeAndName(CoreArtifactTypes.GeneralData, name, AtsUtil.getAtsBranch());
       String storedChangeReport = null;
       Artifact artifactForStore = null;
       if (arts.size() > 1) {
@@ -197,10 +197,10 @@ public class ValidateChangeReports extends XNavigateItemAction {
          // Reuse same artifact if already exists
          if (artifactForStore == null) {
             artifactForStore =
-                  ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, AtsUtil.getAtsBranch(), name);
+               ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, AtsUtil.getAtsBranch(), name);
          }
-         artifactForStore.setSoleAttributeValue(CoreAttributeTypes.GENERAL_STRING_DATA, getReport(currentDbGuid,
-               currentChangeData));
+         artifactForStore.setSoleAttributeValue(CoreAttributeTypes.GENERAL_STRING_DATA,
+            getReport(currentDbGuid, currentChangeData));
          artifactForStore.persist();
          resultData.log("Stored Change Report for " + teamArt.getHumanReadableId());
          return new Result(true, "Stored Change Report for " + teamArt.getHumanReadableId());
@@ -226,7 +226,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
                            String currentChangeReportString = GetComparableString(currentChangeReport);
 
                            CompareHandler compareHandler =
-                                 new CompareHandler(storedChangeReportString, currentChangeReportString);
+                              new CompareHandler(storedChangeReportString, currentChangeReportString);
                            compareHandler.compare();
 
                         } catch (Exception ex) {
@@ -245,7 +245,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
       // As another test, ensure that all artifacts can be retrieved and display their name
       try {
          for (Artifact art : currentChangeData.getArtifacts(KindType.ArtifactOrRelation, ModificationType.NEW,
-               ModificationType.DELETED, ModificationType.MERGED)) {
+            ModificationType.DELETED, ModificationType.MERGED)) {
             art.getName();
          }
       } catch (Exception ex) {
@@ -344,8 +344,8 @@ public class ValidateChangeReports extends XNavigateItemAction {
          ChangeReportComparer comparer = new ChangeReportComparer();
          comparer.compare(currentData, storedData);
 
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, String.format("Checksums not equal - stored:[%s] current:[%s]",
-               checkSum1, checkSum2));
+         OseeLog.log(AtsPlugin.class, Level.SEVERE,
+            String.format("Checksums not equal - stored:[%s] current:[%s]", checkSum1, checkSum2));
       }
       return result;
    }

@@ -32,94 +32,94 @@ import org.eclipse.ui.PlatformUI;
  */
 public class ImportOutfileUIOperation {
 
-	private final URI[] fileSystemObjects;
-	private final Branch selectedBranch;
+   private final URI[] fileSystemObjects;
+   private final Branch selectedBranch;
 
-	public ImportOutfileUIOperation(Branch selectedBranch, URI... fileSystemObjects) {
-		this.fileSystemObjects = fileSystemObjects;
-		this.selectedBranch = selectedBranch;
-	}
+   public ImportOutfileUIOperation(Branch selectedBranch, URI... fileSystemObjects) {
+      this.fileSystemObjects = fileSystemObjects;
+      this.selectedBranch = selectedBranch;
+   }
 
-	public boolean execute() {
-		boolean toReturn = true;
-		if (fileSystemObjects.length > 0) {
-			launchImportJob();
-		} else {
-			toReturn = false;
-			Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
-			MessageDialog.openInformation(shell, "Information", "There were no resources currently selected for import.");
-		}
-		return toReturn;
-	}
+   public boolean execute() {
+      boolean toReturn = true;
+      if (fileSystemObjects.length > 0) {
+         launchImportJob();
+      } else {
+         toReturn = false;
+         Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
+         MessageDialog.openInformation(shell, "Information", "There were no resources currently selected for import.");
+      }
+      return toReturn;
+   }
 
-	private void launchImportJob() {
-		OutfileToArtifactJob convertJob = new OutfileToArtifactJob(selectedBranch, fileSystemObjects);
-		convertJob.addJobChangeListener(new JobChangeAdapter() {
+   private void launchImportJob() {
+      OutfileToArtifactJob convertJob = new OutfileToArtifactJob(selectedBranch, fileSystemObjects);
+      convertJob.addJobChangeListener(new JobChangeAdapter() {
 
-			@Override
-			public void done(IJobChangeEvent event) {
-				if (wasJobSuccessful(event)) {
-					OutfileToArtifactJob job = (OutfileToArtifactJob) event.getJob();
+         @Override
+         public void done(IJobChangeEvent event) {
+            if (wasJobSuccessful(event)) {
+               OutfileToArtifactJob job = (OutfileToArtifactJob) event.getJob();
 
-					URI[] itemsWithError = job.getUnparseableFiles();
-					Artifact[] artifacts = job.getResults();
-					// Report Parse Errors
-					if (itemsWithError.length > 0) {
-						reportFilesWithErrors(itemsWithError, artifacts);
-					} else {
-						launchFindCommitableJob(artifacts);
-					}
-				}
-			}
-		});
-		convertJob.schedule();
-	}
+               URI[] itemsWithError = job.getUnparseableFiles();
+               Artifact[] artifacts = job.getResults();
+               // Report Parse Errors
+               if (itemsWithError.length > 0) {
+                  reportFilesWithErrors(itemsWithError, artifacts);
+               } else {
+                  launchFindCommitableJob(artifacts);
+               }
+            }
+         }
+      });
+      convertJob.schedule();
+   }
 
-	private void launchCommitJob(final FindCommitableJob job) {
-		Displays.ensureInDisplayThread(new Runnable() {
-			@Override
-			public void run() {
-				CommitTestRunJob newJob =
-							new CommitTestRunJob(job.getAll(), job.getCommitAllowed(), job.getCommitNotAllowed(),
-										CommitConfiguration.isCommitOverrideAllowed());
-				newJob.schedule();
-			}
-		});
-	}
+   private void launchCommitJob(final FindCommitableJob job) {
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            CommitTestRunJob newJob =
+               new CommitTestRunJob(job.getAll(), job.getCommitAllowed(), job.getCommitNotAllowed(),
+                  CommitConfiguration.isCommitOverrideAllowed());
+            newJob.schedule();
+         }
+      });
+   }
 
-	private void launchFindCommitableJob(final Artifact[] artifacts) {
-		// Find Commit Allowed
-		FindCommitableJob commitableJob = new FindCommitableJob(artifacts);
-		commitableJob.addJobChangeListener(new JobChangeAdapter() {
+   private void launchFindCommitableJob(final Artifact[] artifacts) {
+      // Find Commit Allowed
+      FindCommitableJob commitableJob = new FindCommitableJob(artifacts);
+      commitableJob.addJobChangeListener(new JobChangeAdapter() {
 
-			@Override
-			public void done(IJobChangeEvent event) {
-				if (wasJobSuccessful(event)) {
-					FindCommitableJob job = (FindCommitableJob) event.getJob();
-					launchCommitJob(job);
-				}
-			}
-		});
-		commitableJob.schedule();
-	}
+         @Override
+         public void done(IJobChangeEvent event) {
+            if (wasJobSuccessful(event)) {
+               FindCommitableJob job = (FindCommitableJob) event.getJob();
+               launchCommitJob(job);
+            }
+         }
+      });
+      commitableJob.schedule();
+   }
 
-	private void reportFilesWithErrors(final Object[] items, final Artifact[] artifacts) {
-		String title = "Outfile Import Error";
-		String message = "The following file(s) had errors during the parsing operation: ";
+   private void reportFilesWithErrors(final Object[] items, final Artifact[] artifacts) {
+      String title = "Outfile Import Error";
+      String message = "The following file(s) had errors during the parsing operation: ";
 
-		JobChangeAdapter listener = new JobChangeAdapter() {
+      JobChangeAdapter listener = new JobChangeAdapter() {
 
-			@Override
-			public void done(IJobChangeEvent event) {
-				launchFindCommitableJob(artifacts);
-			}
-		};
+         @Override
+         public void done(IJobChangeEvent event) {
+            launchFindCommitableJob(artifacts);
+         }
+      };
 
-		ReportErrorsJob.openError(title, message, listener, items);
-	}
+      ReportErrorsJob.openError(title, message, listener, items);
+   }
 
-	private boolean wasJobSuccessful(IJobChangeEvent event) {
-		IStatus status = event.getResult();
-		return status.equals(Status.OK_STATUS) || status.equals(Status.OK);
-	}
+   private boolean wasJobSuccessful(IJobChangeEvent event) {
+      IStatus status = event.getResult();
+      return status.equals(Status.OK_STATUS) || status.equals(IStatus.OK);
+   }
 }

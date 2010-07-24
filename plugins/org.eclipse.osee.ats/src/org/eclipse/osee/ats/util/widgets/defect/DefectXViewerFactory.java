@@ -20,37 +20,31 @@ import org.eclipse.swt.SWT;
  */
 public class DefectXViewerFactory extends SkynetXViewerFactory {
 
-   public static XViewerColumn Severity_Col =
-         new XViewerColumn("osee.defect.severity", "Severity", 70, SWT.LEFT, true, SortDataType.String, false, null);
-   public static XViewerColumn Disposition_Col =
-         new XViewerColumn("osee.defect.disposition", "Disposition", 70, SWT.CENTER, true, SortDataType.String, false,
-               null);
-   public static XViewerColumn Closed_Col =
-         new XViewerColumn("osee.defect.closed", "Closed", 70, SWT.LEFT, true, SortDataType.Boolean, false, null);
-   public static XViewerColumn User_Col =
-         new XViewerColumn("osee.defect.user", "User", 100, SWT.LEFT, true, SortDataType.String, false, null);
-   public static XViewerColumn Created_Date_Col =
-         new XViewerColumn("osee.defect.createdDate", "Created Date", 80, SWT.LEFT, true, SortDataType.Date, false,
-               null);
-   public static XViewerColumn Injection_Activity_Col =
-         new XViewerColumn("osee.defect.injectionActivity", "Injection Activity", 35, SWT.LEFT, true,
-               SortDataType.String, false, null);
-   public static XViewerColumn Description_Col =
-         new XViewerColumn("osee.defect.description", "Description", 200, SWT.LEFT, true,
-               SortDataType.String_MultiLine, false, null);
-   public static XViewerColumn Location_Col =
-         new XViewerColumn("osee.defect.location", "Location", 200, SWT.LEFT, true, SortDataType.String_MultiLine,
-               false, null);
-   public static XViewerColumn Resolution_Col =
-         new XViewerColumn("osee.defect.resolution", "Resolution", 200, SWT.LEFT, true, SortDataType.String_MultiLine,
-               false, null);
+   public static XViewerColumn Severity_Col = new XViewerColumn("osee.defect.severity", "Severity", 70, SWT.LEFT, true,
+      SortDataType.String, false, null);
+   public static XViewerColumn Disposition_Col = new XViewerColumn("osee.defect.disposition", "Disposition", 70,
+      SWT.CENTER, true, SortDataType.String, false, null);
+   public static XViewerColumn Closed_Col = new XViewerColumn("osee.defect.closed", "Closed", 70, SWT.LEFT, true,
+      SortDataType.Boolean, false, null);
+   public static XViewerColumn User_Col = new XViewerColumn("osee.defect.user", "User", 100, SWT.LEFT, true,
+      SortDataType.String, false, null);
+   public static XViewerColumn Created_Date_Col = new XViewerColumn("osee.defect.createdDate", "Created Date", 80,
+      SWT.LEFT, true, SortDataType.Date, false, null);
+   public static XViewerColumn Injection_Activity_Col = new XViewerColumn("osee.defect.injectionActivity",
+      "Injection Activity", 35, SWT.LEFT, true, SortDataType.String, false, null);
+   public static XViewerColumn Description_Col = new XViewerColumn("osee.defect.description", "Description", 200,
+      SWT.LEFT, true, SortDataType.String_MultiLine, false, null);
+   public static XViewerColumn Location_Col = new XViewerColumn("osee.defect.location", "Location", 200, SWT.LEFT,
+      true, SortDataType.String_MultiLine, false, null);
+   public static XViewerColumn Resolution_Col = new XViewerColumn("osee.defect.resolution", "Resolution", 200,
+      SWT.LEFT, true, SortDataType.String_MultiLine, false, null);
 
    private static String NAMESPACE = "osee.ats.DefectXViewer";
 
    public DefectXViewerFactory() {
       super(NAMESPACE);
       registerColumns(Severity_Col, Disposition_Col, Closed_Col, User_Col, Created_Date_Col, Injection_Activity_Col,
-            Description_Col, Location_Col, Resolution_Col);
+         Description_Col, Location_Col, Resolution_Col);
    }
 
 }

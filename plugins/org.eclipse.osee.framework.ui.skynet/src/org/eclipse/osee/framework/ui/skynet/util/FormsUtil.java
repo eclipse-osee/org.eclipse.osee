@@ -46,6 +46,7 @@ public class FormsUtil {
          Hyperlink label = toolkit.createHyperlink(comp, Strings.truncate(str, 150) + "...", SWT.NONE);
          label.setToolTipText("click to view all");
          label.addListener(SWT.MouseUp, new Listener() {
+            @Override
             public void handleEvent(Event event) {
                new HtmlDialog("Note", null, str).open();
             }
@@ -130,14 +131,14 @@ public class FormsUtil {
          form.getForm().setBackground(colors.getBackground());
       }
       form.getForm().setHeadColor(IFormColors.H_BOTTOM_KEYLINE1,
-            add ? colors.getColor(IFormColors.H_BOTTOM_KEYLINE1) : null);
+         add ? colors.getColor(IFormColors.H_BOTTOM_KEYLINE1) : null);
       form.getForm().setHeadColor(IFormColors.H_BOTTOM_KEYLINE2,
-            add ? colors.getColor(IFormColors.H_BOTTOM_KEYLINE2) : null);
+         add ? colors.getColor(IFormColors.H_BOTTOM_KEYLINE2) : null);
       form.getForm().setHeadColor(IFormColors.H_HOVER_LIGHT, add ? colors.getColor(IFormColors.H_HOVER_LIGHT) : null);
       form.getForm().setHeadColor(IFormColors.H_HOVER_FULL, add ? colors.getColor(IFormColors.H_HOVER_FULL) : null);
       form.getForm().setHeadColor(IFormColors.TB_TOGGLE, add ? colors.getColor(IFormColors.TB_TOGGLE) : null);
       form.getForm().setHeadColor(IFormColors.TB_TOGGLE_HOVER,
-            add ? colors.getColor(IFormColors.TB_TOGGLE_HOVER) : null);
+         add ? colors.getColor(IFormColors.TB_TOGGLE_HOVER) : null);
       form.getForm().setSeparatorVisible(add);
       form.reflow(true);
       form.redraw();

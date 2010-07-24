@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.ui.branch.graph.operation.IProgressListener;
  */
 public class GraphLoader {
    private static final String GET_TRANSACTION_DATA =
-         "SELECT otd.* FROM osee_join_transaction ojt, osee_tx_details otd WHERE ojt.transaction_id = otd.transaction_id and ojt.query_id = ? ORDER BY otd.transaction_id desc";
+      "SELECT otd.* FROM osee_join_transaction ojt, osee_tx_details otd WHERE ojt.transaction_id = otd.transaction_id and ojt.query_id = ? ORDER BY otd.transaction_id desc";
 
    private GraphLoader() {
    }
@@ -106,9 +106,11 @@ public class GraphLoader {
                   if (source != null) {
                      connect(source, txModel);
                   } else {
-                     OseeLog.log(BranchGraphActivator.class, Level.SEVERE,
-                           String.format("Invalid parent transaction id of [%s] for branch [%s]", parentTxId,
-                                 branchModel.getBranch()));
+                     OseeLog.log(
+                        BranchGraphActivator.class,
+                        Level.SEVERE,
+                        String.format("Invalid parent transaction id of [%s] for branch [%s]", parentTxId,
+                           branchModel.getBranch()));
                      //                     StubBranchModel stubModel = graphCache.getStubBranchModel();
                      //                     TxModel stubTxModel = stubModel.addTx(parentTxId);
                      //                     graphCache.addTxModel(stubTxModel);
@@ -150,9 +152,9 @@ public class GraphLoader {
          while (chStmt.next()) {
             Branch branch = BranchManager.getBranch(chStmt.getInt("branch_id"));
             TxData txData =
-                  new TxData(branch, chStmt.getInt("author"), chStmt.getTimestamp("time"),
-                        chStmt.getString("osee_comment"), chStmt.getInt("tx_type"), chStmt.getInt("commit_art_id"),
-                        chStmt.getInt("transaction_id"));
+               new TxData(branch, chStmt.getInt("author"), chStmt.getTimestamp("time"),
+                  chStmt.getString("osee_comment"), chStmt.getInt("tx_type"), chStmt.getInt("commit_art_id"),
+                  chStmt.getInt("transaction_id"));
             txDatas.add(txData);
          }
       } finally {

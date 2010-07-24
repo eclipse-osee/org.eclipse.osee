@@ -73,27 +73,27 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
             fromTransactionId = getSourceBranch().getBaseTransaction();
             toTransactionId = TransactionManager.getHeadTransaction(getSourceBranch());
             chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_BRANCH_ATTRIBUTE_IS),
-                  getSourceBranch().getId(), fromTransactionId.getId());
+               getSourceBranch().getId(), fromTransactionId.getId());
 
          }//Changes per transaction number
          else {
             toTransactionId = getTransaction();
             if (hasSpecificArtifact) {
                chStmt.runPreparedQuery(
-                     ClientSessionManager.getSql(OseeSql.CHANGE_TX_ATTRIBUTE_IS_FOR_SPECIFIC_ARTIFACT),
-                     getTransaction().getId(), getSpecificArtifact().getArtId());
+                  ClientSessionManager.getSql(OseeSql.CHANGE_TX_ATTRIBUTE_IS_FOR_SPECIFIC_ARTIFACT),
+                  getTransaction().getId(), getSpecificArtifact().getArtId());
                fromTransactionId = getTransaction();
             } else {
                chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_TX_ATTRIBUTE_IS),
-                     getTransaction().getId());
+                  getTransaction().getId());
                fromTransactionId = TransactionManager.getPriorTransaction(toTransactionId);
             }
          }
          loadIsValues(getSourceBranch(), getArtIds(), getChangeBuilders(), getNewAndDeletedArtifactIds(), getMonitor(),
-               attributesWasValueCache, artModTypes, modifiedArtifacts, chStmt, hasBranch, time, fromTransactionId,
-               toTransactionId, hasSpecificArtifact);
+            attributesWasValueCache, artModTypes, modifiedArtifacts, chStmt, hasBranch, time, fromTransactionId,
+            toTransactionId, hasSpecificArtifact);
          loadAttributeWasValues(getSourceBranch(), getTransaction(), getArtIds(), getMonitor(),
-               attributesWasValueCache, hasBranch);
+            attributesWasValueCache, hasBranch);
       } finally {
          chStmt.close();
       }
@@ -131,8 +131,8 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
                if (artModType == ModificationType.MODIFIED && !modifiedArtifacts.contains(artId)) {
 
                   ArtifactChangeBuilder artifactChangeBuilder =
-                        new ArtifactChangeBuilder(sourceBranch, ArtifactTypeManager.getType(artTypeId), -1, artId,
-                              txDelta, ModificationType.MODIFIED, !hasBranch);
+                     new ArtifactChangeBuilder(sourceBranch, ArtifactTypeManager.getType(artTypeId), -1, artId,
+                        txDelta, ModificationType.MODIFIED, !hasBranch);
 
                   changeBuilders.add(artifactChangeBuilder);
                   modifiedArtifacts.add(artId);
@@ -145,8 +145,8 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
                ArtifactType artifactType = ArtifactTypeManager.getType(artTypeId);
                AttributeType attributeType = AttributeTypeManager.getType(attrTypeId);
                attributeChangeBuilder =
-                     new AttributeChangeBuilder(sourceBranch, artifactType, sourceGamma, artId, txDelta,
-                           modificationType, !hasBranch, isValue, "", attrId, attributeType, artModType);
+                  new AttributeChangeBuilder(sourceBranch, artifactType, sourceGamma, artId, txDelta, modificationType,
+                     !hasBranch, isValue, "", attrId, attributeType, artModType);
 
                changeBuilders.add(attributeChangeBuilder);
                attributesWasValueCache.put(attrId, attributeChangeBuilder);
@@ -210,7 +210,7 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
                   String wasValue = chStmt.getString("was_value");
                   if (attributesWasValueCache.containsKey(attrId) && attributesWasValueCache.get(attrId) instanceof AttributeChangeBuilder) {
                      AttributeChangeBuilder changeBuilder =
-                           (AttributeChangeBuilder) attributesWasValueCache.get(attrId);
+                        (AttributeChangeBuilder) attributesWasValueCache.get(attrId);
 
                      if (changeBuilder.getArtModType() != ModificationType.NEW) {
                         if (changeBuilder.getModType() != ModificationType.DELETED && changeBuilder.getModType() != ModificationType.ARTIFACT_DELETED) {

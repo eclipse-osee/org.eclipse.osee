@@ -14,9 +14,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 
-/** 
+/**
  * @author Robert A. Fisher
- *
  */
 public class ProjectChangeResourceListener implements IResourceChangeListener {
 

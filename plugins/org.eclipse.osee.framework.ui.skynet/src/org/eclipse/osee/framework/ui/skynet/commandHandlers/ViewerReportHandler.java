@@ -36,11 +36,11 @@ public class ViewerReportHandler extends AbstractHandler {
          Object selectionProvider = myIWorkbenchPartSite.getSelectionProvider();
 
          if (selectionProvider instanceof XViewer) {
-            (new XViewerTreeReport((XViewer) selectionProvider)).open();
+            new XViewerTreeReport((XViewer) selectionProvider).open();
          } else if (selectionProvider instanceof TableViewer) {
-            (new TableViewerReport((TableViewer) selectionProvider)).open();
+            new TableViewerReport((TableViewer) selectionProvider).open();
          } else if (selectionProvider instanceof TreeViewer) {
-            (new TreeViewerReport((TreeViewer) selectionProvider)).open();
+            new TreeViewerReport((TreeViewer) selectionProvider).open();
          }
       }
       return null;

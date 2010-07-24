@@ -30,73 +30,72 @@ import org.eclipse.ui.forms.widgets.Section;
  */
 public class DetailsFormSection extends ArtifactEditorFormSection {
 
-	private FormText formText;
-	private boolean sectionCreated = false;
-	private Section section;
+   private FormText formText;
+   private boolean sectionCreated = false;
+   private Section section;
 
-	public DetailsFormSection(ArtifactEditor editor, Composite parent, FormToolkit toolkit, int style) {
-		super(editor, parent, toolkit, style);
-	}
+   public DetailsFormSection(ArtifactEditor editor, Composite parent, FormToolkit toolkit, int style) {
+      super(editor, parent, toolkit, style);
+   }
 
-	@Override
-	public void initialize(IManagedForm form) {
-		super.initialize(form);
-		section = getSection();
-		section.setText("Details");
-		section.setLayout(new GridLayout());
-		section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-		// Only load when users selects section
-		section.addListener(SWT.Activate, new Listener() {
+   @Override
+   public void initialize(IManagedForm form) {
+      super.initialize(form);
+      section = getSection();
+      section.setText("Details");
+      section.setLayout(new GridLayout());
+      section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+      // Only load when users selects section
+      section.addListener(SWT.Activate, new Listener() {
 
-			@Override
-			public void handleEvent(Event e) {
-				createSection();
-			}
-		});
+         @Override
+         public void handleEvent(Event e) {
+            createSection();
+         }
+      });
 
-	}
+   }
 
-	private synchronized void createSection() {
-		if (!sectionCreated) {
-			final FormToolkit toolkit = getManagedForm().getToolkit();
-			Composite composite = toolkit.createComposite(getSection(), toolkit.getBorderStyle() | SWT.WRAP);
-			composite.setLayout(new GridLayout());
-			composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+   private synchronized void createSection() {
+      if (!sectionCreated) {
+         final FormToolkit toolkit = getManagedForm().getToolkit();
+         Composite composite = toolkit.createComposite(getSection(), toolkit.getBorderStyle() | SWT.WRAP);
+         composite.setLayout(new GridLayout());
+         composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-			formText = toolkit.createFormText(composite, false);
-			GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
-			gd.widthHint = 200;
-			formText.setLayoutData(gd);
+         formText = toolkit.createFormText(composite, false);
+         GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+         gd.widthHint = 200;
+         formText.setLayoutData(gd);
 
-			getSection().setClient(composite);
-			toolkit.paintBordersFor(composite);
-			sectionCreated = true;
-		}
+         getSection().setClient(composite);
+         toolkit.paintBordersFor(composite);
+         sectionCreated = true;
+      }
 
-		if (Widgets.isAccessible(formText)) {
-			try {
-				formText.setText(
-							Artifacts.getDetailsFormText(Artifacts.getDetailsKeyValues(getEditorInput().getArtifact())), true,
-							true);
-			} catch (Exception ex) {
-				formText.setText(Lib.exceptionToString(ex), false, false);
-			}
-			getManagedForm().reflow(true);
-		}
-	}
+      if (Widgets.isAccessible(formText)) {
+         try {
+            formText.setText(
+               Artifacts.getDetailsFormText(Artifacts.getDetailsKeyValues(getEditorInput().getArtifact())), true, true);
+         } catch (Exception ex) {
+            formText.setText(Lib.exceptionToString(ex), false, false);
+         }
+         getManagedForm().reflow(true);
+      }
+   }
 
-	@Override
-	public void dispose() {
-		if (formText != null && !formText.isDisposed()) {
-			formText.dispose();
-		}
-		super.dispose();
-	}
+   @Override
+   public void dispose() {
+      if (formText != null && !formText.isDisposed()) {
+         formText.dispose();
+      }
+      super.dispose();
+   }
 
-	@Override
-	public void refresh() {
-		super.refresh();
-		createSection();
-	}
+   @Override
+   public void refresh() {
+      super.refresh();
+      createSection();
+   }
 
 }

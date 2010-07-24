@@ -15,9 +15,8 @@ import org.xml.sax.Attributes;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
-public class ExecutionDate extends ElementHandlers{
+public class ExecutionDate extends ElementHandlers {
 
    /**
     * @param name
@@ -25,7 +24,6 @@ public class ExecutionDate extends ElementHandlers{
    public ExecutionDate() {
       super("ExecutionDate");
    }
-
 
    @Override
    public Object createStartElementFoundObject(String uri, String localName, String name, Attributes attributes) {

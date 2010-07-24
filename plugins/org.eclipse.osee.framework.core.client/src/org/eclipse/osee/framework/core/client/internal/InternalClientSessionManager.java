@@ -62,7 +62,7 @@ public class InternalClientSessionManager {
       clearData();
       this.clientInfo = new OseeClientInfo();
       clientInfo.setClientAddress(HttpServer.getServerAddressForExternalCommunication(),
-            HttpServer.getDefaultServicePort());
+         HttpServer.getDefaultServicePort());
       clientInfo.setClientVersion(OseeCodeVersion.getVersion());
       try {
          clientInfo.setClientMachineName(InetAddress.getLocalHost().getHostName());
@@ -110,15 +110,15 @@ public class InternalClientSessionManager {
             clearData();
             oseeSessionGrant = internalAcquireSession(credential);
             oseeSession =
-                  new OseeClientSession(oseeSessionGrant.getSessionId(), clientInfo.getClientMachineName(),
-                        oseeSessionGrant.getOseeUserInfo().getUserID(), clientInfo.getClientAddress(),
-                        clientInfo.getPort(), clientInfo.getVersion(), credential.getAuthenticationProtocol());
+               new OseeClientSession(oseeSessionGrant.getSessionId(), clientInfo.getClientMachineName(),
+                  oseeSessionGrant.getOseeUserInfo().getUserID(), clientInfo.getClientAddress(), clientInfo.getPort(),
+                  clientInfo.getVersion(), credential.getAuthenticationProtocol());
          } catch (OseeCoreException ex) {
             OseeLog.reportStatus(new BaseStatus(STATUS_ID, Level.SEVERE, ex));
             throw ex;
          }
          OseeLog.reportStatus(new BaseStatus(STATUS_ID, Level.INFO, "%s BuildType:[%s]", oseeSession,
-               oseeSessionGrant.getClientBuildDesignation()));
+            oseeSessionGrant.getClientBuildDesignation()));
       }
       return oseeSession;
    }
@@ -160,8 +160,7 @@ public class InternalClientSessionManager {
       parameters.put("sessionId", sessionId);
       try {
          String url =
-               HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.SESSION_CONTEXT,
-                     parameters);
+            HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.SESSION_CONTEXT, parameters);
          String reponse = HttpProcessor.post(new URL(url));
          OseeLog.log(CoreClientActivator.class, Level.INFO, reponse);
          oseeSession = null;
@@ -176,8 +175,7 @@ public class InternalClientSessionManager {
       try {
          Map<String, String> parameters = new HashMap<String, String>();
          String url =
-               HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.SESSION_CONTEXT,
-                     parameters);
+            HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.SESSION_CONTEXT, parameters);
          ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
          AcquireResult result = HttpProcessor.acquire(new URL(url), outputStream);
          if (result.getCode() == HttpURLConnection.HTTP_OK) {
@@ -209,11 +207,10 @@ public class InternalClientSessionManager {
       String url = null;
       try {
          url =
-               HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.SESSION_CONTEXT,
-                     parameters);
+            HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.SESSION_CONTEXT, parameters);
          ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
          AcquireResult result =
-               HttpProcessor.post(new URL(url), asInputStream(credential), "text/xml", "UTF-8", outputStream);
+            HttpProcessor.post(new URL(url), asInputStream(credential), "text/xml", "UTF-8", outputStream);
          if (result.getCode() == HttpURLConnection.HTTP_ACCEPTED) {
             session = fromEncryptedBytes(outputStream.toByteArray());
          }

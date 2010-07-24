@@ -16,7 +16,7 @@ import java.util.ArrayList;
  * @author Roberto E. Escobar
  */
 public class TreeParent extends TreeObject {
-   private ArrayList<TreeObject> children;
+   private final ArrayList<TreeObject> children;
 
    public TreeParent(String name) {
       super(name);
@@ -38,7 +38,7 @@ public class TreeParent extends TreeObject {
    }
 
    public TreeObject[] getChildren() {
-      return (TreeObject[]) children.toArray(new TreeObject[children.size()]);
+      return children.toArray(new TreeObject[children.size()]);
    }
 
    public boolean hasChildren() {

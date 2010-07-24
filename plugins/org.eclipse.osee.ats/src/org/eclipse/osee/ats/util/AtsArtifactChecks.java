@@ -91,7 +91,7 @@ public class AtsArtifactChecks extends ArtifactCheck {
       if (teamDefs.size() > 0) {
 
          TeamWorldSearchItem srch =
-               new TeamWorldSearchItem("Team Def search", teamDefs, true, false, true, null, null, ReleasedOption.Both);
+            new TeamWorldSearchItem("Team Def search", teamDefs, true, false, true, null, null, ReleasedOption.Both);
          if (srch.performSearchGetResults(false).size() > 0) {
             return "Team Definition (or children Team Definitions) selected to delete have related Team Workflows; Delete or re-assign Team Workflows first.";
          }
@@ -104,22 +104,22 @@ public class AtsArtifactChecks extends ArtifactCheck {
          if (art.isOfType(CoreArtifactTypes.WorkFlowDefinition)) {
             if (art.getRelatedArtifacts(CoreRelationTypes.WorkItem__Parent).size() > 0) {
                return String.format(
-                     "ATS WorkFlowDefinition  [%s] selected to delete has related Team Definition(s) via WorkItem__Parent; Re-assign Team Definitions to new WorkFlowDefinition first.",
-                     art);
+                  "ATS WorkFlowDefinition  [%s] selected to delete has related Team Definition(s) via WorkItem__Parent; Re-assign Team Definitions to new WorkFlowDefinition first.",
+                  art);
             }
          }
          if (art.isOfType(CoreArtifactTypes.WorkRuleDefinition)) {
             if (art.getRelatedArtifacts(CoreRelationTypes.WorkItem__Parent).size() > 0) {
                return String.format(
-                     "ATS WorkRuleDefinition [%s] selected to delete has related Work Items via WorkItem__Parent that must be removed first.",
-                     art);
+                  "ATS WorkRuleDefinition [%s] selected to delete has related Work Items via WorkItem__Parent that must be removed first.",
+                  art);
             }
          }
          if (art.isOfType(CoreArtifactTypes.WorkWidgetDefinition)) {
             if (art.getRelatedArtifacts(CoreRelationTypes.WorkItem__Parent).size() > 0) {
                return String.format(
-                     "ATS WorkWidgetDefinition [%s] selected to delete has related Work Items via WorkItem__Parent that must be removed first.",
-                     art);
+                  "ATS WorkWidgetDefinition [%s] selected to delete has related Work Items via WorkItem__Parent that must be removed first.",
+                  art);
             }
          }
       }
@@ -135,11 +135,11 @@ public class AtsArtifactChecks extends ArtifactCheck {
       }
       for (User user : users) {
          UserRelatedToAtsObjectSearch srch =
-               new UserRelatedToAtsObjectSearch("User search", user, false, LoadView.None);
+            new UserRelatedToAtsObjectSearch("User search", user, false, LoadView.None);
          if (srch.performSearchGetResults().size() > 0) {
             return String.format(
-                  "User name: \"%s\" userId: \"%s\" selected to delete has related ATS Objects; Un-relate to ATS first before deleting.",
-                  user.getName(), user.getUserId());
+               "User name: \"%s\" userId: \"%s\" selected to delete has related ATS Objects; Un-relate to ATS first before deleting.",
+               user.getName(), user.getUserId());
          }
       }
       return null;

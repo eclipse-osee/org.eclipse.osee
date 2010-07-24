@@ -66,7 +66,7 @@ public class ChangeArtifactType {
             boolean success = changeArtifactTypeThroughHistory(artifact, artifactType);
             if (success) {
                artifactChanges.add(new EventChangeTypeBasicGuidArtifact(artifact.getBranch().getGuid(),
-                     originalType.getGuid(), artifactType.getGuid(), artifact.getGuid()));
+                  originalType.getGuid(), artifactType.getGuid(), artifact.getGuid()));
             }
          }
       }
@@ -74,7 +74,7 @@ public class ChangeArtifactType {
       // Kick Local and Remote Events
       // Old Events
       OseeEventManager.kickArtifactsChangeTypeEvent(ChangeArtifactType.class, artifactType.getId(),
-            artifactType.getGuid(), new LoadedArtifacts(artifactsUserAccepted), artifactChanges);
+         artifactType.getGuid(), new LoadedArtifacts(artifactsUserAccepted), artifactChanges);
 
       // New Events
       ArtifactEvent artifactEvent = new ArtifactEvent();
@@ -89,7 +89,9 @@ public class ChangeArtifactType {
    public static void handleRemoteChangeType(EventChangeTypeBasicGuidArtifact guidArt) {
       try {
          Artifact artifact = ArtifactCache.getActive(guidArt);
-         if (artifact == null) return;
+         if (artifact == null) {
+            return;
+         }
          ArtifactCache.deCache(artifact);
          RelationManager.deCache(artifact);
          artifact.setArtifactType(ArtifactTypeManager.getType(guidArt));
@@ -166,7 +168,7 @@ public class ChangeArtifactType {
     * @param artifact
     * @param artifactType
     * @return true if the user accepts the purging of the attributes and relations that are not compatible for the new
-    *         artifact type else false.
+    * artifact type else false.
     */
    private static boolean doesUserAcceptArtifactChange(final Artifact artifact, final ArtifactType artifactType) {
       if (!relationsToDelete.isEmpty() || !attributesToPurge.isEmpty()) {
@@ -175,7 +177,7 @@ public class ChangeArtifactType {
          getConflictString(sb, artifact, artifactType);
          try {
             return (Boolean) DebugPlugin.getDefault().getStatusHandler(promptStatus).handleStatus(promptStatus,
-                  sb.toString());
+               sb.toString());
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
             return false;
@@ -206,7 +208,7 @@ public class ChangeArtifactType {
       artifact.setArtifactType(newArtifactType);
       try {
          ConnectionHandler.runPreparedUpdate("UPDATE osee_artifact SET art_type_id = ? WHERE art_id = ?",
-               newArtifactType.getId(), artifact.getArtId());
+            newArtifactType.getId(), artifact.getArtId());
       } catch (OseeDataStoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          artifact.setArtifactType(originalType);

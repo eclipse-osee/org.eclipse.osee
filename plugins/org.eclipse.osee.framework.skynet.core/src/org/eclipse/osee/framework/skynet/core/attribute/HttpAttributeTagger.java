@@ -93,6 +93,7 @@ public class HttpAttributeTagger {
          return changedGammas.size();
       }
 
+      @Override
       public void run() {
          long start = System.currentTimeMillis();
          StringBuffer response = new StringBuffer();
@@ -113,11 +114,11 @@ public class HttpAttributeTagger {
 
             inputStream = new ByteArrayInputStream(payload.toString().getBytes("UTF-8"));
             String url =
-                  HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.SEARCH_TAGGING_CONTEXT,
-                        parameters);
+               HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.SEARCH_TAGGING_CONTEXT,
+                  parameters);
             response.append(HttpProcessor.put(new URL(url), inputStream, "application/xml", "UTF-8"));
             OseeLog.log(Activator.class, Level.FINEST,
-                  String.format("Transmitted to Tagger in [%d ms]", System.currentTimeMillis() - start));
+               String.format("Transmitted to Tagger in [%d ms]", System.currentTimeMillis() - start));
          } catch (Exception ex) {
             if (response.length() > 0) {
                response.append("\n");

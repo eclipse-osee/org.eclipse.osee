@@ -19,7 +19,7 @@ import java.util.Set;
  */
 public class XOptionHandler {
 
-   private Set<XOption> xOptions = new HashSet<XOption>();
+   private final Set<XOption> xOptions = new HashSet<XOption>();
 
    public XOptionHandler(XOption... xOption) {
       set(xOption);

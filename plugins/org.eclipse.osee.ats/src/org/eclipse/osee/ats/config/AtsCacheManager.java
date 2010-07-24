@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
@@ -71,7 +70,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkWidgetDefinitio
 public class AtsCacheManager implements IArtifactEventListener, IArtifactsPurgedEventListener, IFrameworkTransactionEventListener {
 
    private static Map<TaskableStateMachineArtifact, Collection<TaskArtifact>> teamTasksCache =
-         new HashMap<TaskableStateMachineArtifact, Collection<TaskArtifact>>();
+      new HashMap<TaskableStateMachineArtifact, Collection<TaskArtifact>>();
 
    public static void start() {
       new AtsCacheManager();
@@ -88,7 +87,7 @@ public class AtsCacheManager implements IArtifactEventListener, IArtifactsPurged
    public static synchronized Collection<TaskArtifact> getTaskArtifacts(TaskableStateMachineArtifact sma) throws OseeCoreException {
       if (!teamTasksCache.containsKey(sma)) {
          Collection<TaskArtifact> taskArtifacts =
-               sma.getRelatedArtifacts(AtsRelationTypes.SmaToTask_Task, TaskArtifact.class);
+            sma.getRelatedArtifacts(AtsRelationTypes.SmaToTask_Task, TaskArtifact.class);
          if (taskArtifacts.isEmpty()) {
             return taskArtifacts;
          }
@@ -172,16 +171,16 @@ public class AtsCacheManager implements IArtifactEventListener, IArtifactsPurged
       for (Artifact artifact : transData.cacheAddedArtifacts) {
          if (artifact.isOfType(CoreArtifactTypes.WorkRuleDefinition)) {
             WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update,
-                  new WorkRuleDefinition(artifact), artifact);
+               new WorkRuleDefinition(artifact), artifact);
          } else if (artifact.isOfType(CoreArtifactTypes.WorkPageDefinition)) {
             WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update,
-                  new WorkPageDefinition(artifact), artifact);
+               new WorkPageDefinition(artifact), artifact);
          } else if (artifact.isOfType(CoreArtifactTypes.WorkWidgetDefinition)) {
             WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update, new WorkWidgetDefinition(
-                  artifact), artifact);
+               artifact), artifact);
          } else if (artifact.isOfType(CoreArtifactTypes.WorkFlowDefinition)) {
             WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update,
-                  new WorkFlowDefinition(artifact), artifact);
+               new WorkFlowDefinition(artifact), artifact);
          }
          if (artifact instanceof TaskArtifact) {
             teamTasksCache.remove(artifact.getParent());
@@ -201,16 +200,16 @@ public class AtsCacheManager implements IArtifactEventListener, IArtifactsPurged
       for (Artifact artifact : transData.getArtifactsInRelations(ChangeType.All, CoreRelationTypes.WorkItem__Child)) {
          if (artifact.isOfType(CoreArtifactTypes.WorkRuleDefinition)) {
             WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update,
-                  new WorkRuleDefinition(artifact), artifact);
+               new WorkRuleDefinition(artifact), artifact);
          } else if (artifact.isOfType(CoreArtifactTypes.WorkPageDefinition)) {
             WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update,
-                  new WorkPageDefinition(artifact), artifact);
+               new WorkPageDefinition(artifact), artifact);
          } else if (artifact.isOfType(CoreArtifactTypes.WorkWidgetDefinition)) {
             WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update, new WorkWidgetDefinition(
-                  artifact), artifact);
+               artifact), artifact);
          } else if (artifact.isOfType(CoreArtifactTypes.WorkFlowDefinition)) {
             WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update,
-                  new WorkFlowDefinition(artifact), artifact);
+               new WorkFlowDefinition(artifact), artifact);
          }
       }
    }
@@ -226,7 +225,7 @@ public class AtsCacheManager implements IArtifactEventListener, IArtifactsPurged
             try {
                if (guidArt.is(EventModType.Deleted, EventModType.Purged)) {
                   if (guidArt.is(CoreArtifactTypes.WorkRuleDefinition, CoreArtifactTypes.WorkPageDefinition,
-                        CoreArtifactTypes.WorkFlowDefinition, CoreArtifactTypes.WorkWidgetDefinition)) {
+                     CoreArtifactTypes.WorkFlowDefinition, CoreArtifactTypes.WorkWidgetDefinition)) {
                      WorkItemDefinitionFactory.deCache(guidArt);
                   }
                   if (guidArt.is(AtsArtifactTypes.Task) && guidArt.is(EventModType.Deleted)) {
@@ -242,22 +241,22 @@ public class AtsCacheManager implements IArtifactEventListener, IArtifactsPurged
                }
                if (guidArt.is(EventModType.Added, EventModType.Modified)) {
                   if (guidArt.is(CoreArtifactTypes.WorkRuleDefinition, CoreArtifactTypes.WorkPageDefinition,
-                        CoreArtifactTypes.WorkFlowDefinition, CoreArtifactTypes.WorkWidgetDefinition)) {
+                     CoreArtifactTypes.WorkFlowDefinition, CoreArtifactTypes.WorkWidgetDefinition)) {
                      // Must load these cause they are config artifacts
                      Artifact artifact = ArtifactQuery.getArtifactFromToken(guidArt);
                      if (artifact != null) {
                         if (guidArt.is(CoreArtifactTypes.WorkRuleDefinition)) {
                            WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update,
-                                 new WorkRuleDefinition(artifact), artifact);
+                              new WorkRuleDefinition(artifact), artifact);
                         } else if (artifact.isOfType(CoreArtifactTypes.WorkPageDefinition)) {
                            WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update,
-                                 new WorkPageDefinition(artifact), artifact);
+                              new WorkPageDefinition(artifact), artifact);
                         } else if (artifact.isOfType(CoreArtifactTypes.WorkWidgetDefinition)) {
                            WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update,
-                                 new WorkWidgetDefinition(artifact), artifact);
+                              new WorkWidgetDefinition(artifact), artifact);
                         } else if (artifact.isOfType(CoreArtifactTypes.WorkFlowDefinition)) {
                            WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update,
-                                 new WorkFlowDefinition(artifact), artifact);
+                              new WorkFlowDefinition(artifact), artifact);
                         }
                      }
                   }
@@ -273,7 +272,7 @@ public class AtsCacheManager implements IArtifactEventListener, IArtifactsPurged
                   }
                }
             } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
             }
          }
          for (EventBasicGuidRelation guidRel : artifactEvent.getRelations()) {
@@ -289,28 +288,28 @@ public class AtsCacheManager implements IArtifactEventListener, IArtifactsPurged
                   }
                }
             } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
             }
          }
          for (Artifact artifact : artifactEvent.getArtifactsInRelations(CoreRelationTypes.WorkItem__Child,
-               RelationEventType.Added, RelationEventType.Undeleted)) {
+            RelationEventType.Added, RelationEventType.Undeleted)) {
             if (artifact.isOfType(CoreArtifactTypes.WorkRuleDefinition)) {
                WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update, new WorkRuleDefinition(
-                     artifact), artifact);
+                  artifact), artifact);
             } else if (artifact.isOfType(CoreArtifactTypes.WorkPageDefinition)) {
                WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update, new WorkPageDefinition(
-                     artifact), artifact);
+                  artifact), artifact);
             } else if (artifact.isOfType(CoreArtifactTypes.WorkWidgetDefinition)) {
                WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update, new WorkWidgetDefinition(
-                     artifact), artifact);
+                  artifact), artifact);
             } else if (artifact.isOfType(CoreArtifactTypes.WorkFlowDefinition)) {
                WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update, new WorkFlowDefinition(
-                     artifact), artifact);
+                  artifact), artifact);
             }
          }
 
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
    }
 

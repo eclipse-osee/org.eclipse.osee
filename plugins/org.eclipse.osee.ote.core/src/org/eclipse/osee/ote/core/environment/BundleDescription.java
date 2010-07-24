@@ -18,23 +18,21 @@ import java.io.Serializable;
 import java.net.URL;
 import java.util.jar.Manifest;
 
-/** 
- * Describes the location where a bundle can be acquired from and provides
- * the manifest of the bundle so that an educated decision can be made about
- * whether a bundle is needed or not.
+/**
+ * Describes the location where a bundle can be acquired from and provides the manifest of the bundle so that an
+ * educated decision can be made about whether a bundle is needed or not.
  * 
  * @author Robert A. Fisher
- *
  */
 public class BundleDescription implements Serializable {
    private static final long serialVersionUID = 546754001181908641L;
-   
+
    private final URL location;
    private final boolean systemLibrary;
    private final byte[] manifestData;
    private final byte[] md5Digest;
    private transient Manifest manifest;
-   
+
    /**
     * Deserialization constructor
     */
@@ -45,24 +43,28 @@ public class BundleDescription implements Serializable {
       this.systemLibrary = false;
       this.md5Digest = null;
    }
-   
+
    public BundleDescription(URL systemLocation, URL serverLocation, Manifest manifest, boolean systemLibrary, byte[] md5Digest) {
-      if (systemLocation == null)
+      if (systemLocation == null) {
          throw new IllegalArgumentException("systemLocation must not be null");
-      if (serverLocation == null)
+      }
+      if (serverLocation == null) {
          throw new IllegalArgumentException("serverLocation must not be null");
-      if (manifest == null)
+      }
+      if (manifest == null) {
          throw new IllegalArgumentException("manifest must not be null");
-      if (md5Digest == null)
+      }
+      if (md5Digest == null) {
          throw new IllegalArgumentException("md5Digest must not be null");
-      
+      }
+
       ByteArrayOutputStream out = new ByteArrayOutputStream();
       try {
          manifest.write(out);
       } catch (IOException ex) {
          throw new IllegalStateException("ByteArrayOutputStream never should throw IOException", ex);
       }
-      
+
       this.location = serverLocation;
       this.manifestData = out.toByteArray();
       this.systemLibrary = systemLibrary;
@@ -86,24 +88,24 @@ public class BundleDescription implements Serializable {
          throw new IllegalStateException("ByteArrayInputStream never should throw IOException", ex);
       }
    }
-   
+
    public String getSymbolicName() {
       return getManifestEntry("Bundle-SymbolicName");
    }
-   
+
    public String getVersion() {
       return getManifestEntry("Bundle-Version");
    }
-   
+
    private String getManifestEntry(String attribute) {
       String entry = getManifest().getMainAttributes().getValue(attribute).trim();
-      
+
       // Sometimes there's a semicolon then extra info - ignore this
       int index = entry.indexOf(';');
       if (index != -1) {
          entry = entry.substring(0, index);
       }
-      
+
       return entry;
    }
 
@@ -120,13 +122,13 @@ public class BundleDescription implements Serializable {
    public byte[] getMd5Digest() {
       return md5Digest;
    }
-   
-   public boolean isLocalFile(){
-	   String protocol = location.getProtocol();
-	   return protocol.equals("file");
+
+   public boolean isLocalFile() {
+      String protocol = location.getProtocol();
+      return protocol.equals("file");
    }
 
-public String getLocation() {
-	return location.toString();
-}
+   public String getLocation() {
+      return location.toString();
+   }
 }

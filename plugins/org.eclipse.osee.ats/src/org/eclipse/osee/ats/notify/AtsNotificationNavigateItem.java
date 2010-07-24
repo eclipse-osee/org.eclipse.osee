@@ -54,7 +54,7 @@ public class AtsNotificationNavigateItem extends XNavigateItemAction {
             return;
          }
          Operations.executeAsJob(new NotificationJob(diag.isSendNotifications(), diag.getSelectedAtsNotifications()),
-               true);
+            true);
       }
    }
 
@@ -85,8 +85,8 @@ public class AtsNotificationNavigateItem extends XNavigateItemAction {
                for (OseeNotificationEvent event : notify.getNotificationEvents(monitor)) {
                   numEvents++;
                   rd.addRaw(AHTML.addRowMultiColumnTable(event.getType(), event.getDescription(),
-                        XResultData.getHyperlink(event.getId(), event.getId(), AtsUtil.getAtsBranch().getId()),
-                        Artifacts.semmicolonArts(event.getUsers()), OseeNotifyUsersJob.getHyperlink(event)));
+                     XResultData.getHyperlink(event.getId(), event.getId(), AtsUtil.getAtsBranch().getId()),
+                     Artifacts.semmicolonArts(event.getUsers()), OseeNotifyUsersJob.getHyperlink(event)));
                   if (sendNotifications) {
                      OseeNotificationManager.getInstance().addNotificationEvent(event);
                   }

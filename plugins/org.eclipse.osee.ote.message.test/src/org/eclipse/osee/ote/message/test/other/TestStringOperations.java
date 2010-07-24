@@ -46,7 +46,7 @@ public class TestStringOperations {
       TestMessage msg = new TestMessage();
       support.activateMsg(msg);
       support.genericTestCheckWaitForValue(msg.STRING_ELEMENT_1, new String[] {"Expected 1", " Expected", "Expected ",
-            "", "expected", "EXPECTED", "Expected", "Expected", "01234", "x"}, "abc");
+         "", "expected", "EXPECTED", "Expected", "Expected", "01234", "x"}, "abc");
    }
 
    @Test

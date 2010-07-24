@@ -220,18 +220,18 @@ public class ArtifactTypeManager {
    }
 
    private static final String DELETE_VALID_ATTRIBUTE =
-         "delete from osee_artifact_type_attributes where art_type_id = ?";
+      "delete from osee_artifact_type_attributes where art_type_id = ?";
    private static final String COUNT_ARTIFACT_OCCURRENCE =
-         "select count(1) from (select DISTINCT(art_id) FROM osee_artifact where art_type_id = ?) t1";
+      "select count(1) from (select DISTINCT(art_id) FROM osee_artifact where art_type_id = ?) t1";
    private static final String DELETE_ARIFACT_TYPE = "delete from osee_artifact_type where art_type_id = ?";
 
    public static void purgeArtifactType(final ArtifactType artifactType) throws OseeCoreException {
       int artifactCount =
-            ConnectionHandler.runPreparedQueryFetchInt(0, COUNT_ARTIFACT_OCCURRENCE, artifactType.getId());
+         ConnectionHandler.runPreparedQueryFetchInt(0, COUNT_ARTIFACT_OCCURRENCE, artifactType.getId());
 
       if (artifactCount != 0) {
          throw new OseeArgumentException(
-               "Can not delete artifact type " + artifactType.getName() + " because there are " + artifactCount + " existing artifacts of this type.");
+            "Can not delete artifact type " + artifactType.getName() + " because there are " + artifactCount + " existing artifacts of this type.");
       }
       new DbTransaction() {
 
@@ -268,7 +268,7 @@ public class ArtifactTypeManager {
                   branches.add(artifact.getBranch());
                }
                throw new OseeStateException(
-                     "Found " + artifacts.size() + " artifact references of type " + purgeArtifactType + " on branches " + branches);
+                  "Found " + artifacts.size() + " artifact references of type " + purgeArtifactType + " on branches " + branches);
             } else {
                ChangeArtifactType.changeArtifactType(artifactMap.values(), newArtifactType);
             }
@@ -323,7 +323,7 @@ public class ArtifactTypeManager {
 
    public static Artifact makeNewArtifact(IArtifactType artifactType, IOseeBranch branch) throws OseeCoreException {
       return getFactory(artifactType).makeNewArtifact(branch, ArtifactTypeManager.getType(artifactType), null, null,
-            null);
+         null);
    }
 
    /**

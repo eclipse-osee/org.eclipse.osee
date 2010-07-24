@@ -34,11 +34,11 @@ import javax.swing.JScrollPane;
 public class FileListEditor extends JPanel implements ActionListener {
 
    private static final long serialVersionUID = -4397118110586026746L;
-   private DefaultListModel listModel;
-   private JList list;
-   private JFileChooser chooser;
-   private JButton addButton;
-   private JButton removeButton;
+   private final DefaultListModel listModel;
+   private final JList list;
+   private final JFileChooser chooser;
+   private final JButton addButton;
+   private final JButton removeButton;
    private String relativeToPath;
 
    public FileListEditor() {
@@ -84,6 +84,7 @@ public class FileListEditor extends JPanel implements ActionListener {
       chooser.setDialogTitle(title);
    }
 
+   @Override
    public void actionPerformed(ActionEvent ev) {
       Component component = (Component) ev.getSource();
       if (component == addButton) {

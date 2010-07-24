@@ -31,192 +31,194 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
  */
 public abstract class XHyperlinkLabelCmdValueSelection extends XWidget {
 
-	Label valueLabel;
-	Hyperlink selectHyperLinkLabel, clearHyperLinkLabel;
-	private final boolean supportClear;
-	private Integer truncateValueLength = null;
+   Label valueLabel;
+   Hyperlink selectHyperLinkLabel, clearHyperLinkLabel;
+   private final boolean supportClear;
+   private Integer truncateValueLength = null;
 
-	public XHyperlinkLabelCmdValueSelection(String label) {
-		this(label, false);
-	}
+   public XHyperlinkLabelCmdValueSelection(String label) {
+      this(label, false);
+   }
 
-	public XHyperlinkLabelCmdValueSelection(String label, boolean supportClear, Integer truncateValueLength) {
-		super(label);
-		this.supportClear = supportClear;
-		this.truncateValueLength = truncateValueLength;
-	}
+   public XHyperlinkLabelCmdValueSelection(String label, boolean supportClear, Integer truncateValueLength) {
+      super(label);
+      this.supportClear = supportClear;
+      this.truncateValueLength = truncateValueLength;
+   }
 
-	public XHyperlinkLabelCmdValueSelection(String label, boolean supportClear) {
-		this(label, supportClear, null);
-	}
+   public XHyperlinkLabelCmdValueSelection(String label, boolean supportClear) {
+      this(label, supportClear, null);
+   }
 
-	public String getCurrentValue() {
-		return "";
-	}
+   public String getCurrentValue() {
+      return "";
+   }
 
-	public void setErrorState(boolean error) {
-		valueLabel.setForeground(error ? Displays.getSystemColor(SWT.COLOR_RED) : null);
-	}
+   public void setErrorState(boolean error) {
+      valueLabel.setForeground(error ? Displays.getSystemColor(SWT.COLOR_RED) : null);
+   }
 
-	public String getHyperlinkLabelString() {
-		return " <select>";
-	}
+   public String getHyperlinkLabelString() {
+      return " <select>";
+   }
 
-	public String getClearHyperlinkLabelString() {
-		return "<clear> ";
-	}
+   public String getClearHyperlinkLabelString() {
+      return "<clear> ";
+   }
 
-	public boolean handleSelection() {
-		return false;
-	}
+   public boolean handleSelection() {
+      return false;
+   }
 
-	public boolean handleClear() {
-		return false;
-	}
+   public boolean handleClear() {
+      return false;
+   }
 
-	public boolean isSupportClear() {
-		return supportClear;
-	}
+   public boolean isSupportClear() {
+      return supportClear;
+   }
 
-	@Override
-	protected void createControls(Composite parent, int horizontalSpan) {
+   @Override
+   protected void createControls(Composite parent, int horizontalSpan) {
 
-		Composite comp = new Composite(parent, SWT.NONE);
-		comp.setLayout(ALayout.getZeroMarginLayout(5, false));
-		comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      Composite comp = new Composite(parent, SWT.NONE);
+      comp.setLayout(ALayout.getZeroMarginLayout(5, false));
+      comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-		// Create Text Widgets
-		if (isDisplayLabel() && !getLabel().equals("")) {
-			labelWidget = new Label(comp, SWT.NONE);
-			labelWidget.setText(getLabel() + ":");
-			if (getToolTip() != null) {
-				labelWidget.setToolTipText(getToolTip());
-			}
-		}
-		if (toolkit == null) {
-			selectHyperLinkLabel = new Hyperlink(comp, SWT.NONE);
-		} else {
-			selectHyperLinkLabel = toolkit.createHyperlink(comp, "<select>", SWT.NONE);
-		}
-		selectHyperLinkLabel.setToolTipText(Strings.isValid(getToolTip()) ? getToolTip() : "Select to Modify");
-		selectHyperLinkLabel.addListener(SWT.MouseUp, new Listener() {
-			public void handleEvent(Event event) {
-				if (handleSelection()) {
-					refresh();
-					notifyXModifiedListeners();
-				}
-			}
-		});
-		if (supportClear) {
-			if (toolkit == null) {
-				clearHyperLinkLabel = new Hyperlink(comp, SWT.NONE);
-			} else {
-				clearHyperLinkLabel = toolkit.createHyperlink(comp, "<clear>", SWT.NONE);
-			}
-			clearHyperLinkLabel.setToolTipText("Select to Clear");
-			clearHyperLinkLabel.addListener(SWT.MouseUp, new Listener() {
-				public void handleEvent(Event event) {
-					clear();
-				}
-			});
-		}
-		valueLabel = new Label(comp, SWT.NONE);
-		valueLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		valueLabel.setForeground(Displays.getSystemColor(SWT.COLOR_BLACK));
+      // Create Text Widgets
+      if (isDisplayLabel() && !getLabel().equals("")) {
+         labelWidget = new Label(comp, SWT.NONE);
+         labelWidget.setText(getLabel() + ":");
+         if (getToolTip() != null) {
+            labelWidget.setToolTipText(getToolTip());
+         }
+      }
+      if (toolkit == null) {
+         selectHyperLinkLabel = new Hyperlink(comp, SWT.NONE);
+      } else {
+         selectHyperLinkLabel = toolkit.createHyperlink(comp, "<select>", SWT.NONE);
+      }
+      selectHyperLinkLabel.setToolTipText(Strings.isValid(getToolTip()) ? getToolTip() : "Select to Modify");
+      selectHyperLinkLabel.addListener(SWT.MouseUp, new Listener() {
+         @Override
+         public void handleEvent(Event event) {
+            if (handleSelection()) {
+               refresh();
+               notifyXModifiedListeners();
+            }
+         }
+      });
+      if (supportClear) {
+         if (toolkit == null) {
+            clearHyperLinkLabel = new Hyperlink(comp, SWT.NONE);
+         } else {
+            clearHyperLinkLabel = toolkit.createHyperlink(comp, "<clear>", SWT.NONE);
+         }
+         clearHyperLinkLabel.setToolTipText("Select to Clear");
+         clearHyperLinkLabel.addListener(SWT.MouseUp, new Listener() {
+            @Override
+            public void handleEvent(Event event) {
+               clear();
+            }
+         });
+      }
+      valueLabel = new Label(comp, SWT.NONE);
+      valueLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      valueLabel.setForeground(Displays.getSystemColor(SWT.COLOR_BLACK));
 
-		refresh();
-	}
+      refresh();
+   }
 
-	public void clear() {
-		if (handleClear()) {
-			refresh();
-			notifyXModifiedListeners();
-		}
-	}
+   public void clear() {
+      if (handleClear()) {
+         refresh();
+         notifyXModifiedListeners();
+      }
+   }
 
-	@Override
-	public void refresh() {
-		if (getControl() == null || getControl().isDisposed()) {
-			return;
-		}
-		boolean updated = false;
-		if (!getHyperlinkLabelString().equals(selectHyperLinkLabel.getText())) {
-			selectHyperLinkLabel.setText(getHyperlinkLabelString());
-			updated = true;
-		}
-		if (supportClear && !getClearHyperlinkLabelString().equals(clearHyperLinkLabel.getText())) {
-			clearHyperLinkLabel.setText(getClearHyperlinkLabelString());
-			updated = true;
-		}
-		if (!getCurrentValue().equals(valueLabel.getText())) {
-			valueLabel.setText(truncateValueLength == null ? getCurrentValue() : Strings.truncate(getCurrentValue(),
-						truncateValueLength, true));
-			valueLabel.setToolTipText(getCurrentValue());
-			updated = true;
-		}
-		if (updated) {
-			valueLabel.getParent().layout();
-		}
-		validate();
-	}
+   @Override
+   public void refresh() {
+      if (getControl() == null || getControl().isDisposed()) {
+         return;
+      }
+      boolean updated = false;
+      if (!getHyperlinkLabelString().equals(selectHyperLinkLabel.getText())) {
+         selectHyperLinkLabel.setText(getHyperlinkLabelString());
+         updated = true;
+      }
+      if (supportClear && !getClearHyperlinkLabelString().equals(clearHyperLinkLabel.getText())) {
+         clearHyperLinkLabel.setText(getClearHyperlinkLabelString());
+         updated = true;
+      }
+      if (!getCurrentValue().equals(valueLabel.getText())) {
+         valueLabel.setText(truncateValueLength == null ? getCurrentValue() : Strings.truncate(getCurrentValue(),
+            truncateValueLength, true));
+         valueLabel.setToolTipText(getCurrentValue());
+         updated = true;
+      }
+      if (updated) {
+         valueLabel.getParent().layout();
+      }
+      validate();
+   }
 
-	@Override
-	public Control getControl() {
-		return valueLabel;
-	}
+   @Override
+   public Control getControl() {
+      return valueLabel;
+   }
 
-	@Override
-	public void adaptControls(FormToolkit toolkit) {
-		super.adaptControls(toolkit);
-		toolkit.adapt(selectHyperLinkLabel, true, true);
-		if (supportClear) {
-			toolkit.adapt(clearHyperLinkLabel, true, true);
-		}
-	}
+   @Override
+   public void adaptControls(FormToolkit toolkit) {
+      super.adaptControls(toolkit);
+      toolkit.adapt(selectHyperLinkLabel, true, true);
+      if (supportClear) {
+         toolkit.adapt(clearHyperLinkLabel, true, true);
+      }
+   }
 
-	@Override
-	public String toHTML(String labelFont) {
-		return AHTML.getLabelValueStr(AHTML.LABEL_FONT, getHyperlinkLabelString(), getCurrentValue());
-	}
+   @Override
+   public String toHTML(String labelFont) {
+      return AHTML.getLabelValueStr(AHTML.LABEL_FONT, getHyperlinkLabelString(), getCurrentValue());
+   }
 
-	@Override
-	public void dispose() {
-	}
+   @Override
+   public void dispose() {
+   }
 
-	@Override
-	public Object getData() {
-		return null;
-	}
+   @Override
+   public Object getData() {
+      return null;
+   }
 
-	@Override
-	public String getReportData() {
-		return null;
-	}
+   @Override
+   public String getReportData() {
+      return null;
+   }
 
-	@Override
-	public String getXmlData() {
-		return null;
-	}
+   @Override
+   public String getXmlData() {
+      return null;
+   }
 
-	@Override
-	public IStatus isValid() {
-		return Status.OK_STATUS;
-	}
+   @Override
+   public IStatus isValid() {
+      return Status.OK_STATUS;
+   }
 
-	@Override
-	public void setFocus() {
-	}
+   @Override
+   public void setFocus() {
+   }
 
-	@Override
-	public void setXmlData(String str) {
-	}
+   @Override
+   public void setXmlData(String str) {
+   }
 
-	public Integer getTruncateValueLength() {
-		return truncateValueLength;
-	}
+   public Integer getTruncateValueLength() {
+      return truncateValueLength;
+   }
 
-	public void setTruncateValueLength(Integer truncateValueLength) {
-		this.truncateValueLength = truncateValueLength;
-	}
+   public void setTruncateValueLength(Integer truncateValueLength) {
+      this.truncateValueLength = truncateValueLength;
+   }
 
 }

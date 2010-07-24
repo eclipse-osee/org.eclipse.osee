@@ -45,7 +45,7 @@ public class SimpleOseeFormatter extends Formatter {
             captureNextItem = true;
          } else if (captureNextItem) {
             sb.append(String.format("%s   %s   %s (%d)", record.getLevel().getLocalizedName(), el.getClassName(),
-                  el.getMethodName(), el.getLineNumber()));
+               el.getMethodName(), el.getLineNumber()));
             sb.append(lineSeparator);
             break;
          }

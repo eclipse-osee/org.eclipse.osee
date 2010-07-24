@@ -15,9 +15,8 @@ import org.xml.sax.Attributes;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
-public class ScriptInit extends ElementHandlers{
+public class ScriptInit extends ElementHandlers {
 
    /**
     * @param name

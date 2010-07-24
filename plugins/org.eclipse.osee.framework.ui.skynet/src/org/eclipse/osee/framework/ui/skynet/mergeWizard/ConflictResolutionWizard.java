@@ -34,10 +34,11 @@ public class ConflictResolutionWizard extends Wizard {
    private final AttributeConflict conflict;
 
    public ConflictResolutionWizard(Conflict conflict) {
-      if (conflict instanceof AttributeConflict)
+      if (conflict instanceof AttributeConflict) {
          this.conflict = (AttributeConflict) conflict;
-      else
+      } else {
          this.conflict = null;
+      }
 
    }
 
@@ -73,10 +74,11 @@ public class ConflictResolutionWizard extends Wizard {
 
    @Override
    public IWizardPage getStartingPage() {
-      if (conflict.isWordAttribute())
+      if (conflict.isWordAttribute()) {
          return getPage(EditWFCAttributeWizardPage.TITLE);
-      else
+      } else {
          return getPage(EditAttributeWizardPage.TITLE);
+      }
 
    }
 

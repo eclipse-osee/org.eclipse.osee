@@ -11,14 +11,15 @@
 package org.eclipse.osee.ote.messaging.dds.status;
 
 /**
- * A <code>Status</code> that also maintains a counts for the total and incremental number of samples associated with the status.
+ * A <code>Status</code> that also maintains a counts for the total and incremental number of samples associated with
+ * the status.
  * 
  * @author Robert A. Fisher
  * @author David Diepenbrock
  */
 public abstract class CountedStatus extends Status {
-   private long totalCount;
-   private long totalCountChange;
+   private final long totalCount;
+   private final long totalCountChange;
 
    /**
     * @param totalCount The cumulative count of samples or topics associated with this status.
@@ -40,7 +41,8 @@ public abstract class CountedStatus extends Status {
    }
 
    /**
-    * Gets the number of samples or topics associated with this status since the last time the listener was called or the status was read.
+    * Gets the number of samples or topics associated with this status since the last time the listener was called or
+    * the status was read.
     * 
     * @return Returns the totalCountChange.
     */

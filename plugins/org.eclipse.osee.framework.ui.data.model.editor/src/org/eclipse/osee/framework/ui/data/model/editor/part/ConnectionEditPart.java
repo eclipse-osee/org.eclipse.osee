@@ -48,18 +48,21 @@ public class ConnectionEditPart extends AbstractConnectionEditPart {
 
    public ConnectionEditPart(Object connectionModel) {
       super();
-      setModel((ConnectionModel<?>) connectionModel);
+      setModel(connectionModel);
    }
 
+   @Override
    public void activate() {
       super.activate();
       getConnectionModel().addListener(modelListener);
    }
 
+   @Override
    protected void createEditPolicies() {
       installEditPolicy(EditPolicy.CONNECTION_ENDPOINTS_ROLE, new ConnectionModelEndpointEditPolicy());
 
       installEditPolicy(EditPolicy.CONNECTION_ROLE, new ConnectionEditPolicy() {
+         @Override
          protected Command getDeleteCommand(GroupRequest request) {
             Command toReturn = UnexecutableCommand.INSTANCE;
             Object model = ((AbstractGraphicalEditPart) getParent()).getModel();
@@ -78,38 +81,44 @@ public class ConnectionEditPart extends AbstractConnectionEditPart {
 
       installEditPolicy(EditPolicy.CONNECTION_BENDPOINTS_ROLE, new BendpointEditPolicy() {
 
+         @Override
          protected Command getCreateBendpointCommand(BendpointRequest request) {
             Point location = request.getLocation();
             getConnection().translateToRelative(location);
             return new CreateBendpointCommand((ConnectionModel<?>) request.getSource().getModel(), location,
-                  request.getIndex());
+               request.getIndex());
          }
 
+         @Override
          protected Command getDeleteBendpointCommand(BendpointRequest request) {
             return new DeleteBendpointCommand((ConnectionModel<?>) getHost().getModel(), request.getIndex());
          }
 
+         @Override
          protected Command getMoveBendpointCommand(BendpointRequest request) {
             Point location = request.getLocation();
             getConnection().translateToRelative(location);
             return new MoveBendpointCommand((ConnectionModel<?>) request.getSource().getModel(), location,
-                  request.getIndex());
+               request.getIndex());
          }
       });
 
    }
 
+   @Override
    protected IFigure createFigure() {
       PolylineConnection conn = new PolylineConnection();
       conn.setLineStyle(Graphics.LINE_DASHDOT);
       return conn;
    }
 
+   @Override
    public void deactivate() {
       getConnectionModel().removeListener(modelListener);
       super.deactivate();
    }
 
+   @Override
    @SuppressWarnings("unchecked")
    public Object getAdapter(Class adapter) {
       if (IPropertySource.class == adapter) {
@@ -128,6 +137,7 @@ public class ConnectionEditPart extends AbstractConnectionEditPart {
       refreshTargetAnchor();
    }
 
+   @Override
    protected void refreshVisuals() {
       getConnectionFigure().setRoutingConstraint(getConnectionModel().getBendpoints());
    }

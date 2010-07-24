@@ -96,13 +96,16 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
    public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, WorkPage page, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
    }
 
+   @Override
    public void createXWidgetLayoutData(DynamicXWidgetLayoutData workAttr, XWidget xWidget, FormToolkit toolkit, Artifact art, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
    }
 
+   @Override
    public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
       widgetCreated(xWidget, toolkit, art, this, xModListener, isEditable);
    }
 
+   @Override
    public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
       widgetCreating(xWidget, toolkit, art, this, xModListener, isEditable);
    }
@@ -169,14 +172,14 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
    @Override
    public String toString() {
       StringBuffer sb =
-            new StringBuffer(
-                  workPageDefinition.getPageName() + (workPageDefinition.getId() != null ? " (" + workPageDefinition.getId() + ") " : "") + "\n");
+         new StringBuffer(
+            workPageDefinition.getPageName() + (workPageDefinition.getId() != null ? " (" + workPageDefinition.getId() + ") " : "") + "\n");
       try {
          for (WorkPageDefinition page : workFlowDefinition.getPageDefinitions(workPageDefinition.getId(),
-               TransitionType.ToPage)) {
+            TransitionType.ToPage)) {
             sb.append("-> " + page.getPageName() + (workFlowDefinition.getPageDefinitions(workPageDefinition.getId(),
-                  TransitionType.ToPageAsReturn).contains(
-                  workFlowDefinition.getPageDefinitions(workPageDefinition.getId(), TransitionType.ToPage)) ? " (return)" : "") + "\n");
+               TransitionType.ToPageAsReturn).contains(
+               workFlowDefinition.getPageDefinitions(workPageDefinition.getId(), TransitionType.ToPage)) ? " (return)" : "") + "\n");
          }
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);

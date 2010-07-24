@@ -52,8 +52,9 @@ public class AtsNotificationCheckTreeDialog extends CheckedTreeSelectionDialog {
 
    public Collection<IAtsNotification> getSelectedAtsNotifications() {
       ArrayList<IAtsNotification> notifications = new ArrayList<IAtsNotification>();
-      for (Object obj : getResult())
+      for (Object obj : getResult()) {
          notifications.add((IAtsNotification) obj);
+      }
       return notifications;
    }
 
@@ -65,7 +66,7 @@ public class AtsNotificationCheckTreeDialog extends CheckedTreeSelectionDialog {
          @Override
          public int compare(Viewer viewer, Object e1, Object e2) {
             return getComparator().compare(((IAtsNotification) e1).getNotificationName(),
-                  ((IAtsNotification) e2).getNotificationName());
+               ((IAtsNotification) e2).getNotificationName());
          }
       });
 
@@ -86,30 +87,39 @@ public class AtsNotificationCheckTreeDialog extends CheckedTreeSelectionDialog {
 
    static ILabelProvider labelProvider = new ILabelProvider() {
 
+      @Override
       public Image getImage(Object element) {
          return null;
       }
 
+      @Override
       public String getText(Object element) {
-         if (element instanceof IAtsNotification) return ((IAtsNotification) element).getNotificationName();
+         if (element instanceof IAtsNotification) {
+            return ((IAtsNotification) element).getNotificationName();
+         }
          return "Unknown";
       }
 
+      @Override
       public void addListener(ILabelProviderListener listener) {
       }
 
+      @Override
       public void dispose() {
       }
 
+      @Override
       public boolean isLabelProperty(Object element, String property) {
          return false;
       }
 
+      @Override
       public void removeListener(ILabelProviderListener listener) {
       }
 
    };
    static ITreeContentProvider treeContentProvider = new ITreeContentProvider() {
+      @Override
       @SuppressWarnings("rawtypes")
       public Object[] getElements(Object inputElement) {
          if (inputElement instanceof Collection) {
@@ -118,6 +128,7 @@ public class AtsNotificationCheckTreeDialog extends CheckedTreeSelectionDialog {
          return EMPTY_ARRAY;
       };
 
+      @Override
       @SuppressWarnings("rawtypes")
       public Object[] getChildren(Object parentElement) {
          if (parentElement instanceof Collection) {
@@ -126,17 +137,21 @@ public class AtsNotificationCheckTreeDialog extends CheckedTreeSelectionDialog {
          return EMPTY_ARRAY;
       };
 
+      @Override
       public boolean hasChildren(Object element) {
          return getChildren(element).length > 0;
       }
 
+      @Override
       public Object getParent(Object element) {
          return null;
       }
 
+      @Override
       public void dispose() {
       }
 
+      @Override
       public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
       };
    };

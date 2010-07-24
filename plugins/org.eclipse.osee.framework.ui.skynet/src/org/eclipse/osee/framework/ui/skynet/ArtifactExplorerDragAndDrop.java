@@ -120,20 +120,20 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
             ArtifactData artData = ArtifactTransfer.getInstance().nativeToJava(event.currentDataType);
             final Artifact[] artifactsToBeRelated = artData.getArtifacts();
             if (artifactsToBeRelated != null && artifactsToBeRelated.length > 0 && !artifactsToBeRelated[0].getBranch().equals(
-                  parentArtifact.getBranch())) {
+               parentArtifact.getBranch())) {
                try {
                   interArtifactExplorerHandler.dropArtifactIntoDifferentBranch(parentArtifact, artifactsToBeRelated,
-                        true);
+                     true);
                } catch (OseeCoreException ex) {
                   OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }
             } else if (isValidForArtifactDrop(event) && MessageDialog.openQuestion(
-                  viewPart.getViewSite().getShell(),
-                  "Confirm Move",
-                  "Are you sure you want to make each of the selected artifacts a child of " + parentArtifact.getName() + "?")) {
+               viewPart.getViewSite().getShell(),
+               "Confirm Move",
+               "Are you sure you want to make each of the selected artifacts a child of " + parentArtifact.getName() + "?")) {
                try {
                   SkynetTransaction transaction =
-                        new SkynetTransaction(parentArtifact.getBranch(), "Artifact explorer drag & drop");
+                     new SkynetTransaction(parentArtifact.getBranch(), "Artifact explorer drag & drop");
                   // Replace all of the parent relations
                   for (Artifact artifact : artifactsToBeRelated) {
                      Artifact currentParent = artifact.getParent();

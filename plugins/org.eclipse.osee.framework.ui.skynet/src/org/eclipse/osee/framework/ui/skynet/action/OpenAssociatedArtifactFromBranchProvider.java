@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.action;
 
+import java.util.logging.Level;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -38,7 +40,7 @@ public class OpenAssociatedArtifactFromBranchProvider extends Action {
    private final IBranchProvider branchProvider;
 
    public OpenAssociatedArtifactFromBranchProvider(IBranchProvider branchProvider) {
-      super("Open Associated Artifact", Action.AS_PUSH_BUTTON);
+      super("Open Associated Artifact", IAction.AS_PUSH_BUTTON);
       this.branchProvider = branchProvider;
       setId("open.associated.artifact");
       setToolTipText("Open Associated Artifact");
@@ -60,7 +62,7 @@ public class OpenAssociatedArtifactFromBranchProvider extends Action {
                   AWorkbench.popup(String.format("Associated with user [%s]", assocArt.getName()));
                } else {
                   RendererManager.openInJob(BranchManager.getAssociatedArtifact(branchProvider.getBranch(null)),
-                        PresentationType.GENERALIZED_EDIT);
+                     PresentationType.GENERALIZED_EDIT);
                }
             } catch (OseeCoreException ex) {
                OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, "Cannot access associated artifact.", ex);
@@ -75,7 +77,7 @@ public class OpenAssociatedArtifactFromBranchProvider extends Action {
       try {
          associatedArtifact = BranchManager.getAssociatedArtifact(branchProvider.getBranch(null));
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE, ex);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
       ImageDescriptor descriptor;
       if (associatedArtifact != null && !(associatedArtifact instanceof User)) {

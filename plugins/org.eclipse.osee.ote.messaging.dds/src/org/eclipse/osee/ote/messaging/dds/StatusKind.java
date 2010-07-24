@@ -11,21 +11,23 @@
 package org.eclipse.osee.ote.messaging.dds;
 
 /**
- * The class which stores all of the available kinds of status. The name
- * of any of the values can be acquired from the <code>getKindName()</code>
- * method inherited from <code>Kind</code>.
+ * The class which stores all of the available kinds of status. The name of any of the values can be acquired from the
+ * <code>getKindName()</code> method inherited from <code>Kind</code>.
  * 
  * @see org.eclipse.osee.ote.messaging.dds.Kind
- * 
  * @author Robert A. Fisher
  * @author David Diepenbrock
  */
 public class StatusKind extends Kind {
    public final static StatusKind INCONSISTENT_TOPIC_STATUS = new StatusKind("INCONSISTENT_TOPIC_STATUS", 0x0001 << 0);
-   public final static StatusKind OFFERED_DEADLINE_MISSED_STATUS = new StatusKind("OFFERED_DEADLINE_MISSED_STATUS", 0x0001 << 1);
-   public final static StatusKind REQUESTED_DEADLINE_MISSED_STATUS = new StatusKind("REQUESTED_DEADLINE_MISSED_STATUS", 0x0001 << 2);
-   public final static StatusKind OFFERED_INCOMPATIBLE_QOS_STATUS = new StatusKind("OFFERED_INCOMPATIBLE_QOS_STATUS", 0x0001 << 5);
-   public final static StatusKind REQUESTED_INCOMPATIBLE_QOS_STATUS = new StatusKind("REQUESTED_INCOMPATIBLE_QOS_STATUS", 0x0001 << 6);
+   public final static StatusKind OFFERED_DEADLINE_MISSED_STATUS = new StatusKind("OFFERED_DEADLINE_MISSED_STATUS",
+      0x0001 << 1);
+   public final static StatusKind REQUESTED_DEADLINE_MISSED_STATUS = new StatusKind("REQUESTED_DEADLINE_MISSED_STATUS",
+      0x0001 << 2);
+   public final static StatusKind OFFERED_INCOMPATIBLE_QOS_STATUS = new StatusKind("OFFERED_INCOMPATIBLE_QOS_STATUS",
+      0x0001 << 5);
+   public final static StatusKind REQUESTED_INCOMPATIBLE_QOS_STATUS = new StatusKind(
+      "REQUESTED_INCOMPATIBLE_QOS_STATUS", 0x0001 << 6);
    public final static StatusKind SAMPLE_LOST_STATUS = new StatusKind("SAMPLE_LOST_STATUS", 0x0001 << 7);
    public final static StatusKind SAMPLE_REJECTED_STATUS = new StatusKind("SAMPLE_REJECTED_STATUS", 0x0001 << 8);
    public final static StatusKind DATA_ON_READERS_STATUS = new StatusKind("DATA_ON_READERS_STATUS", 0x0001 << 9);

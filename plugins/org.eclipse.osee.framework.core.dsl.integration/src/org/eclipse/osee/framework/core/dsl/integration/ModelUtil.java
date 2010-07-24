@@ -41,149 +41,149 @@ import com.google.inject.Injector;
  */
 public final class ModelUtil {
 
-	private ModelUtil() {
-	}
+   private ModelUtil() {
+   }
 
-	//   private void loadDependencies(OseeTypeModel baseModel, List<OseeTypeModel> models) throws OseeCoreException, URISyntaxException {
-	//      // This is commented out cause we're using a combined file.  Once combined files
-	//      // are no longer generated, this should be uncommented.
-	//      //      for (Import dependant : baseModel.getImports()) {
-	//      //         OseeTypeModel childModel = OseeTypeModelUtil.loadModel(context, new URI(dependant.getImportURI()));
-	//      //         loadDependencies(childModel, models);
-	//      //         System.out.println("depends on: " + dependant.getImportURI());
-	//      //      }
-	//      //      System.out.println("Added on: " + baseModel.eResource().getURI());
-	//      models.add(baseModel);
-	//
-	//   }
+   //   private void loadDependencies(OseeTypeModel baseModel, List<OseeTypeModel> models) throws OseeCoreException, URISyntaxException {
+   //      // This is commented out cause we're using a combined file.  Once combined files
+   //      // are no longer generated, this should be uncommented.
+   //      //      for (Import dependant : baseModel.getImports()) {
+   //      //         OseeTypeModel childModel = OseeTypeModelUtil.loadModel(context, new URI(dependant.getImportURI()));
+   //      //         loadDependencies(childModel, models);
+   //      //         System.out.println("depends on: " + dependant.getImportURI());
+   //      //      }
+   //      //      System.out.println("Added on: " + baseModel.eResource().getURI());
+   //      models.add(baseModel);
+   //
+   //   }
 
-	//   OseeTypeModel targetModel = null;
-	//   try {
-	//      targetModel = OseeTypeModelUtil.loadModel(context, resource);
-	//   } catch (OseeCoreException ex) {
-	//      throw new OseeWrappedException(String.format("Error loading: [%s]", resource), ex);
-	//   }
-	//   loadDependencies(targetModel, models);
+   //   OseeTypeModel targetModel = null;
+   //   try {
+   //      targetModel = OseeTypeModelUtil.loadModel(context, resource);
+   //   } catch (OseeCoreException ex) {
+   //      throw new OseeWrappedException(String.format("Error loading: [%s]", resource), ex);
+   //   }
+   //   loadDependencies(targetModel, models);
 
-	public static OseeDsl loadModel(String uri, String xTextData) throws OseeCoreException {
-		try {
-			OseeDslStandaloneSetup setup = new OseeDslStandaloneSetup();
-			Injector injector = setup.createInjectorAndDoEMFRegistration();
-			XtextResourceSet set = injector.getInstance(XtextResourceSet.class);
+   public static OseeDsl loadModel(String uri, String xTextData) throws OseeCoreException {
+      try {
+         OseeDslStandaloneSetup setup = new OseeDslStandaloneSetup();
+         Injector injector = setup.createInjectorAndDoEMFRegistration();
+         XtextResourceSet set = injector.getInstance(XtextResourceSet.class);
 
-			set.setClasspathURIContext(ModelUtil.class);
-			set.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
+         set.setClasspathURIContext(ModelUtil.class);
+         set.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
 
-			Resource resource = set.createResource(URI.createURI(uri));
-			resource.load(new ByteArrayInputStream(xTextData.getBytes("UTF-8")), set.getLoadOptions());
-			OseeDsl model = (OseeDsl) resource.getContents().get(0);
-			for (Diagnostic diagnostic : resource.getErrors()) {
-				throw new OseeStateException(diagnostic.toString());
-			}
-			return model;
-		} catch (IOException ex) {
-			throw new OseeWrappedException(ex);
-		}
-	}
+         Resource resource = set.createResource(URI.createURI(uri));
+         resource.load(new ByteArrayInputStream(xTextData.getBytes("UTF-8")), set.getLoadOptions());
+         OseeDsl model = (OseeDsl) resource.getContents().get(0);
+         for (Diagnostic diagnostic : resource.getErrors()) {
+            throw new OseeStateException(diagnostic.toString());
+         }
+         return model;
+      } catch (IOException ex) {
+         throw new OseeWrappedException(ex);
+      }
+   }
 
-	public static OseeDsl loadModel(InputStream inputStream, boolean isZipped) throws OseeCoreException {
-		Injector injector = new OseeDslStandaloneSetup().createInjectorAndDoEMFRegistration();
-		XtextResource resource = injector.getInstance(XtextResource.class);
+   public static OseeDsl loadModel(InputStream inputStream, boolean isZipped) throws OseeCoreException {
+      Injector injector = new OseeDslStandaloneSetup().createInjectorAndDoEMFRegistration();
+      XtextResource resource = injector.getInstance(XtextResource.class);
 
-		Map<String, Boolean> options = new HashMap<String, Boolean>();
-		options.put(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
-		if (isZipped) {
-			options.put(XtextResource.OPTION_ZIP, Boolean.TRUE);
-		}
-		try {
-			resource.setURI(URI.createURI("http://www.eclipse.org/osee/framework/OseeTypes"));
-			resource.load(inputStream, options);
-		} catch (IOException ex) {
-			throw new OseeWrappedException(ex);
-		}
-		OseeDsl model = (OseeDsl) resource.getContents().get(0);
-		for (Diagnostic diagnostic : resource.getErrors()) {
-			throw new OseeStateException(diagnostic.toString());
-		}
-		return model;
-	}
+      Map<String, Boolean> options = new HashMap<String, Boolean>();
+      options.put(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
+      if (isZipped) {
+         options.put(Resource.OPTION_ZIP, Boolean.TRUE);
+      }
+      try {
+         resource.setURI(URI.createURI("http://www.eclipse.org/osee/framework/OseeTypes"));
+         resource.load(inputStream, options);
+      } catch (IOException ex) {
+         throw new OseeWrappedException(ex);
+      }
+      OseeDsl model = (OseeDsl) resource.getContents().get(0);
+      for (Diagnostic diagnostic : resource.getErrors()) {
+         throw new OseeStateException(diagnostic.toString());
+      }
+      return model;
+   }
 
-	public static OseeDsl loadModel(Object context, java.net.URI target) throws OseeCoreException {
-		String uri = target.toASCIIString();
-		Injector injector = new OseeDslStandaloneSetup().createInjectorAndDoEMFRegistration();
-		XtextResourceSet set = injector.getInstance(XtextResourceSet.class);
+   public static OseeDsl loadModel(Object context, java.net.URI target) throws OseeCoreException {
+      String uri = target.toASCIIString();
+      Injector injector = new OseeDslStandaloneSetup().createInjectorAndDoEMFRegistration();
+      XtextResourceSet set = injector.getInstance(XtextResourceSet.class);
 
-		set.setClasspathURIContext(context);
-		set.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
+      set.setClasspathURIContext(context);
+      set.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
 
-		Resource resource = set.getResource(URI.createURI(uri), true);
-		OseeDsl model = (OseeDsl) resource.getContents().get(0);
-		for (Diagnostic diagnostic : resource.getErrors()) {
-			throw new OseeStateException(diagnostic.toString());
-		}
-		return model;
-	}
+      Resource resource = set.getResource(URI.createURI(uri), true);
+      OseeDsl model = (OseeDsl) resource.getContents().get(0);
+      for (Diagnostic diagnostic : resource.getErrors()) {
+         throw new OseeStateException(diagnostic.toString());
+      }
+      return model;
+   }
 
-	public static void saveModel(java.net.URI uri, OseeDsl model) throws IOException {
-		OseeDslStandaloneSetup.doSetup();
+   public static void saveModel(java.net.URI uri, OseeDsl model) throws IOException {
+      OseeDslStandaloneSetup.doSetup();
 
-		ResourceSet resourceSet = new ResourceSetImpl();
-		Resource resource = resourceSet.createResource(URI.createURI(uri.toASCIIString()));
-		resource.getContents().add(model);
+      ResourceSet resourceSet = new ResourceSetImpl();
+      Resource resource = resourceSet.createResource(URI.createURI(uri.toASCIIString()));
+      resource.getContents().add(model);
 
-		Map<String, Boolean> options = new HashMap<String, Boolean>();
-		//		options.put(XtextResource.OPTION_FORMAT, Boolean.TRUE);
-		SaveOptions saveOptions = SaveOptions.getOptions(options);
-		resource.save(saveOptions.toOptionsMap());
-	}
+      Map<String, Boolean> options = new HashMap<String, Boolean>();
+      //		options.put(XtextResource.OPTION_FORMAT, Boolean.TRUE);
+      SaveOptions saveOptions = SaveOptions.getOptions(options);
+      resource.save(saveOptions.toOptionsMap());
+   }
 
-	public static void saveModel(OseeDsl model, String uri, OutputStream outputStream, boolean isZipped) throws IOException {
-		OseeDslStandaloneSetup.doSetup();
+   public static void saveModel(OseeDsl model, String uri, OutputStream outputStream, boolean isZipped) throws IOException {
+      OseeDslStandaloneSetup.doSetup();
 
-		ResourceSet resourceSet = new ResourceSetImpl();
-		Resource resource = resourceSet.createResource(URI.createURI(uri));
-		resource.getContents().add(model);
+      ResourceSet resourceSet = new ResourceSetImpl();
+      Resource resource = resourceSet.createResource(URI.createURI(uri));
+      resource.getContents().add(model);
 
-		Map<String, Boolean> options = new HashMap<String, Boolean>();
-		//		options.put(XtextResource.OPTION_FORMAT, Boolean.TRUE);
-		if (isZipped) {
-			options.put(XtextResource.OPTION_ZIP, Boolean.TRUE);
-		}
-		SaveOptions saveOptions = SaveOptions.getOptions(options);
-		resource.save(outputStream, saveOptions.toOptionsMap());
-	}
+      Map<String, Boolean> options = new HashMap<String, Boolean>();
+      //		options.put(XtextResource.OPTION_FORMAT, Boolean.TRUE);
+      if (isZipped) {
+         options.put(Resource.OPTION_ZIP, Boolean.TRUE);
+      }
+      SaveOptions saveOptions = SaveOptions.getOptions(options);
+      resource.save(outputStream, saveOptions.toOptionsMap());
+   }
 
-	private static void storeModel(OutputStream outputStream, EObject object, String uri, Map<String, Boolean> options) throws OseeCoreException {
-		Resource resource = new XMLResourceImpl();
-		try {
-			resource.setURI(URI.createURI(uri));
-			resource.getContents().add(object);
-			resource.save(outputStream, options);
-		} catch (IOException ex) {
-			throw new OseeWrappedException(ex);
-		}
-	}
+   private static void storeModel(OutputStream outputStream, EObject object, String uri, Map<String, Boolean> options) throws OseeCoreException {
+      Resource resource = new XMLResourceImpl();
+      try {
+         resource.setURI(URI.createURI(uri));
+         resource.getContents().add(object);
+         resource.save(outputStream, options);
+      } catch (IOException ex) {
+         throw new OseeWrappedException(ex);
+      }
+   }
 
-	public static String modelToString(EObject object, String uri, Map<String, Boolean> options) throws OseeCoreException {
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		storeModel(outputStream, object, uri, options);
-		try {
-			return outputStream.toString("UTF-8");
-		} catch (UnsupportedEncodingException ex) {
-			throw new OseeWrappedException(ex);
-		}
-	}
+   public static String modelToString(EObject object, String uri, Map<String, Boolean> options) throws OseeCoreException {
+      ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      storeModel(outputStream, object, uri, options);
+      try {
+         return outputStream.toString("UTF-8");
+      } catch (UnsupportedEncodingException ex) {
+         throw new OseeWrappedException(ex);
+      }
+   }
 
-	public static ComparisonSnapshot loadComparisonSnapshot(String compareName, String compareData) throws OseeCoreException {
-		ComparisonSnapshot snapshot = null;
-		try {
-			ResourceSet resourceSet = new ResourceSetImpl();
-			Resource resource = resourceSet.createResource(URI.createURI(compareName));
-			resource.load(new ByteArrayInputStream(compareData.getBytes("UTF-8")), resourceSet.getLoadOptions());
-			snapshot = (ComparisonSnapshot) resource.getContents().get(0);
-		} catch (IOException ex) {
-			throw new OseeWrappedException(ex);
-		}
-		return snapshot;
-	}
+   public static ComparisonSnapshot loadComparisonSnapshot(String compareName, String compareData) throws OseeCoreException {
+      ComparisonSnapshot snapshot = null;
+      try {
+         ResourceSet resourceSet = new ResourceSetImpl();
+         Resource resource = resourceSet.createResource(URI.createURI(compareName));
+         resource.load(new ByteArrayInputStream(compareData.getBytes("UTF-8")), resourceSet.getLoadOptions());
+         snapshot = (ComparisonSnapshot) resource.getContents().get(0);
+      } catch (IOException ex) {
+         throw new OseeWrappedException(ex);
+      }
+      return snapshot;
+   }
 }

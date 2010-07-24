@@ -67,8 +67,7 @@ public class StaticIdManager {
       Set<Artifact> artifacts = new HashSet<Artifact>();
       // Retrieve database artifacts if cache has none
       artifacts.addAll(ArtifactQuery.getArtifactListFromTypeAndAttribute(artifactType, CoreAttributeTypes.STATIC_ID,
-            staticId,
-            branch));
+         staticId, branch));
       return artifacts;
    }
 

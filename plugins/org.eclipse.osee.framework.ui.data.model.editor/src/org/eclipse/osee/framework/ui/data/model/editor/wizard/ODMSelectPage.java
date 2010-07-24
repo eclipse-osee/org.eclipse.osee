@@ -53,11 +53,11 @@ import org.eclipse.ui.dialogs.ISelectionStatusValidator;
 public class ODMSelectPage extends WizardPage {
 
    private CheckboxTreeViewer fViewer;
-   private ILabelProvider fLabelProvider;
-   private ITreeContentProvider fContentProvider;
+   private final ILabelProvider fLabelProvider;
+   private final ITreeContentProvider fContentProvider;
    private ISelectionStatusValidator fValidator = null;
    private ViewerComparator fComparator;
-   private String fEmptyListMessage = "Nothing Available";
+   private final String fEmptyListMessage = "Nothing Available";
    private IStatus fCurrStatus = new Status(IStatus.OK, PlatformUI.PLUGIN_ID, 0, "", null); //$NON-NLS-1$
    private List<ViewerFilter> fFilters;
    private Object fInput;
@@ -66,7 +66,7 @@ public class ODMSelectPage extends WizardPage {
    private int fHeight = 18;
    private boolean fContainerMode;
    private Object[] fExpandedElements;
-   private List<Object> fInitialSelections;
+   private final List<Object> fInitialSelections;
 
    public ODMSelectPage(String pageName, String description) {
       super(pageName, pageName, null);
@@ -122,7 +122,7 @@ public class ODMSelectPage extends WizardPage {
             updateStatus(fCurrStatus);
          } else if (!fCurrStatus.isOK()) {
             fCurrStatus = new Status(IStatus.OK, PlatformUI.PLUGIN_ID, IStatus.OK, "", //$NON-NLS-1$
-                  null);
+               null);
          }
       } else {
          fCurrStatus = new Status(IStatus.ERROR, PlatformUI.PLUGIN_ID, IStatus.OK, fEmptyListMessage, null);
@@ -136,6 +136,7 @@ public class ODMSelectPage extends WizardPage {
 
    public void create() {
       BusyIndicator.showWhile(null, new Runnable() {
+         @Override
          public void run() {
             fViewer.setCheckedElements(getInitialElementSelections().toArray());
             if (fExpandedElements != null) {
@@ -150,6 +151,7 @@ public class ODMSelectPage extends WizardPage {
       return fInitialSelections;
    }
 
+   @Override
    public void createControl(Composite parent) {
       Composite composite = new Composite(parent, SWT.NONE);
       composite.setLayout(new GridLayout());
@@ -195,6 +197,7 @@ public class ODMSelectPage extends WizardPage {
       fViewer.setContentProvider(fContentProvider);
       fViewer.setLabelProvider(fLabelProvider);
       fViewer.addCheckStateListener(new ICheckStateListener() {
+         @Override
          public void checkStateChanged(CheckStateChangedEvent event) {
             updateOKStatus();
          }
@@ -202,7 +205,7 @@ public class ODMSelectPage extends WizardPage {
       fViewer.setComparator(fComparator);
       if (fFilters != null) {
          for (int i = 0; i != fFilters.size(); i++) {
-            fViewer.addFilter((ViewerFilter) fFilters.get(i));
+            fViewer.addFilter(fFilters.get(i));
          }
       }
       fViewer.setInput(fInput);
@@ -224,6 +227,7 @@ public class ODMSelectPage extends WizardPage {
       composite.setData(data);
       Button selectButton = createButton(buttonComposite, IDialogConstants.SELECT_ALL_ID, "Select All", false);
       SelectionListener listener = new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             Object[] viewerElements = fContentProvider.getElements(fInput);
             if (fContainerMode) {
@@ -239,6 +243,7 @@ public class ODMSelectPage extends WizardPage {
       selectButton.addSelectionListener(listener);
       Button deselectButton = createButton(buttonComposite, IDialogConstants.DESELECT_ALL_ID, "De-select All", false);
       listener = new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             fViewer.setCheckedElements(new Object[0]);
             updateOKStatus();
@@ -256,6 +261,7 @@ public class ODMSelectPage extends WizardPage {
       button.setFont(JFaceResources.getDialogFont());
       button.setData(new Integer(id));
       button.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent event) {
             //            buttonPressed(((Integer) event.widget.getData()).intValue());
          }
@@ -276,7 +282,7 @@ public class ODMSelectPage extends WizardPage {
       if (elements.length > 0) {
          if (fFilters != null) {
             for (int i = 0; i < fFilters.size(); i++) {
-               ViewerFilter curr = (ViewerFilter) fFilters.get(i);
+               ViewerFilter curr = fFilters.get(i);
                elements = curr.filter(fViewer, input, elements);
             }
          }

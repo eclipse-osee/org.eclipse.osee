@@ -88,8 +88,8 @@ public class TableWriterAdaptor {
          cell.setHorizontalAlignment(ElementTags.ALIGN_CENTER);
 
          Font font =
-               FontFactory.getFont("Times New Roman", BaseFont.CP1252, BaseFont.EMBEDDED, 9, Font.BOLD,
-                     WebColors.getRGBColor("#000000"));
+            FontFactory.getFont("Times New Roman", BaseFont.CP1252, BaseFont.EMBEDDED, 9, Font.BOLD,
+               WebColors.getRGBColor("#000000"));
          Paragraph paragraph = new Paragraph(header, font);
          paragraph.setAlignment(ElementTags.ALIGN_CENTER);
          cell.add(paragraph);
@@ -107,8 +107,8 @@ public class TableWriterAdaptor {
          cell.setHeader(false);
          cell.setColspan(1);
          Font font =
-               FontFactory.getFont("Times New Roman", BaseFont.CP1252, BaseFont.EMBEDDED, 9, Font.NORMAL,
-                     WebColors.getRGBColor("#000000"));
+            FontFactory.getFont("Times New Roman", BaseFont.CP1252, BaseFont.EMBEDDED, 9, Font.NORMAL,
+               WebColors.getRGBColor("#000000"));
          Paragraph paragraph = new Paragraph(cellText, font);
          cell.add(paragraph);
          table.addCell(cell);
@@ -138,8 +138,8 @@ public class TableWriterAdaptor {
 
    public void writeDocument() throws DocumentException {
       Font font =
-            FontFactory.getFont("Times New Roman", BaseFont.CP1252, BaseFont.EMBEDDED, 9, Font.BOLD,
-                  WebColors.getRGBColor("#000000"));
+         FontFactory.getFont("Times New Roman", BaseFont.CP1252, BaseFont.EMBEDDED, 9, Font.BOLD,
+            WebColors.getRGBColor("#000000"));
       Paragraph paragraph = new Paragraph(title, font);
       paragraph.setAlignment(ElementTags.ALIGN_CENTER);
       document.add(paragraph);

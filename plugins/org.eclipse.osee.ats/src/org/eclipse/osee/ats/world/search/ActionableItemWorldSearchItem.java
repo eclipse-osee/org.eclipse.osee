@@ -81,11 +81,13 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
    }
 
    public Collection<String> getProductSearchName() {
-      if (actionItemNames != null)
+      if (actionItemNames != null) {
          return actionItemNames;
-      else if (actionItems != null)
+      } else if (actionItems != null) {
          return Artifacts.artNames(actionItems);
-      else if (selectedActionItems != null) return Artifacts.artNames(selectedActionItems);
+      } else if (selectedActionItems != null) {
+         return Artifacts.artNames(selectedActionItems);
+      }
       return new ArrayList<String>();
    }
 
@@ -99,8 +101,8 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
          actionItems = new HashSet<ActionableItemArtifact>();
          for (String actionItemName : actionItemNames) {
             ActionableItemArtifact aia =
-                  (ActionableItemArtifact) AtsCacheManager.getSoleArtifactByName(
-                        ArtifactTypeManager.getType(AtsArtifactTypes.ActionableItem), actionItemName);
+               (ActionableItemArtifact) AtsCacheManager.getSoleArtifactByName(
+                  ArtifactTypeManager.getType(AtsArtifactTypes.ActionableItem), actionItemName);
             if (aia != null) {
                actionItems.add(aia);
             }
@@ -114,10 +116,11 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
    private Set<ActionableItemArtifact> getSearchActionableItems() throws OseeCoreException {
       getActionableItems();
       Set<ActionableItemArtifact> srchTeamDefs = new HashSet<ActionableItemArtifact>();
-      for (ActionableItemArtifact actionableItem : (actionItems != null ? actionItems : selectedActionItems))
+      for (ActionableItemArtifact actionableItem : actionItems != null ? actionItems : selectedActionItems) {
          srchTeamDefs.add(actionableItem);
+      }
       if (selectedRecurseChildren) {
-         for (ActionableItemArtifact actionableItem : (actionItems != null ? actionItems : selectedActionItems)) {
+         for (ActionableItemArtifact actionableItem : actionItems != null ? actionItems : selectedActionItems) {
             Artifacts.getChildrenOfType(actionableItem, srchTeamDefs, ActionableItemArtifact.class, true);
          }
       }
@@ -140,10 +143,10 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
          cancelOrComplete.add(DefaultTeamState.Cancelled.name() + ";;;");
          cancelOrComplete.add(DefaultTeamState.Completed.name() + ";;;");
          criteria.add(new AttributeCriteria(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(), cancelOrComplete,
-               Operator.NOT_EQUAL));
+            Operator.NOT_EQUAL));
       }
       Collection<Artifact> artifacts =
-            ArtifactQuery.getArtifactListFromCriteria(AtsUtil.getAtsBranch(), 1000, criteria);
+         ArtifactQuery.getArtifactListFromCriteria(AtsUtil.getAtsBranch(), 1000, criteria);
       // show as actions
       if (selectedShowAction) {
          Set<Artifact> arts = new HashSet<Artifact>();
@@ -158,16 +161,23 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
             }
          }
          return arts;
-      } else
+      } else {
          return artifacts;
+      }
    }
 
    @Override
    public void performUI(SearchType searchType) throws OseeCoreException {
       super.performUI(searchType);
-      if (actionItemNames != null) return;
-      if (actionItems != null) return;
-      if (searchType == SearchType.ReSearch && selectedActionItems != null) return;
+      if (actionItemNames != null) {
+         return;
+      }
+      if (actionItems != null) {
+         return;
+      }
+      if (searchType == SearchType.ReSearch && selectedActionItems != null) {
+         return;
+      }
       ActionActionableItemListDialog diag = new ActionActionableItemListDialog(Active.Both);
       diag.setShowFinished(showFinished);
       diag.setRecurseChildren(recurseChildren);
@@ -177,12 +187,14 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
          selectedShowFinished = diag.isShowFinished();
          selectedRecurseChildren = diag.isRecurseChildren();
          selectedShowAction = diag.isShowAction();
-         if (selectedActionItems == null)
+         if (selectedActionItems == null) {
             selectedActionItems = new HashSet<ActionableItemArtifact>();
-         else
+         } else {
             selectedActionItems.clear();
-         for (Object obj : diag.getResult())
+         }
+         for (Object obj : diag.getResult()) {
             selectedActionItems.add((ActionableItemArtifact) obj);
+         }
          return;
       }
       cancelled = true;

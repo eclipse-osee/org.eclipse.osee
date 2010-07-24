@@ -19,12 +19,12 @@ import org.eclipse.osee.framework.ui.data.model.editor.model.ConnectionModel;
  */
 public class ReconnectConnectionCommand extends Command {
 
-   private ConnectionModel<ArtifactDataType> connectionModel;
+   private final ConnectionModel<ArtifactDataType> connectionModel;
    //   private NodeModel newNode, oldNode;
    //   private int oldIndex, viewIndex;
 
-   private ArtifactDataType oldSource;
-   private ArtifactDataType oldTarget;
+   private final ArtifactDataType oldSource;
+   private final ArtifactDataType oldTarget;
    private ArtifactDataType newSource;
    private ArtifactDataType newTarget;
 
@@ -53,6 +53,7 @@ public class ReconnectConnectionCommand extends Command {
       newTarget = target;
    }
 
+   @Override
    public boolean canExecute() {
       if (newSource != null) {
          return checkSourceReconnection();
@@ -99,6 +100,7 @@ public class ReconnectConnectionCommand extends Command {
       return true;
    }
 
+   @Override
    public void execute() {
       if (newSource != null) {
          this.connectionModel.reconnect(newSource, oldTarget);
@@ -109,6 +111,7 @@ public class ReconnectConnectionCommand extends Command {
       }
    }
 
+   @Override
    public void undo() {
       this.connectionModel.reconnect(oldSource, oldTarget);
    }

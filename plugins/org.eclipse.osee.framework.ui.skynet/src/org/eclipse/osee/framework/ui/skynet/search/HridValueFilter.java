@@ -21,7 +21,7 @@ import org.eclipse.swt.widgets.Text;
  * @author Ryan D. Brooks
  */
 public class HridValueFilter extends SearchFilter {
-   private Text hridValue;
+   private final Text hridValue;
 
    public HridValueFilter(Control optionsControl, Text hridValue) {
       super("Human Readable ID", optionsControl);
@@ -32,7 +32,9 @@ public class HridValueFilter extends SearchFilter {
    public void addFilterTo(FilterTableViewer filterViewer) {
       OperatorAndValue result = handleWildCard(hridValue.getText());
       ISearchPrimitive primitive = new ArtifactHridSearch(result.value, result.operator);
-      if (not) primitive = new NotSearch(primitive);
+      if (not) {
+         primitive = new NotSearch(primitive);
+      }
       filterViewer.addItem(primitive, getFilterName(), "huid", result.value);
    }
 
@@ -44,7 +46,9 @@ public class HridValueFilter extends SearchFilter {
    @Override
    public void loadFromStorageString(FilterTableViewer filterViewer, String type, String value, String storageString, boolean isNotEnabled) {
       ISearchPrimitive primitive = ArtifactHridSearch.getPrimitive(storageString);
-      if (isNotEnabled) primitive = new NotSearch(primitive);
+      if (isNotEnabled) {
+         primitive = new NotSearch(primitive);
+      }
       filterViewer.addItem(primitive, getFilterName(), type, value);
    }
 }

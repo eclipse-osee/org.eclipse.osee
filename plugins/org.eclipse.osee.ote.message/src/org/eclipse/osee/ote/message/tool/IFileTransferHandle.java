@@ -14,9 +14,9 @@ import java.io.IOException;
 
 /**
  * @author Ken J. Aguilar
- *
  */
 public interface IFileTransferHandle {
    void stop() throws IOException;
+
    void addListener(IUdpTransferListener listener);
 }

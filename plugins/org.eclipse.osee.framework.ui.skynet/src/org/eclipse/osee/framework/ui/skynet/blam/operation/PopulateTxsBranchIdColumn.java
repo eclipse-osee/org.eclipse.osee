@@ -54,9 +54,9 @@ public class PopulateTxsBranchIdColumn extends AbstractBlam {
    private void fullySetBranchId(String tableName) throws OseeCoreException {
       int blockSize = 200000;
       String sql =
-            String.format(
-                  "update %s txs set branch_id = (select branch_id from osee_tx_details txd where txs.transaction_id = txd.transaction_id) where transaction_id > ? and transaction_id < ?",
-                  tableName);
+         String.format(
+            "update %s txs set branch_id = (select branch_id from osee_tx_details txd where txs.transaction_id = txd.transaction_id) where transaction_id > ? and transaction_id < ?",
+            tableName);
 
       for (int i = 0; i < 1000000; i += blockSize) {
          println("> " + i + " and < " + (i + blockSize + 1));

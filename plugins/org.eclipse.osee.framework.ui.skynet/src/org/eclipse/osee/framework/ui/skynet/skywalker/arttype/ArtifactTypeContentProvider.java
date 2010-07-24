@@ -31,6 +31,7 @@ public class ArtifactTypeContentProvider implements IGraphEntityContentProvider 
       super();
    }
 
+   @Override
    public Object[] getConnectedTo(Object entity) {
       try {
          if (entity instanceof ArtifactType) {
@@ -42,6 +43,7 @@ public class ArtifactTypeContentProvider implements IGraphEntityContentProvider 
       return null;
    }
 
+   @Override
    public Object[] getElements(Object inputElement) {
       try {
          if (inputElement instanceof ArtifactType) {
@@ -67,9 +69,11 @@ public class ArtifactTypeContentProvider implements IGraphEntityContentProvider 
       return 0;
    }
 
+   @Override
    public void dispose() {
    }
 
+   @Override
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
    }
 

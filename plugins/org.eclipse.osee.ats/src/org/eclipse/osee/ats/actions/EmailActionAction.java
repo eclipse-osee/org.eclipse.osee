@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.actions;
 
+import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -35,15 +36,15 @@ public class EmailActionAction extends Action {
       try {
          updateName();
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
       setToolTipText(getText());
    }
 
    private void performEmail() throws OseeCoreException {
       ArtifactEmailWizard ew =
-            new ArtifactEmailWizard(
-                  ((StateMachineArtifact) selectedAtsArtifacts.getSelectedSMAArtifacts().iterator().next()));
+         new ArtifactEmailWizard(
+            ((StateMachineArtifact) selectedAtsArtifacts.getSelectedSMAArtifacts().iterator().next()));
       WizardDialog dialog = new WizardDialog(Displays.getActiveShell(), ew);
       dialog.create();
       dialog.open();

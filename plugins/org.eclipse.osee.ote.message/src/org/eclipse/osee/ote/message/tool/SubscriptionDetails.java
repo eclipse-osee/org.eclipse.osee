@@ -13,7 +13,6 @@ package org.eclipse.osee.ote.message.tool;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-
 import org.eclipse.osee.ote.message.enums.DataType;
 
 /**

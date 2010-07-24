@@ -61,8 +61,10 @@ public class CoverageOptionManager {
    }
 
    public void add(CoverageOption coverageOption) throws OseeArgumentException {
-      if (get(coverageOption.getName()) != null) throw new OseeArgumentException(String.format(
-            "Option with name [%s] already exists", coverageOption.getName()));
+      if (get(coverageOption.getName()) != null) {
+         throw new OseeArgumentException(
+            String.format("Option with name [%s] already exists", coverageOption.getName()));
+      }
       options.add(coverageOption);
    }
 
@@ -88,7 +90,7 @@ public class CoverageOptionManager {
             for (int i = 0; i < nodes.getLength(); i++) {
                Element element = (Element) nodes.item(i);
                options.add(new CoverageOption(element.getAttribute("name"), element.getAttribute("desc"),
-                     element.getAttribute("enabled").equals("true")));
+                  element.getAttribute("enabled").equals("true")));
             }
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex.toString(), ex);

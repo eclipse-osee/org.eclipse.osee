@@ -92,7 +92,7 @@ public class BranchEventManagerTest {
       final String guid = committedBranch.getGuid();
       Assert.assertEquals(BranchArchivedState.ARCHIVED, committedBranch.getArchiveState());
       BranchManager.updateBranchArchivedState(null, committedBranch.getId(), committedBranch.getGuid(),
-            BranchArchivedState.UNARCHIVED);
+         BranchArchivedState.UNARCHIVED);
 
       Thread.sleep(4000);
 
@@ -112,7 +112,7 @@ public class BranchEventManagerTest {
    private Branch testEvents__committed(Branch topLevel) throws Exception {
       clearEventCollections();
       Branch workingBranch =
-            BranchManager.createWorkingBranch(topLevel, BRANCH_NAME_PREFIX + " - to commit", UserManager.getUser());
+         BranchManager.createWorkingBranch(topLevel, BRANCH_NAME_PREFIX + " - to commit", UserManager.getUser());
 
       Assert.assertNotNull(workingBranch);
 
@@ -141,7 +141,7 @@ public class BranchEventManagerTest {
    private Branch testEvents__purged(Branch topLevel) throws Exception {
       clearEventCollections();
       Branch workingBranch =
-            BranchManager.createWorkingBranch(topLevel, BRANCH_NAME_PREFIX + " - to purge", UserManager.getUser());
+         BranchManager.createWorkingBranch(topLevel, BRANCH_NAME_PREFIX + " - to purge", UserManager.getUser());
 
       Assert.assertNotNull(workingBranch);
 
@@ -260,7 +260,7 @@ public class BranchEventManagerTest {
    private Branch testEvents__workingAdded(Branch topLevel) throws Exception {
       clearEventCollections();
       Branch workingBranch =
-            BranchManager.createWorkingBranch(topLevel, BRANCH_NAME_PREFIX + " - working", UserManager.getUser());
+         BranchManager.createWorkingBranch(topLevel, BRANCH_NAME_PREFIX + " - working", UserManager.getUser());
 
       Assert.assertNotNull(workingBranch);
 
@@ -353,7 +353,7 @@ public class BranchEventManagerTest {
          }
       }
       for (Branch branch : BranchManager.getBranches(BranchArchivedState.ALL, BranchType.BASELINE, BranchType.MERGE,
-            BranchType.WORKING)) {
+         BranchType.WORKING)) {
          if (branch.getName().startsWith(BRANCH_NAME_PREFIX)) {
             try {
                BranchManager.purgeBranch(branch);
@@ -364,7 +364,7 @@ public class BranchEventManagerTest {
       }
    }
    // artifact listener create for use by all tests to just capture result eventArtifacts for query
-   private BranchEventListener branchEventListener = new BranchEventListener();
+   private final BranchEventListener branchEventListener = new BranchEventListener();
 
    public void clearEventCollections() {
       resultBranchEvent = null;

@@ -38,7 +38,7 @@ public class MyWorldAction extends Action {
    public void run() {
       try {
          WorldEditor.open(new WorldEditorUISearchItemProvider(new MyWorldSearchItem("My World", UserManager.getUser()),
-               null, TableLoadOption.None));
+            null, TableLoadOption.None));
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }

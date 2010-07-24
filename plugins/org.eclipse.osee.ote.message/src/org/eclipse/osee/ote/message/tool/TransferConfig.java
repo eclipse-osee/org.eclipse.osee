@@ -12,11 +12,12 @@ package org.eclipse.osee.ote.message.tool;
 
 import java.net.InetSocketAddress;
 import java.nio.channels.SelectionKey;
+
 public final class TransferConfig {
    public static enum Direction {
       SOCKET_TO_FILE(SelectionKey.OP_READ),
       FILE_TO_SOCKET(SelectionKey.OP_WRITE);
-      
+
       private int accessType;
 
       /**
@@ -25,61 +26,62 @@ public final class TransferConfig {
       private Direction(int accessType) {
          this.accessType = accessType;
       }
-      
+
       public int getSelectionAccessOperation() {
          return accessType;
       }
-      
+
    }
    private final String fileName;
    private final InetSocketAddress sourceAddress;
    private final InetSocketAddress destinationAddress;
    private final Direction direction;
    private final int blockCount;
+
    /**
     * @param fileChannel
     * @param sourceAddress
     * @param port
     * @param direction
     */
-   public TransferConfig(
-         final String fileName, 
-         final InetSocketAddress sourceAddress, 
-         final InetSocketAddress destinationAddress, 
-         final Direction direction,
-         final int blockCount) {
+   public TransferConfig(final String fileName, final InetSocketAddress sourceAddress, final InetSocketAddress destinationAddress, final Direction direction, final int blockCount) {
       super();
       this.fileName = fileName;
       this.sourceAddress = sourceAddress;
       this.destinationAddress = destinationAddress;
       this.direction = direction;
       this.blockCount = blockCount;
-      
+
    }
+
    /**
     * @return the direction
     */
    public Direction getDirection() {
       return direction;
    }
+
    /**
     * @return the fileChannel
     */
    public String getFileName() {
       return fileName;
    }
+
    /**
     * @return the destination of the data
     */
    public InetSocketAddress getDestinationAddress() {
       return destinationAddress;
    }
+
    /**
     * @return the sourceAddress
     */
    public InetSocketAddress getSourceAddress() {
       return sourceAddress;
    }
+
    /**
     * @return the blockCount
     */
@@ -87,5 +89,4 @@ public final class TransferConfig {
       return blockCount;
    }
 
-   
 }

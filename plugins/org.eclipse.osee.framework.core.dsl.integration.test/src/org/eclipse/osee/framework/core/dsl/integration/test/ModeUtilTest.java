@@ -23,49 +23,49 @@ import org.junit.Test;
  */
 public class ModeUtilTest {
 
-	private static String rawXTextData = //
-				"artifactType \"Artifact\" { \n" + //
-				"     guid \"AAMFDh6S7gRLupAMwywA\" \n" + //
-				"     attribute \"Name\" \n" + //
-				"     attribute \"Annotation\" \n" + //
-				"}\n" + //
-				"attributeType \"Name\" extends StringAttribute {\n" + //
-				"     guid \"AAMFEcF1AzV7PKuHmxwA\" \n" + //
-				"     dataProvider DefaultAttributeDataProvider\n" + //
-				"     min 1\n" + //
-				"     max 1\n" + //
-				"     taggerId DefaultAttributeTaggerProvider\n" + //
-				"     description \"Descriptive Name\"\n" + //
-				"     defaultValue \"unnamed\"\n" + //
-				"}\n" + //
-				"attributeType \"Annotation\" extends StringAttribute {\n" + //
-				"guid \"AAMFEcWy0xc4e3tcemQA\" \n" + //
-				"dataProvider DefaultAttributeDataProvider\n" + //
-				"min 0\n" + //
-				"max unlimited\n" + //
-				"taggerId DefaultAttributeTaggerProvider\n" + //
-				"}\n" + //
-				"\n";
+   private static String rawXTextData = //
+      "artifactType \"Artifact\" { \n" + //
+      "     guid \"AAMFDh6S7gRLupAMwywA\" \n" + //
+      "     attribute \"Name\" \n" + //
+      "     attribute \"Annotation\" \n" + //
+      "}\n" + //
+      "attributeType \"Name\" extends StringAttribute {\n" + //
+      "     guid \"AAMFEcF1AzV7PKuHmxwA\" \n" + //
+      "     dataProvider DefaultAttributeDataProvider\n" + //
+      "     min 1\n" + //
+      "     max 1\n" + //
+      "     taggerId DefaultAttributeTaggerProvider\n" + //
+      "     description \"Descriptive Name\"\n" + //
+      "     defaultValue \"unnamed\"\n" + //
+      "}\n" + //
+      "attributeType \"Annotation\" extends StringAttribute {\n" + //
+      "guid \"AAMFEcWy0xc4e3tcemQA\" \n" + //
+      "dataProvider DefaultAttributeDataProvider\n" + //
+      "min 0\n" + //
+      "max unlimited\n" + //
+      "taggerId DefaultAttributeTaggerProvider\n" + //
+      "}\n" + //
+      "\n";
 
-	@Test
-	public void testModelUtilSave() throws OseeCoreException, IOException {
-		OseeDsl model1 = ModelUtil.loadModel("osee:/text.osee", rawXTextData);
-		Assert.assertEquals(1, model1.getArtifactTypes().size());
-		Assert.assertEquals(2, model1.getAttributeTypes().size());
+   @Test
+   public void testModelUtilSave() throws OseeCoreException, IOException {
+      OseeDsl model1 = ModelUtil.loadModel("osee:/text.osee", rawXTextData);
+      Assert.assertEquals(1, model1.getArtifactTypes().size());
+      Assert.assertEquals(2, model1.getAttributeTypes().size());
 
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		ModelUtil.saveModel(model1, "osee:/text.osee", outputStream, false);
-		outputStream.flush();
-		String value = outputStream.toString("UTF-8");
+      ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      ModelUtil.saveModel(model1, "osee:/text.osee", outputStream, false);
+      outputStream.flush();
+      String value = outputStream.toString("UTF-8");
 
-		OseeDsl model2 = ModelUtil.loadModel("osee:/text2.osee", value);
+      OseeDsl model2 = ModelUtil.loadModel("osee:/text2.osee", value);
 
-		Assert.assertEquals(model1.getArtifactTypes().size(), model2.getArtifactTypes().size());
-		Assert.assertEquals(model1.getAttributeTypes().size(), model2.getAttributeTypes().size());
-		Assert.assertEquals(model1.getRelationTypes().size(), model2.getRelationTypes().size());
-		Assert.assertEquals(model1.getImports().size(), model2.getImports().size());
-		Assert.assertEquals(model1.getEnumOverrides().size(), model2.getEnumOverrides().size());
-		Assert.assertEquals(model1.getEnumTypes().size(), model2.getEnumTypes().size());
-	}
+      Assert.assertEquals(model1.getArtifactTypes().size(), model2.getArtifactTypes().size());
+      Assert.assertEquals(model1.getAttributeTypes().size(), model2.getAttributeTypes().size());
+      Assert.assertEquals(model1.getRelationTypes().size(), model2.getRelationTypes().size());
+      Assert.assertEquals(model1.getImports().size(), model2.getImports().size());
+      Assert.assertEquals(model1.getEnumOverrides().size(), model2.getEnumOverrides().size());
+      Assert.assertEquals(model1.getEnumTypes().size(), model2.getEnumTypes().size());
+   }
 
 }

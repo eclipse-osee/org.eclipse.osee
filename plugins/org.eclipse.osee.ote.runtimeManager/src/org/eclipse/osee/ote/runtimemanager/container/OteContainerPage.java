@@ -20,14 +20,12 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
-public class OteContainerPage extends WizardPage 
-               implements IClasspathContainerPage {
+public class OteContainerPage extends WizardPage implements IClasspathContainerPage {
 
-   
    public OteContainerPage() {
       super("OTE Library");
    }
-   
+
    @Override
    public boolean finish() {
       return true;
@@ -47,19 +45,17 @@ public class OteContainerPage extends WizardPage
       Composite comp = new Composite(parent, SWT.None);
       GridLayout layout = new GridLayout(1, true);
       comp.setLayout(layout);
-      
+
       GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
       comp.setLayoutData(data);
-      
+
       Label label = new Label(comp, SWT.NONE);
       label.setText("Please click finish.");
-      
+
       data = new GridData(SWT.FILL, SWT.FILL, true, true);
       label.setLayoutData(data);
       setControl(comp);
-      
-      
+
    }
 
-   
 }

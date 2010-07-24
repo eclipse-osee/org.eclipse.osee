@@ -46,41 +46,49 @@ public class ActionHyperItem extends HyperViewItem {
 
    @Override
    public Image getImage() throws OseeCoreException {
-      if (iHyperartifact.getHyperArtifact() == null)
+      if (iHyperartifact.getHyperArtifact() == null) {
          return null;
-      if (iHyperartifact.isDeleted())
+      }
+      if (iHyperartifact.isDeleted()) {
          return null;
+      }
       return ArtifactImageManager.getImage(iHyperartifact.getHyperArtifact());
    }
 
    @Override
    public String getTitle() {
-      if (iHyperartifact.isDeleted())
+      if (iHyperartifact.isDeleted()) {
          return "Deleted";
+      }
       return iHyperartifact.getHyperName();
    }
 
    @Override
    public String getToolTip() {
-      if (iHyperartifact.isDeleted())
+      if (iHyperartifact.isDeleted()) {
          return "";
+      }
       StringBuilder builder = new StringBuilder();
-      builder.append("Name: " + (iHyperartifact).getHyperName());
-      builder.append("\nType: " + (iHyperartifact).getHyperType());
-      if ((iHyperartifact).getHyperState() != null)
-         builder.append("\nState: " + (iHyperartifact).getHyperState());
-      if ((iHyperartifact).getHyperAssignee() != null)
-         builder.append("\nAssignee: " + (iHyperartifact).getHyperAssignee());
-      if ((iHyperartifact).getHyperTargetVersion() != null)
-         builder.append("\nVersion: " + (iHyperartifact).getHyperTargetVersion());
+      builder.append("Name: " + iHyperartifact.getHyperName());
+      builder.append("\nType: " + iHyperartifact.getHyperType());
+      if (iHyperartifact.getHyperState() != null) {
+         builder.append("\nState: " + iHyperartifact.getHyperState());
+      }
+      if (iHyperartifact.getHyperAssignee() != null) {
+         builder.append("\nAssignee: " + iHyperartifact.getHyperAssignee());
+      }
+      if (iHyperartifact.getHyperTargetVersion() != null) {
+         builder.append("\nVersion: " + iHyperartifact.getHyperTargetVersion());
+      }
 
       return builder.toString();
    }
 
    @Override
    public Image getMarkImage() {
-      if (iHyperartifact.isDeleted())
+      if (iHyperartifact.isDeleted()) {
          return null;
+      }
       try {
          return iHyperartifact.getHyperAssigneeImage();
       } catch (Exception ex) {

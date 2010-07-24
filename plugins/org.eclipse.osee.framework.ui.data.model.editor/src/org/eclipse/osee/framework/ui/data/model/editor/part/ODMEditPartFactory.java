@@ -33,6 +33,7 @@ public class ODMEditPartFactory implements EditPartFactory {
    public ODMEditPartFactory() {
    }
 
+   @Override
    public EditPart createEditPart(EditPart context, Object model) {
       EditPart editPart = null;
       if (model instanceof ODMDiagram) {

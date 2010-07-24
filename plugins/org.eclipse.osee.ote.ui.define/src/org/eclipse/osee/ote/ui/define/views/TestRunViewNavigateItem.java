@@ -29,6 +29,7 @@ public class TestRunViewNavigateItem implements IXNavigateContainer {
       super();
    }
 
+   @Override
    public List<XNavigateItem> getNavigateItems() {
       List<XNavigateItem> items = new ArrayList<XNavigateItem>();
 

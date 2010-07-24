@@ -26,7 +26,7 @@ public class XViewerArtifactTypeColumn extends XViewerValueColumn {
 
    public XViewerArtifactTypeColumn(boolean show) {
       this("framework.artifact.type." + "Artifact Type", "Artifact Type", 150, SWT.LEFT, show, SortDataType.String,
-            false, "Artifact Type");
+         false, "Artifact Type");
    }
 
    public XViewerArtifactTypeColumn(String name) {
@@ -50,7 +50,7 @@ public class XViewerArtifactTypeColumn extends XViewerValueColumn {
    @Override
    public XViewerArtifactTypeColumn copy() {
       return new XViewerArtifactTypeColumn(getId(), getName(), getWidth(), getAlign(), isShow(), getSortDataType(),
-            isMultiColumnEditable(), getDescription());
+         isMultiColumnEditable(), getDescription());
    }
 
    @Override

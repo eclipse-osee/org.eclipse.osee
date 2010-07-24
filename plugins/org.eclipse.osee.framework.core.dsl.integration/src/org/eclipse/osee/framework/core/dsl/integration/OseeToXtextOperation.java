@@ -42,235 +42,235 @@ import org.eclipse.osee.framework.core.operation.AbstractOperation;
  */
 public class OseeToXtextOperation extends AbstractOperation {
 
-	private final OseeDsl oseeModel;
-	private final OseeDslFactory factory;
-	private final OseeTypeCache cache;
+   private final OseeDsl oseeModel;
+   private final OseeDslFactory factory;
+   private final OseeTypeCache cache;
 
-	public OseeToXtextOperation(OseeTypeCache cache, OseeDslFactory factory, OseeDsl oseeModel) {
-		super("OSEE to Text Model", Activator.PLUGIN_ID);
-		this.oseeModel = oseeModel;
-		this.factory = factory;
-		this.cache = cache;
-	}
+   public OseeToXtextOperation(OseeTypeCache cache, OseeDslFactory factory, OseeDsl oseeModel) {
+      super("OSEE to Text Model", Activator.PLUGIN_ID);
+      this.oseeModel = oseeModel;
+      this.factory = factory;
+      this.cache = cache;
+   }
 
-	private OseeDslFactory getFactory() {
-		return factory;
-	}
+   private OseeDslFactory getFactory() {
+      return factory;
+   }
 
-	private OseeDsl getModelByNamespace(String namespace) {
-		return oseeModel;
-	}
+   private OseeDsl getModelByNamespace(String namespace) {
+      return oseeModel;
+   }
 
-	private String getNamespace(String name) {
-		String toReturn = "default";
-		//      if (Strings.isValid(name)) {
-		//         int index = name.lastIndexOf(".");
-		//         if (index > 0) {
-		//            toReturn = name.substring(0, index);
-		//         }
-		//      }
-		return toReturn;
-	}
+   private String getNamespace(String name) {
+      String toReturn = "default";
+      //      if (Strings.isValid(name)) {
+      //         int index = name.lastIndexOf(".");
+      //         if (index > 0) {
+      //            toReturn = name.substring(0, index);
+      //         }
+      //      }
+      return toReturn;
+   }
 
-	private String asPrimitiveType(String name) {
-		return name.replace("org.eclipse.osee.framework.skynet.core.", "");
-	}
+   private String asPrimitiveType(String name) {
+      return name.replace("org.eclipse.osee.framework.skynet.core.", "");
+   }
 
-	@Override
-	protected void doWork(IProgressMonitor monitor) throws Exception {
-		double workPercentage = 1.0 / 6.0;
-		populateEnumTypes(monitor, workPercentage);
-		populateAttributeTypes(monitor, workPercentage);
-		populateArtifactTypes(monitor, workPercentage);
-		populateArtifactTypeInheritance(monitor, workPercentage);
-		populateArtifactTypeAttributeTypes(monitor, workPercentage);
-		populateRelationTypes(monitor, workPercentage);
-	}
+   @Override
+   protected void doWork(IProgressMonitor monitor) throws Exception {
+      double workPercentage = 1.0 / 6.0;
+      populateEnumTypes(monitor, workPercentage);
+      populateAttributeTypes(monitor, workPercentage);
+      populateArtifactTypes(monitor, workPercentage);
+      populateArtifactTypeInheritance(monitor, workPercentage);
+      populateArtifactTypeAttributeTypes(monitor, workPercentage);
+      populateRelationTypes(monitor, workPercentage);
+   }
 
-	private void populateEnumTypes(IProgressMonitor monitor, double workPercentage) throws OseeCoreException {
-		Collection<OseeEnumType> enumTypes = cache.getEnumTypeCache().getAll();
-		for (OseeEnumType enumType : enumTypes) {
-			checkForCancelledStatus(monitor);
-			XOseeEnumType modelType = getFactory().createXOseeEnumType();
+   private void populateEnumTypes(IProgressMonitor monitor, double workPercentage) throws OseeCoreException {
+      Collection<OseeEnumType> enumTypes = cache.getEnumTypeCache().getAll();
+      for (OseeEnumType enumType : enumTypes) {
+         checkForCancelledStatus(monitor);
+         XOseeEnumType modelType = getFactory().createXOseeEnumType();
 
-			OseeDsl model = getModelByNamespace(getNamespace(enumType.getName()));
-			model.getEnumTypes().add(modelType);
+         OseeDsl model = getModelByNamespace(getNamespace(enumType.getName()));
+         model.getEnumTypes().add(modelType);
 
-			modelType.setName(asQuoted(enumType.getName()));
-			modelType.setTypeGuid(enumType.getGuid());
+         modelType.setName(asQuoted(enumType.getName()));
+         modelType.setTypeGuid(enumType.getGuid());
 
-			for (OseeEnumEntry entry : enumType.values()) {
-				checkForCancelledStatus(monitor);
-				XOseeEnumEntry entryModelType = getFactory().createXOseeEnumEntry();
-				modelType.getEnumEntries().add(entryModelType);
+         for (OseeEnumEntry entry : enumType.values()) {
+            checkForCancelledStatus(monitor);
+            XOseeEnumEntry entryModelType = getFactory().createXOseeEnumEntry();
+            modelType.getEnumEntries().add(entryModelType);
 
-				entryModelType.setName(asQuoted(entry.getName()));
-				entryModelType.setOrdinal(String.valueOf(entry.ordinal()));
-			}
-		}
-		monitor.worked(calculateWork(workPercentage));
-	}
+            entryModelType.setName(asQuoted(entry.getName()));
+            entryModelType.setOrdinal(String.valueOf(entry.ordinal()));
+         }
+      }
+      monitor.worked(calculateWork(workPercentage));
+   }
 
-	private void populateAttributeTypes(IProgressMonitor monitor, double workPercentage) throws OseeCoreException {
-		monitor.setTaskName("Attribute Types");
-		Collection<AttributeType> attributeTypes = cache.getAttributeTypeCache().getAll();
-		for (AttributeType attributeType : attributeTypes) {
-			checkForCancelledStatus(monitor);
-			XAttributeType modelType = getFactory().createXAttributeType();
+   private void populateAttributeTypes(IProgressMonitor monitor, double workPercentage) throws OseeCoreException {
+      monitor.setTaskName("Attribute Types");
+      Collection<AttributeType> attributeTypes = cache.getAttributeTypeCache().getAll();
+      for (AttributeType attributeType : attributeTypes) {
+         checkForCancelledStatus(monitor);
+         XAttributeType modelType = getFactory().createXAttributeType();
 
-			OseeDsl model = getModelByNamespace(getNamespace(attributeType.getName()));
-			model.getAttributeTypes().add(modelType);
+         OseeDsl model = getModelByNamespace(getNamespace(attributeType.getName()));
+         model.getAttributeTypes().add(modelType);
 
-			modelType.setName(asQuoted(attributeType.getName()));
-			modelType.setTypeGuid(attributeType.getGuid());
-			modelType.setBaseAttributeType(asPrimitiveType(attributeType.getBaseAttributeTypeId()));
-			modelType.setDataProvider(asPrimitiveType(attributeType.getAttributeProviderId()));
-			modelType.setMax(String.valueOf(attributeType.getMaxOccurrences()));
-			modelType.setMin(String.valueOf(attributeType.getMinOccurrences()));
-			modelType.setFileExtension(attributeType.getFileTypeExtension());
-			modelType.setDescription(attributeType.getDescription());
-			modelType.setDefaultValue(attributeType.getDefaultValue());
-			modelType.setTaggerId(attributeType.getTaggerId());
+         modelType.setName(asQuoted(attributeType.getName()));
+         modelType.setTypeGuid(attributeType.getGuid());
+         modelType.setBaseAttributeType(asPrimitiveType(attributeType.getBaseAttributeTypeId()));
+         modelType.setDataProvider(asPrimitiveType(attributeType.getAttributeProviderId()));
+         modelType.setMax(String.valueOf(attributeType.getMaxOccurrences()));
+         modelType.setMin(String.valueOf(attributeType.getMinOccurrences()));
+         modelType.setFileExtension(attributeType.getFileTypeExtension());
+         modelType.setDescription(attributeType.getDescription());
+         modelType.setDefaultValue(attributeType.getDefaultValue());
+         modelType.setTaggerId(attributeType.getTaggerId());
 
-			OseeEnumType oseeEnumType = attributeType.getOseeEnumType();
-			if (oseeEnumType != null) {
-				XOseeEnumType enumType = toModelEnumType(model, oseeEnumType);
-				modelType.setEnumType(enumType);
-			}
-		}
-		monitor.worked(calculateWork(workPercentage));
-	}
+         OseeEnumType oseeEnumType = attributeType.getOseeEnumType();
+         if (oseeEnumType != null) {
+            XOseeEnumType enumType = toModelEnumType(model, oseeEnumType);
+            modelType.setEnumType(enumType);
+         }
+      }
+      monitor.worked(calculateWork(workPercentage));
+   }
 
-	private XOseeEnumType toModelEnumType(OseeDsl model, OseeEnumType oseeEnumType) {
-		String guid = oseeEnumType.getGuid();
-		for (XOseeEnumType type : model.getEnumTypes()) {
-			if (guid.equals(type.getTypeGuid())) {
-				return type;
-			}
-		}
-		return null;
-	}
+   private XOseeEnumType toModelEnumType(OseeDsl model, OseeEnumType oseeEnumType) {
+      String guid = oseeEnumType.getGuid();
+      for (XOseeEnumType type : model.getEnumTypes()) {
+         if (guid.equals(type.getTypeGuid())) {
+            return type;
+         }
+      }
+      return null;
+   }
 
-	private void populateArtifactTypes(IProgressMonitor monitor, double workPercentage) throws OseeCoreException {
-		monitor.setTaskName("Artifact Types");
-		Collection<ArtifactType> artifactTypes = cache.getArtifactTypeCache().getAll();
-		for (ArtifactType artifactType : artifactTypes) {
-			checkForCancelledStatus(monitor);
-			XArtifactType modelType = getFactory().createXArtifactType();
+   private void populateArtifactTypes(IProgressMonitor monitor, double workPercentage) throws OseeCoreException {
+      monitor.setTaskName("Artifact Types");
+      Collection<ArtifactType> artifactTypes = cache.getArtifactTypeCache().getAll();
+      for (ArtifactType artifactType : artifactTypes) {
+         checkForCancelledStatus(monitor);
+         XArtifactType modelType = getFactory().createXArtifactType();
 
-			OseeDsl model = getModelByNamespace(getNamespace(artifactType.getName()));
-			model.getArtifactTypes().add(modelType);
+         OseeDsl model = getModelByNamespace(getNamespace(artifactType.getName()));
+         model.getArtifactTypes().add(modelType);
 
-			modelType.setName(asQuoted(artifactType.getName()));
-			modelType.setTypeGuid(artifactType.getGuid());
+         modelType.setName(asQuoted(artifactType.getName()));
+         modelType.setTypeGuid(artifactType.getGuid());
 
-		}
-		monitor.worked(calculateWork(workPercentage));
-	}
+      }
+      monitor.worked(calculateWork(workPercentage));
+   }
 
-	private void populateArtifactTypeInheritance(IProgressMonitor monitor, double workPercentage) throws OseeCoreException {
-		monitor.setTaskName("Artifact Type Inheritance");
-		Collection<ArtifactType> artifactTypes = cache.getArtifactTypeCache().getAll();
-		for (ArtifactType artifactType : artifactTypes) {
-			checkForCancelledStatus(monitor);
-			OseeDsl model = getModelByNamespace(getNamespace(artifactType.getName()));
+   private void populateArtifactTypeInheritance(IProgressMonitor monitor, double workPercentage) throws OseeCoreException {
+      monitor.setTaskName("Artifact Type Inheritance");
+      Collection<ArtifactType> artifactTypes = cache.getArtifactTypeCache().getAll();
+      for (ArtifactType artifactType : artifactTypes) {
+         checkForCancelledStatus(monitor);
+         OseeDsl model = getModelByNamespace(getNamespace(artifactType.getName()));
 
-			XArtifactType childType = getArtifactType(model, artifactType.getGuid());
+         XArtifactType childType = getArtifactType(model, artifactType.getGuid());
 
-			for (ArtifactType oseeSuperType : artifactType.getSuperArtifactTypes()) {
-				XArtifactType superModelType = getArtifactType(model, oseeSuperType.getGuid());
-				childType.getSuperArtifactTypes().add(superModelType);
-			}
-		}
-		monitor.worked(calculateWork(workPercentage));
-	}
+         for (ArtifactType oseeSuperType : artifactType.getSuperArtifactTypes()) {
+            XArtifactType superModelType = getArtifactType(model, oseeSuperType.getGuid());
+            childType.getSuperArtifactTypes().add(superModelType);
+         }
+      }
+      monitor.worked(calculateWork(workPercentage));
+   }
 
-	private void populateArtifactTypeAttributeTypes(IProgressMonitor monitor, double workPercentage) throws OseeCoreException {
-		monitor.setTaskName("Artifact Type to Attribute Types");
-		Collection<ArtifactType> artifactTypes = cache.getArtifactTypeCache().getAll();
-		for (ArtifactType artifactType : artifactTypes) {
-			checkForCancelledStatus(monitor);
+   private void populateArtifactTypeAttributeTypes(IProgressMonitor monitor, double workPercentage) throws OseeCoreException {
+      monitor.setTaskName("Artifact Type to Attribute Types");
+      Collection<ArtifactType> artifactTypes = cache.getArtifactTypeCache().getAll();
+      for (ArtifactType artifactType : artifactTypes) {
+         checkForCancelledStatus(monitor);
 
-			OseeDsl model = getModelByNamespace(getNamespace(artifactType.getName()));
-			XArtifactType modelArtifactType = getArtifactType(model, artifactType.getGuid());
+         OseeDsl model = getModelByNamespace(getNamespace(artifactType.getName()));
+         XArtifactType modelArtifactType = getArtifactType(model, artifactType.getGuid());
 
-			Map<Branch, Collection<AttributeType>> types = artifactType.getLocalAttributeTypes();
-			if (types != null) {
-				List<XAttributeTypeRef> references = new ArrayList<XAttributeTypeRef>();
-				for (Entry<Branch, Collection<AttributeType>> entry : types.entrySet()) {
-					Branch branch = entry.getKey();
-					Collection<AttributeType> attributeTypes = entry.getValue();
-					if (attributeTypes != null) {
-						for (AttributeType attributeType : attributeTypes) {
+         Map<Branch, Collection<AttributeType>> types = artifactType.getLocalAttributeTypes();
+         if (types != null) {
+            List<XAttributeTypeRef> references = new ArrayList<XAttributeTypeRef>();
+            for (Entry<Branch, Collection<AttributeType>> entry : types.entrySet()) {
+               Branch branch = entry.getKey();
+               Collection<AttributeType> attributeTypes = entry.getValue();
+               if (attributeTypes != null) {
+                  for (AttributeType attributeType : attributeTypes) {
 
-							XAttributeTypeRef ref = getFactory().createXAttributeTypeRef();
+                     XAttributeTypeRef ref = getFactory().createXAttributeTypeRef();
 
-							XAttributeType modelType = getAttributeType(model, attributeType.getGuid());
-							if (modelType != null) {
-								ref.setValidAttributeType(modelType);
-								if (branch != null && !branch.getBranchType().isSystemRootBranch()) {
-									ref.setBranchGuid(branch.getGuid());
-								}
-								references.add(ref);
-							}
-						}
-					}
-				}
-				modelArtifactType.getValidAttributeTypes().addAll(references);
-			}
-		}
-		monitor.worked(calculateWork(workPercentage));
-	}
+                     XAttributeType modelType = getAttributeType(model, attributeType.getGuid());
+                     if (modelType != null) {
+                        ref.setValidAttributeType(modelType);
+                        if (branch != null && !branch.getBranchType().isSystemRootBranch()) {
+                           ref.setBranchGuid(branch.getGuid());
+                        }
+                        references.add(ref);
+                     }
+                  }
+               }
+            }
+            modelArtifactType.getValidAttributeTypes().addAll(references);
+         }
+      }
+      monitor.worked(calculateWork(workPercentage));
+   }
 
-	private void populateRelationTypes(IProgressMonitor monitor, double workPercentage) throws OseeCoreException {
-		monitor.setTaskName("Relation Types");
-		Collection<RelationType> relationTypes = cache.getRelationTypeCache().getAll();
-		for (RelationType relationType : relationTypes) {
-			checkForCancelledStatus(monitor);
-			XRelationType modelType = getFactory().createXRelationType();
+   private void populateRelationTypes(IProgressMonitor monitor, double workPercentage) throws OseeCoreException {
+      monitor.setTaskName("Relation Types");
+      Collection<RelationType> relationTypes = cache.getRelationTypeCache().getAll();
+      for (RelationType relationType : relationTypes) {
+         checkForCancelledStatus(monitor);
+         XRelationType modelType = getFactory().createXRelationType();
 
-			OseeDsl model = getModelByNamespace(getNamespace(relationType.getName()));
-			model.getRelationTypes().add(modelType);
+         OseeDsl model = getModelByNamespace(getNamespace(relationType.getName()));
+         model.getRelationTypes().add(modelType);
 
-			modelType.setName(asQuoted(relationType.getName()));
-			modelType.setTypeGuid(relationType.getGuid());
+         modelType.setName(asQuoted(relationType.getName()));
+         modelType.setTypeGuid(relationType.getGuid());
 
-			modelType.setDefaultOrderType(getRelationOrderType(relationType.getDefaultOrderTypeGuid()));
-			modelType.setMultiplicity(RelationMultiplicityEnum.getByName(relationType.getMultiplicity().name()));
+         modelType.setDefaultOrderType(getRelationOrderType(relationType.getDefaultOrderTypeGuid()));
+         modelType.setMultiplicity(RelationMultiplicityEnum.getByName(relationType.getMultiplicity().name()));
 
-			modelType.setSideAName(relationType.getSideAName());
-			modelType.setSideBName(relationType.getSideBName());
+         modelType.setSideAName(relationType.getSideAName());
+         modelType.setSideBName(relationType.getSideBName());
 
-			modelType.setSideAArtifactType(getArtifactType(model, relationType.getArtifactTypeSideA().getGuid()));
-			modelType.setSideBArtifactType(getArtifactType(model, relationType.getArtifactTypeSideB().getGuid()));
-		}
-		monitor.worked(calculateWork(workPercentage));
-	}
+         modelType.setSideAArtifactType(getArtifactType(model, relationType.getArtifactTypeSideA().getGuid()));
+         modelType.setSideBArtifactType(getArtifactType(model, relationType.getArtifactTypeSideB().getGuid()));
+      }
+      monitor.worked(calculateWork(workPercentage));
+   }
 
-	private XArtifactType getArtifactType(OseeDsl model, String guid) {
-		for (XArtifactType artifactType : model.getArtifactTypes()) {
-			if (guid.equals(artifactType.getTypeGuid())) {
-				return artifactType;
-			}
-		}
-		return null;
-	}
+   private XArtifactType getArtifactType(OseeDsl model, String guid) {
+      for (XArtifactType artifactType : model.getArtifactTypes()) {
+         if (guid.equals(artifactType.getTypeGuid())) {
+            return artifactType;
+         }
+      }
+      return null;
+   }
 
-	private XAttributeType getAttributeType(OseeDsl model, String guid) {
-		for (XAttributeType attributeType : model.getAttributeTypes()) {
-			if (guid.equals(attributeType.getTypeGuid())) {
-				return attributeType;
-			}
-		}
-		return null;
-	}
+   private XAttributeType getAttributeType(OseeDsl model, String guid) {
+      for (XAttributeType attributeType : model.getAttributeTypes()) {
+         if (guid.equals(attributeType.getTypeGuid())) {
+            return attributeType;
+         }
+      }
+      return null;
+   }
 
-	private String getRelationOrderType(String guid) throws OseeArgumentException {
-		RelationOrderBaseTypes type = RelationOrderBaseTypes.getFromGuid(guid);
-		return type.getName().replaceAll(" ", "_");
-	}
+   private String getRelationOrderType(String guid) throws OseeArgumentException {
+      RelationOrderBaseTypes type = RelationOrderBaseTypes.getFromGuid(guid);
+      return type.getName().replaceAll(" ", "_");
+   }
 
-	private String asQuoted(String name) {
-		return "\"" + name + "\"";
-	}
+   private String asQuoted(String name) {
+      return "\"" + name + "\"";
+   }
 }

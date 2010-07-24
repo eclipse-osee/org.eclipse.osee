@@ -47,11 +47,11 @@ public class SqlManagerImpl extends SqlManager {
    public void createTable(TableElement tableDef) throws OseeDataStoreException {
       StringBuilder toExecute = new StringBuilder();
       toExecute.append(SqlManager.CREATE_STRING + " TABLE " + formatQuotedString(tableDef.getFullyQualifiedTableName(),
-            "\\.") + " ( \n");
+         "\\.") + " ( \n");
       toExecute.append(handleColumnCreationSection(tableDef.getColumns()));
       toExecute.append(handleConstraintCreationSection(tableDef.getConstraints(), tableDef.getFullyQualifiedTableName()));
       toExecute.append(handleConstraintCreationSection(tableDef.getForeignKeyConstraints(),
-            tableDef.getFullyQualifiedTableName()));
+         tableDef.getFullyQualifiedTableName()));
       toExecute.append(" \n)\n");
       OseeLog.log(Activator.class, Level.FINE, "Creating Table: [ " + tableDef.getFullyQualifiedTableName() + "]");
       ConnectionHandler.runPreparedUpdate(toExecute.toString());
@@ -61,7 +61,7 @@ public class SqlManagerImpl extends SqlManager {
    public void dropTable(TableElement tableDef) throws OseeDataStoreException {
       StringBuilder toExecute = new StringBuilder();
       toExecute.append(SqlManager.DROP_STRING + " TABLE " + formatQuotedString(tableDef.getFullyQualifiedTableName(),
-            "\\."));
+         "\\."));
       OseeLog.log(Activator.class, Level.FINE, "Dropping Table: [ " + tableDef.getFullyQualifiedTableName() + "]");
       ConnectionHandler.runPreparedUpdate(toExecute.toString());
    }

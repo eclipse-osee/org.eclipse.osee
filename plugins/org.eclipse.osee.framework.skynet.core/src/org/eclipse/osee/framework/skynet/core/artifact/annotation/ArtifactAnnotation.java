@@ -21,7 +21,11 @@ public class ArtifactAnnotation {
    private String namespace;
    private String content;
    public static enum Type {
-      None, Info, Warning, Error, Hidden;
+      None,
+      Info,
+      Warning,
+      Error,
+      Hidden;
       private static Type[] orderedTypes = new Type[] {Error, Warning, Info, Hidden, None};
 
       public static Type[] getOrderedTypes() {
@@ -61,15 +65,16 @@ public class ArtifactAnnotation {
 
    public String toXml() {
       return AXml.addTagData(TYPE_TAG, type.name()) + AXml.addTagData(NAMESPACE_TAG, namespace) + AXml.addTagData(
-            CONTENT_TAG, content);
+         CONTENT_TAG, content);
    }
 
    public void fromXml(String xml) {
       String typeStr = AXml.getTagData(xml, TYPE_TAG);
-      if (typeStr == null || typeStr.equals(""))
+      if (typeStr == null || typeStr.equals("")) {
          type = Type.None;
-      else
+      } else {
          type = Type.valueOf(typeStr);
+      }
       namespace = AXml.getTagData(xml, NAMESPACE_TAG);
       content = AXml.getTagData(xml, CONTENT_TAG);
    }

@@ -11,7 +11,6 @@
 package org.eclipse.osee.ote.core.log.record;
 
 import java.util.ArrayList;
-
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.ote.core.ReturnFormatter;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
@@ -21,9 +20,9 @@ import org.w3c.dom.Element;
 
 public class TraceRecordEnd extends TestRecord implements Xmlizable {
 
-	private static final long serialVersionUID = 8567378567805515775L;
-   private ReturnFormatter returnFormatter;
-   private ArrayList<Xmlizable> additionalElements;
+   private static final long serialVersionUID = 8567378567805515775L;
+   private final ReturnFormatter returnFormatter;
+   private final ArrayList<Xmlizable> additionalElements;
 
    private static final String additionalString = "AdditionalInfo";
 
@@ -34,8 +33,9 @@ public class TraceRecordEnd extends TestRecord implements Xmlizable {
    }
 
    public void addAdditionalElement(Xmlizable object) {
-      if (object != null)
+      if (object != null) {
          additionalElements.add(object);
+      }
    }
 
    /**
@@ -43,6 +43,7 @@ public class TraceRecordEnd extends TestRecord implements Xmlizable {
     * 
     * @return Element XML formated element.
     */
+   @Override
    public Element toXml(Document doc) {
       Element trElement = doc.createElement("TraceEnd");
       trElement.appendChild(returnFormatter.toXml(doc));

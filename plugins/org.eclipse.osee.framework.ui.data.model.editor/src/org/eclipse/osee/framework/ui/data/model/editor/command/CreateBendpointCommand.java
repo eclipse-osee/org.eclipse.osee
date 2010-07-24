@@ -21,9 +21,9 @@ import org.eclipse.osee.framework.ui.data.model.editor.model.ConnectionModel;
  */
 public class CreateBendpointCommand extends Command {
 
-   private ConnectionModel link;
-   private Bendpoint point;
-   private int index = -1;
+   private final ConnectionModel link;
+   private final Bendpoint point;
+   private final int index = -1;
 
    public CreateBendpointCommand(ConnectionModel link, Point location, int index) {
       super("Create Bendpoint");
@@ -31,6 +31,7 @@ public class CreateBendpointCommand extends Command {
       point = new AbsoluteBendpoint(location);
    }
 
+   @Override
    public void undo() {
       link.getBendpoints().remove(index);
    }

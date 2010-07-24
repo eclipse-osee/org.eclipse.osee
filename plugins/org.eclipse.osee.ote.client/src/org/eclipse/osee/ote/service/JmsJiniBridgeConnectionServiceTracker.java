@@ -18,36 +18,36 @@ import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 class JmsJiniBridgeConnectionServiceTracker extends ServiceTracker {
 
-	private IConnectionService connectionService;
-	private ExportClassLoader exportClassLoader;
-	private MessageingServiceToLookupTracker messageingServiceToLookupTracker;
-	
-	JmsJiniBridgeConnectionServiceTracker(BundleContext context, ExportClassLoader exportClassLoader){
-		super(context, IConnectionService.class.getName(), null);
-		this.exportClassLoader = exportClassLoader;
-	}
+   private IConnectionService connectionService;
+   private final ExportClassLoader exportClassLoader;
+   private MessageingServiceToLookupTracker messageingServiceToLookupTracker;
 
-	@Override
-	public Object addingService(ServiceReference reference) {
-		connectionService = (IConnectionService) context.getService(reference);
-		messageingServiceToLookupTracker = new MessageingServiceToLookupTracker(context, connectionService, exportClassLoader);
-		messageingServiceToLookupTracker.open(true);
-		return super.addingService(reference);
-	}
+   JmsJiniBridgeConnectionServiceTracker(BundleContext context, ExportClassLoader exportClassLoader) {
+      super(context, IConnectionService.class.getName(), null);
+      this.exportClassLoader = exportClassLoader;
+   }
 
-	@Override
-	public void close() {
-		messageingServiceToLookupTracker.close();
-		super.close();
-	}
+   @Override
+   public Object addingService(ServiceReference reference) {
+      connectionService = (IConnectionService) context.getService(reference);
+      messageingServiceToLookupTracker =
+         new MessageingServiceToLookupTracker(context, connectionService, exportClassLoader);
+      messageingServiceToLookupTracker.open(true);
+      return super.addingService(reference);
+   }
 
-	@Override
-	public void removedService(ServiceReference reference, Object service) {
-		messageingServiceToLookupTracker.close();
-		super.removedService(reference, service);
-	}
+   @Override
+   public void close() {
+      messageingServiceToLookupTracker.close();
+      super.close();
+   }
+
+   @Override
+   public void removedService(ServiceReference reference, Object service) {
+      messageingServiceToLookupTracker.close();
+      super.removedService(reference, service);
+   }
 }

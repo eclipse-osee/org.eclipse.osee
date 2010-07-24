@@ -17,14 +17,14 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class UnsecuredOseeHttpServlet extends OseeHttpServlet {
 
-	private static final long serialVersionUID = 6633402530554659368L;
+   private static final long serialVersionUID = 6633402530554659368L;
 
-	public UnsecuredOseeHttpServlet() {
-		super();
-	}
+   public UnsecuredOseeHttpServlet() {
+      super();
+   }
 
-	@Override
-	protected final void checkAccessControl(HttpServletRequest request) {
-	}
+   @Override
+   protected final void checkAccessControl(HttpServletRequest request) {
+   }
 
 }

@@ -87,26 +87,26 @@ public class CommitXManager extends XViewer {
             AWorkbench.popup(commitStatus.getDisplayName(), "Need to create a working branch");
          } else if (commitStatus == CommitStatus.Branch_Not_Configured) {
             AWorkbench.popup(commitStatus.getDisplayName(),
-                  "Talk to project lead to configure branch for version [" + configArt + "]");
+               "Talk to project lead to configure branch for version [" + configArt + "]");
          } else if (commitStatus == CommitStatus.Branch_Commit_Disabled) {
             AWorkbench.popup(commitStatus.getDisplayName(),
-                  "Talk to project lead as to why commit disabled for version [" + configArt + "]");
+               "Talk to project lead as to why commit disabled for version [" + configArt + "]");
          } else if (commitStatus == CommitStatus.Commit_Needed) {
             destBranch = configArt.getParentBranch();
             xCommitManager.getTeamArt().getBranchMgr().commitWorkingBranch(true, false, destBranch,
-                  manager.isBranchesAllCommittedExcept(destBranch));
+               manager.isBranchesAllCommittedExcept(destBranch));
          } else if (commitStatus == CommitStatus.Merge_In_Progress) {
             destBranch = configArt.getParentBranch();
             xCommitManager.getTeamArt().getBranchMgr().commitWorkingBranch(true, false, destBranch,
-                  manager.isBranchesAllCommittedExcept(destBranch));
+               manager.isBranchesAllCommittedExcept(destBranch));
          } else if (commitStatus == CommitStatus.Committed) {
             xCommitManager.getTeamArt().getBranchMgr().showChangeReportForBranch(destBranch);
          } else if (commitStatus == CommitStatus.Committed_With_Merge) {
             destBranch = configArt.getParentBranch();
             MessageDialog dialog =
-                  new MessageDialog(Displays.getActiveShell(), "Select Report", null,
-                        "Both Change Report and Merge Manager exist.\n\nSelect to open.", MessageDialog.QUESTION,
-                        new String[] {"Show Change Report", "Show Merge Manager", "Cancel"}, 0);
+               new MessageDialog(Displays.getActiveShell(), "Select Report", null,
+                  "Both Change Report and Merge Manager exist.\n\nSelect to open.", MessageDialog.QUESTION,
+                  new String[] {"Show Change Report", "Show Merge Manager", "Cancel"}, 0);
             int result = dialog.open();
             if (result == 2) {
                return;

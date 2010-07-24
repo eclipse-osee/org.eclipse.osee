@@ -19,14 +19,14 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * @author Ryan D. Brooks
  */
 public class FindResults {
-   private HashMap<String, HashMap<File, List<String>>> results;
+   private final HashMap<String, HashMap<File, List<String>>> results;
 
    public FindResults(int initialCapacity) {
       results = new HashMap<String, HashMap<File, List<String>>>(initialCapacity * 4 / 3);
@@ -150,7 +150,7 @@ public class FindResults {
     * @author Ryan D. Brooks
     */
    public class IteratorPerPattern {
-      private String pattern;
+      private final String pattern;
       private Iterator<Entry<File, List<String>>> fileIterator;
       private Iterator<String> listIterator;
       private boolean more;

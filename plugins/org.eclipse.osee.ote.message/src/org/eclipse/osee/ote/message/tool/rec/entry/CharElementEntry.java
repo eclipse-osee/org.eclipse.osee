@@ -14,7 +14,6 @@ import java.nio.ByteBuffer;
 import org.eclipse.osee.ote.message.data.MemoryResource;
 import org.eclipse.osee.ote.message.elements.CharElement;
 
-
 /**
  * @author Ken J. Aguilar
  */
@@ -28,13 +27,15 @@ public class CharElementEntry implements IElementEntry {
       nameAsBytes = element.getName().getBytes();
    }
 
+   @Override
    public CharElement getElement() {
       return element;
    }
 
+   @Override
    public void write(ByteBuffer buffer, MemoryResource mem, int limit) {
       mem.setOffset(element.getMsgData().getMem().getOffset());
-      buffer.put(nameAsBytes).put(COMMA).put((byte)element.valueOf(mem).charValue()).put(COMMA);
+      buffer.put(nameAsBytes).put(COMMA).put((byte) element.valueOf(mem).charValue()).put(COMMA);
    }
 
 }

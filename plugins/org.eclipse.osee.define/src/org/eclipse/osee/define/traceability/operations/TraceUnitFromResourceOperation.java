@@ -56,7 +56,7 @@ public class TraceUnitFromResourceOperation {
 
    public static void printTraceFromTestUnits(IProgressMonitor monitor, URI source, boolean isRecursive, boolean isFileWithMultiplePaths, String... traceUnitHandlerIds) throws OseeCoreException {
       ResourceToTraceUnit operation =
-            getResourceToTestUnit(source, isRecursive, isFileWithMultiplePaths, traceUnitHandlerIds);
+         getResourceToTestUnit(source, isRecursive, isFileWithMultiplePaths, traceUnitHandlerIds);
       if (monitor == null) {
          monitor = new NullProgressMonitor();
       }
@@ -68,7 +68,7 @@ public class TraceUnitFromResourceOperation {
       checkBranchArguments(importToBranch);
 
       ResourceToTraceUnit operation =
-            getResourceToTestUnit(source, isRecursive, isFileWithMultiplePaths, traceUnitHandlerIds);
+         getResourceToTestUnit(source, isRecursive, isFileWithMultiplePaths, traceUnitHandlerIds);
       if (monitor == null) {
          monitor = new NullProgressMonitor();
       }
@@ -116,7 +116,7 @@ public class TraceUnitFromResourceOperation {
       }
       if (!importToBranch.getBranchType().isOfType(BranchType.WORKING)) {
          throw new OseeArgumentException(String.format("Branch to import into was not a working branch: [%s]",
-               importToBranch));
+            importToBranch));
       }
    }
 }

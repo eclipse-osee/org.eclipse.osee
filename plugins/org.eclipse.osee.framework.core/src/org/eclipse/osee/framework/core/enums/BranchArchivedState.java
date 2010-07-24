@@ -14,7 +14,9 @@ package org.eclipse.osee.framework.core.enums;
  * @author Ryan D. Brooks
  */
 public enum BranchArchivedState {
-   ARCHIVED(1), UNARCHIVED(0), ALL(-1);
+   ARCHIVED(1),
+   UNARCHIVED(0),
+   ALL(-1);
 
    private final int value;
 

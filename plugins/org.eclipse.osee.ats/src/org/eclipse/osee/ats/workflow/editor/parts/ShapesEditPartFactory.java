@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.workflow.editor.model.WorkflowDiagram;
  */
 public class ShapesEditPartFactory implements EditPartFactory {
 
+   @Override
    public EditPart createEditPart(EditPart context, Object modelElement) {
       // get EditPart for model element
       EditPart part = getPartForElement(modelElement);
@@ -59,7 +60,7 @@ public class ShapesEditPartFactory implements EditPartFactory {
          return new ConnectionEditPart();
       }
       throw new RuntimeException(
-            "Can't create part for model element: " + ((modelElement != null) ? modelElement.getClass().getName() : "null"));
+         "Can't create part for model element: " + (modelElement != null ? modelElement.getClass().getName() : "null"));
    }
 
 }

@@ -18,34 +18,34 @@ import org.eclipse.osee.framework.core.model.AbstractOseeField;
  */
 public class AssociatedArtifactField extends AbstractOseeField<Integer> {
 
-	private Integer artId;
+   private Integer artId;
 
-	public AssociatedArtifactField(Integer artId) {
-		super();
-		this.artId = artId;
-	}
+   public AssociatedArtifactField(Integer artId) {
+      super();
+      this.artId = artId;
+   }
 
-	@Override
-	public Integer get() throws OseeCoreException {
-		return artId;
-	}
+   @Override
+   public Integer get() throws OseeCoreException {
+      return artId;
+   }
 
-	@Override
-	public void set(Integer artId) throws OseeCoreException {
-		boolean wasDifferent = isDifferent(get(), artId);
-		if (wasDifferent) {
-			this.artId = artId;
-		}
-		isDirty |= wasDifferent;
-	}
+   @Override
+   public void set(Integer artId) throws OseeCoreException {
+      boolean wasDifferent = isDifferent(get(), artId);
+      if (wasDifferent) {
+         this.artId = artId;
+      }
+      isDirty |= wasDifferent;
+   }
 
-	private boolean isDifferent(Integer artId1, Integer artId2) {
-		boolean result = false;
-		if (artId1 != null && artId2 == null || artId1 == null && artId2 != null) {
-			result = true;
-		} else {
-			result = artId1 != artId2;
-		}
-		return result;
-	}
+   private boolean isDifferent(Integer artId1, Integer artId2) {
+      boolean result = false;
+      if (artId1 != null && artId2 == null || artId1 == null && artId2 != null) {
+         result = true;
+      } else {
+         result = artId1 != artId2;
+      }
+      return result;
+   }
 }

@@ -40,8 +40,8 @@ public class ElementNode extends AbstractTreeNode implements IElementPath {
 
    private static final Image normalImg = ImageManager.getImage(OteMessageImage.PIPE);
    private static final Image errorImg =
-         new OverlayImage(normalImg, ImageDescriptor.createFromImage(ImageManager.getImage(OteMessageImage.ERROR_SM)),
-               Location.BOT_RIGHT).createImage();
+      new OverlayImage(normalImg, ImageDescriptor.createFromImage(ImageManager.getImage(OteMessageImage.ERROR_SM)),
+         Location.BOT_RIGHT).createImage();
    private MessageNode messageNode;
 
    /**
@@ -197,6 +197,7 @@ public class ElementNode extends AbstractTreeNode implements IElementPath {
       return ""; // obj == null ? "" : get(columns).toString();
    }
 
+   @Override
    public ElementPath getElementPath() {
       return messageElementPath;
    }

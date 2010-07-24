@@ -29,12 +29,14 @@ public class WaitState implements IState {
       this.nextRealStateToRun = nextRealStateToRun;
    }
 
+   @Override
    public IState run() {
       iterationsToWait--;
-      if (iterationsToWait <= 0)
+      if (iterationsToWait <= 0) {
          return nextRealStateToRun;
-      else
+      } else {
          return this;
+      }
 
    }
 

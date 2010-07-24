@@ -106,7 +106,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
       excelWriter.writeRow("5.1  Lower Level Requirements Traceability to Subsystem Requirements");
       excelWriter.writeRow("Lower Level Requirements", null, null, "Traceable Subsystem Requirement");
       excelWriter.writeRow("Paragraph #", "Paragraph Title", "Qualification Method", "PIDS", "Paragraph #",
-            "Paragraph Title", Requirements.SUBSYSTEM);
+         "Paragraph Title", Requirements.SUBSYSTEM);
 
       String[] row = new String[7];
 
@@ -161,7 +161,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
          excelWriter.writeRow();
          excelWriter.writeRow("5.2." + count++ + " " + subSysName + " Requirements Allocation Traceability to Lower Level Requirements");
          excelWriter.writeRow(CoreArtifactTypes.SubsystemRequirement.getName(), null,
-               "Traceable Lower Level Requirements", null);
+            "Traceable Lower Level Requirements", null);
          excelWriter.writeRow("Paragraph #", "Paragraph Title", "Paragraph #", "Paragraph Title");
 
          String[] row = new String[4];
@@ -200,7 +200,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
 
    private void initLowLevelRequirements(List<Artifact> artifacts) throws OseeCoreException {
       RelationManager.getRelatedArtifacts(artifacts, 999, INCLUDE_DELETED,
-            CoreRelationTypes.Default_Hierarchical__Child);
+         CoreRelationTypes.Default_Hierarchical__Child);
       for (Artifact artifact : artifacts) {
          if (!artifact.isOfType(CoreArtifactTypes.Folder)) {
             lowLevelReqs.add(artifact);
@@ -211,7 +211,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
 
    private void initAllocationComponents(List<Artifact> artifacts) throws OseeCoreException {
       RelationManager.getRelatedArtifacts(artifacts, 999, INCLUDE_DELETED,
-            CoreRelationTypes.Default_Hierarchical__Child);
+         CoreRelationTypes.Default_Hierarchical__Child);
       for (Artifact artifact : artifacts) {
          if (!artifact.isOfType(CoreArtifactTypes.Folder)) {
             components.add(artifact);

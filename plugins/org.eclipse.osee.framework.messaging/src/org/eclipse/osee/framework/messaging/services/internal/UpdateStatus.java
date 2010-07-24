@@ -20,39 +20,40 @@ import org.eclipse.osee.framework.messaging.services.messages.ServiceHealth;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public class UpdateStatus implements Runnable {
 
-	private ConnectionNode connectionNode;
-	private ServiceInfoPopulator infoPopulator;
-	private ServiceHealth health;
-	private String errorMsg;
-	
-	UpdateStatus(ConnectionNode connectionNode, String serviceName, String serviceVersion, String serviceUniqueId, URI broker, int refreshRateInSeconds, ServiceInfoPopulator infoPopulator){
-		this.connectionNode = connectionNode;
-		health = new ServiceHealth();
-		health.setBrokerURI(broker.toASCIIString());
-		health.setServiceName(serviceName);
-		health.setServiceVersion(serviceVersion);
-		health.setServiceUniqueId(serviceUniqueId);
-		health.setRefreshRateInSeconds(refreshRateInSeconds);
-		health.setStopping(false);
-		errorMsg = String.format("Failed to send %s to %s v[%s][%s]", BaseMessages.ServiceHealth.getName(), health.getServiceName(),
-				health.getServiceVersion(), health.getServiceUniqueId());
-		this.infoPopulator = infoPopulator;
-	}
-	
-	@Override
-	public synchronized void run() {
-		try {
-			health.getServiceDescription().clear();
-			infoPopulator.updateServiceInfo(health.getServiceDescription());
-			connectionNode.send(BaseMessages.ServiceHealth, health, new OseeMessagingStatusImpl(errorMsg, UpdateStatus.class));
-		} catch (Exception ex) {
-			OseeLog.log(UpdateStatus.class, Level.SEVERE, ex);
-		}
-	}
+   private final ConnectionNode connectionNode;
+   private final ServiceInfoPopulator infoPopulator;
+   private final ServiceHealth health;
+   private final String errorMsg;
+
+   UpdateStatus(ConnectionNode connectionNode, String serviceName, String serviceVersion, String serviceUniqueId, URI broker, int refreshRateInSeconds, ServiceInfoPopulator infoPopulator) {
+      this.connectionNode = connectionNode;
+      health = new ServiceHealth();
+      health.setBrokerURI(broker.toASCIIString());
+      health.setServiceName(serviceName);
+      health.setServiceVersion(serviceVersion);
+      health.setServiceUniqueId(serviceUniqueId);
+      health.setRefreshRateInSeconds(refreshRateInSeconds);
+      health.setStopping(false);
+      errorMsg =
+         String.format("Failed to send %s to %s v[%s][%s]", BaseMessages.ServiceHealth.getName(),
+            health.getServiceName(), health.getServiceVersion(), health.getServiceUniqueId());
+      this.infoPopulator = infoPopulator;
+   }
+
+   @Override
+   public synchronized void run() {
+      try {
+         health.getServiceDescription().clear();
+         infoPopulator.updateServiceInfo(health.getServiceDescription());
+         connectionNode.send(BaseMessages.ServiceHealth, health, new OseeMessagingStatusImpl(errorMsg,
+            UpdateStatus.class));
+      } catch (Exception ex) {
+         OseeLog.log(UpdateStatus.class, Level.SEVERE, ex);
+      }
+   }
 
    public synchronized void close() {
       health.setStopping(true);

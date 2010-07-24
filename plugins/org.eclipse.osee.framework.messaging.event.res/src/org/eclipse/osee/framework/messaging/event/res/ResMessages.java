@@ -58,6 +58,7 @@ public enum ResMessages implements MessageID {
       return guid;
    }
 
+   @Override
    public boolean isTopic() {
       return isTopic;
    }

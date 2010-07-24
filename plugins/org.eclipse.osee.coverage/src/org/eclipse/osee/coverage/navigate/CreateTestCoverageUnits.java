@@ -43,14 +43,16 @@ public class CreateTestCoverageUnits extends XNavigateItemAction {
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
       if (!MessageDialog.openConfirm(Displays.getActiveShell(), getName(),
-            getName() + "\n\nThis will create test CoverageUnits to an existing Coverage Package.")) {
+         getName() + "\n\nThis will create test CoverageUnits to an existing Coverage Package.")) {
          return;
       }
 
       try {
-         if (!CoverageUtil.getBranchFromUser(false)) return;
+         if (!CoverageUtil.getBranchFromUser(false)) {
+            return;
+         }
          CoveragePackageArtifactListDialog dialog =
-               new CoveragePackageArtifactListDialog(getName(), "Select Coverage Package");
+            new CoveragePackageArtifactListDialog(getName(), "Select Coverage Package");
          dialog.setInput(OseeCoveragePackageStore.getCoveragePackageArtifacts(CoverageUtil.getBranch()));
          if (dialog.open() == 0) {
             Artifact coveragePackageArtifact = (Artifact) dialog.getResult()[0];

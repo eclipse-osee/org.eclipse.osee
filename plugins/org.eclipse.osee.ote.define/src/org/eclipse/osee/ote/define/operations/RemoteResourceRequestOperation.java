@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  */
 public class RemoteResourceRequestOperation extends AbstractRemoteResourceRequestTemplate {
    private static final String STORAGE_PATH = "TEMP";
-   private String fileName;
+   private final String fileName;
 
    public RemoteResourceRequestOperation(String tempFolderName, String remoteRequestUrl, String fileName) {
       super(STORAGE_PATH, remoteRequestUrl);
@@ -44,6 +44,7 @@ public class RemoteResourceRequestOperation extends AbstractRemoteResourceReques
       return fileName;
    }
 
+   @Override
    protected HttpURLConnection setupConnection(URL url) throws IOException {
       HttpURLConnection connection = super.setupConnection(url);
       connection.setAllowUserInteraction(false);

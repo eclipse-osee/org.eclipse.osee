@@ -27,61 +27,61 @@ import org.eclipse.osee.framework.logging.OseeLog;
  * @author Roberto E. Escobar
  */
 public class ServerTaskScheduler implements IServerTaskScheduler {
-	private final Map<Runnable, ScheduledFuture<?>> futures;
-	private final ScheduledExecutorService executor;
+   private final Map<Runnable, ScheduledFuture<?>> futures;
+   private final ScheduledExecutorService executor;
 
-	public ServerTaskScheduler() {
-		futures = Collections.synchronizedMap(new HashMap<Runnable, ScheduledFuture<?>>());
-		executor =
-					Executors.newSingleThreadScheduledExecutor(ServerThreads.createNewThreadFactory("Osee Task Scheduler"));
-	}
+   public ServerTaskScheduler() {
+      futures = Collections.synchronizedMap(new HashMap<Runnable, ScheduledFuture<?>>());
+      executor =
+         Executors.newSingleThreadScheduledExecutor(ServerThreads.createNewThreadFactory("Osee Task Scheduler"));
+   }
 
-	@Override
-	public void addServerTask(IServerTask taskProvider) {
-		if (taskProvider != null) {
-			OseeLog.log(ServerActivator.class, Level.INFO, "Adding task: " + taskProvider.getName());
-			switch (taskProvider.getSchedulingScheme()) {
-				case ONE_SHOT:
-					scheduleOneShot(taskProvider, taskProvider.getInitialDelay(), taskProvider.getTimeUnit());
-					break;
-				case FIXED_DELAY_BETWEEN_RUNS:
-					scheduleWithFixedDelay(taskProvider, taskProvider.getInitialDelay(), taskProvider.getPeriod(),
-								taskProvider.getTimeUnit());
-					break;
-				case FIXED_RATE:
-					scheduleAtFixedRate(taskProvider, taskProvider.getInitialDelay(), taskProvider.getPeriod(),
-								taskProvider.getTimeUnit());
-					break;
-				default:
-					break;
-			}
-		}
-	}
+   @Override
+   public void addServerTask(IServerTask taskProvider) {
+      if (taskProvider != null) {
+         OseeLog.log(ServerActivator.class, Level.INFO, "Adding task: " + taskProvider.getName());
+         switch (taskProvider.getSchedulingScheme()) {
+            case ONE_SHOT:
+               scheduleOneShot(taskProvider, taskProvider.getInitialDelay(), taskProvider.getTimeUnit());
+               break;
+            case FIXED_DELAY_BETWEEN_RUNS:
+               scheduleWithFixedDelay(taskProvider, taskProvider.getInitialDelay(), taskProvider.getPeriod(),
+                  taskProvider.getTimeUnit());
+               break;
+            case FIXED_RATE:
+               scheduleAtFixedRate(taskProvider, taskProvider.getInitialDelay(), taskProvider.getPeriod(),
+                  taskProvider.getTimeUnit());
+               break;
+            default:
+               break;
+         }
+      }
+   }
 
-	@Override
-	public void removeServerTask(IServerTask taskProvider) {
-		if (taskProvider != null) {
-			OseeLog.log(ServerActivator.class, Level.INFO, "Removing task: " + taskProvider.getName());
-			ScheduledFuture<?> future = futures.get(taskProvider);
-			if (future != null) {
-				future.cancel(true);
-				futures.remove(future);
-			}
-		}
-	}
+   @Override
+   public void removeServerTask(IServerTask taskProvider) {
+      if (taskProvider != null) {
+         OseeLog.log(ServerActivator.class, Level.INFO, "Removing task: " + taskProvider.getName());
+         ScheduledFuture<?> future = futures.get(taskProvider);
+         if (future != null) {
+            future.cancel(true);
+            futures.remove(future);
+         }
+      }
+   }
 
-	private void scheduleAtFixedRate(Runnable command, long initialDelay, long period, TimeUnit unit) {
-		ScheduledFuture<?> futureTask = executor.scheduleAtFixedRate(command, initialDelay, period, unit);
-		futures.put(command, futureTask);
-	}
+   private void scheduleAtFixedRate(Runnable command, long initialDelay, long period, TimeUnit unit) {
+      ScheduledFuture<?> futureTask = executor.scheduleAtFixedRate(command, initialDelay, period, unit);
+      futures.put(command, futureTask);
+   }
 
-	private void scheduleWithFixedDelay(Runnable command, long initialDelay, long delay, TimeUnit unit) {
-		ScheduledFuture<?> futureTask = executor.scheduleWithFixedDelay(command, initialDelay, delay, unit);
-		futures.put(command, futureTask);
-	}
+   private void scheduleWithFixedDelay(Runnable command, long initialDelay, long delay, TimeUnit unit) {
+      ScheduledFuture<?> futureTask = executor.scheduleWithFixedDelay(command, initialDelay, delay, unit);
+      futures.put(command, futureTask);
+   }
 
-	private void scheduleOneShot(Runnable command, long initialDelay, TimeUnit unit) {
-		ScheduledFuture<?> futureTask = executor.schedule(command, initialDelay, unit);
-		futures.put(command, futureTask);
-	}
+   private void scheduleOneShot(Runnable command, long initialDelay, TimeUnit unit) {
+      ScheduledFuture<?> futureTask = executor.schedule(command, initialDelay, unit);
+      futures.put(command, futureTask);
+   }
 }

@@ -14,7 +14,7 @@ package org.eclipse.osee.ote.container;
  * @author Michael P. Masterson
  */
 public interface IUserLibListener {
-   
+
    public void libraryChanged();
 
 }

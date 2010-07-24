@@ -40,8 +40,11 @@ public class MatrixItem {
 
    public MatrixItem(String name, String[] values) {
       this.name = name;
-      if (values != null) for (String value : values)
-         this.values.add(value);
+      if (values != null) {
+         for (String value : values) {
+            this.values.add(value);
+         }
+      }
    }
 
    public Set<String> getValues() {

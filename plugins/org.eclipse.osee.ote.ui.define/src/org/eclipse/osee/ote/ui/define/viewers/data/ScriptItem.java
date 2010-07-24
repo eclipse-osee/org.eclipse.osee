@@ -31,7 +31,7 @@ public class ScriptItem extends DataItem implements IXViewerItem {
 
    private String scriptUrl;
    private String revision;
-   private Integer key;
+   private final Integer key;
 
    public ScriptItem(String scriptUrl, String revision, DataItem parentItem) {
       super(parentItem);
@@ -76,10 +76,12 @@ public class ScriptItem extends DataItem implements IXViewerItem {
       return String.format("[%s][%s]", scriptUrl, revision);
    }
 
+   @Override
    public Image getImage() {
       return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FOLDER);
    }
 
+   @Override
    public String getLabel(int index) {
       String toReturn = "";
       if (index == 0) {
@@ -106,7 +108,7 @@ public class ScriptItem extends DataItem implements IXViewerItem {
          path = urlMatcher.group(3);
       }
       return String.format("%s [%s] [%s, %s: %s]", getScriptName(), revision, repository, StringUtils.capitalize(type),
-            path);
+         path);
    }
 
    private String getScriptName() {

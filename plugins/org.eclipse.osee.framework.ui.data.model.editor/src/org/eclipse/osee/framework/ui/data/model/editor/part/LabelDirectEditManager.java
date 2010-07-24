@@ -36,7 +36,8 @@ public class LabelDirectEditManager extends DirectEditManager {
    private double cachedZoom = -1.0;
    private IAction copy, cut, paste, undo, redo, find, selectAll, delete;
    private Font scaledFont;
-   private ZoomListener zoomListener = new ZoomListener() {
+   private final ZoomListener zoomListener = new ZoomListener() {
+      @Override
       public void zoomChanged(double newZoom) {
          updateScaledFont(newZoom);
       }
@@ -46,6 +47,7 @@ public class LabelDirectEditManager extends DirectEditManager {
       super(source, TextCellEditor.class, locator);
    }
 
+   @Override
    protected void bringDown() {
       ZoomManager zoomMgr = (ZoomManager) getEditPart().getViewer().getProperty(ZoomManager.class.toString());
       zoomMgr.removeZoomListener(zoomListener);
@@ -65,6 +67,7 @@ public class LabelDirectEditManager extends DirectEditManager {
    /**
     * Creates a multi-lined text celleditor that can wrap.
     */
+   @Override
    protected CellEditor createCellEditorOn(Composite composite) {
       return new TextCellEditor(composite, SWT.MULTI | SWT.WRAP);
    }
@@ -92,6 +95,7 @@ public class LabelDirectEditManager extends DirectEditManager {
       return ((BaseEditPart) getEditPart()).getDirectEditText();
    }
 
+   @Override
    protected void initCellEditor() {
       getCellEditor().setValue(getInitialText());
       ZoomManager zoomMgr = (ZoomManager) getEditPart().getViewer().getProperty(ZoomManager.class.toString());
@@ -101,7 +105,7 @@ public class LabelDirectEditManager extends DirectEditManager {
       // Hook the cell editor's copy/paste actions to the actionBars so that they can
       // be invoked via keyboard shortcuts.
       actionBars =
-            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor().getEditorSite().getActionBars();
+         PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor().getEditorSite().getActionBars();
       saveCurrentActions(actionBars);
       actionHandler = new CellEditorActionHandler(actionBars);
       actionHandler.addCellEditor(getCellEditor());
@@ -131,7 +135,9 @@ public class LabelDirectEditManager extends DirectEditManager {
    }
 
    private void updateScaledFont(double zoom) {
-      if (cachedZoom == zoom) return;
+      if (cachedZoom == zoom) {
+         return;
+      }
       Text text = (Text) getCellEditor().getControl();
       Font font = getEditPart().getFigure().getFont();
 

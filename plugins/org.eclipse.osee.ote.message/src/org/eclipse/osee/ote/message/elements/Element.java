@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
-
 import org.eclipse.osee.ote.core.environment.interfaces.ITimeout;
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.MessageSystemException;
@@ -25,13 +24,13 @@ import org.eclipse.osee.ote.message.enums.DataType;
  * @author Ryan D. Brooks
  * @author Andrew M. Finkbeiner
  */
-public abstract class Element  implements ITimeout {
-   protected final Message<?,?,?> msg;
+public abstract class Element implements ITimeout {
+   protected final Message<?, ?, ?> msg;
    protected String elementName;
    private volatile boolean timedOut;
    private final List<Object> elementPath;
    private final String fullName;
-   
+
    protected final int byteOffset;
    protected int lsb;
    protected final MessageData messageData;
@@ -40,7 +39,7 @@ public abstract class Element  implements ITimeout {
    protected final int originalLsb;
    private String elementPathAsString;
 
-   public Element(Message<?,?,?> msg, String elementName, MessageData messageData, int byteOffset, int msb, int lsb, int originalMsb, int originalLsb) {
+   public Element(Message<?, ?, ?> msg, String elementName, MessageData messageData, int byteOffset, int msb, int lsb, int originalMsb, int originalLsb) {
       this.msg = msg;
       this.elementName = elementName;
       this.messageData = messageData;
@@ -53,13 +52,13 @@ public abstract class Element  implements ITimeout {
       fullName = (msg != null ? msg.getName() : messageData.getName()) + "." + this.elementName;
    }
 
-   public Element(Message<?,?,?> msg, String elementName, MessageData messageData, int bitOffset, int bitLength) {
-      this(msg, elementName, messageData,  bitOffset / 8, 0, 0, 0, 0);
+   public Element(Message<?, ?, ?> msg, String elementName, MessageData messageData, int bitOffset, int bitLength) {
+      this(msg, elementName, messageData, bitOffset / 8, 0, 0, 0, 0);
       this.msb = bitOffset % 8;
-      this.lsb = msb + (bitLength - 1);
+      this.lsb = msb + bitLength - 1;
    }
 
-   public Element(Message<?,?,?> msg, String elementName, MessageData messageData, int byteOffset, int msb, int lsb) {
+   public Element(Message<?, ?, ?> msg, String elementName, MessageData messageData, int byteOffset, int msb, int lsb) {
       this(msg, elementName, messageData, byteOffset, msb, lsb, msb, lsb);
    }
 
@@ -80,18 +79,18 @@ public abstract class Element  implements ITimeout {
    }
 
    public int getBitLength() {
-      return (Math.abs(getMsb() - getLsb()) + 1);
+      return Math.abs(getMsb() - getLsb()) + 1;
    }
 
    public int getStartingBit() {
-      return ((getByteOffset() * 8)) + Math.min(getMsb(), getLsb());
+      return getByteOffset() * 8 + Math.min(getMsb(), getLsb());
    }
 
    /*
     * protected void set(TestEnvironmentAccessor accessor, long value) { if (accessor != null) {
-    * accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(), (new
-    * MethodFormatter()).add(value)); } ((MemHolder) current.get()).getMem().s.setLong(value); if
-    * (accessor != null) { accessor.getLogger().methodEnded(accessor); } }
+    * accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(), (new MethodFormatter()).add(value)); }
+    * ((MemHolder) current.get()).getMem().s.setLong(value); if (accessor != null) {
+    * accessor.getLogger().methodEnded(accessor); } }
     */
    /**
     * @return Returns full name string.
@@ -104,14 +103,14 @@ public abstract class Element  implements ITimeout {
       return this.elementName;
    }
 
-   public String getDescriptiveName(){
+   public String getDescriptiveName() {
       return this.elementName;
    }
-   
+
    /**
     * @return Returns the msg.
     */
-   public Message<?,?,?> getMessage() {
+   public Message<?, ?, ?> getMessage() {
       return msg;
    }
 
@@ -119,10 +118,12 @@ public abstract class Element  implements ITimeout {
       return elementName;
    }
 
+   @Override
    public boolean isTimedOut() {
       return this.timedOut;
    }
 
+   @Override
    public void setTimeout(boolean timeout) {
       this.timedOut = timeout;
    }
@@ -151,25 +152,24 @@ public abstract class Element  implements ITimeout {
    }
 
    private int calculateLongBitsToShift() {
-       int size = lsb - msb + 1;
-       return 64 - size;
-    }
-   
+      int size = lsb - msb + 1;
+      return 64 - size;
+   }
+
    protected int signExtend(int value) {
       int bitsToShift = calculateBitsToShift();
-      return (value << bitsToShift) >> (bitsToShift);
+      return value << bitsToShift >> bitsToShift;
    }
 
    protected int removeSign(int value) {
       int bitsToShift = calculateBitsToShift();
-      return (value << bitsToShift) >>> (bitsToShift);
+      return value << bitsToShift >>> bitsToShift;
    }
-   
+
    protected long removeSign(long value) {
-       int bitsToShift = calculateLongBitsToShift();
-       return (value << bitsToShift) >>> (bitsToShift);
-    }
-   
+      int bitsToShift = calculateLongBitsToShift();
+      return value << bitsToShift >>> bitsToShift;
+   }
 
    /**
     * @return whether this message maps solely to PubSub
@@ -181,14 +181,13 @@ public abstract class Element  implements ITimeout {
    /**
     * Looks for the element matching this elements name inside one of the messages passed
     * 
-    * @param messages Those messages mapped to a certain physical type, one of whom contains a
-    *            mapping to this element
-    * @return An element of one of the messages passed with the same name as this element or this
-    *         element if no match is found.
+    * @param messages Those messages mapped to a certain physical type, one of whom contains a mapping to this element
+    * @return An element of one of the messages passed with the same name as this element or this element if no match is
+    * found.
     */
-   public Element switchMessages(Collection<? extends Message<?,?,?>> messages) {
+   public Element switchMessages(Collection<? extends Message<?, ?, ?>> messages) {
       for (Message<?, ?, ?> currentMessage : messages) {
-//         System.out.println("SwitchMessages" + currentMessage.getMessageName());
+         //         System.out.println("SwitchMessages" + currentMessage.getMessageName());
          Element el = currentMessage.getElement(this.getElementPath());
          if (el != null && currentMessage.isValidElement(this, el)) {
             return el;
@@ -202,15 +201,15 @@ public abstract class Element  implements ITimeout {
    }
 
    /**
-    * This method returns a properly formatted string that describes the range and
-    * inclusive/exclusive properties of each end of the range.
+    * This method returns a properly formatted string that describes the range and inclusive/exclusive properties of
+    * each end of the range.
     * 
     * @param minValue The minimum value of the range.
-    * @param minInclusive If the minumum value of the range is inclusive. If true the actual value
-    *            must not < and not = to the range value.
+    * @param minInclusive If the minumum value of the range is inclusive. If true the actual value must not < and not =
+    * to the range value.
     * @param maxValue The maximum value of the range.
-    * @param maxInclusive If the maximum value of the range is inclusive. If true the actual value
-    *            must not > and not = to the range value.
+    * @param maxInclusive If the maximum value of the range is inclusive. If true the actual value must not > and not =
+    * to the range value.
     * @return the string holding "[", "]", "(", or ")"
     */
    protected static String expectedRangeString(Object minValue, boolean minInclusive, Object maxValue, boolean maxInclusive) {
@@ -218,19 +217,21 @@ public abstract class Element  implements ITimeout {
       String retVal;
 
       // Start with the proper symbol for the lower bound
-      if (minInclusive)
+      if (minInclusive) {
          retVal = "[";
-      else
+      } else {
          retVal = "(";
+      }
 
       // Add in the minimum and maximum values
       retVal += minValue + " .. " + maxValue;
 
       // End with the proper symbol for the upper bound
-      if (maxInclusive)
+      if (maxInclusive) {
          retVal += "]";
-      else
+      } else {
          retVal += ")";
+      }
 
       // Return the formatted string
       return retVal;
@@ -239,8 +240,9 @@ public abstract class Element  implements ITimeout {
    protected abstract Element getNonMappingElement();
 
    protected void throwNoMappingElementException() {
-      throw new MessageSystemException("The element " + msg.getName() + "." + elementName + " does not exist for the message's current MemType!! "
-            + "\nIt shouldn't be used for this environment type!!", Level.SEVERE);
+      throw new MessageSystemException(
+         "The element " + msg.getName() + "." + elementName + " does not exist for the message's current MemType!! " + "\nIt shouldn't be used for this environment type!!",
+         Level.SEVERE);
    }
 
    /**
@@ -271,26 +273,26 @@ public abstract class Element  implements ITimeout {
       getMsgData().getMem().setLong(0L, byteOffset, msb, lsb);
 
    }
-   
+
    public void visit(IElementVisitor visitor) {
-       visitor.asGenericElement(this);
-    }
-   
-   public String getElementPathAsString(){
-      if(elementPathAsString == null){
+      visitor.asGenericElement(this);
+   }
+
+   public String getElementPathAsString() {
+      if (elementPathAsString == null) {
          StringBuilder sb = new StringBuilder();
-         for(int i = 1; i < elementPath.size(); i++){
+         for (int i = 1; i < elementPath.size(); i++) {
             Object obj = elementPath.get(i);
-            if(obj instanceof String){
+            if (obj instanceof String) {
                sb.append(obj);
-               
-            } else if (obj instanceof Integer){
-               sb.delete(sb.length() -1, sb.length());
+
+            } else if (obj instanceof Integer) {
+               sb.delete(sb.length() - 1, sb.length());
                sb.append("[");
-               sb.append(((Integer)obj).intValue());
+               sb.append(((Integer) obj).intValue());
                sb.append("]");
             }
-            if(i < elementPath.size()-1){
+            if (i < elementPath.size() - 1) {
                sb.append(".");
             }
          }
@@ -298,5 +300,5 @@ public abstract class Element  implements ITimeout {
       }
       return elementPathAsString;
    }
-   
+
 }

@@ -15,15 +15,15 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 public class XTextDescriptiveName extends XTextDam {
 
-	public Artifact artifact;
+   public Artifact artifact;
 
-	public XTextDescriptiveName(String displayLabel) {
-		super(displayLabel);
-	}
+   public XTextDescriptiveName(String displayLabel) {
+      super(displayLabel);
+   }
 
-	@Override
-	public void setArtifact(Artifact artifact) throws OseeCoreException {
-		super.setAttributeType(artifact, "Name");
-	}
+   @Override
+   public void setArtifact(Artifact artifact) throws OseeCoreException {
+      super.setAttributeType(artifact, "Name");
+   }
 
 }

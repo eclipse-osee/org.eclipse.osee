@@ -14,9 +14,8 @@ import java.util.Collection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.osgi.framework.BundleException;
 
-/** 
+/**
  * @author Robert A. Fisher
- *
  */
 public class BundleResolveException extends Exception {
    private static final long serialVersionUID = 5506351677181297953L;
@@ -34,10 +33,10 @@ public class BundleResolveException extends Exception {
    @Override
    public String toString() {
       StringBuilder builder = new StringBuilder();
-      
-       builder.append(super.toString() + "\n");
-       builder.append(Collections.toString("\n", bundleExceptions));
-       
-       return builder.toString();
-    }
+
+      builder.append(super.toString() + "\n");
+      builder.append(Collections.toString("\n", bundleExceptions));
+
+      return builder.toString();
+   }
 }

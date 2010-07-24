@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 public final class RoughAttributeSet {
    private final HashCollection<CaseInsensitiveString, String> attributes =
-         new HashCollection<CaseInsensitiveString, String>();
+      new HashCollection<CaseInsensitiveString, String>();
    private final Map<CaseInsensitiveString, URI> uriAttributes = new HashMap<CaseInsensitiveString, URI>(2, 1);
 
    public void clear() {
@@ -96,7 +96,7 @@ public final class RoughAttributeSet {
       for (Entry<CaseInsensitiveString, URI> entry : uriAttributes.entrySet()) {
          try {
             artifact.setSoleAttributeFromStream(entry.getKey().toString(), new BufferedInputStream(
-                     entry.getValue().toURL().openStream()));
+               entry.getValue().toURL().openStream()));
          } catch (Exception ex) {
             OseeExceptions.wrapAndThrow(ex);
          }

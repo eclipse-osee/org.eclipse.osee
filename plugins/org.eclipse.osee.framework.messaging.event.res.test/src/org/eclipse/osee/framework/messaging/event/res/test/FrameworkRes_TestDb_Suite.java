@@ -15,7 +15,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {RemoteNetworkSenderTest.class})
+@Suite.SuiteClasses({RemoteNetworkSenderTest.class})
 /**
  * @author Donald G. Dunne
  */

@@ -32,7 +32,7 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
 
    private static String PreviewOnDoubleClickForWordArtifacts = "PreviewOnDoubleClickForWordArtifacts";
    private static String CHANGE_REPORT_CLOSE_CHANGE_REPORT_EDITORS_ON_SHUTDOWN =
-         "change.report.close.editors.on.shutdown";
+      "change.report.close.editors.on.shutdown";
    private Button previewOnDoubleClickForWordArtifacts;
    private Button closeChangeReportEditorsOnShutdown;
 
@@ -76,6 +76,7 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
    /**
     * initialize the preference store to use with the workbench
     */
+   @Override
    public void init(IWorkbench workbench) {
    }
 

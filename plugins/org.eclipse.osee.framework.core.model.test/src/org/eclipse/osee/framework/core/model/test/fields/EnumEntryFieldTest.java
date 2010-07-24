@@ -67,7 +67,7 @@ public class EnumEntryFieldTest {
 
       // Add Empty
       FieldTestUtil.assertSetGet(field, Collections.<OseeEnumEntry> emptyList(),
-            Collections.<OseeEnumEntry> emptyList(), true);
+         Collections.<OseeEnumEntry> emptyList(), true);
       field.clearDirty();
    }
 

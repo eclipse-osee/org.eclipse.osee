@@ -25,37 +25,37 @@ import org.osgi.framework.ServiceRegistration;
  */
 public class OseeModelingServiceRegHandler extends AbstractTrackingHandler {
 
-	private static final Class<?>[] SERVICE_DEPENDENCIES = new Class<?>[] {
-				//
-				IOseeCachingService.class, //
-				IOseeModelFactoryService.class, //
-				IOseeCachingServiceFactory.class //
-				};
+   private static final Class<?>[] SERVICE_DEPENDENCIES = new Class<?>[] {
+      //
+      IOseeCachingService.class, //
+      IOseeModelFactoryService.class, //
+      IOseeCachingServiceFactory.class //
+      };
 
-	private ServiceRegistration registration;
+   private ServiceRegistration registration;
 
-	@Override
-	public Class<?>[] getDependencies() {
-		return SERVICE_DEPENDENCIES;
-	}
+   @Override
+   public Class<?>[] getDependencies() {
+      return SERVICE_DEPENDENCIES;
+   }
 
-	@Override
-	public void onActivate(BundleContext context, Map<Class<?>, Object> services) {
-		IOseeModelFactoryService modelFactoryService = getService(IOseeModelFactoryService.class, services);
-		IOseeCachingService cachingService = getService(IOseeCachingService.class, services);
-		IOseeCachingServiceFactory cachingFactoryService = getService(IOseeCachingServiceFactory.class, services);
+   @Override
+   public void onActivate(BundleContext context, Map<Class<?>, Object> services) {
+      IOseeModelFactoryService modelFactoryService = getService(IOseeModelFactoryService.class, services);
+      IOseeCachingService cachingService = getService(IOseeCachingService.class, services);
+      IOseeCachingServiceFactory cachingFactoryService = getService(IOseeCachingServiceFactory.class, services);
 
-		IOseeModelingService service =
-					new OseeModelingServiceImpl(modelFactoryService, cachingService, cachingFactoryService,
-								OseeDslFactory.eINSTANCE);
-		registration = context.registerService(IOseeModelingService.class.getName(), service, null);
-	}
+      IOseeModelingService service =
+         new OseeModelingServiceImpl(modelFactoryService, cachingService, cachingFactoryService,
+            OseeDslFactory.eINSTANCE);
+      registration = context.registerService(IOseeModelingService.class.getName(), service, null);
+   }
 
-	@Override
-	public void onDeActivate() {
-		if (registration != null) {
-			registration.unregister();
-		}
-	}
+   @Override
+   public void onDeActivate() {
+      if (registration != null) {
+         registration.unregister();
+      }
+   }
 
 }

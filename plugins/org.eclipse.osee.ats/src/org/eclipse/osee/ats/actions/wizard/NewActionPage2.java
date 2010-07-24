@@ -63,11 +63,13 @@ public class NewActionPage2 extends WizardPage {
    }
 
    private final XModifiedListener xModListener = new XModifiedListener() {
+      @Override
       public void widgetModified(XWidget widget) {
          getContainer().updateButtons();
       }
    };
 
+   @Override
    public void createControl(Composite parent) {
 
       try {
@@ -87,6 +89,7 @@ public class NewActionPage2 extends WizardPage {
          page.createBody(null, comp, null, xModListener, true);
 
          ((XText) getXWidget("Description")).getLabelWidget().addListener(SWT.MouseUp, new Listener() {
+            @Override
             public void handleEvent(Event event) {
                if (event.button == 3) {
                   handlePopulateWithDebugInfo();

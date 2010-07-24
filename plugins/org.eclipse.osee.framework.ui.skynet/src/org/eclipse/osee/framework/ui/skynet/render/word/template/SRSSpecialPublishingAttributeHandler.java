@@ -33,7 +33,7 @@ public class SRSSpecialPublishingAttributeHandler implements ITemplateAttributeH
    @Override
    public boolean canHandle(Artifact artifact, TemplateAttribute attribute) throws OseeCoreException {
       // This is for SRS Publishing. Do not publish unspecified attributes
-      if ((attribute.getName().equals(Requirements.PARTITION) || attribute.getName().equals("Safety Criticality"))) {
+      if (attribute.getName().equals(Requirements.PARTITION) || attribute.getName().equals("Safety Criticality")) {
          for (Attribute<?> partition : artifact.getAttributes(Requirements.PARTITION)) {
             if (partition.getValue().equals("Unspecified")) {
                return true;

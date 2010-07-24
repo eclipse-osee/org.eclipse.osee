@@ -20,8 +20,8 @@ import org.eclipse.osee.ote.core.IUserSession;
 public class EclipseConsoleWriter extends Writer {
 
    private final IUserSession callback;
-   private StringBuffer buffer;
-   private StringBuffer masterBuffer;
+   private final StringBuffer buffer;
+   private final StringBuffer masterBuffer;
 
    public EclipseConsoleWriter(IUserSession callback) {
       this.callback = callback;
@@ -29,11 +29,13 @@ public class EclipseConsoleWriter extends Writer {
       masterBuffer = new StringBuffer(256);
    }
 
+   @Override
    public void write(char[] cbuf, int off, int len) {
       buffer.append(cbuf, off, len);
       masterBuffer.append(cbuf, off, len);
    }
 
+   @Override
    public void flush() throws IOException {
       if (buffer.length() > 0 && buffer.charAt(buffer.length() - 1) == '\n') {
          buffer.deleteCharAt(buffer.length() - 1);
@@ -46,6 +48,7 @@ public class EclipseConsoleWriter extends Writer {
       buffer.delete(0, buffer.length());
    }
 
+   @Override
    public void close() throws IOException {
       flush();
    }

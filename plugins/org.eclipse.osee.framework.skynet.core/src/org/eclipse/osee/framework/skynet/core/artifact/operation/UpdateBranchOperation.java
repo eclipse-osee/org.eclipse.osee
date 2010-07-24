@@ -64,8 +64,7 @@ public class UpdateBranchOperation extends AbstractOperation {
       Branch parentBranch = originalBranch.getParentBranch();
       String branchUpdateName = getUpdatedName(originalBranch.getName());
       Branch newWorkingBranch =
-            BranchManager.createWorkingBranch(parentBranch, branchUpdateName,
-                  UserManager.getUser(SystemUser.OseeSystem));
+         BranchManager.createWorkingBranch(parentBranch, branchUpdateName, UserManager.getUser(SystemUser.OseeSystem));
       return newWorkingBranch;
    }
 

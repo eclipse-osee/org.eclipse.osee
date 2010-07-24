@@ -35,11 +35,11 @@ import org.osgi.framework.Bundle;
 public class ContributionManager extends ClassLoader {
 
    private static ContributionManager instance = null;
-   private Map<String, String> extensionRegistryMap;
+   private final Map<String, String> extensionRegistryMap;
    private Map<String, Class<?>> classesloaded; // <String, Class>
    private List<String> bundleList; // <String>
    private Map<String, String> interfaceToRendererMap;
-   private Map<String, String> interfaceToIconMap;
+   private final Map<String, String> interfaceToIconMap;
 
    private ContributionManager() {
       super();
@@ -62,11 +62,13 @@ public class ContributionManager extends ClassLoader {
       bundleList = new ArrayList<String>();
 
       String registrationStatus = ContributionManager.class.getName() + " Registration: [ \n";
-      if (extensionRegistryMap.size() != 0) return;
+      if (extensionRegistryMap.size() != 0) {
+         return;
+      }
       IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
       if (extensionRegistry != null) {
          IExtensionPoint point =
-               extensionRegistry.getExtensionPoint("org.eclipse.osee.framework.ui.service.control.ServiceView");
+            extensionRegistry.getExtensionPoint("org.eclipse.osee.framework.ui.service.control.ServiceView");
          if (point != null) {
             IExtension[] extensions = point.getExtensions();
             for (IExtension extension : extensions) {
@@ -120,6 +122,7 @@ public class ContributionManager extends ClassLoader {
       return interfaceToIconMap;
    }
 
+   @Override
    protected synchronized Class<?> findClass(String classname) throws ClassNotFoundException {
       Class<?> loadedclass = classesloaded.get(classname);
       if (loadedclass != null) {
@@ -127,7 +130,7 @@ public class ContributionManager extends ClassLoader {
       }
 
       if (extensionRegistryMap.containsKey(classname)) {
-         String bundleName = (String) extensionRegistryMap.get(classname);
+         String bundleName = extensionRegistryMap.get(classname);
          Bundle bundle = Platform.getBundle(bundleName);
          try {
             Class<?> foundclass = bundle.loadClass(classname);
@@ -141,7 +144,7 @@ public class ContributionManager extends ClassLoader {
 
       for (int i = 0; i < bundleList.size(); i++) {
          try {
-            Class<?> foundclass = Platform.getBundle((String) bundleList.get(i)).loadClass(classname);
+            Class<?> foundclass = Platform.getBundle(bundleList.get(i)).loadClass(classname);
             if (foundclass != null) {
                String bundleName = bundleList.remove(i);
                bundleList.add(0, bundleName);
@@ -160,7 +163,7 @@ public class ContributionManager extends ClassLoader {
 
    public ImageDescriptor getImageDescriptor(String imageFilePath) {
       if (imageFilePath != null && extensionRegistryMap.containsKey(imageFilePath)) {
-         String bundleName = (String) extensionRegistryMap.get(imageFilePath);
+         String bundleName = extensionRegistryMap.get(imageFilePath);
          Bundle bundle = Platform.getBundle(bundleName);
          if (bundle != null) {
 

@@ -11,8 +11,6 @@
 
 package org.eclipse.osee.framework.ui.plugin.util;
 
-
-
 public class Result {
 
    public static Result TrueResult = new Result(true);
@@ -57,7 +55,7 @@ public class Result {
 
    public void popup() {
       AWorkbench.popup((isTrue ? "Success" : "ERROR"),
-            text != null && !text.equals("") ? text : isTrue ? "Success" : "Error Encountered.  See Error Log View");
+         text != null && !text.equals("") ? text : isTrue ? "Success" : "Error Encountered.  See Error Log View");
    }
 
    public void setText(String text) {

@@ -81,7 +81,7 @@ public class ExtensionDefinedReports {
 
    private void loadReports() {
       List<IConfigurationElement> elements =
-            ExtensionPoints.getExtensionElements(OteUiDefinePlugin.getInstance(), EXTENSION_ID, EXTENSION_ID);
+         ExtensionPoints.getExtensionElements(OteUiDefinePlugin.getInstance(), EXTENSION_ID, EXTENSION_ID);
       for (IConfigurationElement element : elements) {
          IExtension extension = (IExtension) element.getParent();
          String identifier = extension.getUniqueIdentifier();
@@ -102,7 +102,7 @@ public class ExtensionDefinedReports {
                }
             } catch (Exception ex) {
                OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE,
-                     String.format("Error loading report [%s]", className), ex);
+                  String.format("Error loading report [%s]", className), ex);
             }
          }
       }

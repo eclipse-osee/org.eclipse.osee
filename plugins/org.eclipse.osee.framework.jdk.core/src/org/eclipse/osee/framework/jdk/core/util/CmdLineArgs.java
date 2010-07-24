@@ -14,14 +14,14 @@ import java.util.HashMap;
 
 public class CmdLineArgs {
 
-   private HashMap<String, String> cmdArgs;
+   private final HashMap<String, String> cmdArgs;
 
    public CmdLineArgs(String[] args) {
       cmdArgs = new HashMap<String, String>();
 
       for (int i = 0; i < args.length; i++) {
          if (args[i].matches("-\\w.*")) {
-            if ((i + 1 < args.length) && (!args[i + 1].matches("-\\D.*"))) {
+            if (i + 1 < args.length && !args[i + 1].matches("-\\D.*")) {
                cmdArgs.put(args[i], args[i + 1]);
                i++;
             } else {

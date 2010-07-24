@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor;
 
+import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.SectionPart;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
@@ -39,7 +40,7 @@ public class SMAHistorySection extends SectionPart {
    private boolean sectionCreated = false;
 
    public SMAHistorySection(SMAEditor editor, Composite parent, FormToolkit toolkit, int style) {
-      super(parent, toolkit, style | Section.TWISTIE | Section.TITLE_BAR);
+      super(parent, toolkit, style | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR);
       this.editor = editor;
    }
 
@@ -54,6 +55,7 @@ public class SMAHistorySection extends SectionPart {
       // Only load when users selects section
       section.addListener(SWT.Activate, new Listener() {
 
+         @Override
          public void handleEvent(Event e) {
             createSection();
          }
@@ -79,7 +81,7 @@ public class SMAHistorySection extends SectionPart {
       try {
          xResultsComp.setHtmlText(sma.getLog().getHtml(true), sma.getArtifactTypeName() + " History");
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
 
       Label button = toolkit.createLabel(composite, "   ", SWT.NONE);
@@ -91,7 +93,7 @@ public class SMAHistorySection extends SectionPart {
             try {
                RendererManager.open(fSma, PresentationType.GENERALIZED_EDIT);
             } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
             }
          }
       });

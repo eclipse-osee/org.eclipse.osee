@@ -24,6 +24,7 @@ public class HtmlTableBuilder extends Rule {
       super("html");
    }
 
+   @Override
    public ChangeSet computeChanges(CharSequence seq) {
       ChangeSet changeSet = new ChangeSet(seq);
 

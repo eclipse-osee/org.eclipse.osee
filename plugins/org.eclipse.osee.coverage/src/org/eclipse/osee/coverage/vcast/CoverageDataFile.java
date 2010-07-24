@@ -38,7 +38,7 @@ public class CoverageDataFile {
       File coverageDataFile = getFile();
       if (!coverageDataFile.exists()) {
          throw new OseeArgumentException(String.format("VectorCast coverage data file doesn't exist [%s]",
-               coverageDataFilename));
+            coverageDataFilename));
       }
       String fileStr = AFile.readFile(coverageDataFile);
       try {
@@ -59,10 +59,10 @@ public class CoverageDataFile {
                   // Don't know what to do with >0 branches yet; assume branch coverage (future)
                   if (!m.group(2).equals("0")) {
                      System.out.println(String.format("Unhandled branches [%s] for lineNum [%s] subprogram [%s]",
-                           m.group(1), m.group(1), subprogramName));
+                        m.group(1), m.group(1), subprogramName));
                   }
-                  coverageDataSubProgram.addLineNumToBranches(new Integer(m.group(1)).intValue(), new Integer(
-                        m.group(2)));
+                  coverageDataSubProgram.addLineNumToBranches(new Integer(m.group(1)).intValue(),
+                     new Integer(m.group(2)));
                }
 
                Element metricsElement = Jaxp.getChild(subprogram, "metrics");
@@ -70,7 +70,7 @@ public class CoverageDataFile {
                Element coverageElement = Jaxp.getChild(metricsElement, "coverage");
                if (!coverageElement.getAttribute("coverage_type").equals("STATEMENT")) {
                   System.out.println(String.format("Unhandled coverage_type [%s] for subprogram [%s].  Skipping",
-                        coverageElement.getAttribute("coverage_type"), subprogramName));
+                     coverageElement.getAttribute("coverage_type"), subprogramName));
                   continue;
                }
                String coveredElement = Jaxp.getChildText(coverageElement, "covered");

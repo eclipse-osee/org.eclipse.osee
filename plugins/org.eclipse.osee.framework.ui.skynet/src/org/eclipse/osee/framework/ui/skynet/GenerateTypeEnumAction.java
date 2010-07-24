@@ -50,6 +50,7 @@ public class GenerateTypeEnumAction implements IActionDelegate {
       super();
    }
 
+   @Override
    @SuppressWarnings("unchecked")
    public void run(IAction action) {
       try {
@@ -85,8 +86,8 @@ public class GenerateTypeEnumAction implements IActionDelegate {
 
    private Object getFolderToStoreAutoGenFilesIn(IResource resource) {
       CheckedTreeSelectionDialog resourceDialog =
-            new ResourceSelectionTree(PlatformUI.getWorkbench().getDisplay().getActiveShell(),
-                  new WorkbenchLabelProvider(), new WorkbenchContentProvider());
+         new ResourceSelectionTree(PlatformUI.getWorkbench().getDisplay().getActiveShell(),
+            new WorkbenchLabelProvider(), new WorkbenchContentProvider());
 
       resourceDialog.setInput(resource.getWorkspace().getRoot());
       resourceDialog.addFilter(new ViewerFilter() {
@@ -122,6 +123,7 @@ public class GenerateTypeEnumAction implements IActionDelegate {
       return result != Window.CANCEL ? resourceDialog.getFirstResult() : null;
    }
 
+   @Override
    public void selectionChanged(IAction action, ISelection selection) {
    }
 
@@ -131,6 +133,7 @@ public class GenerateTypeEnumAction implements IActionDelegate {
          super(parent, labelProvider, contentProvider);
       }
 
+      @Override
       protected Control createDialogArea(Composite parent) {
          Composite composite = new Composite(parent, SWT.NONE);
          GridLayout layout = new GridLayout();
@@ -150,6 +153,7 @@ public class GenerateTypeEnumAction implements IActionDelegate {
          Tree treeWidget = treeViewer.getTree();
          treeViewer.addCheckStateListener(new ICheckStateListener() {
 
+            @Override
             public void checkStateChanged(CheckStateChangedEvent event) {
                boolean wasChecked = event.getChecked();
                getTreeViewer().setAllChecked(false);

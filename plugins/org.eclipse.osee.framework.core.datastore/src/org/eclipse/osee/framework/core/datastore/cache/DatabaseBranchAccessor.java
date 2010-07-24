@@ -75,7 +75,7 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
          branch.clearDirty();
       }
       OseeLog.log(Activator.class, Level.INFO,
-            String.format("Branch Cache loaded [%s]", Lib.getElapseString(startTime)));
+         String.format("Branch Cache loaded [%s]", Lib.getElapseString(startTime)));
    }
 
    private void loadBranches(BranchCache cache, Map<Branch, Integer> childToParent, Map<Branch, Integer> branchToBaseTx, Map<Branch, Integer> branchToSourceTx, Map<Branch, Integer> associatedArtifact) throws OseeCoreException {
@@ -93,8 +93,8 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
                boolean isArchived = BranchArchivedState.valueOf(chStmt.getInt("archived")).isArchived();
                String branchGuid = chStmt.getString("branch_guid");
                Branch branch =
-                     factory.createOrUpdate(cache, branchId, StorageState.LOADED, branchGuid, branchName, branchType,
-                           branchState, isArchived);
+                  factory.createOrUpdate(cache, branchId, StorageState.LOADED, branchGuid, branchName, branchType,
+                     branchState, isArchived);
 
                Integer parentBranchId = chStmt.getInt("parent_branch_id");
                if (parentBranchId != BranchStoreOperation.NULL_PARENT_BRANCH_ID) {
@@ -148,7 +148,7 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
          Branch parentBranch = branchCache.getById(entry.getValue());
          if (parentBranch == null) {
             throw new BranchDoesNotExist(String.format("Parent Branch id:[%s] does not exist for child branch [%s]",
-                  entry.getValue(), entry.getKey()));
+               entry.getValue(), entry.getKey()));
          }
          childBranch.setParentBranch(parentBranch);
       }
@@ -175,8 +175,7 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
    @Override
    public void store(Collection<Branch> branches) throws OseeCoreException {
       Operations.executeWorkAndCheckStatus(
-            new BranchStoreOperation(getDatabaseServiceProvider(), eventSender, branches), new NullProgressMonitor(),
-            -1);
+         new BranchStoreOperation(getDatabaseServiceProvider(), eventSender, branches), new NullProgressMonitor(), -1);
    }
 
 }

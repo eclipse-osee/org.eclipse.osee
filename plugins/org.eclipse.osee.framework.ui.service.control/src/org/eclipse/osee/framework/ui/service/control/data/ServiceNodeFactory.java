@@ -15,7 +15,6 @@ import net.jini.core.lookup.ServiceID;
 import net.jini.core.lookup.ServiceItem;
 import net.jini.lookup.entry.Name;
 import net.jini.lookup.entry.ServiceInfo;
-
 import org.eclipse.osee.framework.jini.service.core.PropertyEntry;
 
 /**
@@ -57,8 +56,8 @@ public class ServiceNodeFactory {
       for (Entry entry : entryArray) {
          if (entry instanceof Name) {
             return ((Name) entry).name.toString();
-         } else if (entry instanceof PropertyEntry){
-        	return (String)((PropertyEntry)entry).getProperty("name", "unknown"); 
+         } else if (entry instanceof PropertyEntry) {
+            return (String) ((PropertyEntry) entry).getProperty("name", "unknown");
          }
       }
       return "";

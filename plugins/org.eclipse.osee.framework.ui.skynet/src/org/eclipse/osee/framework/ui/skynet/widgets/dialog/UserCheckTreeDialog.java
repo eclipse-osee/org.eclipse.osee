@@ -110,10 +110,12 @@ public class UserCheckTreeDialog extends ArtifactCheckTreeDialog {
 
    public class UserCheckTreeLabelProvider implements ILabelProvider {
 
+      @Override
       public Image getImage(Object arg0) {
          return null;
       }
 
+      @Override
       public String getText(Object arg0) {
          if (teamMembers != null && teamMembers.contains(arg0)) {
             return ((Artifact) arg0).getName() + " (Team)";
@@ -121,16 +123,20 @@ public class UserCheckTreeDialog extends ArtifactCheckTreeDialog {
          return ((Artifact) arg0).getName();
       }
 
+      @Override
       public void addListener(ILabelProviderListener arg0) {
       }
 
+      @Override
       public void dispose() {
       }
 
+      @Override
       public boolean isLabelProperty(Object arg0, String arg1) {
          return false;
       }
 
+      @Override
       public void removeListener(ILabelProviderListener arg0) {
       }
 

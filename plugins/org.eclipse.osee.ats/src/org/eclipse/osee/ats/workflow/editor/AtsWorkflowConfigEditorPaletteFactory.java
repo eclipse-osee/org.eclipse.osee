@@ -47,150 +47,153 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
  */
 final class AtsWorkflowConfigEditorPaletteFactory {
 
-	/** Create the "States" drawer. */
-	private static PaletteContainer createStatesDrawer() {
-		PaletteDrawer componentsDrawer = new PaletteDrawer("States");
+   /** Create the "States" drawer. */
+   private static PaletteContainer createStatesDrawer() {
+      PaletteDrawer componentsDrawer = new PaletteDrawer("States");
 
-		CombinedTemplateCreationEntry component =
-					new CombinedTemplateCreationEntry("State", "Create a new Workflow State", WorkPageShape.class,
-								new SimpleFactory(WorkPageShape.class),
-								ImageManager.getImageDescriptor(FrameworkImage.RECTANGLE_16),
-								ImageManager.getImageDescriptor(FrameworkImage.RECTANGLE_24));
-		componentsDrawer.add(component);
+      CombinedTemplateCreationEntry component =
+         new CombinedTemplateCreationEntry("State", "Create a new Workflow State", WorkPageShape.class,
+            new SimpleFactory(WorkPageShape.class), ImageManager.getImageDescriptor(FrameworkImage.RECTANGLE_16),
+            ImageManager.getImageDescriptor(FrameworkImage.RECTANGLE_24));
+      componentsDrawer.add(component);
 
-		component =
-					new CombinedTemplateCreationEntry("Completed State", "Create a Completed State",
-								CompletedWorkPageShape.class, new SimpleFactory(CompletedWorkPageShape.class),
-								ImageManager.getImageDescriptor(FrameworkImage.RECTANGLE_16),
-								ImageManager.getImageDescriptor(FrameworkImage.RECTANGLE_24));
-		componentsDrawer.add(component);
+      component =
+         new CombinedTemplateCreationEntry("Completed State", "Create a Completed State", CompletedWorkPageShape.class,
+            new SimpleFactory(CompletedWorkPageShape.class),
+            ImageManager.getImageDescriptor(FrameworkImage.RECTANGLE_16),
+            ImageManager.getImageDescriptor(FrameworkImage.RECTANGLE_24));
+      componentsDrawer.add(component);
 
-		component =
-					new CombinedTemplateCreationEntry("Cancelled State", "Create a Cancelled State",
-								CancelledWorkPageShape.class, new SimpleFactory(CancelledWorkPageShape.class),
-								ImageManager.getImageDescriptor(FrameworkImage.RECTANGLE_16),
-								ImageManager.getImageDescriptor(FrameworkImage.RECTANGLE_24));
-		componentsDrawer.add(component);
+      component =
+         new CombinedTemplateCreationEntry("Cancelled State", "Create a Cancelled State", CancelledWorkPageShape.class,
+            new SimpleFactory(CancelledWorkPageShape.class),
+            ImageManager.getImageDescriptor(FrameworkImage.RECTANGLE_16),
+            ImageManager.getImageDescriptor(FrameworkImage.RECTANGLE_24));
+      componentsDrawer.add(component);
 
-		return componentsDrawer;
-	}
+      return componentsDrawer;
+   }
 
-	/** Create the "Transitions" drawer. */
-	private static PaletteContainer createTransitionsDrawer() {
-		PaletteDrawer componentsDrawer = new PaletteDrawer("Transitions");
+   /** Create the "Transitions" drawer. */
+   private static PaletteContainer createTransitionsDrawer() {
+      PaletteDrawer componentsDrawer = new PaletteDrawer("Transitions");
 
-		ToolEntry tool =
-					new ConnectionCreationToolEntry("Default Transition", "Create a Default Transition",
-								new CreationFactory() {
-									public Object getNewObject() {
-										return null;
-									}
+      ToolEntry tool =
+         new ConnectionCreationToolEntry("Default Transition", "Create a Default Transition", new CreationFactory() {
+            @Override
+            public Object getNewObject() {
+               return null;
+            }
 
-									public Object getObjectType() {
-										return DefaultTransitionConnection.class;
-									}
-								}, ImageManager.getImageDescriptor(AtsImage.CONECTION_16),
-								ImageManager.getImageDescriptor(AtsImage.CONECTION_24));
-		componentsDrawer.add(tool);
+            @Override
+            public Object getObjectType() {
+               return DefaultTransitionConnection.class;
+            }
+         }, ImageManager.getImageDescriptor(AtsImage.CONECTION_16),
+            ImageManager.getImageDescriptor(AtsImage.CONECTION_24));
+      componentsDrawer.add(tool);
 
-		tool =
-					new ConnectionCreationToolEntry("Transition", "Create a Transition", new CreationFactory() {
-						public Object getNewObject() {
-							return null;
-						}
+      tool =
+         new ConnectionCreationToolEntry("Transition", "Create a Transition", new CreationFactory() {
+            @Override
+            public Object getNewObject() {
+               return null;
+            }
 
-						public Object getObjectType() {
-							return TransitionConnection.class;
-						}
-					}, ImageManager.getImageDescriptor(AtsImage.CONECTION_16),
-								ImageManager.getImageDescriptor(AtsImage.CONECTION_24));
-		componentsDrawer.add(tool);
+            @Override
+            public Object getObjectType() {
+               return TransitionConnection.class;
+            }
+         }, ImageManager.getImageDescriptor(AtsImage.CONECTION_16),
+            ImageManager.getImageDescriptor(AtsImage.CONECTION_24));
+      componentsDrawer.add(tool);
 
-		tool =
-					new ConnectionCreationToolEntry("Return Transition", "Create a Return Transition",
-								new CreationFactory() {
-									public Object getNewObject() {
-										return null;
-									}
+      tool =
+         new ConnectionCreationToolEntry("Return Transition", "Create a Return Transition", new CreationFactory() {
+            @Override
+            public Object getNewObject() {
+               return null;
+            }
 
-									public Object getObjectType() {
-										return ReturnTransitionConnection.class;
-									}
-								}, ImageManager.getImageDescriptor(AtsImage.CONECTION_16),
-								ImageManager.getImageDescriptor(AtsImage.CONECTION_24));
-		componentsDrawer.add(tool);
+            @Override
+            public Object getObjectType() {
+               return ReturnTransitionConnection.class;
+            }
+         }, ImageManager.getImageDescriptor(AtsImage.CONECTION_16),
+            ImageManager.getImageDescriptor(AtsImage.CONECTION_24));
+      componentsDrawer.add(tool);
 
-		return componentsDrawer;
-	}
+      return componentsDrawer;
+   }
 
-	/**
-	 * Creates the PaletteRoot and adds all palette elements. Use this factory method to create a new palette for your
-	 * graphical editor.
-	 * 
-	 * @return a new PaletteRoot
-	 */
-	static PaletteRoot createPalette(AtsWorkflowConfigEditor editor) {
-		PaletteRoot palette = new PaletteRoot();
-		palette.add(createToolsGroup(palette, editor));
-		palette.add(createStatesDrawer());
-		palette.add(createTransitionsDrawer());
-		return palette;
-	}
+   /**
+    * Creates the PaletteRoot and adds all palette elements. Use this factory method to create a new palette for your
+    * graphical editor.
+    * 
+    * @return a new PaletteRoot
+    */
+   static PaletteRoot createPalette(AtsWorkflowConfigEditor editor) {
+      PaletteRoot palette = new PaletteRoot();
+      palette.add(createToolsGroup(palette, editor));
+      palette.add(createStatesDrawer());
+      palette.add(createTransitionsDrawer());
+      return palette;
+   }
 
-	/** Create the "Tools" group. */
-	private static PaletteContainer createToolsGroup(PaletteRoot palette, AtsWorkflowConfigEditor editor) {
-		PaletteToolbar toolbar = new PaletteToolbar("Tools");
+   /** Create the "Tools" group. */
+   private static PaletteContainer createToolsGroup(PaletteRoot palette, AtsWorkflowConfigEditor editor) {
+      PaletteToolbar toolbar = new PaletteToolbar("Tools");
 
-		// Add a selection tool to the group
-		ToolEntry tool = new PanningSelectionToolEntry();
-		toolbar.add(tool);
-		palette.setDefaultEntry(tool);
+      // Add a selection tool to the group
+      ToolEntry tool = new PanningSelectionToolEntry();
+      toolbar.add(tool);
+      palette.setDefaultEntry(tool);
 
-		// Add a marquee tool to the group
-		toolbar.add(new MarqueeToolEntry());
+      // Add a marquee tool to the group
+      toolbar.add(new MarqueeToolEntry());
 
-		toolbar.add(new ValidateDiagramToolEntry());
+      toolbar.add(new ValidateDiagramToolEntry());
 
-		final Action action =
-					OseeUiActions.createBugAction(AtsPlugin.getInstance(), editor, AtsWorkflowConfigEditor.EDITOR_ID,
-								"ATS Workflow Config Editor");
-		final ImageDescriptor img = action.getImageDescriptor();
+      final Action action =
+         OseeUiActions.createBugAction(AtsPlugin.getInstance(), editor, AtsWorkflowConfigEditor.EDITOR_ID,
+            "ATS Workflow Config Editor");
+      final ImageDescriptor img = action.getImageDescriptor();
 
-		toolbar.add(new ToolEntry("", action.getText(), img, img, null) {
+      toolbar.add(new ToolEntry("", action.getText(), img, img, null) {
 
-			@Override
-			public Tool createTool() {
-				return new AbstractTool() {
+         @Override
+         public Tool createTool() {
+            return new AbstractTool() {
 
-					@Override
-					protected String getCommandName() {
-						return action.getText();
-					}
+               @Override
+               protected String getCommandName() {
+                  return action.getText();
+               }
 
-					@Override
-					public void activate() {
-						super.activate();
-						Displays.ensureInDisplayThread(new Runnable() {
+               @Override
+               public void activate() {
+                  super.activate();
+                  Displays.ensureInDisplayThread(new Runnable() {
 
-							@Override
-							public void run() {
-								deactivate();
-								action.run();
-							}
-						});
+                     @Override
+                     public void run() {
+                        deactivate();
+                        action.run();
+                     }
+                  });
 
-					}
-				};
-			}
+               }
+            };
+         }
 
-		});
+      });
 
-		return toolbar;
-	}
+      return toolbar;
+   }
 
-	/** Utility class. */
-	private AtsWorkflowConfigEditorPaletteFactory() {
-		// Utility class
-	}
+   /** Utility class. */
+   private AtsWorkflowConfigEditorPaletteFactory() {
+      // Utility class
+   }
 
 }

@@ -90,7 +90,7 @@ public class ArtifactPasteOperation extends AbstractOperation {
          IRelationEnumeration relationTypeSide = CoreRelationTypes.Default_Hierarchical__Child;
          RelationOrderData data = RelationManager.createRelationOrderData(source);
          String order =
-               data.getCurrentSorterGuid(RelationTypeManager.getType(relationTypeSide), relationTypeSide.getSide());
+            data.getCurrentSorterGuid(RelationTypeManager.getType(relationTypeSide), relationTypeSide.getSide());
          IRelationSorter sorter = RelationManager.getSorterProvider().getRelationOrder(order);
          if (RelationOrderBaseTypes.USER_DEFINED == sorter.getSorterId()) {
             newArtifact.setRelationOrder(relationTypeSide, copiedChildren);

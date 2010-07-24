@@ -47,7 +47,7 @@ public interface IAtsWizardItem {
     * 
     * @param wizard
     * @return result of validation. if true, action will be created; if not, error will popup and action will not be
-    *         created
+    * created
     */
    public Result isActionValidToCreate(Collection<ActionableItemArtifact> aias, NewActionWizard wizard);
 

@@ -14,17 +14,13 @@ import org.eclipse.osee.ote.core.environment.interfaces.ICancelTimer;
 import org.eclipse.osee.ote.core.environment.interfaces.IScriptControl;
 import org.eclipse.osee.ote.core.environment.interfaces.ITimeout;
 
-
 /**
- * @author Ryan D. Brooks
- * 
- * This class is used as a 'Time Out' object while waiting for the desired message element value.
- * 
+ * @author Ryan D. Brooks This class is used as a 'Time Out' object while waiting for the desired message element value.
  */
 public class CycleCountDown implements ICancelTimer {
    private int cycleCount;
-   private ITimeout objToNotify;
-   private IScriptControl scriptLock;
+   private final ITimeout objToNotify;
+   private final IScriptControl scriptLock;
 
    /**
     * @param objToNotify The Object that is in wait() on which we will call notifyAll()
@@ -42,12 +38,12 @@ public class CycleCountDown implements ICancelTimer {
     * @return true if the cycleCount == 0, otherwise false
     */
    public boolean cycleOccurred() {
-      if (cycleCount == -1){
+      if (cycleCount == -1) {
          return true;
       }
-      if (cycleCount == 0) {         
-         synchronized(objToNotify){
-        	objToNotify.setTimeout(true);
+      if (cycleCount == 0) {
+         synchronized (objToNotify) {
+            objToNotify.setTimeout(true);
             objToNotify.notifyAll();
          }
          return true; // so that notify is only called after a countdown becomes zero for the first time
@@ -55,10 +51,11 @@ public class CycleCountDown implements ICancelTimer {
       cycleCount--;
       return false;
    }
-   
-   public void cancelTimer(){
-      this.cycleCount = -1;  
-      if(this.scriptLock != null){
+
+   @Override
+   public void cancelTimer() {
+      this.cycleCount = -1;
+      if (this.scriptLock != null) {
          this.scriptLock.lock();
       }
    }

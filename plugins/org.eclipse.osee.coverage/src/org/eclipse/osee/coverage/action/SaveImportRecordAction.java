@@ -51,10 +51,10 @@ public class SaveImportRecordAction extends Action {
          return;
       }
       if (MessageDialog.openConfirm(Displays.getActiveShell(), "Save Coverage Import Record",
-            "Overwrite coverage import record with current import information?")) {
+         "Overwrite coverage import record with current import information?")) {
          try {
             SkynetTransaction transaction =
-                  new SkynetTransaction(saveable.getBranch(), "Coverage - Save Import Record");
+               new SkynetTransaction(saveable.getBranch(), "Coverage - Save Import Record");
             saveable.saveImportRecord(transaction, coverageImport);
             transaction.execute();
          } catch (OseeCoreException ex) {

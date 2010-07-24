@@ -16,8 +16,8 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ //
 SessionTest.class, //
-			SessionCacheTest.class, //
-			SessionManagerTest.class, //
+   SessionCacheTest.class, //
+   SessionManagerTest.class, //
 })
 /**
  * @author Roberto E. Escobar

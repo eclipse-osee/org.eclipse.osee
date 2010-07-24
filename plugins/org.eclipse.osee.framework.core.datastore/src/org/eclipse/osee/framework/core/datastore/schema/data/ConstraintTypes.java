@@ -14,8 +14,12 @@ package org.eclipse.osee.framework.core.datastore.schema.data;
  * @author Roberto E. Escobar
  */
 public enum ConstraintTypes {
-   PRIMARY_KEY, FOREIGN_KEY, UNIQUE, CHECK;
+   PRIMARY_KEY,
+   FOREIGN_KEY,
+   UNIQUE,
+   CHECK;
 
+   @Override
    public String toString() {
       String toReturn = super.toString();
       toReturn = toReturn.replaceAll("_", " ");

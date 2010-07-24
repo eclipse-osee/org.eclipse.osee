@@ -22,16 +22,16 @@ public class XmlUtility {
    public final static XPathFactory myXPathFactory = XPathFactory.newInstance();
    public final static XPath myXPath = myXPathFactory.newXPath();
    public final static String wordLeader1 =
-         "<?xml version='1.0' encoding='UTF-8' standalone='yes'?>" + "<?mso-application progid='Word.Document'?>";
+      "<?xml version='1.0' encoding='UTF-8' standalone='yes'?>" + "<?mso-application progid='Word.Document'?>";
    public final static String wordLeader2 =
-         "<w:wordDocument xmlns:w='http://schemas.microsoft.com/office/word/2003/wordml' xmlns:v='urn:schemas-microsoft-com:vml' xmlns:w10='urn:schemas-microsoft-com:office:word' xmlns:sl='http://schemas.microsoft.com/schemaLibrary/2003/core' xmlns:aml='http://schemas.microsoft.com/aml/2001/core' xmlns:wx='http://schemas.microsoft.com/office/word/2003/auxHint' xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:dt='uuid:C2F41010-65B3-11d1-A29F-00AA00C14882' xmlns:wsp='http://schemas.microsoft.com/office/word/2003/wordml/sp2' xmlns:ns0='http://www.w3.org/2001/XMLSchema' xmlns:ns1='http://eclipse.org/artifact.xsd' xmlns:st1='urn:schemas-microsoft-com:office:smarttags' w:macrosPresent='no' w:embeddedObjPresent='no' w:ocxPresent='no' xml:space='preserve'>";
+      "<w:wordDocument xmlns:w='http://schemas.microsoft.com/office/word/2003/wordml' xmlns:v='urn:schemas-microsoft-com:vml' xmlns:w10='urn:schemas-microsoft-com:office:word' xmlns:sl='http://schemas.microsoft.com/schemaLibrary/2003/core' xmlns:aml='http://schemas.microsoft.com/aml/2001/core' xmlns:wx='http://schemas.microsoft.com/office/word/2003/auxHint' xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:dt='uuid:C2F41010-65B3-11d1-A29F-00AA00C14882' xmlns:wsp='http://schemas.microsoft.com/office/word/2003/wordml/sp2' xmlns:ns0='http://www.w3.org/2001/XMLSchema' xmlns:ns1='http://eclipse.org/artifact.xsd' xmlns:st1='urn:schemas-microsoft-com:office:smarttags' w:macrosPresent='no' w:embeddedObjPresent='no' w:ocxPresent='no' xml:space='preserve'>";
    public final static String wordLeader = wordLeader1.concat(wordLeader2);
    public final static String wordBody = "<w:body></w:body>";
    public final static String wordTrailer = "</w:wordDocument> ";
 
    public static String treatNonUTF8Characters(String contentString) {
       String resultString = contentString;
-      String[][] nonUTF8CharactersOfInterest = { {"–", "-"}, {"’", "'"}, {"’", "'"}, {"“", "\""}, {"”", "\""}};//Wider than usual dash , smaller than usual bullet
+      String[][] nonUTF8CharactersOfInterest = { {"ï¿½", "-"}, {"ï¿½", "'"}, {"ï¿½", "'"}, {"ï¿½", "\""}, {"ï¿½", "\""}};//Wider than usual dash , smaller than usual bullet
       for (int i = 0; i < nonUTF8CharactersOfInterest.length; i++) {
          String[] splitsOfNonUTF8 = resultString.split(nonUTF8CharactersOfInterest[i][0]);//Wider than usual dash or bullet
          if (splitsOfNonUTF8.length > 1) {

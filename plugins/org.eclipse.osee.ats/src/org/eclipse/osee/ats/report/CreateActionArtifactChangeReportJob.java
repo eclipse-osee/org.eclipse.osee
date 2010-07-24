@@ -44,117 +44,117 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  * @author Donald G. Dunne
  */
 public class CreateActionArtifactChangeReportJob extends Job {
-	private final Set<TeamWorkFlowArtifact> teamArts;
-	private final String byAttribute;
+   private final Set<TeamWorkFlowArtifact> teamArts;
+   private final String byAttribute;
 
-	public CreateActionArtifactChangeReportJob(String jobName, Set<TeamWorkFlowArtifact> teamArts, String byAttribute) {
-		super(jobName);
-		this.teamArts = teamArts;
-		this.byAttribute = byAttribute;
-	}
+   public CreateActionArtifactChangeReportJob(String jobName, Set<TeamWorkFlowArtifact> teamArts, String byAttribute) {
+      super(jobName);
+      this.teamArts = teamArts;
+      this.byAttribute = byAttribute;
+   }
 
-	@Override
-	public IStatus run(IProgressMonitor monitor) {
-		return runIt(monitor, getName(), teamArts, byAttribute);
-	}
+   @Override
+   public IStatus run(IProgressMonitor monitor) {
+      return runIt(monitor, getName(), teamArts, byAttribute);
+   }
 
-	public static IStatus runIt(IProgressMonitor monitor, String jobName, Collection<TeamWorkFlowArtifact> teamArts, String byAttribute) {
-		XResultData rd = new XResultData();
-		try {
-			if (teamArts.isEmpty()) {
-				throw new OseeStateException("No Actions/Workflows Specified");
-			}
-			retrieveData(monitor, teamArts, byAttribute, rd);
-			if (rd.toString().equals("")) {
-				rd.log("No Problems Found");
-			}
-			final String html = rd.getReport(jobName).getManipulatedHtml(Arrays.asList(Manipulations.NONE));
-			final String title = jobName;
-			Displays.pendInDisplayThread(new Runnable() {
-				@Override
-				public void run() {
-					Result result = (new HtmlExportTable(title, html, true, false)).exportCsv();
-					if (result.isFalse()) {
-						result.popup();
-						return;
-					}
-					AWorkbench.popup(
-								title,
-								"Completed " + title + "\n\nFile saved to " + System.getProperty("user.home") + File.separator + "table.csv");
-				}
-			});
-			monitor.done();
-			return Status.OK_STATUS;
-		} catch (Exception ex) {
-			OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-			return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, "Failed", ex);
-		}
-	}
+   public static IStatus runIt(IProgressMonitor monitor, String jobName, Collection<TeamWorkFlowArtifact> teamArts, String byAttribute) {
+      XResultData rd = new XResultData();
+      try {
+         if (teamArts.isEmpty()) {
+            throw new OseeStateException("No Actions/Workflows Specified");
+         }
+         retrieveData(monitor, teamArts, byAttribute, rd);
+         if (rd.toString().equals("")) {
+            rd.log("No Problems Found");
+         }
+         final String html = rd.getReport(jobName).getManipulatedHtml(Arrays.asList(Manipulations.NONE));
+         final String title = jobName;
+         Displays.pendInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               Result result = new HtmlExportTable(title, html, true, false).exportCsv();
+               if (result.isFalse()) {
+                  result.popup();
+                  return;
+               }
+               AWorkbench.popup(
+                  title,
+                  "Completed " + title + "\n\nFile saved to " + System.getProperty("user.home") + File.separator + "table.csv");
+            }
+         });
+         monitor.done();
+         return Status.OK_STATUS;
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, -1, "Failed", ex);
+      }
+   }
 
-	/**
-	 * used recursively when originally passed a directory, thus an array of files is accepted
-	 * 
-	 * @throws Exception
-	 */
-	private static void retrieveData(IProgressMonitor monitor, Collection<TeamWorkFlowArtifact> teamArts, String byAttribute, XResultData rd) throws OseeCoreException {
-		monitor.subTask("Retrieving Actions");
+   /**
+    * used recursively when originally passed a directory, thus an array of files is accepted
+    * 
+    * @throws Exception
+    */
+   private static void retrieveData(IProgressMonitor monitor, Collection<TeamWorkFlowArtifact> teamArts, String byAttribute, XResultData rd) throws OseeCoreException {
+      monitor.subTask("Retrieving Actions");
 
-		int x = 1;
-		rd.addRaw(AHTML.beginMultiColumnTable(95));
-		rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"HRID", "Bulld", "UI", byAttribute, "RPCR", "Change"}));
-		for (TeamWorkFlowArtifact teamArt : teamArts) {
-			String rcprId = teamArt.getSoleAttributeValue(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName(), "");
-			String result =
-						(String.format("Processing %s/%s RPCR %s for \"%s\"", x, teamArts.size(), rcprId,
-									teamArt.getTeamDefinition().getName()));
-			monitor.subTask(result);
-			rd.log("\nRPCR " + rcprId);
-			for (ICommitConfigArtifact commitConfigArt : teamArt.getBranchMgr().getConfigArtifactsConfiguredToCommitTo()) {
-				processTeam(teamArt, commitConfigArt.getParentBranch().getShortName(), byAttribute, commitConfigArt, rd);
-			}
-			x++;
+      int x = 1;
+      rd.addRaw(AHTML.beginMultiColumnTable(95));
+      rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"HRID", "Bulld", "UI", byAttribute, "RPCR", "Change"}));
+      for (TeamWorkFlowArtifact teamArt : teamArts) {
+         String rcprId = teamArt.getSoleAttributeValue(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName(), "");
+         String result =
+            String.format("Processing %s/%s RPCR %s for \"%s\"", x, teamArts.size(), rcprId,
+               teamArt.getTeamDefinition().getName());
+         monitor.subTask(result);
+         rd.log("\nRPCR " + rcprId);
+         for (ICommitConfigArtifact commitConfigArt : teamArt.getBranchMgr().getConfigArtifactsConfiguredToCommitTo()) {
+            processTeam(teamArt, commitConfigArt.getParentBranch().getShortName(), byAttribute, commitConfigArt, rd);
+         }
+         x++;
 
-			//          System.err.println("Developmental purposes only, don't release with this");
-			//          if (x >= 5)
-			//          break;
-		}
-		rd.addRaw(AHTML.endMultiColumnTable());
-	}
+         //          System.err.println("Developmental purposes only, don't release with this");
+         //          if (x >= 5)
+         //          break;
+      }
+      rd.addRaw(AHTML.endMultiColumnTable());
+   }
 
-	private static void processTeam(TeamWorkFlowArtifact teamArt, String buildId, String byAttribute, ICommitConfigArtifact commitConfigArt, XResultData rd) throws OseeCoreException {
-		String rpcrNum = teamArt.getSoleAttributeValue(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName(), "");
-		ChangeData changeData = teamArt.getBranchMgr().getChangeData(commitConfigArt);
-		for (Artifact modArt : changeData.getArtifacts(KindType.Artifact, ModificationType.NEW, ModificationType.MODIFIED)) {
-			List<String> attrStrs = modArt.getAttributesToStringList(byAttribute);
-			if (attrStrs.isEmpty()) {
-				attrStrs.add(EnumeratedAttribute.UNSPECIFIED_VALUE);
-			}
-			for (String attrStr : attrStrs) {
-				rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {teamArt.getHumanReadableId(), buildId,
-							modArt.getName(), attrStr, rpcrNum, "Content"}));
-			}
-		}
-		for (Artifact artChg : changeData.getArtifacts(KindType.Artifact, ModificationType.DELETED)) {
-			List<String> attrStrs = artChg.getAttributesToStringList(byAttribute);
-			if (attrStrs.isEmpty()) {
-				attrStrs.add(EnumeratedAttribute.UNSPECIFIED_VALUE);
-			}
-			for (String attrStr : attrStrs) {
-				rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {teamArt.getHumanReadableId(), buildId,
-							artChg.getName(), attrStr, rpcrNum, "Deleted"}));
-			}
-		}
-		for (Artifact artChg : changeData.getArtifacts(KindType.RelationOnly, ModificationType.NEW,
-					ModificationType.MODIFIED)) {
-			List<String> attrStrs = artChg.getAttributesToStringList(byAttribute);
-			if (attrStrs.isEmpty()) {
-				attrStrs.add(EnumeratedAttribute.UNSPECIFIED_VALUE);
-			}
-			for (String attrStr : attrStrs) {
-				rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {teamArt.getHumanReadableId(), buildId,
-							artChg.getName(), attrStr, rpcrNum, "Relation"}));
-			}
-		}
-	}
+   private static void processTeam(TeamWorkFlowArtifact teamArt, String buildId, String byAttribute, ICommitConfigArtifact commitConfigArt, XResultData rd) throws OseeCoreException {
+      String rpcrNum = teamArt.getSoleAttributeValue(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName(), "");
+      ChangeData changeData = teamArt.getBranchMgr().getChangeData(commitConfigArt);
+      for (Artifact modArt : changeData.getArtifacts(KindType.Artifact, ModificationType.NEW, ModificationType.MODIFIED)) {
+         List<String> attrStrs = modArt.getAttributesToStringList(byAttribute);
+         if (attrStrs.isEmpty()) {
+            attrStrs.add(EnumeratedAttribute.UNSPECIFIED_VALUE);
+         }
+         for (String attrStr : attrStrs) {
+            rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {teamArt.getHumanReadableId(), buildId,
+               modArt.getName(), attrStr, rpcrNum, "Content"}));
+         }
+      }
+      for (Artifact artChg : changeData.getArtifacts(KindType.Artifact, ModificationType.DELETED)) {
+         List<String> attrStrs = artChg.getAttributesToStringList(byAttribute);
+         if (attrStrs.isEmpty()) {
+            attrStrs.add(EnumeratedAttribute.UNSPECIFIED_VALUE);
+         }
+         for (String attrStr : attrStrs) {
+            rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {teamArt.getHumanReadableId(), buildId,
+               artChg.getName(), attrStr, rpcrNum, "Deleted"}));
+         }
+      }
+      for (Artifact artChg : changeData.getArtifacts(KindType.RelationOnly, ModificationType.NEW,
+         ModificationType.MODIFIED)) {
+         List<String> attrStrs = artChg.getAttributesToStringList(byAttribute);
+         if (attrStrs.isEmpty()) {
+            attrStrs.add(EnumeratedAttribute.UNSPECIFIED_VALUE);
+         }
+         for (String attrStr : attrStrs) {
+            rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {teamArt.getHumanReadableId(), buildId,
+               artChg.getName(), attrStr, rpcrNum, "Relation"}));
+         }
+      }
+   }
 
 }

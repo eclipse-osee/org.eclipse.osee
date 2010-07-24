@@ -59,7 +59,7 @@ public class ConfigureCoverageMethodsAction extends Action {
             return;
          }
          CoveragePackageArtifactListDialog dialog =
-               new CoveragePackageArtifactListDialog("Open Coverage Package", "Select Coverage Package");
+            new CoveragePackageArtifactListDialog("Open Coverage Package", "Select Coverage Package");
          dialog.setInput(OseeCoveragePackageStore.getCoveragePackageArtifacts(CoverageUtil.getBranch()));
          if (dialog.open() == 0) {
             Artifact coveragePackageArtifact = (Artifact) dialog.getResult()[0];
@@ -74,9 +74,9 @@ public class ConfigureCoverageMethodsAction extends Action {
             StoreLocation storeLocation = optionsStore.getStoreLocation();
             if (storeLocation == StoreLocation.None) {
                MessageDialog localGlobalDialog =
-                     new MessageDialog(Displays.getActiveShell(), "Question", null,
-                           "No Custom Coverage Methods Configured, Configure Now?", MessageDialog.WARNING,
-                           new String[] {"Save local to Coverage Pacakge", "Save globally for Branch", "Cancel"}, 0);
+                  new MessageDialog(Displays.getActiveShell(), "Question", null,
+                     "No Custom Coverage Methods Configured, Configure Now?", MessageDialog.WARNING, new String[] {
+                        "Save local to Coverage Pacakge", "Save globally for Branch", "Cancel"}, 0);
 
                int result = localGlobalDialog.open();
                if (result == 0) {
@@ -119,7 +119,7 @@ public class ConfigureCoverageMethodsAction extends Action {
                      for (CoverageOption option : manager.get()) {
                         if (names.contains(option.getName())) {
                            throw new OseeArgumentException(String.format("Multiple options with same name [%s]",
-                                 option.getName()));
+                              option.getName()));
                         } else {
                            names.add(option.getName());
                         }
@@ -128,7 +128,7 @@ public class ConfigureCoverageMethodsAction extends Action {
                      successOrCancel = true;
                   } catch (Exception ex) {
                      OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP,
-                           "Invalid coverage options\n\n" + ex.getLocalizedMessage(), ex);
+                        "Invalid coverage options\n\n" + ex.getLocalizedMessage(), ex);
                   }
                } else {
                   successOrCancel = true;

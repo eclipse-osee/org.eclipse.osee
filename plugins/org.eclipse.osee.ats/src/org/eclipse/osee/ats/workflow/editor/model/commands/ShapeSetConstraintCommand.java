@@ -54,7 +54,7 @@ public class ShapeSetConstraintCommand extends Command {
    public boolean canExecute() {
       Object type = request.getType();
       // make sure the Request is of a type we support:
-      return (RequestConstants.REQ_MOVE.equals(type) || RequestConstants.REQ_MOVE_CHILDREN.equals(type) || RequestConstants.REQ_RESIZE.equals(type) || RequestConstants.REQ_RESIZE_CHILDREN.equals(type));
+      return RequestConstants.REQ_MOVE.equals(type) || RequestConstants.REQ_MOVE_CHILDREN.equals(type) || RequestConstants.REQ_RESIZE.equals(type) || RequestConstants.REQ_RESIZE_CHILDREN.equals(type);
    }
 
    @Override

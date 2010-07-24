@@ -147,7 +147,6 @@ public class ChangeSet {
    }
 
    /**
-    * 
     * @param srcStartIndex inclusive start index
     * @param srcEndIndex inclusive end index
     * @param newChar
@@ -214,8 +213,7 @@ public class ChangeSet {
    private void overlapping(int a, int b) {
       if (a > b) {
          throw new IllegalArgumentException(
-               "Overlapping changes are not currently allowed " + a + " > " + b + " " + new String(sourceChars, b - 4,
-                     20));
+            "Overlapping changes are not currently allowed " + a + " > " + b + " " + new String(sourceChars, b - 4, 20));
       }
    }
 
@@ -244,6 +242,7 @@ public class ChangeSet {
       return chars;
    }
 
+   @Override
    public String toString() {
       return new String(toCharArray());
    }

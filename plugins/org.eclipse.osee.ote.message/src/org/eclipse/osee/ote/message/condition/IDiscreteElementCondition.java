@@ -12,5 +12,5 @@ package org.eclipse.osee.ote.message.condition;
 
 public interface IDiscreteElementCondition<T extends Comparable<T>> extends ICondition {
 
-    T getLastCheckValue();
+   T getLastCheckValue();
 }

@@ -236,6 +236,7 @@ public class HyperView extends ViewPart implements IPartListener {
       vsb.setSelection(verticalSelection);
       vsb.addListener(SWT.Selection, new Listener() {
 
+         @Override
          public void handleEvent(Event event) {
             refresh();
             // System.out.println("vScroll " + event);
@@ -248,6 +249,7 @@ public class HyperView extends ViewPart implements IPartListener {
       hsb.setSelection(40);
       hsb.addListener(SWT.Selection, new Listener() {
 
+         @Override
          public void handleEvent(Event event) {
             refresh();
             // System.out.println("hScroll " + event);
@@ -678,6 +680,7 @@ public class HyperView extends ViewPart implements IPartListener {
    private void setConnectionMouseListener(PolylineConnection c, final HyperViewItem hvi) {
       MouseListener mouseListener = new MouseListener() {
 
+         @Override
          public void mouseDoubleClicked(MouseEvent e) {
             if (HyperView.debugOn) {
                System.out.println("DoubleClick");

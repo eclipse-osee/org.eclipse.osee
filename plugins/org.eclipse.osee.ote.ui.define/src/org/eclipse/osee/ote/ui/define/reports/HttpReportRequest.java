@@ -39,129 +39,132 @@ import org.eclipse.osee.ote.ui.define.views.TestRunView;
  * @author Roberto E. Escobar
  */
 public class HttpReportRequest implements IHttpServerRequest {
-	private static final String REQUEST_TYPE = "GET.REPORT";
-	private static final String REPORT_ID = "id";
-	private static final String REPORT_FORMAT = "format";
-	private static final String REPORT_SOURCE = "source";
-	private static final String PREVIEW_SIZE = "preview";
+   private static final String REQUEST_TYPE = "GET.REPORT";
+   private static final String REPORT_ID = "id";
+   private static final String REPORT_FORMAT = "format";
+   private static final String REPORT_SOURCE = "source";
+   private static final String PREVIEW_SIZE = "preview";
 
-	public String getRequestType() {
-		return REQUEST_TYPE;
-	}
+   @Override
+   public String getRequestType() {
+      return REQUEST_TYPE;
+   }
 
-	public static String getUrl(String id, String format, String source) throws OseeStateException {
-		return getUrl(id, format, source, -1);
-	}
+   public static String getUrl(String id, String format, String source) throws OseeStateException {
+      return getUrl(id, format, source, -1);
+   }
 
-	public static String getUrl(String id, String format, String source, int preview) throws OseeStateException {
-		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put(REPORT_ID, id);
-		parameters.put(REPORT_FORMAT, format);
-		parameters.put(REPORT_SOURCE, source);
-		if (preview > -1) {
-			parameters.put(PREVIEW_SIZE, Integer.toString(preview));
-		}
-		return HttpUrlBuilderClient.getInstance().getUrlForLocalSkynetHttpServer(HttpReportRequest.REQUEST_TYPE,
-					parameters);
-	}
+   public static String getUrl(String id, String format, String source, int preview) throws OseeStateException {
+      Map<String, String> parameters = new HashMap<String, String>();
+      parameters.put(REPORT_ID, id);
+      parameters.put(REPORT_FORMAT, format);
+      parameters.put(REPORT_SOURCE, source);
+      if (preview > -1) {
+         parameters.put(PREVIEW_SIZE, Integer.toString(preview));
+      }
+      return HttpUrlBuilderClient.getInstance().getUrlForLocalSkynetHttpServer(HttpReportRequest.REQUEST_TYPE,
+         parameters);
+   }
 
-	public void processRequest(HttpRequest httpRequest, HttpResponse httpResponse) {
-		if (httpRequest.getOriginatingAddress().isLoopbackAddress()) {
-			String reportId = httpRequest.getParameter(REPORT_ID);
-			String format = httpRequest.getParameter(REPORT_FORMAT);
+   @Override
+   public void processRequest(HttpRequest httpRequest, HttpResponse httpResponse) {
+      if (httpRequest.getOriginatingAddress().isLoopbackAddress()) {
+         String reportId = httpRequest.getParameter(REPORT_ID);
+         String format = httpRequest.getParameter(REPORT_FORMAT);
 
-			try {
-				OutputFormat outputFormat = OutputFormat.fromString(format);
-				ITestRunReport report = ExtensionDefinedReports.getInstance().getReportGenerator(reportId);
-				report.gatherData(new NullProgressMonitor(), getSourceData(httpRequest));
+         try {
+            OutputFormat outputFormat = OutputFormat.fromString(format);
+            ITestRunReport report = ExtensionDefinedReports.getInstance().getReportGenerator(reportId);
+            report.gatherData(new NullProgressMonitor(), getSourceData(httpRequest));
 
-				IReportWriter writer = OutputFactory.getReportWriter(outputFormat);
-				writer.writeTitle(report.getTitle());
-				writer.writeHeader(report.getHeader());
-				String[][] body = report.getBody();
-				for (int index = 0; index < body.length; index++) {
-					writer.writeRow(body[index]);
-				}
-				report.clear();
+            IReportWriter writer = OutputFactory.getReportWriter(outputFormat);
+            writer.writeTitle(report.getTitle());
+            writer.writeHeader(report.getHeader());
+            String[][] body = report.getBody();
+            for (int index = 0; index < body.length; index++) {
+               writer.writeRow(body[index]);
+            }
+            report.clear();
 
-				if (outputFormat.equals(OutputFormat.HTML) != true) {
-					httpResponse.setReponseHeader("Accept-Ranges", "bytes");
-					httpResponse.setContentEncoding("ISO-8859-1");
-					String fileName = URLEncoder.encode(OutputFactory.getOutputFilename(outputFormat, reportId), "UTF-8");
-					httpResponse.setContentDisposition(String.format("attachment; filename=%s", fileName));
-				}
-				httpResponse.setContentType(OutputFactory.getContentType(outputFormat));
-				httpResponse.sendResponseHeaders(200, writer.length());
-				writer.writeToOutput(httpResponse.getOutputStream());
+            if (outputFormat.equals(OutputFormat.HTML) != true) {
+               httpResponse.setReponseHeader("Accept-Ranges", "bytes");
+               httpResponse.setContentEncoding("ISO-8859-1");
+               String fileName = URLEncoder.encode(OutputFactory.getOutputFilename(outputFormat, reportId), "UTF-8");
+               httpResponse.setContentDisposition(String.format("attachment; filename=%s", fileName));
+            }
+            httpResponse.setContentType(OutputFactory.getContentType(outputFormat));
+            httpResponse.sendResponseHeaders(200, writer.length());
+            writer.writeToOutput(httpResponse.getOutputStream());
 
-			} catch (Exception ex) {
-				handleException(httpRequest, httpResponse, ex);
-			}
-		}
-	}
+         } catch (Exception ex) {
+            handleException(httpRequest, httpResponse, ex);
+         }
+      }
+   }
 
-	private TestRunOperator[] getSourceData(HttpRequest httpRequest) {
-		String source = httpRequest.getParameter(REPORT_SOURCE);
+   private TestRunOperator[] getSourceData(HttpRequest httpRequest) {
+      String source = httpRequest.getParameter(REPORT_SOURCE);
 
-		List<TestRunOperator> toReturn = new ArrayList<TestRunOperator>();
-		if (source.equals("local")) {
-			LocalSourceSelection selection = new LocalSourceSelection();
-			Displays.ensureInDisplayThread(selection);
-			TestRunOperator[] data = selection.getArtifacts();
-			addData(httpRequest, data, toReturn);
-		}
-		return toReturn.toArray(new TestRunOperator[toReturn.size()]);
-	}
+      List<TestRunOperator> toReturn = new ArrayList<TestRunOperator>();
+      if (source.equals("local")) {
+         LocalSourceSelection selection = new LocalSourceSelection();
+         Displays.ensureInDisplayThread(selection);
+         TestRunOperator[] data = selection.getArtifacts();
+         addData(httpRequest, data, toReturn);
+      }
+      return toReturn.toArray(new TestRunOperator[toReturn.size()]);
+   }
 
-	private void addData(HttpRequest httpRequest, TestRunOperator[] source, List<TestRunOperator> destination) {
-		String previewSize = httpRequest.getParameter(PREVIEW_SIZE);
-		if (Strings.isValid(previewSize)) {
-			int size = 5;
-			try {
-				size = Integer.parseInt(previewSize);
-			} catch (Exception ex) {
-				size = 5;
-			}
-			if (size > source.length) {
-				size = source.length;
-			}
-			for (int index = 0; index < size; index++) {
-				destination.add(source[index]);
-			}
-		} else {
-			destination.addAll(Arrays.asList(source));
-		}
-	}
+   private void addData(HttpRequest httpRequest, TestRunOperator[] source, List<TestRunOperator> destination) {
+      String previewSize = httpRequest.getParameter(PREVIEW_SIZE);
+      if (Strings.isValid(previewSize)) {
+         int size = 5;
+         try {
+            size = Integer.parseInt(previewSize);
+         } catch (Exception ex) {
+            size = 5;
+         }
+         if (size > source.length) {
+            size = source.length;
+         }
+         for (int index = 0; index < size; index++) {
+            destination.add(source[index]);
+         }
+      } else {
+         destination.addAll(Arrays.asList(source));
+      }
+   }
 
-	private void handleException(HttpRequest httpRequest, HttpResponse httpResponse, Exception ex) {
-		OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, "Exception occurred.", ex);
-	}
+   private void handleException(HttpRequest httpRequest, HttpResponse httpResponse, Exception ex) {
+      OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, "Exception occurred.", ex);
+   }
 
-	private final class LocalSourceSelection implements Runnable {
+   private final class LocalSourceSelection implements Runnable {
 
-		private TestRunOperator[] artifacts;
-		private boolean done = false;
+      private TestRunOperator[] artifacts;
+      private boolean done = false;
 
-		public TestRunOperator[] getArtifacts() {
-			while (this.isDone() != true) {
-				;
-			}
-			return artifacts;
-		}
+      public TestRunOperator[] getArtifacts() {
+         while (this.isDone() != true) {
+            ;
+         }
+         return artifacts;
+      }
 
-		public void run() {
-			done = false;
-			List<TestRunOperator> toReturn = new ArrayList<TestRunOperator>();
-			StructuredViewer viewer = TestRunView.getViewer();
-			if (viewer != null) {
-				toReturn.addAll(SelectionHelper.getInstance().getSelections(viewer));
-			}
-			artifacts = toReturn.toArray(new TestRunOperator[toReturn.size()]);
-			done = true;
-		}
+      @Override
+      public void run() {
+         done = false;
+         List<TestRunOperator> toReturn = new ArrayList<TestRunOperator>();
+         StructuredViewer viewer = TestRunView.getViewer();
+         if (viewer != null) {
+            toReturn.addAll(SelectionHelper.getInstance().getSelections(viewer));
+         }
+         artifacts = toReturn.toArray(new TestRunOperator[toReturn.size()]);
+         done = true;
+      }
 
-		public boolean isDone() {
-			return done;
-		}
-	}
+      public boolean isDone() {
+         return done;
+      }
+   }
 }

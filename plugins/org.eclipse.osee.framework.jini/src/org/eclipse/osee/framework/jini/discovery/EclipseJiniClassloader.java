@@ -28,9 +28,9 @@ import org.osgi.framework.Bundle;
  */
 public class EclipseJiniClassloader extends ClassLoader {
    private static EclipseJiniClassloader singleton;
-   private Map<String, Class<?>> classesloaded;
+   private final Map<String, Class<?>> classesloaded;
    private Map<String, String> registrationMap;
-   private List<String> bundleList;
+   private final List<String> bundleList;
 
    public static EclipseJiniClassloader getInstance() {
       if (singleton == null) {
@@ -46,7 +46,7 @@ public class EclipseJiniClassloader extends ClassLoader {
       bundleList.add("net.jini");
 
       IExtensionPoint point =
-            Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.framework.jini.JiniInterface");
+         Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.framework.jini.JiniInterface");
       IExtension[] extensions = point.getExtensions();
       for (IExtension extension : extensions) {
          IConfigurationElement[] elements = extension.getConfigurationElements();
@@ -71,7 +71,7 @@ public class EclipseJiniClassloader extends ClassLoader {
       bundleList.add("net.jini");
 
       IExtensionPoint point =
-            Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.framework.jini.JiniInterface");
+         Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.framework.jini.JiniInterface");
       IExtension[] extensions = point.getExtensions();
       for (IExtension extension : extensions) {
          IConfigurationElement[] elements = extension.getConfigurationElements();
@@ -98,7 +98,7 @@ public class EclipseJiniClassloader extends ClassLoader {
       }
 
       if (registrationMap.containsKey(classname)) {
-         String bundleName = (String) registrationMap.get(classname);
+         String bundleName = registrationMap.get(classname);
          Bundle bundle = Platform.getBundle(bundleName);
          try {
             Class<?> foundclass = bundle.loadClass(classname);

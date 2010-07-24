@@ -17,11 +17,15 @@ import java.rmi.RemoteException;
 /**
  * @author Andrew M. Finkbeiner
  */
-public interface IModelListener extends Remote{
-   
+public interface IModelListener extends Remote {
+
    void onModelPreCreate(ModelKey key) throws RemoteException;
+
    void onModelPostCreate(ModelKey key) throws RemoteException;
+
    void onModelDispose(ModelKey key) throws RemoteException;
-   void onModelStateChange(ModelKey key, ModelState state)throws RemoteException;
+
+   void onModelStateChange(ModelKey key, ModelState state) throws RemoteException;
+
    int getHashCode() throws RemoteException;
 }

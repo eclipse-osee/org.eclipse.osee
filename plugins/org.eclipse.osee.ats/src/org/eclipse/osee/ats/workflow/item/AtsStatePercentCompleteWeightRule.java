@@ -43,17 +43,15 @@ public class AtsStatePercentCompleteWeightRule extends WorkRuleDefinition {
             double percent = new Double(value).doubleValue();
             if (percent < 0.0 || percent > 1) {
                OseeLog.log(AtsPlugin.class, Level.SEVERE,
-                     "Invalid percent value \"" + value + "\" (must be 0..1) for rule " + workRuleDefinition.getId(),
-                     new OseeArgumentException("state map exception"));
+                  "Invalid percent value \"" + value + "\" (must be 0..1) for rule " + workRuleDefinition.getId(),
+                  new OseeArgumentException("state map exception"));
             } else {
                stateToWeight.put(stateName, percent);
             }
          } catch (Exception ex) {
-            OseeLog.log(
-                  AtsPlugin.class,
-                  Level.SEVERE,
-                  "Invalid percent value \"" + value + "\" (must be float 0..1) for rule " + workRuleDefinition.getId(),
-                  new OseeArgumentException("state map exception"));
+            OseeLog.log(AtsPlugin.class, Level.SEVERE,
+               "Invalid percent value \"" + value + "\" (must be float 0..1) for rule " + workRuleDefinition.getId(),
+               new OseeArgumentException("state map exception"));
          }
       }
       return stateToWeight;

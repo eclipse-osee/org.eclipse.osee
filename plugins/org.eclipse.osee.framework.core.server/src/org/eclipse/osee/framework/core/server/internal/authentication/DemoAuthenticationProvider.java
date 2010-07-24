@@ -20,23 +20,23 @@ import org.eclipse.osee.framework.core.server.UserDataStore;
  */
 public class DemoAuthenticationProvider implements IAuthenticationProvider {
 
-	private final boolean autoAuthenticate = true;
-	private final String DEMO_USER = "Joe Smith";
+   private final boolean autoAuthenticate = true;
+   private final String DEMO_USER = "Joe Smith";
 
-	@Override
-	public IOseeUserInfo asOseeUserId(OseeCredential credential) {
-		IOseeUserInfo oseeUserInfo = UserDataStore.getOseeUserFromOseeDb(DEMO_USER);
-		return oseeUserInfo != null ? oseeUserInfo : UserDataStore.createUser(true, DEMO_USER, DEMO_USER, "", true);
-	}
+   @Override
+   public IOseeUserInfo asOseeUserId(OseeCredential credential) {
+      IOseeUserInfo oseeUserInfo = UserDataStore.getOseeUserFromOseeDb(DEMO_USER);
+      return oseeUserInfo != null ? oseeUserInfo : UserDataStore.createUser(true, DEMO_USER, DEMO_USER, "", true);
+   }
 
-	@Override
-	public boolean authenticate(OseeCredential credential) {
-		return autoAuthenticate;
-	}
+   @Override
+   public boolean authenticate(OseeCredential credential) {
+      return autoAuthenticate;
+   }
 
-	@Override
-	public String getProtocol() {
-		return "demo";
-	}
+   @Override
+   public String getProtocol() {
+      return "demo";
+   }
 
 }

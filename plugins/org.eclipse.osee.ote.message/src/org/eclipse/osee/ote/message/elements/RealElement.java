@@ -17,7 +17,6 @@ import org.eclipse.osee.ote.message.data.MemoryResource;
 import org.eclipse.osee.ote.message.data.MessageData;
 
 /**
- * 
  * @author Ryan D. Brooks
  * @author Andrew M. Finkbeiner
  */
@@ -49,6 +48,7 @@ public abstract class RealElement extends NumericElement<Double> {
       setValue(value.doubleValue());
    }
 
+   @Override
    public String valueOf() {
       return getValue().toString();
    }
@@ -94,7 +94,7 @@ public abstract class RealElement extends NumericElement<Double> {
    public Double elementMask(Double value) {
       return value;
    }
-   
+
    @Override
    public long getNumericBitValue() {
       return getRaw();

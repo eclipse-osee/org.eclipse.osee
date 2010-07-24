@@ -18,28 +18,28 @@ public interface NumericEvaluator<T extends Number & Comparable<T>> {
    public static final NumericEvaluator<Integer> IntegerEvaluator = new NumericEvaluator<Integer>() {
       @Override
       public boolean subtractAndCheckGreater(Integer left, Integer right, Integer expected) {
-         return (left - right) > expected;
+         return left - right > expected;
       }
    };
 
    public static final NumericEvaluator<Double> DoubleEvaluator = new NumericEvaluator<Double>() {
       @Override
       public boolean subtractAndCheckGreater(Double left, Double right, Double expected) {
-         return (left - right) > expected;
+         return left - right > expected;
       }
    };
 
    public static final NumericEvaluator<Long> LongEvaluator = new NumericEvaluator<Long>() {
       @Override
       public boolean subtractAndCheckGreater(Long left, Long right, Long expected) {
-         return (left - right) > expected;
+         return left - right > expected;
       }
    };
 
    public static final NumericEvaluator<Float> FloatEvaluator = new NumericEvaluator<Float>() {
       @Override
       public boolean subtractAndCheckGreater(Float left, Float right, Float expected) {
-         return (left - right) > expected;
+         return left - right > expected;
       }
    };
 

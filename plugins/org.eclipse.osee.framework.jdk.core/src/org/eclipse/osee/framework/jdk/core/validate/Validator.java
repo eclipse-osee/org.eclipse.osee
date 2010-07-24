@@ -24,8 +24,8 @@ import org.w3c.dom.NodeList;
 
 public class Validator {
 
-   private InputStream fileToRead;
-   private Map<String, List<IValidator>> validatorMap;
+   private final InputStream fileToRead;
+   private final Map<String, List<IValidator>> validatorMap;
 
    private enum EntryEnum {
       field;
@@ -44,7 +44,8 @@ public class Validator {
    }
 
    private enum FieldValidatorEntries {
-      message, param;
+      message,
+      param;
    }
 
    private enum ParamAttributes {
@@ -52,7 +53,9 @@ public class Validator {
    }
 
    private enum ValidationTypes {
-      requiredstring, required, expression;
+      requiredstring,
+      required,
+      expression;
    }
 
    public Validator(InputStream fileToRead) throws Exception {
@@ -154,6 +157,6 @@ public class Validator {
 
    public List<IValidator> getValidator(String fieldName) {
       List<IValidator> list = validatorMap.get(fieldName);
-      return (list != null ? list : new ArrayList<IValidator>());
+      return list != null ? list : new ArrayList<IValidator>();
    }
 }

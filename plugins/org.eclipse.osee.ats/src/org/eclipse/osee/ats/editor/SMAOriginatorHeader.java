@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor;
 
+import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.PromptChangeUtil;
@@ -32,60 +33,63 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
  */
 public class SMAOriginatorHeader extends Composite {
 
-	private static String ORIGINATOR = "Originator:";
-	private Label origLabel;
+   private static String ORIGINATOR = "Originator:";
+   private Label origLabel;
 
-	public SMAOriginatorHeader(Composite parent, int style, final StateMachineArtifact sma, XFormToolkit toolkit) {
-		super(parent, style);
-		setLayoutData(new GridData());
-		setLayout(ALayout.getZeroMarginLayout(2, false));
-		toolkit.adapt(this);
+   public SMAOriginatorHeader(Composite parent, int style, final StateMachineArtifact sma, XFormToolkit toolkit) {
+      super(parent, style);
+      setLayoutData(new GridData());
+      setLayout(ALayout.getZeroMarginLayout(2, false));
+      toolkit.adapt(this);
 
-		try {
-			if (!sma.isCancelled() && !sma.isCompleted()) {
-				Hyperlink link = toolkit.createHyperlink(this, ORIGINATOR, SWT.NONE);
-				link.addHyperlinkListener(new IHyperlinkListener() {
+      try {
+         if (!sma.isCancelled() && !sma.isCompleted()) {
+            Hyperlink link = toolkit.createHyperlink(this, ORIGINATOR, SWT.NONE);
+            link.addHyperlinkListener(new IHyperlinkListener() {
 
-					public void linkEntered(HyperlinkEvent e) {
-					}
+               @Override
+               public void linkEntered(HyperlinkEvent e) {
+               }
 
-					public void linkExited(HyperlinkEvent e) {
-					}
+               @Override
+               public void linkExited(HyperlinkEvent e) {
+               }
 
-					public void linkActivated(HyperlinkEvent e) {
-						try {
-							if (PromptChangeUtil.promptChangeOriginator(sma)) {
-								origLabel.setText(sma.getOriginator().getName());
-								origLabel.getParent().layout();
-								sma.getEditor().onDirtied();
-							}
-						} catch (OseeCoreException ex) {
-							OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-						}
-					}
-				});
-				if (sma.getOriginator() == null) {
-					Label errorLabel = toolkit.createLabel(this, "Error: No originator identified.");
-					errorLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
-				} else {
-					origLabel = toolkit.createLabel(this, sma.getOriginator().getName());
-					origLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-				}
-			} else {
-				if (sma.getOriginator() == null) {
-					Label errorLabel = toolkit.createLabel(this, "Error: No originator identified.");
-					errorLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
-				} else {
-					Label origLabel = toolkit.createLabel(this, ORIGINATOR + sma.getOriginator().getName());
-					origLabel.setLayoutData(new GridData());
-				}
-			}
-		} catch (OseeCoreException ex) {
-			Label errorLabel = toolkit.createLabel(this, "Error: " + ex.getLocalizedMessage());
-			errorLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
-			OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
-		}
+               @Override
+               public void linkActivated(HyperlinkEvent e) {
+                  try {
+                     if (PromptChangeUtil.promptChangeOriginator(sma)) {
+                        origLabel.setText(sma.getOriginator().getName());
+                        origLabel.getParent().layout();
+                        sma.getEditor().onDirtied();
+                     }
+                  } catch (OseeCoreException ex) {
+                     OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                  }
+               }
+            });
+            if (sma.getOriginator() == null) {
+               Label errorLabel = toolkit.createLabel(this, "Error: No originator identified.");
+               errorLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
+            } else {
+               origLabel = toolkit.createLabel(this, sma.getOriginator().getName());
+               origLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+            }
+         } else {
+            if (sma.getOriginator() == null) {
+               Label errorLabel = toolkit.createLabel(this, "Error: No originator identified.");
+               errorLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
+            } else {
+               Label origLabel = toolkit.createLabel(this, ORIGINATOR + sma.getOriginator().getName());
+               origLabel.setLayoutData(new GridData());
+            }
+         }
+      } catch (OseeCoreException ex) {
+         Label errorLabel = toolkit.createLabel(this, "Error: " + ex.getLocalizedMessage());
+         errorLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
 
-	}
+   }
 
 }

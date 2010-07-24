@@ -24,84 +24,84 @@ import org.eclipse.osee.ote.message.enums.DataType;
  */
 public class MessageUpdateListener extends AbstractMessageListener {
 
-	private final WatchedMessageNode node;
-	private final TreeViewer viewer;
+   private final WatchedMessageNode node;
+   private final TreeViewer viewer;
 
-	private final class NodeUpdate implements Runnable {
+   private final class NodeUpdate implements Runnable {
 
-		private final AbstractTreeNode[] nodes;
+      private final AbstractTreeNode[] nodes;
 
-		NodeUpdate(AbstractTreeNode[] nodes) {
-			this.nodes = nodes;
-		}
+      NodeUpdate(AbstractTreeNode[] nodes) {
+         this.nodes = nodes;
+      }
 
-		@Override
-		public void run() {
-			for (AbstractTreeNode node : nodes) {
-				viewer.refresh(node, true);
-			}
-		}
+      @Override
+      public void run() {
+         for (AbstractTreeNode node : nodes) {
+            viewer.refresh(node, true);
+         }
+      }
 
-	};
+   };
 
-	public MessageUpdateListener(TreeViewer viewer, WatchedMessageNode node) {
-		super(node.getSubscription());
-		this.viewer = viewer;
-		this.node = node;
-	}
+   public MessageUpdateListener(TreeViewer viewer, WatchedMessageNode node) {
+      super(node.getSubscription());
+      this.viewer = viewer;
+      this.node = node;
+   }
 
-	@Override
-	public void onDataAvailable(MessageData data, DataType type) throws MessageSystemException {
-		if (type == getSubscription().getMemType()) {
-			node.incrementCounter();
-		}
-	}
+   @Override
+   public void onDataAvailable(MessageData data, DataType type) throws MessageSystemException {
+      if (type == getSubscription().getMemType()) {
+         node.incrementCounter();
+      }
+   }
 
-	@Override
-	public void subscriptionActivated(IMessageSubscription subscription) {
-		update(node);
-	}
+   @Override
+   public void subscriptionActivated(IMessageSubscription subscription) {
+      update(node);
+   }
 
-	@Override
-	public void subscriptionInvalidated(IMessageSubscription subscription) {
-		String reason = subscription.getMessageClassName() + " does not exist";
-		LinkedList<AbstractTreeNode> list = new LinkedList<AbstractTreeNode>();
-		list.add(node);
-		node.collectDescendants(list);
+   @Override
+   public void subscriptionInvalidated(IMessageSubscription subscription) {
+      String reason = subscription.getMessageClassName() + " does not exist";
+      LinkedList<AbstractTreeNode> list = new LinkedList<AbstractTreeNode>();
+      list.add(node);
+      node.collectDescendants(list);
 
-		for (AbstractTreeNode child : list) {
-			child.setEnabled(false);
-			child.setDisabledReason(reason);
-		}
-		update(list.toArray(new AbstractTreeNode[list.size()]));
+      for (AbstractTreeNode child : list) {
+         child.setEnabled(false);
+         child.setDisabledReason(reason);
+      }
+      update(list.toArray(new AbstractTreeNode[list.size()]));
 
-	}
+   }
 
-	@Override
-	public void subscriptionNotSupported(IMessageSubscription subscription) {
-		update(node);
-	}
+   @Override
+   public void subscriptionNotSupported(IMessageSubscription subscription) {
+      update(node);
+   }
 
-	@Override
-	public void subscriptionResolved(IMessageSubscription subscription) {
-		super.subscriptionResolved(subscription);
-		node.setResolved(true);
-		update(node);
-	}
+   @Override
+   public void subscriptionResolved(IMessageSubscription subscription) {
+      super.subscriptionResolved(subscription);
+      node.setResolved(true);
+      update(node);
+   }
 
-	@Override
-	public void subscriptionUnresolved(IMessageSubscription subscription) {
-		super.subscriptionUnresolved(subscription);
-		node.setResolved(false);
-		update(node);
-	}
+   @Override
+   public void subscriptionUnresolved(IMessageSubscription subscription) {
+      super.subscriptionUnresolved(subscription);
+      node.setResolved(false);
+      update(node);
+   }
 
-	private void update(AbstractTreeNode[] nodes) {
-		Displays.ensureInDisplayThread(new NodeUpdate(nodes));
-	}
+   private void update(AbstractTreeNode[] nodes) {
+      Displays.ensureInDisplayThread(new NodeUpdate(nodes));
+   }
 
-	private void update(AbstractTreeNode node) {
-		Displays.ensureInDisplayThread(new NodeUpdate(new AbstractTreeNode[] {node}));
-	}
+   private void update(AbstractTreeNode node) {
+      Displays.ensureInDisplayThread(new NodeUpdate(new AbstractTreeNode[] {node}));
+   }
 
 }

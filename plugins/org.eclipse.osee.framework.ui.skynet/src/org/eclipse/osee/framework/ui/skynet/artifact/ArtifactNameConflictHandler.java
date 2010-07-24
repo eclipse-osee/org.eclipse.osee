@@ -21,26 +21,26 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  */
 public class ArtifactNameConflictHandler {
 
-	public String resolve(IArtifact source) {
-		final Pair<String, String> beforeAfterNames = new Pair<String, String>("", "");
+   public String resolve(IArtifact source) {
+      final Pair<String, String> beforeAfterNames = new Pair<String, String>("", "");
 
-		String startingName = source.getName();
-		beforeAfterNames.setFirst(startingName);
-		beforeAfterNames.setSecond(startingName);
+      String startingName = source.getName();
+      beforeAfterNames.setFirst(startingName);
+      beforeAfterNames.setSecond(startingName);
 
-		Displays.pendInDisplayThread(new Runnable() {
-			@Override
-			public void run() {
-				String startingName = beforeAfterNames.getFirst();
-				InputDialog dialog =
-							new InputDialog(Displays.getActiveShell(), "Name Artifact", "Enter artifact name",
-										startingName, new NonBlankAndNotSameAsStartingValidator(startingName));
-				int result = dialog.open();
-				if (result == Window.OK) {
-					beforeAfterNames.setSecond(dialog.getValue());
-				}
-			}
-		});
-		return beforeAfterNames.getSecond();
-	}
+      Displays.pendInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            String startingName = beforeAfterNames.getFirst();
+            InputDialog dialog =
+               new InputDialog(Displays.getActiveShell(), "Name Artifact", "Enter artifact name", startingName,
+                  new NonBlankAndNotSameAsStartingValidator(startingName));
+            int result = dialog.open();
+            if (result == Window.OK) {
+               beforeAfterNames.setSecond(dialog.getValue());
+            }
+         }
+      });
+      return beforeAfterNames.getSecond();
+   }
 }

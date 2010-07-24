@@ -15,20 +15,20 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.eclipse.osee.ote.messaging.dds.ReturnCode;
 import org.eclipse.osee.ote.messaging.dds.listener.DomainParticipantListener;
 import org.eclipse.osee.ote.messaging.dds.service.DomainId;
 
 /**
- * This is the entry point of the DDS system. This is a singleton factory class used by the application to create <code>DomainParticipant</code> 's.
+ * This is the entry point of the DDS system. This is a singleton factory class used by the application to create
+ * <code>DomainParticipant</code> 's.
  * 
  * @author Robert A. Fisher
  * @author David Diepenbrock
  */
 public class DomainParticipantFactory implements EntityFactory {
    private static DomainParticipantFactory factory = null;
-   private Map<DomainId, Collection<DomainParticipant>> domainMap;
+   private final Map<DomainId, Collection<DomainParticipant>> domainMap;
 
    private DomainParticipantFactory() {
       // This map is very important since data must be sent to all
@@ -41,8 +41,9 @@ public class DomainParticipantFactory implements EntityFactory {
     * @return The instance of the <code>DomainParticipantFactory</code>
     */
    public static DomainParticipantFactory getInstance() {
-      if (factory == null)
+      if (factory == null) {
          factory = new DomainParticipantFactory();
+      }
 
       return factory;
    }
@@ -50,10 +51,11 @@ public class DomainParticipantFactory implements EntityFactory {
    /**
     * Creates a <code>DomainParticipant</code> that belongs to this <code>DomainParticipantFactory</code>
     * 
-    * @param domainId The ID of the domain that the <code>DomainParticipant</code> should belong to. All participants will receive publications from any
-    *           publisher in the domain.
+    * @param domainId The ID of the domain that the <code>DomainParticipant</code> should belong to. All participants
+    * will receive publications from any publisher in the domain.
     * @param listener The listener to attach to the <code>DomainParticipant</code>.
-    * @param threadedPublishing <b>true </b> if the participant should use a separate thread for processing publications.
+    * @param threadedPublishing <b>true </b> if the participant should use a separate thread for processing
+    * publications.
     * @return A DomainParticipant in the domainId with provided listener attached.
     */
    public DomainParticipant createParticipant(DomainId domainId, DomainParticipantListener listener, boolean threadedPublishing) {
@@ -67,7 +69,8 @@ public class DomainParticipantFactory implements EntityFactory {
       }
 
       // Get a new DomainParticipant
-      DomainParticipant participant = new DomainParticipant(domainId, domain, this.isEnabled(), listener, this, threadedPublishing);
+      DomainParticipant participant =
+         new DomainParticipant(domainId, domain, this.isEnabled(), listener, this, threadedPublishing);
 
       // Add the participant to that domain collection
       domain.add(participant);
@@ -76,8 +79,9 @@ public class DomainParticipantFactory implements EntityFactory {
    }
 
    /**
-    * Removes a <code>DomainParticipant</code> from the <code>DomainParticipantFactory</code>. If the participant contains entities the method will fail.
-    * This can be satisfied by calling {@link DomainParticipant#deleteContainedEntities()}on the participant.
+    * Removes a <code>DomainParticipant</code> from the <code>DomainParticipantFactory</code>. If the participant
+    * contains entities the method will fail. This can be satisfied by calling
+    * {@link DomainParticipant#deleteContainedEntities()}on the participant.
     * 
     * @param participant The participant to be removed.
     * @return {@link ReturnCode#OK}if successful, otherwise {@link ReturnCode#PRECONDITION_NOT_MET}.
@@ -85,33 +89,36 @@ public class DomainParticipantFactory implements EntityFactory {
    public ReturnCode deleteParticipant(DomainParticipant participant) {
       // Check the pre-conditions
       // NOTE: This can be satisfied by calling deleteContainedEntities() on the participant
-      if (participant.hasEntities())
+      if (participant.hasEntities()) {
          return ReturnCode.PRECONDITION_NOT_MET;
+      }
 
       // Remove the participant and return OK status
       Collection<DomainParticipant> domain = domainMap.get(participant.getDomainId());
 
       // If the domain doesn't exist, return ALREADY_DELETED
-      if (domain == null)
+      if (domain == null) {
          return ReturnCode.ALREADY_DELETED;
+      }
 
       // Remove the participant from the domain
       domain.remove(participant);
 
       // If the domain is empty now, then remove it from the map
-      if (domain.isEmpty())
+      if (domain.isEmpty()) {
          domainMap.remove(participant.getDomainId());
+      }
 
       return ReturnCode.OK;
    }
 
    /**
-    * Finds a <code>DomainParticipant</code> that belongs to the domain passed. If multiple <code>DomainPariticpant</code>'s are in the domain, any one of
-    * them may be returned.
+    * Finds a <code>DomainParticipant</code> that belongs to the domain passed. If multiple
+    * <code>DomainPariticpant</code>'s are in the domain, any one of them may be returned.
     * 
     * @param domainId The domain to find a <code>DomainParticipant</code> in.
-    * @return A <code>DomainParticipant</code> whose domainId matches the id provided, or NULL if the factory does not contain a participant in the provided
-    *         domain.
+    * @return A <code>DomainParticipant</code> whose domainId matches the id provided, or NULL if the factory does not
+    * contain a participant in the provided domain.
     */
    public DomainParticipant lookupParticipant(DomainId domainId) {
 
@@ -119,18 +126,20 @@ public class DomainParticipantFactory implements EntityFactory {
       Collection<DomainParticipant> domain = domainMap.get(domainId);
 
       // If the domain exists, then get the first participant from the domain
-      if (domain != null)
-         return (DomainParticipant) domain.iterator().next();
-      // Otherwise, no such participant exists
-      else
+      if (domain != null) {
+         return domain.iterator().next();
+         // Otherwise, no such participant exists
+      } else {
          return null;
+      }
    }
 
+   @Override
    public boolean isEnabled() {
       // This is always true because DomainParticipantFactory is never disabled nor disableable.
       return true;
    }
-   
+
    public static void dispose() {
       for (Collection<DomainParticipant> collection : factory.domainMap.values()) {
          for (DomainParticipant p : collection) {

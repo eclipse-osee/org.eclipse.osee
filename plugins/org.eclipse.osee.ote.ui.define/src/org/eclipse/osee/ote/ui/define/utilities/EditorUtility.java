@@ -13,6 +13,7 @@ package org.eclipse.osee.ote.ui.define.utilities;
 import java.io.File;
 import java.net.URL;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
@@ -67,7 +68,7 @@ public class EditorUtility {
          @Override
          public void done(IJobChangeEvent event) {
             org.eclipse.core.runtime.IStatus status = event.getResult();
-            if (status.equals(Status.OK_STATUS) || status.getCode() == Status.OK) {
+            if (status.equals(Status.OK_STATUS) || status.getCode() == IStatus.OK) {
                IFile file = ((RemoteResourceRequestJob) event.getJob()).getDownloadedFile();
                if (file != null && file.exists()) {
                   Program.launch(new File(file.getLocationURI()).getAbsolutePath());

@@ -24,6 +24,6 @@ public class ArtifactEmailWizard extends EmailWizard {
 
    public ArtifactEmailWizard(StateMachineArtifact sma, ArrayList<Object> toAddress) throws OseeCoreException {
       super(sma.getPreviewHtml(PreviewStyle.HYPEROPEN, PreviewStyle.NO_SUBSCRIBE_OR_FAVORITE),
-            " Regarding " + sma.getArtifactTypeName() + " - " + sma.getName(), sma.getEmailableGroups(), toAddress);
+         " Regarding " + sma.getArtifactTypeName() + " - " + sma.getName(), sma.getEmailableGroups(), toAddress);
    }
 }

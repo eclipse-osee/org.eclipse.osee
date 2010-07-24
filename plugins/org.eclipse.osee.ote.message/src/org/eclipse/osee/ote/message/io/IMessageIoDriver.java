@@ -12,10 +12,11 @@ package org.eclipse.osee.ote.message.io;
 
 /**
  * @author Ken J. Aguilar
- *
  */
 public interface IMessageIoDriver {
    void start();
+
    void stop();
+
    boolean isStarted();
 }

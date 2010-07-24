@@ -63,8 +63,8 @@ public class ArtifactEventManagerTest {
    final Set<EventBasicGuidRelation> resultEventRelations = new HashSet<EventBasicGuidRelation>();
    public static Sender resultSender = null;
    public static List<String> ignoreLoggingRemote = Arrays.asList("OEM: ArtifactEvent Loopback enabled",
-         "OEM: kickArtifactReloadEvent Loopback enabled", "OEM2: ArtifactEvent Loopback enabled",
-         "OEM2: kickArtifactReloadEvent Loopback enabled");
+      "OEM: kickArtifactReloadEvent Loopback enabled", "OEM2: ArtifactEvent Loopback enabled",
+      "OEM2: kickArtifactReloadEvent Loopback enabled");
    public static int incrementingGammaId = 2231;
 
    public class ArtifactEventListener implements IArtifactEventListener {
@@ -87,7 +87,7 @@ public class ArtifactEventManagerTest {
    }
 
    // artifact listener create for use by all tests to just capture result eventArtifacts for query
-   private ArtifactEventListener artifactEventListener = new ArtifactEventListener();
+   private final ArtifactEventListener artifactEventListener = new ArtifactEventListener();
 
    public void clearEventCollections() {
       resultEventArtifacts.clear();
@@ -143,7 +143,7 @@ public class ArtifactEventManagerTest {
       remoteInjection_relations_modifyRelationRationale(rootArt, injectArt);
 
       TestUtil.severeLoggingEnd(monitorLog,
-            (isRemoteTest() ? ignoreLoggingRemote : Arrays.asList("Duplicate relation objects")));
+         (isRemoteTest() ? ignoreLoggingRemote : Arrays.asList("Duplicate relation objects")));
    }
 
    @org.junit.Test
@@ -180,8 +180,12 @@ public class ArtifactEventManagerTest {
       }
       boolean addedFound = false, modifiedFound = false;
       for (EventBasicGuidArtifact guidArt : resultEventArtifacts) {
-         if (guidArt.getModType() == EventModType.Added) addedFound = true;
-         if (guidArt.getModType() == EventModType.Modified) modifiedFound = true;
+         if (guidArt.getModType() == EventModType.Added) {
+            addedFound = true;
+         }
+         if (guidArt.getModType() == EventModType.Modified) {
+            modifiedFound = true;
+         }
          Assert.assertEquals(newArt.getGuid(), guidArt.getGuid());
          Assert.assertEquals(newArt.getArtifactType().getGuid(), guidArt.getArtTypeGuid());
          Assert.assertEquals(newArt.getBranch().getGuid(), guidArt.getBranchGuid());
@@ -287,8 +291,12 @@ public class ArtifactEventManagerTest {
          } else {
             Assert.assertTrue(resultSender.isLocal());
          }
-         if (guidArt1.getModType() == EventModType.Deleted) deletedFound = true;
-         if (guidArt1.getModType() == EventModType.Modified) modifiedFound = true;
+         if (guidArt1.getModType() == EventModType.Deleted) {
+            deletedFound = true;
+         }
+         if (guidArt1.getModType() == EventModType.Modified) {
+            modifiedFound = true;
+         }
          Assert.assertEquals(newArt.getGuid(), guidArt1.getGuid());
          Assert.assertEquals(newArt.getArtifactType().getGuid(), guidArt1.getArtTypeGuid());
          Assert.assertEquals(newArt.getBranch().getGuid(), guidArt1.getBranchGuid());
@@ -312,8 +320,8 @@ public class ArtifactEventManagerTest {
 
       // Create fake remote event that would come in from another client
       RemotePersistEvent1 remoteEvent =
-            getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(getIncrementingRelationId(),
-                  RelationEventType.Added, CoreRelationTypes.Default_Hierarchical__Child, rootArt, injectArt);
+         getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(getIncrementingRelationId(),
+            RelationEventType.Added, CoreRelationTypes.Default_Hierarchical__Child, rootArt, injectArt);
 
       // Send
       RemoteEventManager2.getInstance().onEvent(remoteEvent);
@@ -324,7 +332,7 @@ public class ArtifactEventManagerTest {
       Assert.assertEquals("No artifact events should be sent", 0, resultEventArtifacts.size());
       Assert.assertEquals(1, resultEventRelations.size());
       Assert.assertTrue(resultSender.isRemote());
-      EventBasicGuidRelation guidRel = (EventBasicGuidRelation) resultEventRelations.iterator().next();
+      EventBasicGuidRelation guidRel = resultEventRelations.iterator().next();
       Assert.assertEquals(RelationEventType.Added, guidRel.getModType());
       Assert.assertEquals(rootArt, guidRel.getArtA());
       Assert.assertEquals(injectArt, guidRel.getArtB());
@@ -347,8 +355,8 @@ public class ArtifactEventManagerTest {
 
       // Create fake remote event that would come in from another client
       RemotePersistEvent1 remoteEvent =
-            getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(relLink.getId(),
-                  RelationEventType.Deleted, CoreRelationTypes.Default_Hierarchical__Child, rootArt, injectArt);
+         getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(relLink.getId(), RelationEventType.Deleted,
+            CoreRelationTypes.Default_Hierarchical__Child, rootArt, injectArt);
 
       // Send
       RemoteEventManager2.getInstance().onEvent(remoteEvent);
@@ -359,7 +367,7 @@ public class ArtifactEventManagerTest {
       Assert.assertEquals("No artifact events should be sent", 0, resultEventArtifacts.size());
       Assert.assertEquals(1, resultEventRelations.size());
       Assert.assertTrue(resultSender.isRemote());
-      EventBasicGuidRelation guidRel = (EventBasicGuidRelation) resultEventRelations.iterator().next();
+      EventBasicGuidRelation guidRel = resultEventRelations.iterator().next();
       Assert.assertEquals(RelationEventType.Deleted, guidRel.getModType());
       Assert.assertEquals(rootArt, guidRel.getArtA());
       Assert.assertEquals(injectArt, guidRel.getArtB());
@@ -380,8 +388,8 @@ public class ArtifactEventManagerTest {
 
       // Create fake remote event that would come in from another client
       RemotePersistEvent1 remoteEvent =
-            getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(getIncrementingRelationId(),
-                  RelationEventType.Added, CoreRelationTypes.Default_Hierarchical__Child, rootArt, injectArt);
+         getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(getIncrementingRelationId(),
+            RelationEventType.Added, CoreRelationTypes.Default_Hierarchical__Child, rootArt, injectArt);
       RemoteBasicGuidRelation1 relation = remoteEvent.getRelations().iterator().next();
       relation.setRationale(RATIONALE_STR);
 
@@ -394,7 +402,7 @@ public class ArtifactEventManagerTest {
       Assert.assertEquals("No artifact events should be sent", 0, resultEventArtifacts.size());
       Assert.assertEquals(1, resultEventRelations.size());
       Assert.assertTrue(resultSender.isRemote());
-      EventBasicGuidRelation guidRel = (EventBasicGuidRelation) resultEventRelations.iterator().next();
+      EventBasicGuidRelation guidRel = resultEventRelations.iterator().next();
       Assert.assertEquals(RelationEventType.Added, guidRel.getModType());
       Assert.assertEquals(rootArt, guidRel.getArtA());
       Assert.assertEquals(injectArt, guidRel.getArtB());
@@ -418,9 +426,8 @@ public class ArtifactEventManagerTest {
 
       // Create fake remote event that would come in from another client
       RemotePersistEvent1 remoteEvent =
-            getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(relLink.getId(),
-                  RelationEventType.ModifiedRationale, CoreRelationTypes.Default_Hierarchical__Child, rootArt,
-                  injectArt);
+         getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(relLink.getId(),
+            RelationEventType.ModifiedRationale, CoreRelationTypes.Default_Hierarchical__Child, rootArt, injectArt);
       RemoteBasicGuidRelation1 relation = remoteEvent.getRelations().iterator().next();
       relation.setRationale(NEW_RATIONALE_STR);
 
@@ -433,7 +440,7 @@ public class ArtifactEventManagerTest {
       Assert.assertEquals("No artifact events should be sent", 0, resultEventArtifacts.size());
       Assert.assertEquals(1, resultEventRelations.size());
       Assert.assertTrue(resultSender.isRemote());
-      EventBasicGuidRelation guidRel = (EventBasicGuidRelation) resultEventRelations.iterator().next();
+      EventBasicGuidRelation guidRel = resultEventRelations.iterator().next();
       Assert.assertEquals(RelationEventType.ModifiedRationale, guidRel.getModType());
       Assert.assertEquals(rootArt, guidRel.getArtA());
       Assert.assertEquals(injectArt, guidRel.getArtB());
@@ -456,7 +463,7 @@ public class ArtifactEventManagerTest {
       // Create artifact to test injection; this will also put it in cache which is necessary for it's update
       // Artifact must be stored static so it doesn't get garbage collected
       Artifact injectArt =
-            ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, BranchManager.getCommonBranch());
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, BranchManager.getCommonBranch());
       injectArt.setName(ORIG_NAME);
       injectArt.persist();
 
@@ -500,7 +507,7 @@ public class ArtifactEventManagerTest {
       AttributeChange attrChg = guidArt.getAttributeChanges().iterator().next();
       Assert.assertEquals(nameAttrId, attrChg.getAttributeId());
       Assert.assertEquals(AttributeEventModificationType.Modified,
-            AttributeEventModificationType.getType(attrChg.getModTypeGuid()));
+         AttributeEventModificationType.getType(attrChg.getModTypeGuid()));
       Assert.assertEquals(CoreAttributeTypes.NAME.getGuid(), attrChg.getAttrTypeGuid());
       Assert.assertEquals(1000, attrChg.getGammaId());
 
@@ -551,7 +558,7 @@ public class ArtifactEventManagerTest {
       AttributeChange attrChg = guidArt.getAttributeChanges().iterator().next();
       Assert.assertEquals(2343, attrChg.getAttributeId());
       Assert.assertEquals(AttributeEventModificationType.New,
-            AttributeEventModificationType.getType(attrChg.getModTypeGuid()));
+         AttributeEventModificationType.getType(attrChg.getModTypeGuid()));
       Assert.assertEquals(CoreAttributeTypes.GENERAL_STRING_DATA.getGuid(), attrChg.getAttrTypeGuid());
       Assert.assertEquals(1000, attrChg.getGammaId());
 
@@ -559,7 +566,7 @@ public class ArtifactEventManagerTest {
 
       // Validate that artifact was updated
       Assert.assertEquals(GENERAL_DATA_STRING,
-            injectArt.getSoleAttributeValueAsString(CoreAttributeTypes.GENERAL_STRING_DATA, ""));
+         injectArt.getSoleAttributeValueAsString(CoreAttributeTypes.GENERAL_STRING_DATA, ""));
       Assert.assertFalse(injectArt.isDirty());
       return injectArt;
    }
@@ -602,7 +609,7 @@ public class ArtifactEventManagerTest {
       AttributeChange attrChg = guidArt.getAttributeChanges().iterator().next();
       Assert.assertEquals(genStrAttrId, attrChg.getAttributeId());
       Assert.assertEquals(AttributeEventModificationType.Deleted,
-            AttributeEventModificationType.getType(attrChg.getModTypeGuid()));
+         AttributeEventModificationType.getType(attrChg.getModTypeGuid()));
       Assert.assertEquals(CoreAttributeTypes.GENERAL_STRING_DATA.getGuid(), attrChg.getAttrTypeGuid());
       Assert.assertEquals(1000, attrChg.getGammaId());
 
@@ -752,13 +759,13 @@ public class ArtifactEventManagerTest {
       // reload Artifact
       Assert.assertTrue(newArt.isOfType(CoreArtifactTypes.GeneralData));
       ChangeArtifactType.changeArtifactType(Arrays.asList(newArt),
-            ArtifactTypeManager.getType(CoreArtifactTypes.Heading));
+         ArtifactTypeManager.getType(CoreArtifactTypes.Heading));
 
       Thread.sleep(5000);
 
       Assert.assertEquals(1, resultEventArtifacts.size());
       EventChangeTypeBasicGuidArtifact guidArt =
-            (EventChangeTypeBasicGuidArtifact) resultEventArtifacts.iterator().next();
+         (EventChangeTypeBasicGuidArtifact) resultEventArtifacts.iterator().next();
       Assert.assertEquals(EventModType.ChangeType, guidArt.getModType());
       if (isRemoteTest()) {
          Assert.assertTrue(resultSender.isRemote());

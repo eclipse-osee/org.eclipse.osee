@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
  */
 public class ArtifactProcessing implements ITemplateTask {
 
-   private List<ITemplateTask> innerTasks;
+   private final List<ITemplateTask> innerTasks;
    private boolean outlining;
    private boolean recurseChildren;
    private CoreRelationTypes outlineRelation;
@@ -33,12 +33,11 @@ public class ArtifactProcessing implements ITemplateTask {
    private String cleanedText;
    private String artifactSetName;
 
-   private static final Matcher outlineElementsMatcher =
-         Pattern.compile("<((\\w+:)?(Outline))>(.*?)</\\1>",
-               Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher("");
-   private static final Matcher internalOutlineElementsMatcher =
-         Pattern.compile("<((\\w+:)?(HeadingAttribute|RecurseChildren|Number))>(.*?)</\\1>",
-               Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher("");
+   private static final Matcher outlineElementsMatcher = Pattern.compile("<((\\w+:)?(Outline))>(.*?)</\\1>",
+      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher("");
+   private static final Matcher internalOutlineElementsMatcher = Pattern.compile(
+      "<((\\w+:)?(HeadingAttribute|RecurseChildren|Number))>(.*?)</\\1>",
+      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher("");
 
    /**
     * @param innerTasks
@@ -59,8 +58,8 @@ public class ArtifactProcessing implements ITemplateTask {
    public void process(WordMLProducer wordMl, Artifact artifact, List<ITemplateAttributeHandler> handlers) {
 
    }
-   private static final Matcher setNameMatcher =
-         Pattern.compile("<(\\w+:)?Set_Name>(.*?)</(\\w+:)?Set_Name>", Pattern.DOTALL | Pattern.MULTILINE).matcher("");
+   private static final Matcher setNameMatcher = Pattern.compile("<(\\w+:)?Set_Name>(.*?)</(\\w+:)?Set_Name>",
+      Pattern.DOTALL | Pattern.MULTILINE).matcher("");
 
    public List<ITemplateTask> getTasks() {
       return innerTasks;

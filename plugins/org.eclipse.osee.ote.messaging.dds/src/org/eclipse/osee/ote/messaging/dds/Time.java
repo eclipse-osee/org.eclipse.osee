@@ -10,11 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.messaging.dds;
 
-
 /**
- * Provides a time class for marking time with nano-second resolution. This class
- * is not fully implemented yet to provide proper nano-second data, as it is not
- * being used yet.
+ * Provides a time class for marking time with nano-second resolution. This class is not fully implemented yet to
+ * provide proper nano-second data, as it is not being used yet.
  * 
  * @author Robert A. Fisher
  * @author David Diepenbrock
@@ -22,7 +20,7 @@ package org.eclipse.osee.ote.messaging.dds;
 public class Time {
    protected long seconds;
    protected long nanoSeconds;
-   
+
    /**
     * Creates a <code>Time</code> object with the current time accurate to the second.
     */
@@ -30,7 +28,7 @@ public class Time {
       seconds = System.currentTimeMillis() / 1000;
       nanoSeconds = 0;
    }
-   
+
    /**
     * @param seconds
     * @param nanoSeconds
@@ -40,11 +38,12 @@ public class Time {
       this.seconds = seconds;
       this.nanoSeconds = nanoSeconds;
    }
-   
+
    public void copyFrom(Time sourceTime) {
       this.seconds = sourceTime.seconds;
       this.nanoSeconds = sourceTime.nanoSeconds;
    }
+
    /**
     * @return Returns the nanoSeconds.
     */
@@ -58,11 +57,11 @@ public class Time {
    public long getSeconds() {
       return seconds;
    }
-   
+
    public long getMilliseconds() {
-      return seconds*1000 + nanoSeconds/1000;
+      return seconds * 1000 + nanoSeconds / 1000;
    }
-   
+
    protected long millisSince(Time time) {
       return this.getMilliseconds() - time.getMilliseconds();
    }

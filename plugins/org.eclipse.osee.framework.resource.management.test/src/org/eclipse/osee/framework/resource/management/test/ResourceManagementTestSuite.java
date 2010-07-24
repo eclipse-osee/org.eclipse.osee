@@ -15,8 +15,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {ResourceUtilTestSuite.class, OptionsTest.class, ResourceLocatorManagerTest.class,
-      ResourceManagerTest.class})
+@Suite.SuiteClasses({ResourceUtilTestSuite.class, OptionsTest.class, ResourceLocatorManagerTest.class,
+   ResourceManagerTest.class})
 /**
  * @author Roberto E. Escobar
  */

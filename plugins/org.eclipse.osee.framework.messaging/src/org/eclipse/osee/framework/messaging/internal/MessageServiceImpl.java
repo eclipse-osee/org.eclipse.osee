@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.messaging.NodeInfo;
  */
 public class MessageServiceImpl implements MessageService {
    private static final String VM_URI = "vm://localhost?broker.persistent=false";
-	
+
    private final NodeInfo defaultNode;
    private final Map<NodeInfo, ConnectionNode> connectionNodes;
    private final ConnectionNodeFactory factory;
@@ -39,57 +39,64 @@ public class MessageServiceImpl implements MessageService {
       this.factory = factory;
       defaultNode = new NodeInfo("osee-jms", getDefaultURI());
    }
-   
-	private URI getDefaultURI() {
-		URI defaultURI = null;
-		String uri = System.getProperty("osee.broker.primary.uri");
-		if (uri == null) {
-			uri = VM_URI;
-		}
-		try {
-			defaultURI = new URI(uri);
-		} catch (URISyntaxException ex) {
-			try {
-				defaultURI = new URI(VM_URI);
-			} catch (URISyntaxException ex1) {
-				OseeLog.log(MessageServiceImpl.class, Level.SEVERE, ex1);
-			}
-		}
-		OseeLog.log(Activator.class, Level.FINER, String.format("Default URI for message Service [%s]", defaultURI.toASCIIString()));
-		return defaultURI;
-	}
 
-	@Override
-	public ConnectionNode getDefault() throws OseeCoreException {
-		return get(defaultNode);
-	}
-   
+   private URI getDefaultURI() {
+      URI defaultURI = null;
+      String uri = System.getProperty("osee.broker.primary.uri");
+      if (uri == null) {
+         uri = VM_URI;
+      }
+      try {
+         defaultURI = new URI(uri);
+      } catch (URISyntaxException ex) {
+         try {
+            defaultURI = new URI(VM_URI);
+         } catch (URISyntaxException ex1) {
+            OseeLog.log(MessageServiceImpl.class, Level.SEVERE, ex1);
+         }
+      }
+      OseeLog.log(Activator.class, Level.FINER,
+         String.format("Default URI for message Service [%s]", defaultURI.toASCIIString()));
+      return defaultURI;
+   }
+
+   @Override
+   public ConnectionNode getDefault() throws OseeCoreException {
+      return get(defaultNode);
+   }
+
+   @Override
    public Collection<NodeInfo> getAvailableConnections() {
       return new ArrayList<NodeInfo>(connectionNodes.keySet());
    }
 
+   @Override
    public int size() {
       return connectionNodes.size();
    }
 
+   @Override
    public boolean isEmpty() {
       return connectionNodes.isEmpty();
    }
 
+   @Override
    public ConnectionNode get(NodeInfo nodeInfo) throws OseeCoreException {
       ConnectionNode node = connectionNodes.get(nodeInfo);
       if (node == null) {
-         OseeLog.log(Activator.class, Level.FINEST, String.format("going to create a new Connection Node for [%s]", nodeInfo.toString()));
+         OseeLog.log(Activator.class, Level.FINEST,
+            String.format("going to create a new Connection Node for [%s]", nodeInfo.toString()));
          node = factory.create(nodeInfo);
-         connectionNodes.put(nodeInfo, (ConnectionNode)node);
-         OseeLog.log(Activator.class, Level.FINE, String.format("Created a new Connection Node for [%s]", nodeInfo.toString()));
+         connectionNodes.put(nodeInfo, node);
+         OseeLog.log(Activator.class, Level.FINE,
+            String.format("Created a new Connection Node for [%s]", nodeInfo.toString()));
       }
       return node;
    }
 
-	void stop() {
-		for(ConnectionNode node:connectionNodes.values()){
-			node.stop();
-		}
-	}
+   void stop() {
+      for (ConnectionNode node : connectionNodes.values()) {
+         node.stop();
+      }
+   }
 }

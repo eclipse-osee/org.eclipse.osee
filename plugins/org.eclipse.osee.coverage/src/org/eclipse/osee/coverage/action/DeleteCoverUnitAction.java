@@ -68,18 +68,17 @@ public class DeleteCoverUnitAction extends Action {
          result.popup();
          return;
       }
-      if (MessageDialog.openConfirm(Displays.getActiveShell(), "Delete Coverage Unit",
-            "Delete Coverage Units")) {
+      if (MessageDialog.openConfirm(Displays.getActiveShell(), "Delete Coverage Unit", "Delete Coverage Units")) {
          try {
             SkynetTransaction transaction =
-                  new SkynetTransaction(saveable.getBranch(), "Coverage - Delete Coverage Unit");
+               new SkynetTransaction(saveable.getBranch(), "Coverage - Delete Coverage Unit");
             List<ICoverage> deleteItems = new ArrayList<ICoverage>();
             for (ICoverage coverageItem : selectedCoverageEditorItem.getSelectedCoverageEditorItems()) {
                if (coverageItem.getParent() instanceof ICoverageUnitProvider) {
                   ((ICoverageUnitProvider) coverageItem.getParent()).removeCoverageUnit((CoverageUnit) coverageItem);
                   deleteItems.add(coverageItem);
                   new OseeCoverageUnitStore((CoverageUnit) coverageItem, saveable.getBranch()).delete(transaction,
-                        false);
+                     false);
                }
             }
             transaction.execute();

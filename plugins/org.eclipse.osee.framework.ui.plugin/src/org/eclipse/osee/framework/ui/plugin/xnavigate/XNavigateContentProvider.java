@@ -13,9 +13,9 @@ package org.eclipse.osee.framework.ui.plugin.xnavigate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.internal.OseePluginUiActivator;
 
@@ -28,6 +28,7 @@ public class XNavigateContentProvider implements ITreeContentProvider {
       super();
    }
 
+   @Override
    @SuppressWarnings("unchecked")
    public Object[] getChildren(Object parentElement) {
       if (parentElement instanceof Object[]) {
@@ -45,6 +46,7 @@ public class XNavigateContentProvider implements ITreeContentProvider {
       return new Object[0];
    }
 
+   @Override
    public Object getParent(Object element) {
       if (element instanceof XNavigateItem) {
          return ((XNavigateItem) element).getParent();
@@ -52,24 +54,28 @@ public class XNavigateContentProvider implements ITreeContentProvider {
       return null;
    }
 
+   @Override
    public boolean hasChildren(Object element) {
       if (element instanceof XNavigateItem) {
          try {
             return ((XNavigateItem) element).hasChildren();
          } catch (Exception ex) {
-            OseeLog.log(OseePluginUiActivator.class, OseeLevel.SEVERE, ex);
+            OseeLog.log(OseePluginUiActivator.class, Level.SEVERE, ex);
          }
       }
       return getChildren(element).length > 0;
    }
 
+   @Override
    public Object[] getElements(Object inputElement) {
       return getChildren(inputElement);
    }
 
+   @Override
    public void dispose() {
    }
 
+   @Override
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
    }
 

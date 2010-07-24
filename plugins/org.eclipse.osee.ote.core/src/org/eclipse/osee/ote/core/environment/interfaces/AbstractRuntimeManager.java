@@ -29,7 +29,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.jdk.core.util.ChecksumUtil;
@@ -68,11 +67,10 @@ public class AbstractRuntimeManager implements IRuntimeLibraryManager {
    private URLClassLoader scriptClassLoader;
 
    private volatile boolean cleanUpNeeded = true;
-   
+
    private final BundleContext context;
    private final PackageAdmin packageAdmin;
-   
-   
+
    public AbstractRuntimeManager(PackageAdmin packageAdmin, BundleContext context) {
       this.context = context;
       this.packageAdmin = packageAdmin;
@@ -100,13 +98,12 @@ public class AbstractRuntimeManager implements IRuntimeLibraryManager {
          if (jar != null) {
             classpaths.add(jar.toURI().toURL());
          } else {
-            OseeLog.log(AbstractRuntimeManager.class, Level.FINE,
-                  "The null jar file for version " + version);
+            OseeLog.log(AbstractRuntimeManager.class, Level.FINE, "The null jar file for version " + version);
          }
       }
       loader =
-            new OseeURLClassLoader("Runtime Library ClassLoader", classpaths.toArray(new URL[classpaths.size()]),
-                  classLoader);
+         new OseeURLClassLoader("Runtime Library ClassLoader", classpaths.toArray(new URL[classpaths.size()]),
+            classLoader);
 
       return loader;
    }
@@ -115,6 +112,7 @@ public class AbstractRuntimeManager implements IRuntimeLibraryManager {
       return loader;
    }
 
+   @Override
    public boolean isMessageJarAvailable(String version) {
       boolean retVal = false;
 
@@ -133,84 +131,84 @@ public class AbstractRuntimeManager implements IRuntimeLibraryManager {
       return retVal;
    }
 
-//TODO MAKE SURE TO CHECK BUNDLE STATE IS RESOLVED OR ACTIVE
+   //TODO MAKE SURE TO CHECK BUNDLE STATE IS RESOLVED OR ACTIVE
    @Override
    public boolean isBundleAvailable(String symbolicName, String version, byte[] md5Digest) {
-	  Bundle installedBundle = Platform.getBundle(symbolicName);
-	  if(installedBundle != null && !installedBundles.contains(installedBundle)){
-		  return true;
-	  } else {
-	      Bundle[] bundles = Platform.getBundles(symbolicName, version);
-	      if (bundles == null) {
-	         return false;
-	      }
-	      for (Bundle bundle : bundles) {
-	         String bundleSymbolicName = bundle.getSymbolicName();
-	         if (bundleSymbolicName.equals(symbolicName) && bundle.getHeaders().get("Bundle-Version").equals(version)) {
-	            if (bundleNameToMd5Map.containsKey(bundleSymbolicName)) {
-	               // check for bundle binary equality
-	               if (Arrays.equals(bundleNameToMd5Map.get(bundleSymbolicName), md5Digest)) {
-	                  return true;
-	               }
-	            } else {
-	               // we do not have a md5 hash for this bundle so we need to create one
-	               try {
-	                  InputStream in = new FileInputStream(FileLocator.getBundleFile(bundle));
-	                  try {
-	                     byte[] digest = ChecksumUtil.createChecksum(in, "MD5");
-	                     if (Arrays.equals(digest, md5Digest)) {
-	                        bundleNameToMd5Map.put(bundle.getSymbolicName(), digest);
-	                        return true;
-	                     }
-	                  } finally {
-	                     in.close();
-	                  }
-	               } catch (Exception e) {
-	                  OseeLog.log(AbstractRuntimeManager.class, Level.SEVERE,
-	                        "could not determine binary equality of bundles", e);
-	               }
-	            }
-	         }
-	      }
-	  }
+      Bundle installedBundle = Platform.getBundle(symbolicName);
+      if (installedBundle != null && !installedBundles.contains(installedBundle)) {
+         return true;
+      } else {
+         Bundle[] bundles = Platform.getBundles(symbolicName, version);
+         if (bundles == null) {
+            return false;
+         }
+         for (Bundle bundle : bundles) {
+            String bundleSymbolicName = bundle.getSymbolicName();
+            if (bundleSymbolicName.equals(symbolicName) && bundle.getHeaders().get("Bundle-Version").equals(version)) {
+               if (bundleNameToMd5Map.containsKey(bundleSymbolicName)) {
+                  // check for bundle binary equality
+                  if (Arrays.equals(bundleNameToMd5Map.get(bundleSymbolicName), md5Digest)) {
+                     return true;
+                  }
+               } else {
+                  // we do not have a md5 hash for this bundle so we need to create one
+                  try {
+                     InputStream in = new FileInputStream(FileLocator.getBundleFile(bundle));
+                     try {
+                        byte[] digest = ChecksumUtil.createChecksum(in, "MD5");
+                        if (Arrays.equals(digest, md5Digest)) {
+                           bundleNameToMd5Map.put(bundle.getSymbolicName(), digest);
+                           return true;
+                        }
+                     } finally {
+                        in.close();
+                     }
+                  } catch (Exception e) {
+                     OseeLog.log(AbstractRuntimeManager.class, Level.SEVERE,
+                        "could not determine binary equality of bundles", e);
+                  }
+               }
+            }
+         }
+      }
       return false;
    }
 
    @Override
    public BundleConfigurationReport checkBundleConfiguration(Collection<BundleDescription> bundles) throws Exception {
-	   List<BundleDescription> missing = new ArrayList<BundleDescription>();
-	   List<BundleDescription> versionMismatch = new ArrayList<BundleDescription>();
-	   List<BundleDescription> partOfInstallation = new ArrayList<BundleDescription>();
-	   for (BundleDescription bundleDescription : bundles) {
-		   boolean exists = false;
-		   for (Bundle bundle : runningBundles) {
-			   String bundleSymbolicName = bundle.getSymbolicName();
-			   if (bundleSymbolicName.equals(bundleDescription.getSymbolicName())){
-				   exists = true;
-				   if(bundleNameToMd5Map.containsKey(bundleSymbolicName)){
-					   if(bundle.getHeaders().get("Bundle-Version").equals(bundleDescription.getVersion()) &&
-							   Arrays.equals(bundleNameToMd5Map.get(bundleSymbolicName), bundleDescription.getMd5Digest())) {
+      List<BundleDescription> missing = new ArrayList<BundleDescription>();
+      List<BundleDescription> versionMismatch = new ArrayList<BundleDescription>();
+      List<BundleDescription> partOfInstallation = new ArrayList<BundleDescription>();
+      for (BundleDescription bundleDescription : bundles) {
+         boolean exists = false;
+         for (Bundle bundle : runningBundles) {
+            String bundleSymbolicName = bundle.getSymbolicName();
+            if (bundleSymbolicName.equals(bundleDescription.getSymbolicName())) {
+               exists = true;
+               if (bundleNameToMd5Map.containsKey(bundleSymbolicName)) {
+                  if (bundle.getHeaders().get("Bundle-Version").equals(bundleDescription.getVersion()) && Arrays.equals(
+                     bundleNameToMd5Map.get(bundleSymbolicName), bundleDescription.getMd5Digest())) {
 
-					   } else {
-						   versionMismatch.add(bundleDescription);	
-					   }
-				   } else {
-					   versionMismatch.add(bundleDescription);
-				   }
-			   }
-		   }
-		   if (!exists) {
-			   Bundle bundle = Platform.getBundle(bundleDescription.getSymbolicName());
-			   if (bundle == null) {
-				   missing.add(bundleDescription);
-			   } else {
-				   partOfInstallation.add(bundleDescription);
-			   }
-		   }
-	   }
-	   return new BundleConfigurationReport(missing, versionMismatch, partOfInstallation);
+                  } else {
+                     versionMismatch.add(bundleDescription);
+                  }
+               } else {
+                  versionMismatch.add(bundleDescription);
+               }
+            }
+         }
+         if (!exists) {
+            Bundle bundle = Platform.getBundle(bundleDescription.getSymbolicName());
+            if (bundle == null) {
+               missing.add(bundleDescription);
+            } else {
+               partOfInstallation.add(bundleDescription);
+            }
+         }
+      }
+      return new BundleConfigurationReport(missing, versionMismatch, partOfInstallation);
    }
-   
+
    @Override
    public void loadBundles(Collection<BundleDescription> bundles) throws Exception {
       cleanUpNeeded = true;
@@ -232,13 +230,13 @@ public class AbstractRuntimeManager implements IRuntimeLibraryManager {
             if (!exists) {
                Bundle bundle = Platform.getBundle(bundleDescription.getSymbolicName());
                if (bundle == null) {
-            	   Bundle installedBundle;
-                  if(bundleDescription.isLocalFile()){
-                	  installedBundle = context.installBundle(bundleDescription.getLocation());
+                  Bundle installedBundle;
+                  if (bundleDescription.isLocalFile()) {
+                     installedBundle = context.installBundle(bundleDescription.getLocation());
                   } else {
-	            	   InputStream bundleData = getBundleInputStream(bundleDescription);
-	            	   installedBundle = context.installBundle("OTE-" + bundleName, bundleData);
-	                   bundleData.close();
+                     InputStream bundleData = getBundleInputStream(bundleDescription);
+                     installedBundle = context.installBundle("OTE-" + bundleName, bundleData);
+                     bundleData.close();
                   }
                   bundleNameToMd5Map.put(bundleName, bundleDescription.getMd5Digest());
                   installedBundles.add(installedBundle);
@@ -247,7 +245,7 @@ public class AbstractRuntimeManager implements IRuntimeLibraryManager {
 
          } catch (Throwable th) {
             OseeLog.log(AbstractRuntimeManager.class, Level.SEVERE, String.format("Unable to load [%s].", bundleName),
-                  th);
+               th);
          }
       }
 
@@ -255,8 +253,8 @@ public class AbstractRuntimeManager implements IRuntimeLibraryManager {
          runtimeLibraryLoader = getClassLoader(new String[0]);
       }
       scriptClassLoader =
-            new OseeURLClassLoader("Script ClassLoader", Lib.getUrlFromString(new String[] {""}),
-                  this.runtimeLibraryLoader);
+         new OseeURLClassLoader("Script ClassLoader", Lib.getUrlFromString(new String[] {""}),
+            this.runtimeLibraryLoader);
       transitionInstalledBundles();
    }
 
@@ -291,19 +289,20 @@ public class AbstractRuntimeManager implements IRuntimeLibraryManager {
       try {
          File dir = getJarCache();
          File anticipatedJarFile =
-               new File(dir, bundleDescription.getSymbolicName() + "_" + bundleDescription.getVersion() + ".jar");
+            new File(dir, bundleDescription.getSymbolicName() + "_" + bundleDescription.getVersion() + ".jar");
 
          ensureJarFileOnDisk(bundleDescription, anticipatedJarFile);
 
-         OseeLog.log(AbstractRuntimeManager.class, Level.FINEST, String.format("Looking for [%s] on disk.", anticipatedJarFile.getAbsolutePath()));
-         
+         OseeLog.log(AbstractRuntimeManager.class, Level.FINEST,
+            String.format("Looking for [%s] on disk.", anticipatedJarFile.getAbsolutePath()));
+
          return new FileInputStream(anticipatedJarFile);
       } catch (Exception ex) {
          OseeLog.log(
-               AbstractRuntimeManager.class,
-               Level.WARNING,
-               "Failed to acquire system lib from cache. " + "Fell back to direct acquisition from server with out caching",
-               ex);
+            AbstractRuntimeManager.class,
+            Level.WARNING,
+            "Failed to acquire system lib from cache. " + "Fell back to direct acquisition from server with out caching",
+            ex);
 
          return bundleDescription.getBundleData();
       }
@@ -337,8 +336,8 @@ public class AbstractRuntimeManager implements IRuntimeLibraryManager {
          try {
             runtimeLibraryLoader = getClassLoader(new String[0]);
             scriptClassLoader =
-                  new OseeURLClassLoader("Script ClassLoader", Lib.getUrlFromString(new String[] {""}),
-                        this.runtimeLibraryLoader);
+               new OseeURLClassLoader("Script ClassLoader", Lib.getUrlFromString(new String[] {""}),
+                  this.runtimeLibraryLoader);
          } catch (IOException ex) {
             OseeLog.log(AbstractRuntimeManager.class, Level.SEVERE, ex);
          }
@@ -399,7 +398,6 @@ public class AbstractRuntimeManager implements IRuntimeLibraryManager {
       return jarCache;
    }
 
-
    /**
     * @throws BundleException
     * @throws BundleResolveException
@@ -409,28 +407,28 @@ public class AbstractRuntimeManager implements IRuntimeLibraryManager {
 
       // Make sure that all installed bundles have been resolved so that
       // the export class loader has access to their classes if necessary.
-   	  try{
-   		  resolveBundles();
-   	  } catch (Throwable th){
-   		  th.printStackTrace();
-   		  OseeLog.log(AbstractRuntimeManager.class, Level.SEVERE, th);
-   	  }
+      try {
+         resolveBundles();
+      } catch (Throwable th) {
+         th.printStackTrace();
+         OseeLog.log(AbstractRuntimeManager.class, Level.SEVERE, th);
+      }
 
       while (iter.hasNext()) {
          Bundle bundle = iter.next();
 
          try {
-            String oteActivationPolicy = (String) bundle.getHeaders().get(OTE_ACTIVATION_POLICY);
-//            if ("early".equalsIgnoreCase(oteActivationPolicy)) {
-//               bundle.start();
-//            }
+            bundle.getHeaders().get(OTE_ACTIVATION_POLICY);
+            //            if ("early".equalsIgnoreCase(oteActivationPolicy)) {
+            //               bundle.start();
+            //            }
             bundle.start();
 
             // We got here because bundle.start did not exception
             runningBundles.add(bundle);
          } catch (BundleException ex) {
-        	OseeLog.log(AbstractRuntimeManager.class, Level.SEVERE, ex);
-//            throw new BundleException("Error trying to start bundle " + bundle.getSymbolicName() + ": " + ex, ex);
+            OseeLog.log(AbstractRuntimeManager.class, Level.SEVERE, ex);
+            //            throw new BundleException("Error trying to start bundle " + bundle.getSymbolicName() + ": " + ex, ex);
          } finally {
             iter.remove();
          }
@@ -462,10 +460,10 @@ public class AbstractRuntimeManager implements IRuntimeLibraryManager {
                // If resolve failed then the call to start should have forced a BundleException
                // and this code should never be reached
                OseeLog.log(AbstractRuntimeManager.class, Level.SEVERE,
-                     "Forced to start bundle " + bundle.getSymbolicName() + " to get it resolved, should never occur!");
+                  "Forced to start bundle " + bundle.getSymbolicName() + " to get it resolved, should never occur!");
             } catch (BundleException ex) {
                resolveExceptions.add(new BundleException(
-                     "Error trying to resolve bundle " + bundle.getSymbolicName() + ": " + ex, ex));
+                  "Error trying to resolve bundle " + bundle.getSymbolicName() + ": " + ex, ex));
             }
          }
       }
@@ -487,23 +485,21 @@ public class AbstractRuntimeManager implements IRuntimeLibraryManager {
          }
       }
       if (nonMatchingVersions.size() > 0) {
-         return new ReturnStatus(
-               String.format(
-                     "Bundle versions [%s] were not found in the currently configured environment that is running with [%s].",
-                     Arrays.deepToString(nonMatchingVersions.toArray()), Arrays.deepToString(currentJarVersions)),
-               false);
+         return new ReturnStatus(String.format(
+            "Bundle versions [%s] were not found in the currently configured environment that is running with [%s].",
+            Arrays.deepToString(nonMatchingVersions.toArray()), Arrays.deepToString(currentJarVersions)), false);
       }
       return new ReturnStatus(String.format("Jar Versions [%s] are already loaded.", Arrays.deepToString(jarVersions)),
-            true);
+         true);
    }
 
    private void computeRunningJarVersions() {
       List<String> versions = new ArrayList<String>();
       for (Bundle bundle : runningBundles) {
          String versionStr =
-               OteUtil.generateBundleVersionString((String) bundle.getHeaders().get("Implementation-Version"),
-                     bundle.getSymbolicName(), (String) bundle.getHeaders().get("Bundle-Version"),
-                     bundleNameToMd5Map.get(bundle.getSymbolicName()));
+            OteUtil.generateBundleVersionString((String) bundle.getHeaders().get("Implementation-Version"),
+               bundle.getSymbolicName(), (String) bundle.getHeaders().get("Bundle-Version"),
+               bundleNameToMd5Map.get(bundle.getSymbolicName()));
          versions.add(versionStr);
       }
       if (versions.size() > 0) {
@@ -512,10 +508,12 @@ public class AbstractRuntimeManager implements IRuntimeLibraryManager {
       }
    }
 
+   @Override
    public ReturnStatus isRunningJarVersions(String[] versions) {
       return checkCurrentJarVersions(versions);
    }
 
+   @Override
    public void addJarToClassLoader(byte[] jarData) throws IOException {
       File dir = getJarCache();
       File jar = File.createTempFile("runtimeLibrary_", ".jar", dir);
@@ -523,8 +521,9 @@ public class AbstractRuntimeManager implements IRuntimeLibraryManager {
       availableJars.put(Lib.getJarFileVersion(jar.getAbsolutePath()), jar);
    }
 
+   @Override
    public void resetScriptLoader(String[] classPaths) throws Exception {
-	   cleanUpNeeded = true;
+      cleanUpNeeded = true;
       initClassloadersWithNoURLs();
       if (scriptClassLoader == null) {
          throw new IllegalStateException("Script Class Loader not yet created");
@@ -533,11 +532,12 @@ public class AbstractRuntimeManager implements IRuntimeLibraryManager {
          // TODO do we need some cleanup here
       }
       scriptClassLoader =
-            new OseeURLClassLoader("Script ClassLoader", Lib.getUrlFromString(classPaths), this.runtimeLibraryLoader);
+         new OseeURLClassLoader("Script ClassLoader", Lib.getUrlFromString(classPaths), this.runtimeLibraryLoader);
    }
 
+   @Override
    public Class<?> loadFromScriptClassLoader(String path) throws ClassNotFoundException {
-	   cleanUpNeeded = true;
+      cleanUpNeeded = true;
       initClassloadersWithNoURLs();
       if (scriptClassLoader == null) {
          throw new IllegalStateException("Script Class Loader not yet created");
@@ -546,29 +546,31 @@ public class AbstractRuntimeManager implements IRuntimeLibraryManager {
       GCHelper.getGCHelper().addRefWatch(scriptClass);
       return scriptClass;
    }
-   
-   public Class<?> loadClass(String name, Version version) throws ClassNotFoundException{
-	   ExportedPackage[] exportedPackages = packageAdmin.getExportedPackages(getPackageFromClass(name));
-	   for(ExportedPackage exportedPackage:exportedPackages){
-		   Bundle bundle = exportedPackage.getExportingBundle();
-		   if(bundle.getVersion().equals(version)){
-			   return bundle.loadClass(name);
-		   }
-	   }
-	   return null;
-   }
-   
-   private String getPackageFromClass(String clazz){
-	   int index = clazz.lastIndexOf(".");
-	   if(index > 0){
-		   return clazz.substring(0, index);
-	   } else {
-		   return "";
-	   }
+
+   @Override
+   public Class<?> loadClass(String name, Version version) throws ClassNotFoundException {
+      ExportedPackage[] exportedPackages = packageAdmin.getExportedPackages(getPackageFromClass(name));
+      for (ExportedPackage exportedPackage : exportedPackages) {
+         Bundle bundle = exportedPackage.getExportingBundle();
+         if (bundle.getVersion().equals(version)) {
+            return bundle.loadClass(name);
+         }
+      }
+      return null;
    }
 
+   private String getPackageFromClass(String clazz) {
+      int index = clazz.lastIndexOf(".");
+      if (index > 0) {
+         return clazz.substring(0, index);
+      } else {
+         return "";
+      }
+   }
+
+   @Override
    public Class<?> loadFromRuntimeLibraryLoader(String path) throws ClassNotFoundException {
-	   cleanUpNeeded = true;
+      cleanUpNeeded = true;
       initClassloadersWithNoURLs();
       if (runtimeLibraryLoader == null) {
          throw new IllegalStateException("The message/runtime library loader has not been configured");
@@ -578,12 +580,12 @@ public class AbstractRuntimeManager implements IRuntimeLibraryManager {
       return clazz;
    }
 
+   @Override
    public void cleanup() {
-	   if (!cleanUpNeeded) {
-		   return;
-	   }
-	   cleanUpNeeded = false;
-
+      if (!cleanUpNeeded) {
+         return;
+      }
+      cleanUpNeeded = false;
 
       for (Bundle bundle : installedBundles) {
          try {
@@ -617,6 +619,7 @@ public class AbstractRuntimeManager implements IRuntimeLibraryManager {
       return availableJars.get(version);
    }
 
+   @Override
    public Element toXml(Document doc) {
       Element el = doc.createElement("RuntimeVersions");
 
@@ -644,10 +647,12 @@ public class AbstractRuntimeManager implements IRuntimeLibraryManager {
       return el;
    }
 
+   @Override
    public void addRuntimeLibraryListener(RuntimeLibraryListener listener) {
       listeners.add(listener);
    }
 
+   @Override
    public void removeRuntimeLibraryListener(RuntimeLibraryListener listener) {
       listeners.remove(listener);
    }

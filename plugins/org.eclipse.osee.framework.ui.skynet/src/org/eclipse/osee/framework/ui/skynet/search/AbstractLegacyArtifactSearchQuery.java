@@ -27,6 +27,7 @@ public abstract class AbstractLegacyArtifactSearchQuery extends AbstractArtifact
 
    protected abstract Collection<Artifact> getArtifacts() throws Exception;
 
+   @Override
    public IStatus run(final IProgressMonitor pm) {
       setIsDoneRunning(false);
       aResult.removeAll();

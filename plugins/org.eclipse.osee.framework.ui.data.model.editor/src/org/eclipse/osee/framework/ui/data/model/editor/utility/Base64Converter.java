@@ -15,9 +15,9 @@ public class Base64Converter {
    private static final byte equalSign = (byte) '=';
 
    static char digits[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', //
-         'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', //
-         'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', //
-         'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'};
+      'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', //
+      'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', //
+      'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'};
 
    /**
     * This method decodes the byte array in base 64 encoding into a char array Base 64 encoding has to be according to
@@ -27,10 +27,13 @@ public class Base64Converter {
     * @return the decoded byte array
     */
    public static byte[] decode(byte[] data) {
-      if (data.length == 0) return data;
+      if (data.length == 0) {
+         return data;
+      }
       int lastRealDataIndex = data.length - 1;
-      while (data[lastRealDataIndex] == equalSign)
+      while (data[lastRealDataIndex] == equalSign) {
          lastRealDataIndex--;
+      }
       // original data digit is 8 bits long, but base64 digit is 6 bits long
       int padBytes = data.length - 1 - lastRealDataIndex;
       int byteLength = data.length * 6 / 8 - padBytes;
@@ -44,8 +47,9 @@ public class Base64Converter {
       for (int i = 0; i < resultChunks; i++) {
          allBits = 0;
          // Loop 4 times gathering input bits (4 * 6 = 24)
-         for (int j = 0; j < 4; j++)
-            allBits = (allBits << 6) | decodeDigit(data[dataIndex++]);
+         for (int j = 0; j < 4; j++) {
+            allBits = allBits << 6 | decodeDigit(data[dataIndex++]);
+         }
          // Loop 3 times generating output bits (3 * 8 = 24)
          for (int j = resultIndex + 2; j >= resultIndex; j--) {
             result[j] = (byte) (allBits & 0xff); // Bottom 8 bits
@@ -62,8 +66,9 @@ public class Base64Converter {
             // Or: 2 bytes of result data
             allBits = 0;
             // Loop 3 times gathering input bits
-            for (int j = 0; j < 3; j++)
-               allBits = (allBits << 6) | decodeDigit(data[dataIndex++]);
+            for (int j = 0; j < 3; j++) {
+               allBits = allBits << 6 | decodeDigit(data[dataIndex++]);
+            }
             // NOTE - The code below ends up being equivalent to allBits =
             // allBits>>>2
             // But we code it in a non-optimized way for clarity
@@ -84,8 +89,9 @@ public class Base64Converter {
             // Or: 1 byte of result data
             allBits = 0;
             // Loop 2 times gathering input bits
-            for (int j = 0; j < 2; j++)
-               allBits = (allBits << 6) | decodeDigit(data[dataIndex++]);
+            for (int j = 0; j < 2; j++) {
+               allBits = allBits << 6 | decodeDigit(data[dataIndex++]);
+            }
             // NOTE - The code below ends up being equivalent to allBits =
             // allBits>>>4
             // But we code it in a non-optimized way for clarity
@@ -111,9 +117,15 @@ public class Base64Converter {
     */
    static int decodeDigit(byte data) {
       char charData = (char) data;
-      if (charData <= 'Z' && charData >= 'A') return charData - 'A';
-      if (charData <= 'z' && charData >= 'a') return charData - 'a' + 26;
-      if (charData <= '9' && charData >= '0') return charData - '0' + 52;
+      if (charData <= 'Z' && charData >= 'A') {
+         return charData - 'A';
+      }
+      if (charData <= 'z' && charData >= 'a') {
+         return charData - 'a' + 26;
+      }
+      if (charData <= '9' && charData >= '0') {
+         return charData - '0' + 52;
+      }
       switch (charData) {
          case '+':
             return 62;
@@ -133,9 +145,9 @@ public class Base64Converter {
     */
    public static byte[] encode(byte[] data) {
       int sourceChunks = data.length / 3;
-      int len = ((data.length + 2) / 3) * 4;
+      int len = (data.length + 2) / 3 * 4;
       byte[] result = new byte[len];
-      int extraBytes = data.length - (sourceChunks * 3);
+      int extraBytes = data.length - sourceChunks * 3;
       // Each 4 bytes of input (encoded) we end up with 3 bytes of output
       int dataIndex = 0;
       int resultIndex = 0;
@@ -143,8 +155,9 @@ public class Base64Converter {
       for (int i = 0; i < sourceChunks; i++) {
          allBits = 0;
          // Loop 3 times gathering input bits (3 * 8 = 24)
-         for (int j = 0; j < 3; j++)
-            allBits = (allBits << 8) | (data[dataIndex++] & 0xff);
+         for (int j = 0; j < 3; j++) {
+            allBits = allBits << 8 | data[dataIndex++] & 0xff;
+         }
          // Loop 4 times generating output bits (4 * 6 = 24)
          for (int j = resultIndex + 3; j >= resultIndex; j--) {
             result[j] = (byte) digits[(allBits & 0x3f)]; // Bottom
@@ -174,7 +187,7 @@ public class Base64Converter {
             break;
          case 2:
             allBits = data[dataIndex++]; // actual byte
-            allBits = (allBits << 8) | (data[dataIndex++] & 0xff); // actual
+            allBits = allBits << 8 | data[dataIndex++] & 0xff; // actual
             // byte
             allBits = allBits << 8; // 8 bits of zeroes
             // Loop 4 times generating output bits (4 * 6 = 24)

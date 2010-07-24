@@ -30,7 +30,7 @@ import org.eclipse.ui.PlatformUI;
  */
 public class KillServiceAction extends Action implements ISelectionChangedListener {
 
-   private IServiceManager<TreeParent> mainWindow;
+   private final IServiceManager<TreeParent> mainWindow;
 
    public KillServiceAction(IServiceManager<TreeParent> mainWindow) {
       super();
@@ -40,36 +40,38 @@ public class KillServiceAction extends Action implements ISelectionChangedListen
       setText("Kill Service");
       setToolTipText("Shutdown the selected service.");
       setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(
-            ISharedImages.IMG_OBJS_ERROR_TSK));
+         ISharedImages.IMG_OBJS_ERROR_TSK));
    }
 
+   @Override
    public void run() {
       ISelection sel = mainWindow.getServicesViewer().getViewer().getSelection();
       if (!sel.isEmpty()) {
          TreeObject treeObject = (TreeObject) ((StructuredSelection) sel).getFirstElement();
          if (treeObject instanceof ServiceNode) {
-            ServiceNode serviceNode = ((ServiceNode) treeObject);
+            ServiceNode serviceNode = (ServiceNode) treeObject;
             Object service = serviceNode.getServiceItem().service;
             if (service instanceof IService) {
                try {
                   ((IService) service).kill();
                } catch (RemoteException ex) {
                   MessageDialog.openError(
-                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                        "Kill Service Error",
-                        "Unable to kill [" + serviceNode.getName() + "] service.\n" + "Service may no longer be available.");
+                     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                     "Kill Service Error",
+                     "Unable to kill [" + serviceNode.getName() + "] service.\n" + "Service may no longer be available.");
                }
             }
          }
       }
    }
 
+   @Override
    public void selectionChanged(SelectionChangedEvent event) {
       StructuredSelection selection = (StructuredSelection) event.getSelection();
       if (!selection.isEmpty()) {
          TreeObject selectedObject = (TreeObject) selection.getFirstElement();
          if (selectedObject instanceof ServiceNode) {
-            ServiceNode serviceNode = ((ServiceNode) selectedObject);
+            ServiceNode serviceNode = (ServiceNode) selectedObject;
             Object service = serviceNode.getServiceItem().service;
             if (service instanceof IService) {
                this.setEnabled(true);

@@ -32,8 +32,8 @@ public class V0_8_3Transformer implements IOseeExchangeVersionTransformer {
       tableToColumns.put("osee_branch", "<column id=\"branch_state\" type=\"INTEGER\" />\n");
       processor.transform(ExportItem.EXPORT_DB_SCHEMA, new DbSchemaRuleAddColumn(tableToColumns));
 
-      processor.transform(ExportItem.EXPORT_DB_SCHEMA, new ReplaceAll(
-            Pattern.compile("\\s+<table name=\"osee_\\w+_type\".*?</table>", Pattern.DOTALL), ""));
+      processor.transform(ExportItem.EXPORT_DB_SCHEMA,
+         new ReplaceAll(Pattern.compile("\\s+<table name=\"osee_\\w+_type\".*?</table>", Pattern.DOTALL), ""));
 
       processor.transform(ExportItem.OSEE_BRANCH_DATA, new V0_8_3_BranchRule());
       return getMaxVersion().toString();

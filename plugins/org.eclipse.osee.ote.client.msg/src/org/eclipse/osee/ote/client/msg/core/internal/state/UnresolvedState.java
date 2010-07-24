@@ -23,82 +23,82 @@ import org.eclipse.osee.ote.message.tool.MessageMode;
 
 /**
  * @author Ken J. Aguilar
- *
  */
 public class UnresolvedState extends AbstractSubscriptionState {
 
-	private DataType type;
+   private DataType type;
 
-	private final String msgClassName;
-	private MessageInstance instance = null;
-	
-	public UnresolvedState(String msgClassName, MessageSubscription subscription, DataType type, MessageMode mode) {
-		super(subscription, type, mode);
-		this.type = type;
-		this.msgClassName = msgClassName;
-	}
+   private final String msgClassName;
+   private MessageInstance instance = null;
 
-	public UnresolvedState(String msgClassName, AbstractSubscriptionState previousState) {
-		super(previousState);
-		this.msgClassName = msgClassName;
-	}
-	@Override
-	public Message getMessage() {
-		return instance != null ? instance.getMessage() : null;
-	}
+   public UnresolvedState(String msgClassName, MessageSubscription subscription, DataType type, MessageMode mode) {
+      super(subscription, type, mode);
+      this.type = type;
+      this.msgClassName = msgClassName;
+   }
 
-	@Override
-	public String getMsgClassName() {
-		return msgClassName;
-	}
+   public UnresolvedState(String msgClassName, AbstractSubscriptionState previousState) {
+      super(previousState);
+      this.msgClassName = msgClassName;
+   }
 
-	@Override
-	public ISubscriptionState onMessageDbFound(AbstractMessageDataBase msgDB) {
-		try {
-			instance = msgDB.acquireInstance(msgClassName, getMode(), getMemType());
-			this.type = instance.getType();
-			getSubscription().notifyResolved();
-			return new InactiveState(instance, msgDB, this);
-		} catch (Exception e) {
-			OseeLog.log(UnresolvedState.class, Level.SEVERE, "problems acquring instance for " + getMsgClassName(), e);
-			getSubscription().notifyInvalidated();
-			return this;
-		}
-		
-	}
+   @Override
+   public Message getMessage() {
+      return instance != null ? instance.getMessage() : null;
+   }
 
-	@Override
-	public DataType getMemType() {
-		return type;
-	}
-	
-	@Override
-	public ISubscriptionState onMessageDbClosing(AbstractMessageDataBase msgDb) {
-		return this;
-	}
+   @Override
+   public String getMsgClassName() {
+      return msgClassName;
+   }
 
-	@Override
-	public ISubscriptionState onActivated() {
-		return this;
-	}
+   @Override
+   public ISubscriptionState onMessageDbFound(AbstractMessageDataBase msgDB) {
+      try {
+         instance = msgDB.acquireInstance(msgClassName, getMode(), getMemType());
+         this.type = instance.getType();
+         getSubscription().notifyResolved();
+         return new InactiveState(instance, msgDB, this);
+      } catch (Exception e) {
+         OseeLog.log(UnresolvedState.class, Level.SEVERE, "problems acquring instance for " + getMsgClassName(), e);
+         getSubscription().notifyInvalidated();
+         return this;
+      }
 
-	@Override
-	public ISubscriptionState onDeactivated() {
-		return this;
-	}
+   }
 
-	@Override
-	public Set<DataType> getAvailableTypes() {
-		return new HashSet<DataType>();
-	}
+   @Override
+   public DataType getMemType() {
+      return type;
+   }
 
-	@Override
-	public boolean isActive() {
-		return false;
-	}
+   @Override
+   public ISubscriptionState onMessageDbClosing(AbstractMessageDataBase msgDb) {
+      return this;
+   }
 
-	@Override
-	public boolean isResolved() {
-		return instance != null;
-	}
+   @Override
+   public ISubscriptionState onActivated() {
+      return this;
+   }
+
+   @Override
+   public ISubscriptionState onDeactivated() {
+      return this;
+   }
+
+   @Override
+   public Set<DataType> getAvailableTypes() {
+      return new HashSet<DataType>();
+   }
+
+   @Override
+   public boolean isActive() {
+      return false;
+   }
+
+   @Override
+   public boolean isResolved() {
+      return instance != null;
+   }
 }

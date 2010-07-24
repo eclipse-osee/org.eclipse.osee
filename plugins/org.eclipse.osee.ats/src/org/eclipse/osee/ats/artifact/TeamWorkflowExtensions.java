@@ -51,8 +51,7 @@ public class TeamWorkflowExtensions {
    }
 
    /*
-    * due to lazy initialization, this function is non-reentrant
-    * therefore, the synchronized keyword is necessary
+    * due to lazy initialization, this function is non-reentrant therefore, the synchronized keyword is necessary
     */
    public synchronized Set<IAtsTeamWorkflow> getAtsTeamWorkflowExtensions() {
       if (teamWorkflowExtensionItems != null) {

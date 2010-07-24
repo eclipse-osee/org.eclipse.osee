@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManage
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 public class RevertJob extends Job {
-   private List<Artifact> artifacts;
+   private final List<Artifact> artifacts;
 
    public RevertJob(List<Artifact> artifacts) {
       super("Reverting " + artifacts.size() + " artifacts.");
@@ -50,7 +50,7 @@ public class RevertJob extends Job {
 
          toReturn = Status.OK_STATUS;
       } catch (Exception ex) {
-         toReturn = new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
+         toReturn = new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
       } finally {
          monitor.done();
       }

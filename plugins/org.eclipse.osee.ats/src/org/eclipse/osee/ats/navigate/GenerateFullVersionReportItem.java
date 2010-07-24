@@ -67,8 +67,12 @@ public class GenerateFullVersionReportItem extends XNavigateItemAction {
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
       TeamDefinitionArtifact teamDef = getTeamDefinition();
-      if (teamDef == null) return;
-      if (!MessageDialog.openConfirm(Displays.getActiveShell(), getName(), getName())) return;
+      if (teamDef == null) {
+         return;
+      }
+      if (!MessageDialog.openConfirm(Displays.getActiveShell(), getName(), getName())) {
+         return;
+      }
       PublishReportJob job = new PublishReportJob(teamDef);
       job.setUser(true);
       job.setPriority(Job.LONG);
@@ -76,14 +80,18 @@ public class GenerateFullVersionReportItem extends XNavigateItemAction {
    }
 
    public TeamDefinitionArtifact getTeamDefinition() throws OseeCoreException {
-      if (teamDef != null) return teamDef;
+      if (teamDef != null) {
+         return teamDef;
+      }
       if (teamDefName != null && !teamDefName.equals("")) {
          try {
             TeamDefinitionArtifact teamDef =
-                  (TeamDefinitionArtifact) AtsCacheManager.getSoleArtifactByName(
-                        ArtifactTypeManager.getType(AtsArtifactTypes.TeamDefinition), teamDefName);
+               (TeamDefinitionArtifact) AtsCacheManager.getSoleArtifactByName(
+                  ArtifactTypeManager.getType(AtsArtifactTypes.TeamDefinition), teamDefName);
 
-            if (teamDef != null) return teamDef;
+            if (teamDef != null) {
+               return teamDef;
+            }
          } catch (ArtifactDoesNotExist ex) {
             // do nothing, going to get team below
          }
@@ -118,7 +126,7 @@ public class GenerateFullVersionReportItem extends XNavigateItemAction {
             rd.addRaw(html);
             rd.report(getName(), Manipulations.RAW_HTML);
          } catch (Exception ex) {
-            return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.toString(), ex);
+            return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.toString(), ex);
          }
 
          monitor.done();

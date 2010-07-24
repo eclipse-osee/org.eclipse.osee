@@ -22,9 +22,9 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.relation.order.IRelationSorter;
 import org.eclipse.osee.framework.skynet.core.relation.sorters.LexicographicalRelationSorter;
+import org.eclipse.osee.framework.skynet.core.relation.sorters.LexicographicalRelationSorter.SortMode;
 import org.eclipse.osee.framework.skynet.core.relation.sorters.UnorderedRelationSorter;
 import org.eclipse.osee.framework.skynet.core.relation.sorters.UserDefinedRelationSorter;
-import org.eclipse.osee.framework.skynet.core.relation.sorters.LexicographicalRelationSorter.SortMode;
 import org.eclipse.osee.framework.skynet.core.test.types.MockIArtifact;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
@@ -72,7 +72,7 @@ public class RelationSorterTest {
       Assert.assertEquals(message, expectedOrder.size(), actualToOrder.size());
       for (int index = 0; index < expectedOrder.size(); index++) {
          Assert.assertEquals(message + " - index:" + index, expectedOrder.get(index).getName(),
-               actualToOrder.get(index).getName());
+            actualToOrder.get(index).getName());
       }
    }
 
@@ -101,7 +101,7 @@ public class RelationSorterTest {
 
       List<IArtifact> artifacts = Arrays.asList(art1, art2, art3, art4);
       return new Object[] {"Unordered Test", new UnorderedRelationSorter(), RelationOrderBaseTypes.UNORDERED, null,
-            artifacts, artifacts};
+         artifacts, artifacts};
    }
 
    private static Object[] createLexicographicalTest(SortMode mode, String... names) {
@@ -111,12 +111,12 @@ public class RelationSorterTest {
       IArtifact art4 = createArtifact(names[3], GUID.create());
 
       IRelationSorterId orderId =
-            mode == SortMode.ASCENDING ? RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC : RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC;
+         mode == SortMode.ASCENDING ? RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC : RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC;
 
       List<IArtifact> itemsToOrder = Arrays.asList(art3, art1, art4, art2);
       List<IArtifact> expectedOrder = Arrays.asList(art1, art2, art3, art4);
       return new Object[] {"Lex Test " + mode.name(), new LexicographicalRelationSorter(mode), orderId, null,
-            itemsToOrder, expectedOrder};
+         itemsToOrder, expectedOrder};
    }
 
    private static Object[] getTestUserDefined(String... names) {
@@ -129,7 +129,7 @@ public class RelationSorterTest {
       List<IArtifact> expectedOrder = Arrays.asList(art1, art2, art3, art4);
       List<String> relatives = Artifacts.toGuids(Arrays.asList(art1, art2, art3, art4));
       return new Object[] {"UserDefined", new UserDefinedRelationSorter(), RelationOrderBaseTypes.USER_DEFINED,
-            relatives, itemsToOrder, expectedOrder};
+         relatives, itemsToOrder, expectedOrder};
    }
 
    private static IArtifact createArtifact(String name, String guid) {

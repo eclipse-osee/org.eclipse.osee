@@ -42,78 +42,70 @@ import org.junit.Test;
 //@formatter:on
 public class WordMlResolutionGuiTest {
 
-	private static final Pattern PARAGRAPH_REGEX =
-				Pattern.compile("<w:p[ >].*?</w:p>", Pattern.DOTALL);
+   private static final Pattern PARAGRAPH_REGEX = Pattern.compile("<w:p[ >].*?</w:p>", Pattern.DOTALL);
 
-	private static final String FILE_INPUT =
-				"outlineResolutionCausingInput_no_toc_formatted.xml";
+   private static final String FILE_INPUT = "outlineResolutionCausingInput_no_toc_formatted.xml";
 
-	private WordOutlineExtractorDelegate delegate = null;
+   private WordOutlineExtractorDelegate delegate = null;
 
-	public WordMlResolutionGuiTest() {
-		delegate = new WordOutlineExtractorDelegate(
-					new MockResolutionGui());
-	}
+   public WordMlResolutionGuiTest() {
+      delegate = new WordOutlineExtractorDelegate(new MockResolutionGui());
+   }
 
-	@Test
-	public void uiResolutionTests() throws Exception {
-		//init some ds in delegate
-		delegate.initialize();
+   @Test
+   public void uiResolutionTests() throws Exception {
+      //init some ds in delegate
+      delegate.initialize();
 
-		//TODO: not finished, needs to be able to compare resulting rough artifact to data
-		RoughArtifact testRoughArtifactParent = new RoughArtifact(RoughArtifactKind.CONTAINER);
-		RoughArtifactCollector testCollector = new RoughArtifactCollector(testRoughArtifactParent);
+      //TODO: not finished, needs to be able to compare resulting rough artifact to data
+      RoughArtifact testRoughArtifactParent = new RoughArtifact(RoughArtifactKind.CONTAINER);
+      new RoughArtifactCollector(testRoughArtifactParent);
 
-		MockResolutionGui resolvingGui =
-					(MockResolutionGui)
-						delegate.getOutlineResolvingUi();
-		//as if the user selected content
-		//if asked answer No, treat questions as content
-		resolvingGui.setMockUserAnswer(ContentType.CONTENT);
+      MockResolutionGui resolvingGui = (MockResolutionGui) delegate.getOutlineResolvingUi();
+      //as if the user selected content
+      //if asked answer No, treat questions as content
+      resolvingGui.setMockUserAnswer(ContentType.CONTENT);
 
-		//pre load with some real data
-		String rawData = getResourceData(FILE_INPUT);
-		Matcher matcher = PARAGRAPH_REGEX.matcher(rawData);
-		boolean foundSomething = false;
-		matcher.find();//skip 1.0
-		matcher.find();//skip 1.1
-		//read the 3.1
-		if (matcher.find()) {
-			foundSomething = true;
-			String singleWp = matcher.group();
-			//TODO: pass in the real testCollector
-			delegate.processContent(null, false, false, null,
-						null, null, singleWp, false);
-		}
+      //pre load with some real data
+      String rawData = getResourceData(FILE_INPUT);
+      Matcher matcher = PARAGRAPH_REGEX.matcher(rawData);
+      boolean foundSomething = false;
+      matcher.find();//skip 1.0
+      matcher.find();//skip 1.1
+      //read the 3.1
+      if (matcher.find()) {
+         foundSomething = true;
+         String singleWp = matcher.group();
+         //TODO: pass in the real testCollector
+         delegate.processContent(null, false, false, null, null, null, singleWp, false);
+      }
 
-		//TODO:
-		//because this case puts stuff into content
-		//there should be a node containing 'Meters and 5.4 Meters'
-		//i.e. testRoughArtifactParent.getContent().equals( "Meters and 5.4 Meters" );
+      //TODO:
+      //because this case puts stuff into content
+      //there should be a node containing 'Meters and 5.4 Meters'
+      //i.e. testRoughArtifactParent.getContent().equals( "Meters and 5.4 Meters" );
 
-		Assert.assertTrue(foundSomething);
-	}
+      Assert.assertTrue(foundSomething);
+   }
 
-	@After
-	public void testCleanup() {
-		delegate.dispose();
-		Assert.assertNull(delegate.getLastHeaderNumber());
-		Assert.assertNull(delegate.getLastHeaderName());
-		Assert.assertNull(delegate.getLastContent());
-	}
+   @After
+   public void testCleanup() {
+      delegate.dispose();
+      Assert.assertNull(delegate.getLastHeaderNumber());
+      Assert.assertNull(delegate.getLastHeaderName());
+      Assert.assertNull(delegate.getLastContent());
+   }
 
-	private static String getResourceData(String name)
-				throws IOException {
+   private static String getResourceData(String name) throws IOException {
 
-		InputStream inputStream = null;
-		try {
-			inputStream =
-						WordMlResolutionGuiTest.class.getResourceAsStream(name);
-			String data = Lib.inputStreamToString(inputStream);
-			Assert.assertTrue(Strings.isValid(data));
-			return data;
-		} finally {
-			Lib.close(inputStream);
-		}
-	}
+      InputStream inputStream = null;
+      try {
+         inputStream = WordMlResolutionGuiTest.class.getResourceAsStream(name);
+         String data = Lib.inputStreamToString(inputStream);
+         Assert.assertTrue(Strings.isValid(data));
+         return data;
+      } finally {
+         Lib.close(inputStream);
+      }
+   }
 }

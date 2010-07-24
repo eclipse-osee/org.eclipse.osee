@@ -31,7 +31,7 @@ public class RelationPropertySource extends ModelPropertySource {
    protected final PropertyId idOrdered;
 
    public RelationPropertySource(String categoryName, Object dataType) {
-      super((RelationDataType) dataType);
+      super(dataType);
       idSideAName = new PropertyId(categoryName, "Side A Name");
       idSideBName = new PropertyId(categoryName, "Side B Name");
       idAToBPhrase = new PropertyId(categoryName, "A to B Phrase");
@@ -61,11 +61,21 @@ public class RelationPropertySource extends ModelPropertySource {
 
    @Override
    public boolean isPropertySet(Object id) {
-      if (id == idSideAName) return getDataTypeElement().getSideAName() != null;
-      if (id == idSideBName) return getDataTypeElement().getSideBName() != null;
-      if (id == idAToBPhrase) return getDataTypeElement().getAToBPhrase() != null;
-      if (id == idBToAPhrase) return getDataTypeElement().getBToAPhrase() != null;
-      if (id == idShortName) return getDataTypeElement().getShortName() != null;
+      if (id == idSideAName) {
+         return getDataTypeElement().getSideAName() != null;
+      }
+      if (id == idSideBName) {
+         return getDataTypeElement().getSideBName() != null;
+      }
+      if (id == idAToBPhrase) {
+         return getDataTypeElement().getAToBPhrase() != null;
+      }
+      if (id == idBToAPhrase) {
+         return getDataTypeElement().getBToAPhrase() != null;
+      }
+      if (id == idShortName) {
+         return getDataTypeElement().getShortName() != null;
+      }
       if (id == idOrdered) {
          return true;
       }
@@ -74,33 +84,69 @@ public class RelationPropertySource extends ModelPropertySource {
 
    @Override
    public Object getPropertyValue(Object id) {
-      if (id == idSideAName) return StringPropertyDescriptor.fromModel(getDataTypeElement().getSideAName());
-      if (id == idSideBName) return StringPropertyDescriptor.fromModel(getDataTypeElement().getSideBName());
-      if (id == idAToBPhrase) return StringPropertyDescriptor.fromModel(getDataTypeElement().getAToBPhrase());
-      if (id == idBToAPhrase) return StringPropertyDescriptor.fromModel(getDataTypeElement().getBToAPhrase());
-      if (id == idShortName) return StringPropertyDescriptor.fromModel(getDataTypeElement().getShortName());
-      if (id == idOrdered) return BooleanPropertyDescriptor.fromModel(getDataTypeElement().getOrdered());
+      if (id == idSideAName) {
+         return StringPropertyDescriptor.fromModel(getDataTypeElement().getSideAName());
+      }
+      if (id == idSideBName) {
+         return StringPropertyDescriptor.fromModel(getDataTypeElement().getSideBName());
+      }
+      if (id == idAToBPhrase) {
+         return StringPropertyDescriptor.fromModel(getDataTypeElement().getAToBPhrase());
+      }
+      if (id == idBToAPhrase) {
+         return StringPropertyDescriptor.fromModel(getDataTypeElement().getBToAPhrase());
+      }
+      if (id == idShortName) {
+         return StringPropertyDescriptor.fromModel(getDataTypeElement().getShortName());
+      }
+      if (id == idOrdered) {
+         return BooleanPropertyDescriptor.fromModel(getDataTypeElement().getOrdered());
+      }
       return false;
    }
 
    @Override
    public void resetPropertyValue(Object id) {
-      if (id == idSideAName) getDataTypeElement().setSideAName(null);
-      if (id == idSideBName) getDataTypeElement().setSideBName(null);
-      if (id == idAToBPhrase) getDataTypeElement().setAToBPhrase(null);
-      if (id == idBToAPhrase) getDataTypeElement().setBToAPhrase(null);
-      if (id == idShortName) getDataTypeElement().setShortName(null);
-      if (id == idOrdered) getDataTypeElement().setOrdered(true);
+      if (id == idSideAName) {
+         getDataTypeElement().setSideAName(null);
+      }
+      if (id == idSideBName) {
+         getDataTypeElement().setSideBName(null);
+      }
+      if (id == idAToBPhrase) {
+         getDataTypeElement().setAToBPhrase(null);
+      }
+      if (id == idBToAPhrase) {
+         getDataTypeElement().setBToAPhrase(null);
+      }
+      if (id == idShortName) {
+         getDataTypeElement().setShortName(null);
+      }
+      if (id == idOrdered) {
+         getDataTypeElement().setOrdered(true);
+      }
    }
 
    @Override
    public void setPropertyValue(Object id, Object value) {
-      if (id == idSideAName) getDataTypeElement().setSideAName(StringPropertyDescriptor.toModel(value));
-      if (id == idSideBName) getDataTypeElement().setSideBName(StringPropertyDescriptor.toModel(value));
-      if (id == idAToBPhrase) getDataTypeElement().setAToBPhrase(StringPropertyDescriptor.toModel(value));
-      if (id == idBToAPhrase) getDataTypeElement().setBToAPhrase(StringPropertyDescriptor.toModel(value));
-      if (id == idShortName) getDataTypeElement().setShortName(StringPropertyDescriptor.toModel(value));
-      if (id == idOrdered) getDataTypeElement().setOrdered(BooleanPropertyDescriptor.toModel(value));
+      if (id == idSideAName) {
+         getDataTypeElement().setSideAName(StringPropertyDescriptor.toModel(value));
+      }
+      if (id == idSideBName) {
+         getDataTypeElement().setSideBName(StringPropertyDescriptor.toModel(value));
+      }
+      if (id == idAToBPhrase) {
+         getDataTypeElement().setAToBPhrase(StringPropertyDescriptor.toModel(value));
+      }
+      if (id == idBToAPhrase) {
+         getDataTypeElement().setBToAPhrase(StringPropertyDescriptor.toModel(value));
+      }
+      if (id == idShortName) {
+         getDataTypeElement().setShortName(StringPropertyDescriptor.toModel(value));
+      }
+      if (id == idOrdered) {
+         getDataTypeElement().setOrdered(BooleanPropertyDescriptor.toModel(value));
+      }
    }
 
 }

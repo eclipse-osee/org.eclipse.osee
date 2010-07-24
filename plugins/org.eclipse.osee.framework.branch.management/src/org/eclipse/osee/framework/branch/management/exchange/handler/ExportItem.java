@@ -39,14 +39,17 @@ public enum ExportItem implements IExportItem {
       return this.name().toLowerCase().replace('_', '.');
    }
 
+   @Override
    public String getFileName() {
       return this + ".xml";
    }
 
+   @Override
    public String getSource() {
       return source;
    }
 
+   @Override
    public int getPriority() {
       return ordinal();
    }

@@ -217,8 +217,8 @@ public class BranchManager {
     */
    public static Job completeUpdateBranch(final ConflictManagerExternal conflictManager, final boolean archiveSourceBranch, final boolean overwriteUnresolvedConflicts) {
       IOperation operation =
-            new FinishUpdateBranchOperation(Activator.PLUGIN_ID, conflictManager, archiveSourceBranch,
-                  overwriteUnresolvedConflicts);
+         new FinishUpdateBranchOperation(Activator.PLUGIN_ID, conflictManager, archiveSourceBranch,
+            overwriteUnresolvedConflicts);
       return Operations.executeAsJob(operation, true);
    }
 
@@ -273,13 +273,13 @@ public class BranchManager {
       }
       runCommitExtPointActions(conflictManager);
       HttpCommitDataRequester.commitBranch(monitor, UserManager.getUser(), conflictManager.getSourceBranch(),
-            conflictManager.getDestinationBranch(), archiveSourceBranch);
+         conflictManager.getDestinationBranch(), archiveSourceBranch);
    }
 
    private static void runCommitExtPointActions(ConflictManagerExternal conflictManager) throws OseeCoreException {
       ExtensionDefinedObjects<CommitAction> extensions =
-            new ExtensionDefinedObjects<CommitAction>("org.eclipse.osee.framework.skynet.core.CommitActions",
-                  "CommitActions", "className");
+         new ExtensionDefinedObjects<CommitAction>("org.eclipse.osee.framework.skynet.core.CommitActions",
+            "CommitActions", "className");
       for (CommitAction commitAction : extensions.getObjects()) {
          commitAction.runCommitAction(conflictManager.getSourceBranch(), conflictManager.getDestinationBranch());
       }
@@ -334,7 +334,7 @@ public class BranchManager {
       List<Object[]> datas = new LinkedList<Object[]>();
       for (int artId : expectedArtIds) {
          datas.add(new Object[] {populateBaseTxFromAddressingQueryId, insertTime, artId, sourceBranch.getId(),
-               SQL3DataType.INTEGER});
+            SQL3DataType.INTEGER});
       }
       MergeBranch mergeBranch = null;
       try {
@@ -342,13 +342,13 @@ public class BranchManager {
 
          int parentTxId = sourceBranch.getBaseTransaction().getId();
          String creationComment =
-               String.format("New Merge Branch from %s(%s) and %s", sourceBranch.getName(), parentTxId,
-                     destBranch.getName());
+            String.format("New Merge Branch from %s(%s) and %s", sourceBranch.getName(), parentTxId,
+               destBranch.getName());
          String branchName = "Merge " + sourceBranch.getShortName() + " <=> " + destBranch.getShortName();
          mergeBranch =
-               (MergeBranch) HttpBranchCreation.createBranch(BranchType.MERGE, parentTxId, sourceBranch.getId(),
-                     branchName, null, UserManager.getUser(), creationComment, populateBaseTxFromAddressingQueryId,
-                     destBranch.getId());
+            (MergeBranch) HttpBranchCreation.createBranch(BranchType.MERGE, parentTxId, sourceBranch.getId(),
+               branchName, null, UserManager.getUser(), creationComment, populateBaseTxFromAddressingQueryId,
+               destBranch.getId());
          mergeBranch.setSourceBranch(sourceBranch);
          mergeBranch.setDestinationBranch(destBranch);
       } finally {
@@ -373,7 +373,7 @@ public class BranchManager {
 
       final String truncatedName = Strings.truncate(childBranchName, 195, true);
       return HttpBranchCreation.createBranch(BranchType.WORKING, parentTransactionNumber, parentBranchId,
-            truncatedName, childBranchGuid, associatedArtifact, creationComment, -1, -1);
+         truncatedName, childBranchGuid, associatedArtifact, creationComment, -1, -1);
    }
 
    /**
@@ -404,8 +404,8 @@ public class BranchManager {
       TransactionRecord parentTransactionId = TransactionManager.getHeadTransaction(parentBranch);
       String creationComment = String.format("Branch Creation for %s", childBranch.getName());
       return HttpBranchCreation.createBranch(BranchType.BASELINE, parentTransactionId.getId(),
-            parentTransactionId.getBranch().getId(), childBranch.getName(), childBranch.getGuid(), associatedArtifact,
-            creationComment, -1, -1);
+         parentTransactionId.getBranch().getId(), childBranch.getName(), childBranch.getGuid(), associatedArtifact,
+         creationComment, -1, -1);
    }
 
    /**
@@ -444,9 +444,9 @@ public class BranchManager {
 
    private Branch getDefaultInitialBranch() throws OseeCoreException {
       ExtensionDefinedObjects<IDefaultInitialBranchesProvider> extensions =
-            new ExtensionDefinedObjects<IDefaultInitialBranchesProvider>(
-                  "org.eclipse.osee.framework.skynet.core.DefaultInitialBranchProvider",
-                  "DefaultInitialBranchProvider", "class");
+         new ExtensionDefinedObjects<IDefaultInitialBranchesProvider>(
+            "org.eclipse.osee.framework.skynet.core.DefaultInitialBranchProvider", "DefaultInitialBranchProvider",
+            "class");
       for (IDefaultInitialBranchesProvider provider : extensions.getObjects()) {
          try {
             // Guard against problematic extensions
@@ -457,7 +457,7 @@ public class BranchManager {
             }
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.WARNING,
-                  "Exception occurred while trying to determine initial default branch", ex);
+               "Exception occurred while trying to determine initial default branch", ex);
          }
       }
       return getCommonBranch();

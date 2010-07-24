@@ -54,10 +54,12 @@ public class SaveWidget {
       saveAsMenuItem.setText("SaveAs...");
       saveAsMenuItem.setImage(ImageManager.getImage(OteTestManagerImage.SAVEAS_EDIT));
       saveAsMenuItem.addSelectionListener(new SelectionListener() {
+         @Override
          public void widgetDefaultSelected(SelectionEvent e) {
             widgetSelected(e);
          }
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             String[] filterExtensions = {"*.xml"};
             FileDialog fileDialog = new FileDialog(shell, SWT.SAVE);
@@ -130,8 +132,8 @@ public class SaveWidget {
 
          saveConfig.saveConfig(new File(configFile));
       } catch (Exception ex) {
-         Dialogs.popupError("Error Saving File", String.format("Error saving file: [%s]\n%s", configFile,
-               TestManagerPlugin.getStackMessages(ex)));
+         Dialogs.popupError("Error Saving File",
+            String.format("Error saving file: [%s]\n%s", configFile, OseeUiActivator.getStackMessages(ex)));
       }
    }
 }

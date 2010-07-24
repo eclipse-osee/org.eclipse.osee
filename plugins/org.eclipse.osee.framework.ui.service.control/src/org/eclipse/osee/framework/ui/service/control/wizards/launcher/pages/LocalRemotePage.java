@@ -24,10 +24,10 @@ import org.eclipse.swt.widgets.Group;
 
 public class LocalRemotePage extends DynamicWizardPage {
 
-   private ServiceLaunchingInformation serviceInfo;
+   private final ServiceLaunchingInformation serviceInfo;
    private Button local;
    private Button remote;
-   private ServiceLaunchWizard wizard;
+   private final ServiceLaunchWizard wizard;
    private Composite composite;
 
    public LocalRemotePage(String pageName, String previous, String next, ServiceLaunchingInformation serviceInfo, ServiceLaunchWizard wizard) {
@@ -39,6 +39,7 @@ public class LocalRemotePage extends DynamicWizardPage {
       this.wizard = wizard;
    }
 
+   @Override
    public void createControl(Composite parent) {
       composite = new Composite(parent, SWT.NONE);
       composite.setLayout(new GridLayout());
@@ -89,7 +90,7 @@ public class LocalRemotePage extends DynamicWizardPage {
 
    @Override
    public boolean onNextPressed() {
-      ServicePage servicePage = ((ServicePage) this.getNextPage());
+      ServicePage servicePage = (ServicePage) this.getNextPage();
       servicePage.setIsLocal(local.getSelection());
       serviceInfo.setIsLocal(local.getSelection());
 
@@ -104,10 +105,10 @@ public class LocalRemotePage extends DynamicWizardPage {
 
          servicePage.setNextPage(hostInformationTitle);
          IWizardPage[] pagesToAdd =
-               new IWizardPage[] {
-                     new HostInfoPage(hostInformationTitle, servicePage.getName(), uploadServiceTitle, serviceInfo),
-                     new UploadPage(uploadServiceTitle, hostInformationTitle, executeServiceTitle, serviceInfo),
-                     new ExecutePage(executeServiceTitle, uploadServiceTitle, "", serviceInfo)};
+            new IWizardPage[] {
+               new HostInfoPage(hostInformationTitle, servicePage.getName(), uploadServiceTitle, serviceInfo),
+               new UploadPage(uploadServiceTitle, hostInformationTitle, executeServiceTitle, serviceInfo),
+               new ExecutePage(executeServiceTitle, uploadServiceTitle, "", serviceInfo)};
          for (IWizardPage page : pagesToAdd) {
             wizard.addPage(page);
          }

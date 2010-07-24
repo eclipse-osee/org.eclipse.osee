@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.workflow.editor.model.WorkflowDiagram;
  */
 public class ShapesTreeEditPartFactory implements EditPartFactory {
 
+   @Override
    public EditPart createEditPart(EditPart context, Object model) {
       if (model instanceof Shape) {
          return new ShapeTreeEditPart((Shape) model);

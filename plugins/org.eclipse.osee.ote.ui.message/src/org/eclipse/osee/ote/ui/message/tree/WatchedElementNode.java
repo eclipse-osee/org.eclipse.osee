@@ -101,11 +101,11 @@ public class WatchedElementNode extends ElementNode {
             return;
          }
          if (element.isNonMappingElement()) {
-             columnValues.clear();
-             value = "???";
-             setEnabled(false);
-             setDisabledReason("this element does not map in " + getSubscription().getMemType());
-             return;
+            columnValues.clear();
+            value = "???";
+            setEnabled(false);
+            setDisabledReason("this element does not map in " + getSubscription().getMemType());
+            return;
          }
          columnValues.put(MessageXViewerFactory.lsb, Integer.valueOf(element.getLsb()));
          columnValues.put(MessageXViewerFactory.msb, Integer.valueOf(element.getMsb()));
@@ -116,7 +116,7 @@ public class WatchedElementNode extends ElementNode {
          } else if (element instanceof RecordMap<?>) {
             value = "";
             columnValues.put(MessageXViewerFactory.byteOffset,
-                  Integer.valueOf(((RecordMap<?>) element).get(0).getByteOffset()));
+               Integer.valueOf(((RecordMap<?>) element).get(0).getByteOffset()));
          } else {
             value = "";
             columnValues.put(MessageXViewerFactory.byteOffset, Integer.valueOf(element.getByteOffset()));

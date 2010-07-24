@@ -48,12 +48,11 @@ public class JmsToJiniBridgeConnector implements IServiceConnector {
 
    private EnhancedProperties properties;
    private final HashMap<Object, ExportInfo> exports = new HashMap<Object, ExportInfo>();
-   private ExportClassLoader exportClassLoader;
-   private Object service;
-   private List<IServicePropertyChangeListener> propertyChangeListeners = new CopyOnWriteArrayList<IServicePropertyChangeListener>();
-   private String uniqueServerId;
-
-  
+   private final ExportClassLoader exportClassLoader;
+   private final Object service;
+   private final List<IServicePropertyChangeListener> propertyChangeListeners =
+      new CopyOnWriteArrayList<IServicePropertyChangeListener>();
+   private final String uniqueServerId;
 
    public JmsToJiniBridgeConnector(ExportClassLoader exportClassLoader, Object service, String id) {
       this.uniqueServerId = id;
@@ -109,7 +108,8 @@ public class JmsToJiniBridgeConnector implements IServiceConnector {
    }
 
    private Exporter createExporter() throws UnknownHostException {
-      return new BasicJeriExporter(TcpServerEndpoint.getInstance(Network.getValidIP().getHostAddress(), 0), new BasicILFactory(null, null, exportClassLoader), false, false);
+      return new BasicJeriExporter(TcpServerEndpoint.getInstance(Network.getValidIP().getHostAddress(), 0),
+         new BasicILFactory(null, null, exportClassLoader), false, false);
    }
 
    @Override
@@ -129,11 +129,11 @@ public class JmsToJiniBridgeConnector implements IServiceConnector {
 
    @Override
    public boolean ping() {
-      if(getService() != null && getService() instanceof IHostTestEnvironment){
-         try{
-            ((IHostTestEnvironment)getService()).getProperties();
+      if (getService() != null && getService() instanceof IHostTestEnvironment) {
+         try {
+            ((IHostTestEnvironment) getService()).getProperties();
             return true;
-         } catch (Throwable th){
+         } catch (Throwable th) {
             return false;
          }
       }
@@ -163,6 +163,7 @@ public class JmsToJiniBridgeConnector implements IServiceConnector {
       return null;
    }
 
+   @Override
    public String getUniqueServerId() {
       return uniqueServerId;
    }
@@ -174,7 +175,7 @@ public class JmsToJiniBridgeConnector implements IServiceConnector {
 
    @Override
    public void init(Object service) throws UnknownHostException, ExportException {
-      
+
    }
-   
+
 }

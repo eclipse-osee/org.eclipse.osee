@@ -15,7 +15,7 @@ package org.eclipse.osee.ote.core.framework.saxparse.elements;
  */
 public class SoftKeyInfoGroupData {
 
-   private String title;
+   private final String title;
 
    /**
     * @param title

@@ -20,27 +20,27 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 public final class SessionUtil {
 
-	private SessionUtil() {
+   private SessionUtil() {
 
-	}
+   }
 
-	public static boolean isAlive(ISession session) throws OseeCoreException {
-		boolean wasAlive = false;
-		try {
-			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-			URL url =
-						new URL(String.format("http://%s:%s/osee/request?cmd=pingId", session.getClientAddress(),
-									session.getClientPort()));
-			AcquireResult result = HttpProcessor.acquire(url, outputStream);
-			if (result.wasSuccessful()) {
-				String sessionId = outputStream.toString(result.getEncoding());
-				if (Strings.isValid(sessionId)) {
-					wasAlive = sessionId.contains(session.getGuid());
-				}
-			}
-		} catch (Exception ex) {
-			OseeExceptions.wrapAndThrow(ex);
-		}
-		return wasAlive;
-	}
+   public static boolean isAlive(ISession session) throws OseeCoreException {
+      boolean wasAlive = false;
+      try {
+         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+         URL url =
+            new URL(String.format("http://%s:%s/osee/request?cmd=pingId", session.getClientAddress(),
+               session.getClientPort()));
+         AcquireResult result = HttpProcessor.acquire(url, outputStream);
+         if (result.wasSuccessful()) {
+            String sessionId = outputStream.toString(result.getEncoding());
+            if (Strings.isValid(sessionId)) {
+               wasAlive = sessionId.contains(session.getGuid());
+            }
+         }
+      } catch (Exception ex) {
+         OseeExceptions.wrapAndThrow(ex);
+      }
+      return wasAlive;
+   }
 }

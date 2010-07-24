@@ -64,7 +64,7 @@ public class ArtifactTransfer extends ByteArrayTransfer {
    // Create a unique ID to make sure that different Eclipse
    // applications use different "types" of <code>ResourceTransfer</code>
    private static final String TYPE_NAME =
-         "artifact-transfer-format:" + System.currentTimeMillis() + ":" + instance.hashCode(); //$NON-NLS-2$//$NON-NLS-1$
+      "artifact-transfer-format:" + System.currentTimeMillis() + ":" + instance.hashCode(); //$NON-NLS-2$//$NON-NLS-1$
 
    private static final int TYPEID = registerType(TYPE_NAME);
 

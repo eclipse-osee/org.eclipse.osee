@@ -21,78 +21,77 @@ import org.eclipse.swt.widgets.Group;
 
 public class HostPage extends TestManagerPage {
 
-	private static final String pageName = "Hosts";
+   private static final String pageName = "Hosts";
 
-	public HostPage(Composite parent, int style,
-			TestManagerEditor parentTestManager) {
-		super(parent, style, parentTestManager);
-		createPage();
-		TestManagerPlugin.getInstance().setHelp(this, "tm_hosts_page", "org.eclipse.osee.framework.help.ui");
-	}
+   public HostPage(Composite parent, int style, TestManagerEditor parentTestManager) {
+      super(parent, style, parentTestManager);
+      createPage();
+      TestManagerPlugin.getInstance().setHelp(this, "tm_hosts_page", "org.eclipse.osee.framework.help.ui");
+   }
 
-	@Override
-	public String getPageName() {
-		return pageName;
-	}
+   @Override
+   public String getPageName() {
+      return pageName;
+   }
 
-	protected void createPage() {
-		super.createPage();
-		Composite parent = (Composite) getContent();
+   @Override
+   protected void createPage() {
+      super.createPage();
+      Composite parent = (Composite) getContent();
 
-		Group hostGroup = new Group(parent, SWT.NONE);
-		hostGroup.setLayout(new GridLayout());
-		hostGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		hostGroup.setText("Double click a Host to Connect/Disconnect");
+      Group hostGroup = new Group(parent, SWT.NONE);
+      hostGroup.setLayout(new GridLayout());
+      hostGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      hostGroup.setText("Double click a Host to Connect/Disconnect");
 
-		getTestManager().createHostWidget(hostGroup);
-		computeScrollSize();
-	}
+      getTestManager().createHostWidget(hostGroup);
+      computeScrollSize();
+   }
 
-	@Override
-	public boolean areSettingsValidForRun() {
-		return getTestManager().isConnected();
-	}
+   @Override
+   public boolean areSettingsValidForRun() {
+      return getTestManager().isConnected();
+   }
 
-	@Override
-	public void restoreData() {
-		// Do Nothing
-	}
+   @Override
+   public void restoreData() {
+      // Do Nothing
+   }
 
-	@Override
-	public void saveData() {
-		// Do Nothing
-	}
+   @Override
+   public void saveData() {
+      // Do Nothing
+   }
 
-	@Override
-	public String getErrorMessage() {
-		StringBuilder builder = new StringBuilder();
-		if (areSettingsValidForRun() != true) {
-			builder.append("Connect to a Test Server");
-		}
-		return builder.toString();
-	}
+   @Override
+   public String getErrorMessage() {
+      StringBuilder builder = new StringBuilder();
+      if (areSettingsValidForRun() != true) {
+         builder.append("Connect to a Test Server");
+      }
+      return builder.toString();
+   }
 
-	@Override
-	public boolean onConnection(ConnectionEvent event) {
-		return false;
+   @Override
+   public boolean onConnection(ConnectionEvent event) {
+      return false;
 
-	}
+   }
 
-	@Override
-	public boolean onDisconnect(ConnectionEvent event) {
-		return false;
+   @Override
+   public boolean onDisconnect(ConnectionEvent event) {
+      return false;
 
-	}
+   }
 
-	@Override
-	public boolean onConnectionLost() {
-		return false;
-	}
+   @Override
+   public boolean onConnectionLost() {
+      return false;
+   }
 
-	@Override
-	public void dispose() {
-		super.dispose();
-	}
-
+   @Override
+   public void dispose() {
+      super.dispose();
+   }
 
 }

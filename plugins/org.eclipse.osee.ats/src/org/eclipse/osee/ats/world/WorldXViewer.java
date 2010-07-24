@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.GroupMarker;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -155,7 +156,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
             public void run() {
                try {
                   remove(loadedArtifacts.getLoadedArtifacts().toArray(
-                        new Object[loadedArtifacts.getLoadedArtifacts().size()]));
+                     new Object[loadedArtifacts.getLoadedArtifacts().size()]));
                } catch (OseeCoreException ex) {
                   OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
                }
@@ -229,6 +230,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
       final WorldXViewer fWorldXViewer = this;
       super.createSupportWidgets(parent);
       parent.addDisposeListener(new DisposeListener() {
+         @Override
          public void widgetDisposed(DisposeEvent e) {
             OseeEventManager.removeListener(fWorldXViewer); // <REM2> Don't need this cause handled through IWorldViewerEventHandler
             ((WorldContentProvider) getContentProvider()).clear(false);
@@ -239,7 +241,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
    }
 
    Action editStatusAction, editNotesAction, editResolutionAction, editEstimateAction, editChangeTypeAction,
-         editPriorityAction, editTargetVersionAction, editAssigneeAction, editActionableItemsAction;
+      editPriorityAction, editTargetVersionAction, editAssigneeAction, editActionableItemsAction;
    ConvertActionableItemsAction convertActionableItemsAction;
    Action openInAtsWorldEditorAction, openInAtsTaskEditorAction;
    OpenInAtsWorkflowEditor openInAtsWorkflowEditorAction;
@@ -262,12 +264,12 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
       deletePurgeAtsObjectAction = new DeletePurgeAtsArtifactsAction(this);
       emailAction = new EmailActionAction(this);
 
-      editNotesAction = new Action("Edit Notes", Action.AS_PUSH_BUTTON) {
+      editNotesAction = new Action("Edit Notes", IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
             try {
                if (PromptChangeUtil.promptChangeAttribute(getSelectedSMAArtifacts(), ATSAttributes.SMA_NOTE_ATTRIBUTE,
-                     true, true)) {
+                  true, true)) {
                   update(getSelectedSMAArtifacts().toArray(), null);
                }
             } catch (OseeCoreException ex) {
@@ -276,12 +278,12 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
          }
       };
 
-      editResolutionAction = new Action("Edit Resolution", Action.AS_PUSH_BUTTON) {
+      editResolutionAction = new Action("Edit Resolution", IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
             try {
                if (PromptChangeUtil.promptChangeAttribute(getSelectedSMAArtifacts(),
-                     ATSAttributes.RESOLUTION_ATTRIBUTE, true, true)) {
+                  ATSAttributes.RESOLUTION_ATTRIBUTE, true, true)) {
                   update(getSelectedSMAArtifacts().toArray(), null);
                }
             } catch (OseeCoreException ex) {
@@ -290,7 +292,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
          }
       };
 
-      editStatusAction = new Action("Edit Status", Action.AS_PUSH_BUTTON) {
+      editStatusAction = new Action("Edit Status", IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
             try {
@@ -303,13 +305,13 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
          }
       };
 
-      editEstimateAction = new Action("Edit Estimated Hours", Action.AS_PUSH_BUTTON) {
+      editEstimateAction = new Action("Edit Estimated Hours", IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
             try {
                if (ArtifactPromptChange.promptChangeFloatAttribute(
-                     ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(),
-                     ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getDisplayName(), getSelectedSMAArtifacts(), true)) {
+                  ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(),
+                  ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getDisplayName(), getSelectedSMAArtifacts(), true)) {
                   update(getSelectedSMAArtifacts().toArray(), null);
                }
             } catch (Exception ex) {
@@ -318,7 +320,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
          }
       };
 
-      editChangeTypeAction = new Action("Edit Change Type", Action.AS_PUSH_BUTTON) {
+      editChangeTypeAction = new Action("Edit Change Type", IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
             try {
@@ -331,7 +333,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
          }
       };
 
-      editPriorityAction = new Action("Edit Priority", Action.AS_PUSH_BUTTON) {
+      editPriorityAction = new Action("Edit Priority", IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
             if (PromptChangeUtil.promptChangePriority(getSelectedTeamWorkflowArtifacts(), true)) {
@@ -340,12 +342,12 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
          }
       };
 
-      editTargetVersionAction = new Action("Edit Targeted Version", Action.AS_PUSH_BUTTON) {
+      editTargetVersionAction = new Action("Edit Targeted Version", IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
             try {
                if (PromptChangeUtil.promptChangeVersion(getSelectedTeamWorkflowArtifacts(),
-                     (AtsUtil.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased), true)) {
+                  (AtsUtil.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased), true)) {
                   update(getSelectedArtifactItems().toArray(), null);
                }
             } catch (Exception ex) {
@@ -354,7 +356,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
          }
       };
 
-      editAssigneeAction = new Action("Edit Assignee", Action.AS_PUSH_BUTTON) {
+      editAssigneeAction = new Action("Edit Assignee", IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
             try {
@@ -369,7 +371,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
          }
       };
 
-      editActionableItemsAction = new Action("Edit Actionable Item(s)", Action.AS_PUSH_BUTTON) {
+      editActionableItemsAction = new Action("Edit Actionable Item(s)", IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
             try {
@@ -388,7 +390,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
          }
       };
 
-      openInAtsWorldEditorAction = new Action("Open in ATS World Editor", Action.AS_PUSH_BUTTON) {
+      openInAtsWorldEditorAction = new Action("Open in ATS World Editor", IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
             if (getSelectedArtifacts().isEmpty()) {
@@ -398,12 +400,12 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
             WorldEditorInput worldEditorInput = null;
             if (thisXViewer instanceof TaskXViewer) {
                worldEditorInput =
-                     new WorldEditorInput(new WorldEditorSimpleProvider("ATS World", getSelectedArtifacts(), null,
-                           TableLoadOption.None));
+                  new WorldEditorInput(new WorldEditorSimpleProvider("ATS World", getSelectedArtifacts(), null,
+                     TableLoadOption.None));
             } else {
                worldEditorInput =
-                     new WorldEditorInput(new WorldEditorSimpleProvider("ATS World", getSelectedArtifacts(),
-                           getCustomizeMgr().generateCustDataFromTable(), TableLoadOption.None));
+                  new WorldEditorInput(new WorldEditorSimpleProvider("ATS World", getSelectedArtifacts(),
+                     getCustomizeMgr().generateCustDataFromTable(), TableLoadOption.None));
             }
             if (worldEditorInput != null) {
                IWorkbenchPage page = AWorkbench.getActivePage();
@@ -422,7 +424,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
 
       };
 
-      openInAtsTaskEditorAction = new Action("Open in ATS Task Editor", Action.AS_PUSH_BUTTON) {
+      openInAtsTaskEditorAction = new Action("Open in ATS Task Editor", IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
             if (getSelectedTaskArtifacts().isEmpty()) {
@@ -443,7 +445,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
 
       };
 
-      resetActionArtifactAction = new Action("Reset Action off Children", Action.AS_PUSH_BUTTON) {
+      resetActionArtifactAction = new Action("Reset Action off Children", IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
             SkynetTransaction transaction;
@@ -837,6 +839,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
    /**
     * @return all selected Workflow and any workflow that have Actions with single workflow
     */
+   @Override
    public Set<StateMachineArtifact> getSelectedSMAArtifacts() {
       Set<StateMachineArtifact> smaArts = new HashSet<StateMachineArtifact>();
       try {
@@ -960,10 +963,9 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
                return false;
             } else if (xCol.equals(WorldXViewerFactory.Goal_Order_Vote_Col)) {
                modified =
-                     PromptChangeUtil.promptChangeAttribute((Artifact) useArt, ATSAttributes.GOAL_ORDER_VOTE_ATTRIBUTE,
-                           persist, true);
+                  PromptChangeUtil.promptChangeAttribute(useArt, ATSAttributes.GOAL_ORDER_VOTE_ATTRIBUTE, persist, true);
             } else if (xCol.equals(WorldXViewerFactory.Goals_Col)) {
-               modified = PromptChangeUtil.promptChangeGoals((Artifact) useArt, persist);
+               modified = PromptChangeUtil.promptChangeGoals(useArt, persist);
             }
             if (modified) {
                update(useArt, null);
@@ -981,44 +983,44 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
          boolean modified = false;
          if (xCol.equals(WorldXViewerFactory.Version_Target_Col)) {
             modified =
-                  PromptChangeUtil.promptChangeVersion(sma,
-                        AtsUtil.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased, true);
+               PromptChangeUtil.promptChangeVersion(sma,
+                  AtsUtil.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased, true);
          } else if (xCol.equals(WorldXViewerFactory.Notes_Col)) {
             modified = PromptChangeUtil.promptChangeAttribute(sma, ATSAttributes.SMA_NOTE_ATTRIBUTE, persist, true);
          } else if (xCol.equals(WorldXViewerFactory.Percent_Rework_Col)) {
             modified =
-                  PromptChangeUtil.promptChangePercentAttribute(sma, ATSAttributes.PERCENT_REWORK_ATTRIBUTE, persist);
+               PromptChangeUtil.promptChangePercentAttribute(sma, ATSAttributes.PERCENT_REWORK_ATTRIBUTE, persist);
          } else if (xCol.equals(WorldXViewerFactory.Estimated_Hours_Col)) {
             modified =
-                  PromptChangeUtil.promptChangeFloatAttribute(sma, ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE, persist);
+               PromptChangeUtil.promptChangeFloatAttribute(sma, ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE, persist);
          } else if (xCol.equals(WorldXViewerFactory.Weekly_Benefit_Hrs_Col)) {
             modified =
-                  PromptChangeUtil.promptChangeFloatAttribute(sma, ATSAttributes.WEEKLY_BENEFIT_ATTRIBUTE, persist);
+               PromptChangeUtil.promptChangeFloatAttribute(sma, ATSAttributes.WEEKLY_BENEFIT_ATTRIBUTE, persist);
          } else if (xCol.equals(WorldXViewerFactory.Estimated_Release_Date_Col)) {
             modified = PromptChangeUtil.promptChangeEstimatedReleaseDate(sma);
          } else if (xCol.equals(WorldXViewerFactory.Groups_Col)) {
             modified = PromptChangeUtil.promptChangeGroups(sma, persist);
          } else if (xCol.equals(WorldXViewerFactory.Estimated_Completion_Date_Col)) {
             modified =
-                  PromptChangeUtil.promptChangeDate(sma, ATSAttributes.ESTIMATED_COMPLETION_DATE_ATTRIBUTE, persist);
+               PromptChangeUtil.promptChangeDate(sma, ATSAttributes.ESTIMATED_COMPLETION_DATE_ATTRIBUTE, persist);
          } else if (xCol.equals(WorldXViewerFactory.Deadline_Col)) {
             modified = PromptChangeUtil.promptChangeDate(sma, ATSAttributes.NEED_BY_ATTRIBUTE, persist);
          } else if (xCol.equals(WorldXViewerFactory.Assignees_Col)) {
             modified = PromptChangeUtil.promptChangeAssignees(sma, persist);
          } else if (xCol.equals(WorldXViewerFactory.Remaining_Hours_Col)) {
             AWorkbench.popup("Calculated Field",
-                  "Hours Remaining field is calculated.\nHour Estimate - (Hour Estimate * Percent Complete)");
+               "Hours Remaining field is calculated.\nHour Estimate - (Hour Estimate * Percent Complete)");
             return false;
          } else if (xCol.equals(WorldXViewerFactory.Work_Days_Needed_Col)) {
             AWorkbench.popup(
-                  "Calculated Field",
-                  "Work Days Needed field is calculated.\nRemaining Hours / Hours per Week (" + sma.getManHrsPerDayPreference() + ")");
+               "Calculated Field",
+               "Work Days Needed field is calculated.\nRemaining Hours / Hours per Week (" + sma.getManHrsPerDayPreference() + ")");
             return false;
          } else if (xCol.equals(WorldXViewerFactory.Release_Date_Col)) {
             modified = PromptChangeUtil.promptChangeReleaseDate(sma);
          } else if (xCol.equals(WorldXViewerFactory.Work_Package_Col)) {
             modified =
-                  PromptChangeUtil.promptChangeAttribute(sma, ATSAttributes.WORK_PACKAGE_ATTRIBUTE, persist, false);
+               PromptChangeUtil.promptChangeAttribute(sma, ATSAttributes.WORK_PACKAGE_ATTRIBUTE, persist, false);
          } else if (xCol.equals(WorldXViewerFactory.Points_Col)) {
             modified = PromptChangeUtil.promptChangePoints(sma, persist);
          } else if (xCol.equals(WorldXViewerFactory.Numeric1_Col)) {
@@ -1080,7 +1082,9 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
 
    @Override
    public void handleReloadEvent(Sender sender, final Collection<? extends Artifact> artifacts) throws OseeCoreException {
-      if (!Widgets.isAccessible(getTree())) return;
+      if (!Widgets.isAccessible(getTree())) {
+         return;
+      }
       if (!artifacts.iterator().next().getBranch().equals(AtsUtil.getAtsBranch())) {
          return;
       }
@@ -1115,6 +1119,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
    /**
     * store off parent goalItem in label provider so it can determine parent when providing order of goal member
     */
+   @Override
    protected void doUpdateItem(Item item, Object element) {
       if (item instanceof TreeItem) {
          GoalArtifact parentGoalArtifact = getParentGoalArtifact((TreeItem) item);

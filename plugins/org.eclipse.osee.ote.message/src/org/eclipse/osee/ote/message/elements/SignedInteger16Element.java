@@ -11,7 +11,6 @@
 package org.eclipse.osee.ote.message.elements;
 
 import java.util.Collection;
-
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.data.MemoryResource;
@@ -54,7 +53,7 @@ public class SignedInteger16Element extends NumericElement<Integer> {
 
    @Override
    public void setValue(Integer value) {
-      getMsgData().getMem().setInt((Integer) value, byteOffset, msb, lsb);
+      getMsgData().getMem().setInt(value, byteOffset, msb, lsb);
    }
 
    @Override
@@ -109,7 +108,9 @@ public class SignedInteger16Element extends NumericElement<Integer> {
    public void checkPulse(ITestAccessor accessor, int value) throws InterruptedException {
 
       int nonPulsedValue = 0;
-      if (value == 0) nonPulsedValue = 1;
+      if (value == 0) {
+         nonPulsedValue = 1;
+      }
 
       checkPulse(accessor, value, nonPulsedValue);
 
@@ -142,17 +143,17 @@ public class SignedInteger16Element extends NumericElement<Integer> {
     * @param accessor
     * @param minValue The minimum value of the range.
     * @param minInclusive If the minumum value of the range is inclusive. If true the actual value must not < and not =
-    *           to the range value.
+    * to the range value.
     * @param maxValue The maximum value of the range.
     * @param maxInclusive If the maximum value of the range is inclusive. If true the actual value must not > and not =
-    *           to the range value.
+    * to the range value.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
     * @throws InterruptedException
     */
    public int waitForRange(ITestEnvironmentAccessor accessor, int minValue, boolean minInclusive, int maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
-      return super.waitForRange(accessor, Integer.valueOf(minValue), minInclusive, Integer.valueOf(maxValue), maxInclusive,
-            milliseconds);
+      return super.waitForRange(accessor, Integer.valueOf(minValue), minInclusive, Integer.valueOf(maxValue),
+         maxInclusive, milliseconds);
    }
 
    /**
@@ -175,17 +176,17 @@ public class SignedInteger16Element extends NumericElement<Integer> {
     * @param accessor
     * @param minValue The minimum value of the range.
     * @param minInclusive If the minumum value of the range is inclusive. If true the actual value must not < and not =
-    *           to the range value.
+    * to the range value.
     * @param maxValue The maximum value of the range.
     * @param maxInclusive If the maximum value of the range is inclusive. If true the actual value must not > and not =
-    *           to the range value.
+    * to the range value.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
     * @throws InterruptedException
     */
    public int waitForNotRange(ITestEnvironmentAccessor accessor, int minValue, boolean minInclusive, int maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
-      return (Integer) super.waitForNotRange(accessor, Integer.valueOf(minValue), minInclusive, Integer.valueOf(maxValue),
-            maxInclusive, milliseconds);
+      return super.waitForNotRange(accessor, Integer.valueOf(minValue), minInclusive, Integer.valueOf(maxValue),
+         maxInclusive, milliseconds);
    }
 
    @Override
@@ -195,7 +196,7 @@ public class SignedInteger16Element extends NumericElement<Integer> {
 
    @Override
    protected Element getNonMappingElement() {
-      return (NonMappingSignedInteger16Element) new NonMappingSignedInteger16Element(this);
+      return new NonMappingSignedInteger16Element(this);
    }
 
    @Override

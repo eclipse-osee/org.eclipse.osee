@@ -28,17 +28,16 @@ import org.eclipse.swt.widgets.Composite;
  */
 
 /*
- * All of the instance of checks are needed to support both artifacts and
- * conflicts. The reason to support both is I created the classes for
- * artifacts so all of the work was already done for them. I then realized
- * that I needed to control the setting of values for conflicts and thus had to call
- * the conflict specific methods instead of simply setting the values.
+ * All of the instance of checks are needed to support both artifacts and conflicts. The reason to support both is I
+ * created the classes for artifacts so all of the work was already done for them. I then realized that I needed to
+ * control the setting of values for conflicts and thus had to call the conflict specific methods instead of simply
+ * setting the values.
  */
 
 public class EmbeddedStringAttributeEditor implements IEmbeddedAttributeEditor {
    private static final String PROMPT = "Set the Attribute Value";
    private static final String VALIDATION_ERROR =
-         "ERROR: You have entered an invalid value." + " This value can not be saved.";
+      "ERROR: You have entered an invalid value." + " This value can not be saved.";
    private static final String TYPE_ERROR = "All the artifacts being edited are not of the same type.";
 
    protected IAttributeType attributeType;
@@ -56,6 +55,7 @@ public class EmbeddedStringAttributeEditor implements IEmbeddedAttributeEditor {
       this.persist = persist;
    }
 
+   @Override
    public boolean create(Composite composite, GridData gd) {
       if (attributeHolders == null) {
          return false;
@@ -101,12 +101,14 @@ public class EmbeddedStringAttributeEditor implements IEmbeddedAttributeEditor {
       return true;
    }
 
+   @Override
    public void update(Object value) {
       if (value != null) {
          editor.setEntry(value.toString());
       }
    }
 
+   @Override
    public boolean commit() {
       if (editor != null) {
          try {
@@ -142,10 +144,12 @@ public class EmbeddedStringAttributeEditor implements IEmbeddedAttributeEditor {
 
    }
 
+   @Override
    public boolean canClear() {
       return true;
    }
 
+   @Override
    public boolean canFinish() {
       if (editor == null) {
          return false;

@@ -56,350 +56,359 @@ import org.eclipse.ui.PartInitException;
  * @author Donald G. Dunne
  */
 public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEditor, IActionable, IAtsMetricsProvider, IXTaskViewer {
-	public static final String EDITOR_ID = "org.eclipse.osee.ats.editor.TaskEditor";
-	private int mainPageIndex, metricsPageIndex;
-	private TaskEditorXWidgetActionPage taskActionPage;
-	private final Collection<TaskArtifact> tasks = new HashSet<TaskArtifact>();
-	private AtsMetricsComposite metricsComposite;
-	private boolean loading = false;
-	public static int TITLE_MAX_LENGTH = WorldEditor.TITLE_MAX_LENGTH;
+   public static final String EDITOR_ID = "org.eclipse.osee.ats.editor.TaskEditor";
+   private int mainPageIndex, metricsPageIndex;
+   private TaskEditorXWidgetActionPage taskActionPage;
+   private final Collection<TaskArtifact> tasks = new HashSet<TaskArtifact>();
+   private AtsMetricsComposite metricsComposite;
+   private boolean loading = false;
+   public static int TITLE_MAX_LENGTH = WorldEditor.TITLE_MAX_LENGTH;
 
-	@Override
-	public void doSave(IProgressMonitor monitor) {
-		try {
-			SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Task Editor Save");
-			for (TaskArtifact taskArt : tasks) {
-				taskArt.saveSMA(transaction);
-			}
-			transaction.execute();
-		} catch (Exception ex) {
-			OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-		}
-		onDirtied();
-	}
+   @Override
+   public void doSave(IProgressMonitor monitor) {
+      try {
+         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Task Editor Save");
+         for (TaskArtifact taskArt : tasks) {
+            taskArt.saveSMA(transaction);
+         }
+         transaction.execute();
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+      onDirtied();
+   }
 
-	public ArrayList<Artifact> getLoadedArtifacts() {
-		return taskActionPage.getTaskComposite().getTaskXViewer().getLoadedArtifacts();
-	}
+   public ArrayList<Artifact> getLoadedArtifacts() {
+      return taskActionPage.getTaskComposite().getTaskXViewer().getLoadedArtifacts();
+   }
 
-	@Override
-	public boolean isSaveOnCloseNeeded() {
-		return isDirty();
-	}
+   @Override
+   public boolean isSaveOnCloseNeeded() {
+      return isDirty();
+   }
 
-	public static Collection<TaskEditor> getEditors() {
-		final List<TaskEditor> editors = new ArrayList<TaskEditor>();
-		Displays.pendInDisplayThread(new Runnable() {
-			@Override
-			public void run() {
-				for (IEditorReference editor : AWorkbench.getEditors(EDITOR_ID)) {
-					editors.add((TaskEditor) editor.getEditor(false));
-				}
-			}
-		});
-		return editors;
-	}
+   public static Collection<TaskEditor> getEditors() {
+      final List<TaskEditor> editors = new ArrayList<TaskEditor>();
+      Displays.pendInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            for (IEditorReference editor : AWorkbench.getEditors(EDITOR_ID)) {
+               editors.add((TaskEditor) editor.getEditor(false));
+            }
+         }
+      });
+      return editors;
+   }
 
-	public static void closeAll() {
-		Displays.ensureInDisplayThread(new Runnable() {
-			@Override
-			public void run() {
-				for (IEditorReference editor : AWorkbench.getEditors(EDITOR_ID)) {
-					AWorkbench.getActivePage().closeEditor((editor.getEditor(false)), false);
-				}
-			}
-		});
-	}
+   public static void closeAll() {
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            for (IEditorReference editor : AWorkbench.getEditors(EDITOR_ID)) {
+               AWorkbench.getActivePage().closeEditor(editor.getEditor(false), false);
+            }
+         }
+      });
+   }
 
-	public void setTableTitle(final String title, final boolean warning) {
-		taskActionPage.setTableTitle(title, warning);
-	}
+   public void setTableTitle(final String title, final boolean warning) {
+      taskActionPage.setTableTitle(title, warning);
+   }
 
-	@Override
-	public void dispose() {
-		for (TaskArtifact taskArt : tasks) {
-			if (taskArt != null && !taskArt.isDeleted() && taskArt.isSMAEditorDirty().isTrue()) {
-				taskArt.revertSMA();
-			}
-		}
-		if (taskActionPage != null && taskActionPage.getTaskComposite() != null) {
-			taskActionPage.getTaskComposite().disposeComposite();
-		}
-		if (metricsComposite != null) {
-			metricsComposite.disposeComposite();
-		}
+   @Override
+   public void dispose() {
+      for (TaskArtifact taskArt : tasks) {
+         if (taskArt != null && !taskArt.isDeleted() && taskArt.isSMAEditorDirty().isTrue()) {
+            taskArt.revertSMA();
+         }
+      }
+      if (taskActionPage != null && taskActionPage.getTaskComposite() != null) {
+         taskActionPage.getTaskComposite().disposeComposite();
+      }
+      if (metricsComposite != null) {
+         metricsComposite.disposeComposite();
+      }
 
-		super.dispose();
-	}
+      super.dispose();
+   }
 
-	@Override
-	public boolean isDirty() {
-		for (TaskArtifact taskArt : new CopyOnWriteArrayList<TaskArtifact>(tasks)) {
-			if (taskArt.isDeleted()) {
-				continue;
-			} else if (taskArt.isSMAEditorDirty().isTrue()) {
-				return true;
-			}
-		}
-		return false;
-	}
+   @Override
+   public boolean isDirty() {
+      for (TaskArtifact taskArt : new CopyOnWriteArrayList<TaskArtifact>(tasks)) {
+         if (taskArt.isDeleted()) {
+            continue;
+         } else if (taskArt.isSMAEditorDirty().isTrue()) {
+            return true;
+         }
+      }
+      return false;
+   }
 
-	@Override
-	public String toString() {
-		return "TaskEditor";
-	}
+   @Override
+   public String toString() {
+      return "TaskEditor";
+   }
 
-	/**
-	 * @return the taskActionPage
-	 */
-	public TaskEditorXWidgetActionPage getTaskActionPage() {
-		return taskActionPage;
-	}
+   /**
+    * @return the taskActionPage
+    */
+   public TaskEditorXWidgetActionPage getTaskActionPage() {
+      return taskActionPage;
+   }
 
-	@Override
-	protected void addPages() {
+   @Override
+   protected void addPages() {
 
-		try {
-			OseeContributionItem.addTo(this, true);
+      try {
+         OseeContributionItem.addTo(this, true);
 
-			IEditorInput editorInput = getEditorInput();
-			if (!(editorInput instanceof TaskEditorInput)) {
-				throw new OseeArgumentException("Editor Input not TaskEditorInput");
-			}
+         IEditorInput editorInput = getEditorInput();
+         if (!(editorInput instanceof TaskEditorInput)) {
+            throw new OseeArgumentException("Editor Input not TaskEditorInput");
+         }
 
-			createMainTab();
-			createMetricsTab();
+         createMainTab();
+         createMetricsTab();
 
-			setActivePage(mainPageIndex);
-			loadTable();
+         setActivePage(mainPageIndex);
+         loadTable();
 
-		} catch (OseeCoreException ex) {
-			OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-		} catch (PartInitException ex) {
-			OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-		}
-	}
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      } catch (PartInitException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
+   }
 
-	private void createMainTab() throws OseeCoreException, PartInitException {
-		taskActionPage = new TaskEditorXWidgetActionPage(this);
-		mainPageIndex = addPage(taskActionPage);
-	}
+   private void createMainTab() throws OseeCoreException, PartInitException {
+      taskActionPage = new TaskEditorXWidgetActionPage(this);
+      mainPageIndex = addPage(taskActionPage);
+   }
 
-	private void createMetricsTab() throws OseeCoreException {
-		Composite comp = AtsUtil.createCommonPageComposite(getContainer());
-		AtsUtil.createCommonToolBar(comp);
-		metricsComposite = new AtsMetricsComposite(this, comp, SWT.NONE);
-		metricsPageIndex = addPage(comp);
-		setPageText(metricsPageIndex, "Metrics");
-	}
+   private void createMetricsTab() throws OseeCoreException {
+      Composite comp = AtsUtil.createCommonPageComposite(getContainer());
+      AtsUtil.createCommonToolBar(comp);
+      metricsComposite = new AtsMetricsComposite(this, comp, SWT.NONE);
+      metricsPageIndex = addPage(comp);
+      setPageText(metricsPageIndex, "Metrics");
+   }
 
-	public ITaskEditorProvider getTaskEditorProvider() {
-		TaskEditorInput aei = (TaskEditorInput) getEditorInput();
-		return aei.getItaskEditorProvider();
-	}
+   public ITaskEditorProvider getTaskEditorProvider() {
+      TaskEditorInput aei = (TaskEditorInput) getEditorInput();
+      return aei.getItaskEditorProvider();
+   }
 
-	private void loadTable() throws OseeCoreException {
-		ITaskEditorProvider provider = getTaskEditorProvider();
-		setPartName(provider.getTaskEditorLabel(SearchType.Search));
+   private void loadTable() throws OseeCoreException {
+      ITaskEditorProvider provider = getTaskEditorProvider();
+      setPartName(provider.getTaskEditorLabel(SearchType.Search));
 
-		if (provider instanceof TaskEditorParameterSearchItemProvider && ((TaskEditorParameterSearchItemProvider) provider).isFirstTime()) {
-			setPartName(provider.getName());
-			setTableTitle(WorldEditorParameterSearchItemProvider.ENTER_OPTIONS_AND_SELECT_SEARCH, false);
-			return;
-		}
-		if (provider instanceof TaskEditorParameterSearchItemProvider) {
-			Result result =
-						((TaskEditorParameterSearchItemProvider) provider).getWorldSearchItem().isParameterSelectionValid();
-			if (result.isFalse()) {
-				result.popup();
-				return;
-			}
-		}
-		if (loading) {
-			AWorkbench.popup("Already Loading, Please Wait");
-			return;
-		}
-		LoadTableJob job = null;
-		job = new LoadTableJob(provider, SearchType.ReSearch, this);
-		job.setUser(false);
-		job.setPriority(Job.LONG);
-		job.schedule();
-		if (provider.getTableLoadOptions() != null && provider.getTableLoadOptions().contains(TableLoadOption.ForcePend)) {
-			try {
-				job.join();
-			} catch (InterruptedException ex) {
-				OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-			}
-		}
-	}
+      if (provider instanceof TaskEditorParameterSearchItemProvider && ((TaskEditorParameterSearchItemProvider) provider).isFirstTime()) {
+         setPartName(provider.getName());
+         setTableTitle(WorldEditorParameterSearchItemProvider.ENTER_OPTIONS_AND_SELECT_SEARCH, false);
+         return;
+      }
+      if (provider instanceof TaskEditorParameterSearchItemProvider) {
+         Result result =
+            ((TaskEditorParameterSearchItemProvider) provider).getWorldSearchItem().isParameterSelectionValid();
+         if (result.isFalse()) {
+            result.popup();
+            return;
+         }
+      }
+      if (loading) {
+         AWorkbench.popup("Already Loading, Please Wait");
+         return;
+      }
+      LoadTableJob job = null;
+      job = new LoadTableJob(provider, SearchType.ReSearch, this);
+      job.setUser(false);
+      job.setPriority(Job.LONG);
+      job.schedule();
+      if (provider.getTableLoadOptions() != null && provider.getTableLoadOptions().contains(TableLoadOption.ForcePend)) {
+         try {
+            job.join();
+         } catch (InterruptedException ex) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         }
+      }
+   }
 
-	@Override
-	public void onDirtied() {
-		Displays.ensureInDisplayThread(new Runnable() {
-			public void run() {
-				firePropertyChange(PROP_DIRTY);
-			}
-		});
-	}
+   @Override
+   public void onDirtied() {
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            firePropertyChange(PROP_DIRTY);
+         }
+      });
+   }
 
-	public static void open(final ITaskEditorProvider provider) throws OseeCoreException {
-		Displays.ensureInDisplayThread(new Runnable() {
-			public void run() {
-				IWorkbenchPage page = AWorkbench.getActivePage();
-				try {
-					page.openEditor(new TaskEditorInput(provider), EDITOR_ID);
-				} catch (PartInitException ex) {
-					OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-				}
-			}
-		}, (provider.getTableLoadOptions() != null && provider.getTableLoadOptions().contains(TableLoadOption.ForcePend)));
-	}
+   public static void open(final ITaskEditorProvider provider) throws OseeCoreException {
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            IWorkbenchPage page = AWorkbench.getActivePage();
+            try {
+               page.openEditor(new TaskEditorInput(provider), EDITOR_ID);
+            } catch (PartInitException ex) {
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+         }
+      }, (provider.getTableLoadOptions() != null && provider.getTableLoadOptions().contains(TableLoadOption.ForcePend)));
+   }
 
-	private static class LoadTableJob extends Job {
+   private static class LoadTableJob extends Job {
 
-		private final ITaskEditorProvider itaskEditorProvider;
-		private final TaskEditor taskEditor;
-		private final SearchType searchType;
+      private final ITaskEditorProvider itaskEditorProvider;
+      private final TaskEditor taskEditor;
+      private final SearchType searchType;
 
-		public LoadTableJob(ITaskEditorProvider itaskEditorProvider, SearchType searchType, TaskEditor taskEditor) throws OseeCoreException {
-			super("Loading \"" + itaskEditorProvider.getTaskEditorLabel(searchType) + "\"");
-			this.searchType = searchType;
-			this.taskEditor = taskEditor;
-			taskEditor.setPartName(itaskEditorProvider.getTaskEditorLabel(searchType));
-			taskEditor.setTableTitle("Loading \"" + itaskEditorProvider.getTaskEditorLabel(searchType) + "\"", false);
-			this.itaskEditorProvider = itaskEditorProvider;
-		}
+      public LoadTableJob(ITaskEditorProvider itaskEditorProvider, SearchType searchType, TaskEditor taskEditor) throws OseeCoreException {
+         super("Loading \"" + itaskEditorProvider.getTaskEditorLabel(searchType) + "\"");
+         this.searchType = searchType;
+         this.taskEditor = taskEditor;
+         taskEditor.setPartName(itaskEditorProvider.getTaskEditorLabel(searchType));
+         taskEditor.setTableTitle("Loading \"" + itaskEditorProvider.getTaskEditorLabel(searchType) + "\"", false);
+         this.itaskEditorProvider = itaskEditorProvider;
+      }
 
-		@Override
-		protected IStatus run(IProgressMonitor monitor) {
-			if (taskEditor.isLoading()) {
-				return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, "Already Loading, Please Wait", null);
-			}
-			try {
-				taskEditor.setLoading(true);
-				final List<TaskArtifact> taskArts = new ArrayList<TaskArtifact>();
-				for (Artifact artifact : itaskEditorProvider.getTaskEditorTaskArtifacts()) {
-					if (artifact instanceof TaskArtifact) {
-						taskArts.add((TaskArtifact) artifact);
-					}
-				}
-				taskEditor.tasks.clear();
-				taskEditor.tasks.addAll(taskArts);
-				Displays.pendInDisplayThread(new Runnable() {
-					@Override
-					public void run() {
-						try {
-							taskEditor.setPartName(itaskEditorProvider.getTaskEditorLabel(searchType));
-							if (taskArts.isEmpty()) {
-								taskEditor.setTableTitle(
-											"No Results Found - " + itaskEditorProvider.getTaskEditorLabel(searchType), true);
-							} else {
-								taskEditor.setTableTitle(itaskEditorProvider.getTaskEditorLabel(searchType), false);
-							}
-							taskEditor.getTaskActionPage().getTaskComposite().loadTable();
-						} catch (OseeCoreException ex) {
-							OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-						}
-					}
-				});
-			} catch (final Exception ex) {
-				monitor.done();
-				return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, "Can't load tasks", ex);
-			} finally {
-				taskEditor.setLoading(false);
-			}
-			monitor.done();
-			return Status.OK_STATUS;
-		}
-	}
+      @Override
+      protected IStatus run(IProgressMonitor monitor) {
+         if (taskEditor.isLoading()) {
+            return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, -1, "Already Loading, Please Wait", null);
+         }
+         try {
+            taskEditor.setLoading(true);
+            final List<TaskArtifact> taskArts = new ArrayList<TaskArtifact>();
+            for (Artifact artifact : itaskEditorProvider.getTaskEditorTaskArtifacts()) {
+               if (artifact instanceof TaskArtifact) {
+                  taskArts.add((TaskArtifact) artifact);
+               }
+            }
+            taskEditor.tasks.clear();
+            taskEditor.tasks.addAll(taskArts);
+            Displays.pendInDisplayThread(new Runnable() {
+               @Override
+               public void run() {
+                  try {
+                     taskEditor.setPartName(itaskEditorProvider.getTaskEditorLabel(searchType));
+                     if (taskArts.isEmpty()) {
+                        taskEditor.setTableTitle(
+                           "No Results Found - " + itaskEditorProvider.getTaskEditorLabel(searchType), true);
+                     } else {
+                        taskEditor.setTableTitle(itaskEditorProvider.getTaskEditorLabel(searchType), false);
+                     }
+                     taskEditor.getTaskActionPage().getTaskComposite().loadTable();
+                  } catch (OseeCoreException ex) {
+                     OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+                  }
+               }
+            });
+         } catch (final Exception ex) {
+            monitor.done();
+            return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, -1, "Can't load tasks", ex);
+         } finally {
+            taskEditor.setLoading(false);
+         }
+         monitor.done();
+         return Status.OK_STATUS;
+      }
+   }
 
-	@Override
-	public Collection<? extends Artifact> getMetricsArtifacts() throws OseeCoreException {
-		return tasks;
-	}
+   @Override
+   public Collection<? extends Artifact> getMetricsArtifacts() throws OseeCoreException {
+      return tasks;
+   }
 
-	@Override
-	public VersionArtifact getMetricsVersionArtifact() throws OseeCoreException {
-		for (TaskArtifact taskArt : tasks) {
-			if (taskArt.getWorldViewTargetedVersion() != null) {
-				return taskArt.getWorldViewTargetedVersion();
-			}
-		}
-		return null;
-	}
+   @Override
+   public VersionArtifact getMetricsVersionArtifact() throws OseeCoreException {
+      for (TaskArtifact taskArt : tasks) {
+         if (taskArt.getWorldViewTargetedVersion() != null) {
+            return taskArt.getWorldViewTargetedVersion();
+         }
+      }
+      return null;
+   }
 
-	public String getCurrentStateName() throws OseeCoreException {
-		return "";
-	}
+   @Override
+   public String getCurrentStateName() throws OseeCoreException {
+      return "";
+   }
 
-	public IDirtiableEditor getEditor() throws OseeCoreException {
-		return this;
-	}
+   @Override
+   public IDirtiableEditor getEditor() throws OseeCoreException {
+      return this;
+   }
 
-	public StateMachineArtifact getSma() throws OseeCoreException {
-		return null;
-	}
+   @Override
+   public StateMachineArtifact getSma() throws OseeCoreException {
+      return null;
+   }
 
-	public String getTabName() throws OseeCoreException {
-		return "Tasks";
-	}
+   @Override
+   public String getTabName() throws OseeCoreException {
+      return "Tasks";
+   }
 
-	public Collection<TaskArtifact> getTaskArtifacts(String stateName) throws OseeCoreException {
-		return tasks;
-	}
+   @Override
+   public Collection<TaskArtifact> getTaskArtifacts(String stateName) throws OseeCoreException {
+      return tasks;
+   }
 
-	public boolean isTaskable() throws OseeCoreException {
-		return false;
-	}
+   @Override
+   public boolean isTaskable() throws OseeCoreException {
+      return false;
+   }
 
-	public boolean isTasksEditable() throws OseeCoreException {
-		return true;
-	}
+   @Override
+   public boolean isTasksEditable() throws OseeCoreException {
+      return true;
+   }
 
-	@Override
-	public boolean isRefreshActionHandled() throws OseeCoreException {
-		return true;
-	}
+   @Override
+   public boolean isRefreshActionHandled() throws OseeCoreException {
+      return true;
+   }
 
-	@Override
-	public void handleRefreshAction() throws OseeCoreException {
-		loadTable();
-	}
+   @Override
+   public void handleRefreshAction() throws OseeCoreException {
+      loadTable();
+   }
 
-	@Override
-	public double getManHoursPerDayPreference() throws OseeCoreException {
-		if (tasks.isEmpty()) {
-			return StateMachineArtifact.DEFAULT_HOURS_PER_WORK_DAY;
-		}
-		return tasks.iterator().next().getManHrsPerDayPreference();
-	}
+   @Override
+   public double getManHoursPerDayPreference() throws OseeCoreException {
+      if (tasks.isEmpty()) {
+         return StateMachineArtifact.DEFAULT_HOURS_PER_WORK_DAY;
+      }
+      return tasks.iterator().next().getManHrsPerDayPreference();
+   }
 
-	@Override
-	public String getActionDescription() {
-		return taskActionPage.getActionDescription();
-	}
+   @Override
+   public String getActionDescription() {
+      return taskActionPage.getActionDescription();
+   }
 
-	@Override
-	public IActionable getActionable() throws OseeCoreException {
-		return this;
-	}
+   @Override
+   public IActionable getActionable() throws OseeCoreException {
+      return this;
+   }
 
-	public boolean isLoading() {
-		return loading;
-	}
+   public boolean isLoading() {
+      return loading;
+   }
 
-	public void setLoading(final boolean loading) {
-		this.loading = loading;
-		Displays.ensureInDisplayThread(new Runnable() {
-			@Override
-			public void run() {
-				if (loading) {
-					taskActionPage.getTaskComposite().setCursor(CursorManager.getCursor(SWT.CURSOR_WAIT));
-				} else {
-					taskActionPage.getTaskComposite().setCursor(null);
-				}
-			}
-		});
-	}
+   public void setLoading(final boolean loading) {
+      this.loading = loading;
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            if (loading) {
+               taskActionPage.getTaskComposite().setCursor(CursorManager.getCursor(SWT.CURSOR_WAIT));
+            } else {
+               taskActionPage.getTaskComposite().setCursor(null);
+            }
+         }
+      });
+   }
 
 }

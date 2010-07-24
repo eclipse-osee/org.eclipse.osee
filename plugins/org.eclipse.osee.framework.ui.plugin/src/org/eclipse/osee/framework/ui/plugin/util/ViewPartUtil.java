@@ -31,16 +31,14 @@ public class ViewPartUtil {
     */
    public static int startMultiView(String viewID) {
       /*
-       * ViewParts have a primary ID (which identifies the type of the View) and a secondary ID
-       * (which allows us to have multiple Views of the same type running concurrently. Since the
-       * secondary ID must be unique, we need to find an ID that isn't being used currently. Also,
-       * its nice to display this to the user so they can keep the views straight. So, we've opted
-       * to simply use an integer number for this purpose. Therefore, to startup another instnace of
-       * this view, we want to find a number which isn't currently being used, and use that. The
-       * lower numbers are preferable from a useability standpoint, and we'll start counting at 1.
-       * If a view is closed, we should first re-use its number before going on to higher numbers.
-       * For example, if views with secondary IDs 1, and 3 are currently running, the next instance
-       * of the view should be 2.
+       * ViewParts have a primary ID (which identifies the type of the View) and a secondary ID (which allows us to have
+       * multiple Views of the same type running concurrently. Since the secondary ID must be unique, we need to find an
+       * ID that isn't being used currently. Also, its nice to display this to the user so they can keep the views
+       * straight. So, we've opted to simply use an integer number for this purpose. Therefore, to startup another
+       * instnace of this view, we want to find a number which isn't currently being used, and use that. The lower
+       * numbers are preferable from a useability standpoint, and we'll start counting at 1. If a view is closed, we
+       * should first re-use its number before going on to higher numbers. For example, if views with secondary IDs 1,
+       * and 3 are currently running, the next instance of the view should be 2.
        */
 
       SortedSet<Integer> set = new TreeSet<Integer>();
@@ -61,10 +59,11 @@ public class ViewPartUtil {
       boolean found = false;
       int secondaryId = 1;
       while (iter.hasNext() && !found) {
-         if (iter.next().intValue() != secondaryId)
+         if (iter.next().intValue() != secondaryId) {
             found = true;
-         else
+         } else {
             secondaryId++;
+         }
       }
       try {
          page.showView(viewID, Integer.toString(secondaryId), IWorkbenchPage.VIEW_ACTIVATE);
@@ -82,7 +81,7 @@ public class ViewPartUtil {
          return page.showView(viewId);
       } catch (PartInitException e1) {
          MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Launch Error",
-               "Couldn't Launch " + viewId + "\n\n" + e1.getMessage());
+            "Couldn't Launch " + viewId + "\n\n" + e1.getMessage());
       }
       return null;
    }

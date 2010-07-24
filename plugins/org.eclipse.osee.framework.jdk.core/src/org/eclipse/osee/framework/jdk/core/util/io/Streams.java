@@ -39,7 +39,9 @@ public class Streams {
 
    public static byte[] getByteArray(InputStream stream) {
 
-      if (stream == null) throw new IllegalStateException("stream can not be null");
+      if (stream == null) {
+         throw new IllegalStateException("stream can not be null");
+      }
 
       int length = -1;
       long read = 0;
@@ -54,7 +56,9 @@ public class Streams {
             // Get another buffer for the next go around
             data = new byte[ORACLE_BUFF_LENGTH];
 
-            if (read > Integer.MAX_VALUE) throw new UnsupportedOperationException("The data is too large.");
+            if (read > Integer.MAX_VALUE) {
+               throw new UnsupportedOperationException("The data is too large.");
+            }
          }
       } catch (IOException e) {
          throw new RuntimeException(e);

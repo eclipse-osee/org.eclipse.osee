@@ -37,6 +37,7 @@ public class TeamDefinitionTreeContentProvider implements ITreeContentProvider {
       this.active = active;
    }
 
+   @Override
    @SuppressWarnings("rawtypes")
    public Object[] getChildren(Object parentElement) {
       if (parentElement instanceof Collection) {
@@ -45,7 +46,7 @@ public class TeamDefinitionTreeContentProvider implements ITreeContentProvider {
          try {
             TeamDefinitionArtifact teamDef = (TeamDefinitionArtifact) parentElement;
             return AtsUtil.getActive(Artifacts.getChildrenOfTypeSet(teamDef, TeamDefinitionArtifact.class, false),
-                  active, TeamDefinitionArtifact.class).toArray();
+               active, TeamDefinitionArtifact.class).toArray();
          } catch (Exception ex) {
             // do nothing
          }
@@ -53,6 +54,7 @@ public class TeamDefinitionTreeContentProvider implements ITreeContentProvider {
       return new Object[] {};
    }
 
+   @Override
    public Object getParent(Object element) {
       try {
          if (element instanceof TeamDefinitionArtifact) {
@@ -64,17 +66,21 @@ public class TeamDefinitionTreeContentProvider implements ITreeContentProvider {
       return null;
    }
 
+   @Override
    public boolean hasChildren(Object element) {
       return getChildren(element).length > 0;
    }
 
+   @Override
    public Object[] getElements(Object inputElement) {
       return getChildren(inputElement);
    }
 
+   @Override
    public void dispose() {
    }
 
+   @Override
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
    }
 

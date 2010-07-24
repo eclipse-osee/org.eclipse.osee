@@ -132,9 +132,11 @@ public class EnvironmentPreferencePage {
 
    private void attachListeners() {
       treeViewer.getTree().addKeyListener(new KeyListener() {
+         @Override
          public void keyPressed(KeyEvent e) {
          }
 
+         @Override
          public void keyReleased(KeyEvent e) {
             if (e.character == SWT.DEL) {
                environmentPageEventHandler.handleRemoveSelectedViewEvent();
@@ -143,25 +145,30 @@ public class EnvironmentPreferencePage {
       });
 
       treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+         @Override
          public void selectionChanged(SelectionChangedEvent event) {
             environmentPageEventHandler.handleTreeSelectionEvent(event);
          }
       });
 
       treeViewer.getTree().addMouseListener(new MouseListener() {
+         @Override
          public void mouseDoubleClick(MouseEvent e) {
             environmentPageEventHandler.handleEditVariableEvent();
          }
 
+         @Override
          public void mouseDown(MouseEvent e) {
          }
 
+         @Override
          public void mouseUp(MouseEvent e) {
          }
       });
 
       treeViewer.addCheckStateListener(new ICheckStateListener() {
 
+         @Override
          public void checkStateChanged(CheckStateChangedEvent event) {
             environmentPageEventHandler.handleCheckStateChangeEvent(event);
          }
@@ -182,10 +189,12 @@ public class EnvironmentPreferencePage {
       addButton.setText("Add");
       addButton.addSelectionListener(new SelectionListener() {
 
+         @Override
          public void widgetDefaultSelected(SelectionEvent e) {
             widgetSelected(e);
          }
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             environmentPageEventHandler.handleAddEnvironmentVariableEvent();
          }
@@ -195,10 +204,12 @@ public class EnvironmentPreferencePage {
       removeButton.setText("Remove");
       removeButton.addSelectionListener(new SelectionListener() {
 
+         @Override
          public void widgetDefaultSelected(SelectionEvent e) {
             widgetSelected(e);
          }
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             environmentPageEventHandler.handleRemoveSelectedViewEvent();
          }
@@ -237,14 +248,16 @@ public class EnvironmentPreferencePage {
       treeGridData.verticalAlignment = GridData.FILL;
 
       treeViewer =
-            new CheckboxTreeViewer(areaComposite, SWT.MULTI | SWT.CHECK | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+         new CheckboxTreeViewer(areaComposite, SWT.MULTI | SWT.CHECK | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
       treeViewer.getTree().setLayoutData(treeGridData);
       treeViewer.setContentProvider(new ITreeContentProvider() {
 
+         @Override
          public void dispose() {
 
          }
 
+         @Override
          public Object[] getChildren(Object parentElement) {
             if (parentElement != null && parentElement instanceof TreeParent) {
                TreeParent parent = (TreeParent) parentElement;
@@ -255,6 +268,7 @@ public class EnvironmentPreferencePage {
             return new Object[0];
          }
 
+         @Override
          public Object[] getElements(Object inputElement) {
             if (inputElement != null && inputElement instanceof ArrayList<?>) {
                ArrayList<?> elementArray = (ArrayList<?>) inputElement;
@@ -263,6 +277,7 @@ public class EnvironmentPreferencePage {
             return new Object[0];
          }
 
+         @Override
          public Object getParent(Object element) {
             if (element != null && element instanceof TreeObject) {
                TreeObject child = (TreeObject) element;
@@ -271,6 +286,7 @@ public class EnvironmentPreferencePage {
             return new Object();
          }
 
+         @Override
          public boolean hasChildren(Object element) {
             if (element instanceof TreeParent) {
                TreeParent parent = (TreeParent) element;
@@ -279,6 +295,7 @@ public class EnvironmentPreferencePage {
             return false;
          }
 
+         @Override
          public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 
          }

@@ -47,8 +47,8 @@ public class ImportTraceUnitWizard extends Wizard implements IImportWizard {
          boolean fileWithMultiPaths = page.isFileContainingMultiplePaths();
 
          Job job =
-               new ImportTraceUnitsJob("Import Trace Units", importToBranch, source, isRecursive, isPersistChanges,
-                     fileWithMultiPaths, traceUnitHandlerIds);
+            new ImportTraceUnitsJob("Import Trace Units", importToBranch, source, isRecursive, isPersistChanges,
+               fileWithMultiPaths, traceUnitHandlerIds);
          Jobs.startJob(job, true);
          page.saveWidgetValues();
       } catch (Exception ex) {
@@ -57,6 +57,7 @@ public class ImportTraceUnitWizard extends Wizard implements IImportWizard {
       return true;
    }
 
+   @Override
    public void init(IWorkbench workbench, IStructuredSelection selection) {
       this.selection = selection;
    }

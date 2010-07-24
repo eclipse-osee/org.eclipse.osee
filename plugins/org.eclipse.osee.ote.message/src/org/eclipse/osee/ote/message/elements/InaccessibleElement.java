@@ -20,18 +20,16 @@ public class InaccessibleElement extends Element {
    // individual elements, delete this class!!! Make sure to remove it from
    // MuxSignalType too!! Also make sure to take code out of Message Generation
    // too.
-   public InaccessibleElement(Message<?,?,?> message, String elementName, MessageData messageData, int byteOffset, int msb,
-         int lsb) {
+   public InaccessibleElement(Message<?, ?, ?> message, String elementName, MessageData messageData, int byteOffset, int msb, int lsb) {
       this(message, elementName, messageData, byteOffset, msb, lsb, msb, lsb);
    }
 
-   public InaccessibleElement(Message<?,?,?> message, String elementName, MessageData messageData, int byteOffset, int msb,
-         int lsb, int originalLsb, int originalMsb) {
+   public InaccessibleElement(Message<?, ?, ?> message, String elementName, MessageData messageData, int byteOffset, int msb, int lsb, int originalLsb, int originalMsb) {
       super(message, elementName, messageData, byteOffset, msb, lsb, originalLsb, originalMsb);
    }
 
    @Override
-   public InaccessibleElement switchMessages(Collection<? extends Message<?,?,?>> messages) {
+   public InaccessibleElement switchMessages(Collection<? extends Message<?, ?, ?>> messages) {
       return (InaccessibleElement) super.switchMessages(messages);
    }
 
@@ -40,9 +38,8 @@ public class InaccessibleElement extends Element {
       return null;
    }
 
-public int compareTo(InaccessibleElement o) {
-    return 0;
-}
-   
-   
+   public int compareTo(InaccessibleElement o) {
+      return 0;
+   }
+
 }

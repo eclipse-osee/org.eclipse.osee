@@ -27,6 +27,7 @@ import org.eclipse.ui.IPerspectiveFactory;
  */
 public class CoveragePerspectiveFactory implements IPerspectiveFactory {
 
+   @Override
    public void createInitialLayout(IPageLayout layout) {
       final String editorArea = layout.getEditorArea();
 
@@ -49,7 +50,7 @@ public class CoveragePerspectiveFactory implements IPerspectiveFactory {
       bottom.addPlaceholder(NewSearchUI.SEARCH_VIEW_ID);
 
       final IFolderLayout bottomLeft =
-            layout.createFolder("bottomLeft", IPageLayout.BOTTOM, 0.6f, CoverageNavigateView.VIEW_ID);
+         layout.createFolder("bottomLeft", IPageLayout.BOTTOM, 0.6f, CoverageNavigateView.VIEW_ID);
       bottomLeft.addView(QuickSearchView.VIEW_ID);
    }
 }

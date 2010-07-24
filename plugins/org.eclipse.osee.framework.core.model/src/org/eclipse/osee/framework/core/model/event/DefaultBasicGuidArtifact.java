@@ -32,14 +32,17 @@ public class DefaultBasicGuidArtifact implements Identity, IBasicGuidArtifact {
       this.artGuid = guid;
    }
 
+   @Override
    public String getBranchGuid() {
       return branchGuid;
    }
 
+   @Override
    public String getArtTypeGuid() {
       return artTypeGuid;
    }
 
+   @Override
    public String toString() {
       return String.format("[%s]", artGuid);
    }
@@ -56,24 +59,33 @@ public class DefaultBasicGuidArtifact implements Identity, IBasicGuidArtifact {
    @Override
    public boolean equals(Object obj) {
       boolean equals = false;
-      if (this == obj) equals = true;
+      if (this == obj) {
+         equals = true;
+      }
       if (!equals && obj instanceof IBasicGuidArtifact) {
          IBasicGuidArtifact other = (IBasicGuidArtifact) obj;
 
-         if (artTypeGuid == null || other.getArtTypeGuid() == null) equals = false;
+         if (artTypeGuid == null || other.getArtTypeGuid() == null) {
+            equals = false;
+         }
          equals = artTypeGuid.equals(other.getArtTypeGuid());
 
-         if (equals && branchGuid == null || other.getBranchGuid() == null)
+         if (equals && branchGuid == null || other.getBranchGuid() == null) {
             equals = false;
-         else if (equals) equals = branchGuid.equals(other.getBranchGuid());
+         } else if (equals) {
+            equals = branchGuid.equals(other.getBranchGuid());
+         }
 
-         if (equals && artGuid == null || other.getGuid() == null)
+         if (equals && artGuid == null || other.getGuid() == null) {
             equals = false;
-         else if (equals) equals = artGuid.equals(other.getGuid());
+         } else if (equals) {
+            equals = artGuid.equals(other.getGuid());
+         }
       }
       return equals;
    }
 
+   @Override
    public String getGuid() {
       return artGuid;
    }
@@ -92,7 +104,9 @@ public class DefaultBasicGuidArtifact implements Identity, IBasicGuidArtifact {
 
    public boolean is(IArtifactType... artifactTypes) {
       for (IArtifactType artifactType : artifactTypes) {
-         if (artifactType.getGuid().equals(getArtTypeGuid())) return true;
+         if (artifactType.getGuid().equals(getArtTypeGuid())) {
+            return true;
+         }
       }
       return false;
    }

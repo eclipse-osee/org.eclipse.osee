@@ -44,8 +44,8 @@ public class ActiveArtifactTypeSearch {
             arts = ArtifactQuery.getArtifactListFromType(artifactTypeName, branch);
          } else {
             arts =
-                  ArtifactQuery.getArtifactListFromTypeAndAttribute(artifactTypeName, "ats.Active",
-                        active == Active.Active ? "yes" : "no", branch);
+               ArtifactQuery.getArtifactListFromTypeAndAttribute(artifactTypeName, "ats.Active",
+                  active == Active.Active ? "yes" : "no", branch);
          }
          for (Artifact art : arts) {
             results.add((A) art);

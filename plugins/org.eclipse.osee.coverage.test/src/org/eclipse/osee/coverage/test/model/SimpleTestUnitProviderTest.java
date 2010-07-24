@@ -69,8 +69,8 @@ public class SimpleTestUnitProviderTest {
    @Test
    public void testToFromXml() throws OseeCoreException {
       CoverageItem newCoverageItem =
-            new CoverageItem(null, coverageItem1.toXml(), CoverageOptionManagerDefault.instance(),
-                  new SimpleTestUnitProvider());
+         new CoverageItem(null, coverageItem1.toXml(), CoverageOptionManagerDefault.instance(),
+            new SimpleTestUnitProvider());
       Assert.assertEquals(coverageItem1.getName(), newCoverageItem.getName());
       Assert.assertEquals(coverageItem1.getGuid(), newCoverageItem.getGuid());
       Assert.assertEquals(coverageItem1.getOrderNumber(), newCoverageItem.getOrderNumber());

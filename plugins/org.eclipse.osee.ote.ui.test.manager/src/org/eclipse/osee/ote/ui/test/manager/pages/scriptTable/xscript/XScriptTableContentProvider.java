@@ -53,8 +53,8 @@ public class XScriptTableContentProvider implements IStructuredContentProvider, 
 
    @Override
    public Object[] getChildren(Object parentElement) {
-      if(parentElement instanceof ScriptTaskList){
-         return ((ScriptTaskList)parentElement).getTasks().toArray();
+      if (parentElement instanceof ScriptTaskList) {
+         return ((ScriptTaskList) parentElement).getTasks().toArray();
       }
       return null;
    }
@@ -67,7 +67,9 @@ public class XScriptTableContentProvider implements IStructuredContentProvider, 
    @Override
    public boolean hasChildren(Object element) {
       Object[] children = getChildren(element);
-      if(children != null && children.length > 0) return true;
+      if (children != null && children.length > 0) {
+         return true;
+      }
       return false;
    }
 }

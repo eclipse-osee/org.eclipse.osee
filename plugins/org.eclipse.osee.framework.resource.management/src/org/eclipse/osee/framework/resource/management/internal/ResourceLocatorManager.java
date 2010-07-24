@@ -76,7 +76,7 @@ public class ResourceLocatorManager implements IResourceLocatorManager {
       }
       if (toReturn == null) {
          throw new MalformedLocatorException(String.format("Error finding locator for [%s] in [%s]", protocol,
-               resourceLocatorProviders));
+            resourceLocatorProviders));
       }
       return toReturn;
    }

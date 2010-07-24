@@ -45,6 +45,7 @@ public class ImportTraceabilityWizard extends Wizard implements IImportWizard {
       return true;
    }
 
+   @Override
    public void init(IWorkbench workbench, IStructuredSelection selection) {
       this.selection = selection;
    }

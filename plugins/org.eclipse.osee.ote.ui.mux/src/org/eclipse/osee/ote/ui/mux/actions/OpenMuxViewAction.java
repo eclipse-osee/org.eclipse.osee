@@ -18,17 +18,17 @@ import org.eclipse.ui.PlatformUI;
 
 public class OpenMuxViewAction extends Action {
 
-	public OpenMuxViewAction() {
-		super("Open Mux View");
-	}
+   public OpenMuxViewAction() {
+      super("Open Mux View");
+   }
 
-	@Override
-	public void run() {
-		try {
-			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(MuxView.VIEW_ID);
-		} catch (Exception e) {
-			MessageDialog.openError(Displays.getActiveShell(), "Error", "got an exception");
-		}
-	}
+   @Override
+   public void run() {
+      try {
+         PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(MuxView.VIEW_ID);
+      } catch (Exception e) {
+         MessageDialog.openError(Displays.getActiveShell(), "Error", "got an exception");
+      }
+   }
 
 }

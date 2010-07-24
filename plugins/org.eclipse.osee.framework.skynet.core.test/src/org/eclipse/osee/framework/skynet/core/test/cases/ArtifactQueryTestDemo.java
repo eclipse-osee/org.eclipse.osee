@@ -28,17 +28,17 @@ public class ArtifactQueryTestDemo {
    @org.junit.Test
    public void testGetArtifactFromGUIDDeleted() throws OseeCoreException {
       Artifact newArtifact =
-            ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, BranchManager.getCommonBranch());
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, BranchManager.getCommonBranch());
       newArtifact.persist();
 
       // Should exist
       Artifact searchedArtifact =
-            ArtifactQuery.getArtifactFromId(newArtifact.getGuid(), BranchManager.getCommonBranch());
+         ArtifactQuery.getArtifactFromId(newArtifact.getGuid(), BranchManager.getCommonBranch());
       Assert.assertNotNull(searchedArtifact);
 
       // Should exist with allowDeleted
       searchedArtifact =
-            ArtifactQuery.getArtifactFromId(newArtifact.getGuid(), BranchManager.getCommonBranch(), INCLUDE_DELETED);
+         ArtifactQuery.getArtifactFromId(newArtifact.getGuid(), BranchManager.getCommonBranch(), INCLUDE_DELETED);
       Assert.assertNotNull(searchedArtifact);
 
       newArtifact.deleteAndPersist();
@@ -60,7 +60,7 @@ public class ArtifactQueryTestDemo {
 
       // Should still exist with allowDeleted
       searchedArtifact =
-            ArtifactQuery.getArtifactFromId(newArtifact.getGuid(), BranchManager.getCommonBranch(), INCLUDE_DELETED);
+         ArtifactQuery.getArtifactFromId(newArtifact.getGuid(), BranchManager.getCommonBranch(), INCLUDE_DELETED);
       Assert.assertNotNull(searchedArtifact);
 
    }

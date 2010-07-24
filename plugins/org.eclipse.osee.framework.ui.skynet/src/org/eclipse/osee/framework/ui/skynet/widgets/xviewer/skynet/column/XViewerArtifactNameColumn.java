@@ -46,7 +46,7 @@ public class XViewerArtifactNameColumn extends XViewerValueColumn {
    @Override
    public XViewerArtifactNameColumn copy() {
       return new XViewerArtifactNameColumn(getId(), getName(), getWidth(), getAlign(), isShow(), getSortDataType(),
-            isMultiColumnEditable(), getDescription());
+         isMultiColumnEditable(), getDescription());
    }
 
    @Override

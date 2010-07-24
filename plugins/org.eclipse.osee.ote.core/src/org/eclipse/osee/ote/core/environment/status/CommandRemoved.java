@@ -27,6 +27,7 @@ public class CommandRemoved implements Serializable, IServiceStatusDataCommand {
    public CommandRemoved() {
    }
 
+   @Override
    public CommandDescription getDescription() {
       return description;
    }
@@ -43,6 +44,7 @@ public class CommandRemoved implements Serializable, IServiceStatusDataCommand {
       return reason;
    }
 
+   @Override
    public void accept(IServiceStatusDataVisitor visitor) {
       if (visitor != null) {
          visitor.asCommandRemoved(this);

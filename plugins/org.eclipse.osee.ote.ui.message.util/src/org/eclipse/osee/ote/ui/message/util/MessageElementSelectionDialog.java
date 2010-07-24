@@ -54,8 +54,8 @@ public class MessageElementSelectionDialog extends ElementListSelectionDialog {
 
    private static Message<?, ?, ?> getMessage(String msg) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
       ServiceTracker tracker =
-            new ServiceTracker(Activator.getDefault().getBundle().getBundleContext(),
-                  IOteClientService.class.getName(), null);
+         new ServiceTracker(Activator.getDefault().getBundle().getBundleContext(), IOteClientService.class.getName(),
+            null);
       tracker.open(true);
       try {
          IMessageDictionary dictionary = ((IOteClientService) tracker.waitForService(1000)).getLoadedDictionary();

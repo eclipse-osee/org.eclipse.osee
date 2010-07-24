@@ -20,8 +20,8 @@ import java.io.Reader;
  */
 public class IOInputThread extends Thread {
 
-   private Reader input;
-   private BufferedWriter output;
+   private final Reader input;
+   private final BufferedWriter output;
 
    /**
     * 
@@ -32,6 +32,7 @@ public class IOInputThread extends Thread {
       this.input = input;
    }
 
+   @Override
    public void run() {
       int character;
       try {

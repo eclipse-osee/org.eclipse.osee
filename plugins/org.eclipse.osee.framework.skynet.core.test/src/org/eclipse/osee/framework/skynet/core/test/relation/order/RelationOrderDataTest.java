@@ -87,7 +87,7 @@ public class RelationOrderDataTest {
 
       List<Object[]> expected = new ArrayList<Object[]>();
       addData(data, expected, relationType1, RelationSide.SIDE_A, //
-            RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC.getGuid(), "1", "2", "3");
+         RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC.getGuid(), "1", "2", "3");
       checkData(data, expected);
 
       accessor.clearLoadCalled();
@@ -215,7 +215,7 @@ public class RelationOrderDataTest {
       // Store
       accessor.clearStoreCalled();
       data.store(relationType1, RelationSide.SIDE_A,
-            RelationOrderBaseTypes.getFromGuid(relationType1.getDefaultOrderTypeGuid()), emptyList);
+         RelationOrderBaseTypes.getFromGuid(relationType1.getDefaultOrderTypeGuid()), emptyList);
       Assert.assertTrue(accessor.wasStoreCalled());
 
       // Store
@@ -231,10 +231,10 @@ public class RelationOrderDataTest {
 
    private void addData(List<Object[]> expected) {
       addData(data, expected, relationType1, RelationSide.SIDE_A, //
-            RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC.getGuid(), "1", "2", "3");
+         RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC.getGuid(), "1", "2", "3");
 
       addData(data, expected, relationType2, RelationSide.SIDE_B, //
-            RelationOrderBaseTypes.UNORDERED.getGuid(), "4", "5", "6");
+         RelationOrderBaseTypes.UNORDERED.getGuid(), "4", "5", "6");
 
       checkData(data, expected);
    }
@@ -244,8 +244,8 @@ public class RelationOrderDataTest {
       Assert.assertEquals(expectedValues.size(), orderData.size());
       for (Entry<Pair<String, String>, Pair<String, List<String>>> entry : orderData.getOrderedEntrySet()) {
          Object[] actual =
-               new Object[] {entry.getKey().getFirst(), entry.getKey().getSecond(), entry.getValue().getFirst(),
-                     entry.getValue().getSecond()};
+            new Object[] {entry.getKey().getFirst(), entry.getKey().getSecond(), entry.getValue().getFirst(),
+               entry.getValue().getSecond()};
          Object[] expected = expectedValues.get(index++);
          Assert.assertEquals(expected.length, actual.length);
          for (int index2 = 0; index2 < expected.length; index2++) {
@@ -272,8 +272,8 @@ public class RelationOrderDataTest {
       ArtifactType type1 = new ArtifactType(GUID.create(), "1", false);
       ArtifactType type2 = new ArtifactType(GUID.create(), "2", false);
       RelationType relationType =
-            new RelationType(GUID.create(), name, name + "_A", name + "_B", type1, type2,
-                  RelationTypeMultiplicity.MANY_TO_MANY, delationRelationOrderGuid);
+         new RelationType(GUID.create(), name, name + "_A", name + "_B", type1, type2,
+            RelationTypeMultiplicity.MANY_TO_MANY, delationRelationOrderGuid);
       Assert.assertNotNull(relationType);
       cache.cache(relationType);
       return relationType;

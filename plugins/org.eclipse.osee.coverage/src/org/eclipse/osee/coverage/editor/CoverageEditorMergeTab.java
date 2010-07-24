@@ -119,13 +119,13 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
 
       coverageParameters = new CoverageParameters(coveragePackage);
       coverageParametersComposite =
-            new CoverageParametersComposite(mainComp, managedForm, coverageEditor, coverageParameters,
-                  new SelectionAdapter() {
-                     @Override
-                     public void widgetSelected(SelectionEvent e) {
-                        handleSearchButtonPressed();
-                     }
-                  });
+         new CoverageParametersComposite(mainComp, managedForm, coverageEditor, coverageParameters,
+            new SelectionAdapter() {
+               @Override
+               public void widgetSelected(SelectionEvent e) {
+                  handleSearchButtonPressed();
+               }
+            });
 
       Composite tableComp = coverageEditor.getToolkit().createComposite(mainComp, SWT.NONE);
       tableComp.setLayout(ALayout.getZeroMarginLayout(3, false));
@@ -162,8 +162,8 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
       }
       try {
          CheckBoxDialog dialog =
-               new CheckBoxDialog("Import Items", String.format("Importing [%d] items.", mergeItems.size()),
-                     "Save Import Record?");
+            new CheckBoxDialog("Import Items", String.format("Importing [%d] items.", mergeItems.size()),
+               "Save Import Record?");
          if (dialog.open() == 0) {
             XResultData rd = new MergeImportManager(mergeManager).importItems(this, mergeItems);
             rd.report("Import");
@@ -209,8 +209,8 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
       managedForm.getToolkit().adapt(leftToolBar);
 
       xPackageViewer1 =
-            new XCoverageMergeViewer(null, this, new CoverageMergeXViewerFactoryPackage(),
-                  coveragePackage.getCoverageOptionManager(), TableType.Package, TableType.Merge);
+         new XCoverageMergeViewer(null, this, new CoverageMergeXViewerFactoryPackage(),
+            coveragePackage.getCoverageOptionManager(), TableType.Package, TableType.Merge);
       xPackageViewer1.setDisplayLabel(false);
       xPackageViewer1.createWidgets(managedForm, leftComp, 1);
       xPackageViewer1.getXViewer().getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -234,8 +234,8 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
       managedForm.getToolkit().adapt(rightToolBar);
 
       xImportViewer2 =
-            new XCoverageMergeViewer(mergeManager, new NotSaveable(), new CoverageMergeXViewerFactoryImport(),
-                  coverageImport.getCoverageOptionManager(), TableType.Import, TableType.Merge);
+         new XCoverageMergeViewer(mergeManager, new NotSaveable(), new CoverageMergeXViewerFactoryImport(),
+            coverageImport.getCoverageOptionManager(), TableType.Import, TableType.Merge);
       xImportViewer2.setDisplayLabel(false);
       xImportViewer2.createWidgets(managedForm, rightComp, 1);
       xImportViewer2.getXViewer().getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -371,7 +371,7 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
 
    public void simulateSearchAll() throws OseeArgumentException {
       XHyperlabelCoverageMethodSelection methodSelectionWidget =
-            coverageParametersComposite.getCoverageMethodHyperlinkSelection();
+         coverageParametersComposite.getCoverageMethodHyperlinkSelection();
       List<CoverageOption> values = new ArrayList<CoverageOption>();
       for (CoverageOption method : coveragePackage.getCoverageOptionManager().get()) {
          values.add(method);
@@ -407,7 +407,9 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
    public Result save() throws OseeCoreException {
       OseeCoveragePackageStore store = OseeCoveragePackageStore.get(coveragePackage, coverageEditor.getBranch());
       Result result = store.save();
-      if (result.isFalse()) return result;
+      if (result.isFalse()) {
+         return result;
+      }
       Artifact artifact = store.getArtifact(false);
       coverageEditor.getCoverageEditorInput().setCoveragePackageArtifact(artifact);
       return result;
@@ -417,7 +419,9 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
    public Result save(Collection<ICoverage> coverages) throws OseeCoreException {
       OseeCoveragePackageStore store = OseeCoveragePackageStore.get(coveragePackage, coverageEditor.getBranch());
       Result result = store.save(coverages);
-      if (result.isFalse()) return result;
+      if (result.isFalse()) {
+         return result;
+      }
       Artifact artifact = store.getArtifact(false);
       coverageEditor.getCoverageEditorInput().setCoveragePackageArtifact(artifact);
       return result;

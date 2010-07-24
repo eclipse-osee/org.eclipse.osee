@@ -16,25 +16,26 @@ import org.eclipse.osee.ote.core.log.ITestPointTally;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public class TestPointTally implements ITestPointTally {
    private int testPointSuccesses;
    private int testPointFailures;
-   private String testName;
-   private OTEStatusBoard statusBoard;
-   
-   public TestPointTally(String testName){
+   private final String testName;
+   private final OTEStatusBoard statusBoard;
+
+   public TestPointTally(String testName) {
       this.testName = testName;
       statusBoard = Activator.getInstance().getOteStatusBoard();
    }
-   
+
+   @Override
    public void reset() {
       this.testPointSuccesses = 0;
       this.testPointFailures = 0;
       sendUpdate();
    }
 
+   @Override
    public int tallyTestPoint(boolean pass) {
       if (pass) {
          testPointSuccesses++;
@@ -45,12 +46,12 @@ public class TestPointTally implements ITestPointTally {
       return getTestPointTotal();
    }
 
-   private void sendUpdate(){
+   private void sendUpdate() {
       statusBoard.onTestPointUpdate(testPointSuccesses, testPointFailures, testName);
    }
-   
+
+   @Override
    public int getTestPointTotal() {
       return testPointSuccesses + testPointFailures;
    }
 }
-

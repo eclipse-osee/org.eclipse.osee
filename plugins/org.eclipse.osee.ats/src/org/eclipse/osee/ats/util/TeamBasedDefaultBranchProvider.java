@@ -27,11 +27,12 @@ import org.eclipse.osee.framework.skynet.core.artifact.IDefaultInitialBranchesPr
  */
 public class TeamBasedDefaultBranchProvider implements IDefaultInitialBranchesProvider {
 
+   @Override
    public Collection<Branch> getDefaultInitialBranches() throws OseeCoreException {
       User user = UserManager.getUser();
       try {
          Collection<TeamDefinitionArtifact> teams =
-               user.getRelatedArtifacts(AtsRelationTypes.TeamMember_Team, TeamDefinitionArtifact.class);
+            user.getRelatedArtifacts(AtsRelationTypes.TeamMember_Team, TeamDefinitionArtifact.class);
          Collection<Branch> branches = new LinkedList<Branch>();
 
          Branch branch;

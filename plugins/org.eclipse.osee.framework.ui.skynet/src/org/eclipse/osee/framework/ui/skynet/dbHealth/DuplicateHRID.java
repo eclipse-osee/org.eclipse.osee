@@ -56,14 +56,14 @@ public class DuplicateHRID extends DatabaseHealthOperation {
    }
 
    private static final String GET_DUPLICATE_HRIDS =
-         "SELECT DISTINCT(t1.art_id), t1.guid, t1.human_readable_id, t3.name FROM osee_artifact t1, osee_artifact_type t3 WHERE t1.human_readable_id IN (SELECT t2.human_readable_id FROM osee_artifact t2 GROUP BY t2.human_readable_id HAVING COUNT(t2.human_readable_id) > 1) AND t3.art_type_id = t1.art_type_id ORDER BY t1.human_readable_id";
+      "SELECT DISTINCT(t1.art_id), t1.guid, t1.human_readable_id, t3.name FROM osee_artifact t1, osee_artifact_type t3 WHERE t1.human_readable_id IN (SELECT t2.human_readable_id FROM osee_artifact t2 GROUP BY t2.human_readable_id HAVING COUNT(t2.human_readable_id) > 1) AND t3.art_type_id = t1.art_type_id ORDER BY t1.human_readable_id";
 
    private static final String COUNT_ATTRIBUTE_VALUES_CONTAINING =
-         "SELECT count(1) from osee_attribute where value like ?"; // TODO value not necessarily in database
+      "SELECT count(1) from osee_attribute where value like ?"; // TODO value not necessarily in database
    private static final String COUNT_COMMENTS_CONTAINING =
-         "SELECT count(1) from osee_tx_details where osee_comment like ?";
+      "SELECT count(1) from osee_tx_details where osee_comment like ?";
    private static final String COUNT_BRANCH_NAMES_CONTAINING =
-         "SELECT count(1) from osee_branch where branch_name like ?";
+      "SELECT count(1) from osee_branch where branch_name like ?";
 
    public DuplicateHRID() {
       super("Duplicate HRID Errors");
@@ -100,7 +100,7 @@ public class DuplicateHRID extends DatabaseHealthOperation {
 
       try {
          String[] columnHeaders =
-               new String[] {"GUID", "HRID", "Artifact Type", "Attribute Hits", "Branch Hits", "Comment Hits"};
+            new String[] {"GUID", "HRID", "Artifact Type", "Attribute Hits", "Branch Hits", "Comment Hits"};
          rd.addRaw(AHTML.beginMultiColumnTable(100, 1));
          rd.addRaw(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
 
@@ -114,13 +114,13 @@ public class DuplicateHRID extends DatabaseHealthOperation {
 
                if (results == null) {
                   results =
-                        new String[] {String.valueOf(getAdditionalCounts(COUNT_ATTRIBUTE_VALUES_CONTAINING, dup.hrid)),
-                              String.valueOf(getAdditionalCounts(COUNT_COMMENTS_CONTAINING, dup.hrid)),
-                              String.valueOf(getAdditionalCounts(COUNT_BRANCH_NAMES_CONTAINING, dup.hrid))};
+                     new String[] {String.valueOf(getAdditionalCounts(COUNT_ATTRIBUTE_VALUES_CONTAINING, dup.hrid)),
+                        String.valueOf(getAdditionalCounts(COUNT_COMMENTS_CONTAINING, dup.hrid)),
+                        String.valueOf(getAdditionalCounts(COUNT_BRANCH_NAMES_CONTAINING, dup.hrid))};
                   knownValues.put(dup.hrid, results);
                }
                rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {dup.guid, dup.hrid, dup.artTypeName, results[0],
-                     results[1], results[2]}));
+                  results[1], results[2]}));
                monitor.worked(stepAmount);
             }
          } else {

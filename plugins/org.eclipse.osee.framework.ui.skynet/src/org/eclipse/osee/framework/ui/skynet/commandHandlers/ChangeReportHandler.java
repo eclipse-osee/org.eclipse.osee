@@ -33,7 +33,7 @@ public class ChangeReportHandler extends AbstractHandler {
    @Override
    public Object execute(ExecutionEvent arg0) throws ExecutionException {
       IStructuredSelection selection =
-            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+         (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
       if (!selection.isEmpty()) {
          Object selectedObject = selection.getFirstElement();
          try {
@@ -57,7 +57,7 @@ public class ChangeReportHandler extends AbstractHandler {
       boolean enabled = false;
 
       IStructuredSelection selection =
-            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+         (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
       if (!selection.isEmpty()) {
          Object selectedObject = selection.getFirstElement();
 

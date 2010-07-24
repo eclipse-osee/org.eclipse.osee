@@ -18,31 +18,30 @@ import org.eclipse.osee.ote.message.tool.MessageMode;
 
 /**
  * @author Ken J. Aguilar
- *
  */
 public interface ISubscriptionState {
    DataType getMemType();
 
-	MessageMode getMode();
+   MessageMode getMode();
 
-	String getMsgClassName();
+   String getMsgClassName();
 
-	Message getMessage();
+   Message getMessage();
 
-	Set<DataType> getAvailableTypes();
-	
-	ISubscriptionState onMessageDbFound(AbstractMessageDataBase msgDB);
+   Set<DataType> getAvailableTypes();
 
-	ISubscriptionState onMessageDbClosing(AbstractMessageDataBase msgDb);
+   ISubscriptionState onMessageDbFound(AbstractMessageDataBase msgDB);
 
-	ISubscriptionState onActivated();
+   ISubscriptionState onMessageDbClosing(AbstractMessageDataBase msgDb);
 
-	ISubscriptionState onDeactivated();
-	
-	void onCanceled();
-	
-	boolean isActive();
+   ISubscriptionState onActivated();
 
-	boolean isResolved();
-	
+   ISubscriptionState onDeactivated();
+
+   void onCanceled();
+
+   boolean isActive();
+
+   boolean isResolved();
+
 }

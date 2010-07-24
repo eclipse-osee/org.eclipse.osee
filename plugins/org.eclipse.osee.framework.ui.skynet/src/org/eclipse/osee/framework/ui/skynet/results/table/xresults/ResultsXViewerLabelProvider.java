@@ -27,28 +27,37 @@ public class ResultsXViewerLabelProvider extends XViewerLabelProvider {
    @Override
    public String getColumnText(Object element, XViewerColumn xCol, int columnIndex) {
       if (element instanceof String) {
-         if (columnIndex == 1)
+         if (columnIndex == 1) {
             return (String) element;
-         else
+         } else {
             return "";
+         }
       }
-      IResultsXViewerRow task = ((IResultsXViewerRow) element);
-      if (task == null) return "";
+      IResultsXViewerRow task = (IResultsXViewerRow) element;
+      if (task == null) {
+         return "";
+      }
       return task.getValue(columnIndex);
    }
 
+   @Override
    public void dispose() {
-      if (font != null) font.dispose();
+      if (font != null) {
+         font.dispose();
+      }
       font = null;
    }
 
+   @Override
    public boolean isLabelProperty(Object element, String property) {
       return false;
    }
 
+   @Override
    public void addListener(ILabelProviderListener listener) {
    }
 
+   @Override
    public void removeListener(ILabelProviderListener listener) {
    }
 

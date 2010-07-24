@@ -36,7 +36,7 @@ public class BranchExchange implements IBranchExchange {
       ExportController controller = new ExportController(oseeServices, exportName, options, branchIds);
       controller.execute();
       return oseeServices.getResourceLocatorManager().generateResourceLocator(ExchangeLocatorProvider.PROTOCOL, "",
-            controller.getExchangeFileName());
+         controller.getExchangeFileName());
    }
 
    @Override
@@ -71,12 +71,12 @@ public class BranchExchange implements IBranchExchange {
       ExchangeIntegrity exchangeIntegrityCheck = new ExchangeIntegrity(oseeServices, exportDataProvider, processor);
       exchangeIntegrityCheck.execute();
       return oseeServices.getResourceLocatorManager().generateResourceLocator(ExchangeLocatorProvider.PROTOCOL, "",
-            exchangeIntegrityCheck.getExchangeCheckFileName());
+         exchangeIntegrityCheck.getExchangeCheckFileName());
    }
 
    private IOseeExchangeDataProvider createExportDataProvider(IResourceLocator exportDataLocator) throws Exception {
       Pair<Boolean, File> result =
-            ExchangeUtil.getTempExchangeFile(exportDataLocator, oseeServices.getResourceManager());
+         ExchangeUtil.getTempExchangeFile(exportDataLocator, oseeServices.getResourceManager());
       return new StandardOseeDbExportDataProvider(result.getSecond(), result.getFirst());
    }
 }

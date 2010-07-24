@@ -16,7 +16,14 @@ package org.eclipse.osee.framework.ui.skynet.skywalker;
 public interface ISkyWalkerOptionsChangeListener {
 
    public enum ModType {
-      Artifact, Level, ArtType, RelType, FilterEnabled, Layout, Link_Name, Show_Attribute
+      Artifact,
+      Level,
+      ArtType,
+      RelType,
+      FilterEnabled,
+      Layout,
+      Link_Name,
+      Show_Attribute
    };
 
    public void modified(ModType... modTypes);

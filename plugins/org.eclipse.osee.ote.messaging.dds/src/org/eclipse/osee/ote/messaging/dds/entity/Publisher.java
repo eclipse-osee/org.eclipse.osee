@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
-
 import org.eclipse.osee.ote.messaging.dds.Data;
 import org.eclipse.osee.ote.messaging.dds.DataSample;
 import org.eclipse.osee.ote.messaging.dds.DataStoreItem;
@@ -29,31 +28,32 @@ import org.eclipse.osee.ote.messaging.dds.listener.PublisherListener;
 import org.eclipse.osee.ote.messaging.dds.service.TopicDescription;
 
 /**
- * Provides functionality for applications to create <code>DataWriter</code> 's, and control when data written from
- * the writers is published.
+ * Provides functionality for applications to create <code>DataWriter</code> 's, and control when data written from the
+ * writers is published.
  * <p>
- * This class also provides the middleware the ability to publish data directly (i.e. without a <code>DataWriter</code>).
+ * This class also provides the middleware the ability to publish data directly (i.e. without a <code>DataWriter</code>
+ * ).
  * 
  * @author Robert A. Fisher
  * @author David Diepenbrock
  */
 public class Publisher extends DomainEntity implements EntityFactory {
 
-   private DomainParticipant participant;
+   private final DomainParticipant participant;
    private boolean publicationsAllowed;
    private final CopyOnWriteArrayList<DataWriter> dataWriters;
    private final Collection<DataStoreItem> publicationQueue; // Stores pending publications to be processed, possibly be a seperate thread
    private final Collection<DataStoreItem> pendingQueue; // Stores publications while publications are suspended
 
    /**
-    * Constructor for <code>Publisher</code> with the provided listener attached, and enabled status set as passed.
-    * This constructor is only visible to the DDS system, applications should use
+    * Constructor for <code>Publisher</code> with the provided listener attached, and enabled status set as passed. This
+    * constructor is only visible to the DDS system, applications should use
     * {@link DomainParticipant#createPublisher(PublisherListener)}to create a <code>Publisher</code>..
     * 
-    * @param participant The participant creating this <code>Publisher</code>. This is also used as the parentEntity
-    *           for enabling purposes.
+    * @param participant The participant creating this <code>Publisher</code>. This is also used as the parentEntity for
+    * enabling purposes.
     * @param enabled If <b>true </b>, the created <code>Publisher</code> will be enabled iff the parentEntity is
-    *           enabled.
+    * enabled.
     * @param listener The listener to attach to the created publisher.
     */
    Publisher(DomainParticipant participant, boolean enabled, PublisherListener listener) {
@@ -137,22 +137,25 @@ public class Publisher extends DomainEntity implements EntityFactory {
    }
 
    /**
-    * Removes the <code>DataWriter</code> from this <code>Publisher</code>. If the writer was already deleted, or
-    * was not created by this <code>Publisher</code>, an error is returned.
+    * Removes the <code>DataWriter</code> from this <code>Publisher</code>. If the writer was already deleted, or was
+    * not created by this <code>Publisher</code>, an error is returned.
     * 
     * @param dataWriter The writer to delete.
     * @return {@link ReturnCode#OK}if the writer was successfully deleted, otherwise {@link ReturnCode#NOT_ENABLED}if
-    *         this <code>Publisher</code> is not enabled, or {@link ReturnCode#ALREADY_DELETED}if the writer has
-    *         already been deleted, or {@link ReturnCode#PRECONDITION_NOT_MET}if dataWriter was not created by this
-    *         <code>Publisher</code>.
+    * this <code>Publisher</code> is not enabled, or {@link ReturnCode#ALREADY_DELETED}if the writer has already been
+    * deleted, or {@link ReturnCode#PRECONDITION_NOT_MET}if dataWriter was not created by this <code>Publisher</code>.
     */
    public ReturnCode deleteDataWriter(DataWriter dataWriter) {
 
       // Check that the Entity is enabled before proceeding (See description of enable on the Entity object in the DDS spec)
-      if (!isEnabled()) return ReturnCode.NOT_ENABLED;
+      if (!isEnabled()) {
+         return ReturnCode.NOT_ENABLED;
+      }
 
       // Check that the writer is not already marked as deleted (in case others kept a reference to it
-      if (dataWriter.isDeleted()) return ReturnCode.ALREADY_DELETED;
+      if (dataWriter.isDeleted()) {
+         return ReturnCode.ALREADY_DELETED;
+      }
 
       if (dataWriters.remove(dataWriter)) {
          dataWriter.markAsDeleted();
@@ -169,21 +172,25 @@ public class Publisher extends DomainEntity implements EntityFactory {
     */
    public DataWriter lookupDataWriter(String topicName) {
       // UNSURE This method has not been implemented, but is called out in the spec
-      if (true) throw new NotImplementedException();
+      if (true) {
+         throw new NotImplementedException();
+      }
       return null;
    }
 
    /**
-    * Suspends published data from being processed (sent to the subscribers) until <code>resumePublications()</code>
-    * is called.
+    * Suspends published data from being processed (sent to the subscribers) until <code>resumePublications()</code> is
+    * called.
     * 
-    * @return {@link ReturnCode#OK}if publications are successfully suspended, or {@link ReturnCode#NOT_ENABLED}if
-    *         this <code>Publisher</code> has not been enabled.
+    * @return {@link ReturnCode#OK}if publications are successfully suspended, or {@link ReturnCode#NOT_ENABLED}if this
+    * <code>Publisher</code> has not been enabled.
     */
    public ReturnCode suspendPublications() {
 
       // Check that the Entity is enabled before proceeding (See description of enable on the Entity object in the DDS spec)
-      if (!isEnabled()) return ReturnCode.NOT_ENABLED;
+      if (!isEnabled()) {
+         return ReturnCode.NOT_ENABLED;
+      }
 
       publicationsAllowed = false;
       return ReturnCode.OK;
@@ -192,16 +199,20 @@ public class Publisher extends DomainEntity implements EntityFactory {
    /**
     * Resumes publications that were suspended by calling <code>suspendPublications()</code>.
     * 
-    * @return {@link ReturnCode#OK}if publications are successfully suspended, or {@link ReturnCode#NOT_ENABLED}if
-    *         this <code>Publisher</code> has not been enabled, or {@link ReturnCode#PRECONDITION_NOT_MET}if
-    *         publications were not suspended.
+    * @return {@link ReturnCode#OK}if publications are successfully suspended, or {@link ReturnCode#NOT_ENABLED}if this
+    * <code>Publisher</code> has not been enabled, or {@link ReturnCode#PRECONDITION_NOT_MET}if publications were not
+    * suspended.
     */
    public ReturnCode resumePublications() {
 
       // Check that the Entity is enabled before proceeding (See description of enable on the Entity object in the DDS spec)
-      if (!isEnabled()) return ReturnCode.NOT_ENABLED;
+      if (!isEnabled()) {
+         return ReturnCode.NOT_ENABLED;
+      }
 
-      if (publicationsAllowed) return ReturnCode.PRECONDITION_NOT_MET;
+      if (publicationsAllowed) {
+         return ReturnCode.PRECONDITION_NOT_MET;
+      }
 
       // Move the pending items in to the publishQueue
       synchronized (pendingQueue) {
@@ -223,10 +234,14 @@ public class Publisher extends DomainEntity implements EntityFactory {
     */
    public ReturnCode beginCoherentChanges() {
       // UNSURE This method has not been implemented, but is called out in the spec
-      if (true) throw new NotImplementedException();
+      if (true) {
+         throw new NotImplementedException();
+      }
 
       // Check that the Entity is enabled before proceeding (See description of enable on the Entity object in the DDS spec)
-      if (!isEnabled()) return ReturnCode.NOT_ENABLED;
+      if (!isEnabled()) {
+         return ReturnCode.NOT_ENABLED;
+      }
 
       return ReturnCode.ERROR;
    }
@@ -237,10 +252,14 @@ public class Publisher extends DomainEntity implements EntityFactory {
     */
    public ReturnCode endCoherentChanges() {
       // UNSURE This method has not been implemented, but is called out in the spec
-      if (true) throw new NotImplementedException();
+      if (true) {
+         throw new NotImplementedException();
+      }
 
       // Check that the Entity is enabled before proceeding (See description of enable on the Entity object in the DDS spec)
-      if (!isEnabled()) return ReturnCode.NOT_ENABLED;
+      if (!isEnabled()) {
+         return ReturnCode.NOT_ENABLED;
+      }
 
       return ReturnCode.ERROR;
    }
@@ -257,12 +276,14 @@ public class Publisher extends DomainEntity implements EntityFactory {
     * Deletes all of the <code>DataWriter</code> objects currently in this <code>Publisher</code>.
     * 
     * @return {@link ReturnCode#OK}if the writers were successfully deleted, otherwise {@link ReturnCode#NOT_ENABLED}if
-    *         this <code>Publisher</code> is not enabled.
+    * this <code>Publisher</code> is not enabled.
     */
    public ReturnCode deleteContainedEntities() {
 
       // Check that the Entity is enabled before proceeding (See description of enable on the Entity object in the DDS spec)
-      if (!isEnabled()) return ReturnCode.NOT_ENABLED;
+      if (!isEnabled()) {
+         return ReturnCode.NOT_ENABLED;
+      }
 
       for (DataWriter writer : dataWriters) {
          writer.markAsDeleted();
@@ -281,10 +302,10 @@ public class Publisher extends DomainEntity implements EntityFactory {
    /**
     * Allows the MiddlewarePublisher to publish data without providing the <code>Topic</code> object, but instead
     * specifying the Topic as a string. This method will only publish data when called by the
-    * <code>MiddlewarePublisher</code> of the <code>DomainParticipant</code>. This is intended for an outside
-    * System to be able to publish any data it wants, regardless of if the <code>Topic</code> has been created in the
-    * DDS system. If a <code>Topic</code> with the provided name does not exist in this publisher's
-    * <code>DomainParticipant</code>, the data will not be published.
+    * <code>MiddlewarePublisher</code> of the <code>DomainParticipant</code>. This is intended for an outside System to
+    * be able to publish any data it wants, regardless of if the <code>Topic</code> has been created in the DDS system.
+    * If a <code>Topic</code> with the provided name does not exist in this publisher's <code>DomainParticipant</code>,
+    * the data will not be published.
     * 
     * @param theData The Data to be published
     * @param namespace The name of the Topic associated with theData
@@ -315,11 +336,12 @@ public class Publisher extends DomainEntity implements EntityFactory {
    /**
     * If threading is enabled and publications are not suspended, places the data on the queue to be processed by the
     * publication thread. If threading is not enabled and publications are not suspended, sends the data to the
-    * <code>DomainParticipant</code> to be sent to be immediately made available to the subscribers. If publications
-    * are suspended the data is queued so it can be processed once publications are resumed.
- * @param destination TODO
- * @param source TODO
- * @param dataStoreItem The published data to be processed
+    * <code>DomainParticipant</code> to be sent to be immediately made available to the subscribers. If publications are
+    * suspended the data is queued so it can be processed once publications are resumed.
+    * 
+    * @param destination TODO
+    * @param source TODO
+    * @param dataStoreItem The published data to be processed
     */
    void publishData(IDestination destination, ISource source, DataStoreItem dataStoreItem) { // package scope
 

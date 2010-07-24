@@ -22,12 +22,12 @@ import org.eclipse.swt.widgets.Text;
 
 public class MultiTextDialog extends Dialog {
 
-   private String title;
-   private String message;
+   private final String title;
+   private final String message;
 
    private Text[] texts;
-   private String[] prompt;
-   private boolean[] displayable;
+   private final String[] prompt;
+   private final boolean[] displayable;
    private String[] value;
 
    public MultiTextDialog(Shell parentShell, String dialogTitle, String dialogMessage, String[] prompt, boolean[] displayable) {
@@ -39,6 +39,7 @@ public class MultiTextDialog extends Dialog {
       this.value = null;
    }
 
+   @Override
    protected void buttonPressed(int buttonId) {
       if (buttonId == IDialogConstants.OK_ID) {
          value = new String[prompt.length];
@@ -51,6 +52,7 @@ public class MultiTextDialog extends Dialog {
       super.buttonPressed(buttonId);
    }
 
+   @Override
    protected void configureShell(Shell shell) {
       super.configureShell(shell);
       if (title != null) {
@@ -58,6 +60,7 @@ public class MultiTextDialog extends Dialog {
       }
    }
 
+   @Override
    protected void createButtonsForButtonBar(Composite parent) {
       createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
       createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
@@ -70,6 +73,7 @@ public class MultiTextDialog extends Dialog {
       }
    }
 
+   @Override
    protected Control createDialogArea(Composite parent) {
       Composite composite = (Composite) super.createDialogArea(parent);
       if (message != null) {

@@ -16,7 +16,6 @@ import org.eclipse.osee.framework.messaging.Message;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public class OteClientEndpointReceive extends EndpointReceive {
 
@@ -31,5 +30,5 @@ public class OteClientEndpointReceive extends EndpointReceive {
    public void receivedMessage(Message message) {
       onReceive(message);
    }
-   
+
 }

@@ -140,9 +140,9 @@ public class QuickSearchOptionComposite extends Composite {
             optionsMap.put(SearchOption.All_Match_Locations.asLabel(), setEnabled);
          } else {
             optionsMap.put(SearchOption.Case_Sensitive.asLabel(),
-                  optionsButtons.get(SearchOption.Case_Sensitive.asLabel()).getSelection());
+               optionsButtons.get(SearchOption.Case_Sensitive.asLabel()).getSelection());
             optionsMap.put(SearchOption.All_Match_Locations.asLabel(),
-                  optionsButtons.get(SearchOption.All_Match_Locations.asLabel()).getSelection());
+               optionsButtons.get(SearchOption.All_Match_Locations.asLabel()).getSelection());
          }
          optionGroup.getParent().layout();
       }
@@ -282,7 +282,7 @@ public class QuickSearchOptionComposite extends Composite {
          String[] config = handler.toStore();
          if (config != null && config.length > 0) {
             memento.putString(OPTION_CONFIGS_KEY_ID + entry.getKey().replaceAll(" ", "_"),
-                  StringUtils.join(config, ENTRY_SEPARATOR));
+               StringUtils.join(config, ENTRY_SEPARATOR));
          }
       }
    }
@@ -339,6 +339,7 @@ public class QuickSearchOptionComposite extends Composite {
 
       public String[] toStore();
 
+      @Override
       public String toString();
 
       public void configure();
@@ -456,8 +457,8 @@ public class QuickSearchOptionComposite extends Composite {
          try {
             Collection<AttributeType> taggableItems = AttributeTypeManager.getTaggableTypes();
             AttributeTypeFilteredCheckTreeDialog dialog =
-                  new AttributeTypeFilteredCheckTreeDialog("Attribute Type Filter Selection",
-                        "Select attribute types to search in.");
+               new AttributeTypeFilteredCheckTreeDialog("Attribute Type Filter Selection",
+                  "Select attribute types to search in.");
             dialog.setSelectableTypes(taggableItems);
 
             List<AttributeType> selectedElements = new ArrayList<AttributeType>();

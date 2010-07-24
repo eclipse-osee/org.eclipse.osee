@@ -51,9 +51,9 @@ public abstract class Attribute<T> {
 
       try {
          Class<? extends IAttributeDataProvider> providerClass =
-               AttributeTypeManager.getAttributeProviderClass(this.attributeType);
+            AttributeTypeManager.getAttributeProviderClass(this.attributeType);
          Constructor<? extends IAttributeDataProvider> providerConstructor =
-               providerClass.getConstructor(new Class[] {Attribute.class});
+            providerClass.getConstructor(new Class[] {Attribute.class});
          attributeDataProvider = providerConstructor.newInstance(new Object[] {this});
       } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);
@@ -342,8 +342,8 @@ public abstract class Attribute<T> {
          return modificationType.isDeleted();
       } catch (NullPointerException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, String.format(
-               "Unexpected null modification type for artifact attribute [%d] gamma [%d] on artifact [%s]", getId(),
-               getGammaId(), getArtifact().getSafeName()), ex);
+            "Unexpected null modification type for artifact attribute [%d] gamma [%d] on artifact [%s]", getId(),
+            getGammaId(), getArtifact().getSafeName()), ex);
       }
       return false;
    }

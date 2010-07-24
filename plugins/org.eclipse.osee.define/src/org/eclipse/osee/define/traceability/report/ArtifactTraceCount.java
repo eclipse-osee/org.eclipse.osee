@@ -60,6 +60,7 @@ public class ArtifactTraceCount extends AbstractArtifactRelationReport {
       return EMPTY_STRING;
    }
 
+   @Override
    public void process(IProgressMonitor monitor) throws OseeCoreException {
       String[] header = getHeader();
       notifyOnTableHeader(header);

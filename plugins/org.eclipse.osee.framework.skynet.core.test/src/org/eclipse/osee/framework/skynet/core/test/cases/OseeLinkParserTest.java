@@ -25,17 +25,17 @@ public class OseeLinkParserTest {
       OseeLinkParser parser = new OseeLinkParser();
       String guid = GUID.create();
       parser.parse(String.format("http://127.0.0.1:8081/get/guid/%s/Define", guid));
-     
+
       Assert.assertEquals(guid, parser.getGuid());
    }
-   
+
    @org.junit.Test
    public void testNewSchoolLink() throws Exception {
       OseeLinkParser parser = new OseeLinkParser();
       String guid = GUID.create();
       int branchId = 12;
       parser.parse(String.format("http://127.0.0.1:8081/Define?guid=%s&branchId=%s", guid, branchId));
-      
+
       Assert.assertEquals(guid, parser.getGuid());
       Assert.assertEquals(branchId, parser.getId());
    }

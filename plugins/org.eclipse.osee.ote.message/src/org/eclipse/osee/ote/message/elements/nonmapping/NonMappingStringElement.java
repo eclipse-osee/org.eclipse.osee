@@ -27,14 +27,14 @@ public class NonMappingStringElement extends StringElement {
     * 
     * @param element
     */
-    public NonMappingStringElement(StringElement element) {
-       super(element.getMessage(), element.getElementName(), element.getMsgData(), 
-             element.getByteOffset(), element.getMsb(), element.getLsb());
-       for(Object obj:element.getElementPath()){
-          this.getElementPath().add(obj);
-       }
-    }
-    
+   public NonMappingStringElement(StringElement element) {
+      super(element.getMessage(), element.getElementName(), element.getMsgData(), element.getByteOffset(),
+         element.getMsb(), element.getLsb());
+      for (Object obj : element.getElementPath()) {
+         this.getElementPath().add(obj);
+      }
+   }
+
    /**
     * @param message
     * @param elementName
@@ -43,7 +43,7 @@ public class NonMappingStringElement extends StringElement {
     * @param msb
     * @param lsb
     */
-   public NonMappingStringElement(Message<?,?,?> message, String elementName, MessageData messageData, int byteOffset, int msb, int lsb) {
+   public NonMappingStringElement(Message<?, ?, ?> message, String elementName, MessageData messageData, int byteOffset, int msb, int lsb) {
       super(message, elementName, messageData, byteOffset, msb, lsb);
    }
 
@@ -54,7 +54,7 @@ public class NonMappingStringElement extends StringElement {
     * @param bitOffset
     * @param bitLength
     */
-   public NonMappingStringElement(Message<?,?,?> message, String elementName, MessageData messageData, int bitOffset, int bitLength) {
+   public NonMappingStringElement(Message<?, ?, ?> message, String elementName, MessageData messageData, int bitOffset, int bitLength) {
       super(message, elementName, messageData, bitOffset, bitLength);
    }
 
@@ -68,11 +68,12 @@ public class NonMappingStringElement extends StringElement {
     * @param originalLsb
     * @param originalMsb
     */
-   public NonMappingStringElement(Message<?,?,?> message, String elementName, MessageData messageData, int byteOffset, int msb, int lsb, int originalLsb, int originalMsb) {
+   public NonMappingStringElement(Message<?, ?, ?> message, String elementName, MessageData messageData, int byteOffset, int msb, int lsb, int originalLsb, int originalMsb) {
       super(message, elementName, messageData, byteOffset, msb, lsb, originalLsb, originalMsb);
    }
-   
-   public String get(ITestEnvironmentAccessor accessor){
+
+   @Override
+   public String get(ITestEnvironmentAccessor accessor) {
       throwNoMappingElementException();
       return null;
    }
@@ -86,99 +87,101 @@ public class NonMappingStringElement extends StringElement {
     * @return If the check passed.
     * @throws InterruptedException
     */
+   @Override
    public boolean checkTrimWhiteSpace(ITestAccessor accessor, String value, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
       return false;
    }
+
    /**
     * Verifies that the element is set to "value" within the number of "milliseconds" passed.
     * 
     * @param accessor
-    * @param checkGroup If this check is part of a larger set of checks which another method is
-    *           going to log then the reference to the CheckGroup must be passed and this method
-    *           will add the result of the check to the group with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference
-    *           should be passed and this method will log the test point.
+    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param value Expected value.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
     * @throws InterruptedException
     */
+   @Override
    public boolean check(ITestAccessor accessor, CheckGroup checkGroup, String value, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
       return false;
    }
 
    /**
-    * Verifies that the element is set to some value other than "value" within the number of
-    * "milliseconds" passed. Passes if at any point with in the time allowed, the elment is set to a
-    * value other than "value".
+    * Verifies that the element is set to some value other than "value" within the number of "milliseconds" passed.
+    * Passes if at any point with in the time allowed, the elment is set to a value other than "value".
     * 
     * @param accessor
-    * @param checkGroup If this check is part of a larger set of checks which another method is
-    *           going to log then the reference to the CheckGroup must be passed and this method
-    *           will add the result of the check to the group with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference
-    *           should be passed and this method will log the test point.
+    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param value value to test against.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
     * @throws InterruptedException
     */
+   @Override
    public boolean checkNot(ITestAccessor accessor, CheckGroup checkGroup, String value, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
       return false;
    }
 
    /**
-    * Verifies that the element is set to the "value" passed for the entire time passed into
-    * "milliseconds". Returns value found that caused failure or last value observed if time
-    * expires.
+    * Verifies that the element is set to the "value" passed for the entire time passed into "milliseconds". Returns
+    * value found that caused failure or last value observed if time expires.
     * 
     * @param accessor
-    * @param checkGroup If this check is part of a larger set of checks which another method is
-    *           going to log then the reference to the CheckGroup must be passed and this method
-    *           will add the result of the check to the group with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference
-    *           should be passed and this method will log the test point.
+    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param value
     * @param milliseconds
     * @return last value observed. Either value expected or value found at timeout.
     * @throws InterruptedException
     */
+   @Override
    public String checkMaintain(ITestAccessor accessor, CheckGroup checkGroup, String value, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
       return "";
    }
 
    /**
-    * Verifies that the element is set to the "value" passed for the entire time passed into
-    * "milliseconds". Returns value found that caused failure or last value observed if time
-    * expires.
+    * Verifies that the element is set to the "value" passed for the entire time passed into "milliseconds". Returns
+    * value found that caused failure or last value observed if time expires.
     * 
     * @param accessor
-    * @param checkGroup If this check is part of a larger set of checks which another method is
-    *           going to log then the reference to the CheckGroup must be passed and this method
-    *           will add the result of the check to the group with out logging a point.
-    *           <p>
-    *           If an outside method is not going to log the check then a <b>null </b> reference
-    *           should be passed and this method will log the test point.
+    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
     * @param value
     * @param milliseconds
     * @return last value observed
     * @throws InterruptedException
     */
+   @Override
    public String checkMaintainNot(ITestAccessor accessor, CheckGroup checkGroup, String value, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
       return "";
    }
 
    /**
-    * Waits until the element has a value other than the "value" passed. Returns last value observed
-    * upon a timout.
+    * Waits until the element has a value other than the "value" passed. Returns last value observed upon a timout.
     * 
     * @param accessor
     * @param value The expected value to wait for.
@@ -186,22 +189,22 @@ public class NonMappingStringElement extends StringElement {
     * @return last value observed
     * @throws InterruptedException
     */
+   @Override
    public String waitForNotValue(ITestEnvironmentAccessor accessor, String value, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
       return "";
    }
 
-
    @Override
    public void parseAndSet(ITestEnvironmentAccessor accessor, String value) throws IllegalArgumentException {
       throwNoMappingElementException();
    }
-   
+
    @Override
    public void setAndSend(ITestEnvironmentAccessor accessor, String value) throws IllegalArgumentException {
       throwNoMappingElementException();
    }
-   
+
    @Override
    public boolean isNonMappingElement() {
       return true;

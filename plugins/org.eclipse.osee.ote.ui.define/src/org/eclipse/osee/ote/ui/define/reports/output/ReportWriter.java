@@ -34,10 +34,12 @@ public class ReportWriter implements IReportWriter {
       }
    }
 
+   @Override
    public String getReport() throws IOException {
       return outputStream.toString(TableWriterAdaptor.ENCODING);
    }
 
+   @Override
    public int length() throws Exception {
       if (!tableWriterAdapter.isCompleted()) {
          try {
@@ -50,6 +52,7 @@ public class ReportWriter implements IReportWriter {
       return outputStream.toByteArray().length;
    }
 
+   @Override
    public void writeHeader(String[] headers) {
       try {
          tableWriterAdapter.writeHeader(headers);
@@ -58,14 +61,17 @@ public class ReportWriter implements IReportWriter {
       }
    }
 
+   @Override
    public void writeRow(String... cellData) {
       tableWriterAdapter.writeRow(cellData);
    }
 
+   @Override
    public void writeTitle(String title) {
       tableWriterAdapter.writeTitle(title);
    }
 
+   @Override
    public void writeToOutput(OutputStream outputStream) throws IOException {
       outputStream.write(this.outputStream.toByteArray());
    }

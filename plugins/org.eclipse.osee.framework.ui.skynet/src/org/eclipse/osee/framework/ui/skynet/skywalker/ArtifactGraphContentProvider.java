@@ -44,6 +44,7 @@ public class ArtifactGraphContentProvider implements IGraphEntityContentProvider
       this.options = options;
    }
 
+   @Override
    public Object[] getConnectedTo(Object entity) {
       List<Artifact> otherItems = new LinkedList<Artifact>();
 
@@ -91,6 +92,7 @@ public class ArtifactGraphContentProvider implements IGraphEntityContentProvider
    }
    private final Set<Artifact> displayArtifacts = new HashSet<Artifact>();
 
+   @Override
    public Object[] getElements(Object inputElement) {
       // Only perform this method for top level artifact
       if (inputElement.equals(options.getArtifact())) {
@@ -155,9 +157,11 @@ public class ArtifactGraphContentProvider implements IGraphEntityContentProvider
       return 0;
    }
 
+   @Override
    public void dispose() {
    }
 
+   @Override
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
    }
 

@@ -13,23 +13,23 @@ package org.eclipse.osee.ote.container;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.osee.framework.ui.workspacebundleloader.JarCollectionNature;
 
 public class LibraryChangeProvider<T extends JarCollectionNature> {
-   
-   private List<IUserLibListener> listeners;
-   
+
+   private final List<IUserLibListener> listeners;
+
    /**
     * 
     */
    public LibraryChangeProvider() {
       listeners = new ArrayList<IUserLibListener>();
    }
-   
+
    public void addListener(IUserLibListener listener) {
-      if( !listeners.contains(listener))
+      if (!listeners.contains(listener)) {
          listeners.add(listener);
+      }
    }
 
    public void handleBundleAdded(URL url) {
@@ -41,14 +41,15 @@ public class LibraryChangeProvider<T extends JarCollectionNature> {
     */
    @SuppressWarnings("restriction")
    private void resetClasspath() {
-      for( IUserLibListener listener : listeners )
+      for (IUserLibListener listener : listeners) {
          listener.libraryChanged();
-//      try {
-//         this.oteClasspathContainer.javaProject.getPerProjectInfo().resetResolvedClasspath();
-//      }
-//      catch (JavaModelException ex) {
-//         ex.printStackTrace();
-//      }
+         //      try {
+         //         this.oteClasspathContainer.javaProject.getPerProjectInfo().resetResolvedClasspath();
+         //      }
+         //      catch (JavaModelException ex) {
+         //         ex.printStackTrace();
+         //      }
+      }
    }
 
    public void handleBundleChanged(URL url) {
@@ -64,5 +65,5 @@ public class LibraryChangeProvider<T extends JarCollectionNature> {
 
    public void handlePostChange() {
    }
-   
+
 }

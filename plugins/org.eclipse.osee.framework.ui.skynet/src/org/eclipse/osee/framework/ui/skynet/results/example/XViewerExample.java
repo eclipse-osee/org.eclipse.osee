@@ -35,7 +35,9 @@ public class XViewerExample extends XNavigateItemAction {
 
    public static String TITLE = "XViewer Example";
    private static enum Columns {
-      Date, String1, String2;
+      Date,
+      String1,
+      String2;
    };
 
    /**
@@ -65,11 +67,10 @@ public class XViewerExample extends XNavigateItemAction {
                bigRows.add(new ResultsXViewerRow(new String[] {"Date " + x, "hello", "world"}));
             }
             List<XViewerColumn> columns =
-                  Arrays.asList(new XViewerColumn(Columns.Date.name(), Columns.Date.name(), 80, SWT.LEFT, true,
-                        SortDataType.String, false, ""), new XViewerColumn(Columns.String1.name(),
-                        Columns.String1.name(), 80, SWT.LEFT, true, SortDataType.Integer, false, ""),
-                        new XViewerColumn(Columns.String2.name(), Columns.String2.name(), 80, SWT.LEFT, true,
-                              SortDataType.Integer, false, ""));
+               Arrays.asList(new XViewerColumn(Columns.Date.name(), Columns.Date.name(), 80, SWT.LEFT, true,
+                  SortDataType.String, false, ""), new XViewerColumn(Columns.String1.name(), Columns.String1.name(),
+                  80, SWT.LEFT, true, SortDataType.Integer, false, ""), new XViewerColumn(Columns.String2.name(),
+                  Columns.String2.name(), 80, SWT.LEFT, true, SortDataType.Integer, false, ""));
             List<IResultsEditorTab> tabs = new ArrayList<IResultsEditorTab>();
             tabs.add(new ResultsEditorTableTab("15,000 entries", columns, rows));
             tabs.add(new ResultsEditorTableTab("50,000 entries", columns, bigRows));

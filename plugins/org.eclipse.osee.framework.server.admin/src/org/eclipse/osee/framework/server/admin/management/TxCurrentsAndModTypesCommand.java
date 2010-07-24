@@ -42,6 +42,6 @@ public class TxCurrentsAndModTypesCommand extends BaseServerCommand {
 
    private void checkAndFix(String tableName, String columnName, IProgressMonitor monitor) throws Exception {
       doSubWork(new InvalidTxCurrentsAndModTypes(tableName, columnName, new CommandInterpreterReporter(
-            getCommandInterpreter()), true, archived), monitor, 0.3);
+         getCommandInterpreter()), true, archived), monitor, 0.3);
    }
 }

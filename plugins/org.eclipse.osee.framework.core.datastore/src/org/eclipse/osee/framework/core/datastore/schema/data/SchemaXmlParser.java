@@ -75,9 +75,9 @@ public class SchemaXmlParser {
          if (type != null && id != null) {
 
             ConstraintElement constraintElement =
-                  ConstraintFactory.getConstraint(ConstraintTypes.textToType(type.getValue().toUpperCase()),
-                        schema.toUpperCase(), id.getValue().toUpperCase(),
-                        deferrable.equalsIgnoreCase(Boolean.toString(true)));
+               ConstraintFactory.getConstraint(ConstraintTypes.textToType(type.getValue().toUpperCase()),
+                  schema.toUpperCase(), id.getValue().toUpperCase(),
+                  deferrable.equalsIgnoreCase(Boolean.toString(true)));
 
             Attr appliesTo = constraint.getAttributeNode(ConstraintFields.appliesTo.name());
             if (appliesTo != null) {
@@ -99,7 +99,7 @@ public class SchemaXmlParser {
                   if (table != null) {
 
                      ReferenceClause references =
-                           new ReferenceClause(refSchema.toUpperCase(), table.getValue().toUpperCase());
+                        new ReferenceClause(refSchema.toUpperCase(), table.getValue().toUpperCase());
                      if (refColumn != null) {
                         String[] columns = refColumn.getValue().split(",");
                         for (String column : columns) {

@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.ui.swt.DynamicWizard;
 
 public class ServiceLaunchWizard extends DynamicWizard implements IZipEntryCompleteCallback {
 
-   private ServiceLaunchingInformation serviceInfo;
+   private final ServiceLaunchingInformation serviceInfo;
 
    public ServiceLaunchWizard() {
       serviceInfo = new ServiceLaunchingInformation();
@@ -36,7 +36,9 @@ public class ServiceLaunchWizard extends DynamicWizard implements IZipEntryCompl
 
    @Override
    public boolean performFinish() {
-      if (!canFinish()) return false;
+      if (!canFinish()) {
+         return false;
+      }
       boolean returnVal = true;
       ServiceLaunchDataPersist data = ServiceLaunchDataPersist.getInstance();
       data.saveHostName(serviceInfo.getSelectedHost());
@@ -58,12 +60,15 @@ public class ServiceLaunchWizard extends DynamicWizard implements IZipEntryCompl
       this.setStartingPage(startingPage);
    }
 
+   @Override
    public void setValue(int i) {
    }
 
+   @Override
    public void setMinimum(int i) {
    }
 
+   @Override
    public void setMaximum(int i) {
    }
 }

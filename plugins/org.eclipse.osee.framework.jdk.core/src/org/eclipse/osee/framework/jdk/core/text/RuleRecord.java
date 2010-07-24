@@ -41,6 +41,7 @@ public class RuleRecord extends LogRecord implements Xmlizable {
     * 
     * @return xml formated element.
     */
+   @Override
    public Element toXml(Document doc) {
       Element recordElement = Jaxp.createElement(doc, getLevel().getName(), getMessage());
       return recordElement;

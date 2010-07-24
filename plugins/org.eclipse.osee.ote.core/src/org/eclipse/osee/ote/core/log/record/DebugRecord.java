@@ -22,10 +22,11 @@ public class DebugRecord extends TestRecord {
    /**
 	 * 
 	 */
-	private static final long serialVersionUID = -5340996017961551683L;
+   private static final long serialVersionUID = -5340996017961551683L;
 
-/**
-    * DebugRecord Constructor. Invokes TestRecord with the log message source, the log message, and the ability to include a timestamp.
+   /**
+    * DebugRecord Constructor. Invokes TestRecord with the log message source, the log message, and the ability to
+    * include a timestamp.
     * 
     * @param source The object requesting the logging.
     * @param msg The log message.

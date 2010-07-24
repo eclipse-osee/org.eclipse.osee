@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.
 
 public class AtsDatabaseConfig implements IDbInitializationTask {
 
+   @Override
    public void run() throws OseeCoreException {
       AtsFolderUtil.createAtsFolders();
 
@@ -38,7 +39,7 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
 
       // Import Work Item Definitions
       AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(writeType, xResultData,
-            AtsWorkDefinitions.getAtsWorkDefinitions());
+         AtsWorkDefinitions.getAtsWorkDefinitions());
 
       new TeamWorkflowDefinition().config(writeType, xResultData);
       new TaskWorkflowDefinition().config(writeType, xResultData);

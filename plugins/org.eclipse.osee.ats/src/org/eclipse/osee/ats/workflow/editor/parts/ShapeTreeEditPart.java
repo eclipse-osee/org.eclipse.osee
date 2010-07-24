@@ -81,6 +81,7 @@ class ShapeTreeEditPart extends AbstractTreeEditPart implements PropertyChangeLi
       return getCastedModel().toString();
    }
 
+   @Override
    public void propertyChange(PropertyChangeEvent evt) {
       refreshVisuals(); // this will cause an invocation of getImage() and getText(), see below
    }

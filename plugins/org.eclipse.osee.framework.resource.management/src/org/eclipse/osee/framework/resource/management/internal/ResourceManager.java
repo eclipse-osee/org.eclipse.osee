@@ -39,6 +39,7 @@ public class ResourceManager implements IResourceManager {
       return listeners.add(listener);
    }
 
+   @Override
    public boolean removeResourceListener(IResourceListener listener) {
       return listeners.remove(listener);
    }
@@ -103,6 +104,7 @@ public class ResourceManager implements IResourceManager {
       return resourceProviders.remove(resourceProvider);
    }
 
+   @Override
    public IResource acquire(IResourceLocator locator, Options options) throws OseeCoreException {
       IResourceProvider provider = getProvider(locator);
       notifyPreOnAcquire(locator);
@@ -111,6 +113,7 @@ public class ResourceManager implements IResourceManager {
       return toReturn;
    }
 
+   @Override
    public IResourceLocator save(IResourceLocator locator, IResource resource, Options options) throws OseeCoreException {
       IResourceProvider provider = getProvider(locator);
       notifyPreOnSave(locator, resource, options);
@@ -119,6 +122,7 @@ public class ResourceManager implements IResourceManager {
       return actualLocator;
    }
 
+   @Override
    public int delete(IResourceLocator locator) throws OseeCoreException {
       int toReturn = IResourceManager.FAIL;
       IResourceProvider provider = getProvider(locator);

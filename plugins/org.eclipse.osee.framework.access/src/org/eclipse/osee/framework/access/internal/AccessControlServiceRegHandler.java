@@ -11,43 +11,43 @@ import org.osgi.framework.ServiceRegistration;
 
 public final class AccessControlServiceRegHandler extends AbstractTrackingHandler {
 
-	private static final Class<?>[] DEPENDENCIES = new Class[] {IOseeDatabaseService.class, IOseeCachingService.class};
+   private static final Class<?>[] DEPENDENCIES = new Class[] {IOseeDatabaseService.class, IOseeCachingService.class};
 
-	private AccessControlService accessService;
-	private ServiceRegistration serviceRegistration;;
-	private AccessEventListener accessEventListener;
+   private AccessControlService accessService;
+   private ServiceRegistration serviceRegistration;;
+   private AccessEventListener accessEventListener;
 
-	public AccessControlService getService() {
-		return accessService;
-	}
+   public AccessControlService getService() {
+      return accessService;
+   }
 
-	@Override
-	public Class<?>[] getDependencies() {
-		return DEPENDENCIES;
-	}
+   @Override
+   public Class<?>[] getDependencies() {
+      return DEPENDENCIES;
+   }
 
-	@Override
-	public void onActivate(BundleContext context, Map<Class<?>, Object> services) {
-		IOseeDatabaseService databaseService = getService(IOseeDatabaseService.class, services);
-		IOseeCachingService cachingService = getService(IOseeCachingService.class, services);
+   @Override
+   public void onActivate(BundleContext context, Map<Class<?>, Object> services) {
+      IOseeDatabaseService databaseService = getService(IOseeDatabaseService.class, services);
+      IOseeCachingService cachingService = getService(IOseeCachingService.class, services);
 
-		//		IAccessCacheAccessor accessor = new DatabaseAccessCacheAccessor(databaseService, cachingService);
-		//		ObjectBasedAccessCache cache = new ObjectBasedAccessCache(accessor);
+      //		IAccessCacheAccessor accessor = new DatabaseAccessCacheAccessor(databaseService, cachingService);
+      //		ObjectBasedAccessCache cache = new ObjectBasedAccessCache(accessor);
 
-		accessService = new AccessControlService(databaseService, cachingService);
-		serviceRegistration = context.registerService(IAccessControlService.class.getName(), accessService, null);
+      accessService = new AccessControlService(databaseService, cachingService);
+      serviceRegistration = context.registerService(IAccessControlService.class.getName(), accessService, null);
 
-		accessEventListener = new AccessEventListener(accessService);
-		OseeEventManager.addListener(accessEventListener);
-	}
+      accessEventListener = new AccessEventListener(accessService);
+      OseeEventManager.addListener(accessEventListener);
+   }
 
-	@Override
-	public void onDeActivate() {
-		if (accessEventListener != null) {
-			OseeEventManager.removeListener(accessEventListener);
-		}
-		if (serviceRegistration != null) {
-			serviceRegistration.unregister();
-		}
-	}
+   @Override
+   public void onDeActivate() {
+      if (accessEventListener != null) {
+         OseeEventManager.removeListener(accessEventListener);
+      }
+      if (serviceRegistration != null) {
+         serviceRegistration.unregister();
+      }
+   }
 }

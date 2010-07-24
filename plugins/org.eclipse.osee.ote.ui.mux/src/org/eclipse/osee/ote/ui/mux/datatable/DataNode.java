@@ -26,26 +26,31 @@ public class DataNode {
       row4 = new RowNode();
       temp = new byte[16];
    }
-   
+
    public RowNode getRow(int row) {
       switch (row) {
-         case 1: return row1;
-         case 2: return row2;
-         case 3: return row3;
-         case 4: return row4;
-         default: return row1;
+         case 1:
+            return row1;
+         case 2:
+            return row2;
+         case 3:
+            return row3;
+         case 4:
+            return row4;
+         default:
+            return row1;
       }
    }
-   
+
    public synchronized void setData(ByteBuffer data) {
       // discard header bytes
-      if (data.remaining() <= 15)
+      if (data.remaining() <= 15) {
          return;
-      else {
+      } else {
          temp = new byte[15];
          data.get(temp, 0, 15);
       }
-      
+
       int copySize = data.remaining() >= 16 ? 16 : data.remaining();
       temp = new byte[copySize];
       data.get(temp, 0, copySize);

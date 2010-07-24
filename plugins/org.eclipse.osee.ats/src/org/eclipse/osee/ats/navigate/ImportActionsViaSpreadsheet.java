@@ -36,7 +36,7 @@ public class ImportActionsViaSpreadsheet extends XNavigateItemAction {
    public void run(TableLoadOption... tableLoadOptions) {
       ActionImportWizard actionWizard = new ActionImportWizard();
       WizardDialog dialog =
-            new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), actionWizard);
+         new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), actionWizard);
       dialog.create();
       dialog.open();
    }

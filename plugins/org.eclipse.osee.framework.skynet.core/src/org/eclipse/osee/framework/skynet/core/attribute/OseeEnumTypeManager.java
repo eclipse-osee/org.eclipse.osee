@@ -43,7 +43,7 @@ public class OseeEnumTypeManager {
       OseeEnumType itemsFound = getCache().getUniqueByName(enumTypeName);
       if (itemsFound == null) {
          throw new OseeTypeDoesNotExist(
-               String.format("OSEE enum types matching [%s] name does not exist", enumTypeName));
+            String.format("OSEE enum types matching [%s] name does not exist", enumTypeName));
       }
       return itemsFound;
    }

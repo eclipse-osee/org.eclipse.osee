@@ -51,7 +51,7 @@ public class ClientRelationTypeAccessor extends AbstractClientDataAccessor<Relat
       List<RelationType> updatedItems = new ArrayList<RelationType>();
 
       RelationTypeCacheUpdateResponse response =
-            requestUpdateMessage(cache, CoreTranslatorId.RELATION_TYPE_CACHE_UPDATE_RESPONSE);
+         requestUpdateMessage(cache, CoreTranslatorId.RELATION_TYPE_CACHE_UPDATE_RESPONSE);
 
       RelationTypeFactory factory = getFactory();
       for (RelationTypeRow row : response.getRelationTypeRows()) {
@@ -59,9 +59,9 @@ public class ClientRelationTypeAccessor extends AbstractClientDataAccessor<Relat
          ArtifactType bSideType = artCache.getById(row.getArtifactTypeSideB());
 
          RelationType type =
-               factory.createOrUpdate(cache, row.getId(), row.getStorageState(), row.getGuid(), row.getName(),
-                     row.getSideAName(), row.getSideBName(), aSideType, bSideType, row.getMultiplicity(),
-                     row.getDefaultOrderTypeGuid());
+            factory.createOrUpdate(cache, row.getId(), row.getStorageState(), row.getGuid(), row.getName(),
+               row.getSideAName(), row.getSideBName(), aSideType, bSideType, row.getMultiplicity(),
+               row.getDefaultOrderTypeGuid());
          updatedItems.add(type);
       }
       return updatedItems;

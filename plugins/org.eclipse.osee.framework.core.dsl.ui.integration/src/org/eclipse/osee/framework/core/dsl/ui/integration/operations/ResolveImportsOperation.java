@@ -33,67 +33,67 @@ import org.eclipse.xtext.resource.IClasspathUriResolver;
  * @author Roberto E. Escobar
  */
 public class ResolveImportsOperation extends AbstractOperation {
-	private final Pattern pattern = Pattern.compile("\\s*import\\s+\"(.*?)\"");
-	private final List<IFile> selectedItems;
-	private final Matcher matcher;
-	private final IClasspathUriResolver resolver;
-	private final List<LinkNode> dependencyData;
+   private final Pattern pattern = Pattern.compile("\\s*import\\s+\"(.*?)\"");
+   private final List<IFile> selectedItems;
+   private final Matcher matcher;
+   private final IClasspathUriResolver resolver;
+   private final List<LinkNode> dependencyData;
 
-	public ResolveImportsOperation(IClasspathUriResolver resolver, List<IFile> selectedItems, List<LinkNode> dependencyData) {
-		super("Extract imports", Activator.PLUGIN_ID);
-		this.matcher = pattern.matcher("");
-		this.selectedItems = selectedItems;
-		this.resolver = resolver;
-		this.dependencyData = dependencyData;
-	}
+   public ResolveImportsOperation(IClasspathUriResolver resolver, List<IFile> selectedItems, List<LinkNode> dependencyData) {
+      super("Extract imports", Activator.PLUGIN_ID);
+      this.matcher = pattern.matcher("");
+      this.selectedItems = selectedItems;
+      this.resolver = resolver;
+      this.dependencyData = dependencyData;
+   }
 
-	@Override
-	protected void doWork(IProgressMonitor monitor) throws Exception {
-		if (!selectedItems.isEmpty()) {
-			double workPercentage = 1.0 / selectedItems.size();
-			for (IFile selectedFile : selectedItems) {
-				URI uri = URI.createURI(selectedFile.getLocationURI().toASCIIString());
-				LinkNode node = new LinkNode(uri);
-				dependencyData.add(node);
-				resolveImports(node);
-			}
-			monitor.worked(calculateWork(workPercentage));
-		}
-	}
+   @Override
+   protected void doWork(IProgressMonitor monitor) throws Exception {
+      if (!selectedItems.isEmpty()) {
+         double workPercentage = 1.0 / selectedItems.size();
+         for (IFile selectedFile : selectedItems) {
+            URI uri = URI.createURI(selectedFile.getLocationURI().toASCIIString());
+            LinkNode node = new LinkNode(uri);
+            dependencyData.add(node);
+            resolveImports(node);
+         }
+         monitor.worked(calculateWork(workPercentage));
+      }
+   }
 
-	private void resolveImports(LinkNode node) throws IOException {
-		if (node.getUri() != null) {
-			Set<String> requiredImports = null;
-			try {
-				requiredImports = getImports(node.getUri());
-			} catch (IOException ex) {
-				node.setIsResolved(false);
-				throw ex;
-			}
-			for (String importEntry : requiredImports) {
-				URI resolved = resolver.resolve((Object) null, URI.createURI(importEntry));
-				LinkMessage message = new LinkMessage(resolved, importEntry);
-				node.addChild(message);
-				resolveImports(message);
-			}
-		}
-	}
+   private void resolveImports(LinkNode node) throws IOException {
+      if (node.getUri() != null) {
+         Set<String> requiredImports = null;
+         try {
+            requiredImports = getImports(node.getUri());
+         } catch (IOException ex) {
+            node.setIsResolved(false);
+            throw ex;
+         }
+         for (String importEntry : requiredImports) {
+            URI resolved = resolver.resolve((Object) null, URI.createURI(importEntry));
+            LinkMessage message = new LinkMessage(resolved, importEntry);
+            node.addChild(message);
+            resolveImports(message);
+         }
+      }
+   }
 
-	private Set<String> getImports(URI uri) throws IOException {
-		Set<String> imports = new HashSet<String>();
-		InputStream inputStream = null;
-		try {
-			inputStream = new BufferedInputStream(new URL(uri.toString()).openStream());
-			String inputString = Lib.inputStreamToString(inputStream);
-			matcher.reset(inputString);
-			while (matcher.find()) {
-				imports.add(matcher.group(1));
-			}
-		} finally {
-			if (inputStream != null) {
-				inputStream.close();
-			}
-		}
-		return imports;
-	}
+   private Set<String> getImports(URI uri) throws IOException {
+      Set<String> imports = new HashSet<String>();
+      InputStream inputStream = null;
+      try {
+         inputStream = new BufferedInputStream(new URL(uri.toString()).openStream());
+         String inputString = Lib.inputStreamToString(inputStream);
+         matcher.reset(inputString);
+         while (matcher.find()) {
+            imports.add(matcher.group(1));
+         }
+      } finally {
+         if (inputStream != null) {
+            inputStream.close();
+         }
+      }
+      return imports;
+   }
 }

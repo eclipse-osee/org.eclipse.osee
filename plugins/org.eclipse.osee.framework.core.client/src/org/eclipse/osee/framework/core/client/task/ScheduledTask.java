@@ -28,6 +28,7 @@ public abstract class ScheduledTask implements Runnable {
       return name;
    }
 
+   @Override
    public final void run() {
       try {
          innerRun();

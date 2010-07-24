@@ -21,7 +21,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
  */
 public class AtsDecisionPrepareWorkPageDefinition extends WorkPageDefinition {
 
-   public static String ID = DecisionWorkflowDefinition.ID + "." + DecisionReviewArtifact.DecisionReviewState.Prepare.name();
+   public static String ID =
+      DecisionWorkflowDefinition.ID + "." + DecisionReviewArtifact.DecisionReviewState.Prepare.name();
 
    public AtsDecisionPrepareWorkPageDefinition() {
       this(DecisionReviewArtifact.DecisionReviewState.Prepare.name(), ID, null);

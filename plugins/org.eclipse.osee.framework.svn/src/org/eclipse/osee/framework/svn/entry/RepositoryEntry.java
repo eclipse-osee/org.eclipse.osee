@@ -62,22 +62,27 @@ public class RepositoryEntry implements IRepositoryEntry {
       return toReturn;
    }
 
+   @Override
    public String getVersion() {
       return getField(EntryFields.committedRev);
    }
 
+   @Override
    public String getURL() {
       return getField(EntryFields.url);
    }
 
+   @Override
    public String getModifiedFlag() {
       return modifiedFlag;
    }
 
+   @Override
    public String getLastAuthor() {
       return getField(EntryFields.lastAuthor);
    }
 
+   @Override
    public String getLastModificationDate() {
       return getField(EntryFields.dateCommitted);
    }
@@ -86,6 +91,7 @@ public class RepositoryEntry implements IRepositoryEntry {
       return fileType;
    }
 
+   @Override
    public String getVersionControlSystem() {
       return controlSystem;
    }

@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public class UserDataStore {
    private static final String LOAD_OSEE_USER =
-         "select oa.value as user_id from osee_attribute_type oat, osee_attribute oa, osee_txs txs where oat.name = 'User Id' and oat.attr_type_id = oa.attr_type_id and oa.gamma_id = txs.gamma_id and txs.tx_current = 1 and oa.value = ?";
+      "select oa.value as user_id from osee_attribute_type oat, osee_attribute oa, osee_txs txs where oat.name = 'User Id' and oat.attr_type_id = oa.attr_type_id and oa.gamma_id = txs.gamma_id and txs.tx_current = 1 and oa.value = ?";
 
    private UserDataStore() {
    }
@@ -40,8 +40,8 @@ public class UserDataStore {
             toReturn = new OseeUserInfo(false, "-", chStmt.getString("user_id"), "-", false);
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(ServerActivator.class, Level.SEVERE, String.format(
-               "Unable to find userId [%s] in OSEE database.", userId), ex);
+         OseeLog.log(ServerActivator.class, Level.SEVERE,
+            String.format("Unable to find userId [%s] in OSEE database.", userId), ex);
       } finally {
          if (chStmt != null) {
             chStmt.close();

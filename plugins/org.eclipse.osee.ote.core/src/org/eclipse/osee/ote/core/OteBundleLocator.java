@@ -16,11 +16,11 @@ import org.eclipse.core.runtime.CoreException;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public interface OteBundleLocator {
 
    Collection<BundleInfo> getRuntimeLibs() throws IOException, CoreException;
+
    Collection<BundleInfo> consumeModifiedLibs() throws IOException, CoreException;
 
 }

@@ -24,7 +24,6 @@ import java.nio.channels.WritableByteChannel;
 import java.util.logging.Level;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
-
 import org.apache.commons.net.telnet.EchoOptionHandler;
 import org.apache.commons.net.telnet.InvalidTelnetOptionException;
 import org.apache.commons.net.telnet.SuppressGAOptionHandler;
@@ -47,6 +46,7 @@ public class TelnetShell implements TelnetNotificationHandler {
       private final OutputStream outStream;
 
       public final ByteBuffer buffer = ByteBuffer.allocateDirect(1024);
+
       public Piper(InputStream in, OutputStream out) {
          super("Stream Piper");
          this.inStream = in;
@@ -111,14 +111,8 @@ public class TelnetShell implements TelnetNotificationHandler {
       }
 
       /*
-       * try {
-       * if (!telnet.sendAYT(5000)) {
-       * throw new SocketException("server appears to be in use");
-       * }
-       * } catch (IllegalArgumentException ex) {
-       * ex.printStackTrace();
-       * } catch (InterruptedException ex) {
-       * ex.printStackTrace();
+       * try { if (!telnet.sendAYT(5000)) { throw new SocketException("server appears to be in use"); } } catch
+       * (IllegalArgumentException ex) { ex.printStackTrace(); } catch (InterruptedException ex) { ex.printStackTrace();
        * }
        */
       //printOptionStates();
@@ -190,7 +184,7 @@ public class TelnetShell implements TelnetNotificationHandler {
    public synchronized void waitFor(String string) throws InterruptedException {
       if (inputBuffer.waitFor(string, true, MAX_RESPONSE_TIME) < 0) {
          throw new InterruptedException(
-               "Waiting for '" + string + "' took longer then " + MAX_RESPONSE_TIME + " miliseconds.");
+            "Waiting for '" + string + "' took longer then " + MAX_RESPONSE_TIME + " miliseconds.");
       }
    }
 
@@ -198,7 +192,7 @@ public class TelnetShell implements TelnetNotificationHandler {
       MatchResult index = inputBuffer.waitFor(pattern, false, millis);
       if (index == null) {
          throw new InterruptedException(
-               "Waiting for '" + pattern.pattern() + "' took longer then " + millis + " miliseconds.");
+            "Waiting for '" + pattern.pattern() + "' took longer then " + millis + " miliseconds.");
       }
       return index;
    }
@@ -217,7 +211,7 @@ public class TelnetShell implements TelnetNotificationHandler {
       int index = inputBuffer.waitFor(string, false, MAX_RESPONSE_TIME);
       if (index < 0) {
          throw new InterruptedException(
-               "Waiting for '" + string + "' took longer then " + MAX_RESPONSE_TIME + " miliseconds.");
+            "Waiting for '" + string + "' took longer then " + MAX_RESPONSE_TIME + " miliseconds.");
       }
       return inputBuffer.subString(0, index);
    }
@@ -257,7 +251,7 @@ public class TelnetShell implements TelnetNotificationHandler {
          System.out.println("Enter port");
          String string = reader.readLine();
          if (string == null) {
-        	 return;
+            return;
          }
          int port = Integer.parseInt(string);
          TelnetShell shell = new TelnetShell(host, port, false);
@@ -311,6 +305,7 @@ public class TelnetShell implements TelnetNotificationHandler {
       inputBuffer.clear();
    }
 
+   @Override
    public void receivedNegotiation(int negotiationCode, int option) {
       final String negotiationCodeStr;
       switch (negotiationCode) {

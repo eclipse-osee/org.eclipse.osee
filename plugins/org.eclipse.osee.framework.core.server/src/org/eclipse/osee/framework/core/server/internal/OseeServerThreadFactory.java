@@ -21,36 +21,36 @@ import java.util.concurrent.ThreadFactory;
  */
 class OseeServerThreadFactory implements ThreadFactory {
 
-	private final List<WeakReference<OseeServerThread>> threads;
-	private final String threadName;
-	private final int priority;
+   private final List<WeakReference<OseeServerThread>> threads;
+   private final String threadName;
+   private final int priority;
 
-	public OseeServerThreadFactory(String threadName, int priority) {
-		this.threadName = threadName;
-		this.threads = new CopyOnWriteArrayList<WeakReference<OseeServerThread>>();
-		this.priority = priority;
-	}
+   public OseeServerThreadFactory(String threadName, int priority) {
+      this.threadName = threadName;
+      this.threads = new CopyOnWriteArrayList<WeakReference<OseeServerThread>>();
+      this.priority = priority;
+   }
 
-	public OseeServerThreadFactory(String name) {
-		this(name, Thread.NORM_PRIORITY);
-	}
+   public OseeServerThreadFactory(String name) {
+      this(name, Thread.NORM_PRIORITY);
+   }
 
-	@Override
-	public Thread newThread(Runnable runnable) {
-		OseeServerThread thread = new OseeServerThread(runnable, threadName + ":" + threads.size());
-		thread.setPriority(priority);
-		this.threads.add(new WeakReference<OseeServerThread>(thread));
-		return thread;
-	}
+   @Override
+   public Thread newThread(Runnable runnable) {
+      OseeServerThread thread = new OseeServerThread(runnable, threadName + ":" + threads.size());
+      thread.setPriority(priority);
+      this.threads.add(new WeakReference<OseeServerThread>(thread));
+      return thread;
+   }
 
-	List<OseeServerThread> getThreads() {
-		List<OseeServerThread> toReturn = new ArrayList<OseeServerThread>();
-		for (WeakReference<OseeServerThread> weak : threads) {
-			OseeServerThread thread = weak.get();
-			if (thread != null) {
-				toReturn.add(thread);
-			}
-		}
-		return toReturn;
-	}
+   List<OseeServerThread> getThreads() {
+      List<OseeServerThread> toReturn = new ArrayList<OseeServerThread>();
+      for (WeakReference<OseeServerThread> weak : threads) {
+         OseeServerThread thread = weak.get();
+         if (thread != null) {
+            toReturn.add(thread);
+         }
+      }
+      return toReturn;
+   }
 }

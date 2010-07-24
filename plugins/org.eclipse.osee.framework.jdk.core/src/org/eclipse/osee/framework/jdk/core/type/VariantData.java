@@ -39,10 +39,12 @@ public class VariantData implements IVariantData {
       this.storageArrays = new Properties();
    }
 
+   @Override
    public String get(String key) {
       return (String) storageData.get(key);
    }
 
+   @Override
    public boolean isEmpty(String key) {
       if (get(key) == null) {
          return true;
@@ -50,14 +52,17 @@ public class VariantData implements IVariantData {
       return get(key).equals("");
    }
 
+   @Override
    public String[] getArray(String key) {
       return (String[]) storageArrays.get(key);
    }
 
+   @Override
    public boolean getBoolean(String key) {
       return Boolean.valueOf((String) storageData.get(key)).booleanValue();
    }
 
+   @Override
    public double getDouble(String key) throws NumberFormatException {
       String setting = (String) storageData.get(key);
       if (setting == null) {
@@ -67,6 +72,7 @@ public class VariantData implements IVariantData {
       return new Double(setting).doubleValue();
    }
 
+   @Override
    public float getFloat(String key) throws NumberFormatException {
       String setting = (String) storageData.get(key);
       if (setting == null) {
@@ -76,6 +82,7 @@ public class VariantData implements IVariantData {
       return new Float(setting).floatValue();
    }
 
+   @Override
    public int getInt(String key) throws NumberFormatException {
       String setting = (String) storageData.get(key);
       if (setting == null) {
@@ -85,6 +92,7 @@ public class VariantData implements IVariantData {
       return new Integer(setting).intValue();
    }
 
+   @Override
    public long getLong(String key) throws NumberFormatException {
       String setting = (String) storageData.get(key);
       if (setting == null) {
@@ -93,6 +101,7 @@ public class VariantData implements IVariantData {
       return new Long(setting).longValue();
    }
 
+   @Override
    public Date getDate(String key) throws IllegalArgumentException {
       String setting = (String) storageData.get(key);
       if (setting == null) {
@@ -101,6 +110,7 @@ public class VariantData implements IVariantData {
       return new Date(new Long(setting).longValue());
    }
 
+   @Override
    public String getStreamAsString(String key) throws Exception {
       String toReturn;
       InputStream inputStream = getStream(key);
@@ -112,6 +122,7 @@ public class VariantData implements IVariantData {
       return toReturn;
    }
 
+   @Override
    public InputStream getStream(String key) throws IllegalArgumentException {
       byte[] bytes = byteArrayData.get(key);
       if (bytes == null) {
@@ -120,6 +131,7 @@ public class VariantData implements IVariantData {
       return new ByteArrayInputStream(bytes);
    }
 
+   @Override
    public void put(String key, String[] value) {
       if (value == null) {
          value = new String[0];
@@ -127,32 +139,39 @@ public class VariantData implements IVariantData {
       storageArrays.put(key, value);
    }
 
+   @Override
    public void put(String key, double value) {
       put(key, String.valueOf(value));
    }
 
+   @Override
    public void put(String key, float value) {
       put(key, String.valueOf(value));
    }
 
+   @Override
    public void put(String key, int value) {
       put(key, String.valueOf(value));
    }
 
+   @Override
    public void put(String key, long value) {
       put(key, String.valueOf(value));
    }
 
+   @Override
    public void put(String key, boolean value) {
       put(key, String.valueOf(value));
    }
 
+   @Override
    public void put(String key, Date date) {
       if (date != null) {
          put(key, date.getTime());
       }
    }
 
+   @Override
    public void put(String key, String value) {
       if (value == null) {
          value = "";
@@ -160,6 +179,7 @@ public class VariantData implements IVariantData {
       storageData.put(key, value);
    }
 
+   @Override
    public void put(String key, byte[] bytes) {
       if (bytes == null) {
          bytes = new byte[0];

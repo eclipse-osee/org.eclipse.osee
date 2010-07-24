@@ -15,6 +15,8 @@ package org.eclipse.osee.framework.core.enums;
  */
 public enum Active {
 
-   Active, InActive, Both;
+   Active,
+   InActive,
+   Both;
 
 }

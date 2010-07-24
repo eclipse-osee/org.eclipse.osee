@@ -34,7 +34,7 @@ public abstract class BaseCredentialProvider implements ICredentialProvider {
       String localAddress = HttpServer.getServerAddressForExternalCommunication();
 
       credential.setClientAddress(Strings.isValid(localAddress) ? localAddress : "Unknown",
-            HttpServer.getDefaultServicePort());
+         HttpServer.getDefaultServicePort());
       credential.setClientVersion(OseeCodeVersion.getVersion());
       try {
          credential.setClientMachineName(InetAddress.getLocalHost().getHostName());

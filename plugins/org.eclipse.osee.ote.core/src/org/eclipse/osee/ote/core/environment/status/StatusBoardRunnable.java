@@ -10,16 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.core.environment.status;
 
-
 public abstract class StatusBoardRunnable implements Runnable {
 
-	private IServiceStatusData data;
+   private final IServiceStatusData data;
 
-	public StatusBoardRunnable(IServiceStatusData data){
-		this.data = data;
-	}
+   public StatusBoardRunnable(IServiceStatusData data) {
+      this.data = data;
+   }
 
-	protected IServiceStatusData getData(){
-		return data;
-	}	
+   protected IServiceStatusData getData() {
+      return data;
+   }
 }

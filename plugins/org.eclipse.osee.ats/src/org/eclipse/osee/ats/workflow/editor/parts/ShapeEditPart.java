@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.workflow.editor.parts;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.draw2d.ChopboxAnchor;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.ConnectionAnchor;
@@ -41,7 +42,6 @@ import org.eclipse.osee.ats.workflow.editor.model.commands.ConnectionCreateComma
 import org.eclipse.osee.ats.workflow.editor.model.commands.ConnectionReconnectCommand;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -120,7 +120,7 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
          f.setBackgroundColor(ColorConstants.green);
          return f;
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
       return null;
    }
@@ -179,42 +179,47 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
       return getCastedModel().getTargetConnections();
    }
 
+   @Override
    public ConnectionAnchor getSourceConnectionAnchor(ConnectionEditPart connection) {
       try {
          return getConnectionAnchor();
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
       return null;
    }
 
+   @Override
    public ConnectionAnchor getSourceConnectionAnchor(Request request) {
       try {
          return getConnectionAnchor();
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
       return null;
    }
 
+   @Override
    public ConnectionAnchor getTargetConnectionAnchor(ConnectionEditPart connection) {
       try {
          return getConnectionAnchor();
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
       return null;
    }
 
+   @Override
    public ConnectionAnchor getTargetConnectionAnchor(Request request) {
       try {
          return getConnectionAnchor();
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
       return null;
    }
 
+   @Override
    public void propertyChange(PropertyChangeEvent evt) {
       String prop = evt.getPropertyName();
       if (Shape.SIZE_PROP.equals(prop) || Shape.LOCATION_PROP.equals(prop)) {

@@ -25,68 +25,68 @@ import org.eclipse.ui.texteditor.StatusLineContributionItem;
 
 public class ArtifactEditorContributor extends MultiPageEditorActionBarContributor {
 
-	private StatusLineContributionItem typeStatusItem;
-	private ShowInExplorerAction showInExplorerAction;
+   private StatusLineContributionItem typeStatusItem;
+   private ShowInExplorerAction showInExplorerAction;
 
-	public ArtifactEditorContributor() {
-		super();
-		createActions();
-	}
+   public ArtifactEditorContributor() {
+      super();
+      createActions();
+   }
 
-	@Override
-	public void setActiveEditor(IEditorPart part) {
-		super.setActiveEditor(part);
-		Artifact artifact = (Artifact) part.getAdapter(Artifact.class);
-		if (artifact != null) {
-			typeStatusItem.setText(artifact.getArtifactType().getName());
-			typeStatusItem.setImage(ArtifactImageManager.getImage(artifact));
-			showInExplorerAction.setArtifact(artifact);
+   @Override
+   public void setActiveEditor(IEditorPart part) {
+      super.setActiveEditor(part);
+      Artifact artifact = (Artifact) part.getAdapter(Artifact.class);
+      if (artifact != null) {
+         typeStatusItem.setText(artifact.getArtifactType().getName());
+         typeStatusItem.setImage(ArtifactImageManager.getImage(artifact));
+         showInExplorerAction.setArtifact(artifact);
 
-			RelationsComposite composite = (RelationsComposite) part.getAdapter(RelationsComposite.class);
-			if (composite != null) {
-				composite.getTreeViewer().addSelectionChangedListener(
-							new SelectionCountChangeListener(this.getActionBars().getStatusLineManager()));
-			}
-		}
-	}
+         RelationsComposite composite = (RelationsComposite) part.getAdapter(RelationsComposite.class);
+         if (composite != null) {
+            composite.getTreeViewer().addSelectionChangedListener(
+               new SelectionCountChangeListener(this.getActionBars().getStatusLineManager()));
+         }
+      }
+   }
 
-	@Override
-	public void setActivePage(IEditorPart part) {
-	}
+   @Override
+   public void setActivePage(IEditorPart part) {
+   }
 
-	private void createActions() {
-		typeStatusItem = new StatusLineContributionItem("skynet.artifactType", true, 25);
-		typeStatusItem.setToolTipText("The type of the artifact being edited.");
+   private void createActions() {
+      typeStatusItem = new StatusLineContributionItem("skynet.artifactType", true, 25);
+      typeStatusItem.setToolTipText("The type of the artifact being edited.");
 
-		showInExplorerAction = new ShowInExplorerAction();
-	}
+      showInExplorerAction = new ShowInExplorerAction();
+   }
 
-	@Override
-	public void contributeToStatusLine(IStatusLineManager statusLineManager) {
-		statusLineManager.add(typeStatusItem);
-		OseeContributionItem.addTo(statusLineManager);
-	}
+   @Override
+   public void contributeToStatusLine(IStatusLineManager statusLineManager) {
+      statusLineManager.add(typeStatusItem);
+      OseeContributionItem.addTo(statusLineManager);
+   }
 
-	@Override
-	public void contributeToCoolBar(ICoolBarManager coolBarManager) {
-		coolBarManager.add(showInExplorerAction);
-	}
+   @Override
+   public void contributeToCoolBar(ICoolBarManager coolBarManager) {
+      coolBarManager.add(showInExplorerAction);
+   }
 
-	private static class ShowInExplorerAction extends Action {
-		private Artifact artifact;
+   private static class ShowInExplorerAction extends Action {
+      private Artifact artifact;
 
-		public ShowInExplorerAction() {
-			setText("Show in Artifact Explorer");
-			setToolTipText("Show the Artifact being edited in the Artifact Explorer");
-		}
+      public ShowInExplorerAction() {
+         setText("Show in Artifact Explorer");
+         setToolTipText("Show the Artifact being edited in the Artifact Explorer");
+      }
 
-		public void setArtifact(Artifact artifact) {
-			this.artifact = artifact;
-		}
+      public void setArtifact(Artifact artifact) {
+         this.artifact = artifact;
+      }
 
-		@Override
-		public void run() {
-			ArtifactExplorer.revealArtifact(artifact);
-		}
-	}
+      @Override
+      public void run() {
+         ArtifactExplorer.revealArtifact(artifact);
+      }
+   }
 }

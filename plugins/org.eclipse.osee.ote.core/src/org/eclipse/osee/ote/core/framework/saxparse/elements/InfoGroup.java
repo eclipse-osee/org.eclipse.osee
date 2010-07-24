@@ -15,9 +15,8 @@ import org.xml.sax.Attributes;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
-public class InfoGroup extends ElementHandlers{
+public class InfoGroup extends ElementHandlers {
 
    /**
     * @param name
@@ -25,7 +24,6 @@ public class InfoGroup extends ElementHandlers{
    public InfoGroup() {
       super("InfoGroup");
    }
-
 
    @Override
    public Object createStartElementFoundObject(String uri, String localName, String name, Attributes attributes) {

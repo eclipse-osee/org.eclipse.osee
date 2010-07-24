@@ -40,6 +40,7 @@ public class CompositePropertySource extends AbstractPropertySource {
       }
    }
 
+   @Override
    protected void addPropertyDescriptors(List<IPropertyDescriptor> list) {
       if (sources != null) {
          for (AbstractPropertySource propertySource : sources) {
@@ -48,6 +49,7 @@ public class CompositePropertySource extends AbstractPropertySource {
       }
    }
 
+   @Override
    public Object getPropertyValue(Object id) {
       if (sources != null) {
          for (AbstractPropertySource propertySource : sources) {
@@ -60,6 +62,7 @@ public class CompositePropertySource extends AbstractPropertySource {
       return null;
    }
 
+   @Override
    public boolean isPropertyResettable(Object id) {
       if (sources != null) {
          for (AbstractPropertySource propertySource : sources) {
@@ -71,6 +74,7 @@ public class CompositePropertySource extends AbstractPropertySource {
       return false;
    }
 
+   @Override
    public boolean isPropertySet(Object id) {
       if (sources != null) {
          for (AbstractPropertySource propertySource : sources) {
@@ -82,6 +86,7 @@ public class CompositePropertySource extends AbstractPropertySource {
       return false;
    }
 
+   @Override
    public void resetPropertyValue(Object id) {
       if (sources != null) {
          for (AbstractPropertySource propertySource : sources) {
@@ -90,6 +95,7 @@ public class CompositePropertySource extends AbstractPropertySource {
       }
    }
 
+   @Override
    public void setPropertyValue(Object id, Object value) {
       if (sources != null) {
          for (AbstractPropertySource propertySource : sources) {

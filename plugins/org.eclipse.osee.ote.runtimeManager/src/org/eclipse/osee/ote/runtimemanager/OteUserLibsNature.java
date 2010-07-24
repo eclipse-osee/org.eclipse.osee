@@ -17,11 +17,11 @@ import org.eclipse.osee.framework.ui.workspacebundleloader.JarCollectionNature;
 public class OteUserLibsNature extends JarCollectionNature {
    public static final String NATURE_ID = "org.eclipse.osee.ote.runtimeManager.OteUserLibsNature";
    private static final String BUNDLE_PATH_ATTRIBUTE = "OteBundlePath";
-   
+
    public OteUserLibsNature() {
       super(BUNDLE_PATH_ATTRIBUTE);
    }
-   
+
    public static Collection<OteUserLibsNature> getWorkspaceProjects() throws CoreException {
       return getWorkspaceProjects(NATURE_ID, OteUserLibsNature.class);
    }

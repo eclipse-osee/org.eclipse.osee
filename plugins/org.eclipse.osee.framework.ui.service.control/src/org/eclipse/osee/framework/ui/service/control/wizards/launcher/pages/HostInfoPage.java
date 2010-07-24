@@ -17,6 +17,7 @@ import java.util.List;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.IWorkbenchUser;
+import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.service.control.ControlPlugin;
 import org.eclipse.osee.framework.ui.service.control.wizards.launcher.ServiceLaunchDataPersist;
 import org.eclipse.osee.framework.ui.service.control.wizards.launcher.ServiceLaunchingInformation;
@@ -49,6 +50,7 @@ public class HostInfoPage extends DynamicWizardPage {
       setPageComplete(false);
    }
 
+   @Override
    public void createControl(Composite parent) {
       Composite composite = new Composite(parent, SWT.NULL);
       GridLayout gridLayout = new GridLayout();
@@ -88,16 +90,19 @@ public class HostInfoPage extends DynamicWizardPage {
       }
 
       hostName.addModifyListener(new ModifyListener() {
+         @Override
          public void modifyText(ModifyEvent e) {
             tryToGoToNext();
          }
       });
       hostName.addSelectionListener(new SelectionListener() {
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             tryToGoToNext();
          }
 
+         @Override
          public void widgetDefaultSelected(SelectionEvent e) {
          }
 
@@ -127,6 +132,7 @@ public class HostInfoPage extends DynamicWizardPage {
       }
       userName.setText(name);
       userName.addModifyListener(new ModifyListener() {
+         @Override
          public void modifyText(ModifyEvent e) {
             tryToGoToNext();
          }
@@ -176,7 +182,7 @@ public class HostInfoPage extends DynamicWizardPage {
          StringWriter error = new StringWriter();
          ex.printStackTrace(new PrintWriter(error));
          MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-               "Unable to connect to the remote host", ControlPlugin.getStackMessages(ex));
+            "Unable to connect to the remote host", OseeUiActivator.getStackMessages(ex));
          return false;
       }
       return true;

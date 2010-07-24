@@ -29,7 +29,9 @@ public class StringValue extends UniversalCellEditorValue {
    @Override
    public Control prepareControl(UniversalCellEditor universalEditor) {
       Text textBox = universalEditor.getStringControl();
-      if (value != null) textBox.setText(value);
+      if (value != null) {
+         textBox.setText(value);
+      }
       return textBox;
    }
 

@@ -13,9 +13,6 @@ package org.eclipse.osee.ote.core.testPoint;
 import javax.print.attribute.EnumSyntax;
 import org.eclipse.osee.framework.jdk.core.util.EnumBase;
 
-
-
-
 public class Operation extends EnumBase {
 
    /**
@@ -40,10 +37,12 @@ public class Operation extends EnumBase {
       return (Operation) getEnum(value, enumValueTable);
    }
 
+   @Override
    protected String[] getStringTable() {
       return stringTable;
    }
 
+   @Override
    protected EnumSyntax[] getEnumValueTable() {
       return enumValueTable;
    }

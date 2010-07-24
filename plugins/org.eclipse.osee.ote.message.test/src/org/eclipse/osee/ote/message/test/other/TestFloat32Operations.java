@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.message.test.other;
 
-
 import org.eclipse.osee.ote.message.test.mock.TestMessage;
 import org.eclipse.osee.ote.message.test.mock.UnitTestSupport;
 import org.junit.After;
@@ -20,34 +19,33 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class TestFloat32Operations {
-    private UnitTestSupport support;
-    
-    @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
-    }
+   private UnitTestSupport support;
 
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {
-    }
+   @BeforeClass
+   public static void setUpBeforeClass() throws Exception {
+   }
 
-    @Before
-    public void setUp() throws Exception {
-	support = new UnitTestSupport();
-    }
+   @AfterClass
+   public static void tearDownAfterClass() throws Exception {
+   }
 
-    @After
-    public void tearDown() throws Exception {
-	support.cleanup();
-    }
-    @Test
-    public void testCheckWaitForValue() throws InterruptedException{
-	TestMessage msg = new TestMessage();
-	support.activateMsg(msg);
+   @Before
+   public void setUp() throws Exception {
+      support = new UnitTestSupport();
+   }
 
-	support.genericTestCheckWaitForValue(msg.FLOAT32_ELEMENT_1, 
-		new Double[]{new Double(0.0f), 
-					new Double(0.2f), 
-					new Double(100.0f), new Double(999.00075f)}, new Double(33.4001f));
-	
-    }
+   @After
+   public void tearDown() throws Exception {
+      support.cleanup();
+   }
+
+   @Test
+   public void testCheckWaitForValue() throws InterruptedException {
+      TestMessage msg = new TestMessage();
+      support.activateMsg(msg);
+
+      support.genericTestCheckWaitForValue(msg.FLOAT32_ELEMENT_1, new Double[] {new Double(0.0f), new Double(0.2f),
+         new Double(100.0f), new Double(999.00075f)}, new Double(33.4001f));
+
+   }
 }

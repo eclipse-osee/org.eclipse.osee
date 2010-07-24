@@ -25,16 +25,18 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
  * @author Jeff C. Phillips
  */
 public class RelationTypeContentProvider implements ITreeContentProvider {
+   @Override
    public Object[] getElements(Object inputElement) {
       return getChildren(inputElement);
    }
 
+   @Override
    public Object[] getChildren(Object parentElement) {
       if (parentElement instanceof Branch) {
          ArrayList<Object> descriptors = new ArrayList<Object>();
          try {
             for (RelationType descriptor : RelationTypeManager.getValidTypes((Branch) parentElement)) {
-               descriptors.add((Object) descriptor);
+               descriptors.add(descriptor);
             }
             return descriptors.toArray();
          } catch (OseeCoreException ex) {
@@ -44,17 +46,21 @@ public class RelationTypeContentProvider implements ITreeContentProvider {
       return null;
    }
 
+   @Override
    public Object getParent(Object element) {
       return null;
    }
 
+   @Override
    public boolean hasChildren(Object element) {
       return false;
    }
 
+   @Override
    public void dispose() {
    }
 
+   @Override
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
    }
 }

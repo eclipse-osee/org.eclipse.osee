@@ -25,25 +25,25 @@ import org.eclipse.osee.ote.ui.message.tree.WatchedMessageNode;
  */
 public class ZeroizeElementAction extends Action {
 
-	private final WatchedMessageNode msgNode;
-	private final List<Object> path;
+   private final WatchedMessageNode msgNode;
+   private final List<Object> path;
 
-	public ZeroizeElementAction(ElementNode node) {
-		super("Zeroize Element");
-		this.msgNode = (WatchedMessageNode) node.getMessageNode();
-		setEnabled(node.isEnabled() && msgNode.getSubscription().getMessageMode() == MessageMode.WRITER);
-		path = node.getElementPath().getElementPath();
-	}
+   public ZeroizeElementAction(ElementNode node) {
+      super("Zeroize Element");
+      this.msgNode = (WatchedMessageNode) node.getMessageNode();
+      setEnabled(node.isEnabled() && msgNode.getSubscription().getMessageMode() == MessageMode.WRITER);
+      path = node.getElementPath().getElementPath();
+   }
 
-	@Override
-	public void run() {
-		try {
-			msgNode.getSubscription().zeroize(path);
-		} catch (Exception e) {
-			String message = "could not zeroize the message " + msgNode.getMessageClassName();
-			OseeLog.log(ZeroizeElementAction.class, Level.SEVERE, message, e);
-			MessageDialog.openError(Displays.getActiveShell(), "Zeroize Error", message + ". See error log for trace");
-		}
-	}
+   @Override
+   public void run() {
+      try {
+         msgNode.getSubscription().zeroize(path);
+      } catch (Exception e) {
+         String message = "could not zeroize the message " + msgNode.getMessageClassName();
+         OseeLog.log(ZeroizeElementAction.class, Level.SEVERE, message, e);
+         MessageDialog.openError(Displays.getActiveShell(), "Zeroize Error", message + ". See error log for trace");
+      }
+   }
 
 }

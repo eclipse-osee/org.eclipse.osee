@@ -21,23 +21,24 @@ import org.eclipse.osee.ote.core.environment.TestEnvironment;
 
 public class InputStreamConnection extends PipedInputStream {
 
-	private PrintWriter writer;
-	public InputStreamConnection() {
-		PipedOutputStream piped = new PipedOutputStream();
-		writer = new PrintWriter(piped);
-		try {
-			this.connect(piped);
-		} catch (IOException e) {
-			OseeLog.log(TestEnvironment.class, Level.SEVERE, e);
-		}
-	}
-	
-	public InputStreamConnection(OutputStream output) {
-		writer = new PrintWriter(output);				
-	}
-	
-	public void write(String string){
-		writer.println(string);
-		writer.flush();
-	}
+   private final PrintWriter writer;
+
+   public InputStreamConnection() {
+      PipedOutputStream piped = new PipedOutputStream();
+      writer = new PrintWriter(piped);
+      try {
+         this.connect(piped);
+      } catch (IOException e) {
+         OseeLog.log(TestEnvironment.class, Level.SEVERE, e);
+      }
+   }
+
+   public InputStreamConnection(OutputStream output) {
+      writer = new PrintWriter(output);
+   }
+
+   public void write(String string) {
+      writer.println(string);
+      writer.flush();
+   }
 }

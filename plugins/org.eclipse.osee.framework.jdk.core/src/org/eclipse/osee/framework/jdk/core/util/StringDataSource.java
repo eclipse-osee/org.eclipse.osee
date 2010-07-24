@@ -18,8 +18,8 @@ import javax.activation.DataSource;
 
 public class StringDataSource implements DataSource {
 
-   private String data;
-   private String name;
+   private final String data;
+   private final String name;
 
    /**
     * @param data
@@ -31,18 +31,22 @@ public class StringDataSource implements DataSource {
       this.name = name;
    }
 
+   @Override
    public String getContentType() {
       return "text/plain";
    }
 
+   @Override
    public InputStream getInputStream() throws IOException {
       return new ByteArrayInputStream(data.getBytes());
    }
 
+   @Override
    public String getName() {
       return name;
    }
 
+   @Override
    public OutputStream getOutputStream() throws IOException {
       throw new UnsupportedOperationException();
    }

@@ -13,15 +13,15 @@ package org.eclipse.osee.ote.message.enums;
 import java.io.Serializable;
 import org.eclipse.osee.ote.message.interfaces.INamespace;
 
-
-
 /**
  * @author Ryan D. Brooks
  * @author Andrew M. Finkbeiner
  */
 public interface DataType extends Serializable, INamespace {
 
-	String name();
-	int getToolingDepth();
-	int getToolingBufferSize();
+   String name();
+
+   int getToolingDepth();
+
+   int getToolingBufferSize();
 }

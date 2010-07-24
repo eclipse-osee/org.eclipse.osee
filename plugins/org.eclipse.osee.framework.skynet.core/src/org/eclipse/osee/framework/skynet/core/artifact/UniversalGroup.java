@@ -75,6 +75,6 @@ public class UniversalGroup {
 
    public static Artifact getTopUniversalGroupArtifact(Branch branch) throws OseeCoreException {
       return ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.UniversalGroup,
-            OseeSystemArtifacts.ROOT_ARTIFACT_TYPE_NAME, branch);
+         OseeSystemArtifacts.ROOT_ARTIFACT_TYPE_NAME, branch);
    }
 }

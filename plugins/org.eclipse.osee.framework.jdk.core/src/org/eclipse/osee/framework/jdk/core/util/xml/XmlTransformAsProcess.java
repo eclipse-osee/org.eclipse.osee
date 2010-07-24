@@ -27,7 +27,6 @@ import java.security.CodeSource;
 import java.security.ProtectionDomain;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.osee.framework.jdk.core.util.network.PortUtil;
 
 /**
@@ -64,9 +63,11 @@ public class XmlTransformAsProcess {
             // Convert a code source location into a full class file location
             if (result.getProtocol().equals("file")) {
                try {
-                  if (result.toExternalForm().endsWith(".jar") || result.toExternalForm().endsWith(".zip"))
+                  if (result.toExternalForm().endsWith(".jar") || result.toExternalForm().endsWith(".zip")) {
                      result = new URL("jar:".concat(result.toExternalForm()).concat("!/").concat(classAsResource));
-                  else if (new File(result.getFile()).isDirectory()) result = new URL(result, classAsResource);
+                  } else if (new File(result.getFile()).isDirectory()) {
+                     result = new URL(result, classAsResource);
+                  }
                } catch (MalformedURLException ignore) {
                }
             }
@@ -76,7 +77,7 @@ public class XmlTransformAsProcess {
          // Try to find class definition as a resource
          final ClassLoader classLoader = classToFind.getClassLoader();
          result =
-               classLoader != null ? classLoader.getResource(classAsResource) : ClassLoader.getSystemResource(classAsResource);
+            classLoader != null ? classLoader.getResource(classAsResource) : ClassLoader.getSystemResource(classAsResource);
       }
       return result;
    }

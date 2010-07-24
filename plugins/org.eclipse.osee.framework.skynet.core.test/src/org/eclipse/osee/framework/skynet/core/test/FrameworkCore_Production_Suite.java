@@ -19,7 +19,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {ArtifactQueryPerformanceTests.class, ArtifactQueryTestProduction.class})
+@Suite.SuiteClasses({ArtifactQueryPerformanceTests.class, ArtifactQueryTestProduction.class})
 /**
  * @author Donald G. Dunne
  */
@@ -28,6 +28,6 @@ public class FrameworkCore_Production_Suite {
    @BeforeClass
    public static void setUp() throws Exception {
       Assert.assertTrue("Application Server must be running.",
-            ClientSessionManager.getAuthenticationProtocols().contains("lba"));
+         ClientSessionManager.getAuthenticationProtocols().contains("lba"));
    }
 }

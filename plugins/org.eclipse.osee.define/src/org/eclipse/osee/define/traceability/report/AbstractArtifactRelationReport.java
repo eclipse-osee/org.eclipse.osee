@@ -52,6 +52,7 @@ public abstract class AbstractArtifactRelationReport extends AbstractReport {
       return relationsToCheck.toArray(new IRelationEnumeration[relationsToCheck.size()]);
    }
 
+   @Override
    public void clear() {
       artifactsToCheck.clear();
       relationsToCheck.clear();

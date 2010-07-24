@@ -66,6 +66,7 @@ public class ODMOutlinePage extends Page implements IContentOutlinePage {
       this.registry = registry;
    }
 
+   @Override
    public void addSelectionChangedListener(ISelectionChangedListener listener) {
 
    }
@@ -120,10 +121,12 @@ public class ODMOutlinePage extends Page implements IContentOutlinePage {
       return overview;
    }
 
+   @Override
    public ISelection getSelection() {
       return StructuredSelection.EMPTY;
    }
 
+   @Override
    public void removeSelectionChangedListener(ISelectionChangedListener listener) {
 
    }
@@ -135,6 +138,7 @@ public class ODMOutlinePage extends Page implements IContentOutlinePage {
       }
    }
 
+   @Override
    public void setSelection(ISelection selection) {
    }
 

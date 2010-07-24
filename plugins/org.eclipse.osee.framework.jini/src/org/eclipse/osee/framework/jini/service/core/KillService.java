@@ -15,12 +15,13 @@ package org.eclipse.osee.framework.jini.service.core;
  */
 public class KillService extends Thread {
 
-   private JiniJoinManager mgr;
+   private final JiniJoinManager mgr;
 
    public KillService(JiniJoinManager mgr) {
       this.mgr = mgr;
    }
 
+   @Override
    public void run() {
       try {
          mgr.terminate();

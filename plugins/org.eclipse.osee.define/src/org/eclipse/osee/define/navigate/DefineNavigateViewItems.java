@@ -66,14 +66,14 @@ public class DefineNavigateViewItems extends XNavigateViewItems {
       addExtensionPointItems(items);
       items.add(new XNavigateItemAction(null, new CompareTwoStringsAction(), FrameworkImage.EDIT));
       items.add(new XNavigateItemOperation(null, FrameworkImage.GEAR, MassEditDirtyArtifactOperation.NAME,
-            new MassEditDirtyArtifactOperation()));
+         new MassEditDirtyArtifactOperation()));
 
       return items;
    }
 
    public void addExtensionPointItems(List<XNavigateItem> items) {
       IExtensionPoint point =
-            Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.define.DefineNavigateItem");
+         Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.define.DefineNavigateItem");
       if (point == null) {
          OseeLog.log(DefinePlugin.class, OseeLevel.SEVERE_POPUP, "Can't access DefineNavigateItem extension point");
          return;

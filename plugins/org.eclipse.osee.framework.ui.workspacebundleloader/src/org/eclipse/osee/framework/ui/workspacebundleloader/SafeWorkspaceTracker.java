@@ -37,276 +37,276 @@ import org.osgi.util.tracker.ServiceTracker;
  */
 public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeListener<WorkspaceStarterNature>, WorkspaceLoader {
 
-	private final Map<String, Bundle> installedBundles;
-	private final Map<String, Bundle> runningBundles;
-	private final Collection<Bundle> stoppedBundles;
-	private JarChangeResourceListener<WorkspaceStarterNature> workspaceListener;
-	private SafeWorkspaceAccess service;
-	private final ServiceTracker packageAdminTracker;
+   private final Map<String, Bundle> installedBundles;
+   private final Map<String, Bundle> runningBundles;
+   private final Collection<Bundle> stoppedBundles;
+   private JarChangeResourceListener<WorkspaceStarterNature> workspaceListener;
+   private SafeWorkspaceAccess service;
+   private final ServiceTracker packageAdminTracker;
 
-	private final FileChangeDetector detector = new FileChangeDetector();
+   private final FileChangeDetector detector = new FileChangeDetector();
 
-	/**
-	 * @param context
-	 * @param filter
-	 * @param customizer
-	 */
-	public SafeWorkspaceTracker(BundleContext context) {
-		super(context, SafeWorkspaceAccess.class.getName(), null);
+   /**
+    * @param context
+    * @param filter
+    * @param customizer
+    */
+   public SafeWorkspaceTracker(BundleContext context) {
+      super(context, SafeWorkspaceAccess.class.getName(), null);
 
-		packageAdminTracker = new ServiceTracker(context, PackageAdmin.class.getName(), null);
-		packageAdminTracker.open(true);
+      packageAdminTracker = new ServiceTracker(context, PackageAdmin.class.getName(), null);
+      packageAdminTracker.open(true);
 
-		this.installedBundles = new HashMap<String, Bundle>();
-		this.runningBundles = new HashMap<String, Bundle>();
-		this.stoppedBundles = new LinkedList<Bundle>();
+      this.installedBundles = new HashMap<String, Bundle>();
+      this.runningBundles = new HashMap<String, Bundle>();
+      this.stoppedBundles = new LinkedList<Bundle>();
 
-		context.registerService(WorkspaceLoader.class.getName(), this, null);
-	}
+      context.registerService(WorkspaceLoader.class.getName(), this, null);
+   }
 
-	@Override
-	public Object addingService(ServiceReference reference) {
-		service = (SafeWorkspaceAccess) context.getService(reference);
-		setupWorkspaceBundleLoadingAfterBenchStartup();
-		return super.addingService(reference);
-	}
+   @Override
+   public Object addingService(ServiceReference reference) {
+      service = (SafeWorkspaceAccess) context.getService(reference);
+      setupWorkspaceBundleLoadingAfterBenchStartup();
+      return super.addingService(reference);
+   }
 
-	void setupWorkspaceBundleLoadingAfterBenchStartup() {
-		Jobs.runInJob(new PrecompileStartup("Loading Precompiled Libraries", Activator.BUNDLE_ID), false);
-	}
+   void setupWorkspaceBundleLoadingAfterBenchStartup() {
+      Jobs.runInJob(new PrecompileStartup("Loading Precompiled Libraries", Activator.BUNDLE_ID), false);
+   }
 
-	private class PrecompileStartup extends AbstractOperation {
-		/**
-		 * @param operationName
-		 * @param pluginId
-		 */
-		public PrecompileStartup(String operationName, String pluginId) {
-			super(operationName, pluginId);
-		}
+   private class PrecompileStartup extends AbstractOperation {
+      /**
+       * @param operationName
+       * @param pluginId
+       */
+      public PrecompileStartup(String operationName, String pluginId) {
+         super(operationName, pluginId);
+      }
 
-		@Override
-		protected void doWork(IProgressMonitor monitor) throws Exception {
-			IWorkspace workspace = service.getWorkspace();
-			workspaceListener =
-						new JarChangeResourceListener<WorkspaceStarterNature>(WorkspaceStarterNature.NATURE_ID,
-									SafeWorkspaceTracker.this);
-			try {
-				installWorkspacePlugins();
-			} catch (CoreException ex) {
-				OseeLog.log(Activator.class, Level.SEVERE, ex);
-			}
-			workspace.addResourceChangeListener(workspaceListener);
-		}
-	}
+      @Override
+      protected void doWork(IProgressMonitor monitor) throws Exception {
+         IWorkspace workspace = service.getWorkspace();
+         workspaceListener =
+            new JarChangeResourceListener<WorkspaceStarterNature>(WorkspaceStarterNature.NATURE_ID,
+               SafeWorkspaceTracker.this);
+         try {
+            installWorkspacePlugins();
+         } catch (CoreException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
+         workspace.addResourceChangeListener(workspaceListener);
+      }
+   }
 
-	@Override
-	public synchronized void close() {
-		IWorkspace workspace = service.getWorkspace();
-		cleanupHandledBundles();
-		workspace.removeResourceChangeListener(workspaceListener);
-		super.close();
-	}
+   @Override
+   public synchronized void close() {
+      IWorkspace workspace = service.getWorkspace();
+      cleanupHandledBundles();
+      workspace.removeResourceChangeListener(workspaceListener);
+      super.close();
+   }
 
-	/**
+   /**
     * 
     */
-	private void cleanupHandledBundles() {
-		for (Bundle bundle : installedBundles.values()) {
-			try {
-				if (bundle.getState() != Bundle.UNINSTALLED) {
-					bundle.uninstall();
-				}
-			} catch (BundleException ex) {
-				OseeLog.log(SafeWorkspaceTracker.class, Level.INFO, ex);
-			}
-		}
-		for (Bundle bundle : runningBundles.values()) {
-			try {
-				bundle.stop();
-				bundle.uninstall();
-			} catch (BundleException ex) {
-				OseeLog.log(SafeWorkspaceTracker.class, Level.INFO, ex);
-			}
-		}
-		for (Bundle bundle : stoppedBundles) {
-			try {
-				bundle.uninstall();
-			} catch (BundleException ex) {
-				OseeLog.log(SafeWorkspaceTracker.class, Level.INFO, ex);
-			}
-		}
-		refreshPackages();
-		detector.clear();
-		stoppedBundles.clear();
-		runningBundles.clear();
-		installedBundles.clear();
-	}
+   private void cleanupHandledBundles() {
+      for (Bundle bundle : installedBundles.values()) {
+         try {
+            if (bundle.getState() != Bundle.UNINSTALLED) {
+               bundle.uninstall();
+            }
+         } catch (BundleException ex) {
+            OseeLog.log(SafeWorkspaceTracker.class, Level.INFO, ex);
+         }
+      }
+      for (Bundle bundle : runningBundles.values()) {
+         try {
+            bundle.stop();
+            bundle.uninstall();
+         } catch (BundleException ex) {
+            OseeLog.log(SafeWorkspaceTracker.class, Level.INFO, ex);
+         }
+      }
+      for (Bundle bundle : stoppedBundles) {
+         try {
+            bundle.uninstall();
+         } catch (BundleException ex) {
+            OseeLog.log(SafeWorkspaceTracker.class, Level.INFO, ex);
+         }
+      }
+      refreshPackages();
+      detector.clear();
+      stoppedBundles.clear();
+      runningBundles.clear();
+      installedBundles.clear();
+   }
 
-	/**
-	 * @param monitor
-	 * @throws CoreException
-	 * @throws CoreException
-	 * @throws BundleException
-	 * @throws BundleException
-	 */
-	private void installWorkspacePlugins() throws CoreException {
-		loadBundles();
-	}
+   /**
+    * @param monitor
+    * @throws CoreException
+    * @throws CoreException
+    * @throws BundleException
+    * @throws BundleException
+    */
+   private void installWorkspacePlugins() throws CoreException {
+      loadBundles();
+   }
 
-	/**
-	 * @param url
-	 * @throws BundleException
-	 */
-	@Override
-	public void handleBundleAdded(URL url) {
-		try {
-			if (detector.isChanged(url)) {
-				String urlString = url.toString();
-				Bundle bundle = context.installBundle(urlString);
-				installedBundles.put(urlString, bundle);
-			}
-		} catch (BundleException ex) {
-			OseeLog.log(SafeWorkspaceTracker.class, Level.SEVERE, ex);
-		}
-	}
+   /**
+    * @param url
+    * @throws BundleException
+    */
+   @Override
+   public void handleBundleAdded(URL url) {
+      try {
+         if (detector.isChanged(url)) {
+            String urlString = url.toString();
+            Bundle bundle = context.installBundle(urlString);
+            installedBundles.put(urlString, bundle);
+         }
+      } catch (BundleException ex) {
+         OseeLog.log(SafeWorkspaceTracker.class, Level.SEVERE, ex);
+      }
+   }
 
-	/**
-	 * @param stoppedBundles
-	 * @param url
-	 * @throws BundleException
-	 */
-	@Override
-	public void handleBundleChanged(URL url) {
-		try {
-			if (detector.isChanged(url)) {
-				String urlString = url.toString();
+   /**
+    * @param stoppedBundles
+    * @param url
+    * @throws BundleException
+    */
+   @Override
+   public void handleBundleChanged(URL url) {
+      try {
+         if (detector.isChanged(url)) {
+            String urlString = url.toString();
 
-				// Check to see if this is the first we've seen this
-				if (runningBundles.containsKey(urlString)) {
-					Bundle bundle = runningBundles.get(urlString);
-					System.out.println("\tUpdating plugin " + bundle.getSymbolicName());
+            // Check to see if this is the first we've seen this
+            if (runningBundles.containsKey(urlString)) {
+               Bundle bundle = runningBundles.get(urlString);
+               System.out.println("\tUpdating plugin " + bundle.getSymbolicName());
 
-					bundle.update();
-				} else {
-					handleBundleAdded(url);
-				}
-			}
-		} catch (BundleException ex) {
-		}
-	}
+               bundle.update();
+            } else {
+               handleBundleAdded(url);
+            }
+         }
+      } catch (BundleException ex) {
+      }
+   }
 
-	/**
-	 * @param stoppedBundles
-	 * @param url
-	 * @throws BundleException
-	 */
-	@Override
-	public void handleBundleRemoved(URL url) {
-		try {
-			detector.remove(url);
-			String urlString = url.toString();
-			if (runningBundles.containsKey(urlString)) {
-				Bundle bundle = runningBundles.get(urlString);
-				System.out.println("\tStopping plugin " + bundle.getSymbolicName());
+   /**
+    * @param stoppedBundles
+    * @param url
+    * @throws BundleException
+    */
+   @Override
+   public void handleBundleRemoved(URL url) {
+      try {
+         detector.remove(url);
+         String urlString = url.toString();
+         if (runningBundles.containsKey(urlString)) {
+            Bundle bundle = runningBundles.get(urlString);
+            System.out.println("\tStopping plugin " + bundle.getSymbolicName());
 
-				bundle.stop();
-				runningBundles.remove(urlString);
-				stoppedBundles.add(bundle);
-			}
-		} catch (BundleException ex) {
-		}
-	}
+            bundle.stop();
+            runningBundles.remove(urlString);
+            stoppedBundles.add(bundle);
+         }
+      } catch (BundleException ex) {
+      }
+   }
 
-	/**
-	 * @throws BundleException
-	 */
-	private void transitionInstalledPlugins() {
-		Iterator<String> iter = installedBundles.keySet().iterator();
-		while (iter.hasNext()) {
-			String urlString = iter.next();
-			Bundle bundle = installedBundles.get(urlString);
-			try {
-				bundle.start();
-				iter.remove();
-				runningBundles.put(urlString, bundle);
-			} catch (Throwable th) {
-				OseeLog.log(Activator.class, Level.SEVERE, th);
-			}
-		}
-		refreshPackages();
-	}
+   /**
+    * @throws BundleException
+    */
+   private void transitionInstalledPlugins() {
+      Iterator<String> iter = installedBundles.keySet().iterator();
+      while (iter.hasNext()) {
+         String urlString = iter.next();
+         Bundle bundle = installedBundles.get(urlString);
+         try {
+            bundle.start();
+            iter.remove();
+            runningBundles.put(urlString, bundle);
+         } catch (Throwable th) {
+            OseeLog.log(Activator.class, Level.SEVERE, th);
+         }
+      }
+      refreshPackages();
+   }
 
-	/**
+   /**
 	 * 
 	 */
-	private void refreshPackages() {
-		PackageAdmin packageAdmin = (PackageAdmin) packageAdminTracker.getService();
-		packageAdmin.refreshPackages(null);
-		// try {
-		// Thread.sleep(10000);
-		// } catch (InterruptedException ex) {
-		// }
-	}
+   private void refreshPackages() {
+      PackageAdmin packageAdmin = (PackageAdmin) packageAdminTracker.getService();
+      packageAdmin.refreshPackages(null);
+      // try {
+      // Thread.sleep(10000);
+      // } catch (InterruptedException ex) {
+      // }
+   }
 
-	/**
-	 * @throws BundleException
-	 */
-	private void transitionStoppedBundles() {
-		Iterator<Bundle> iter = stoppedBundles.iterator();
-		while (iter.hasNext()) {
-			Bundle bundle = iter.next();
-			try {
-				bundle.uninstall();
+   /**
+    * @throws BundleException
+    */
+   private void transitionStoppedBundles() {
+      Iterator<Bundle> iter = stoppedBundles.iterator();
+      while (iter.hasNext()) {
+         Bundle bundle = iter.next();
+         try {
+            bundle.uninstall();
 
-				iter.remove();
-			} catch (Throwable th) {
-				OseeLog.log(Activator.class, Level.SEVERE, th);
-			}
-		}
-		refreshPackages();
-	}
+            iter.remove();
+         } catch (Throwable th) {
+            OseeLog.log(Activator.class, Level.SEVERE, th);
+         }
+      }
+      refreshPackages();
+   }
 
-	@Override
-	public void handlePostChange() {
-		transitionInstalledPlugins();
-		transitionStoppedBundles();
-	}
+   @Override
+   public void handlePostChange() {
+      transitionInstalledPlugins();
+      transitionStoppedBundles();
+   }
 
-	@Override
-	public void handleNatureClosed(WorkspaceStarterNature nature) {
-		closeAllPlugins(nature);
-	}
+   @Override
+   public void handleNatureClosed(WorkspaceStarterNature nature) {
+      closeAllPlugins(nature);
+   }
 
-	/**
-	 * @param project
-	 * @throws CoreException
-	 * @throws BundleException
-	 */
-	private void closeAllPlugins(WorkspaceStarterNature nature) {
-		for (URL url : nature.getBundles()) {
-			handleBundleRemoved(url);
-		}
+   /**
+    * @param project
+    * @throws CoreException
+    * @throws BundleException
+    */
+   private void closeAllPlugins(WorkspaceStarterNature nature) {
+      for (URL url : nature.getBundles()) {
+         handleBundleRemoved(url);
+      }
 
-		transitionStoppedBundles();
-	}
+      transitionStoppedBundles();
+   }
 
-	@Override
-	public void loadBundles() throws CoreException {
-		for (WorkspaceStarterNature starterNature : WorkspaceStarterNature.getWorkspaceProjects()) {
-			for (URL url : starterNature.getBundles()) {
-				try {
-					handleBundleAdded(url);
-				} catch (Exception ex) {
-					OseeLog.log(SafeWorkspaceTracker.class, Level.INFO, ex);
-					ex.printStackTrace();
-				}
-			}
-		}
-		transitionInstalledPlugins();
-	}
+   @Override
+   public void loadBundles() throws CoreException {
+      for (WorkspaceStarterNature starterNature : WorkspaceStarterNature.getWorkspaceProjects()) {
+         for (URL url : starterNature.getBundles()) {
+            try {
+               handleBundleAdded(url);
+            } catch (Exception ex) {
+               OseeLog.log(SafeWorkspaceTracker.class, Level.INFO, ex);
+               ex.printStackTrace();
+            }
+         }
+      }
+      transitionInstalledPlugins();
+   }
 
-	@Override
-	public void unloadBundles() {
-		cleanupHandledBundles();
-	}
+   @Override
+   public void unloadBundles() {
+      cleanupHandledBundles();
+   }
 }

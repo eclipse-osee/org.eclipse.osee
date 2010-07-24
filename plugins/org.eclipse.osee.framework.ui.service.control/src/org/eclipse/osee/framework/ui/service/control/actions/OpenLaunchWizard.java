@@ -23,23 +23,23 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
  */
 public class OpenLaunchWizard extends Action {
 
-	public OpenLaunchWizard(ManagerMain mainWindow) {
-		super();
-		setImageDescriptor(ImageManager.getImageDescriptor(ServiceControlImage.ROCKET));
-		setText("Launch A Service");
-		//      setToolTipText("Open the service launching wizard.");
-		//TODO: Please remove next two lines upon action 4ZXCH completion.
-		this.setToolTipText("Disabled until action 4ZXCH is complete.");
-		this.setEnabled(false);
-	}
+   public OpenLaunchWizard(ManagerMain mainWindow) {
+      super();
+      setImageDescriptor(ImageManager.getImageDescriptor(ServiceControlImage.ROCKET));
+      setText("Launch A Service");
+      //      setToolTipText("Open the service launching wizard.");
+      //TODO: Please remove next two lines upon action 4ZXCH completion.
+      this.setToolTipText("Disabled until action 4ZXCH is complete.");
+      this.setEnabled(false);
+   }
 
-	@Override
-	public void run() {
-		super.run();
-		ServiceLaunchWizard wizard = new ServiceLaunchWizard();
-		ServiceWizardDialog dialog = new ServiceWizardDialog(Displays.getActiveShell(), wizard);
-		dialog.setBlockOnOpen(true);
-		dialog.open();
-	}
+   @Override
+   public void run() {
+      super.run();
+      ServiceLaunchWizard wizard = new ServiceLaunchWizard();
+      ServiceWizardDialog dialog = new ServiceWizardDialog(Displays.getActiveShell(), wizard);
+      dialog.setBlockOnOpen(true);
+      dialog.open();
+   }
 
 }

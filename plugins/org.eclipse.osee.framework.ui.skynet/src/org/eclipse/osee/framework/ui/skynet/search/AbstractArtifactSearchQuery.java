@@ -20,18 +20,21 @@ public abstract class AbstractArtifactSearchQuery implements ISearchQuery {
    protected ArtifactSearchResult aResult;
    private boolean doneRunning;
 
+   @Override
    public boolean canRunInBackground() {
       return true;
    }
 
+   @Override
    public String getLabel() {
       return "Artifact Search";
-         }
+   }
 
    protected void setIsDoneRunning(boolean isDoneRunning) {
       this.doneRunning = isDoneRunning;
    }
 
+   @Override
    public abstract IStatus run(final IProgressMonitor pm);
 
    public String getResultLabel() {
@@ -39,15 +42,17 @@ public abstract class AbstractArtifactSearchQuery implements ISearchQuery {
       if (aResult.getArtifactResults() != null && !aResult.getArtifactResults().isEmpty()) {
          branch = " on Branch: \"" + aResult.getArtifactResults().get(0).getBranch().getShortName() + "\"";
       }
-      return getCriteriaLabel() + " - " + (doneRunning ? (aResult.getMatchCount() + " matches" + branch) : "busy");
+      return getCriteriaLabel() + " - " + (doneRunning ? aResult.getMatchCount() + " matches" + branch : "busy");
    }
 
    public abstract String getCriteriaLabel();
 
+   @Override
    public boolean canRerun() {
       return true;
    }
 
+   @Override
    public ISearchResult getSearchResult() {
       if (aResult == null) {
          aResult = new ArtifactSearchResult(this);

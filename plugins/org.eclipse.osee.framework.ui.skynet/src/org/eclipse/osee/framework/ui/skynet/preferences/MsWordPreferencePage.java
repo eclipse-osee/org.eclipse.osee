@@ -74,6 +74,7 @@ public class MsWordPreferencePage extends PreferencePage implements IWorkbenchPr
    /**
     * initialize the preference store to use with the workbench
     */
+   @Override
    public void init(IWorkbench workbench) {
    }
 

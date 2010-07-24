@@ -30,10 +30,10 @@ public class DemoDbTasks {
       for (TeamWorkFlowArtifact codeArt : DemoDbUtil.getSampleCodeWorkflows()) {
          for (String title : getTaskTitles(firstTaskWorkflow)) {
             TaskArtifact taskArt =
-                  codeArt.createNewTask(
-                        (firstTaskWorkflow ? Arrays.asList(DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith),
-                              DemoDbUtil.getDemoUser(DemoUsers.Kay_Jones)) : Arrays.asList(DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith))),
-                        title);
+               codeArt.createNewTask(
+                  (firstTaskWorkflow ? Arrays.asList(DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith),
+                     DemoDbUtil.getDemoUser(DemoUsers.Kay_Jones)) : Arrays.asList(DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith))),
+                  title);
             taskArt.persist();
          }
          firstTaskWorkflow = false;
@@ -47,11 +47,11 @@ public class DemoDbTasks {
       if (firstTaskWorkflow) {
          firstTaskWorkflow = false;
          return Arrays.asList("Look into Graph View.", "Redesign how view shows values.",
-               "Discuss new design with Senior Engineer", "Develop prototype", "Show prototype to management",
-               "Create development plan", "Create test plan", "Make changes");
+            "Discuss new design with Senior Engineer", "Develop prototype", "Show prototype to management",
+            "Create development plan", "Create test plan", "Make changes");
       } else {
          return Arrays.asList("Document how Graph View works", "Update help contents", "Review new documentation",
-               "Publish documentation to website", "Remove old viewer", "Deploy release");
+            "Publish documentation to website", "Remove old viewer", "Deploy release");
       }
    }
 

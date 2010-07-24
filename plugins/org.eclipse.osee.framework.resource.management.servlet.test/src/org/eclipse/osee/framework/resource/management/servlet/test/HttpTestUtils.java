@@ -21,7 +21,7 @@ import java.net.URL;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-import junit.framework.TestCase;
+import junit.framework.Assert;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
@@ -84,7 +84,7 @@ public class HttpTestUtils {
          URL url = new URL(request);
          connection = (HttpURLConnection) url.openConnection();
 
-         TestCase.assertNotNull(connection);
+         Assert.assertNotNull(connection);
 
          connection.setRequestProperty("Content-Length", Integer.toString(payload.available()));
          connection.setRequestProperty("Content-Type", contentType);
@@ -96,18 +96,18 @@ public class HttpTestUtils {
          connection.connect();
 
          outputStream = connection.getOutputStream();
-         TestCase.assertNotNull(outputStream);
+         Assert.assertNotNull(outputStream);
 
          Lib.inputStreamToOutputStream(payload, outputStream);
 
          // Wait for response
          int code = connection.getResponseCode();
-         TestCase.assertEquals(HttpURLConnection.HTTP_CREATED, code);
-         TestCase.assertTrue(connection.getContentType().contains("text/plain"));
+         Assert.assertEquals(HttpURLConnection.HTTP_CREATED, code);
+         Assert.assertTrue(connection.getContentType().contains("text/plain"));
 
          inputStream = (InputStream) connection.getContent();
          Lib.inputStreamToOutputStream(inputStream, output);
-         TestCase.assertTrue("Got Data", output.size() > 0);
+         Assert.assertTrue("Got Data", output.size() > 0);
       } finally {
          if (outputStream != null) {
             outputStream.close();
@@ -129,16 +129,16 @@ public class HttpTestUtils {
       try {
          URL url = new URL(request);
          connection = (HttpURLConnection) url.openConnection();
-         TestCase.assertNotNull(connection);
+         Assert.assertNotNull(connection);
          connection.connect();
 
          // Wait for response
          int code = connection.getResponseCode();
-         TestCase.assertEquals(HttpURLConnection.HTTP_OK, code);
-         TestCase.assertTrue(connection.getContentType().contains(contentType));
+         Assert.assertEquals(HttpURLConnection.HTTP_OK, code);
+         Assert.assertTrue(connection.getContentType().contains(contentType));
          inputStream = (InputStream) connection.getContent();
          Lib.inputStreamToOutputStream(inputStream, output);
-         TestCase.assertTrue("Got Data", output.size() > 0);
+         Assert.assertTrue("Got Data", output.size() > 0);
       } finally {
          if (inputStream != null) {
             inputStream.close();
@@ -157,7 +157,7 @@ public class HttpTestUtils {
       try {
          URL url = new URL(request);
          connection = (HttpURLConnection) url.openConnection();
-         TestCase.assertNotNull(connection);
+         Assert.assertNotNull(connection);
 
          connection.setRequestMethod("DELETE");
          connection.setDoOutput(true);
@@ -166,12 +166,12 @@ public class HttpTestUtils {
 
          // Wait for response
          response = connection.getResponseCode();
-         TestCase.assertEquals(HttpURLConnection.HTTP_ACCEPTED, response);
-         TestCase.assertTrue(connection.getContentType().contains("text/plain"));
+         Assert.assertEquals(HttpURLConnection.HTTP_ACCEPTED, response);
+         Assert.assertTrue(connection.getContentType().contains("text/plain"));
          inputStream = (InputStream) connection.getContent();
          BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
          String status = reader.readLine();
-         TestCase.assertNotNull("Deleted: " + request.replace("uri=", ""), status);
+         Assert.assertNotNull("Deleted: " + request.replace("uri=", ""), status);
       } finally {
          if (inputStream != null) {
             inputStream.close();

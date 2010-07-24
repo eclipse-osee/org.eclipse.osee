@@ -23,17 +23,18 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
  */
 public class SwitchParentBranch extends AbstractBlam {
    private static final String UPDATE_PARENT_BRANCHES =
-         "UPDATE osee_branch SET parent_branch_id = ? where branch_id in (";
+      "UPDATE osee_branch SET parent_branch_id = ? where branch_id in (";
 
    @Override
    public String getName() {
       return "Switch Parent Branch";
    }
 
+   @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       Branch branch = variableMap.getBranch("New Parent Branch");
       ConnectionHandler.runPreparedUpdate(UPDATE_PARENT_BRANCHES + variableMap.getString("Branch List") + ")",
-            branch.getId());
+         branch.getId());
    }
 
    @Override
@@ -41,6 +42,7 @@ public class SwitchParentBranch extends AbstractBlam {
       return "<xWidgets><XWidget xwidgetType=\"XText\" displayName=\"Branch List\" /><XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"New Parent Branch\" /></xWidgets>";
    }
 
+   @Override
    public Collection<String> getCategories() {
       return Arrays.asList("Admin");
    }

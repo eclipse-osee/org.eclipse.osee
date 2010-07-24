@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.core.server.internal;
 
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.osgi.framework.BundleContext;
@@ -39,7 +38,7 @@ public class InternalHttpServiceTracker extends ServiceTracker {
       try {
          httpService.registerServlet(contextName, servlet, null, null);
          ApplicationServerManager serverManager =
-               (ApplicationServerManager) ServerActivator.getApplicationServerManager();
+            (ApplicationServerManager) ServerActivator.getApplicationServerManager();
          serverManager.register(contextName, servlet);
          System.out.println(String.format("Registered servlet '%s'", contextName));
       } catch (Exception ex) {
@@ -52,8 +51,7 @@ public class InternalHttpServiceTracker extends ServiceTracker {
    public void removedService(ServiceReference reference, Object service) {
       HttpService httpService = (HttpService) service;
       httpService.unregister(contextName);
-      ApplicationServerManager serverManager =
-            (ApplicationServerManager) ServerActivator.getApplicationServerManager();
+      ApplicationServerManager serverManager = (ApplicationServerManager) ServerActivator.getApplicationServerManager();
       serverManager.unregister(contextName);
       System.out.println(String.format("De-registering servlet '%s'", contextName));
       super.removedService(reference, service);

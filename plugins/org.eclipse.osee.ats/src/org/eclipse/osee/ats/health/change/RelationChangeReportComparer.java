@@ -24,20 +24,21 @@ public class RelationChangeReportComparer extends DataChangeReportComparer {
 
    @Override
    public void processContent(String content) {
-      relId = Integer.parseInt(content.substring(content.indexOf(REL_TAG_START_ID)
-                                                 + REL_TAG_START_ID.length(), content.indexOf(REL_TAG_END_ID)));
+      relId =
+         Integer.parseInt(content.substring(content.indexOf(REL_TAG_START_ID) + REL_TAG_START_ID.length(),
+            content.indexOf(REL_TAG_END_ID)));
    }
 
    @Override
    public int compareTo(Object obj) {
       int compareResults = -1;
-      if(obj instanceof RelationChangeReportComparer){
+      if (obj instanceof RelationChangeReportComparer) {
          RelationChangeReportComparer comparer = (RelationChangeReportComparer) obj;
-         
-         if(this.relId == comparer.relId){
-               compareResults = 0;
-         } else if(this.relId > comparer.relId){
-               compareResults = 1;
+
+         if (this.relId == comparer.relId) {
+            compareResults = 0;
+         } else if (this.relId > comparer.relId) {
+            compareResults = 1;
          }
       }
       return compareResults;

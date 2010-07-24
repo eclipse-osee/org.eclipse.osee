@@ -62,6 +62,7 @@ public class BlockingMessagePrompt extends AbstractRemotePrompt implements IResu
       }
    }
 
+   @Override
    public void resume() throws RemoteException {
       lock.lock();
       try {

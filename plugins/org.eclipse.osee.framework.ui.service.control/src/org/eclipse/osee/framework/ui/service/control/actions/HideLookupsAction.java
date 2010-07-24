@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.service.control.actions;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.osee.framework.ui.service.control.ServiceControlImage;
 import org.eclipse.osee.framework.ui.service.control.widgets.ManagerMain;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -24,7 +25,7 @@ public class HideLookupsAction extends Action {
    private static String ACTION_TITLE = "non-member Lookup Servers";
 
    public HideLookupsAction(ManagerMain mainWindow) {
-      super("", Action.AS_CHECK_BOX);
+      super("", IAction.AS_CHECK_BOX);
       this.mainWindow = mainWindow;
       setImageDescriptor(ImageManager.getImageDescriptor(ServiceControlImage.TOOLS));
       setText("Display " + ACTION_TITLE);

@@ -44,7 +44,7 @@ public class ODMEditorActionBarContributor extends ActionBarContributor {
       addRetargetAction(new ZoomInRetargetAction());
       addRetargetAction(new ZoomOutRetargetAction());
       RetargetAction action =
-            new RetargetAction(GEFActionConstants.TOGGLE_SNAP_TO_GEOMETRY, null, IAction.AS_CHECK_BOX);
+         new RetargetAction(GEFActionConstants.TOGGLE_SNAP_TO_GEOMETRY, null, IAction.AS_CHECK_BOX);
       action.setImageDescriptor(ImageManager.getImageDescriptor(ODMImage.SNAP_TO_GRID));
       action.setDisabledImageDescriptor(ImageManager.getImageDescriptor(ODMImage.SNAP_TO_GRID_DISABLED));
       action.setToolTipText("Enable Snap To Geometry");

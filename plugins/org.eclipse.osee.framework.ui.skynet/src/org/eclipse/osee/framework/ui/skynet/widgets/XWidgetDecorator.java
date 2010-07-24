@@ -27,149 +27,149 @@ import org.eclipse.swt.widgets.Label;
  * @author Roberto E. Escobar
  */
 public class XWidgetDecorator {
-	private final int decorationPosition = SWT.LEFT | SWT.BOTTOM;
-	private final Map<XWidget, Decorator> decoratorMap = new HashMap<XWidget, Decorator>();
+   private final int decorationPosition = SWT.LEFT | SWT.BOTTOM;
+   private final Map<XWidget, Decorator> decoratorMap = new HashMap<XWidget, Decorator>();
 
-	public XWidgetDecorator() {
-	}
+   public XWidgetDecorator() {
+   }
 
-	public void addWidget(XWidget xWidget) {
-		Control controlToDecorate = xWidget.getErrorMessageControl();
-		Decorator decorator = new Decorator(controlToDecorate, decorationPosition);
-		decoratorMap.put(xWidget, decorator);
-	}
+   public void addWidget(XWidget xWidget) {
+      Control controlToDecorate = xWidget.getErrorMessageControl();
+      Decorator decorator = new Decorator(controlToDecorate, decorationPosition);
+      decoratorMap.put(xWidget, decorator);
+   }
 
-	public void update() {
-		Displays.ensureInDisplayThread(new Runnable() {
-			@Override
-			public void run() {
-				for (Decorator decorator : decoratorMap.values()) {
-					decorator.update();
-				}
-			}
-		});
-	}
+   public void update() {
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            for (Decorator decorator : decoratorMap.values()) {
+               decorator.update();
+            }
+         }
+      });
+   }
 
-	public void dispose() {
-		for (Decorator decorator : decoratorMap.values()) {
-			decorator.dispose();
-		}
-		decoratorMap.clear();
-	}
+   public void dispose() {
+      for (Decorator decorator : decoratorMap.values()) {
+         decorator.dispose();
+      }
+      decoratorMap.clear();
+   }
 
-	private final static class Decorator {
-		private ControlDecoration decoration;
-		private String description;
-		private int position;
-		private Image image;
-		private boolean isVisible;
-		private boolean requiresCreation;
-		private final Control control;
+   private final static class Decorator {
+      private ControlDecoration decoration;
+      private String description;
+      private int position;
+      private Image image;
+      private boolean isVisible;
+      private boolean requiresCreation;
+      private final Control control;
 
-		public Decorator(Control control, int position) {
-			this.control = control;
-			setPosition(position);
-		}
+      public Decorator(Control control, int position) {
+         this.control = control;
+         setPosition(position);
+      }
 
-		public void setDescription(String description) {
-			this.description = description;
-		}
+      public void setDescription(String description) {
+         this.description = description;
+      }
 
-		public void setImage(Image image) {
-			this.image = image;
-		}
+      public void setImage(Image image) {
+         this.image = image;
+      }
 
-		public void setPosition(int position) {
-			if (getPosition() != position) {
-				this.position = position;
-				this.requiresCreation = true;
-			}
-		}
+      public void setPosition(int position) {
+         if (getPosition() != position) {
+            this.position = position;
+            this.requiresCreation = true;
+         }
+      }
 
-		public void setVisible(boolean isVisible) {
-			this.isVisible = isVisible;
-		}
+      public void setVisible(boolean isVisible) {
+         this.isVisible = isVisible;
+      }
 
-		public boolean isVisible() {
-			return isVisible;
-		}
+      public boolean isVisible() {
+         return isVisible;
+      }
 
-		public int getPosition() {
-			return position;
-		}
+      public int getPosition() {
+         return position;
+      }
 
-		public void dispose() {
-			if (decoration != null) {
-				decoration.dispose();
-			}
-		}
+      public void dispose() {
+         if (decoration != null) {
+            decoration.dispose();
+         }
+      }
 
-		public void update() {
-			if (requiresCreation) {
-				if (decoration != null) {
-					decoration.dispose();
-				}
-				decoration = new ControlDecoration(control, position, control.getParent());
-				requiresCreation = false;
-			}
+      public void update() {
+         if (requiresCreation) {
+            if (decoration != null) {
+               decoration.dispose();
+            }
+            decoration = new ControlDecoration(control, position, control.getParent());
+            requiresCreation = false;
+         }
 
-			if (isVisible()) {
-				if (image != null) {
-					decoration.setImage(image);
-				}
-				decoration.setDescriptionText(description);
-				decoration.show();
-			} else {
-				decoration.setDescriptionText(null);
-				decoration.hide();
-			}
-		}
-	}
+         if (isVisible()) {
+            if (image != null) {
+               decoration.setImage(image);
+            }
+            decoration.setDescriptionText(description);
+            decoration.show();
+         } else {
+            decoration.setDescriptionText(null);
+            decoration.hide();
+         }
+      }
+   }
 
-	//	public static interface DecorationProvider {
-	//		int getPriority();
-	//
-	//		void onUpdate(XWidget widget, Decorator decorator);
-	//	}
+   //	public static interface DecorationProvider {
+   //		int getPriority();
+   //
+   //		void onUpdate(XWidget widget, Decorator decorator);
+   //	}
 
-	//	public void addProvider(DecorationProvider provider) {
-	//
-	//	}
+   //	public void addProvider(DecorationProvider provider) {
+   //
+   //	}
 
-	public void onUpdate(XWidget xWidget, Decorator decorator) {
-		// TODO separate onUpdate - make extensible
-		// TODO Add AccessControlService
+   public void onUpdate(XWidget xWidget, Decorator decorator) {
+      // TODO separate onUpdate - make extensible
+      // TODO Add AccessControlService
 
-		if (xWidget instanceof IAttributeWidget) {
-			IAttributeWidget attributeWidget = (IAttributeWidget) xWidget;
-			String attributeType = attributeWidget.getAttributeType();
-			//			Artifact artifact = null;
-			PermissionStatus permissionStatus = new PermissionStatus(true, "You are not cool enough");
-			//			try {
-			//				AccessDataQuery query = AccessControlManager.getAccessData(null);
-			//				query.attributeTypeMatches(PermissionEnum.WRITE, artifact, attributeType, permissionStatus);
-			//			} catch (OseeCoreException ex) {
-			//				OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-			//			}
+      if (xWidget instanceof IAttributeWidget) {
+         IAttributeWidget attributeWidget = (IAttributeWidget) xWidget;
+         attributeWidget.getAttributeType();
+         //			Artifact artifact = null;
+         PermissionStatus permissionStatus = new PermissionStatus(true, "You are not cool enough");
+         //			try {
+         //				AccessDataQuery query = AccessControlManager.getAccessData(null);
+         //				query.attributeTypeMatches(PermissionEnum.WRITE, artifact, attributeType, permissionStatus);
+         //			} catch (OseeCoreException ex) {
+         //				OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         //			}
 
-			// Get Info from AccessControlService;
-			boolean isLocked = permissionStatus.matches();
-			String reason = permissionStatus.getReason();
+         // Get Info from AccessControlService;
+         boolean isLocked = permissionStatus.matches();
+         String reason = permissionStatus.getReason();
 
-			Control control = xWidget.getControl();
-			if (Widgets.isAccessible(control)) {
-				xWidget.setEditable(!isLocked);
-			}
-			Label label = xWidget.getLabelWidget();
-			if (Widgets.isAccessible(label)) {
-				label.setEnabled(!isLocked);
-			}
+         Control control = xWidget.getControl();
+         if (Widgets.isAccessible(control)) {
+            xWidget.setEditable(!isLocked);
+         }
+         Label label = xWidget.getLabelWidget();
+         if (Widgets.isAccessible(label)) {
+            label.setEnabled(!isLocked);
+         }
 
-			Image image = ImageManager.getImage(FrameworkImage.LOCK_OVERLAY);
+         Image image = ImageManager.getImage(FrameworkImage.LOCK_OVERLAY);
 
-			decorator.setImage(isLocked ? image : null);
-			decorator.setDescription(isLocked ? reason : null);
-			decorator.setVisible(isLocked);
-		}
-	}
+         decorator.setImage(isLocked ? image : null);
+         decorator.setDescription(isLocked ? reason : null);
+         decorator.setVisible(isLocked);
+      }
+   }
 }

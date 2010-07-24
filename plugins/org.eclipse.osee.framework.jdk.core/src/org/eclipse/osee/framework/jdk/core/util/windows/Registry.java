@@ -35,14 +35,17 @@ public class Registry {
    }
 
    public class RegVersion_1_00 implements RegVersion {
+      @Override
       public String getQueryCmd(String root, String path, String key) {
          return "reg query " + root + "\\" + path + "\\" + key;
       }
 
+      @Override
       public String getQueryPattern(String key) {
          return "out:\\s*(\\w*)\\s*" + key + "\\s*(.*)";
       }
 
+      @Override
       public String getUpdateCommand(String root, String path, String key, String value, String[] regArray) {
          String cmd = "";
          if (regArray != null) {
@@ -58,6 +61,7 @@ public class Registry {
          return cmd;
       }
 
+      @Override
       public String isVersion() {
          return "1.00";
       }
@@ -65,14 +69,17 @@ public class Registry {
 
    public class RegVersion_3_0 implements RegVersion {
 
+      @Override
       public String getQueryCmd(String root, String path, String key) {
          return "reg query " + root + "\\" + path + " /v " + key;
       }
 
+      @Override
       public String getQueryPattern(String key) {
          return ".*?" + key + "\\s*(\\w*)\\s*(\\S*).*";
       }
 
+      @Override
       public String getUpdateCommand(String root, String path, String key, String value, String[] regArray) {
          String type = Registry.REG_SZ;
          if (regArray != null) {
@@ -82,6 +89,7 @@ public class Registry {
          return "reg add " + root + "\\" + path + " /v " + key + " /t " + type + " /f /d \"" + value + "\"";
       }
 
+      @Override
       public String isVersion() {
          return "3.0";
       }
@@ -161,12 +169,13 @@ public class Registry {
       String command = version.getUpdateCommand(root, path, key, value, regArray);
 
       /*
-       * If we are using a 1.0 version then use a provided reg.exe executable to use commands. If
-       * not operation will fail.
+       * If we are using a 1.0 version then use a provided reg.exe executable to use commands. If not operation will
+       * fail.
        */
       if (version.isVersion().equals("1.00")) {
          if (updatedReg.exists() && updatedReg.isFile()) {
-            command = updatedReg.getAbsolutePath() + command.replaceAll("reg", "");;
+            command = updatedReg.getAbsolutePath() + command.replaceAll("reg", "");
+            ;
          }
       }
 

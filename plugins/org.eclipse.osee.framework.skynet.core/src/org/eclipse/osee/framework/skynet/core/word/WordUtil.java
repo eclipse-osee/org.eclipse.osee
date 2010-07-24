@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -50,11 +49,11 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 public class WordUtil {
    public static final String BODY_START = "<w:body>";
    public static final String BODY_END = "</w:body>";
-   private static final String[] NUMBER =
-         new String[] {"Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"};
+   private static final String[] NUMBER = new String[] {"Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven",
+      "Eight", "Nine"};
 
    private static final String SELECT_WORD_VALUES =
-         "SELECT attr.content, attr.gamma_id FROM osee_attribute attr, osee_txs txs WHERE attr.art_id=? AND attr.attr_type_id=? AND attr.gamma_id = txs.gamma_id AND txs.branch_id=? ORDER BY attr.gamma_id DESC";
+      "SELECT attr.content, attr.gamma_id FROM osee_attribute attr, osee_txs txs WHERE attr.art_id=? AND attr.attr_type_id=? AND attr.gamma_id = txs.gamma_id AND txs.branch_id=? ORDER BY attr.gamma_id DESC";
    private static final Matcher binIdMatcher = Pattern.compile("wordml://(.+?)[.]").matcher("");
    private static final Pattern tagKiller = Pattern.compile("<.*?>", Pattern.DOTALL | Pattern.MULTILINE);
    private static final Pattern paragraphPattern = Pattern.compile("<w:p( .*?)?>");
@@ -65,8 +64,8 @@ public class WordUtil {
 
    /**
     * @return Returns the content with the bin data ID being reassigned. Note: The bin data Id needs to be reassigned to
-    *         allow multi edits of artifacts with images. Else if 2 images have the same ID the first image will be
-    *         printed duplicate times.
+    * allow multi edits of artifacts with images. Else if 2 images have the same ID the first image will be printed
+    * duplicate times.
     */
    public static String reassignBinDataID(String content) {
       ChangeSet changeSet = new ChangeSet(content);
@@ -241,7 +240,7 @@ public class WordUtil {
 
       String leadingPartOfFile = new String(myBytes, "UTF-8");
       String[] splitsBeforeAndAfter =
-            leadingPartOfFile.split(Artifact.BEFORE_GUID_STRING + "|" + Artifact.AFTER_GUID_STRING);
+         leadingPartOfFile.split(Artifact.BEFORE_GUID_STRING + "|" + Artifact.AFTER_GUID_STRING);
       if (splitsBeforeAndAfter.length == 3) {
          guid = splitsBeforeAndAfter[1];
       }
@@ -261,16 +260,16 @@ public class WordUtil {
       return newTemplate;
    }
 
-   private static final Matcher spellCheck =
-         Pattern.compile("<w:proofErr w:type=\"spell(End|Start)\"/>", Pattern.DOTALL | Pattern.MULTILINE).matcher("");
+   private static final Matcher spellCheck = Pattern.compile("<w:proofErr w:type=\"spell(End|Start)\"/>",
+      Pattern.DOTALL | Pattern.MULTILINE).matcher("");
 
    public final static String stripSpellCheck(String content) {
       String response = content;
-      
-      try{
-      spellCheck.reset(content);
-      response = spellCheck.replaceAll("");
-      }catch (Exception ex){
+
+      try {
+         spellCheck.reset(content);
+         response = spellCheck.replaceAll("");
+      } catch (Exception ex) {
       }
       return response;
    }

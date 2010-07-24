@@ -29,7 +29,7 @@ public class XViewerSmaCompletedDateColumn extends XViewerValueColumn {
 
    public XViewerSmaCompletedDateColumn(String name) {
       super(WorldXViewerFactory.COLUMN_NAMESPACE + "completeDate", name, 80, SWT.LEFT, true, SortDataType.Date, false,
-            "Date this workflow transitioned to the Completed state.");
+         "Date this workflow transitioned to the Completed state.");
    }
 
    public XViewerSmaCompletedDateColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
@@ -45,7 +45,7 @@ public class XViewerSmaCompletedDateColumn extends XViewerValueColumn {
    @Override
    public XViewerSmaCompletedDateColumn copy() {
       return new XViewerSmaCompletedDateColumn(getId(), getName(), getWidth(), getAlign(), isShow(), getSortDataType(),
-            isMultiColumnEditable(), getDescription());
+         isMultiColumnEditable(), getDescription());
    }
 
    @Override

@@ -15,5 +15,7 @@ package org.eclipse.osee.framework.core.server;
  */
 public enum SchedulingScheme {
 
-   ONE_SHOT, FIXED_RATE, FIXED_DELAY_BETWEEN_RUNS;
+   ONE_SHOT,
+   FIXED_RATE,
+   FIXED_DELAY_BETWEEN_RUNS;
 }

@@ -27,6 +27,7 @@ public class ContainerFigure extends Figure {
       setLayoutManager(layout);
    }
 
+   @Override
    public Dimension getPreferredSize(int wHint, int hHint) {
       Dimension size = super.getPreferredSize(wHint, hHint);
       size.height = Math.max(size.height, 10);

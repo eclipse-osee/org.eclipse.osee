@@ -18,7 +18,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {TransformerTestSuite.class})
+@Suite.SuiteClasses({TransformerTestSuite.class})
 public class ExchangeTestSuite {
 
 }

@@ -42,7 +42,8 @@ public abstract class WorkItemDefinition {
    private final Pattern keyValuePattern = Pattern.compile("^(.*?)=(.*)$", Pattern.MULTILINE | Pattern.DOTALL);
    protected String type;
    public static enum WriteType {
-      Update, New
+      Update,
+      New
    };
 
    public Map<String, String> getWorkDataKeyValueMap() {
@@ -77,11 +78,11 @@ public abstract class WorkItemDefinition {
       this.description = description;
       if (parentId != null && parentId.equals("")) {
          throw new IllegalArgumentException(
-               "parentId must either be null or a valid parent Id.  Invalid for WorkItemDefinition " + id);
+            "parentId must either be null or a valid parent Id.  Invalid for WorkItemDefinition " + id);
       }
       if (type != null && type.equals("")) {
          throw new IllegalArgumentException(
-               "type must either be null or a value, not empty string.  Invalid for WorkItemDefinition " + id);
+            "type must either be null or a value, not empty string.  Invalid for WorkItemDefinition " + id);
       }
       if (!Strings.isValid(id)) {
          throw new IllegalArgumentException("id must be unique and non-null");
@@ -168,9 +169,9 @@ public abstract class WorkItemDefinition {
       if (writeType == WriteType.New) {
          // Double-check that doesn't already exist in db.  If so, exception cause duplicates
          if (ArtifactQuery.getArtifactListFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(), getId(),
-               BranchManager.getCommonBranch()).size() > 0) {
+            BranchManager.getCommonBranch()).size() > 0) {
             throw new IllegalStateException(
-                  "WorkItemDefinition artifact creation failed.  \"" + getId() + "\" already exists.");
+               "WorkItemDefinition artifact creation failed.  \"" + getId() + "\" already exists.");
          }
       }
       if (artifact == null) {

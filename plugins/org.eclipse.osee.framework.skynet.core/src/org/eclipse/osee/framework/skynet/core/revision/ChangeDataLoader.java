@@ -113,8 +113,8 @@ public class ChangeDataLoader extends AbstractOperation {
             startTxArtifact = getArtifactAtTx(artId, txDelta.getStartTx());
          } else {
             startTxArtifact =
-                  ArtifactQuery.checkHistoricalArtifactFromId(artId,
-                        txDelta.getStartTx().getBranch().getBaseTransaction(), INCLUDE_DELETED);
+               ArtifactQuery.checkHistoricalArtifactFromId(artId,
+                  txDelta.getStartTx().getBranch().getBaseTransaction(), INCLUDE_DELETED);
          }
          Artifact endTxArtifact;
          if (txDelta.areOnTheSameBranch()) {
@@ -150,8 +150,8 @@ public class ChangeDataLoader extends AbstractOperation {
 
       if (item instanceof ArtifactChangeItem) {
          change =
-               new ArtifactChange(startTxBranch, itemGammaId, itemId, txDelta, netModType, isHistorical,
-                     changeArtifact, artifactDelta);
+            new ArtifactChange(startTxBranch, itemGammaId, itemId, txDelta, netModType, isHistorical, changeArtifact,
+               artifactDelta);
       } else if (item instanceof AttributeChangeItem) {
          String isValue = item.getCurrentVersion().getValue();
          AttributeType attributeType = AttributeTypeManager.getType(item.getItemTypeId());
@@ -165,8 +165,8 @@ public class ChangeDataLoader extends AbstractOperation {
             }
          }
          change =
-               new AttributeChange(startTxBranch, itemGammaId, artId, txDelta, netModType, isValue, wasValue, itemId,
-                     attributeType, netModType, isHistorical, changeArtifact, artifactDelta);
+            new AttributeChange(startTxBranch, itemGammaId, artId, txDelta, netModType, isValue, wasValue, itemId,
+               attributeType, netModType, isHistorical, changeArtifact, artifactDelta);
 
       } else if (item instanceof RelationChangeItem) {
          RelationChangeItem relationItem = (RelationChangeItem) item;
@@ -179,9 +179,9 @@ public class ChangeDataLoader extends AbstractOperation {
          Artifact endTxBArtifact = getArtifactAtTx(relationItem.getBArtId(), transaction);
 
          change =
-               new RelationChange(startTxBranch, itemGammaId, artId, txDelta, netModType, endTxBArtifact.getArtId(),
-                     itemId, relationItem.getRationale(), relationType, isHistorical, changeArtifact, artifactDelta,
-                     endTxBArtifact);
+            new RelationChange(startTxBranch, itemGammaId, artId, txDelta, netModType, endTxBArtifact.getArtId(),
+               itemId, relationItem.getRationale(), relationType, isHistorical, changeArtifact, artifactDelta,
+               endTxBArtifact);
       } else {
          throw new OseeCoreException("The change item must map to either an artifact, attribute or relation change");
       }
@@ -225,11 +225,11 @@ public class ChangeDataLoader extends AbstractOperation {
       parameters.put("function", Function.CHANGE_REPORT.name());
 
       ChangeReportRequest requestData =
-            new ChangeReportRequest(txDelta.getStartTx().getId(), txDelta.getEndTx().getId());
+         new ChangeReportRequest(txDelta.getStartTx().getId(), txDelta.getEndTx().getId());
 
       ChangeReportResponse response =
-            HttpClientMessage.send(OseeServerContext.BRANCH_CONTEXT, parameters,
-                  CoreTranslatorId.CHANGE_REPORT_REQUEST, requestData, CoreTranslatorId.CHANGE_REPORT_RESPONSE);
+         HttpClientMessage.send(OseeServerContext.BRANCH_CONTEXT, parameters, CoreTranslatorId.CHANGE_REPORT_REQUEST,
+            requestData, CoreTranslatorId.CHANGE_REPORT_RESPONSE);
       if (response.wasSuccessful()) {
          // OseeEventManager.kickBranchEvent(HttpBranchCreation.class, ,
          // branch.getId());

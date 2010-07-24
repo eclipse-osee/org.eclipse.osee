@@ -32,10 +32,12 @@ public class PulseCondition<T extends Comparable<T>> extends AbstractCondition i
       this(element, pulsedValue, nonPulsedValue, 2);
    }
 
+   @Override
    public T getLastCheckValue() {
       return lastValue;
    }
 
+   @Override
    public boolean check() {
       lastValue = element.getValue();
       if (lastValue.equals(pulsedValue)) {

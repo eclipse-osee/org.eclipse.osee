@@ -53,7 +53,7 @@ public class PrivilegedEditAction extends Action {
          }
          if (sma.getEditor().isPriviledgedEditModeEnabled()) {
             if (MessageDialog.openQuestion(Displays.getActiveShell(), "Diable Privileged Edit",
-                  "Privileged Edit Mode Enabled.\n\nDisable?\n\nNote: (changes will be saved)")) {
+               "Privileged Edit Mode Enabled.\n\nDisable?\n\nNote: (changes will be saved)")) {
                sma.getEditor().setPriviledgedEditMode(false);
             }
          } else {
@@ -73,12 +73,12 @@ public class PrivilegedEditAction extends Action {
                buttons = new String[] {"Cancel"};
             }
             MessageDialog ed =
-                  new MessageDialog(
-                        Displays.getActiveShell(),
-                        "Privileged Edit",
-                        null,
-                        "The following users have the ability to edit this " + sma.getArtifactTypeName() + " in case of emergency.\n\n" + sb.toString(),
-                        MessageDialog.QUESTION, buttons, 0);
+               new MessageDialog(
+                  Displays.getActiveShell(),
+                  "Privileged Edit",
+                  null,
+                  "The following users have the ability to edit this " + sma.getArtifactTypeName() + " in case of emergency.\n\n" + sb.toString(),
+                  MessageDialog.QUESTION, buttons, 0);
             int result = ed.open();
             if (iAmPrivileged && result == 0) {
                sma.getEditor().setPriviledgedEditMode(true);

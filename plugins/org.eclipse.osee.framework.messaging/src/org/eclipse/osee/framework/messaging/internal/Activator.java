@@ -35,24 +35,28 @@ public class Activator implements BundleActivator {
    private MessagingGatewayImpl messaging;
    private ServiceRegistration msgCommandProvider;
 
-   
-   
+   @Override
    public void start(BundleContext context) throws Exception {
       this.context = context;
       me = this;
-      serviceLookupAndRegistrarLifeCycle = new ServiceLookupAndRegistrarLifeCycle(context, ExportClassLoader.getInstance());
+      serviceLookupAndRegistrarLifeCycle =
+         new ServiceLookupAndRegistrarLifeCycle(context, ExportClassLoader.getInstance());
       serviceLookupAndRegistrarLifeCycle.open(true);
-      
+
       messageServiceProviderImpl = new MessageServiceProviderImpl(ExportClassLoader.getInstance());
       messageServiceProviderImpl.start();
-      msgServiceRegistration = context.registerService(MessageService.class.getName(), messageServiceProviderImpl.getMessageService(), null);
+      msgServiceRegistration =
+         context.registerService(MessageService.class.getName(), messageServiceProviderImpl.getMessageService(), null);
 
-      msgCommandProvider = context.registerService(CommandProvider.class.getName(), new MessageServiceConsole(messageServiceProviderImpl.getMessageService()), null);
+      msgCommandProvider =
+         context.registerService(CommandProvider.class.getName(),
+            new MessageServiceConsole(messageServiceProviderImpl.getMessageService()), null);
       //old
       messaging = new MessagingGatewayImpl();
       registration = context.registerService(MessagingGateway.class.getName(), messaging, null);
    }
 
+   @Override
    public void stop(BundleContext context) throws Exception {
       me = null;
       this.context = null;

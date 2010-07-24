@@ -44,12 +44,14 @@ public class TeamDefinitionCheckTreeDialog extends OSEECheckedFilteredTreeDialog
 
    public TeamDefinitionCheckTreeDialog(String title, String message, Active active) {
       super(title, message, patternFilter, new TeamDefinitionTreeContentProvider(active), new ArtifactLabelProvider(),
-            new ArtifactNameSorter());
+         new ArtifactNameSorter());
       this.active = active;
    }
 
    public Collection<TeamDefinitionArtifact> getChecked() {
-      if (super.getTreeViewer() == null) return Collections.emptyList();
+      if (super.getTreeViewer() == null) {
+         return Collections.emptyList();
+      }
       Set<TeamDefinitionArtifact> checked = new HashSet<TeamDefinitionArtifact>();
       for (Object obj : super.getTreeViewer().getChecked()) {
          checked.add((TeamDefinitionArtifact) obj);
@@ -76,7 +78,9 @@ public class TeamDefinitionCheckTreeDialog extends OSEECheckedFilteredTreeDialog
                }
             }
          });
-         if (getInitialTeamDefs() != null) getTreeViewer().setInitalChecked(getInitialTeamDefs());
+         if (getInitialTeamDefs() != null) {
+            getTreeViewer().setInitalChecked(getInitialTeamDefs());
+         }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }

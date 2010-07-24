@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -60,10 +61,12 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
       treeViewer.getTree().addKeyListener(new keySelectedListener());
    }
    private class keySelectedListener implements KeyListener {
+      @Override
       public void keyPressed(KeyEvent e) {
          isCtrlPressed = e.keyCode == SWT.CONTROL;
       }
 
+      @Override
       public void keyReleased(KeyEvent e) {
          if (e.keyCode == 'a' && e.stateMask == SWT.CONTROL) {
             treeViewer.getTree().selectAll();
@@ -78,7 +81,7 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
    private void expandAll(IStructuredSelection selection) {
       Iterator<?> iter = selection.iterator();
       while (iter.hasNext()) {
-         treeViewer.expandToLevel(iter.next(), TreeViewer.ALL_LEVELS);
+         treeViewer.expandToLevel(iter.next(), AbstractTreeViewer.ALL_LEVELS);
       }
    }
 
@@ -187,7 +190,7 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
                   // If event originated outside, it's a copy event;
                   // OR if event is inside and ctrl is down, this is a copy; add items to group
                   if (!((ArtifactData) event.data).getSource().equals(viewId) || ((ArtifactData) event.data).getSource().equals(
-                        viewId) && isCtrlPressed) {
+                     viewId) && isCtrlPressed) {
                      copyArtifactsToGroup(event, dragOverExplorerItem);
                   }
                   // Else this is a move
@@ -202,7 +205,7 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
                         }
                      }
                      GroupExplorerItem parentUnivGroupItem =
-                           ((GroupExplorerItem) selectedItem.getFirstElement()).getParentItem();
+                        ((GroupExplorerItem) selectedItem.getFirstElement()).getParentItem();
                      final Artifact parentArtifact = parentUnivGroupItem.getArtifact();
                      final Artifact targetArtifact = dragOverExplorerItem.getArtifact();
 
@@ -241,7 +244,7 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
 
                      for (Artifact art : insertArts) {
                         parentArtifact.setRelationOrder(CoreRelationTypes.Universal_Grouping__Members, targetArtifact,
-                              isFeedbackAfter, art);
+                           isFeedbackAfter, art);
                         targetArtifact = art;
                      }
                      parentArtifact.persist();
@@ -257,7 +260,7 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
 
                      for (Artifact art : insertArts) {
                         parentArtifact.addRelation(RelationOrderBaseTypes.USER_DEFINED,
-                              CoreRelationTypes.Universal_Grouping__Members, targetArtifact, isFeedbackAfter, art, "");
+                           CoreRelationTypes.Universal_Grouping__Members, targetArtifact, isFeedbackAfter, art, "");
                      }
                      parentArtifact.persist();
                   }
@@ -278,7 +281,7 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
       for (Artifact artifact : artsToRelate) {
          if (!artifact.getBranch().equals(branch)) {
             AWorkbench.popup("ERROR",
-                  "Cross-branch grouping not supported.\n\nGroup and Artifacts must belong to same branch.");
+               "Cross-branch grouping not supported.\n\nGroup and Artifacts must belong to same branch.");
             return;
          }
       }

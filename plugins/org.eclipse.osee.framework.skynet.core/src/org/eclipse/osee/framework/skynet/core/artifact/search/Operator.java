@@ -11,7 +11,8 @@
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 public enum Operator {
-   EQUAL("="), NOT_EQUAL("<>");
+   EQUAL("="),
+   NOT_EQUAL("<>");
 
    private String expression;
 
@@ -19,6 +20,7 @@ public enum Operator {
       this.expression = expression;
    }
 
+   @Override
    public String toString() {
       return expression;
    }

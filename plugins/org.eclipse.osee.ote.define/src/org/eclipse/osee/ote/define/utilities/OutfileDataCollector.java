@@ -35,6 +35,7 @@ public class OutfileDataCollector implements IDataListener {
       this.collectedData = new HashMap<String, String>();
    }
 
+   @Override
    public void notifyDataEvent(String name, String value) {
       collectedData.put(name, value);
    }

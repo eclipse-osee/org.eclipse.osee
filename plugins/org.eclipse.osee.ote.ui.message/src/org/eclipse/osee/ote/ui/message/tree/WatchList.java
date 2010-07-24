@@ -35,6 +35,7 @@ public class WatchList implements ITreeContentProvider {
       viewRefresher = new ViewRefresher(this, view, 200);
    }
 
+   @Override
    public Object[] getChildren(Object parentElement) {
       if (parentElement instanceof IOteMessageService) {
          return getChildren(rootNode);
@@ -42,16 +43,19 @@ public class WatchList implements ITreeContentProvider {
       return ((AbstractTreeNode) parentElement).getChildren().toArray();
    }
 
+   @Override
    public Object getParent(Object element) {
       assert element instanceof AbstractTreeNode;
       return ((AbstractTreeNode) element).getParent();
    }
 
+   @Override
    public boolean hasChildren(Object element) {
       assert element instanceof AbstractTreeNode;
       return ((AbstractTreeNode) element).hasChildren();
    }
 
+   @Override
    public Object[] getElements(Object inputElement) {
       if (inputElement == null) {
          return new Object[0];
@@ -77,6 +81,7 @@ public class WatchList implements ITreeContentProvider {
       }
    }
 
+   @Override
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
       this.viewer = (TreeViewer) viewer;
 
@@ -170,6 +175,7 @@ public class WatchList implements ITreeContentProvider {
       final HashSet<ElementNode> elemNodesToDelete = new HashSet<ElementNode>(64);
       final INodeVisitor<Boolean> visitor = new INodeVisitor<Boolean>() {
 
+         @Override
          public Boolean elementNode(ElementNode node) {
             if (!msgNodesToDelete.contains(node.getParent())) {
                return elemNodesToDelete.add(node);
@@ -177,10 +183,12 @@ public class WatchList implements ITreeContentProvider {
             return null;
          }
 
+         @Override
          public Boolean messageNode(MessageNode node) {
             return msgNodesToDelete.add(node);
          }
 
+         @Override
          public Boolean rootNode(RootNode node) {
             return null;
          }

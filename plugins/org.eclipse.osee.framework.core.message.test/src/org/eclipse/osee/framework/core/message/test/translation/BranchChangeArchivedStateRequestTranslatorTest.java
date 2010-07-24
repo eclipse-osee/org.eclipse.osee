@@ -47,7 +47,7 @@ public class BranchChangeArchivedStateRequestTranslatorTest extends BaseTranslat
       int state = 0;
       for (int index = 1; index <= 2; index++) {
          data.add(new Object[] {new ChangeBranchArchiveStateRequest(index * 3, BranchArchivedState.valueOf(state++)),
-               translator});
+            translator});
       }
       return data;
    }

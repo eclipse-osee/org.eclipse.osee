@@ -16,7 +16,7 @@ import java.util.logging.Level;
 
 public class SevereLoggingMonitor implements ILoggerListener {
 
-   private List<IHealthStatus> status = new ArrayList<IHealthStatus>();
+   private final List<IHealthStatus> status = new ArrayList<IHealthStatus>();
 
    @Override
    public void log(String loggerName, Level level, String message, Throwable th) {
@@ -51,6 +51,7 @@ public class SevereLoggingMonitor implements ILoggerListener {
       return warningStatus;
    }
 
+   @Override
    public String toString() {
       StringBuilder sb = new StringBuilder();
       sb.append(getSevereLogs().size());

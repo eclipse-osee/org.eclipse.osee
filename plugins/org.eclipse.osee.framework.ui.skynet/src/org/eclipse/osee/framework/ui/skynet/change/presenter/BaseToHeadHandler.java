@@ -60,10 +60,10 @@ public final class BaseToHeadHandler implements IChangeReportUiHandler {
       TransactionDelta txDelta = changeUiData.getTxDelta();
       NumberFormat formatter = NumberFormat.getInstance();
       return String.format(
-            "Shows all changes made to [<b>%s</b>] from when it was created (transaction <b>%s</b>) until it was last modified (transaction <b>%s</b>).",
-            AXml.textToXml(txDelta.getStartTx().getBranch().getName()),
-            AXml.textToXml(formatter.format(txDelta.getStartTx().getId())),
-            AXml.textToXml(formatter.format(txDelta.getEndTx().getId())));
+         "Shows all changes made to [<b>%s</b>] from when it was created (transaction <b>%s</b>) until it was last modified (transaction <b>%s</b>).",
+         AXml.textToXml(txDelta.getStartTx().getBranch().getName()),
+         AXml.textToXml(formatter.format(txDelta.getStartTx().getId())),
+         AXml.textToXml(formatter.format(txDelta.getEndTx().getId())));
    }
 
    @Override

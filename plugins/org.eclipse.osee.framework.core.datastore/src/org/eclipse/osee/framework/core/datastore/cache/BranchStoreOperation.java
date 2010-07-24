@@ -36,10 +36,10 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
    protected static final int NULL_PARENT_BRANCH_ID = -1;
 
    private static final String INSERT_BRANCH =
-         "INSERT INTO osee_branch (branch_id, branch_guid, branch_name, parent_branch_id, parent_transaction_id, archived, associated_art_id, branch_type, branch_state, baseline_transaction_id) VALUES (?,?,?,?,?,?,?,?,?,?)";
+      "INSERT INTO osee_branch (branch_id, branch_guid, branch_name, parent_branch_id, parent_transaction_id, archived, associated_art_id, branch_type, branch_state, baseline_transaction_id) VALUES (?,?,?,?,?,?,?,?,?,?)";
 
    private static final String UPDATE_BRANCH =
-         "update osee_branch SET branch_name = ?, parent_branch_id = ?, parent_transaction_id = ?, archived = ?, associated_art_id = ?, branch_type = ?, branch_state = ?, baseline_transaction_id = ? where branch_id = ?";
+      "update osee_branch SET branch_name = ?, parent_branch_id = ?, parent_transaction_id = ?, archived = ?, associated_art_id = ?, branch_type = ?, branch_state = ?, baseline_transaction_id = ? where branch_id = ?";
 
    private static final String DELETE_BRANCH = "DELETE from osee_branch where branch_id = ?";
 
@@ -59,9 +59,8 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
       int baselineTransaction = baseTxRecord != null ? baseTxRecord.getId() : NULL_PARENT_BRANCH_ID;
 
       return new Object[] {branch.getId(), branch.getGuid(), branch.getName(), parentBranchId,
-            branch.getSourceTransaction().getId(), branch.getArchiveState().getValue(),
-            branch.getAssociatedArtifactId(), branch.getBranchType().getValue(), branch.getBranchState().getValue(),
-            baselineTransaction};
+         branch.getSourceTransaction().getId(), branch.getArchiveState().getValue(), branch.getAssociatedArtifactId(),
+         branch.getBranchType().getValue(), branch.getBranchState().getValue(), baselineTransaction};
    }
 
    private Object[] toUpdateValues(Branch branch) throws OseeCoreException {
@@ -70,8 +69,8 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
       int parentBranchId = parentBranch != null ? parentBranch.getId() : NULL_PARENT_BRANCH_ID;
       int baselineTransaction = baseTxRecord != null ? baseTxRecord.getId() : NULL_PARENT_BRANCH_ID;
       return new Object[] {branch.getName(), parentBranchId, branch.getSourceTransaction().getId(),
-            branch.getArchiveState().getValue(), branch.getAssociatedArtifactId(), branch.getBranchType().getValue(),
-            branch.getBranchState().getValue(), baselineTransaction, branch.getId()};
+         branch.getArchiveState().getValue(), branch.getAssociatedArtifactId(), branch.getBranchType().getValue(),
+         branch.getBranchState().getValue(), baselineTransaction, branch.getId()};
    }
 
    private Object[] toDeleteValues(Branch branch) throws OseeDataStoreException {
@@ -103,7 +102,7 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
          }
          if (branch.isFieldDirty(BranchField.BRANCH_ARCHIVED_STATE_FIELD_KEY)) {
             Operations.executeAsJob(new BranchMoveOperation(getDatabaseServiceProvider(),
-                  branch.getArchiveState().isArchived(), branch), false);
+               branch.getArchiveState().isArchived(), branch), false);
          }
 
       }
@@ -123,12 +122,12 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
 
    private boolean isDataDirty(Branch type) throws OseeCoreException {
       return type.areFieldsDirty(//
-            AbstractOseeType.NAME_FIELD_KEY, //
-            AbstractOseeType.UNIQUE_ID_FIELD_KEY, //
-            BranchField.BRANCH_ARCHIVED_STATE_FIELD_KEY, //
-            BranchField.BRANCH_STATE_FIELD_KEY, //
-            BranchField.BRANCH_TYPE_FIELD_KEY, //
-            BranchField.BRANCH_ASSOCIATED_ARTIFACT_ID_FIELD_KEY, //
-            BranchField.BRANCH_BASE_TRANSACTION);
+         AbstractOseeType.NAME_FIELD_KEY, //
+         AbstractOseeType.UNIQUE_ID_FIELD_KEY, //
+         BranchField.BRANCH_ARCHIVED_STATE_FIELD_KEY, //
+         BranchField.BRANCH_STATE_FIELD_KEY, //
+         BranchField.BRANCH_TYPE_FIELD_KEY, //
+         BranchField.BRANCH_ASSOCIATED_ARTIFACT_ID_FIELD_KEY, //
+         BranchField.BRANCH_BASE_TRANSACTION);
    }
 }

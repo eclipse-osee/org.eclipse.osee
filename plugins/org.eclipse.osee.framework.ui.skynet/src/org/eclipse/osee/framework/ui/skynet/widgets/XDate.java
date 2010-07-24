@@ -186,8 +186,8 @@ public class XDate extends XWidget {
    @Override
    public void setFromXml(String xml) {
       Matcher m =
-            Pattern.compile("<" + getXmlRoot() + ">(\\d+)</" + getXmlRoot() + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(
-                  xml);
+         Pattern.compile("<" + getXmlRoot() + ">(\\d+)</" + getXmlRoot() + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(
+            xml);
       if (m.find()) {
          try {
             Long l = new Long(m.group(1));

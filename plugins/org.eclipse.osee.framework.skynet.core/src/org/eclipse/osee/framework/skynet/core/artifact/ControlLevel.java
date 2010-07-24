@@ -16,7 +16,9 @@ package org.eclipse.osee.framework.skynet.core.artifact;
  * @author Robert A. Fisher
  */
 public enum ControlLevel {
-   UNVERSIONED(false), VERSIONED(true), CHANGE_MANAGED(true);
+   UNVERSIONED(false),
+   VERSIONED(true),
+   CHANGE_MANAGED(true);
 
    private boolean versionControlled;
 

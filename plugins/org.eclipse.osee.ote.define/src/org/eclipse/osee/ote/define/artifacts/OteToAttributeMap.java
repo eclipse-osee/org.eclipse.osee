@@ -43,9 +43,10 @@ public class OteToAttributeMap {
       outfileFieldToAttributeMap.put(TestRunField.SYSTEM_OS_NAME, OteAttributeTypes.OS_NAME.getName());
       outfileFieldToAttributeMap.put(TestRunField.SYSTEM_OS_VERSION, OteAttributeTypes.OS_VERSION.getName());
       outfileFieldToAttributeMap.put(TestRunField.SYSTEM_OSEE_VERSION, OteAttributeTypes.OSEE_VERSION.getName());
-      outfileFieldToAttributeMap.put(TestRunField.SYSTEM_OSEE_SERVER_TITLE, OteAttributeTypes.OSEE_SERVER_TITLE.getName());
+      outfileFieldToAttributeMap.put(TestRunField.SYSTEM_OSEE_SERVER_TITLE,
+         OteAttributeTypes.OSEE_SERVER_TITLE.getName());
       outfileFieldToAttributeMap.put(TestRunField.SYSTEM_OSEE_SERVER_JAR_VERSIONS,
-            OteAttributeTypes.OSEE_SERVER_JAR_VERSION.getName());
+         OteAttributeTypes.OSEE_SERVER_JAR_VERSION.getName());
 
       outfileFieldToAttributeMap.put(TestRunField.PROCESSOR_ID, OteAttributeTypes.PROCESSOR_ID.getName());
       outfileFieldToAttributeMap.put(TestRunField.SCRIPT_START_DATE, OteAttributeTypes.START_DATE.getName());
@@ -61,7 +62,8 @@ public class OteToAttributeMap {
 
       outfileFieldToAttributeMap.put(TestRunField.BUILD_ID, OteAttributeTypes.BUILD_ID.getName());
 
-      outfileFieldToAttributeMap.put(TestRunField.IS_BATCH_MODE_ALLOWED, OteAttributeTypes.IS_BATCH_MODE_ALLOWED.getName());
+      outfileFieldToAttributeMap.put(TestRunField.IS_BATCH_MODE_ALLOWED,
+         OteAttributeTypes.IS_BATCH_MODE_ALLOWED.getName());
       outfileFieldToAttributeMap.put(TestRunField.RAN_IN_BATCH_MODE, OteAttributeTypes.RAN_IN_BATCH_MODE.getName());
 
       // outfileFieldToAttributeMap.put(TestRunField.SCRIPT_EXECUTION_TIME,

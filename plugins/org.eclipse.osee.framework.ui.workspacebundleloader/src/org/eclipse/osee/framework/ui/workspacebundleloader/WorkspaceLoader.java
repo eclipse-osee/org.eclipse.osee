@@ -15,9 +15,9 @@ import org.osgi.framework.BundleException;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public interface WorkspaceLoader {
-	public void loadBundles() throws CoreException, BundleException;
-	public void unloadBundles();
+   public void loadBundles() throws CoreException, BundleException;
+
+   public void unloadBundles();
 }

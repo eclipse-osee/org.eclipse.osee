@@ -26,7 +26,8 @@ public class XArtifactTypeListViewer extends XTypeListViewer {
    public XArtifactTypeListViewer(String keyedBranchName, String defaultValue) {
       super(NAME);
 
-      setContentProvider(new DefaultBranchContentProvider(new ArtifactTypeContentProvider(), resolveBranch(keyedBranchName)));
+      setContentProvider(new DefaultBranchContentProvider(new ArtifactTypeContentProvider(),
+         resolveBranch(keyedBranchName)));
       ArrayList<Object> input = new ArrayList<Object>(1);
       input.add(resolveBranch(keyedBranchName));
 

@@ -84,7 +84,7 @@ public class ViewSourceAction extends Action {
                   html = html.replaceAll("HEREBEGIN", "<FONT style=\"BACKGROUND-COLOR: yellow\">");
                   html = html.replaceAll("HEREEND", "</FONT>");
                   ResultsEditor.open("source",
-                        CoverageUtil.getFullPathWithName(item.getParent()) + "[" + item.getName() + "]", html);
+                     CoverageUtil.getFullPathWithName(item.getParent()) + "[" + item.getName() + "]", html);
                } else {
                   AWorkbench.popup("No File Contents Available");
                   return;

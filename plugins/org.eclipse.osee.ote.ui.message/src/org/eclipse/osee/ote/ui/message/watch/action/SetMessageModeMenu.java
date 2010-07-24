@@ -20,32 +20,31 @@ import org.eclipse.osee.ote.ui.message.tree.WatchedMessageNode;
 
 /**
  * @author Ken J. Aguilar
- *
  */
 public class SetMessageModeMenu extends XSubMenuManager implements IMenuListener {
-	private final static String NAME = "Set Reader/Writer Buffer";
-	private final WatchedMessageNode node;
+   private final static String NAME = "Set Reader/Writer Buffer";
+   private final WatchedMessageNode node;
 
-	public static IContributionItem createMenu(WatchedMessageNode node) {
-		if (node.isEnabled() && node.getSubscription().isResolved()) {
-			return new SetMessageModeMenu(node);
-		}
-		return new ActionContributionItem(new DisabledAction(NAME));
-	}
-	
-	protected SetMessageModeMenu(WatchedMessageNode node) {
-		super(NAME);
-		this.node = node;
-		setRemoveAllWhenShown(true);
-		addMenuListener(this);
-	}
+   public static IContributionItem createMenu(WatchedMessageNode node) {
+      if (node.isEnabled() && node.getSubscription().isResolved()) {
+         return new SetMessageModeMenu(node);
+      }
+      return new ActionContributionItem(new DisabledAction(NAME));
+   }
 
-	@Override
-	public void menuAboutToShow(IMenuManager manager) {
-		for (MessageMode mode : MessageMode.values()) {
-			add(new SetMessageModeAction(node, mode));
-		}
-		
-	}
+   protected SetMessageModeMenu(WatchedMessageNode node) {
+      super(NAME);
+      this.node = node;
+      setRemoveAllWhenShown(true);
+      addMenuListener(this);
+   }
+
+   @Override
+   public void menuAboutToShow(IMenuManager manager) {
+      for (MessageMode mode : MessageMode.values()) {
+         add(new SetMessageModeAction(node, mode));
+      }
+
+   }
 
 }

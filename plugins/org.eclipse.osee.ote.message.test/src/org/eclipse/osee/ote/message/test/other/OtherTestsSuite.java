@@ -17,12 +17,12 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses( { //
+@Suite.SuiteClasses({ //
 TestEnumElementOperations.class, //
-      TestFloat32Operations.class, //
-      TestIntegerOperations.class, //
-      TestMessageOperations.class,//
-      TestStringOperations.class, //
+   TestFloat32Operations.class, //
+   TestIntegerOperations.class, //
+   TestMessageOperations.class,//
+   TestStringOperations.class, //
 })
 public class OtherTestsSuite {
 

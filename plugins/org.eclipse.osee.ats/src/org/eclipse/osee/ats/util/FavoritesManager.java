@@ -47,9 +47,11 @@ public class FavoritesManager {
       try {
          if (((IFavoriteableArtifact) smas.iterator().next()).amIFavorite()) {
             boolean result = true;
-            if (prompt) result =
+            if (prompt) {
+               result =
                   MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                        "Remove Favorite", "Are You sure you wish to remove this as Favorite?");
+                     "Remove Favorite", "Are You sure you wish to remove this as Favorite?");
+            }
             if (result) {
                SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Toggle Favorites");
                for (StateMachineArtifact sma : smas) {
@@ -59,9 +61,11 @@ public class FavoritesManager {
             }
          } else {
             boolean result = true;
-            if (prompt) result =
+            if (prompt) {
+               result =
                   MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                        "Favorite", "Are you sure you wish add this as a Favorite?");
+                     "Favorite", "Are you sure you wish add this as a Favorite?");
+            }
             if (result) {
                SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Toggle Favorites");
                for (StateMachineArtifact sma : smas) {

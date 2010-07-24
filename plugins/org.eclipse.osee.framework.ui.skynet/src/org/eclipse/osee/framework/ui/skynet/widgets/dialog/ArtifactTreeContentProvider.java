@@ -33,6 +33,7 @@ public class ArtifactTreeContentProvider implements ITreeContentProvider {
    /*
     * @see IContentProvider#dispose()
     */
+   @Override
    public void dispose() {
    }
 
@@ -49,6 +50,7 @@ public class ArtifactTreeContentProvider implements ITreeContentProvider {
     * @param newInput the new input element, or <code>null</code> if the viewer does not have an input
     * @see IContentProvider#inputChanged(Viewer, Object, Object)
     */
+   @Override
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
       this.viewer = (TreeViewer) viewer;
       // if (oldInput != null) {
@@ -66,6 +68,7 @@ public class ArtifactTreeContentProvider implements ITreeContentProvider {
     * 
     * @see ITreeContentProvider#getChildren(Object)
     */
+   @Override
    @SuppressWarnings("unchecked")
    public Object[] getChildren(Object parentElement) {
       if (parentElement instanceof Collection) {
@@ -77,6 +80,7 @@ public class ArtifactTreeContentProvider implements ITreeContentProvider {
    /*
     * @see ITreeContentProvider#getParent(Object)
     */
+   @Override
    public Object getParent(Object element) {
       return null;
    }
@@ -88,6 +92,7 @@ public class ArtifactTreeContentProvider implements ITreeContentProvider {
     * 
     * @see ITreeContentProvider#hasChildren(Object)
     */
+   @Override
    public boolean hasChildren(Object element) {
       return false;
    }
@@ -102,6 +107,7 @@ public class ArtifactTreeContentProvider implements ITreeContentProvider {
     * 
     * @see IStructuredContentProvider#getElements(Object)
     */
+   @Override
    public Object[] getElements(Object inputElement) {
       return getChildren(inputElement);
    }

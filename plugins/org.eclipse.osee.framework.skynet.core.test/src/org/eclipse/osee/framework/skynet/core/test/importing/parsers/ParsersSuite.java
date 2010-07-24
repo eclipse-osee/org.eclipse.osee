@@ -16,9 +16,9 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ //
 WordMLExtractorDelegateTableOfContentsTest.class, //
-			WordOutlineTest.class, //
-			OutlineResolutionAndNumberTest.class, //
-			WordMlResolutionGuiTest.class, //
+   WordOutlineTest.class, //
+   OutlineResolutionAndNumberTest.class, //
+   WordMlResolutionGuiTest.class, //
 })
 public class ParsersSuite {
 

@@ -44,7 +44,7 @@ import org.xml.sax.SAXException;
 public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
    private Appendable output;
    public static final String branchXWidgetXml =
-         "<xWidgets><XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Branch\" /></xWidgets>";
+      "<xWidgets><XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Branch\" /></xWidgets>";
    public static final String emptyXWidgetsXml = "<xWidgets/>";
    protected IOseeDatabaseService databaseService;
 

@@ -21,9 +21,9 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.relation.sorters.LexicographicalRelationSorter;
+import org.eclipse.osee.framework.skynet.core.relation.sorters.LexicographicalRelationSorter.SortMode;
 import org.eclipse.osee.framework.skynet.core.relation.sorters.UnorderedRelationSorter;
 import org.eclipse.osee.framework.skynet.core.relation.sorters.UserDefinedRelationSorter;
-import org.eclipse.osee.framework.skynet.core.relation.sorters.LexicographicalRelationSorter.SortMode;
 
 /**
  * @author Andrew M. Finkbeiner

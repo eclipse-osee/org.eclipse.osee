@@ -11,16 +11,15 @@
 package org.eclipse.osee.ote.service.core;
 
 import java.rmi.RemoteException;
-
 import org.eclipse.osee.ote.core.environment.status.IServiceStatusData;
 import org.eclipse.osee.ote.core.environment.status.IServiceStatusListener;
 
 /**
  * @author Ken J. Aguilar
- *
  */
 public class OteServiceStatusListener implements IServiceStatusListener {
 
+   @Override
    public void statusBoardUpdated(IServiceStatusData statusData) throws RemoteException {
    }
 

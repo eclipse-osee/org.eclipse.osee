@@ -81,17 +81,17 @@ public class CoverageTestUtil {
 
    public static Collection<Artifact> getCoverageUnitArtifacts() throws OseeCoreException {
       return StaticIdManager.getArtifactsFromArtifactQuery(CoverageArtifactTypes.CoverageUnit, COVERAGE_STATIC_ID,
-            BranchManager.getCommonBranch());
+         BranchManager.getCommonBranch());
    }
 
    public static Collection<Artifact> getCoveragePackageArtifacts() throws OseeCoreException {
       return StaticIdManager.getArtifactsFromArtifactQuery(CoverageArtifactTypes.CoveragePackage, COVERAGE_STATIC_ID,
-            BranchManager.getCommonBranch());
+         BranchManager.getCommonBranch());
    }
 
    public static Collection<Artifact> getCoverageRecordArtifacts() throws OseeCoreException {
       return StaticIdManager.getArtifactsFromArtifactQuery(CoreArtifactTypes.GeneralDocument, COVERAGE_STATIC_ID,
-            BranchManager.getCommonBranch());
+         BranchManager.getCommonBranch());
    }
 
    public static void setAllCoverageMethod(CoverageUnit coverageUnit, CoverageOption CoverageOption, boolean recurse) {

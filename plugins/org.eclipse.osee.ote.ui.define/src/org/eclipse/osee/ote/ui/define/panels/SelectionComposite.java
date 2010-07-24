@@ -285,12 +285,15 @@ public class SelectionComposite extends Composite {
    }
 
    private final class TableContentProvider implements IStructuredContentProvider {
+      @Override
       public void dispose() {
       }
 
+      @Override
       public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
       }
 
+      @Override
       public Object[] getElements(Object inputElement) {
          return resources;
       }
@@ -322,8 +325,8 @@ public class SelectionComposite extends Composite {
          if (isOverriden != false) {
             if (CHECK_OVERRIDEN_IMAGE == null || UNCHECKED_OVERRIDEN_IMAGE == null) {
                DecorationOverlayIcon overlay =
-                     new DecorationOverlayIcon(toReturn, ImageManager.getImageDescriptor(OteDefineImage.SWITCHED),
-                           IDecoration.BOTTOM_RIGHT);
+                  new DecorationOverlayIcon(toReturn, ImageManager.getImageDescriptor(OteDefineImage.SWITCHED),
+                     IDecoration.BOTTOM_RIGHT);
 
                Image overlayedImage = overlay.createImage();
                if (isChecked != false) {

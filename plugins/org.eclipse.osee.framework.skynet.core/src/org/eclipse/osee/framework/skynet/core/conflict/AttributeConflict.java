@@ -49,9 +49,9 @@ public class AttributeConflict extends Conflict {
    public final static String NO_VALUE = "";
    public final static String STREAM_DATA = "Stream data";
    public final static String RESOLVE_MERGE_MARKUP =
-         "Can not mark as resolved an attribute that has merge markup.  Finish merging the document to be able to resolve the conflict.";
+      "Can not mark as resolved an attribute that has merge markup.  Finish merging the document to be able to resolve the conflict.";
    public final static String DIFF_MERGE_MARKUP =
-         "Can not run a diff against an attribute that has merge markup.  Finish merging the document to be able to resolve the conflict.";
+      "Can not run a diff against an attribute that has merge markup.  Finish merging the document to be able to resolve the conflict.";
    private final int attrId;
    private final int attrTypeId;
    private Object sourceObject;
@@ -65,7 +65,7 @@ public class AttributeConflict extends Conflict {
    private boolean mergeEqualsDest;
    private boolean sourceEqualsDest;
    private static final boolean DEBUG =
-         "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Merge"));
+      "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Merge"));
 
    public AttributeConflict(int sourceGamma, int destGamma, int artId, TransactionRecord toTransactionId, String sourceValue, int attrId, int attrTypeId, Branch mergeBranch, Branch sourceBranch, Branch destBranch) throws OseeCoreException {
       super(sourceGamma, destGamma, artId, toTransactionId, null, mergeBranch, sourceBranch, destBranch);
@@ -115,7 +115,7 @@ public class AttributeConflict extends Conflict {
       }
       if (sourceAttribute == null) {
          throw new AttributeDoesNotExist(
-               "Attribute " + attrId + " could not be found on Artifact " + getArtId() + " on Branch " + sourceBranch.getId());
+            "Attribute " + attrId + " could not be found on Artifact " + getArtId() + " on Branch " + sourceBranch.getId());
       }
       return sourceAttribute;
    }
@@ -132,7 +132,7 @@ public class AttributeConflict extends Conflict {
       }
       if (destAttribute == null) {
          throw new AttributeDoesNotExist(
-               "Attribute " + attrId + " could not be found on Artifact " + getArtId() + " on Branch " + destBranch.getId());
+            "Attribute " + attrId + " could not be found on Artifact " + getArtId() + " on Branch " + destBranch.getId());
       }
       return destAttribute;
    }
@@ -147,7 +147,7 @@ public class AttributeConflict extends Conflict {
       }
       if (attribute == null) {
          throw new AttributeDoesNotExist(
-               "Attribute " + attrId + " could not be found on Artifact " + artifact.getArtId() + " on Branch " + artifact.getBranch().getId());
+            "Attribute " + attrId + " could not be found on Artifact " + artifact.getArtId() + " on Branch " + artifact.getBranch().getId());
       }
       return attribute;
    }
@@ -187,6 +187,7 @@ public class AttributeConflict extends Conflict {
       return destObject;
    }
 
+   @Override
    @SuppressWarnings("unchecked")
    public Object getAdapter(Class adapter) {
       if (adapter == null) {
@@ -224,7 +225,7 @@ public class AttributeConflict extends Conflict {
    @Override
    public String getDestDisplayData() throws OseeCoreException {
       String displayValue =
-            isWordAttribute ? STREAM_DATA : getDestObject() == null ? "Null Value" : getDestObject().toString();
+         isWordAttribute ? STREAM_DATA : getDestObject() == null ? "Null Value" : getDestObject().toString();
       try {
          getDestAttribute();
       } catch (AttributeDoesNotExist ex) {
@@ -236,7 +237,7 @@ public class AttributeConflict extends Conflict {
    @Override
    public String getSourceDisplayData() throws OseeCoreException {
       String displayValue =
-            isWordAttribute ? STREAM_DATA : getSourceObject() == null ? "Null Value" : getSourceObject().toString();
+         isWordAttribute ? STREAM_DATA : getSourceObject() == null ? "Null Value" : getSourceObject().toString();
       try {
          getSourceAttribute(false);
       } catch (AttributeDoesNotExist ex) {
@@ -272,7 +273,7 @@ public class AttributeConflict extends Conflict {
       if (!okToOverwriteMerge()) {
          if (DEBUG) {
             System.out.println(String.format("AttributeConflict: Failed setting the Merge Value for attr_id %d",
-                  getAttrId()));
+               getAttrId()));
          }
          return false;
       }
@@ -289,7 +290,7 @@ public class AttributeConflict extends Conflict {
       if (!okToOverwriteMerge()) {
          if (DEBUG) {
             System.out.println(String.format("AttributeConflict: Failed setting the Merge Value for attr_id %d",
-                  getAttrId()));
+               getAttrId()));
          }
          return false;
       }
@@ -307,13 +308,13 @@ public class AttributeConflict extends Conflict {
       if (!okToOverwriteMerge() || getSourceObject() == null) {
          if (DEBUG) {
             System.out.println(String.format(
-                  "AttributeConflict: Failed setting the Merge Value to the Source Value for attr_id %d", getAttrId()));
+               "AttributeConflict: Failed setting the Merge Value to the Source Value for attr_id %d", getAttrId()));
          }
          return false;
       }
       if (DEBUG) {
          System.out.println(String.format("AttributeConflict: Set the Merge Value to the Source Value for attr_id %d",
-               getAttrId()));
+            getAttrId()));
       }
       getArtifact().setSoleAttributeValue(getAttributeType().getName(), getSourceObject());
       getArtifact().persist();
@@ -326,13 +327,13 @@ public class AttributeConflict extends Conflict {
       if (!okToOverwriteMerge() || getDestObject() == null) {
          if (DEBUG) {
             System.out.println(String.format(
-                  "AttributeConflict: Failed setting the Merge Value to the Dest Value for attr_id %d", getAttrId()));
+               "AttributeConflict: Failed setting the Merge Value to the Dest Value for attr_id %d", getAttrId()));
          }
          return false;
       }
       if (DEBUG) {
          System.out.println(String.format("AttributeConflict: Set the Merge Value to the Dest Value for attr_id %d",
-               getAttrId()));
+            getAttrId()));
       }
       getArtifact().setSoleAttributeValue(getAttributeType().getName(), getDestObject());
       getArtifact().persist();
@@ -345,7 +346,7 @@ public class AttributeConflict extends Conflict {
       if (!okToOverwriteMerge()) {
          if (DEBUG) {
             System.out.println(String.format("AttributeConflict: Failed to clear the Merge Value for attr_id %d",
-                  getAttrId()));
+               getAttrId()));
          }
          return false;
       }
@@ -483,16 +484,16 @@ public class AttributeConflict extends Conflict {
          Artifact destArtifact;
          try {
             mergeArtifact =
-                  ArtifactQuery.getArtifactFromId(getArtifact().getArtId(), BranchManager.getBranch(mergeBranchId));
+               ArtifactQuery.getArtifactFromId(getArtifact().getArtId(), BranchManager.getBranch(mergeBranchId));
             destArtifact =
-                  ArtifactQuery.getArtifactFromId(getArtifact().getArtId(), BranchManager.getBranch(destBranchId));
+               ArtifactQuery.getArtifactFromId(getArtifact().getArtId(), BranchManager.getBranch(destBranchId));
          } catch (ArtifactDoesNotExist ex) {
             return false;
          }
          setAttributeValue(getAttribute(mergeArtifact).getValue());
          computeEqualsValues();
          if (getDestAttribute().getValue().equals(getAttribute(destArtifact).getValue()) || getDestAttribute().getGammaId() == getAttribute(
-               destArtifact).getGammaId()) {
+            destArtifact).getGammaId()) {
             setStatus(ConflictStatus.PREVIOUS_MERGE_APPLIED_SUCCESS);
          } else {
             setStatus(ConflictStatus.PREVIOUS_MERGE_APPLIED_CAUTION);

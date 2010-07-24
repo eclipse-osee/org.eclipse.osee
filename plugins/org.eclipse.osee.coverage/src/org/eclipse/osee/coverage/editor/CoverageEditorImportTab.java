@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.AssertionFailedException;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -55,8 +56,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.FormPage;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
-import org.eclipse.ui.forms.widgets.Section;
 
 /**
  * @author Donald G. Dunne
@@ -154,7 +155,7 @@ public class CoverageEditorImportTab extends FormPage {
          destroyableComposite.dispose();
       }
       destroyableComposite =
-            getManagedForm().getToolkit().createComposite(getManagedForm().getForm().getBody(), SWT.NONE);
+         getManagedForm().getToolkit().createComposite(getManagedForm().getForm().getBody(), SWT.NONE);
       destroyableComposite.setLayout(new GridLayout());
       destroyableComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
@@ -176,18 +177,16 @@ public class CoverageEditorImportTab extends FormPage {
          }
          createDestroyableComposite();
       }
-      int sectionStyle = Section.TITLE_BAR | Section.EXPANDED | Section.TWISTIE;
+      int sectionStyle = ExpandableComposite.TITLE_BAR | ExpandableComposite.EXPANDED | ExpandableComposite.TWISTIE;
       blamUsageSection =
-            new BlamUsageSection(getEditor(), getBlam(), destroyableComposite, getManagedForm().getToolkit(),
-                  sectionStyle);
+         new BlamUsageSection(getEditor(), getBlam(), destroyableComposite, getManagedForm().getToolkit(), sectionStyle);
 
       blamInputSection =
-            new BlamInputSection(getEditor(), getBlam(), destroyableComposite, getManagedForm().getToolkit(),
-                  sectionStyle);
+         new BlamInputSection(getEditor(), getBlam(), destroyableComposite, getManagedForm().getToolkit(), sectionStyle);
 
       blamOutputSection =
-            new BlamOutputSection(getEditor(), getBlam(), destroyableComposite, getManagedForm().getToolkit(),
-                  sectionStyle, new ExecuteBlamAction());
+         new BlamOutputSection(getEditor(), getBlam(), destroyableComposite, getManagedForm().getToolkit(),
+            sectionStyle, new ExecuteBlamAction());
 
       getManagedForm().addPart(blamUsageSection);
       getManagedForm().addPart(blamInputSection);
@@ -230,7 +229,7 @@ public class CoverageEditorImportTab extends FormPage {
    public final class ExecuteBlamAction extends Action {
 
       public ExecuteBlamAction() {
-         super("Run BLAM in Job", Action.AS_PUSH_BUTTON);
+         super("Run BLAM in Job", IAction.AS_PUSH_BUTTON);
          setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.RUN_EXC));
          setToolTipText("Executes the BLAM Operation");
       }
@@ -271,7 +270,7 @@ public class CoverageEditorImportTab extends FormPage {
             coverageImport = null;
 
             getBlam().execute(getBlam().getName(), blamOutputSection.getOutput(), blamInputSection.getData(),
-                  new BlamEditorExecutionAdapter(getBlam().getName()));
+               new BlamEditorExecutionAdapter(getBlam().getName()));
          } catch (Exception ex) {
             OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
          }
@@ -283,16 +282,16 @@ public class CoverageEditorImportTab extends FormPage {
       coverageImportOverviewIndex = coverageEditor.addFormPage(coverageImportOverviewTab);
 
       coverageImportTab =
-            new CoverageEditorCoverageTab(String.format("Import Items (%d)", coverageImport.getCoverageItems().size()),
-                  coverageEditor, coverageImport);
+         new CoverageEditorCoverageTab(String.format("Import Items (%d)", coverageImport.getCoverageItems().size()),
+            coverageEditor, coverageImport);
       coverageImportIndex = coverageEditor.addFormPage(coverageImportTab);
 
       try {
          coverageEditorMergeTab =
-               new CoverageEditorMergeTab("Import Merge", coverageEditor,
-                     (CoveragePackage) coverageEditor.getCoveragePackageBase(), coverageImport);
+            new CoverageEditorMergeTab("Import Merge", coverageEditor,
+               (CoveragePackage) coverageEditor.getCoveragePackageBase(), coverageImport);
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       coverageEditorMergeIndex = coverageEditor.addFormPage(coverageEditorMergeTab);
    }
@@ -312,10 +311,12 @@ public class CoverageEditorImportTab extends FormPage {
 
    static ILabelProvider labelProvider = new ILabelProvider() {
 
+      @Override
       public Image getImage(Object element) {
          return null;
       }
 
+      @Override
       public String getText(Object element) {
          if (element instanceof AbstractBlam) {
             return ((AbstractBlam) element).getName();
@@ -323,16 +324,20 @@ public class CoverageEditorImportTab extends FormPage {
          return "Unknown";
       }
 
+      @Override
       public void addListener(ILabelProviderListener listener) {
       }
 
+      @Override
       public void dispose() {
       }
 
+      @Override
       public boolean isLabelProperty(Object element, String property) {
          return false;
       }
 
+      @Override
       public void removeListener(ILabelProviderListener listener) {
       }
 

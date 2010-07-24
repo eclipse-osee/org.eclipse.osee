@@ -29,10 +29,12 @@ public class AttributeLabelProvider implements ITableLabelProvider {
       super();
    }
 
+   @Override
    public Image getColumnImage(Object element, int columnIndex) {
       return null;
    }
 
+   @Override
    public String getColumnText(Object element, int columnIndex) {
       Attribute<?> attribute = (Attribute<?>) element;
       if (columnIndex == 0) {
@@ -45,16 +47,20 @@ public class AttributeLabelProvider implements ITableLabelProvider {
       }
    }
 
+   @Override
    public void addListener(ILabelProviderListener listener) {
    }
 
+   @Override
    public void dispose() {
    }
 
+   @Override
    public boolean isLabelProperty(Object element, String property) {
       return false;
    }
 
+   @Override
    public void removeListener(ILabelProviderListener listener) {
    }
 

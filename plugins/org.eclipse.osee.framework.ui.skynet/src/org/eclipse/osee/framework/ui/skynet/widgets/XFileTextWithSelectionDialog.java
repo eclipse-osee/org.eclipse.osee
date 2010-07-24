@@ -30,7 +30,8 @@ public class XFileTextWithSelectionDialog extends XText {
    private String defaultFileSelection;
    private final Type type;
    public static enum Type {
-      File, Directory
+      File,
+      Directory
    };
 
    public XFileTextWithSelectionDialog(String displayLabel, Type type, String defaultFileSelection) {
@@ -65,19 +66,22 @@ public class XFileTextWithSelectionDialog extends XText {
       }
       fileDialog.addSelectionListener(new SelectionListener() {
 
+         @Override
          public void widgetDefaultSelected(SelectionEvent e) {
             widgetSelected(e);
          }
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             if (type == Type.File) {
                FileDialog dialog = new FileDialog(Displays.getActiveShell(), SWT.OPEN);
                dialog.setFilterExtensions(new String[] {"*.*"});
                File dir = new File(defaultFileSelection != null ? defaultFileSelection : "");
-               if (dir.isFile() || dir.isDirectory())
+               if (dir.isFile() || dir.isDirectory()) {
                   dialog.setFilterPath(defaultFileSelection);
-               else
+               } else {
                   dialog.setFilterPath("c:\\");
+               }
 
                String result = dialog.open();
                if (result != null && !result.equals("")) {
@@ -86,10 +90,11 @@ public class XFileTextWithSelectionDialog extends XText {
             } else if (type == Type.Directory) {
                DirectoryDialog dialog = new DirectoryDialog(Displays.getActiveShell(), SWT.OPEN);
                File dir = new File(defaultFileSelection != null ? defaultFileSelection : "");
-               if (dir.isFile() || dir.isDirectory())
+               if (dir.isFile() || dir.isDirectory()) {
                   dialog.setFilterPath(defaultFileSelection);
-               else
+               } else {
                   dialog.setFilterPath("c:\\");
+               }
 
                String result = dialog.open();
                if (result != null && !result.equals("")) {

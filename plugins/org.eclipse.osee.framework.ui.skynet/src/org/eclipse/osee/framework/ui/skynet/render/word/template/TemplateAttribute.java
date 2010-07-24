@@ -96,7 +96,7 @@ public class TemplateAttribute implements ITemplateTask {
       //      throw new Exception(String.format("There was not a valid handler for Artifact[%s] and TemplateAttribute[%s].",
       //            artifact.toString(), this.toString()));
       System.out.println(String.format("There was not a valid handler for Artifact[%s] and TemplateAttribute[%s].",
-            artifact.toString(), this.toString()));
+         artifact.toString(), this.toString()));
    }
 
    public String getLabel() {

@@ -61,12 +61,12 @@ public class TagProcessorTest {
       try {
          if (expectedTags.hasNext()) {
             Assert.assertEquals(String.format("Line: [%d] Test: [%s] word: [%s]", currentCount, test, word),
-                  expectedTags.next(), word);
+               expectedTags.next(), word);
             Assert.assertEquals(String.format("Line: [%d] Test: [%s] word: [%s]", currentCount, test, word),
-                  expectedTags.nextLong(), codedTag.longValue());
+               expectedTags.nextLong(), codedTag.longValue());
          } else {
             Assert.assertTrue(String.format("Line: [%d] Test: [%s] word: [%s] tag: [%d] -- Extra Tag Found",
-                  currentCount, test, word, codedTag), false);
+               currentCount, test, word, codedTag), false);
          }
       } catch (Exception ex) {
          Assert.fail(String.format("%s %s", word, codedTag));

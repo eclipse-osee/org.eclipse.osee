@@ -17,15 +17,14 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author Ken J. Aguilar
- *
  */
-public class MessageIoManagementService implements IMessageIoManagementService{
+public class MessageIoManagementService implements IMessageIoManagementService {
 
    private final HashSet<IMessageIoDriver> drivers = new HashSet<IMessageIoDriver>();
 
    private final Lock lock = new ReentrantLock();
    private boolean ioStarted = false;
-   
+
    @Override
    public void install(IMessageIoDriver ioDriver) {
       lock.lock();

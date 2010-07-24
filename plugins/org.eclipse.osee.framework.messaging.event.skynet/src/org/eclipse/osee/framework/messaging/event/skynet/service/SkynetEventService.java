@@ -72,7 +72,7 @@ public class SkynetEventService extends JiniService implements ISkynetEventServi
    private void registerWithJini(String dbConfig) throws Exception {
       jiniClassServer = JiniClassServer.getInstance();
       jiniClassServer.addResourceFinder(new BundleResourceFinder(new String[] {
-            "org.eclipse.osee.framework.messaging.event.skynet", "org.eclipse.osee.framework.jdk.core"}));
+         "org.eclipse.osee.framework.messaging.event.skynet", "org.eclipse.osee.framework.jdk.core"}));
 
       Dictionary dictionary = null;
       String name = "OSEE Event Service";
@@ -89,17 +89,19 @@ public class SkynetEventService extends JiniService implements ISkynetEventServi
       }
 
       this.registerService(new Entry[] {new SimpleFormattedEntry("db", dbConfig),
-            new ServiceInfo(name, manufacturer, vendor, version, model, serialNumber), new Name(name),
-            new Comment(description)}, dictionary);
+         new ServiceInfo(name, manufacturer, vendor, version, model, serialNumber), new Name(name),
+         new Comment(description)}, dictionary);
 
       System.out.println("....................OSEE Event Service(" + dbConfig + ") is Alive....................");
       this.stayAlive();
    }
 
+   @Override
    public void register(ISkynetEventListener listener, IEventFilter... filters) throws RemoteException {
       addListeners(listener, filters);
    }
 
+   @Override
    public void deregister(ISkynetEventListener listener, IEventFilter... filters) throws RemoteException {
       removeListeners(listener, filters);
    }
@@ -126,7 +128,7 @@ public class SkynetEventService extends JiniService implements ISkynetEventServi
 
    private synchronized HashCollection<ISkynetEventListener, ISkynetEvent> getEventAndListenersToSendTo(final ISkynetEvent[] events, Set<ISkynetEventListener> filterOutSet) {
       HashCollection<ISkynetEventListener, ISkynetEvent> eventSets =
-            new HashCollection<ISkynetEventListener, ISkynetEvent>(false, HashSet.class);
+         new HashCollection<ISkynetEventListener, ISkynetEvent>(false, HashSet.class);
       // Build sets according to the filters that the event matches
       for (IEventFilter filter : listenerMap.keySet()) {
          for (ISkynetEvent event : events) {
@@ -146,7 +148,7 @@ public class SkynetEventService extends JiniService implements ISkynetEventServi
    private Set<ISkynetEventListener> toFilteredSet(final ISkynetEventListener... filterOut) {
       if (filterOut != null && filterOut.length > 0) {
          Set<ISkynetEventListener> filterOutSet =
-               new HashSet<ISkynetEventListener>((int) (filterOut.length / .75f) + 1);
+            new HashSet<ISkynetEventListener>((int) (filterOut.length / .75f) + 1);
          for (ISkynetEventListener listener : filterOut) {
             if (listener != null) {
                filterOutSet.add(listener);
@@ -157,20 +159,23 @@ public class SkynetEventService extends JiniService implements ISkynetEventServi
       return Collections.emptySet();
    }
 
+   @Override
    public void kick(final ISkynetEvent[] events, final ISkynetEventListener... except) throws RemoteException {
       if (events != null && events.length > 0) {
          executorService.submit(new EventDispatchRunnable(this, getEventAndListenersToSendTo(events,
-               toFilteredSet(except))));
+            toFilteredSet(except))));
       }
    }
 
    public static void main(String[] args) {
-      if (args.length != 2) throw new IllegalArgumentException(
-            "Must supply the db name for the service, such as \"dbinstance:schema\"");
+      if (args.length != 2) {
+         throw new IllegalArgumentException("Must supply the db name for the service, such as \"dbinstance:schema\"");
+      }
 
       new SkynetEventService(args[1]);
    }
 
+   @Override
    public void kill() throws RemoteException {
       try {
          this.deregisterService();
@@ -180,6 +185,7 @@ public class SkynetEventService extends JiniService implements ISkynetEventServi
       }
    }
 
+   @Override
    public boolean isAlive() throws RemoteException {
       return true;
    }

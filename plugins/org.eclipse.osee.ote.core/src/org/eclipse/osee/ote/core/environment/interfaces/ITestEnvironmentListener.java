@@ -17,11 +17,17 @@ import org.eclipse.osee.ote.core.environment.status.CommandEndedStatusEnum;
 import org.eclipse.osee.ote.core.framework.command.ICommandHandle;
 
 public interface ITestEnvironmentListener {
-	void onEnvironmentKilled(TestEnvironment env);
-	void onCommandAdded(TestEnvironment env, TestEnvironmentCommand cmd);
-	void onCommandBegan(TestEnvironment env, CommandDescription cmdDesc);
-	void onCommandFinished(TestEnvironment env, CommandDescription cmdDesc, CommandEndedStatusEnum status);
-	void onTestServerCommandFinished(TestEnvironment env, ICommandHandle handle);
-	void onCommandRemoved(TestEnvironment env, CommandDescription cmdDesc, CommandEndedStatusEnum status);
-	void onException(String message, Throwable t);
+   void onEnvironmentKilled(TestEnvironment env);
+
+   void onCommandAdded(TestEnvironment env, TestEnvironmentCommand cmd);
+
+   void onCommandBegan(TestEnvironment env, CommandDescription cmdDesc);
+
+   void onCommandFinished(TestEnvironment env, CommandDescription cmdDesc, CommandEndedStatusEnum status);
+
+   void onTestServerCommandFinished(TestEnvironment env, ICommandHandle handle);
+
+   void onCommandRemoved(TestEnvironment env, CommandDescription cmdDesc, CommandEndedStatusEnum status);
+
+   void onException(String message, Throwable t);
 }

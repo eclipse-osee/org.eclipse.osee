@@ -52,8 +52,8 @@ public class RelationDeletionTest {
       parent.addRelation(CoreRelationTypes.Default_Hierarchical__Child, child3);
       parent.persist();
 
-      assertTrue("Failed to add all three children", parent.getRelatedArtifacts(
-            CoreRelationTypes.Default_Hierarchical__Child).size() == 3);
+      assertTrue("Failed to add all three children",
+         parent.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Child).size() == 3);
 
       child1.deleteRelation(CoreRelationTypes.Default_Hierarchical__Parent, parent);
 

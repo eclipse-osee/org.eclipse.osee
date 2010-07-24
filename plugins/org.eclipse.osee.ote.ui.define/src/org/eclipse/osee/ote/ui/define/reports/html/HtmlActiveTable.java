@@ -43,8 +43,8 @@ public class HtmlActiveTable {
    private String tableHeight;
    private String tableWidth;
    private String tableTitle;
-   private List<List<String>> rowData;
-   private List<HtmlActiveTableColumnData> columnList;
+   private final List<List<String>> rowData;
+   private final List<HtmlActiveTableColumnData> columnList;
 
    public HtmlActiveTable() {
       super();

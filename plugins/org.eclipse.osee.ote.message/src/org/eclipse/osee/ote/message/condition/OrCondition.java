@@ -14,8 +14,8 @@ import java.util.Collection;
 
 /**
  * Checks that a series of conditions are all true
+ * 
  * @author Ken J. Aguilar
- *
  */
 public class OrCondition extends AbstractCondition {
 
@@ -29,6 +29,7 @@ public class OrCondition extends AbstractCondition {
       this.conditions = conditions.toArray(new ICondition[conditions.size()]);
    }
 
+   @Override
    public boolean check() {
       for (ICondition condition : conditions) {
          if (!condition.check()) {

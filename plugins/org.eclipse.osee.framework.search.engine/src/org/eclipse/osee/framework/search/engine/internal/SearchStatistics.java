@@ -37,18 +37,22 @@ public class SearchStatistics implements Cloneable, ISearchStatistics {
       this.longestQuery = EMPTY_STRING;
    }
 
+   @Override
    public long getAverageSearchTime() {
       return averageProcessingTime;
    }
 
+   @Override
    public int getTotalSearches() {
       return totalProcessed;
    }
 
+   @Override
    public long getLongestSearchTime() {
       return longestProcessingTime;
    }
 
+   @Override
    public String getLongestSearch() {
       return longestQuery;
    }
@@ -60,8 +64,8 @@ public class SearchStatistics implements Cloneable, ISearchStatistics {
 
       if (processingTime > this.longestProcessingTime) {
          this.longestQuery =
-               String.format("Query:[%s] BranchId:[%d] Options:[%s] Found:[%d in %d ms]", queryString, branchId,
-                     options.toString(), found, processingTime);
+            String.format("Query:[%s] BranchId:[%d] Options:[%s] Found:[%d in %d ms]", queryString, branchId,
+               options.toString(), found, processingTime);
       }
    }
 

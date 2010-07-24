@@ -20,9 +20,12 @@ import org.eclipse.swt.browser.LocationEvent;
  */
 public class AtsActionBrowserListener extends XResultBrowserListener {
 
+   @Override
    public void changing(LocationEvent event) {
       String location = event.location;
-      if (location.contains("javascript:print")) return;
+      if (location.contains("javascript:print")) {
+         return;
+      }
       String cmdStr = location.replaceFirst("about:blank", "");
       cmdStr = cmdStr.replaceFirst("blank", "");
       XResultBrowserHyperCmd xResultBrowserHyperCmd = XResultBrowserHyperCmd.getCmdStrHyperCmd(cmdStr);

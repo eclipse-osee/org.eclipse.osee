@@ -58,9 +58,9 @@ public final class BranchCacheUpdateUtil {
       for (BranchRow srcItem : cacheMessage.getBranchRows()) {
          int branchId = srcItem.getBranchId();
          Branch updated =
-               factory.createOrUpdate(cache, srcItem.getBranchId(), srcItem.getStorageState(), srcItem.getBranchGuid(),
-                     srcItem.getBranchName(), srcItem.getBranchType(), srcItem.getBranchState(),
-                     srcItem.getBranchArchived().isArchived());
+            factory.createOrUpdate(cache, srcItem.getBranchId(), srcItem.getStorageState(), srcItem.getBranchGuid(),
+               srcItem.getBranchName(), srcItem.getBranchType(), srcItem.getBranchState(),
+               srcItem.getBranchArchived().isArchived());
          updatedItems.add(updated);
 
          updated.setBaseTransaction(getTx(cacheMessage.getBranchToBaseTx(), branchId));
@@ -104,8 +104,8 @@ public final class BranchCacheUpdateUtil {
       for (Branch br : types) {
          Integer branchId = br.getId();
          message.getBranchRows().add(
-               new BranchRow(br.getId(), br.getGuid(), br.getName(), br.getBranchType(), br.getBranchState(),
-                     br.getArchiveState(), br.getStorageState()));
+            new BranchRow(br.getId(), br.getGuid(), br.getName(), br.getBranchType(), br.getBranchState(),
+               br.getArchiveState(), br.getStorageState()));
          if (br.hasParentBranch()) {
             message.getChildToParent().put(branchId, br.getParentBranch().getId());
          }

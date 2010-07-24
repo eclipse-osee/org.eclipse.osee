@@ -15,9 +15,8 @@ import org.xml.sax.Attributes;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
-public class Attention extends ElementHandlers{
+public class Attention extends ElementHandlers {
 
    /**
     * @param name
@@ -25,8 +24,6 @@ public class Attention extends ElementHandlers{
    public Attention() {
       super("Attention");
    }
-
-
 
    @Override
    public Object createStartElementFoundObject(String uri, String localName, String name, Attributes attributes) {

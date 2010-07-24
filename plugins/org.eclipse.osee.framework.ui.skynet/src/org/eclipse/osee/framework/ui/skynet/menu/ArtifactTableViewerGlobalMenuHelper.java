@@ -31,20 +31,26 @@ public class ArtifactTableViewerGlobalMenuHelper implements IGlobalMenuHelper {
       this.tableViewer = tableViewer;
    }
 
+   @Override
    public Collection<Artifact> getArtifacts() {
       Set<Artifact> artifacts = new HashSet<Artifact>();
-      if (tableViewer == null || tableViewer.getTable().isDisposed()) return artifacts;
+      if (tableViewer == null || tableViewer.getTable().isDisposed()) {
+         return artifacts;
+      }
       IStructuredSelection selection = (IStructuredSelection) tableViewer.getSelection();
       Iterator<?> iterator = selection.iterator();
       while (iterator.hasNext()) {
          Object obj = iterator.next();
-         if (obj instanceof Artifact)
+         if (obj instanceof Artifact) {
             artifacts.add((Artifact) obj);
-         else if ((obj instanceof Match) && (((Match) obj).getElement() instanceof Artifact)) artifacts.add((Artifact) ((Match) obj).getElement());
+         } else if (obj instanceof Match && ((Match) obj).getElement() instanceof Artifact) {
+            artifacts.add((Artifact) ((Match) obj).getElement());
+         }
       }
       return artifacts;
    }
 
+   @Override
    public Collection<GlobalMenuItem> getValidMenuItems() {
       return GlobalMenuItem.ALL;
    }

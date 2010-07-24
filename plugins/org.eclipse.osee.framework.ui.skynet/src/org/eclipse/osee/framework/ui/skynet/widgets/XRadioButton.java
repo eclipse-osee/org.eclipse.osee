@@ -38,7 +38,8 @@ public class XRadioButton extends XWidget {
    private final String xmlRoot;
    private Button button;
    public static enum ButtonType {
-      Check, Radio
+      Check,
+      Radio
    };
    private ButtonType buttonType = ButtonType.Radio;
    private boolean labelAfter;
@@ -59,28 +60,34 @@ public class XRadioButton extends XWidget {
 
    public void setSelected(boolean selected) {
       this.selected = selected;
-      if (button != null) button.setSelection(selected);
+      if (button != null) {
+         button.setSelection(selected);
+      }
    }
 
+   @Override
    public String toString() {
       return getLabel() + ": " + selected;
    }
 
+   @Override
    public void setFromXml(String xml) {
       Matcher m;
       m = Pattern.compile("<" + xmlRoot + ">(.*?)</" + xmlRoot + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(xml);
       if (m.find()) {
          String str = m.group(1);
-         if (str.equals("true"))
+         if (str.equals("true")) {
             setSelected(true);
-         else if (str.equals("false"))
+         } else if (str.equals("false")) {
             setSelected(false);
-         else
+         } else {
             System.err.println("Unexpected radiobutton value " + str);
+         }
       }
       refresh();
    }
 
+   @Override
    public String getXmlData() {
       return "" + selected;
    }
@@ -92,6 +99,7 @@ public class XRadioButton extends XWidget {
    /**
     * Don't need this since overriding setFromXml
     */
+   @Override
    public void setXmlData(String str) {
    }
 
@@ -99,44 +107,65 @@ public class XRadioButton extends XWidget {
     * Create radio Widgets. Widgets Created: Label: "text entry" horizonatalSpan takes up 2 columns; horizontalSpan must
     * be >=2
     */
+   @Override
    protected void createControls(Composite parent, int horizontalSpan) {
       this.parent = parent;
       // Create Text Widgets
-      if (!isLabelAfter() && isDisplayLabel()) createLabel(parent);
+      if (!isLabelAfter() && isDisplayLabel()) {
+         createLabel(parent);
+      }
 
-      button = new Button(parent, (buttonType == ButtonType.Check) ? SWT.CHECK : SWT.RADIO);
-      if (getToolTip() != null && !getToolTip().equals("")) button.setToolTipText(getToolTip());
-      if (getToolTip() != null && !getToolTip().equals("")) button.setToolTipText(getToolTip());
+      button = new Button(parent, buttonType == ButtonType.Check ? SWT.CHECK : SWT.RADIO);
+      if (getToolTip() != null && !getToolTip().equals("")) {
+         button.setToolTipText(getToolTip());
+      }
+      if (getToolTip() != null && !getToolTip().equals("")) {
+         button.setToolTipText(getToolTip());
+      }
       GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
       button.setLayoutData(gd);
       button.addSelectionListener(new SelectionAdapter() {
 
+         @Override
          public void widgetSelected(SelectionEvent event) {
             Button b = (Button) event.getSource();
             setSelected(b.getSelection());
             notifyXModifiedListeners();
          }
       });
-      if (isLabelAfter()) createLabel(parent);
+      if (isLabelAfter()) {
+         createLabel(parent);
+      }
       refresh();
    }
 
    public void createLabel(Composite parent) {
       labelWidget = new Label(parent, SWT.NONE);
       String str = getLabel();
-      if (!isLabelAfter()) str += ":";
+      if (!isLabelAfter()) {
+         str += ":";
+      }
       labelWidget.setText(str);
-      if (getToolTip() != null && !getToolTip().equals("")) labelWidget.setToolTipText(getToolTip());
+      if (getToolTip() != null && !getToolTip().equals("")) {
+         labelWidget.setToolTipText(getToolTip());
+      }
    }
 
+   @Override
    public void dispose() {
       button.dispose();
-      if (labelWidget != null) labelWidget.dispose();
-      if (parent != null && !parent.isDisposed()) parent.layout();
+      if (labelWidget != null) {
+         labelWidget.dispose();
+      }
+      if (parent != null && !parent.isDisposed()) {
+         parent.layout();
+      }
    }
 
    public void addSelectionListener(SelectionListener selectionListener) {
-      if (button != null) button.addSelectionListener(selectionListener);
+      if (button != null) {
+         button.addSelectionListener(selectionListener);
+      }
    }
 
    public void removeSelectionListener(SelectionListener selectionListener) {
@@ -147,6 +176,7 @@ public class XRadioButton extends XWidget {
       return selected;
    }
 
+   @Override
    public void refresh() {
       if (button != null) {
          button.setSelection(selected);
@@ -154,14 +184,17 @@ public class XRadioButton extends XWidget {
       validate();
    }
 
+   @Override
    public IStatus isValid() {
       return Status.OK_STATUS;
    }
 
+   @Override
    public String getReportData() {
       return getXmlData();
    }
 
+   @Override
    public String toHTML(String labelFont) {
       return AHTML.getLabelStr(labelFont, getLabel() + ": ") + getDisplayStr();
    }

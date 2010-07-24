@@ -27,32 +27,42 @@ public class GroupContentProvider implements ITreeContentProvider, ArtifactChang
    public GroupContentProvider(GroupExplorer groupExplorer) {
    }
 
+   @Override
    public void dispose() {
    }
 
    /**
     */
+   @Override
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
       this.viewer = (TreeViewer) viewer;
    }
 
+   @Override
    public Object[] getChildren(Object parentElement) {
-      if (parentElement instanceof GroupExplorerItem) return ((GroupExplorerItem) parentElement).getGroupItems().toArray();
+      if (parentElement instanceof GroupExplorerItem) {
+         return ((GroupExplorerItem) parentElement).getGroupItems().toArray();
+      }
       return new Object[] {};
    }
 
    /*
     * @see ITreeContentProvider#getParent(Object)
     */
+   @Override
    public Object getParent(Object element) {
-      if (element instanceof GroupExplorerItem) return ((GroupExplorerItem) element).getParentItem();
+      if (element instanceof GroupExplorerItem) {
+         return ((GroupExplorerItem) element).getParentItem();
+      }
       return null;
    }
 
+   @Override
    public boolean hasChildren(Object element) {
       return getChildren(element).length > 0;
    }
 
+   @Override
    public Object[] getElements(Object inputElement) {
       return getChildren(inputElement);
    }

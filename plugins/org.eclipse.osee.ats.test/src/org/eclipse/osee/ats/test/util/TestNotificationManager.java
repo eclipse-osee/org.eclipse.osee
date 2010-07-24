@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationEvent;
  */
 public class TestNotificationManager implements INotificationManager {
 
-   private List<OseeNotificationEvent> notificationEvents = new ArrayList<OseeNotificationEvent>();
+   private final List<OseeNotificationEvent> notificationEvents = new ArrayList<OseeNotificationEvent>();
 
    @Override
    public void addNotificationEvent(OseeNotificationEvent notificationEvent) {

@@ -12,15 +12,13 @@ package org.eclipse.osee.ote.message.commands;
 
 import java.io.Serializable;
 import java.net.InetSocketAddress;
-
 import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.message.tool.MessageMode;
-
 
 /**
  * @author Ken J. Aguilar
  */
-public class SetMessageModeCmd implements Serializable{
+public class SetMessageModeCmd implements Serializable {
 
    private static final long serialVersionUID = 4294009014724352978L;
 
@@ -29,7 +27,7 @@ public class SetMessageModeCmd implements Serializable{
    private final MessageMode oldMode;
    private final MessageMode newMode;
    private final InetSocketAddress address;
-   
+
    public SetMessageModeCmd(String name, DataType type, MessageMode oldMode, MessageMode newMode, InetSocketAddress address) {
       this.name = name;
       this.type = type;
@@ -79,7 +77,5 @@ public class SetMessageModeCmd implements Serializable{
    public DataType getType() {
       return type;
    }
-
-   
 
 }

@@ -22,18 +22,22 @@ public class BaseTestRunListenerDataProvider implements ITestRunListenerDataProv
       return new BaseEvent(properties, test, testCase);
    }
 
+   @Override
    public IEventData createOnPostRun(IPropertyStore propertyStore, TestScript test) {
       return new BaseEvent(propertyStore, test);
    }
 
+   @Override
    public IEventData createOnPostTestCase(IPropertyStore propertyStore, TestScript test, TestCase testCase) {
       return new BaseEvent(propertyStore, test, testCase);
    }
 
+   @Override
    public IEventData createOnPreRun(IPropertyStore propertyStore, TestScript test) {
       return new BaseEvent(propertyStore, test);
    }
 
+   @Override
    public IEventData createOnPreTestCase(IPropertyStore propertyStore, TestScript test, TestCase testCase) {
       return new BaseEvent(propertyStore, test, testCase);
    }

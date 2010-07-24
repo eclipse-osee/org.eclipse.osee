@@ -84,7 +84,7 @@ public class OseeLeaseRenewer {
          renewer.cancel();
       } else {
          OseeLog.log(JiniPlugin.class, Level.WARNING,
-               this.getClass().getName() + ": Lease Cancel Attempt: Lease Not Found!");
+            this.getClass().getName() + ": Lease Cancel Attempt: Lease Not Found!");
       }
 
       if (map.isEmpty()) {
@@ -113,9 +113,9 @@ public class OseeLeaseRenewer {
             OseeLog.log(JiniPlugin.class, Level.SEVERE, ex);
          }
          /*
-          * If there was a problem with the lease renewal, retry up until there is less than 250 ms
-          * remaining in the lease, at which point we can give up hope. Assuming leases are renewed
-          * with 2 minutes remaining & 250 ms for STOP_RETRY_TIME, this will provide 8 attempts.
+          * If there was a problem with the lease renewal, retry up until there is less than 250 ms remaining in the
+          * lease, at which point we can give up hope. Assuming leases are renewed with 2 minutes remaining & 250 ms for
+          * STOP_RETRY_TIME, this will provide 8 attempts.
           */
          catch (RemoteException ex) {
             long remainingTime = lease.getExpiration() - System.currentTimeMillis();

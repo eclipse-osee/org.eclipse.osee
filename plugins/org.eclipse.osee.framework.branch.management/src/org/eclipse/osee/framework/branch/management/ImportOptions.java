@@ -14,5 +14,10 @@ package org.eclipse.osee.framework.branch.management;
  * @author Roberto E. Escobar
  */
 public enum ImportOptions {
-   USE_IDS_FROM_IMPORT_FILE, EXCLUDE_BASELINE_TXS, ALL_AS_ROOT_BRANCHES, CLEAN_BEFORE_IMPORT, MIN_TXS, MAX_TXS;
+   USE_IDS_FROM_IMPORT_FILE,
+   EXCLUDE_BASELINE_TXS,
+   ALL_AS_ROOT_BRANCHES,
+   CLEAN_BEFORE_IMPORT,
+   MIN_TXS,
+   MAX_TXS;
 }

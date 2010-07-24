@@ -48,16 +48,19 @@ public class SkyWalkerShowAttributeTabItem {
       treeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
       treeViewer.setContentProvider(new ArrayTreeContentProvider());
       treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+         @Override
          public void selectionChanged(SelectionChangedEvent event) {
             storeSelected();
          }
       });
       treeViewer.setLabelProvider(new LabelProvider() {
 
+         @Override
          public Image getImage(Object obj) {
             return null;
          }
 
+         @Override
          public String getText(Object obj) {
             return obj.toString();
          }
@@ -65,6 +68,7 @@ public class SkyWalkerShowAttributeTabItem {
       treeViewer.setSorter(new ViewerSorter());
 
       options.addSkyWalkerOptionsChangeListener(new ISkyWalkerOptionsChangeListener() {
+         @Override
          public void modified(ModType... modTypes) {
             handleOptionModified(modTypes);
          }

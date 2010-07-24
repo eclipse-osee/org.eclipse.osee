@@ -43,7 +43,7 @@ public class XmlTransformServer {
    private Socket clientSocket;
    private ServerSocket server;
    private int portNumber;
-   private String userHome;
+   private final String userHome;
 
    public XmlTransformServer() {
       this.server = null;

@@ -14,17 +14,16 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public class ArtifactRoot {
 
    private final Artifact artifact;
-   
-   ArtifactRoot(Artifact artifact){
+
+   ArtifactRoot(Artifact artifact) {
       this.artifact = artifact;
    }
-   
-   Artifact getArtifact(){
+
+   Artifact getArtifact() {
       return artifact;
    }
 }

@@ -23,56 +23,57 @@ import org.eclipse.osee.framework.logging.ILoggerListener;
 
 public class OteLogFile implements ILoggerListener {
 
-	public Set<Logger> initializedLoggers;
-	private FileOutputStream fos;
-	private StringBuilder sb;
-	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-	public OteLogFile(File file) throws FileNotFoundException{
-		fos = new FileOutputStream(file);
-		sb = new StringBuilder();
-	}
-	
-	public synchronized void log(String loggerName, Level level, String message, Throwable th) {
-		try{
-			sb.append(String.format("<record name=\"%s\" level=\"%s\" >\n", loggerName, level.getName()));
-			sb.append("<Time>");
-			sb.append(sdf.format(new Date()));
-			sb.append("</Time>\n");
-			sb.append("<message>\n");
-			sb.append(message);
-			sb.append("\n");
-			sb.append("</message>\n");
-			if(th != null){
-				sb.append("<stacktrace>");
-				writeStackTrace(sb, th);
-				sb.append("</stacktrace>\n");
-			}
-			sb.append("</record>\n");
-			fos.write(sb.toString().getBytes());
-			fos.flush();
-			sb.setLength(0);
-		}
-		catch(IOException ex){
-			ex.printStackTrace();
-		}
-	}
-	
-	private void writeStackTrace(StringBuilder sb, Throwable th){
-		while(th != null){
-			sb.append(th.getMessage());
-			sb.append("\n");
-			for(StackTraceElement el:th.getStackTrace()){
-				sb.append(el.toString());
-				sb.append("\n");
-			}
-			th = th.getCause();
-		}
-	}
+   public Set<Logger> initializedLoggers;
+   private final FileOutputStream fos;
+   private final StringBuilder sb;
+   private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
-	@Override
-	protected void finalize() throws Throwable {
-		fos.close();
-		super.finalize();
-	}
-	
+   public OteLogFile(File file) throws FileNotFoundException {
+      fos = new FileOutputStream(file);
+      sb = new StringBuilder();
+   }
+
+   @Override
+   public synchronized void log(String loggerName, Level level, String message, Throwable th) {
+      try {
+         sb.append(String.format("<record name=\"%s\" level=\"%s\" >\n", loggerName, level.getName()));
+         sb.append("<Time>");
+         sb.append(sdf.format(new Date()));
+         sb.append("</Time>\n");
+         sb.append("<message>\n");
+         sb.append(message);
+         sb.append("\n");
+         sb.append("</message>\n");
+         if (th != null) {
+            sb.append("<stacktrace>");
+            writeStackTrace(sb, th);
+            sb.append("</stacktrace>\n");
+         }
+         sb.append("</record>\n");
+         fos.write(sb.toString().getBytes());
+         fos.flush();
+         sb.setLength(0);
+      } catch (IOException ex) {
+         ex.printStackTrace();
+      }
+   }
+
+   private void writeStackTrace(StringBuilder sb, Throwable th) {
+      while (th != null) {
+         sb.append(th.getMessage());
+         sb.append("\n");
+         for (StackTraceElement el : th.getStackTrace()) {
+            sb.append(el.toString());
+            sb.append("\n");
+         }
+         th = th.getCause();
+      }
+   }
+
+   @Override
+   protected void finalize() throws Throwable {
+      fos.close();
+      super.finalize();
+   }
+
 }

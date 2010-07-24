@@ -33,6 +33,7 @@ public class BranchCommitResponseTranslator implements ITranslator<BranchCommitR
       this.service = service;
    }
 
+   @Override
    public BranchCommitResponse convert(PropertyStore propertyStore) throws OseeCoreException {
       BranchCommitResponse response = new BranchCommitResponse();
       PropertyStore innerStore = propertyStore.getPropertyStore(Entry.TRANSACTION_NUMBER.name());
@@ -41,6 +42,7 @@ public class BranchCommitResponseTranslator implements ITranslator<BranchCommitR
       return response;
    }
 
+   @Override
    public PropertyStore convert(BranchCommitResponse data) throws OseeCoreException {
       PropertyStore store = new PropertyStore();
       TransactionRecord record = data.getTransaction();

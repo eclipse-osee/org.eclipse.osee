@@ -110,6 +110,7 @@ public class JarCreator {
          this.matcher = Pattern.compile(pattern).matcher("");
       }
 
+      @Override
       public boolean accept(File pathname) {
          if (pathname.isDirectory()) {
             return true;

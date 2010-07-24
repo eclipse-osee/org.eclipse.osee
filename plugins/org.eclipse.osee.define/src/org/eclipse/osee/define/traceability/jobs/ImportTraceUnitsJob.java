@@ -55,16 +55,16 @@ public class ImportTraceUnitsJob extends Job {
          monitor.beginTask(getName(), Integer.MAX_VALUE);
          if (isPersistChanges) {
             TraceUnitFromResourceOperation.importTraceFromTestUnits(monitor, source, isRecursive, fileWithMultiPaths,
-                  importToBranch, traceTypeIds);
+               importToBranch, traceTypeIds);
          } else {
             TraceUnitFromResourceOperation.printTraceFromTestUnits(monitor, source, isRecursive, fileWithMultiPaths,
-                  traceTypeIds);
+               traceTypeIds);
          }
          if (!monitor.isCanceled()) {
             status = Status.OK_STATUS;
          }
       } catch (Exception ex) {
-         status = new Status(Status.ERROR, DefinePlugin.PLUGIN_ID, "", ex);
+         status = new Status(IStatus.ERROR, DefinePlugin.PLUGIN_ID, "", ex);
       } finally {
          monitor.done();
       }

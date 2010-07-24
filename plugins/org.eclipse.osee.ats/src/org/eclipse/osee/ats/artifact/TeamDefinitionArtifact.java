@@ -58,13 +58,15 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
 
    public static Set<TeamDefinitionArtifact> EMPTY_SET = new HashSet<TeamDefinitionArtifact>();
    public static enum TeamDefinitionOptions {
-      TeamUsesVersions, RequireTargetedVersion
+      TeamUsesVersions,
+      RequireTargetedVersion
    };
 
    public TeamDefinitionArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 
+   @Override
    public Result isCreateBranchAllowed() throws OseeCoreException {
       if (getSoleAttributeValue(ATSAttributes.ALLOW_CREATE_BRANCH.getStoreName(), false) == false) {
          return new Result(false, "Branch creation disabled for Team Definition [" + this + "]");
@@ -75,6 +77,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
       return Result.TrueResult;
    }
 
+   @Override
    public Result isCommitBranchAllowed() throws OseeCoreException {
       if (getSoleAttributeValue(ATSAttributes.ALLOW_COMMIT_BRANCH.getStoreName(), false) == false) {
          return new Result(false, "Team Definition [" + this + "] not configured to allow branch commit.");
@@ -117,10 +120,12 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
       if (topTeamDef == null) {
          return java.util.Collections.emptyList();
       }
-      return Collections.castAll(AtsUtil.getActive(Artifacts.getChildrenOfTypeSet(topTeamDef,
-            TeamDefinitionArtifact.class, false), active, TeamDefinitionArtifact.class));
+      return Collections.castAll(AtsUtil.getActive(
+         Artifacts.getChildrenOfTypeSet(topTeamDef, TeamDefinitionArtifact.class, false), active,
+         TeamDefinitionArtifact.class));
    }
 
+   @Override
    public Branch getParentBranch() throws OseeCoreException {
       try {
          String guid = getSoleAttributeValue(ATSAttributes.BASELINE_BRANCH_GUID_ATTRIBUTE.getStoreName(), "");
@@ -179,7 +184,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
 
    public VersionArtifact getNextReleaseVersion() throws OseeCoreException {
       for (VersionArtifact verArt : getRelatedArtifacts(AtsRelationTypes.TeamDefinitionToVersion_Version,
-            VersionArtifact.class)) {
+         VersionArtifact.class)) {
          if (verArt.getSoleAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), false)) {
             return verArt;
          }
@@ -197,7 +202,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
 
    public static List<TeamDefinitionArtifact> getTeamDefinitions(Active active) throws OseeCoreException {
       return Collections.castAll(AtsCacheManager.getArtifactsByActive(
-            ArtifactTypeManager.getType(AtsArtifactTypes.TeamDefinition), active));
+         ArtifactTypeManager.getType(AtsArtifactTypes.TeamDefinition), active));
    }
 
    public static List<TeamDefinitionArtifact> getTeamTopLevelDefinitions(Active active) throws OseeCoreException {
@@ -205,8 +210,9 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
       if (topTeamDef == null) {
          return java.util.Collections.emptyList();
       }
-      return Collections.castAll(AtsUtil.getActive(Artifacts.getChildrenOfTypeSet(topTeamDef,
-            TeamDefinitionArtifact.class, false), active, TeamDefinitionArtifact.class));
+      return Collections.castAll(AtsUtil.getActive(
+         Artifacts.getChildrenOfTypeSet(topTeamDef, TeamDefinitionArtifact.class, false), active,
+         TeamDefinitionArtifact.class));
    }
 
    public static TeamDefinitionArtifact getTopTeamDefinition() throws OseeCoreException {
@@ -284,9 +290,9 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
          if (artifact.isOfType(CoreArtifactTypes.WorkFlowDefinition)) {
             if (workFlowArt != null) {
                OseeLog.log(
-                     AtsPlugin.class,
-                     Level.SEVERE,
-                     "Multiple workflows found where only one expected for Team Definition " + getHumanReadableId() + " - " + getName());
+                  AtsPlugin.class,
+                  Level.SEVERE,
+                  "Multiple workflows found where only one expected for Team Definition " + getHumanReadableId() + " - " + getName());
             }
             workFlowArt = artifact;
          }
@@ -338,7 +344,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
    public double getHoursPerWorkDayFromItemAndChildren(TeamDefinitionArtifact teamDef) {
       try {
          Double manDaysHrs =
-               teamDef.getSoleAttributeValue(ATSAttributes.HOURS_PER_WORK_DAY_ATTRIBUTE.getStoreName(), 0.0);
+            teamDef.getSoleAttributeValue(ATSAttributes.HOURS_PER_WORK_DAY_ATTRIBUTE.getStoreName(), 0.0);
          if (manDaysHrs != null && manDaysHrs != 0) {
             return manDaysHrs;
          }
@@ -419,7 +425,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
 
    public VersionArtifact createVersion(String name) throws OseeCoreException {
       VersionArtifact versionArt =
-            (VersionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtil.getAtsBranch(), name);
+         (VersionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtil.getAtsBranch(), name);
       addRelation(AtsRelationTypes.TeamDefinitionToVersion_Version, versionArt);
       return versionArt;
    }
@@ -500,7 +506,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
       Set<TeamDefinitionArtifact> teamDefs = new HashSet<TeamDefinitionArtifact>();
       for (String teamDefName : teamDefNames) {
          for (Artifact artifact : AtsCacheManager.getArtifactsByName(
-               ArtifactTypeManager.getType(AtsArtifactTypes.TeamDefinition), teamDefName)) {
+            ArtifactTypeManager.getType(AtsArtifactTypes.TeamDefinition), teamDefName)) {
             teamDefs.add((TeamDefinitionArtifact) artifact);
          }
       }

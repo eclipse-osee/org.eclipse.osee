@@ -17,30 +17,28 @@ import org.eclipse.osee.ote.message.enums.DataType;
 
 public class TestMessageData extends MessageData {
 
-    public TestMessageData(String typeName, String name, int dataByteSize,
-	    int offset, DataType memType) {
-	super(typeName, name, dataByteSize, offset, memType);
-    }
+   public TestMessageData(String typeName, String name, int dataByteSize, int offset, DataType memType) {
+      super(typeName, name, dataByteSize, offset, memType);
+   }
 
+   @Override
+   public IMessageHeader getMsgHeader() {
+      return null;
+   }
 
-    @Override
-    public IMessageHeader getMsgHeader() {
-	return null;
-    }
+   @Override
+   public void initializeDefaultHeaderValues() {
 
-    @Override
-    public void initializeDefaultHeaderValues() {
+   }
 
-    }
+   @Override
+   public void visit(IMessageDataVisitor visitor) {
 
-    @Override
-    public void visit(IMessageDataVisitor visitor) {
+   }
 
-    }
+   @Override
+   public void zeroize() {
 
-    @Override
-    public void zeroize() {
-
-    }
+   }
 
 }

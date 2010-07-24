@@ -126,6 +126,6 @@ public class BranchEventFiltersTest {
    }
 
    // artifact listener create for use by all tests to just capture result eventArtifacts for query
-   private BranchEventListener branchEventListener = new BranchEventListener();
+   private final BranchEventListener branchEventListener = new BranchEventListener();
 
 }

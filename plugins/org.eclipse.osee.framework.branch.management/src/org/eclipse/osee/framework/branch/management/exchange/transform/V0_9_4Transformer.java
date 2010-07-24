@@ -25,7 +25,7 @@ public class V0_9_4Transformer implements IOseeExchangeVersionTransformer {
    public String applyTransform(ExchangeDataProcessor processor) throws OseeCoreException {
 
       processor.transform(ExportItem.EXPORT_DB_SCHEMA, new ReplaceAll("\\s+<table name=\"osee_\\w+_type\".*?</table>",
-            ""));
+         ""));
       return getMaxVersion().toString();
    }
 

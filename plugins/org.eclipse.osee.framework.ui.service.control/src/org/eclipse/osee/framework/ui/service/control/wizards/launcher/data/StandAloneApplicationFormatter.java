@@ -15,7 +15,7 @@ package org.eclipse.osee.framework.ui.service.control.wizards.launcher.data;
  */
 public class StandAloneApplicationFormatter extends ExecutionCommandFormatter {
    private final String baseExecString = "nohup" + ServiceItem.EXEC_SEPARATOR + "#JAVA#";
-   private String executionString;
+   private final String executionString;
 
    public StandAloneApplicationFormatter(String executionString) {
       this.executionString = executionString;
@@ -25,7 +25,7 @@ public class StandAloneApplicationFormatter extends ExecutionCommandFormatter {
    protected String buildExecString() {
       String toReturn = baseExecString.replace("#JAVA#", "java");
       toReturn +=
-            this.getJvmArgsString() + ServiceItem.EXEC_SEPARATOR + executionString + this.getApplicationArgsString();
+         this.getJvmArgsString() + ServiceItem.EXEC_SEPARATOR + executionString + this.getApplicationArgsString();
       return toReturn;
    }
 

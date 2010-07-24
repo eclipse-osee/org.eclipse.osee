@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.logging;
 
 import java.io.Serializable;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
@@ -74,14 +73,15 @@ public class BaseStatus implements IHealthStatus, Serializable {
    public boolean isOk() {
       return Level.INFO.intValue() >= getLevel().intValue();
    }
-   
-   public String toString(){
-	   StringBuilder sb = new StringBuilder();
-	   if(message != null){
-	      sb.append(message);
-	   	  sb.append("\n");
-	   }
-	   sb.append(Lib.exceptionToString(th));
-	   return sb.toString();   
+
+   @Override
+   public String toString() {
+      StringBuilder sb = new StringBuilder();
+      if (message != null) {
+         sb.append(message);
+         sb.append("\n");
+      }
+      sb.append(Lib.exceptionToString(th));
+      return sb.toString();
    }
 }

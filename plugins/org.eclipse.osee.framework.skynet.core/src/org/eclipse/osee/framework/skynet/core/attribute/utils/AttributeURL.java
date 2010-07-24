@@ -40,7 +40,7 @@ public class AttributeURL {
          parameterMap.put("extension", extension);
       }
       String urlString =
-            HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.RESOURCE_CONTEXT, parameterMap);
+         HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.RESOURCE_CONTEXT, parameterMap);
       return new URL(urlString);
    }
 
@@ -50,7 +50,8 @@ public class AttributeURL {
          parameterMap.put("sessionId", ClientSessionManager.getSessionId());
          parameterMap.put("uri", uri);
          String urlString =
-               HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.RESOURCE_CONTEXT, parameterMap);
+            HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.RESOURCE_CONTEXT,
+               parameterMap);
          return new URL(urlString);
       } catch (Exception ex) {
          throw new OseeDataStoreException(ex);

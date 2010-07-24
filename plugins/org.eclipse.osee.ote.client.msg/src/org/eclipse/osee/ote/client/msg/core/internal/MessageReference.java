@@ -16,50 +16,49 @@ import org.eclipse.osee.ote.message.tool.MessageMode;
 
 /**
  * @author Ken J. Aguilar
- *
  */
 public class MessageReference {
 
-	private final DataType type;
-	private final MessageMode mode;
-	private final String msgClassName;
+   private final DataType type;
+   private final MessageMode mode;
+   private final String msgClassName;
 
-	public MessageReference(DataType type, MessageMode mode, String msgClassName) {
-		this.type = type;
-		this.mode = mode;
-		this.msgClassName = msgClassName;
-	}
-	
-	public MessageReference(Message msg) {
-		this.type = msg.getDefaultMessageData().getType();
-		this.mode = MessageMode.READER;
-		this.msgClassName = msg.getMessageName();
-	}
+   public MessageReference(DataType type, MessageMode mode, String msgClassName) {
+      this.type = type;
+      this.mode = mode;
+      this.msgClassName = msgClassName;
+   }
 
-	public String getMsgClass() {
-		return msgClassName;
-	}
+   public MessageReference(Message msg) {
+      this.type = msg.getDefaultMessageData().getType();
+      this.mode = MessageMode.READER;
+      this.msgClassName = msg.getMessageName();
+   }
 
-	public DataType getType() {
-		return type;
-	}
+   public String getMsgClass() {
+      return msgClassName;
+   }
 
-	public MessageMode getMode() {
-		return mode;
-	}
-	
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		MessageReference otherRef = (MessageReference) obj;
-		return msgClassName.equals(otherRef.msgClassName) && type == otherRef.type && mode == otherRef.mode;
-	}
+   public DataType getType() {
+      return type;
+   }
 
-	@Override
-	public int hashCode() {
-		return msgClassName.hashCode() ^ mode.hashCode() ^ type.hashCode();
-	}
-	
+   public MessageMode getMode() {
+      return mode;
+   }
+
+   @Override
+   public boolean equals(Object obj) {
+      if (obj == null) {
+         return false;
+      }
+      MessageReference otherRef = (MessageReference) obj;
+      return msgClassName.equals(otherRef.msgClassName) && type == otherRef.type && mode == otherRef.mode;
+   }
+
+   @Override
+   public int hashCode() {
+      return msgClassName.hashCode() ^ mode.hashCode() ^ type.hashCode();
+   }
+
 }

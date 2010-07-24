@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Control;
  * @author Ryan D. Brooks
  */
 public class ArtifactTypeFilter extends SearchFilter {
-   private ListViewer searchTypeList;
+   private final ListViewer searchTypeList;
 
    public ArtifactTypeFilter(Control optionsControl, ListViewer searchTypeList) {
       super("Artifact Type", optionsControl);
@@ -33,7 +33,9 @@ public class ArtifactTypeFilter extends SearchFilter {
    public void addFilterTo(FilterTableViewer filterViewer) {
       for (String type : searchTypeList.getList().getSelection()) {
          ISearchPrimitive primitive = new ArtifactTypeSearch(type, EQUAL);
-         if (not) primitive = new NotSearch(primitive);
+         if (not) {
+            primitive = new NotSearch(primitive);
+         }
          filterViewer.addItem(primitive, getFilterName(), type, "");
       }
    }
@@ -46,7 +48,9 @@ public class ArtifactTypeFilter extends SearchFilter {
    @Override
    public void loadFromStorageString(FilterTableViewer filterViewer, String type, String value, String storageString, boolean isNotEnabled) {
       ISearchPrimitive primitive = ArtifactTypeSearch.getPrimitive(storageString);
-      if (isNotEnabled) primitive = new NotSearch(primitive);
+      if (isNotEnabled) {
+         primitive = new NotSearch(primitive);
+      }
       filterViewer.addItem(primitive, getFilterName(), type, value);
    }
 }

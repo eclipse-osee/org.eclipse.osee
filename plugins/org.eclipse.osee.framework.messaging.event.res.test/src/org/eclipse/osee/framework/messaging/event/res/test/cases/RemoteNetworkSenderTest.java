@@ -28,8 +28,8 @@ public class RemoteNetworkSenderTest {
    public static int Port = 485;
    public static String UserId = "b345344";
 
-   public static RemoteNetworkSender1 networkSender =
-         RemoteEventUtil.getNetworkSender(Object, SessionId, MachineName, UserId, MachineIp, Port, ClientVersion);
+   public static RemoteNetworkSender1 networkSender = RemoteEventUtil.getNetworkSender(Object, SessionId, MachineName,
+      UserId, MachineIp, Port, ClientVersion);
 
    /**
     * Test method for

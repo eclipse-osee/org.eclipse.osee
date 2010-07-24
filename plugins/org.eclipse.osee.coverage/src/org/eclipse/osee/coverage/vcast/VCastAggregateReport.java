@@ -42,7 +42,7 @@ public class VCastAggregateReport {
       File reportHtmlFile = getFile();
       if (!reportHtmlFile.exists()) {
          throw new OseeArgumentException(String.format(
-               "VectorCast vcast_aggregate_coverage_report.html file doesn't exist [%s]", vcastDirectory));
+            "VectorCast vcast_aggregate_coverage_report.html file doesn't exist [%s]", vcastDirectory));
       }
       List<AggregateCoverageUnitResult> results = new ArrayList<AggregateCoverageUnitResult>();
       try {

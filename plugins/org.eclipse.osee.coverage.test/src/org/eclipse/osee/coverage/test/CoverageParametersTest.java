@@ -237,7 +237,7 @@ public class CoverageParametersTest {
 
       // Test_Unit and Not_Covered
       coverageParameters.setCoverageMethods(Arrays.asList(CoverageOptionManager.Not_Covered,
-            CoverageOptionManager.Test_Unit));
+         CoverageOptionManager.Test_Unit));
       itemsAndParents = coverageParameters.performSearchGetResults();
       Assert.assertEquals(122, itemsAndParents.getFirst().size());
       Assert.assertEquals(4, itemsAndParents.getSecond().size());

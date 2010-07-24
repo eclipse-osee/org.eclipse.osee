@@ -108,12 +108,15 @@ public class EnumeratedElement<T extends Enum<T> & IEnumValue<T>> extends Discre
    public void checkPulse(ITestAccessor accessor, T value) throws InterruptedException {
 
       T nonPulsedValue = getValue(0);
-      if (value == nonPulsedValue) nonPulsedValue = getValue(1);
+      if (value == nonPulsedValue) {
+         nonPulsedValue = getValue(1);
+      }
 
       checkPulse(accessor, value, nonPulsedValue);
 
    }
 
+   @Override
    @SuppressWarnings("unchecked")
    public EnumeratedElement<T> switchMessages(Collection<? extends Message<?, ?, ?>> messages) {
       return (EnumeratedElement<T>) super.switchMessages(messages);
@@ -125,7 +128,7 @@ public class EnumeratedElement<T extends Enum<T> & IEnumValue<T>> extends Discre
          return val;
       }
       throw new IllegalArgumentException(
-            "No enum value associated with the integer value " + intValue + " for element " + getName());
+         "No enum value associated with the integer value " + intValue + " for element " + getName());
    }
 
    @Override
@@ -175,6 +178,7 @@ public class EnumeratedElement<T extends Enum<T> & IEnumValue<T>> extends Discre
       return new NonMappingEnumeratedElement<T>(this);
    }
 
+   @Override
    public String valueOf() {
       return String.format("%s [%d]", getValue().name(), getIntValue());
    }

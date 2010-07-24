@@ -61,8 +61,7 @@ public class ArtifactLoaderTest {
    private static void testCleanup() throws Exception {
       SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch(), "ArtifactLoaderTest");
       List<Artifact> artifacts =
-            ArtifactQuery.getArtifactListFromName("ArtifactLoaderTest", BranchManager.getCommonBranch(),
-                  EXCLUDE_DELETED);
+         ArtifactQuery.getArtifactListFromName("ArtifactLoaderTest", BranchManager.getCommonBranch(), EXCLUDE_DELETED);
       ArtifactPersistenceManager.deleteArtifactList(transaction, false, artifacts);
       transaction.execute();
    }
@@ -81,8 +80,8 @@ public class ArtifactLoaderTest {
       // Create some software artifacts
       SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch(), "ArtifactLoaderTest");
       Collection<Artifact> artifacts =
-            FrameworkTestUtil.createSimpleArtifacts(CoreArtifactTypes.GlobalPreferences, NUM_ARTIFACTS,
-                  "ArtifactLoaderTest", BranchManager.getCommonBranch());
+         FrameworkTestUtil.createSimpleArtifacts(CoreArtifactTypes.GlobalPreferences, NUM_ARTIFACTS,
+            "ArtifactLoaderTest", BranchManager.getCommonBranch());
       for (Artifact artifact : artifacts) {
          artifact.setName("ArtifactLoaderTest");
          artifact.addAttribute(CoreAttributeTypes.DEFAULT_MAIL_SERVER, ATTRIBUTE_VALUE);
@@ -108,7 +107,7 @@ public class ArtifactLoaderTest {
          thread.start();
       }
 
-      long endTime = new Date().getTime() + (45 * 1000);
+      long endTime = new Date().getTime() + 45 * 1000;
       while (true) {
          Thread.sleep(1000);
          System.out.println("Checking for thread completion..." + numThreadsCompleted + "/" + TOTAL_THREADS);
@@ -122,8 +121,7 @@ public class ArtifactLoaderTest {
 
       // Load and check artifacts
       artifacts =
-            ArtifactQuery.getArtifactListFromName("ArtifactLoaderTest", BranchManager.getCommonBranch(),
-                  EXCLUDE_DELETED);
+         ArtifactQuery.getArtifactListFromName("ArtifactLoaderTest", BranchManager.getCommonBranch(), EXCLUDE_DELETED);
       Assert.assertEquals(NUM_ARTIFACTS, artifacts.size());
 
       for (Artifact artifact : artifacts) {
@@ -144,8 +142,8 @@ public class ArtifactLoaderTest {
          try {
             System.out.println("Running " + getName());
             List<Artifact> artifacts =
-                  ArtifactQuery.getArtifactListFromName("ArtifactLoaderTest", BranchManager.getCommonBranch(),
-                        EXCLUDE_DELETED);
+               ArtifactQuery.getArtifactListFromName("ArtifactLoaderTest", BranchManager.getCommonBranch(),
+                  EXCLUDE_DELETED);
             if (artifacts.size() != NUM_ARTIFACTS) {
                throw new OseeStateException("Should have loaded " + NUM_ARTIFACTS + "; only got " + artifacts.size());
             }

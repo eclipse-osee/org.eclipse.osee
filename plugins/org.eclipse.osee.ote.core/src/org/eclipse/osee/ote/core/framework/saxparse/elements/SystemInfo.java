@@ -15,9 +15,8 @@ import org.xml.sax.Attributes;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
-public class SystemInfo extends ElementHandlers{
+public class SystemInfo extends ElementHandlers {
 
    /**
     * @param name
@@ -28,8 +27,10 @@ public class SystemInfo extends ElementHandlers{
 
    @Override
    public Object createStartElementFoundObject(String uri, String localName, String name, Attributes attributes) {
-      SystemInfoData data = new SystemInfoData(attributes.getValue("osArch"), 
-            attributes.getValue("osName"), attributes.getValue("osVersion"), attributes.getValue("oseeVersion"), attributes.getValue("oseeServerTitle"));
+      SystemInfoData data =
+         new SystemInfoData(attributes.getValue("osArch"), attributes.getValue("osName"),
+            attributes.getValue("osVersion"), attributes.getValue("oseeVersion"),
+            attributes.getValue("oseeServerTitle"));
       return data;
    }
 

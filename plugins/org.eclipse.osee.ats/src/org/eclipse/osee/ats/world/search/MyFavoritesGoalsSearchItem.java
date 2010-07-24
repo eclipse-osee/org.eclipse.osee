@@ -43,12 +43,14 @@ public class MyFavoritesGoalsSearchItem extends UserSearchItem {
    @Override
    protected Collection<Artifact> searchIt(User user) throws OseeCoreException {
       return Collections.castAll(user.getRelatedArtifactsOfType(AtsRelationTypes.FavoriteUser_Artifact,
-            GoalArtifact.class));
+         GoalArtifact.class));
    }
 
    @Override
    public void performUI(SearchType searchType) throws OseeCoreException {
-      if (user != null) return;
+      if (user != null) {
+         return;
+      }
       super.performUI(searchType);
    }
 

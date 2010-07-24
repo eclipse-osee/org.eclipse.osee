@@ -42,7 +42,7 @@ public class ChildElementNodeLabelProvider extends LabelProvider {
             return ((Element) element).getDescriptiveName();
          } else {
             return String.format("%s: byte=%d, msb=%d, lsb=%d", ((Element) element).getDescriptiveName(),
-                  ((Element) element).getByteOffset(), ((Element) element).getMsb(), ((Element) element).getLsb());
+               ((Element) element).getByteOffset(), ((Element) element).getMsb(), ((Element) element).getLsb());
          }
       }
       return "<UNKNOWN>";

@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.database.init;
  * @author Ryan D. Brooks
  */
 public class AddBaseDbInitChoice implements IAddDbInitChoice {
+   @Override
    public void addDbInitChoice(GroupSelection groupSelection) {
       DbInitConfiguration config = new DbInitConfiguration(true);
       groupSelection.addChoice("Base - for importing branches", config);

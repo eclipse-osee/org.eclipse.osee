@@ -17,12 +17,12 @@ import java.io.Serializable;
  */
 public class StringNamespace implements Namespace, Serializable {
    private static final long serialVersionUID = -8903438134102328929L;
-   private String namespace;
+   private final String namespace;
 
    public StringNamespace(String namespace) {
       this.namespace = namespace;
    }
-   
+
    @Override
    public String toString() {
       return namespace;

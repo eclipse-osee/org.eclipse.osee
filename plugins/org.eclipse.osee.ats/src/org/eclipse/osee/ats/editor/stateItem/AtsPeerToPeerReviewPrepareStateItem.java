@@ -38,7 +38,7 @@ public class AtsPeerToPeerReviewPrepareStateItem extends AtsStateItem {
    public void xWidgetCreated(XWidget widget, FormToolkit toolkit, AtsWorkPage page, Artifact art, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
       super.xWidgetCreated(widget, toolkit, page, art, modListener, isEditable);
       try {
-         if ((art instanceof ReviewSMArtifact) && ((ReviewSMArtifact) art).getParentSMA() == null) {
+         if (art instanceof ReviewSMArtifact && ((ReviewSMArtifact) art).getParentSMA() == null) {
             if (widget.getLabel().equals(ATSAttributes.BLOCKING_REVIEW_ATTRIBUTE.getDisplayName())) {
                XComboBooleanDam decisionComboDam = (XComboBooleanDam) widget;
                decisionComboDam.setEnabled(false);
@@ -54,6 +54,7 @@ public class AtsPeerToPeerReviewPrepareStateItem extends AtsStateItem {
       }
    }
 
+   @Override
    public String getDescription() throws OseeCoreException {
       return "AtsPeerToPeerReviewPrepareStateItem - If stand-alone review, remove blocking review enablement and required entry.";
    }

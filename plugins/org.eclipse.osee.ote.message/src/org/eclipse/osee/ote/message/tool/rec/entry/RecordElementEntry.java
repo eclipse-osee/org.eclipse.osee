@@ -19,44 +19,46 @@ import org.eclipse.osee.ote.message.tool.rec.ElementEntryFactory;
 
 public class RecordElementEntry implements IElementEntry {
 
-	private final RecordElement element;
-	private final IElementEntry[] entries;
-    private final byte[] nameAsBytes;
-    
-	public RecordElementEntry(RecordElement element) {
-		this.element = element;
-        nameAsBytes = element.getName().getBytes();
-        Collection<Element> elements = element.getElementMap().values();
-        entries = new IElementEntry[elements.size()];
-        int i = 0;
-        for (Element elem : elements) {
-           entries[i] = ElementEntryFactory.createEntry(elem);
-           i++;
-        }
-	}
-	
-	public RecordElement getElement() {
-		return element;
-	}
+   private final RecordElement element;
+   private final IElementEntry[] entries;
+   private final byte[] nameAsBytes;
 
-	public void write(ByteBuffer buffer, MemoryResource mem, int limit) {
-//       for (IElementEntry entry : entries) {
-//    	   if (entry.getElement().getByteOffset() < limit) {
-//    		   buffer.put(nameAsBytes).put((byte)'.');
-//    		   entry.write(buffer, mem, limit);
-//    		   buffer.put(COMMA);
-//    	   }
-//       }
-	}
-	
-	public void write(byte[] prefix, ByteBuffer buffer, MemoryResource mem, int limit) {
-//	       for (IElementEntry entry : entries) {
-//	    	   if (entry.getElement().getByteOffset() < limit) {
-//	    		   buffer.put(prefix).put(nameAsBytes).put((byte)'.');
-//	    		   entry.write(buffer, mem, limit);
-//	    		   buffer.put(COMMA);
-//	    	   }
-//	       }
-		}
+   public RecordElementEntry(RecordElement element) {
+      this.element = element;
+      nameAsBytes = element.getName().getBytes();
+      Collection<Element> elements = element.getElementMap().values();
+      entries = new IElementEntry[elements.size()];
+      int i = 0;
+      for (Element elem : elements) {
+         entries[i] = ElementEntryFactory.createEntry(elem);
+         i++;
+      }
+   }
+
+   @Override
+   public RecordElement getElement() {
+      return element;
+   }
+
+   @Override
+   public void write(ByteBuffer buffer, MemoryResource mem, int limit) {
+      //       for (IElementEntry entry : entries) {
+      //    	   if (entry.getElement().getByteOffset() < limit) {
+      //    		   buffer.put(nameAsBytes).put((byte)'.');
+      //    		   entry.write(buffer, mem, limit);
+      //    		   buffer.put(COMMA);
+      //    	   }
+      //       }
+   }
+
+   public void write(byte[] prefix, ByteBuffer buffer, MemoryResource mem, int limit) {
+      //	       for (IElementEntry entry : entries) {
+      //	    	   if (entry.getElement().getByteOffset() < limit) {
+      //	    		   buffer.put(prefix).put(nameAsBytes).put((byte)'.');
+      //	    		   entry.write(buffer, mem, limit);
+      //	    		   buffer.put(COMMA);
+      //	    	   }
+      //	       }
+   }
 
 }

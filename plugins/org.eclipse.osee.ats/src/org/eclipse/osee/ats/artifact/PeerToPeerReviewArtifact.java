@@ -33,7 +33,9 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IReviewArtifact, IWorldViewArtifact, IATSStateMachineArtifact {
 
    public static enum PeerToPeerReviewState {
-      Prepare, Review, Completed
+      Prepare,
+      Review,
+      Completed
    };
 
    public PeerToPeerReviewArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
@@ -47,15 +49,18 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
 
    @Override
    public IStatus isUserRoleValid(String namespace) throws OseeCoreException {
-      if (getUserRoleManager().getUserRoles(Role.Author).size() <= 0) return new Status(IStatus.ERROR, namespace,
-            "Must have at least one Author");
-      if (getUserRoleManager().getUserRoles(Role.Reviewer).size() <= 0) return new Status(IStatus.ERROR, namespace,
-            "Must have at least one Reviewer");
+      if (getUserRoleManager().getUserRoles(Role.Author).size() <= 0) {
+         return new Status(IStatus.ERROR, namespace, "Must have at least one Author");
+      }
+      if (getUserRoleManager().getUserRoles(Role.Reviewer).size() <= 0) {
+         return new Status(IStatus.ERROR, namespace, "Must have at least one Reviewer");
+      }
       // If in review state, all roles must have hours spent entered
       if (getStateMgr().getCurrentStateName().equals(PeerToPeerReviewArtifact.PeerToPeerReviewState.Review.name())) {
          for (UserRole uRole : userRoleManager.getUserRoles()) {
-            if (uRole.getHoursSpent() == null) new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID,
-                  "Hours spent must be entered for each role.");
+            if (uRole.getHoursSpent() == null) {
+               new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, "Hours spent must be entered for each role.");
+            }
          }
       }
       return super.isUserRoleValid(namespace);
@@ -78,7 +83,9 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
 
    @Override
    public VersionArtifact getWorldViewTargetedVersion() throws OseeCoreException {
-      if (getParentSMA() == null) return null;
+      if (getParentSMA() == null) {
+         return null;
+      }
       return getParentSMA().getWorldViewTargetedVersion();
    }
 

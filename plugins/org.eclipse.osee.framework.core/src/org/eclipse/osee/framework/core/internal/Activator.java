@@ -17,10 +17,12 @@ public class Activator implements BundleActivator {
 
    private static BundleContext bundleContext;
 
+   @Override
    public void start(BundleContext context) throws Exception {
       Activator.bundleContext = context;
    }
 
+   @Override
    public void stop(BundleContext context) throws Exception {
       Activator.bundleContext = null;
    }

@@ -18,37 +18,35 @@ import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 class ExportClassLoaderCreationTracker extends ServiceTracker {
 
-	private ExportClassLoader exportClassLoader;
-	private JmsJiniBridgeConnectionServiceTracker jmsJiniBridgeConnectionServiceTracker;
+   private ExportClassLoader exportClassLoader;
+   private JmsJiniBridgeConnectionServiceTracker jmsJiniBridgeConnectionServiceTracker;
 
-	ExportClassLoaderCreationTracker(BundleContext context){
-		super(context, PackageAdmin.class.getName(), null);
-	}
+   ExportClassLoaderCreationTracker(BundleContext context) {
+      super(context, PackageAdmin.class.getName(), null);
+   }
 
-	@Override
-	public Object addingService(ServiceReference reference) {
-		PackageAdmin pa = (PackageAdmin) context.getService(reference);
-		exportClassLoader = new ExportClassLoader(pa);
-		jmsJiniBridgeConnectionServiceTracker = new JmsJiniBridgeConnectionServiceTracker(context, exportClassLoader);
-		jmsJiniBridgeConnectionServiceTracker.open(true);
-		return super.addingService(reference);
-	}
+   @Override
+   public Object addingService(ServiceReference reference) {
+      PackageAdmin pa = (PackageAdmin) context.getService(reference);
+      exportClassLoader = new ExportClassLoader(pa);
+      jmsJiniBridgeConnectionServiceTracker = new JmsJiniBridgeConnectionServiceTracker(context, exportClassLoader);
+      jmsJiniBridgeConnectionServiceTracker.open(true);
+      return super.addingService(reference);
+   }
 
-	@Override
-	public void close() {
-		jmsJiniBridgeConnectionServiceTracker.close();
-		super.close();
-	}
+   @Override
+   public void close() {
+      jmsJiniBridgeConnectionServiceTracker.close();
+      super.close();
+   }
 
-	@Override
-	public void removedService(ServiceReference reference, Object service) {
-		jmsJiniBridgeConnectionServiceTracker.close();
-		super.removedService(reference, service);
-	}
-	
-	
+   @Override
+   public void removedService(ServiceReference reference, Object service) {
+      jmsJiniBridgeConnectionServiceTracker.close();
+      super.removedService(reference, service);
+   }
+
 }

@@ -43,10 +43,10 @@ public class OseeEnumTypeCacheUpdateResponse {
       List<String[]> enumEntryRows = new ArrayList<String[]>();
       for (OseeEnumType type : types) {
          enumTypeRows.add(new String[] {String.valueOf(type.getId()), type.getStorageState().toString(),
-               type.getGuid(), type.getName()});
+            type.getGuid(), type.getName()});
          for (OseeEnumEntry entry : type.values()) {
             enumEntryRows.add(new String[] {type.getGuid(), entry.getGuid(), entry.getName(),
-                  String.valueOf(entry.ordinal())});
+               String.valueOf(entry.ordinal())});
          }
       }
       return new OseeEnumTypeCacheUpdateResponse(enumTypeRows, enumEntryRows);

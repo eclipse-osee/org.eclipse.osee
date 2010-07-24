@@ -78,13 +78,15 @@ public class AtsWorkPage extends WorkPage {
       super.createXWidgetLayoutData(layoutData, xWidget, toolkit, art, xModListener, isEditable);
       // If no tooltip, add global tooltip
       if ((xWidget.getToolTip() == null || xWidget.getToolTip().equals("")) && ATSAttributes.getAtsAttributeByStoreName(layoutData.getStorageName()) != null && ATSAttributes.getAtsAttributeByStoreName(
-            layoutData.getStorageName()).getDescription() != null && !ATSAttributes.getAtsAttributeByStoreName(
-            layoutData.getStorageName()).getDescription().equals("")) {
+         layoutData.getStorageName()).getDescription() != null && !ATSAttributes.getAtsAttributeByStoreName(
+         layoutData.getStorageName()).getDescription().equals("")) {
          xWidget.setToolTip(ATSAttributes.getAtsAttributeByStoreName(layoutData.getStorageName()).getDescription());
          layoutData.setToolTip(ATSAttributes.getAtsAttributeByStoreName(layoutData.getStorageName()).getDescription());
       }
       // Store workAttr in control for use by help
-      if (xWidget.getControl() != null) xWidget.getControl().setData(layoutData);
+      if (xWidget.getControl() != null) {
+         xWidget.getControl().setData(layoutData);
+      }
 
    }
 

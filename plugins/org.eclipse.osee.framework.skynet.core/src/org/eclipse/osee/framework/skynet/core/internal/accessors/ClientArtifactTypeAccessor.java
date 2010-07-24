@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.ArtifactTypeCacheUpdateResponse;
@@ -61,13 +61,13 @@ public class ClientArtifactTypeAccessor extends AbstractClientDataAccessor<Artif
       List<ArtifactType> updatedItems = new ArrayList<ArtifactType>();
 
       ArtifactTypeCacheUpdateResponse response =
-            requestUpdateMessage(cache, CoreTranslatorId.ARTIFACT_TYPE_CACHE_UPDATE_RESPONSE);
+         requestUpdateMessage(cache, CoreTranslatorId.ARTIFACT_TYPE_CACHE_UPDATE_RESPONSE);
 
       ArtifactTypeFactory factory = getFactory();
       for (ArtifactTypeRow row : response.getArtTypeRows()) {
          ArtifactType cached =
-               factory.createOrUpdate(cache, row.getId(), row.getStorageState(), row.getGuid(), row.isAbstract(),
-                     row.getName());
+            factory.createOrUpdate(cache, row.getId(), row.getStorageState(), row.getGuid(), row.isAbstract(),
+               row.getName());
          updatedItems.add(cached);
       }
 
@@ -84,7 +84,7 @@ public class ClientArtifactTypeAccessor extends AbstractClientDataAccessor<Artif
       }
 
       CompositeKeyHashMap<ArtifactType, Branch, Collection<AttributeType>> attrs =
-            new CompositeKeyHashMap<ArtifactType, Branch, Collection<AttributeType>>();
+         new CompositeKeyHashMap<ArtifactType, Branch, Collection<AttributeType>>();
 
       for (Triplet<Integer, Integer, Integer> entry : response.getAttributeTypes()) {
          ArtifactType key1 = cache.getById(entry.getFirst());

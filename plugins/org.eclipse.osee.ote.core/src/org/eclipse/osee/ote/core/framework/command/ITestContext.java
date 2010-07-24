@@ -17,7 +17,10 @@ import org.eclipse.osee.ote.core.framework.IRunManager;
 
 public interface ITestContext {
    IRunManager getRunManager();
+
    void setActiveUser(UserTestSessionKey key);
+
    File getOutDir();
+
    IServiceConnector getConnector();
 }

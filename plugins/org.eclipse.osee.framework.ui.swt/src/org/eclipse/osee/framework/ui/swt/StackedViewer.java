@@ -25,80 +25,80 @@ import org.eclipse.swt.widgets.Label;
  */
 public class StackedViewer extends Composite {
 
-	public static final String DEFAULT_CONTROL = "DEFAULT_CONTROL";
-	private StackLayout stackLayout;
-	private Composite stackComposite;
-	private final Map<String, Control> compositeMap;
+   public static final String DEFAULT_CONTROL = "DEFAULT_CONTROL";
+   private StackLayout stackLayout;
+   private Composite stackComposite;
+   private final Map<String, Control> compositeMap;
 
-	public StackedViewer(Composite parent, int style) {
-		super(parent, style);
-		compositeMap = new HashMap<String, Control>();
-		create();
-	}
+   public StackedViewer(Composite parent, int style) {
+      super(parent, style);
+      compositeMap = new HashMap<String, Control>();
+      create();
+   }
 
-	private void create() {
-		this.setLayout(new GridLayout());
-		this.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+   private void create() {
+      this.setLayout(new GridLayout());
+      this.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-		stackComposite = new Composite(this, SWT.NONE);
-		stackLayout = new StackLayout();
-		stackLayout.marginHeight = 0;
-		stackLayout.marginWidth = 0;
-		stackComposite.setLayout(stackLayout);
-		stackComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      stackComposite = new Composite(this, SWT.NONE);
+      stackLayout = new StackLayout();
+      stackLayout.marginHeight = 0;
+      stackLayout.marginWidth = 0;
+      stackComposite.setLayout(stackLayout);
+      stackComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-		compositeMap.clear();
-		compositeMap.put(DEFAULT_CONTROL, createDefault(stackComposite));
+      compositeMap.clear();
+      compositeMap.put(DEFAULT_CONTROL, createDefault(stackComposite));
 
-		setCurrentControl(DEFAULT_CONTROL);
-	}
+      setCurrentControl(DEFAULT_CONTROL);
+   }
 
-	public Control addControl(String key, Control control) {
-		return compositeMap.put(key, control);
-	}
+   public Control addControl(String key, Control control) {
+      return compositeMap.put(key, control);
+   }
 
-	public Control removeControl(String key) {
-		return compositeMap.remove(key);
-	}
+   public Control removeControl(String key) {
+      return compositeMap.remove(key);
+   }
 
-	public int getControlCount() {
-		return compositeMap.size() - 1;
-	}
+   public int getControlCount() {
+      return compositeMap.size() - 1;
+   }
 
-	private Composite createDefault(Composite parent) {
-		Composite composite = new Composite(parent, SWT.NONE);
-		composite.setLayout(new GridLayout());
-		composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		composite.setBackground(Displays.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
+   private Composite createDefault(Composite parent) {
+      Composite composite = new Composite(parent, SWT.NONE);
+      composite.setLayout(new GridLayout());
+      composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      composite.setBackground(Displays.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
 
-		Label label = new Label(composite, SWT.NONE);
-		label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		label.setText("DEFAULT LAYER");
-		label.setBackground(Displays.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
+      Label label = new Label(composite, SWT.NONE);
+      label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      label.setText("DEFAULT LAYER");
+      label.setBackground(Displays.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
 
-		return composite;
-	}
+      return composite;
+   }
 
-	public Composite getStackComposite() {
-		return stackComposite;
-	}
+   public Composite getStackComposite() {
+      return stackComposite;
+   }
 
-	public void setCurrentControl(String key) {
-		Control control = compositeMap.get(key);
-		if (control == null) {
-			control = compositeMap.get(DEFAULT_CONTROL);
-		}
-		stackLayout.topControl = control;
-		stackComposite.layout();
-	}
+   public void setCurrentControl(String key) {
+      Control control = compositeMap.get(key);
+      if (control == null) {
+         control = compositeMap.get(DEFAULT_CONTROL);
+      }
+      stackLayout.topControl = control;
+      stackComposite.layout();
+   }
 
-	@Override
-	public void dispose() {
-		for (Control control : compositeMap.values()) {
-			Widgets.disposeWidget(control);
-		}
-		compositeMap.clear();
-		Widgets.disposeWidget(stackComposite);
-		super.dispose();
-	}
+   @Override
+   public void dispose() {
+      for (Control control : compositeMap.values()) {
+         Widgets.disposeWidget(control);
+      }
+      compositeMap.clear();
+      Widgets.disposeWidget(stackComposite);
+      super.dispose();
+   }
 }

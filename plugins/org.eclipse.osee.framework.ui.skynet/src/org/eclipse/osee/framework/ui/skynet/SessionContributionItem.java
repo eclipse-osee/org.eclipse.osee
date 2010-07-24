@@ -39,9 +39,8 @@ public final class SessionContributionItem extends OseeContributionItem implemen
 
    private static final String CONTRIBUTION_ITEM_ID = "session.contribution.item";
 
-   private static final Image DISABLED_IMAGE =
-         new OverlayImage(ImageManager.getImage(FrameworkImage.USER),
-               ImageManager.getImageDescriptor(FrameworkImage.SLASH_RED_OVERLAY)).createImage();
+   private static final Image DISABLED_IMAGE = new OverlayImage(ImageManager.getImage(FrameworkImage.USER),
+      ImageManager.getImageDescriptor(FrameworkImage.SLASH_RED_OVERLAY)).createImage();
 
    private static final String ENABLED_TOOLTIP = "Authenticated as: %s (%s) - session(%s)\nDouble-Click to Log Off.";
    private static final String DISABLED_TOOLTIP = "Not Authenticated.\nDouble-Click to Log On.";
@@ -61,8 +60,8 @@ public final class SessionContributionItem extends OseeContributionItem implemen
             try {
                if (ClientSessionManager.isSessionValid()) {
                   boolean result =
-                        MessageDialog.openQuestion(PlatformUI.getWorkbench().getDisplay().getActiveShell(),
-                              "Log Off...", "Are you sure you want to log off and exit OSEE?");
+                     MessageDialog.openQuestion(PlatformUI.getWorkbench().getDisplay().getActiveShell(), "Log Off...",
+                        "Are you sure you want to log off and exit OSEE?");
                   if (result) {
                      ClientSessionManager.releaseSession();
 
@@ -75,14 +74,14 @@ public final class SessionContributionItem extends OseeContributionItem implemen
                   //                  oseeAuthentication.authenticate("", "", "", false);
                   //               }
                   if (ClientSessionManager.isSessionValid()) {
-            			Displays.ensureInDisplayThread(new Runnable() {
-            				@Override
-            				public void run() {
+                     Displays.ensureInDisplayThread(new Runnable() {
+                        @Override
+                        public void run() {
                            try {
                               AccessControlEvent event = new AccessControlEvent();
                               event.setEventType(AccessControlEventType.UserAuthenticated);
                               OseeEventManager.kickAccessControlArtifactsEvent(this, event,
-                                    LoadedArtifacts.createEmptyLoadedArtifacts());
+                                 LoadedArtifacts.createEmptyLoadedArtifacts());
                            } catch (Exception ex) {
                               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                            }

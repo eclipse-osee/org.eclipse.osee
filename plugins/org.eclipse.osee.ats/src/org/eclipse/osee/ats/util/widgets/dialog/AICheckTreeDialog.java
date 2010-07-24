@@ -42,12 +42,14 @@ public class AICheckTreeDialog extends OSEECheckedFilteredTreeDialog {
 
    public AICheckTreeDialog(String title, String message, Active active) {
       super(title, message, patternFilter, new AITreeContentProvider(active), new ArtifactLabelProvider(),
-            new ArtifactNameSorter());
+         new ArtifactNameSorter());
       this.active = active;
    }
 
    public Collection<ActionableItemArtifact> getChecked() {
-      if (super.getTreeViewer() == null) return Collections.emptyList();
+      if (super.getTreeViewer() == null) {
+         return Collections.emptyList();
+      }
       Set<ActionableItemArtifact> checked = new HashSet<ActionableItemArtifact>();
       for (Object obj : super.getTreeViewer().getChecked()) {
          checked.add((ActionableItemArtifact) obj);
@@ -74,7 +76,9 @@ public class AICheckTreeDialog extends OSEECheckedFilteredTreeDialog {
                }
             }
          });
-         if (getInitialAias() != null) getTreeViewer().setInitalChecked(getInitialAias());
+         if (getInitialAias() != null) {
+            getTreeViewer().setInitalChecked(getInitialAias());
+         }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }

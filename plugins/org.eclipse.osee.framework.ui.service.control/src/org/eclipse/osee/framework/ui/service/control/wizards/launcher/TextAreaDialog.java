@@ -25,23 +25,23 @@ import org.eclipse.swt.widgets.Shell;
 public class TextAreaDialog extends MessageDialog {
 
    private StyledText cmdText;
-   private String groupTitle;
-   private String content;
+   private final String groupTitle;
+   private final String content;
 
    public TextAreaDialog(String groupTitle, String content, Shell parentShell, String dialogTitle, Image dialogTitleImage, String dialogMessage, int dialogImageType, String[] dialogButtonLabels, int defaultIndex) {
       super(parentShell, dialogTitle, dialogTitleImage, dialogMessage, dialogImageType, dialogButtonLabels,
-            defaultIndex);
+         defaultIndex);
       this.groupTitle = groupTitle;
       this.content = content;
    }
 
    public static void open(String groupTitle, String content, Shell parent, String title, String message) {
       TextAreaDialog dialog = new TextAreaDialog(groupTitle, content, parent, title, null, // accept
-            // the
-            // default
-            // window
-            // icon
-            message, INFORMATION, new String[] {IDialogConstants.OK_LABEL}, 0);
+         // the
+         // default
+         // window
+         // icon
+         message, INFORMATION, new String[] {IDialogConstants.OK_LABEL}, 0);
       // ok is the default
       dialog.open();
       return;

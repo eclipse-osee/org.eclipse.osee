@@ -22,12 +22,14 @@ public class EmbeddedDerbyConnection implements IConnectionFactory {
 
    private static final String driver = "org.apache.derby.jdbc.EmbeddedDriver";
 
+   @Override
    public Connection getConnection(Properties properties, String connectionURL) throws Exception {
       Class.forName(driver);
       Connection connection = DriverManager.getConnection(connectionURL, properties);
       return connection;
    }
 
+   @Override
    public String getDriver() {
       return driver;
    }

@@ -60,17 +60,17 @@ public class WorldXViewerEventManager implements IArtifactEventListener {
       }
       try {
          if (artifactEvent.getBranchGuid() == null || !artifactEvent.getBranchGuid().equals(
-               AtsUtil.getAtsBranch().getGuid())) {
+            AtsUtil.getAtsBranch().getGuid())) {
             return;
          }
       } catch (OseeCoreException ex) {
          return;
       }
       final Collection<Artifact> modifiedArts =
-            artifactEvent.getCacheArtifacts(EventModType.Modified, EventModType.Reloaded);
+         artifactEvent.getCacheArtifacts(EventModType.Modified, EventModType.Reloaded);
       final Collection<Artifact> relModifiedArts = artifactEvent.getRelCacheArtifacts();
       final Collection<EventBasicGuidArtifact> deletedPurgedArts =
-            artifactEvent.get(EventModType.Deleted, EventModType.Purged);
+         artifactEvent.get(EventModType.Deleted, EventModType.Purged);
 
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
@@ -84,7 +84,7 @@ public class WorldXViewerEventManager implements IArtifactEventListener {
                      // remove from UI
                      if (contentProvider instanceof WorldContentProvider) {
                         handler.getWorldXViewer().remove(
-                              deletedPurgedArts.toArray(new Object[deletedPurgedArts.size()]));
+                           deletedPurgedArts.toArray(new Object[deletedPurgedArts.size()]));
                      }
                   }
                }
@@ -102,7 +102,7 @@ public class WorldXViewerEventManager implements IArtifactEventListener {
                            // If parent is loaded and child changed, refresh parent
                            if (artifact instanceof StateMachineArtifact && ((StateMachineArtifact) artifact).getParentAtsArtifact() instanceof IWorldViewArtifact) {
                               handler.getWorldXViewer().refresh(
-                                    ((StateMachineArtifact) artifact).getParentAtsArtifact());
+                                 ((StateMachineArtifact) artifact).getParentAtsArtifact());
                            }
                         }
                      } catch (OseeCoreException ex) {

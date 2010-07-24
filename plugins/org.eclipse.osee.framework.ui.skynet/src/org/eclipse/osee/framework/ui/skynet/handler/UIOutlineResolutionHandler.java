@@ -30,29 +30,29 @@ import org.eclipse.ui.PlatformUI;
 
 public class UIOutlineResolutionHandler implements IStatusHandler {
 
-	@Override
-	public Object handleStatus(IStatus status, Object source) throws CoreException {
-		if (source instanceof ArrayList<?>) {
-			final List<String> list = (ArrayList<String>) source;
-			// Preferences get the last should ask?
-			// Use the last preference ?
-			final MutableBoolean mutableBoolean = new MutableBoolean(false);
-			Runnable runnable = new Runnable() {
-				@Override
-				public void run() {
-					String message =
-								String.format(
-											"Previous valid outline number was \"%s\", is \"%s\" the next outline number? If not, I will treat it as content.",
-											list.get(0), list.get(1));
-					mutableBoolean.setValue(MessageDialog.openQuestion(
-								PlatformUI.getWorkbench().getDisplay().getActiveShell(), "Help me decide...", message));
-				}
-			};
-			Displays.ensureInDisplayThread(runnable, true);
-			return mutableBoolean.booleanValue() ? ContentType.OUTLINE_TITLE : ContentType.CONTENT;
-		}
+   @Override
+   public Object handleStatus(IStatus status, Object source) throws CoreException {
+      if (source instanceof ArrayList<?>) {
+         final List<String> list = (ArrayList<String>) source;
+         // Preferences get the last should ask?
+         // Use the last preference ?
+         final MutableBoolean mutableBoolean = new MutableBoolean(false);
+         Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+               String message =
+                  String.format(
+                     "Previous valid outline number was \"%s\", is \"%s\" the next outline number? If not, I will treat it as content.",
+                     list.get(0), list.get(1));
+               mutableBoolean.setValue(MessageDialog.openQuestion(
+                  PlatformUI.getWorkbench().getDisplay().getActiveShell(), "Help me decide...", message));
+            }
+         };
+         Displays.ensureInDisplayThread(runnable, true);
+         return mutableBoolean.booleanValue() ? ContentType.OUTLINE_TITLE : ContentType.CONTENT;
+      }
 
-		throw new CoreException(new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID,
-					"Invalid source object in UIOutlineResolutionHandler"));
-	}
+      throw new CoreException(new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID,
+         "Invalid source object in UIOutlineResolutionHandler"));
+   }
 }

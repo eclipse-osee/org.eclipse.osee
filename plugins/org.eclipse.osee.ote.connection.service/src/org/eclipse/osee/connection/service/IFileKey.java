@@ -12,7 +12,6 @@ package org.eclipse.osee.connection.service;
 
 /**
  * @author Ken J. Aguilar
- *
  */
 public interface IFileKey {
 

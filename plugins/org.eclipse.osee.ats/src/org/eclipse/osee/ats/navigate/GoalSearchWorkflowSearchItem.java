@@ -62,6 +62,7 @@ public class GoalSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
       return new GoalSearchWorkflowSearchItem(this);
    }
 
+   @Override
    public GoalSearchWorkflowSearchItem copyProvider() throws OseeArgumentException {
       return new GoalSearchWorkflowSearchItem(this);
    }
@@ -82,7 +83,7 @@ public class GoalSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
    @Override
    public Collection<? extends Artifact> performSearchGetResults(SearchType searchType) throws OseeCoreException {
       return new GoalSearchItem("", getSelectedTeamDefinitions(), isIncludeCompletedCancelledCheckbox(),
-            getSelectedUser()).performSearchGetResults(false);
+         getSelectedUser()).performSearchGetResults(false);
    }
 
    @Override
@@ -115,25 +116,35 @@ public class GoalSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
    }
 
    private User getSelectedUser() {
-      if (assigneeCombo == null) return null;
+      if (assigneeCombo == null) {
+         return null;
+      }
       return assigneeCombo.getUser();
    }
 
    public void setSelectedUser(User user) {
-      if (assigneeCombo != null) assigneeCombo.set(user);
+      if (assigneeCombo != null) {
+         assigneeCombo.set(user);
+      }
    }
 
    private boolean isIncludeCompletedCancelledCheckbox() {
-      if (includeCompletedCancelledCheckbox == null) return false;
+      if (includeCompletedCancelledCheckbox == null) {
+         return false;
+      }
       return includeCompletedCancelledCheckbox.isSelected();
    }
 
    public void includeCompletedCancelledCheckbox(boolean selected) {
-      if (includeCompletedCancelledCheckbox != null) includeCompletedCancelledCheckbox.set(selected);
+      if (includeCompletedCancelledCheckbox != null) {
+         includeCompletedCancelledCheckbox.set(selected);
+      }
    }
 
    public Collection<TeamDefinitionArtifact> getSelectedTeamDefinitions() throws OseeCoreException {
-      if (teamCombo == null) return java.util.Collections.emptyList();
+      if (teamCombo == null) {
+         return java.util.Collections.emptyList();
+      }
       return teamCombo.getSelectedTeamDefintions();
    }
 
@@ -172,6 +183,7 @@ public class GoalSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
       return null;
    }
 
+   @Override
    public VersionArtifact getTargetedVersionArtifact() throws OseeCoreException {
       return null;
    }

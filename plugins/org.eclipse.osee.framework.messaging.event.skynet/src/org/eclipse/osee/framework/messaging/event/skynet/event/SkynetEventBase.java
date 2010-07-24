@@ -20,6 +20,7 @@ public class SkynetEventBase implements ISkynetEvent {
 
    private final NetworkSender networkSender;
 
+   @Override
    public NetworkSender getNetworkSender() {
       return networkSender;
    }

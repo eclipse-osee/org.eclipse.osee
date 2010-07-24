@@ -193,7 +193,7 @@ public abstract class JiniService implements IService {
       messageClassServer.addResourceFinder(resource);
       messageClassServer.start();
       codeBase =
-            "http://" + InetAddress.getLocalHost().getCanonicalHostName() + ":" + messageClassServer.getPort() + "/";
+         "http://" + InetAddress.getLocalHost().getCanonicalHostName() + ":" + messageClassServer.getPort() + "/";
       hostName = InetAddress.getLocalHost().getHostAddress();
       System.setProperty("java.rmi.server.hostname", hostName);
       System.setProperty("java.rmi.server.codebase", codeBase);
@@ -218,13 +218,17 @@ public abstract class JiniService implements IService {
    }
 
    public void cleanup() {
-      if (messageClassServer != null) messageClassServer.terminate();
+      if (messageClassServer != null) {
+         messageClassServer.terminate();
+      }
    }
 
+   @Override
    public ServiceID getServiceID() throws RemoteException {
       return serviceID;
    }
 
+   @Override
    public boolean equals(Object object) {
       if (object instanceof JiniService) {
          return ((JiniService) object).serviceID.equals(this.serviceID);
@@ -232,6 +236,7 @@ public abstract class JiniService implements IService {
       return false;
    }
 
+   @Override
    public int hashCode() {
       return serviceID.hashCode();
    }

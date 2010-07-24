@@ -35,6 +35,7 @@ import org.eclipse.osee.ats.world.search.WorldSearchItem.LoadView;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
+import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemFolder;
@@ -52,10 +53,11 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
       super();
    }
 
+   @Override
    public List<XNavigateItem> getNavigateItems() throws OseeCoreException {
       List<XNavigateItem> items = new ArrayList<XNavigateItem>();
 
-      if (OseeAtsConfigDemoActivator.areOSEEServicesAvailable().isFalse()) {
+      if (OseeUiActivator.areOSEEServicesAvailable().isFalse()) {
          return items;
       }
 
@@ -88,16 +90,16 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
             TeamDefinitionArtifact teamDef = DemoTeams.getInstance().getTeamDef(team);
             XNavigateItem teamItems = new XNavigateItemFolder(jhuItem, "JHU " + team.name().replaceAll("_", " "));
             new SearchNavigateItem(teamItems, new TeamWorldSearchItem("Show Open " + teamDef + " Actions",
-                  Arrays.asList(DemoTeams.getInstance().getTeamDef(team)), false, true, true, null, null,
-                  ReleasedOption.Both));
+               Arrays.asList(DemoTeams.getInstance().getTeamDef(team)), false, true, true, null, null,
+               ReleasedOption.Both));
             new SearchNavigateItem(teamItems, new TeamWorldSearchItem("Show Open " + teamDef + " Workflows",
-                  Arrays.asList(DemoTeams.getInstance().getTeamDef(team)), false, false, true, null, null,
-                  ReleasedOption.Both));
+               Arrays.asList(DemoTeams.getInstance().getTeamDef(team)), false, false, true, null, null,
+               ReleasedOption.Both));
             // Handle all children teams
             for (TeamDefinitionArtifact childTeamDef : Artifacts.getChildrenOfTypeSet(
-                  DemoTeams.getInstance().getTeamDef(team), TeamDefinitionArtifact.class, true)) {
+               DemoTeams.getInstance().getTeamDef(team), TeamDefinitionArtifact.class, true)) {
                new SearchNavigateItem(teamItems, new TeamWorldSearchItem("Show Open " + childTeamDef + " Workflows",
-                     Arrays.asList(childTeamDef), false, false, false, null, null, ReleasedOption.Both));
+                  Arrays.asList(childTeamDef), false, false, false, null, null, ReleasedOption.Both));
             }
             if (teamDef.isTeamUsesVersions()) {
                if (team.name().contains("SAW")) {
@@ -108,9 +110,9 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
 
                new SearchNavigateItem(teamItems, new NextVersionSearchItem(teamDef, LoadView.WorldEditor));
                new SearchNavigateItem(teamItems, new VersionTargetedForTeamSearchItem(teamDef, null, false,
-                     LoadView.WorldEditor));
+                  LoadView.WorldEditor));
                new SearchNavigateItem(teamItems, new TeamWorldSearchItem("Show Un-Released Team Workflows",
-                     Arrays.asList(teamDef), true, false, true, null, null, ReleasedOption.UnReleased));
+                  Arrays.asList(teamDef), true, false, true, null, null, ReleasedOption.UnReleased));
                new ReleaseVersionItem(teamItems, teamDef);
                new CreateNewVersionItem(teamItems, teamDef);
             }
@@ -125,7 +127,7 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
       new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Decision Review", "Decision Review"));
       new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all PeerToPeer Review", "PeerToPeer Review"));
       new SearchNavigateItem(adminItems, new ArtifactTypeWithInheritenceSearchItem("Show all Team Workflows",
-            AtsArtifactTypes.TeamWorkflow));
+         AtsArtifactTypes.TeamWorkflow));
       new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Tasks", "Task"));
 
       XNavigateItem healthItems = new XNavigateItem(adminItems, "Health", FrameworkImage.LASER);

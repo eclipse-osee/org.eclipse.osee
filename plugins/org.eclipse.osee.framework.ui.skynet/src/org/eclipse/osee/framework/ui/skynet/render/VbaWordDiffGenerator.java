@@ -23,22 +23,22 @@ import org.eclipse.osee.framework.jdk.core.util.io.streams.StreamCatcher;
  */
 public class VbaWordDiffGenerator implements IVbaDiffGenerator {
    private final static String header =
-         "Option Explicit\n\nDim oWord\nDim baseDoc\nDim compareDoc\nDim authorName\nDim detectFormatChanges\nDim ver1\nDim ver2\nDim diffPath\nDim wdCompareTargetSelectedDiff\nDim wdCompareTargetSelectedMerge\nDim wdFormattingFromCurrent\nDim wdFormatXML\nDim wdDoNotSaveChanges\nDim visible\nDim mainDoc\n\nPublic Sub main()\n On error resume next\n    wdCompareTargetSelectedDiff = 0\n    wdCompareTargetSelectedMerge = 1\n    wdDoNotSaveChanges = 0\n    wdFormattingFromCurrent = 3\n    wdFormatXML = 11\n\n    authorName = \"OSEE Doc compare\"\n\n    detectFormatChanges = True\n\n    set oWord = WScript.CreateObject(\"Word.Application\")\n    oWord.Visible = False\n\n";
+      "Option Explicit\n\nDim oWord\nDim baseDoc\nDim compareDoc\nDim authorName\nDim detectFormatChanges\nDim ver1\nDim ver2\nDim diffPath\nDim wdCompareTargetSelectedDiff\nDim wdCompareTargetSelectedMerge\nDim wdFormattingFromCurrent\nDim wdFormatXML\nDim wdDoNotSaveChanges\nDim visible\nDim mainDoc\n\nPublic Sub main()\n On error resume next\n    wdCompareTargetSelectedDiff = 0\n    wdCompareTargetSelectedMerge = 1\n    wdDoNotSaveChanges = 0\n    wdFormattingFromCurrent = 3\n    wdFormatXML = 11\n\n    authorName = \"OSEE Doc compare\"\n\n    detectFormatChanges = True\n\n    set oWord = WScript.CreateObject(\"Word.Application\")\n    oWord.Visible = False\n\n";
 
    private final static String comparisonCommand =
-         "    baseDoc.Compare ver2, authorName, wdCompareTargetSelectedDiff, detectFormatChanges, False, False\n    set compareDoc = oWord.ActiveDocument\n\n";
+      "    baseDoc.Compare ver2, authorName, wdCompareTargetSelectedDiff, detectFormatChanges, False, False\n    set compareDoc = oWord.ActiveDocument\n\n";
    private final static String comparisonCommandFirst =
-         "    set mainDoc = compareDoc\n    baseDoc.close\n    set baseDoc = Nothing\n";
+      "    set mainDoc = compareDoc\n    baseDoc.close\n    set baseDoc = Nothing\n";
 
    private final static String comparisonCommandOthers =
-         "    mainDoc.Range(mainDoc.Range.End-1, mainDoc.Range.End-1).FormattedText =  compareDoc.Range.FormattedText\n\n    baseDoc.close wdDoNotSaveChanges\n    set baseDoc = Nothing\n\n    compareDoc.close wdDoNotSaveChanges\n    set compareDoc = Nothing\n\n";
+      "    mainDoc.Range(mainDoc.Range.End-1, mainDoc.Range.End-1).FormattedText =  compareDoc.Range.FormattedText\n\n    baseDoc.close wdDoNotSaveChanges\n    set baseDoc = Nothing\n\n    compareDoc.close wdDoNotSaveChanges\n    set compareDoc = Nothing\n\n";
 
    private final static String mergeCommand =
-         "    baseDoc.Merge ver2, wdCompareTargetSelectedMerge, detectFormatChanges, wdFormattingFromCurrent, False\n    oWord.ActiveDocument.SaveAs diffPath, wdFormatXML, , , False\n\n";
+      "    baseDoc.Merge ver2, wdCompareTargetSelectedMerge, detectFormatChanges, wdFormattingFromCurrent, False\n    oWord.ActiveDocument.SaveAs diffPath, wdFormatXML, , , False\n\n";
 
    private final static String tail = "    If visible Then\n        oWord.Visible = True\n     Else\n";
    private final static String tail2 =
-         "         oWord.Quit()\n        set oWord = Nothing\n    End If\n\nEnd Sub\n\nmain";
+      "         oWord.Quit()\n        set oWord = Nothing\n    End If\n\nEnd Sub\n\nmain";
 
    private StringBuilder builder;
    private boolean finalized;
@@ -53,6 +53,7 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
       merge = false;
    }
 
+   @Override
    public boolean initialize(boolean visible, boolean detectFormatChanges) {
       if (initialized) {
          return false;
@@ -73,6 +74,7 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
       return true;
    }
 
+   @Override
    public boolean addComparison(IFile baseFile, IFile newerFile, String diffPath, boolean merge) {
       if (finalized) {
          return false;

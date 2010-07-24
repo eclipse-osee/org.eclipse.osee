@@ -67,6 +67,7 @@ public class XListDropViewer extends XListViewer {
       removeFromMenuItem.setText("Remove From This Blam's Parameters ");
       removeFromMenuItem.addSelectionListener(new SelectionListener() {
 
+         @Override
          public void widgetSelected(SelectionEvent event) {
             IStructuredSelection structuredSelection = (IStructuredSelection) myTableViewer.getSelection();
             Iterator<?> iterator = structuredSelection.iterator();
@@ -82,6 +83,7 @@ public class XListDropViewer extends XListViewer {
             refresh();
          }
 
+         @Override
          public void widgetDefaultSelected(SelectionEvent ev) {
          }
       });
@@ -96,7 +98,7 @@ public class XListDropViewer extends XListViewer {
       ArrayList<Object> objects = new ArrayList<Object>();
 
       for (Artifact artifact : artifacts) {
-         objects.add((Object) artifact);
+         objects.add(artifact);
       }
 
       if (getInput() == null) {

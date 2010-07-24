@@ -381,6 +381,7 @@ public class DirectoryPerson implements Comparable<Object>, Serializable {
       uSPersonStatus = personStatus;
    }
 
+   @Override
    public int compareTo(Object person) {
       return fullName.compareTo(((DirectoryPerson) person).fullName);
    }

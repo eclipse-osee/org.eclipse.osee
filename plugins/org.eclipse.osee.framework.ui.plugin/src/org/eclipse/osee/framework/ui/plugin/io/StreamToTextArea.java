@@ -24,50 +24,50 @@ import org.eclipse.swt.custom.StyledText;
  * @author Roberto E. Escobar
  */
 public class StreamToTextArea extends Thread {
-	private final InputStream is;
-	private final String type;
-	private final FormattedText textArea;
-	private final StyledText styledText;
-	private int swtColor;
-	private boolean isStopped;
+   private final InputStream is;
+   private final String type;
+   private final FormattedText textArea;
+   private final StyledText styledText;
+   private int swtColor;
+   private boolean isStopped;
 
-	public StreamToTextArea(InputStream is, String type, FormattedText textArea) {
-		this.is = is;
-		this.type = type;
-		this.textArea = textArea;
-		this.styledText = textArea.getStyledText();
-		this.isStopped = false;
-	}
+   public StreamToTextArea(InputStream is, String type, FormattedText textArea) {
+      this.is = is;
+      this.type = type;
+      this.textArea = textArea;
+      this.styledText = textArea.getStyledText();
+      this.isStopped = false;
+   }
 
-	public void typeColor(int swtColor) {
-		this.swtColor = swtColor;
-	}
+   public void typeColor(int swtColor) {
+      this.swtColor = swtColor;
+   }
 
-	public void setStopped(boolean value) {
-		this.isStopped = value;
-	}
+   public void setStopped(boolean value) {
+      this.isStopped = value;
+   }
 
-	@Override
-	public void run() {
-		try {
-			BufferedReader br = new BufferedReader(new InputStreamReader(is));
-			String line = null;
-			while (true != isStopped && null != textArea && true != textArea.getStyledText().isDisposed() && null != (line =
-						br.readLine())) {
-				final String toDisplay = line;
-				Displays.ensureInDisplayThread(new Runnable() {
-					@Override
-					public void run() {
-						if (textArea != null && !textArea.getStyledText().isDisposed()) {
-							textArea.addText("\t" + type + "> ", SWT.NORMAL, swtColor);
-							textArea.addText(toDisplay + "\n");
-							styledText.setSelection(styledText.getCharCount());
-						}
-					}
-				});
-			}
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
-		}
-	}
+   @Override
+   public void run() {
+      try {
+         BufferedReader br = new BufferedReader(new InputStreamReader(is));
+         String line = null;
+         while (true != isStopped && null != textArea && true != textArea.getStyledText().isDisposed() && null != (line =
+            br.readLine())) {
+            final String toDisplay = line;
+            Displays.ensureInDisplayThread(new Runnable() {
+               @Override
+               public void run() {
+                  if (textArea != null && !textArea.getStyledText().isDisposed()) {
+                     textArea.addText("\t" + type + "> ", SWT.NORMAL, swtColor);
+                     textArea.addText(toDisplay + "\n");
+                     styledText.setSelection(styledText.getCharCount());
+                  }
+               }
+            });
+         }
+      } catch (IOException ioe) {
+         ioe.printStackTrace();
+      }
+   }
 }

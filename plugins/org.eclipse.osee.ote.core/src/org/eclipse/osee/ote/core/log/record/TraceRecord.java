@@ -11,7 +11,6 @@
 package org.eclipse.osee.ote.core.log.record;
 
 import java.util.ArrayList;
-
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.ote.core.MethodFormatter;
@@ -28,10 +27,10 @@ public class TraceRecord extends TestRecord implements Xmlizable {
     * 
     */
    private static final long serialVersionUID = 8567378567805515775L;
-   private String objectName;
-   private String methodName;
-   private MethodFormatter methodArguments;
-   private ArrayList<Xmlizable> additionalElements;
+   private final String objectName;
+   private final String methodName;
+   private final MethodFormatter methodArguments;
+   private final ArrayList<Xmlizable> additionalElements;
 
    private static final String additionalString = "AdditionalInfo";
 
@@ -44,28 +43,26 @@ public class TraceRecord extends TestRecord implements Xmlizable {
     * @param methodArguments
     * @param timeStamp <b>True </b> if a timestamp should be recorded, <b>False </b> if not.
     */
-   public TraceRecord(ITestEnvironmentAccessor source, String objectName, String methodName,
-         MethodFormatter methodArguments, boolean timeStamp, boolean startFlag) {
-	  this(source, objectName, methodName, methodArguments, timeStamp);
+   public TraceRecord(ITestEnvironmentAccessor source, String objectName, String methodName, MethodFormatter methodArguments, boolean timeStamp, boolean startFlag) {
+      this(source, objectName, methodName, methodArguments, timeStamp);
    }
 
-   public TraceRecord(ITestEnvironmentAccessor source, String objectName, String methodName,
-	         MethodFormatter methodArguments, boolean timeStamp) {
-	      super(source, TestLevel.TRACE, "", timeStamp);
-	      this.objectName = objectName;
-	      this.methodName = methodName;
-	      this.methodArguments = methodArguments;
-	      this.additionalElements = new ArrayList<Xmlizable>();
+   public TraceRecord(ITestEnvironmentAccessor source, String objectName, String methodName, MethodFormatter methodArguments, boolean timeStamp) {
+      super(source, TestLevel.TRACE, "", timeStamp);
+      this.objectName = objectName;
+      this.methodName = methodName;
+      this.methodArguments = methodArguments;
+      this.additionalElements = new ArrayList<Xmlizable>();
    }
 
-   public TraceRecord(ITestEnvironmentAccessor source, String objectName2,
-		   String methodName2, MethodFormatter methodArguments2) {
-	   this(source, objectName2,methodName2, methodArguments2, true);
+   public TraceRecord(ITestEnvironmentAccessor source, String objectName2, String methodName2, MethodFormatter methodArguments2) {
+      this(source, objectName2, methodName2, methodArguments2, true);
    }
 
-public void addAdditionalElement(Xmlizable object) {
-      if (object != null)
+   public void addAdditionalElement(Xmlizable object) {
+      if (object != null) {
          additionalElements.add(object);
+      }
    }
 
    /**
@@ -73,6 +70,7 @@ public void addAdditionalElement(Xmlizable object) {
     * 
     * @return Element XML formated element.
     */
+   @Override
    public Element toXml(Document doc) {
       Element trElement = doc.createElement("Trace");
       trElement.appendChild(Jaxp.createElement(doc, "ObjectName", objectName));

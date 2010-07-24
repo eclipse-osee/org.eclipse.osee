@@ -55,7 +55,7 @@ public class GroupListDialog extends ArtifactListDialog {
             }
          }
          if (branchSelect != null && branchSelect.getSelectedBranch() != null && !branchSelect.getSelectedBranch().equals(
-               BranchManager.getCommonBranch())) {
+            BranchManager.getCommonBranch())) {
             for (Artifact art : UniversalGroup.getGroups(branchSelect.getSelectedBranch())) {
                if (!art.getName().equals(OseeSystemArtifacts.ROOT_ARTIFACT_TYPE_NAME)) {
                   arts.add(art);
@@ -75,10 +75,12 @@ public class GroupListDialog extends ArtifactListDialog {
 
    public class GroupsDescriptiveLabelProvider implements ILabelProvider {
 
+      @Override
       public Image getImage(Object arg0) {
          return null;
       }
 
+      @Override
       public String getText(Object obj) {
          if (obj instanceof Artifact) {
             Artifact art = (Artifact) obj;
@@ -94,16 +96,20 @@ public class GroupListDialog extends ArtifactListDialog {
          return "";
       }
 
+      @Override
       public void addListener(ILabelProviderListener arg0) {
       }
 
+      @Override
       public void dispose() {
       }
 
+      @Override
       public boolean isLabelProperty(Object arg0, String arg1) {
          return false;
       }
 
+      @Override
       public void removeListener(ILabelProviderListener arg0) {
       }
 

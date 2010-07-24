@@ -27,12 +27,15 @@ import org.eclipse.ui.PlatformUI;
  */
 public class ServiceManagerMenuItem implements IWorkbenchWindowActionDelegate {
 
+   @Override
    public void dispose() {
    }
 
+   @Override
    public void init(IWorkbenchWindow window) {
    }
 
+   @Override
    public void run(IAction action) {
       IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
       try {
@@ -42,6 +45,7 @@ public class ServiceManagerMenuItem implements IWorkbenchWindowActionDelegate {
       }
    }
 
+   @Override
    public void selectionChanged(IAction action, ISelection selection) {
    }
 

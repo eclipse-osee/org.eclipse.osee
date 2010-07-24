@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Arrays;
+import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.server.OseeServerProperties;
@@ -61,7 +62,7 @@ public class TestResourceManagerServlet extends TestCase {
       try {
          URL url = new URL(getRequest("protocol=attr&seed=1234567&name=ABCDEFGHIJK&extension=txt"));
          connection = (HttpURLConnection) url.openConnection();
-         TestCase.assertNotNull(connection);
+         Assert.assertNotNull(connection);
          connection.connect();
 
          int code = connection.getResponseCode();
@@ -78,7 +79,7 @@ public class TestResourceManagerServlet extends TestCase {
       try {
          URL url = new URL(getRequest("uri=attr://1/4/somefile.txt.zip"));
          connection = (HttpURLConnection) url.openConnection();
-         TestCase.assertNotNull(connection);
+         Assert.assertNotNull(connection);
          connection.connect();
 
          // Wait for response
@@ -99,8 +100,8 @@ public class TestResourceManagerServlet extends TestCase {
    public void testSaveAcquireDeleteTxt() throws Exception {
       String payload = "This is a test. Hello World!!!";
       String response =
-            HttpTestUtils.sendData(getRequest("protocol=attr&seed=1234567&name=ABCDEFGHIJK&extension=txt"),
-                  "text/plain", "UTF-8", new ByteArrayInputStream(payload.getBytes()));
+         HttpTestUtils.sendData(getRequest("protocol=attr&seed=1234567&name=ABCDEFGHIJK&extension=txt"), "text/plain",
+            "UTF-8", new ByteArrayInputStream(payload.getBytes()));
       assertNotNull(response);
       assertEquals("Put Response", "attr://123/456/7/ABCDEFGHIJK.txt", response);
 
@@ -116,8 +117,8 @@ public class TestResourceManagerServlet extends TestCase {
 
       byte[] compressed = HttpTestUtils.compressStream(new ByteArrayInputStream(payload.getBytes()), "ABCDEFGHIJK.txt");
       String response =
-            HttpTestUtils.sendData(getRequest("protocol=attr&seed=1234567&name=ABCDEFGHIJK&extension=zip"),
-                  "application/zip", "ISO-8859-1", new ByteArrayInputStream(compressed));
+         HttpTestUtils.sendData(getRequest("protocol=attr&seed=1234567&name=ABCDEFGHIJK&extension=zip"),
+            "application/zip", "ISO-8859-1", new ByteArrayInputStream(compressed));
       assertNotNull(response);
       assertEquals("Put Response", "attr://123/456/7/ABCDEFGHIJK.zip", response);
 
@@ -131,14 +132,13 @@ public class TestResourceManagerServlet extends TestCase {
    public void testAcquireDataCompressed() throws Exception {
       String payload = "This is a test. Hello World!!!";
       String response =
-            HttpTestUtils.sendData(getRequest("protocol=attr&seed=1234567&name=ABCDEFGHIJK&extension=txt"),
-                  "text/plain", "UTF-8", new ByteArrayInputStream(payload.getBytes()));
+         HttpTestUtils.sendData(getRequest("protocol=attr&seed=1234567&name=ABCDEFGHIJK&extension=txt"), "text/plain",
+            "UTF-8", new ByteArrayInputStream(payload.getBytes()));
       assertNotNull(response);
       assertEquals("Put Response", "attr://123/456/7/ABCDEFGHIJK.txt", response);
 
       byte[] result =
-            HttpTestUtils.acquireData(getRequest("uri=" + response + "&compress.before.sending=true"),
-                  "application/zip");
+         HttpTestUtils.acquireData(getRequest("uri=" + response + "&compress.before.sending=true"), "application/zip");
       ByteArrayOutputStream output = new ByteArrayOutputStream();
       String fileName = HttpTestUtils.decompressStream(new ByteArrayInputStream(result), output);
       assertEquals("ABCDEFGHIJK.txt", fileName);
@@ -152,9 +152,9 @@ public class TestResourceManagerServlet extends TestCase {
       String payload = "This is a test. Hello World!!!";
       // TODO: work here
       String response =
-            HttpTestUtils.sendData(
-                  getRequest("protocol=attr&seed=1234567&name=ABCDEFGHIJK&extension=txt&compress.before.saving=true"),
-                  "text/plain", "UTF-8", new ByteArrayInputStream(payload.getBytes()));
+         HttpTestUtils.sendData(
+            getRequest("protocol=attr&seed=1234567&name=ABCDEFGHIJK&extension=txt&compress.before.saving=true"),
+            "text/plain", "UTF-8", new ByteArrayInputStream(payload.getBytes()));
       assertNotNull(response);
       assertEquals("Put Response", "attr://123/456/7/ABCDEFGHIJK.txt.zip", response);
 

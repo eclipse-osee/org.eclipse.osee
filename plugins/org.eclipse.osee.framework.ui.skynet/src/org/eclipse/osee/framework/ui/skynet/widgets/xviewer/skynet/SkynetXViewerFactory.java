@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.OseeXViewerTreeReport;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerArtifactNameColumn;
@@ -51,7 +52,7 @@ public class SkynetXViewerFactory extends XViewerFactory {
    @Override
    public IXViewerCustomizations getXViewerCustomizations() {
       try {
-         if (SkynetGuiPlugin.areOSEEServicesAvailable().isTrue()) {
+         if (OseeUiActivator.areOSEEServicesAvailable().isTrue()) {
             if (xViewerCustomizations == null) {
                xViewerCustomizations = new SkynetCustomizations(this);
             }
@@ -59,7 +60,7 @@ public class SkynetXViewerFactory extends XViewerFactory {
          }
       } catch (Throwable ex) {
          OseeLog.log(SkynetXViewerFactory.class, Level.SEVERE,
-               "Failed to retrieve XViewer customizations from the persistence layer.", ex);
+            "Failed to retrieve XViewer customizations from the persistence layer.", ex);
       }
       return new XViewerCustomizations();
    }
@@ -98,7 +99,7 @@ public class SkynetXViewerFactory extends XViewerFactory {
 
    public static XViewerColumn getAttributeColumn(AttributeType attributeType) throws OseeCoreException {
       return new XViewerAttributeColumn("attribute." + attributeType.getName(), attributeType.getName(),
-            attributeType.getName(), 75, SWT.LEFT, false, XViewerAttributeSortDataType.get(attributeType), false, null);
+         attributeType.getName(), 75, SWT.LEFT, false, XViewerAttributeSortDataType.get(attributeType), false, null);
    }
 
    /**

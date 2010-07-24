@@ -13,6 +13,7 @@ package org.eclipse.osee.ote.service;
 import java.util.Collection;
 
 public interface IOteRuntimeLibraryProvider {
-    void initialize(ILibraryLoader libraryLoader);
-    Collection<IMessageDictionary> getLibraries();
+   void initialize(ILibraryLoader libraryLoader);
+
+   Collection<IMessageDictionary> getLibraries();
 }

@@ -15,9 +15,8 @@ import org.xml.sax.Attributes;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
-public class CheckPoint extends ElementHandlers{
+public class CheckPoint extends ElementHandlers {
 
    /**
     * @param name
@@ -25,7 +24,6 @@ public class CheckPoint extends ElementHandlers{
    public CheckPoint() {
       super("CheckPoint");
    }
-
 
    @Override
    public Object createStartElementFoundObject(String uri, String localName, String name, Attributes attributes) {

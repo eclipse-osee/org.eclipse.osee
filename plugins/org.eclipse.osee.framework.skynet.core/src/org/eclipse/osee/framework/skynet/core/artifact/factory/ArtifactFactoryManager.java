@@ -32,7 +32,7 @@ public final class ArtifactFactoryManager {
    private static final String CLASSNAME_ATTRIBUTE = "classname";
 
    private static final ExtensionDefinedObjects<ArtifactFactory> extensionDefinedObjects =
-         new ExtensionDefinedObjects<ArtifactFactory>(EXTENSION_ID, ARTIFACT_FACTORY_EXTENSION, CLASSNAME_ATTRIBUTE);
+      new ExtensionDefinedObjects<ArtifactFactory>(EXTENSION_ID, ARTIFACT_FACTORY_EXTENSION, CLASSNAME_ATTRIBUTE);
 
    private static final DefaultArtifactFactory defaultArtifactFactory = new DefaultArtifactFactory();
    private static Set<ArtifactType> eternalArtifactTypes = null;
@@ -48,9 +48,9 @@ public final class ArtifactFactoryManager {
                responsibleFactory = factory;
             } else {
                OseeLog.log(
-                     Activator.class,
-                     Level.SEVERE,
-                     "Multiple ArtifactFactories [" + responsibleFactory + "][" + factory + "]responsible for same artifact type [" + artifactTypeName + "].  Defaulting to DefaultArtifactFactory.");
+                  Activator.class,
+                  Level.SEVERE,
+                  "Multiple ArtifactFactories [" + responsibleFactory + "][" + factory + "]responsible for same artifact type [" + artifactTypeName + "].  Defaulting to DefaultArtifactFactory.");
                return getDefaultArtifactFactory();
             }
          }

@@ -48,7 +48,7 @@ public class ImportOutfileOperation {
    }
 
    private void checkSuccessful(IStatus status) throws OseeStateException {
-      if (status.equals(Status.OK_STATUS) != true && status.equals(Status.OK) != true) {
+      if (status.equals(Status.OK_STATUS) != true && status.equals(IStatus.OK) != true) {
          throw new OseeStateException(String.format("Error detected: %s", status.getMessage()));
       }
    }

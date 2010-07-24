@@ -18,8 +18,8 @@ import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 
 public class DbSchemaRuleAddColumn extends Rule {
-   private static final Pattern tablePattern =
-         Pattern.compile("\\s+<table name=\"([^\"]+)\"(.*?)</table>", Pattern.DOTALL);
+   private static final Pattern tablePattern = Pattern.compile("\\s+<table name=\"([^\"]+)\"(.*?)</table>",
+      Pattern.DOTALL);
 
    private final HashCollection<String, String> tableToColumns;
 

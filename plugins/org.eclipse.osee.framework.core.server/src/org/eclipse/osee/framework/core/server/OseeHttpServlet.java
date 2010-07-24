@@ -17,20 +17,20 @@ import org.eclipse.osee.framework.core.server.internal.InternalOseeHttpServlet;
  */
 public abstract class OseeHttpServlet extends InternalOseeHttpServlet {
 
-	private static final long serialVersionUID = -4747761442607851113L;
-	//
-	//	@Override
-	//	protected void checkAccessControl(HttpServletRequest request) throws OseeCoreException {
-	//		String sessionId = request.getParameter("sessionId");
-	//		String interaction =
-	//					String.format("%s %s %s", request.getMethod(), request.getRequestURI(), request.getQueryString());
-	//		ServerActivator.getSessionManager().updateSessionActivity(sessionId, interaction);
-	//	}
-	//
-	//	public boolean isInitializing(HttpServletRequest request) throws OseeCoreException {
-	//		String sessionId = request.getParameter("sessionId");
-	//		ISession session = ServerActivator.getSessionManager().getSessionById(sessionId);
-	//		String userId = session.getUserId();
-	//		return SystemUser.BootStrap.getUserID().equals(userId);
-	//	}
+   private static final long serialVersionUID = -4747761442607851113L;
+   //
+   //	@Override
+   //	protected void checkAccessControl(HttpServletRequest request) throws OseeCoreException {
+   //		String sessionId = request.getParameter("sessionId");
+   //		String interaction =
+   //					String.format("%s %s %s", request.getMethod(), request.getRequestURI(), request.getQueryString());
+   //		ServerActivator.getSessionManager().updateSessionActivity(sessionId, interaction);
+   //	}
+   //
+   //	public boolean isInitializing(HttpServletRequest request) throws OseeCoreException {
+   //		String sessionId = request.getParameter("sessionId");
+   //		ISession session = ServerActivator.getSessionManager().getSessionById(sessionId);
+   //		String userId = session.getUserId();
+   //		return SystemUser.BootStrap.getUserID().equals(userId);
+   //	}
 }

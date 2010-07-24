@@ -21,9 +21,9 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
  * @author Jeff C. Phillips
  */
 public class AttributeElement {
-   private static final Pattern internalAttributeElementsPattern =
-         Pattern.compile("<((\\w+:)?(Label|Outline|Name|Format|Editable))>(.*?)</\\1>",
-               Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern internalAttributeElementsPattern = Pattern.compile(
+      "<((\\w+:)?(Label|Outline|Name|Format|Editable))>(.*?)</\\1>",
+      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
    private String outlineNumber;
    private String label;
    private String attributeName;

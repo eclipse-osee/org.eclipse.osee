@@ -35,7 +35,9 @@ public class ArtifactCheckTreeDialog extends CheckedTreeSelectionDialog {
 
    public ArtifactCheckTreeDialog(Collection<? extends Artifact> artifacts, ILabelProvider iLabelProvider) {
       super(Displays.getActiveShell(), iLabelProvider, new ArtifactTreeContentProvider());
-      if (artifacts != null) setInput(artifacts);
+      if (artifacts != null) {
+         setInput(artifacts);
+      }
    }
 
    public ArtifactCheckTreeDialog() {
@@ -44,8 +46,9 @@ public class ArtifactCheckTreeDialog extends CheckedTreeSelectionDialog {
 
    public Collection<Artifact> getSelection() {
       ArrayList<Artifact> arts = new ArrayList<Artifact>();
-      for (Object obj : getResult())
+      for (Object obj : getResult()) {
          arts.add((Artifact) obj);
+      }
       return arts;
    }
 

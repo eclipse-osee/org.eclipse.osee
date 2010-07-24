@@ -33,7 +33,7 @@ public final class OseeSystemArtifacts {
 
    public static Artifact getGlobalPreferenceArtifact() throws OseeCoreException {
       return getCachedArtifact(CoreArtifactTypes.GlobalPreferences, CoreArtifactTypes.GlobalPreferences.getName(),
-            BranchManager.getCommonBranch());
+         BranchManager.getCommonBranch());
    }
 
    public static Artifact getDefaultHierarchyRootArtifact(IOseeBranch branch) throws OseeCoreException {
@@ -42,7 +42,7 @@ public final class OseeSystemArtifacts {
 
    public static Artifact createGlobalPreferenceArtifact() throws OseeCoreException {
       return ArtifactTypeManager.addArtifact(CoreArtifactTypes.GlobalPreferences, BranchManager.getCommonBranch(),
-            CoreArtifactTypes.GlobalPreferences.getName());
+         CoreArtifactTypes.GlobalPreferences.getName());
    }
 
    /**
@@ -50,7 +50,7 @@ public final class OseeSystemArtifacts {
     * @param artifactName
     * @param branch
     * @return the artifact specified by type, name, and branch from the cache if available otherwise the datastore is
-    *         accessed, and finally a new artifact is created if it can not be found
+    * accessed, and finally a new artifact is created if it can not be found
     * @throws OseeCoreException
     */
    public static Artifact getOrCreateArtifact(IArtifactType artifactType, String artifactName, Branch branch) throws OseeCoreException {
@@ -70,7 +70,7 @@ public final class OseeSystemArtifacts {
          }
          if (artifact == null) {
             throw new ArtifactDoesNotExist(
-                  "Artifact of type " + artifactType + " with name " + artifactName + " does not exist on branch " + branch);
+               "Artifact of type " + artifactType + " with name " + artifactName + " does not exist on branch " + branch);
          }
          ArtifactCache.cacheByTextId(artifactType.getName() + "." + artifactName, artifact);
       }

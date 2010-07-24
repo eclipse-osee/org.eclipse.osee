@@ -47,6 +47,7 @@ public class ChartViewerSWT implements PaintListener
     * The SWT paint callback
     */
 
+   @Override
    public void paintControl(PaintEvent pe) {
 
       idr.setProperty(IDeviceRenderer.GRAPHICS_CONTEXT, pe.gc);

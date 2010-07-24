@@ -48,236 +48,236 @@ import org.osgi.util.tracker.ServiceTracker;
  */
 public class SafeWorkspaceTracker extends ServiceTracker implements OteBundleLocator {
 
-	private JarChangeResourceListener<OteSystemLibsNature> systemLibResourceListener;
-	private JarChangeResourceListener<OteUserLibsNature> userLibResourceListener;
-	private LibJarListener<OteSystemLibsNature> systemLibListener;
-	private LibJarListener<OteUserLibsNature> userLibListener;
-	private ProjectChangeResourceListener projectChangeResourceListener;
-	private RuntimeBundleServer bundleServer;
-	private SafeWorkspaceAccess service;
-	private final BundleContext context;
+   private JarChangeResourceListener<OteSystemLibsNature> systemLibResourceListener;
+   private JarChangeResourceListener<OteUserLibsNature> userLibResourceListener;
+   private LibJarListener<OteSystemLibsNature> systemLibListener;
+   private LibJarListener<OteUserLibsNature> userLibListener;
+   private ProjectChangeResourceListener projectChangeResourceListener;
+   private RuntimeBundleServer bundleServer;
+   private SafeWorkspaceAccess service;
+   private final BundleContext context;
 
-	/**
-	 * @param context
-	 * @param filter
-	 * @param customizer
-	 */
-	public SafeWorkspaceTracker(BundleContext context) {
-		super(context, SafeWorkspaceAccess.class.getName(), null);
-		this.context = context;
-	}
+   /**
+    * @param context
+    * @param filter
+    * @param customizer
+    */
+   public SafeWorkspaceTracker(BundleContext context) {
+      super(context, SafeWorkspaceAccess.class.getName(), null);
+      this.context = context;
+   }
 
-	@Override
-	public Object addingService(ServiceReference reference) {
-		this.systemLibListener = new LibJarListener<OteSystemLibsNature>();
-		this.userLibListener = new LibJarListener<OteUserLibsNature>();
-		this.systemLibResourceListener =
-					new JarChangeResourceListener<OteSystemLibsNature>(OteSystemLibsNature.NATURE_ID, systemLibListener);
-		this.userLibResourceListener =
-					new JarChangeResourceListener<OteUserLibsNature>(OteUserLibsNature.NATURE_ID, userLibListener);
-		this.projectChangeResourceListener = new ProjectChangeResourceListener();
-		service = (SafeWorkspaceAccess) context.getService(reference);
-		slowLoadingJars();
+   @Override
+   public Object addingService(ServiceReference reference) {
+      this.systemLibListener = new LibJarListener<OteSystemLibsNature>();
+      this.userLibListener = new LibJarListener<OteUserLibsNature>();
+      this.systemLibResourceListener =
+         new JarChangeResourceListener<OteSystemLibsNature>(OteSystemLibsNature.NATURE_ID, systemLibListener);
+      this.userLibResourceListener =
+         new JarChangeResourceListener<OteUserLibsNature>(OteUserLibsNature.NATURE_ID, userLibListener);
+      this.projectChangeResourceListener = new ProjectChangeResourceListener();
+      service = (SafeWorkspaceAccess) context.getService(reference);
+      slowLoadingJars();
 
-		return super.addingService(reference);
-	}
+      return super.addingService(reference);
+   }
 
-	/**
+   /**
  * 
  */
-	private void slowLoadingJars() {
-		Jobs.runInJob(new LocateWorkspaceBundles("Locating Workspace Bundles", RuntimeManager.BUNDLE_ID), false);
+   private void slowLoadingJars() {
+      Jobs.runInJob(new LocateWorkspaceBundles("Locating Workspace Bundles", RuntimeManager.BUNDLE_ID), false);
 
-	}
+   }
 
-	private class LocateWorkspaceBundles extends AbstractOperation {
-		/**
-		 * @param operationName
-		 * @param pluginId
-		 */
-		public LocateWorkspaceBundles(String operationName, String pluginId) {
-			super(operationName, pluginId);
-		}
+   private class LocateWorkspaceBundles extends AbstractOperation {
+      /**
+       * @param operationName
+       * @param pluginId
+       */
+      public LocateWorkspaceBundles(String operationName, String pluginId) {
+         super(operationName, pluginId);
+      }
 
-		@SuppressWarnings("rawtypes")
-		@Override
-		protected void doWork(IProgressMonitor monitor) throws Exception {
-			IWorkspace workspace = service.getWorkspace();
-			try {
-				scrapeAllLibs();
-			} catch (CoreException ex) {
-				OseeLog.log(RuntimeManager.class, Level.SEVERE, ex);
-			}
-			workspace.addResourceChangeListener(systemLibResourceListener);
-			workspace.addResourceChangeListener(userLibResourceListener);
+      @SuppressWarnings("rawtypes")
+      @Override
+      protected void doWork(IProgressMonitor monitor) throws Exception {
+         IWorkspace workspace = service.getWorkspace();
+         try {
+            scrapeAllLibs();
+         } catch (CoreException ex) {
+            OseeLog.log(RuntimeManager.class, Level.SEVERE, ex);
+         }
+         workspace.addResourceChangeListener(systemLibResourceListener);
+         workspace.addResourceChangeListener(userLibResourceListener);
 
-			SafeWorkspaceTracker.this.bundleServer = new RuntimeBundleServer(SafeWorkspaceTracker.this);
+         SafeWorkspaceTracker.this.bundleServer = new RuntimeBundleServer(SafeWorkspaceTracker.this);
 
-			context.registerService(OteBundleLocator.class.getName(), SafeWorkspaceTracker.this, new Hashtable());
-			OteClasspathContainer.refreshAll();
-		}
-	}
+         context.registerService(OteBundleLocator.class.getName(), SafeWorkspaceTracker.this, new Hashtable());
+         OteClasspathContainer.refreshAll();
+      }
+   }
 
-	private void scrapeAllLibs() throws CoreException {
-		for (OteSystemLibsNature nature : OteSystemLibsNature.getWorkspaceProjects()) {
-			for (URL url : nature.getBundles()) {
-				systemLibListener.handleBundleAdded(url);
-			}
+   private void scrapeAllLibs() throws CoreException {
+      for (OteSystemLibsNature nature : OteSystemLibsNature.getWorkspaceProjects()) {
+         for (URL url : nature.getBundles()) {
+            systemLibListener.handleBundleAdded(url);
+         }
 
-			projectChangeResourceListener.addProject(nature.getProject());
-		}
-		for (OteUserLibsNature nature : OteUserLibsNature.getWorkspaceProjects()) {
-			for (URL url : nature.getBundles()) {
-				userLibListener.handleBundleAdded(url);
-			}
+         projectChangeResourceListener.addProject(nature.getProject());
+      }
+      for (OteUserLibsNature nature : OteUserLibsNature.getWorkspaceProjects()) {
+         for (URL url : nature.getBundles()) {
+            userLibListener.handleBundleAdded(url);
+         }
 
-			projectChangeResourceListener.addProject(nature.getProject());
-		}
-	}
+         projectChangeResourceListener.addProject(nature.getProject());
+      }
+   }
 
-	@Override
-	public synchronized void close() {
-		IWorkspace workspace = service.getWorkspace();
-		if (workspace != null) {
-			workspace.removeResourceChangeListener(systemLibResourceListener);
-			workspace.removeResourceChangeListener(userLibResourceListener);
-		}
-		super.close();
-	}
+   @Override
+   public synchronized void close() {
+      IWorkspace workspace = service.getWorkspace();
+      if (workspace != null) {
+         workspace.removeResourceChangeListener(systemLibResourceListener);
+         workspace.removeResourceChangeListener(userLibResourceListener);
+      }
+      super.close();
+   }
 
-	/**
-	 * Returns a list of URL's to workspace jars to be used for the test server. The collection returned is a combination
-	 * of all the user libraries and any system libraries that weren't already supplied in the user libraries. The
-	 * workspace is considered to have runtime libraries only if there are system libraries present. Subsequently, if no
-	 * system libraries are in the workspace then this method will return an empty collection.
-	 * 
-	 * @return runtime library bundle infos
-	 * @throws IOException
-	 * @throws CoreException
-	 */
-	@Override
-	public Collection<BundleInfo> getRuntimeLibs() throws IOException, CoreException {
-		Collection<URL> userLibUrls = getUserLibUrls();
-		Collection<URL> systemLibUrls = getSystemLibUrls();
-		// If there are no system libs, then claim no runtime libs
-		if (!systemLibUrls.isEmpty()) {
-			return getRuntimeLibs(systemLibUrls, userLibUrls);
-		} else {
-			return Collections.emptyList();
-		}
-	}
+   /**
+    * Returns a list of URL's to workspace jars to be used for the test server. The collection returned is a combination
+    * of all the user libraries and any system libraries that weren't already supplied in the user libraries. The
+    * workspace is considered to have runtime libraries only if there are system libraries present. Subsequently, if no
+    * system libraries are in the workspace then this method will return an empty collection.
+    * 
+    * @return runtime library bundle infos
+    * @throws IOException
+    * @throws CoreException
+    */
+   @Override
+   public Collection<BundleInfo> getRuntimeLibs() throws IOException, CoreException {
+      Collection<URL> userLibUrls = getUserLibUrls();
+      Collection<URL> systemLibUrls = getSystemLibUrls();
+      // If there are no system libs, then claim no runtime libs
+      if (!systemLibUrls.isEmpty()) {
+         return getRuntimeLibs(systemLibUrls, userLibUrls);
+      } else {
+         return Collections.emptyList();
+      }
+   }
 
-	private Collection<BundleInfo> getRuntimeLibs(Collection<URL> systemLibUrls, Collection<URL> userLibUrls) throws IOException {
-		Map<String, BundleInfo> runtimeMap = new HashMap<String, BundleInfo>();
-		Collection<BundleInfo> runtimeInfos = new LinkedList<BundleInfo>();
+   private Collection<BundleInfo> getRuntimeLibs(Collection<URL> systemLibUrls, Collection<URL> userLibUrls) throws IOException {
+      Map<String, BundleInfo> runtimeMap = new HashMap<String, BundleInfo>();
+      Collection<BundleInfo> runtimeInfos = new LinkedList<BundleInfo>();
 
-		// First add all of the system libraries to the map
-		for (URL url : systemLibUrls) {
-			String symbolicName = getBundleNameFromJar(url);
+      // First add all of the system libraries to the map
+      for (URL url : systemLibUrls) {
+         String symbolicName = getBundleNameFromJar(url);
 
-			runtimeMap.put(symbolicName, new BundleInfo(url, bundleServer.getClassServerPath(), true));
-		}
+         runtimeMap.put(symbolicName, new BundleInfo(url, bundleServer.getClassServerPath(), true));
+      }
 
-		// Now add the user libraries so any system library with the same name
-		// gets replaced
-		for (URL url : userLibUrls) {
-			String symbolicName = getBundleNameFromJar(url);
+      // Now add the user libraries so any system library with the same name
+      // gets replaced
+      for (URL url : userLibUrls) {
+         String symbolicName = getBundleNameFromJar(url);
 
-			runtimeMap.put(symbolicName, new BundleInfo(url, bundleServer.getClassServerPath(), false));
-		}
+         runtimeMap.put(symbolicName, new BundleInfo(url, bundleServer.getClassServerPath(), false));
+      }
 
-		runtimeInfos.addAll(runtimeMap.values());
+      runtimeInfos.addAll(runtimeMap.values());
 
-		return runtimeInfos;
-	}
+      return runtimeInfos;
+   }
 
-	/**
-	 * Returns a list of URL's to all system libraries in the workspace regardless of ones that are supplied in user
-	 * libraries.
-	 * 
-	 * @return system library URL's
-	 * @throws CoreException
-	 */
-	public Collection<URL> getSystemLibUrls() throws CoreException {
-		Collection<URL> libs = new LinkedList<URL>();
-		for (OteSystemLibsNature systemNature : OteSystemLibsNature.getWorkspaceProjects()) {
-			libs.addAll(systemNature.getBundles());
-		}
+   /**
+    * Returns a list of URL's to all system libraries in the workspace regardless of ones that are supplied in user
+    * libraries.
+    * 
+    * @return system library URL's
+    * @throws CoreException
+    */
+   public Collection<URL> getSystemLibUrls() throws CoreException {
+      Collection<URL> libs = new LinkedList<URL>();
+      for (OteSystemLibsNature systemNature : OteSystemLibsNature.getWorkspaceProjects()) {
+         libs.addAll(systemNature.getBundles());
+      }
 
-		return libs;
-	}
+      return libs;
+   }
 
-	/**
-	 * Returns a list of URL's to all user libraries in the workspace.
-	 * 
-	 * @return user library URL's
-	 * @throws CoreException
-	 */
-	public Collection<URL> getUserLibUrls() throws CoreException {
-		Collection<URL> libs = new LinkedList<URL>();
-		for (OteUserLibsNature userNature : OteUserLibsNature.getWorkspaceProjects()) {
-			libs.addAll(userNature.getBundles());
-		}
+   /**
+    * Returns a list of URL's to all user libraries in the workspace.
+    * 
+    * @return user library URL's
+    * @throws CoreException
+    */
+   public Collection<URL> getUserLibUrls() throws CoreException {
+      Collection<URL> libs = new LinkedList<URL>();
+      for (OteUserLibsNature userNature : OteUserLibsNature.getWorkspaceProjects()) {
+         libs.addAll(userNature.getBundles());
+      }
 
-		return libs;
-	}
+      return libs;
+   }
 
-	/**
-	 * @param url
-	 * @return
-	 * @throws IOException
-	 */
-	private String getBundleNameFromJar(URL url) throws IOException {
-		File file;
-		try {
-			file = new File(url.toURI());
-		} catch (URISyntaxException ex) {
-			file = new File(url.getPath());
-		}
+   /**
+    * @param url
+    * @return
+    * @throws IOException
+    */
+   private String getBundleNameFromJar(URL url) throws IOException {
+      File file;
+      try {
+         file = new File(url.toURI());
+      } catch (URISyntaxException ex) {
+         file = new File(url.getPath());
+      }
 
-		JarFile jarFile = new JarFile(file);
-		Manifest jarManifest = jarFile.getManifest();
-		return BundleInfo.generateBundleName(jarManifest);
-	}
+      JarFile jarFile = new JarFile(file);
+      Manifest jarManifest = jarFile.getManifest();
+      return BundleInfo.generateBundleName(jarManifest);
+   }
 
-	/**
-	 * Returns a list of all bundles that have been modified since the last time this was called.
-	 * 
-	 * @throws CoreException
-	 * @throws IOException
-	 */
-	@Override
-	public Collection<BundleInfo> consumeModifiedLibs() throws IOException {
-		//		Collection<BundleInfo> modifiedLibs = new LinkedList<BundleInfo>();
+   /**
+    * Returns a list of all bundles that have been modified since the last time this was called.
+    * 
+    * @throws CoreException
+    * @throws IOException
+    */
+   @Override
+   public Collection<BundleInfo> consumeModifiedLibs() throws IOException {
+      //		Collection<BundleInfo> modifiedLibs = new LinkedList<BundleInfo>();
 
-		Set<URL> sysNewBundles = systemLibListener.consumeNewBundles();
-		Set<URL> sysChangedBundles = systemLibListener.consumeChangedBundles();
-		//		Set<URL> sysRemovedBundles = 
-		systemLibListener.consumeRemovedBundles();
+      Set<URL> sysNewBundles = systemLibListener.consumeNewBundles();
+      Set<URL> sysChangedBundles = systemLibListener.consumeChangedBundles();
+      //		Set<URL> sysRemovedBundles = 
+      systemLibListener.consumeRemovedBundles();
 
-		Set<URL> userNewBundles = userLibListener.consumeNewBundles();
-		Set<URL> userChangedBundles = userLibListener.consumeChangedBundles();
-		//		Set<URL> userRemovedBundles = 
-		userLibListener.consumeRemovedBundles();
+      Set<URL> userNewBundles = userLibListener.consumeNewBundles();
+      Set<URL> userChangedBundles = userLibListener.consumeChangedBundles();
+      //		Set<URL> userRemovedBundles = 
+      userLibListener.consumeRemovedBundles();
 
-		Collection<URL> sysNewModLibs = new ArrayList<URL>(sysNewBundles.size() + sysChangedBundles.size());
-		sysNewModLibs.addAll(sysNewBundles);
-		sysNewModLibs.addAll(sysChangedBundles);
+      Collection<URL> sysNewModLibs = new ArrayList<URL>(sysNewBundles.size() + sysChangedBundles.size());
+      sysNewModLibs.addAll(sysNewBundles);
+      sysNewModLibs.addAll(sysChangedBundles);
 
-		Collection<URL> userNewModLibs = new ArrayList<URL>(userNewBundles.size() + userChangedBundles.size());
-		userNewModLibs.addAll(userNewBundles);
-		userNewModLibs.addAll(userChangedBundles);
+      Collection<URL> userNewModLibs = new ArrayList<URL>(userNewBundles.size() + userChangedBundles.size());
+      userNewModLibs.addAll(userNewBundles);
+      userNewModLibs.addAll(userChangedBundles);
 
-		// TODO what about removed libs?
-		return getRuntimeLibs(sysNewModLibs, userNewModLibs);
+      // TODO what about removed libs?
+      return getRuntimeLibs(sysNewModLibs, userNewModLibs);
 
-		// // For now, return all user libs
-		// for (BundleInfo info : getRuntimeLibs()) {
-		// if (!info.isSystemLibrary()) {
-		// modifiedLibs.add(info);
-		// }
-		// }
-		//      
-		// return modifiedLibs;
-	}
+      // // For now, return all user libs
+      // for (BundleInfo info : getRuntimeLibs()) {
+      // if (!info.isSystemLibrary()) {
+      // modifiedLibs.add(info);
+      // }
+      // }
+      //      
+      // return modifiedLibs;
+   }
 }

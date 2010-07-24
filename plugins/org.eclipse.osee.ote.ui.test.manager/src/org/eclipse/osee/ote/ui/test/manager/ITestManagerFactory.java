@@ -27,7 +27,7 @@ public interface ITestManagerFactory {
    public String getEditorId();
 
    public String getEditorLastOpenedKey();
-   
+
    public ScriptPage getScriptPageNewInstance(Composite parent, int style, TestManagerEditor parentTestManager);
 
    public String getTestManagerExtension();

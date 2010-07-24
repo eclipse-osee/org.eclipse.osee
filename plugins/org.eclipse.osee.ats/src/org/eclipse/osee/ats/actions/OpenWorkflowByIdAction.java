@@ -32,7 +32,7 @@ public class OpenWorkflowByIdAction extends Action {
    @Override
    public void run() {
       Operations.executeAsJob(new MultipleHridSearchOperation(new MultipleHridSearchData(getText(),
-            AtsEditor.WorkflowEditor)), true);
+         AtsEditor.WorkflowEditor)), true);
    }
 
    @Override

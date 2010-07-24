@@ -71,19 +71,12 @@ public class ComputeConflictsOperation extends AbstractOperation {
    }
 
    /**
-    * change
-    * Source Destination Type
-    * Any mod deleted informational
-    * deleted deleted informational
-    * deleted changed informational
-    * new none
-    * select * from osee_merge where merge_branch_id = 2957;
-    * select * from osee_txs_archived where branch_id in (2140, 784) and gamma_id in (4903469, 8710061) order by
-    * branch_id;
-    * select count(merge_branch_id), count(conflict_id) from osee_conflict group by merge_branch_id, conflict_id;
-    * select * from osee_artifact_version where art_id = 2083 and gamma_id = 8710061; -- 8710061
-    * select * from osee_attribute where art_id = 2083;
-    * mod mod
+    * change Source Destination Type Any mod deleted informational deleted deleted informational deleted changed
+    * informational new none select * from osee_merge where merge_branch_id = 2957; select * from osee_txs_archived
+    * where branch_id in (2140, 784) and gamma_id in (4903469, 8710061) order by branch_id; select
+    * count(merge_branch_id), count(conflict_id) from osee_conflict group by merge_branch_id, conflict_id; select * from
+    * osee_artifact_version where art_id = 2083 and gamma_id = 8710061; -- 8710061 select * from osee_attribute where
+    * art_id = 2083; mod mod
     */
    // source baseline version is not equal to the destinations current version;
    // source item changed - destination item deleted

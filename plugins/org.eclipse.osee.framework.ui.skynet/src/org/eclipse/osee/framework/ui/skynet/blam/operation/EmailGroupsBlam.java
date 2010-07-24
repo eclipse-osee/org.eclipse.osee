@@ -112,9 +112,9 @@ public class EmailGroupsBlam extends AbstractBlam implements XModifiedListener {
 
       for (Artifact group : groups) {
          html.append(String.format(
-               "</br>Click <a href=\"%sosee/unsubscribe/group/%d/user/%d\">unsubscribe</a> to stop receiving all emails for the topic \"%s\"",
-               HttpUrlBuilderClient.getInstance().getApplicationServerPrefix(), group.getArtId(), user.getArtId(),
-               group.getName()));
+            "</br>Click <a href=\"%sosee/unsubscribe/group/%d/user/%d\">unsubscribe</a> to stop receiving all emails for the topic \"%s\"",
+            HttpUrlBuilderClient.getInstance().getApplicationServerPrefix(), group.getArtId(), user.getArtId(),
+            group.getName()));
       }
       emailMessage.addHTMLBody(html.toString());
 
@@ -127,7 +127,7 @@ public class EmailGroupsBlam extends AbstractBlam implements XModifiedListener {
       if (xWidget.getLabel().equals("Groups")) {
          XArtifactList listViewer = (XArtifactList) xWidget;
          List<Artifact> groups =
-               ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.UserGroup, BranchManager.getCommonBranch());
+            ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.UserGroup, BranchManager.getCommonBranch());
          Collections.sort(groups);
          listViewer.setInputArtifacts(groups);
          listViewer.addXModifiedListener(this);
@@ -156,6 +156,7 @@ public class EmailGroupsBlam extends AbstractBlam implements XModifiedListener {
       return Arrays.asList("Util");
    }
 
+   @Override
    public void widgetModified(XWidget xWidget) {
       try {
          if (xWidget == templateList) {

@@ -49,6 +49,7 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
       super(worldSearchItem, oseeImage);
    }
 
+   @Override
    public abstract String getParameterXWidgetXml() throws OseeCoreException;
 
    public abstract Result isParameterSelectionValid() throws OseeCoreException;
@@ -62,10 +63,12 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
       return null;
    }
 
+   @Override
    public void setCustomizeData(CustomizeData customizeData) {
       this.customizeData = customizeData;
    }
 
+   @Override
    public void setTableLoadOptions(TableLoadOption... tableLoadOptions) {
       this.tableLoadOptions = tableLoadOptions;
    }

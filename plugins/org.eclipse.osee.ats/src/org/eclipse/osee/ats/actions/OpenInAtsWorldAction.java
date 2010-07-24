@@ -42,11 +42,11 @@ public class OpenInAtsWorldAction extends Action {
          if (sma.isTeamWorkflow()) {
             ActionArtifact actionArt = ((TeamWorkFlowArtifact) sma).getParentActionArtifact();
             WorldEditor.open(new WorldEditorSimpleProvider("Action " + actionArt.getHumanReadableId(),
-                  Arrays.asList(actionArt)));
+               Arrays.asList(actionArt)));
             return;
          } else {
             WorldEditor.open(new WorldEditorSimpleProvider(sma.getArtifactTypeName() + ": " + sma.getHumanReadableId(),
-                  Arrays.asList(sma)));
+               Arrays.asList(sma)));
             return;
          }
       } catch (OseeCoreException ex) {

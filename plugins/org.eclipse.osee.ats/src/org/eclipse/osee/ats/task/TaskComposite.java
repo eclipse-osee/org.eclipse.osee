@@ -100,7 +100,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
          showReleaseMetricsLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
          taskXViewer =
-               new TaskXViewer(this, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, iXTaskViewer.getEditor(), this);
+            new TaskXViewer(this, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, iXTaskViewer.getEditor(), this);
          taskXViewer.setTasksEditable(iXTaskViewer.isTasksEditable());
          taskXViewer.setAddDeleteTaskEnabled(iXTaskViewer.isTaskable());
          taskXViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -174,8 +174,8 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
 
       }
       boolean delete =
-            MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Delete Task",
-                  builder.toString());
+         MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Delete Task",
+            builder.toString());
       if (delete) {
          try {
             SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Delete Tasks");
@@ -209,8 +209,8 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
    public TaskArtifact handleNewTask() {
       TaskArtifact taskArt = null;
       EntryDialog ed =
-            new EntryDialog(Displays.getActiveShell(), "Create New Task", null,
-                  "Enter Task Title/Description", MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
+         new EntryDialog(Displays.getActiveShell(), "Create New Task", null, "Enter Task Title/Description",
+            MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
       if (ed.open() == 0) {
          try {
             taskArt = ((TaskableStateMachineArtifact) iXTaskViewer.getSma()).createNewTask(ed.getEntry());
@@ -249,9 +249,11 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
       source.setTransfer(new Transfer[] {ArtifactTransfer.getInstance()});
       source.addDragListener(new DragSourceListener() {
 
+         @Override
          public void dragFinished(DragSourceEvent event) {
          }
 
+         @Override
          public void dragSetData(DragSourceEvent event) {
             Collection<TaskArtifact> arts = taskXViewer.getSelectedTaskArtifacts();
             if (arts.size() > 0) {
@@ -259,13 +261,14 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
             }
          }
 
+         @Override
          public void dragStart(DragSourceEvent event) {
          }
       });
 
       DropTarget target = new DropTarget(taskXViewer.getTree(), DND.DROP_COPY);
       target.setTransfer(new Transfer[] {FileTransfer.getInstance(), TextTransfer.getInstance(),
-            ArtifactTransfer.getInstance()});
+         ArtifactTransfer.getInstance()});
       target.addDropListener(new DropTargetAdapter() {
 
          @Override

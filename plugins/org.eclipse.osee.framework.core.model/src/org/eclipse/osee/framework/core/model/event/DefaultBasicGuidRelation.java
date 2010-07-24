@@ -81,33 +81,57 @@ public class DefaultBasicGuidRelation implements IBasicGuidRelation {
    public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + ((artA == null) ? 0 : artA.hashCode());
-      result = prime * result + ((artB == null) ? 0 : artB.hashCode());
-      result = prime * result + ((branchGuid == null) ? 0 : branchGuid.hashCode());
+      result = prime * result + (artA == null ? 0 : artA.hashCode());
+      result = prime * result + (artB == null ? 0 : artB.hashCode());
+      result = prime * result + (branchGuid == null ? 0 : branchGuid.hashCode());
       result = prime * result + gammaId;
-      result = prime * result + ((relTypeGuid == null) ? 0 : relTypeGuid.hashCode());
+      result = prime * result + (relTypeGuid == null ? 0 : relTypeGuid.hashCode());
       return result;
    }
 
    @Override
    public boolean equals(Object obj) {
-      if (this == obj) return true;
-      if (obj == null) return false;
-      if (getClass() != obj.getClass()) return false;
+      if (this == obj) {
+         return true;
+      }
+      if (obj == null) {
+         return false;
+      }
+      if (getClass() != obj.getClass()) {
+         return false;
+      }
       IBasicGuidRelation other = (IBasicGuidRelation) obj;
       if (artA == null) {
-         if (other.getArtA() != null) return false;
-      } else if (!artA.equals(other.getArtA())) return false;
+         if (other.getArtA() != null) {
+            return false;
+         }
+      } else if (!artA.equals(other.getArtA())) {
+         return false;
+      }
       if (artB == null) {
-         if (other.getArtB() != null) return false;
-      } else if (!artB.equals(other.getArtB())) return false;
+         if (other.getArtB() != null) {
+            return false;
+         }
+      } else if (!artB.equals(other.getArtB())) {
+         return false;
+      }
       if (branchGuid == null) {
-         if (other.getBranchGuid() != null) return false;
-      } else if (!branchGuid.equals(other.getBranchGuid())) return false;
-      if (gammaId != other.getGammaId()) return false;
+         if (other.getBranchGuid() != null) {
+            return false;
+         }
+      } else if (!branchGuid.equals(other.getBranchGuid())) {
+         return false;
+      }
+      if (gammaId != other.getGammaId()) {
+         return false;
+      }
       if (relTypeGuid == null) {
-         if (other.getRelTypeGuid() != null) return false;
-      } else if (!relTypeGuid.equals(other.getRelTypeGuid())) return false;
+         if (other.getRelTypeGuid() != null) {
+            return false;
+         }
+      } else if (!relTypeGuid.equals(other.getRelTypeGuid())) {
+         return false;
+      }
       return true;
    }
 
@@ -121,7 +145,9 @@ public class DefaultBasicGuidRelation implements IBasicGuidRelation {
 
    public boolean is(IRelationType... relationTypes) {
       for (IRelationType relType : relationTypes) {
-         if (relType.getGuid().equals(getRelTypeGuid())) return true;
+         if (relType.getGuid().equals(getRelTypeGuid())) {
+            return true;
+         }
       }
       return false;
    }

@@ -95,15 +95,15 @@ public class ServiceDataStore implements ServiceDiscoveryListener, DiscoveryList
          String[] filterGroups = JiniLookupGroupConfig.getOseeJiniServiceGroups();
          if (filterGroups == null) {
             logger.log(
-                  Level.SEVERE,
-                  "[-D" + OseeProperties.getOseeJiniServiceGroups() + "] was not set.\n" + "Please enter the Jini Group this service register with.");
+               Level.SEVERE,
+               "[-D" + OseeProperties.getOseeJiniServiceGroups() + "] was not set.\n" + "Please enter the Jini Group this service register with.");
             System.exit(1);
          }
 
          LookupLocator[] locator = null;
          lookupDiscoveryManager = new LookupDiscoveryManager(filterGroups, locator, this, new OseeJiniConfiguration());
          serviceDiscoveryManager =
-               new ServiceDiscoveryManager(lookupDiscoveryManager, null, new OseeJiniConfiguration());
+            new ServiceDiscoveryManager(lookupDiscoveryManager, null, new OseeJiniConfiguration());
 
          // We will maintain our own cache, so this call just registers
          // ourselves for lookup
@@ -160,13 +160,9 @@ public class ServiceDataStore implements ServiceDiscoveryListener, DiscoveryList
       LookupLocator locator = new LookupLocator(host);
       return locator.getRegistrar(5000);
       /*
-      if (lookupDiscoveryManager.getFrom(reg) == LookupDiscoveryManager.FROM_GROUP || compareGroups(reg)) {
-          if (reg != null) {
-              return locator;
-          }
-      }
-      return null;
-      */
+       * if (lookupDiscoveryManager.getFrom(reg) == LookupDiscoveryManager.FROM_GROUP || compareGroups(reg)) { if (reg
+       * != null) { return locator; } } return null;
+       */
    }
 
    private class LookupList extends Thread {
@@ -289,7 +285,7 @@ public class ServiceDataStore implements ServiceDiscoveryListener, DiscoveryList
             try {
                Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
                lookupCaches.put(classType, serviceDiscoveryManager.createLookupCache(new ServiceTemplate(null,
-                     new Class[] {classType}, null), null, this));
+                  new Class[] {classType}, null), null, this));
             } finally {
                Thread.currentThread().setContextClassLoader(currentContext);
             }
@@ -555,6 +551,7 @@ public class ServiceDataStore implements ServiceDiscoveryListener, DiscoveryList
       return false;
    }
 
+   @Override
    public synchronized void serviceAdded(ServiceDiscoveryEvent event) {
       try {
          if (!findServiceId(serviceItemList, event.getPostEventServiceItem().serviceID, false)) {
@@ -576,6 +573,7 @@ public class ServiceDataStore implements ServiceDiscoveryListener, DiscoveryList
       }
    }
 
+   @Override
    public void serviceRemoved(ServiceDiscoveryEvent event) {
       if (findServiceId(serviceItemList, event.getPreEventServiceItem().serviceID, true)) {
          notifyServiceRemoved(event.getPreEventServiceItem());
@@ -590,12 +588,14 @@ public class ServiceDataStore implements ServiceDiscoveryListener, DiscoveryList
       }
    }
 
+   @Override
    public void serviceChanged(ServiceDiscoveryEvent event) {
       if (findServiceId(serviceItemList, event.getPostEventServiceItem().serviceID, false)) {
          notifyServiceChanged(event.getPostEventServiceItem());
       }
    }
 
+   @Override
    public void discovered(DiscoveryEvent arg0) {
       synchronized (serviceRegistrars) {
          ServiceRegistrar[] reggies = arg0.getRegistrars();
@@ -633,6 +633,7 @@ public class ServiceDataStore implements ServiceDiscoveryListener, DiscoveryList
 
    }
 
+   @Override
    public void discarded(DiscoveryEvent arg0) {
       synchronized (serviceRegistrars) {
          ServiceRegistrar[] reggies = arg0.getRegistrars();
@@ -664,8 +665,8 @@ public class ServiceDataStore implements ServiceDiscoveryListener, DiscoveryList
    /**
     * @param lookupList
     * @param addToLocators - If true, adds the lookupList to the 'global' lookup list such that a refresh will try to
-    *           locate the service again. This is provided primarily as an optimization for when this routine is called
-    *           from refresh().
+    * locate the service again. This is provided primarily as an optimization for when this routine is called from
+    * refresh().
     */
    private void addLookupLocators(Collection<String> lookupList, boolean addToLocators) {
       boolean isEnabled = OseeProperties.isOseeJiniForcedReggieSearchEnabled();

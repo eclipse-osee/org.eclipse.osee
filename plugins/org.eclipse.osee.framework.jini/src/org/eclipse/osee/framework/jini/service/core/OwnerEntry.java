@@ -23,6 +23,7 @@ public class OwnerEntry extends FormmatedEntry {
       return owner;
    }
 
+   @Override
    public String getFormmatedString() {
       return "Owner : " + owner;
    }

@@ -38,12 +38,13 @@ public class VersionMetrics {
       this.verTeamMet = verTeamMet;
    }
 
+   @Override
    public String toString() {
       StringBuffer sb = new StringBuffer(verArt.getName() + "\n");
       try {
          sb.append("Workflows: " + verArt.getTargetedForTeamArtifacts().size());
          sb.append(" Problem: " + getTeamWorkFlows(ChangeType.Problem).size() + " Improve: " + getTeamWorkFlows(
-               ChangeType.Improvement).size() + " Support: " + getTeamWorkFlows(ChangeType.Support).size());
+            ChangeType.Improvement).size() + " Support: " + getTeamWorkFlows(ChangeType.Support).size());
          sb.append(" Release Date: " + verArt.getReleaseDate());
          VersionMetrics prevVerMet = getPreviousVerMetViaReleaseDate();
          if (prevVerMet == null) {
@@ -61,14 +62,20 @@ public class VersionMetrics {
 
    public Integer getNumberDaysInRelease() throws OseeCoreException {
       Date startDate = getReleaseStartDate();
-      if (startDate == null) return null;
-      if (verArt.getReleaseDate() == null) return null;
+      if (startDate == null) {
+         return null;
+      }
+      if (verArt.getReleaseDate() == null) {
+         return null;
+      }
       return XDate.calculateDifference(startDate, verArt.getReleaseDate());
    }
 
    public Date getReleaseStartDate() throws OseeCoreException {
       VersionMetrics prevVerMet = getPreviousVerMetViaReleaseDate();
-      if (prevVerMet == null) return null;
+      if (prevVerMet == null) {
+         return null;
+      }
       return prevVerMet.getVerArt().getReleaseDate();
    }
 
@@ -76,20 +83,28 @@ public class VersionMetrics {
       List<ChangeType> changeTypes = Arrays.asList(changeType);
       Set<TeamWorkFlowArtifact> teams = new HashSet<TeamWorkFlowArtifact>();
       for (TeamWorkFlowArtifact team : verArt.getTargetedForTeamArtifacts()) {
-         if (changeTypes.contains(team.getChangeType())) teams.add(team);
+         if (changeTypes.contains(team.getChangeType())) {
+            teams.add(team);
+         }
       }
       return teams;
    }
 
    public VersionMetrics getPreviousVerMetViaReleaseDate() throws OseeCoreException {
-      if (verArt.getReleaseDate() == null) return null;
+      if (verArt.getReleaseDate() == null) {
+         return null;
+      }
       int index = verTeamMet.getReleasedOrderedVersions().indexOf(this);
-      if (index > 0) return verTeamMet.getReleasedOrderedVersions().get(index - 1);
+      if (index > 0) {
+         return verTeamMet.getReleasedOrderedVersions().get(index - 1);
+      }
       return null;
    }
 
    public VersionMetrics getNextVerMetViaReleaseDate() throws OseeCoreException {
-      if (verArt.getReleaseDate() == null) return null;
+      if (verArt.getReleaseDate() == null) {
+         return null;
+      }
       int index = verTeamMet.getReleasedOrderedVersions().indexOf(this);
       if (index < verTeamMet.getReleasedOrderedVersions().size() - 1) {
          return verTeamMet.getReleasedOrderedVersions().get(index + 1);

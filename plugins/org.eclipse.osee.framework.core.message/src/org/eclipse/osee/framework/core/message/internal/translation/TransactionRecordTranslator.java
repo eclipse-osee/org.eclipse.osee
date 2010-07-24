@@ -41,6 +41,7 @@ public final class TransactionRecordTranslator implements ITranslator<Transactio
       this.factoryProvider = factoryProvider;
    }
 
+   @Override
    public TransactionRecord convert(PropertyStore store) throws OseeCoreException {
       int transactionNumber = store.getInt(Entry.TRANSACTION_ID.name());
       TransactionDetailsType txType = TransactionDetailsType.valueOf(store.get(Entry.TRANSACTION_TX_TYPE.name()));
@@ -53,6 +54,7 @@ public final class TransactionRecordTranslator implements ITranslator<Transactio
       return factory.create(transactionNumber, branchId, comment, time, authorArtId, commitArtId, txType);
    }
 
+   @Override
    public PropertyStore convert(TransactionRecord data) throws OseeCoreException {
       PropertyStore store = new PropertyStore();
       store.put(Entry.TRANSACTION_ID.name(), data.getId());

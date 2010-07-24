@@ -11,18 +11,15 @@
 package org.eclipse.osee.ote.message.timer;
 
 import java.util.TimerTask;
-
 import org.eclipse.osee.ote.core.environment.interfaces.ICancelTimer;
 import org.eclipse.osee.ote.core.environment.interfaces.ITimeout;
-
-
 
 /**
  * @author Ryan D. Brooks
  * @author Andrew M. Finkbeiner
  */
 public class AlarmClock extends TimerTask implements ICancelTimer {
-   private ITimeout sleeper;
+   private final ITimeout sleeper;
 
    /**
     * @param sleeper
@@ -33,16 +30,18 @@ public class AlarmClock extends TimerTask implements ICancelTimer {
       sleeper.setTimeout(false);
    }
 
-   /** 
+   /**
     * @see java.lang.Runnable#run()
     */
+   @Override
    public void run() {
-      synchronized(sleeper) {
+      synchronized (sleeper) {
          sleeper.notify();
-         sleeper.setTimeout(true);            
+         sleeper.setTimeout(true);
       }
    }
-   
+
+   @Override
    public void cancelTimer() {
       this.cancel();
    }

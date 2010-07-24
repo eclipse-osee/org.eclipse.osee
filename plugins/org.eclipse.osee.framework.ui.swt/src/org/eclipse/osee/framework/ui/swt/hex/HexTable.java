@@ -41,19 +41,19 @@ public abstract class HexTable extends Composite {
       setLayout(layout);
       createAndConfigureColumns(v, layout, bytesPerRow);
       TableViewerFocusCellManager focusCellManager =
-            new TableViewerFocusCellManager(v, new FocusCellOwnerDrawHighlighter(v));
+         new TableViewerFocusCellManager(v, new FocusCellOwnerDrawHighlighter(v));
       ColumnViewerEditorActivationStrategy actSupport = new ColumnViewerEditorActivationStrategy(v) {
          @Override
          protected boolean isEditorActivationEvent(ColumnViewerEditorActivationEvent event) {
-            return event.eventType == ColumnViewerEditorActivationEvent.TRAVERSAL || event.eventType == ColumnViewerEditorActivationEvent.MOUSE_DOUBLE_CLICK_SELECTION || (event.eventType == ColumnViewerEditorActivationEvent.KEY_PRESSED && event.keyCode == SWT.CR) || event.eventType == ColumnViewerEditorActivationEvent.PROGRAMMATIC;
+            return event.eventType == ColumnViewerEditorActivationEvent.TRAVERSAL || event.eventType == ColumnViewerEditorActivationEvent.MOUSE_DOUBLE_CLICK_SELECTION || event.eventType == ColumnViewerEditorActivationEvent.KEY_PRESSED && event.keyCode == SWT.CR || event.eventType == ColumnViewerEditorActivationEvent.PROGRAMMATIC;
          }
       };
 
       TableViewerEditor.create(
-            v,
-            focusCellManager,
-            actSupport,
-            ColumnViewerEditor.TABBING_HORIZONTAL | ColumnViewerEditor.TABBING_MOVE_TO_ROW_NEIGHBOR | ColumnViewerEditor.TABBING_VERTICAL | ColumnViewerEditor.KEYBOARD_ACTIVATION);
+         v,
+         focusCellManager,
+         actSupport,
+         ColumnViewerEditor.TABBING_HORIZONTAL | ColumnViewerEditor.TABBING_MOVE_TO_ROW_NEIGHBOR | ColumnViewerEditor.TABBING_VERTICAL | ColumnViewerEditor.KEYBOARD_ACTIVATION);
 
       v.setInput(array);
       v.setItemCount((array.length + bytesPerRow - 1) / bytesPerRow);

@@ -21,9 +21,9 @@ public class DiagramNode {
 
    private String id = GUID.create();
    private String name;
-   private ArrayList<DiagramNode> fromPages = new ArrayList<DiagramNode>();
-   private ArrayList<DiagramNode> toPages = new ArrayList<DiagramNode>();
-   private ArrayList<DiagramNode> returnPages = new ArrayList<DiagramNode>();
+   private final ArrayList<DiagramNode> fromPages = new ArrayList<DiagramNode>();
+   private final ArrayList<DiagramNode> toPages = new ArrayList<DiagramNode>();
+   private final ArrayList<DiagramNode> returnPages = new ArrayList<DiagramNode>();
    private DiagramNode defaultToPage;
    private String instructionStr;
 
@@ -36,7 +36,8 @@ public class DiagramNode {
    }
 
    public static enum PageType {
-      Team, ActionableItem
+      Team,
+      ActionableItem
    };
    private PageType pageType;
 
@@ -46,8 +47,9 @@ public class DiagramNode {
    public DiagramNode(String name, String id, String xWidgetsXml, IXWidgetOptionResolver optionResolver) {
       super();
       this.name = name;
-      if (id != null && !id.equals(""))
+      if (id != null && !id.equals("")) {
          this.id = id;
+      }
    }
 
    public DiagramNode(String xWidgetsXml, IXWidgetOptionResolver optionResolver) {
@@ -88,11 +90,13 @@ public class DiagramNode {
 
    @Override
    public boolean equals(Object obj) {
-      if (obj instanceof DiagramNode)
+      if (obj instanceof DiagramNode) {
          return getId().equals(((DiagramNode) obj).getId());
+      }
       return false;
    }
 
+   @Override
    public String toString() {
       StringBuffer sb = new StringBuffer(name + (id != null ? " (" + id + ") " : "") + "\n");
       for (DiagramNode page : toPages) {
@@ -110,8 +114,9 @@ public class DiagramNode {
 
    public void addToPage(DiagramNode page, boolean returnPage) {
       toPages.add(page);
-      if (returnPage)
+      if (returnPage) {
          returnPages.add(page);
+      }
    }
 
    public String getName() {

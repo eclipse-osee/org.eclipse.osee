@@ -29,11 +29,10 @@ import org.eclipse.swt.graphics.Image;
 public class SkynetServiceContributionItem extends OseeContributionItem implements IRemoteEventManagerEventListener {
 
    public static final String ID = "skynet.service";
-   private static final Image ENABLED_IMAGE =
-         new OverlayImage(ImageManager.getImage(FrameworkImage.GEAR),
-               ImageManager.getImageDescriptor(FrameworkImage.LASER_OVERLAY)).createImage();
-   private static final Image DISABLED_IMAGE =
-         new OverlayImage(ENABLED_IMAGE, ImageManager.getImageDescriptor(FrameworkImage.SLASH_RED_OVERLAY)).createImage();
+   private static final Image ENABLED_IMAGE = new OverlayImage(ImageManager.getImage(FrameworkImage.GEAR),
+      ImageManager.getImageDescriptor(FrameworkImage.LASER_OVERLAY)).createImage();
+   private static final Image DISABLED_IMAGE = new OverlayImage(ENABLED_IMAGE,
+      ImageManager.getImageDescriptor(FrameworkImage.SLASH_RED_OVERLAY)).createImage();
    private static final String ENABLED_TOOLTIP = "Remote event service is connected.";
    private static final String DISABLED_TOOLTIP = "Remote event service is disconnected.";
    private static Thread updateThread = null;

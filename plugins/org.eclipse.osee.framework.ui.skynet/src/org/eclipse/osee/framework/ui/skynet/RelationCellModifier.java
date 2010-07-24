@@ -34,6 +34,7 @@ public class RelationCellModifier implements ICellModifier {
       //      pList.addPermission(Permission.PermPermissionEnum.EDITREQUIREMENT);
    }
 
+   @Override
    public boolean canModify(Object element, String property) {
       boolean isModifiable = true;
 
@@ -47,19 +48,21 @@ public class RelationCellModifier implements ICellModifier {
       return isModifiable;
    }
 
+   @Override
    public Object getValue(Object element, String property) {
       WrapperForRelationLink relLink = (WrapperForRelationLink) element;
       String rationale = "";
       try {
          rationale =
-               RelationManager.getRelationRationale(relLink.getArtifactA(), relLink.getArtifactB(),
-                     relLink.getRelationType());
+            RelationManager.getRelationRationale(relLink.getArtifactA(), relLink.getArtifactB(),
+               relLink.getRelationType());
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
       return rationale;
    }
 
+   @Override
    public void modify(Object element, String property, Object value) {
       // Note that it is possible for an SWT Item to be passed instead of the model element.
       if (element instanceof Item) {
@@ -68,7 +71,7 @@ public class RelationCellModifier implements ICellModifier {
       WrapperForRelationLink relLink = (WrapperForRelationLink) element;
       try {
          RelationManager.setRelationRationale(relLink.getArtifactA(), relLink.getArtifactB(),
-               relLink.getRelationType(), value.toString());
+            relLink.getRelationType(), value.toString());
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }

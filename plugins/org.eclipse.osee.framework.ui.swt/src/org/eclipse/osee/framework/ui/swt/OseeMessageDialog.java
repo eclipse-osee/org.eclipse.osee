@@ -27,9 +27,9 @@ public class OseeMessageDialog extends IconAndMessageDialog {
 
    private String[] buttonLabels;
    private Button[] buttons;
-   private int defaultButtonIndex;
-   private String title;
-   private Image titleImage;
+   private final int defaultButtonIndex;
+   private final String title;
+   private final Image titleImage;
    private Image image = null;
    private Control customArea;
 
@@ -43,17 +43,24 @@ public class OseeMessageDialog extends IconAndMessageDialog {
       this.defaultButtonIndex = defaultIndex;
    }
 
+   @Override
    protected void buttonPressed(int buttonId) {
       setReturnCode(buttonId);
       close();
    }
 
+   @Override
    protected void configureShell(Shell shell) {
       super.configureShell(shell);
-      if (title != null) shell.setText(title);
-      if (titleImage != null) shell.setImage(titleImage);
+      if (title != null) {
+         shell.setText(title);
+      }
+      if (titleImage != null) {
+         shell.setImage(titleImage);
+      }
    }
 
+   @Override
    protected void createButtonsForButtonBar(Composite parent) {
       buttons = new Button[buttonLabels.length];
       for (int i = 0; i < buttonLabels.length; i++) {
@@ -82,6 +89,7 @@ public class OseeMessageDialog extends IconAndMessageDialog {
     * <code>createMessageArea</code> and <code>createCustomArea</code> to populate it. Subclasses should override
     * <code>createCustomArea</code> to add contents below the message.
     */
+   @Override
    protected Control createDialogArea(Composite parent) {
       // create message area
       createMessageArea(parent);
@@ -97,7 +105,9 @@ public class OseeMessageDialog extends IconAndMessageDialog {
       // allow subclasses to add custom controls
       customArea = createCustomArea(composite);
       // If it is null create a dummy label for spacing purposes
-      if (customArea == null) customArea = new Label(composite, SWT.NULL);
+      if (customArea == null) {
+         customArea = new Label(composite, SWT.NULL);
+      }
       return composite;
    }
 
@@ -107,6 +117,7 @@ public class OseeMessageDialog extends IconAndMessageDialog {
     * @param index the index of the button in the dialog's button bar
     * @return a button in the dialog's button bar
     */
+   @Override
    protected Button getButton(int index) {
       return buttons[index];
    }
@@ -124,11 +135,12 @@ public class OseeMessageDialog extends IconAndMessageDialog {
    }
 
    /**
-    * Handle the shell close. Set the return code to <code>SWT.DEFAULT</code> as there has been no explicit close by
-    * the user.
+    * Handle the shell close. Set the return code to <code>SWT.DEFAULT</code> as there has been no explicit close by the
+    * user.
     * 
     * @see org.eclipse.jface.window.Window#handleShellCloseEvent()
     */
+   @Override
    protected void handleShellCloseEvent() {
       // Sets a return code of SWT.DEFAULT since none of the dialog buttons
       // were pressed to close the dialog.
@@ -137,14 +149,17 @@ public class OseeMessageDialog extends IconAndMessageDialog {
    }
 
    /*
-    * @see org.eclipse.jface.dialogs.Dialog#createButton(org.eclipse.swt.widgets.Composite, int,
-    *      java.lang.String, boolean)
+    * @see org.eclipse.jface.dialogs.Dialog#createButton(org.eclipse.swt.widgets.Composite, int, java.lang.String,
+    * boolean)
     */
+   @Override
    protected Button createButton(Composite parent, int id, String label, boolean defaultButton) {
       Button button = super.createButton(parent, id, label, defaultButton);
       // Be sure to set the focus if the custom area cannot so as not
       // to lose the defaultButton.
-      if (defaultButton && !customShouldTakeFocus()) button.setFocus();
+      if (defaultButton && !customShouldTakeFocus()) {
+         button.setFocus();
+      }
       return button;
    }
 
@@ -156,11 +171,16 @@ public class OseeMessageDialog extends IconAndMessageDialog {
     * @return boolean
     */
    protected boolean customShouldTakeFocus() {
-      if (customArea instanceof Label) return false;
-      if (customArea instanceof CLabel) return (customArea.getStyle() & SWT.NO_FOCUS) > 0;
+      if (customArea instanceof Label) {
+         return false;
+      }
+      if (customArea instanceof CLabel) {
+         return (customArea.getStyle() & SWT.NO_FOCUS) > 0;
+      }
       return true;
    }
 
+   @Override
    public Image getImage() {
       return image;
    }

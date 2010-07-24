@@ -105,7 +105,7 @@ public final class AWorkspace {
       IWorkbenchPage page = AWorkbench.getActivePage();
       try {
          IViewPart viewPart =
-               page.showView("org.eclipse.ui.views.ResourceNavigator", null, IWorkbenchPage.VIEW_ACTIVATE);
+            page.showView("org.eclipse.ui.views.ResourceNavigator", null, IWorkbenchPage.VIEW_ACTIVATE);
 
          if (viewPart != null && viewPart instanceof ResourceNavigator) {
             ResourceNavigator resourceNavigator = (ResourceNavigator) viewPart;
@@ -141,8 +141,8 @@ public final class AWorkspace {
          return false;
       }
       IViewPart p =
-            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
-                  "org.eclipse.jdt.ui.PackageExplorer");
+         PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
+            "org.eclipse.jdt.ui.PackageExplorer");
       if (p != null && p instanceof IPackagesViewPart) {
          StructuredSelection ss = new StructuredSelection(file);
          IPackagesViewPart rn = (IPackagesViewPart) p;
@@ -157,7 +157,7 @@ public final class AWorkspace {
          parentResource.refreshLocal(IResource.DEPTH_INFINITE, null);
       } catch (org.eclipse.core.runtime.CoreException ex) {
          MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-               "Refresh Navigator", "Can't refresh \"" + resource.getName() + "\"\n\nYou must refresh Manually");
+            "Refresh Navigator", "Can't refresh \"" + resource.getName() + "\"\n\nYou must refresh Manually");
          return;
       }
 

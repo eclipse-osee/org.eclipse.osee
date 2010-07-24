@@ -19,10 +19,11 @@ import org.eclipse.osee.ote.message.tool.IFileTransferHandle;
 
 /**
  * @author Ken J. Aguilar
- *
  */
 public interface IOteMessageService {
-	IMessageSubscription subscribe(String name);
-	IFileTransferHandle startRecording(String fileName, List<RecordCommand.MessageRecordDetails> list) throws FileNotFoundException, IOException;
-	void stopRecording() throws Exception;
+   IMessageSubscription subscribe(String name);
+
+   IFileTransferHandle startRecording(String fileName, List<RecordCommand.MessageRecordDetails> list) throws FileNotFoundException, IOException;
+
+   void stopRecording() throws Exception;
 }

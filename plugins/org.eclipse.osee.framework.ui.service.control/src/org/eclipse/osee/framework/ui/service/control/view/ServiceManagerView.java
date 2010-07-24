@@ -47,7 +47,7 @@ public class ServiceManagerView extends ViewPart implements IActionable {
       createLookupViewerPopUp();
 
       this.setContentDescription("Jini Groups { " + StringUtils.join(JiniLookupGroupConfig.getOseeJiniServiceGroups(),
-            ",") + " }");
+         ",") + " }");
 
       OseeUiActions.addBugToViewToolbar(this, this, ControlPlugin.getInstance(), VIEW_ID, "Service Manager");
    }
@@ -68,6 +68,7 @@ public class ServiceManagerView extends ViewPart implements IActionable {
       menuBuilder.createPopUpMenu(managerMain.getLookupViewer().getViewer());
    }
 
+   @Override
    public String getActionDescription() {
       return "";
    }

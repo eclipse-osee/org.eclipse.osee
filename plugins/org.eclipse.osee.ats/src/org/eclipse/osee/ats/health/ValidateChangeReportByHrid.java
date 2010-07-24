@@ -67,7 +67,7 @@ public class ValidateChangeReportByHrid extends XNavigateItemAction {
             final XResultData rd = new XResultData();
             try {
                TeamWorkFlowArtifact teamArt =
-                     (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromId(hrid, AtsUtil.getAtsBranch());
+                  (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromId(hrid, AtsUtil.getAtsBranch());
                String currentDbGuid = OseeInfo.getDatabaseGuid();
                ValidateChangeReports.changeReportValidated(currentDbGuid, teamArt, rd, exportWasIs);
             } catch (Exception ex) {
@@ -76,7 +76,7 @@ public class ValidateChangeReportByHrid extends XNavigateItemAction {
             rd.report(getName());
          } catch (Exception ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-            return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
+            return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
          }
          monitor.done();
          return Status.OK_STATUS;

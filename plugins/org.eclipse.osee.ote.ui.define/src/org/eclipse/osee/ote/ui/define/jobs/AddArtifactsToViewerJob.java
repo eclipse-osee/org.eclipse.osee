@@ -45,7 +45,7 @@ public class AddArtifactsToViewerJob extends Job {
          viewerDataManager.addArtifacts(monitor, artifacts);
       } catch (Exception ex) {
          OseeLog.log(OteUiDefinePlugin.class, OseeLevel.SEVERE_POPUP, ex);
-         return new Status(Status.ERROR, OteUiDefinePlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
+         return new Status(IStatus.ERROR, OteUiDefinePlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
       }
       if (monitor.isCanceled() != true) {
          toReturn = Status.OK_STATUS;

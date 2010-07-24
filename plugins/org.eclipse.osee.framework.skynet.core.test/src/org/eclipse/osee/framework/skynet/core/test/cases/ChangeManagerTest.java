@@ -63,8 +63,8 @@ public class ChangeManagerTest {
       String branchName = "Change Manager Test Branch" + GUID.create();
 
       branch =
-            BranchManager.createWorkingBranch(CoreBranches.SYSTEM_ROOT, branchName,
-                  UserManager.getUser(SystemUser.OseeSystem));
+         BranchManager.createWorkingBranch(CoreBranches.SYSTEM_ROOT, branchName,
+            UserManager.getUser(SystemUser.OseeSystem));
       sleep(5000);
 
       newArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch);

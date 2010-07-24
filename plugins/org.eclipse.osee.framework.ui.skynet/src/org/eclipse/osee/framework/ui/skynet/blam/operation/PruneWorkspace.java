@@ -32,6 +32,7 @@ public class PruneWorkspace extends AbstractBlam {
       return "Prune Workspace";
    }
 
+   @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       File keeperFile = new File(variableMap.getString("Preserve List File"));
       File workspacePath = new File(variableMap.getString("Workspace Path"));
@@ -56,6 +57,7 @@ public class PruneWorkspace extends AbstractBlam {
       return "<xWidgets><XWidget xwidgetType=\"XText\" displayName=\"Preserve List File\" /><XWidget xwidgetType=\"XText\" displayName=\"Workspace Path\" /><XWidget xwidgetType=\"XText\" displayName=\"File Path Pattern\" /></xWidgets>";
    }
 
+   @Override
    public Collection<String> getCategories() {
       return Arrays.asList("OTE");
    }

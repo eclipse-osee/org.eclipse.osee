@@ -29,7 +29,7 @@ import org.eclipse.osee.ote.core.environment.interfaces.ITimeout;
  */
 public class RealTime extends TimerControl {
    private final HashMap<EnvironmentTask, ScheduledFuture<?>> handleMap =
-         new HashMap<EnvironmentTask, ScheduledFuture<?>>(32);
+      new HashMap<EnvironmentTask, ScheduledFuture<?>>(32);
 
    /**
     * Constructor
@@ -40,14 +40,15 @@ public class RealTime extends TimerControl {
       super((Runtime.getRuntime().availableProcessors() + 1) / 2 + 1);
    }
 
+   @Override
    public void addTask(final EnvironmentTask task, final TestEnvironment environment) {
       if (!handleMap.containsKey(task)) {
          final WeakReference<TestEnvironment> te = new WeakReference<TestEnvironment>(environment);
          final ScheduledFuture<?> handle = schedulePeriodicTask(new Runnable() {
-            final Benchmark bm =
-                  new Benchmark(task.getClass().getName() + ":" + task.getHzRate() + "Hz",
-                        (long) (1000000.0 / task.getHzRate()));
+            final Benchmark bm = new Benchmark(task.getClass().getName() + ":" + task.getHzRate() + "Hz",
+               (long) (1000000.0 / task.getHzRate()));
 
+            @Override
             public void run() {
 
                try {
@@ -61,7 +62,7 @@ public class RealTime extends TimerControl {
                      h.cancel(false);
                   }
                   te.get().handleException(ex, "exception while running one cycle for task " + task.toString(),
-                        Level.SEVERE, false);
+                     Level.SEVERE, false);
                }
             }
 
@@ -70,6 +71,7 @@ public class RealTime extends TimerControl {
       }
    }
 
+   @Override
    public void removeTask(EnvironmentTask task) {
       ScheduledFuture<?> handle = handleMap.remove(task);
       if (handle != null) {
@@ -77,6 +79,7 @@ public class RealTime extends TimerControl {
       }
    }
 
+   @Override
    public long getEnvTime() {
       return System.currentTimeMillis();
    }
@@ -88,10 +91,12 @@ public class RealTime extends TimerControl {
       }
    }
 
+   @Override
    public ICancelTimer setTimerFor(final ITimeout objToNotify, int milliseconds) {
       objToNotify.setTimeout(false);
       final ScheduledFuture<?> handle = scheduleOneShotTask(new Runnable() {
 
+         @Override
          public void run() {
             synchronized (objToNotify) {
                objToNotify.setTimeout(true);
@@ -102,16 +107,19 @@ public class RealTime extends TimerControl {
 
       return new ICancelTimer() {
 
+         @Override
          public void cancelTimer() {
             handle.cancel(false);
          }
       };
    }
 
+   @Override
    public int getCycleCount() {
       return (int) System.currentTimeMillis() / 20;
    }
 
+   @Override
    public void incrementCycleCount() {
    }
 
@@ -122,12 +130,15 @@ public class RealTime extends TimerControl {
    public void setCycleCounters(List<CycleCountDown> cycleCounters) {
    }
 
+   @Override
    public void setCycleCount(int cycle) {
    }
 
+   @Override
    public void dispose() {
    }
 
+   @Override
    public void cancelAllTasks() {
       for (ScheduledFuture<?> handle : handleMap.values()) {
          handle.cancel(false);
@@ -135,11 +146,12 @@ public class RealTime extends TimerControl {
       handleMap.clear();
    }
 
+   @Override
    public void step() {
    }
 
    @Override
    public long getTimeOfDay() {
-	   return getEnvTime();
+      return getEnvTime();
    }
 }

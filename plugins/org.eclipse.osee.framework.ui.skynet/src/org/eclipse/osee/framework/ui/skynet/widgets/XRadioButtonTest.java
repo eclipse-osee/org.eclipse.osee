@@ -33,9 +33,11 @@ public class XRadioButtonTest extends Composite {
       final XRadioButton rb = new XRadioButton("Single Button", "singleButton");
       rb.createWidgets(c, 2);
       rb.addSelectionListener(new SelectionListener() {
+         @Override
          public void widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent e) {
          };
 
+         @Override
          public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
             try {
                System.out.println("isSelected *" + rb.isSelected() + "*");
@@ -54,9 +56,11 @@ public class XRadioButtonTest extends Composite {
       rb2.setLabelAfter(true);
       rb2.createWidgets(c, 2);
       rb2.addSelectionListener(new SelectionListener() {
+         @Override
          public void widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent e) {
          };
 
+         @Override
          public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
             try {
                System.out.println("isSelected *" + rb2.isSelected() + "*");
@@ -77,9 +81,11 @@ public class XRadioButtonTest extends Composite {
       rb3.createWidgets(c, 2);
 
       rb3.addSelectionListener(new SelectionListener() {
+         @Override
          public void widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent e) {
          };
 
+         @Override
          public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
             try {
                System.out.println("isSelected *" + rb3.isSelected() + "*");
@@ -100,9 +106,11 @@ public class XRadioButtonTest extends Composite {
       rb4.addButton("bbbbb", "3rd tool tip");
       rb4.createWidgets(c, 1);
       rb4.addSelectionListener(new SelectionListener() {
+         @Override
          public void widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent e) {
          };
 
+         @Override
          public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
             try {
                System.out.println("isSelected *" + rb4.getXmlData() + "*");
@@ -120,9 +128,11 @@ public class XRadioButtonTest extends Composite {
       rb4.setSortNames(true);
       rb4.createWidgets(c, 7);
       rb4.addSelectionListener(new SelectionListener() {
+         @Override
          public void widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent e) {
          };
 
+         @Override
          public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
             try {
                System.out.println("isSelected *" + rb4.getXmlData() + "*");
@@ -144,9 +154,11 @@ public class XRadioButtonTest extends Composite {
       rb5.setMultiSelect(true);
       rb5.createWidgets(c, 11);
       rb5.addSelectionListener(new SelectionListener() {
+         @Override
          public void widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent e) {
          };
 
+         @Override
          public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
             try {
                System.out.println("isSelected *" + rb5.getXmlData() + "*");
@@ -164,9 +176,11 @@ public class XRadioButtonTest extends Composite {
       rb5.setSortNames(true);
       rb5.createWidgets(c, 11);
       rb5.addSelectionListener(new SelectionListener() {
+         @Override
          public void widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent e) {
          };
 
+         @Override
          public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
             try {
                System.out.println("isSelected *" + rb5.getXmlData() + "*");
@@ -186,9 +200,11 @@ public class XRadioButtonTest extends Composite {
       rb6.setMultiSelect(true);
       rb6.createWidgets(c, 11);
       rb6.addSelectionListener(new SelectionListener() {
+         @Override
          public void widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent e) {
          };
 
+         @Override
          public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
             try {
                System.out.println("selected *" + rb6.getXmlData() + "*");

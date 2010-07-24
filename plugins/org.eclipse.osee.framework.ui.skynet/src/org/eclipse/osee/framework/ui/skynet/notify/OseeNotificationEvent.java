@@ -36,6 +36,7 @@ public class OseeNotificationEvent {
       this.url = url;
    }
 
+   @Override
    public String toString() {
       return type + " - " + id + " - " + users + " - " + description;
    }

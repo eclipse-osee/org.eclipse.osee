@@ -51,6 +51,7 @@ public class ActionButton extends SelectionAdapter implements IExceptionableRunn
       Jobs.runInJob(label, this, Activator.class, pluginId);
    }
 
+   @Override
    public IStatus run(IProgressMonitor monitor) throws Exception {
       action.run();
       return Status.OK_STATUS;

@@ -25,7 +25,7 @@ import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
  */
 public class ExcelReportWriter implements IReportWriter {
    private ISheetWriter sheetWriter;
-   private StringWriter stringWriter;
+   private final StringWriter stringWriter;
    private String result;
    private String title;
 
@@ -39,6 +39,7 @@ public class ExcelReportWriter implements IReportWriter {
       }
    }
 
+   @Override
    public String getReport() throws IOException {
       if (result == null) {
          generate();
@@ -46,6 +47,7 @@ public class ExcelReportWriter implements IReportWriter {
       return result;
    }
 
+   @Override
    public int length() throws IOException {
       if (result == null) {
          generate();
@@ -53,6 +55,7 @@ public class ExcelReportWriter implements IReportWriter {
       return result.length();
    }
 
+   @Override
    public void writeHeader(String[] headers) {
       try {
          this.sheetWriter.startSheet(title, headers.length);
@@ -62,6 +65,7 @@ public class ExcelReportWriter implements IReportWriter {
       }
    }
 
+   @Override
    public void writeRow(String... cellData) {
       try {
          this.sheetWriter.writeRow(cellData);
@@ -70,10 +74,12 @@ public class ExcelReportWriter implements IReportWriter {
       }
    }
 
+   @Override
    public void writeTitle(String title) {
       this.title = title;
    }
 
+   @Override
    public void writeToOutput(OutputStream outputStream) throws IOException {
       if (result == null) {
          generate();

@@ -19,9 +19,8 @@ import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
  */
 public class XmlSupport {
 
-   private static final Matcher xmlPatternMatcher =
-         Pattern.compile("[^" + "a-zA-Z0-9" + "!@#$%\\^&*\\(\\)" + "+ _.-=" + "\'\"<>{}\\[\\]|:;,\n\r\t?/`~\\\\]+").matcher(
-               "");
+   private static final Matcher xmlPatternMatcher = Pattern.compile(
+      "[^" + "a-zA-Z0-9" + "!@#$%\\^&*\\(\\)" + "+ _.-=" + "\'\"<>{}\\[\\]|:;,\n\r\t?/`~\\\\]+").matcher("");
    private static final String CDATA_TEMPLATE = "<![CDATA[%s]]>";
    private static final String HEX_START = " 0x";
    private static final String CDATA_END = "]]>";
@@ -43,7 +42,7 @@ public class XmlSupport {
             StringBuilder converted = new StringBuilder();
             for (int index = 0; index < charToConvert.length; index++) {
                converted.append(HEX_START);
-               converted.append(Integer.toString((int) charToConvert[index], 16));
+               converted.append(Integer.toString(charToConvert[index], 16));
             }
             if (changeSet == null) {
                changeSet = new ChangeSet(value);
@@ -102,12 +101,16 @@ public class XmlSupport {
    }
 
    private static int toInt(int higher, char lower) {
-      return 0x10000 + (higher - 0xD800) * 0x400 + (lower - 0xDC00);
+      return 0x10000 + (higher - 0xD800) * 0x400 + lower - 0xDC00;
    }
 
    private static boolean isHTMLCharacter(int c) {
-      if (c == '\n' || c == '\r' || c == '\t') return true;
-      if (c >= 0x20 && c < 0x7F) return true;
+      if (c == '\n' || c == '\r' || c == '\t') {
+         return true;
+      }
+      if (c >= 0x20 && c < 0x7F) {
+         return true;
+      }
       return false;
    }
 }

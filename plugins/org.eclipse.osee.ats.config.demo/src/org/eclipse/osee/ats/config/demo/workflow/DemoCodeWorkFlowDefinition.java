@@ -31,7 +31,7 @@ public class DemoCodeWorkFlowDefinition extends TeamWorkflowDefinition {
    @Override
    public void config(WriteType writeType, XResultData xResultData) throws OseeCoreException {
       AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(writeType, xResultData,
-            TeamWorkflowDefinition.getWorkPageDefinitionsForId(getId()));
+         TeamWorkflowDefinition.getWorkPageDefinitionsForId(getId()));
       AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(writeType, xResultData, new DemoCodeWorkFlowDefinition());
    }
 

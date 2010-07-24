@@ -29,7 +29,7 @@ public class V0_9_0TxDetailsHandler extends AbstractSaxHandler {
    public void startElementFound(String uri, String localName, String qName, Attributes attributes) throws SAXException {
       if (localName.equals("entry")) {
          branchIdMap.put(Integer.parseInt(attributes.getValue("transaction_id")),
-               Integer.parseInt(attributes.getValue("branch_id")));
+            Integer.parseInt(attributes.getValue("branch_id")));
       }
    }
 

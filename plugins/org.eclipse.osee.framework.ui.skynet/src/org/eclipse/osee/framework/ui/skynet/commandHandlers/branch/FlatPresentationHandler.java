@@ -30,7 +30,7 @@ import org.eclipse.ui.menus.UIElement;
  */
 public class FlatPresentationHandler extends AbstractHandler implements IElementUpdater {
    public static String COMMAND_ID = "org.eclipse.osee.framework.ui.skynet.branch.BranchView.flatCommand";
-   private ICommandService service;
+   private final ICommandService service;
 
    public FlatPresentationHandler() {
       this.service = (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
@@ -45,7 +45,7 @@ public class FlatPresentationHandler extends AbstractHandler implements IElement
    @Override
    public void updateElement(UIElement element, Map parameters) {
       element.setChecked(Platform.getPreferencesService().getRootNode().node(InstanceScope.SCOPE).node(
-            BranchView.VIEW_ID).getBoolean(BranchViewPresentationPreferences.FLAT_KEY, true));
+         BranchView.VIEW_ID).getBoolean(BranchViewPresentationPreferences.FLAT_KEY, true));
    }
 
    @Override

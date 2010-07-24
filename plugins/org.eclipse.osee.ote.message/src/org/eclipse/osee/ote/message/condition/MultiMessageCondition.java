@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
-
 import org.eclipse.osee.ote.core.MethodFormatter;
 import org.eclipse.osee.ote.core.environment.interfaces.ICancelTimer;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
@@ -32,10 +31,10 @@ import org.eclipse.osee.ote.message.listener.IOSEEMessageListener;
 
 public class MultiMessageCondition {
 
-
    private static final class MessageCounter {
       private final Message message;
       private int count;
+
       /**
        * @param count
        * @param messageData
@@ -59,7 +58,6 @@ public class MultiMessageCondition {
       private final Message[] messages;
       private final HashSet<MessageData> messagesNotSeen = new HashSet<MessageData>();
       private final HashMap<MessageData, MessageCounter> hitCount = new HashMap<MessageData, MessageCounter>();
-
 
       private Listener(Message... messages) {
          this.messages = messages;
@@ -178,8 +176,6 @@ public class MultiMessageCondition {
       return new MsgWaitResult(time, count, seenAllMessages);
    }
 
-
-
    public MsgWaitResult waitForAnyTransmission(ITestEnvironmentAccessor accessor, int timeout, Collection<MessageCounter> msgsSeen, Message... messages) throws InterruptedException {
       long time = accessor.getEnvTime();
       boolean anyTransmissions = false;
@@ -221,12 +217,13 @@ public class MultiMessageCondition {
       if (!result.isPassed()) {
          CheckPoint cp =
             new CheckPoint("MESSAGE_TRANSMISSION.NONE", "NONE", result.isPassed() ? "AT LEAST ONE" : "NONE",
-                  !result.isPassed(), result.getXmitCount(), result.getElapsedTime());
+               !result.isPassed(), result.getXmitCount(), result.getElapsedTime());
          accessor.getLogger().testpoint(accessor, accessor.getTestScript(), accessor.getTestCase(), cp);
       } else {
          CheckGroup group = new CheckGroup(Operation.AND, "MESSAGE_TRANSMISSION.NONE");
          for (MessageCounter counter : msgsReceived) {
-            group.add(new CheckPoint("TRANSMISSIONS OF " + counter.message.getName(), "0", Integer.toString(counter.count), counter.count == 0, counter.count, result.getElapsedTime()));
+            group.add(new CheckPoint("TRANSMISSIONS OF " + counter.message.getName(), "0",
+               Integer.toString(counter.count), counter.count == 0, counter.count, result.getElapsedTime()));
          }
          accessor.getLogger().testpoint(accessor, accessor.getTestScript(), accessor.getTestCase(), group);
       }
@@ -244,7 +241,7 @@ public class MultiMessageCondition {
       MsgWaitResult result = waitForAnyTransmission(accessor, timeout, msgsReceived, messages);
       CheckPoint cp =
          new CheckPoint("MESSAGE_TRANSMISSION.ANY", "AT LEAST ONE", result.isPassed() ? "AT LEAST ONE" : "NONE",
-               result.isPassed(), result.getXmitCount(), result.getElapsedTime());
+            result.isPassed(), result.getXmitCount(), result.getElapsedTime());
       accessor.getLogger().testpoint(accessor, accessor.getTestScript(), accessor.getTestCase(), cp);
       accessor.getLogger().methodEnded(accessor);
    }
@@ -260,17 +257,17 @@ public class MultiMessageCondition {
       MsgWaitResult result = waitForAllTransmissions(accessor, timeout, msgsReceived, messages);
       if (result.isPassed()) {
          CheckPoint cp =
-            new CheckPoint("MESSAGE_TRANSMISSION.ALL", "ALL", result.isPassed() ? "ALL" : "NOT ALL",
-                  result.isPassed(), result.getXmitCount(), result.getElapsedTime());
+            new CheckPoint("MESSAGE_TRANSMISSION.ALL", "ALL", result.isPassed() ? "ALL" : "NOT ALL", result.isPassed(),
+               result.getXmitCount(), result.getElapsedTime());
          accessor.getLogger().testpoint(accessor, accessor.getTestScript(), accessor.getTestCase(), cp);
       } else {
          CheckGroup group = new CheckGroup(Operation.AND, "MESSAGE_TRANSMISSION.ALL");
          for (MessageCounter counter : msgsReceived) {
-            group.add(new CheckPoint("TRANSMISSIONS OF " + counter.message.getName(), "GREATER THAN 0", Integer.toString(counter.count), counter.count > 0, counter.count, result.getElapsedTime()));
+            group.add(new CheckPoint("TRANSMISSIONS OF " + counter.message.getName(), "GREATER THAN 0",
+               Integer.toString(counter.count), counter.count > 0, counter.count, result.getElapsedTime()));
          }
          accessor.getLogger().testpoint(accessor, accessor.getTestScript(), accessor.getTestCase(), group);
       }
-
 
       accessor.getLogger().methodEnded(accessor);
    }

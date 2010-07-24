@@ -37,8 +37,8 @@ public class OseeJini {
 
    public static Remote getRemoteReference(Remote object, InetAddress inetAddress) throws ExportException {
       Exporter export =
-            new BasicJeriExporter(TcpServerEndpoint.getInstance(inetAddress.getHostAddress(), 0), new BasicILFactory(),
-                  false, false);
+         new BasicJeriExporter(TcpServerEndpoint.getInstance(inetAddress.getHostAddress(), 0), new BasicILFactory(),
+            false, false);
       return export.export(object);
    }
 

@@ -45,24 +45,24 @@ public class CommitIntoHandler extends CommitHandler {
    @Override
    public Object execute(ExecutionEvent arg0) throws ExecutionException {
       IStructuredSelection selection =
-            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+         (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
       Branch sourceBranch = Handlers.getBranchesFromStructuredSelection(selection).iterator().next();
 
       try {
          List<Branch> branches =
-               BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING, BranchType.BASELINE);
+            BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING, BranchType.BASELINE);
          Collections.sort(branches);
 
          branches.remove(sourceBranch);
          BranchSelectionDialog branchSelection =
-               new BranchSelectionDialog(
-                     String.format("Source Branch [%s]\n\nSelect Destination Branch", sourceBranch), branches);
+            new BranchSelectionDialog(String.format("Source Branch [%s]\n\nSelect Destination Branch", sourceBranch),
+               branches);
          int result = branchSelection.open();
          if (result == Window.OK) {
             CheckBoxDialog dialog =
-                  new CheckBoxDialog("Commit Into", String.format(
-                        "Commit from\n\nSource Branch: [%s]\n\ninto\n\nDestination Branch: [%s]", sourceBranch,
-                        branchSelection.getSelected()), "Archive Source Branch");
+               new CheckBoxDialog("Commit Into", String.format(
+                  "Commit from\n\nSource Branch: [%s]\n\ninto\n\nDestination Branch: [%s]", sourceBranch,
+                  branchSelection.getSelected()), "Archive Source Branch");
             if (dialog.open() == 0) {
                Jobs.startJob(new CommitJob(sourceBranch, branchSelection.getSelected(), dialog.isChecked()));
             }

@@ -15,9 +15,8 @@ import org.xml.sax.Attributes;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
-public class CurrentProcessor extends ElementHandlers{
+public class CurrentProcessor extends ElementHandlers {
 
    /**
     * @param name
@@ -25,7 +24,6 @@ public class CurrentProcessor extends ElementHandlers{
    public CurrentProcessor() {
       super("CurrentProcessor");
    }
-
 
    @Override
    public Object createStartElementFoundObject(String uri, String localName, String name, Attributes attributes) {

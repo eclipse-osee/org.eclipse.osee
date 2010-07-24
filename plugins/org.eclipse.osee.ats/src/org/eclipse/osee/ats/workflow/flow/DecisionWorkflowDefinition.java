@@ -61,7 +61,7 @@ public class DecisionWorkflowDefinition extends WorkFlowDefinition {
       workItems.add(new AtsDecisionFollowupWorkPageDefinition());
       workItems.add(new AtsDecisionCompletedWorkPageDefinition());
       workItems.add(new WorkPageDefinition(DefaultTeamState.Cancelled.name(),
-            DecisionWorkflowDefinition.DECISION_CANCELLED_STATE_ID, AtsCancelledWorkPageDefinition.ID));
+         DecisionWorkflowDefinition.DECISION_CANCELLED_STATE_ID, AtsCancelledWorkPageDefinition.ID));
       workItems.add(new DecisionWorkflowDefinition());
 
       return workItems;
@@ -70,38 +70,38 @@ public class DecisionWorkflowDefinition extends WorkFlowDefinition {
    private void addTransitions() {
       // Add Prepare Transitions
       addPageTransition(AtsDecisionPrepareWorkPageDefinition.ID, AtsDecisionDecisionWorkPageDefinition.ID,
-            TransitionType.ToPageAsDefault);
+         TransitionType.ToPageAsDefault);
       addPageTransitionToPageAndReturn(AtsDecisionPrepareWorkPageDefinition.ID, DECISION_CANCELLED_STATE_ID);
 
       // Add Decision Transitions
       addPageTransition(AtsDecisionDecisionWorkPageDefinition.ID, AtsDecisionCompletedWorkPageDefinition.ID,
-            TransitionType.ToPageAsDefault);
+         TransitionType.ToPageAsDefault);
       addPageTransition(AtsDecisionDecisionWorkPageDefinition.ID, AtsDecisionFollowupWorkPageDefinition.ID,
-            TransitionType.ToPage);
+         TransitionType.ToPage);
       addPageTransition(AtsDecisionDecisionWorkPageDefinition.ID, AtsDecisionPrepareWorkPageDefinition.ID,
-            TransitionType.ToPageAsReturn);
+         TransitionType.ToPageAsReturn);
       addPageTransitionToPageAndReturn(AtsDecisionDecisionWorkPageDefinition.ID, DECISION_CANCELLED_STATE_ID);
 
       // Add Followup Transitions
       addPageTransition(AtsDecisionFollowupWorkPageDefinition.ID, AtsDecisionDecisionWorkPageDefinition.ID,
-            TransitionType.ToPageAsReturn);
+         TransitionType.ToPageAsReturn);
       addPageTransition(AtsDecisionFollowupWorkPageDefinition.ID, AtsDecisionCompletedWorkPageDefinition.ID,
-            TransitionType.ToPageAsDefault);
+         TransitionType.ToPageAsDefault);
       addPageTransitionToPageAndReturn(AtsDecisionFollowupWorkPageDefinition.ID, DECISION_CANCELLED_STATE_ID);
 
       // Add Completed Transitions
       addPageTransition(AtsDecisionCompletedWorkPageDefinition.ID, AtsDecisionDecisionWorkPageDefinition.ID,
-            TransitionType.ToPageAsReturn);
+         TransitionType.ToPageAsReturn);
       addPageTransition(AtsDecisionCompletedWorkPageDefinition.ID, AtsDecisionFollowupWorkPageDefinition.ID,
-            TransitionType.ToPageAsReturn);
+         TransitionType.ToPageAsReturn);
 
       // Add Cancelled Transitions
       addPageTransition(DECISION_CANCELLED_STATE_ID, AtsDecisionPrepareWorkPageDefinition.ID,
-            TransitionType.ToPageAsReturn);
+         TransitionType.ToPageAsReturn);
       addPageTransition(DECISION_CANCELLED_STATE_ID, AtsDecisionDecisionWorkPageDefinition.ID,
-            TransitionType.ToPageAsReturn);
+         TransitionType.ToPageAsReturn);
       addPageTransition(DECISION_CANCELLED_STATE_ID, AtsDecisionFollowupWorkPageDefinition.ID,
-            TransitionType.ToPageAsReturn);
+         TransitionType.ToPageAsReturn);
 
    }
 

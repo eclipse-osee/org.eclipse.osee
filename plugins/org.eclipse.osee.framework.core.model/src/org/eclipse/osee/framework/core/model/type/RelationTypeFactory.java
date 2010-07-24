@@ -35,19 +35,19 @@ public class RelationTypeFactory implements IOseeTypeFactory {
       Conditions.checkNotNull(multiplicity, "multiplicity");
       String checkedGuid = Conditions.checkGuidCreateIfNeeded(guid);
       return new RelationType(checkedGuid, name, sideAName, sideBName, artifactTypeSideA, artifactTypeSideB,
-            multiplicity, defaultOrderTypeGuid);
+         multiplicity, defaultOrderTypeGuid);
    }
 
    public RelationType createOrUpdate(RelationTypeCache cache, String guid, String typeName, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, String defaultOrderTypeGuid) throws OseeCoreException {
       RelationType relationType = cache.getByGuid(guid);
       if (relationType == null) {
          relationType =
-               create(guid, typeName, sideAName, sideBName, artifactTypeSideA, artifactTypeSideB, multiplicity,
-                     defaultOrderTypeGuid);
+            create(guid, typeName, sideAName, sideBName, artifactTypeSideA, artifactTypeSideB, multiplicity,
+               defaultOrderTypeGuid);
       } else {
          cache.decache(relationType);
          relationType.setFields(typeName, sideAName, sideBName, artifactTypeSideA, artifactTypeSideB, multiplicity,
-               defaultOrderTypeGuid);
+            defaultOrderTypeGuid);
       }
       cache.cache(relationType);
       return relationType;
@@ -57,14 +57,14 @@ public class RelationTypeFactory implements IOseeTypeFactory {
       RelationType relationType = cache.getById(typeId);
       if (relationType == null) {
          relationType =
-               create(guid, typeName, sideAName, sideBName, artifactTypeSideA, artifactTypeSideB, multiplicity,
-                     defaultOrderTypeGuid);
+            create(guid, typeName, sideAName, sideBName, artifactTypeSideA, artifactTypeSideB, multiplicity,
+               defaultOrderTypeGuid);
          relationType.setId(typeId);
          relationType.setStorageState(storageState);
       } else {
          cache.decache(relationType);
          relationType.setFields(typeName, sideAName, sideBName, artifactTypeSideA, artifactTypeSideB, multiplicity,
-               defaultOrderTypeGuid);
+            defaultOrderTypeGuid);
       }
       cache.cache(relationType);
       return relationType;

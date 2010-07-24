@@ -80,31 +80,38 @@ public abstract class TaskableStateMachineArtifact extends StateMachineArtifact 
    @Override
    public VersionArtifact getWorldViewTargetedVersion() throws OseeCoreException {
       TeamWorkFlowArtifact teamArt = getParentTeamWorkflow();
-      if (teamArt == null) return null;
+      if (teamArt == null) {
+         return null;
+      }
       return teamArt.getWorldViewTargetedVersion();
    }
 
    @Override
    public boolean showTaskTab() throws OseeCoreException {
-      return (isTaskable() || isCompleted() || isCancelled());
+      return isTaskable() || isCompleted() || isCancelled();
    }
 
    @Override
    public void atsDelete(Set<Artifact> deleteArts, Map<Artifact, Object> allRelated) throws OseeCoreException {
       super.atsDelete(deleteArts, allRelated);
-      for (TaskArtifact taskArt : getTaskArtifacts())
+      for (TaskArtifact taskArt : getTaskArtifacts()) {
          taskArt.atsDelete(deleteArts, allRelated);
+      }
    }
 
    @Override
    public void transitioned(WorkPageDefinition fromPage, WorkPageDefinition toPage, Collection<User> toAssignees, boolean persist, SkynetTransaction transaction) throws OseeCoreException {
       super.transitioned(fromPage, toPage, toAssignees, persist, transaction);
-      for (TaskArtifact taskArt : getTaskArtifacts())
+      for (TaskArtifact taskArt : getTaskArtifacts()) {
          taskArt.parentWorkFlowTransitioned(fromPage, toPage, toAssignees, persist, transaction);
+      }
    }
 
+   @Override
    public String getWorldViewNumberOfTasksRemaining() throws OseeCoreException {
-      if (getTaskArtifacts().isEmpty()) return "";
+      if (getTaskArtifacts().isEmpty()) {
+         return "";
+      }
       return String.valueOf(getNumTasksInWork());
    }
 
@@ -120,7 +127,7 @@ public abstract class TaskableStateMachineArtifact extends StateMachineArtifact 
          }
       }
       return String.format("Total: %d - InWork: %d - Completed: %d - Cancelled: %d",
-            getTaskArtifacts(stateName).size(), inWork, completed, cancelled);
+         getTaskArtifacts(stateName).size(), inWork, completed, cancelled);
    }
 
    public Collection<TaskArtifact> getTaskArtifacts() throws OseeCoreException {
@@ -139,7 +146,7 @@ public abstract class TaskableStateMachineArtifact extends StateMachineArtifact 
       List<TaskArtifact> arts = new ArrayList<TaskArtifact>();
       for (TaskArtifact taskArt : getTaskArtifacts()) {
          if (taskArt.getSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), "").equals(
-               stateName)) {
+            stateName)) {
             arts.add(taskArt);
          }
       }
@@ -174,7 +181,7 @@ public abstract class TaskableStateMachineArtifact extends StateMachineArtifact 
 
       // Set parent state task is related to
       taskArt.setSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(),
-            getStateMgr().getCurrentStateName());
+         getStateMgr().getCurrentStateName());
 
       addRelation(AtsRelationTypes.SmaToTask_Task, taskArt);
 
@@ -229,6 +236,7 @@ public abstract class TaskableStateMachineArtifact extends StateMachineArtifact 
     * @param relatedToStateName state name of parent workflow's state
     * @return Returns the Estimated Hours
     */
+   @Override
    public double getEstimatedHoursFromTasks(String relatedToStateName) throws OseeCoreException {
       double hours = 0;
       for (TaskArtifact taskArt : getTaskArtifacts(relatedToStateName)) {
@@ -243,6 +251,7 @@ public abstract class TaskableStateMachineArtifact extends StateMachineArtifact 
     * @return hours
     * @throws Exception
     */
+   @Override
    public double getEstimatedHoursFromTasks() throws OseeCoreException {
       double hours = 0;
       for (TaskArtifact taskArt : getTaskArtifacts()) {

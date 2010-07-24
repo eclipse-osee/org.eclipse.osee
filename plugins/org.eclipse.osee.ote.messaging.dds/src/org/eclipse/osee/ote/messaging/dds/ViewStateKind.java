@@ -11,8 +11,8 @@
 package org.eclipse.osee.ote.messaging.dds;
 
 /**
- * The class which stores all of the available view states for a sample. The name of any of the values can be acquired from the <code>getKindName()</code>
- * method inherited from <code>Kind</code>.
+ * The class which stores all of the available view states for a sample. The name of any of the values can be acquired
+ * from the <code>getKindName()</code> method inherited from <code>Kind</code>.
  * 
  * @see org.eclipse.osee.ote.messaging.dds.Kind
  * @author Robert A. Fisher

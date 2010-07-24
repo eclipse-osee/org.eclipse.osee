@@ -55,12 +55,12 @@ public class ClassServerInst {
       try {
          InetAddress useHostAddress = CorePreferences.getDefaultInetAddress();
          classServer = new ClassServer(0, useHostAddress)//;
-               {
-                  @Override
-                  protected void fileDownloaded(String fp, InetAddress addr) {
-                     System.out.println("ClassServerInst: File " + fp + " downloaded to " + addr);
-                  }
-               };
+            {
+               @Override
+               protected void fileDownloaded(String fp, InetAddress addr) {
+                  System.out.println("ClassServerInst: File " + fp + " downloaded to " + addr);
+               }
+            };
          pathResourceFinder = new PathResourceFinder(new String[] {}, false);
          classServer.addResourceFinder(new UserLibResourceFinder());
          classServer.addResourceFinder(pathResourceFinder);
@@ -84,10 +84,10 @@ public class ClassServerInst {
          job.schedule();
       } catch (BindException ex) {
          OseeLog.log(
-               ClassServerInst.class,
-               Level.SEVERE,
-               "Class Server not started.  Likely the IP address used is not local.  Set your IP address in the advanced page.",
-               ex);
+            ClassServerInst.class,
+            Level.SEVERE,
+            "Class Server not started.  Likely the IP address used is not local.  Set your IP address in the advanced page.",
+            ex);
       } catch (Exception ex) {
          OseeLog.log(ClassServerInst.class, Level.SEVERE, "Class Server not started.", ex);
       }

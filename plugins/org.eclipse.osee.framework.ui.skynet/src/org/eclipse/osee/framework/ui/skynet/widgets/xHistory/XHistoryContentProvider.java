@@ -27,6 +27,7 @@ public class XHistoryContentProvider implements ITreeContentProvider {
       this.changeXViewer = commitXViewer;
    }
 
+   @Override
    public Object[] getChildren(Object parentElement) {
       if (parentElement instanceof Collection) {
          return ((Collection<?>) parentElement).toArray();
@@ -34,15 +35,20 @@ public class XHistoryContentProvider implements ITreeContentProvider {
       return EMPTY_ARRAY;
    }
 
+   @Override
    public Object getParent(Object element) {
       return null;
    }
 
+   @Override
    public boolean hasChildren(Object element) {
-      if (element instanceof Collection) return true;
+      if (element instanceof Collection) {
+         return true;
+      }
       return false;
    }
 
+   @Override
    public Object[] getElements(Object inputElement) {
       if (inputElement instanceof Collection) {
          return ((Collection<?>) inputElement).toArray();
@@ -50,9 +56,11 @@ public class XHistoryContentProvider implements ITreeContentProvider {
       return EMPTY_ARRAY;
    }
 
+   @Override
    public void dispose() {
    }
 
+   @Override
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
    }
 

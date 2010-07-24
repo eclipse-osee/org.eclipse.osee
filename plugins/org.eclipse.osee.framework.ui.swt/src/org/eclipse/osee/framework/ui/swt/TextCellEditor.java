@@ -39,6 +39,7 @@ public abstract class TextCellEditor extends CustomTableCellEditor<String> {
     * @author Ken J. Aguilar
     */
    private final class EditCellListener implements Listener {
+      @Override
       public void handleEvent(Event event) {
          final Point pt = new Point(event.x, event.y);
          int index = table.getTopIndex();
@@ -52,6 +53,7 @@ public abstract class TextCellEditor extends CustomTableCellEditor<String> {
                   final Text text = new Text(table, textStyle);
                   text.setToolTipText(toolTip);
                   final Listener textListener = new Listener() {
+                     @Override
                      public void handleEvent(final Event e) {
                         final String value = text.getText();
                         switch (e.type) {
@@ -117,6 +119,7 @@ public abstract class TextCellEditor extends CustomTableCellEditor<String> {
     * @param previousValue the value that was in the cell before the edit took place
     * @return the value that will be actually written into the table's cell
     */
+   @Override
    abstract protected String applyValue(final int itemIndex, final String value, final String previousValue);
 
    /**
@@ -127,6 +130,7 @@ public abstract class TextCellEditor extends CustomTableCellEditor<String> {
     * @param previousValue
     * @return String
     */
+   @Override
    abstract protected String focusLost(final int itemIndex, final String value, final String previousValue);
 
    /**
@@ -137,7 +141,9 @@ public abstract class TextCellEditor extends CustomTableCellEditor<String> {
     */
    public void setEnabled(boolean enabled) {
       // do nothing if already enabled/disabled
-      if (this.enabled == enabled) return;
+      if (this.enabled == enabled) {
+         return;
+      }
 
       if (enabled) {
          table.addListener(SWT.MouseDown, tblListener);

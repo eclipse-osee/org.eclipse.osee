@@ -22,9 +22,9 @@ import org.eclipse.osee.framework.database.core.OseeConnection;
 public class OseeSequenceImpl implements IOseeSequence {
    private static final String QUERY_SEQUENCE = "SELECT last_sequence FROM osee_sequence WHERE sequence_name = ?";
    private static final String INSERT_SEQUENCE =
-         "INSERT INTO osee_sequence (last_sequence, sequence_name) VALUES (?,?)";
+      "INSERT INTO osee_sequence (last_sequence, sequence_name) VALUES (?,?)";
    private static final String UPDATE_SEQUENCE =
-         "UPDATE osee_sequence SET last_sequence = ? WHERE sequence_name = ? AND last_sequence = ?";
+      "UPDATE osee_sequence SET last_sequence = ? WHERE sequence_name = ? AND last_sequence = ?";
 
    private final static HashMap<String, SequenceRange> sequences = new HashMap<String, SequenceRange>(30);
 
@@ -53,6 +53,7 @@ public class OseeSequenceImpl implements IOseeSequence {
       sequences.clear();
    }
 
+   @Override
    @SuppressWarnings("unchecked")
    public synchronized long getNextSequence(String sequenceName) throws OseeDataStoreException {
       SequenceRange range = getRange(sequenceName);
@@ -63,7 +64,7 @@ public class OseeSequenceImpl implements IOseeSequence {
          try {
             while (!gotSequence) {
                long currentValue =
-                     getDatabase().runPreparedQueryFetchObject(connection, lastValue, QUERY_SEQUENCE, sequenceName);
+                  getDatabase().runPreparedQueryFetchObject(connection, lastValue, QUERY_SEQUENCE, sequenceName);
                if (currentValue == lastValue) {
                   internalInitializeSequence(sequenceName);
                   lastValue = 0;
@@ -71,8 +72,8 @@ public class OseeSequenceImpl implements IOseeSequence {
                   lastValue = currentValue;
                }
                gotSequence =
-                     getDatabase().runPreparedUpdate(connection, UPDATE_SEQUENCE, lastValue + range.prefetchSize,
-                           sequenceName, lastValue) == 1;
+                  getDatabase().runPreparedUpdate(connection, UPDATE_SEQUENCE, lastValue + range.prefetchSize,
+                     sequenceName, lastValue) == 1;
             }
             range.updateRange(lastValue);
          } finally {
@@ -93,66 +94,82 @@ public class OseeSequenceImpl implements IOseeSequence {
       getDatabase().runPreparedUpdate(INSERT_SEQUENCE, 0, sequenceName);
    }
 
+   @Override
    public int getNextSessionId() throws OseeDataStoreException {
       return (int) getNextSequence(TTE_SESSION_SEQ);
    }
 
+   @Override
    public int getNextTransactionId() throws OseeDataStoreException {
       return (int) getNextSequence(TRANSACTION_ID_SEQ);
    }
 
+   @Override
    public int getNextArtifactId() throws OseeDataStoreException {
       return (int) getNextSequence(ART_ID_SEQ);
    }
 
+   @Override
    public int getNextOseeEnumTypeId() throws OseeDataStoreException {
       return (int) getNextSequence(ENUM_TYPE_ID_SEQ);
    }
 
+   @Override
    public int getNextGammaId() throws OseeDataStoreException {
       return (int) getNextSequence(GAMMA_ID_SEQ);
    }
 
+   @Override
    public int getNextArtifactTypeId() throws OseeDataStoreException {
       return (int) getNextSequence(ART_TYPE_ID_SEQ);
    }
 
+   @Override
    public int getNextAttributeBaseTypeId() throws OseeDataStoreException {
       return (int) getNextSequence(ATTR_BASE_TYPE_ID_SEQ);
    }
 
+   @Override
    public int getNextAttributeProviderTypeId() throws OseeDataStoreException {
       return (int) getNextSequence(ATTR_PROVIDER_TYPE_ID_SEQ);
    }
 
+   @Override
    public int getNextAttributeId() throws OseeDataStoreException {
       return (int) getNextSequence(ATTR_ID_SEQ);
    }
 
+   @Override
    public int getNextAttributeTypeId() throws OseeDataStoreException {
       return (int) getNextSequence(ATTR_TYPE_ID_SEQ);
    }
 
+   @Override
    public int getNextFactoryId() throws OseeDataStoreException {
       return (int) getNextSequence(FACTORY_ID_SEQ);
    }
 
+   @Override
    public int getNextBranchId() throws OseeDataStoreException {
       return (int) getNextSequence(BRANCH_ID_SEQ);
    }
 
+   @Override
    public int getNextRelationTypeId() throws OseeDataStoreException {
       return (int) getNextSequence(REL_LINK_TYPE_ID_SEQ);
    }
 
+   @Override
    public int getNextRelationId() throws OseeDataStoreException {
       return (int) getNextSequence(REL_LINK_ID_SEQ);
    }
 
+   @Override
    public int getNextImportId() throws OseeDataStoreException {
       return (int) getNextSequence(IMPORT_ID_SEQ);
    }
 
+   @Override
    public int getNextImportMappedIndexId() throws OseeDataStoreException {
       return (int) getNextSequence(IMPORT_MAPPED_INDEX_SEQ);
    }
@@ -181,7 +198,5 @@ public class OseeSequenceImpl implements IOseeSequence {
          }
       }
    }
-
-
 
 }

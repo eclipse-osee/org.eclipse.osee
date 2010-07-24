@@ -11,9 +11,9 @@
 package org.eclipse.osee.ats.navigate;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -29,7 +29,7 @@ public class AtsNavigateComposite extends XNavigateComposite {
 
    public AtsNavigateComposite(XNavigateViewItems navigateViewItems, Composite parent, int style) {
       super(navigateViewItems, parent, style);
-      Result result = AtsPlugin.areOSEEServicesAvailable();
+      Result result = OseeUiActivator.areOSEEServicesAvailable();
       if (result.isFalse()) {
          new Label(parent, SWT.NONE).setText(result.getText());
          return;

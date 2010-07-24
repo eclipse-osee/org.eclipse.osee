@@ -27,8 +27,8 @@ import org.eclipse.ui.PlatformUI;
  */
 public class NodeDoubleClicked implements IDoubleClickListener {
 
-   private ManagerMain mainWindow;
-   private ConnectionManager connectionManager;
+   private final ManagerMain mainWindow;
+   private final ConnectionManager connectionManager;
 
    public NodeDoubleClicked(ManagerMain mainWindow) {
       super();
@@ -37,6 +37,7 @@ public class NodeDoubleClicked implements IDoubleClickListener {
       this.mainWindow.getServicesViewer().getViewer().addDoubleClickListener(this);
    }
 
+   @Override
    public void doubleClick(DoubleClickEvent event) {
       ISelection sel = event.getSelection();
       if (!sel.isEmpty()) {
@@ -48,13 +49,13 @@ public class NodeDoubleClicked implements IDoubleClickListener {
                   connectionManager.attemptConnection(serviceNode);
                } catch (ServiceConnectionException ex) {
                   MessageDialog.openError(
-                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                        "Unable to Connect",
-                        "Unable to connect to [" + serviceNode.getName() + "] service.\n" + "Service may no longer be available.");
+                     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                     "Unable to Connect",
+                     "Unable to connect to [" + serviceNode.getName() + "] service.\n" + "Service may no longer be available.");
                }
             } else {
                MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                     "Unsupported Connection", "Connection is not allowed for [" + serviceNode.getName() + "] Service.");
+                  "Unsupported Connection", "Connection is not allowed for [" + serviceNode.getName() + "] Service.");
             }
          }
       }

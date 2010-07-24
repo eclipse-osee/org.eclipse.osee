@@ -12,11 +12,7 @@ package org.eclipse.osee.ote.message.commands;
 
 import java.io.Serializable;
 import java.util.List;
-
 import org.eclipse.osee.ote.message.enums.DataType;
-
-
-
 
 /**
  * @author Ryan D. Brooks
@@ -25,41 +21,39 @@ import org.eclipse.osee.ote.message.enums.DataType;
  */
 public class ZeroizeElement implements Serializable {
 
-
-	   /**
+   /**
 	 * 
 	 */
-	private static final long serialVersionUID = 2245725475520729629L;
-	private final String message;
-	   private final List<Object> element;
-       private final DataType type;
-	   
-	   /**
+   private static final long serialVersionUID = 2245725475520729629L;
+   private final String message;
+   private final List<Object> element;
+   private final DataType type;
+
+   /**
 	    * 
 	    */
-	   public ZeroizeElement(String message, DataType type, List<Object> elementPath) {
-	      super();
-	      this.message = message;
-          this.type = type;
-	      this.element = elementPath;
-	   }
-       
-       
-       
-	   /**
-	    * @return Returns the message.
-	    */
-	   public String getMessage() {
-	      return message;
-	   }
-	   /**
-	    * @return Returns the data.
-	    */
-	   public List<Object> getElement() {
-	      return element;
-	   }
-       
-       public DataType getMemType() {
-          return type;
-       }
+   public ZeroizeElement(String message, DataType type, List<Object> elementPath) {
+      super();
+      this.message = message;
+      this.type = type;
+      this.element = elementPath;
+   }
+
+   /**
+    * @return Returns the message.
+    */
+   public String getMessage() {
+      return message;
+   }
+
+   /**
+    * @return Returns the data.
+    */
+   public List<Object> getElement() {
+      return element;
+   }
+
+   public DataType getMemType() {
+      return type;
+   }
 }

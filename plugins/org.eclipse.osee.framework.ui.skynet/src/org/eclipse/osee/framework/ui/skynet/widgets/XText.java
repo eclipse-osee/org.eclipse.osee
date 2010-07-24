@@ -126,6 +126,7 @@ public class XText extends XWidget {
 
          ModifyListener textListener = new ModifyListener() {
 
+            @Override
             public void modifyText(ModifyEvent e) {
                if (sText != null) {
                   debug("modifyText");
@@ -440,7 +441,7 @@ public class XText extends XWidget {
    @Override
    public String toXml(String xmlRoot, String xmlSubRoot) {
       String s =
-            "<" + xmlRoot + ">" + "<" + xmlSubRoot + ">" + getXmlData() + "</" + xmlSubRoot + ">" + "</" + xmlRoot + ">\n";
+         "<" + xmlRoot + ">" + "<" + xmlSubRoot + ">" + getXmlData() + "</" + xmlSubRoot + ">" + "</" + xmlRoot + ">\n";
       return s;
    }
 
@@ -456,8 +457,8 @@ public class XText extends XWidget {
    public void setFromXml(String xml) {
       Matcher m;
       m =
-            Pattern.compile("<" + getXmlRoot() + ">(.*?)</" + getXmlRoot() + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(
-                  xml);
+         Pattern.compile("<" + getXmlRoot() + ">(.*?)</" + getXmlRoot() + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(
+            xml);
 
       if (m.find()) {
          String xmlStr = m.group(1);

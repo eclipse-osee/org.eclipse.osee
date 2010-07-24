@@ -200,15 +200,17 @@ public class RelationTableViewer {
 
    public void resizeTable(int windowWidth) {
       int otherColumns = 15;
-      for (int i = 0; i < validColumnWidths.length - 1; i++)
+      for (int i = 0; i < validColumnWidths.length - 1; i++) {
          otherColumns += validColumnWidths[i];
+      }
 
       validColumnWidths[RATIONALE_NUM] = windowWidth - otherColumns;
       validTable.getColumns()[RATIONALE_NUM].setWidth(validColumnWidths[RATIONALE_NUM]);
 
       otherColumns = 15;
-      for (int i = 0; i < invalidColumnWidths.length - 1; i++)
+      for (int i = 0; i < invalidColumnWidths.length - 1; i++) {
          otherColumns += invalidColumnWidths[i];
+      }
 
       invalidColumnWidths[INVALID_REASON_NUM] = windowWidth - otherColumns;
       invalidTable.getColumns()[INVALID_REASON_NUM].setWidth(invalidColumnWidths[INVALID_REASON_NUM]);
@@ -220,30 +222,38 @@ public class RelationTableViewer {
     */
    class RelationContentProvider implements IStructuredContentProvider, IArtifactListViewer {
 
+      @Override
       public void inputChanged(Viewer v, Object oldInput, Object newInput) {
-         if (newInput != null)
+         if (newInput != null) {
             artifactList.addChangeListener(this);
-         if (oldInput != null)
+         }
+         if (oldInput != null) {
             artifactList.removeChangeListener(this);
+         }
       }
 
+      @Override
       public void dispose() {
          artifactList.removeChangeListener(this);
       }
 
       // Return the tasks as an array of Objects
+      @Override
       public Object[] getElements(Object parent) {
          return artifactList.getArtifactModel().toArray();
       }
 
+      @Override
       public void addArtifact(ArtifactModel artifact) {
          tableViewer.add(artifact);
       }
 
+      @Override
       public void removeArtifact(ArtifactModel artifact) {
          tableViewer.remove(artifact);
       }
 
+      @Override
       public void updateArtifact(ArtifactModel artifact) {
          tableViewer.update(artifact, null);
       }

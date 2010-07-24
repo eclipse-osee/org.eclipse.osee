@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.database.core;
 
 import org.eclipse.osee.framework.core.data.Named;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+
 /**
  * @author Roberto E. Escobar
  * @author Jeff C. Phillips
@@ -38,8 +39,7 @@ public interface IDbTransactionWork extends Named {
    void handleTxException(Exception ex);
 
    /**
-    * This convenience method is provided in case child classes have a portion of code that needs to execute always
-    * at
+    * This convenience method is provided in case child classes have a portion of code that needs to execute always at
     * the end of the transaction, regardless of exceptions. <br/>
     * <b>Override to add additional code to finally block</b>
     * 

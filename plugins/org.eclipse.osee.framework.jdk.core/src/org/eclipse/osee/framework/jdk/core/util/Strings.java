@@ -28,9 +28,9 @@ public class Strings {
    }
 
    /**
-    * This method adjusts '&'-containing strings to break the keyboard shortcut ("Accelerator")
-    * feature some widgets offer, where &Test will make Alt+T a shortcut. This method breaks the
-    * accelerator by escaping ampersands.
+    * This method adjusts '&'-containing strings to break the keyboard shortcut ("Accelerator") feature some widgets
+    * offer, where &Test will make Alt+T a shortcut. This method breaks the accelerator by escaping ampersands.
+    * 
     * @return a string with doubled ampersands.
     */
    public static String escapeAmpersands(String stringWithAmp) {
@@ -57,7 +57,7 @@ public class Strings {
       }
       String toReturn = value;
       if (Strings.isValid(value) && value.length() > length) {
-         int len = (addDots && length - 3 > 0 ? length - 3 : length);
+         int len = addDots && length - 3 > 0 ? length - 3 : length;
          toReturn = value.substring(0, Math.min(length, len)) + (addDots ? "..." : "");
       }
       return toReturn;

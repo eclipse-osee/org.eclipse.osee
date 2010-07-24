@@ -28,11 +28,10 @@ public class TestMessage extends Message<UnitTestAccessor, TestMessageData, Test
    public TestMessage() {
       super("TEST_MSG", 100, 0, true, 0, 50.0);
       TestMessageData ethData =
-            new TestMessageData(this.getClass().getName(), getName(), getDefaultByteSize(), getDefaultOffset(),
-                  TestMemType.ETHERNET);
-      TestMessageData serialData =
-            new TestMessageData(this.getClass().getName(), getName(), getDefaultByteSize(), getDefaultOffset(),
-                  TestMemType.SERIAL);
+         new TestMessageData(this.getClass().getName(), getName(), getDefaultByteSize(), getDefaultOffset(),
+            TestMemType.ETHERNET);
+      new TestMessageData(this.getClass().getName(), getName(), getDefaultByteSize(), getDefaultOffset(),
+         TestMemType.SERIAL);
       setDefaultMessageData(ethData);
       INT_ELEMENT_1 = new IntegerElement(this, "INT_ELEMENT_1", ethData, 0, 0, 15);
       STRING_ELEMENT_1 = new StringElement(this, "STRING_ELEMENT_1", ethData, 2, 0, 159);
@@ -46,6 +45,5 @@ public class TestMessage extends Message<UnitTestAccessor, TestMessageData, Test
    public void switchElementAssociation(Collection<TestMessage> messages) {
 
    }
-
 
 }

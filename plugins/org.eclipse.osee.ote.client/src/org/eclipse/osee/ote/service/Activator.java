@@ -19,34 +19,35 @@ import org.osgi.framework.ServiceRegistration;
 
 public class Activator implements BundleActivator {
 
-	private ServiceRegistration registration;
+   private ServiceRegistration registration;
    private ConnectionServiceTracker connectionServiceTracker;
-	private MessagingGatewayBindTracker messagingGatewayTracker;
-	private ExportClassLoaderCreationTracker exportClassLoaderCreationTracker;
-	
-	
-	public void start(BundleContext context) throws Exception {
+   private MessagingGatewayBindTracker messagingGatewayTracker;
+   private ExportClassLoaderCreationTracker exportClassLoaderCreationTracker;
+
+   @Override
+   public void start(BundleContext context) throws Exception {
       connectionServiceTracker = new ConnectionServiceTracker(context);
       connectionServiceTracker.open(true);
-   
+
       exportClassLoaderCreationTracker = new ExportClassLoaderCreationTracker(context);
       exportClassLoaderCreationTracker.open(true);
-	}
+   }
 
-	public void stop(BundleContext context) throws Exception {
+   @Override
+   public void stop(BundleContext context) throws Exception {
 
-		// close the service tracker
-		connectionServiceTracker.close();
-		exportClassLoaderCreationTracker.close();
-		connectionServiceTracker = null;
+      // close the service tracker
+      connectionServiceTracker.close();
+      exportClassLoaderCreationTracker.close();
+      connectionServiceTracker = null;
 
-	}
+   }
 
-	public static void log(Level level, String message, Throwable t) {
-		OseeLog.log(Activator.class, level, message, t);
-	}
+   public static void log(Level level, String message, Throwable t) {
+      OseeLog.log(Activator.class, level, message, t);
+   }
 
-	public static void log(Level level, String message) {
-		log(level, message, null);
-	}
+   public static void log(Level level, String message) {
+      log(level, message, null);
+   }
 }

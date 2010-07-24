@@ -12,7 +12,6 @@ package org.eclipse.osee.ote.message.internal;
 
 import java.io.IOException;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.message.interfaces.IMessageManager;
 import org.eclipse.osee.ote.message.interfaces.IRemoteMessageService;
@@ -22,7 +21,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
 
-public class MessageWatchActivator extends ServiceTracker{
+public class MessageWatchActivator extends ServiceTracker {
 
    private ServiceRegistration registration;
 
@@ -50,17 +49,18 @@ public class MessageWatchActivator extends ServiceTracker{
 
    private void disposeToolService() {
       try {
-         AbstractMessageToolService toolService = (AbstractMessageToolService)context.getService(registration.getReference());
+         AbstractMessageToolService toolService =
+            (AbstractMessageToolService) context.getService(registration.getReference());
          toolService.terminateService();
       } finally {
          registration.unregister();
          registration = null;
       }
    }
-   
+
    @Override
    public synchronized void close() {
-      if (registration != null){
+      if (registration != null) {
          disposeToolService();
       }
       super.close();

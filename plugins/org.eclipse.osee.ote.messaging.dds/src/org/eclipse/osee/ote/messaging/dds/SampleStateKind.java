@@ -11,12 +11,10 @@
 package org.eclipse.osee.ote.messaging.dds;
 
 /**
- * The class which stores all of the available read states for a sample. The name
- * of any of the values can be acquired from the <code>getKindName()</code>
- * method inherited from <code>Kind</code>.
+ * The class which stores all of the available read states for a sample. The name of any of the values can be acquired
+ * from the <code>getKindName()</code> method inherited from <code>Kind</code>.
  * 
  * @see org.eclipse.osee.ote.messaging.dds.Kind
- * 
  * @author Robert A. Fisher
  * @author David Diepenbrock
  */
@@ -24,7 +22,7 @@ public class SampleStateKind extends Kind {
 
    public final static SampleStateKind READ = new SampleStateKind("Read sample state", 1);
    public final static SampleStateKind NOT_READ = new SampleStateKind("Not read sample state", 2);
-   
+
    /**
     * Local constructor for creating <code>SampleStateKind</code> objects.
     * 
@@ -34,5 +32,5 @@ public class SampleStateKind extends Kind {
    private SampleStateKind(String kindName, long kindId) {
       super(kindName, kindId);
    }
-   
+
 }

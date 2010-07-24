@@ -56,11 +56,13 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
    }
 
    public String getGroupSearchName() {
-      if (group != null)
+      if (group != null) {
          return group.getName();
-      else if (selectedGroup != null)
+      } else if (selectedGroup != null) {
          return selectedGroup.getName();
-      else if (groupName != null) return groupName;
+      } else if (groupName != null) {
+         return groupName;
+      }
       return "";
    }
 
@@ -70,33 +72,52 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
    }
 
    public void getProduct() throws OseeCoreException {
-      if (groupName == null) return;
-      if (group == null && branch != null) group = UniversalGroup.getGroups(groupName, branch).iterator().next();
-      if (group == null) throw new OseeArgumentException("Can't Find Universal Group for " + getName());
+      if (groupName == null) {
+         return;
+      }
+      if (group == null && branch != null) {
+         group = UniversalGroup.getGroups(groupName, branch).iterator().next();
+      }
+      if (group == null) {
+         throw new OseeArgumentException("Can't Find Universal Group for " + getName());
+      }
    }
 
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
       getProduct();
-      if (getSearchGroup() == null) return EMPTY_SET;
-      Collection<Artifact> arts =
-            getSearchGroup().getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Members);
-      if (cancelled) return EMPTY_SET;
+      if (getSearchGroup() == null) {
+         return EMPTY_SET;
+      }
+      Collection<Artifact> arts = getSearchGroup().getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Members);
+      if (cancelled) {
+         return EMPTY_SET;
+      }
       return arts;
    }
 
    private Artifact getSearchGroup() {
-      if (group != null) return group;
-      if (selectedGroup != null) return selectedGroup;
+      if (group != null) {
+         return group;
+      }
+      if (selectedGroup != null) {
+         return selectedGroup;
+      }
       return null;
    }
 
    @Override
    public void performUI(SearchType searchType) throws OseeCoreException {
       super.performUI(searchType);
-      if (groupName != null) return;
-      if (group != null) return;
-      if (searchType == SearchType.ReSearch && selectedGroup != null) return;
+      if (groupName != null) {
+         return;
+      }
+      if (group != null) {
+         return;
+      }
+      if (searchType == SearchType.ReSearch && selectedGroup != null) {
+         return;
+      }
       GroupListDialog gld = new GroupListDialog(Displays.getActiveShell());
       int result = gld.open();
       if (result == 0) {

@@ -16,7 +16,8 @@ package org.eclipse.osee.framework.svn.enums;
 public class RepositoryEnums {
 
    public enum ControlledType {
-      dir, file;
+      dir,
+      file;
 
       public static boolean isDefined(String value) {
          ControlledType[] types = ControlledType.values();
@@ -44,7 +45,7 @@ public class RepositoryEnums {
       checksum("checksum"),
       properTime("prop-time");
 
-      private String value;
+      private final String value;
 
       private EntryFields(String value) {
          this.value = value;

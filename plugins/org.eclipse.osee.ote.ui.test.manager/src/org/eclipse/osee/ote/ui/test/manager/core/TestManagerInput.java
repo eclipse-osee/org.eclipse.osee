@@ -31,22 +31,27 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class TestManagerInput implements IEditorInput {
-   private HashMap<String, String> keyValue;
+   private final HashMap<String, String> keyValue;
 
    public TestManagerInput() {
       keyValue = new HashMap<String, String>();
       loadFromFile();
    }
 
+   @Override
    public boolean equals(Object object) {
-      if (object instanceof TestManagerInput) return true;
+      if (object instanceof TestManagerInput) {
+         return true;
+      }
       return false;
    }
 
+   @Override
    public boolean exists() {
       return false;
    }
 
+   @Override
    @SuppressWarnings("unchecked")
    public Object getAdapter(Class adapter) {
       return null;
@@ -57,18 +62,22 @@ public class TestManagerInput implements IEditorInput {
 
    }
 
+   @Override
    public ImageDescriptor getImageDescriptor() {
       return null;
    }
 
+   @Override
    public String getName() {
       return "TestManager";
    }
 
+   @Override
    public IPersistableElement getPersistable() {
       return null;
    }
 
+   @Override
    public String getToolTipText() {
       return "OSEE TestManager";
    }
@@ -86,8 +95,8 @@ public class TestManagerInput implements IEditorInput {
       Location user = Platform.getUserLocation();
       String path = user.getURL().getPath();
       File file =
-            new File(
-                  path + File.separator + "org.eclipse.osee.ote.ui.test.manager" + File.separator + this.getClass().getName() + ".xml");
+         new File(
+            path + File.separator + "org.eclipse.osee.ote.ui.test.manager" + File.separator + this.getClass().getName() + ".xml");
       file.getParentFile().mkdirs();
       return file;
    }
@@ -121,7 +130,7 @@ public class TestManagerInput implements IEditorInput {
 
       Iterator<String> it = keyValue.keySet().iterator();
       while (it.hasNext()) {
-         String key = (String) it.next();
+         String key = it.next();
          String value = keyValue.get(key);
          if (key != null && value != null && !key.equals("") && !value.equals("")) {
             Element pair = document.createElement("Pair");

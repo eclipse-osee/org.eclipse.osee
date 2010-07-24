@@ -33,7 +33,7 @@ public class AtsHealthCheck {
          healthCheckItems = new HashSet<IAtsHealthCheck>();
 
          IExtensionPoint point =
-               Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.ats.AtsHealthCheck");
+            Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.ats.AtsHealthCheck");
          if (point == null) {
             OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't access AtsHealthCheck extension point");
             return healthCheckItems;
@@ -55,7 +55,7 @@ public class AtsHealthCheck {
                         healthCheckItems.add((IAtsHealthCheck) obj);
                      } catch (Exception ex) {
                         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Error loading AtsHealthCheck extension",
-                              ex);
+                           ex);
                      }
                   }
                }

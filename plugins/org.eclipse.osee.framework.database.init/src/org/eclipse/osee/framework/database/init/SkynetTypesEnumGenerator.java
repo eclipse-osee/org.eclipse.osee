@@ -33,13 +33,17 @@ public class SkynetTypesEnumGenerator implements RowProcessor {
    private static final Pattern nonJavaCharP = Pattern.compile("[^a-zA-Z_0-9]");
 
    private static final String relationImports =
-         "import java.sql.SQLException;\n" + "import org.eclipse.osee.framework.skynet.core.artifact.Branch;\n" + "import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;\n" + "import org.eclipse.osee.framework.skynet.core.relation.RelationLink;\n" + "import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;\n" + "import org.eclipse.osee.framework.skynet.core.relation.RelationSide;\n" + "import org.eclipse.osee.framework.skynet.core.relation.RelationType;\n" + "import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;\n\n";
+      "import java.sql.SQLException;\n" + "import org.eclipse.osee.framework.skynet.core.artifact.Branch;\n" + "import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;\n" + "import org.eclipse.osee.framework.skynet.core.relation.RelationLink;\n" + "import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;\n" + "import org.eclipse.osee.framework.skynet.core.relation.RelationSide;\n" + "import org.eclipse.osee.framework.skynet.core.relation.RelationType;\n" + "import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;\n\n";
 
    private static final String relationEnumCode =
-         "   private boolean sideA;\n" + "\n" + "   private String typeName;\n" + "\n" + "   private CLASSNAME_PLACEHOLDER(boolean sideA, String typeName) {\n" + "      this.sideA = sideA;\n" + "      this.typeName = typeName;\n" + "      RelationPersistenceManager.sideHash.put(typeName, sideA, this);\n" + "   }\n" + "		\n" + "   public static IRelationEnumeration getRelationSide(String relationType, String relationSide, Branch branch)  throws SQLException {\n" + "      RelationType desc = RelationTypeManager.getType(relationType);\n" + "      boolean isSideA = (desc.getSideAName().equals(relationSide));\n" + "      return RelationPersistenceManager.sideHash.get(relationType, isSideA);\n" + "   }\n" + "\n" + "   /**\n" + "    * @return Returns the sideName.\n" + "    */\n" + "   public boolean isSideA() {\n" + "      return sideA;\n" + "   }\n" + "\n" + "   public String getSideName(Branch branch)  throws SQLException  {\n" + "      if (isSideA())\n" + "         return getRelationType().getSideAName();\n" + "      else\n" + "        return getRelationType().getSideBName();\n" + "   }\n" + "\n" + "   /**\n" + "    * @return Returns the typeName.\n" + "    */\n" + "   public String getName() {\n" + "      return typeName;\n" + "   }\n" + "\n" + "   public RelationType getRelationType() throws SQLException {\n" + "      return RelationTypeManager.getType(typeName);\n" + "   }\n" + "   \n" + "   public RelationSide getSide() { \n" + "      return sideA ? RelationSide.SIDE_A : RelationSide.SIDE_B;\n" + "}\n\n" + "   public String getSideName() throws SQLException {\n" + "      if (isSideA()) {\n" + "         return getRelationType().getSideAName();\n" + "      } else {\n" + "         return getRelationType().getSideBName();\n}\n}\n";
+      "   private boolean sideA;\n" + "\n" + "   private String typeName;\n" + "\n" + "   private CLASSNAME_PLACEHOLDER(boolean sideA, String typeName) {\n" + "      this.sideA = sideA;\n" + "      this.typeName = typeName;\n" + "      RelationPersistenceManager.sideHash.put(typeName, sideA, this);\n" + "   }\n" + "		\n" + "   public static IRelationEnumeration getRelationSide(String relationType, String relationSide, Branch branch)  throws SQLException {\n" + "      RelationType desc = RelationTypeManager.getType(relationType);\n" + "      boolean isSideA = (desc.getSideAName().equals(relationSide));\n" + "      return RelationPersistenceManager.sideHash.get(relationType, isSideA);\n" + "   }\n" + "\n" + "   /**\n" + "    * @return Returns the sideName.\n" + "    */\n" + "   public boolean isSideA() {\n" + "      return sideA;\n" + "   }\n" + "\n" + "   public String getSideName(Branch branch)  throws SQLException  {\n" + "      if (isSideA())\n" + "         return getRelationType().getSideAName();\n" + "      else\n" + "        return getRelationType().getSideBName();\n" + "   }\n" + "\n" + "   /**\n" + "    * @return Returns the typeName.\n" + "    */\n" + "   public String getName() {\n" + "      return typeName;\n" + "   }\n" + "\n" + "   public RelationType getRelationType() throws SQLException {\n" + "      return RelationTypeManager.getType(typeName);\n" + "   }\n" + "   \n" + "   public RelationSide getSide() { \n" + "      return sideA ? RelationSide.SIDE_A : RelationSide.SIDE_B;\n" + "}\n\n" + "   public String getSideName() throws SQLException {\n" + "      if (isSideA()) {\n" + "         return getRelationType().getSideAName();\n" + "      } else {\n" + "         return getRelationType().getSideBName();\n}\n}\n";
 
    private enum Table {
-      ARTIFACT_TYPE_TABLE, ATTRIBUTE_TYPE_TABLE, ATTRIBUTE_MAP_TABLE, RELATION_TYPE_TABLE, RELATION_SIDE_TABLE
+      ARTIFACT_TYPE_TABLE,
+      ATTRIBUTE_TYPE_TABLE,
+      ATTRIBUTE_MAP_TABLE,
+      RELATION_TYPE_TABLE,
+      RELATION_SIDE_TABLE
    }
 
    private static final String description = "Setup artifact, attribute, and relation type data";
@@ -65,7 +69,7 @@ public class SkynetTypesEnumGenerator implements RowProcessor {
    private File destinationDir;
 
    private static final String skynetTypeCode =
-         "   private String name;\n   private CLASSNAME_PLACEHOLDER(String name){ this.name = name; }\n   public String getName(){ return this.name;}\n";
+      "   private String name;\n   private CLASSNAME_PLACEHOLDER(String name){ this.name = name; }\n   public String getName(){ return this.name;}\n";
 
    /**
     * @throws SAXException
@@ -88,7 +92,7 @@ public class SkynetTypesEnumGenerator implements RowProcessor {
       xmlReader.parse(new InputSource(new FileInputStream(importFile)));
 
       this.destinationDir =
-            destinationDir != null && destinationDir.isDirectory() ? destinationDir : importFile.getParentFile();
+         destinationDir != null && destinationDir.isDirectory() ? destinationDir : importFile.getParentFile();
    }
 
    public void finish() throws IOException {
@@ -163,7 +167,7 @@ public class SkynetTypesEnumGenerator implements RowProcessor {
          currentTable = tableIterator.next();
       } else {
          throw new IllegalArgumentException(
-               "Encountered row past end of last expected table: " + Arrays.deepToString(headerRow));
+            "Encountered row past end of last expected table: " + Arrays.deepToString(headerRow));
       }
    }
 
@@ -240,7 +244,7 @@ public class SkynetTypesEnumGenerator implements RowProcessor {
       sideBName = nonJavaCharP.matcher(sideBName).replaceAll("_").toUpperCase();
       String enumPrefix = nonJavaCharP.matcher(relationTypeName).replaceAll("_").toUpperCase();
       relations.add(String.format("%s__%s(true, \"%s\"),\n   %s__%s(false, \"%s\")", enumPrefix, sideAName,
-            relationTypeName, enumPrefix, sideBName, relationTypeName));
+         relationTypeName, enumPrefix, sideBName, relationTypeName));
    }
 
    /**

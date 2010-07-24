@@ -19,7 +19,7 @@ package org.eclipse.osee.framework.jini.event.old;
 public class PopupEventType extends OseeRemoteEventInstance {
 
    private static final long serialVersionUID = 8818248591835649870L;
-   private String message;
+   private final String message;
 
    public PopupEventType(String eventGuid, String message) {
       super(eventGuid);

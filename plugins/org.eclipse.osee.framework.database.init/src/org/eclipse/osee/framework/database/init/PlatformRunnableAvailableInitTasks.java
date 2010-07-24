@@ -28,12 +28,14 @@ public class PlatformRunnableAvailableInitTasks implements IApplication {
       }
    }
 
+   @Override
    public Object start(IApplicationContext context) throws Exception {
       printExtensionPoints("org.eclipse.osee.framework.database.IDbInitializationTask");
       printExtensionPoints("org.eclipse.osee.framework.database.SkynetDbTypes");
       return null;
    }
 
+   @Override
    public void stop() {
    }
 }

@@ -10,27 +10,25 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.core.framework.saxparse.elements;
 
-
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public class ScriptVersionData {
 
-   private String lastAuthor;
-   private  String lastModified;
-   private  String modifiedFlag;
-   private  String repositoryType;
-   private  String revision;
-   private  String url;
-   
+   private final String lastAuthor;
+   private final String lastModified;
+   private final String modifiedFlag;
+   private final String repositoryType;
+   private final String revision;
+   private final String url;
+
    /**
-    * @param string6 
-    * @param string5 
-    * @param string4 
-    * @param string3 
-    * @param string2 
-    * @param string 
+    * @param string6
+    * @param string5
+    * @param string4
+    * @param string3
+    * @param string2
+    * @param string
     * @param name
     */
    ScriptVersionData(String lastAuthor, String lastModified, String modifiedFlag, String repositoryType, String revision, String url) {

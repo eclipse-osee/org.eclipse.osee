@@ -70,7 +70,7 @@ public class FinishUpdateBranchOperation extends AbstractOperation {
    @Override
    protected IStatus createErrorStatus(Throwable error) {
       setStatusMessage(String.format("Error merging updates between [%s] and [%s]",
-            conflictManager.getSourceBranch().getShortName(), conflictManager.getDestinationBranch().getShortName()));
+         conflictManager.getSourceBranch().getShortName(), conflictManager.getDestinationBranch().getShortName()));
       return super.createErrorStatus(error);
    }
 

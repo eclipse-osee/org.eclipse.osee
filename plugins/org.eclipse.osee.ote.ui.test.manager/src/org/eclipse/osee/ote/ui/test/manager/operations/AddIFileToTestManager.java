@@ -39,25 +39,25 @@ public class AddIFileToTestManager {
          AWorkbench.popup("ERROR", "Test Manager Not Opened");
          return;
       }
-      for(TestManagerEditor editor: PluginUtil.getTestManagers()){
+      for (TestManagerEditor editor : PluginUtil.getTestManagers()) {
          editor.getPageManager().getScriptPage().getScriptTableViewer().getTaskList().removeAllTasks();
       }
    }
-   
-   public void addFilesToScriptPage(List<String> files, boolean removeOtherScripts){
+
+   public void addFilesToScriptPage(List<String> files, boolean removeOtherScripts) {
       if (PluginUtil.areTestManagersAvailable() != true) {
          AWorkbench.popup("ERROR", "Test Manager Not Opened");
          return;
       }
       TestManagerEditor[] itemsToOpen = PluginUtil.getTestManagers();
       for (TestManagerEditor tme : itemsToOpen) {
-         if(removeOtherScripts){
+         if (removeOtherScripts) {
             tme.getPageManager().getScriptPage().getScriptTableViewer().getTaskList().removeAllTasks();
          }
          tme.addFiles(files.toArray(new String[files.size()]));
       }
    }
-   
+
    public void addIFileToScriptsPage(String fullPath) {
       if (PluginUtil.areTestManagersAvailable() != true) {
          AWorkbench.popup("ERROR", "Test Manager Not Opened");

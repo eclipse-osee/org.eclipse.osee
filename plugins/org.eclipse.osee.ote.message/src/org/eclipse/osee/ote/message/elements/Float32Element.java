@@ -23,114 +23,119 @@ import org.eclipse.osee.ote.message.interfaces.ITestAccessor;
  */
 public class Float32Element extends RealElement {
 
-	public Float32Element(Message<?,?,?> message, String elementName, MessageData messageData, int byteOffset, int msb, int lsb) {
-		this(message, elementName, messageData, byteOffset, msb, lsb, msb, lsb);
-	}
+   public Float32Element(Message<?, ?, ?> message, String elementName, MessageData messageData, int byteOffset, int msb, int lsb) {
+      this(message, elementName, messageData, byteOffset, msb, lsb, msb, lsb);
+   }
 
-	public Float32Element(Message<?,?,?> message, String elementName, MessageData messageData, int byteOffset, int msb,
-			int lsb, int originalLsb, int originalMsb) {
-		super(message, elementName, messageData, byteOffset, msb, lsb, originalLsb, originalMsb);
-	}
-	public Float32Element(Message<?,?,?> message, String elementName, MessageData messageData, int bitOffset, int bitLength) {
-		super(message, elementName, messageData, bitOffset, bitLength);
-	}
-	/**
-	 * Checks that this element correctly forwards a message sent from cause with the value passed.
-	 * 
-	 * @param accessor
-	 * @param cause The originator of the signal
-	 * @param value The value sent by cause and being forwarded by this element
-	 * @throws InterruptedException
-	 */
-	public void checkForwarding(ITestAccessor accessor, Float32Element cause, double value) throws InterruptedException {
-		/* check for 0 to begine */
-		check(accessor, 0d, 0);
+   public Float32Element(Message<?, ?, ?> message, String elementName, MessageData messageData, int byteOffset, int msb, int lsb, int originalLsb, int originalMsb) {
+      super(message, elementName, messageData, byteOffset, msb, lsb, originalLsb, originalMsb);
+   }
 
-		/* Set the DP1 Mux Signal */
-		cause.set(accessor, (float) value);
+   public Float32Element(Message<?, ?, ?> message, String elementName, MessageData messageData, int bitOffset, int bitLength) {
+      super(message, elementName, messageData, bitOffset, bitLength);
+   }
 
-		/* Chk Value on DP2 */
-		check(accessor, value, 1000);
+   /**
+    * Checks that this element correctly forwards a message sent from cause with the value passed.
+    * 
+    * @param accessor
+    * @param cause The originator of the signal
+    * @param value The value sent by cause and being forwarded by this element
+    * @throws InterruptedException
+    */
+   public void checkForwarding(ITestAccessor accessor, Float32Element cause, double value) throws InterruptedException {
+      /* check for 0 to begine */
+      check(accessor, 0d, 0);
 
-		/* Set DP1 to 0 */
-		cause.set(accessor, 0);
+      /* Set the DP1 Mux Signal */
+      cause.set(accessor, (float) value);
 
-		/* Init DP2 Mux to 0 */
-		set(accessor, 0);
+      /* Chk Value on DP2 */
+      check(accessor, value, 1000);
 
-		/* Chk Value on DP2 is still set */
-		check(accessor, value, 500);
+      /* Set DP1 to 0 */
+      cause.set(accessor, 0);
 
-		/* Chk DP2 is 0 for two-pulse signals and high for four-oulse signal */
-		check(accessor, 0d, 500);
+      /* Init DP2 Mux to 0 */
+      set(accessor, 0);
 
-	}
+      /* Chk Value on DP2 is still set */
+      check(accessor, value, 500);
 
-	/**
-	 * Sets the element to the "value" passed.
-	 * 
-	 * @param accessor
-	 * @param value The value to set.
-	 */
-	public void set(ITestEnvironmentAccessor accessor, double value) {
-		if (accessor != null) {
-			accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(), (new MethodFormatter()).add(value),
-					this.getMessage());
-		}
-		setValue(value);
-		if (accessor != null) {
-			accessor.getLogger().methodEnded(accessor);
-		}
-	}
+      /* Chk DP2 is 0 for two-pulse signals and high for four-oulse signal */
+      check(accessor, 0d, 500);
 
-	/**
-	 * Sets the element to the "value" passed and immediately sends the message that contains it..
-	 * 
-	 * @param accessor
-	 * @param value The value to set.
-	 */
-	public void setAndSend(ITestEnvironmentAccessor accessor, double value) {
-		this.set(accessor, value);
-		super.sendMessage();
-	}
+   }
 
-	@Override
-	public Double getValue() {
-		return new Double(Float.intBitsToFloat(getMsgData().getMem().getInt(byteOffset, msb, lsb)));
+   /**
+    * Sets the element to the "value" passed.
+    * 
+    * @param accessor
+    * @param value The value to set.
+    */
+   @Override
+   public void set(ITestEnvironmentAccessor accessor, double value) {
+      if (accessor != null) {
+         accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(), new MethodFormatter().add(value),
+            this.getMessage());
+      }
+      setValue(value);
+      if (accessor != null) {
+         accessor.getLogger().methodEnded(accessor);
+      }
+   }
 
-	}
+   /**
+    * Sets the element to the "value" passed and immediately sends the message that contains it..
+    * 
+    * @param accessor
+    * @param value The value to set.
+    */
+   @Override
+   public void setAndSend(ITestEnvironmentAccessor accessor, double value) {
+      this.set(accessor, value);
+      super.sendMessage();
+   }
 
+   @Override
+   public Double getValue() {
+      return new Double(Float.intBitsToFloat(getMsgData().getMem().getInt(byteOffset, msb, lsb)));
 
+   }
 
-	@Override
-	public Double valueOf(MemoryResource mem) {
-		return new Double(Float.intBitsToFloat(mem.getInt(byteOffset, msb, lsb)));
-	}
+   @Override
+   public Double valueOf(MemoryResource mem) {
+      return new Double(Float.intBitsToFloat(mem.getInt(byteOffset, msb, lsb)));
+   }
 
-	@Override
-	public void setValue(Double obj) {
-		setValue(obj.floatValue());
-	}
+   @Override
+   public void setValue(Double obj) {
+      setValue(obj.floatValue());
+   }
 
-	public void setValue(Float obj) {
-		getMsgData().getMem().setInt(Float.floatToIntBits(obj), byteOffset, msb, lsb);
-	}
-	
-	protected double toDouble(long value) {
-		return Float.intBitsToFloat((int) value);
-	}
+   @Override
+   public void setValue(Float obj) {
+      getMsgData().getMem().setInt(Float.floatToIntBits(obj), byteOffset, msb, lsb);
+   }
 
-	protected long toLong(double value) {
-		return Double.doubleToLongBits(value);
-	}
+   @Override
+   protected double toDouble(long value) {
+      return Float.intBitsToFloat((int) value);
+   }
 
-	@Override
-	protected NonMappingFloat32Element getNonMappingElement() {
-		return new NonMappingFloat32Element(this);
-	}
-	@Override
-	public void setHex(long hex) {
-	    getMsgData().getMem().setLong(hex, byteOffset, msb, lsb);
-	}
+   @Override
+   protected long toLong(double value) {
+      return Double.doubleToLongBits(value);
+   }
+
+   @Override
+   protected NonMappingFloat32Element getNonMappingElement() {
+      return new NonMappingFloat32Element(this);
+   }
+
+   @Override
+   public void setHex(long hex) {
+      getMsgData().getMem().setLong(hex, byteOffset, msb, lsb);
+   }
 
 }

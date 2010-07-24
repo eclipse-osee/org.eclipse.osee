@@ -23,11 +23,8 @@ import org.eclipse.osee.framework.ui.ws.AWorkspace;
 import org.eclipse.osee.ote.ui.test.manager.internal.TestManagerPlugin;
 import org.eclipse.ui.PlatformUI;
 
-
-
 public class FileModel {
 
-   
    private File file = null;
    private IFile iFile = null;
    private long lastModified = 0;
@@ -37,8 +34,9 @@ public class FileModel {
 
    public FileModel(String rawFilename) {
       this.rawFilename = rawFilename;
-      if (getIFile() != null)
+      if (getIFile() != null) {
          lastModified = getIFile().getModificationStamp();
+      }
    }
 
    public boolean exists() {
@@ -80,10 +78,12 @@ public class FileModel {
     * @return Returns the path.
     */
    public String getPath() {
-      if (iFile == null)
+      if (iFile == null) {
          iFile = getIFile();
-      if (iFile != null)
+      }
+      if (iFile != null) {
          path = iFile.getFullPath().toString();
+      }
       return path;
    }
 
@@ -93,7 +93,7 @@ public class FileModel {
    public String getRawFilename() {
       return rawFilename;
    }
-   
+
    public String getWorkspaceRelativePath() {
       IWorkspace ws = ResourcesPlugin.getWorkspace();
       IFile ifile = ws.getRoot().getFileForLocation(new Path(rawFilename));
@@ -105,32 +105,35 @@ public class FileModel {
    }
 
    public String getText() {
-      if (iFile == null)
+      if (iFile == null) {
          getIFile();
-      if (iFile == null)
+      }
+      if (iFile == null) {
          return "";
+      }
       if (text == null || iFile.getModificationStamp() != lastModified) {
          text = AFile.readFile(rawFilename);
          OseeLog.log(TestManagerPlugin.class, Level.INFO, "getText: Reading file " + getName());
-      }
-      else
+      } else {
          OseeLog.log(TestManagerPlugin.class, Level.INFO, "getText: Using buffered file " + getName());
+      }
       lastModified = iFile.getModificationStamp();
       return text;
    }
 
    public boolean isModified() {
-      if (iFile == null)
+      if (iFile == null) {
          getIFile();
+      }
       if (iFile == null) {
          OseeLog.log(TestManagerPlugin.class, Level.WARNING, "Can't Read iFile");
          return true;
       }
-      return (iFile.getModificationStamp() != lastModified);
+      return iFile.getModificationStamp() != lastModified;
    }
 
    public void openEditor() {
-      if(getIFile() != null){
+      if (getIFile() != null) {
          AWorkspace.openEditor(getIFile());
       }
    }
@@ -139,12 +142,12 @@ public class FileModel {
       OseeLog.log(TestManagerPlugin.class, Level.INFO, "Show in explorer " + getName());
       // Open in Package Explorer and error if can't
       boolean success = AWorkspace.showInPackageExplorer(getIFile());
-//      if(!success){
-//         success = AWorkspace.showInResourceNavigator(getIFile());
-//      }
+      //      if(!success){
+      //         success = AWorkspace.showInResourceNavigator(getIFile());
+      //      }
       if (!success) {
          MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Open Error",
-               "Can't Show in Explorer\n\n" + getName());
+            "Can't Show in Explorer\n\n" + getName());
       }
       // As a convenience, open in Navigator, but don't error
       success = AWorkspace.showInResourceNavigator(getIFile());

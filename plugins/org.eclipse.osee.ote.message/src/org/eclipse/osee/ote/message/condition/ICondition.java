@@ -10,9 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.message.condition;
 
-
 public interface ICondition {
-    boolean check();
-    boolean checkAndIncrement();
-    int getCheckCount();
+   boolean check();
+
+   boolean checkAndIncrement();
+
+   int getCheckCount();
 }

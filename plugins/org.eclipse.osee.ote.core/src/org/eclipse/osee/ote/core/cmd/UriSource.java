@@ -15,18 +15,17 @@ import java.net.URI;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public class UriSource implements Source, Serializable {
 
    private static final long serialVersionUID = -917397242786038197L;
-   private URI source;
- 
-   public UriSource(URI source){
+   private final URI source;
+
+   public UriSource(URI source) {
       this.source = source;
    }
-   
-   public URI getSource(){
+
+   public URI getSource() {
       return source;
    }
 

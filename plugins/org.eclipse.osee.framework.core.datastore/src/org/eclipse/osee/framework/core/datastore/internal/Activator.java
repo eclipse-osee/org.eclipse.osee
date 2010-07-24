@@ -27,10 +27,12 @@ public class Activator implements BundleActivator {
       this.services = new ArrayList<ServiceDependencyTracker>();
    }
 
+   @Override
    public void start(BundleContext context) throws Exception {
       createService(context, new OseeCachingServiceRegistrationHandler());
    }
 
+   @Override
    public void stop(BundleContext context) throws Exception {
       for (ServiceDependencyTracker service : services) {
          service.close();

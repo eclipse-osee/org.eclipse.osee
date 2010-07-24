@@ -15,9 +15,8 @@ import org.xml.sax.Attributes;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
-public class ReturnValue extends ElementHandlers{
+public class ReturnValue extends ElementHandlers {
 
    public ReturnValue() {
       super("ReturnValue");

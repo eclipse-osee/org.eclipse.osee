@@ -29,7 +29,7 @@ public class XViewerSmaCreatedDateColumn extends XViewerValueColumn {
 
    public XViewerSmaCreatedDateColumn(String name) {
       super(WorldXViewerFactory.COLUMN_NAMESPACE + ".createdDate", name, 80, SWT.LEFT, true, SortDataType.Date, false,
-            "Date this workflow was created.");
+         "Date this workflow was created.");
    }
 
    public XViewerSmaCreatedDateColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
@@ -45,7 +45,7 @@ public class XViewerSmaCreatedDateColumn extends XViewerValueColumn {
    @Override
    public XViewerSmaCreatedDateColumn copy() {
       return new XViewerSmaCreatedDateColumn(getId(), getName(), getWidth(), getAlign(), isShow(), getSortDataType(),
-            isMultiColumnEditable(), getDescription());
+         isMultiColumnEditable(), getDescription());
    }
 
    @Override

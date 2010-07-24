@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.plugin.views.property;
 
 public abstract class ModelPropertySource extends AbstractPropertySource {
 
-   private Object model;
+   private final Object model;
 
    public ModelPropertySource(Object model) {
       this.model = model;

@@ -82,7 +82,10 @@ public class FrameworkTransactionData {
    public int branchId = -1;
 
    public static enum ChangeType {
-      Changed, Deleted, Added, All
+      Changed,
+      Deleted,
+      Added,
+      All
    };
 
    public FrameworkTransactionData(Collection<ArtifactTransactionModifiedEvent> xModifiedEvents) {
@@ -313,8 +316,8 @@ public class FrameworkTransactionData {
                Artifact artB = ArtifactCache.getActive(link.getBArtifactId(), link.getBBranch());
                try {
                   loadedRelation =
-                        new LoadedRelation(artA, artB, xRelationModifiedEvent.link.getRelationType(),
-                              xRelationModifiedEvent.branch, unloadedRelation);
+                     new LoadedRelation(artA, artB, xRelationModifiedEvent.link.getRelationType(),
+                        xRelationModifiedEvent.branch, unloadedRelation);
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
@@ -326,8 +329,8 @@ public class FrameworkTransactionData {
                if (artA != null || artB != null) {
                   try {
                      loadedRelation =
-                           new LoadedRelation(artA, artB, RelationTypeManager.getType(unloadedRelation.getTypeId()),
-                                 artA != null ? artA.getBranch() : artB.getBranch(), unloadedRelation);
+                        new LoadedRelation(artA, artB, RelationTypeManager.getType(unloadedRelation.getTypeId()),
+                           artA != null ? artA.getBranch() : artB.getBranch(), unloadedRelation);
                   } catch (OseeCoreException ex) {
                      OseeLog.log(Activator.class, Level.SEVERE, ex);
                   }

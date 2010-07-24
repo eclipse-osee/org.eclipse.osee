@@ -77,12 +77,12 @@ public class FileOrFolderTreeSelecPanel extends Composite {
       composite.setLayout(layout);
       composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
       fileSelect =
-            FileOrFolderSelectPanel.createFileSelectPanel(composite, SWT.NONE, "Select File:  ", SWT.OPEN | SWT.SINGLE,
-                  ButtonType.RADIO, new String[] {"*.xml"});
+         FileOrFolderSelectPanel.createFileSelectPanel(composite, SWT.NONE, "Select File:  ", SWT.OPEN | SWT.SINGLE,
+            ButtonType.RADIO, new String[] {"*.xml"});
 
       folderSelect =
-            FileOrFolderSelectPanel.createFolderSelectPanel(composite, SWT.NONE, "Select Folder:",
-                  SWT.OPEN | SWT.SINGLE, ButtonType.RADIO);
+         FileOrFolderSelectPanel.createFolderSelectPanel(composite, SWT.NONE, "Select Folder:", SWT.OPEN | SWT.SINGLE,
+            ButtonType.RADIO);
    }
 
    private void createControl(Composite parent) {
@@ -121,7 +121,7 @@ public class FileOrFolderTreeSelecPanel extends Composite {
                }
 
                String resource =
-                     fileSelect.isSelected() ? fileSelect.getSelectedResource() : folderSelect.getSelectedResource();
+                  fileSelect.isSelected() ? fileSelect.getSelectedResource() : folderSelect.getSelectedResource();
                addButton.setEnabled(Strings.isValid(resource) && !addedItems.contains(resource));
                removeButton.setEnabled(!selectedFiles.isEmpty());
             }
@@ -253,6 +253,7 @@ public class FileOrFolderTreeSelecPanel extends Composite {
          return EMPTY;
       }
 
+      @Override
       public Object getParent(Object element) {
          if (element instanceof IFileStore) {
             return ((IFileStore) element).getParent();
@@ -260,29 +261,34 @@ public class FileOrFolderTreeSelecPanel extends Composite {
          return null;
       }
 
+      @Override
       public boolean hasChildren(Object element) {
          return getChildren(element).length > 0;
       }
 
+      @Override
       public Object[] getElements(Object element) {
          return getChildren(element);
       }
 
+      @Override
       public void dispose() {
       }
 
+      @Override
       public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
       }
 
    }
 
    private static class FileLabelProvider extends LabelProvider {
-      private static final Image IMG_FOLDER =
-            PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FOLDER);
+      private static final Image IMG_FOLDER = PlatformUI.getWorkbench().getSharedImages().getImage(
+         ISharedImages.IMG_OBJ_FOLDER);
 
-      private static final Image IMG_FILE =
-            PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FILE);
+      private static final Image IMG_FILE = PlatformUI.getWorkbench().getSharedImages().getImage(
+         ISharedImages.IMG_OBJ_FILE);
 
+      @Override
       public Image getImage(Object element) {
          if (element instanceof IFileStore) {
             IFileStore curr = (IFileStore) element;
@@ -294,6 +300,7 @@ public class FileOrFolderTreeSelecPanel extends Composite {
          return null;
       }
 
+      @Override
       public String getText(Object element) {
          if (element instanceof IFileStore) {
             return ((IFileStore) element).getName();

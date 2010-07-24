@@ -36,7 +36,7 @@ public class VueLink {
       super();
       this.xml = xml;
       Matcher m =
-            Pattern.compile("<ID1>(.*?)</ID1>.*?<ID2>(.*?)</ID2>", Pattern.DOTALL | Pattern.MULTILINE).matcher(xml);
+         Pattern.compile("<ID1>(.*?)</ID1>.*?<ID2>(.*?)</ID2>", Pattern.DOTALL | Pattern.MULTILINE).matcher(xml);
       while (m.find()) {
          if (xml.contains("arrowState=\"2\"")) {
             fromVueId = m.group(1);
@@ -48,17 +48,18 @@ public class VueLink {
             fromVueId = m.group(1);
             toVueId = m.group(2);
             multiDirectional = true;
-         } else if (xml.contains("arrowState=\"0\"")) throw new OseeArgumentException(
-               "Non-directional links not supported. id = " + getVueId());
+         } else if (xml.contains("arrowState=\"0\"")) {
+            throw new OseeArgumentException("Non-directional links not supported. id = " + getVueId());
+         }
       }
    }
 
    public String getVueId() {
       if (vueId == null) {
          Matcher m = Pattern.compile("<child.*? ID=\"(.*?)\" ").matcher(xml);
-         if (m.find())
+         if (m.find()) {
             vueId = m.group(1);
-         else {
+         } else {
             vueId = "Unknown";
          }
       }
@@ -68,9 +69,9 @@ public class VueLink {
    public String getName() {
       if (name == null) {
          Matcher m = Pattern.compile("<child.*? label=\"(.*?)\" ").matcher(xml);
-         if (m.find())
+         if (m.find()) {
             name = m.group(1);
-         else {
+         } else {
             name = "Unknown";
          }
       }

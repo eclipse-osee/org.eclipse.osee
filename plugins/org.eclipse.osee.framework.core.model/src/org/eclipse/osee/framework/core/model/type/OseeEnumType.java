@@ -118,7 +118,7 @@ public class OseeEnumType extends AbstractOseeType implements Comparable<OseeEnu
       entries.addAll(Arrays.asList(values()));
       if (!entries.remove(entry)) {
          throw new OseeArgumentException(String.format("OseeEnumEntry[%s] does not exist on OseeEnumType[%s]", entry,
-               this));
+            this));
       }
       setEntries(entries);
    }

@@ -12,9 +12,9 @@ package org.eclipse.osee.ote.core.environment.interfaces;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public interface IOTypeDefinition {
    String getName();
+
    String getDescription();
 }

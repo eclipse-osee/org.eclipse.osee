@@ -27,7 +27,7 @@ public class ListSelectionDialog extends MessageDialog {
    private Button cancelButton;
    private List selections;
    private int selectionIndex;
-   private Object[] choose;
+   private final Object[] choose;
    private Button saveSelection;
    private boolean isChecked = true;
 
@@ -40,7 +40,7 @@ public class ListSelectionDialog extends MessageDialog {
 
    public ListSelectionDialog(Object[] choose, Shell parentShell, String dialogTitle, Image dialogTitleImage, String dialogMessage, int dialogImageType, String[] dialogButtonLabels, int defaultIndex) {
       super(parentShell, dialogTitle, dialogTitleImage, dialogMessage, dialogImageType, dialogButtonLabels,
-            defaultIndex);
+         defaultIndex);
       this.choose = choose;
    }
 
@@ -53,10 +53,12 @@ public class ListSelectionDialog extends MessageDialog {
 
       saveSelection.addSelectionListener(new SelectionListener() {
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             isChecked = saveSelection.getSelection();
          }
 
+         @Override
          public void widgetDefaultSelected(SelectionEvent e) {
          }
 
@@ -67,11 +69,13 @@ public class ListSelectionDialog extends MessageDialog {
 
       selections.addSelectionListener(new SelectionListener() {
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             selectionIndex = selections.getSelectionIndex();
             System.out.println("selected index " + selectionIndex);
          }
 
+         @Override
          public void widgetDefaultSelected(SelectionEvent e) {
          }
 
@@ -90,20 +94,24 @@ public class ListSelectionDialog extends MessageDialog {
 
       okButton.addSelectionListener(new SelectionListener() {
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
 
          }
 
+         @Override
          public void widgetDefaultSelected(SelectionEvent e) {
          }
       });
 
       cancelButton.addSelectionListener(new SelectionListener() {
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
 
          }
 
+         @Override
          public void widgetDefaultSelected(SelectionEvent e) {
          }
 

@@ -29,43 +29,43 @@ import org.eclipse.ui.IWorkbench;
  * @author Roberto E. Escobar
  */
 public class OseeTypesImportWizard extends Wizard implements IImportWizard {
-	private OseeTypesImportPage mainPage;
+   private OseeTypesImportPage mainPage;
 
-	public OseeTypesImportWizard() {
-		super();
-		setDialogSettings(SkynetGuiPlugin.getInstance().getDialogSettings());
-		setWindowTitle("OSEE Types Import Wizard");
-		setNeedsProgressMonitor(true);
-		setHelpAvailable(true);
-	}
+   public OseeTypesImportWizard() {
+      super();
+      setDialogSettings(SkynetGuiPlugin.getInstance().getDialogSettings());
+      setWindowTitle("OSEE Types Import Wizard");
+      setNeedsProgressMonitor(true);
+      setHelpAvailable(true);
+   }
 
-	@Override
-	public boolean performFinish() {
-		final File file = mainPage.getTypesToImport();
-		boolean isReport = mainPage.isReportChanges();
-		boolean useCompareEditor = mainPage.useCompareEditor();
-		boolean isPersistAllowed = mainPage.isPersistAllowed();
+   @Override
+   public boolean performFinish() {
+      final File file = mainPage.getTypesToImport();
+      boolean isReport = mainPage.isReportChanges();
+      boolean useCompareEditor = mainPage.useCompareEditor();
+      boolean isPersistAllowed = mainPage.isPersistAllowed();
 
-		IOseeCachingService cacheService = Activator.getOseeCacheService();
-		IOperation operation =
-					new OseeTypesImportOperation(cacheService, file.toURI(), isReport, useCompareEditor, isPersistAllowed);
-		Job job = Operations.executeAsJob(operation, true);
-		job.addJobChangeListener(new JobChangeAdapter() {
-			@Override
-			public void done(IJobChangeEvent event) {
-				file.delete();
-			}
-		});
-		return true;
-	}
+      IOseeCachingService cacheService = Activator.getOseeCacheService();
+      IOperation operation =
+         new OseeTypesImportOperation(cacheService, file.toURI(), isReport, useCompareEditor, isPersistAllowed);
+      Job job = Operations.executeAsJob(operation, true);
+      job.addJobChangeListener(new JobChangeAdapter() {
+         @Override
+         public void done(IJobChangeEvent event) {
+            file.delete();
+         }
+      });
+      return true;
+   }
 
-	@Override
-	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		mainPage = new OseeTypesImportPage(selection, getWindowTitle());
-	}
+   @Override
+   public void init(IWorkbench workbench, IStructuredSelection selection) {
+      mainPage = new OseeTypesImportPage(selection, getWindowTitle());
+   }
 
-	@Override
-	public void addPages() {
-		addPage(mainPage);
-	}
+   @Override
+   public void addPages() {
+      addPage(mainPage);
+   }
 }

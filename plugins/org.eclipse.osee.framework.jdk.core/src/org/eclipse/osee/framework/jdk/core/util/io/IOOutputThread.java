@@ -20,8 +20,8 @@ import java.io.Writer;
  */
 public class IOOutputThread extends Thread {
 
-   private Writer output;
-   private BufferedReader input;
+   private final Writer output;
+   private final BufferedReader input;
 
    /**
     * 
@@ -36,10 +36,11 @@ public class IOOutputThread extends Thread {
       this(output, input, true);
    }
 
+   @Override
    public void run() {
       try {
-    	  final char[] buffer = new char[4096];
-    	  int size;
+         final char[] buffer = new char[4096];
+         int size;
          while ((size = input.read(buffer)) != -1) {
             output.write(buffer, 0, size);
             output.flush();

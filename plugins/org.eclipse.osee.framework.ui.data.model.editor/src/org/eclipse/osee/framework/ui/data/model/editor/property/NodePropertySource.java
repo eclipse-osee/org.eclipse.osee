@@ -35,15 +35,19 @@ public class NodePropertySource extends ModelPropertySource {
       idWidth = new PropertyId(categoryName, "Width");
    }
 
+   @Override
    protected void addPropertyDescriptors(List<IPropertyDescriptor> list) {
       list.add(new IntegerPropertyDescriptor(idX));
       list.add(new IntegerPropertyDescriptor(idY));
       IntegerPropertyDescriptor integerDescriptor = new IntegerPropertyDescriptor(idWidth);
       integerDescriptor.setValidator(new ICellEditorValidator() {
+         @Override
          public String isValid(Object value) {
             try {
                int val = Integer.parseInt((String) value);
-               if (val == -1 || val > 0) return null;
+               if (val == -1 || val > 0) {
+                  return null;
+               }
             } catch (NumberFormatException nfe) {
             }
             return "The width has to be an integer greater than 0 (or -1 for default).";
@@ -56,26 +60,41 @@ public class NodePropertySource extends ModelPropertySource {
       return (NodeModel) getModel();
    }
 
+   @Override
    public Object getPropertyValue(Object id) {
-      if (id == idX) return IntegerPropertyDescriptor.fromModel(getNode().getLocation().x);
-      if (id == idY) return IntegerPropertyDescriptor.fromModel(getNode().getLocation().y);
-      if (id == idWidth) return IntegerPropertyDescriptor.fromModel(getNode().getWidth());
+      if (id == idX) {
+         return IntegerPropertyDescriptor.fromModel(getNode().getLocation().x);
+      }
+      if (id == idY) {
+         return IntegerPropertyDescriptor.fromModel(getNode().getLocation().y);
+      }
+      if (id == idWidth) {
+         return IntegerPropertyDescriptor.fromModel(getNode().getWidth());
+      }
       return null;
    }
 
+   @Override
    public boolean isPropertyResettable(Object id) {
       return id == idWidth;
    }
 
+   @Override
    public boolean isPropertySet(Object id) {
-      if (id == idWidth) return getNode().getWidth() != -1;
+      if (id == idWidth) {
+         return getNode().getWidth() != -1;
+      }
       return false;
    }
 
+   @Override
    public void resetPropertyValue(Object id) {
-      if (id == idWidth) getNode().setWidth(-1);
+      if (id == idWidth) {
+         getNode().setWidth(-1);
+      }
    }
 
+   @Override
    public void setPropertyValue(Object id, Object value) {
       if (id == idX) {
          Point newLoc = getNode().getLocation().getCopy();
@@ -85,7 +104,9 @@ public class NodePropertySource extends ModelPropertySource {
          Point newLoc = getNode().getLocation().getCopy();
          newLoc.y = IntegerPropertyDescriptor.toModel(value);
          getNode().setLocation(newLoc);
-      } else if (id == idWidth) getNode().setWidth(IntegerPropertyDescriptor.toModel(value));
+      } else if (id == idWidth) {
+         getNode().setWidth(IntegerPropertyDescriptor.toModel(value));
+      }
    }
 
 }

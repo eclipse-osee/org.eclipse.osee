@@ -31,8 +31,8 @@ public class ConnectionManager {
    private boolean connected;
    private ServiceNode connectedTo;
    private Class<?> connectionType;
-   private Collection<IConnectionListener> listeners;
-   private Map<Class<?>, IServiceRenderer> allowedConnectionTypes;
+   private final Collection<IConnectionListener> listeners;
+   private final Map<Class<?>, IServiceRenderer> allowedConnectionTypes;
 
    private ConnectionManager() {
       super();

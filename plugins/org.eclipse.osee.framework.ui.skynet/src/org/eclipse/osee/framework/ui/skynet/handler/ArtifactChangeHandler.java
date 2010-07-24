@@ -22,23 +22,23 @@ import org.eclipse.ui.PlatformUI;
  * @author Ryan D. Brooks
  */
 public class ArtifactChangeHandler implements IStatusHandler {
-	@Override
-	public Object handleStatus(IStatus status, Object source) throws CoreException {
-		final MutableInteger result = new MutableInteger(0);
-		final String message = (String) source;
+   @Override
+   public Object handleStatus(IStatus status, Object source) throws CoreException {
+      final MutableInteger result = new MutableInteger(0);
+      final String message = (String) source;
 
-		Runnable runnable = new Runnable() {
-			@Override
-			public void run() {
-				if (MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-							"Confirm Artifact Type Change ", message)) {
-					result.setValue(1);
-				}
-			}
+      Runnable runnable = new Runnable() {
+         @Override
+         public void run() {
+            if (MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+               "Confirm Artifact Type Change ", message)) {
+               result.setValue(1);
+            }
+         }
 
-		};
+      };
 
-		Displays.pendInDisplayThread(runnable);
-		return result.getValue() == 1;
-	}
+      Displays.pendInDisplayThread(runnable);
+      return result.getValue() == 1;
+   }
 }

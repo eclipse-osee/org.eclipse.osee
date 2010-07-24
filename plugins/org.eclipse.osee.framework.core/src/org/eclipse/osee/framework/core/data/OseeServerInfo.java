@@ -94,7 +94,7 @@ public class OseeServerInfo extends BaseExchangeData {
 
    /**
     * Create new instance from XML input
-    *
+    * 
     * @param OseeServerInfo the new instance
     * @throws OseeWrappedException
     */

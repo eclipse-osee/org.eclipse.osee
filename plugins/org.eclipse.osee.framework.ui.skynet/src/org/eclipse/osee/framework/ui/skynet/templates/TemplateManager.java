@@ -34,7 +34,7 @@ public class TemplateManager {
 
    private TemplateManager() {
       ExtensionDefinedObjects<ITemplateProvider> extensionDefinedObjects =
-            new ExtensionDefinedObjects<ITemplateProvider>(EXTENSION_ID, EXTENSION_ELEMENT, EXTENSION_CLASSNAME);
+         new ExtensionDefinedObjects<ITemplateProvider>(EXTENSION_ID, EXTENSION_ELEMENT, EXTENSION_CLASSNAME);
       templateProviders = extensionDefinedObjects.getObjects();
    }
 

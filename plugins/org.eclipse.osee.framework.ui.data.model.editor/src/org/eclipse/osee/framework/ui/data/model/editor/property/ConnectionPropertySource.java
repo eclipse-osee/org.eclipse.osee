@@ -33,10 +33,12 @@ public class ConnectionPropertySource extends ModelPropertySource {
       idBendpoints = new PropertyId(categoryName, "Bendpoints");
    }
 
+   @Override
    protected void addPropertyDescriptors(List<IPropertyDescriptor> list) {
       list.add(new StringPropertyDescriptor(idBendpoints));
    }
 
+   @Override
    public boolean isPropertyResettable(Object id) {
       return id == idBendpoints;
    }
@@ -45,6 +47,7 @@ public class ConnectionPropertySource extends ModelPropertySource {
       return (ConnectionModel<?>) getModel();
    }
 
+   @Override
    public Object getPropertyValue(Object id) {
       if (id == idBendpoints) {
          StringBuffer buffer = new StringBuffer();
@@ -61,14 +64,19 @@ public class ConnectionPropertySource extends ModelPropertySource {
       return null;
    }
 
+   @Override
    public boolean isPropertySet(Object id) {
       return id == idBendpoints && !getConnectionModel().getBendpoints().isEmpty();
    }
 
+   @Override
    public void resetPropertyValue(Object id) {
-      if (id == idBendpoints) getConnectionModel().getBendpoints().clear();
+      if (id == idBendpoints) {
+         getConnectionModel().getBendpoints().clear();
+      }
    }
 
+   @Override
    public void setPropertyValue(Object id, Object value) {
       if (id == idBendpoints) {
          List<AbsoluteBendpoint> points = new ArrayList<AbsoluteBendpoint>();

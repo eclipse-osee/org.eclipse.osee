@@ -20,24 +20,24 @@ import org.eclipse.osee.framework.core.server.ISession;
  * @author Roberto E. Escobar
  */
 public final class DefaultSessionCollector implements ISessionCollector {
-	private final Collection<ISession> sessions;
-	private final String serverId;
-	private final SessionFactory factory;
+   private final Collection<ISession> sessions;
+   private final String serverId;
+   private final SessionFactory factory;
 
-	public DefaultSessionCollector(String serverId, SessionFactory factory, Collection<ISession> sessions) {
-		this.serverId = serverId;
-		this.factory = factory;
-		this.sessions = sessions;
-	}
+   public DefaultSessionCollector(String serverId, SessionFactory factory, Collection<ISession> sessions) {
+      this.serverId = serverId;
+      this.factory = factory;
+      this.sessions = sessions;
+   }
 
-	@Override
-	public void collect(int sessionId, String guid, String userId, Date creationDate, String managedByServerId, String clientVersion, String clientMachineName, String clientAddress, int clientPort, Date lastInteractionDate, String lastInteractionDetails) throws OseeCoreException {
-		Session session =
-					factory.create(guid, userId, creationDate, serverId, clientVersion, clientMachineName, clientAddress,
-								clientPort, lastInteractionDate, lastInteractionDetails);
-		session.setId(sessionId);
-		session.setStorageState(StorageState.LOADED);
-		session.clearDirty();
-		sessions.add(session);
-	}
+   @Override
+   public void collect(int sessionId, String guid, String userId, Date creationDate, String managedByServerId, String clientVersion, String clientMachineName, String clientAddress, int clientPort, Date lastInteractionDate, String lastInteractionDetails) throws OseeCoreException {
+      Session session =
+         factory.create(guid, userId, creationDate, serverId, clientVersion, clientMachineName, clientAddress,
+            clientPort, lastInteractionDate, lastInteractionDetails);
+      session.setId(sessionId);
+      session.setStorageState(StorageState.LOADED);
+      session.clearDirty();
+      sessions.add(session);
+   }
 }

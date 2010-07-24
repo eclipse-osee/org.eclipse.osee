@@ -49,7 +49,7 @@ public class UpdateChangeUiData extends AbstractOperation {
 
       if (!txDelta.areOnTheSameBranch()) {
          Branch mergeBranch =
-               BranchManager.getMergeBranch(txDelta.getStartTx().getBranch(), txDelta.getEndTx().getBranch(), true);
+            BranchManager.getMergeBranch(txDelta.getStartTx().getBranch(), txDelta.getEndTx().getBranch(), true);
          changeData.setMergeBranch(mergeBranch);
       }
       boolean areBranchesValid = !hasBeenRebaselined(txDelta.getStartTx()) && !hasBeenRebaselined(txDelta.getEndTx());

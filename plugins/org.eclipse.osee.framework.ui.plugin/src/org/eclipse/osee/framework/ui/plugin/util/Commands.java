@@ -46,7 +46,7 @@ public final class Commands {
     */
    public static CommandContributionItem getLocalCommandContribution(IWorkbenchPartSite site, String shortCommandId, String name, IParameter[] parameterDefs, Map<String, String> parameters, ImageDescriptor image, String mnemonic, String tooltip, String helpContextId) {
       return createCommandContributionItem(site, site.getId(), shortCommandId, name, parameterDefs, parameters, image,
-            mnemonic, tooltip, helpContextId);
+         mnemonic, tooltip, helpContextId);
    }
 
    private static CommandContributionItem createCommandContributionItem(IServiceLocator site, String id, String shortCommandId, String name, IParameter[] parameterDefs, Map<String, String> parameters, ImageDescriptor image, String mnemonic, String tooltip, String helpContextId) {
@@ -65,7 +65,7 @@ public final class Commands {
 
       // Use the commandId as the id so calling code can get to the commandId
       return new CommandContributionItem(new CommandContributionItemParameter(site, command.getId(), command.getId(),
-            parameters, image, null, null, name, mnemonic, tooltip, CommandContributionItem.STYLE_PUSH, helpContextId,
-            false));
+         parameters, image, null, null, name, mnemonic, tooltip, CommandContributionItem.STYLE_PUSH, helpContextId,
+         false));
    }
 }

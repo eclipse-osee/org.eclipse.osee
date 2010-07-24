@@ -12,10 +12,9 @@ package org.eclipse.osee.ote.ui.mux.datatable;
 
 /**
  * @author Ky Komadino
- * 
  */
 public class RowNode {
-   private byte[] databytes;
+   private final byte[] databytes;
    private int numDatabytes;
 
    public RowNode() {
@@ -25,24 +24,26 @@ public class RowNode {
 
    public synchronized void setData(byte[] data) {
       numDatabytes = data.length;
-      for (int i = 0; i < data.length && i < databytes.length; i++)
+      for (int i = 0; i < data.length && i < databytes.length; i++) {
          databytes[i] = data[i];
+      }
    }
-   
+
    public synchronized void setDataword(int data, int index) {
-      databytes[index * 2] = (byte)((data & 0x0000FF00) >> 8);
-      databytes[index * 2 + 1] = (byte)(data & 0x000000FF);
+      databytes[index * 2] = (byte) ((data & 0x0000FF00) >> 8);
+      databytes[index * 2 + 1] = (byte) (data & 0x000000FF);
    }
-   
+
    public synchronized byte getDatabyte(int index) {
       return databytes[index];
    }
 
    public synchronized String getDataword(int index) {
-      if (numDatabytes > index * 2 + 1)
-         return String.format("%02X%02X", (short)(databytes[index * 2] & 0x00FF),
-                                          (short)(databytes[index * 2 + 1] & 0x00FF));
-      else
+      if (numDatabytes > index * 2 + 1) {
+         return String.format("%02X%02X", (short) (databytes[index * 2] & 0x00FF),
+            (short) (databytes[index * 2 + 1] & 0x00FF));
+      } else {
          return "";
+      }
    }
 }

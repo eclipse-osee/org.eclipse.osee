@@ -37,7 +37,9 @@ public class EmailTeamsItem extends XNavigateItemAction {
    private final TeamDefinitionArtifact teamDef;
    private final Collection<MemberType> memberTypes;
    public static enum MemberType {
-      Leads, Members, Both
+      Leads,
+      Members,
+      Both
    };
 
    /**
@@ -46,10 +48,10 @@ public class EmailTeamsItem extends XNavigateItemAction {
     */
    public EmailTeamsItem(XNavigateItem parent, TeamDefinitionArtifact teamDef, MemberType... memberType) {
       super(
-            parent,
-            "Email " + (teamDef == null ? "Team " : "\"" + teamDef + "\" Team ") + (Arrays.asList(memberType).contains(
-                  MemberType.Both) ? "Leads / Members" : (Arrays.asList(memberType).contains(MemberType.Leads) ? "Leads" : "Members")),
-            FrameworkImage.EMAIL);
+         parent,
+         "Email " + (teamDef == null ? "Team " : "\"" + teamDef + "\" Team ") + (Arrays.asList(memberType).contains(
+            MemberType.Both) ? "Leads / Members" : Arrays.asList(memberType).contains(MemberType.Leads) ? "Leads" : "Members"),
+         FrameworkImage.EMAIL);
       memberTypes = Arrays.asList(memberType);
       this.teamDef = teamDef;
    }
@@ -57,16 +59,24 @@ public class EmailTeamsItem extends XNavigateItemAction {
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
       Collection<TeamDefinitionArtifact> teamDefs = getTeamDefinitions();
-      if (teamDefs.isEmpty()) return;
+      if (teamDefs.isEmpty()) {
+         return;
+      }
       Set<String> emails = new HashSet<String>();
       for (TeamDefinitionArtifact teamDef : teamDefs) {
          if (memberTypes.contains(MemberType.Members) || memberTypes.contains(MemberType.Both)) {
-            for (User user : teamDef.getRelatedArtifacts(AtsRelationTypes.TeamMember_Member, User.class))
-               if (!user.getEmail().equals("")) emails.add(user.getEmail());
+            for (User user : teamDef.getRelatedArtifacts(AtsRelationTypes.TeamMember_Member, User.class)) {
+               if (!user.getEmail().equals("")) {
+                  emails.add(user.getEmail());
+               }
+            }
          }
          if (memberTypes.contains(MemberType.Leads) || memberTypes.contains(MemberType.Both)) {
-            for (User user : teamDef.getRelatedArtifacts(AtsRelationTypes.TeamLead_Lead, User.class))
-               if (!user.getEmail().equals("")) emails.add(user.getEmail());
+            for (User user : teamDef.getRelatedArtifacts(AtsRelationTypes.TeamLead_Lead, User.class)) {
+               if (!user.getEmail().equals("")) {
+                  emails.add(user.getEmail());
+               }
+            }
          }
       }
       if (emails.isEmpty()) {

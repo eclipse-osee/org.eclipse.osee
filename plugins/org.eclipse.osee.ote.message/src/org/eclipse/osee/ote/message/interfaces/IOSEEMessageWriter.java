@@ -17,7 +17,10 @@ import org.eclipse.osee.ote.message.MessageSystemException;
  */
 public interface IOSEEMessageWriter {
    void set(byte[] data);
+
    byte[] get();
+
    void set(IOSEEMessageWriterListener listener);
+
    void send() throws MessageSystemException;
 }

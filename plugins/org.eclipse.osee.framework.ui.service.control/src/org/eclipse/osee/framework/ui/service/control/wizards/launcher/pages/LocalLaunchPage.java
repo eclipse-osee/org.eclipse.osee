@@ -34,7 +34,7 @@ import org.eclipse.swt.widgets.Group;
  */
 public class LocalLaunchPage extends DynamicWizardPage {
 
-   private ServiceLaunchingInformation serviceInfo;
+   private final ServiceLaunchingInformation serviceInfo;
 
    private Button eclipseApplicationButton;
    private Button standAloneButton;
@@ -50,6 +50,7 @@ public class LocalLaunchPage extends DynamicWizardPage {
       setPageComplete(true);
    }
 
+   @Override
    public void createControl(Composite parent) {
       Composite composite = new Composite(parent, SWT.NONE);
       composite.setLayout(new GridLayout());
@@ -134,6 +135,7 @@ public class LocalLaunchPage extends DynamicWizardPage {
 
    private void registerListeners() {
       eclipseApplicationButton.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             stackLayout.topControl = widgets.get(eclipseApplicationButton).getControl();
             stackedComposite.layout();
@@ -142,6 +144,7 @@ public class LocalLaunchPage extends DynamicWizardPage {
       });
 
       standAloneButton.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             stackLayout.topControl = widgets.get(standAloneButton).getControl();
             stackedComposite.layout();

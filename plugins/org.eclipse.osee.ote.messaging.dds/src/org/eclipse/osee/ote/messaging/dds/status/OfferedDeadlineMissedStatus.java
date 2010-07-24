@@ -13,13 +13,14 @@ package org.eclipse.osee.ote.messaging.dds.status;
 import org.eclipse.osee.ote.messaging.dds.InstanceHandle;
 
 /**
- * Maintains counts of the number of times the {@link org.eclipse.osee.ote.messaging.dds.entity.DataWriter} failed to write within the offered deadline.
+ * Maintains counts of the number of times the {@link org.eclipse.osee.ote.messaging.dds.entity.DataWriter} failed to
+ * write within the offered deadline.
  * 
  * @author Robert A. Fisher
  * @author David Diepenbrock
  */
 public class OfferedDeadlineMissedStatus extends CountedStatus {
-   private InstanceHandle lastInstanceHandle;
+   private final InstanceHandle lastInstanceHandle;
 
    /**
     * @param totalCount The cumulative count of offered deadlines missed.

@@ -53,16 +53,16 @@ public final class ArtifactImageManager {
    private static final String EXTENSION_ID = SkynetGuiPlugin.PLUGIN_ID + "." + EXTENSION_ELEMENT;
 
    private static final String SELECT_ARTIFACT_TYPES_IMAGE_QUERY =
-         "SELECT art_type_id, image FROM osee_artifact_type where image is not null";
+      "SELECT art_type_id, image FROM osee_artifact_type where image is not null";
    private static final String UPDATE_ARTIFACT_TYPE_IMAGE =
-         "UPDATE osee_artifact_type SET image = ? where art_type_id = ?";
+      "UPDATE osee_artifact_type SET image = ? where art_type_id = ?";
 
    private static final Map<String, ArtifactImageProvider> providersOverrideImageMap =
-         Collections.synchronizedMap(new HashMap<String, ArtifactImageProvider>());
+      Collections.synchronizedMap(new HashMap<String, ArtifactImageProvider>());
    private static final Map<String, KeyedImage> artifactTypeImageMap =
-         Collections.synchronizedMap(new HashMap<String, KeyedImage>());
+      Collections.synchronizedMap(new HashMap<String, KeyedImage>());
    private static final Map<String, String> artifactTypeImageProviderMap =
-         Collections.synchronizedMap(new HashMap<String, String>());
+      Collections.synchronizedMap(new HashMap<String, String>());
 
    private static final String OSEE_DATABASE_PROVIDER = "OSEE Database Provider";
 
@@ -93,7 +93,7 @@ public final class ArtifactImageManager {
       artifactTypeImageProviderMap.clear();
 
       List<ArtifactImageProvider> providers =
-            new ExtensionDefinedObjects<ArtifactImageProvider>(EXTENSION_ID, EXTENSION_ELEMENT, "class").getObjects();
+         new ExtensionDefinedObjects<ArtifactImageProvider>(EXTENSION_ID, EXTENSION_ELEMENT, "class").getObjects();
 
       for (ArtifactImageProvider imageProvider : providers) {
          try {
@@ -117,8 +117,8 @@ public final class ArtifactImageManager {
             while (chStmt.next()) {
                try {
                   ArtifactType artifactType = ArtifactTypeManager.getType(chStmt.getInt("art_type_id"));
-                  artifactTypeImageMap.put(artifactType.getName(), BaseImage.getBaseImageEnum(artifactType,
-                        Lib.inputStreamToBytes(chStmt.getBinaryStream("image"))));
+                  artifactTypeImageMap.put(artifactType.getName(),
+                     BaseImage.getBaseImageEnum(artifactType, Lib.inputStreamToBytes(chStmt.getBinaryStream("image"))));
                   artifactTypeImageProviderMap.put(artifactType.getName(), OSEE_DATABASE_PROVIDER);
                } catch (Exception ex) {
                   OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
@@ -149,7 +149,8 @@ public final class ArtifactImageManager {
    }
 
    private static enum ChangeImageType {
-      CHANGE_KIND, CHANGE_TYPE;
+      CHANGE_KIND,
+      CHANGE_TYPE;
    }
 
    private static Image getChangeImage(Change change, ChangeImageType changeImageType) {
@@ -214,7 +215,7 @@ public final class ArtifactImageManager {
 
    public static Image getImage(Artifact artifact, KeyedImage overlay, Location location) {
       return ImageManager.getImage(ImageManager.setupImageWithOverlay(BaseImage.getBaseImageEnum(artifact), overlay,
-            location));
+         location));
    }
 
    public synchronized static String setupImage(KeyedImage imageEnum) {
@@ -238,15 +239,14 @@ public final class ArtifactImageManager {
 
       boolean alreadyProvided = artifactTypeImageMap.containsKey(artifactTypeName);
       boolean providedByOseeDatabase =
-            artifactTypeImageProviderMap.get(artifactTypeName) != null && artifactTypeImageProviderMap.get(
-                  artifactTypeName).equals(OSEE_DATABASE_PROVIDER);
+         artifactTypeImageProviderMap.get(artifactTypeName) != null && artifactTypeImageProviderMap.get(
+            artifactTypeName).equals(OSEE_DATABASE_PROVIDER);
 
       // Database can override other providers, don't display error in that cases
       if (alreadyProvided && !providedByOseeDatabase) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, String.format(
-               "Two ArtifactImageProviders [%s][%s] specify image for same artifact type [%s]",
-               provider.getClass().getSimpleName(), artifactTypeImageProviderMap.get(artifactTypeName),
-               artifactTypeName));
+            "Two ArtifactImageProviders [%s][%s] specify image for same artifact type [%s]",
+            provider.getClass().getSimpleName(), artifactTypeImageProviderMap.get(artifactTypeName), artifactTypeName));
       }
       // Regardless of error, register image if not already provided
       if (!alreadyProvided) {
@@ -292,7 +292,7 @@ public final class ArtifactImageManager {
 
          if (AccessControlManager.hasLock(castedArtifact)) {
             KeyedImage overlay =
-                  AccessControlManager.hasLockAccess(castedArtifact) ? FrameworkImage.LOCKED_WITH_ACCESS : FrameworkImage.LOCKED_NO_ACCESS;
+               AccessControlManager.hasLockAccess(castedArtifact) ? FrameworkImage.LOCKED_WITH_ACCESS : FrameworkImage.LOCKED_NO_ACCESS;
             return ImageManager.setupImageWithOverlay(baseImageEnum, overlay, Location.TOP_LEFT).getImageKey();
          }
 

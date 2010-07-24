@@ -29,6 +29,7 @@ public class RelatedToAndOfIDSearch implements ISearchPrimitive {
       this.relType = relType;
    }
 
+   @Override
    public String getArtIdColName() {
       return "artLinkJoin.art_id";
    }
@@ -51,14 +52,17 @@ public class RelatedToAndOfIDSearch implements ISearchPrimitive {
       return new RelatedToAndOfIDSearch(Integer.parseInt(args[0]), Integer.parseInt(args[1]));
    }
 
+   @Override
    public String getCriteriaSql(List<Object> dataList, Branch branch) {
       return null;
    }
 
+   @Override
    public String getTableSql(List<Object> dataList, Branch branch) {
       return null;
    }
 
+   @Override
    public String getStorageString() {
       return Integer.toString(artId) + "," + Integer.toString(relType);
    }

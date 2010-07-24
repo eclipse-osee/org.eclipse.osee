@@ -38,6 +38,7 @@ public class AtsConfigWizard extends Wizard implements INewWizard {
       addPage(page1);
    }
 
+   @Override
    public void init(IWorkbench workbench, IStructuredSelection selection) {
       // create pages for this wizard
       page1 = new AtsConfigWizardPage1(this);
@@ -53,7 +54,7 @@ public class AtsConfigWizard extends Wizard implements INewWizard {
          String workflowId = page1.getWorkflowId();
 
          IOperation operation =
-               AtsConfigManager.createAtsConfigOperation(namespace, teamDefName, versionNames, aias, workflowId);
+            AtsConfigManager.createAtsConfigOperation(namespace, teamDefName, versionNames, aias, workflowId);
          Operations.executeAsJob(operation, true);
 
       } catch (OseeCoreException ex) {

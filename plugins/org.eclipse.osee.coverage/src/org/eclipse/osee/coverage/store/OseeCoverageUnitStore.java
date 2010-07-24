@@ -40,13 +40,13 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
       super(null, artifact.getArtifactType(), artifact.getBranch());
       this.artifact = artifact;
       this.coverageUnit =
-            new CoverageUnit(parent, artifact.getName(), "", OseeCoverageUnitFileContentsProvider.getInstance(branch));
+         new CoverageUnit(parent, artifact.getName(), "", OseeCoverageUnitFileContentsProvider.getInstance(branch));
       load(coverageOptionManager);
    }
 
    public OseeCoverageUnitStore(CoverageUnit coverageUnit, Branch branch) {
       super(coverageUnit,
-            coverageUnit.isFolder() ? CoverageArtifactTypes.CoverageFolder : CoverageArtifactTypes.CoverageUnit, branch);
+         coverageUnit.isFolder() ? CoverageArtifactTypes.CoverageFolder : CoverageArtifactTypes.CoverageUnit, branch);
       this.coverageUnit = coverageUnit;
    }
 
@@ -59,18 +59,21 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
       return new OseeCoverageUnitStore(coverageUnit, branch);
    }
 
+   @Override
    public void delete(SkynetTransaction transaction, boolean purge) throws OseeCoreException {
       if (getArtifact(false) != null) {
-         if (purge)
+         if (purge) {
             getArtifact(false).purgeFromBranch();
-         else
+         } else {
             getArtifact(false).deleteAndPersist(transaction);
+         }
       }
       for (CoverageUnit childCoverageUnit : coverageUnit.getCoverageUnits()) {
          new OseeCoverageUnitStore(childCoverageUnit, branch).delete(transaction, purge);
       }
    }
 
+   @Override
    public void load(CoverageOptionManager coverageOptionManager) throws OseeCoreException {
       coverageUnit.clearCoverageUnits();
       coverageUnit.clearCoverageItems();
@@ -80,7 +83,7 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
          coverageUnit.setGuid(artifact.getGuid());
          for (String value : artifact.getAttributesToStringList(CoverageAttributes.COVERAGE_ITEM.getStoreName())) {
             CoverageItem item =
-                  new CoverageItem(coverageUnit, value, coverageOptionManager, DbTestUnitProvider.instance());
+               new CoverageItem(coverageUnit, value, coverageOptionManager, DbTestUnitProvider.instance());
             coverageUnit.addCoverageItem(item);
          }
          // Don't load file contents until needed
@@ -88,9 +91,9 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
          coverageUnit.setNotes(artifact.getSoleAttributeValueAsString(CoverageAttributes.NOTES.getStoreName(), ""));
          coverageUnit.setFolder(artifact.isOfType(CoverageArtifactTypes.CoverageFolder));
          coverageUnit.setAssignees(artifact.getSoleAttributeValueAsString(CoverageAttributes.ASSIGNEES.getStoreName(),
-               ""));
+            ""));
          coverageUnit.setNamespace(artifact.getSoleAttributeValueAsString(CoverageAttributes.NAMESPACE.getStoreName(),
-               ""));
+            ""));
          coverageUnit.setOrderNumber(artifact.getSoleAttributeValueAsString(CoverageAttributes.ORDER.getStoreName(), ""));
          coverageUnit.setLocation(artifact.getSoleAttributeValueAsString(CoverageAttributes.LOCATION.getStoreName(), ""));
          for (Artifact childArt : artifact.getChildren()) {
@@ -163,7 +166,7 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
             }
             if (!found) {
                new OseeCoverageUnitStore(coverageUnit, childArt, CoverageOptionManagerDefault.instance()).delete(
-                     transaction, false);
+                  transaction, false);
             }
          }
       }

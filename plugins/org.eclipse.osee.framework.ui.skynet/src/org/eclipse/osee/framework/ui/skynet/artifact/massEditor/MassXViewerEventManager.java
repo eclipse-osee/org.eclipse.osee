@@ -54,10 +54,10 @@ public class MassXViewerEventManager implements IArtifactEventListener {
       }
 
       final Collection<Artifact> modifiedArts =
-            artifactEvent.getCacheArtifacts(EventModType.Modified, EventModType.Reloaded);
+         artifactEvent.getCacheArtifacts(EventModType.Modified, EventModType.Reloaded);
       final Collection<Artifact> relModifiedArts = artifactEvent.getRelCacheArtifacts();
       final Collection<EventBasicGuidArtifact> deletedPurgedArts =
-            artifactEvent.get(EventModType.Deleted, EventModType.Purged);
+         artifactEvent.get(EventModType.Deleted, EventModType.Purged);
 
       Displays.ensureInDisplayThread(new Runnable() {
          @Override

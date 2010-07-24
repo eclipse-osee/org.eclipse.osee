@@ -68,96 +68,96 @@ import java.util.Map.Entry;
 //@formatter:on
 public final class ReservedCharacters {
 
-	private static Map<String, Character> reservedCharacters = new HashMap<String, Character>();
-	private static Map<Character, String> charsToEncoding = new HashMap<Character, String>();
-	private static Map<Character, String> xmlEntitiesMap = new HashMap<Character, String>();
-	static {
-		// TODO Fix Encoding
-		//		reservedCharacters.put("&nbsp;", ' ');
-		//		reservedCharacters.put("&iexcl;", '¡');
-		//		reservedCharacters.put("&cent;", '¢');
-		//		reservedCharacters.put("&pound;", '£');
-		//		reservedCharacters.put("&curren;", '¤');
-		//		reservedCharacters.put("&yen;", '¥');
-		//		reservedCharacters.put("&brvbar;", '¦');
-		//		reservedCharacters.put("&sect;", '§');
-		//		reservedCharacters.put("&uml;", '¨');
-		//		reservedCharacters.put("&copy;", '©');
-		//		reservedCharacters.put("&ordf;", 'ª');
-		//		reservedCharacters.put("&laquo;", '«');
-		//		reservedCharacters.put("&not;", '¬');
-		//		reservedCharacters.put("&shy;", '­');
-		//		reservedCharacters.put("&reg;", '®');
-		//		reservedCharacters.put("&macr;", '¯');
-		//		reservedCharacters.put("&deg;", '°');
-		//		reservedCharacters.put("&plusmn;", '±');
-		//		reservedCharacters.put("&sup2;", '²');
-		//		reservedCharacters.put("&sup3;", '³');
-		//		reservedCharacters.put("&acute;", '´');
-		//		reservedCharacters.put("&micro;", 'µ');
-		//		reservedCharacters.put("&para;", '¶');
-		//		reservedCharacters.put("&middot;", '·');
-		//		reservedCharacters.put("&cedil;", '¸');
-		//		reservedCharacters.put("&sup1;", '¹');
-		//		reservedCharacters.put("&ordm;", 'º');
-		//		reservedCharacters.put("&raquo;", '»');
-		//		reservedCharacters.put("&frac14;", '¼');
-		//		reservedCharacters.put("&frac12;", '½');
-		//		reservedCharacters.put("&frac34;", '¾');
-		//		reservedCharacters.put("&iquest;", '¿');
-		//		reservedCharacters.put("&times;", '×');
-		//		reservedCharacters.put("&divide;", '÷');
-		xmlEntitiesMap.put('"', "&quot;");
-		xmlEntitiesMap.put('\'', "&apos;");
-		xmlEntitiesMap.put('&', "&amp;");
-		xmlEntitiesMap.put('<', "&lt;");
-		xmlEntitiesMap.put('>', "&gt;");
+   private static Map<String, Character> reservedCharacters = new HashMap<String, Character>();
+   private static Map<Character, String> charsToEncoding = new HashMap<Character, String>();
+   private static Map<Character, String> xmlEntitiesMap = new HashMap<Character, String>();
+   static {
+      // TODO Fix Encoding
+      //		reservedCharacters.put("&nbsp;", ' ');
+      //		reservedCharacters.put("&iexcl;", '¡');
+      //		reservedCharacters.put("&cent;", '¢');
+      //		reservedCharacters.put("&pound;", '£');
+      //		reservedCharacters.put("&curren;", '¤');
+      //		reservedCharacters.put("&yen;", '¥');
+      //		reservedCharacters.put("&brvbar;", '¦');
+      //		reservedCharacters.put("&sect;", '§');
+      //		reservedCharacters.put("&uml;", '¨');
+      //		reservedCharacters.put("&copy;", '©');
+      //		reservedCharacters.put("&ordf;", 'ª');
+      //		reservedCharacters.put("&laquo;", '«');
+      //		reservedCharacters.put("&not;", '¬');
+      //		reservedCharacters.put("&shy;", '­');
+      //		reservedCharacters.put("&reg;", '®');
+      //		reservedCharacters.put("&macr;", '¯');
+      //		reservedCharacters.put("&deg;", '°');
+      //		reservedCharacters.put("&plusmn;", '±');
+      //		reservedCharacters.put("&sup2;", '²');
+      //		reservedCharacters.put("&sup3;", '³');
+      //		reservedCharacters.put("&acute;", '´');
+      //		reservedCharacters.put("&micro;", 'µ');
+      //		reservedCharacters.put("&para;", '¶');
+      //		reservedCharacters.put("&middot;", '·');
+      //		reservedCharacters.put("&cedil;", '¸');
+      //		reservedCharacters.put("&sup1;", '¹');
+      //		reservedCharacters.put("&ordm;", 'º');
+      //		reservedCharacters.put("&raquo;", '»');
+      //		reservedCharacters.put("&frac14;", '¼');
+      //		reservedCharacters.put("&frac12;", '½');
+      //		reservedCharacters.put("&frac34;", '¾');
+      //		reservedCharacters.put("&iquest;", '¿');
+      //		reservedCharacters.put("&times;", '×');
+      //		reservedCharacters.put("&divide;", '÷');
+      xmlEntitiesMap.put('"', "&quot;");
+      xmlEntitiesMap.put('\'', "&apos;");
+      xmlEntitiesMap.put('&', "&amp;");
+      xmlEntitiesMap.put('<', "&lt;");
+      xmlEntitiesMap.put('>', "&gt;");
 
-		for (Entry<String, Character> entry : reservedCharacters.entrySet()) {
-			charsToEncoding.put(entry.getValue(), entry.getKey());
-		}
-		for (Entry<Character, String> entry : xmlEntitiesMap.entrySet()) {
-			charsToEncoding.put(entry.getKey(), entry.getValue());
-			reservedCharacters.put(entry.getValue(), entry.getKey());
-		}
-	}
+      for (Entry<String, Character> entry : reservedCharacters.entrySet()) {
+         charsToEncoding.put(entry.getValue(), entry.getKey());
+      }
+      for (Entry<Character, String> entry : xmlEntitiesMap.entrySet()) {
+         charsToEncoding.put(entry.getKey(), entry.getValue());
+         reservedCharacters.put(entry.getValue(), entry.getKey());
+      }
+   }
 
-	private ReservedCharacters() {
+   private ReservedCharacters() {
 
-	}
+   }
 
-	public static String encode(String original) {
-		return encode(original, charsToEncoding);
-	}
+   public static String encode(String original) {
+      return encode(original, charsToEncoding);
+   }
 
-	public static String encodeXmlEntities(String original) {
-		return encode(original, xmlEntitiesMap);
-	}
+   public static String encodeXmlEntities(String original) {
+      return encode(original, xmlEntitiesMap);
+   }
 
-	private static String encode(String original, Map<Character, String> charactersToEntityMap) {
-		StringBuilder encodedItem = new StringBuilder();
-		for (int index = 0; index < original.length(); index++) {
-			char item = original.charAt(index);
-			String encode = charactersToEntityMap.get(item);
-			if (encode != null) {
-				encodedItem.append(encode);
-			} else {
-				encodedItem.append(item);
-			}
-		}
-		return encodedItem.toString();
-	}
+   private static String encode(String original, Map<Character, String> charactersToEntityMap) {
+      StringBuilder encodedItem = new StringBuilder();
+      for (int index = 0; index < original.length(); index++) {
+         char item = original.charAt(index);
+         String encode = charactersToEntityMap.get(item);
+         if (encode != null) {
+            encodedItem.append(encode);
+         } else {
+            encodedItem.append(item);
+         }
+      }
+      return encodedItem.toString();
+   }
 
-	public static Character toCharacter(String entity) {
-		Character toReturn = null;
-		if (Strings.isValid(entity)) {
-			entity = entity.trim();
-			toReturn = reservedCharacters.get(entity);
-		}
-		return toReturn;
-	}
+   public static Character toCharacter(String entity) {
+      Character toReturn = null;
+      if (Strings.isValid(entity)) {
+         entity = entity.trim();
+         toReturn = reservedCharacters.get(entity);
+      }
+      return toReturn;
+   }
 
-	public static Collection<Character> getChars() {
-		return reservedCharacters.values();
-	}
+   public static Collection<Character> getChars() {
+      return reservedCharacters.values();
+   }
 }

@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -48,9 +49,8 @@ import com.lowagie.text.Table;
 public class GenerateDetailedCoverageReportAction extends Action {
 
    private final ICoveragePackageHandler coveragePackageHandler;
-   private Collection<XViewerColumn> columns =
-         Arrays.asList(CoverageXViewerFactory.Namespace, CoverageXViewerFactory.Coverage_Method,
-               CoverageXViewerFactory.Guid, CoverageXViewerFactory.Name);
+   private final Collection<XViewerColumn> columns = Arrays.asList(CoverageXViewerFactory.Namespace,
+      CoverageXViewerFactory.Coverage_Method, CoverageXViewerFactory.Guid, CoverageXViewerFactory.Name);
 
    public GenerateDetailedCoverageReportAction(ICoveragePackageHandler coveragePackageHandler) {
       super("Generate Detailed Coverage Report");
@@ -70,7 +70,7 @@ public class GenerateDetailedCoverageReportAction extends Action {
       try {
          Date date = new Date();
          File file =
-               OseeData.getFile("coverage_" + XDate.getDateStr(date, XDate.YYYY_MM_DD).replaceAll("\\\\", "_") + ".pdf");
+            OseeData.getFile("coverage_" + XDate.getDateStr(date, XDate.YYYY_MM_DD).replaceAll("\\\\", "_") + ".pdf");
          OutputStream outputStream = new FileOutputStream(file, true);
          TableWriterAdaptor masterAdaptor = new TableWriterAdaptor("pdf", outputStream);
 
@@ -112,20 +112,20 @@ public class GenerateDetailedCoverageReportAction extends Action {
          for (XViewerColumn column : columns) {
             try {
                if (column.equals(CoverageXViewerFactory.Namespace)) {
-                  values.add(String.format("%s[%s][%s]", CoverageUtil.getFullPath(item), labelProvider.getColumnText(
-                        item, CoverageXViewerFactory.Method_Number, 0), labelProvider.getColumnText(item,
-                        CoverageXViewerFactory.Execution_Number, 0)));
+                  values.add(String.format("%s[%s][%s]", CoverageUtil.getFullPath(item),
+                     labelProvider.getColumnText(item, CoverageXViewerFactory.Method_Number, 0),
+                     labelProvider.getColumnText(item, CoverageXViewerFactory.Execution_Number, 0)));
                } else if (column.equals(CoverageXViewerFactory.Coverage_Method)) {
                   String rationale = labelProvider.getColumnText(item, CoverageXViewerFactory.Coverage_Rationale, 0);
-                  values.add(String.format("%s%s", labelProvider.getColumnText(item,
-                        CoverageXViewerFactory.Coverage_Method, 0),
-                        Strings.isValid(rationale) ? "Rationale: " + rationale : ""));
+                  values.add(String.format("%s%s",
+                     labelProvider.getColumnText(item, CoverageXViewerFactory.Coverage_Method, 0),
+                     Strings.isValid(rationale) ? "Rationale: " + rationale : ""));
                } else {
                   values.add(labelProvider.getColumnText(item, column, 0));
                }
             } catch (OseeCoreException ex) {
                values.add("Exception: " + ex.getLocalizedMessage());
-               OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
          writerAdaptor.writeRow(values.toArray(new String[values.size()]));

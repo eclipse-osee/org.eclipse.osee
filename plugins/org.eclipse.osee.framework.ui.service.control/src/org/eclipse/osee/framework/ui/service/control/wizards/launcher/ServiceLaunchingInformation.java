@@ -28,7 +28,7 @@ public class ServiceLaunchingInformation {
 
    private ServiceItem selectedServiceItem;
 
-   private ServiceLaunchDataPersist serviceLaunchData;
+   private final ServiceLaunchDataPersist serviceLaunchData;
 
    public ServiceLaunchingInformation() {
       serviceLaunchData = ServiceLaunchDataPersist.getInstance();
@@ -73,7 +73,7 @@ public class ServiceLaunchingInformation {
    }
 
    public boolean canFinish() {
-      return (selectedHost != null && user != null && execCmds != null || isLocal());
+      return selectedHost != null && user != null && execCmds != null || isLocal();
    }
 
    public ServiceItem getServiceItem() {

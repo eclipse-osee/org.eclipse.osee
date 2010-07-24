@@ -16,7 +16,6 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.List;
-
 import org.eclipse.osee.framework.jdk.core.reportdata.ReportDataListener;
 import org.eclipse.osee.framework.messaging.Message;
 import org.eclipse.osee.ote.core.IUserSession;
@@ -48,7 +47,7 @@ public interface ITestEnvironment extends Remote {
    boolean disconnect(UserTestSessionKey user) throws RemoteException;
 
    void disconnectAll() throws RemoteException;
-   
+
    boolean equals(ITestEnvironment testEnvironment) throws RemoteException;
 
    List<String> getQueueLabels() throws RemoteException;
@@ -82,7 +81,7 @@ public interface ITestEnvironment extends Remote {
    public void setBatchMode(boolean isBatched) throws RemoteException;
 
    public void sendCommand(Command command) throws RemoteException;
-   
+
    public void sendMessage(Message message) throws RemoteException;
-   
+
 }

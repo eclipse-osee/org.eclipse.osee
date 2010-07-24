@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
  */
 public class RelationTransactionData extends BaseTransactionData {
    private static final String INSERT_INTO_RELATION_TABLE =
-         "INSERT INTO osee_relation_link (rel_link_id, rel_link_type_id, a_art_id, b_art_id, rationale, gamma_id) VALUES (?,?,?,?,?,?)";
+      "INSERT INTO osee_relation_link (rel_link_id, rel_link_type_id, a_art_id, b_art_id, rationale, gamma_id) VALUES (?,?,?,?,?,?)";
 
    private final RelationLink relation;
    private final RelationEventType relationEventType;
@@ -51,8 +51,8 @@ public class RelationTransactionData extends BaseTransactionData {
       super.addInsertToBatch(transaction);
       if (!useExistingBackingData()) {
          internalAddInsertToBatch(transaction, 4, INSERT_INTO_RELATION_TABLE, relation.getId(),
-               relation.getRelationType().getId(), relation.getAArtifactId(), relation.getBArtifactId(),
-               relation.getRationale(), getGammaId());
+            relation.getRelationType().getId(), relation.getAArtifactId(), relation.getBArtifactId(),
+            relation.getRationale(), getGammaId());
       }
    }
 
@@ -84,21 +84,21 @@ public class RelationTransactionData extends BaseTransactionData {
    @Override
    protected void internalAddToEvents(ArtifactEvent artifactEvent) throws OseeCoreException {
       DefaultBasicGuidRelation defaultBasicGuidRelation =
-            new DefaultBasicGuidRelation(relation.getBranch().getGuid(), relation.getRelationType().getGuid(),
-                  relation.getId(), relation.getGammaId(), relation.getArtifactA().getBasicGuidArtifact(),
-                  relation.getArtifactB().getBasicGuidArtifact());
+         new DefaultBasicGuidRelation(relation.getBranch().getGuid(), relation.getRelationType().getGuid(),
+            relation.getId(), relation.getGammaId(), relation.getArtifactA().getBasicGuidArtifact(),
+            relation.getArtifactB().getBasicGuidArtifact());
       artifactEvent.setBranchGuid(relation.getBranch().getGuid());
       EventBasicGuidRelation event =
-            new EventBasicGuidRelation(relationEventType, relation.getAArtifactId(), relation.getBArtifactId(),
-                  defaultBasicGuidRelation);
+         new EventBasicGuidRelation(relationEventType, relation.getAArtifactId(), relation.getBArtifactId(),
+            defaultBasicGuidRelation);
       if (relationEventType == RelationEventType.ModifiedRationale) {
          event.setRationale(relation.getRationale());
       }
       artifactEvent.getRelations().add(event);
 
       artifactEvent.getSkynetTransactionDetails().add(
-            new RelationModifiedEvent(new Sender(this.getClass().getName()), relationEventType, relation,
-                  relation.getBranch(), relation.getRelationType().getName()));
+         new RelationModifiedEvent(new Sender(this.getClass().getName()), relationEventType, relation,
+            relation.getBranch(), relation.getRelationType().getName()));
 
    }
 }

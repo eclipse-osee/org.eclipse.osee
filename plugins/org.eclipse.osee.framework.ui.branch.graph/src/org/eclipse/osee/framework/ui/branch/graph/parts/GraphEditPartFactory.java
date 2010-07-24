@@ -23,12 +23,13 @@ import org.eclipse.osee.framework.ui.branch.graph.model.TxModel;
  */
 public class GraphEditPartFactory implements EditPartFactory {
 
-   private GraphicalViewer viewer;
+   private final GraphicalViewer viewer;
 
    public GraphEditPartFactory(GraphicalViewer viewer) {
       this.viewer = viewer;
    }
 
+   @Override
    public EditPart createEditPart(EditPart context, Object model) {
       EditPart editPart = null;
       if (model instanceof String) {

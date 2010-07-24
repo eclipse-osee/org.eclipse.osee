@@ -17,10 +17,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.Map.Entry;
 import net.jini.core.lease.Lease;
 import net.jini.core.lease.LeaseDeniedException;
 import net.jini.core.lease.UnknownLeaseException;
@@ -38,10 +38,10 @@ public class OseeLeaseGrantor implements ILeaseGrantor {
    public static final long maxDuration = 10 * 60 * 1000; /* 10 minutes */
    public static final long minDuration = 2 * 60 * 1000; /* 2 minutes */
    private ILeaseGrantor thisRemoteReference;
-   private Map<Object, LeaseData> leaseStore;
-   private WeakReference<ILeasee> leasee;
-   private LeaseChecker leaseChecker;
-   private Timer myTimer;
+   private final Map<Object, LeaseData> leaseStore;
+   private final WeakReference<ILeasee> leasee;
+   private final LeaseChecker leaseChecker;
+   private final Timer myTimer;
    private boolean cancelTimer;
 
    /**
@@ -81,7 +81,9 @@ public class OseeLeaseGrantor implements ILeaseGrantor {
     */
    public void shutdown() {
       leaseChecker.cancel();
-      if (cancelTimer) myTimer.cancel();
+      if (cancelTimer) {
+         myTimer.cancel();
+      }
    }
 
    /**
@@ -107,24 +109,29 @@ public class OseeLeaseGrantor implements ILeaseGrantor {
     * 
     * @see org.eclipse.osee.framework.jini.lease.ILeaseGrantor#renewRequest
     */
+   @Override
    public void renewRequest(Lease lease, Object consumer, long duration) throws LeaseDeniedException, UnknownLeaseException, RemoteException {
 
       // debug.report("Lease renewRequest: " + consumer + " @" + new Date());
 
       synchronized (leaseStore) {
          LeaseData leaseData = leaseStore.get(consumer);
-         if (leaseData == null) throw new LeaseDeniedException("Consumer does not currently hold a lease");
+         if (leaseData == null) {
+            throw new LeaseDeniedException("Consumer does not currently hold a lease");
+         }
 
          if (lease instanceof OseeLease) {
             long actualDuration = checkDuration(duration);
             leaseData.setDuration(actualDuration);
             leaseData.setStartTime();
             ((OseeLease) lease).setDuration(actualDuration);
-         } else
+         } else {
             throw new UnknownLeaseException("Unknown Lease Type");
+         }
       }
    }
 
+   @Override
    public void cancelRequest(Lease lease, Object consumer) throws UnknownLeaseException, RemoteException {
       // debug.report("Lease cancelRequest: " + consumer + " @" + new Date());
       if (leaseStore.remove(consumer) != null) {
@@ -134,27 +141,31 @@ public class OseeLeaseGrantor implements ILeaseGrantor {
 
    public boolean isLeaseExpired(Object consumer) {
       LeaseData leaseData = leaseStore.get(consumer);
-      if (leaseData != null) return leaseData.isExpired();
+      if (leaseData != null) {
+         return leaseData.isExpired();
+      }
 
       return true;
    }
 
    private long checkDuration(long duration) throws LeaseDeniedException {
       long actualDuration;
-      if (duration > maxDuration)
+      if (duration > maxDuration) {
          actualDuration = maxDuration;
-      else if (duration >= minDuration)
+      } else if (duration >= minDuration) {
          actualDuration = duration;
-      else if (duration == Lease.ANY)
+      } else if (duration == Lease.ANY) {
          actualDuration = maxDuration;
-      else
+      } else {
          throw new LeaseDeniedException("Duration too short - must be at least " + minDuration + " milliseconds.");
+      }
 
       return actualDuration;
    }
 
    private class LeaseChecker extends TimerTask {
 
+      @Override
       public void run() {
          synchronized (leaseStore) {
             Set<Entry<Object, LeaseData>> set = leaseStore.entrySet();

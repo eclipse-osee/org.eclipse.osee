@@ -23,11 +23,13 @@ public class StringTrimCondition extends AbstractCondition implements IDiscreteE
       this.value = value;
    }
 
+   @Override
    public boolean check() {
       actualValue = element.getValue().trim();
       return actualValue.equals(value);
    }
 
+   @Override
    public String getLastCheckValue() {
       return actualValue;
    }

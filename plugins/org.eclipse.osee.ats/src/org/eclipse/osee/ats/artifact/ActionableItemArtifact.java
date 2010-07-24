@@ -45,7 +45,7 @@ public class ActionableItemArtifact extends Artifact {
 
    public static List<ActionableItemArtifact> getActionableItems(Active active) throws OseeCoreException {
       return Collections.castAll(AtsCacheManager.getArtifactsByActive(
-            ArtifactTypeManager.getType(AtsArtifactTypes.ActionableItem), active));
+         ArtifactTypeManager.getType(AtsArtifactTypes.ActionableItem), active));
    }
 
    public static String getNotActionableItemError(Artifact aia) {
@@ -57,8 +57,9 @@ public class ActionableItemArtifact extends Artifact {
       if (topAi == null) {
          return java.util.Collections.emptyList();
       }
-      return Collections.castAll(AtsUtil.getActive(Artifacts.getChildrenOfTypeSet(topAi, ActionableItemArtifact.class,
-            false), active, ActionableItemArtifact.class));
+      return Collections.castAll(AtsUtil.getActive(
+         Artifacts.getChildrenOfTypeSet(topAi, ActionableItemArtifact.class, false), active,
+         ActionableItemArtifact.class));
    }
 
    public Collection<User> getLeads() throws OseeCoreException {
@@ -71,7 +72,7 @@ public class ActionableItemArtifact extends Artifact {
 
    public static List<ActionableItemArtifact> getActionableItems() throws OseeCoreException {
       return Collections.castAll(AtsCacheManager.getArtifactsByActive(
-            ArtifactTypeManager.getType(AtsArtifactTypes.ActionableItem), Active.Both));
+         ArtifactTypeManager.getType(AtsArtifactTypes.ActionableItem), Active.Both));
    }
 
    public boolean isActionable() throws OseeCoreException {
@@ -82,7 +83,7 @@ public class ActionableItemArtifact extends Artifact {
       Set<ActionableItemArtifact> aias = new HashSet<ActionableItemArtifact>();
       for (String actionableItemName : actionableItemNames) {
          for (Artifact artifact : AtsCacheManager.getArtifactsByName(
-               ArtifactTypeManager.getType(AtsArtifactTypes.ActionableItem), actionableItemName)) {
+            ArtifactTypeManager.getType(AtsArtifactTypes.ActionableItem), actionableItemName)) {
             aias.add((ActionableItemArtifact) artifact);
          }
       }

@@ -15,8 +15,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import org.eclipse.osee.framework.jdk.core.util.ReservedCharacters;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.ReservedCharacters;
 
 /**
  * @author Roberto E. Escobar
@@ -140,6 +140,7 @@ public class XmlTextInputStream extends BufferedInputStream {
          lastIsCarriageReturn = false;
       }
 
+      @Override
       public int process(int value) throws IOException {
          if ((char) value == '<') {
             this.partOfTag = true;
@@ -160,6 +161,7 @@ public class XmlTextInputStream extends BufferedInputStream {
          return value;
       }
 
+      @Override
       public void restoreState() throws IOException {
          if (wasSaved) {
             partOfTag = lastPartOfTag;
@@ -170,6 +172,7 @@ public class XmlTextInputStream extends BufferedInputStream {
          }
       }
 
+      @Override
       public void saveState() {
          wasSaved = true;
          lastPartOfTag = partOfTag;
@@ -182,7 +185,7 @@ public class XmlTextInputStream extends BufferedInputStream {
       private boolean collect;
       private boolean isCarriageReturn;
       private boolean isStartOfParagraph;
-      private StringBuilder buffer;
+      private final StringBuilder buffer;
 
       private boolean wasSaved;
       private boolean lastPartOfTag;
@@ -204,13 +207,14 @@ public class XmlTextInputStream extends BufferedInputStream {
          lastIsCarriageReturn = false;
       }
 
+      @Override
       public int process(int value) throws IOException {
          isStartOfParagraph = false;
          if ((char) value == '<') {
             partOfTag = true;
             buffer.append((char) value);
          }
-         while ((partOfTag || isCarriageReturn || (isStartOfParagraph != true && collect != true)) && available() > 0) {
+         while ((partOfTag || isCarriageReturn || isStartOfParagraph != true && collect != true) && available() > 0) {
             value = readFromOriginalBuffer();
             if ((char) value == '<') {
                partOfTag = true;
@@ -252,6 +256,7 @@ public class XmlTextInputStream extends BufferedInputStream {
          return value;
       }
 
+      @Override
       public void restoreState() throws IOException {
          if (wasSaved) {
             partOfTag = lastPartOfTag;
@@ -264,6 +269,7 @@ public class XmlTextInputStream extends BufferedInputStream {
          }
       }
 
+      @Override
       public void saveState() {
          wasSaved = true;
          lastPartOfTag = partOfTag;

@@ -19,8 +19,8 @@ import org.eclipse.osee.framework.search.engine.IAttributeTaggerProviderManager;
 import org.eclipse.osee.framework.search.engine.ISearchEngine;
 import org.eclipse.osee.framework.search.engine.MatchLocation;
 import org.eclipse.osee.framework.search.engine.SearchOptions;
-import org.eclipse.osee.framework.search.engine.SearchResult;
 import org.eclipse.osee.framework.search.engine.SearchOptions.SearchOptionsEnum;
+import org.eclipse.osee.framework.search.engine.SearchResult;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeData;
 import org.eclipse.osee.framework.search.engine.data.AttributeSearch;
 
@@ -57,8 +57,7 @@ public class SearchEngine implements ISearchEngine {
             try {
                List<MatchLocation> locations = manager.find(attributeData, searchString, options);
                if (!locations.isEmpty()) {
-                  results.add(attributeData.getId(), attributeData.getArtId(), attributeData.getGammaId(),
-                        locations);
+                  results.add(attributeData.getId(), attributeData.getArtId(), attributeData.getGammaId(), locations);
                }
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, String.format("Error processing: [%s]", attributeData));
@@ -68,12 +67,12 @@ public class SearchEngine implements ISearchEngine {
       secondPass = System.currentTimeMillis() - secondPass;
 
       String firstPassMsg =
-            String.format("Pass 1: [%d items in %d ms]);", bypassSecondPass ? results.size() : tagMatches.size(),
-                  timeAfterPass1);
+         String.format("Pass 1: [%d items in %d ms]);", bypassSecondPass ? results.size() : tagMatches.size(),
+            timeAfterPass1);
       String secondPassMsg = String.format(" Pass 2: [%d items in %d ms]", results.size(), secondPass);
 
       System.out.println(String.format("Search for [%s] - %s%s", searchString, firstPassMsg,
-            bypassSecondPass ? "" : secondPassMsg));
+         bypassSecondPass ? "" : secondPassMsg));
       statistics.addEntry(searchString, branchId, options, results.size(), System.currentTimeMillis() - startTime);
       return results;
    }

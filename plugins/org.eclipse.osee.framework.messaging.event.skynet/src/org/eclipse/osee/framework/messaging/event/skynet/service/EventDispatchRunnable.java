@@ -47,7 +47,7 @@ public class EventDispatchRunnable implements Runnable {
                try {
                   service.deregister(listener);
                   OseeLog.log(SkynetEventPlugin.class, Level.WARNING,
-                        "Listener unavailable - removing it from lookup:\n" + ex.getLocalizedMessage());
+                     "Listener unavailable - removing it from lookup:\n" + ex.getLocalizedMessage());
                } catch (RemoteException ex1) {
                   // Do Nothing - this should never happen
                } finally {
@@ -57,8 +57,7 @@ public class EventDispatchRunnable implements Runnable {
                   String totalMemory = numFormat.format(totalMem);
                   String usedMemory = numFormat.format(totalMem - freeMem);
                   String message =
-                        String.format("JVM Heap space allocated: %s\nJVM Heap space used: %s\n", totalMemory,
-                              usedMemory);
+                     String.format("JVM Heap space allocated: %s\nJVM Heap space used: %s\n", totalMemory, usedMemory);
                   OseeLog.log(SkynetEventPlugin.class, Level.INFO, message);
                }
             } catch (Exception ex) {

@@ -101,18 +101,22 @@ public class MethodFormatter implements Xmlizable {
       return this;
    }
 
+   @Override
    public String toString() {
       String argumentString = "";
 
       for (int i = 0; i < variableValue.size(); i++) {
 
-         if (i != 0) argumentString += ", ";
+         if (i != 0) {
+            argumentString += ", ";
+         }
          argumentString += "<" + variableClass.get(i) + ">" + variableValue.get(i);
 
       }
       return argumentString;
    }
 
+   @Override
    public Element toXml(Document doc) {
       Element toReturn = doc.createElement("MethodArguments");
 
@@ -121,7 +125,7 @@ public class MethodFormatter implements Xmlizable {
          element.appendChild(Jaxp.createElement(doc, "Type", variableClass.get(i).toString()));
 
          Object obj = variableValue.get(i);
-         String toLog = (obj != null ? XmlSupport.format(obj.toString()) : "null");
+         String toLog = obj != null ? XmlSupport.format(obj.toString()) : "null";
          element.appendChild(Jaxp.createElement(doc, "Value", toLog));
 
          toReturn.appendChild(element);

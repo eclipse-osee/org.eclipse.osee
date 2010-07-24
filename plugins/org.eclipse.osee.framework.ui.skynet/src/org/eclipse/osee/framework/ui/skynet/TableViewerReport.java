@@ -90,8 +90,9 @@ public class TableViewerReport {
       for (int x = 0; x < numCols; x++) {
          str[x] = "";
          if (x == 0) {
-            for (int y = 0; y < level; y++)
+            for (int y = 0; y < level; y++) {
                str[x] += "&nbsp;&nbsp;&nbsp;&nbsp;";
+            }
          }
 
          if (labelProvider instanceof LabelProvider) {

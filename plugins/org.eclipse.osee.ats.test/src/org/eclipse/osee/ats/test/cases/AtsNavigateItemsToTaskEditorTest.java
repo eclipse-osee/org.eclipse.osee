@@ -32,8 +32,8 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IDynamicWidgetLayoutListener;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 
@@ -58,12 +58,12 @@ public class AtsNavigateItemsToTaskEditorTest {
    @org.junit.Test
    public void testTaskSearch() throws Exception {
       Collection<TeamDefinitionArtifact> selectedUsers =
-            TeamDefinitionArtifact.getTeamTopLevelDefinitions(Active.Active);
+         TeamDefinitionArtifact.getTeamTopLevelDefinitions(Active.Active);
       TaskEditor.closeAll();
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Task Search");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof TaskSearchWorldSearchItem);
       handleGeneralDoubleClickAndTestResults(item, TaskSearchWorldSearchItem.class, 0,
-            TableLoadOption.DontCopySearchItem);
+         TableLoadOption.DontCopySearchItem);
       runGeneralTaskSearchOnCompletedCancelledTest(item, true, 14);
       runGeneralTaskSearchOnCompletedCancelledTest(item, false, 0);
       runGeneralTaskSearchOnTeamTest(item, selectedUsers, 0);
@@ -110,8 +110,8 @@ public class AtsNavigateItemsToTaskEditorTest {
 
    public void runGeneralTaskSearchOnCompletedCancelledTest(XNavigateItem item, boolean selected, int expectedNum) throws Exception {
       Artifact groupArt =
-            ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.UniversalGroup, "Test Group",
-                  AtsUtil.getAtsBranch());
+         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.UniversalGroup, "Test Group",
+            AtsUtil.getAtsBranch());
       Set<Artifact> selectedUsers = new HashSet<Artifact>();
       TaskEditor editor = getSingleEditorOrFail();
       ((TaskSearchWorldSearchItem) editor.getTaskActionPage().getDynamicWidgetLayoutListener()).setIncludeCompletedCancelledCheckbox(selected);

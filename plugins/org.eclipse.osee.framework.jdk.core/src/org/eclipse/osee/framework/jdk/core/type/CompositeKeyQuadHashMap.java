@@ -28,14 +28,14 @@ public class CompositeKeyQuadHashMap<KeyOne, KeyTwo, KeyThree, KeyFour, Value> i
    private final Map<Quad<KeyOne, KeyTwo, KeyThree, KeyFour>, Value> map;
 
    private final ThreadLocal<Quad<KeyOne, KeyTwo, KeyThree, KeyFour>> threadLocalKey =
-         new ThreadLocal<Quad<KeyOne, KeyTwo, KeyThree, KeyFour>>() {
+      new ThreadLocal<Quad<KeyOne, KeyTwo, KeyThree, KeyFour>>() {
 
-            @Override
-            protected Quad<KeyOne, KeyTwo, KeyThree, KeyFour> initialValue() {
-               return new Quad<KeyOne, KeyTwo, KeyThree, KeyFour>(null, null, null, null);
-            }
+         @Override
+         protected Quad<KeyOne, KeyTwo, KeyThree, KeyFour> initialValue() {
+            return new Quad<KeyOne, KeyTwo, KeyThree, KeyFour>(null, null, null, null);
+         }
 
-         };
+      };
 
    public CompositeKeyQuadHashMap() {
       map = new HashMap<Quad<KeyOne, KeyTwo, KeyThree, KeyFour>, Value>();
@@ -49,10 +49,12 @@ public class CompositeKeyQuadHashMap<KeyOne, KeyTwo, KeyThree, KeyFour, Value> i
       map = new HashMap<Quad<KeyOne, KeyTwo, KeyThree, KeyFour>, Value>(initialCapacity);
    }
 
+   @Override
    public void clear() {
       map.clear();
    }
 
+   @Override
    public boolean containsKey(Object key) {
       return map.containsKey(key);
    }
@@ -61,20 +63,23 @@ public class CompositeKeyQuadHashMap<KeyOne, KeyTwo, KeyThree, KeyFour, Value> i
       return map.containsKey(threadLocalKey.get().set(a, b, c, d));
    }
 
+   @Override
    public boolean containsValue(Object value) {
       return map.containsValue(value);
    }
 
+   @Override
    public Set<Map.Entry<Quad<KeyOne, KeyTwo, KeyThree, KeyFour>, Value>> entrySet() {
       return map.entrySet();
    }
 
+   @Override
    public Value get(Object key) {
       if (Quad.class.isInstance(key)) {
          return map.get(key);
       } else {
          throw new IllegalArgumentException(String.format("Expected Type [CompositeKey], got type [%s].",
-               key.getClass().getName()));
+            key.getClass().getName()));
       }
    }
 
@@ -82,14 +87,17 @@ public class CompositeKeyQuadHashMap<KeyOne, KeyTwo, KeyThree, KeyFour, Value> i
       return map.get(threadLocalKey.get().set(a, b, c, d));
    }
 
+   @Override
    public boolean isEmpty() {
       return map.isEmpty();
    }
 
+   @Override
    public Set<Quad<KeyOne, KeyTwo, KeyThree, KeyFour>> keySet() {
       return map.keySet();
    }
 
+   @Override
    public Value put(Quad<KeyOne, KeyTwo, KeyThree, KeyFour> key, Value value) {
       return map.put(key, value);
    }
@@ -98,10 +106,12 @@ public class CompositeKeyQuadHashMap<KeyOne, KeyTwo, KeyThree, KeyFour, Value> i
       return map.put(new Quad<KeyOne, KeyTwo, KeyThree, KeyFour>(a, b, c, d), value);
    }
 
+   @Override
    public void putAll(Map<? extends Quad<KeyOne, KeyTwo, KeyThree, KeyFour>, ? extends Value> m) {
       map.putAll(m);
    }
 
+   @Override
    public Value remove(Object key) {
       return map.remove(key);
    }
@@ -110,10 +120,12 @@ public class CompositeKeyQuadHashMap<KeyOne, KeyTwo, KeyThree, KeyFour, Value> i
       return map.remove(threadLocalKey.get().set(a, b, c, d));
    }
 
+   @Override
    public int size() {
       return map.size();
    }
 
+   @Override
    public Collection<Value> values() {
       return map.values();
    }

@@ -26,6 +26,7 @@ public class CommandAdded implements IServiceStatusDataCommand, Serializable {
    public CommandAdded() {
    }
 
+   @Override
    public CommandDescription getDescription() {
       return description;
    }
@@ -34,6 +35,7 @@ public class CommandAdded implements IServiceStatusDataCommand, Serializable {
       this.description = description;
    }
 
+   @Override
    public void accept(IServiceStatusDataVisitor visitor) {
       if (visitor != null) {
          visitor.asCommandAdded(this);

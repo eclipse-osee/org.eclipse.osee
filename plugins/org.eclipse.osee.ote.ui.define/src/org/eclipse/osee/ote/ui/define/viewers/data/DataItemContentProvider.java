@@ -21,6 +21,7 @@ public class DataItemContentProvider implements ITreeContentProvider {
 
    private static final Object[] EMPTY_ARRAY = new Object[0];
 
+   @Override
    @SuppressWarnings("unchecked")
    public Object[] getChildren(Object parentElement) {
       if (parentElement instanceof Collection) {
@@ -32,6 +33,7 @@ public class DataItemContentProvider implements ITreeContentProvider {
       return EMPTY_ARRAY;
    }
 
+   @Override
    public Object getParent(Object element) {
       if (element instanceof DataItem) {
          return ((DataItem) element).getParent();
@@ -39,6 +41,7 @@ public class DataItemContentProvider implements ITreeContentProvider {
       return null;
    }
 
+   @Override
    public boolean hasChildren(Object element) {
       if (element instanceof Collection<?>) {
          return true;
@@ -49,6 +52,7 @@ public class DataItemContentProvider implements ITreeContentProvider {
       return false;
    }
 
+   @Override
    public Object[] getElements(Object inputElement) {
       if (inputElement instanceof String) {
          return new Object[] {inputElement};
@@ -56,9 +60,11 @@ public class DataItemContentProvider implements ITreeContentProvider {
       return getChildren(inputElement);
    }
 
+   @Override
    public void dispose() {
    }
 
+   @Override
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
    }
 

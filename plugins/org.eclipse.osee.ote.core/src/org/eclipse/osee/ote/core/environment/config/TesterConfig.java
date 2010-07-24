@@ -24,12 +24,12 @@ public class TesterConfig implements Xmlizable, Serializable {
    private String id;
    private String email;
 
-   public TesterConfig(){
+   public TesterConfig() {
       name = "";
       id = "";
       email = "";
    }
-   
+
    public String getEmail() {
       return email;
    }
@@ -54,6 +54,7 @@ public class TesterConfig implements Xmlizable, Serializable {
       this.name = name;
    }
 
+   @Override
    public Element toXml(Document doc) {
       Element testerElement = doc.createElement(BaseTestTags.EXECUTED_BY);
       testerElement.appendChild(Jaxp.createElement(doc, BaseTestTags.NAME_FIELD, name));

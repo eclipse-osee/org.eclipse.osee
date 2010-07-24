@@ -11,22 +11,25 @@
 package org.eclipse.osee.ote.messaging.dds.status;
 
 /**
- * Maintains counts of {@link org.eclipse.osee.ote.messaging.dds.entity.DataWriter}'s actively or inactively write the same Topic as the {@link org.eclipse.osee.ote.messaging.dds.entity.DataReader}this is attached to.
+ * Maintains counts of {@link org.eclipse.osee.ote.messaging.dds.entity.DataWriter}'s actively or inactively write the
+ * same Topic as the {@link org.eclipse.osee.ote.messaging.dds.entity.DataReader}this is attached to.
  * 
  * @author Robert A. Fisher
  * @author David Diepenbrock
  */
 public class LivelinessChangedStatus extends Status {
-   private long activeCount;
-   private long activeCountChange;
-   private long inactiveCount;
-   private long inactiveCountChange;
+   private final long activeCount;
+   private final long activeCountChange;
+   private final long inactiveCount;
+   private final long inactiveCountChange;
 
    /**
-    * @param activeCount The current number of active <code>DataWriter</code>'s with the same Topic. 
+    * @param activeCount The current number of active <code>DataWriter</code>'s with the same Topic.
     * @param inactiveCount The current number of inactive <code>DataWriter</code>'s with the same Topic.
-    * @param activeCountChange The change in activeCount since the last time the listener was called or the status was read.
-    * @param inactiveCountChange The change in inactiveCount since the last time the listener was called or the status was read.
+    * @param activeCountChange The change in activeCount since the last time the listener was called or the status was
+    * read.
+    * @param inactiveCountChange The change in inactiveCount since the last time the listener was called or the status
+    * was read.
     */
    public LivelinessChangedStatus(long activeCount, long inactiveCount, long activeCountChange, long inactiveCountChange) {
       super();
@@ -37,7 +40,7 @@ public class LivelinessChangedStatus extends Status {
    }
 
    /**
-    * Gets the current number of active <code>DataWriter</code>'s with the same Topic. 
+    * Gets the current number of active <code>DataWriter</code>'s with the same Topic.
     * 
     * @return Returns the activeCount.
     */

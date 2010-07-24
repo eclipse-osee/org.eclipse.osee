@@ -36,9 +36,13 @@ public class UpdateAtsWorkItemDefinitions extends XNavigateItemAction {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
-      if (!MessageDialog.openConfirm(Displays.getActiveShell(), getName(), getName())) return;
+      if (!MessageDialog.openConfirm(Displays.getActiveShell(), getName(), getName())) {
+         return;
+      }
       if (!MessageDialog.openConfirm(Displays.getActiveShell(), getName(),
-            "This could break lots of things, are you SURE?")) return;
+         "This could break lots of things, are you SURE?")) {
+         return;
+      }
 
       XResultData xResultData = new XResultData();
       AtsDatabaseConfig.configWorkItemDefinitions(WriteType.Update, xResultData);

@@ -37,11 +37,18 @@ public class AtsAddDecisionReviewRule extends WorkRuleDefinition {
 
    public static String ID = "atsAddDecisionReview";
    public static enum DecisionParameter {
-      title, forState, forEvent, reviewBlockingType, assignees, options, description
+      title,
+      forState,
+      forEvent,
+      reviewBlockingType,
+      assignees,
+      options,
+      description
    };
 
    public static enum DecisionRuleOption {
-      None, TransitionToDecision
+      None,
+      TransitionToDecision
    }
 
    public AtsAddDecisionReviewRule() {
@@ -91,22 +98,23 @@ public class AtsAddDecisionReviewRule extends WorkRuleDefinition {
       DecisionReviewArtifact decArt = null;
       if (Collections.getAggregate(decisionRuleOption).contains(DecisionRuleOption.TransitionToDecision)) {
          decArt =
-               ReviewManager.createNewDecisionReviewAndTransitionToDecision(teamArt, title, getValueOrDefault(teamArt,
-                     atsAddDecisionReviewRule, DecisionParameter.description), getValueOrDefault(teamArt,
-                     atsAddDecisionReviewRule, DecisionParameter.forState), getReviewBlockTypeOrDefault(teamArt,
-                     atsAddDecisionReviewRule), getValueOrDefault(teamArt, atsAddDecisionReviewRule,
-                     DecisionParameter.options), getAssigneesOrDefault(teamArt, atsAddDecisionReviewRule), transaction);
+            ReviewManager.createNewDecisionReviewAndTransitionToDecision(teamArt, title,
+               getValueOrDefault(teamArt, atsAddDecisionReviewRule, DecisionParameter.description),
+               getValueOrDefault(teamArt, atsAddDecisionReviewRule, DecisionParameter.forState),
+               getReviewBlockTypeOrDefault(teamArt, atsAddDecisionReviewRule),
+               getValueOrDefault(teamArt, atsAddDecisionReviewRule, DecisionParameter.options),
+               getAssigneesOrDefault(teamArt, atsAddDecisionReviewRule), transaction);
       } else {
          decArt =
-               ReviewManager.createNewDecisionReview(teamArt, title, getValueOrDefault(teamArt,
-                     atsAddDecisionReviewRule, DecisionParameter.description), getValueOrDefault(teamArt,
-                     atsAddDecisionReviewRule, DecisionParameter.forState), getReviewBlockTypeOrDefault(teamArt,
-                     atsAddDecisionReviewRule), getValueOrDefault(teamArt, atsAddDecisionReviewRule,
-                     DecisionParameter.options), getAssigneesOrDefault(teamArt, atsAddDecisionReviewRule), transaction);
+            ReviewManager.createNewDecisionReview(teamArt, title,
+               getValueOrDefault(teamArt, atsAddDecisionReviewRule, DecisionParameter.description),
+               getValueOrDefault(teamArt, atsAddDecisionReviewRule, DecisionParameter.forState),
+               getReviewBlockTypeOrDefault(teamArt, atsAddDecisionReviewRule),
+               getValueOrDefault(teamArt, atsAddDecisionReviewRule, DecisionParameter.options),
+               getAssigneesOrDefault(teamArt, atsAddDecisionReviewRule), transaction);
       }
 
-      decArt.getLog().addLog(LogType.Note, null,
-            "Review auto-generated off rule " + atsAddDecisionReviewRule.getId());
+      decArt.getLog().addLog(LogType.Note, null, "Review auto-generated off rule " + atsAddDecisionReviewRule.getId());
       return decArt;
    }
 

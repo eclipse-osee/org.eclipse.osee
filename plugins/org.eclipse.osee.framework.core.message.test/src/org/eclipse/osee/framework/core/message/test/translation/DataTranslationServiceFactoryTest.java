@@ -44,7 +44,7 @@ import org.junit.Test;
 
 /**
  * Test Case for {@link DataTranslationServiceFactory}
- *
+ * 
  * @author Roberto E. Escobar
  */
 public class DataTranslationServiceFactoryTest {
@@ -52,8 +52,8 @@ public class DataTranslationServiceFactoryTest {
    @Test
    public void testServiceCreation() throws OseeCoreException {
       IDataTranslationService srvc =
-            new DataTranslationServiceFactory().createService(new MockOseeCachingServiceProvider(null),
-                  new MockOseeModelFactoryServiceProvider(null));
+         new DataTranslationServiceFactory().createService(new MockOseeCachingServiceProvider(null),
+            new MockOseeModelFactoryServiceProvider(null));
 
       checkExists(srvc, TransactionRecordTranslator.class, CoreTranslatorId.TRANSACTION_RECORD);
 
@@ -69,13 +69,13 @@ public class DataTranslationServiceFactoryTest {
 
       checkExists(srvc, CacheUpdateRequestTranslator.class, CoreTranslatorId.OSEE_CACHE_UPDATE_REQUEST);
       checkExists(srvc, ArtifactTypeCacheUpdateResponseTranslator.class,
-            CoreTranslatorId.ARTIFACT_TYPE_CACHE_UPDATE_RESPONSE);
+         CoreTranslatorId.ARTIFACT_TYPE_CACHE_UPDATE_RESPONSE);
       checkExists(srvc, AttributeTypeCacheUpdateResponseTranslator.class,
-            CoreTranslatorId.ATTRIBUTE_TYPE_CACHE_UPDATE_RESPONSE);
+         CoreTranslatorId.ATTRIBUTE_TYPE_CACHE_UPDATE_RESPONSE);
       checkExists(srvc, RelationTypeCacheUpdateResponseTranslator.class,
-            CoreTranslatorId.RELATION_TYPE_CACHE_UPDATE_RESPONSE);
+         CoreTranslatorId.RELATION_TYPE_CACHE_UPDATE_RESPONSE);
       checkExists(srvc, OseeEnumTypeCacheUpdateResponseTranslator.class,
-            CoreTranslatorId.OSEE_ENUM_TYPE_CACHE_UPDATE_RESPONSE);
+         CoreTranslatorId.OSEE_ENUM_TYPE_CACHE_UPDATE_RESPONSE);
       checkExists(srvc, BranchCacheUpdateResponseTranslator.class, CoreTranslatorId.BRANCH_CACHE_UPDATE_RESPONSE);
       checkExists(srvc, BranchCacheStoreRequestTranslator.class, CoreTranslatorId.BRANCH_CACHE_STORE_REQUEST);
       checkExists(srvc, TransactionCacheUpdateResponseTranslator.class, CoreTranslatorId.TX_CACHE_UPDATE_RESPONSE);

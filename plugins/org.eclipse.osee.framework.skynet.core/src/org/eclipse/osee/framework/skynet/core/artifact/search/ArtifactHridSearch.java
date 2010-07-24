@@ -37,10 +37,12 @@ public class ArtifactHridSearch implements ISearchPrimitive {
       this(humanReadableId, EQUAL);
    }
 
+   @Override
    public String getArtIdColName() {
       return "art_id";
    }
 
+   @Override
    public String getCriteriaSql(List<Object> dataList, Branch branch) {
       String sql = "osee_artifact.human_readable_id" + operator + "?";
       dataList.add(humanReadableId);
@@ -48,6 +50,7 @@ public class ArtifactHridSearch implements ISearchPrimitive {
       return sql;
    }
 
+   @Override
    public String getTableSql(List<Object> dataList, Branch branch) {
       return "osee_artifact";
    }
@@ -57,6 +60,7 @@ public class ArtifactHridSearch implements ISearchPrimitive {
       return "Artifact Human Readable Id: " + humanReadableId;
    }
 
+   @Override
    public String getStorageString() {
       return humanReadableId;
    }

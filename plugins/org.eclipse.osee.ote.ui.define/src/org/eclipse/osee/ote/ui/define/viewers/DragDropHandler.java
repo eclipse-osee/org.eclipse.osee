@@ -89,17 +89,20 @@ public class DragDropHandler {
       dragSource.setTransfer(new Transfer[] {ArtifactTransfer.getInstance()});
       dragSource.addDragListener(new DragSourceListener() {
 
+         @Override
          public void dragFinished(DragSourceEvent event) {
          }
 
+         @Override
          public void dragSetData(DragSourceEvent event) {
             List<Artifact> artifacts = viewerDataManager.getSelectedArtifacts();
             if (artifacts.size() > 0) {
                event.data =
-                     new ArtifactData(artifacts.toArray(new Artifact[artifacts.size()]), "", TestRunView.VIEW_ID);
+                  new ArtifactData(artifacts.toArray(new Artifact[artifacts.size()]), "", TestRunView.VIEW_ID);
             }
          }
 
+         @Override
          public void dragStart(DragSourceEvent event) {
             event.doit = false;
             List<Artifact> artifacts = viewerDataManager.getSelectedArtifacts();

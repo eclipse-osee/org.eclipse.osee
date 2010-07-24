@@ -11,12 +11,10 @@
 package org.eclipse.osee.framework.skynet.core.importing.operations;
 
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Parent;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
@@ -145,14 +143,14 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
 
       if (aArt == null || bArt == null) {
          OseeLog.log(Activator.class, Level.WARNING,
-               "The relation of type " + roughRelation.getRelationTypeName() + " could not be created.");
+            "The relation of type " + roughRelation.getRelationTypeName() + " could not be created.");
          if (aArt == null) {
             OseeLog.log(Activator.class, Level.WARNING,
-                  "The artifact with guid: " + roughRelation.getAartifactGuid() + " does not exist.");
+               "The artifact with guid: " + roughRelation.getAartifactGuid() + " does not exist.");
          }
          if (bArt == null) {
             OseeLog.log(Activator.class, Level.WARNING,
-                  "The artifact with guid: " + roughRelation.getBartifactGuid() + " does not exist.");
+               "The artifact with guid: " + roughRelation.getBartifactGuid() + " does not exist.");
          }
       } else {
          try {

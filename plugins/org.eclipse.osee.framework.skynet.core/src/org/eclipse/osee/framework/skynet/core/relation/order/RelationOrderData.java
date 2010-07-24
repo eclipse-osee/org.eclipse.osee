@@ -65,7 +65,7 @@ public class RelationOrderData {
 
    public Collection<Entry<Pair<String, String>, Pair<String, List<String>>>> getOrderedEntrySet() {
       List<Entry<Pair<String, String>, Pair<String, List<String>>>> entries =
-            new ArrayList<Entry<Pair<String, String>, Pair<String, List<String>>>>(entrySet());
+         new ArrayList<Entry<Pair<String, String>, Pair<String, List<String>>>>(entrySet());
       Collections.sort(entries, new EntryComparator());
       return entries;
    }
@@ -133,9 +133,9 @@ public class RelationOrderData {
             relationOrderModType = RelationOrderModType.Absolute;
          }
          DefaultBasicGuidRelationReorder reorder =
-               new DefaultBasicGuidRelationReorder(relationOrderModType, getIArtifact().getBranch().getGuid(),
-                     type.getGuid(), new DefaultBasicGuidArtifact(getIArtifact().getBranch().getGuid(),
-                           getIArtifact().getArtifactType().getGuid(), getIArtifact().getGuid()));
+            new DefaultBasicGuidRelationReorder(relationOrderModType, getIArtifact().getBranch().getGuid(),
+               type.getGuid(), new DefaultBasicGuidArtifact(getIArtifact().getBranch().getGuid(),
+                  getIArtifact().getArtifactType().getGuid(), getIArtifact().getGuid()));
 
          accessor.store(getIArtifact(), this, reorder);
       }

@@ -15,9 +15,8 @@ import org.xml.sax.Attributes;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
-public class GroupName extends ElementHandlers{
+public class GroupName extends ElementHandlers {
 
    /**
     * @param name

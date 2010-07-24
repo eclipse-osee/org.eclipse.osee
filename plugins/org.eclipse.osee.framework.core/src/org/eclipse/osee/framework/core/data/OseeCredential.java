@@ -62,7 +62,7 @@ public class OseeCredential extends OseeClientInfo {
 
    /**
     * Create new instance from XML input
-    *
+    * 
     * @param OseeCredential the new instance
     * @throws OseeWrappedException
     */

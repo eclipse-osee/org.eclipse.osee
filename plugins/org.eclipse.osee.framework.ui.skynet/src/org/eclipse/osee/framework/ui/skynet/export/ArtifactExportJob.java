@@ -55,14 +55,14 @@ public class ArtifactExportJob extends Job {
 
          for (Artifact artifact : exportArtifacts) {
             if (monitor.isCanceled()) {
-               return new Status(Status.CANCEL, SkynetGuiPlugin.PLUGIN_ID, "User Cancled the operation.");
+               return new Status(IStatus.CANCEL, SkynetGuiPlugin.PLUGIN_ID, "User Cancled the operation.");
             }
             writeArtifactPreview(rootExportPath, monitor, artifact, PresentationType.PREVIEW);
          }
 
          toReturn = Status.OK_STATUS;
       } catch (Exception ex) {
-         toReturn = new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, -1, ex.getLocalizedMessage(), ex);
+         toReturn = new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, -1, ex.getLocalizedMessage(), ex);
       } finally {
          monitor.done();
       }
@@ -89,7 +89,7 @@ public class ArtifactExportJob extends Job {
             FileSystemRenderer fileRenderer = RendererManager.getBestFileRenderer(presentationType, artifact, null);
             String fileName = artifact.getSafeName() + "." + fileRenderer.getAssociatedExtension(artifact);
             InputStream inputStream =
-                  fileRenderer.getRenderInputStream(presentationType, Collections.singletonList(artifact));
+               fileRenderer.getRenderInputStream(presentationType, Collections.singletonList(artifact));
             Lib.inputStreamToFile(inputStream, new File(exportPath, fileName));
          } catch (OseeArgumentException ex) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);

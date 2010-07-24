@@ -22,19 +22,24 @@ import org.eclipse.osee.framework.jini.event.old.IOseeRemoteSubscriber;
  */
 public class RemoteEventHandler implements IServiceLookupListener, IOseeRemoteSubscriber {
 
+   @Override
    public void serviceAdded(ServiceItem serviceItem) {
    }
 
+   @Override
    public void serviceChanged(ServiceItem serviceItem) {
    }
 
+   @Override
    public void serviceRemoved(ServiceItem serviceItem) {
    }
 
+   @Override
    public boolean receiveEventType(String event) throws RemoteException {
       return false;
    }
 
+   @Override
    public boolean receiveEventGuid(String event) throws RemoteException {
       return false;
    }

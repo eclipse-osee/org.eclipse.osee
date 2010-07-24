@@ -46,14 +46,16 @@ public class DiagramEditPart extends AbstractGraphicalEditPart implements LayerC
 
    public DiagramEditPart(Object model) {
       super();
-      setModel((ODMDiagram) model);
+      setModel(model);
    }
 
+   @Override
    public void activate() {
       super.activate();
       ((ODMDiagram) getModel()).addListener(modelListener);
    }
 
+   @Override
    protected IFigure createFigure() {
       Figure f = new FreeformLayer();
       f.setBorder(new MarginBorder(5));
@@ -69,12 +71,14 @@ public class DiagramEditPart extends AbstractGraphicalEditPart implements LayerC
       return f;
    }
 
+   @Override
    protected void createEditPolicies() {
       installEditPolicy(EditPolicy.COMPONENT_ROLE, new RootComponentEditPolicy());
       installEditPolicy(EditPolicy.LAYOUT_ROLE, new DiagramLayoutEditPolicy());
       installEditPolicy("Snap Feedback", new SnapFeedbackPolicy());
    }
 
+   @Override
    public void deactivate() {
       ((ODMDiagram) getModel()).removeListener(modelListener);
       super.deactivate();
@@ -85,6 +89,7 @@ public class DiagramEditPart extends AbstractGraphicalEditPart implements LayerC
       refreshChildren();
    }
 
+   @Override
    @SuppressWarnings("unchecked")
    public Object getAdapter(Class adapter) {
       if (SnapToHelper.class == adapter) {
@@ -94,6 +99,7 @@ public class DiagramEditPart extends AbstractGraphicalEditPart implements LayerC
       return super.getAdapter(adapter);
    }
 
+   @Override
    @SuppressWarnings("unchecked")
    protected List getModelChildren() {
       return ((ODMDiagram) getModel()).getContent();

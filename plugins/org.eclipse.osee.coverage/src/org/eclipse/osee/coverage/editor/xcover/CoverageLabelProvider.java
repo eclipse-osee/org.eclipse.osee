@@ -11,10 +11,10 @@
 package org.eclipse.osee.coverage.editor.xcover;
 
 import java.util.Collection;
+import java.util.logging.Level;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
-import org.eclipse.osee.coverage.editor.xmerge.CoverageMergeXViewerFactory;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.merge.MergeItem;
 import org.eclipse.osee.coverage.model.CoverageItem;
@@ -26,7 +26,6 @@ import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.skynet.core.utility.UsersByIds;
@@ -50,14 +49,14 @@ public class CoverageLabelProvider extends XViewerLabelProvider {
             return FrameworkArtifactImageProvider.getUserImage(UsersByIds.getUsers(coverageItem.getAssignees()));
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return null;
    }
 
    @Override
    public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
-      if (element instanceof MessageCoverageItem && xCol.equals(CoverageMergeXViewerFactory.Name)) {
+      if (element instanceof MessageCoverageItem && xCol.equals(CoverageXViewerFactory.Name)) {
          return ImageManager.getImage(FrameworkImage.X_RED);
       }
       if (element instanceof MessageCoverageItem) {
@@ -168,33 +167,33 @@ public class CoverageLabelProvider extends XViewerLabelProvider {
          ICoverage importItem = mergeItem.getImportItem();
          ICoverage packageItem = mergeItem.getPackageItem();
          if (xCol.equals(CoverageXViewerFactory.Parent_Coverage_Unit)) {
-            if (importItem != null && importItem.getParent() != null)
+            if (importItem != null && importItem.getParent() != null) {
                return importItem.getParent().getName();
-            else if (packageItem != null && packageItem.getParent() != null) {
+            } else if (packageItem != null && packageItem.getParent() != null) {
                return packageItem.getParent().getName();
             }
             return "";
          }
          if (xCol.equals(CoverageXViewerFactory.Method_Number)) {
-            if (importItem != null && importItem.getParent() != null)
+            if (importItem != null && importItem.getParent() != null) {
                return importItem.getParent().getOrderNumber();
-            else if (packageItem != null && packageItem.getParent() != null) {
+            } else if (packageItem != null && packageItem.getParent() != null) {
                return packageItem.getParent().getOrderNumber();
             }
             return "";
          }
          if (xCol.equals(CoverageXViewerFactory.Execution_Number)) {
-            if (importItem != null)
+            if (importItem != null) {
                return importItem.getOrderNumber();
-            else if (packageItem != null) {
+            } else if (packageItem != null) {
                return packageItem.getOrderNumber();
             }
             return "";
          }
          if (xCol.equals(CoverageXViewerFactory.Coverage_Method)) {
-            if (importItem != null)
+            if (importItem != null) {
                return ((CoverageItem) importItem).getCoverageMethod().getName();
-            else if (packageItem != null) {
+            } else if (packageItem != null) {
                return ((CoverageItem) packageItem).getCoverageMethod().getName();
             }
             return "";
@@ -204,16 +203,20 @@ public class CoverageLabelProvider extends XViewerLabelProvider {
 
    }
 
+   @Override
    public void dispose() {
    }
 
+   @Override
    public boolean isLabelProperty(Object element, String property) {
       return false;
    }
 
+   @Override
    public void addListener(ILabelProviderListener listener) {
    }
 
+   @Override
    public void removeListener(ILabelProviderListener listener) {
    }
 

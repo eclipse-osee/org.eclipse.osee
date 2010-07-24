@@ -26,27 +26,26 @@ import org.eclipse.osee.ote.service.IOteClientService;
  */
 public class OteClientEndpointSend implements EndpointSend {
 
-   public static ProtocolId OTE_CLIENT_SEND_PROTOCOL =
-         new StringProtocolId(new StringNamespace("org.eclipse.osee.ote.service.core"), new StringName(
-               "OteClientEndpointSend"));
+   public static ProtocolId OTE_CLIENT_SEND_PROTOCOL = new StringProtocolId(new StringNamespace(
+      "org.eclipse.osee.ote.service.core"), new StringName("OteClientEndpointSend"));
    private IOteClientService clientService;
 
    @Override
    public void send(Message message, ExceptionHandler exceptionHandler) {
       if (clientService == null) {
          exceptionHandler.handleException(new Exception(String.format(
-               "Unable to send message [%s], no client service is available.", message.toString())));
+            "Unable to send message [%s], no client service is available.", message.toString())));
       } else {
          ITestEnvironment env = clientService.getConnectedEnvironment();
          if (env == null) {
             exceptionHandler.handleException(new Exception(String.format(
-                  "Unable to send message [%s], there is not a connected environment.", message.toString())));
+               "Unable to send message [%s], there is not a connected environment.", message.toString())));
          } else {
             try {
                env.sendMessage(message);
             } catch (Throwable th) {
                exceptionHandler.handleException(new Exception(String.format("Unable to send message [%s]",
-                     message.toString()), th));
+                  message.toString()), th));
             }
          }
       }

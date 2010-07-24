@@ -49,30 +49,37 @@ public class DeleteChange implements CharacterChanger {
       this.srcEndIndex = changeB.srcEndIndex;
    }
 
+   @Override
    public int getStartIndex() {
       return srcStartIndex;
    }
 
+   @Override
    public int getEndIndex() {
       return srcEndIndex;
    }
 
+   @Override
    public int applyChange(char[] dest, int destPos) {
       return destPos;
    }
 
+   @Override
    public void applyChange(Writer writer) {
       return;
    }
 
+   @Override
    public CharacterChanger next() {
       return next;
    }
 
+   @Override
    public void setNext(CharacterChanger next) {
       this.next = next;
    }
 
+   @Override
    public int getLengthDelta() {
       return srcStartIndex - srcEndIndex;
    }

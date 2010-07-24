@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.HierarchyRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ObjectRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.PermissionRule;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction;
-import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactRef;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.util.OseeDslSwitch;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -37,131 +36,131 @@ import org.eclipse.osee.framework.core.model.access.AccessDetail;
  */
 public class OseeAccessModelInterpreter implements AccessModelInterpreter {
 
-	public static interface ObjectDataAccessor {
+   public static interface ObjectDataAccessor {
 
-		Collection<Identity> getHierarchy(Object object);
+      Collection<Identity> getHierarchy(Object object);
 
-		Collection<IAttributeType> getAttributeTypes(Object object);
+      Collection<IAttributeType> getAttributeTypes(Object object);
 
-		Collection<IArtifactType> getArtifactSuperTypes(Object object);
-	}
+      Collection<IArtifactType> getArtifactSuperTypes(Object object);
+   }
 
-	public OseeAccessModelInterpreter() {
-	}
+   public OseeAccessModelInterpreter() {
+   }
 
-	@Override
-	public AccessContext getContext(Collection<AccessContext> contexts, AccessContextId contextId) {
-		AccessContext toReturn = null;
-		for (AccessContext accessContext : contexts) {
-			if (contextId.equals(accessContext.getTypeGuid())) {
-				toReturn = accessContext;
-			}
-		}
-		return toReturn;
-	}
+   @Override
+   public AccessContext getContext(Collection<AccessContext> contexts, AccessContextId contextId) {
+      AccessContext toReturn = null;
+      for (AccessContext accessContext : contexts) {
+         if (contextId.equals(accessContext.getTypeGuid())) {
+            toReturn = accessContext;
+         }
+      }
+      return toReturn;
+   }
 
-	@Override
-	public void computeAccessDetails(AccessContext context, Object objectToCheck, Collection<AccessDetail<?>> details) {
-		computeAccess(context, objectToCheck, details);
-		for (AccessContext superContext : context.getSuperAccessContexts()) {
-			computeAccess(superContext, objectToCheck, details);
-		}
-	}
+   @Override
+   public void computeAccessDetails(AccessContext context, Object objectToCheck, Collection<AccessDetail<?>> details) {
+      computeAccess(context, objectToCheck, details);
+      for (AccessContext superContext : context.getSuperAccessContexts()) {
+         computeAccess(superContext, objectToCheck, details);
+      }
+   }
 
-	private void computeAccess(AccessContext context, Object objectToCheck, Collection<AccessDetail<?>> details) {
-		context.getAccessRules();
+   private void computeAccess(AccessContext context, Object objectToCheck, Collection<AccessDetail<?>> details) {
+      context.getAccessRules();
 
-		Collection<HierarchyRestriction> restrictions = context.getHierarchyRestrictions();
-		for (HierarchyRestriction restriction : restrictions) {
-			XArtifactRef artifactRef = restriction.getArtifact();
-			// Apply childrenOf Rule;
-			boolean isApplicable = false;
-			if (isApplicable) {
-				restriction.getAccessRules();
-			}
-		}
+      Collection<HierarchyRestriction> restrictions = context.getHierarchyRestrictions();
+      for (HierarchyRestriction restriction : restrictions) {
+         restriction.getArtifact();
+         // Apply childrenOf Rule;
+         boolean isApplicable = false;
+         if (isApplicable) {
+            restriction.getAccessRules();
+         }
+      }
 
-	}
+   }
 
-	private AccessPermissionEnum getLeastRestrictive(AccessPermissionEnum permission1, AccessPermissionEnum permission2) {
-		if (permission1 == AccessPermissionEnum.ALLOW) {
+   private AccessPermissionEnum getLeastRestrictive(AccessPermissionEnum permission1, AccessPermissionEnum permission2) {
+      if (permission1 == AccessPermissionEnum.ALLOW) {
 
-		}
-		return permission1;
-	}
+      }
+      return permission1;
+   }
 
-	public static void checkRuleConflict(Collection<PermissionRule> rules) throws OseeCoreException {
-		ObjectRestrictionSwitch checker = new ObjectRestrictionSwitch();
-		for (PermissionRule rule : rules) {
-			ObjectRestriction restriction = rule.getObjectRestriction();
-			checker.doSwitch(restriction);
-		}
-		if (checker.hasConflicts()) {
+   public static void checkRuleConflict(Collection<PermissionRule> rules) throws OseeCoreException {
+      ObjectRestrictionSwitch checker = new ObjectRestrictionSwitch();
+      for (PermissionRule rule : rules) {
+         ObjectRestriction restriction = rule.getObjectRestriction();
+         checker.doSwitch(restriction);
+      }
+      if (checker.hasConflicts()) {
 
-		}
-	}
+      }
+   }
 
-	public static PermissionEnum toCorePermission(AccessPermissionEnum modelPermission) {
-		PermissionEnum toReturn = PermissionEnum.READ;
-		if (modelPermission == AccessPermissionEnum.ALLOW) {
-			toReturn = PermissionEnum.WRITE;
-		}
-		return toReturn;
-	}
+   public static PermissionEnum toCorePermission(AccessPermissionEnum modelPermission) {
+      PermissionEnum toReturn = PermissionEnum.READ;
+      if (modelPermission == AccessPermissionEnum.ALLOW) {
+         toReturn = PermissionEnum.WRITE;
+      }
+      return toReturn;
+   }
 
-	private static final class ObjectRestrictionSwitch extends OseeDslSwitch<Object> {
-		Collection<Identity> artifactInstances;
+   private static final class ObjectRestrictionSwitch extends OseeDslSwitch<Object> {
+      Collection<Identity> artifactInstances;
 
-		//		Collection<Identity> 
-		@Override
-		public Object caseArtifactInstanceRestriction(ArtifactInstanceRestriction object) {
-			return object;
-		}
+      //		Collection<Identity> 
+      @Override
+      public Object caseArtifactInstanceRestriction(ArtifactInstanceRestriction object) {
+         return object;
+      }
 
-		@Override
-		public Object caseArtifactTypeRestriction(ArtifactTypeRestriction object) {
-			return object;
-		}
+      @Override
+      public Object caseArtifactTypeRestriction(ArtifactTypeRestriction object) {
+         return object;
+      }
 
-		@Override
-		public Object caseRelationTypeRestriction(RelationTypeRestriction object) {
-			return object;
-		}
+      @Override
+      public Object caseRelationTypeRestriction(RelationTypeRestriction object) {
+         return object;
+      }
 
-		@Override
-		public Object caseAttributeTypeRestriction(AttributeTypeRestriction object) {
-			return object;
-		}
+      @Override
+      public Object caseAttributeTypeRestriction(AttributeTypeRestriction object) {
+         return object;
+      }
 
-		@Override
-		public Object caseAttributeTypeOfArtifactTypeRestriction(AttributeTypeOfArtifactTypeRestriction object) {
-			object.getArtifactType();
-			object.getAttributeType();
+      @Override
+      public Object caseAttributeTypeOfArtifactTypeRestriction(AttributeTypeOfArtifactTypeRestriction object) {
+         object.getArtifactType();
+         object.getAttributeType();
 
-			return object;
-		}
+         return object;
+      }
 
-		public boolean hasConflicts() {
-			return false;
-		}
-	}
+      public boolean hasConflicts() {
+         return false;
+      }
+   }
 
-	//
-	// RequirementFolder1 art
-	//
-	// art.getParent...
-	// if not matches SoftwareRequirements --
-	//             PermissionEnum - Full --- Store what?
-	// else
-	//		if ( art.getArtifactType isOfType("SoftwareRequirements")){
-	//            data.add(art, new Access<IAttributeType>(QualificationMethod), DENY);
-	//    } else {
-	//
-	//    }
-	// endif
-	//
-	// Branch allows Type
-	//	deny contextId "lba.requirementer" edit
-	//	attributeType "Qualification Method" of artifactType "Software Requirement"
-	//	under "Software Requirements"
+   //
+   // RequirementFolder1 art
+   //
+   // art.getParent...
+   // if not matches SoftwareRequirements --
+   //             PermissionEnum - Full --- Store what?
+   // else
+   //		if ( art.getArtifactType isOfType("SoftwareRequirements")){
+   //            data.add(art, new Access<IAttributeType>(QualificationMethod), DENY);
+   //    } else {
+   //
+   //    }
+   // endif
+   //
+   // Branch allows Type
+   //	deny contextId "lba.requirementer" edit
+   //	attributeType "Qualification Method" of artifactType "Software Requirement"
+   //	under "Software Requirements"
 }

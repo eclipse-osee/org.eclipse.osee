@@ -11,7 +11,9 @@
 package org.eclipse.osee.framework.jdk.core.util.io;
 
 public enum DriveType {
-   Unknown((short) 0), NoRootDirectory((short) 1), Removable((short) 2), // Floppy, Zip, etc
+   Unknown((short) 0),
+   NoRootDirectory((short) 1),
+   Removable((short) 2), // Floppy, Zip, etc
    Fixed((short) 3), // Hard disk
    Remote((short) 4), // Network drive
    CdRom((short) 5),

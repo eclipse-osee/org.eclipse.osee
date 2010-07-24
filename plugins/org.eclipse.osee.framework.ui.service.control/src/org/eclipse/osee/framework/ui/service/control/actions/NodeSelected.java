@@ -28,9 +28,9 @@ import org.eclipse.osee.framework.ui.swt.FormattedText;
  */
 public class NodeSelected implements ISelectionChangedListener {
 
-   private IServiceManager<TreeParent> mainWindow;
-   private FormattedText textArea;
-   private LookupViewer lookupViewer;
+   private final IServiceManager<TreeParent> mainWindow;
+   private final FormattedText textArea;
+   private final LookupViewer lookupViewer;
 
    public NodeSelected(IServiceManager<TreeParent> mainWindow) {
       super();
@@ -44,6 +44,7 @@ public class NodeSelected implements ISelectionChangedListener {
 
    }
 
+   @Override
    public void selectionChanged(SelectionChangedEvent event) {
       StructuredSelection selection = (StructuredSelection) event.getSelection();
       if (!selection.isEmpty()) {

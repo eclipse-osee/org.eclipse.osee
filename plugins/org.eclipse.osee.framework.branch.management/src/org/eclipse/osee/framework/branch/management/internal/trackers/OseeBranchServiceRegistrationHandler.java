@@ -30,8 +30,8 @@ import org.osgi.framework.ServiceRegistration;
  */
 public class OseeBranchServiceRegistrationHandler extends AbstractTrackingHandler {
 
-   private final static Class<?>[] SERVICE_DEPENDENCIES =
-         new Class<?>[] {IOseeDatabaseService.class, IOseeModelFactoryService.class, IOseeCachingService.class};
+   private final static Class<?>[] SERVICE_DEPENDENCIES = new Class<?>[] {IOseeDatabaseService.class,
+      IOseeModelFactoryService.class, IOseeCachingService.class};
 
    private ServiceRegistration serviceRegistration;
 

@@ -17,5 +17,5 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  * @author Roberto E. Escobar
  */
 public interface ISessionCollector {
-	void collect(int sessionId, String guid, String userId, Date creationDate, String managedByServerId, String clientVersion, String clientMachineName, String clientAddress, int clientPort, Date lastInteractionDate, String lastInteractionDetails) throws OseeCoreException;
+   void collect(int sessionId, String guid, String userId, Date creationDate, String managedByServerId, String clientVersion, String clientMachineName, String clientAddress, int clientPort, Date lastInteractionDate, String lastInteractionDetails) throws OseeCoreException;
 }

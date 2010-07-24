@@ -105,7 +105,7 @@ public class WorldViewDragAndDrop extends SkynetDragAndDrop {
                            GroupWorldSearchItem groupWorldSearchItem = new GroupWorldSearchItem(art.getBranch());
                            groupWorldSearchItem.setSelectedGroup(art);
                            WorldEditor.open(new WorldEditorUISearchItemProvider(groupWorldSearchItem, null,
-                                 TableLoadOption.NoUI));
+                              TableLoadOption.NoUI));
                            return Status.OK_STATUS;
                         }
                      }
@@ -126,7 +126,7 @@ public class WorldViewDragAndDrop extends SkynetDragAndDrop {
                   }
                } catch (Exception ex) {
                   OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-                  return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, ex.getLocalizedMessage(), ex);
+                  return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, ex.getLocalizedMessage(), ex);
                }
                return Status.OK_STATUS;
             }

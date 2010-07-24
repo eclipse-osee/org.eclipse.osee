@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.plugin.util;
 
 import java.io.File;
-
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.swt.SWT;
@@ -34,12 +33,12 @@ import org.eclipse.ui.dialogs.WizardDataTransferPage;
  */
 public class DirectoryOrFileSelector extends Composite implements Listener {
 
-   private Button radDirectory;
-   private Button radSingleFile;
-   private Text txtDirectory;
-   private Text txtSingleFile;
-   private Button btnDirectory;
-   private Button btnSingleFile;
+   private final Button radDirectory;
+   private final Button radSingleFile;
+   private final Text txtDirectory;
+   private final Text txtSingleFile;
+   private final Button btnDirectory;
+   private final Button btnSingleFile;
 
    /**
     * @param parent
@@ -75,8 +74,9 @@ public class DirectoryOrFileSelector extends Composite implements Listener {
          @Override
          public void widgetSelected(SelectionEvent e) {
             File directory = selectDirectory();
-            if (directory != null && directory.isDirectory())
+            if (directory != null && directory.isDirectory()) {
                txtDirectory.setText(directory.getPath());
+            }
          }
 
       });
@@ -96,8 +96,9 @@ public class DirectoryOrFileSelector extends Composite implements Listener {
          @Override
          public void widgetSelected(SelectionEvent e) {
             File file = selectFile();
-            if (file != null && file.isFile())
+            if (file != null && file.isFile()) {
                txtSingleFile.setText(file.getPath());
+            }
          }
 
       });
@@ -144,8 +145,9 @@ public class DirectoryOrFileSelector extends Composite implements Listener {
    }
 
    public boolean validate(WizardDataTransferPage wizardPage) {
-      if ((isDirectorySelected() && getFile().isDirectory()) || (!isDirectorySelected() && getFile().isFile()))
+      if (isDirectorySelected() && getFile().isDirectory() || !isDirectorySelected() && getFile().isFile()) {
          return true;
+      }
 
       wizardPage.setErrorMessage(getText() + " is not a " + (isDirectorySelected() ? "directory" : "file"));
       return false;
@@ -185,6 +187,7 @@ public class DirectoryOrFileSelector extends Composite implements Listener {
       }
    }
 
+   @Override
    public void handleEvent(Event event) {
       updateWidgetEnablements();
    }

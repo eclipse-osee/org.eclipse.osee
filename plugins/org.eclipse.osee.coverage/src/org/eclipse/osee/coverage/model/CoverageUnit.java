@@ -64,6 +64,7 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
       coverageItems.clear();
    }
 
+   @Override
    public void addCoverageUnit(CoverageUnit coverageUnit) {
       coverageUnit.setParent(this);
       if (!coverageUnits.contains(coverageUnit)) {
@@ -71,6 +72,7 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
       }
    }
 
+   @Override
    public List<CoverageUnit> getCoverageUnits() {
       return getCoverageUnits(false);
    }
@@ -86,6 +88,7 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
       return units;
    }
 
+   @Override
    public void addCoverageItem(CoverageItem coverageItem) {
       if (!coverageItems.contains(coverageItem)) {
          coverageItems.add(coverageItem);
@@ -116,6 +119,7 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
       return null;
    }
 
+   @Override
    public String getName() {
       return name;
    }
@@ -124,6 +128,7 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
       this.name = name;
    }
 
+   @Override
    public String getLocation() {
       return location;
    }
@@ -132,6 +137,7 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
       this.location = location;
    }
 
+   @Override
    public String getFileContents() throws OseeCoreException {
       if (fileContentsProvider == null) {
          throw new OseeStateException("No File Contents Provider Specified");
@@ -146,6 +152,7 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
       this.fileContentsProvider.setFileContents(this, fileContents);
    }
 
+   @Override
    public String getGuid() {
       return guid;
    }
@@ -160,7 +167,7 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
    @Override
    public String toString() {
       return String.format("[Unit [%s][M: %s][%s][Path: %s]]", getName(), getOrderNumber(), getGuid(),
-            CoverageUtil.getFullPath(this));
+         CoverageUtil.getFullPath(this));
    }
 
    @Override
@@ -232,6 +239,7 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
       this.guid = guid;
    }
 
+   @Override
    public String getNamespace() {
       if (namespace == null) {
          return getParent() == null ? null : getParent().getNamespace();
@@ -247,6 +255,7 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
       }
    }
 
+   @Override
    public String getAssignees() {
       return assignees;
    }
@@ -334,8 +343,8 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
       if (includeItems) {
          for (CoverageItem coverageItem : coverageItems) {
             CoverageItem newCoverageItem =
-                  new CoverageItem(coverageUnit, coverageItem.toXml(), CoverageOptionManagerDefault.instance(),
-                        coverageItem.getTestUnitProvider());
+               new CoverageItem(coverageUnit, coverageItem.toXml(), CoverageOptionManagerDefault.instance(),
+                  coverageItem.getTestUnitProvider());
             newCoverageItem.setTestUnitProvider(coverageItem.getTestUnitProvider());
             coverageUnit.addCoverageItem(newCoverageItem);
          }
@@ -349,10 +358,12 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
       return CoverageUtil.getPercent(getCoverageItemsCovered(true).size(), getCoverageItems(true).size(), true).getSecond();
    }
 
+   @Override
    public Double getCoveragePercent() {
       return CoverageUtil.getPercent(getCoverageItemsCovered(true).size(), getCoverageItems(true).size(), true).getFirst();
    }
 
+   @Override
    public boolean isFolder() {
       return folder;
    }
@@ -374,6 +385,7 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
       this.parent = parent;
    }
 
+   @Override
    public String getOrderNumber() {
       return orderNumber;
    }

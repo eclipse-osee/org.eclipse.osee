@@ -21,23 +21,28 @@ import java.util.Enumeration;
 public class ClassServerPermissions extends PermissionCollection {
 
    private static final long serialVersionUID = 7752469678730039503L;
-   private ArrayList<Permission> list;
+   private final ArrayList<Permission> list;
 
    public ClassServerPermissions() {
       list = new ArrayList<Permission>();
    }
 
+   @Override
    public void add(Permission permission) {
       list.add(permission);
    }
 
+   @Override
    public boolean implies(Permission permission) {
       for (int i = 0; i < list.size(); i++) {
-         if (list.get(i).implies(permission)) return true;
+         if (list.get(i).implies(permission)) {
+            return true;
+         }
       }
       return false;
    }
 
+   @Override
    public Enumeration<Permission> elements() {
       return null;
    }

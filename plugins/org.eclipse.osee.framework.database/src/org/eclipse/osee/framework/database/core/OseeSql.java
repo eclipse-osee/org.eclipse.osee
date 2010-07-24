@@ -64,9 +64,8 @@ public enum OseeSql {
    CHANGE_TX_MODIFYING("SELECT arj.art_id, arj.branch_id, txs.transaction_id from osee_join_artifact arj, osee_artifact art, osee_txs txs, osee_branch br where arj.query_id = ? AND arj.art_id = art.art_id AND art.gamma_id = txs.gamma_id AND txs.branch_id = arj.branch_id AND txs.transaction_id <= arj.transaction_id AND txs.branch_id = br.branch_id AND txs.transaction_id <> br.baseline_transaction_id", Strings.HINTS__ORDERED__FIRST_ROWS),
    CHANGE_BRANCH_MODIFYING("SELECT count(txs.transaction_id) as tx_count, arj.branch_id, arj.art_id FROM osee_join_artifact arj, osee_artifact art, osee_txs txs, osee_branch br where arj.query_id = ? AND arj.art_id = art.art_id AND art.gamma_id = txs.gamma_id AND txs.branch_id = arj.branch_id and txs.branch_id = br.branch_id AND txs.transaction_id <> br.baseline_transaction_id group by arj.art_id, arj.branch_id", Strings.HINTS__ORDERED__FIRST_ROWS),
 
-   IS_ARTIFACT_ON_BRANCH(
-         "SELECT%s count(1) from osee_artifact av1, osee_txs txs1 where av1.art_id = ? and av1.gamma_id = txs1.gamma_id and txs1.branch_id = ?", Strings.HINTS__ORDERED__FIRST_ROWS),
-         QUERY_BUILDER("%s", Strings.HINTS__ORDERED__FIRST_ROWS);
+   IS_ARTIFACT_ON_BRANCH("SELECT%s count(1) from osee_artifact av1, osee_txs txs1 where av1.art_id = ? and av1.gamma_id = txs1.gamma_id and txs1.branch_id = ?", Strings.HINTS__ORDERED__FIRST_ROWS),
+   QUERY_BUILDER("%s", Strings.HINTS__ORDERED__FIRST_ROWS);
 
    private final String sql;
    private final String hints;
@@ -103,14 +102,14 @@ public enum OseeSql {
       private static final String HINTS__THE_INDEX = "/*+ INDEX(txs OSEE_TXS_B_G_C_M_T_IDX) */";
 
       private static final String HINTS__ORDERED__INDEX__ARTIFACT_CONFLICT =
-            " /*+ ordered index(atr1) index(atr2) index(txs2) */";
+         " /*+ ordered index(atr1) index(atr2) index(txs2) */";
       private static final String HINTS__ORDERED__INDEX__ATTRIBUTE_CONFLICT =
-            " /*+ ordered index(atr1) index(atr2) index(txs2) */";
+         " /*+ ordered index(atr1) index(atr2) index(txs2) */";
 
       private static final String SELECT_CURRENT_ATTRIBUTES_PREFIX =
-            "SELECT%s att1.art_id, att1.attr_id, att1.value, att1.gamma_id, att1.attr_type_id, att1.uri, al1.branch_id, txs.mod_type, txs.transaction_id FROM osee_join_artifact al1, osee_attribute att1, osee_txs txs WHERE al1.query_id = ? AND al1.art_id = att1.art_id AND att1.gamma_id = txs.gamma_id AND txs.branch_id = al1.branch_id AND txs.tx_current ";
+         "SELECT%s att1.art_id, att1.attr_id, att1.value, att1.gamma_id, att1.attr_type_id, att1.uri, al1.branch_id, txs.mod_type, txs.transaction_id FROM osee_join_artifact al1, osee_attribute att1, osee_txs txs WHERE al1.query_id = ? AND al1.art_id = att1.art_id AND att1.gamma_id = txs.gamma_id AND txs.branch_id = al1.branch_id AND txs.tx_current ";
 
       private static final String SELECT_CURRENT_ARTIFACTS_PREFIX =
-            "SELECT%s aj.art_id, txs.gamma_id, mod_type, art_type_id, guid, human_readable_id, txs.branch_id FROM osee_join_artifact aj, osee_artifact art, osee_txs txs WHERE aj.query_id = ? AND aj.art_id = art.art_id AND art.gamma_id = txs.gamma_id AND txs.branch_id = aj.branch_id AND txs.tx_current ";
+         "SELECT%s aj.art_id, txs.gamma_id, mod_type, art_type_id, guid, human_readable_id, txs.branch_id FROM osee_join_artifact aj, osee_artifact art, osee_txs txs WHERE aj.query_id = ? AND aj.art_id = art.art_id AND art.gamma_id = txs.gamma_id AND txs.branch_id = aj.branch_id AND txs.tx_current ";
    }
 }

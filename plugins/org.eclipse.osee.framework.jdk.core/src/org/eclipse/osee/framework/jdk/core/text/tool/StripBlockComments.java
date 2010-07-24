@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
  * @author Ryan D. Brooks
  */
 public class StripBlockComments implements FileToBufferConvert {
+   @Override
    public CharSequence fileToCharSequence(File file) throws IOException {
       return Lib.stripBlockComments(Lib.fileToCharBuffer(file));
    }

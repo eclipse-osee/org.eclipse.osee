@@ -59,7 +59,7 @@ public class FileWatcher extends TimerTask {
     * 
     * @param file
     * @return returns the last know timestamp of the file before it was removed or null if it was never being monitored
-    *         in the first place
+    * in the first place
     */
    public synchronized Long removeFile(File file) {
       return filesToWatch.remove(file);

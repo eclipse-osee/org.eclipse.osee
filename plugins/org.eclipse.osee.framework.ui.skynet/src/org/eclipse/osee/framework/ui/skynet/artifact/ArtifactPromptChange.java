@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -60,7 +61,7 @@ public class ArtifactPromptChange {
             return ArtifactPromptChange.promptChangeEnumeratedAttribute(attributeName, displayName, artifacts, persist);
          } else if (AttributeTypeManager.isBaseTypeCompatible(StringAttribute.class, attributeName)) {
             return ArtifactPromptChange.promptChangeStringAttribute(attributeName, displayName, artifacts, persist,
-                  true);
+               true);
          } else {
             AWorkbench.popup("ERROR", "Unhandled attribute type.  Can't edit through this view");
          }
@@ -72,22 +73,22 @@ public class ArtifactPromptChange {
 
    public static boolean promptChangeIntegerAttribute(String attributeName, String displayName, final Collection<? extends Artifact> artifacts, boolean persist) throws OseeCoreException {
       return promptChangeStringAttribute(attributeName, displayName, NumberFormat.getIntegerInstance(), artifacts,
-            persist, false);
+         persist, false);
    }
 
    public static boolean promptChangeIntegerAttribute(String attributeName, String displayName, final Artifact artifact, boolean persist) throws OseeCoreException {
       return promptChangeStringAttribute(attributeName, displayName, NumberFormat.getIntegerInstance(),
-            Arrays.asList(artifact), persist, false);
+         Arrays.asList(artifact), persist, false);
    }
 
    public static boolean promptChangePercentAttribute(String attributeName, String displayName, final Artifact artifact, boolean persist) throws OseeCoreException {
       return promptChangeStringAttribute(attributeName, displayName, NumberFormat.getPercentInstance(),
-            Arrays.asList(artifact), persist, false);
+         Arrays.asList(artifact), persist, false);
    }
 
    public static boolean promptChangePercentAttribute(String attributeName, String displayName, final Collection<? extends Artifact> artifacts, boolean persist) throws OseeCoreException {
       return promptChangeStringAttribute(attributeName, displayName, NumberFormat.getPercentInstance(), artifacts,
-            persist, false);
+         persist, false);
    }
 
    public static boolean promptChangeFloatAttribute(String attributeName, String displayName, final Artifact artifact, boolean persist) throws OseeCoreException {
@@ -113,9 +114,9 @@ public class ArtifactPromptChange {
    public static boolean promptChangeDate(String attributeName, String displayName, final Collection<? extends Artifact> artifacts, boolean persist) throws OseeCoreException {
       String diagTitle = "Select " + displayName;
       Date currentDate =
-            artifacts.size() == 1 ? artifacts.iterator().next().getSoleAttributeValue(attributeName, null, Date.class) : null;
+         artifacts.size() == 1 ? artifacts.iterator().next().getSoleAttributeValue(attributeName, null, Date.class) : null;
       DateSelectionDialog diag = new DateSelectionDialog(diagTitle, diagTitle, currentDate);
-      if (diag.open() == DateSelectionDialog.OK) {
+      if (diag.open() == Window.OK) {
          for (Artifact artifact : artifacts) {
             if (diag.isNoneSelected()) {
                artifact.deleteSoleAttribute(attributeName);
@@ -126,7 +127,7 @@ public class ArtifactPromptChange {
 
          if (persist) {
             SkynetTransaction transaction =
-                  new SkynetTransaction(artifacts.iterator().next().getBranch(), "Persist artifact date change");
+               new SkynetTransaction(artifacts.iterator().next().getBranch(), "Persist artifact date change");
             for (Artifact artifact : artifacts) {
                artifact.persist(transaction);
             }
@@ -157,8 +158,8 @@ public class ArtifactPromptChange {
          }
          if (artifacts.size() > 0) {
             SkynetTransaction transaction =
-                  !persist ? null : new SkynetTransaction(artifacts.iterator().next().getBranch(),
-                        "Change enumerated attribute");
+               !persist ? null : new SkynetTransaction(artifacts.iterator().next().getBranch(),
+                  "Change enumerated attribute");
             for (Artifact artifact : artifacts) {
                List<String> current = artifact.getAttributesToStringList(attributeName);
                if (diag.getSelected() == Selection.AddSelection) {
@@ -211,7 +212,7 @@ public class ArtifactPromptChange {
       ed.setNumberFormat(format);
 
       int result = ed.open();
-      if (result == EntryDialog.OK) {
+      if (result == Window.OK) {
          updateSmaAttributes(smas, attributeName, format, ed);
 
          if (persist) {
@@ -244,7 +245,7 @@ public class ArtifactPromptChange {
 
    private static void persistSmaAttributes(final Collection<? extends Artifact> smas) throws OseeCoreException {
       SkynetTransaction transaction =
-            new SkynetTransaction(smas.iterator().next().getBranch(), "Persist SMA attributes");
+         new SkynetTransaction(smas.iterator().next().getBranch(), "Persist SMA attributes");
       for (Artifact sma : smas) {
          sma.persist(transaction);
       }
@@ -262,15 +263,14 @@ public class ArtifactPromptChange {
          set = smas.iterator().next().getSoleAttributeValue(attributeName, false);
       }
       MessageDialogWithToggle md =
-            new MessageDialogWithToggle(Displays.getActiveShell(), displayName, null, displayName,
-                  MessageDialog.QUESTION, new String[] {"Ok", "Cancel"}, MessageDialog.OK,
-                  toggleMessage != null ? toggleMessage : displayName, set);
+         new MessageDialogWithToggle(Displays.getActiveShell(), displayName, null, displayName, MessageDialog.QUESTION,
+            new String[] {"Ok", "Cancel"}, Window.OK, toggleMessage != null ? toggleMessage : displayName, set);
 
       int result = md.open();
       if (result == 256) {
          if (smas.size() > 0) {
             SkynetTransaction transaction =
-                  !persist ? null : new SkynetTransaction(smas.iterator().next().getBranch(), "Prompt change boolean");
+               !persist ? null : new SkynetTransaction(smas.iterator().next().getBranch(), "Prompt change boolean");
             for (Artifact sma : smas) {
                sma.setSoleAttributeValue(attributeName, md.getToggleState());
                if (persist) {

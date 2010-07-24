@@ -22,6 +22,7 @@ public class XCommitContentProvider implements ITreeContentProvider {
       super();
    }
 
+   @Override
    @SuppressWarnings("rawtypes")
    public Object[] getChildren(Object parentElement) {
       if (parentElement instanceof Object[]) {
@@ -33,22 +34,29 @@ public class XCommitContentProvider implements ITreeContentProvider {
       return EMPTY_ARRAY;
    }
 
+   @Override
    public Object getParent(Object element) {
       return null;
    }
 
+   @Override
    public boolean hasChildren(Object element) {
       return getChildren(element).length > 0;
    }
 
+   @Override
    public Object[] getElements(Object inputElement) {
-      if (inputElement instanceof String) return new Object[] {inputElement};
+      if (inputElement instanceof String) {
+         return new Object[] {inputElement};
+      }
       return getChildren(inputElement);
    }
 
+   @Override
    public void dispose() {
    }
 
+   @Override
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
    }
 

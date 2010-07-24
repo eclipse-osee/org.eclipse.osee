@@ -41,7 +41,7 @@ public class StateListDialog extends ListDialog {
          @SuppressWarnings("unchecked")
          @Override
          public int compare(Viewer viewer, Object e1, Object e2) {
-            return getComparator().compare((String) e1, (String) e2);
+            return getComparator().compare(e1, e2);
          }
       });
       return control;

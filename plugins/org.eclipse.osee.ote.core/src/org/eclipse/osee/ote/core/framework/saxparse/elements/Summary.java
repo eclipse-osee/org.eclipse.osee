@@ -15,9 +15,8 @@ import org.xml.sax.Attributes;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
-public class Summary extends ElementHandlers{
+public class Summary extends ElementHandlers {
 
    /**
     * @param name
@@ -28,7 +27,9 @@ public class Summary extends ElementHandlers{
 
    @Override
    public Object createStartElementFoundObject(String uri, String localName, String name, Attributes attributes) {
-      return new SummaryData(attributes.getValue("CRITICAL_COUNT"), attributes.getValue("EXCEPTION_COUNT"), attributes.getValue("INFORMATIONAL_COUNT"), attributes.getValue("MINOR_COUNT"), attributes.getValue("NODE_ID"), attributes.getValue("SERIOUS_COUNT"), attributes.getValue("START_NUMBER"));
+      return new SummaryData(attributes.getValue("CRITICAL_COUNT"), attributes.getValue("EXCEPTION_COUNT"),
+         attributes.getValue("INFORMATIONAL_COUNT"), attributes.getValue("MINOR_COUNT"),
+         attributes.getValue("NODE_ID"), attributes.getValue("SERIOUS_COUNT"), attributes.getValue("START_NUMBER"));
    }
 
 }

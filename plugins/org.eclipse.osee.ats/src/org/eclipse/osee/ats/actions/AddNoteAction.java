@@ -60,7 +60,7 @@ public class AddNoteAction extends Action {
          }
          NewNoteWizard noteWizard = new NewNoteWizard(artifactNames);
          WizardDialog dialog =
-               new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), noteWizard);
+            new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), noteWizard);
          dialog.create();
          if (dialog.open() == 0) {
             String selected = noteWizard.mainPage.artifactList.getSelected().iterator().next().getName();
@@ -69,8 +69,8 @@ public class AddNoteAction extends Action {
                state = selectedToStateName.get(selected);
             }
             sma.getNotes().addNote(
-                  NoteType.getType(noteWizard.mainPage.typeList.getSelected().iterator().next().getName()), state,
-                  noteWizard.mainPage.noteText.get(), UserManager.getUser());
+               NoteType.getType(noteWizard.mainPage.typeList.getSelected().iterator().next().getName()), state,
+               noteWizard.mainPage.noteText.get(), UserManager.getUser());
             sma.getEditor().onDirtied();
          }
       } catch (Exception ex) {

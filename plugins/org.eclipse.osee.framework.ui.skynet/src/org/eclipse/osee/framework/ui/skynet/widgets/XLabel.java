@@ -42,7 +42,9 @@ public class XLabel extends XWidget {
     */
    @Override
    protected void createControls(Composite parent, int horizontalSpan) {
-      if (horizontalSpan < 2) horizontalSpan = 2;
+      if (horizontalSpan < 2) {
+         horizontalSpan = 2;
+      }
       // Create Data Widgets
       if (!getLabel().equals("")) {
          labelWidget = new Label(parent, SWT.NONE);

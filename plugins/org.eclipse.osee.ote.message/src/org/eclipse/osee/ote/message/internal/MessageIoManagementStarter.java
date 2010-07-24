@@ -20,11 +20,11 @@ import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * @author Ken J. Aguilar
- *
  */
-public class MessageIoManagementStarter extends ServiceTracker{
+public class MessageIoManagementStarter extends ServiceTracker {
 
    private ServiceRegistration registration;
+
    /**
     * @param context
     * @param filter
@@ -37,7 +37,8 @@ public class MessageIoManagementStarter extends ServiceTracker{
    @Override
    public synchronized TestEnvironmentInterface addingService(ServiceReference reference) {
       TestEnvironmentInterface manager = (TestEnvironmentInterface) super.addingService(reference);
-      registration = context.registerService(IMessageIoManagementService.class.getName(), new MessageIoManagementService(), null);
+      registration =
+         context.registerService(IMessageIoManagementService.class.getName(), new MessageIoManagementService(), null);
       return manager;
    }
 
@@ -55,6 +56,5 @@ public class MessageIoManagementStarter extends ServiceTracker{
       }
       super.close();
    }
-   
-   
+
 }

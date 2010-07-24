@@ -57,7 +57,7 @@ public class SkynetDbBranchDataImport implements IDbInitializationTask {
       if (OseeClientProperties.isOseeImportAllowed()) {
          // Clean up and delete all branches except Common
          for (Branch branch : BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING,
-               BranchType.BASELINE)) {
+            BranchType.BASELINE)) {
             if (!branch.equals(CoreBranches.COMMON)) {
                BranchManager.purgeBranch(branch);
             }
@@ -71,8 +71,8 @@ public class SkynetDbBranchDataImport implements IDbInitializationTask {
                //TODO not yet supported               importData.getSelectedBranches();
                HttpBranchExchange.importBranches(importFile.toURI().toASCIIString(), true, true);
             } catch (OseeDataStoreException ex) {
-               OseeLog.log(DatabaseInitActivator.class, Level.SEVERE, String.format(
-                     "Exception while importing branch: [%s]", importData), ex);
+               OseeLog.log(DatabaseInitActivator.class, Level.SEVERE,
+                  String.format("Exception while importing branch: [%s]", importData), ex);
                throw ex;
             }
          }
@@ -101,19 +101,19 @@ public class SkynetDbBranchDataImport implements IDbInitializationTask {
                   importData.addSelectedBranch(branchName);
                   if (!selectedBranches.containsKey(branchName.toLowerCase())) {
                      selectedBranches.put(branchName.toLowerCase(),
-                           element.getDeclaringExtension().getUniqueIdentifier());
+                        element.getDeclaringExtension().getUniqueIdentifier());
                   } else {
                      throw new OseeDataStoreException(
-                           String.format(
-                                 "Branch import error - cannot import twice into a branch - [%s] was already specified by [%s] ",
-                                 branchName, selectedBranches.get(branchName.toLowerCase())));
+                        String.format(
+                           "Branch import error - cannot import twice into a branch - [%s] was already specified by [%s] ",
+                           branchName, selectedBranches.get(branchName.toLowerCase())));
                   }
                }
             }
             toReturn.add(importData);
          } else {
             throw new OseeDataStoreException(String.format("Branch import error: [%s] attributes were empty.",
-                  element.getDeclaringExtension().getExtensionPointUniqueIdentifier()));
+               element.getDeclaringExtension().getExtensionPointUniqueIdentifier()));
          }
       }
       return toReturn;

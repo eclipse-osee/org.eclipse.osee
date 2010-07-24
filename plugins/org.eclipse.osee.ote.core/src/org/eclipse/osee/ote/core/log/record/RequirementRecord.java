@@ -21,9 +21,9 @@ public class RequirementRecord extends TestRecord {
    /**
 	 * 
 	 */
-	private static final long serialVersionUID = -3533522844275324310L;
+   private static final long serialVersionUID = -3533522844275324310L;
 
-/**
+   /**
     * RequirementRecord Constructor. Sets up a Requirement log message.
     * 
     * @param source The object requesting the logging.

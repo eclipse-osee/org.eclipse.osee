@@ -33,6 +33,7 @@ public class Activator implements BundleActivator, IOseeCachingServiceProvider {
 
    private BundleContext context;
 
+   @Override
    public void start(BundleContext context) throws Exception {
       instance = this;
       this.context = context;
@@ -44,13 +45,14 @@ public class Activator implements BundleActivator, IOseeCachingServiceProvider {
       resourceManagementTracker.open();
 
       attributeTaggerProviderTracker =
-            new ServiceTracker(context, IAttributeTaggerProviderManager.class.getName(), null);
+         new ServiceTracker(context, IAttributeTaggerProviderManager.class.getName(), null);
       attributeTaggerProviderTracker.open();
 
       cacheTracker = new ServiceTracker(context, IOseeCachingService.class.getName(), null);
       cacheTracker.open();
    }
 
+   @Override
    public void stop(BundleContext context) throws Exception {
       attributeTaggerProviderTracker.close();
       attributeTaggerProviderTracker = null;

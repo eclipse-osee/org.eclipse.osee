@@ -64,8 +64,8 @@ public class HttpBranchExchange {
    private static void execute(Map<String, String> parameters) throws OseeDataStoreException {
       try {
          String returnVal =
-               HttpProcessor.post(new URL(HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(
-                     OseeServerContext.BRANCH_EXCHANGE_CONTEXT, parameters)));
+            HttpProcessor.post(new URL(HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(
+               OseeServerContext.BRANCH_EXCHANGE_CONTEXT, parameters)));
          OseeLog.log(HttpBranchExchange.class, Level.INFO, returnVal);
       } catch (Exception ex) {
          throw new OseeDataStoreException(ex);

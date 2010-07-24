@@ -10,19 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.core.framework.saxparse.elements;
 
-
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public class OteLogData {
 
-   private String level;
-   private String logger;
-   
+   private final String level;
+   private final String logger;
+
    /**
-    * @param string2 
-    * @param string 
+    * @param string2
+    * @param string
     * @param name
     */
    OteLogData(String level, String logger) {

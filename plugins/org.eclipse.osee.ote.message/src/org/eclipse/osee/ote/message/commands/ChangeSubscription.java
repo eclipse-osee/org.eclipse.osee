@@ -12,10 +12,7 @@ package org.eclipse.osee.ote.message.commands;
 
 import java.io.Serializable;
 import java.net.InetSocketAddress;
-
 import org.eclipse.osee.ote.message.tool.MessageMode;
-
-
 
 public final class ChangeSubscription implements Serializable {
    private static final long serialVersionUID = 2863442398798431500L;
@@ -25,14 +22,8 @@ public final class ChangeSubscription implements Serializable {
    private final int oldMemTypeOrdinal;
    private final InetSocketAddress oldAddress;
    private final InetSocketAddress newAddress;
-   
-   public ChangeSubscription(
-         final String msgName, 
-         final MessageMode mode,
-         final int oldMemTypeOrdinal, 
-         final int newMemTypeOrdinal, 
-         final InetSocketAddress oldAddress,
-         final InetSocketAddress newAddress) {
+
+   public ChangeSubscription(final String msgName, final MessageMode mode, final int oldMemTypeOrdinal, final int newMemTypeOrdinal, final InetSocketAddress oldAddress, final InetSocketAddress newAddress) {
       this.msgName = msgName;
       this.mode = mode;
       this.newMemTypeOrdinal = newMemTypeOrdinal;
@@ -55,11 +46,11 @@ public final class ChangeSubscription implements Serializable {
    public int getNewMemTypeOrdinal() {
       return newMemTypeOrdinal;
    }
-   
+
    public int getOldMemTypeOrdinal() {
       return oldMemTypeOrdinal;
    }
-   
+
    public InetSocketAddress getOldAddress() {
       return oldAddress;
    }

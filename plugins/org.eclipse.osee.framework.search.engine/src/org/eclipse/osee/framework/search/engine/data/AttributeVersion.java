@@ -14,21 +14,26 @@ package org.eclipse.osee.framework.search.engine.data;
  * @author Roberto E. Escobar
  */
 public class AttributeVersion implements IAttributeLocator {
-   private long gammaId;
+   private final long gammaId;
 
    public AttributeVersion(long gammaId) {
       super();
       this.gammaId = gammaId;
    }
 
+   @Override
    public long getGammaId() {
       return gammaId;
    }
 
    @Override
    public boolean equals(Object object) {
-      if (this == object) return true;
-      if (!(object instanceof IAttributeLocator)) return false;
+      if (this == object) {
+         return true;
+      }
+      if (!(object instanceof IAttributeLocator)) {
+         return false;
+      }
       IAttributeLocator other = (IAttributeLocator) object;
       return other.getGammaId() == this.getGammaId();
    }
@@ -38,6 +43,7 @@ public class AttributeVersion implements IAttributeLocator {
       return (int) (37 * getGammaId());
    }
 
+   @Override
    public String toString() {
       return String.format("gammaId: [%d]", getGammaId());
    }

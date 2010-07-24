@@ -18,9 +18,9 @@ import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.dialog.CoveragePackageArtifactListDialog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 
 /**
  * @author Donald G. Dunne
@@ -38,20 +38,24 @@ public class CpSelectAndImportItem extends XNavigateItemAction {
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
       CoverageUtil.getBranchFromUser(false);
       CoveragePackageArtifactListDialog dialog =
-            new CoveragePackageArtifactListDialog("Open Coverage Package", "Select Coverage Package");
-      if (!CoverageUtil.getBranchFromUser(false)) return;
+         new CoveragePackageArtifactListDialog("Open Coverage Package", "Select Coverage Package");
+      if (!CoverageUtil.getBranchFromUser(false)) {
+         return;
+      }
       dialog.setInput(OseeCoveragePackageStore.getCoveragePackageArtifacts(CoverageUtil.getBranch()));
-      if (dialog.open() != 0) return;
+      if (dialog.open() != 0) {
+         return;
+      }
       Artifact coveragePackageArtifact = (Artifact) dialog.getResult()[0];
       CoveragePackage coveragePackage = OseeCoveragePackageStore.get(coveragePackageArtifact);
       CoverageEditor.open(new CoverageEditorInput(coveragePackage.getName(), coveragePackageArtifact, coveragePackage,
-            true));
+         true));
       // Process Import 1
       CoverageEditor editor = null;
       for (CoverageEditor coverageEditor : CoverageEditor.getEditors()) {
          if (coverageEditor.getCoverageEditorInput().getCoveragePackageBase() instanceof CoveragePackage) {
             CoveragePackage editorPackage =
-                  (CoveragePackage) coverageEditor.getCoverageEditorInput().getCoveragePackageBase();
+               (CoveragePackage) coverageEditor.getCoverageEditorInput().getCoveragePackageBase();
             if (editorPackage.getGuid().equals(coveragePackage.getGuid())) {
                editor = coverageEditor;
             }

@@ -25,11 +25,19 @@ public class DbDetailData implements Serializable {
    private static final long serialVersionUID = 4610179141542353247L;
 
    public enum ConfigPairField {
-      key, value;
+      key,
+      value;
    }
 
    public enum ConfigField {
-      DatabaseType, DatabaseName, DatabaseHome, Prefix, UserName, Password, Host, Port
+      DatabaseType,
+      DatabaseName,
+      DatabaseHome,
+      Prefix,
+      UserName,
+      Password,
+      Host,
+      Port
    }
 
    public enum DescriptionField {

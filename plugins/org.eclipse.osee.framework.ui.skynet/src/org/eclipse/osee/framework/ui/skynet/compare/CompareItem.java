@@ -42,6 +42,7 @@ public class CompareItem implements IStreamContentAccessor, ITypedElement, IModi
       this.image = image;
    }
 
+   @Override
    public InputStream getContents() throws CoreException {
       try {
          return new ByteArrayInputStream(contents.getBytes("UTF-8"));
@@ -50,18 +51,22 @@ public class CompareItem implements IStreamContentAccessor, ITypedElement, IModi
       }
    }
 
+   @Override
    public Image getImage() {
       return image;
    }
 
+   @Override
    public boolean isEditable() {
       return isEditable;
    }
 
+   @Override
    public long getModificationDate() {
       return time;
    }
 
+   @Override
    public String getName() {
       return name;
    }
@@ -70,6 +75,7 @@ public class CompareItem implements IStreamContentAccessor, ITypedElement, IModi
       return contents;
    }
 
+   @Override
    public String getType() {
       return ITypedElement.TEXT_TYPE;
    }

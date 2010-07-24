@@ -46,8 +46,8 @@ public class TeamDefinitionTreeWithChildrenDialog extends CheckedTreeSelectionDi
    }
 
    public TeamDefinitionTreeWithChildrenDialog(Active active, Collection<TeamDefinitionArtifact> teamDefinitionArtifacts) throws OseeCoreException {
-      super(Displays.getActiveShell(), new ArtifactDescriptiveLabelProvider(),
-            new TeamDefinitionTreeContentProvider(active));
+      super(Displays.getActiveShell(), new ArtifactDescriptiveLabelProvider(), new TeamDefinitionTreeContentProvider(
+         active));
       setTitle("Select Team Definition");
       setMessage("Select Team Definition");
       setComparator(new ArtifactNameSorter());
@@ -80,9 +80,11 @@ public class TeamDefinitionTreeWithChildrenDialog extends CheckedTreeSelectionDi
       recurseChildrenCheck.createWidgets(dialogComp, 2);
       recurseChildrenCheck.set(recurseChildren);
       recurseChildrenCheck.addSelectionListener(new SelectionListener() {
+         @Override
          public void widgetDefaultSelected(SelectionEvent e) {
          }
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             recurseChildren = recurseChildrenCheck.isSelected();
          };

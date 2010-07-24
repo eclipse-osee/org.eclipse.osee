@@ -25,8 +25,8 @@ import org.eclipse.swt.widgets.TableItem;
  */
 public class UpdateLookupViewerToolTip implements MouseTrackListener {
 
-   private IServiceManager<TreeParent> mainWindow;
-   private StructuredViewer structuredViewer;
+   private final IServiceManager<TreeParent> mainWindow;
+   private final StructuredViewer structuredViewer;
 
    public UpdateLookupViewerToolTip(IServiceManager<TreeParent> mainWindow) {
       super();
@@ -35,14 +35,17 @@ public class UpdateLookupViewerToolTip implements MouseTrackListener {
       structuredViewer = this.mainWindow.getLookupViewer().getViewer();
    }
 
+   @Override
    public void mouseEnter(MouseEvent e) {
       structuredViewer.getControl().setToolTipText("Displays JINI Lookup Servers");
    }
 
+   @Override
    public void mouseExit(MouseEvent e) {
       structuredViewer.getControl().setToolTipText("Displays JINI Lookup Servers");
    }
 
+   @Override
    public void mouseHover(MouseEvent e) {
       String toSet = "";
       Point point = new Point(e.x, e.y);

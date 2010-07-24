@@ -13,7 +13,6 @@ package org.eclipse.osee.ote.core.log;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
-
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.ote.core.MethodFormatter;
 import org.eclipse.osee.ote.core.ReturnFormatter;
@@ -50,8 +49,7 @@ public class TestLogger extends Logger implements ITestLogger {
    }
 
    /**
-    * For communicating with the user running an interactive script only allowed in interactive
-    * scripts (use sparingly).
+    * For communicating with the user running an interactive script only allowed in interactive scripts (use sparingly).
     */
    public void attention(ITestEnvironmentAccessor source, String message) {
       // TODO: this is not just a straight log
@@ -64,6 +62,7 @@ public class TestLogger extends Logger implements ITestLogger {
     * @param source The object requesting the logging (Usually "this" is passed in).
     * @param message The log message.
     */
+   @Override
    public void debug(ITestEnvironmentAccessor source, String message) {
       log(new DebugRecord(source, message));
    }
@@ -75,6 +74,7 @@ public class TestLogger extends Logger implements ITestLogger {
     * @param message The log message.
     * @param timeStamp <b>True</b> if you want a time stamp included, <b>False</b> if you do not.
     */
+   @Override
    public void debug(ITestEnvironmentAccessor source, String message, boolean timeStamp) {
       log(new DebugRecord(source, message, timeStamp));
    }
@@ -85,6 +85,7 @@ public class TestLogger extends Logger implements ITestLogger {
     * @param source The object requesting the logging (Usually "this" is passed in).
     * @param message The log message.
     */
+   @Override
    public void warning(ITestEnvironmentAccessor source, String message) {
       log(new WarningRecord(source, message));
    }
@@ -95,6 +96,7 @@ public class TestLogger extends Logger implements ITestLogger {
     * @param source The object requesting the logging (Usually "this" is passed in).
     * @param message The log message.
     */
+   @Override
    public void support(ITestEnvironmentAccessor source, String message) {
       log(new SupportRecord(source, message));
    }
@@ -105,6 +107,7 @@ public class TestLogger extends Logger implements ITestLogger {
     * @param source The object requesting the logging (Usually "this" is passed in).
     * @param message The log message.
     */
+   @Override
    public void severe(ITestEnvironmentAccessor source, String message) {
       log(new SevereRecord(source, message));
    }
@@ -115,19 +118,22 @@ public class TestLogger extends Logger implements ITestLogger {
     * @param source The object requesting the logging (Usually "this" is passed in).
     * @param thrown
     */
+   @Override
    public void severe(Object source, Throwable thrown) {
       throwing(source.getClass().getName(), null, thrown);
    }
 
-   public void testpoint(ITestEnvironmentAccessor env, TestScript script, TestCase testCase, boolean passed,
-         String testPointName, String exp, String act) {
+   @Override
+   public void testpoint(ITestEnvironmentAccessor env, TestScript script, TestCase testCase, boolean passed, String testPointName, String exp, String act) {
       log(new TestPointRecord(env, script, testCase, testPointName, exp, act, passed));
    }
 
+   @Override
    public void testpoint(TestPointRecord record) {
       log(record);
    }
 
+   @Override
    public void testpoint(ITestEnvironmentAccessor env, TestScript script, TestCase testCase, ITestPoint testPoint) {
       log(new TestPointRecord(env, script, testCase, testPoint));
    }
@@ -137,6 +143,7 @@ public class TestLogger extends Logger implements ITestLogger {
     * 
     * @param testCase The test case whose start is to be recorded.
     */
+   @Override
    public void testCaseBegan(TestCase testCase) {
       log(testCase.getTestRecord());
    }
@@ -153,9 +160,9 @@ public class TestLogger extends Logger implements ITestLogger {
    public void trace(ITestEnvironmentAccessor source, String objectName, String methodName, MethodFormatter methodArguments) {
       log(new TraceRecord(source, objectName, methodName, methodArguments));
    }
-   
+
    public void endtrace(ITestEnvironmentAccessor source, ReturnFormatter methodArguments) {
-	      log(new TraceRecordEnd(source, methodArguments));
+      log(new TraceRecordEnd(source, methodArguments));
    }
 
    /**
@@ -173,6 +180,7 @@ public class TestLogger extends Logger implements ITestLogger {
     * 
     * @param source The object requesting the logging (Usually "this" is passed in).
     */
+   @Override
    public void methodCalled(ITestEnvironmentAccessor source) {
       methodCalled(source, new MethodFormatter(), 2);
    }
@@ -183,19 +191,20 @@ public class TestLogger extends Logger implements ITestLogger {
     * @param source The object requesting the logging (Usually "this" is passed in).
     * @param arguments The arguments in a formatted string.
     */
+   @Override
    public void methodCalled(ITestEnvironmentAccessor source, MethodFormatter arguments) {
       methodCalled(source, arguments, 2);
    }
 
-//   /**
-//    * Log the beginning of a method with a the MethodFormatter formatted argument object.
-//    * 
-//    * @param source The object requesting the logging (Usually "this" is passed in).
-//    * @param methodFormat Reference to the MethodFormatter formatted argument list.
-//    */
-//   public void methodCalled(ITestEnvironmentAccessor source, MethodFormatter methodFormat) {
-//      methodCalled(source, methodFormat, 2);
-//   }
+   //   /**
+   //    * Log the beginning of a method with a the MethodFormatter formatted argument object.
+   //    * 
+   //    * @param source The object requesting the logging (Usually "this" is passed in).
+   //    * @param methodFormat Reference to the MethodFormatter formatted argument list.
+   //    */
+   //   public void methodCalled(ITestEnvironmentAccessor source, MethodFormatter methodFormat) {
+   //      methodCalled(source, methodFormat, 2);
+   //   }
 
    /**
     * Log the beginning of a method.
@@ -205,7 +214,7 @@ public class TestLogger extends Logger implements ITestLogger {
     * @param methodCount The number of methods called to reach this point.
     */
    public void methodCalled(ITestEnvironmentAccessor source, MethodFormatter arguments, int methodCount) {
-      String methodName = (new Exception()).getStackTrace()[methodCount].getMethodName();
+      String methodName = new Exception().getStackTrace()[methodCount].getMethodName();
       trace(source, "", methodName, arguments);
    }
 
@@ -215,30 +224,31 @@ public class TestLogger extends Logger implements ITestLogger {
     * @param source The object requesting the logging (Usually "this" is passed in).
     * @param objectName The class variable name.
     */
+   @Override
    public void methodCalledOnObject(ITestEnvironmentAccessor source, String objectName) {
       methodCalledOnObject(source, objectName, new MethodFormatter(), 2);
    }
 
-//   /**
-//    * Log the start of a method with the object variable name and a formatted string with the
-//    * arguments.
-//    * 
-//    * @param source The object requesting the logging (Usually "this" is passed in).
-//    * @param objectName The class variable name.
-//    * @param arguments The arguments in a formatted string.
-//    */
-//   public void methodCalledOnObject(ITestEnvironmentAccessor source, String objectName, MethodFormatter arguments) {
-//      methodCalledOnObject(source, objectName, arguments, 2);
-//   }
+   //   /**
+   //    * Log the start of a method with the object variable name and a formatted string with the
+   //    * arguments.
+   //    * 
+   //    * @param source The object requesting the logging (Usually "this" is passed in).
+   //    * @param objectName The class variable name.
+   //    * @param arguments The arguments in a formatted string.
+   //    */
+   //   public void methodCalledOnObject(ITestEnvironmentAccessor source, String objectName, MethodFormatter arguments) {
+   //      methodCalledOnObject(source, objectName, arguments, 2);
+   //   }
 
    /**
-    * Log the start of a method with the object variable name and a MethodFormatter formatted
-    * argument object.
+    * Log the start of a method with the object variable name and a MethodFormatter formatted argument object.
     * 
     * @param source The object requesting the logging (Usually "this" is passed in).
     * @param objectName The class variable name.
     * @param methodFormat Reference to the MethodFormatter formatted argument list.
     */
+   @Override
    public void methodCalledOnObject(ITestEnvironmentAccessor source, String objectName, MethodFormatter methodFormat) {
       methodCalledOnObject(source, objectName, methodFormat, 2);
    }
@@ -251,10 +261,9 @@ public class TestLogger extends Logger implements ITestLogger {
     * @param arguments The arguments in a formatted string.
     * @param methodCount The number of methods called to reach this point.
     */
-   public void methodCalledOnObject(ITestEnvironmentAccessor source, String objectName, MethodFormatter arguments,
-         int methodCount) {
+   public void methodCalledOnObject(ITestEnvironmentAccessor source, String objectName, MethodFormatter arguments, int methodCount) {
 
-      String methodName = (new Exception()).getStackTrace()[methodCount].getMethodName();
+      String methodName = new Exception().getStackTrace()[methodCount].getMethodName();
       trace(source, objectName, methodName, arguments);
    }
 
@@ -263,26 +272,28 @@ public class TestLogger extends Logger implements ITestLogger {
     * 
     * @param source The object requesting the logging (Usually "this" is passed in).
     */
+   @Override
    public void methodEnded(ITestEnvironmentAccessor source) {
       endtrace(source, new ReturnFormatter());
    }
-   
+
+   @Override
    public void methodEnded(ITestEnvironmentAccessor source, ReturnFormatter returnFormatter) {
       endtrace(source, returnFormatter);
    }
 
+   @Override
    public void log(TestRecord record) {
       this.log((LogRecord) record);
    }
 
-   public void methodCalledOnObject(ITestEnvironmentAccessor source, String objectName, MethodFormatter methodFormat,
-         Xmlizable xmlObject) {
+   @Override
+   public void methodCalledOnObject(ITestEnvironmentAccessor source, String objectName, MethodFormatter methodFormat, Xmlizable xmlObject) {
       methodCalledOnObject(source, objectName, methodFormat, xmlObject, 2);
    }
 
-   private void methodCalledOnObject(ITestEnvironmentAccessor source, String objectName, MethodFormatter methodFormat,
-         Xmlizable xmlObject, int methodCount) {
-      String methodName = (new Exception()).getStackTrace()[methodCount].getMethodName();
+   private void methodCalledOnObject(ITestEnvironmentAccessor source, String objectName, MethodFormatter methodFormat, Xmlizable xmlObject, int methodCount) {
+      String methodName = new Exception().getStackTrace()[methodCount].getMethodName();
       TraceRecord record = new TraceRecord(source, objectName, methodName, methodFormat, true);
       record.addAdditionalElement(xmlObject);
       log(record);

@@ -44,11 +44,11 @@ import org.eclipse.ui.commands.ICommandService;
  */
 
 public class OpenWithMenuListener implements MenuListener {
-   private Menu parentMenu;
-   private Viewer viewer;
-   private IRebuildMenuListener rebuildMenuListener;
-   private static ICommandService commandService =
-         (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
+   private final Menu parentMenu;
+   private final Viewer viewer;
+   private final IRebuildMenuListener rebuildMenuListener;
+   private static ICommandService commandService = (ICommandService) PlatformUI.getWorkbench().getService(
+      ICommandService.class);
 
    public OpenWithMenuListener(Menu parentMenu, final Viewer viewer, IRebuildMenuListener rebuildMenuListener) {
       super();
@@ -87,7 +87,7 @@ public class OpenWithMenuListener implements MenuListener {
                RelationLink link = (RelationLink) object;
                try {
                   List<Artifact> edittedArtifacts =
-                        Handlers.getArtifactsFromStructuredSelection((IStructuredSelection) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getSelection());
+                     Handlers.getArtifactsFromStructuredSelection((IStructuredSelection) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getSelection());
                   artifact = link.getArtifactOnOtherSide(edittedArtifacts.iterator().next());
                } catch (OseeCoreException ex) {
                   OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);

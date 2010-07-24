@@ -134,8 +134,8 @@ public class LoadedArtifacts {
          if (unloadedArtifacts.size() > 0) {
             for (UnloadedArtifact unloadedArtifact : new CopyOnWriteArrayList<UnloadedArtifact>(unloadedArtifacts)) {
                Artifact art =
-                     ArtifactCache.getActive(unloadedArtifact.getArtifactId(),
-                           BranchManager.getBranch(unloadedArtifact.getBranchId()));
+                  ArtifactCache.getActive(unloadedArtifact.getArtifactId(),
+                     BranchManager.getBranch(unloadedArtifact.getBranchId()));
                if (art != null) {
                   unloadedArtifacts.remove(unloadedArtifact);
                   artifacts.add(art);

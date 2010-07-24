@@ -133,6 +133,7 @@ public abstract class Change implements IAdaptable {
 
    public abstract int getItemId();
 
+   @Override
    @SuppressWarnings("unchecked")
    public Object getAdapter(Class adapter) {
       if (adapter == null) {

@@ -26,9 +26,9 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ArtifactEventFiltersTest.class, BranchEventFiltersTest.class, TransactionEventTest.class,
-      TransactionEventLoopbackTest.class, BranchEventManagerLoopbackTest.class, BranchEventManagerTest.class,
-      ArtifactEventManagerTest.class, ArtifactEventManagerLoopbackTest.class, RemoteNetworkSenderTest.class,
-      ArtifactLoaderTest.class, Artifact_getLastModified.class,})
+   TransactionEventLoopbackTest.class, BranchEventManagerLoopbackTest.class, BranchEventManagerTest.class,
+   ArtifactEventManagerTest.class, ArtifactEventManagerLoopbackTest.class, RemoteNetworkSenderTest.class,
+   ArtifactLoaderTest.class, Artifact_getLastModified.class,})
 /**
  * @author Donald G. Dunne
  */

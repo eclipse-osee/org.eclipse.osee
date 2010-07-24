@@ -34,13 +34,13 @@ public class Sender {
 
    public Sender(NetworkSender networkSender) {
       this(networkSender.sourceObject, new OseeClientSession(networkSender.sessionId, networkSender.machineName,
-            networkSender.userId, networkSender.machineIp, networkSender.port, networkSender.clientVersion, "n/a"));
+         networkSender.userId, networkSender.machineIp, networkSender.port, networkSender.clientVersion, "n/a"));
    }
 
    public Sender(RemoteNetworkSender1 networkSender) {
       this(networkSender.getSourceObject(), new OseeClientSession(networkSender.getSessionId(),
-            networkSender.getMachineName(), networkSender.getUserId(), networkSender.getMachineIp(),
-            networkSender.getPort(), networkSender.getClientVersion(), "n/a"));
+         networkSender.getMachineName(), networkSender.getUserId(), networkSender.getMachineIp(),
+         networkSender.getPort(), networkSender.getClientVersion(), "n/a"));
    }
 
    public Sender(Object sourceObject) throws OseeAuthenticationRequiredException {
@@ -85,7 +85,7 @@ public class Sender {
 
    public NetworkSender getNetworkSender() {
       return new NetworkSender(sourceObject, oseeSession.getId(), oseeSession.getMachineName(),
-            oseeSession.getUserId(), oseeSession.getMachineIp(), oseeSession.getPort(), oseeSession.getVersion());
+         oseeSession.getUserId(), oseeSession.getMachineIp(), oseeSession.getPort(), oseeSession.getVersion());
    }
 
    public RemoteNetworkSender1 getNetworkSenderRes() {
@@ -104,7 +104,7 @@ public class Sender {
    public String toString() {
       String remote = "Source Unknown";
       try {
-         remote = (isRemote() ? "Remote" : "Local");
+         remote = isRemote() ? "Remote" : "Local";
       } catch (OseeAuthenticationRequiredException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }

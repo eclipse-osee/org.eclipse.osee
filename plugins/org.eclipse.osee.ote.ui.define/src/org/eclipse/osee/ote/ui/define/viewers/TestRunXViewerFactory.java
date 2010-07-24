@@ -22,55 +22,54 @@ import org.eclipse.swt.SWT;
  */
 public class TestRunXViewerFactory extends SkynetXViewerFactory {
 
-   public static final XViewerColumn DISPOSITION =
-         new XViewerColumn("ote.test.run.view.Disposition", "Disposition", 300, SWT.LEFT, true, SortDataType.String,
-               true, null);
+   public static final XViewerColumn DISPOSITION = new XViewerColumn("ote.test.run.view.Disposition", "Disposition",
+      300, SWT.LEFT, true, SortDataType.String, true, null);
 
    public TestRunXViewerFactory() {
       super(TestRunView.VIEW_ID);
       registerAllAttributeColumns();
       registerColumns(new XViewerColumn("ote.test.run.view.Name", "Name", 150, SWT.LEFT, true, SortDataType.String,
-            false, null));
+         false, null));
       registerColumns(new XViewerColumn("ote.test.run.view.Passed", "Passed", 50, SWT.LEFT, true, SortDataType.Integer,
-            false, null));
+         false, null));
       registerColumns(new XViewerColumn("ote.test.run.view.Failed", "Failed", 50, SWT.LEFT, true, SortDataType.Integer,
-            false, null));
+         false, null));
       registerColumns(new XViewerColumn("ote.test.run.view.Total Test Points", "Total Test Points", 50, SWT.LEFT,
-            false, SortDataType.Integer, false, null));
+         false, SortDataType.Integer, false, null));
       registerColumns(new XViewerColumn("ote.test.run.view.Status", "Status", 150, SWT.LEFT, true, SortDataType.String,
-            false, null));
+         false, null));
       registerColumns(new XViewerColumn("ote.test.run.view.Script Aborted", "Script Aborted", 150, SWT.LEFT, false,
-            SortDataType.Boolean, false, null));
+         SortDataType.Boolean, false, null));
 
       registerColumns(new XViewerColumn("ote.test.run.view.Ran In Batch Mode", "Ran In Batch Mode", 150, SWT.LEFT,
-            false, SortDataType.Boolean, false, null));
+         false, SortDataType.Boolean, false, null));
       registerColumns(new XViewerColumn("ote.test.run.view.Is Batch Mode Allowed", "Is Batch Mode Allowed", 150,
-            SWT.LEFT, false, SortDataType.Boolean, false, null));
+         SWT.LEFT, false, SortDataType.Boolean, false, null));
 
       registerColumns(new XViewerColumn("ote.test.run.view.Start Date", "Start Date", 150, SWT.LEFT, false,
-            SortDataType.Date, false, null));
+         SortDataType.Date, false, null));
       registerColumns(new XViewerColumn("ote.test.run.view.End Date", "End Date", 150, SWT.LEFT, false,
-            SortDataType.Date, false, null));
+         SortDataType.Date, false, null));
       registerColumns(new XViewerColumn("ote.test.run.view.Elapsed Date", "Elapsed Date", 150, SWT.LEFT, false,
-            SortDataType.String, false, null));
+         SortDataType.String, false, null));
 
       registerColumns(new XViewerColumn("ote.test.run.view.Processor ID", "Processor ID", 150, SWT.LEFT, false,
-            SortDataType.String, false, null));
+         SortDataType.String, false, null));
       registerColumns(new XViewerColumn("ote.test.run.view.Build Id", "Build Id", 150, SWT.LEFT, false,
-            SortDataType.String, false, null));
+         SortDataType.String, false, null));
       registerColumns(new XViewerColumn("ote.test.run.view.Qualification Level", "Qualification Level", 150, SWT.LEFT,
-            true, SortDataType.String, false, null));
+         true, SortDataType.String, false, null));
       registerColumns(new XViewerColumn("ote.test.run.view.Last Author", "Last Author", 150, SWT.LEFT, false,
-            SortDataType.String, false, null));
+         SortDataType.String, false, null));
       registerColumns(new XViewerColumn("ote.test.run.view.Last Modified Date", "Last Modified Date", 150, SWT.LEFT,
-            false, SortDataType.Date, false, null));
+         false, SortDataType.Date, false, null));
       registerColumns(new XViewerColumn("ote.test.run.view.Revision", "Revision", 150, SWT.LEFT, false,
-            SortDataType.String, false, null));
+         SortDataType.String, false, null));
 
       registerColumns(new XViewerColumn("ote.test.run.view.OS Name", "OS Name", 150, SWT.LEFT, false,
-            SortDataType.String, false, null));
+         SortDataType.String, false, null));
       registerColumns(new XViewerColumn("ote.test.run.view.User Id", "User Id", 150, SWT.LEFT, false,
-            SortDataType.String, false, null));
+         SortDataType.String, false, null));
       registerColumns(DISPOSITION);
    }
 

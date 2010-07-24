@@ -18,14 +18,14 @@ import java.io.Serializable;
 public abstract class StringId implements Serializable {
 
    private static final long serialVersionUID = 80655792810954088L;
-   private Namespace namespace;
-   private Name name;
+   private final Namespace namespace;
+   private final Name name;
 
    public StringId(Namespace namespace, Name name) {
       this.namespace = namespace;
       this.name = name;
    }
-   
+
    @Override
    public String toString() {
       return String.format("StringId (NameSpace: %s, Name: %s)", namespace.toString(), name.toString());

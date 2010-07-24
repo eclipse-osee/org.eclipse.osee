@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
@@ -20,7 +21,6 @@ import org.eclipse.osee.framework.core.enums.Function;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.ChangeBranchArchiveStateRequest;
 import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.requester.HttpPurgeBranchRequester;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
@@ -39,16 +39,16 @@ public class HttpUpdateBranchArchivedStateRequester {
 
       ChangeBranchArchiveStateRequest requestData = new ChangeBranchArchiveStateRequest(branchId, branchState);
       AcquireResult response =
-            HttpClientMessage.send(OseeServerContext.BRANCH_CONTEXT, parameters,
-                  CoreTranslatorId.CHANGE_BRANCH_ARCHIVE_STATE, requestData, null);
+         HttpClientMessage.send(OseeServerContext.BRANCH_CONTEXT, parameters,
+            CoreTranslatorId.CHANGE_BRANCH_ARCHIVE_STATE, requestData, null);
 
       if (response.wasSuccessful()) {
          BranchManager.refreshBranches();
          try {
             OseeEventManager.kickBranchEvent(HttpPurgeBranchRequester.class, new BranchEvent(
-                  BranchEventType.ArchiveStateUpdated, branchGuid), branchId);
+               BranchEventType.ArchiveStateUpdated, branchGuid), branchId);
          } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
 

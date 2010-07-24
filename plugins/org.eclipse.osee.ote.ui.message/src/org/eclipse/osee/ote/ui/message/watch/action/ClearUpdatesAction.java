@@ -16,24 +16,21 @@ import org.eclipse.osee.ote.ui.message.tree.WatchList;
 
 /**
  * @author Ken J. Aguilar
- *
  */
 public class ClearUpdatesAction extends Action {
 
+   private final IStructuredSelection selection;
+   private final WatchList watchList;
 
-	private final IStructuredSelection selection;
-	private final WatchList watchList;
+   public ClearUpdatesAction(WatchList watchList, IStructuredSelection selection) {
+      super("Clear Update Counter");
+      this.selection = selection;
+      this.watchList = watchList;
+   }
 
-	public ClearUpdatesAction(WatchList watchList, IStructuredSelection selection) {
-		super("Clear Update Counter");
-		this.selection = selection;
-		this.watchList = watchList;
-	}
-	
-	@Override
-	public void run() {
-		watchList.clearUpdateCounters(selection);
-	}
-	
-	
+   @Override
+   public void run() {
+      watchList.clearUpdateCounters(selection);
+   }
+
 }

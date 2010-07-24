@@ -19,11 +19,11 @@ public class OSEEPerson1_4 implements Serializable {
     */
    private static final long serialVersionUID = 6345874159597384661L;
 
-   private String name;
+   private final String name;
 
-   private String email;
+   private final String email;
 
-   private String id;
+   private final String id;
 
    public OSEEPerson1_4(String name, String email, String id) {
       this.name = name;
@@ -43,6 +43,7 @@ public class OSEEPerson1_4 implements Serializable {
       return name;
    }
 
+   @Override
    public boolean equals(Object arg0) {
       if (arg0 instanceof OSEEPerson1_4) {
          OSEEPerson1_4 person = (OSEEPerson1_4) arg0;
@@ -51,6 +52,7 @@ public class OSEEPerson1_4 implements Serializable {
       return false;
    }
 
+   @Override
    public int hashCode() {
       int hashCode = 0;
       if (name != null) {
@@ -65,6 +67,7 @@ public class OSEEPerson1_4 implements Serializable {
       return hashCode;
    }
 
+   @Override
    public String toString() {
       return name + ":" + email + ":" + id + " hash=" + hashCode();
    }

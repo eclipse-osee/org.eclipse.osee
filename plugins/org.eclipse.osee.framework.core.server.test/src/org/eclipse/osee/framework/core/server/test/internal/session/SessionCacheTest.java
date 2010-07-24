@@ -32,48 +32,48 @@ import org.junit.BeforeClass;
  */
 public class SessionCacheTest extends AbstractOseeCacheTest<Session> {
 
-	private static AbstractOseeCache<Session> cache;
-	private static List<Session> sessionData;
+   private static AbstractOseeCache<Session> cache;
+   private static List<Session> sessionData;
 
-	@BeforeClass
-	public static void prepareTestData() throws OseeCoreException {
-		sessionData = new ArrayList<Session>();
+   @BeforeClass
+   public static void prepareTestData() throws OseeCoreException {
+      sessionData = new ArrayList<Session>();
 
-		SessionDataAccessor accessor = new SessionDataAccessor(sessionData);
-		cache = new SessionCache(accessor);
-		cache.ensurePopulated();
+      SessionDataAccessor accessor = new SessionDataAccessor(sessionData);
+      cache = new SessionCache(accessor);
+      cache.ensurePopulated();
 
-		Assert.assertTrue(accessor.wasLoaded());
-	}
+      Assert.assertTrue(accessor.wasLoaded());
+   }
 
-	public SessionCacheTest() {
-		super(sessionData, cache);
-	}
+   public SessionCacheTest() {
+      super(sessionData, cache);
+   }
 
-	private final static class SessionDataAccessor extends MockOseeDataAccessor<Session> {
+   private final static class SessionDataAccessor extends MockOseeDataAccessor<Session> {
 
-		private final List<Session> data;
+      private final List<Session> data;
 
-		public SessionDataAccessor(List<Session> data) {
-			super();
-			this.data = data;
-		}
+      public SessionDataAccessor(List<Session> data) {
+         super();
+         this.data = data;
+      }
 
-		@Override
-		public void load(IOseeCache<Session> cache) throws OseeCoreException {
-			super.load(cache);
-			int typeId = 100;
-			for (int index = 0; index < 10; index++) {
+      @Override
+      public void load(IOseeCache<Session> cache) throws OseeCoreException {
+         super.load(cache);
+         int typeId = 100;
+         for (int index = 0; index < 10; index++) {
 
-				String guid = GUID.create();
-				Session item =
-							new Session(guid, guid, "userId", new Date(), "serverX", "clientVersion", "clientMachine",
-										"clientAddress", 4500, new Date(), "Test Data");
-				item.setStorageState(StorageState.LOADED);
-				data.add(item);
-				item.setId(typeId++);
-				cache.cache(item);
-			}
-		}
-	}
+            String guid = GUID.create();
+            Session item =
+               new Session(guid, guid, "userId", new Date(), "serverX", "clientVersion", "clientMachine",
+                  "clientAddress", 4500, new Date(), "Test Data");
+            item.setStorageState(StorageState.LOADED);
+            data.add(item);
+            item.setId(typeId++);
+            cache.cache(item);
+         }
+      }
+   }
 }

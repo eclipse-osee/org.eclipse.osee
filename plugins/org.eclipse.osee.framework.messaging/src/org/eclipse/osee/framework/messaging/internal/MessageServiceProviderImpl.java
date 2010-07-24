@@ -24,16 +24,17 @@ public class MessageServiceProviderImpl implements MessageServiceProvider {
 
    private MessageServiceImpl messageService;
    private ExecutorService executor;
-   private ClassLoader contextClassLoader;
+   private final ClassLoader contextClassLoader;
 
    MessageServiceProviderImpl(ClassLoader contextClassLoader) {
       this.contextClassLoader = contextClassLoader;
    }
 
    public void start() throws Exception {
-//      Thread.currentThread().setContextClassLoader(contextClassLoader);
+      //      Thread.currentThread().setContextClassLoader(contextClassLoader);
       executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-      messageService = new MessageServiceImpl(new ConnectionNodeFactoryImpl("1.0", Integer.toString(hashCode()), executor));
+      messageService =
+         new MessageServiceImpl(new ConnectionNodeFactoryImpl("1.0", Integer.toString(hashCode()), executor));
    }
 
    public void stop() throws Exception {

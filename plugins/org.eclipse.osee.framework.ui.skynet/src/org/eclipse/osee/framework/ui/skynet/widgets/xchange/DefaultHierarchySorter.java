@@ -33,8 +33,8 @@ public class DefaultHierarchySorter {
       childrenMap = new HashMap<Artifact, Set<Artifact>>();
       orderedList = new ArrayList<Artifact>();
       orginalList = new HashSet<Artifact>();
-      
-      if(artifacts.isEmpty()){
+
+      if (artifacts.isEmpty()) {
          return orderedList;
       }
 
@@ -78,7 +78,7 @@ public class DefaultHierarchySorter {
                orderChildren(child);
             }
          }
-      } else if ((childrenMap.get(parent).size() == 1)) {
+      } else if (childrenMap.get(parent).size() == 1) {
          orderChildren(childrenMap.get(parent).iterator().next());
       }
    }

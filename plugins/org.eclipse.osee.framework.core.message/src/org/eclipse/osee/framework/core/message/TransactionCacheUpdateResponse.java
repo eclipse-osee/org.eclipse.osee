@@ -36,7 +36,7 @@ public class TransactionCacheUpdateResponse {
       List<TransactionRecord> rows = new ArrayList<TransactionRecord>();
       for (TransactionRecord tx : types) {
          rows.add(factory.create(tx.getId(), tx.getBranchId(), tx.getComment(), tx.getTimeStamp(), tx.getAuthor(),
-               tx.getCommit(), tx.getTxType()));
+            tx.getCommit(), tx.getTxType()));
       }
       return new TransactionCacheUpdateResponse(rows);
    }

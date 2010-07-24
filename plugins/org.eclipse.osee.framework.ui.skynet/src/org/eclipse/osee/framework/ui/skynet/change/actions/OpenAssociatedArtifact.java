@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -32,7 +33,7 @@ public class OpenAssociatedArtifact extends Action {
    private final ChangeUiData changeData;
 
    public OpenAssociatedArtifact(ChangeUiData changeData) {
-      super("Open Associated Artifact", Action.AS_PUSH_BUTTON);
+      super("Open Associated Artifact", IAction.AS_PUSH_BUTTON);
       this.changeData = changeData;
       setId("open.associated.artifact.change.report");
       setToolTipText("Open Associated Artifact");

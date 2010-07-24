@@ -19,10 +19,10 @@ import org.eclipse.osee.ote.messaging.dds.InstanceHandle;
  * @author David Diepenbrock
  */
 public class SampleRejectedStatus extends CountedStatus {
-   private SampleRejectedStatusKind lastReason;
-   private InstanceHandle lastInstanceHandle;
+   private final SampleRejectedStatusKind lastReason;
+   private final InstanceHandle lastInstanceHandle;
 
-   /** 
+   /**
     * @param totalCount The cumulative count of all samples rejected by the <code>DataReader</code>.
     * @param totalCountChange The change in count since the last time the listener was called or the status was read.
     * @param lastReason The reason the last sample was rejected.

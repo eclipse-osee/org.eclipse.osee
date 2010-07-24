@@ -33,7 +33,7 @@ public class EmbededAttributeEditorFactory {
    private final static String VALID_FLOAT_REG_EX = "^[0-9\\.]+$";
    private final static String VALID_INTEGER_REG_EX = "^[0-9]+$";
    private final static String VALID_PERCENT_REG_EX =
-         "^(0*100{1,1}\\.?((?<=\\.)0*)?%?$)|(^0*\\d{0,2}\\.?((?<=\\.)\\d*)?%?)$";
+      "^(0*100{1,1}\\.?((?<=\\.)0*)?%?$)|(^0*\\d{0,2}\\.?((?<=\\.)\\d*)?%?)$";
 
    public static IEmbeddedAttributeEditor getEmbeddedEditor(IAttributeType attributeType, String displayName, final Collection<?> attributeHolder, boolean persist) {
       try {
@@ -41,10 +41,10 @@ public class EmbededAttributeEditorFactory {
             return new EmbeddedDateAttributeEditor(null, attributeHolder, displayName, attributeType, persist);
          } else if (AttributeTypeManager.isBaseTypeCompatible(FloatingPointAttribute.class, attributeType)) {
             return new EmbeddedStringAttributeEditor(VALID_FLOAT_REG_EX, attributeHolder, displayName, attributeType,
-                  persist);
+               persist);
          } else if (AttributeTypeManager.isBaseTypeCompatible(IntegerAttribute.class, attributeType)) {
             return new EmbeddedStringAttributeEditor(VALID_INTEGER_REG_EX, attributeHolder, displayName, attributeType,
-                  persist);
+               persist);
          } else if (AttributeTypeManager.isBaseTypeCompatible(BooleanAttribute.class, attributeType)) {
             return new EmbeddedBooleanAttributeEditor(null, attributeHolder, displayName, attributeType, persist);
          } else if (AttributeTypeManager.isBaseTypeCompatible(EnumeratedAttribute.class, attributeType)) {

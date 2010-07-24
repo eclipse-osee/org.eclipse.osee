@@ -18,8 +18,8 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.JoinUtility;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.JoinUtility.IdJoinQuery;
+import org.eclipse.osee.framework.database.core.OseeConnection;
 
 /**
  * @author Ryan D. Brooks
@@ -72,7 +72,7 @@ public class UpdatePreviousTxCurrent {
          chStmt.runPreparedQuery(10000, query, queryId, branch.getId());
          while (chStmt.next()) {
             updateData.add(new Object[] {branch.getId(), chStmt.getLong("gamma_id"), TxChange.NOT_CURRENT.getValue(),
-                  chStmt.getInt("transaction_id")});
+               chStmt.getInt("transaction_id")});
          }
       } finally {
          chStmt.close();

@@ -19,41 +19,41 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  */
 public class SessionDataStoreSync implements ISessionDataStoreSync {
 
-	private static final long DATASTORE_UPDATE = 1000 * 5;
+   private static final long DATASTORE_UPDATE = 1000 * 5;
 
-	private final SessionCache sessionCache;
-	private Timer updateTimer;
+   private final SessionCache sessionCache;
+   private Timer updateTimer;
 
-	public SessionDataStoreSync(SessionCache sessionCache) {
-		this.sessionCache = sessionCache;
-	}
+   public SessionDataStoreSync(SessionCache sessionCache) {
+      this.sessionCache = sessionCache;
+   }
 
-	@Override
-	public void start() {
-		updateTimer = new Timer("Persist Session Data Timer");
-		updateTimer.scheduleAtFixedRate(new UpdateDataStore(), DATASTORE_UPDATE, DATASTORE_UPDATE);
-	}
+   @Override
+   public void start() {
+      updateTimer = new Timer("Persist Session Data Timer");
+      updateTimer.scheduleAtFixedRate(new UpdateDataStore(), DATASTORE_UPDATE, DATASTORE_UPDATE);
+   }
 
-	@Override
-	public void stop() {
-		updateTimer.cancel();
-	}
+   @Override
+   public void stop() {
+      updateTimer.cancel();
+   }
 
-	private final class UpdateDataStore extends TimerTask {
+   private final class UpdateDataStore extends TimerTask {
 
-		private boolean isCacheCurrent = false;
+      private boolean isCacheCurrent = false;
 
-		@Override
-		public void run() {
-			try {
-				if (!isCacheCurrent) {
-					sessionCache.reloadCache();
-					isCacheCurrent = true;
-				}
-				sessionCache.storeAllModified();
-			} catch (OseeCoreException ex) {
-				// Do nothing;
-			}
-		}
-	}
+      @Override
+      public void run() {
+         try {
+            if (!isCacheCurrent) {
+               sessionCache.reloadCache();
+               isCacheCurrent = true;
+            }
+            sessionCache.storeAllModified();
+         } catch (OseeCoreException ex) {
+            // Do nothing;
+         }
+      }
+   }
 }

@@ -10,23 +10,21 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.core.framework.saxparse.elements;
 
-
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public class VersionData {
 
-   private String name;
-   private String underTest;
-   private String version;
-   private String versionUnit;
-   
+   private final String name;
+   private final String underTest;
+   private final String version;
+   private final String versionUnit;
+
    /**
-    * @param versionUnit 
-    * @param version 
-    * @param underTest 
-    * @param name 
+    * @param versionUnit
+    * @param version
+    * @param underTest
+    * @param name
     */
    VersionData(String name, String underTest, String version, String versionUnit) {
       this.name = name;

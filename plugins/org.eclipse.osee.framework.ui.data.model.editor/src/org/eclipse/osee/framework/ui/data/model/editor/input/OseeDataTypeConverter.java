@@ -53,8 +53,8 @@ public class OseeDataTypeConverter implements IOseeDataTypeProcessor {
       OseeEnumType enumType = OseeEnumTypeManager.getType(name);
       int enumTypeId = enumType.getId();
       AttributeDataType attributeDataType =
-            new AttributeDataType(name, baseAttributeClass, defaultValue, fileTypeExtension, maxOccurrence,
-                  minOccurrence, providerAttributeClass, taggerId, toolTipText, enumTypeId);
+         new AttributeDataType(name, baseAttributeClass, defaultValue, fileTypeExtension, maxOccurrence, minOccurrence,
+            providerAttributeClass, taggerId, toolTipText, enumTypeId);
 
       // Create attribute provider and base attribute classes here ?? 
 
@@ -68,7 +68,7 @@ public class OseeDataTypeConverter implements IOseeDataTypeProcessor {
    @Override
    public void onRelationType(String name, String sideAName, String sideBName, String artifactTypeSideA, String artifactTypeSideB, String multiplicity, String ordered, String defaultOrderTypeGuid) throws OseeCoreException {
       RelationDataType relationDataType =
-            new RelationDataType("", name, "", "", Boolean.valueOf(ordered), "", sideAName, sideBName);
+         new RelationDataType("", name, "", "", Boolean.valueOf(ordered), "", sideAName, sideBName);
 
       this.dataTypeSource.add(relationDataType);
    }

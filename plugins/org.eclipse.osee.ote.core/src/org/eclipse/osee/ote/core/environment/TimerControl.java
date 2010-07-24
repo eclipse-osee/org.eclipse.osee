@@ -18,30 +18,33 @@ import org.eclipse.osee.ote.core.environment.interfaces.BasicTimeout;
 import org.eclipse.osee.ote.core.environment.interfaces.ITimeout;
 import org.eclipse.osee.ote.core.environment.interfaces.ITimerControl;
 
-public abstract class TimerControl implements ITimerControl{
+public abstract class TimerControl implements ITimerControl {
 
    private final ScheduledExecutorService executor;
-   
-   public TimerControl(int maxTimers){
-	  executor  = Executors.newScheduledThreadPool(maxTimers);
+
+   public TimerControl(int maxTimers) {
+      executor = Executors.newScheduledThreadPool(maxTimers);
    }
-   
+
+   @Override
    public void cancelTimers() {
       executor.shutdown();
    }
 
    public ScheduledFuture<?> schedulePeriodicTask(Runnable task, long initialDelay, long period) {
-	   return executor.scheduleAtFixedRate(task, initialDelay, period, TimeUnit.MILLISECONDS);
+      return executor.scheduleAtFixedRate(task, initialDelay, period, TimeUnit.MILLISECONDS);
    }
-   
+
    public ScheduledFuture<?> scheduleOneShotTask(Runnable task, long delay) {
-	   return executor.schedule(task, delay, TimeUnit.MILLISECONDS);
+      return executor.schedule(task, delay, TimeUnit.MILLISECONDS);
    }
-   
+
+   @Override
    public void envWait(int milliseconds) throws InterruptedException {
       envWait(new BasicTimeout(), milliseconds);
    }
 
+   @Override
    public void envWait(ITimeout obj, int milliseconds) throws InterruptedException {
       setTimerFor(obj, milliseconds);
       synchronized (obj) {

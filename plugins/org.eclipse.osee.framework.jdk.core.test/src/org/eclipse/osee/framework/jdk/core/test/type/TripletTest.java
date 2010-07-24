@@ -27,12 +27,12 @@ public class TripletTest {
    private final Triplet<Integer, Integer, Integer> alsoMapToPi = new Triplet<Integer, Integer, Integer>(a, b, c);
    private final Triplet<Integer, Integer, Integer> alsoMapToE = new Triplet<Integer, Integer, Integer>(b, c, a);
 
-   private final Triplet<Integer, Integer, Integer> firstEntryNull =
-         new Triplet<Integer, Integer, Integer>(null, 222, 333);
-   private final Triplet<Integer, Integer, Integer> secondEntryNull =
-         new Triplet<Integer, Integer, Integer>(111, null, 333);
-   private final Triplet<Integer, Integer, Integer> thirdEntryNull =
-         new Triplet<Integer, Integer, Integer>(111, 222, null);
+   private final Triplet<Integer, Integer, Integer> firstEntryNull = new Triplet<Integer, Integer, Integer>(null, 222,
+      333);
+   private final Triplet<Integer, Integer, Integer> secondEntryNull = new Triplet<Integer, Integer, Integer>(111, null,
+      333);
+   private final Triplet<Integer, Integer, Integer> thirdEntryNull = new Triplet<Integer, Integer, Integer>(111, 222,
+      null);
    private final Triplet<Integer, Integer, Integer> nonNull = new Triplet<Integer, Integer, Integer>(111, 222, 333);
 
    @org.junit.Test
@@ -96,7 +96,7 @@ public class TripletTest {
    @org.junit.Test
    public void testHashCorrectness() {
       HashMap<Triplet<Integer, Integer, Integer>, Double> hash =
-            new HashMap<Triplet<Integer, Integer, Integer>, Double>();
+         new HashMap<Triplet<Integer, Integer, Integer>, Double>();
       hash.put(mapToPi, Math.PI);
       hash.put(mapToE, Math.E);
       Assert.assertTrue(hash.get(mapToPi).equals(Math.PI));

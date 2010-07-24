@@ -29,7 +29,7 @@ public class AtsActionableItemToTeamDefinitionTest {
       boolean error = false;
       StringBuffer sb = new StringBuffer();
       for (Artifact artifact : ArtifactQuery.getArtifactListFromType(AtsArtifactTypes.ActionableItem,
-            AtsUtil.getAtsBranch())) {
+         AtsUtil.getAtsBranch())) {
          ActionableItemArtifact aia = (ActionableItemArtifact) artifact;
          if (aia.isActionable()) {
             if (TeamDefinitionArtifact.getImpactedTeamDefs(Arrays.asList(aia)).isEmpty()) {

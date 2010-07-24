@@ -15,9 +15,8 @@ import org.xml.sax.Attributes;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
-public class Version extends ElementHandlers{
+public class Version extends ElementHandlers {
 
    /**
     * @param name
@@ -28,7 +27,8 @@ public class Version extends ElementHandlers{
 
    @Override
    public Object createStartElementFoundObject(String uri, String localName, String name, Attributes attributes) {
-      return new VersionData(attributes.getValue("name"), attributes.getValue("underTest"), attributes.getValue("version"), attributes.getValue("versionUnit"));
+      return new VersionData(attributes.getValue("name"), attributes.getValue("underTest"),
+         attributes.getValue("version"), attributes.getValue("versionUnit"));
    }
 
 }

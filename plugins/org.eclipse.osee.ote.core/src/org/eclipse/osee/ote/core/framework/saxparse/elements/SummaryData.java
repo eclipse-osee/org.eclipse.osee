@@ -10,30 +10,27 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.core.framework.saxparse.elements;
 
-
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public class SummaryData {
 
-   private String criticalCount;
-   private String exceptionCount;
-   private String informationCount;
-   private String minorCount;
-   private String nodeId;
-   private String seriousCount;
-   private String startNumber;
-   
-   
+   private final String criticalCount;
+   private final String exceptionCount;
+   private final String informationCount;
+   private final String minorCount;
+   private final String nodeId;
+   private final String seriousCount;
+   private final String startNumber;
+
    /**
-    * @param startNumber 
-    * @param seriousCount 
-    * @param nodeId 
-    * @param minorCount 
-    * @param informationCount 
-    * @param exceptionCount 
-    * @param criticalCount 
+    * @param startNumber
+    * @param seriousCount
+    * @param nodeId
+    * @param minorCount
+    * @param informationCount
+    * @param exceptionCount
+    * @param criticalCount
     * @param name
     */
    SummaryData(String criticalCount, String exceptionCount, String informationCount, String minorCount, String nodeId, String seriousCount, String startNumber) {
@@ -46,14 +43,12 @@ public class SummaryData {
       this.startNumber = startNumber;
    }
 
-
    /**
     * @return the criticalCount
     */
    public String getCriticalCount() {
       return criticalCount;
    }
-
 
    /**
     * @return the exceptionCount
@@ -62,14 +57,12 @@ public class SummaryData {
       return exceptionCount;
    }
 
-
    /**
     * @return the informationCount
     */
    public String getInformationCount() {
       return informationCount;
    }
-
 
    /**
     * @return the minorCount
@@ -78,7 +71,6 @@ public class SummaryData {
       return minorCount;
    }
 
-
    /**
     * @return the nodeId
     */
@@ -86,14 +78,12 @@ public class SummaryData {
       return nodeId;
    }
 
-
    /**
     * @return the seriousCount
     */
    public String getSeriousCount() {
       return seriousCount;
    }
-
 
    /**
     * @return the startNumber

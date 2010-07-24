@@ -18,12 +18,14 @@ public class Activator implements BundleActivator {
    private BundleContext myContext;
    private static Activator instance;
 
+   @Override
    public void start(BundleContext context) throws Exception {
       myContext = context;
       instance = this;
       myContext.registerService(CommandProvider.class.getName(), new SosCommand(), null);
    }
 
+   @Override
    public void stop(BundleContext context) throws Exception {
       instance = null;
    }

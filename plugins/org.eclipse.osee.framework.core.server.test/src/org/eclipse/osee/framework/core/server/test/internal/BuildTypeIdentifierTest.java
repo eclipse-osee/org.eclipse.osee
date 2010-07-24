@@ -29,7 +29,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Test Case for {@link BuildTypeIdentifier}
- *
+ * 
  * @author Roberto E. Escobar
  */
 @RunWith(Parameterized.class)
@@ -38,29 +38,28 @@ public class BuildTypeIdentifierTest {
    private static final String INVALID_XML = "Invalid<><>";
    private static final Collection<BuildInfo> EMPTY_INFOS = Collections.emptyList();
    private static final String XML_DATA1 =
-         "<builds><build type=\"BUILD1\"><matches>version1</matches></build></builds>";
+      "<builds><build type=\"BUILD1\"><matches>version1</matches></build></builds>";
    private static final Collection<BuildInfo> BUILD_DATA1 = Collections.singleton(new BuildInfo("BUILD1", "version1"));
 
    private static final String XML_DATA2 =
-         "<builds><build type=\"BUILD1\"><matches>version1.*</matches></build></builds>";
+      "<builds><build type=\"BUILD1\"><matches>version1.*</matches></build></builds>";
    private static final Collection<BuildInfo> BUILD_DATA2 =
-         Collections.singleton(new BuildInfo("BUILD1", "version1.*"));
+      Collections.singleton(new BuildInfo("BUILD1", "version1.*"));
 
    private static final String XML_DATA3 =
-         "<builds><build type=\"BUILD1\"><matches>ver[a|B].*?456</matches></build></builds>";
-   private static final Collection<BuildInfo> BUILD_DATA3 =
-         Collections.singleton(new BuildInfo("BUILD1", "ver[a|B].*?456"));
+      "<builds><build type=\"BUILD1\"><matches>ver[a|B].*?456</matches></build></builds>";
+   private static final Collection<BuildInfo> BUILD_DATA3 = Collections.singleton(new BuildInfo("BUILD1",
+      "ver[a|B].*?456"));
 
    private static final String XML_DATA4 =
-         "<builds><build type=\"BUILD1\"><matches>0.9.1.*</matches></build><build type=\"BUILD2\"><matches>0.9.2.*</matches><matches>0.9.3.*</matches></build></builds>";
-   private static final Collection<BuildInfo> BUILD_DATA4 =
-         Arrays.asList(new BuildInfo("BUILD1", "0.9.1.*"), new BuildInfo("BUILD2", "0.9.2.*", "0.9.3.*"));
+      "<builds><build type=\"BUILD1\"><matches>0.9.1.*</matches></build><build type=\"BUILD2\"><matches>0.9.2.*</matches><matches>0.9.3.*</matches></build></builds>";
+   private static final Collection<BuildInfo> BUILD_DATA4 = Arrays.asList(new BuildInfo("BUILD1", "0.9.1.*"),
+      new BuildInfo("BUILD2", "0.9.2.*", "0.9.3.*"));
 
    private static final String XML_DATA5 =
-         "<builds><build type=\"Release Candidate\"><matches>0.9.2.*</matches></build><build type=\"Release\"><matches>0.9.*</matches></build><build type=\"Hacking\"><matches>.*</matches></build></builds>";
-   private static final Collection<BuildInfo> BUILD_DATA5 =
-         Arrays.asList(new BuildInfo("Release Candidate", "0.9.2.*"), new BuildInfo("Release", "0.9.*"), new BuildInfo(
-               "Hacking", ".*"));
+      "<builds><build type=\"Release Candidate\"><matches>0.9.2.*</matches></build><build type=\"Release\"><matches>0.9.*</matches></build><build type=\"Hacking\"><matches>.*</matches></build></builds>";
+   private static final Collection<BuildInfo> BUILD_DATA5 = Arrays.asList(
+      new BuildInfo("Release Candidate", "0.9.2.*"), new BuildInfo("Release", "0.9.*"), new BuildInfo("Hacking", ".*"));
 
    private final BuildTypeIdentifier buildIdentifier;
    private final String clientVersion;

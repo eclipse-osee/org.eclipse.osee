@@ -36,7 +36,13 @@ public class AtsAddPeerToPeerReviewRule extends WorkRuleDefinition {
 
    public static String ID = "atsAddPeerToPeerReview";
    public static enum PeerToPeerParameter {
-      title, forState, forEvent, reviewBlockingType, assignees, location, description
+      title,
+      forState,
+      forEvent,
+      reviewBlockingType,
+      assignees,
+      location,
+      description
    };
 
    public AtsAddPeerToPeerReviewRule() {
@@ -83,18 +89,18 @@ public class AtsAddPeerToPeerReviewRule extends WorkRuleDefinition {
          return null;
       }
       PeerToPeerReviewArtifact peerArt =
-            ReviewManager.createNewPeerToPeerReview(teamArt, title, getValueOrDefault(teamArt,
-                  atsAddPeerToPeerReviewRule, PeerToPeerParameter.forState), UserManager.getUser(), new Date(),
-                  transaction);
+         ReviewManager.createNewPeerToPeerReview(teamArt, title,
+            getValueOrDefault(teamArt, atsAddPeerToPeerReviewRule, PeerToPeerParameter.forState),
+            UserManager.getUser(), new Date(), transaction);
       String desc = getValueOrDefault(teamArt, atsAddPeerToPeerReviewRule, PeerToPeerParameter.description);
       if (desc != null && !desc.equals("")) {
          peerArt.setSoleAttributeFromString(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), desc);
       }
       ReviewBlockType reviewBlockType =
-            AtsAddDecisionReviewRule.getReviewBlockTypeOrDefault(teamArt, atsAddPeerToPeerReviewRule);
+         AtsAddDecisionReviewRule.getReviewBlockTypeOrDefault(teamArt, atsAddPeerToPeerReviewRule);
       if (reviewBlockType != null) {
          peerArt.setSoleAttributeFromString(ATSAttributes.REVIEW_BLOCKS_ATTRIBUTE.getStoreName(),
-               reviewBlockType.name());
+            reviewBlockType.name());
       }
       String location = getValueOrDefault(teamArt, atsAddPeerToPeerReviewRule, PeerToPeerParameter.location);
       if (location != null && location.equals("")) {
@@ -105,7 +111,7 @@ public class AtsAddPeerToPeerReviewRule extends WorkRuleDefinition {
          peerArt.getStateMgr().setAssignees(assignees);
       }
       peerArt.getLog().addLog(LogType.Note, null,
-            "Review auto-generated off rule " + atsAddPeerToPeerReviewRule.getId());
+         "Review auto-generated off rule " + atsAddPeerToPeerReviewRule.getId());
       return peerArt;
    }
 

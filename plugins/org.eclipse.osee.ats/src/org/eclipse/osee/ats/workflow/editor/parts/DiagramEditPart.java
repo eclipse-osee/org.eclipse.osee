@@ -107,6 +107,7 @@ public class DiagramEditPart extends AbstractGraphicalEditPart implements Proper
       return getCastedModel().getChildren(); // return a list of shapes
    }
 
+   @Override
    public void propertyChange(PropertyChangeEvent evt) {
       String prop = evt.getPropertyName();
       // these properties are fired when Shapes are added into or removed from 
@@ -146,7 +147,7 @@ public class DiagramEditPart extends AbstractGraphicalEditPart implements Proper
          if (childClass == EllipticalShape.class || WorkPageShape.class.isAssignableFrom(((Class<?>) childClass))) {
             // return a command that can add a Shape to a WorkflowDiagram 
             return new ShapeCreateCommand((Shape) request.getNewObject(), (WorkflowDiagram) getHost().getModel(),
-                  (Rectangle) getConstraintFor(request));
+               (Rectangle) getConstraintFor(request));
          }
          return null;
       }

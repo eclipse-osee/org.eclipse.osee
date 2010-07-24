@@ -27,8 +27,8 @@ import org.osgi.framework.Bundle;
  * @author Andrew M. Finkbeiner
  */
 public class EclipseBundleClassloader extends ClassLoader {
-   private Map<String, Class<?>> classesloaded;
-   private Map<String, Bundle> bundleLoaded;
+   private final Map<String, Class<?>> classesloaded;
+   private final Map<String, Bundle> bundleLoaded;
 
    public EclipseBundleClassloader(List<String> bundleNames) {
       this(bundleNames, EclipseBundleClassloader.class.getClassLoader());
@@ -56,6 +56,7 @@ public class EclipseBundleClassloader extends ClassLoader {
       bundleLoaded.put(bundle.getSymbolicName(), bundle);
    }
 
+   @Override
    protected synchronized Class<?> findClass(String classname) throws ClassNotFoundException {
       Class<?> loadedclass = classesloaded.get(classname);
       if (loadedclass != null) {
@@ -80,6 +81,7 @@ public class EclipseBundleClassloader extends ClassLoader {
       return this.getParent().loadClass(classname);
    }
 
+   @Override
    @SuppressWarnings("unchecked")
    public Class loadClass(String classname) throws ClassNotFoundException {
       return loadClass(classname, false);

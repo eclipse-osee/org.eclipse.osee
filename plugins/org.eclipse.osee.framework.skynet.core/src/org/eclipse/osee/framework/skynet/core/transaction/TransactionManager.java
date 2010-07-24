@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.skynet.core.transaction;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -49,28 +48,28 @@ import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 public final class TransactionManager {
 
    private static final String INSERT_INTO_TRANSACTION_DETAIL =
-         "INSERT INTO osee_tx_details (transaction_id, osee_comment, time, author, branch_id, tx_type) VALUES (?, ?, ?, ?, ?, ?)";
+      "INSERT INTO osee_tx_details (transaction_id, osee_comment, time, author, branch_id, tx_type) VALUES (?, ?, ?, ?, ?, ?)";
 
    private static final String SELECT_TRANSACTIONS =
-         "SELECT * FROM osee_tx_details WHERE branch_id = ? ORDER BY transaction_id DESC";
+      "SELECT * FROM osee_tx_details WHERE branch_id = ? ORDER BY transaction_id DESC";
 
    private static final String GET_PRIOR_TRANSACTION =
-         "SELECT MAX(transaction_id) AS prior_id FROM osee_tx_details WHERE branch_id = ? AND transaction_id < ?";
+      "SELECT MAX(transaction_id) AS prior_id FROM osee_tx_details WHERE branch_id = ? AND transaction_id < ?";
 
    private static final String SELECT_COMMIT_TRANSACTIONS =
-         "SELECT transaction_id FROM osee_tx_details WHERE commit_art_id = ?";
+      "SELECT transaction_id FROM osee_tx_details WHERE commit_art_id = ?";
 
    private static final String UPDATE_TRANSACTION_COMMENTS =
-         "UPDATE osee_tx_details SET osee_comment = ? WHERE transaction_id = ?";
+      "UPDATE osee_tx_details SET osee_comment = ? WHERE transaction_id = ?";
 
    private static final String SELECT_TRANSACTION_COMMENTS =
-         "SELECT transaction_id FROM osee_tx_details WHERE osee_comment LIKE ?";
+      "SELECT transaction_id FROM osee_tx_details WHERE osee_comment LIKE ?";
 
    private static final String SELECT_BRANCH_TRANSACTION_BY_DATE =
-         "SELECT * FROM osee_tx_details WHERE branch_id = ? AND time < ? ORDER BY time DESC";
+      "SELECT * FROM osee_tx_details WHERE branch_id = ? AND time < ? ORDER BY time DESC";
 
    private static final HashMap<Integer, List<TransactionRecord>> commitArtifactIdMap =
-         new HashMap<Integer, List<TransactionRecord>>();
+      new HashMap<Integer, List<TransactionRecord>>();
 
    private TransactionManager() {
    }
@@ -164,8 +163,8 @@ public final class TransactionManager {
    public static TransactionRecord getHeadTransaction(IOseeBranch branch) throws OseeCoreException {
       int branchId = BranchManager.getBranchId(branch);
       int transactionNumber =
-            ConnectionHandler.runPreparedQueryFetchInt(-1,
-                  ClientSessionManager.getSql(OseeSql.TX_GET_MAX_AS_LARGEST_TX), branchId);
+         ConnectionHandler.runPreparedQueryFetchInt(-1, ClientSessionManager.getSql(OseeSql.TX_GET_MAX_AS_LARGEST_TX),
+            branchId);
       if (transactionNumber == -1) {
          throw new TransactionDoesNotExist("No transactions where found in the database for branch: " + branchId);
       }
@@ -188,8 +187,8 @@ public final class TransactionManager {
       Date transactionTime = GlobalTime.GreenwichMeanTimestamp();
       TransactionRecordFactory factory = Activator.getInstance().getOseeFactoryService().getTransactionFactory();
       TransactionRecord transactionId =
-            factory.createOrUpdate(getTransactionCache(), transactionNumber, branch.getId(), comment, transactionTime,
-                  authorArtId, -1, txType);
+         factory.createOrUpdate(getTransactionCache(), transactionNumber, branch.getId(), comment, transactionTime,
+            authorArtId, -1, txType);
       transactionId.setBranchCache(Activator.getInstance().getOseeCacheService().getBranchCache());
       return transactionId;
    }
@@ -197,8 +196,8 @@ public final class TransactionManager {
    @SuppressWarnings("unchecked")
    public static synchronized void internalPersist(OseeConnection connection, TransactionRecord transactionRecord) throws OseeCoreException {
       ConnectionHandler.runPreparedUpdate(connection, INSERT_INTO_TRANSACTION_DETAIL, transactionRecord.getId(),
-            transactionRecord.getComment(), transactionRecord.getTimeStamp(), transactionRecord.getAuthor(),
-            transactionRecord.getBranchId(), transactionRecord.getTxType().getId());
+         transactionRecord.getComment(), transactionRecord.getTimeStamp(), transactionRecord.getAuthor(),
+         transactionRecord.getBranchId(), transactionRecord.getTxType().getId());
    }
 
    /**
@@ -241,10 +240,10 @@ public final class TransactionManager {
          if (chStmt.next()) {
             int transactionId = chStmt.getInt("transaction_id");
             if (chStmt.wasNull()) {
-               DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG);
+               DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG);
                String message =
-                     String.format("Cannot find transaction for [%s] - the transation id was null",
-                           dateFormat.format(maxDateExclusive));
+                  String.format("Cannot find transaction for [%s] - the transation id was null",
+                     dateFormat.format(maxDateExclusive));
                throw new TransactionDoesNotExist(message);
             }
             txRecord = getTransactionId(transactionId, chStmt);
@@ -291,8 +290,8 @@ public final class TransactionManager {
             BranchCache branchCache = Activator.getInstance().getOseeCacheService().getBranchCache();
 
             transactionRecord =
-                  factory.createOrUpdate(txCache, txId, chStmt.getInt("branch_id"), chStmt.getString("osee_comment"),
-                        chStmt.getTimestamp("time"), chStmt.getInt("author"), chStmt.getInt("commit_art_id"), txType);
+               factory.createOrUpdate(txCache, txId, chStmt.getInt("branch_id"), chStmt.getString("osee_comment"),
+                  chStmt.getTimestamp("time"), chStmt.getInt("author"), chStmt.getInt("commit_art_id"), txType);
             transactionRecord.setBranchCache(branchCache);
 
          } finally {

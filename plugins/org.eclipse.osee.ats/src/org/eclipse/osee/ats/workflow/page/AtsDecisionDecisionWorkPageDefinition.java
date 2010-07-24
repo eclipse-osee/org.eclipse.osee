@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 public class AtsDecisionDecisionWorkPageDefinition extends WorkPageDefinition {
 
    public static String ID =
-         DecisionWorkflowDefinition.ID + "." + DecisionReviewArtifact.DecisionReviewState.Decision.name();
+      DecisionWorkflowDefinition.ID + "." + DecisionReviewArtifact.DecisionReviewState.Decision.name();
    public static String DECISION_QUESTION_LABEL = "ats.Decision Question";
    public static String DECISION_ANSWER_LABEL = "ats.Decision Answer";
 

@@ -24,7 +24,6 @@ import org.eclipse.osee.ote.core.BundleInfo;
 
 /**
  * @author Robert A. Fisher
- *
  */
 public class JarListenerStub<T extends JarCollectionNature> implements IJarChangeListener<T> {
 
@@ -39,7 +38,7 @@ public class JarListenerStub<T extends JarCollectionNature> implements IJarChang
       this.changedBundles = new HashSet<String>();
       this.removedBundles = new HashSet<String>();
    }
-   
+
    @Override
    public void handleBundleAdded(URL url) {
       try {
@@ -94,7 +93,7 @@ public class JarListenerStub<T extends JarCollectionNature> implements IJarChang
    public void handlePostChange() {
       System.out.println("Bunch of changes just finished");
    }
-   
+
    private <S extends Object> Set<S> duplicateAndClear(Set<S> set) {
       synchronized (bundleSynchronizer) {
          Set<S> returnBundles = new HashSet<S>(set);
@@ -133,7 +132,7 @@ public class JarListenerStub<T extends JarCollectionNature> implements IJarChang
       File file;
       try {
          file = new File(url.toURI());
-      } catch(URISyntaxException ex) {
+      } catch (URISyntaxException ex) {
          file = new File(url.getPath());
       }
 

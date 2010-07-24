@@ -12,11 +12,13 @@ package org.eclipse.osee.ote.core.cmd;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public interface CommandDistributer {
    void distribute(Command command);
+
    void registerHandler(CommandHandler commandHandler);
+
    void unregisterHandler(CommandHandler commandHandler);
+
    void shutdown();
 }

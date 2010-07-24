@@ -53,20 +53,19 @@ public class DuplicateHridTest {
       return toReturn;
    }
 
-   private static final String GET_ARTIFACTS = "SELECT t1.human_readable_id FROM osee_artifact t1, osee_artifact_type t3";
+   private static final String GET_ARTIFACTS =
+      "SELECT t1.human_readable_id FROM osee_artifact t1, osee_artifact_type t3";
 
-   private static final char[][] chars =
-         new char[][] {
-               {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K',
-                     'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'},
-               {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'M',
-                     'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Y', 'Z'}};
+   private static final char[][] chars = new char[][] {
+      {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M',
+         'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'},
+      {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P',
+         'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Y', 'Z'}};
    private static final int[] charsIndexLookup = new int[] {0, 1, 1, 1, 0};
 
    /*
-    * Copied from Artifact.java
-    * The hope here is that we won't randomly generate an HRID that's already taken;
-    * given the size of the demo database, this is unlikely
+    * Copied from Artifact.java The hope here is that we won't randomly generate an HRID that's already taken; given the
+    * size of the demo database, this is unlikely
     */
    private static String generate_random_HRID() {
       int seed = (int) (Math.random() * 34438396);

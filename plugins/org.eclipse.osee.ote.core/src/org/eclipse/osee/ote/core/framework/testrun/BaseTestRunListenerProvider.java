@@ -22,103 +22,109 @@ import org.eclipse.osee.ote.core.framework.event.IEventData;
 
 public class BaseTestRunListenerProvider implements ITestRunListenerProvider {
 
-	List<ITestRunListener> listeners;
+   List<ITestRunListener> listeners;
 
-	public BaseTestRunListenerProvider() {
-		listeners = new CopyOnWriteArrayList<ITestRunListener>();
-	}
+   public BaseTestRunListenerProvider() {
+      listeners = new CopyOnWriteArrayList<ITestRunListener>();
+   }
 
-	public boolean addTestRunListener(ITestRunListener listener) {
-		return listeners.add(listener);
-	}
+   @Override
+   public boolean addTestRunListener(ITestRunListener listener) {
+      return listeners.add(listener);
+   }
 
-	public boolean removeTestRunListener(ITestRunListener listener) {
-		return listeners.remove(listener);
-	}
+   @Override
+   public boolean removeTestRunListener(ITestRunListener listener) {
+      return listeners.remove(listener);
+   }
 
-	public IMethodResult notifyPostRun(IEventData eventData) {
-		MethodResultImpl result = new MethodResultImpl(ReturnCode.OK);
-		boolean failed = false;
-		for (ITestRunListener listener : listeners) {
-		   try{
-		      result = collectStatus(result, listener.postRun(eventData));
-		   } catch (Throwable th){
+   @Override
+   public IMethodResult notifyPostRun(IEventData eventData) {
+      MethodResultImpl result = new MethodResultImpl(ReturnCode.OK);
+      boolean failed = false;
+      for (ITestRunListener listener : listeners) {
+         try {
+            result = collectStatus(result, listener.postRun(eventData));
+         } catch (Throwable th) {
             failed = true;
             result.addStatus(new BaseStatus(TestEnvironment.class.getName(), Level.SEVERE, th));
          }
-		}
-		if(failed){
+      }
+      if (failed) {
          result.setReturnCode(ReturnCode.ERROR);
       }
-		return result;
-	}
+      return result;
+   }
 
-	public IMethodResult notifyPostTestCase(IEventData eventData) {
-		MethodResultImpl result = new MethodResultImpl(ReturnCode.OK);
-		boolean failed = false;
-		for (ITestRunListener listener : listeners) {
-			try{
-			   result = collectStatus(result, listener.postTestCase(eventData));
-   		 } catch (Throwable th){
-             failed = true;
-             result.addStatus(new BaseStatus(TestEnvironment.class.getName(), Level.SEVERE, th));
-          }
-		}
-		if(failed){
-         result.setReturnCode(ReturnCode.ERROR);
-      }
-		return result;
-	}
-
-	public IMethodResult notifyPreRun(IEventData eventData) {
-		MethodResultImpl result = new MethodResultImpl(ReturnCode.OK);
-		boolean failed = false;
-		for (ITestRunListener listener : listeners) {
-		   try{
-		      result = collectStatus(result, listener.preRun(eventData));
-		   } catch (Throwable th){
-		      failed = true;
-		      result.addStatus(new BaseStatus(TestEnvironment.class.getName(), Level.SEVERE, th));
-		   }
-		}
-		if(failed){
-		   result.setReturnCode(ReturnCode.ERROR);
-		}
-		return result;
-	}
-
-	public IMethodResult notifyPreTestCase(IEventData eventData) {
-		MethodResultImpl result = new MethodResultImpl(ReturnCode.OK);
-		boolean failed = false;
-		for (ITestRunListener listener : listeners) {
-		   try{
-		      result = collectStatus(result, listener.preTestCase(eventData));
-		   } catch (Throwable th){
+   @Override
+   public IMethodResult notifyPostTestCase(IEventData eventData) {
+      MethodResultImpl result = new MethodResultImpl(ReturnCode.OK);
+      boolean failed = false;
+      for (ITestRunListener listener : listeners) {
+         try {
+            result = collectStatus(result, listener.postTestCase(eventData));
+         } catch (Throwable th) {
             failed = true;
             result.addStatus(new BaseStatus(TestEnvironment.class.getName(), Level.SEVERE, th));
          }
-		}
-		if(failed){
+      }
+      if (failed) {
          result.setReturnCode(ReturnCode.ERROR);
       }
-		return result;
-	}
+      return result;
+   }
 
-	private MethodResultImpl collectStatus(MethodResultImpl result,
-			IMethodResult listenerResult) {
-		if (listenerResult.getReturnCode() != ReturnCode.OK) {
-			if (result.getReturnCode() == ReturnCode.OK) {
-				result = new MethodResultImpl(ReturnCode.OK);
-			}
-			result.setReturnCode(listenerResult.getReturnCode());
-			result.addStatus(listenerResult.getStatus());
-		}
-		return result;
-	}
+   @Override
+   public IMethodResult notifyPreRun(IEventData eventData) {
+      MethodResultImpl result = new MethodResultImpl(ReturnCode.OK);
+      boolean failed = false;
+      for (ITestRunListener listener : listeners) {
+         try {
+            result = collectStatus(result, listener.preRun(eventData));
+         } catch (Throwable th) {
+            failed = true;
+            result.addStatus(new BaseStatus(TestEnvironment.class.getName(), Level.SEVERE, th));
+         }
+      }
+      if (failed) {
+         result.setReturnCode(ReturnCode.ERROR);
+      }
+      return result;
+   }
 
-	/**
-	 * Clearing out the listeners.
-	 */
+   @Override
+   public IMethodResult notifyPreTestCase(IEventData eventData) {
+      MethodResultImpl result = new MethodResultImpl(ReturnCode.OK);
+      boolean failed = false;
+      for (ITestRunListener listener : listeners) {
+         try {
+            result = collectStatus(result, listener.preTestCase(eventData));
+         } catch (Throwable th) {
+            failed = true;
+            result.addStatus(new BaseStatus(TestEnvironment.class.getName(), Level.SEVERE, th));
+         }
+      }
+      if (failed) {
+         result.setReturnCode(ReturnCode.ERROR);
+      }
+      return result;
+   }
+
+   private MethodResultImpl collectStatus(MethodResultImpl result, IMethodResult listenerResult) {
+      if (listenerResult.getReturnCode() != ReturnCode.OK) {
+         if (result.getReturnCode() == ReturnCode.OK) {
+            result = new MethodResultImpl(ReturnCode.OK);
+         }
+         result.setReturnCode(listenerResult.getReturnCode());
+         result.addStatus(listenerResult.getStatus());
+      }
+      return result;
+   }
+
+   /**
+    * Clearing out the listeners.
+    */
+   @Override
    public void clear() {
       listeners.clear();
    }

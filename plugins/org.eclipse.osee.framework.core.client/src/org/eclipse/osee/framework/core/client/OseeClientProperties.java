@@ -12,8 +12,8 @@ package org.eclipse.osee.framework.core.client;
 
 import java.net.URL;
 import java.util.Dictionary;
-import java.util.Properties;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -39,7 +39,7 @@ public class OseeClientProperties extends OseeProperties {
 
    // Database Initialization Properties
    private static final String OSEE_IMPORT_DURING_DB_INIT = "osee.import.on.db.init";
-//   private static final String OSEE_IMPORT_FROM_DB_SERVICE = "osee.import.from.connection.id.on.db.init";
+   //   private static final String OSEE_IMPORT_FROM_DB_SERVICE = "osee.import.from.connection.id.on.db.init";
    private static final String OSEE_USE_FILE_SPECIFIED_SCHEMAS = "osee.file.specified.schema.names.on.db.init";
 
    private static final String OSEE_TABLE_DATA_SPACE_ON_DB_INIT = "osee.table.data.space.on.db.init";
@@ -49,7 +49,8 @@ public class OseeClientProperties extends OseeProperties {
    private static final String OSEE_CHOICE_ON_DB_INIT = "osee.choice.on.db.init";
 
    private enum InitializerFlag {
-      overwrite_settings, client_defaults;
+      overwrite_settings,
+      client_defaults;
 
       public static InitializerFlag fromString(String value) {
          InitializerFlag toReturn = client_defaults;
@@ -76,20 +77,20 @@ public class OseeClientProperties extends OseeProperties {
       initialize();
    }
 
-//   /**
-//    * Retrieves where table data should be imported from during OSEE database initialization. The default is to use the
-//    * database connection id specified in the schema.xml files.
-//    *
-//    * @return the connection id to use as a source of the data to be imported.
-//    */
-//   public static String getTableImportSource() {
-//      return getProperty(OSEE_IMPORT_FROM_DB_SERVICE);
-//   }
+   //   /**
+   //    * Retrieves where table data should be imported from during OSEE database initialization. The default is to use the
+   //    * database connection id specified in the schema.xml files.
+   //    *
+   //    * @return the connection id to use as a source of the data to be imported.
+   //    */
+   //   public static String getTableImportSource() {
+   //      return getProperty(OSEE_IMPORT_FROM_DB_SERVICE);
+   //   }
 
    /**
     * Retrieves whether OSEE database initialization should use the schema names specified in the schema.xml files
     * instead of using the connection schema. Using the connection specified schema is the default behavior.
-    *
+    * 
     * @return <b>true</b> if the file specified schemas should be used.
     */
    public static boolean useSchemasSpecifiedInDbConfigFiles() {
@@ -98,7 +99,7 @@ public class OseeClientProperties extends OseeProperties {
 
    /**
     * Retrieves the table data space to use during OSEE database initialization
-    *
+    * 
     * @return table data space
     */
    public static String getOseeTableDataSpaceForDbInit() {
@@ -107,7 +108,7 @@ public class OseeClientProperties extends OseeProperties {
 
    /**
     * Retrieves the index data space to use during OSEE database initialization
-    *
+    * 
     * @return index data space
     */
    public static String getOseeIndexDataSpaceForDbInit() {
@@ -130,7 +131,7 @@ public class OseeClientProperties extends OseeProperties {
 
    /**
     * Retrieves whether OSEE database initialization should import database data as part of its tasks.
-    *
+    * 
     * @return <b>true</b> if database initialization should import database data as part of its tasks.
     */
    public static boolean isOseeImportAllowed() {
@@ -139,9 +140,9 @@ public class OseeClientProperties extends OseeProperties {
 
    /**
     * Gets whether local application server launch is required
-    *
+    * 
     * @return <b>true</b> if local application server launch is required. <b>false</b> if local application server
-    *         launch is not required.
+    * launch is not required.
     */
    public static boolean isLocalApplicationServerRequired() {
       return Boolean.valueOf(getProperty(OSEE_LOCAL_APPLICATION_SERVER));
@@ -149,7 +150,7 @@ public class OseeClientProperties extends OseeProperties {
 
    /**
     * Retrieves the specified port to use for the local HTTP server
-    *
+    * 
     * @return port to use
     */
    public static String getLocalHttpWorkerPort() {
@@ -158,7 +159,7 @@ public class OseeClientProperties extends OseeProperties {
 
    /**
     * Authentication Protocol to use
-    *
+    * 
     * @return client/server authentication protocol.
     */
    public static String getAuthenticationProtocol() {
@@ -170,9 +171,9 @@ public class OseeClientProperties extends OseeProperties {
     * Sets the application server address and port to use. This system property sets the URL used to reference
     * the application server. Arbitration is bypassed.
     * </pre>
-    *
+    * 
     * <b>Format: </b> <code>http://address:port</code>
-    *
+    * 
     * @param application server URL to use instead going through the arbitration server
     */
    public static void setOseeApplicationServer(String value) {
@@ -184,9 +185,9 @@ public class OseeClientProperties extends OseeProperties {
     * Retrieves the application server address and port to use. When specified, this system property sets the URL used to reference
     * the application server. Arbitration is bypassed.
     * </pre>
-    *
+    * 
     * <b>Format: </b> <code>http://address:port</code>
-    *
+    * 
     * @return application server URL to use instead going through the arbitration server
     */
    public static String getOseeApplicationServer() {
@@ -199,9 +200,9 @@ public class OseeClientProperties extends OseeProperties {
     * gain access to OSEE data. If the application server property is set then that address takes precedence and
     * arbitration is bypassed.
     * </pre>
-    *
+    * 
     * <b>Format: </b> <code>http://address:port</code>
-    *
+    * 
     * @return default arbitration server URL to set preferences.
     */
    public static String getOseeArbitrationServer() {
@@ -226,7 +227,7 @@ public class OseeClientProperties extends OseeProperties {
 
    /**
     * A string representation of all the property setting specified by this class
-    *
+    * 
     * @return settings for all properties specified by this class
     */
    public static String getAllSettings() {

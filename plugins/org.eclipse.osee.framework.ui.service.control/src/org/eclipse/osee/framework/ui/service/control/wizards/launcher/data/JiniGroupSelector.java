@@ -64,6 +64,7 @@ public class JiniGroupSelector implements IRegistrarListener {
       comboViewer.getCombo().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
       comboViewer.getCombo().addModifyListener(new ModifyListener() {
 
+         @Override
          public void modifyText(ModifyEvent e) {
             jiniGroup[0] = comboViewer.getCombo().getText();
          }
@@ -71,6 +72,7 @@ public class JiniGroupSelector implements IRegistrarListener {
 
       comboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
+         @Override
          public void selectionChanged(SelectionChangedEvent event) {
             IStructuredSelection selection = (IStructuredSelection) comboViewer.getSelection();
             Object obj = selection.getFirstElement();
@@ -86,6 +88,7 @@ public class JiniGroupSelector implements IRegistrarListener {
    private void populateGroups() {
       PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 
+         @Override
          public void run() {
             availableGroups.clear();
             availableGroups.addAll(reggieCache.getAvailableJiniGroups());
@@ -129,14 +132,17 @@ public class JiniGroupSelector implements IRegistrarListener {
       this.reggieCache.removeListener(this);
    }
 
+   @Override
    public void reggieAdded(List<ServiceRegistrar> serviceRegistrars) {
       populateGroups();
    }
 
+   @Override
    public void reggieChanged(List<ServiceRegistrar> serviceRegistrars) {
       populateGroups();
    }
 
+   @Override
    public void reggieRemoved(List<ServiceRegistrar> serviceRegistrars) {
       populateGroups();
    }

@@ -57,7 +57,7 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
    @Override
    public IWorldEditorProvider copyProvider() throws OseeArgumentException {
       return new WorldEditorParameterSearchItemProvider(
-            (WorldEditorParameterSearchItem) worldParameterSearchItem.copy(), customizeData, tableLoadOptions);
+         (WorldEditorParameterSearchItem) worldParameterSearchItem.copy(), customizeData, tableLoadOptions);
    }
 
    public WorldSearchItem getWorldSearchItem() {
@@ -69,6 +69,7 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
       return worldParameterSearchItem.getName();
    }
 
+   @Override
    public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend) throws OseeCoreException {
       this.worldEditor = worldEditor;
       if (firstTime) {
@@ -76,7 +77,9 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
          worldEditor.setTableTitle(ENTER_OPTIONS_AND_SELECT_SEARCH, false);
          return;
       }
-      if (worldParameterSearchItem.isCancelled()) return;
+      if (worldParameterSearchItem.isCancelled()) {
+         return;
+      }
 
       Result result = worldParameterSearchItem.isParameterSelectionValid();
       if (result.isFalse()) {
@@ -122,7 +125,7 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
       @Override
       protected IStatus run(IProgressMonitor monitor) {
          if (loading) {
-            return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, "Already Loading, Please Wait", null);
+            return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, -1, "Already Loading, Please Wait", null);
          }
          String selectedName = "";
          try {
@@ -149,12 +152,13 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
             worldEditor.getWorldComposite().load(selectedName, artifacts, customizeData, tableLoadOptions);
          } catch (final Exception ex) {
             String str = "Exception occurred. Network may be down.";
-            if (ex.getLocalizedMessage() != null && !ex.getLocalizedMessage().equals("")) str +=
-                  " => " + ex.getLocalizedMessage();
+            if (ex.getLocalizedMessage() != null && !ex.getLocalizedMessage().equals("")) {
+               str += " => " + ex.getLocalizedMessage();
+            }
             worldEditor.getWorldComposite().setTableTitle("Searching Error - " + selectedName, false);
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
             monitor.done();
-            return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, str, null);
+            return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, -1, str, null);
          } finally {
             setLoading(false);
          }

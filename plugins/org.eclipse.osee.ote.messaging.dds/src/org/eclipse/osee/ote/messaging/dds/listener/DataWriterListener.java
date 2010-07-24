@@ -22,35 +22,34 @@ import org.eclipse.osee.ote.messaging.dds.status.PublicationMatchStatus;
  * @author Robert A. Fisher
  * @author David Diepenbrock
  */
-public interface DataWriterListener extends Listener{
+public interface DataWriterListener extends Listener {
 
    /**
-    * This method is here for future functionality that is described in the DDS specification
-    * but has not been implemented or used.
+    * This method is here for future functionality that is described in the DDS specification but has not been
+    * implemented or used.
     */
    public void onLivelinessLost(DataWriter theWriter, LivelinessLostStatus status);
 
    /**
-    * This method is here for future functionality that is described in the DDS specification
-    * but has not been implemented or used.
+    * This method is here for future functionality that is described in the DDS specification but has not been
+    * implemented or used.
     */
    public void onOfferedDeadlineMissed(DataWriter theWriter, OfferedDeadlineMissedStatus status);
 
    /**
-    * This method is here for future functionality that is described in the DDS specification
-    * but has not been implemented or used.
+    * This method is here for future functionality that is described in the DDS specification but has not been
+    * implemented or used.
     */
    public void onOfferedIncompatibleQos(DataWriter theWriter, OfferedIncompatibleQosStatus status);
 
    /**
-    * This method is here for future functionality that is described in the DDS specification
-    * but has not been implemented or used.
+    * This method is here for future functionality that is described in the DDS specification but has not been
+    * implemented or used.
     */
    public void onPublicationMatch(DataWriter theWriter, PublicationMatchStatus status);
 
    /**
-    * This method is called when information for a <code>DataWriter</code> has been sent to the
-    * middleware.
+    * This method is called when information for a <code>DataWriter</code> has been sent to the middleware.
     * 
     * @param theWriter - The <code>DataWriter</code> who's information was sent.
     */

@@ -16,22 +16,20 @@ import org.eclipse.osee.ote.ui.message.tree.WatchList;
 
 /**
  * @author Ken J. Aguilar
- *
  */
 public class DeleteSelectionAction extends Action {
 
-	private final WatchList watchList;
-	private final IStructuredSelection selection;
+   private final WatchList watchList;
+   private final IStructuredSelection selection;
 
-	public DeleteSelectionAction(WatchList watchList, IStructuredSelection selection) {
-		super("Delete");
-		this.watchList = watchList;
-		this.selection = selection;
-	}
-	
-	
-	@Override
-	public void run() {
-		watchList.deleteSelection(selection);
-	}
+   public DeleteSelectionAction(WatchList watchList, IStructuredSelection selection) {
+      super("Delete");
+      this.watchList = watchList;
+      this.selection = selection;
+   }
+
+   @Override
+   public void run() {
+      watchList.deleteSelection(selection);
+   }
 }

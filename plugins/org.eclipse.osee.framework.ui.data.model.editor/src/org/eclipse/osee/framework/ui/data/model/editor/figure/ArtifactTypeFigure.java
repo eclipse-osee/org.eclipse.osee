@@ -22,8 +22,8 @@ import org.eclipse.swt.graphics.Image;
  */
 public class ArtifactTypeFigure extends RoundedRectangle {
 
-   private DataTypeFigure header;
-   private IFigure body;
+   private final DataTypeFigure header;
+   private final IFigure body;
 
    public ArtifactTypeFigure(IFigure namespaceFigure, IFigure nameFigure) {
       setOpaque(true);

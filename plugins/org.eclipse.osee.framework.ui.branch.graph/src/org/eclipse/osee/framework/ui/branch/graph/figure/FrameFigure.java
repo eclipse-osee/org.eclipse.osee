@@ -34,8 +34,8 @@ public class FrameFigure extends LabeledContainer {
          outer = new CompoundBorder(new SchemeBorder(SchemeBorder.SCHEMES.RAISED), titlebar);
 
          inner =
-               new CompoundBorder(new LineBorder(FigureUtilities.mixColors(ColorConstants.buttonDarker,
-                     ColorConstants.button), 3), new SchemeBorder(SchemeBorder.SCHEMES.LOWERED));
+            new CompoundBorder(new LineBorder(FigureUtilities.mixColors(ColorConstants.buttonDarker,
+               ColorConstants.button), 3), new SchemeBorder(SchemeBorder.SCHEMES.LOWERED));
 
       }
    }
@@ -51,6 +51,7 @@ public class FrameFigure extends LabeledContainer {
       setLabel(title);
    }
 
+   @Override
    public Dimension getPreferredSize(int wHint, int hHint) {
       Dimension size = super.getPreferredSize(wHint, hHint);
       size.height = Math.max(size.height, 10);

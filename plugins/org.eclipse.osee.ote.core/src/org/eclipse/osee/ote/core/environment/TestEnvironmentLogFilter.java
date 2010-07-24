@@ -15,20 +15,24 @@ import java.util.regex.Pattern;
 import org.eclipse.osee.framework.logging.ILoggerFilter;
 
 public class TestEnvironmentLogFilter implements ILoggerFilter {
-	private static Level level;
-	   static {
-		   level = Level.parse(System.getProperty("ote.testenv.filter.level", "INFO"));
-	   }
-	public Pattern bundleId() {
-		return null;
-	}
+   private static Level level;
+   static {
+      level = Level.parse(System.getProperty("ote.testenv.filter.level", "INFO"));
+   }
 
-	public Level getLoggerLevel() {
-		return level;
-	}
+   @Override
+   public Pattern bundleId() {
+      return null;
+   }
 
-	public Pattern name() {
-		return null;
-	}
+   @Override
+   public Level getLoggerLevel() {
+      return level;
+   }
+
+   @Override
+   public Pattern name() {
+      return null;
+   }
 
 }

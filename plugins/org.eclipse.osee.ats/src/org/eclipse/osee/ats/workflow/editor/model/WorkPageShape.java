@@ -38,14 +38,14 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 public class WorkPageShape extends RectangleShape {
 
    private final WorkPageDefinition workPageDefinition;
-   private static String[] attributeProperties =
-         new String[] {WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName(),
-               WorkItemAttributes.WORK_ID.getAttributeTypeName(),
-               WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName()};
+   private static String[] attributeProperties = new String[] {
+      WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName(), WorkItemAttributes.WORK_ID.getAttributeTypeName(),
+      WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName()};
    public static String START_PAGE = "Start Page";
    private Artifact artifact;
    public static enum StartPageEnum {
-      Yes, No
+      Yes,
+      No
    };
 
    public WorkPageShape() {
@@ -66,8 +66,8 @@ public class WorkPageShape extends RectangleShape {
       super.setWorkflowDiagram(workflowDiagram);
       if (getId().equals("NEW")) {
          setPropertyValue(
-               WorkItemAttributes.WORK_ID.getAttributeTypeName(),
-               workflowDiagram.getWorkFlowDefinition().getId() + "." + getPropertyValue(WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName()));
+            WorkItemAttributes.WORK_ID.getAttributeTypeName(),
+            workflowDiagram.getWorkFlowDefinition().getId() + "." + getPropertyValue(WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName()));
       }
    }
 
@@ -78,7 +78,7 @@ public class WorkPageShape extends RectangleShape {
          descriptorList.add(new TextPropertyDescriptor(type, type)); // id and description pair
       }
       descriptorList.add(new ComboBoxPropertyDescriptor(START_PAGE, START_PAGE, new String[] {StartPageEnum.Yes.name(),
-            StartPageEnum.No.name()}));
+         StartPageEnum.No.name()}));
    }
 
    @Override
@@ -86,16 +86,18 @@ public class WorkPageShape extends RectangleShape {
       if (propertyValues == null) {
          super.initializePropertyValues();
          super.setPropertyValue(WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName(),
-               workPageDefinition.getPageName());
+            workPageDefinition.getPageName());
          super.setPropertyValue(WorkItemAttributes.WORK_ID.getAttributeTypeName(), workPageDefinition.getId());
          super.setPropertyValue(WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName(),
-               workPageDefinition.getParentId() == null ? "" : workPageDefinition.getParentId());
+            workPageDefinition.getParentId() == null ? "" : workPageDefinition.getParentId());
       }
    }
 
    public boolean isStartPage() {
-      if (getPropertyValue(START_PAGE) == null) return false;
-      return ((Integer) getPropertyValue(START_PAGE)) == StartPageEnum.Yes.ordinal();
+      if (getPropertyValue(START_PAGE) == null) {
+         return false;
+      }
+      return (Integer) getPropertyValue(START_PAGE) == StartPageEnum.Yes.ordinal();
    }
 
    public void setStartPage(boolean set) {
@@ -127,15 +129,18 @@ public class WorkPageShape extends RectangleShape {
    public Result validForSave() throws OseeCoreException {
       try {
          String pageName = (String) getPropertyValue(WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName());
-         if (pageName == null || pageName.equals("")) return new Result(
-               WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName() + " can not be null");
+         if (pageName == null || pageName.equals("")) {
+            return new Result(WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName() + " can not be null");
+         }
          String pageId = (String) getPropertyValue(WorkItemAttributes.WORK_ID.getAttributeTypeName());
-         if (pageId == null || pageId.equals("")) return new Result(
-               WorkItemAttributes.WORK_ID.getAttributeTypeName() + " can not be null");
+         if (pageId == null || pageId.equals("")) {
+            return new Result(WorkItemAttributes.WORK_ID.getAttributeTypeName() + " can not be null");
+         }
          String parentPageId = (String) getPropertyValue(WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName());
          if (parentPageId != null && !parentPageId.equals("")) {
-            if (WorkItemDefinitionFactory.getWorkItemDefinition(parentPageId) == null) return new Result(
-                  "Parent Id " + parentPageId + " Work Page Definition must exist and does not.");
+            if (WorkItemDefinitionFactory.getWorkItemDefinition(parentPageId) == null) {
+               return new Result("Parent Id " + parentPageId + " Work Page Definition must exist and does not.");
+            }
          }
       } catch (OseeCoreException ex) {
          return new Result("Exception in validation " + ex.getLocalizedMessage());
@@ -148,7 +153,9 @@ public class WorkPageShape extends RectangleShape {
    }
 
    private boolean isInstanceofRecurse(WorkPageDefinition workPageDefinition, String workPageDefinitionId) throws OseeCoreException {
-      if (workPageDefinition.getId().equals(workPageDefinitionId)) return true;
+      if (workPageDefinition.getId().equals(workPageDefinitionId)) {
+         return true;
+      }
       if (workPageDefinition.getParent() != null) {
          return isInstanceofRecurse((WorkPageDefinition) workPageDefinition.getParent(), workPageDefinitionId);
       }
@@ -203,7 +210,7 @@ public class WorkPageShape extends RectangleShape {
             super.setPropertyValue(WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName(), value);
             firePropertyChange(WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName(), null, value);
             setPropertyValue(WorkItemAttributes.WORK_ID.getAttributeTypeName(),
-                  getWorkflowDiagram().getWorkFlowDefinition().getId() + "." + value);
+               getWorkflowDiagram().getWorkFlowDefinition().getId() + "." + value);
          } else if (WorkItemAttributes.WORK_ID.getAttributeTypeName().equals(propertyId)) {
             super.setPropertyValue(WorkItemAttributes.WORK_ID.getAttributeTypeName(), value);
             firePropertyChange(WorkItemAttributes.WORK_ID.getAttributeTypeName(), null, value);

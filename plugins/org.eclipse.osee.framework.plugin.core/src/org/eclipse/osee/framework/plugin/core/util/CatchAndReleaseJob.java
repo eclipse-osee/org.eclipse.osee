@@ -45,7 +45,7 @@ public class CatchAndReleaseJob extends Job {
       } catch (Exception ex) {
          String message = ex.getLocalizedMessage() == null ? ex.toString() : ex.getLocalizedMessage();
          OseeLog.log(clazz, Level.SEVERE, ex);
-         return new Status(Status.ERROR, pluginId, Status.OK, message, ex);
+         return new Status(IStatus.ERROR, pluginId, IStatus.OK, message, ex);
       }
       return Status.OK_STATUS;
    }

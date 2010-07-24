@@ -95,6 +95,7 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
    @Override
    public void runOperation(final VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       Displays.ensureInDisplayThread(new Runnable() {
+         @Override
          public void run() {
             try {
                List<Artifact> artifacts = variableMap.getArtifacts(TEAM_WORKFLOW);
@@ -121,10 +122,10 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
                File file = new File(filename);
                try {
                   SkynetTransaction transaction =
-                        new SkynetTransaction(AtsUtil.getAtsBranch(), "Import Tasks from Spreadsheet");
+                     new SkynetTransaction(AtsUtil.getAtsBranch(), "Import Tasks from Spreadsheet");
                   Job job =
-                        Jobs.startJob(new TaskImportJob(file, new ExcelAtsTaskArtifactExtractor(
-                              (TeamWorkFlowArtifact) artifact, emailPocs, transaction)));
+                     Jobs.startJob(new TaskImportJob(file, new ExcelAtsTaskArtifactExtractor(
+                        (TeamWorkFlowArtifact) artifact, emailPocs, transaction)));
                   job.join();
                   transaction.execute();
                } catch (Exception ex) {
@@ -140,6 +141,7 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
       });
    }
 
+   @Override
    public Collection<String> getCategories() {
       return Arrays.asList("ATS");
    }

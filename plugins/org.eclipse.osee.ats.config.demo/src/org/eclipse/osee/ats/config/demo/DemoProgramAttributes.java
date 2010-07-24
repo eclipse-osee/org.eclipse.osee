@@ -15,7 +15,10 @@ package org.eclipse.osee.ats.config.demo;
  */
 public enum DemoProgramAttributes {
 
-   Crew_Interface_Requirement, Timing_Critical, Obsolescence_date, Complexity_Factor,
+   Crew_Interface_Requirement,
+   Timing_Critical,
+   Obsolescence_date,
+   Complexity_Factor,
    //
    Weight,
    Content_URL,

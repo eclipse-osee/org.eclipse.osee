@@ -28,11 +28,11 @@ public final class GlobalXViewerSettings {
 
    public static Artifact getCustomArtifact() throws OseeCoreException {
       return OseeSystemArtifacts.getCachedArtifact(CoreArtifactTypes.XViewerGlobalCustomization,
-            CoreArtifactTypes.XViewerGlobalCustomization.getName(), BranchManager.getCommonBranch());
+         CoreArtifactTypes.XViewerGlobalCustomization.getName(), BranchManager.getCommonBranch());
    }
 
    public static Artifact createCustomArtifact() throws OseeCoreException {
-      return ArtifactTypeManager.addArtifact(CoreArtifactTypes.XViewerGlobalCustomization, BranchManager.getCommonBranch(),
-            CoreArtifactTypes.XViewerGlobalCustomization.getName());
+      return ArtifactTypeManager.addArtifact(CoreArtifactTypes.XViewerGlobalCustomization,
+         BranchManager.getCommonBranch(), CoreArtifactTypes.XViewerGlobalCustomization.getName());
    }
 }

@@ -80,11 +80,11 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
       if (AttributeTypeManager.isBaseTypeCompatible(EnumeratedAttribute.class, attributeType)) {
          if (maxOccurrence == 1) {
             xWidgetName =
-                  "XComboDam(" + Collections.toString(",", AttributeTypeManager.getEnumerationValues(attributeType)) + ")";
+               "XComboDam(" + Collections.toString(",", AttributeTypeManager.getEnumerationValues(attributeType)) + ")";
          } else {
             xWidgetName =
-                  "XSelectFromMultiChoiceDam(" + Collections.toString(",",
-                        AttributeTypeManager.getEnumerationValues(attributeType)) + ")";
+               "XSelectFromMultiChoiceDam(" + Collections.toString(",",
+                  AttributeTypeManager.getEnumerationValues(attributeType)) + ")";
          }
       } else if (AttributeTypeManager.isBaseTypeCompatible(BooleanAttribute.class, attributeType)) {
          if (minOccurrence == 1) {

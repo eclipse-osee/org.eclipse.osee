@@ -20,11 +20,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -143,6 +144,7 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
       treeViewer.setLabelProvider(new GroupLabelProvider());
       treeViewer.setUseHashlookup(true);
       treeViewer.getTree().addListener(SWT.MouseDoubleClick, new Listener() {
+         @Override
          public void handleEvent(org.eclipse.swt.widgets.Event event) {
             handleDoubleClick();
          }
@@ -219,6 +221,7 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
       item = new MenuItem(popupMenu, SWT.PUSH);
       item.setText("&Select All\tCtrl+A");
       item.addListener(SWT.Selection, new Listener() {
+         @Override
          public void handleEvent(org.eclipse.swt.widgets.Event event) {
             treeViewer.getTree().selectAll();
          }
@@ -265,9 +268,11 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
     */
    public class ArtifactMenuListener implements MenuListener {
 
+      @Override
       public void menuHidden(MenuEvent e) {
       }
 
+      @Override
       public void menuShown(MenuEvent e) {
          // Use this menu listener until all menu items can be moved to
          // GlobaMenu
@@ -290,7 +295,7 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
    }
 
    protected void createActions() {
-      Action refreshAction = new Action("Refresh", Action.AS_PUSH_BUTTON) {
+      Action refreshAction = new Action("Refresh", IAction.AS_PUSH_BUTTON) {
 
          @Override
          public void run() {
@@ -308,8 +313,8 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
 
    private void handleNewGroup() {
       EntryDialog ed =
-            new EntryDialog(Displays.getActiveShell(), "Create New Group", null, "Enter Group Name",
-                  MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
+         new EntryDialog(Displays.getActiveShell(), "Create New Group", null, "Enter Group Name",
+            MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
       if (ed.open() == 0) {
          try {
             UniversalGroup.addGroup(ed.getEntry(), branch);
@@ -331,12 +336,12 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
          return;
       }
       if (MessageDialog.openConfirm(Displays.getActiveShell(), "Remove From Group",
-            "Remove From Group - (Artifacts will not be deleted)\n\nAre you sure?")) {
+         "Remove From Group - (Artifacts will not be deleted)\n\nAre you sure?")) {
          try {
             SkynetTransaction transaction = new SkynetTransaction(branch, "Artifacts removed from group");
             for (GroupExplorerItem item : items) {
                item.getArtifact().deleteRelation(CoreRelationTypes.Universal_Grouping__Group,
-                     item.getParentItem().getArtifact());
+                  item.getParentItem().getArtifact());
                item.getArtifact().persist(transaction);
             }
             transaction.execute();
@@ -365,7 +370,7 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
             }
          }
          if (MessageDialog.openConfirm(Displays.getActiveShell(), "Delete Groups",
-               "Delete Groups - (Contained Artifacts will not be deleted)\n\n" + names + "\nAre you sure?")) {
+            "Delete Groups - (Contained Artifacts will not be deleted)\n\n" + names + "\nAre you sure?")) {
 
             SkynetTransaction transaction = new SkynetTransaction(branch, "Delete Groups: " + names);
             for (GroupExplorerItem item : items) {
@@ -441,7 +446,7 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
    private void expandAll(IStructuredSelection selection) {
       Iterator<?> iter = selection.iterator();
       while (iter.hasNext()) {
-         treeViewer.expandToLevel(iter.next(), TreeViewer.ALL_LEVELS);
+         treeViewer.expandToLevel(iter.next(), AbstractTreeViewer.ALL_LEVELS);
       }
    }
 
@@ -484,6 +489,7 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
       super.dispose();
    }
 
+   @Override
    public String getActionDescription() {
       return "";
    }
@@ -517,9 +523,11 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
          this.items = new LinkedList<MenuItem>();
       }
 
+      @Override
       public void menuHidden(MenuEvent e) {
       }
 
+      @Override
       public void menuShown(MenuEvent e) {
          boolean valid = treeViewer.getInput() != null;
          for (MenuItem item : items) {

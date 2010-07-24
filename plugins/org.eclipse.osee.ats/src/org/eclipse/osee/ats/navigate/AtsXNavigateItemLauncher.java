@@ -43,20 +43,19 @@ public class AtsXNavigateItemLauncher {
          if (worldSearchItem.getLoadView() == LoadView.WorldEditor) {
             if (worldSearchItem instanceof WorldUISearchItem) {
                WorldEditor.open(new WorldEditorUISearchItemProvider(
-                     (WorldUISearchItem) (dontCopyWsi ? worldSearchItem : worldSearchItem.copy()), null,
-                     tableLoadOptions));
+                  (WorldUISearchItem) (dontCopyWsi ? worldSearchItem : worldSearchItem.copy()), null, tableLoadOptions));
             } else if (worldSearchItem instanceof WorldEditorParameterSearchItem) {
                WorldEditor.open(new WorldEditorParameterSearchItemProvider(
-                     (WorldEditorParameterSearchItem) (dontCopyWsi ? worldSearchItem : worldSearchItem.copy()), null,
-                     tableLoadOptions));
+                  (WorldEditorParameterSearchItem) (dontCopyWsi ? worldSearchItem : worldSearchItem.copy()), null,
+                  tableLoadOptions));
             } else {
                AWorkbench.popup("ERROR", "Unhandled WorldEditor navigate item");
             }
          } else if (worldSearchItem.getLoadView() == LoadView.TaskEditor) {
             if (worldSearchItem instanceof TaskEditorParameterSearchItem) {
                TaskEditor.open(new TaskEditorParameterSearchItemProvider(
-                     (TaskEditorParameterSearchItem) (dontCopyWsi ? worldSearchItem : worldSearchItem.copy()), null,
-                     tableLoadOptions));
+                  (TaskEditorParameterSearchItem) (dontCopyWsi ? worldSearchItem : worldSearchItem.copy()), null,
+                  tableLoadOptions));
             } else {
                AWorkbench.popup("ERROR", "Unhandled TaskEditor navigate item");
             }

@@ -37,7 +37,7 @@ public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
       super();
       if (cacheLimit < 0) {
          throw new IllegalArgumentException(String.format("Cache limit cannot be less than zero - cacheLimit=[%d]",
-               cacheLimit));
+            cacheLimit));
       }
       this.service = service;
       this.options = new Options();

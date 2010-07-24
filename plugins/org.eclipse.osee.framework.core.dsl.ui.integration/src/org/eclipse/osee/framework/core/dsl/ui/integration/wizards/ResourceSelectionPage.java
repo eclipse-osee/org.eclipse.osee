@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.core.dsl.ui.integration.wizards;
 
 import java.io.File;
-
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.ws.AWorkspace;
 import org.eclipse.swt.SWT;

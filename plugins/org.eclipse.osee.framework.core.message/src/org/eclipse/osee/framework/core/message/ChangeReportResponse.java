@@ -19,26 +19,26 @@ import java.util.List;
  */
 public class ChangeReportResponse {
 
-	private final List<ChangeItem> changeItems;
+   private final List<ChangeItem> changeItems;
 
-	public ChangeReportResponse() {
-		super();
-		this.changeItems = new ArrayList<ChangeItem>();
-	}
+   public ChangeReportResponse() {
+      super();
+      this.changeItems = new ArrayList<ChangeItem>();
+   }
 
-	public void setChangeItems(Collection<ChangeItem> items) {
-		this.changeItems.addAll(items);
-	}
+   public void setChangeItems(Collection<ChangeItem> items) {
+      this.changeItems.addAll(items);
+   }
 
-	public void addItem(ChangeItem item) {
-		this.changeItems.add(item);
-	}
+   public void addItem(ChangeItem item) {
+      this.changeItems.add(item);
+   }
 
-	public List<ChangeItem> getChangeItems() {
-		return changeItems;
-	}
+   public List<ChangeItem> getChangeItems() {
+      return changeItems;
+   }
 
-	public boolean wasSuccessful() {
-		return !changeItems.isEmpty();
-	}
+   public boolean wasSuccessful() {
+      return !changeItems.isEmpty();
+   }
 }

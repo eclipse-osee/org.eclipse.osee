@@ -40,6 +40,7 @@ import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.SectionPart;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.FormPage;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
@@ -107,7 +108,7 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
    }
 
    private Section createParametersSection(IManagedForm managedForm, Composite body) throws OseeCoreException {
-      parameterSection = toolkit.createSection(body, Section.NO_TITLE);
+      parameterSection = toolkit.createSection(body, ExpandableComposite.NO_TITLE);
       parameterSection.setText("Parameters");
       parameterSection.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
@@ -169,7 +170,7 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
             @Override
             public void widgetSelected(SelectionEvent e) {
                if (MessageDialog.openConfirm(Displays.getActiveShell(), "Save Default Parameters",
-                     "Save current parameters as default?")) {
+                  "Save current parameters as default?")) {
                   handleSaveButtonPressed();
                }
             }
@@ -195,6 +196,7 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
    public void setTableTitle(final String title, final boolean warning) {
       this.title = title;
       Displays.ensureInDisplayThread(new Runnable() {
+         @Override
          public void run() {
             scrolledForm.setText(title);
          };
@@ -210,8 +212,9 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
    public String getCurrentTitleLabel() {
       if (title != null) {
          return title;
-      } else
+      } else {
          return WorldEditor.EDITOR_ID;
+      }
    }
 
 }

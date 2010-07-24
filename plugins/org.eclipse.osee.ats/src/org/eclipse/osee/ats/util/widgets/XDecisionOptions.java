@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
  */
 public class XDecisionOptions {
 
-   private WeakReference<StateMachineArtifact> smaRef;
+   private final WeakReference<StateMachineArtifact> smaRef;
 
    public XDecisionOptions(StateMachineArtifact sma) {
       this.smaRef = new WeakReference<StateMachineArtifact>(sma);
@@ -35,7 +35,7 @@ public class XDecisionOptions {
 
    public Set<DecisionOption> getDecisionOptions() throws OseeCoreException {
       String decString =
-            getSma().getSoleAttributeValue(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName(), "");
+         getSma().getSoleAttributeValue(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName(), "");
       return getDecisionOptions(decString);
    }
 
@@ -62,35 +62,40 @@ public class XDecisionOptions {
 
    public DecisionOption getDecisionOption(String name) throws OseeCoreException {
       for (DecisionOption opt : getDecisionOptions()) {
-         if (opt.getName().equals(name)) return opt;
+         if (opt.getName().equals(name)) {
+            return opt;
+         }
       }
       return null;
    }
 
    public Result validateDecisionOptions() throws OseeCoreException {
       return validateDecisionOptions(getSma().getSoleAttributeValue(
-            ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName(), ""));
+         ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName(), ""));
    }
 
    public static Result validateDecisionOptions(String decisionOptions) {
       for (String decsionOpt : decisionOptions.split("[\n\r]+")) {
          DecisionOption state = new DecisionOption();
          Result result = state.setFromXml(decsionOpt);
-         if (result.isFalse()) return new Result("Invalid Decision Option \"" + decsionOpt + "\" " + result.getText());
+         if (result.isFalse()) {
+            return new Result("Invalid Decision Option \"" + decsionOpt + "\" " + result.getText());
+         }
       }
       return Result.TrueResult;
    }
 
    public String toXml(Set<DecisionOption> opts) throws OseeCoreException {
       StringBuffer sb = new StringBuffer();
-      for (DecisionOption opt : opts)
+      for (DecisionOption opt : opts) {
          sb.append(opt.toXml() + "\n");
+      }
       return sb.toString().replaceFirst("\n$", "");
    }
 
    public void setDecisionOptions(String decisionOptions) throws OseeCoreException {
       getSma().setSoleAttributeValue(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName(),
-            toXml(getDecisionOptions(decisionOptions)));
+         toXml(getDecisionOptions(decisionOptions)));
    }
 
 }

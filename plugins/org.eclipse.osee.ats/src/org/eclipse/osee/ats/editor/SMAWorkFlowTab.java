@@ -54,7 +54,6 @@ import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
@@ -130,11 +129,12 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       try {
          scrolledForm = managedForm.getForm();
          scrolledForm.addDisposeListener(new DisposeListener() {
+            @Override
             public void widgetDisposed(DisposeEvent e) {
                try {
                   storeScrollLocation();
                } catch (OseeCoreException ex) {
-                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+                  OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
                }
             }
          });
@@ -238,7 +238,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       if (Widgets.isAccessible(atsBody)) {
          atsBody.dispose();
       }
-      OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+      OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       new ExceptionComposite(bodyComp, ex);
       bodyComp.layout();
    }
@@ -287,7 +287,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          smaDetailsSection = new SMADetailsSection(sma.getEditor(), atsBody, toolkit, SWT.NONE);
          managedForm.addPart(smaDetailsSection);
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
    }
 
@@ -296,7 +296,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          smaOperationsSection = new SMAOperationsSection(sma.getEditor(), atsBody, toolkit, SWT.NONE);
          managedForm.addPart(smaOperationsSection);
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
    }
 
@@ -306,7 +306,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          managedForm.addPart(smaRelationsSection);
 
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
    }
 
@@ -315,7 +315,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          smaHistorySection = new SMAHistorySection(sma.getEditor(), atsBody, toolkit, SWT.NONE);
          managedForm.addPart(smaHistorySection);
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
    }
 
@@ -326,7 +326,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
             managedForm.addPart(smaGoalMembersSection);
          }
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
    }
 
@@ -350,11 +350,11 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
                   atsWorkPages.add(atsWorkPage);
                }
             } catch (Exception ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
             }
          }
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
    }
 
@@ -422,9 +422,9 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
       // Current Assignees
       if (isCurrentNonCompleteCanceledState) {
-         boolean editable = (!sma.isCancelledOrCompleted() && !sma.isReadOnly() &&
+         boolean editable = !sma.isCancelledOrCompleted() && !sma.isReadOnly() &&
          // and access control writeable
-         sma.isAccessControlWrite()) && //
+         sma.isAccessControlWrite() && //
 
          (SMAWorkFlowSection.isEditable(sma, page) || //
          // page is define to allow anyone to edit
@@ -483,7 +483,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       toolBarMgr.add(new ReloadAction(sma));
 
       OseeUiActions.addButtonToEditorToolBar(sma.getEditor(), this, AtsPlugin.getInstance(),
-            scrolledForm.getToolBarManager(), SMAEditor.EDITOR_ID, "ATS Editor");
+         scrolledForm.getToolBarManager(), SMAEditor.EDITOR_ID, "ATS Editor");
 
       scrolledForm.updateToolBar();
    }
@@ -548,6 +548,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
    }
 
+   @Override
    public String getActionDescription() {
       return "Workflow Tab";
    }
@@ -570,6 +571,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       @Override
       protected IStatus run(IProgressMonitor monitor) {
          Displays.ensureInDisplayThread(new Runnable() {
+            @Override
             public void run() {
                Integer selection = guidToScrollLocation.get(sma.getGuid());
                // System.out.println("Restoring selection => " + selection);
@@ -607,9 +609,9 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       try {
          FormsUtil.createLabelText(toolkit, topLineComp, "Current State: ", sma.getStateMgr().getCurrentStateName());
          FormsUtil.createLabelText(toolkit, topLineComp, "Created: ",
-               XDate.getDateStr(sma.getLog().getCreationDate(), XDate.MMDDYYHHMM));
+            XDate.getDateStr(sma.getLog().getCreationDate(), XDate.MMDDYYHHMM));
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
 
       new SMAOriginatorHeader(topLineComp, SWT.NONE, sma, toolkit);
@@ -619,14 +621,14 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
             FormsUtil.createLabelText(toolkit, topLineComp, "Team: ", ((TeamWorkFlowArtifact) sma).getTeamName());
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
 
       try {
          FormsUtil.createLabelText(toolkit, topLineComp, sma.getArtifactSuperTypeName() + "Id: ",
-               sma.getHumanReadableId());
+            sma.getHumanReadableId());
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
 
       try {
@@ -634,16 +636,16 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
             FormsUtil.createLabelText(toolkit, topLineComp, " Id: ", sma.getPcrId());
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
    }
 
    private void createLatestHeader(Composite comp, XFormToolkit toolkit) throws OseeStateException {
       if (sma.isHistoricalVersion()) {
          Label label =
-               toolkit.createLabel(
-                     comp,
-                     "This is a historical version of this " + sma.getArtifactTypeName() + " and can not be edited; Select \"Open Latest\" to view/edit latest version.");
+            toolkit.createLabel(
+               comp,
+               "This is a historical version of this " + sma.getArtifactTypeName() + " and can not be edited; Select \"Open Latest\" to view/edit latest version.");
          label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
       }
    }

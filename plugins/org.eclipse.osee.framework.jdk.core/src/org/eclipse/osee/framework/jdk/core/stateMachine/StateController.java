@@ -27,8 +27,12 @@ public class StateController {
     * Calls the run method of the next state.
     */
    public void runNextState() {
-      if (isRunning) nextState = nextState.run();
-      if (nextState == null) isRunning = false;
+      if (isRunning) {
+         nextState = nextState.run();
+      }
+      if (nextState == null) {
+         isRunning = false;
+      }
    }
 
    public boolean isRunning() {

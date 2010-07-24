@@ -15,16 +15,11 @@ import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.message.interfaces.IMsgToolServiceClient;
 import org.eclipse.osee.ote.message.tool.MessageMode;
 
-
-
-
 /**
  * @author Ryan D. Brooks
  * @author Andrew M. Finkbeiner
  */
 public class SubscribeToMessage implements Serializable {
-
-
 
    /**
     * 
@@ -34,6 +29,7 @@ public class SubscribeToMessage implements Serializable {
    private final DataType type;
    private final MessageMode mode;
    private final IMsgToolServiceClient callback;
+
    /**
     * 
     */
@@ -44,18 +40,18 @@ public class SubscribeToMessage implements Serializable {
       this.mode = mode;
       this.callback = callback;
    }
-   
+
    public IMsgToolServiceClient getCallback() {
       return callback;
    }
-   
+
    /**
     * @param message The message to set.
     */
    public String getMessage() {
       return message;
    }
-   
+
    public DataType getType() {
       return type;
    }

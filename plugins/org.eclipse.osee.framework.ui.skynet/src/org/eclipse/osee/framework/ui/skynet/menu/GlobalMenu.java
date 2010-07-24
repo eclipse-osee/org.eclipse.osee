@@ -47,7 +47,7 @@ import org.eclipse.ui.PlatformUI;
 /**
  * Provided so all OSEE context menus (and programatic manipulations) can share the same menu items, dialogs,
  * permissions checks and code.
- *
+ * 
  * @author Donald G. Dunne
  */
 public class GlobalMenu {
@@ -95,9 +95,11 @@ public class GlobalMenu {
     */
    public class EnablementMenuListener implements MenuListener {
 
+      @Override
       public void menuHidden(MenuEvent e) {
       }
 
+      @Override
       public void menuShown(MenuEvent e) {
          try {
             GlobalMenuPermissions permiss = new GlobalMenuPermissions(globalMenuHelper);
@@ -135,9 +137,9 @@ public class GlobalMenu {
          try {
             final Collection<Artifact> artifactsToBeDeleted = globalMenuHelper.getArtifacts();
             MessageDialog dialog =
-                  new MessageDialog(Displays.getActiveShell(), "Confirm Artifact Deletion", null,
-                        " Are you sure you want to delete this artifact and all of the default hierarchy children?",
-                        MessageDialog.QUESTION, new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 1);
+               new MessageDialog(Displays.getActiveShell(), "Confirm Artifact Deletion", null,
+                  " Are you sure you want to delete this artifact and all of the default hierarchy children?",
+                  MessageDialog.QUESTION, new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 1);
             if (dialog.open() == 0) {
                try {
                   for (GlobalMenuListener listener : listeners) {
@@ -153,7 +155,7 @@ public class GlobalMenu {
 
                Artifact[] artifactsArray = artifactsToBeDeleted.toArray(new Artifact[artifactsToBeDeleted.size()]);
                SkynetTransaction transaction =
-                     new SkynetTransaction(artifactsArray[0].getBranch(), "Delete artifact action");
+                  new SkynetTransaction(artifactsArray[0].getBranch(), "Delete artifact action");
                ArtifactPersistenceManager.deleteArtifact(transaction, false, artifactsArray);
                transaction.execute();
 
@@ -177,9 +179,9 @@ public class GlobalMenu {
          final Collection<Artifact> artifactsToBePurged = globalMenuHelper.getArtifacts();
 
          if (MessageDialog.openConfirm(
-               PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-               "Confirm Artifact Purge ",
-               " Are you sure you want to purge this artifact, all of " + "its children and all history associated with these artifacts from the database ?")) {
+            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+            "Confirm Artifact Purge ",
+            " Are you sure you want to purge this artifact, all of " + "its children and all history associated with these artifacts from the database ?")) {
             Job job = new Job("Purge artifact") {
 
                @Override
@@ -191,7 +193,8 @@ public class GlobalMenu {
                      for (GlobalMenuListener listener : listeners) {
                         Result result = listener.actioning(GlobalMenuItem.PurgeArtifacts, artifactsToBePurged);
                         if (result.isFalse()) {
-                           return new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, Status.OK, result.getText(), null);
+                           return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, IStatus.OK, result.getText(),
+                              null);
                         }
                      }
                   } catch (Exception ex) {
@@ -210,7 +213,7 @@ public class GlobalMenu {
                      toReturn = Status.OK_STATUS;
                   } catch (Exception ex) {
                      OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-                     toReturn = new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
+                     toReturn = new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
                   } finally {
                      monitor.done();
                   }
@@ -248,7 +251,7 @@ public class GlobalMenu {
    /**
     * This method is provided for programatic access to delete artifact. No permissions are checked. Preferred use is by
     * adding item as menu item.
-    *
+    * 
     * @return the deleteArtifactAction
     */
    public Action getDeleteArtifactAction() {

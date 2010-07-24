@@ -24,7 +24,7 @@ public class ArtifactChecks {
    private static String CLASS_NAME_ATTRIBUTE = "classname";
 
    private static final ExtensionDefinedObjects<IArtifactCheck> artifactCheckObjects =
-         new ExtensionDefinedObjects<IArtifactCheck>(EXTENSION_ID, ELEMENT_ID, CLASS_NAME_ATTRIBUTE, true);
+      new ExtensionDefinedObjects<IArtifactCheck>(EXTENSION_ID, ELEMENT_ID, CLASS_NAME_ATTRIBUTE, true);
 
    private ArtifactChecks() {
    }

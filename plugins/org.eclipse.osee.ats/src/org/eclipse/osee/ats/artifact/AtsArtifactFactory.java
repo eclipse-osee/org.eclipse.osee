@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -21,7 +22,6 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
@@ -33,7 +33,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 public class AtsArtifactFactory extends ArtifactFactory {
 
    public AtsArtifactFactory() {
-      super(Arrays.asList(AtsArtifactTypes.Action.getName(), AtsArtifactTypes.PeerToPeerReview.getName(),
+      super(
+         Arrays.asList(AtsArtifactTypes.Action.getName(), AtsArtifactTypes.PeerToPeerReview.getName(),
             AtsArtifactTypes.DecisionReview.getName(), AtsArtifactTypes.ActionableItem.getName(),
             AtsArtifactTypes.Task.getName(), AtsArtifactTypes.TeamWorkflow.getName(),
             AtsArtifactTypes.TeamDefinition.getName(), AtsArtifactTypes.Version.getName(),
@@ -84,7 +85,7 @@ public class AtsArtifactFactory extends ArtifactFactory {
          artifactTypes.add(ArtifactTypeManager.getType(CoreArtifactTypes.WorkWidgetDefinition));
          artifactTypes.add(ArtifactTypeManager.getType(CoreArtifactTypes.WorkPageDefinition));
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
       return artifactTypes;
    }

@@ -23,7 +23,7 @@ import org.eclipse.osee.ote.ui.define.reports.html.HtmlTableReport;
  */
 public class HtmlReportWriter implements IReportWriter {
 
-   private HtmlTableReport report;
+   private final HtmlTableReport report;
    private String reportHtml;
 
    public HtmlReportWriter() {
@@ -31,11 +31,13 @@ public class HtmlReportWriter implements IReportWriter {
       report.getActiveTable().setTableTitle("Results");
    }
 
+   @Override
    public void writeTitle(String title) {
       report.getActiveTable().setElementName("tbl" + new Date().getTime());
       report.setReportTitle(title);
    }
 
+   @Override
    public void writeHeader(String[] headers) {
       HtmlActiveTable table = report.getActiveTable();
       String[] metadata = new String[headers.length];
@@ -45,10 +47,12 @@ public class HtmlReportWriter implements IReportWriter {
       }
    }
 
+   @Override
    public void writeRow(String... cellData) {
       report.getActiveTable().addDataRow(cellData);
    }
 
+   @Override
    public int length() throws IOException {
       if (reportHtml == null) {
          generate();
@@ -56,6 +60,7 @@ public class HtmlReportWriter implements IReportWriter {
       return reportHtml.length();
    }
 
+   @Override
    public String getReport() throws IOException {
       if (reportHtml == null) {
          generate();
@@ -63,6 +68,7 @@ public class HtmlReportWriter implements IReportWriter {
       return reportHtml;
    }
 
+   @Override
    public void writeToOutput(OutputStream outputStream) throws IOException {
       outputStream.write(getReport().getBytes("UTF-8"));
    }

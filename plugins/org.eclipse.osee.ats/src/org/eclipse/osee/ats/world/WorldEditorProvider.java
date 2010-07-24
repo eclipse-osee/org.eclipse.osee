@@ -47,10 +47,12 @@ public abstract class WorldEditorProvider implements IWorldEditorProvider {
       return customizeData;
    }
 
+   @Override
    public void setTableLoadOptions(TableLoadOption... tableLoadOptions) {
       this.tableLoadOptions = tableLoadOptions;
    }
 
+   @Override
    public void setCustomizeData(CustomizeData customizeData) {
       this.customizeData = customizeData;
    }

@@ -33,9 +33,11 @@ public class EnvVariableDialogHelper implements Runnable {
       return selection;
    }
 
+   @Override
    public void run() {
-      EnvVariableDialog dlg = new EnvVariableDialog(null, "Add Environment Variable", null, "Enter Name:",
-            MessageDialog.NONE, new String[] {"OK", "Cancel"}, 0);
+      EnvVariableDialog dlg =
+         new EnvVariableDialog(null, "Add Environment Variable", null, "Enter Name:", MessageDialog.NONE, new String[] {
+            "OK", "Cancel"}, 0);
 
       result = dlg.open();
 
@@ -44,8 +46,7 @@ public class EnvVariableDialogHelper implements Runnable {
             String info = dlg.getSelection();
             if (info != null) {
                selection = info;
-            }
-            else {
+            } else {
                selection = "";
             }
          }

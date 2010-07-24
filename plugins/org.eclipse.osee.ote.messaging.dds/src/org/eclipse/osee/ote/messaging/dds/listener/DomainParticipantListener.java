@@ -15,23 +15,22 @@ import org.eclipse.osee.ote.messaging.dds.IDestination;
 import org.eclipse.osee.ote.messaging.dds.ISource;
 
 /**
- * The interface for receiving events from the <code>DomainParticipant</code>. This
- * class also extends the <code>TopicListener</code>, <code>SubscriberListener</code>,
- * and <code>PublisherListener</code>.
+ * The interface for receiving events from the <code>DomainParticipant</code>. This class also extends the
+ * <code>TopicListener</code>, <code>SubscriberListener</code>, and <code>PublisherListener</code>.
  * 
  * @see org.eclipse.osee.ote.messaging.dds.entity.DomainParticipant
- * 
  * @author Robert A. Fisher
  * @author David Diepenbrock
  */
 public interface DomainParticipantListener extends TopicListener, SubscriberListener, PublisherListener {
 
    /**
-    * The method called whenever data is published within the DDS system. This can be used
-    * by the listening object to propogate information out to local entities running DDS.
- * @param destination TODO
- * @param source TODO
- * @param dataStoreItem - The published information.
+    * The method called whenever data is published within the DDS system. This can be used by the listening object to
+    * propogate information out to local entities running DDS.
+    * 
+    * @param destination TODO
+    * @param source TODO
+    * @param dataStoreItem - The published information.
     */
    public void onPublishNotifyMiddleware(IDestination destination, ISource source, DataStoreItem dataStoreItem);
 

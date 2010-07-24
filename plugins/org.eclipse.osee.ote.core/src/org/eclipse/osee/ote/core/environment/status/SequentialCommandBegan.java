@@ -28,10 +28,12 @@ public class SequentialCommandBegan implements IServiceStatusDataCommand {
       this.description = description;
    }
 
+   @Override
    public CommandDescription getDescription() {
       return description;
    }
 
+   @Override
    public void accept(IServiceStatusDataVisitor visitor) {
       if (visitor != null) {
          visitor.asSequentialCommandBegan(this);

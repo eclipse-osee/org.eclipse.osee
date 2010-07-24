@@ -41,8 +41,8 @@ public class CsvTransform extends Action {
          File file = new File(getter.getPath());
          File csvFile = new File(getter.getPath() + "_transformed.csv");
          if (!file.exists()) {
-            OseeLog.log(Activator.class, Level.SEVERE, String.format(
-                  "[%s] does not exist.  Exiting the csv transformer.", file.toString()));
+            OseeLog.log(Activator.class, Level.SEVERE,
+               String.format("[%s] does not exist.  Exiting the csv transformer.", file.toString()));
          }
 
          try {
@@ -68,12 +68,9 @@ public class CsvTransform extends Action {
             BufferedWriter bw = new BufferedWriter(new FileWriter(csvFile));
             bw.write("time,");
             if (columnsArray.length >= 254) {
-               OseeLog.log(
-                     CsvTransform.class,
-                     Level.SEVERE,
-                     String.format(
-                           "%d columns have been lost in the CsvTransform because there is a limitation of 256 rows in excel.",
-                           (columnsArray.length - 254)));
+               OseeLog.log(CsvTransform.class, Level.SEVERE, String.format(
+                  "%d columns have been lost in the CsvTransform because there is a limitation of 256 rows in excel.",
+                  (columnsArray.length - 254)));
             }
             for (int i = 0; i < columnsArray.length && i < 254; i++) {
                bw.write(columnsArray[i]);
@@ -94,7 +91,7 @@ public class CsvTransform extends Action {
                msg += ".";
                for (int i = 3; i < items.length; i += 2) {
                   String value = null;
-                  if ((i + 1) >= items.length) {
+                  if (i + 1 >= items.length) {
                      value = "null";
                   } else {
                      value = items[i + 1];
@@ -129,6 +126,7 @@ public class CsvTransform extends Action {
 
       String path;
 
+      @Override
       public void run() {
          FileDialog fd = new FileDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.OPEN);
          fd.setFilterPath(ResourcesPlugin.getWorkspace().getRoot().getLocation().toOSString());

@@ -26,11 +26,19 @@ public class ReferenceClause implements Xmlizable {
    public static final String REFERENCES_TAG = "References";
 
    public enum ReferencesFields {
-      schema, table, column, onUpdate, onDelete;
+      schema,
+      table,
+      column,
+      onUpdate,
+      onDelete;
    }
 
    public enum OnDeleteEnum {
-      NO_ACTION, RESTRICT, CASCADE, SET_NULL, UNSPECIFIED;
+      NO_ACTION,
+      RESTRICT,
+      CASCADE,
+      SET_NULL,
+      UNSPECIFIED;
 
       @Override
       public String toString() {
@@ -41,7 +49,9 @@ public class ReferenceClause implements Xmlizable {
    }
 
    public enum OnUpdateEnum {
-      NO_ACTION, RESTRICT, UNSPECIFIED;
+      NO_ACTION,
+      RESTRICT,
+      UNSPECIFIED;
 
       @Override
       public String toString() {
@@ -116,6 +126,7 @@ public class ReferenceClause implements Xmlizable {
       return toReturn;
    }
 
+   @Override
    public Element toXml(Document doc) {
       Element refElement = doc.createElement(REFERENCES_TAG);
       refElement.setAttribute(ReferencesFields.schema.name(), schema);
@@ -142,13 +153,13 @@ public class ReferenceClause implements Xmlizable {
       }
       ReferenceClause that = (ReferenceClause) otherObject;
       return new EqualsBuilder().appendSuper(super.equals(otherObject)).append(this.getFullyQualifiedTableName(),
-            that.getFullyQualifiedTableName()).append(this.columns, that.getColumns()).append(this.onDeleteAction,
-            that.getOnDeleteAction()).append(this.onUpdateAction, that.getOnUpdateAction()).isEquals();
+         that.getFullyQualifiedTableName()).append(this.columns, that.getColumns()).append(this.onDeleteAction,
+         that.getOnDeleteAction()).append(this.onUpdateAction, that.getOnUpdateAction()).isEquals();
    }
 
    @Override
    public int hashCode() {
       return new HashCodeBuilder(113, 67).append(schema).append(table).append(columns).append(onDeleteAction).append(
-            onUpdateAction).toHashCode();
+         onUpdateAction).toHashCode();
    }
 }

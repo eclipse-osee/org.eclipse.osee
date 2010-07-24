@@ -15,9 +15,9 @@ import org.eclipse.osee.framework.logging.IHealthStatus;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public interface IMethodResult {
-	List<IHealthStatus> getStatus();
-	ReturnCode getReturnCode();
+   List<IHealthStatus> getStatus();
+
+   ReturnCode getReturnCode();
 }

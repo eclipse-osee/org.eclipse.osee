@@ -19,8 +19,8 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
  */
 public class CoverageOptionManagerDefault extends CoverageOptionManager {
 
-   public static List<CoverageOption> defaultOptions =
-         Arrays.asList(Deactivated_Code, Dead_Code, Exception_Handling, Test_Unit, Not_Covered);
+   public static List<CoverageOption> defaultOptions = Arrays.asList(Deactivated_Code, Dead_Code, Exception_Handling,
+      Test_Unit, Not_Covered);
    private static CoverageOptionManagerDefault instance = new CoverageOptionManagerDefault();
 
    private CoverageOptionManagerDefault() {

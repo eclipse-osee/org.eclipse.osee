@@ -26,116 +26,99 @@ import org.eclipse.osee.ote.service.ITestConnectionListener;
  * @author Ken J. Aguilar
  */
 class ListenerNotifier {
-	private final ExecutorService executor = Executors.newCachedThreadPool();
-	private CopyOnWriteArraySet<ITestConnectionListener> testConnectionListeners = new CopyOnWriteArraySet<ITestConnectionListener>();
+   private final ExecutorService executor = Executors.newCachedThreadPool();
+   private final CopyOnWriteArraySet<ITestConnectionListener> testConnectionListeners =
+      new CopyOnWriteArraySet<ITestConnectionListener>();
 
-	private final CopyOnWriteArraySet<IMessageDictionaryListener> dictionaryListeners = new CopyOnWriteArraySet<IMessageDictionaryListener>();
+   private final CopyOnWriteArraySet<IMessageDictionaryListener> dictionaryListeners =
+      new CopyOnWriteArraySet<IMessageDictionaryListener>();
 
-	boolean addTestConnectionListener(ITestConnectionListener listener) {
-		return testConnectionListeners.add(listener);
-	}
+   boolean addTestConnectionListener(ITestConnectionListener listener) {
+      return testConnectionListeners.add(listener);
+   }
 
-	boolean removeTestConnectionListener(ITestConnectionListener listener) {
-		return testConnectionListeners.remove(listener);
-	}
+   boolean removeTestConnectionListener(ITestConnectionListener listener) {
+      return testConnectionListeners.remove(listener);
+   }
 
-	public boolean addDictionaryListener(
-			IMessageDictionaryListener listener) {
-		return dictionaryListeners.add(listener);
-	}
+   public boolean addDictionaryListener(IMessageDictionaryListener listener) {
+      return dictionaryListeners.add(listener);
+   }
 
-	public void removeDictionaryListener(IMessageDictionaryListener listener) {
-		dictionaryListeners.remove(listener);
-	}
+   public void removeDictionaryListener(IMessageDictionaryListener listener) {
+      dictionaryListeners.remove(listener);
+   }
 
-	void notifyPostConnection(final ConnectionEvent event) {
-		executor.submit(new Runnable() {
+   void notifyPostConnection(final ConnectionEvent event) {
+      executor.submit(new Runnable() {
 
-			@Override
-			public void run() {
-				for (ITestConnectionListener listener : testConnectionListeners) {
-					try {
-						listener.onPostConnect(event);
-					} catch (Exception ex) {
-						OseeLog
-						.log(
-								Activator.class,
-								Level.SEVERE,
-								"exception notifying listener of post connect event",
-								ex);
-					}
-				}
-			}
+         @Override
+         public void run() {
+            for (ITestConnectionListener listener : testConnectionListeners) {
+               try {
+                  listener.onPostConnect(event);
+               } catch (Exception ex) {
+                  OseeLog.log(Activator.class, Level.SEVERE, "exception notifying listener of post connect event", ex);
+               }
+            }
+         }
 
-		});
-	}
+      });
+   }
 
-	void notifyDisconnect(final ConnectionEvent event) {
-		for (ITestConnectionListener listener : testConnectionListeners) {
-			try {
-				listener.onPreDisconnect(event);
-			} catch (Exception ex) {
-				OseeLog.log(Activator.class, Level.SEVERE,
-						"exception notifying listener of disconnect event", ex);
-			}
-		}
-	}
+   void notifyDisconnect(final ConnectionEvent event) {
+      for (ITestConnectionListener listener : testConnectionListeners) {
+         try {
+            listener.onPreDisconnect(event);
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, "exception notifying listener of disconnect event", ex);
+         }
+      }
+   }
 
-	void notifyConnectionLost(final IServiceConnector connector) {
-		executor.submit(new Runnable() {
+   void notifyConnectionLost(final IServiceConnector connector) {
+      executor.submit(new Runnable() {
 
-			@Override
-			public void run() {
-				for (ITestConnectionListener listener : testConnectionListeners) {
-					try {
-						listener.onConnectionLost(connector);
-					} catch (Exception ex) {
-						OseeLog
-						.log(
-								Activator.class,
-								Level.SEVERE,
-								"exception notifying listener of connection error event",
-								ex);
-					}
-				}
-			}
-		});
+         @Override
+         public void run() {
+            for (ITestConnectionListener listener : testConnectionListeners) {
+               try {
+                  listener.onConnectionLost(connector);
+               } catch (Exception ex) {
+                  OseeLog.log(Activator.class, Level.SEVERE, "exception notifying listener of connection error event",
+                     ex);
+               }
+            }
+         }
+      });
 
-	}
+   }
 
-	void notifyDictionaryLoaded(final IMessageDictionary dictionary) {
-		executor.submit(new Runnable() {
+   void notifyDictionaryLoaded(final IMessageDictionary dictionary) {
+      executor.submit(new Runnable() {
 
-			@Override
-			public void run() {
-				for (IMessageDictionaryListener listener : dictionaryListeners) {
-					try {
-						listener.onDictionaryLoaded(dictionary);
-					} catch (Exception e) {
-						Activator
-						.log(
-								Level.SEVERE,
-								"exception in listener during dictionary load event notification",
-								e);
-					}
-				}
-			}
+         @Override
+         public void run() {
+            for (IMessageDictionaryListener listener : dictionaryListeners) {
+               try {
+                  listener.onDictionaryLoaded(dictionary);
+               } catch (Exception e) {
+                  Activator.log(Level.SEVERE, "exception in listener during dictionary load event notification", e);
+               }
+            }
+         }
 
-		});
+      });
 
-	}
+   }
 
-	void notifyDictionaryUnloaded(final IMessageDictionary dictionary) {
-		for (IMessageDictionaryListener listener : dictionaryListeners) {
-			try {
-				listener.onDictionaryUnloaded(dictionary);
-			} catch (Exception e) {
-				Activator
-				.log(
-						Level.SEVERE,
-						"exception in listener during dictionary unload event notification",
-						e);
-			}
-		}
-	}
+   void notifyDictionaryUnloaded(final IMessageDictionary dictionary) {
+      for (IMessageDictionaryListener listener : dictionaryListeners) {
+         try {
+            listener.onDictionaryUnloaded(dictionary);
+         } catch (Exception e) {
+            Activator.log(Level.SEVERE, "exception in listener during dictionary unload event notification", e);
+         }
+      }
+   }
 }

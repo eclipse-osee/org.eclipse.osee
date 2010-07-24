@@ -40,7 +40,7 @@ public class ConvertActionableItemsAction extends Action {
    public void run() {
       try {
          Collection<TeamWorkFlowArtifact> teamArts =
-               Collections.castMatching(TeamWorkFlowArtifact.class, selectedAtsArtifacts.getSelectedSMAArtifacts());
+            Collections.castMatching(TeamWorkFlowArtifact.class, selectedAtsArtifacts.getSelectedSMAArtifacts());
          if (teamArts.isEmpty()) {
             throw new OseeStateException("No TeamWorkflows selected");
          }
@@ -63,7 +63,7 @@ public class ConvertActionableItemsAction extends Action {
    public void updateEnablement() {
       try {
          Collection<TeamWorkFlowArtifact> teamArts =
-               Collections.castMatching(TeamWorkFlowArtifact.class, selectedAtsArtifacts.getSelectedSMAArtifacts());
+            Collections.castMatching(TeamWorkFlowArtifact.class, selectedAtsArtifacts.getSelectedSMAArtifacts());
          setEnabled(teamArts.size() == 1);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);

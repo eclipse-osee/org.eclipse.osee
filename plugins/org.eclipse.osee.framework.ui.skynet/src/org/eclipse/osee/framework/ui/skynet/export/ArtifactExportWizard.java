@@ -35,7 +35,7 @@ public class ArtifactExportWizard extends Wizard implements IExportWizard {
          Jobs.startJob(new ArtifactExportJob(mainPage.getExportPath(), mainPage.getExportArtifacts()));
       } catch (Exception ex) {
          ErrorDialog.openError(getShell(), "Define Export Error", ex.getLocalizedMessage(), new Status(IStatus.ERROR,
-               "org.eclipse.osee.framework.jdk.core", IStatus.ERROR, ex.getLocalizedMessage(), ex));
+            "org.eclipse.osee.framework.jdk.core", IStatus.ERROR, ex.getLocalizedMessage(), ex));
       }
       return true;
    }

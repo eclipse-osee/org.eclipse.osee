@@ -49,26 +49,38 @@ public class ArtifactPropertySource extends ModelPropertySource {
 
    @Override
    public boolean isPropertySet(Object id) {
-      if (id == idImage) return getDataTypeElement().getImage() != null;
-      if (id == idSuperTypes) return true;
+      if (id == idImage) {
+         return getDataTypeElement().getImage() != null;
+      }
+      if (id == idSuperTypes) {
+         return true;
+      }
       return false;
    }
 
    @Override
    public Object getPropertyValue(Object id) {
-      if (id == idImage) return ImagePropertyDescriptor.fromModel(getDataTypeElement().getImage());
-      if (id == idSuperTypes) return ReadOnlyPropertyDescriptor.fromModel(getDataTypeElement().getSuperTypes().toString());
+      if (id == idImage) {
+         return ImagePropertyDescriptor.fromModel(getDataTypeElement().getImage());
+      }
+      if (id == idSuperTypes) {
+         return ReadOnlyPropertyDescriptor.fromModel(getDataTypeElement().getSuperTypes().toString());
+      }
       return false;
    }
 
    @Override
    public void resetPropertyValue(Object id) {
-      if (id == idImage) getDataTypeElement().setImage(null);
+      if (id == idImage) {
+         getDataTypeElement().setImage(null);
+      }
    }
 
    @Override
    public void setPropertyValue(Object id, Object value) {
-      if (id == idImage) getDataTypeElement().setImage(ImagePropertyDescriptor.toModel(value));
+      if (id == idImage) {
+         getDataTypeElement().setImage(ImagePropertyDescriptor.toModel(value));
+      }
    }
 
 }

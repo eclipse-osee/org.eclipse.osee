@@ -73,8 +73,8 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
       TeamDefinitionArtifact useTeamDef = teamDef;
       if (useTeamDef == null && teamDefName != null) {
          useTeamDef =
-               (TeamDefinitionArtifact) AtsCacheManager.getSoleArtifactByName(
-                     ArtifactTypeManager.getType(AtsArtifactTypes.TeamDefinition), teamDefName);
+            (TeamDefinitionArtifact) AtsCacheManager.getSoleArtifactByName(
+               ArtifactTypeManager.getType(AtsArtifactTypes.TeamDefinition), teamDefName);
       }
       if (useTeamDef == null) {
          TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");
@@ -91,9 +91,12 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
                return;
             }
             useTeamDef = (TeamDefinitionArtifact) ld.getResult()[0];
-         } else
+         } else {
             return;
-      } else if (!MessageDialog.openConfirm(Displays.getActiveShell(), getName(), getName())) return;
+         }
+      } else if (!MessageDialog.openConfirm(Displays.getActiveShell(), getName(), getName())) {
+         return;
+      }
 
       ReportJob job = new ReportJob(getName(), useTeamDef);
       job.setUser(true);
@@ -118,7 +121,7 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
             resultData.addRaw(html);
             resultData.report(getName(), Manipulations.RAW_HTML);
          } catch (Exception ex) {
-            return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.toString(), ex);
+            return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.toString(), ex);
          }
          monitor.done();
          return Status.OK_STATUS;
@@ -126,8 +129,8 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
    }
 
    private static String[] HEADER_STRINGS =
-         new String[] {"Version", "StartDate", "RelDate", "Num 1 + 2 Orig During Next Release Cycle",
-               "Num Non-Support Released", "Ratio Orig 1 and 2 Bugs/Number Released"};
+      new String[] {"Version", "StartDate", "RelDate", "Num 1 + 2 Orig During Next Release Cycle",
+         "Num Non-Support Released", "Ratio Orig 1 and 2 Bugs/Number Released"};
 
    /**
     * Ratio of # of priority 1 and 2 OSEE problem actions (non-cancelled) that were orginated between a release and the
@@ -142,8 +145,8 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
       sb.append(AHTML.heading(3, title));
       sb.append(AHTML.beginMultiColumnTable(100, 1));
       sb.append(AHTML.addRowSpanMultiColumnTable(
-            "This report shows the ratio of 1+2 problem workflows created during next release cycle due to current release over the total non-support workflows during this release.",
-            HEADER_STRINGS.length));
+         "This report shows the ratio of 1+2 problem workflows created during next release cycle due to current release over the total non-support workflows during this release.",
+         HEADER_STRINGS.length));
       sb.append(AHTML.addHeaderRowMultiColumnTable(HEADER_STRINGS));
       VersionTeamMetrics teamMet = new VersionTeamMetrics(teamDef);
       Collection<VersionMetrics> verMets = teamMet.getReleasedOrderedVersions();
@@ -164,7 +167,7 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
                numOrigDurningNextReleaseCycle = 0;
             }
             Collection<TeamWorkFlowArtifact> arts =
-                  teamMet.getWorkflowsOriginatedBetween(nextReleaseStartDate, nextReleaseEndDate);
+               teamMet.getWorkflowsOriginatedBetween(nextReleaseStartDate, nextReleaseEndDate);
             for (TeamWorkFlowArtifact team : arts) {
                if (!team.isCancelled() && team.getChangeType() == ChangeType.Problem && (team.getPriority() == PriorityType.Priority_1 || team.getPriority() == PriorityType.Priority_2)) {
                   numOrigDurningNextReleaseCycle++;
@@ -181,12 +184,12 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
             }
          }
          sb.append(AHTML.addRowMultiColumnTable(new String[] {
-               verMet.getVerArt().getName(),
-               XDate.getDateStr(thisReleaseStartDate, XDate.MMDDYY),
-               XDate.getDateStr(thisReleaseEndDate, XDate.MMDDYY),
-               numOrigDurningNextReleaseCycle == null ? "N/A" : String.valueOf(numOrigDurningNextReleaseCycle),
-               numNonSupportReleased == null ? "N/A" : String.valueOf(numNonSupportReleased),
-               numOrigDurningNextReleaseCycle == null || numNonSupportReleased == null || numNonSupportReleased == 0 ? "N/A" : AtsUtil.doubleToI18nString((double) numOrigDurningNextReleaseCycle / (double) numNonSupportReleased)}));
+            verMet.getVerArt().getName(),
+            XDate.getDateStr(thisReleaseStartDate, XDate.MMDDYY),
+            XDate.getDateStr(thisReleaseEndDate, XDate.MMDDYY),
+            numOrigDurningNextReleaseCycle == null ? "N/A" : String.valueOf(numOrigDurningNextReleaseCycle),
+            numNonSupportReleased == null ? "N/A" : String.valueOf(numNonSupportReleased),
+            numOrigDurningNextReleaseCycle == null || numNonSupportReleased == null || numNonSupportReleased == 0 ? "N/A" : AtsUtil.doubleToI18nString((double) numOrigDurningNextReleaseCycle / (double) numNonSupportReleased)}));
          monitor.worked(1);
       }
       sb.append(AHTML.endMultiColumnTable());

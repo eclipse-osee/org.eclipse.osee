@@ -39,8 +39,9 @@ public class ArtifactTypeInheritanceTest {
    public void testAllArtifactTypesInheritFromArtifactWithIsOfType() throws OseeCoreException {
       ArtifactType baseArtifactType = ArtifactTypeManager.getType("Artifact");
       for (ArtifactType artifactType : ArtifactTypeManager.getAllTypes()) {
-         Assert.assertTrue(String.format("[%s] was not of type [%s]", artifactType.getName(),
-               baseArtifactType.getName()), artifactType.inheritsFrom(baseArtifactType));
+         Assert.assertTrue(
+            String.format("[%s] was not of type [%s]", artifactType.getName(), baseArtifactType.getName()),
+            artifactType.inheritsFrom(baseArtifactType));
       }
    }
 
@@ -59,7 +60,7 @@ public class ArtifactTypeInheritanceTest {
          Collection<AttributeType> childAttributeTypes = artifactType.getAttributeTypes(branch);
          Collection<AttributeType> complement = Collections.setComplement(baseAttributeTypes, childAttributeTypes);
          Assert.assertTrue(String.format("[%s] did not inherit %s ", artifactType.getName(), complement),
-               complement.isEmpty());
+            complement.isEmpty());
       }
    }
 }

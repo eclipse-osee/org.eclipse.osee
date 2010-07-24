@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.action;
 
-
 /**
  * @author Donald G. Dunne
  */

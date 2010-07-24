@@ -40,8 +40,8 @@ import org.eclipse.ui.menus.CommandContributionItemParameter;
  * @author Jeff C. Phillips
  */
 public class CommitIntoParentCompoundContributionItem extends CompoundContributionItem {
-   private static final IParameter[] BRANCH_COMMIT_PARAMETER_DEF =
-         new IParameter[] {new BranchIdParameter(), new CommitBranchParameter()};
+   private static final IParameter[] BRANCH_COMMIT_PARAMETER_DEF = new IParameter[] {new BranchIdParameter(),
+      new CommitBranchParameter()};
 
    private ICommandService commandService;
 
@@ -56,7 +56,7 @@ public class CommitIntoParentCompoundContributionItem extends CompoundContributi
    @Override
    protected IContributionItem[] getContributionItems() {
       ISelectionProvider selectionProvider =
-            AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
+         AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
       ArrayList<IContributionItem> contributionItems = new ArrayList<IContributionItem>(40);
 
       if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
@@ -94,9 +94,9 @@ public class CommitIntoParentCompoundContributionItem extends CompoundContributi
       String label = "Commit into Parent Branch: " + branch.getParentBranch().getName();
 
       contributionItem =
-            new CommandContributionItem(new CommandContributionItemParameter(
-                  PlatformUI.getWorkbench().getActiveWorkbenchWindow(), label, commandId, parameters, null, null, null,
-                  label, null, null, SWT.NONE, null, false));
+         new CommandContributionItem(new CommandContributionItemParameter(
+            PlatformUI.getWorkbench().getActiveWorkbenchWindow(), label, commandId, parameters, null, null, null,
+            label, null, null, SWT.NONE, null, false));
 
       return contributionItem;
    }
@@ -106,7 +106,7 @@ public class CommitIntoParentCompoundContributionItem extends CompoundContributi
 
       try {
          command.define(command.getName(), "", commandService.getCategory("org.eclipse.debug.ui.category.run"),
-               BRANCH_COMMIT_PARAMETER_DEF);
+            BRANCH_COMMIT_PARAMETER_DEF);
       } catch (NotDefinedException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }

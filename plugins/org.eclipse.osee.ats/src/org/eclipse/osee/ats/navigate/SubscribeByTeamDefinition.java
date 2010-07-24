@@ -40,17 +40,18 @@ public class SubscribeByTeamDefinition extends XNavigateItemAction {
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
       final TeamDefinitionCheckTreeDialog diag =
-            new TeamDefinitionCheckTreeDialog(getName(),
-                  "Select Team Definition\n\nEmail will be sent for every Action created against these Teams.",
-                  Active.Active);
+         new TeamDefinitionCheckTreeDialog(getName(),
+            "Select Team Definition\n\nEmail will be sent for every Action created against these Teams.", Active.Active);
       try {
          List<TeamDefinitionArtifact> objs =
-               Collections.castAll(UserManager.getUser().getRelatedArtifactsOfType(AtsRelationTypes.SubscribedUser_Artifact,
-                     TeamDefinitionArtifact.class));
+            Collections.castAll(UserManager.getUser().getRelatedArtifactsOfType(
+               AtsRelationTypes.SubscribedUser_Artifact, TeamDefinitionArtifact.class));
          diag.setInitialTeamDefs(objs);
-         if (diag.open() != 0) return;
-         UserManager.getUser().setRelationsOfTypeUseCurrentOrder(AtsRelationTypes.SubscribedUser_Artifact, diag.getChecked(),
-               TeamDefinitionArtifact.class);
+         if (diag.open() != 0) {
+            return;
+         }
+         UserManager.getUser().setRelationsOfTypeUseCurrentOrder(AtsRelationTypes.SubscribedUser_Artifact,
+            diag.getChecked(), TeamDefinitionArtifact.class);
          UserManager.getUser().persist();
          AWorkbench.popup(getName(), "Subscriptions updated.");
       } catch (Exception ex) {

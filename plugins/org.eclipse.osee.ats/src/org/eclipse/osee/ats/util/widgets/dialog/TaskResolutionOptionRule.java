@@ -46,14 +46,18 @@ public class TaskResolutionOptionRule extends WorkRuleDefinition {
 
    public static List<TaskResOptionDefinition> getTaskResolutionOptions(WorkPageDefinition workPageDefinition) throws OseeCoreException {
       TaskResolutionOptionRule taskResolutionOptionRule = getTaskResolutionOptionRule(workPageDefinition);
-      if (taskResolutionOptionRule != null) return taskResolutionOptionRule.getOptions();
+      if (taskResolutionOptionRule != null) {
+         return taskResolutionOptionRule.getOptions();
+      }
       return EMPTY_TASK_RESOLUTION_OPTIONS;
    }
 
    public static TaskResolutionOptionRule getTaskResolutionOptionRule(WorkPageDefinition workPageDefinition) throws OseeCoreException {
       List<WorkItemDefinition> wids =
-            workPageDefinition.getWorkItemDefinitionsByType(TaskResolutionOptionRule.WORK_TYPE);
-      if (wids.isEmpty()) return null;
+         workPageDefinition.getWorkItemDefinitionsByType(TaskResolutionOptionRule.WORK_TYPE);
+      if (wids.isEmpty()) {
+         return null;
+      }
       WorkItemDefinition workItemDefinition = wids.iterator().next();
       if (workItemDefinition != null) {
          TaskResolutionOptionRule taskResolutionOptionRule = new TaskResolutionOptionRule(null, GUID.create(), null);
@@ -107,7 +111,9 @@ public class TaskResolutionOptionRule extends WorkRuleDefinition {
    public Integer getResolutionOptionOrderIndex(String name) {
       int x = 1;
       for (TaskResOptionDefinition option : options) {
-         if (option.getName().equals(name)) return x;
+         if (option.getName().equals(name)) {
+            return x;
+         }
          x++;
       }
       return null;

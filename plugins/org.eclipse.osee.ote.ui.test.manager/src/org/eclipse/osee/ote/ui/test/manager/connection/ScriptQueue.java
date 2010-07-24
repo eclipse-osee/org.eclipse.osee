@@ -16,8 +16,8 @@ import org.eclipse.osee.ote.ui.test.manager.pages.scriptTable.ScriptTask;
 
 public abstract class ScriptQueue implements Runnable {
 
-   private List<ScriptTask> scripts;
-   private TestManagerEditor testManager;
+   private final List<ScriptTask> scripts;
+   private final TestManagerEditor testManager;
 
    public ScriptQueue(List<ScriptTask> scripts, TestManagerEditor testManager) {
       super();
@@ -25,6 +25,7 @@ public abstract class ScriptQueue implements Runnable {
       this.testManager = testManager;
    }
 
+   @Override
    public abstract void run();
 
    protected List<ScriptTask> getScriptsToExecute() {
@@ -36,6 +37,6 @@ public abstract class ScriptQueue implements Runnable {
    }
 
    protected ScriptManager getScriptManager() {
-	return testManager.getPageManager().getScriptPage().getScriptManager();
-    }
+      return testManager.getPageManager().getScriptPage().getScriptManager();
+   }
 }

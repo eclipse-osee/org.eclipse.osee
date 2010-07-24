@@ -29,7 +29,7 @@ public class EmbeddedDateEditor {
    }
 
    public void createEditor(Composite container) {
-      (new Label(container, SWT.None)).setText(dialogMessage);
+      new Label(container, SWT.None).setText(dialogMessage);
       datePicker = new DateTime(container, SWT.DATE | SWT.DROP_DOWN);
       setSelectedDate(selectedDate);
    }
@@ -40,7 +40,7 @@ public class EmbeddedDateEditor {
          Calendar calendar = Calendar.getInstance();
          calendar.setTime(selectedDate);
          datePicker.setDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
-               calendar.get(Calendar.DAY_OF_MONTH));
+            calendar.get(Calendar.DAY_OF_MONTH));
       }
    }
 

@@ -13,7 +13,6 @@ package org.eclipse.osee.ote.ui.message.view;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.framework.ui.plugin.util.ViewPartUtil;
 
-
 /**
  * @author Donald G. Dunne
  */

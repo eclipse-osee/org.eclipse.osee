@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.database.internal.Activator;
 
 /**
  * Handles connection recovery in the event of database connection being lost
- *
+ * 
  * @author Jeff C. Phillips
  */
 public final class ConnectionHandler {
@@ -63,7 +63,7 @@ public final class ConnectionHandler {
 
    /**
     * This method should only be used when not contained in a DB transaction
-    *
+    * 
     * @param query
     * @param data
     * @return number of records updated
@@ -75,7 +75,7 @@ public final class ConnectionHandler {
 
    /**
     * This method should only be used when not contained in a DB transaction
-    *
+    * 
     * @param query
     * @param dataList
     * @return number of records updated
@@ -87,7 +87,7 @@ public final class ConnectionHandler {
 
    /**
     * This method should only be used when contained in a DB transaction
-    *
+    * 
     * @param connection
     * @param query
     * @param data
@@ -162,7 +162,7 @@ public final class ConnectionHandler {
 
    /**
     * Cause constraint checking to be deferred until the end of the current transaction.
-    *
+    * 
     * @param connection
     * @throws OseeDataStoreException
     */

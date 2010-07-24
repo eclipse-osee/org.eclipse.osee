@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers.branch;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -20,7 +21,6 @@ import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
@@ -45,7 +45,7 @@ public class ArchiveBranchHandler extends CommandHandler {
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
       IStructuredSelection selection =
-            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+         (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
       Collection<Branch> branches = Handlers.getBranchesFromStructuredSelection(selection);
 
       for (Branch branch : branches) {
@@ -57,10 +57,10 @@ public class ArchiveBranchHandler extends CommandHandler {
 
          for (Branch branch : branches) {
             OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.Committed, branch.getGuid()),
-                  branch.getId());
+               branch.getId());
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE, ex);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
       return null;
    }

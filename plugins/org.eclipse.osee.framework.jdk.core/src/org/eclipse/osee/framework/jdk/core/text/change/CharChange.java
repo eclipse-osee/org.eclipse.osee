@@ -17,9 +17,9 @@ import java.io.Writer;
  * @author Ryan D. Brooks
  */
 public class CharChange implements CharacterChanger {
-   private int srcStartIndex;
-   private int srcEndIndex;
-   private char newChar;
+   private final int srcStartIndex;
+   private final int srcEndIndex;
+   private final char newChar;
    private CharacterChanger next;
 
    /**
@@ -32,31 +32,38 @@ public class CharChange implements CharacterChanger {
       this.newChar = newChar;
    }
 
+   @Override
    public int getStartIndex() {
       return srcStartIndex;
    }
 
+   @Override
    public int getEndIndex() {
       return srcEndIndex;
    }
 
+   @Override
    public int applyChange(char[] dest, int destPos) {
       dest[destPos] = newChar;
       return destPos + 1;
    }
 
+   @Override
    public void applyChange(Writer writer) throws IOException {
       writer.write(newChar);
    }
 
+   @Override
    public CharacterChanger next() {
       return next;
    }
 
+   @Override
    public void setNext(CharacterChanger next) {
       this.next = next;
    }
 
+   @Override
    public int getLengthDelta() {
       return 1 - srcEndIndex + srcStartIndex;
    }

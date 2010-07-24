@@ -33,6 +33,7 @@ public final class OseeEventThreadFactory implements ThreadFactory {
       this(name, Thread.NORM_PRIORITY);
    }
 
+   @Override
    public Thread newThread(Runnable runnable) {
       Thread thread = new Thread(runnable, threadName + ":" + threads.size());
       thread.setPriority(priority);

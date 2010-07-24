@@ -12,7 +12,6 @@ package org.eclipse.osee.ote.core.environment.interfaces;
 
 import java.io.File;
 
-
 public interface IOutfileResults {
    public File genOutfileResults(ITestEnvironmentServiceConfig serverConfig);
 }

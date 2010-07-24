@@ -53,13 +53,13 @@ public class NewDecisionReviewJob extends Job {
    public IStatus run(final IProgressMonitor monitor) {
       try {
          decisionReviewArtifact =
-               ReviewManager.createNewDecisionReview(teamParent, reviewBlockType, reviewTitle, againstState,
-                     description, options, assignees);
+            ReviewManager.createNewDecisionReview(teamParent, reviewBlockType, reviewTitle, againstState, description,
+               options, assignees);
          decisionReviewArtifact.persist();
          AtsUtil.openATSAction(decisionReviewArtifact, AtsOpenOption.OpenOneOrPopupSelect);
       } catch (Exception ex) {
          monitor.done();
-         return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, "Error creating Decision Review", ex);
+         return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, -1, "Error creating Decision Review", ex);
       } finally {
          monitor.done();
       }

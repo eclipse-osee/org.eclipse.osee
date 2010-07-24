@@ -27,7 +27,7 @@ public class TransactionRecordFactory implements IOseeTypeFactory {
 
    public TransactionRecord create(int transactionNumber, int branchId, String comment, Date timestamp, int authorArtId, int commitArtId, TransactionDetailsType txType) throws OseeCoreException {
       Conditions.checkExpressionFailOnTrue(transactionNumber < 1, "[%s] is not a valid transaction number",
-            transactionNumber);
+         transactionNumber);
       Conditions.checkNotNull(timestamp, "timestamp");
       Conditions.checkNotNull(txType, "transaction type");
       return new TransactionRecord(transactionNumber, branchId, comment, timestamp, authorArtId, commitArtId, txType);

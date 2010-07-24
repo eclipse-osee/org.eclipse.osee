@@ -29,7 +29,7 @@ public class AttributeDataType extends DataType {
 
    public AttributeDataType() {
       this(EMPTY_STRING, EMPTY_STRING, EMPTY_STRING, EMPTY_STRING, EMPTY_STRING, 0, 0, EMPTY_STRING, EMPTY_STRING,
-            EMPTY_STRING, -1);
+         EMPTY_STRING, -1);
    }
 
    public AttributeDataType(String typeId, String name, String baseAttributeClass, String defaultValue, String fileTypeExtension, int maxOccurrence, int minOccurrence, String providerAttributeClass, String taggerId, String toolTipText, int enumTypeId) {
@@ -47,7 +47,7 @@ public class AttributeDataType extends DataType {
 
    public AttributeDataType(String name, String baseAttributeClass, String defaultValue, String fileTypeExtension, int maxOccurrence, int minOccurrence, String providerAttributeClass, String taggerId, String toolTipText, int enumTypeId) {
       this(EMPTY_STRING, name, baseAttributeClass, defaultValue, fileTypeExtension, maxOccurrence, minOccurrence,
-            providerAttributeClass, taggerId, toolTipText, enumTypeId);
+         providerAttributeClass, taggerId, toolTipText, enumTypeId);
    }
 
    /**

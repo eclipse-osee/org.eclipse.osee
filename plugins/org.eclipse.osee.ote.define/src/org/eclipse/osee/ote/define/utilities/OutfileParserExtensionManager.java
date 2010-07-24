@@ -72,7 +72,7 @@ public class OutfileParserExtensionManager {
       }
       if (toReturn == null) {
          throw new OseeStateException(String.format("Unsupported outfile type [%s] no valid outfile parser found",
-               fileToImport));
+            fileToImport));
       }
       return toReturn;
    }
@@ -90,9 +90,9 @@ public class OutfileParserExtensionManager {
    private void checkObjectsLoaded() throws OseeCoreException {
       if (contributions.isEmpty()) {
          List<IConfigurationElement> elements =
-               ExtensionPoints.getExtensionElements(OteDefinePlugin.PLUGIN_ID + "." + OUTFILE_PARSER, OUTFILE_PARSER);
+            ExtensionPoints.getExtensionElements(OteDefinePlugin.PLUGIN_ID + "." + OUTFILE_PARSER, OUTFILE_PARSER);
          for (IConfigurationElement element : elements) {
-            IExtension extension = ((IExtension) element.getParent());
+            IExtension extension = (IExtension) element.getParent();
             String identifier = extension.getUniqueIdentifier();
             String bundleName = element.getContributor().getName();
             String parserClassName = element.getAttribute(CLASS_NAME);

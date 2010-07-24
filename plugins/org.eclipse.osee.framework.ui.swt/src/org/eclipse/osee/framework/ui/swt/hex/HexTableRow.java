@@ -16,16 +16,16 @@ public class HexTableRow {
    public final int offset;
    public int length;
    public byte[] array;
-   private Color[] backgroundColor;
-   private boolean[] displayAsAscii;
+   private final Color[] backgroundColor;
+   private final boolean[] displayAsAscii;
 
    private static final String[] hexTbl = new String[256];
    static {
-		for (int i = 0; i < 256; i++) {
-			hexTbl[i] = String.format("%02X", i);
-		}
-	}
-   
+      for (int i = 0; i < 256; i++) {
+         hexTbl[i] = String.format("%02X", i);
+      }
+   }
+
    public HexTableRow(int offset, int length, byte[] array) {
       this.offset = offset;
       this.array = array;

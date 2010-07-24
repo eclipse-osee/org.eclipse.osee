@@ -52,6 +52,7 @@ public class BranchEditPart extends AbstractGraphicalEditPart {
       return txContainer;
    }
 
+   @Override
    @SuppressWarnings("unchecked")
    protected List getModelChildren() {
       List toReturn = new ArrayList();
@@ -83,17 +84,17 @@ public class BranchEditPart extends AbstractGraphicalEditPart {
 
       int xMiddle = maxBranches * GraphFigureConstants.BRANCH_X_OFFSET / 2;
 
-      int xStart = xMiddle + (((branchAtLevel - 1) * GraphFigureConstants.BRANCH_X_OFFSET) / 2) * -1;
+      int xStart = xMiddle + (branchAtLevel - 1) * GraphFigureConstants.BRANCH_X_OFFSET / 2 * -1;
 
       xStart +=
-            GraphFigureConstants.GRAPH_MARGIN + (branchModel.getIndex() - branchesAboveLevel) * GraphFigureConstants.BRANCH_X_OFFSET;
+         GraphFigureConstants.GRAPH_MARGIN + (branchModel.getIndex() - branchesAboveLevel) * GraphFigureConstants.BRANCH_X_OFFSET;
 
       int totalTxs = 0;
       for (int index = 0; index < graphLevel; index++) {
          totalTxs += gPart.getMaxTxForGraphLevel(index);
       }
       int yStart =
-            GraphFigureConstants.GRAPH_MARGIN + (GraphFigureConstants.BRANCH_Y_OFFSET * graphLevel) + (GraphFigureConstants.TX_Y_OFFSET * totalTxs);
+         GraphFigureConstants.GRAPH_MARGIN + GraphFigureConstants.BRANCH_Y_OFFSET * graphLevel + GraphFigureConstants.TX_Y_OFFSET * totalTxs;
 
       return new Point(xStart, yStart);
    }
@@ -135,12 +136,15 @@ public class BranchEditPart extends AbstractGraphicalEditPart {
    //      return new Point(xStart, yStart);
    //   }
 
+   @Override
    protected void createEditPolicies() {
       installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, new SelectionEditPolicy() {
+         @Override
          protected void hideSelection() {
             refreshVisuals();
          }
 
+         @Override
          protected void showSelection() {
             refreshVisuals();
          }

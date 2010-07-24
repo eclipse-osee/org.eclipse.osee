@@ -11,15 +11,15 @@
 package org.eclipse.osee.ote.ui.message.watch.action;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
 
 /**
  * @author Ken J. Aguilar
- *
  */
 public class DisabledAction extends Action {
 
-	public DisabledAction(String name) {
-		super(name, Action.AS_PUSH_BUTTON);
-		setEnabled(false);
-	}
+   public DisabledAction(String name) {
+      super(name, IAction.AS_PUSH_BUTTON);
+      setEnabled(false);
+   }
 }

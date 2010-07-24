@@ -22,6 +22,7 @@ import org.eclipse.osee.coverage.merge.MergeItem;
 import org.eclipse.osee.coverage.merge.MergeManager;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageItem;
+import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoverageUnit;
@@ -83,15 +84,15 @@ public class CoverageUnitPersistTest {
       try {
          for (String filename : Arrays.asList(
          //
-               "com/screenA/ComScrnAButton1.java", "com/screenA/ComScrnAButton2.java",
-               //
-               "com/screenB/ScreenBButton1.java", "com/screenB/ScreenBButton2.java", "com/screenB/ScreenBButton3.java"
+            "com/screenA/ComScrnAButton1.java", "com/screenA/ComScrnAButton2.java",
+            //
+            "com/screenB/ScreenBButton1.java", "com/screenB/ScreenBButton2.java", "com/screenB/ScreenBButton3.java"
          //
          )) {
             System.err.println(String.format("Importing [%s]", PATH + filename));
             URL url = CoverageImport1TestBlam.class.getResource(PATH + filename);
             CoverageUnit coverageUnit =
-                  SampleJavaFileParser.createCodeUnit(url, coverageImport.getCoverageUnitFileContentsProvider());
+               SampleJavaFileParser.createCodeUnit(url, coverageImport.getCoverageUnitFileContentsProvider());
             String namespace = coverageUnit.getNamespace().replaceFirst("org.eclipse.osee.coverage.test.import1.", "");
             coverageUnit.setNamespace(namespace);
             CoverageUnit parentCoverageUnit = coverageImport.getOrCreateParent(namespace);
@@ -122,7 +123,7 @@ public class CoverageUnitPersistTest {
          @Override
          public Result save() throws OseeCoreException {
             OseeCoveragePackageStore store =
-                  OseeCoveragePackageStore.get(saveCoveragePackage, BranchManager.getCommonBranch());
+               OseeCoveragePackageStore.get(saveCoveragePackage, BranchManager.getCommonBranch());
             store.save();
             Artifact artifact = store.getArtifact(false);
             CoverageTestUtil.registerAsTestArtifact(artifact, true);
@@ -153,8 +154,8 @@ public class CoverageUnitPersistTest {
 
       // TEST LOAD
       Artifact artifact =
-            ArtifactQuery.getArtifactFromTypeAndName(CoverageArtifactTypes.CoveragePackage, "CU Test",
-                  BranchManager.getCommonBranch());
+         ArtifactQuery.getArtifactFromTypeAndName(CoverageArtifactTypes.CoveragePackage, "CU Test",
+            BranchManager.getCommonBranch());
       loadCoveragePackage = OseeCoveragePackageStore.get(artifact);
       Assert.assertEquals(saveCoveragePackage.getName(), loadCoveragePackage.getName());
       Assert.assertEquals(saveCoveragePackage.getNamespace(), loadCoveragePackage.getNamespace());
@@ -165,15 +166,15 @@ public class CoverageUnitPersistTest {
 
       // TEST DELETE
       artifact =
-            ArtifactQuery.getArtifactFromTypeAndName(CoverageArtifactTypes.CoveragePackage, "CU Test",
-                  BranchManager.getCommonBranch());
+         ArtifactQuery.getArtifactFromTypeAndName(CoverageArtifactTypes.CoveragePackage, "CU Test",
+            BranchManager.getCommonBranch());
       Assert.assertNotNull(artifact);
       OseeCoveragePackageStore store = new OseeCoveragePackageStore(artifact);
       store.delete(false);
       try {
          artifact =
-               ArtifactQuery.getArtifactFromTypeAndName(CoverageArtifactTypes.CoveragePackage, "CU Test",
-                     BranchManager.getCommonBranch());
+            ArtifactQuery.getArtifactFromTypeAndName(CoverageArtifactTypes.CoveragePackage, "CU Test",
+               BranchManager.getCommonBranch());
          Assert.assertNotNull("CU Test should not have been found", artifact);
       } catch (ArtifactDoesNotExist ex) {
          //do nothing
@@ -190,7 +191,7 @@ public class CoverageUnitPersistTest {
       TestUnitStore.clearStore();
       String cuName = DbTestUnitProviderTest.class.getSimpleName() + "-" + GUID.create();
       CoverageUnit unit = new CoverageUnit(null, cuName, "location", new SimpleCoverageUnitFileContentsProvider());
-      CoverageItem item = new CoverageItem(unit, CoverageOptionManagerDefault.Test_Unit, "1");
+      CoverageItem item = new CoverageItem(unit, CoverageOptionManager.Test_Unit, "1");
       item.setTestUnitProvider(new SimpleTestUnitProvider());
       for (int x = 0; x < 10; x++) {
          item.addTestUnitName("Test Unit " + x);
@@ -201,11 +202,11 @@ public class CoverageUnitPersistTest {
       Assert.assertTrue(result.isTrue());
 
       Artifact artifact =
-            ArtifactQuery.getArtifactFromTypeAndName(CoverageArtifactTypes.CoverageUnit, cuName,
-                  BranchManager.getCommonBranch());
+         ArtifactQuery.getArtifactFromTypeAndName(CoverageArtifactTypes.CoverageUnit, cuName,
+            BranchManager.getCommonBranch());
       Assert.assertNotNull(artifact);
       OseeCoverageUnitStore dbStore =
-            new OseeCoverageUnitStore(null, artifact, CoverageOptionManagerDefault.instance());
+         new OseeCoverageUnitStore(null, artifact, CoverageOptionManagerDefault.instance());
       CoverageUnit dbUnit = dbStore.getCoverageUnit();
       Assert.assertEquals(1, dbUnit.getCoverageItems().size());
       CoverageItem dbItem = dbUnit.getCoverageItems().iterator().next();

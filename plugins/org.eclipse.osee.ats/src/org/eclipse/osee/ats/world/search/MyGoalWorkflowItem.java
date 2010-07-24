@@ -35,7 +35,8 @@ public class MyGoalWorkflowItem extends UserSearchItem {
    private final GoalSearchState goalSearchState;
 
    public enum GoalSearchState {
-      InWork, All
+      InWork,
+      All
    };
 
    public MyGoalWorkflowItem(String name, User user, GoalSearchState goalSearchState) {
@@ -61,13 +62,13 @@ public class MyGoalWorkflowItem extends UserSearchItem {
          artifacts.addAll(RelationManager.getRelatedArtifacts(assigned, 1, AtsRelationTypes.SmaToTask_Sma));
       } else {
          artifacts.addAll(ArtifactQuery.getArtifactListFromAttribute(ATSAttributes.STATE_ATTRIBUTE.getStoreName(),
-               "%<" + user.getUserId() + ">%", AtsUtil.getAtsBranch()));
+            "%<" + user.getUserId() + ">%", AtsUtil.getAtsBranch()));
       }
 
       List<Artifact> artifactsToReturn = new ArrayList<Artifact>(artifacts.size());
       for (Artifact artifact : artifacts) {
          if (artifact instanceof GoalArtifact) {
-            if (goalSearchState == GoalSearchState.All || (goalSearchState == GoalSearchState.InWork && !((StateMachineArtifact) artifact).isCancelledOrCompleted())) {
+            if (goalSearchState == GoalSearchState.All || goalSearchState == GoalSearchState.InWork && !((StateMachineArtifact) artifact).isCancelledOrCompleted()) {
                artifactsToReturn.add(artifact);
             }
          }

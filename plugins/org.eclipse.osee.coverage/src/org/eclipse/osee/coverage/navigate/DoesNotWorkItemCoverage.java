@@ -107,7 +107,7 @@ public class DoesNotWorkItemCoverage extends XNavigateItemAction {
             totalCoverageItems++;
             String xml = (String) attr.getValue();
             CoverageItem coverageItem =
-                  new CoverageItem(null, xml, CoverageOptionManagerDefault.instance(), new SimpleTestUnitProvider());
+               new CoverageItem(null, xml, CoverageOptionManagerDefault.instance(), new SimpleTestUnitProvider());
             allTestUnitNames.addAll(coverageItem.getTestUnits());
             if (coverageItem.getTestUnits().size() > 0) {
                fixCount++;
@@ -153,7 +153,7 @@ public class DoesNotWorkItemCoverage extends XNavigateItemAction {
             String attrStr = (String) attr.getValue();
             store.load(attrStr);
             CoverageItem item =
-                  new CoverageItem(null, attrStr, packageStore.getCoverageOptionManager(), new SimpleTestUnitProvider());
+               new CoverageItem(null, attrStr, packageStore.getCoverageOptionManager(), new SimpleTestUnitProvider());
             String name = store.get("name");
             if (!Strings.isValid(name)) {
                System.err.println(String.format("Invalid name [%s] for item [%s]", name, item));
@@ -170,7 +170,9 @@ public class DoesNotWorkItemCoverage extends XNavigateItemAction {
                System.err.println(String.format("Error: name [%s] doesn't match", name));
             }
          }
-         if (persist) artifact.persist(transaction);
+         if (persist) {
+            artifact.persist(transaction);
+         }
       }
 
       transaction.execute();
@@ -193,7 +195,7 @@ public class DoesNotWorkItemCoverage extends XNavigateItemAction {
             String str = (String) attr.getValue();
             store.load(str);
             CoverageItem item =
-                  new CoverageItem(null, str, CoverageOptionManagerDefault.instance(), new SimpleTestUnitProvider());
+               new CoverageItem(null, str, CoverageOptionManagerDefault.instance(), new SimpleTestUnitProvider());
 
             String executeNum = store.get("executeNum");
             if (!Strings.isValid(executeNum)) {
@@ -226,7 +228,9 @@ public class DoesNotWorkItemCoverage extends XNavigateItemAction {
                System.out.println(String.format("Adding method num [%s] to unit [%s]", methodNum, artifact));
             }
          }
-         if (persist) artifact.persist(transaction);
+         if (persist) {
+            artifact.persist(transaction);
+         }
       }
 
       transaction.execute();

@@ -22,6 +22,7 @@ public class XNavigateLabelProvider implements ILabelProvider {
     * @param arg0 the element
     * @return Image
     */
+   @Override
    public Image getImage(Object arg0) {
       return ((XNavigateItem) arg0).getImage();
    }
@@ -32,8 +33,11 @@ public class XNavigateLabelProvider implements ILabelProvider {
     * @param arg0 the element
     * @return String
     */
+   @Override
    public String getText(Object arg0) {
-      if (arg0 == null) return "";
+      if (arg0 == null) {
+         return "";
+      }
       return ((XNavigateItem) arg0).getName();
    }
 
@@ -42,6 +46,7 @@ public class XNavigateLabelProvider implements ILabelProvider {
     * 
     * @param arg0 the listener
     */
+   @Override
    public void addListener(ILabelProviderListener arg0) {
       // Throw it away
    }
@@ -49,6 +54,7 @@ public class XNavigateLabelProvider implements ILabelProvider {
    /**
     * Disposes any resources
     */
+   @Override
    public void dispose() {
       // Nothing to dispose
    }
@@ -60,6 +66,7 @@ public class XNavigateLabelProvider implements ILabelProvider {
     * @param arg1 the property
     * @return boolean
     */
+   @Override
    public boolean isLabelProperty(Object arg0, String arg1) {
       return false;
    }
@@ -69,6 +76,7 @@ public class XNavigateLabelProvider implements ILabelProvider {
     * 
     * @param arg0 the listener
     */
+   @Override
    public void removeListener(ILabelProviderListener arg0) {
       // Ignore
    }

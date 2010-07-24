@@ -33,6 +33,7 @@ public class HostEntry extends FormmatedEntry {
       return host;
    }
 
+   @Override
    public String getFormmatedString() {
       return "Host : " + host;
    }

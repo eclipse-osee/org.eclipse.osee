@@ -33,15 +33,13 @@ public class ReadOnlyHyperlinkListener implements IHyperlinkListener {
    @Override
    public void linkActivated(HyperlinkEvent e) {
       try {
-         if (sma.isHistoricalVersion())
-            AWorkbench.popup(
-                  "Historical Error",
-                  "You can not change a historical version of " + sma.getArtifactTypeName() + ":\n\n" + sma);
-
-         else
-            AWorkbench.popup(
-                  "Authentication Error",
-                  "You do not have permissions to edit " + sma.getArtifactTypeName() + ":" + sma);
+         if (sma.isHistoricalVersion()) {
+            AWorkbench.popup("Historical Error",
+               "You can not change a historical version of " + sma.getArtifactTypeName() + ":\n\n" + sma);
+         } else {
+            AWorkbench.popup("Authentication Error",
+               "You do not have permissions to edit " + sma.getArtifactTypeName() + ":" + sma);
+         }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }

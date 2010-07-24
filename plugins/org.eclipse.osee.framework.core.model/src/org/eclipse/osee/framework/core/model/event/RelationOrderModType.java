@@ -11,7 +11,8 @@
 package org.eclipse.osee.framework.core.model.event;
 
 public enum RelationOrderModType {
-   Default("AFRkIhe6hTMJL8pL4IAA"), Absolute("AFRkIhftz3PrR0yVYqwA");
+   Default("AFRkIhe6hTMJL8pL4IAA"),
+   Absolute("AFRkIhftz3PrR0yVYqwA");
 
    private final String guid;
 

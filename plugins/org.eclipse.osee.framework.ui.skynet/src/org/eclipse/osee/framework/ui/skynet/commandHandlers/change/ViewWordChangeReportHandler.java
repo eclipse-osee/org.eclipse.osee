@@ -42,7 +42,7 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
    public Object execute(ExecutionEvent event) {
       try {
          ISelectionProvider selectionProvider =
-               AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
+            AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
 
          if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
             IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
@@ -78,7 +78,7 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
 
       try {
          ISelectionProvider selectionProvider =
-               AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
+            AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
          isEnabled = !selectionProvider.getSelection().isEmpty();
 
       } catch (Exception ex) {

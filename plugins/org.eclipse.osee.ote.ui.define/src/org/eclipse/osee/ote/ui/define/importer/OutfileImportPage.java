@@ -86,10 +86,12 @@ public class OutfileImportPage extends WizardDataTransferPage {
       return false;
    }
 
+   @Override
    public void handleEvent(Event event) {
       updateWidgetEnablements();
    }
 
+   @Override
    public void createControl(Composite parent) {
       initializeDialogUnits(parent);
 
@@ -142,6 +144,7 @@ public class OutfileImportPage extends WizardDataTransferPage {
       treeViewer.setContentProvider(contentProvider);
       treeViewer.setLabelProvider(labelProvider);
       treeViewer.addCheckStateListener(new ICheckStateListener() {
+         @Override
          public void checkStateChanged(CheckStateChangedEvent event) {
             setPageComplete(determinePageCompletion());
          }

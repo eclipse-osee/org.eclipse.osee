@@ -28,6 +28,7 @@ class TestHostConnection {
    private final ITestEnvironment connectEnvironment;
    private final UserTestSessionKey sessionKey;
    private final IHostTestEnvironment host;
+
    /**
     * @param connectedTestHost
     * @param connectEnvironment

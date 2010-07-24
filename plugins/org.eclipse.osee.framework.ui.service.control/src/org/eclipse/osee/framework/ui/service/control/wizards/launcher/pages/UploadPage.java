@@ -69,6 +69,7 @@ public class UploadPage extends DynamicWizardPage {
       setPageComplete(true);
    }
 
+   @Override
    public void createControl(Composite parent) {
       Group composite = new Group(parent, SWT.NULL);
       composite.setLayout(new GridLayout());
@@ -146,10 +147,11 @@ public class UploadPage extends DynamicWizardPage {
          @Override
          public void widgetSelected(SelectionEvent e) {
             PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+               @Override
                public void run() {
                   Job job =
-                        new UploadRemoteFileJob("Uploading Files", serviceInfo, new TextDisplayHelper(cmdText),
-                              progress, dataMap);
+                     new UploadRemoteFileJob("Uploading Files", serviceInfo, new TextDisplayHelper(cmdText), progress,
+                        dataMap);
                   job.setUser(true);
                   job.setPriority(Job.LONG);
                   job.schedule();
@@ -164,16 +166,19 @@ public class UploadPage extends DynamicWizardPage {
       help.setToolTipText("Double-Click to open help dialog.");
       help.addMouseListener(new MouseListener() {
 
+         @Override
          public void mouseDoubleClick(MouseEvent e) {
             MessageDialog.openInformation(
-                  PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                  "Upload Help",
-                  "Upload Hints: \n\n" + "1. If the service binds to a static port, ensure that the \n" + "service to be launched is not running on the target machine.\n\n" + "2. If the remote directory used to upload files to exists previously, \n" + "make sure that the user login has write/execute permissions for that folder.\n");
+               PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+               "Upload Help",
+               "Upload Hints: \n\n" + "1. If the service binds to a static port, ensure that the \n" + "service to be launched is not running on the target machine.\n\n" + "2. If the remote directory used to upload files to exists previously, \n" + "make sure that the user login has write/execute permissions for that folder.\n");
          }
 
+         @Override
          public void mouseDown(MouseEvent e) {
          }
 
+         @Override
          public void mouseUp(MouseEvent e) {
          }
 

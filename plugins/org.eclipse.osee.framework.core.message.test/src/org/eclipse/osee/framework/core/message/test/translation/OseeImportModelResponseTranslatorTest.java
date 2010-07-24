@@ -62,7 +62,7 @@ public class OseeImportModelResponseTranslatorTest extends BaseTranslatorTest<Os
 
       List<TableData> tableDatas = new ArrayList<TableData>();
       tableDatas.add(new TableData("hello", new String[] {"col1", "col2"}, Arrays.asList(new String[] {"one1", "two2"},
-            new String[] {"one3", "two4"})));
+         new String[] {"one3", "two4"})));
       response.setReportData(tableDatas);
       data.add(new Object[] {response, translator});
       return data;

@@ -17,11 +17,11 @@ import java.io.Writer;
  * @author Ryan D. Brooks
  */
 public class CharArrayChange implements CharacterChanger {
-   private int srcStartIndex;
-   private int srcEndIndex;
+   private final int srcStartIndex;
+   private final int srcEndIndex;
    private char[] newChars;
-   private int offset;
-   private int length;
+   private final int offset;
+   private final int length;
    private CharacterChanger next;
 
    public CharArrayChange(int srcStartIndex, int srcEndIndex, char[] newChars, int offset, int length, boolean copy) {
@@ -49,31 +49,38 @@ public class CharArrayChange implements CharacterChanger {
       this(srcStartIndex, srcEndIndex, newChars, 0, newChars.length);
    }
 
+   @Override
    public int getStartIndex() {
       return srcStartIndex;
    }
 
+   @Override
    public int getEndIndex() {
       return srcEndIndex;
    }
 
+   @Override
    public int applyChange(char[] dest, int destPos) {
       System.arraycopy(newChars, offset, dest, destPos, length);
       return destPos + length;
    }
 
+   @Override
    public void applyChange(Writer writer) throws IOException {
       writer.write(newChars, offset, length);
    }
 
+   @Override
    public CharacterChanger next() {
       return next;
    }
 
+   @Override
    public void setNext(CharacterChanger next) {
       this.next = next;
    }
 
+   @Override
    public int getLengthDelta() {
       return length - srcEndIndex + srcStartIndex;
    }

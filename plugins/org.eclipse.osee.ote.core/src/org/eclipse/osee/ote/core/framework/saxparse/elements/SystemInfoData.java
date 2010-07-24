@@ -12,45 +12,50 @@ package org.eclipse.osee.ote.core.framework.saxparse.elements;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public class SystemInfoData {
 
-   private String osArch;
-   private String osName;
-   private String osVersion;
-   private String oseeVersion;
-   private String oseeServerTitle;
+   private final String osArch;
+   private final String osName;
+   private final String osVersion;
+   private final String oseeVersion;
+   private final String oseeServerTitle;
+
    /**
     * @return the osArch
     */
    public String getOsArch() {
       return osArch;
    }
+
    /**
     * @return the osName
     */
    public String getOsName() {
       return osName;
    }
+
    /**
     * @return the osVersion
     */
    public String getOsVersion() {
       return osVersion;
    }
+
    /**
     * @return the oseeVersion
     */
    public String getOseeVersion() {
       return oseeVersion;
    }
+
    /**
     * @return the oseeServerTitle
     */
    public String getOseeServerTitle() {
       return oseeServerTitle;
    }
+
    /**
     * @param osArch
     * @param osName

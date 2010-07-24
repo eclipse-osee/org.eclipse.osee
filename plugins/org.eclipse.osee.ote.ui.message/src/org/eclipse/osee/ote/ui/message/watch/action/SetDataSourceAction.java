@@ -11,29 +11,28 @@
 package org.eclipse.osee.ote.ui.message.watch.action;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.ui.message.tree.WatchedMessageNode;
 
 /**
  * @author Ken J. Aguilar
- *
  */
 public class SetDataSourceAction extends Action {
 
+   private final WatchedMessageNode node;
+   private final DataType type;
 
-	private final WatchedMessageNode node;
-	private final DataType type;
-	
-	public SetDataSourceAction(WatchedMessageNode node, DataType type) {
-		super(type.name(), Action.AS_RADIO_BUTTON);
-		this.node = node;
-		this.type = type;
-		setChecked(node.getSubscription().getMemType() == type);
-	}
-	
-	@Override
-	public void run() {
-		node.getSubscription().changeMemType(type);
-	}
+   public SetDataSourceAction(WatchedMessageNode node, DataType type) {
+      super(type.name(), IAction.AS_RADIO_BUTTON);
+      this.node = node;
+      this.type = type;
+      setChecked(node.getSubscription().getMemType() == type);
+   }
+
+   @Override
+   public void run() {
+      node.getSubscription().changeMemType(type);
+   }
 
 }

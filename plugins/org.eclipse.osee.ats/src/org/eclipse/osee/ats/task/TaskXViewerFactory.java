@@ -29,12 +29,11 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewer
  */
 public class TaskXViewerFactory extends SkynetXViewerFactory {
 
-   public static final List<XViewerColumn> TaskViewerVisibleColumns =
-         Arrays.asList(WorldXViewerFactory.Title_Col, WorldXViewerFactory.State_Col, WorldXViewerFactory.Assignees_Col,
-               WorldXViewerFactory.Percent_Complete_Total_Col, WorldXViewerFactory.Total_Hours_Spent_Col,
-               WorldXViewerFactory.Resolution_Col, WorldXViewerFactory.Estimated_Hours_Col,
-               WorldXViewerFactory.Remaining_Hours_Col, WorldXViewerFactory.Related_To_State_Col,
-               WorldXViewerFactory.Notes_Col);
+   public static final List<XViewerColumn> TaskViewerVisibleColumns = Arrays.asList(WorldXViewerFactory.Title_Col,
+      WorldXViewerFactory.State_Col, WorldXViewerFactory.Assignees_Col, WorldXViewerFactory.Percent_Complete_Total_Col,
+      WorldXViewerFactory.Total_Hours_Spent_Col, WorldXViewerFactory.Resolution_Col,
+      WorldXViewerFactory.Estimated_Hours_Col, WorldXViewerFactory.Remaining_Hours_Col,
+      WorldXViewerFactory.Related_To_State_Col, WorldXViewerFactory.Notes_Col);
    public static Integer[] widths = new Integer[] {450, 60, 150, 40, 40, 100, 50, 50, 50, 80, 80};
 
    public TaskXViewerFactory() {

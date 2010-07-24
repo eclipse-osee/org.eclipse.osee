@@ -30,7 +30,7 @@ public class ClientDatabaseProvider implements IDatabaseInfoProvider {
       try {
          databaseInfo = InternalClientSessionManager.getInstance().getDatabaseInfo();
          OseeLog.reportStatus(new BaseStatus(NAME, Level.INFO, "%s [%s as %s]", databaseInfo.getDriver(),
-               databaseInfo.getDatabaseName(), databaseInfo.getDatabaseLoginName()));
+            databaseInfo.getDatabaseName(), databaseInfo.getDatabaseLoginName()));
       } catch (OseeAuthenticationRequiredException ex) {
          OseeLog.reportStatus(new BaseStatus(NAME, Level.SEVERE, ex, "Error obtaining database connection."));
          throw ex;

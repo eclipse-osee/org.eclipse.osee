@@ -42,6 +42,7 @@ public class XResultBrowserListener implements LocationListener {
       super();
    }
 
+   @Override
    public void changing(LocationEvent event) {
       try {
          String location = event.location;
@@ -108,6 +109,7 @@ public class XResultBrowserListener implements LocationListener {
       OseeAts.getInstance().openArtifact(guid, view);
    }
 
+   @Override
    public void changed(LocationEvent event) {
    }
 

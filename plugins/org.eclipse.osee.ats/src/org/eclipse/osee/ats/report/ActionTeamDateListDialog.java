@@ -71,23 +71,27 @@ public class ActionTeamDateListDialog extends SelectionDialog {
       teamDefList.createWidgets(comp, 2);
       if (selectedTeamDefs != null) {
          ArrayList<Object> sel = new ArrayList<Object>();
-         for (Object obj : selectedTeamDefs)
+         for (Object obj : selectedTeamDefs) {
             sel.add(obj);
+         }
          teamDefList.setSelected(sel);
       }
       Set<Object> objs = new HashSet<Object>();
       try {
-         for (TeamDefinitionArtifact teamDef : TeamDefinitionArtifact.getTeamDefinitions(Active.Both))
+         for (TeamDefinitionArtifact teamDef : TeamDefinitionArtifact.getTeamDefinitions(Active.Both)) {
             objs.add(teamDef);
+         }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
       teamDefList.setInput(objs);
       teamDefList.addSelectionListener(new SelectionListener() {
+         @Override
          public void widgetDefaultSelected(SelectionEvent e) {
             widgetSelected(e);
          }
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             selectedTeamDefs = teamDefList.getSelected();
          };
@@ -103,24 +107,28 @@ public class ActionTeamDateListDialog extends SelectionDialog {
       changeTypeList.setLabelProvider(new ChangeType.ChangeTypeLabelProvider());
       changeTypeList.setContentProvider(new ArrayContentProvider());
       Collection<Object> types = new ArrayList<Object>();
-      for (ChangeType type : ChangeType.values())
+      for (ChangeType type : ChangeType.values()) {
          types.add(type);
+      }
       changeTypeList.setInput(types);
       changeTypeList.setGrabHorizontal(true);
       changeTypeList.setMultiSelect(true);
       changeTypeList.createWidgets(comp, 2);
       if (selectedChangeTypes != null) {
          ArrayList<Object> sel = new ArrayList<Object>();
-         for (Object obj : selectedChangeTypes)
+         for (Object obj : selectedChangeTypes) {
             sel.add(obj);
+         }
          changeTypeList.setSelected(sel);
       }
 
       changeTypeList.addSelectionListener(new SelectionListener() {
+         @Override
          public void widgetDefaultSelected(SelectionEvent e) {
             widgetSelected(e);
          }
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             selectedChangeTypes = changeTypeList.getSelected();
          };
@@ -133,7 +141,9 @@ public class ActionTeamDateListDialog extends SelectionDialog {
       dateCombo.setFormat(XDate.MMDDYY);
       dateCombo.setRequiredEntry(true);
       dateCombo.createWidgets(comp, 2);
-      if (selectedDate != null) dateCombo.setDate(selectedDate);
+      if (selectedDate != null) {
+         dateCombo.setDate(selectedDate);
+      }
       dateCombo.addXModifiedListener(new XModifiedListener() {
          @Override
          public void widgetModified(XWidget widget) {
@@ -146,8 +156,9 @@ public class ActionTeamDateListDialog extends SelectionDialog {
 
    public ArrayList<TeamDefinitionArtifact> getSelectedTeamDefs() {
       ArrayList<TeamDefinitionArtifact> adas = new ArrayList<TeamDefinitionArtifact>();
-      for (Object obj : selectedTeamDefs)
+      for (Object obj : selectedTeamDefs) {
          adas.add((TeamDefinitionArtifact) obj);
+      }
       return adas;
    }
 

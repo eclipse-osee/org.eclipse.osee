@@ -34,20 +34,15 @@ public class ScriptVersionConfig implements Xmlizable, Serializable {
       lastModificationDate = "-";
       modifiedFlag = "-";
    }
-   
-   public ScriptVersionConfig(String repositoryType,
-    String location,
-    String revision,
-    String lastAuthor,
-    String lastModificationDate,
-    String modifiedFlag) {
-	      this.repositoryType =repositoryType;
-	      this.location =location;
-	      this.revision = revision;
-	      this.lastAuthor = lastAuthor;
-	      this.lastModificationDate = lastModificationDate;
-	      this.modifiedFlag = modifiedFlag;
-	   }
+
+   public ScriptVersionConfig(String repositoryType, String location, String revision, String lastAuthor, String lastModificationDate, String modifiedFlag) {
+      this.repositoryType = repositoryType;
+      this.location = location;
+      this.revision = revision;
+      this.lastAuthor = lastAuthor;
+      this.lastModificationDate = lastModificationDate;
+      this.modifiedFlag = modifiedFlag;
+   }
 
    /**
     * @return the location
@@ -133,6 +128,7 @@ public class ScriptVersionConfig implements Xmlizable, Serializable {
       this.modifiedFlag = modifiedFlag;
    }
 
+   @Override
    public Element toXml(Document doc) {
       Element scriptVersion = doc.createElement(BaseTestTags.SCRIPT_VERSION);
       scriptVersion.setAttribute(BaseTestTags.REVISION_FIELD, getRevision());

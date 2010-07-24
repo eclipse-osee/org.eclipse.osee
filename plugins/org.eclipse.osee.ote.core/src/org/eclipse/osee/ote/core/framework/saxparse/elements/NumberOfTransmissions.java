@@ -15,9 +15,8 @@ import org.xml.sax.Attributes;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
-public class NumberOfTransmissions extends ElementHandlers{
+public class NumberOfTransmissions extends ElementHandlers {
 
    /**
     * @param name

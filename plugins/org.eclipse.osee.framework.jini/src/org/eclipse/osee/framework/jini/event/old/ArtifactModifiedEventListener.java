@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.jini.event.old;
 
 public class ArtifactModifiedEventListener implements IOseeRemoteEventListener {
 
+   @Override
    public void notify(OseeRemoteEvent event) {
 
       if (event.eventData.getEventType().equals(ArtifactModifiedRemoteType.class.getCanonicalName())) {

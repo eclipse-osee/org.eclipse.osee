@@ -30,7 +30,9 @@ public class XNavigateViewFilter extends ViewerFilter {
 
    @Override
    public boolean select(Viewer viewer, Object parentElement, Object element) {
-      if (!enabled) return true;
+      if (!enabled) {
+         return true;
+      }
       XNavigateItem item = (XNavigateItem) element;
       return Pattern.compile(text).matcher(item.getName()).find();
    }

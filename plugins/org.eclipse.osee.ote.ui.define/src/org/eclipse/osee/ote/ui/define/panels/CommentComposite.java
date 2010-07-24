@@ -53,6 +53,7 @@ public class CommentComposite extends Composite {
       this.textArea.selectAll();
 
       this.textArea.addModifyListener(new ModifyListener() {
+         @Override
          public void modifyText(ModifyEvent e) {
             message = textArea.getText();
          }

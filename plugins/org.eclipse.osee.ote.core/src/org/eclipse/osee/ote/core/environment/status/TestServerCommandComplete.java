@@ -15,23 +15,22 @@ import org.eclipse.osee.ote.core.framework.command.ICommandHandle;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
-public class TestServerCommandComplete implements Serializable,
-IServiceStatusData {
+public class TestServerCommandComplete implements Serializable, IServiceStatusData {
 
-	private static final long serialVersionUID = -2678833105694275416L;
-	private ICommandHandle handle;
+   private static final long serialVersionUID = -2678833105694275416L;
+   private final ICommandHandle handle;
 
-	public TestServerCommandComplete(ICommandHandle handle){
-		this.handle = handle;
-	}
-	
-	public void accept(IServiceStatusDataVisitor visitor) {
-		visitor.asTestServerCommandComplete(this);
-	}
-	
-	public ICommandHandle getHandle(){
-		return handle;
-	}
+   public TestServerCommandComplete(ICommandHandle handle) {
+      this.handle = handle;
+   }
+
+   @Override
+   public void accept(IServiceStatusDataVisitor visitor) {
+      visitor.asTestServerCommandComplete(this);
+   }
+
+   public ICommandHandle getHandle() {
+      return handle;
+   }
 }

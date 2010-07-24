@@ -22,11 +22,13 @@ public class Activator implements BundleActivator {
    private static Activator instance;
    private BundleContext context;
 
+   @Override
    public void start(BundleContext context) throws Exception {
       instance = this;
       this.context = context;
    }
 
+   @Override
    public void stop(BundleContext context) throws Exception {
    }
 

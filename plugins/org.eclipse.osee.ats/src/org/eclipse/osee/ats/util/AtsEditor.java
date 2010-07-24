@@ -14,5 +14,8 @@ package org.eclipse.osee.ats.util;
  * @author Donald G. Dunne
  */
 public enum AtsEditor {
-   WorldEditor, WorkflowEditor, TaskEditor, ChangeReport
+   WorldEditor,
+   WorkflowEditor,
+   TaskEditor,
+   ChangeReport
 }

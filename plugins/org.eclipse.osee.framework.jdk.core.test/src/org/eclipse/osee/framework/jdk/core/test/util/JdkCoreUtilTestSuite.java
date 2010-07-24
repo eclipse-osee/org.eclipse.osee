@@ -19,13 +19,13 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ //
 CollectionsTest.class, //
-			CompareTest.class, //
-			GuidObject.class, //
-			GUIDTest.class, //
-			HashCollectionTest.class, //
-			HumanReadableIdTest.class, //
-			StringsTest.class, //
-			ReservedCharactersTest.class})
+   CompareTest.class, //
+   GuidObject.class, //
+   GUIDTest.class, //
+   HashCollectionTest.class, //
+   HumanReadableIdTest.class, //
+   StringsTest.class, //
+   ReservedCharactersTest.class})
 public class JdkCoreUtilTestSuite {
 
 }

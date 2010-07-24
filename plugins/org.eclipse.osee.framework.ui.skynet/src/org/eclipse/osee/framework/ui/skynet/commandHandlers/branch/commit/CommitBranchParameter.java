@@ -16,22 +16,26 @@ import org.eclipse.core.commands.ParameterValuesException;
 
 /**
  * @author Jeff C. Phillips
- *
  */
 public class CommitBranchParameter implements IParameter {
    public static String ARCHIVE_PARENT_BRANCH = "archive_parent_branch";
+
+   @Override
    public String getId() {
       return ARCHIVE_PARENT_BRANCH;
    }
 
+   @Override
    public String getName() {
       return "Branch Commit parameter";
    }
 
+   @Override
    public IParameterValues getValues() throws ParameterValuesException {
       throw new ParameterValuesException("Branch Commit has no parameters", null);
    }
 
+   @Override
    public boolean isOptional() {
       return false;
    }

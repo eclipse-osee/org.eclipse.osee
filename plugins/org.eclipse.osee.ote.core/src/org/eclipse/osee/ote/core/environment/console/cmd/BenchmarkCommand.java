@@ -32,6 +32,7 @@ public class BenchmarkCommand extends ConsoleCommand {
       super(NAME, DESCRIPTION);
    }
 
+   @Override
    protected void doCmd(ConsoleShell shell, String[] switches, String[] args) {
       if (Benchmark.isBenchmarkingEnabled()) {
          if (switches.length > 0) {
@@ -41,20 +42,20 @@ public class BenchmarkCommand extends ConsoleCommand {
          final StringBuilder buffer = new StringBuilder(4096);
          final Iterator<Benchmark> iter = Benchmark.getAllBenchamrks().iterator();
          while (iter.hasNext()) {
-            Benchmark bm = (Benchmark) iter.next();
-            float val = ((float) bm.getLongestSample()) / 1000.0f;
+            Benchmark bm = iter.next();
+            float val = bm.getLongestSample() / 1000.0f;
             buffer.append(bm.getName()).append(": total samples: ").append(bm.getTotalSamples());
             buffer.append(". Max Time: ").append(val).append("ms. Min: ");
-            val = ((float) bm.getShortestSample()) / 1000.0f;
+            val = bm.getShortestSample() / 1000.0f;
             buffer.append(val).append("ms. Avg: ");
-            val = ((float) bm.getAverage()) / 1000.0f;
+            val = bm.getAverage() / 1000.0f;
             buffer.append(val).append("ms. Exceed Count: ").append(bm.getExceedCount()).append(" (threshold=").append(
-                  bm.getThreshold() / 1000.0f);
-            val = ((float) bm.getAverageExceedAmount()) / 1000.0f;
+               bm.getThreshold() / 1000.0f);
+            val = bm.getAverageExceedAmount() / 1000.0f;
             buffer.append("ms) avg. exceed time:  ").append(val).append("ms\n");
             for (Map.Entry<String, Integer> entry : bm.getExceeders()) {
                buffer.append("\tExceeder ").append(entry.getKey()).append(": counted ").append(entry.getValue()).append(
-                     '\n');
+                  '\n');
             }
          }
          print(buffer.toString());
@@ -88,10 +89,10 @@ public class BenchmarkCommand extends ConsoleCommand {
       final Iterator<Benchmark> iter = Benchmark.getAllBenchamrks().iterator();
       out.println("NAME,TOTAL SAMPLES,MAX TIME,MIN TIME,AVG TIME,EXCEED CNT,THRESHOLD,AVG EXCEED TIME,EXCEEDERS");
       while (iter.hasNext()) {
-         final Benchmark bm = (Benchmark) iter.next();
+         final Benchmark bm = iter.next();
          out.format("%s,%d,%f,%f,%f,%d,%f,%f", bm.getName(), bm.getTotalSamples(), bm.getLongestSample() / 1000.0f,
-               bm.getShortestSample() / 1000.0f, bm.getAverage() / 1000.0f, bm.getExceedCount(),
-               bm.getThreshold() / 1000.0f, bm.getAverageExceedAmount() / 1000.0f);
+            bm.getShortestSample() / 1000.0f, bm.getAverage() / 1000.0f, bm.getExceedCount(),
+            bm.getThreshold() / 1000.0f, bm.getAverageExceedAmount() / 1000.0f);
          for (Map.Entry<String, Integer> entry : bm.getExceeders()) {
             out.format(",Exceeder %s:%d", entry.getKey(), entry.getValue());
          }

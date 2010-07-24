@@ -17,10 +17,10 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses( { //
+@Suite.SuiteClasses({ //
 SearchTagDataStoreTest.class,//
-      TagProcessorTest.class, //
-      WordsUtilTest.class, //
+   TagProcessorTest.class, //
+   WordsUtilTest.class, //
 })
 public class UtilityTestSuite {
 

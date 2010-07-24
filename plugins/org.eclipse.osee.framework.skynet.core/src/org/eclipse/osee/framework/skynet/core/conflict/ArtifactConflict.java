@@ -42,6 +42,7 @@ public class ArtifactConflict extends Conflict {
       }
    }
 
+   @Override
    @SuppressWarnings("unchecked")
    public Object getAdapter(Class adapter) {
       if (adapter == null) {

@@ -21,7 +21,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
  */
 public class AtsPeerReviewWorkPageDefinition extends WorkPageDefinition {
 
-   public static String ID = PeerToPeerWorkflowDefinition.ID + "." + PeerToPeerReviewArtifact.PeerToPeerReviewState.Review.name();
+   public static String ID =
+      PeerToPeerWorkflowDefinition.ID + "." + PeerToPeerReviewArtifact.PeerToPeerReviewState.Review.name();
 
    public AtsPeerReviewWorkPageDefinition() {
       this(PeerToPeerReviewArtifact.PeerToPeerReviewState.Review.name(), ID, null);

@@ -12,7 +12,6 @@ package org.eclipse.osee.ote.service.core;
 
 import java.util.Collection;
 import java.util.HashSet;
-
 import org.eclipse.osee.connection.service.IConnectorFilter;
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;

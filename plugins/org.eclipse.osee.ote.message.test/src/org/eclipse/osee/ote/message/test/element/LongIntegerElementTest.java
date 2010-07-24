@@ -150,15 +150,15 @@ public class LongIntegerElementTest {
 
             for (int l = 0; l <= 1024; l++) {
                /*
-                * perform sets going through the array. We do this so that we can catch
-                * sets that modified bits before the element
+                * perform sets going through the array. We do this so that we can catch sets that modified bits before
+                * the element
                 */
                generateAscending(r, e, expectedVals, count);
                check(e, expectedVals, count);
 
                /*
-                * perform sets going backwards through the array. We do this so that we can catch
-                * sets that modified bits after the element
+                * perform sets going backwards through the array. We do this so that we can catch sets that modified
+                * bits after the element
                 */
                generateDescending(r, e, expectedVals, count);
                check(e, expectedVals, count);
@@ -187,8 +187,9 @@ public class LongIntegerElementTest {
             expectedVals[i] = val;
          }
          if (el.getValue() != expectedVals[i]) {
-            Assert.failNotEquals(String.format("set/get fail on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(),
-                  el.getLsb()), Long.toHexString(expectedVals[i]), Long.toHexString(el.getValue()));
+            Assert.failNotEquals(
+               String.format("set/get fail on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(), el.getLsb()),
+               Long.toHexString(expectedVals[i]), Long.toHexString(el.getValue()));
          }
       }
    }
@@ -205,8 +206,9 @@ public class LongIntegerElementTest {
             expectedVals[i] = val;
          }
          if (el.getValue() != expectedVals[i]) {
-            Assert.failNotEquals(String.format("set/get fail on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(),
-                  el.getLsb()), expectedVals[i], el.getValue());
+            Assert.failNotEquals(
+               String.format("set/get fail on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(), el.getLsb()),
+               expectedVals[i], el.getValue());
          }
       }
    }
@@ -215,8 +217,9 @@ public class LongIntegerElementTest {
       for (int i = 0; i < length; i++) {
          LongIntegerElement el = e[i];
          if (el.getValue() != expectedVals[i]) {
-            Assert.failNotEquals(String.format("corruption detect on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(),
-                  el.getLsb()), expectedVals[i], e[i].getValue());
+            Assert.failNotEquals(
+               String.format("corruption detect on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(), el.getLsb()),
+               expectedVals[i], e[i].getValue());
          }
       }
    }

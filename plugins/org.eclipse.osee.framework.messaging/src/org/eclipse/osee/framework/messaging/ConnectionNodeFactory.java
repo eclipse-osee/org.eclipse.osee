@@ -10,12 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.messaging;
 
-
 /**
  * @author Roberto E. Escobar
  */
 public interface ConnectionNodeFactory {
 
    ConnectionNode create(NodeInfo nodeInfo);
-   
+
 }

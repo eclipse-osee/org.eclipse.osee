@@ -32,6 +32,7 @@ public class AITreeContentProvider implements ITreeContentProvider {
       this.active = active;
    }
 
+   @Override
    @SuppressWarnings("rawtypes")
    public Object[] getChildren(Object parentElement) {
       if (parentElement instanceof Collection) {
@@ -40,13 +41,14 @@ public class AITreeContentProvider implements ITreeContentProvider {
          try {
             ActionableItemArtifact ai = (ActionableItemArtifact) parentElement;
             return AtsUtil.getActive(Artifacts.getChildrenOfTypeSet(ai, ActionableItemArtifact.class, false), active,
-                  ActionableItemArtifact.class).toArray();
+               ActionableItemArtifact.class).toArray();
          } catch (Exception ex) {
          }
       }
       return new Object[] {};
    }
 
+   @Override
    public Object getParent(Object element) {
       try {
          if (element instanceof ActionableItemArtifact) {
@@ -58,17 +60,21 @@ public class AITreeContentProvider implements ITreeContentProvider {
       return null;
    }
 
+   @Override
    public boolean hasChildren(Object element) {
       return getChildren(element).length > 0;
    }
 
+   @Override
    public Object[] getElements(Object inputElement) {
       return getChildren(inputElement);
    }
 
+   @Override
    public void dispose() {
    }
 
+   @Override
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
    }
 

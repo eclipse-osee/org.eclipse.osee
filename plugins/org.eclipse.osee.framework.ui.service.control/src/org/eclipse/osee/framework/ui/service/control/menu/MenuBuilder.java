@@ -30,8 +30,8 @@ import org.eclipse.ui.part.ViewPart;
  */
 public class MenuBuilder {
 
-   private ViewPart view;
-   private List<Action> actions;
+   private final ViewPart view;
+   private final List<Action> actions;
 
    public MenuBuilder(ViewPart view) {
       this.view = view;
@@ -46,6 +46,7 @@ public class MenuBuilder {
       MenuManager menuManager = new MenuManager("#PopupMenu");
       menuManager.setRemoveAllWhenShown(true);
       menuManager.addMenuListener(new IMenuListener() {
+         @Override
          public void menuAboutToShow(IMenuManager manager) {
             MenuBuilder.this.fillMenu(manager);
          }

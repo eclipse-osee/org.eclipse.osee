@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.jdk.core.collection.tree;
 
 public class Tree<treeType> {
 
-   private TreeNode<treeType> root;
+   private final TreeNode<treeType> root;
 
    public Tree() {
       this.root = new TreeNode<treeType>();

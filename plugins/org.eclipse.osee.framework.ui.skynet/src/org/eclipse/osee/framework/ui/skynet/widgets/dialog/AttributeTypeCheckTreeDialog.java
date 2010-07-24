@@ -33,7 +33,9 @@ public class AttributeTypeCheckTreeDialog extends CheckedTreeSelectionDialog {
 
    public AttributeTypeCheckTreeDialog(Collection<? extends AttributeType> attributeTypes, ILabelProvider iLabelProvider) {
       super(Displays.getActiveShell(), iLabelProvider, new ArrayTreeContentProvider());
-      if (attributeTypes != null) setInput(attributeTypes);
+      if (attributeTypes != null) {
+         setInput(attributeTypes);
+      }
    }
 
    public AttributeTypeCheckTreeDialog() {
@@ -42,8 +44,9 @@ public class AttributeTypeCheckTreeDialog extends CheckedTreeSelectionDialog {
 
    public Collection<AttributeType> getSelection() {
       ArrayList<AttributeType> arts = new ArrayList<AttributeType>();
-      for (Object obj : getResult())
+      for (Object obj : getResult()) {
          arts.add((AttributeType) obj);
+      }
       return arts;
    }
 

@@ -91,6 +91,7 @@ class ConnectionEditPart extends AbstractConnectionEditPart implements PropertyC
       return (Connection) getModel();
    }
 
+   @Override
    public void propertyChange(PropertyChangeEvent event) {
       String property = event.getPropertyName();
       if (TransitionConnection.TYPE_PROP.equals(property)) {

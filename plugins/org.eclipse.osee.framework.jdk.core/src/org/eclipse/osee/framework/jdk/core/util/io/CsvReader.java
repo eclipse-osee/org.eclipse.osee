@@ -22,9 +22,9 @@ import java.util.Arrays;
  * @author Ryan D. Brooks
  */
 public class CsvReader {
-   private Reader reader;
-   private StreamTokenizer streamTokenizer;
-   private boolean[] fieldsUsed;
+   private final Reader reader;
+   private final StreamTokenizer streamTokenizer;
+   private final boolean[] fieldsUsed;
    private int fieldCount;
    private String[] nextRow;
 

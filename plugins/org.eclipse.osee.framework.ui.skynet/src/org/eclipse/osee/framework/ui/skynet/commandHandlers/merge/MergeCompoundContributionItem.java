@@ -59,7 +59,7 @@ public class MergeCompoundContributionItem extends CompoundContributionItem {
    @Override
    protected IContributionItem[] getContributionItems() {
       ISelectionProvider selectionProvider =
-            AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
+         AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
       ArrayList<IContributionItem> contributionItems = new ArrayList<IContributionItem>(40);
 
       if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
@@ -71,7 +71,7 @@ public class MergeCompoundContributionItem extends CompoundContributionItem {
             if (selectedBranch != null) {
                try {
                   Collection<Integer> destBranches =
-                        ConflictManagerInternal.getDestinationBranchesMerged(selectedBranch.getId());
+                     ConflictManagerInternal.getDestinationBranchesMerged(selectedBranch.getId());
                   if (selectedBranch.getParentBranch() != null && !destBranches.contains(selectedBranch.getParentBranch().getId())) {
                      destBranches.add(selectedBranch.getParentBranch().getId());
                   }
@@ -103,9 +103,9 @@ public class MergeCompoundContributionItem extends CompoundContributionItem {
       String label = branchId == 0 ? "Can't Merge a Root Branch" : BranchManager.getBranch(branchId).getName();
 
       contributionItem =
-            new CommandContributionItem(new CommandContributionItemParameter(
-                  PlatformUI.getWorkbench().getActiveWorkbenchWindow(), label, commandId, parameters, null, null, null,
-                  label, null, null, SWT.NONE, null, false));
+         new CommandContributionItem(new CommandContributionItemParameter(
+            PlatformUI.getWorkbench().getActiveWorkbenchWindow(), label, commandId, parameters, null, null, null,
+            label, null, null, SWT.NONE, null, false));
 
       return contributionItem;
    }
@@ -115,7 +115,7 @@ public class MergeCompoundContributionItem extends CompoundContributionItem {
 
       try {
          command.define(command.getName(), "", commandService.getCategory("org.eclipse.debug.ui.category.run"),
-               BRANCH_PARAMETER_DEF);
+            BRANCH_PARAMETER_DEF);
       } catch (NotDefinedException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }

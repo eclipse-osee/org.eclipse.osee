@@ -16,7 +16,7 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 public class ArtifactData {
    private String url = "";
    private String source = "";
-   private Artifact[] artifacts;
+   private final Artifact[] artifacts;
 
    /**
     * @param artifacts

@@ -12,12 +12,14 @@ package org.eclipse.osee.ote.message.io;
 
 /**
  * @author Ken J. Aguilar
- *
  */
 public interface IMessageIoManagementService {
 
    void install(IMessageIoDriver ioDriver);
+
    void uninstall(IMessageIoDriver ioDriver);
+
    void startIO();
+
    void stopIO();
 }

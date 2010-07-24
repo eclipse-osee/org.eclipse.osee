@@ -44,7 +44,7 @@ public class BranchViewPresentationPreferences {
 
    private final IPreferencesService preferencesService;
    private IPreferenceChangeListener preferenceChangeListener;
-   private BranchView branchView;
+   private final BranchView branchView;
    private boolean disposed;
 
    public BranchViewPresentationPreferences(BranchView branchView) {
@@ -54,7 +54,7 @@ public class BranchViewPresentationPreferences {
       this.disposed = false;
 
       IEclipsePreferences instanceNode =
-            (IEclipsePreferences) preferencesService.getRootNode().node(InstanceScope.SCOPE);
+         (IEclipsePreferences) preferencesService.getRootNode().node(InstanceScope.SCOPE);
 
       try {
          if (instanceNode.nodeExists(BranchView.VIEW_ID)) {
@@ -66,12 +66,14 @@ public class BranchViewPresentationPreferences {
 
       instanceNode.addNodeChangeListener(new IEclipsePreferences.INodeChangeListener() {
 
+         @Override
          public void added(NodeChangeEvent event) {
             if (event.getChild().name().equals(BranchView.VIEW_ID)) {
                ((IEclipsePreferences) event.getChild()).addPreferenceChangeListener(singletonPreferenceChangeListener());
             }
          }
 
+         @Override
          public void removed(NodeChangeEvent event) {
             if (event.getChild().name().equals(BranchView.VIEW_ID)) {
                ((IEclipsePreferences) event.getChild()).removePreferenceChangeListener(singletonPreferenceChangeListener());
@@ -86,14 +88,15 @@ public class BranchViewPresentationPreferences {
       if (preferenceChangeListener == null) {
          preferenceChangeListener = new IPreferenceChangeListener() {
 
+            @Override
             public void preferenceChange(PreferenceChangeEvent event) {
                if (disposed) {
                   ((IEclipsePreferences) event.getNode()).removePreferenceChangeListener(this);
                } else {
                   String propertyName = event.getKey();
-                  
+
                   refreshCommands();
-                  
+
                   if (propertyName.equals(FLAT_KEY)) {
                      setPresentation(getViewPreference().getBoolean(FLAT_KEY, true));
                   }
@@ -116,14 +119,20 @@ public class BranchViewPresentationPreferences {
 
       return preferenceChangeListener;
    }
-   
-   private void refreshCommands(){
-      ((ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class)).refreshElements(HierarchicalPresentationHandler.COMMAND_ID, null);
-      ((ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class)).refreshElements(FlatPresentationHandler.COMMAND_ID, null);
-      ((ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class)).refreshElements(ShowTransactionPresentationHandler.COMMAND_ID, null);
-      ((ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class)).refreshElements(ShowMergeBranchPresentationHandler.COMMAND_ID, null);
-      ((ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class)).refreshElements(ShowArchivedBranchHandler.COMMAND_ID, null);
-      ((ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class)).refreshElements(ShowFavoriteBranchesFirstHandler.COMMAND_ID, null);
+
+   private void refreshCommands() {
+      ((ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class)).refreshElements(
+         HierarchicalPresentationHandler.COMMAND_ID, null);
+      ((ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class)).refreshElements(
+         FlatPresentationHandler.COMMAND_ID, null);
+      ((ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class)).refreshElements(
+         ShowTransactionPresentationHandler.COMMAND_ID, null);
+      ((ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class)).refreshElements(
+         ShowMergeBranchPresentationHandler.COMMAND_ID, null);
+      ((ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class)).refreshElements(
+         ShowArchivedBranchHandler.COMMAND_ID, null);
+      ((ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class)).refreshElements(
+         ShowFavoriteBranchesFirstHandler.COMMAND_ID, null);
    }
 
    private void loadPreferences() {
@@ -149,9 +158,9 @@ public class BranchViewPresentationPreferences {
    private void setShowTransactions(boolean showTransactions) {
       branchView.setShowTransactions(showTransactions);
    }
-   
+
    private void setShowArchivedBranches(boolean showArchivedBranches) {
-      branchView.setShowArchivedBranches(showArchivedBranches);      
+      branchView.setShowArchivedBranches(showArchivedBranches);
    }
 
    /**

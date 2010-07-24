@@ -44,7 +44,7 @@ public class FunctionCallStats {
       System.out.println("Searching " + files.size() + " files...");
 
       FindNonLocalFunctionCalls nonLocalFindApp =
-            new FindNonLocalFunctionCalls((File[]) files.toArray(new File[files.size()]));
+         new FindNonLocalFunctionCalls((File[]) files.toArray(new File[files.size()]));
       nonLocalFindApp.searchFiles();
       Set nonLocalFunctions = nonLocalFindApp.getResultSet();
 

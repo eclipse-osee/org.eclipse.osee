@@ -34,11 +34,11 @@ public class V0_9_0Transformer implements IOseeExchangeVersionTransformer {
    @Override
    public String applyTransform(ExchangeDataProcessor processor) throws OseeCoreException {
       replaceDataTypeIdsWithGuids(processor, cachingService.getArtifactTypeCache(), ExportItem.OSEE_ARTIFACT_DATA,
-               "art_type_id", "name");
+         "art_type_id", "name");
       replaceDataTypeIdsWithGuids(processor, cachingService.getAttributeTypeCache(), ExportItem.OSEE_ATTRIBUTE_DATA,
-               "attr_type_id", "name");
-      replaceDataTypeIdsWithGuids(processor, cachingService.getRelationTypeCache(),
-               ExportItem.OSEE_RELATION_LINK_DATA, "rel_link_type_id", "type_name");
+         "attr_type_id", "name");
+      replaceDataTypeIdsWithGuids(processor, cachingService.getRelationTypeCache(), ExportItem.OSEE_RELATION_LINK_DATA,
+         "rel_link_type_id", "type_name");
 
       V0_9_0TxDetailsHandler txdHandler = new V0_9_0TxDetailsHandler();
       processor.parse(ExportItem.OSEE_TX_DETAILS_DATA, txdHandler);
@@ -48,7 +48,7 @@ public class V0_9_0Transformer implements IOseeExchangeVersionTransformer {
 
       processor.deleteExportItem("osee.branch.definitions.xml");
       processor.transform(ExportItem.EXPORT_MANIFEST, new ReplaceAll(
-            "<entry id=\"osee\\.(?:branch\\.definitions|(?:.*?.data.type))\\.xml.*\\s+", ""));
+         "<entry id=\"osee\\.(?:branch\\.definitions|(?:.*?.data.type))\\.xml.*\\s+", ""));
 
       return MAX_VERSION.toString();
    }

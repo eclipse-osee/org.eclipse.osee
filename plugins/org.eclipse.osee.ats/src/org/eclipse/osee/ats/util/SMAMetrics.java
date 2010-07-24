@@ -55,17 +55,19 @@ public class SMAMetrics {
    Set<User> assignees = new HashSet<User>();
    Set<User> assigneesAssignedOrCompleted = new HashSet<User>();
 
-   private final HashCollection<User, Artifact> userToAssignedSmas =
-         new HashCollection<User, Artifact>(true, HashSet.class, 100);
-   private final HashCollection<User, Artifact> userToCompletedSmas =
-         new HashCollection<User, Artifact>(true, HashSet.class, 100);
+   private final HashCollection<User, Artifact> userToAssignedSmas = new HashCollection<User, Artifact>(true,
+      HashSet.class, 100);
+   private final HashCollection<User, Artifact> userToCompletedSmas = new HashCollection<User, Artifact>(true,
+      HashSet.class, 100);
    private final double manHoursPerDay;
 
    public SMAMetrics(Collection<? extends Artifact> artifacts, VersionArtifact versionArtifact, double manHoursPerDay, Date estimatedReleaseDate) throws OseeCoreException {
       this.manHoursPerDay = manHoursPerDay;
       this.versionArtifact = versionArtifact;
       this.estimatedReleaseDate = estimatedReleaseDate;
-      if (artifacts.isEmpty()) return;
+      if (artifacts.isEmpty()) {
+         return;
+      }
       Set<Artifact> resolvedArts = new HashSet<Artifact>(artifacts);
       for (Artifact art : artifacts) {
          if (art instanceof GoalArtifact) {
@@ -116,7 +118,9 @@ public class SMAMetrics {
          manDaysNeeded += team.getWorldViewManDaysNeeded();
          cummulativeWorkflowPercentComplete += team.getWorldViewPercentCompleteTotal();
       }
-      if (hrsRemainFromEstimates != 0) manDaysNeeded = hrsRemainFromEstimates / manHoursPerDay;
+      if (hrsRemainFromEstimates != 0) {
+         manDaysNeeded = hrsRemainFromEstimates / manHoursPerDay;
+      }
       percentCompleteByWorkflowPercents = 0;
       if (getNumSMAs() > 0 && cummulativeWorkflowPercentComplete > 0) {
          percentCompleteByWorkflowPercents = cummulativeWorkflowPercentComplete / getNumSMAs();
@@ -131,13 +135,20 @@ public class SMAMetrics {
          daysTillRel = DateUtil.getWorkingDaysBetween(today, estimatedReleaseDate);
       }
       str =
-            String.format("TeamWFs: %s Tasks: %s EstHrs: %5.2f  %sCmp: %5.2f  RmnHrs: %5.2f  HrsSpnt: %5.2f  %s  %s",
-                  getNumTeamWfs(), getNumTasks(), estHours, "%", percentCompleteByWorkflowPercents,
-                  hrsRemainFromEstimates, hrsSpent, (manDaysNeeded > 0 ? String.format("ManDaysNeeded: %5.2f ",
-                        manDaysNeeded) : ""),
-                  (versionArtifact != null ? String.format("Version: %s  EstRelDate: %s DaysLeft: %d ",
-                        versionArtifact.getName(), (estimatedReleaseDate == null ? "Not Set" : XDate.getDateStr(
-                              estimatedReleaseDate, XDate.MMDDYY)), daysTillRel) : ""));
+         String.format(
+            "TeamWFs: %s Tasks: %s EstHrs: %5.2f  %sCmp: %5.2f  RmnHrs: %5.2f  HrsSpnt: %5.2f  %s  %s",
+            getNumTeamWfs(),
+            getNumTasks(),
+            estHours,
+            "%",
+            percentCompleteByWorkflowPercents,
+            hrsRemainFromEstimates,
+            hrsSpent,
+            (manDaysNeeded > 0 ? String.format("ManDaysNeeded: %5.2f ", manDaysNeeded) : ""),
+            (versionArtifact != null ? String.format("Version: %s  EstRelDate: %s DaysLeft: %d ",
+               versionArtifact.getName(),
+               (estimatedReleaseDate == null ? "Not Set" : XDate.getDateStr(estimatedReleaseDate, XDate.MMDDYY)),
+               daysTillRel) : ""));
    }
 
    /**
@@ -153,7 +164,9 @@ public class SMAMetrics {
 
    @SuppressWarnings("unchecked")
    public <A extends StateMachineArtifact> Collection<A> getUserToCompletedSmas(User user, Class<A> clazz) {
-      if (!userToCompletedSmas.containsKey(user)) return Collections.emptyList();
+      if (!userToCompletedSmas.containsKey(user)) {
+         return Collections.emptyList();
+      }
       List<A> smas = new ArrayList<A>();
       for (Artifact art : userToCompletedSmas.getValues(user)) {
          if (clazz == null || art.getClass().isInstance(clazz)) {
@@ -165,7 +178,9 @@ public class SMAMetrics {
 
    @SuppressWarnings("unchecked")
    public <A extends StateMachineArtifact> Collection<A> getUserToAssignedSmas(User user, Class<A> clazz) {
-      if (!userToAssignedSmas.containsKey(user)) return Collections.emptyList();
+      if (!userToAssignedSmas.containsKey(user)) {
+         return Collections.emptyList();
+      }
       List<A> smas = new ArrayList<A>();
       for (Artifact art : userToAssignedSmas.getValues(user)) {
          if (clazz == null || art.getClass().equals(clazz)) {
@@ -196,16 +211,24 @@ public class SMAMetrics {
    }
 
    public double getPercentCompleteByTeamWorkflow() throws OseeCoreException {
-      if (getTeamArts().isEmpty()) return 0;
+      if (getTeamArts().isEmpty()) {
+         return 0;
+      }
       double completed = getCompletedTeamWorkflows().size();
-      if (completed == 0) return 0;
+      if (completed == 0) {
+         return 0;
+      }
       return completed / getTeamArts().size() * 100;
    }
 
    public double getPercentCompleteByWorkflow() throws OseeCoreException {
-      if (smas.isEmpty()) return 0;
+      if (smas.isEmpty()) {
+         return 0;
+      }
       double completed = getCompletedWorkflows().size();
-      if (completed == 0) return 0;
+      if (completed == 0) {
+         return 0;
+      }
       return completed / smas.size() * 100;
    }
 
@@ -220,9 +243,13 @@ public class SMAMetrics {
    }
 
    public double getPercentCompleteByTaskWorkflow() throws OseeCoreException {
-      if (getTaskArts().isEmpty()) return 0;
+      if (getTaskArts().isEmpty()) {
+         return 0;
+      }
       double completed = getCompletedTaskWorkflows().size();
-      if (completed == 0) return 0;
+      if (completed == 0) {
+         return 0;
+      }
       return completed / getTaskArts().size() * 100;
    }
 
@@ -247,17 +274,22 @@ public class SMAMetrics {
 
    public String toStringObjectBreakout() {
       return String.format("Actions: %s  - Team Workflows: %s - Task Workflows: %s - Review Workflows: %s ",
-            getNumActions(), getNumTeamWfs(), getNumTasks(), getNumReviews());
+         getNumActions(), getNumTeamWfs(), getNumTasks(), getNumReviews());
    }
 
    public String toStringLong() {
       return String.format(
-            "%s\nEstimated Hours: %5.2f  Percent Complete: %5.2f  Remaining Hours: %5.2f  ManDaysNeeded: %5.2f \nHours Spent: %5.2f  %s",
-            toStringObjectBreakout(), estHours, percentCompleteByWorkflowPercents, hrsRemainFromEstimates,
-            manDaysNeeded, hrsSpent, (versionArtifact != null ? String.format(
-                  "\nVersion: %s  Estimated Release Date: %s Days Left: %d ", versionArtifact.getName(),
-                  (estimatedReleaseDate == null ? "Not Set" : XDate.getDateStr(estimatedReleaseDate, XDate.MMDDYY)),
-                  daysTillRel) : ""));
+         "%s\nEstimated Hours: %5.2f  Percent Complete: %5.2f  Remaining Hours: %5.2f  ManDaysNeeded: %5.2f \nHours Spent: %5.2f  %s",
+         toStringObjectBreakout(),
+         estHours,
+         percentCompleteByWorkflowPercents,
+         hrsRemainFromEstimates,
+         manDaysNeeded,
+         hrsSpent,
+         (versionArtifact != null ? String.format("\nVersion: %s  Estimated Release Date: %s Days Left: %d ",
+            versionArtifact.getName(),
+            (estimatedReleaseDate == null ? "Not Set" : XDate.getDateStr(estimatedReleaseDate, XDate.MMDDYY)),
+            daysTillRel) : ""));
    }
 
    /**
@@ -290,7 +322,7 @@ public class SMAMetrics {
 
    public String getHoursTillRelStr() {
       return String.format("%5.2f hours = %d days till release * %5.2f Man Hours Per Day", getHoursTillRel(),
-            daysTillRel, manHoursPerDay);
+         daysTillRel, manHoursPerDay);
    }
 
    public String getDaysTillRelStr() {
@@ -339,7 +371,9 @@ public class SMAMetrics {
    public int getNumNotEstimated() throws OseeCoreException {
       int count = 0;
       for (StateMachineArtifact sma : smas) {
-         if (sma.getWorldViewEstimatedHours() == 0) count++;
+         if (sma.getWorldViewEstimatedHours() == 0) {
+            count++;
+         }
       }
       return count;
    }

@@ -12,7 +12,6 @@ package org.eclipse.osee.ote.container;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.resources.IResource;
@@ -94,7 +93,7 @@ public class JarChangeResourceListener<T extends JarCollectionNature> implements
                      IResourceDelta pluginDelta = child.findMember(path);
                      if (pluginDelta != null) {
                         handlePluginChanges(project.getLocation().removeLastSegments(1),
-                              pluginDelta.getAffectedChildren());
+                           pluginDelta.getAffectedChildren());
                         triggered = true;
                      }
                   }

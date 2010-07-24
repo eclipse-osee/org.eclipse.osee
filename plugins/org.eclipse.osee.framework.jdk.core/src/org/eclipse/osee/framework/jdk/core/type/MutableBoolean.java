@@ -30,6 +30,7 @@ public class MutableBoolean {
       this.value = value;
    }
 
+   @Override
    public String toString() {
       return Boolean.toString(value);
    }

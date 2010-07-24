@@ -55,7 +55,9 @@ public class Dialogs {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          return Result.FalseResult;
       }
-      if (openInSystem) Program.launch(filename);
+      if (openInSystem) {
+         Program.launch(filename);
+      }
       return Result.TrueResult;
    }
 
@@ -78,6 +80,6 @@ public class Dialogs {
          AWorkbench.popup("ERROR", "Save data is empty.  Nothing to export.");
          return Result.FalseResult;
       }
-      return (new HtmlExportTable((title.equals("") ? "Exported Text" : title), htmlText, openInSystem)).exportCsv();
+      return new HtmlExportTable((title.equals("") ? "Exported Text" : title), htmlText, openInSystem).exportCsv();
    }
 }

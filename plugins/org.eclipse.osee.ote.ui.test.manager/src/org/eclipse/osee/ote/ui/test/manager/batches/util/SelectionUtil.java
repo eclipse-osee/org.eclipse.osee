@@ -55,8 +55,9 @@ public class SelectionUtil {
          CoreException ce = (CoreException) e;
          IStatus status = ce.getStatus();
          IStatus[] children = status.getChildren();
-         for (int i = 0; i < children.length; i++)
+         for (int i = 0; i < children.length; i++) {
             msg += "\n" + children[i].getMessage();
+         }
          System.err.println(msg);
          ce.printStackTrace(System.err);
       }

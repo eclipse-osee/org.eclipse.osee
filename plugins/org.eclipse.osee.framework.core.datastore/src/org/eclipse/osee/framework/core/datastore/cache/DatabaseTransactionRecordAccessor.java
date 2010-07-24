@@ -34,15 +34,15 @@ import org.eclipse.osee.framework.database.core.JoinUtility.IdJoinQuery;
 public class DatabaseTransactionRecordAccessor implements ITransactionDataAccessor {
 
    private static final String SELECT_BASE_TRANSACTION =
-         "select txd.* from osee_branch ob, osee_tx_details txd WHERE ob.branch_id = ? AND ob.baseline_transaction_id = txd.transaction_id";
+      "select txd.* from osee_branch ob, osee_tx_details txd WHERE ob.branch_id = ? AND ob.baseline_transaction_id = txd.transaction_id";
 
    private static final String SELECT_BY_TRANSACTION = "select * from osee_tx_details WHERE transaction_id = ?";
 
    private static final String SELECT_BRANCH_TRANSACTIONS =
-         "select * from osee_tx_details where branch_id = ? order by transaction_id DESC";
+      "select * from osee_tx_details where branch_id = ? order by transaction_id DESC";
 
    private static final String SELECT_TRANSACTIONS_BY_QUERY_ID =
-         "select * from osee_tx_details txd, osee_join_id oji where txd.transaction_id = oji.id and oji.query_id = ?";
+      "select * from osee_tx_details txd, osee_join_id oji where txd.transaction_id = oji.id and oji.query_id = ?";
 
    private final IOseeDatabaseServiceProvider oseeDatabaseProvider;
    private final BranchCache branchCache;
@@ -58,6 +58,7 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
       branchCache.ensurePopulated();
    }
 
+   @Override
    public void loadTransactionRecord(TransactionCache cache, Collection<Integer> transactionIds) throws OseeCoreException {
       if (transactionIds.isEmpty()) {
          return;
@@ -81,11 +82,13 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
       }
    }
 
+   @Override
    public void loadTransactionRecord(TransactionCache cache, Branch branch) throws OseeCoreException {
       ensureDependantCachePopulated();
       loadFromTransaction(cache, branch, 1000, SELECT_BRANCH_TRANSACTIONS, branch.getId());
    }
 
+   @Override
    public TransactionRecord loadTransactionRecord(TransactionCache cache, Branch branch, TransactionVersion transactionType) throws OseeCoreException {
       ensureDependantCachePopulated();
       TransactionRecord toReturn = null;
@@ -127,8 +130,8 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
             TransactionDetailsType txType = TransactionDetailsType.toEnum(chStmt.getInt("tx_type"));
 
             record =
-                  prepareTransactionRecord(cache, transactionNumber, branchId, comment, timestamp, authorArtId,
-                        commitArtId, txType);
+               prepareTransactionRecord(cache, transactionNumber, branchId, comment, timestamp, authorArtId,
+                  commitArtId, txType);
             if (isOnlyReadFirstResult) {
                break;
             }
@@ -142,8 +145,8 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
    private TransactionRecord prepareTransactionRecord(TransactionCache cache, int transactionNumber, int branchId, String comment, Date timestamp, int authorArtId, int commitArtId, TransactionDetailsType txType) throws OseeCoreException {
       TransactionRecordFactory factory = factoryProvider.getOseeFactoryService().getTransactionFactory();
       TransactionRecord record =
-            factory.createOrUpdate(cache, transactionNumber, branchId, comment, timestamp, authorArtId, commitArtId,
-                  txType);
+         factory.createOrUpdate(cache, transactionNumber, branchId, comment, timestamp, authorArtId, commitArtId,
+            txType);
       record.setBranchCache(branchCache);
       record.clearDirty();
       return record;

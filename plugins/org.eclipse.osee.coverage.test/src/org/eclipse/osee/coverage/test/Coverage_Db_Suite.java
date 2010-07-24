@@ -25,9 +25,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {CoveragePreferencesTest.class, CoverageOptionManagerStoreTest.class, TestUnitStoreTest.class,
-      DbTestUnitProviderTest.class, Coverage_Suite.class, CoverageParametersTest.class, CoverageItemPersistTest.class,
-      CoverageUnitPersistTest.class, CoveragePackageImportTest.class, VectorCastImportTest.class})
+@Suite.SuiteClasses({CoveragePreferencesTest.class, CoverageOptionManagerStoreTest.class, TestUnitStoreTest.class,
+   DbTestUnitProviderTest.class, Coverage_Suite.class, CoverageParametersTest.class, CoverageItemPersistTest.class,
+   CoverageUnitPersistTest.class, CoveragePackageImportTest.class, VectorCastImportTest.class})
 /**
  * @author Donald G. Dunne
  */
@@ -35,10 +35,10 @@ public class Coverage_Db_Suite {
    @BeforeClass
    public static void setUp() throws Exception {
       assertTrue("Should be run on test database.", TestUtil.isTestDb());
-      assertTrue("Application Server must be running.", ClientSessionManager.getAuthenticationProtocols().contains(
-            "lba"));
+      assertTrue("Application Server must be running.",
+         ClientSessionManager.getAuthenticationProtocols().contains("lba"));
       assertTrue("Client must authenticate using lba protocol",
-            ClientSessionManager.getSession().getAuthenticationProtocol().equals("lba"));
+         ClientSessionManager.getSession().getAuthenticationProtocol().equals("lba"));
       TestUtil.setIsInTest(true);
    }
 

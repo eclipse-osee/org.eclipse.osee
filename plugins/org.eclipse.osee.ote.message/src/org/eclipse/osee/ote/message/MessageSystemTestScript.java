@@ -39,18 +39,22 @@ public abstract class MessageSystemTestScript extends TestScript implements ITes
       msgSysEnvironment = (ITestEnvironmentMessageSystemAccessor) environment;
    }
 
+   @Override
    public IMessageManager<?, ?> getMsgManager() {
       return msgSysEnvironment.getMsgManager();
    }
 
+   @Override
    public boolean isPhysicalTypeAvailable(DataType mux) {
       return msgSysEnvironment.isPhysicalTypeAvailable(mux);
    }
 
+   @Override
    public void associateObject(Class<?> c, Object obj) {
       msgSysEnvironment.associateObject(c, obj);
    }
 
+   @Override
    public Object getAssociatedObject(Class<?> c) {
       return msgSysEnvironment.getAssociatedObject(c);
    }
@@ -59,53 +63,64 @@ public abstract class MessageSystemTestScript extends TestScript implements ITes
       return msgSysEnvironment.getAssociatedObjects();
    }
 
+   @Override
    public IExecutionUnitManagement getExecutionUnitManagement() {
       return msgSysEnvironment.getExecutionUnitManagement();
    }
 
+   @Override
    public ITestStation getTestStation() {
       return msgSysEnvironment.getTestStation();
    }
 
+   @Override
    public ITestLogger getLogger() {
       return msgSysEnvironment.getLogger();
    }
 
+   @Override
    public ITimerControl getTimerCtrl() {
       return msgSysEnvironment.getTimerCtrl();
    }
 
+   @Override
    public IScriptControl getScriptCtrl() {
       return msgSysEnvironment.getScriptCtrl();
    }
 
+   @Override
    public ICancelTimer setTimerFor(ITimeout listener, int time) {
       return msgSysEnvironment.setTimerFor(listener, time);
    }
 
+   @Override
    public final void onScriptSetup() {
       msgSysEnvironment.onScriptSetup();
    }
 
+   @Override
    public final void onScriptComplete() throws InterruptedException {
       msgSysEnvironment.onScriptComplete();
    }
 
+   @Override
    public long getEnvTime() {
       return msgSysEnvironment.getEnvTime();
    }
 
-//   public ITestPointTally getAttachedTestPointTally(TestScript script) {
-//      return msgSysEnvironment.getAttachedTestPointTally(script);
-//   }
+   //   public ITestPointTally getAttachedTestPointTally(TestScript script) {
+   //      return msgSysEnvironment.getAttachedTestPointTally(script);
+   //   }
 
    //   public EnvironmentType getEnvironmentType() {
    //      return msgSysEnvironment.getEnvironmentType();
    //   }
+   @Override
    public void abortTestScript() {
       msgSysEnvironment.abortTestScript();
    }
 
+   @Override
    public boolean addTask(EnvironmentTask task) {
       return msgSysEnvironment.addTask(task);
    }

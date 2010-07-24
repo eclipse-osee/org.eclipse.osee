@@ -38,7 +38,7 @@ public class TreeViewerUtility {
       populateSelectionHash(treeViewer, selectionHash);
       populateExpansionHash(treeViewer, expansionHash);
       traverseTree(((ITreeContentProvider) treeViewer.getContentProvider()).getChildren(treeViewer.getInput()),
-            (ITreeContentProvider) treeViewer.getContentProvider(), selectedTreeItems, selectionHash, expansionHash);
+         (ITreeContentProvider) treeViewer.getContentProvider(), selectedTreeItems, selectionHash, expansionHash);
    }
 
    @SuppressWarnings("unchecked")
@@ -61,9 +61,13 @@ public class TreeViewerUtility {
    @SuppressWarnings("unchecked")
    private static <A extends Object> void traverseTree(Object[] items, ITreeContentProvider contentProvider, List<A> selectedTreeItems, Map<A, Object> selectionHash, Map<A, Object> expandedHash) {
       for (Object item : items) {
-         if (selectionHash.containsKey(item)) selectedTreeItems.add((A) item);
-         if (expandedHash.containsKey(item)) traverseTree(contentProvider.getChildren(item), contentProvider,
-               selectedTreeItems, selectionHash, expandedHash);
+         if (selectionHash.containsKey(item)) {
+            selectedTreeItems.add((A) item);
+         }
+         if (expandedHash.containsKey(item)) {
+            traverseTree(contentProvider.getChildren(item), contentProvider, selectedTreeItems, selectionHash,
+               expandedHash);
+         }
       }
    }
 }

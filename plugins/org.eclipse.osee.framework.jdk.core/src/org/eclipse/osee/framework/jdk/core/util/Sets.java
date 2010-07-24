@@ -26,8 +26,12 @@ public class Sets {
     * @throws IllegalArgumentException if either argument is null.
     */
    public static <A extends Object> Set<A> intersect(Set<A> set1, Set<A> set2) {
-      if (set1 == null) throw new IllegalArgumentException("set1 can not be null.");
-      if (set2 == null) throw new IllegalArgumentException("set2 can not be null.");
+      if (set1 == null) {
+         throw new IllegalArgumentException("set1 can not be null.");
+      }
+      if (set2 == null) {
+         throw new IllegalArgumentException("set2 can not be null.");
+      }
 
       Set<A> intersection = new HashSet<A>();
 
@@ -37,8 +41,11 @@ public class Sets {
       Set<A> baseSet = set1Larger ? set2 : set1;
       Set<A> otherSet = set1Larger ? set1 : set2;
 
-      for (A item : baseSet)
-         if (otherSet.contains(item)) intersection.add(item);
+      for (A item : baseSet) {
+         if (otherSet.contains(item)) {
+            intersection.add(item);
+         }
+      }
 
       return intersection;
    }

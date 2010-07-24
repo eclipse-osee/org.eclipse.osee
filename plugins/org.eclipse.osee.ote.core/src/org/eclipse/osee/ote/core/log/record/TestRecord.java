@@ -33,13 +33,13 @@ public abstract class TestRecord extends LogRecord implements Xmlizable {
    private static final ArrayList<Pattern> stacktraceIncludes = new ArrayList<Pattern>(32);
 
    static {
-      filterTheStacktrace = (System.getProperty("org.eclipse.osee.ote.core.noStacktraceFilter") == null);
+      filterTheStacktrace = System.getProperty("org.eclipse.osee.ote.core.noStacktraceFilter") == null;
       stacktraceExcludes.add(Pattern.compile("org\\.eclipse\\.osee\\..*"));
    }
 
    private final ITestEnvironmentAccessor source;
    private long timeStamp;
-   private boolean printTimeStamp;
+   private final boolean printTimeStamp;
    private Throwable throwable;
 
    /**
@@ -58,15 +58,14 @@ public abstract class TestRecord extends LogRecord implements Xmlizable {
       this.printTimeStamp = timeStamp;
       this.source = source;
       if (this.printTimeStamp) {
-         if (source != null)
+         if (source != null) {
             this.timeStamp = source.getEnvTime();
-         else {
+         } else {
             this.timeStamp = System.currentTimeMillis();
             try {
                throw new Exception("source was null");
             } catch (Exception e) {
-               OseeLog.log(TestEnvironment.class,
-                     Level.SEVERE, e.getMessage(), e);
+               OseeLog.log(TestEnvironment.class, Level.SEVERE, e.getMessage(), e);
             }
          }
       }
@@ -115,6 +114,7 @@ public abstract class TestRecord extends LogRecord implements Xmlizable {
     * 
     * @return xml formated element.
     */
+   @Override
    public Element toXml(Document doc) {
       Element recordElement = doc.createElement(getLevel().getName());
       recordElement.appendChild(getLocation(doc));
@@ -147,7 +147,9 @@ public abstract class TestRecord extends LogRecord implements Xmlizable {
     */
    protected Element getLocation(Document doc) {
       Element locationElement = calc(doc);
-      if (this.printTimeStamp) locationElement.appendChild(Jaxp.createElement(doc, "Time", Long.toString(timeStamp)));
+      if (this.printTimeStamp) {
+         locationElement.appendChild(Jaxp.createElement(doc, "Time", Long.toString(timeStamp)));
+      }
 
       return locationElement;
    }

@@ -23,6 +23,7 @@ public class TestPerspective implements IPerspectiveFactory {
       super();
    }
 
+   @Override
    public void createInitialLayout(IPageLayout layout) {
       defineActions(layout);
       defineLayout(layout);

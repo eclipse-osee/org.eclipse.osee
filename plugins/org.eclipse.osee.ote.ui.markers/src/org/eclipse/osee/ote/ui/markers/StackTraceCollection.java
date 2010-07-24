@@ -16,12 +16,11 @@ import org.eclipse.osee.ote.core.framework.saxparse.elements.StacktraceData;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public class StackTraceCollection {
 
    public List<StacktraceData> data = new ArrayList<StacktraceData>();
-   
+
    public void addTrace(StacktraceData obj) {
       data.add(obj);
    }

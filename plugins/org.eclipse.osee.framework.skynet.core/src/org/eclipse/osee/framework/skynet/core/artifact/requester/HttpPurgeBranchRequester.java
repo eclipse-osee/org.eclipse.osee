@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.artifact.requester;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.enums.Function;
@@ -20,7 +21,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.PurgeBranchRequest;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.HttpClientMessage;
@@ -41,17 +41,17 @@ public class HttpPurgeBranchRequester {
       parameters.put("function", Function.PURGE_BRANCH.name());
 
       AcquireResult response =
-            HttpClientMessage.send(OseeServerContext.BRANCH_CONTEXT, parameters, CoreTranslatorId.PURGE_BRANCH_REQUEST,
-                  requestData, null);
+         HttpClientMessage.send(OseeServerContext.BRANCH_CONTEXT, parameters, CoreTranslatorId.PURGE_BRANCH_REQUEST,
+            requestData, null);
 
       if (response.wasSuccessful()) {
          branch.setStorageState(StorageState.PURGED);
          BranchManager.decache(branch);
          try {
             OseeEventManager.kickBranchEvent(HttpPurgeBranchRequester.class, new BranchEvent(BranchEventType.Purged,
-                  branch.getGuid()), branch.getId());
+               branch.getGuid()), branch.getId());
          } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
    }

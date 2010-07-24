@@ -22,24 +22,24 @@ import org.eclipse.osee.ote.ui.message.tree.WatchedMessageNode;
  * @author Ken J. Aguilar
  */
 public class SendMessageAction extends Action {
-	private final WatchedMessageNode msgNode;
+   private final WatchedMessageNode msgNode;
 
-	public SendMessageAction(WatchedMessageNode msgNode) {
-		super("Send");
-		this.msgNode = msgNode;
-		setEnabled(msgNode.isEnabled() && msgNode.getSubscription().getMessageMode() == MessageMode.WRITER && msgNode.getSubscription().isActive());
+   public SendMessageAction(WatchedMessageNode msgNode) {
+      super("Send");
+      this.msgNode = msgNode;
+      setEnabled(msgNode.isEnabled() && msgNode.getSubscription().getMessageMode() == MessageMode.WRITER && msgNode.getSubscription().isActive());
 
-	}
+   }
 
-	@Override
-	public void run() {
-		try {
-			msgNode.getSubscription().send();
-		} catch (Exception e) {
-			String message = "could not send the message " + msgNode.getMessageClassName();
-			OseeLog.log(SendMessageAction.class, Level.SEVERE, message, e);
-			MessageDialog.openError(Displays.getActiveShell(), "Send Message", message + ". Check error log for trace");
-		}
-	}
+   @Override
+   public void run() {
+      try {
+         msgNode.getSubscription().send();
+      } catch (Exception e) {
+         String message = "could not send the message " + msgNode.getMessageClassName();
+         OseeLog.log(SendMessageAction.class, Level.SEVERE, message, e);
+         MessageDialog.openError(Displays.getActiveShell(), "Send Message", message + ". Check error log for trace");
+      }
+   }
 
 }

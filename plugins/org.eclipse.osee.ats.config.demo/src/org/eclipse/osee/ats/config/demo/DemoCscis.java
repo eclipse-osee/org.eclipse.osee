@@ -14,5 +14,10 @@ package org.eclipse.osee.ats.config.demo;
  * @author Donald G. Dunne
  */
 public enum DemoCscis {
-   CoreUnit, Framework, Interface, Navigation, Unspecified, Visual;
+   CoreUnit,
+   Framework,
+   Interface,
+   Navigation,
+   Unspecified,
+   Visual;
 }

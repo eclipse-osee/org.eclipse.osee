@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -67,13 +68,14 @@ public class TestRunXViewer extends XViewer {
 
    public TestRunXViewer(Composite parent) {
       super(parent, //SWT.VIRTUAL | 
-            SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI, new TestRunXViewerFactory());
+         SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI, new TestRunXViewerFactory());
       setSorter(null);
       setContentProvider(new DataItemContentProvider());
       setLabelProvider(new DataItemLabelProvider(this));
       setUseHashlookup(true);
       setupActions();
       getMenuManager().addMenuListener(new IMenuListener() {
+         @Override
          public void menuAboutToShow(IMenuManager manager) {
             customActions();
          }
@@ -111,7 +113,7 @@ public class TestRunXViewer extends XViewer {
 
    private void setupActions() {
       try {
-         editDisposition = new Action("Edit Disposition", Action.AS_PUSH_BUTTON) {
+         editDisposition = new Action("Edit Disposition", IAction.AS_PUSH_BUTTON) {
             @Override
             public void run() {
                try {
@@ -262,8 +264,8 @@ public class TestRunXViewer extends XViewer {
                Artifact dispoArtifact = null;
                try {
                   dispoArtifact =
-                        ArtifactQuery.getArtifactFromTypeAndAttribute("Test Run Disposition", "Name", name,
-                              artifact.getBranch());
+                     ArtifactQuery.getArtifactFromTypeAndAttribute("Test Run Disposition", "Name", name,
+                        artifact.getBranch());
                } catch (ArtifactDoesNotExist ex) {
                   ArtifactType artifactType = ArtifactTypeManager.getType("Test Run Disposition");
                   dispoArtifact = ArtifactTypeManager.makeNewArtifact(artifactType, artifact.getBranch());
@@ -277,8 +279,8 @@ public class TestRunXViewer extends XViewer {
       }
       try {
          returnValue =
-               ArtifactPromptChange.promptChangeStringAttribute("Disposition", "Edit Disposition",
-                     dispositionArtifacts, true, false);
+            ArtifactPromptChange.promptChangeStringAttribute("Disposition", "Edit Disposition", dispositionArtifacts,
+               true, false);
          refresh();
       } catch (Exception ex) {
          OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, ex);

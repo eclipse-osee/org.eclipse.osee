@@ -23,17 +23,18 @@ import org.eclipse.osee.ote.message.interfaces.ITestAccessor;
  */
 public class Float64Element extends RealElement {
 
-   public Float64Element(Message<?,?,?> message, String elementName, MessageData messageData, int byteOffset, int msb, int lsb) {
+   public Float64Element(Message<?, ?, ?> message, String elementName, MessageData messageData, int byteOffset, int msb, int lsb) {
       this(message, elementName, messageData, byteOffset, msb, lsb, msb, lsb);
    }
 
-   public Float64Element(Message<?,?,?> message, String elementName, MessageData messageData, int byteOffset, int msb,
-         int lsb, int originalLsb, int originalMsb) {
+   public Float64Element(Message<?, ?, ?> message, String elementName, MessageData messageData, int byteOffset, int msb, int lsb, int originalLsb, int originalMsb) {
       super(message, elementName, messageData, byteOffset, msb, lsb, originalLsb, originalMsb);
    }
-   public Float64Element(Message<?,?,?> message, String elementName, MessageData messageData, int bitOffset, int bitLength) {
+
+   public Float64Element(Message<?, ?, ?> message, String elementName, MessageData messageData, int bitOffset, int bitLength) {
       super(message, elementName, messageData, bitOffset, bitLength);
    }
+
    /**
     * Checks that this element correctly forwards a message sent from cause with the value passed.
     * 
@@ -65,30 +66,32 @@ public class Float64Element extends RealElement {
       check(accessor, 0d, 500);
 
    }
-   
+
    /**
     * Sets the element to the "value" passed.
     * 
     * @param accessor
     * @param value The value to set.
     */
+   @Override
    public void set(ITestEnvironmentAccessor accessor, double value) {
       if (accessor != null) {
-         accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(), (new MethodFormatter()).add(value),
-               this.getMessage());
+         accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(), new MethodFormatter().add(value),
+            this.getMessage());
       }
       setValue(value);
       if (accessor != null) {
          accessor.getLogger().methodEnded(accessor);
       }
    }
-   
+
    /**
     * Sets the element to the "value" passed and immediately sends the message that contains it..
     * 
     * @param accessor
     * @param value The value to set.
     */
+   @Override
    public void setAndSend(ITestEnvironmentAccessor accessor, double value) {
       this.set(accessor, value);
       super.sendMessage();
@@ -97,22 +100,22 @@ public class Float64Element extends RealElement {
    public void setNoLog(ITestEnvironmentAccessor accessor, double value) {
       setValue(value);
    }
-   
+
    @Override
    public Double getValue() {
-	   return Double.longBitsToDouble(getMsgData().getMem().getLong(byteOffset, msb, lsb));
+      return Double.longBitsToDouble(getMsgData().getMem().getLong(byteOffset, msb, lsb));
    }
-
 
    @Override
    public Double valueOf(MemoryResource mem) {
-	   return Double.longBitsToDouble(mem.getLong(byteOffset, msb, lsb));
+      return Double.longBitsToDouble(mem.getLong(byteOffset, msb, lsb));
    }
 
    @Override
    public void setValue(Double obj) {
-      getMsgData().getMem().setLong(Double.doubleToLongBits((Double)obj), byteOffset, msb, lsb);
+      getMsgData().getMem().setLong(Double.doubleToLongBits(obj), byteOffset, msb, lsb);
    }
+
    /**
     * Sets the element to the "value" passed.
     * 
@@ -121,8 +124,8 @@ public class Float64Element extends RealElement {
     */
    public void setRawBits(ITestEnvironmentAccessor accessor, long bits) {
       if (accessor != null) {
-         accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(), (new MethodFormatter()).add(bits),
-               this.getMessage());
+         accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(), new MethodFormatter().add(bits),
+            this.getMessage());
       }
 
       getMsgData().getMem().setLong(bits, byteOffset, msb, lsb);
@@ -137,7 +140,7 @@ public class Float64Element extends RealElement {
     * @param bits
     */
    public void setRawBits(long bits) {
-	   getMsgData().getMem().setLong(bits, byteOffset, msb, lsb);
+      getMsgData().getMem().setLong(bits, byteOffset, msb, lsb);
    }
 
    @Override
@@ -152,11 +155,11 @@ public class Float64Element extends RealElement {
 
    @Override
    protected Element getNonMappingElement() {
-      return (NonMappingFloat64Element)new NonMappingFloat64Element(this);
+      return new NonMappingFloat64Element(this);
    }
 
    @Override
    public void setHex(long hex) {
-       getMsgData().getMem().setLong(hex, byteOffset, msb, lsb);
+      getMsgData().getMem().setLong(hex, byteOffset, msb, lsb);
    }
 }

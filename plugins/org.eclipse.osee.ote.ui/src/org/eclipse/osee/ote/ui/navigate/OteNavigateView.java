@@ -37,90 +37,90 @@ import org.eclipse.ui.part.ViewPart;
  */
 public class OteNavigateView extends ViewPart implements IActionable {
 
-	public static final String VIEW_ID = "org.eclipse.osee.ote.ui.navigate.OteNavigateView";
-	private XNavigateComposite xNavComp;
+   public static final String VIEW_ID = "org.eclipse.osee.ote.ui.navigate.OteNavigateView";
+   private XNavigateComposite xNavComp;
 
-	/**
-	 * The constructor.
-	 */
-	public OteNavigateView() {
-	}
+   /**
+    * The constructor.
+    */
+   public OteNavigateView() {
+   }
 
-	@Override
-	public void setFocus() {
-	}
+   @Override
+   public void setFocus() {
+   }
 
-	/*
-	 * @see IWorkbenchPart#createPartControl(Composite)
-	 */
-	@Override
-	public void createPartControl(Composite parent) {
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, "org.eclipse.osee.ote.ui.oteNavigator");
-		xNavComp = new XNavigateComposite(new OteNavigateViewItems(), parent, SWT.NONE);
+   /*
+    * @see IWorkbenchPart#createPartControl(Composite)
+    */
+   @Override
+   public void createPartControl(Composite parent) {
+      PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, "org.eclipse.osee.ote.ui.oteNavigator");
+      xNavComp = new XNavigateComposite(new OteNavigateViewItems(), parent, SWT.NONE);
 
-		xNavComp.getFilteredTree().getViewer().setSorter(new OteNavigateViewerSorter());
+      xNavComp.getFilteredTree().getViewer().setSorter(new OteNavigateViewerSorter());
 
-		createActions();
-		xNavComp.refresh();
+      createActions();
+      xNavComp.refresh();
 
-		addExtensionPointListenerBecauseOfWorkspaceLoading();
-	}
+      addExtensionPointListenerBecauseOfWorkspaceLoading();
+   }
 
-	private void addExtensionPointListenerBecauseOfWorkspaceLoading() {
-		IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
-		extensionRegistry.addListener(new IRegistryEventListener() {
-			@Override
-			public void added(IExtension[] extensions) {
-				refresh();
-			}
+   private void addExtensionPointListenerBecauseOfWorkspaceLoading() {
+      IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
+      extensionRegistry.addListener(new IRegistryEventListener() {
+         @Override
+         public void added(IExtension[] extensions) {
+            refresh();
+         }
 
-			@Override
-			public void added(IExtensionPoint[] extensionPoints) {
-				refresh();
-			}
+         @Override
+         public void added(IExtensionPoint[] extensionPoints) {
+            refresh();
+         }
 
-			@Override
-			public void removed(IExtension[] extensions) {
-				refresh();
-			}
+         @Override
+         public void removed(IExtension[] extensions) {
+            refresh();
+         }
 
-			@Override
-			public void removed(IExtensionPoint[] extensionPoints) {
-				refresh();
-			}
-		}, "org.eclipse.osee.framework.ui.plugin.XNavigateItem");
-	}
+         @Override
+         public void removed(IExtensionPoint[] extensionPoints) {
+            refresh();
+         }
+      }, "org.eclipse.osee.framework.ui.plugin.XNavigateItem");
+   }
 
-	protected void createActions() {
-		Action refreshAction = new Action("Refresh") {
+   protected void createActions() {
+      Action refreshAction = new Action("Refresh") {
 
-			@Override
-			public void run() {
-				xNavComp.refresh();
-			}
-		};
-		refreshAction.setImageDescriptor(ImageManager.getImageDescriptor(PluginUiImage.REFRESH));
-		refreshAction.setToolTipText("Refresh");
+         @Override
+         public void run() {
+            xNavComp.refresh();
+         }
+      };
+      refreshAction.setImageDescriptor(ImageManager.getImageDescriptor(PluginUiImage.REFRESH));
+      refreshAction.setToolTipText("Refresh");
 
-		OseeUiActions.addBugToViewToolbar(this, this, TestCoreGuiPlugin.getDefault(), VIEW_ID, "OTE Navigator");
+      OseeUiActions.addBugToViewToolbar(this, this, TestCoreGuiPlugin.getDefault(), VIEW_ID, "OTE Navigator");
 
-	}
+   }
 
-	@Override
-	public String getActionDescription() {
-		IStructuredSelection sel = (IStructuredSelection) xNavComp.getFilteredTree().getViewer().getSelection();
-		if (sel.iterator().hasNext()) {
-			return String.format("Currently Selected - %s", ((XNavigateItem) sel.iterator().next()).getName());
-		}
-		return "";
-	}
+   @Override
+   public String getActionDescription() {
+      IStructuredSelection sel = (IStructuredSelection) xNavComp.getFilteredTree().getViewer().getSelection();
+      if (sel.iterator().hasNext()) {
+         return String.format("Currently Selected - %s", ((XNavigateItem) sel.iterator().next()).getName());
+      }
+      return "";
+   }
 
-	public void refresh() {
-		Displays.ensureInDisplayThread(new Runnable() {
-			@Override
-			public void run() {
-				xNavComp.refresh();
-			}
-		});
-	}
+   public void refresh() {
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            xNavComp.refresh();
+         }
+      });
+   }
 }

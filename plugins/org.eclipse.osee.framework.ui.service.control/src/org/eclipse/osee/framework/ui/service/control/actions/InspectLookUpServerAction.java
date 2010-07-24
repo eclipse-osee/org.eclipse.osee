@@ -23,22 +23,22 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  * @author Roberto E. Escobar
  */
 public class InspectLookUpServerAction implements IDoubleClickListener {
-	private final ManagerMain mainWindow;
+   private final ManagerMain mainWindow;
 
-	public InspectLookUpServerAction(ManagerMain mainWindow) {
-		super();
-		this.mainWindow = mainWindow;
-		this.mainWindow.getLookupViewer().getViewer().addDoubleClickListener(this);
-	}
+   public InspectLookUpServerAction(ManagerMain mainWindow) {
+      super();
+      this.mainWindow = mainWindow;
+      this.mainWindow.getLookupViewer().getViewer().addDoubleClickListener(this);
+   }
 
-	@Override
-	public void doubleClick(DoubleClickEvent event) {
-		ISelection sel = event.getSelection();
-		if (!sel.isEmpty()) {
-			Object object = ((StructuredSelection) sel).getFirstElement();
-			if (object instanceof ServiceRegistrar) {
-				Displays.ensureInDisplayThread(new InspectReggieDialogHelper(mainWindow, (ServiceRegistrar) object));
-			}
-		}
-	}
+   @Override
+   public void doubleClick(DoubleClickEvent event) {
+      ISelection sel = event.getSelection();
+      if (!sel.isEmpty()) {
+         Object object = ((StructuredSelection) sel).getFirstElement();
+         if (object instanceof ServiceRegistrar) {
+            Displays.ensureInDisplayThread(new InspectReggieDialogHelper(mainWindow, (ServiceRegistrar) object));
+         }
+      }
+   }
 }

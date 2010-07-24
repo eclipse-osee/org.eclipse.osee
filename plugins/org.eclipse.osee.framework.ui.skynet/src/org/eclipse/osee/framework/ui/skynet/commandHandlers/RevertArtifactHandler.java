@@ -75,7 +75,7 @@ public class RevertArtifactHandler extends AbstractHandler {
       boolean isEnabled = false;
       try {
          ISelectionProvider selectionProvider =
-               AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
+            AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
 
          if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
             IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();

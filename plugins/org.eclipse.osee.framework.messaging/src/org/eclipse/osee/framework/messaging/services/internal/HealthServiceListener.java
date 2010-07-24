@@ -21,49 +21,48 @@ import org.eclipse.osee.framework.messaging.services.messages.ServiceHealth;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 class HealthServiceListener extends OseeMessagingListener {
 
-	private static final int WIGGLE_ROOM = 20000;
-	
-	private CompositeKeyHashMap<String/* serviceName */, String /* serviceVersion */, Map<String /* serviceUniqueId */,ServiceHealthPlusTimeout>> map;
-	private CompositeKeyHashMap<String/* serviceName */, String /* serviceVersion */, List<ServiceNotification>> callbacks;
-	
-	HealthServiceListener(CompositeKeyHashMap<String, String, Map<String, ServiceHealthPlusTimeout>> map, CompositeKeyHashMap<String, String, List<ServiceNotification>> callbacks){
-		super(ServiceHealth.class);
-		this.map = map;
-		this.callbacks = callbacks;
-	}
-	
-	@Override
-	public void process(Object message, Map<String, Object> headers,
-			ReplyConnection replyConnection) {
-		ServiceHealth health = (ServiceHealth)message;
-		
-		if(health.isStopping()){
-		   List<ServiceNotification> itemsToNotify = callbacks.get(health.getServiceName(), health.getServiceVersion());
-         if(itemsToNotify != null){
-            for(ServiceNotification notification :itemsToNotify){
+   private static final int WIGGLE_ROOM = 20000;
+
+   private final CompositeKeyHashMap<String/* serviceName */, String /* serviceVersion */, Map<String /* serviceUniqueId */, ServiceHealthPlusTimeout>> map;
+   private final CompositeKeyHashMap<String/* serviceName */, String /* serviceVersion */, List<ServiceNotification>> callbacks;
+
+   HealthServiceListener(CompositeKeyHashMap<String, String, Map<String, ServiceHealthPlusTimeout>> map, CompositeKeyHashMap<String, String, List<ServiceNotification>> callbacks) {
+      super(ServiceHealth.class);
+      this.map = map;
+      this.callbacks = callbacks;
+   }
+
+   @Override
+   public void process(Object message, Map<String, Object> headers, ReplyConnection replyConnection) {
+      ServiceHealth health = (ServiceHealth) message;
+
+      if (health.isStopping()) {
+         List<ServiceNotification> itemsToNotify = callbacks.get(health.getServiceName(), health.getServiceVersion());
+         if (itemsToNotify != null) {
+            for (ServiceNotification notification : itemsToNotify) {
                notification.onServiceGone(health);
             }
          }
-		} else { 
-   		Map<String, ServiceHealthPlusTimeout> idMap = map.get(health.getServiceName(), health.getServiceVersion());
-   		if(idMap == null){
-   			idMap = new ConcurrentHashMap<String, ServiceHealthPlusTimeout>();
-   			map.put(health.getServiceName(), health.getServiceVersion(), idMap);
-   		}
-   		long shouldHaveRenewedTime = System.currentTimeMillis() + (health.getRefreshRateInSeconds()*1000) + WIGGLE_ROOM;
-   		idMap.put(health.getServiceUniqueId(), new ServiceHealthPlusTimeout(health, shouldHaveRenewedTime));
-   		
-   		List<ServiceNotification> itemsToNotify = callbacks.get(health.getServiceName(), health.getServiceVersion());
-   		if(itemsToNotify != null){
-   			for(ServiceNotification notification :itemsToNotify){
-   				notification.onServiceUpdate(health);
-   			}
-   		}
-		}
-	}
+      } else {
+         Map<String, ServiceHealthPlusTimeout> idMap = map.get(health.getServiceName(), health.getServiceVersion());
+         if (idMap == null) {
+            idMap = new ConcurrentHashMap<String, ServiceHealthPlusTimeout>();
+            map.put(health.getServiceName(), health.getServiceVersion(), idMap);
+         }
+         long shouldHaveRenewedTime =
+            System.currentTimeMillis() + health.getRefreshRateInSeconds() * 1000 + WIGGLE_ROOM;
+         idMap.put(health.getServiceUniqueId(), new ServiceHealthPlusTimeout(health, shouldHaveRenewedTime));
+
+         List<ServiceNotification> itemsToNotify = callbacks.get(health.getServiceName(), health.getServiceVersion());
+         if (itemsToNotify != null) {
+            for (ServiceNotification notification : itemsToNotify) {
+               notification.onServiceUpdate(health);
+            }
+         }
+      }
+   }
 
 }

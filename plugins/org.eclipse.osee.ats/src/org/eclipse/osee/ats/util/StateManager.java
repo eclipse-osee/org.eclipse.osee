@@ -60,10 +60,11 @@ public class StateManager {
     * @return state matching name
     */
    private SMAState getSMAState(String name, boolean create) throws OseeCoreException {
-      if (currentStateDam.getState().getName().equals(name))
+      if (currentStateDam.getState().getName().equals(name)) {
          return currentStateDam.getState();
-      else
-         return (stateDam.getState(name, create));
+      } else {
+         return stateDam.getState(name, create);
+      }
    }
 
    /**
@@ -115,7 +116,9 @@ public class StateManager {
     */
    public double getHoursSpent(String stateName) throws OseeCoreException {
       SMAState state = getSMAState(stateName, false);
-      if (state == null) return 0.0;
+      if (state == null) {
+         return 0.0;
+      }
       return state.getHoursSpent();
    }
 
@@ -130,9 +133,13 @@ public class StateManager {
     * @return percent complete or 0 if none
     */
    public int getPercentComplete(String stateName) throws OseeCoreException {
-      if (stateName.equals(DefaultTeamState.Completed.name()) || stateName.equals(DefaultTeamState.Cancelled.name())) return 100;
+      if (stateName.equals(DefaultTeamState.Completed.name()) || stateName.equals(DefaultTeamState.Cancelled.name())) {
+         return 100;
+      }
       SMAState state = getSMAState(stateName, false);
-      if (state == null) return 0;
+      if (state == null) {
+         return 0;
+      }
       return state.getPercentComplete();
 
    }
@@ -163,10 +170,11 @@ public class StateManager {
 
    public Collection<User> getAssignees(String stateName) throws OseeCoreException {
       SMAState state = getSMAState(stateName, false);
-      if (state != null)
+      if (state != null) {
          return state.getAssignees();
-      else
+      } else {
          return Collections.emptyList();
+      }
    }
 
    public void updateMetrics(double additionalHours, int percentComplete, boolean logMetrics) throws OseeCoreException {
@@ -174,10 +182,11 @@ public class StateManager {
    }
 
    public void updateMetrics(String stateName, double additionalHours, int percentComplete, boolean logMetrics) throws OseeCoreException {
-      if (stateName.equals(getCurrentStateName()))
+      if (stateName.equals(getCurrentStateName())) {
          currentStateDam.updateMetrics(additionalHours, percentComplete, logMetrics);
-      else
+      } else {
          stateDam.updateMetrics(stateName, additionalHours, percentComplete, logMetrics);
+      }
    }
 
    public void setMetrics(double hours, int percentComplete, boolean logMetrics) throws OseeCoreException {
@@ -203,7 +212,9 @@ public class StateManager {
     * @throws Exception
     */
    public void setAssignee(String stateName, User assignee) throws OseeCoreException {
-      if (!isStateVisited(stateName)) throw new OseeArgumentException("State " + stateName + " does not exist.");
+      if (!isStateVisited(stateName)) {
+         throw new OseeArgumentException("State " + stateName + " does not exist.");
+      }
       SMAState state = getSMAState(stateName, false);
       state.setAssignee(assignee);
       putState(state);
@@ -229,7 +240,9 @@ public class StateManager {
     * @throws Exception
     */
    public void removeAssignee(String stateName, User assignee) throws OseeCoreException {
-      if (!isStateVisited(stateName)) return;
+      if (!isStateVisited(stateName)) {
+         return;
+      }
       SMAState state = getSMAState(stateName, false);
       state.removeAssignee(assignee);
       putState(state);
@@ -285,7 +298,9 @@ public class StateManager {
       // Set XCurrentState; If been to this state, copy state info from prev state; else create new
       SMAState previousState = stateDam.getState(toStateName, false);
       if (previousState != null) {
-         if (toAssignees.size() > 0) previousState.setAssignees(toAssignees);
+         if (toAssignees.size() > 0) {
+            previousState.setAssignees(toAssignees);
+         }
          currentStateDam.setState(previousState);
       } else {
          currentStateDam.setState(new SMAState(toStateName, toAssignees));
@@ -324,10 +339,11 @@ public class StateManager {
    }
 
    private void putState(SMAState state) throws OseeCoreException {
-      if (getCurrentStateName().equals(state.getName()))
+      if (getCurrentStateName().equals(state.getName())) {
          currentStateDam.setState(state);
-      else
+      } else {
          stateDam.setState(state);
+      }
    }
 
    public Collection<String> getVisitedStateNames() throws OseeCoreException {
@@ -345,10 +361,14 @@ public class StateManager {
 
    public long getTimeInState(String stateName) throws OseeCoreException {
       SMAState state = getSMAState(stateName, false);
-      if (state == null) return 0;
+      if (state == null) {
+         return 0;
+      }
       LogItem logItem = sma.getLog().getLastEvent(LogType.StateEntered);
-      if (logItem == null) return 0;
-      return (new Date()).getTime() - logItem.getDate().getTime();
+      if (logItem == null) {
+         return 0;
+      }
+      return new Date().getTime() - logItem.getDate().getTime();
    }
 
    /**
@@ -375,7 +395,7 @@ public class StateManager {
    public static Set<Artifact> getAssigned(String userId, Class<?> clazz) throws OseeCoreException {
       Set<Artifact> assigned = new HashSet<Artifact>();
       for (Artifact artifact : ArtifactQuery.getArtifactListFromAttribute(
-            ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(), "%<" + userId + ">%", AtsUtil.getAtsBranch())) {
+         ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(), "%<" + userId + ">%", AtsUtil.getAtsBranch())) {
          if (clazz == null || clazz.isInstance(artifact)) {
             assigned.add(artifact);
          }

@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 
 /**
  * Utility methods for common tasks performed on Artifact's.
- *
+ * 
  * @author Robert A. Fisher
  * @author Donald G. Dunne
  */
@@ -97,7 +97,7 @@ public final class Artifacts {
 
    public static void persistInTransaction(Artifact... artifacts) throws OseeCoreException {
       SkynetTransaction transaction =
-            new SkynetTransaction(artifacts[0].getBranch(), "Artifacts.persistInTransaction(Artifact... artifacts)");
+         new SkynetTransaction(artifacts[0].getBranch(), "Artifacts.persistInTransaction(Artifact... artifacts)");
       for (Artifact art : artifacts) {
          art.persist(transaction);
       }
@@ -114,7 +114,7 @@ public final class Artifacts {
 
    /**
     * Recurses default hierarchy and collections children of parentArtifact that are of type class
-    *
+    * 
     * @param <A>
     * @param parentArtifact
     * @param children
@@ -175,12 +175,12 @@ public final class Artifacts {
          details.put("Historical", String.valueOf(artifact.isHistorical()));
          details.put("Deleted", String.valueOf(artifact.isDeleted()));
          details.put("Revision",
-               String.valueOf(artifact.isInDb() ? String.valueOf(artifact.getTransactionNumber()) : "Not In Db"));
+            String.valueOf(artifact.isInDb() ? String.valueOf(artifact.getTransactionNumber()) : "Not In Db"));
          details.put("Read Only", String.valueOf(artifact.isReadOnly()));
          details.put("Last Modified", (artifact.isInDb() ? String.valueOf(artifact.getLastModified()) : "Not In Db"));
          try {
             details.put("Last Modified By",
-                  (artifact.isInDb() ? String.valueOf(artifact.getLastModifiedBy()) : "Not In Db"));
+               (artifact.isInDb() ? String.valueOf(artifact.getLastModifiedBy()) : "Not In Db"));
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
             details.put("Last Modified By", "Exception " + ex.getLocalizedMessage());

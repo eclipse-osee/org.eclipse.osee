@@ -36,7 +36,7 @@ public class BranchGraphOutlinePage extends Page implements IContentOutlinePage 
 
    private Composite composite;
    private Canvas overview;
-   private ScalableRootEditPart rootEditPart;
+   private final ScalableRootEditPart rootEditPart;
    private Thumbnail thumbnail;
 
    public BranchGraphOutlinePage(ScalableRootEditPart rootEditPart) {
@@ -44,10 +44,12 @@ public class BranchGraphOutlinePage extends Page implements IContentOutlinePage 
       this.rootEditPart = rootEditPart;
    }
 
+   @Override
    public void addSelectionChangedListener(ISelectionChangedListener listener) {
 
    }
 
+   @Override
    public void createControl(Composite parent) {
       composite = new Composite(parent, SWT.BORDER);
       composite.setLayout(new FillLayout(SWT.VERTICAL));
@@ -64,27 +66,37 @@ public class BranchGraphOutlinePage extends Page implements IContentOutlinePage 
       lws.setContents(thumbnail);
    }
 
+   @Override
    public void dispose() {
-      if (null != thumbnail) thumbnail.deactivate();
+      if (null != thumbnail) {
+         thumbnail.deactivate();
+      }
       super.dispose();
    }
 
+   @Override
    public Control getControl() {
       return composite;
    }
 
+   @Override
    public ISelection getSelection() {
       return StructuredSelection.EMPTY;
    }
 
+   @Override
    public void removeSelectionChangedListener(ISelectionChangedListener listener) {
 
    }
 
+   @Override
    public void setFocus() {
-      if (getControl() != null) getControl().setFocus();
+      if (getControl() != null) {
+         getControl().setFocus();
+      }
    }
 
+   @Override
    public void setSelection(ISelection selection) {
 
    }
@@ -93,6 +105,7 @@ public class BranchGraphOutlinePage extends Page implements IContentOutlinePage 
       //      viewer.setInput(object != null ? object : "Data not available");
    }
 
+   @Override
    public void init(IPageSite pageSite) {
       super.init(pageSite);
    }

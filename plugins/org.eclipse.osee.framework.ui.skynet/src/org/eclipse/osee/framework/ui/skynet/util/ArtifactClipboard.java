@@ -46,9 +46,10 @@ public class ArtifactClipboard {
 
       Artifact[] artifacts = artifactTransferData.toArray(new Artifact[artifactTransferData.size()]);
 
-      clipboard.setContents(new Object[] {new ArtifactData(artifacts, STATUS, viewId),
-            HTMLTransferFormatter.getHtml(artifacts), Collections.toString(textTransferData, null, ", ", null)},
-            new Transfer[] {ArtifactTransfer.getInstance(), HTMLTransfer.getInstance(), TextTransfer.getInstance()});
+      clipboard.setContents(
+         new Object[] {new ArtifactData(artifacts, STATUS, viewId), HTMLTransferFormatter.getHtml(artifacts),
+            Collections.toString(textTransferData, null, ", ", null)}, new Transfer[] {ArtifactTransfer.getInstance(),
+            HTMLTransfer.getInstance(), TextTransfer.getInstance()});
    }
 
    public void setTextToClipboard(Collection<String> textTransferData) {
@@ -60,7 +61,7 @@ public class ArtifactClipboard {
       }
 
       clipboard.setContents(new Object[] {Collections.toString(textTransferData, null, ", ", null)},
-            new Transfer[] {TextTransfer.getInstance()});
+         new Transfer[] {TextTransfer.getInstance()});
    }
 
    public boolean isEmpty() {

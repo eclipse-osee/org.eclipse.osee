@@ -33,11 +33,11 @@ import org.eclipse.osee.ote.define.AUTOGEN.OteAttributeTypes;
  * @author Roberto E. Escobar
  */
 public class TestRunOperator {
-   private static final OteArtifactFetcher<Artifact> TEST_RUN_ARTIFACT_FETCHER =
-         new OteArtifactFetcher<Artifact>(CoreArtifactTypes.TestRun);
+   private static final OteArtifactFetcher<Artifact> TEST_RUN_ARTIFACT_FETCHER = new OteArtifactFetcher<Artifact>(
+      CoreArtifactTypes.TestRun);
 
-   private static final OteArtifactFetcher<Artifact> TEST_SCRIPT_ARTIFACT_FETCHER =
-         new OteArtifactFetcher<Artifact>(CoreArtifactTypes.TestCase);
+   private static final OteArtifactFetcher<Artifact> TEST_SCRIPT_ARTIFACT_FETCHER = new OteArtifactFetcher<Artifact>(
+      CoreArtifactTypes.TestCase);
 
    private final Artifact artifact;
 
@@ -57,7 +57,7 @@ public class TestRunOperator {
       try {
          if (!artifact.isOfType(CoreArtifactTypes.TestRun)) {
             throw new OseeArgumentException(String.format("Unable to operate on type [%s]. Only [%s] allowed.",
-                  artifact.getArtifactTypeName(), CoreArtifactTypes.TestRun));
+               artifact.getArtifactTypeName(), CoreArtifactTypes.TestRun));
          }
       } catch (OseeCoreException e) {
          // TODO Auto-generated catch block
@@ -166,8 +166,8 @@ public class TestRunOperator {
       Artifact fetched = null;
       try {
          fetched =
-               getTestRunFetcher().searchForUniqueArtifactMatching(OteAttributeTypes.CHECKSUM.getName(), getChecksum(),
-                     artifact.getBranch());
+            getTestRunFetcher().searchForUniqueArtifactMatching(OteAttributeTypes.CHECKSUM.getName(), getChecksum(),
+               artifact.getBranch());
       } catch (Exception ex) {
       }
       return fetched == null;
@@ -183,7 +183,7 @@ public class TestRunOperator {
 
    public void createTestScriptSoftLink() throws OseeCoreException {
       Artifact testScript =
-            getTestScriptFetcher().searchForUniqueArtifactMatching("Name", artifact.getName(), artifact.getBranch());
+         getTestScriptFetcher().searchForUniqueArtifactMatching("Name", artifact.getName(), artifact.getBranch());
       if (testScript != null) {
          artifact.setSoleAttributeValue(OteAttributeTypes.TEST_SCRIPT_GUID.getName(), testScript.getGuid());
       }

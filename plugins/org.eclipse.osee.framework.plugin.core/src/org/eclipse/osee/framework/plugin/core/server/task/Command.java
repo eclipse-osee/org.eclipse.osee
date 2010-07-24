@@ -37,7 +37,7 @@ public abstract class Command {
    private void writeParameter(ObjectOutputStream toServer, Object parameter) throws IOException {
       if (parameter instanceof Boolean) {
          toServer.writeByte((byte) Parameter.BOOLEAN.ordinal());
-         toServer.writeByte(((Boolean) parameter) ? 1 : 0);
+         toServer.writeByte((Boolean) parameter ? 1 : 0);
       }
       if (parameter instanceof Byte) {
          toServer.writeByte((byte) Parameter.BYTE.ordinal());
@@ -71,12 +71,10 @@ public abstract class Command {
          toServer.writeByte((byte) Parameter.STRING.ordinal());
          toServer.writeUTF((String) parameter);
       }
-      /*      if (parameter.getClass().isArray()) {
-               for (Object obj : parameter)  {
-                  toServer.writeShort(Array.getLength(obj));  // write array length
-                  writeParameter(toServer, obj);
-               }
-            }*/
+      /*
+       * if (parameter.getClass().isArray()) { for (Object obj : parameter) { toServer.writeShort(Array.getLength(obj));
+       * // write array length writeParameter(toServer, obj); } }
+       */
    }
 
    public abstract Object invoke(Object... parameters) throws Exception;

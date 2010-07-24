@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor.widget;
 
+import java.util.logging.Level;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact.TransitionOption;
@@ -79,7 +80,7 @@ public class TaskInfoXWidget extends XLabelValueBase {
             IMessageManager messageManager = managedForm.getMessageManager();
             if (messageManager != null) {
                messageManager.addMessage("validation.error", "State \"" + forStateName + "\" has uncompleted Tasks",
-                     null, IMessageProvider.ERROR, labelWidget);
+                  null, IMessageProvider.ERROR, labelWidget);
             }
          } else {
             if (Widgets.isAccessible(managedForm.getForm())) {
@@ -87,7 +88,7 @@ public class TaskInfoXWidget extends XLabelValueBase {
             }
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
    }
 
@@ -100,20 +101,20 @@ public class TaskInfoXWidget extends XLabelValueBase {
                public void handleEvent(Event event) {
                   if (event.button == 3) {
                      if (!MessageDialog.openConfirm(Displays.getActiveShell(), "Auto Complete Tasks",
-                           "ATS Admin\n\nAuto Complete Tasks?")) {
+                        "ATS Admin\n\nAuto Complete Tasks?")) {
                         return;
                      }
                      try {
                         SkynetTransaction transaction =
-                              new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Auto Complete Tasks");
+                           new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Auto Complete Tasks");
                         for (TaskArtifact taskArt : taskableArt.getTaskArtifacts(forStateName)) {
                            if (!taskArt.isCancelledOrCompleted()) {
                               if (taskArt.getStateMgr().isUnAssigned()) {
                                  taskArt.getStateMgr().setAssignee(UserManager.getUser());
                               }
                               Result result =
-                                    taskArt.transitionToCompleted("", transaction,
-                                          TransitionOption.OverrideTransitionValidityCheck, TransitionOption.Persist);
+                                 taskArt.transitionToCompleted("", transaction,
+                                    TransitionOption.OverrideTransitionValidityCheck, TransitionOption.Persist);
                               if (result.isFalse()) {
                                  result.popup();
                                  return;

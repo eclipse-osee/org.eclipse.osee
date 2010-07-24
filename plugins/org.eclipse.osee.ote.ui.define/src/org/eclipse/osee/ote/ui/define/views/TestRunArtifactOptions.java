@@ -26,12 +26,14 @@ public class TestRunArtifactOptions implements IPropertyStoreBasedControl {
 
    private GrayableBranchSelectionComposite panel;
 
+   @Override
    public Control createControl(Composite parent) {
       this.panel = new GrayableBranchSelectionComposite(parent, SWT.NONE);
       this.panel.setFeatureEnabled(true);
       return this.panel;
    }
 
+   @Override
    public void load(IPropertyStore propertyStore) {
       boolean widgetEnabled = propertyStore.getBoolean(TestRunStorageKey.STORAGE_ENABLED);
       String lastBranchSelected = propertyStore.get(TestRunStorageKey.SELECTED_BRANCH_ID);
@@ -40,6 +42,7 @@ public class TestRunArtifactOptions implements IPropertyStoreBasedControl {
       this.panel.restoreWidgetValues(widgetEnabled, branchIds, lastBranchSelected);
    }
 
+   @Override
    public void save(IPropertyStore propertyStore) {
       propertyStore.put(TestRunStorageKey.STORAGE_ENABLED, this.panel.isBranchSelectEnabled());
       propertyStore.put(TestRunStorageKey.BRANCH_IDS, this.panel.getBranchIds());
@@ -70,6 +73,7 @@ public class TestRunArtifactOptions implements IPropertyStoreBasedControl {
       return builder.toString();
    }
 
+   @Override
    public int getPriority() {
       return 2;
    }

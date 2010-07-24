@@ -42,8 +42,8 @@ public class SMAPrintTest {
       IArtifactType DemoCodeTeamWorkflow = new ArtifactType("ABRNqDKnpGEKAyUm49gA", "Demo Code Team Workflow", false);
 
       TeamWorkFlowArtifact teamArt =
-            (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromTypeAndName(DemoCodeTeamWorkflow,
-                  "SAW (uncommitted) More Reqt Changes for Diagram View", AtsUtil.getAtsBranch());
+         (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromTypeAndName(DemoCodeTeamWorkflow,
+            "SAW (uncommitted) More Reqt Changes for Diagram View", AtsUtil.getAtsBranch());
       Assert.assertNotNull(teamArt);
 
       SMAPrint smaPrint = new SMAPrint(teamArt);
@@ -73,8 +73,8 @@ public class SMAPrintTest {
       Assert.assertTrue(resultData.getReport("report").getManipulatedHtml().length() > 2700);
 
       teamArt =
-            (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.TeamWorkflow,
-                  "Button S doesn't work on help", AtsUtil.getAtsBranch());
+         (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.TeamWorkflow,
+            "Button S doesn't work on help", AtsUtil.getAtsBranch());
       Assert.assertNotNull(teamArt);
       DecisionReviewArtifact decArt = (DecisionReviewArtifact) ReviewManager.getReviews(teamArt).iterator().next();
       smaPrint = new SMAPrint(decArt);

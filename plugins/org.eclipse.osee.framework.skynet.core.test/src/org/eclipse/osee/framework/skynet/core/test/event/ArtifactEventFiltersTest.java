@@ -115,7 +115,7 @@ public class ArtifactEventFiltersTest {
       testArtifactEvent.setBranchGuid(branchGuid);
       testArtifactEvent.setNetworkSender(getDummyRemoteNetworkSender());
       testArtifactEvent.getArtifacts().add(
-            new EventBasicGuidArtifact(EventModType.Added, branchGuid, artifactTypeGuid, GUID.create()));
+         new EventBasicGuidArtifact(EventModType.Added, branchGuid, artifactTypeGuid, GUID.create()));
 
       // Reset event filters only allow events from this branch
       eventFilters = new ArrayList<IEventFilter>();
@@ -190,7 +190,7 @@ public class ArtifactEventFiltersTest {
    }
 
    // artifact listener create for use by all tests to just capture result eventArtifacts for query
-   private ArtifactEventListener artifactEventListener = new ArtifactEventListener();
+   private final ArtifactEventListener artifactEventListener = new ArtifactEventListener();
 
    public void clearEventCollections() {
       resultArtifactEvent = null;

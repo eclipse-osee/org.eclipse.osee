@@ -71,14 +71,14 @@ public class ExtensionPoints {
          IExtension extension = Platform.getExtensionRegistry().getExtension(entensionPointUniqueId);
          if (extension == null) {
             OseeLog.log(PluginCoreActivator.class, Level.SEVERE,
-                  "Unable to locate extension [" + entensionPointUniqueId + "]");
+               "Unable to locate extension [" + entensionPointUniqueId + "]");
          } else {
             String thisPointId = extension.getExtensionPointUniqueIdentifier();
             if (extensionPointId.equals(thisPointId)) {
                extensions.add(extension);
             } else {
                OseeLog.log(PluginCoreActivator.class, Level.SEVERE,
-                     "Unknown extension id [" + thisPointId + "] from extension [" + entensionPointUniqueId + "]");
+                  "Unknown extension id [" + thisPointId + "] from extension [" + entensionPointUniqueId + "]");
             }
          }
       }
@@ -104,11 +104,11 @@ public class ExtensionPoints {
 
       if (elements.isEmpty()) {
          throw new IllegalArgumentException(
-               "no elements named " + elementName + " for " + extensionPointId + " where found.");
+            "no elements named " + elementName + " for " + extensionPointId + " where found.");
       }
       if (elements.size() > 1) {
          throw new IllegalArgumentException(
-               elements.size() + " elements named " + elementName + " for " + extensionPointId + " where found.  Expected exactly one.");
+            elements.size() + " elements named " + elementName + " for " + extensionPointId + " where found.  Expected exactly one.");
       }
       return elements.get(0);
    }

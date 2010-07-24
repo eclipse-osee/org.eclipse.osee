@@ -43,7 +43,7 @@ public class FavoriteAction extends Action {
       try {
          if (getSelectedFavoritableArts().size() == 1) {
             title =
-                  getSelectedFavoritableArts().iterator().next().amIFavorite() ? "Remove Favorite" : "Add as Favorite";
+               getSelectedFavoritableArts().iterator().next().amIFavorite() ? "Remove Favorite" : "Add as Favorite";
          } else {
             title = "Toggle Favorites";
          }

@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -40,10 +39,10 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  */
 public class PurgeArchivedBranch extends AbstractBlam {
    private static final String SELECT_ARCHIVED_BRANCHES =
-         "select * from osee_branch where associated_art_id = ? and archived = ? and branch_state IN (?, ?)";
+      "select * from osee_branch where associated_art_id = ? and archived = ? and branch_state IN (?, ?)";
 
    private static final String SELECT_UNUSUAL_ARCHIVED_BRANCHES =
-         "select * from osee_branch where associated_art_id = ? and archived = ? and branch_state NOT IN (?,?,?)";
+      "select * from osee_branch where associated_art_id = ? and archived = ? and branch_state NOT IN (?,?,?)";
 
    private static int systemUserArtId;
    private static boolean purgeBranches = false;
@@ -57,6 +56,7 @@ public class PurgeArchivedBranch extends AbstractBlam {
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       purgeBranches = variableMap.getBoolean("Purge Branches");
       Displays.ensureInDisplayThread(new Runnable() {
+         @Override
          public void run() {
             try {
                List<BranchInfo> branches = new ArrayList<BranchInfo>();
@@ -68,10 +68,10 @@ public class PurgeArchivedBranch extends AbstractBlam {
                }
                unusualBranches = checkUnusualArchivedBranches();
                displayReport(unusualBranches, "Unusual Archived Branches",
-                     "List of archived branches with unusual branch states: ");
+                  "List of archived branches with unusual branch states: ");
                displayReport(branches, "Archived Branches", "List of archived branches to be purged: ");
             } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE, ex);
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
          }
       });
@@ -82,11 +82,11 @@ public class PurgeArchivedBranch extends AbstractBlam {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(SELECT_ARCHIVED_BRANCHES, systemUserArtId, BranchArchivedState.ARCHIVED.getValue(),
-               BranchState.REBASELINED.getValue(), BranchState.DELETED.getValue());
+            BranchState.REBASELINED.getValue(), BranchState.DELETED.getValue());
          while (chStmt.next()) {
             BranchInfo purgedBranch =
-                  new BranchInfo(chStmt.getString("branch_name"), chStmt.getInt("branch_id"),
-                        chStmt.getInt("archived"), BranchState.getBranchState(chStmt.getInt("branch_state")).name());
+               new BranchInfo(chStmt.getString("branch_name"), chStmt.getInt("branch_id"), chStmt.getInt("archived"),
+                  BranchState.getBranchState(chStmt.getInt("branch_state")).name());
             branches.add(purgedBranch);
          }
       } finally {
@@ -97,7 +97,7 @@ public class PurgeArchivedBranch extends AbstractBlam {
 
    private void confirmPurgeArchivedBranch(List<BranchInfo> branches) throws OseeCoreException {
       if (MessageDialog.openConfirm(Displays.getActiveShell(), "Purge Confirmation",
-            "Do you wish to purge the archived branches: " + "?")) {
+         "Do you wish to purge the archived branches: " + "?")) {
          //only delete archived branches that are not changed managed, rebaselined and deleted 
          for (BranchInfo purgeBranch : branches) {
             try {
@@ -115,12 +115,12 @@ public class PurgeArchivedBranch extends AbstractBlam {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(SELECT_UNUSUAL_ARCHIVED_BRANCHES, systemUserArtId,
-               BranchArchivedState.ARCHIVED.getValue(), BranchState.COMMITTED.getValue(),
-               BranchState.REBASELINED.getValue(), BranchState.DELETED.getValue());
+            BranchArchivedState.ARCHIVED.getValue(), BranchState.COMMITTED.getValue(),
+            BranchState.REBASELINED.getValue(), BranchState.DELETED.getValue());
          while (chStmt.next()) {
             BranchInfo unusualBranch =
-                  new BranchInfo(chStmt.getString("branch_name"), chStmt.getInt("branch_id"),
-                        chStmt.getInt("archived"), BranchState.getBranchState(chStmt.getInt("branch_state")).name());
+               new BranchInfo(chStmt.getString("branch_name"), chStmt.getInt("branch_id"), chStmt.getInt("archived"),
+                  BranchState.getBranchState(chStmt.getInt("branch_state")).name());
             branches.add(unusualBranch);
          }
       } finally {
@@ -139,7 +139,7 @@ public class PurgeArchivedBranch extends AbstractBlam {
             rd.addRaw(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
             for (BranchInfo purgedBranch : branches) {
                rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {purgedBranch.getName(), purgedBranch.getId(),
-                     purgedBranch.getArchived(), purgedBranch.getState()}));
+                  purgedBranch.getArchived(), purgedBranch.getState()}));
             }
             rd.addRaw(AHTML.endMultiColumnTable());
 

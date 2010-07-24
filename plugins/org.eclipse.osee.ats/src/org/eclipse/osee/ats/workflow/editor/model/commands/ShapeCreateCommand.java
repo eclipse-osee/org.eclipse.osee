@@ -54,7 +54,9 @@ public class ShapeCreateCommand extends Command {
    @Override
    public boolean canExecute() {
       boolean create = newShape != null && parent != null && bounds != null;
-      if (!create) return false;
+      if (!create) {
+         return false;
+      }
       if (parent.hasChild(newShape)) {
          return false;
       }
@@ -65,7 +67,9 @@ public class ShapeCreateCommand extends Command {
    public void execute() {
       newShape.setLocation(bounds.getLocation());
       Dimension size = bounds.getSize();
-      if (size.width > 0 && size.height > 0) newShape.setSize(size);
+      if (size.width > 0 && size.height > 0) {
+         newShape.setSize(size);
+      }
       redo();
    }
 

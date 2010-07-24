@@ -95,7 +95,7 @@ public class LoadAIsAndTeamsAction {
 
    private void run() throws OseeCoreException {
       if (prompt && !MessageDialog.openQuestion(Displays.getActiveShell(), "Import ATS Config?",
-            "Importing ATS Config from ActionableItems.vue.\n\nAre you sure?")) {
+         "Importing ATS Config from ActionableItems.vue.\n\nAre you sure?")) {
          return;
       }
 
@@ -108,7 +108,7 @@ public class LoadAIsAndTeamsAction {
    private Map<String, String> loadResources() {
       Map<String, String> resources = new HashMap<String, String>();
       IExtensionPoint point =
-            Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.ats.AtsAIandTeamConfig");
+         Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.ats.AtsAIandTeamConfig");
       if (point == null) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't access AtsAIandTeamConfig extension point");
          return resources;
@@ -211,7 +211,7 @@ public class LoadAIsAndTeamsAction {
                   members.add(u);
                } else {
                   throw new OseeArgumentException(
-                        "Unhandled AtsConfig Line\"" + line + "\" in diagram page \"" + page.getName() + "\"");
+                     "Unhandled AtsConfig Line\"" + line + "\" in diagram page \"" + page.getName() + "\"");
                }
             }
          }
@@ -225,23 +225,23 @@ public class LoadAIsAndTeamsAction {
                   actionableItems.add(actItem);
                } else {
                   throw new OseeArgumentException(
-                        "Can't retrieve Actionable Item \"" + childPage.getName() + "\" with id " + childPage.getId());
+                     "Can't retrieve Actionable Item \"" + childPage.getName() + "\" with id " + childPage.getId());
                }
             }
          }
 
          if (getOrCreate) {
             teamDefArt =
-                  (TeamDefinitionArtifact) OseeSystemArtifacts.getOrCreateArtifact(AtsArtifactTypes.TeamDefinition,
-                        page.getName(), AtsUtil.getAtsBranch());
+               (TeamDefinitionArtifact) OseeSystemArtifacts.getOrCreateArtifact(AtsArtifactTypes.TeamDefinition,
+                  page.getName(), AtsUtil.getAtsBranch());
          } else {
             teamDefArt =
-                  (TeamDefinitionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.TeamDefinition,
-                        AtsUtil.getAtsBranch(), page.getName());
+               (TeamDefinitionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.TeamDefinition,
+                  AtsUtil.getAtsBranch(), page.getName());
          }
          if (!teamDefArt.isInDb()) {
             teamDefArt.initialize(fullName, desc, leads, members, actionableItems,
-                  teamDefinitionOptions.toArray(new TeamDefinitionOptions[teamDefinitionOptions.size()]));
+               teamDefinitionOptions.toArray(new TeamDefinitionOptions[teamDefinitionOptions.size()]));
             if (parent == null) {
                // Relate to team heading
                parent = AtsFolderUtil.getFolder(AtsFolder.Teams);
@@ -260,8 +260,8 @@ public class LoadAIsAndTeamsAction {
          if (!workflowId.equals("")) {
             try {
                Artifact workflowArt =
-                     ArtifactQuery.getArtifactFromTypeAndName(WorkFlowDefinition.ARTIFACT_NAME, workflowId,
-                           AtsUtil.getAtsBranch());
+                  ArtifactQuery.getArtifactFromTypeAndName(WorkFlowDefinition.ARTIFACT_NAME, workflowId,
+                     AtsUtil.getAtsBranch());
                if (workflowArt != null) {
                   teamDefArt.addRelation(CoreRelationTypes.WorkItem__Child, workflowArt);
                } else {
@@ -305,13 +305,13 @@ public class LoadAIsAndTeamsAction {
       } else {
          if (getOrCreate) {
             aia =
-                  (ActionableItemArtifact) ArtifactQuery.checkArtifactFromTypeAndName(AtsArtifactTypes.ActionableItem,
-                        page.getName(), AtsUtil.getAtsBranch());
+               (ActionableItemArtifact) ArtifactQuery.checkArtifactFromTypeAndName(AtsArtifactTypes.ActionableItem,
+                  page.getName(), AtsUtil.getAtsBranch());
          }
          if (aia == null) {
             aia =
-                  (ActionableItemArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.ActionableItem,
-                        AtsUtil.getAtsBranch());
+               (ActionableItemArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.ActionableItem,
+                  AtsUtil.getAtsBranch());
             aia.setName(page.getName());
             for (String staticId : staticIds) {
                StaticIdManager.setSingletonAttributeValue(aia, staticId);

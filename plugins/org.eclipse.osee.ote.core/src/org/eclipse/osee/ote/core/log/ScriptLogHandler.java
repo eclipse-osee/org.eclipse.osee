@@ -19,12 +19,10 @@ import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
-
 import org.apache.xml.serialize.OutputFormat;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -85,9 +83,11 @@ public class ScriptLogHandler extends Handler {
       format.setIndenting(true);
       format.setIndent(3);
 
-//      Jaxp.setXslProperty(document, getXSLTransformName());
-      
-      ProcessingInstruction processingInstruction = document.createProcessingInstruction("xml-stylesheet", "type=\"text/xsl\" href=\"" + getXSLTransformName() + "\"");
+      //      Jaxp.setXslProperty(document, getXSLTransformName());
+
+      ProcessingInstruction processingInstruction =
+         document.createProcessingInstruction("xml-stylesheet",
+            "type=\"text/xsl\" href=\"" + getXSLTransformName() + "\"");
       document.appendChild(processingInstruction);
       records = new ArrayList<LogRecord>();
 
@@ -108,14 +108,14 @@ public class ScriptLogHandler extends Handler {
       try {
          if (testEnvironment.getTestScript() != null) {
             testScriptElement.insertBefore(document.createComment(testEnvironment.getTestScript().getOutfileComment()),
-                  testScriptElement.getFirstChild());
+               testScriptElement.getFirstChild());
          }
          Jaxp.writeXmlDocument(document, outFile, format);
       } catch (TransformerException ex) {
          OseeLog.log(TestEnvironment.class, Level.SEVERE, ex);
       } catch (IOException ex) {
          OseeLog.log(TestEnvironment.class, Level.SEVERE, ex);
-      } catch (Throwable th){
+      } catch (Throwable th) {
          OseeLog.log(TestEnvironment.class, Level.SEVERE, th);
       }
    }
@@ -154,14 +154,14 @@ public class ScriptLogHandler extends Handler {
                      parent = testScriptElement;
                   }
                } else {
-            	  parent.appendChild(child);
+                  parent.appendChild(child);
                   if (record instanceof TraceRecord) {// method began
-                      parent = child;
-                  } else if (record instanceof TraceRecordEnd){// method ended
-                	  if (parent.getParentNode() != null) {
-                         parent = (Element) parent.getParentNode();
-                      }
-                  } 
+                     parent = child;
+                  } else if (record instanceof TraceRecordEnd) {// method ended
+                     if (parent.getParentNode() != null) {
+                        parent = (Element) parent.getParentNode();
+                     }
+                  }
                }
             }
          } else {

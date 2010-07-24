@@ -26,10 +26,12 @@ public class StringEditPart extends AbstractGraphicalEditPart {
       this.data = data;
    }
 
+   @Override
    protected IFigure createFigure() {
       return new Label(data);
    }
 
+   @Override
    protected void createEditPolicies() {
    }
 }

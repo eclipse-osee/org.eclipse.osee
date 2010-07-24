@@ -27,10 +27,14 @@ public class VueNode {
    private String vueId;
    private final DiagramNode workPage;
    public static enum Shape {
-      ellipse, rectangle, hexagon;
+      ellipse,
+      rectangle,
+      hexagon;
       public static Shape getShape(String shape) {
          for (Shape s : Shape.values()) {
-            if (s.name().equals(shape)) return s;
+            if (s.name().equals(shape)) {
+               return s;
+            }
          }
          return null;
       }
@@ -59,28 +63,33 @@ public class VueNode {
       noteXml = noteXml.replaceAll("%sp;", " ");
       workPage.setInstructionStr(noteXml);
       getDetails();
-      if (getShape() == VueNode.Shape.ellipse)
+      if (getShape() == VueNode.Shape.ellipse) {
          workPage.setPageType(PageType.Team);
-      else if (getShape() == VueNode.Shape.rectangle) workPage.setPageType(PageType.ActionableItem);
+      } else if (getShape() == VueNode.Shape.rectangle) {
+         workPage.setPageType(PageType.ActionableItem);
+      }
    }
 
    public void getDetails() throws OseeCoreException {
       Matcher m = Pattern.compile("<child.*? label=\"(.*?)\" ").matcher(vueXml);
-      if (m.find())
+      if (m.find()) {
          workPage.setName(m.group(1));
-      else
+      } else {
          workPage.setName("Unknown");
+      }
 
       m = Pattern.compile("<shape xsi:type=\"(.*?)\"").matcher(vueXml);
-      if (m.find())
+      if (m.find()) {
          shape = Shape.getShape(m.group(1));
-      else
+      } else {
          throw new OseeArgumentException("Can't determine shape name");
+      }
       m = Pattern.compile("<child.*? ID=\"(.*?)\" ").matcher(vueXml);
-      if (m.find())
+      if (m.find()) {
          vueId = m.group(1);
-      else
+      } else {
          vueId = "Unknown";
+      }
    }
 
    /**

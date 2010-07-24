@@ -101,15 +101,15 @@ public enum OseeSql_0_9_1 {
       private static final String HINTS__THE_INDEX = "/*+ INDEX(txs OSEE_TXS_B_G_C_M_T_IDX) */";
 
       private static final String HINTS__ORDERED__INDEX__ARTIFACT_CONFLICT =
-            " /*+ ordered index(atr1) index(atr2) index(txs2) */";
+         " /*+ ordered index(atr1) index(atr2) index(txs2) */";
       private static final String HINTS__ORDERED__INDEX__ATTRIBUTE_CONFLICT =
-            " /*+ ordered index(atr1) index(atr2) index(txs2) */";
+         " /*+ ordered index(atr1) index(atr2) index(txs2) */";
 
       private static final String SELECT_CURRENT_ATTRIBUTES_PREFIX =
-            "SELECT%s att1.art_id, att1.attr_id, att1.value, att1.gamma_id, att1.attr_type_id, att1.uri, al1.branch_id, txs1.mod_type FROM osee_join_artifact al1, osee_attribute att1, osee_txs txs1 WHERE al1.query_id = ? AND al1.art_id = att1.art_id AND att1.gamma_id = txs1.gamma_id AND txs1.branch_id = al1.branch_id AND txs1.tx_current ";
+         "SELECT%s att1.art_id, att1.attr_id, att1.value, att1.gamma_id, att1.attr_type_id, att1.uri, al1.branch_id, txs1.mod_type FROM osee_join_artifact al1, osee_attribute att1, osee_txs txs1 WHERE al1.query_id = ? AND al1.art_id = att1.art_id AND att1.gamma_id = txs1.gamma_id AND txs1.branch_id = al1.branch_id AND txs1.tx_current ";
 
       private static final String SELECT_CURRENT_ARTIFACTS_PREFIX =
-            "SELECT%s aj.art_id, txs.gamma_id, mod_type, txd.*, art_type_id, guid, human_readable_id FROM osee_join_artifact aj, osee_artifact art, osee_artifact_version arv, osee_txs txs, osee_tx_details txd WHERE aj.query_id = ? AND aj.art_id = art.art_id AND art.art_id = arv.art_id AND arv.gamma_id = txs.gamma_id AND txs.branch_id = aj.branch_id AND txs.transaction_id = txd.transaction_id AND txs.tx_current ";
+         "SELECT%s aj.art_id, txs.gamma_id, mod_type, txd.*, art_type_id, guid, human_readable_id FROM osee_join_artifact aj, osee_artifact art, osee_artifact_version arv, osee_txs txs, osee_tx_details txd WHERE aj.query_id = ? AND aj.art_id = art.art_id AND art.art_id = arv.art_id AND arv.gamma_id = txs.gamma_id AND txs.branch_id = aj.branch_id AND txs.transaction_id = txd.transaction_id AND txs.tx_current ";
 
    }
 }

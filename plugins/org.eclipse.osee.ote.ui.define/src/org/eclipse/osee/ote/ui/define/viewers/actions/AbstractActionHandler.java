@@ -46,6 +46,7 @@ public abstract class AbstractActionHandler extends Action implements ISelection
 
    public abstract void updateState() throws Exception;
 
+   @Override
    public void selectionChanged(SelectionChangedEvent event) {
       try {
          updateState();

@@ -25,7 +25,7 @@ public class ScriptInitRecord extends TestRecord {
     * 
     */
    private static final long serialVersionUID = -8573603873316659237L;
-   private boolean startFlag;
+   private final boolean startFlag;
 
    /**
     * ScriptInitRecord Constructor. Constructs test script configuration log message with timestamp.
@@ -57,13 +57,14 @@ public class ScriptInitRecord extends TestRecord {
       return startFlag;
    }
 
+   @Override
    public Element toXml(Document doc) {
       //This element is not added to the output xml.
       //It is here because ScriptLogHandler creates an
       //element out of the record and adds it to the xml.
       //We don't add it, but it was necessary to create the
       //element so that we could test for ScriptInitRecord.
-      return (doc.createElement("ScriptInit"));
+      return doc.createElement("ScriptInit");
    }
 
 }

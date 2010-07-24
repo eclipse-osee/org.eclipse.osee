@@ -17,8 +17,9 @@ public class Enums {
 
    public static String getCommaDeliminatedString(Enum<?>[] enums) {
       StringBuffer sb = new StringBuffer();
-      for (Enum<?> e : enums)
+      for (Enum<?> e : enums) {
          sb.append(e.name() + ",");
+      }
       return sb.toString().replaceFirst(",$", "");
    }
 }

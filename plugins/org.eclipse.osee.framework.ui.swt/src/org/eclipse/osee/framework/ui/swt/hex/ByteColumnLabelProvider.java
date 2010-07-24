@@ -35,14 +35,17 @@ public class ByteColumnLabelProvider extends ColumnLabelProvider {
       return null;
    }
 
+   @Override
    public Point getToolTipShift(Object object) {
       return new Point(12, 12);
    }
 
+   @Override
    public int getToolTipDisplayDelayTime(Object object) {
       return 125;
    }
 
+   @Override
    public int getToolTipTimeDisplayed(Object object) {
       return 5000;
    }

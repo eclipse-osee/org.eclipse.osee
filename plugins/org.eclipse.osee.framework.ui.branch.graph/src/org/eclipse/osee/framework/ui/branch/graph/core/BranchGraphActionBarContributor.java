@@ -61,19 +61,18 @@ public class BranchGraphActionBarContributor extends ActionBarContributor {
       toolBarManager.add(new Separator());
 
       toggleFilterConnectionAction =
-            new ToggleFilterConnectionAction[] {
-                  new ToggleFilterConnectionAction("None", ConnectionFilter.NO_FILTER),
-                  new ToggleFilterConnectionAction("Filter All Connections", ConnectionFilter.FILTER_ALL_CONNECTIONS),
-                  new ToggleFilterConnectionAction("Filter Branch Hierarchy Connections",
-                        ConnectionFilter.FILTER_CHILD_BRANCH_CONNECTIONS),
-                  new ToggleFilterConnectionAction("Filter Merge Connections",
-                        ConnectionFilter.FILTER_MERGE_CONNECTIONS)};
+         new ToggleFilterConnectionAction[] {
+            new ToggleFilterConnectionAction("None", ConnectionFilter.NO_FILTER),
+            new ToggleFilterConnectionAction("Filter All Connections", ConnectionFilter.FILTER_ALL_CONNECTIONS),
+            new ToggleFilterConnectionAction("Filter Branch Hierarchy Connections",
+               ConnectionFilter.FILTER_CHILD_BRANCH_CONNECTIONS),
+            new ToggleFilterConnectionAction("Filter Merge Connections", ConnectionFilter.FILTER_MERGE_CONNECTIONS)};
 
       toolBarManager.add(new FilterConnectionAction());
 
       toggleTxFilterAction =
-            new ToggleTxFilterAction[] {new ToggleTxFilterAction("Show All", TxFilter.NO_FILTER),
-                  new ToggleTxFilterAction("Hide All", TxFilter.HIDE_ALL)};
+         new ToggleTxFilterAction[] {new ToggleTxFilterAction("Show All", TxFilter.NO_FILTER),
+            new ToggleTxFilterAction("Hide All", TxFilter.HIDE_ALL)};
       toolBarManager.add(new FilterTxAction());
    }
 
@@ -127,6 +126,7 @@ public class BranchGraphActionBarContributor extends ActionBarContributor {
          setMenuCreator(this);
       }
 
+      @Override
       public void dispose() {
          if (menu != null) {
             menu.dispose();
@@ -134,6 +134,7 @@ public class BranchGraphActionBarContributor extends ActionBarContributor {
          }
       }
 
+      @Override
       public Menu getMenu(Control parent) {
          if (menu != null) {
             menu.dispose();
@@ -145,6 +146,7 @@ public class BranchGraphActionBarContributor extends ActionBarContributor {
          return menu;
       }
 
+      @Override
       public Menu getMenu(Menu parent) {
          return null;
       }
@@ -166,6 +168,7 @@ public class BranchGraphActionBarContributor extends ActionBarContributor {
          setMenuCreator(this);
       }
 
+      @Override
       public void dispose() {
          if (menu != null) {
             menu.dispose();
@@ -173,6 +176,7 @@ public class BranchGraphActionBarContributor extends ActionBarContributor {
          }
       }
 
+      @Override
       public Menu getMenu(Control parent) {
          if (menu != null) {
             menu.dispose();
@@ -184,6 +188,7 @@ public class BranchGraphActionBarContributor extends ActionBarContributor {
          return menu;
       }
 
+      @Override
       public Menu getMenu(Menu parent) {
          return null;
       }

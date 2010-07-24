@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.swt;
 
 import java.util.regex.Pattern;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
@@ -68,6 +67,7 @@ public final class Widgets {
          }
       }
 
+      @Override
       public void verifyText(VerifyEvent e) {
          String text = txt.getText();
          str.replace(0, text.length(), text);
@@ -85,11 +85,13 @@ public final class Widgets {
          }
       }
 
+      @Override
       public void focusGained(FocusEvent e) {
          currentTxt = txt.getText();
          txt.selectAll();
       }
 
+      @Override
       public void focusLost(FocusEvent e) {
          try {
             long value = Long.parseLong(txt.getText());
@@ -109,6 +111,7 @@ public final class Widgets {
          }
       }
 
+      @Override
       public void keyTraversed(TraverseEvent e) {
          switch (e.detail) {
             case SWT.TRAVERSE_ESCAPE:
@@ -153,6 +156,7 @@ public final class Widgets {
          }
       }
 
+      @Override
       public void verifyText(VerifyEvent e) {
          String text = txt.getText();
          str.replace(0, text.length(), text);
@@ -170,11 +174,13 @@ public final class Widgets {
          }
       }
 
+      @Override
       public void focusGained(FocusEvent e) {
          currentTxt = txt.getText();
          txt.selectAll();
       }
 
+      @Override
       public void focusLost(FocusEvent e) {
          try {
             double value = Double.parseDouble(txt.getText());
@@ -194,6 +200,7 @@ public final class Widgets {
 
       public abstract void applyValue(double value);
 
+      @Override
       public void keyTraversed(TraverseEvent e) {
          switch (e.detail) {
             case SWT.TRAVERSE_ESCAPE:
@@ -442,6 +449,7 @@ public final class Widgets {
       txtBox.setTextLimit(limit);
       txtBox.setText(defaultTxt);
       txtBox.addVerifyListener(new VerifyListener() {
+         @Override
          public void verifyText(final VerifyEvent e) {
             final StringBuilder str = new StringBuilder(txtBox.getText());
             if (e.start == e.end) {
@@ -463,6 +471,7 @@ public final class Widgets {
       txtBox.setTextLimit(limit);
       txtBox.setText(defaultTxt);
       txtBox.addVerifyListener(new VerifyListener() {
+         @Override
          public void verifyText(final VerifyEvent e) {
             final StringBuilder str = new StringBuilder(txtBox.getText());
             if (e.start == e.end) {
@@ -540,18 +549,18 @@ public final class Widgets {
    }
 
    public static RowLayout setRowLayout(final Composite item, final int style, final boolean wrap, final boolean pack, boolean fill) {
-	   final RowLayout layout = setRowLayout(item, style, wrap, pack);
-	   layout.fill = fill;
-	   layout.center = true;
-	   return layout;
-	}
-   
-   public static FillLayout setFillLayout(Composite item, int style) {
-	   FillLayout layout = new FillLayout(style);
-	   item.setLayout(layout);
-	   return layout;
+      final RowLayout layout = setRowLayout(item, style, wrap, pack);
+      layout.fill = fill;
+      layout.center = true;
+      return layout;
    }
-   
+
+   public static FillLayout setFillLayout(Composite item, int style) {
+      FillLayout layout = new FillLayout(style);
+      item.setLayout(layout);
+      return layout;
+   }
+
    public static void setGridLayout(Composite item, int numColumns, int columnSpacing, boolean equal, int hpad) {
       final GridLayout layout = new GridLayout();
       layout.numColumns = numColumns;
@@ -574,21 +583,21 @@ public final class Widgets {
       item.setLayout(layout);
       return layout;
    }
-   
+
    public static GridLayout setGridLayout(Composite item, int numColumns, int columnSpacing, int verticalSpacing, boolean equal, int hpad, int vpad) {
-	      final GridLayout layout = new GridLayout();
-	      layout.numColumns = numColumns;
-	      layout.horizontalSpacing = columnSpacing;
-	      layout.makeColumnsEqualWidth = equal;
-	      layout.marginLeft = hpad;
-	      layout.marginRight = hpad;
-	      layout.marginTop = vpad;
-	      layout.marginBottom = vpad;
-	      layout.verticalSpacing = verticalSpacing;
-	      layout.marginHeight = 0;
-	      item.setLayout(layout);
-	      return layout;
-	   }
+      final GridLayout layout = new GridLayout();
+      layout.numColumns = numColumns;
+      layout.horizontalSpacing = columnSpacing;
+      layout.makeColumnsEqualWidth = equal;
+      layout.marginLeft = hpad;
+      layout.marginRight = hpad;
+      layout.marginTop = vpad;
+      layout.marginBottom = vpad;
+      layout.verticalSpacing = verticalSpacing;
+      layout.marginHeight = 0;
+      item.setLayout(layout);
+      return layout;
+   }
 
    public static Combo createCombo(int style, Object[] list) {
       final Combo cbx = new Combo(targetContainer, style);
@@ -620,15 +629,17 @@ public final class Widgets {
          final Button rdo = new Button(grp, SWT.RADIO);
          rdo.setText(obj.toString());
          rdo.setData(obj);
-         rdo.setSelection((count == 0) ? true : false);
+         rdo.setSelection(count == 0 ? true : false);
          positionGridItem(rdo, false, SWT.BEGINNING, SWT.CENTER);
          rdo.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                if (rdo.getSelection()) {
                   grp.setData(rdo.getData());
                }
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
 
             }
@@ -649,9 +660,10 @@ public final class Widgets {
          btns[count] = rdo;
          rdo.setText(obj.toString());
          rdo.setData(obj);
-         rdo.setSelection((count == 0) ? true : false);
+         rdo.setSelection(count == 0 ? true : false);
          positionGridItem(rdo, false, SWT.BEGINNING, SWT.CENTER);
          rdo.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                if (rdo.getSelection()) {
                   grp.setData(rdo.getData());
@@ -659,6 +671,7 @@ public final class Widgets {
                }
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
 
             }
@@ -676,9 +689,10 @@ public final class Widgets {
       for (final Object item : items) {
          final Button rdo = new Button(grp, SWT.RADIO);
          rdo.setText(item.toString());
-         rdo.setSelection((count == 0) ? true : false);
+         rdo.setSelection(count == 0 ? true : false);
          positionGridItem(rdo, false, SWT.BEGINNING, SWT.CENTER);
          rdo.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                if (rdo.getSelection()) {
                   grp.setData(item);
@@ -700,9 +714,10 @@ public final class Widgets {
          final Button rdo = new Button(grp, SWT.RADIO);
          btns[count] = rdo;
          rdo.setText(obj.toString());
-         rdo.setSelection((count == 0) ? true : false);
+         rdo.setSelection(count == 0 ? true : false);
          positionGridItem(rdo, false, SWT.CENTER, SWT.CENTER);
          rdo.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                if (rdo.getSelection()) {
                   grp.setData(obj);
@@ -729,7 +744,7 @@ public final class Widgets {
 
    public static void attachToParent(final Control control, final int edge, final int percent, final int offset, int width, int height) {
       final Object ld = control.getLayoutData();
-      final FormData fd = (ld != null) ? (FormData) ld : new FormData();
+      final FormData fd = ld != null ? (FormData) ld : new FormData();
       switch (edge) {
          case SWT.LEFT:
             fd.left = new FormAttachment(percent, offset);
@@ -775,7 +790,7 @@ public final class Widgets {
     */
    public static void attachToControl(final Control control, final Control itemToAttachTo, final int edge, final int itemToAttachToEdge, final int offset, final int width, final int height) {
       final Object ld = control.getLayoutData();
-      final FormData fd = (ld != null) ? (FormData) ld : new FormData();
+      final FormData fd = ld != null ? (FormData) ld : new FormData();
       switch (edge) {
          case SWT.LEFT:
             fd.left = new FormAttachment(itemToAttachTo, offset, itemToAttachToEdge);
@@ -822,7 +837,9 @@ public final class Widgets {
     * @param widgets
     */
    public static <T extends Widget> void disposeWidgets(final T... widgets) {
-      if (widgets == null) return;
+      if (widgets == null) {
+         return;
+      }
       for (T widget : widgets) {
          if (widget != null && !widget.isDisposed()) {
             widget.dispose();

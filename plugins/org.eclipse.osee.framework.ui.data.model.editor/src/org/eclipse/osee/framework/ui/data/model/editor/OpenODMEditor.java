@@ -32,8 +32,8 @@ public class OpenODMEditor extends AbstractSelectionChangedHandler {
       IEditorPart editorPart = null;
       try {
          editorPart =
-               PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(new ODMEditorInput(),
-                     ODMEditor.EDITOR_ID);
+            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(new ODMEditorInput(),
+               ODMEditor.EDITOR_ID);
       } catch (Exception ex) {
          throw new ExecutionException("Error opening Branch Editor", ex);
       }

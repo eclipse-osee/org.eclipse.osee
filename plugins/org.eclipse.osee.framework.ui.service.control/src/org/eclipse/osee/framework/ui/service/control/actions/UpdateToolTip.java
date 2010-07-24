@@ -27,8 +27,8 @@ import org.eclipse.swt.widgets.TreeItem;
  */
 public class UpdateToolTip implements MouseTrackListener {
 
-   private IServiceManager<TreeParent> mainWindow;
-   private TreeViewer treeViewer;
+   private final IServiceManager<TreeParent> mainWindow;
+   private final TreeViewer treeViewer;
 
    public UpdateToolTip(IServiceManager<TreeParent> mainWindow) {
       super();
@@ -43,14 +43,17 @@ public class UpdateToolTip implements MouseTrackListener {
       return name + ": " + numberOfItems + (numberOfItems == 1 ? " service" : " services");
    }
 
+   @Override
    public void mouseEnter(MouseEvent e) {
       mainWindow.getServicesViewer().getViewer().getControl().setToolTipText("Displays JINI services");
    }
 
+   @Override
    public void mouseExit(MouseEvent e) {
       mainWindow.getServicesViewer().getViewer().getControl().setToolTipText("Displays JINI services");
    }
 
+   @Override
    public void mouseHover(MouseEvent e) {
       String toSet = "";
       Point point = new Point(e.x, e.y);
@@ -64,7 +67,7 @@ public class UpdateToolTip implements MouseTrackListener {
             ReggieMonitorServiceNode monitorNode = (ReggieMonitorServiceNode) elementData;
 
             toSet =
-                  "Right-Click and select Kill from pop-up menu \n" + "to terminate Lookup Server.\n" + "On: " + monitorNode.getSpawnedReggieOnHost() + "\n" + "Service Id: " + monitorNode.getSpawnedReggieServiceId();
+               "Right-Click and select Kill from pop-up menu \n" + "to terminate Lookup Server.\n" + "On: " + monitorNode.getSpawnedReggieOnHost() + "\n" + "Service Id: " + monitorNode.getSpawnedReggieServiceId();
             mainWindow.getServicesViewer().getViewer().getControl().setToolTipText(toSet);
          } else if (elementData instanceof ServiceNode) {
             ServiceNode serviceNode = (ServiceNode) elementData;

@@ -21,40 +21,36 @@ import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
-public class ChildSelectCheckedTreeSelectionDialog extends
-		CheckedTreeSelectionDialog {
+public class ChildSelectCheckedTreeSelectionDialog extends CheckedTreeSelectionDialog {
 
-	@Override
-	public Object[] getResult() {
-		Object[] objs =  super.getResult();
-		return objs;
-	}
+   @Override
+   public Object[] getResult() {
+      Object[] objs = super.getResult();
+      return objs;
+   }
 
+   private CheckboxTreeViewer viewer;
 
-	private CheckboxTreeViewer viewer;
-	/**
-	 * @param parent
-	 * @param labelProvider
-	 * @param contentProvider
-	 */
-	public ChildSelectCheckedTreeSelectionDialog(Shell parent,
-			ILabelProvider labelProvider, ITreeContentProvider contentProvider) {
-		super(parent, labelProvider, contentProvider);
-	}
+   /**
+    * @param parent
+    * @param labelProvider
+    * @param contentProvider
+    */
+   public ChildSelectCheckedTreeSelectionDialog(Shell parent, ILabelProvider labelProvider, ITreeContentProvider contentProvider) {
+      super(parent, labelProvider, contentProvider);
+   }
 
-	
-	@Override
-	protected CheckboxTreeViewer createTreeViewer(Composite parent) {
-		viewer =  super.createTreeViewer(parent);
-		viewer.addCheckStateListener(new ICheckStateListener(){
-			@Override
-			public void checkStateChanged(CheckStateChangedEvent event) {
-				viewer.expandToLevel(event.getElement(), 1);
-				viewer.setSubtreeChecked(event.getElement(), event.getChecked());
-			}
-		});
-		return viewer;
-	}
+   @Override
+   protected CheckboxTreeViewer createTreeViewer(Composite parent) {
+      viewer = super.createTreeViewer(parent);
+      viewer.addCheckStateListener(new ICheckStateListener() {
+         @Override
+         public void checkStateChanged(CheckStateChangedEvent event) {
+            viewer.expandToLevel(event.getElement(), 1);
+            viewer.setSubtreeChecked(event.getElement(), event.getChecked());
+         }
+      });
+      return viewer;
+   }
 }

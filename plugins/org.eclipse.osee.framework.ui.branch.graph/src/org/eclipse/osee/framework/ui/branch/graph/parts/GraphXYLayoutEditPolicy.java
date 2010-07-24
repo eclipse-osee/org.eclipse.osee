@@ -21,8 +21,9 @@ import org.eclipse.gef.requests.CreateRequest;
 public class GraphXYLayoutEditPolicy extends XYLayoutEditPolicy {
 
    /*
-    * @see org.eclipse.gef.editpolicies.ConstrainedLayoutTEditPolicy#createChangeConstraintCommand(org.eclipse.gef.EditPart,
-    *      java.lang.Object)
+    * @see
+    * org.eclipse.gef.editpolicies.ConstrainedLayoutTEditPolicy#createChangeConstraintCommand(org.eclipse.gef.EditPart,
+    * java.lang.Object)
     */
    @Override
    protected Command createChangeConstraintCommand(EditPart child, Object constraint) {

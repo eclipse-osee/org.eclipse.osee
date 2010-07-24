@@ -29,8 +29,8 @@ import org.eclipse.ui.progress.UIJob;
  * @author Roberto E. Escobar
  */
 final class TestBatchSetupItem extends XNavigateItem implements Runnable {
-   private URI testBatchFile;
-   private String jobName;
+   private final URI testBatchFile;
+   private final String jobName;
 
    public TestBatchSetupItem(XNavigateItem parent, String name, KeyedImage oseeImage, URI testBatchFile) {
       super(parent, name, oseeImage);
@@ -38,6 +38,7 @@ final class TestBatchSetupItem extends XNavigateItem implements Runnable {
       this.testBatchFile = testBatchFile;
    }
 
+   @Override
    public void run() {
       Job job = new UIJob(jobName) {
          @Override
@@ -45,10 +46,10 @@ final class TestBatchSetupItem extends XNavigateItem implements Runnable {
             IStatus status = Status.CANCEL_STATUS;
             if (PluginUtil.areTestManagersAvailable() != true) {
                Exception exception =
-                     new IllegalStateException("Test Manager was not opened before this operation was selected.");
+                  new IllegalStateException("Test Manager was not opened before this operation was selected.");
                status =
-                     new Status(Status.ERROR, TestManagerPlugin.PLUGIN_ID, Status.ERROR,
-                           "A Test Manager must be opened for this operation to work.", exception);
+                  new Status(IStatus.ERROR, TestManagerPlugin.PLUGIN_ID, IStatus.ERROR,
+                     "A Test Manager must be opened for this operation to work.", exception);
             } else {
                TestManagerEditor[] itemsToOpen = PluginUtil.getTestManagers();
                if (itemsToOpen.length > 1) {
@@ -62,15 +63,14 @@ final class TestBatchSetupItem extends XNavigateItem implements Runnable {
                   } else {
                      Exception exception = new IllegalStateException("Test Manager setup failed.");
                      status =
-                           new Status(Status.ERROR, TestManagerPlugin.PLUGIN_ID,
-                                 "Test Manager configuration failed for some unknown reason. Please try again.",
-                                 exception);
+                        new Status(IStatus.ERROR, TestManagerPlugin.PLUGIN_ID,
+                           "Test Manager configuration failed for some unknown reason. Please try again.", exception);
                   }
                } else {
                   Exception exception = new IllegalStateException("No Test Manager was selected.");
                   status =
-                        new Status(Status.ERROR, TestManagerPlugin.PLUGIN_ID,
-                              "A Test Manager must be selected for this operation to work.", exception);
+                     new Status(IStatus.ERROR, TestManagerPlugin.PLUGIN_ID,
+                        "A Test Manager must be selected for this operation to work.", exception);
                }
             }
             return status;

@@ -13,12 +13,12 @@ package org.eclipse.osee.ats.artifact;
 import static org.eclipse.osee.framework.jdk.core.util.Strings.intern;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -57,8 +57,8 @@ public class LogItem {
          this.user = UserManager.getUserByUserId(userId);
       } catch (UserNotInDatabase ex) {
          this.user = UserManager.getUser(SystemUser.Guest);
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, String.format("Error parsing ATS Log for %s - %s", hrid,
-               ex.getLocalizedMessage()), ex);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE,
+            String.format("Error parsing ATS Log for %s - %s", hrid, ex.getLocalizedMessage()), ex);
       }
       this.type = type;
    }

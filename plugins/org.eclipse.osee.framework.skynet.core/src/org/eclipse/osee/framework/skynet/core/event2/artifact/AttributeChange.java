@@ -139,10 +139,11 @@ public class AttributeChange extends FrameworkEvent {
       return this.data;
    }
 
+   @Override
    public String toString() {
       try {
          return String.format("[AttrChg: %s - %s - %s]", AttributeEventModificationType.getType(modTypeGuid),
-               AttributeTypeManager.getTypeByGuid(attrTypeGuid), data);
+            AttributeTypeManager.getTypeByGuid(attrTypeGuid), data);
       } catch (OseeCoreException ex) {
          return "Exception: " + ex.getLocalizedMessage();
       }

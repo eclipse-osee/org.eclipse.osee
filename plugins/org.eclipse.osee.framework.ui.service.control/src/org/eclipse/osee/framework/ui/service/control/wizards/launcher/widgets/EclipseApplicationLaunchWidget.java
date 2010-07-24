@@ -16,7 +16,7 @@ import java.net.URL;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.framework.ui.service.control.ControlPlugin;
+import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.service.control.ServiceControlImage;
 import org.eclipse.osee.framework.ui.service.control.jobs.EclipseApplicationLaunchJob;
 import org.eclipse.osee.framework.ui.service.control.jobs.TextDisplayHelper;
@@ -63,6 +63,7 @@ public class EclipseApplicationLaunchWidget implements ILaunchWidget {
       this.serviceInfo = serviceInfo;
    }
 
+   @Override
    public void create(Composite parent) {
       shell = parent.getShell();
 
@@ -146,8 +147,8 @@ public class EclipseApplicationLaunchWidget implements ILaunchWidget {
                serviceInfo.getServiceItem().setJiniGroup(groupSelector.getJiniGroupVmArg());
             }
             Job job =
-                  new EclipseApplicationLaunchJob("Eclipse Application Launch", javaCompiler, latestPlugin,
-                        serviceInfo, displayHelper);
+               new EclipseApplicationLaunchJob("Eclipse Application Launch", javaCompiler, latestPlugin, serviceInfo,
+                  displayHelper);
             job.setUser(true);
             job.setPriority(Job.LONG);
             job.schedule();
@@ -169,6 +170,7 @@ public class EclipseApplicationLaunchWidget implements ILaunchWidget {
       javaCompilerText.setText(javaHome);
 
       javaCompilerText.addModifyListener(new ModifyListener() {
+         @Override
          public void modifyText(ModifyEvent e) {
             javaCompiler = javaCompilerText.getText();
          }
@@ -213,17 +215,19 @@ public class EclipseApplicationLaunchWidget implements ILaunchWidget {
          latestPlugin = new File(resolvedURL.getFile());
       } catch (Exception ex) {
          if (executionResultText != null && !executionResultText.isDisposed()) {
-            executionResultText.addText(ControlPlugin.getStackMessages(ex) + "\n\n", SWT.NORMAL, SWT.COLOR_RED);
+            executionResultText.addText(OseeUiActivator.getStackMessages(ex) + "\n\n", SWT.NORMAL, SWT.COLOR_RED);
          }
       }
 
       localLocation = new File(Platform.getInstallLocation().getURL().getFile());
    }
 
+   @Override
    public Control getControl() {
       return control;
    }
 
+   @Override
    public void dispose() {
       if (control != null && !control.isDisposed()) {
          control.dispose();
@@ -234,6 +238,7 @@ public class EclipseApplicationLaunchWidget implements ILaunchWidget {
       displayHelper.disposeProcessHandling();
    }
 
+   @Override
    public void refresh() {
       getEclipseInformation();
       serviceInfoText.clearTextArea();

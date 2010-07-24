@@ -84,7 +84,7 @@ public class PopulateUserGroupBlam extends AbstractBlam {
       if (xWidget.getLabel().equals("User Groups")) {
          XArtifactList listViewer = (XArtifactList) xWidget;
          listViewer.setInputArtifacts(ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.UserGroup,
-               BranchManager.getCommonBranch()));
+            BranchManager.getCommonBranch()));
       }
    }
 

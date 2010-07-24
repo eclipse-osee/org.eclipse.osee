@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.core.exception;
 
-
 /**
  * @author Donald G. Dunne
  */

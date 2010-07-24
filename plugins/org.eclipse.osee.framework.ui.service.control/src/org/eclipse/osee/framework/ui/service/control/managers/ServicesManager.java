@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.service.control.managers;
 
+import net.jini.core.lookup.ServiceItem;
 import org.eclipse.osee.framework.jdk.core.type.InputManager;
 import org.eclipse.osee.framework.jdk.core.type.TreeParent;
 import org.eclipse.osee.framework.jini.discovery.EclipseJiniClassloader;
 import org.eclipse.osee.framework.jini.discovery.IServiceLookupListener;
 import org.eclipse.osee.framework.jini.discovery.ServiceDataStore;
-import net.jini.core.lookup.ServiceItem;
 
 /**
  * @author Roberto E. Escobar
@@ -23,7 +23,7 @@ import net.jini.core.lookup.ServiceItem;
 public class ServicesManager implements IServiceLookupListener {
 
    private static ServicesManager instance = null;
-   private ServiceTreeBuilder servicesTreeBuilder;
+   private final ServiceTreeBuilder servicesTreeBuilder;
 
    private ServicesManager() {
       super();
@@ -38,14 +38,17 @@ public class ServicesManager implements IServiceLookupListener {
       return instance;
    }
 
+   @Override
    public void serviceAdded(ServiceItem serviceItem) {
       servicesTreeBuilder.serviceAdded(serviceItem);
    }
 
+   @Override
    public void serviceChanged(ServiceItem serviceItem) {
       servicesTreeBuilder.serviceChanged(serviceItem);
    }
 
+   @Override
    public void serviceRemoved(ServiceItem serviceItem) {
       servicesTreeBuilder.serviceRemoved(serviceItem);
    }

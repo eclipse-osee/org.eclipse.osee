@@ -21,9 +21,9 @@ import org.eclipse.osee.ote.core.environment.command.TestEnvironmentCommand;
 import org.eclipse.osee.ote.core.environment.interfaces.IReportData;
 
 public class ReportDataControl implements IReportData {
-   private ReportData queueData;
+   private final ReportData queueData;
    // private ArrayList<ReportDataListener> queueListeners;
-   private ArrayList<ReportDataListener> queueListeners;
+   private final ArrayList<ReportDataListener> queueListeners;
 
    public ReportDataControl() {
       this.queueListeners = new ArrayList<ReportDataListener>();
@@ -34,31 +34,32 @@ public class ReportDataControl implements IReportData {
       this.queueData = new ReportData(queueHeaders);
    }
 
+   @Override
    @SuppressWarnings("unchecked")
    public void addQueueListener(ReportDataListener listener, List cmds) {
       queueListeners.add(listener);
       updateQueueData(cmds);
       try {
          listener.updateData(queueData);
-      }
-      catch (RemoteException e) {
-    	  OseeLog.log(TestEnvironment.class, Level.SEVERE, e);
+      } catch (RemoteException e) {
+         OseeLog.log(TestEnvironment.class, Level.SEVERE, e);
       }
    }
 
+   @Override
    public void removeQueueListener(ReportDataListener listener) {
       queueListeners.remove(listener);
    }
 
+   @Override
    @SuppressWarnings("unchecked")
    public void updateQueueListeners(List cmds) {
       updateQueueData(cmds);
       for (int i = 0; i < queueListeners.size(); i++) {
          try {
             queueListeners.get(i).updateData(queueData);
-         }
-         catch (RemoteException e) {
-        	 OseeLog.log(TestEnvironment.class, Level.SEVERE, e);
+         } catch (RemoteException e) {
+            OseeLog.log(TestEnvironment.class, Level.SEVERE, e);
          }
       }
    }
@@ -67,9 +68,9 @@ public class ReportDataControl implements IReportData {
       queueData.clearItems();
       ArrayList<String> values;
       for (int i = 0; i < cmds.size(); i++) {
-         TestEnvironmentCommand cmd = (TestEnvironmentCommand) cmds.get(i);
+         TestEnvironmentCommand cmd = cmds.get(i);
          values = new ArrayList<String>();
-         values.add((cmd.getUser() == null) ? "unknown" : cmd.getUser().getName());
+         values.add(cmd.getUser() == null ? "unknown" : cmd.getUser().getName());
          values.add(cmd.getDescription().getDescription());
          queueData.addItem(cmd.getDescription().getGuid(), values);
       }
