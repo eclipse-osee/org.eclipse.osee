@@ -61,7 +61,7 @@ public class PurgeUser extends AbstractBlam {
    }
 
    @Override
-   public void runOperation(final VariableMap variableMap, IProgressMonitor monitor) throws OseeCoreException {
+   public void runOperation(final VariableMap variableMap, IProgressMonitor monitor) {
       final IProgressMonitor mon = monitor;
       Displays.ensureInDisplayThread(new Runnable() {
          @Override

@@ -57,6 +57,7 @@ public class SMAStatusDialog extends MessageDialog {
    }
 
    protected void createPreCustomArea(Composite parent) {
+      // do nothing
    }
 
    @Override

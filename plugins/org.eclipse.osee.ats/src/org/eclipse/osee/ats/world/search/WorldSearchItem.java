@@ -72,6 +72,7 @@ public abstract class WorldSearchItem {
 
    public abstract WorldSearchItem copy() throws OseeArgumentException;
 
+   @SuppressWarnings("unused")
    public String getName() throws OseeCoreException {
       return name;
    }

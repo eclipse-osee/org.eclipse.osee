@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.test.util;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.notify.INotificationManager;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationEvent;
 
@@ -39,7 +38,8 @@ public class TestNotificationManager implements INotificationManager {
    }
 
    @Override
-   public void sendNotifications() throws OseeCoreException {
+   public void sendNotifications() {
+      // do nothings
    }
 
 }

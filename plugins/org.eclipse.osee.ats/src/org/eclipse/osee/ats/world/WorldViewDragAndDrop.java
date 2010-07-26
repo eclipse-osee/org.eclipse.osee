@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.world.search.GroupWorldSearchItem;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
@@ -62,7 +61,7 @@ public class WorldViewDragAndDrop extends SkynetDragAndDrop {
       return artifacts.toArray(new Artifact[artifacts.size()]);
    }
 
-   private boolean isValidForArtifactDrop(DropTargetEvent event) throws OseeCoreException {
+   private boolean isValidForArtifactDrop(DropTargetEvent event) {
       if (ArtifactTransfer.getInstance().isSupportedType(event.currentDataType)) {
          ArtifactData artData = ArtifactTransfer.getInstance().nativeToJava(event.currentDataType);
 
@@ -79,7 +78,7 @@ public class WorldViewDragAndDrop extends SkynetDragAndDrop {
    }
 
    @Override
-   public void performDragOver(DropTargetEvent event) throws OseeCoreException {
+   public void performDragOver(DropTargetEvent event) {
       if (isValidForArtifactDrop(event)) {
          event.detail = DND.DROP_COPY;
       }

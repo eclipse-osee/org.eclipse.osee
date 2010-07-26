@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResolutionOptionRule;
-import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -42,7 +41,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 /**
  * @author Donald G. Dunne
  */
-public class TaskArtifact extends StateMachineArtifact implements IWorldViewArtifact, IATSStateMachineArtifact {
+public class TaskArtifact extends StateMachineArtifact implements IATSStateMachineArtifact {
 
    public static enum TaskStates {
       InWork,
@@ -160,7 +159,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
    }
 
    @Override
-   public String getWorldViewTeam() throws OseeCoreException {
+   public String getWorldViewTeam() {
       return "";
    }
 
@@ -280,7 +279,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
    }
 
    @Override
-   public String getWorldViewNumberOfTasks() throws OseeCoreException {
+   public String getWorldViewNumberOfTasks() {
       return "";
    }
 
@@ -360,12 +359,12 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
    }
 
    @Override
-   public Date getWorldViewDeadlineDate() throws OseeCoreException {
+   public Date getWorldViewDeadlineDate() {
       return null;
    }
 
    @Override
-   public String getWorldViewDeadlineDateStr() throws OseeCoreException {
+   public String getWorldViewDeadlineDateStr() {
       return "";
    }
 
@@ -375,7 +374,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
    }
 
    @Override
-   public Result isWorldViewAnnualCostAvoidanceValid() throws OseeCoreException {
+   public Result isWorldViewAnnualCostAvoidanceValid() {
       return Result.TrueResult;
    }
 
@@ -408,7 +407,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
    }
 
    @Override
-   public boolean hasAtsWorldChildren() throws OseeCoreException {
+   public boolean hasAtsWorldChildren() {
       return false;
    }
 

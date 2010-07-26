@@ -114,7 +114,7 @@ public class WorkPageShape extends RectangleShape {
       return super.getPropertyValue(propertyId);
    }
 
-   public Artifact getArtifact() throws OseeCoreException {
+   public Artifact getArtifact() {
       return artifact;
    }
 
@@ -126,7 +126,7 @@ public class WorkPageShape extends RectangleShape {
    }
 
    @Override
-   public Result validForSave() throws OseeCoreException {
+   public Result validForSave() {
       try {
          String pageName = (String) getPropertyValue(WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName());
          if (pageName == null || pageName.equals("")) {

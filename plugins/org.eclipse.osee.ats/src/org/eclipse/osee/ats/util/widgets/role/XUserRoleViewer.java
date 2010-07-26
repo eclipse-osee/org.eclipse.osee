@@ -389,6 +389,7 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IArtifa
 
    @Override
    public void setXmlData(String str) {
+      // do nothing
    }
 
    @Override

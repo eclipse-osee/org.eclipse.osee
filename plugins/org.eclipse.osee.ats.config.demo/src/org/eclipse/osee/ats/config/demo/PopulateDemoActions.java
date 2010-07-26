@@ -189,7 +189,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       }
    }
 
-   private void createMainWorkingBranchTx() throws OseeCoreException {
+   private void createMainWorkingBranchTx() {
       try {
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Creating SAW_Bld_2 branch off SAW_Bld_1");
          // Create SAW_Bld_2 branch off SAW_Bld_1
@@ -454,7 +454,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       return actionArts;
    }
 
-   private void demoDbImportReqsTx() throws OseeCoreException {
+   private void demoDbImportReqsTx() {
       try {
          importRequirements(DemoSawBuilds.SAW_Bld_1, CoreArtifactTypes.SoftwareRequirement.getName() + "s",
             CoreArtifactTypes.SoftwareRequirement, "support/SAW-SoftwareRequirements.xml");
@@ -496,7 +496,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       }
    }
 
-   private void demoDbTraceabilityTx(SkynetTransaction transaction, Branch branch) throws OseeCoreException {
+   private void demoDbTraceabilityTx(SkynetTransaction transaction, Branch branch) {
       try {
          Collection<Artifact> systemArts =
             DemoDbUtil.getArtTypeRequirements(CoreArtifactTypes.SystemRequirement, "Robot", branch);

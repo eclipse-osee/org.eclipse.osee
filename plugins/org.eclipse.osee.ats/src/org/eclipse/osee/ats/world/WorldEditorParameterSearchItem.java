@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.world;
 
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
@@ -29,23 +28,23 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    private CustomizeData customizeData;
    private TableLoadOption[] tableLoadOptions;
 
-   public WorldEditorParameterSearchItem(String name, KeyedImage oseeImage) throws OseeArgumentException {
+   public WorldEditorParameterSearchItem(String name, KeyedImage oseeImage) {
       super(name, LoadView.WorldEditor, oseeImage);
    }
 
-   public WorldEditorParameterSearchItem(String name, LoadView loadView) throws OseeArgumentException {
+   public WorldEditorParameterSearchItem(String name, LoadView loadView) {
       this(name, loadView, null);
    }
 
-   public WorldEditorParameterSearchItem(String name, LoadView loadView, KeyedImage oseeImage) throws OseeArgumentException {
+   public WorldEditorParameterSearchItem(String name, LoadView loadView, KeyedImage oseeImage) {
       super(name, loadView, oseeImage);
    }
 
-   public WorldEditorParameterSearchItem(WorldSearchItem worldSearchItem) throws OseeArgumentException {
+   public WorldEditorParameterSearchItem(WorldSearchItem worldSearchItem) {
       this(worldSearchItem, null);
    }
 
-   public WorldEditorParameterSearchItem(WorldSearchItem worldSearchItem, KeyedImage oseeImage) throws OseeArgumentException {
+   public WorldEditorParameterSearchItem(WorldSearchItem worldSearchItem, KeyedImage oseeImage) {
       super(worldSearchItem, oseeImage);
    }
 
@@ -55,7 +54,8 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    public abstract Result isParameterSelectionValid() throws OseeCoreException;
 
    @Override
-   public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend) throws OseeCoreException {
+   public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend) {
+      // do nothing
    }
 
    @Override
@@ -83,6 +83,7 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
 
    @Override
    public void handleSaveButtonPressed() {
+      // do nothing
    }
 
    @Override

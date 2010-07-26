@@ -62,7 +62,7 @@ public class SMAUtil {
       return artifactsToReturn;
    }
 
-   public static Collection<StateMachineArtifact> filterOutTypes(Collection<StateMachineArtifact> smas, Collection<Class<?>> classes) throws OseeCoreException {
+   public static Collection<StateMachineArtifact> filterOutTypes(Collection<StateMachineArtifact> smas, Collection<Class<?>> classes) {
       List<StateMachineArtifact> artifactsToReturn = new ArrayList<StateMachineArtifact>(smas.size());
       for (StateMachineArtifact sma : smas) {
          boolean found = false;
@@ -214,7 +214,7 @@ public class SMAUtil {
       return returnSmas;
    }
 
-   public static Collection<StateMachineArtifact> getSMAs(Collection<? extends Artifact> artifacts) throws OseeCoreException {
+   public static Collection<StateMachineArtifact> getSMAs(Collection<? extends Artifact> artifacts) {
       return Collections.castMatching(StateMachineArtifact.class, artifacts);
    }
 

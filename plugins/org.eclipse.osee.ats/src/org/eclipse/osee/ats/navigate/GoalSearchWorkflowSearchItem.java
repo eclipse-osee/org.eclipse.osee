@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.ats.world.search.GoalSearchItem;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -45,30 +44,30 @@ public class GoalSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
    private XMembersCombo assigneeCombo;
    private XCheckBox includeCompletedCancelledCheckbox;
 
-   public GoalSearchWorkflowSearchItem(String name) throws OseeArgumentException {
+   public GoalSearchWorkflowSearchItem(String name) {
       super(name, AtsImage.GOAL);
    }
 
-   public GoalSearchWorkflowSearchItem() throws OseeArgumentException {
+   public GoalSearchWorkflowSearchItem() {
       this("Goal Search");
    }
 
-   public GoalSearchWorkflowSearchItem(GoalSearchWorkflowSearchItem goalWorkflowSearchItem) throws OseeArgumentException {
+   public GoalSearchWorkflowSearchItem(GoalSearchWorkflowSearchItem goalWorkflowSearchItem) {
       super(goalWorkflowSearchItem, AtsImage.GOAL);
    }
 
    @Override
-   public GoalSearchWorkflowSearchItem copy() throws OseeArgumentException {
+   public GoalSearchWorkflowSearchItem copy() {
       return new GoalSearchWorkflowSearchItem(this);
    }
 
    @Override
-   public GoalSearchWorkflowSearchItem copyProvider() throws OseeArgumentException {
+   public GoalSearchWorkflowSearchItem copyProvider() {
       return new GoalSearchWorkflowSearchItem(this);
    }
 
    @Override
-   public String getParameterXWidgetXml() throws OseeCoreException {
+   public String getParameterXWidgetXml() {
       return "<xWidgets>" +
       //
       "<XWidget xwidgetType=\"XHyperlabelTeamDefinitionSelection\" displayName=\"Team Definitions(s)\" horizontalLabel=\"true\"/>" +
@@ -87,7 +86,7 @@ public class GoalSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
    }
 
    @Override
-   public String getSelectedName(SearchType searchType) throws OseeCoreException {
+   public String getSelectedName(SearchType searchType) {
       StringBuffer sb = new StringBuffer();
       Collection<TeamDefinitionArtifact> teamDefs = getSelectedTeamDefinitions();
       if (teamDefs.size() > 0) {
@@ -103,7 +102,7 @@ public class GoalSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
    }
 
    @Override
-   public void widgetCreated(XWidget widget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
+   public void widgetCreated(XWidget widget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
       if (widget.getLabel().equals("Assignee")) {
          assigneeCombo = (XMembersCombo) widget;
       }
@@ -141,7 +140,7 @@ public class GoalSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
       }
    }
 
-   public Collection<TeamDefinitionArtifact> getSelectedTeamDefinitions() throws OseeCoreException {
+   public Collection<TeamDefinitionArtifact> getSelectedTeamDefinitions() {
       if (teamCombo == null) {
          return java.util.Collections.emptyList();
       }
@@ -156,15 +155,17 @@ public class GoalSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
    }
 
    @Override
-   public void createXWidgetLayoutData(DynamicXWidgetLayoutData layoutData, XWidget widget, FormToolkit toolkit, Artifact art, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
+   public void createXWidgetLayoutData(DynamicXWidgetLayoutData layoutData, XWidget widget, FormToolkit toolkit, Artifact art, XModifiedListener modListener, boolean isEditable) {
+      // do nothing
    }
 
    @Override
-   public void widgetCreating(XWidget widget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
+   public void widgetCreating(XWidget widget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
+      // do nothing
    }
 
    @Override
-   public Result isParameterSelectionValid() throws OseeCoreException {
+   public Result isParameterSelectionValid() {
       try {
          User user = getSelectedUser();
          boolean includeCompleted = isIncludeCompletedCancelledCheckbox();
@@ -184,7 +185,7 @@ public class GoalSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
    }
 
    @Override
-   public VersionArtifact getTargetedVersionArtifact() throws OseeCoreException {
+   public VersionArtifact getTargetedVersionArtifact() {
       return null;
    }
 

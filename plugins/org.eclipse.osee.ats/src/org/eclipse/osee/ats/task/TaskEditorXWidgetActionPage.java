@@ -74,7 +74,7 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage implem
    }
 
    @Override
-   public Section createResultsSection(Composite body) throws OseeCoreException {
+   public Section createResultsSection(Composite body) {
       resultsSection = toolkit.createSection(body, ExpandableComposite.NO_TITLE);
       resultsSection.setText("Results");
       resultsSection.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -110,7 +110,7 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage implem
    }
 
    @Override
-   public Result isResearchSearchValid() throws OseeCoreException {
+   public Result isResearchSearchValid() {
       return taskEditor.isDirty() ? new Result("Changes un-saved. Save first.") : Result.TrueResult;
    }
 
@@ -237,11 +237,6 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage implem
          item.fill(parent, -1);
       }
 
-      @Override
-      public void run() {
-
-      }
-
       void clear() {
          dispose();
       }
@@ -250,6 +245,7 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage implem
          taskComposite.getTaskXViewer().getTree().addKeyListener(new KeyListener() {
             @Override
             public void keyPressed(KeyEvent event) {
+               // do nothing
             }
 
             @Override
@@ -282,6 +278,7 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage implem
          taskComposite.getTaskXViewer().getTree().addSelectionListener(new SelectionListener() {
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
+               // do nothing
             }
 
             @Override
@@ -376,6 +373,7 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage implem
 
    @Override
    public void handleSaveButtonPressed() {
+      // do nothing
    }
 
    @Override

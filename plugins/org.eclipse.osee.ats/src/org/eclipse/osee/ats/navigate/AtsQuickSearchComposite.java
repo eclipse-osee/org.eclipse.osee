@@ -58,6 +58,7 @@ public class AtsQuickSearchComposite extends Composite {
 
          @Override
          public void mouseUp(MouseEvent mouseEvent) {
+            // do nothing
          }
 
          @Override
@@ -74,6 +75,7 @@ public class AtsQuickSearchComposite extends Composite {
 
          @Override
          public void mouseDown(MouseEvent arg0) {
+            // do nothing
          }
       });
 

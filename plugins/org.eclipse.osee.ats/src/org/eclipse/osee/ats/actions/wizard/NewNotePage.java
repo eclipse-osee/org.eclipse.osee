@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -71,10 +71,7 @@ public class NewNotePage extends WizardPage {
       topCLeft.setLayoutData(gd);
 
       typeList.createWidgets(topCLeft, 2);
-      typeList.addSelectionListener(new SelectionListener() {
-         @Override
-         public void widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent e) {
-         };
+      typeList.addSelectionListener(new SelectionAdapter() {
 
          @Override
          public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
@@ -88,10 +85,7 @@ public class NewNotePage extends WizardPage {
       topCRight.setLayoutData(gd);
 
       artifactList.createWidgets(topCRight, 2);
-      artifactList.addSelectionListener(new SelectionListener() {
-         @Override
-         public void widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent e) {
-         };
+      artifactList.addSelectionListener(new SelectionAdapter() {
 
          @Override
          public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {

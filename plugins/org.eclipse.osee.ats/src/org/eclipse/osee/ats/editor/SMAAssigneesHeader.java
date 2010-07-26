@@ -53,10 +53,12 @@ public class SMAAssigneesHeader extends Composite {
 
                @Override
                public void linkEntered(HyperlinkEvent e) {
+                  // do nothing
                }
 
                @Override
                public void linkExited(HyperlinkEvent e) {
+                  // do nothing
                }
 
                @Override
@@ -95,7 +97,7 @@ public class SMAAssigneesHeader extends Composite {
 
    }
 
-   private void updateLabel(StateMachineArtifact sma) throws OseeCoreException {
+   private void updateLabel(StateMachineArtifact sma) {
       String value = "";
       try {
          if (sma.getStateMgr().getAssignees().isEmpty()) {

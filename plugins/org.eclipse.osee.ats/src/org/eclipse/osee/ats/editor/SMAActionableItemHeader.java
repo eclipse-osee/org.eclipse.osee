@@ -41,7 +41,7 @@ public class SMAActionableItemHeader extends Composite {
    private Label label;
    private final StateMachineArtifact sma;
 
-   public SMAActionableItemHeader(Composite parent, XFormToolkit toolkit, StateMachineArtifact sma) throws OseeCoreException {
+   public SMAActionableItemHeader(Composite parent, XFormToolkit toolkit, StateMachineArtifact sma) {
       super(parent, SWT.NONE);
       this.sma = sma;
       try {
@@ -59,10 +59,12 @@ public class SMAActionableItemHeader extends Composite {
 
             @Override
             public void linkEntered(HyperlinkEvent e) {
+               // do nothing
             }
 
             @Override
             public void linkExited(HyperlinkEvent e) {
+               // do nothing
             }
 
             @Override

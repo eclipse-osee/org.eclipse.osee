@@ -25,4 +25,5 @@ import org.junit.runners.Suite;
  * @author Donald G. Dunne
  */
 public class AtsTest_Config_Suite {
+   // test provided above
 }

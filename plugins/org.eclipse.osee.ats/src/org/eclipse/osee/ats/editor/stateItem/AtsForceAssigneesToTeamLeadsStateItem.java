@@ -47,7 +47,7 @@ public class AtsForceAssigneesToTeamLeadsStateItem extends AtsStateItem {
    }
 
    @Override
-   public String getDescription() throws OseeCoreException {
+   public String getDescription() {
       return "AtsForceAssigneesToTeamLeadsStateItem";
    }
 

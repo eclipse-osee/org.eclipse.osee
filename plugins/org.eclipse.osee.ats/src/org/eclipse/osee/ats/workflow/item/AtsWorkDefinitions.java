@@ -185,7 +185,7 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
    }
 
    @Override
-   public Collection<WorkItemDefinition> getProgramaticWorkItemDefinitions() throws OseeCoreException {
+   public Collection<WorkItemDefinition> getProgramaticWorkItemDefinitions() {
       return new ArrayList<WorkItemDefinition>();
    }
 

@@ -29,7 +29,6 @@ import org.eclipse.osee.ats.world.search.GoalSearchItem;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -245,14 +244,14 @@ public class PromptChangeUtil {
       return true;
    }
 
-   public static boolean promptChangeType(StateMachineArtifact sma, boolean persist) throws OseeStateException {
+   public static boolean promptChangeType(StateMachineArtifact sma, boolean persist) {
       if (sma.isTeamWorkflow()) {
          return promptChangeType(Arrays.asList((TeamWorkFlowArtifact) sma), persist);
       }
       return false;
    }
 
-   public static boolean promptChangeType(final Collection<? extends TeamWorkFlowArtifact> teams, boolean persist) throws OseeStateException {
+   public static boolean promptChangeType(final Collection<? extends TeamWorkFlowArtifact> teams, boolean persist) {
 
       for (TeamWorkFlowArtifact team : teams) {
          if (team.isReleased() || team.isVersionLocked()) {
@@ -285,14 +284,14 @@ public class PromptChangeUtil {
       }
    }
 
-   public static boolean promptChangePoints(StateMachineArtifact sma, boolean persist) throws OseeStateException {
+   public static boolean promptChangePoints(StateMachineArtifact sma, boolean persist) {
       if (sma.isTeamWorkflow()) {
          return promptChangePoints(Arrays.asList((TeamWorkFlowArtifact) sma), persist);
       }
       return false;
    }
 
-   public static boolean promptChangePoints(final Collection<? extends TeamWorkFlowArtifact> teams, boolean persist) throws OseeStateException {
+   public static boolean promptChangePoints(final Collection<? extends TeamWorkFlowArtifact> teams, boolean persist) {
 
       final ChangePointDialog dialog = new ChangePointDialog(Displays.getActiveShell());
       try {
@@ -323,7 +322,7 @@ public class PromptChangeUtil {
       }
    }
 
-   public static boolean promptChangePriority(StateMachineArtifact sma, boolean persist) throws OseeStateException {
+   public static boolean promptChangePriority(StateMachineArtifact sma, boolean persist) {
       if (sma.isTeamWorkflow()) {
          return promptChangePriority(Arrays.asList((TeamWorkFlowArtifact) sma), persist);
       }
@@ -427,7 +426,7 @@ public class PromptChangeUtil {
       return false;
    }
 
-   public static boolean promptChangeDate(StateMachineArtifact sma, ATSAttributes atsAttr, boolean persist) throws OseeStateException {
+   public static boolean promptChangeDate(StateMachineArtifact sma, ATSAttributes atsAttr, boolean persist) {
       try {
          return ArtifactPromptChange.promptChangeDate(atsAttr.getStoreName(), atsAttr.getDisplayName(), sma, persist);
       } catch (Exception ex) {
@@ -437,7 +436,7 @@ public class PromptChangeUtil {
       return false;
    }
 
-   public static boolean promptChangeReleaseDate(StateMachineArtifact sma) throws OseeStateException {
+   public static boolean promptChangeReleaseDate(StateMachineArtifact sma) {
       if (sma.isReleased() || sma.isVersionLocked()) {
          AWorkbench.popup("ERROR", "Team Workflow\n \"" + sma.getName() + "\"\n version is locked or already released.");
          return false;
@@ -479,7 +478,7 @@ public class PromptChangeUtil {
       return false;
    }
 
-   public static boolean promptChangeEstimatedReleaseDate(StateMachineArtifact sma) throws OseeStateException {
+   public static boolean promptChangeEstimatedReleaseDate(StateMachineArtifact sma) {
       try {
          VersionArtifact verArt = sma.getTargetedForVersion();
          if (verArt != null) {

@@ -149,7 +149,7 @@ public class WorldEditorUISearchItemProvider extends WorldEditorProvider {
    }
 
    @Override
-   public VersionArtifact getTargetedVersionArtifact() throws OseeCoreException {
+   public VersionArtifact getTargetedVersionArtifact() {
       if (worldUISearchItem instanceof VersionTargetedForTeamSearchItem) {
          return ((VersionTargetedForTeamSearchItem) worldUISearchItem).getSearchVersionArtifact();
       } else if (worldUISearchItem instanceof NextVersionSearchItem) {

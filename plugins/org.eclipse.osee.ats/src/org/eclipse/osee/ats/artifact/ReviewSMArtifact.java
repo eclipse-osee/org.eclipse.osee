@@ -173,6 +173,7 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
       return userRoleManager;
    }
 
+   @SuppressWarnings("unused")
    public IStatus isUserRoleValid(String namespace) throws OseeCoreException {
       // Need this cause it removes all error items of this namespace
       return new Status(IStatus.OK, namespace, "");
@@ -262,17 +263,17 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
    }
 
    @Override
-   public Date getWorldViewDeadlineDate() throws OseeCoreException {
+   public Date getWorldViewDeadlineDate() {
       return null;
    }
 
    @Override
-   public String getWorldViewCategory() throws OseeCoreException {
+   public String getWorldViewCategory() {
       return "";
    }
 
    @Override
-   public Date getWorldViewReleaseDate() throws OseeCoreException {
+   public Date getWorldViewReleaseDate() {
       return null;
    }
 
@@ -285,21 +286,25 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
       return "";
    }
 
+   @SuppressWarnings("unused")
    @Override
    public String getWorldViewReviewDecider() throws OseeCoreException {
       return "";
    }
 
+   @SuppressWarnings("unused")
    @Override
    public String getWorldViewReviewModerator() throws OseeCoreException {
       return "";
    }
 
+   @SuppressWarnings("unused")
    @Override
    public String getWorldViewReviewReviewer() throws OseeCoreException {
       return "";
    }
 
+   @SuppressWarnings("unused")
    @Override
    public String getWorldViewReviewAuthor() throws OseeCoreException {
       return "";
@@ -311,7 +316,7 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
    }
 
    @Override
-   public String getWorldViewWorkPackage() throws OseeCoreException {
+   public String getWorldViewWorkPackage() {
       return "";
    }
 
@@ -320,17 +325,17 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
    }
 
    @Override
-   public String getWorldViewCategory2() throws OseeCoreException {
+   public String getWorldViewCategory2() {
       return "";
    }
 
    @Override
-   public String getWorldViewCategory3() throws OseeCoreException {
+   public String getWorldViewCategory3() {
       return "";
    }
 
    @Override
-   public String getWorldViewDeadlineDateStr() throws OseeCoreException {
+   public String getWorldViewDeadlineDateStr() {
       return "";
    }
 

@@ -323,12 +323,8 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
       editChangeTypeAction = new Action("Edit Change Type", IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
-            try {
-               if (PromptChangeUtil.promptChangeType(getSelectedTeamWorkflowArtifacts(), true)) {
-                  update(getSelectedArtifactItems().toArray(), null);
-               }
-            } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            if (PromptChangeUtil.promptChangeType(getSelectedTeamWorkflowArtifacts(), true)) {
+               update(getSelectedArtifactItems().toArray(), null);
             }
          }
       };
@@ -407,13 +403,11 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
                   new WorldEditorInput(new WorldEditorSimpleProvider("ATS World", getSelectedArtifacts(),
                      getCustomizeMgr().generateCustDataFromTable(), TableLoadOption.None));
             }
-            if (worldEditorInput != null) {
-               IWorkbenchPage page = AWorkbench.getActivePage();
-               try {
-                  page.openEditor(worldEditorInput, WorldEditor.EDITOR_ID);
-               } catch (PartInitException ex) {
-                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-               }
+            IWorkbenchPage page = AWorkbench.getActivePage();
+            try {
+               page.openEditor(worldEditorInput, WorldEditor.EDITOR_ID);
+            } catch (PartInitException ex) {
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
 
@@ -498,19 +492,15 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
             OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
       } else if (treeColumn.getData().equals(WorldXViewerFactory.Points_Col)) {
-         try {
-            Set<TeamWorkFlowArtifact> smas = new HashSet<TeamWorkFlowArtifact>();
-            for (TreeItem item : treeItems) {
-               Artifact art = (Artifact) item.getData();
-               if (art instanceof TeamWorkFlowArtifact) {
-                  smas.add((TeamWorkFlowArtifact) art);
-               }
+         Set<TeamWorkFlowArtifact> smas = new HashSet<TeamWorkFlowArtifact>();
+         for (TreeItem item : treeItems) {
+            Artifact art = (Artifact) item.getData();
+            if (art instanceof TeamWorkFlowArtifact) {
+               smas.add((TeamWorkFlowArtifact) art);
             }
-            PromptChangeUtil.promptChangePoints(smas, true);
-            return;
-         } catch (OseeCoreException ex) {
-            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
+         PromptChangeUtil.promptChangePoints(smas, true);
+         return;
       }
       if (!(treeColumn.getData() instanceof XViewerAttributeColumn) && !(treeColumn.getData() instanceof XViewerAtsAttributeColumn)) {
          AWorkbench.popup("ERROR", "Column is not attribute and thus not multi-editable " + treeColumn.getText());

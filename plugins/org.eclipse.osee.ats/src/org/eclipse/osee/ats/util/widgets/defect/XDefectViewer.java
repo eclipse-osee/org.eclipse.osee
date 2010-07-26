@@ -174,9 +174,6 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IArtifact
       tree.setLinesVisible(true);
    }
 
-   public void setXviewerTree(boolean expand) {
-   }
-
    private int getTableHeight() {
       if (reviewArt != null && tableHeight.containsKey(reviewArt)) {
          return tableHeight.get(reviewArt);
@@ -312,11 +309,6 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IArtifact
    }
 
    private void handleExpandCollapseDefectTableList() {
-      if (mapOfReviewArtifacts != null && mapOfReviewArtifacts.containsKey(reviewArt) && mapOfReviewArtifacts.get(reviewArt)) {
-         setXviewerTree(true);
-      } else {
-         setXviewerTree(false);
-      }
       xViewer.refresh();
       if (getForm(parentComposite) != null) {
          getForm(parentComposite).reflow(true);
@@ -501,6 +493,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IArtifact
 
    @Override
    public void setXmlData(String str) {
+      // do nothing
    }
 
    @Override

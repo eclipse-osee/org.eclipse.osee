@@ -51,6 +51,7 @@ public abstract class TaskableStateMachineArtifact extends StateMachineArtifact 
       registerAtsWorldRelation(AtsRelationTypes.SmaToTask_Task);
    }
 
+   @SuppressWarnings("unused")
    @Override
    public Set<User> getPrivilegedUsers() throws OseeCoreException {
       return null;
@@ -62,6 +63,7 @@ public abstract class TaskableStateMachineArtifact extends StateMachineArtifact 
       artifacts.addAll(getTaskArtifacts());
    }
 
+   @SuppressWarnings("unused")
    @Override
    public Date getWorldViewReleaseDate() throws OseeCoreException {
       return null;
@@ -72,6 +74,7 @@ public abstract class TaskableStateMachineArtifact extends StateMachineArtifact 
       return null;
    }
 
+   @SuppressWarnings("unused")
    @Override
    public String getWorldViewParentID() throws OseeCoreException {
       return null;

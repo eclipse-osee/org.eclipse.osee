@@ -16,7 +16,6 @@ import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Disposition;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.InjectionActivity;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -33,7 +32,7 @@ public class DefectLabelProvider extends XViewerLabelProvider {
    }
 
    @Override
-   public Image getColumnImage(Object element, XViewerColumn dCol, int columnIndex) throws OseeCoreException {
+   public Image getColumnImage(Object element, XViewerColumn dCol, int columnIndex) {
       DefectItem defectItem = (DefectItem) element;
       if (dCol.equals(DefectXViewerFactory.Severity_Col)) {
          return Severity.getImage(defectItem.getSeverity());
@@ -50,7 +49,7 @@ public class DefectLabelProvider extends XViewerLabelProvider {
    }
 
    @Override
-   public String getColumnText(Object element, XViewerColumn aCol, int columnIndex) throws OseeCoreException {
+   public String getColumnText(Object element, XViewerColumn aCol, int columnIndex) {
       DefectItem defectItem = (DefectItem) element;
       if (aCol.equals(DefectXViewerFactory.User_Col)) {
          return defectItem.getUser().getName();
@@ -77,6 +76,7 @@ public class DefectLabelProvider extends XViewerLabelProvider {
 
    @Override
    public void dispose() {
+      // do nothing
    }
 
    @Override
@@ -86,10 +86,12 @@ public class DefectLabelProvider extends XViewerLabelProvider {
 
    @Override
    public void addListener(ILabelProviderListener listener) {
+      // do nothing
    }
 
    @Override
    public void removeListener(ILabelProviderListener listener) {
+      // do nothing
    }
 
    public DefectXViewer getTreeViewer() {

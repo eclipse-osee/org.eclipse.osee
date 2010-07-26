@@ -167,20 +167,23 @@ public class ArtifactSelectWizardPage extends WizardPage {
       }
 
       @Override
-      public void addListener(ILabelProviderListener arg0) {
-      }
-
-      @Override
-      public void dispose() {
-      }
-
-      @Override
       public boolean isLabelProperty(Object arg0, String arg1) {
          return false;
       }
 
       @Override
       public void removeListener(ILabelProviderListener arg0) {
+         // do nothing
+      }
+
+      @Override
+      public void addListener(ILabelProviderListener listener) {
+         // do nothing
+      }
+
+      @Override
+      public void dispose() {
+         // do nothing
       }
    }
 
@@ -198,10 +201,12 @@ public class ArtifactSelectWizardPage extends WizardPage {
 
       @Override
       public void addListener(ILabelProviderListener arg0) {
+         // do nothing
       }
 
       @Override
       public void dispose() {
+         // do nothing
       }
 
       @Override
@@ -211,6 +216,7 @@ public class ArtifactSelectWizardPage extends WizardPage {
 
       @Override
       public void removeListener(ILabelProviderListener arg0) {
+         // do nothing
       }
    }
 

@@ -80,7 +80,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
    }
 
    @Override
-   public String getParameterXWidgetXml() throws OseeCoreException {
+   public String getParameterXWidgetXml() {
       return "<xWidgets>" +
       //
       "<XWidget xwidgetType=\"XHyperlabelTeamDefinitionSelection\" displayName=\"Team Definitions(s)\" horizontalLabel=\"true\"/>" +
@@ -201,7 +201,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
    }
 
    @Override
-   public Collection<TableLoadOption> getTableLoadOptions() throws OseeCoreException {
+   public Collection<TableLoadOption> getTableLoadOptions() {
       return null;
    }
 
@@ -228,15 +228,17 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
    }
 
    @Override
-   public void createXWidgetLayoutData(DynamicXWidgetLayoutData layoutData, XWidget widget, FormToolkit toolkit, Artifact art, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
+   public void createXWidgetLayoutData(DynamicXWidgetLayoutData layoutData, XWidget widget, FormToolkit toolkit, Artifact art, XModifiedListener modListener, boolean isEditable) {
+      // do nothing
    }
 
    @Override
-   public void widgetCreating(XWidget widget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
+   public void widgetCreating(XWidget widget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
+      // do nothing
    }
 
    @Override
-   public void widgetCreated(XWidget widget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
+   public void widgetCreated(XWidget widget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
       if (widget.getLabel().equals("Group(s)")) {
          groupWidget = (XHyperlabelGroupSelection) widget;
       }
@@ -343,7 +345,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       }
    }
 
-   private Collection<TeamDefinitionArtifact> getSelectedTeamDefinitions() throws OseeCoreException {
+   private Collection<TeamDefinitionArtifact> getSelectedTeamDefinitions() {
       return teamCombo.getSelectedTeamDefintions();
    }
 
@@ -354,7 +356,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       }
    }
 
-   private Collection<Artifact> getSelectedGroups() throws OseeCoreException {
+   private Collection<Artifact> getSelectedGroups() {
       return groupWidget.getSelectedGroups();
    }
 
@@ -382,10 +384,12 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
 
    @Override
    public void setCustomizeData(CustomizeData customizeData) {
+      // do nothing
    }
 
    @Override
    public void setTableLoadOptions(TableLoadOption... tableLoadOptions) {
+      // do nothing
    }
 
 }

@@ -51,7 +51,7 @@ public class AtsPeerToPeerReviewReviewStateItem extends AtsStateItem {
    }
 
    @Override
-   public String getDescription() throws OseeCoreException {
+   public String getDescription() {
       return "AtsPeerToPeerReviewReviewStateItem - assign review state to all members of review as per role in prepare state.";
    }
 

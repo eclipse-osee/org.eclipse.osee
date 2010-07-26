@@ -273,7 +273,7 @@ public class SMAWorkFlowSection extends SectionPart {
       allXWidgets.add(xWidget);
    }
 
-   private void createMetricsHeader(Composite parent) throws OseeCoreException {
+   private void createMetricsHeader(Composite parent) {
       if (!atsWorkPage.isCompleteCancelledState()) {
          Composite comp = new Composite(parent, SWT.None);
          GridLayout layout = ALayout.getZeroMarginLayout(4, false);
@@ -287,7 +287,7 @@ public class SMAWorkFlowSection extends SectionPart {
       }
    }
 
-   private void createReviewFooter(Composite parent, String forStateName) throws OseeCoreException {
+   private void createReviewFooter(Composite parent, String forStateName) {
       if (isShowReviewInfo() && sma.isTeamWorkflow()) {
          Composite comp = new Composite(parent, SWT.None);
          GridLayout layout = new GridLayout(1, false);
@@ -313,11 +313,11 @@ public class SMAWorkFlowSection extends SectionPart {
       return sma.isTaskable();
    }
 
-   protected boolean isShowReviewInfo() throws OseeCoreException {
+   protected boolean isShowReviewInfo() {
       return sma.isTeamWorkflow();
    }
 
-   public Result isXWidgetSavable() throws OseeCoreException {
+   public Result isXWidgetSavable() {
       for (XWidget widget : allXWidgets) {
          if (widget instanceof IArtifactWidget) {
             IStatus status = widget.isValid();
@@ -551,10 +551,12 @@ public class SMAWorkFlowSection extends SectionPart {
 
          @Override
          public void linkEntered(HyperlinkEvent e) {
+            // do nothing
          }
 
          @Override
          public void linkExited(HyperlinkEvent e) {
+            // do nothing
          }
 
          @Override

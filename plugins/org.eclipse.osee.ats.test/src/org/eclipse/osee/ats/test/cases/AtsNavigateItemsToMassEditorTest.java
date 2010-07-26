@@ -35,9 +35,6 @@ import org.junit.Before;
  */
 public class AtsNavigateItemsToMassEditorTest {
 
-   public AtsNavigateItemsToMassEditorTest() {
-   }
-
    @Before
    public void setup() throws Exception {
       DemoTestUtil.setUpTest();

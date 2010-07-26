@@ -178,7 +178,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
     * @return Result.TrueResult if same, else Result.FalseResult with comparison in resultData
     * @throws ParserConfigurationException
     */
-   static Result changeReportValidated(final String currentDbGuid, final TeamWorkFlowArtifact teamArt, XResultData resultData, boolean displayWasIs) throws OseeCoreException, ParserConfigurationException {
+   static Result changeReportValidated(final String currentDbGuid, final TeamWorkFlowArtifact teamArt, XResultData resultData, boolean displayWasIs) throws OseeCoreException {
       String name = "VCR_" + teamArt.getHumanReadableId();
       List<Artifact> arts =
          ArtifactQuery.getArtifactListFromTypeAndName(CoreArtifactTypes.GeneralData, name, AtsUtil.getAtsBranch());
@@ -268,7 +268,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
       return comparableString.toString().replaceAll("><", ">\n<");
    }
 
-   private static String getReport(String dbGuid, ChangeData changeData) throws OseeCoreException, ParserConfigurationException {
+   private static String getReport(String dbGuid, ChangeData changeData) {
       StringBuffer sb = new StringBuffer();
       sb.append(String.format("<%s %s=\"%s\">", VCR_ROOT_ELEMENT_TAG, VCR_DB_GUID, dbGuid));
       for (Change change : changeData.getChanges()) {
@@ -285,11 +285,11 @@ public class ValidateChangeReports extends XNavigateItemAction {
       return toReturn.replaceAll("\n", "");
    }
 
-   private static void toXmlCommon(Change change, StringBuffer sb) throws OseeCoreException {
+   private static void toXmlCommon(Change change, StringBuffer sb) {
       sb.append(AXml.addTagData(TxImportedValidateChangeReports.BRANCH_ID_ALIASES, change.getBranch().getGuid()));
    }
 
-   private static String toXml(RelationChange change) throws OseeCoreException, ParserConfigurationException {
+   private static String toXml(RelationChange change) {
       StringBuffer sb = new StringBuffer();
       toXmlCommon(change, sb);
       sb.append(AXml.addTagData("artTId", String.valueOf(change.getItemTypeId())));
@@ -306,7 +306,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
       return AXml.addTagData("RelChg", sb.toString());
    }
 
-   private static String toXml(ArtifactChange change) throws OseeCoreException {
+   private static String toXml(ArtifactChange change) {
       StringBuffer sb = new StringBuffer();
       toXmlCommon(change, sb);
       sb.append(AXml.addTagData("artTId", String.valueOf(change.getItemTypeId())));
@@ -319,7 +319,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
       return AXml.addTagData("ArtChg", sb.toString());
    }
 
-   private static String toXml(AttributeChange change) throws OseeCoreException, ParserConfigurationException {
+   private static String toXml(AttributeChange change) {
       StringBuffer sb = new StringBuffer();
       toXmlCommon(change, sb);
       sb.append(AXml.addTagData("artTId", String.valueOf(change.getItemTypeId())));
@@ -335,7 +335,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
       return AXml.addTagData("AttrChg", sb.toString());
    }
 
-   private static boolean isXmlChangeDataEqual(String currentData, String storedData) throws OseeCoreException {
+   private static boolean isXmlChangeDataEqual(String currentData, String storedData) {
       int checkSum1 = getCheckSum(currentData);
       int checkSum2 = getCheckSum(storedData);
 

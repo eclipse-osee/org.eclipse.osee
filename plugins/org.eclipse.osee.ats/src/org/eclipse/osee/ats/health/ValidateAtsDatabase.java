@@ -53,7 +53,6 @@ import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
@@ -94,11 +93,11 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    private String emailOnComplete = null;
    private static ActionArtifact tempParentAction;
 
-   public ValidateAtsDatabase(XNavigateItem parent) throws OseeArgumentException {
+   public ValidateAtsDatabase(XNavigateItem parent) {
       this("Validate ATS Database", parent);
    }
 
-   public ValidateAtsDatabase(String name, XNavigateItem parent) throws OseeArgumentException {
+   public ValidateAtsDatabase(String name, XNavigateItem parent) {
       super(parent, name, PluginUiImage.ADMIN);
    }
 
@@ -110,7 +109,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       Jobs.startJob(new Report(getName()), true);
    }
 
-   public void performTaskAndPend() throws OseeCoreException, InterruptedException {
+   public void performTaskAndPend() throws InterruptedException {
       Report job = new Report(getName());
       job.setUser(true);
       job.setPriority(Job.LONG);
@@ -137,7 +136,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             }
          } catch (Exception ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-            return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
+            return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
          }
          monitor.done();
          return Status.OK_STATUS;
@@ -618,7 +617,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       }
    }
 
-   private void testTeamDefinitionHasWorkflow(Collection<Artifact> artifacts) throws OseeCoreException {
+   private void testTeamDefinitionHasWorkflow(Collection<Artifact> artifacts) {
       for (Artifact artifact : artifacts) {
          try {
             if (artifact instanceof TeamDefinitionArtifact) {

@@ -35,7 +35,7 @@ public class TasksActionHyperItem extends ActionHyperItem {
    }
 
    @Override
-   public void handleDoubleClick(HyperViewItem hyperViewItem) throws OseeCoreException {
+   public void handleDoubleClick(HyperViewItem hyperViewItem) {
       super.handleDoubleClick(hyperViewItem);
       WorldEditor.open(new WorldEditorSimpleProvider("Tasks", taskArtifacts));
    }

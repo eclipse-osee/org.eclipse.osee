@@ -134,7 +134,7 @@ public class AtsNavigateItemsToTaskEditorTest {
       NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, clazz, numOfType);
    }
 
-   public TaskEditor getSingleEditorOrFail() throws OseeCoreException {
+   public TaskEditor getSingleEditorOrFail() {
       // Retrieve results from opened editor and test
       Collection<TaskEditor> editors = TaskEditor.getEditors();
       assertTrue("Expecting 1 editor open, currently " + editors.size(), editors.size() == 1);
@@ -142,11 +142,11 @@ public class AtsNavigateItemsToTaskEditorTest {
       return editors.iterator().next();
    }
 
-   public TaskXViewer getXViewer() throws OseeCoreException {
+   public TaskXViewer getXViewer() {
       return getSingleEditorOrFail().getTaskActionPage().getTaskComposite().getTaskXViewer();
    }
 
-   public void handleTableCustomization() throws OseeCoreException {
+   public void handleTableCustomization() {
       // add all columns
       CustomizeDemoTableTestUtil cdialog = new CustomizeDemoTableTestUtil(getXViewer());
       cdialog.createDialogArea(getSingleEditorOrFail().getTaskActionPage().getTaskComposite());

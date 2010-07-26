@@ -67,7 +67,7 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
    }
 
    @Override
-   public String getSelectedName(SearchType searchType) throws OseeCoreException {
+   public String getSelectedName(SearchType searchType) {
       return String.format("Group Search - %s", getGroupSearchName());
    }
 

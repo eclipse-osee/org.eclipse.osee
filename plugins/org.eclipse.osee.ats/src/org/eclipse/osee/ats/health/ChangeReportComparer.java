@@ -15,7 +15,6 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.health.change.DataChangeReportComparer;
 import org.eclipse.osee.ats.health.change.ValidateChangeReportParser;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -29,12 +28,9 @@ public class ChangeReportComparer {
     * Compares two change report strings by parsing them and comparing each artifact change, attribute change and
     * relation change.
     * 
-    * @param currentData
-    * @param storedData
     * @return Returns true if the change reports matches else false.
-    * @throws OseeArgumentException
     */
-   public boolean compare(String currentData, String storedData) throws OseeArgumentException {
+   public boolean compare(String currentData, String storedData) {
       boolean success = true;
       ValidateChangeReportParser parser = new ValidateChangeReportParser();
       ArrayList<ArrayList<DataChangeReportComparer>> currentList = parser.parse(currentData);

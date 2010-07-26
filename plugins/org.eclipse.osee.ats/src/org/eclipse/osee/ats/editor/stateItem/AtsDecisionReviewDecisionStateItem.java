@@ -100,7 +100,7 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
    }
 
    @Override
-   public String getDescription() throws OseeCoreException {
+   public String getDescription() {
       return "AtsDecisionReviewDecisionStateItem - Add decision options to review state based on prepare state's entries.";
    }
 

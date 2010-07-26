@@ -33,11 +33,13 @@ public abstract class AtsStateItem implements IAtsStateItem {
 
    public static String ALL_STATE_IDS = "ALL";
 
+   @SuppressWarnings("unused")
    @Override
    public Result committing(StateMachineArtifact sma) throws OseeCoreException {
       return Result.TrueResult;
    }
 
+   @SuppressWarnings("unused")
    @Override
    public String getBranchShortName(StateMachineArtifact sma) throws OseeCoreException {
       return null;
@@ -47,6 +49,7 @@ public abstract class AtsStateItem implements IAtsStateItem {
       return null;
    }
 
+   @SuppressWarnings("unused")
    @Override
    public Collection<String> getIds() throws OseeCoreException {
       if (getId() == null) {
@@ -55,53 +58,67 @@ public abstract class AtsStateItem implements IAtsStateItem {
       return Arrays.asList(getId());
    }
 
+   @SuppressWarnings("unused")
    @Override
    public Collection<User> getOverrideTransitionToAssignees(SMAWorkFlowSection section) throws OseeCoreException {
       return null;
    }
 
+   @SuppressWarnings("unused")
    @Override
    public String getOverrideTransitionToStateName(SMAWorkFlowSection section) throws OseeCoreException {
       return null;
    }
 
+   @SuppressWarnings("unused")
    @Override
    public List<XWidget> getDynamicXWidgetsPostBody(StateMachineArtifact sma) throws OseeCoreException {
       return Collections.emptyList();
    }
 
+   @SuppressWarnings("unused")
    @Override
    public List<XWidget> getDynamicXWidgetsPreBody(StateMachineArtifact sma) throws OseeCoreException {
       return Collections.emptyList();
    }
 
+   @SuppressWarnings("unused")
    @Override
    public Result pageCreated(FormToolkit toolkit, AtsWorkPage page, StateMachineArtifact sma, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
       return Result.TrueResult;
    }
 
+   @SuppressWarnings("unused")
    @Override
    public void transitioned(StateMachineArtifact sma, String fromState, String toState, Collection<User> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
+      // provided for subclass implementation
    }
 
+   @SuppressWarnings("unused")
    @Override
    public Result transitioning(StateMachineArtifact sma, String fromState, String toState, Collection<User> toAssignees) throws OseeCoreException {
       return Result.TrueResult;
    }
 
+   @SuppressWarnings("unused")
    @Override
    public void widgetModified(SMAWorkFlowSection section, XWidget xWidget) throws OseeCoreException {
+      // provided for subclass implementation
    }
 
+   @SuppressWarnings("unused")
    @Override
    public void xWidgetCreated(XWidget xWidget, FormToolkit toolkit, AtsWorkPage page, Artifact art, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
+      // provided for subclass implementation
    }
 
+   @SuppressWarnings("unused")
    @Override
    public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, AtsWorkPage page, Artifact art, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
       return Result.TrueResult;
    }
 
+   @SuppressWarnings("unused")
    @Override
    public boolean isAccessControlViaAssigneesEnabledForBranching() throws OseeCoreException {
       return false;

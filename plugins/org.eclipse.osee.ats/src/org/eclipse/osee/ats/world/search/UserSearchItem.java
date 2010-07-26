@@ -82,6 +82,7 @@ public abstract class UserSearchItem extends WorldUISearchItem {
       }
    }
 
+   @SuppressWarnings("unused")
    protected Collection<Artifact> searchIt(User user) throws OseeCoreException {
       return EMPTY_SET;
    }

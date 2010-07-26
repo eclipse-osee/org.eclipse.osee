@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.artifact;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.util.widgets.XDecisionOptions;
-import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -25,7 +24,7 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 /**
  * @author Donald G. Dunne
  */
-public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewArtifact, IWorldViewArtifact, IATSStateMachineArtifact {
+public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewArtifact, IATSStateMachineArtifact {
 
    public XDecisionOptions decisionOptions;
    public static enum DecisionReviewState {

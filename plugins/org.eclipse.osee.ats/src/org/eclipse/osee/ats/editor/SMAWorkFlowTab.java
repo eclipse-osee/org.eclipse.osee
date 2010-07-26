@@ -47,9 +47,7 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
-import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -131,11 +129,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          scrolledForm.addDisposeListener(new DisposeListener() {
             @Override
             public void widgetDisposed(DisposeEvent e) {
-               try {
-                  storeScrollLocation();
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-               }
+               storeScrollLocation();
             }
          });
          updateTitleBar();
@@ -152,11 +146,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
             AtsPlugin.getInstance().setHelp(scrolledForm, sma.getHelpContext(), "org.eclipse.osee.ats.help.ui");
          }
 
-         try {
-            refreshData();
-         } catch (OseeCoreException ex) {
-            handleException(ex);
-         }
+         refreshData();
 
       } catch (Exception ex) {
          handleException(ex);
@@ -178,7 +168,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
    }
 
-   public void refreshData() throws OseeCoreException {
+   public void refreshData() {
       List<IOperation> ops = new ArrayList<IOperation>();
       ops.add(AtsBulkLoad.getConfigLoadingOperation());
       IOperation operation = new CompositeOperation("Load SMA Workflow Tab", AtsPlugin.PLUGIN_ID, ops);
@@ -498,7 +488,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       return Result.FalseResult;
    }
 
-   public Result isXWidgetSavable() throws OseeCoreException {
+   public Result isXWidgetSavable() {
       for (SMAWorkFlowSection section : sections) {
          Result result = section.isXWidgetSavable();
          if (result.isFalse()) {
@@ -555,7 +545,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
    private Control control = null;
 
-   private void storeScrollLocation() throws OseeStateException {
+   private void storeScrollLocation() {
       if (scrolledForm != null) {
          Integer selection = scrolledForm.getVerticalBar().getSelection();
          // System.out.println("Storing selection => " + selection);
@@ -640,7 +630,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
    }
 
-   private void createLatestHeader(Composite comp, XFormToolkit toolkit) throws OseeStateException {
+   private void createLatestHeader(Composite comp, XFormToolkit toolkit) {
       if (sma.isHistoricalVersion()) {
          Label label =
             toolkit.createLabel(
@@ -650,7 +640,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
    }
 
-   private void createAnnotationsHeader(Composite comp, XFormToolkit toolkit) throws OseeCoreException {
+   private void createAnnotationsHeader(Composite comp, XFormToolkit toolkit) {
       if (sma.getAnnotations().size() > 0) {
          new AnnotationComposite(toolkit, comp, SWT.None, sma);
       }
@@ -664,7 +654,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
    }
 
-   public static void createStateNotesHeader(Composite comp, XFormToolkit toolkit, StateMachineArtifact sma, int horizontalSpan, String forStateName) throws MultipleAttributesExist {
+   public static void createStateNotesHeader(Composite comp, XFormToolkit toolkit, StateMachineArtifact sma, int horizontalSpan, String forStateName) {
       // Display global Notes
       for (NoteItem noteItem : sma.getNotes().getNoteItems()) {
          if (forStateName == null || noteItem.getState().equals(forStateName)) {
@@ -673,7 +663,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
    }
 
-   public void refresh() throws OseeCoreException {
+   public void refresh() {
       if (sma.getEditor() != null && !sma.isInTransition()) {
          // remove all pages
          for (SMAWorkFlowSection section : sections) {

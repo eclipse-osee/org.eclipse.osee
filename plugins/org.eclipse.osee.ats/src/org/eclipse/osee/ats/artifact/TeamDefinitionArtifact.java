@@ -514,7 +514,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
    }
 
    @Override
-   public String getFullDisplayName() throws OseeCoreException {
+   public String getFullDisplayName() {
       return getName();
    }
 

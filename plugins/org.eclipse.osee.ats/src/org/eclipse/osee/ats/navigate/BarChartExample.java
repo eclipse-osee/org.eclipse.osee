@@ -36,7 +36,6 @@ import org.eclipse.birt.chart.model.layout.Plot;
 import org.eclipse.birt.chart.model.type.BarSeries;
 import org.eclipse.birt.chart.model.type.impl.BarSeriesImpl;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -62,12 +61,12 @@ public class BarChartExample extends XNavigateItemAction {
       ResultsEditor.open(new IResultsEditorProvider() {
 
          @Override
-         public String getEditorName() throws OseeCoreException {
+         public String getEditorName() {
             return "Example Bar Chart";
          }
 
          @Override
-         public List<IResultsEditorTab> getResultsEditorTabs() throws OseeCoreException {
+         public List<IResultsEditorTab> getResultsEditorTabs() {
             List<IResultsEditorTab> tabs = new ArrayList<IResultsEditorTab>();
             tabs.add(new ResultsEditorChartTab("Chart", createMyChart()));
             tabs.add(getReportHtmlTab());

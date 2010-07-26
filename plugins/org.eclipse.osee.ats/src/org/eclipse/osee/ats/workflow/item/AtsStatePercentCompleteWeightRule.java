@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
 
@@ -35,7 +34,7 @@ public class AtsStatePercentCompleteWeightRule extends WorkRuleDefinition {
       setDescription("Work Flow Option: <state>=<percent> Work Data attributes specify weighting given to each state in percent complete calculations.  <state> is either state name (not id) and <percent> is number from 0..1");
    }
 
-   public static Map<String, Double> getStateWeightMap(WorkRuleDefinition workRuleDefinition) throws OseeCoreException {
+   public static Map<String, Double> getStateWeightMap(WorkRuleDefinition workRuleDefinition) {
       Map<String, Double> stateToWeight = new HashMap<String, Double>();
       for (String stateName : workRuleDefinition.getWorkDataKeyValueMap().keySet()) {
          String value = workRuleDefinition.getWorkDataValue(stateName);

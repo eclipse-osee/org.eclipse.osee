@@ -17,7 +17,6 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.defect.DefectManager;
 import org.eclipse.osee.ats.util.widgets.role.UserRole;
 import org.eclipse.osee.ats.util.widgets.role.UserRole.Role;
-import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -30,7 +29,7 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 /**
  * @author Donald G. Dunne
  */
-public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IReviewArtifact, IWorldViewArtifact, IATSStateMachineArtifact {
+public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IReviewArtifact, IATSStateMachineArtifact {
 
    public static enum PeerToPeerReviewState {
       Prepare,

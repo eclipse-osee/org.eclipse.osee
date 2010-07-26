@@ -21,8 +21,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactListDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -75,10 +75,7 @@ public class ActionTeamListDialog extends ArtifactListDialog {
 
       recurseChildrenCheck.createWidgets(comp, 2);
       recurseChildrenCheck.set(recurseChildren);
-      recurseChildrenCheck.addSelectionListener(new SelectionListener() {
-         @Override
-         public void widgetDefaultSelected(SelectionEvent e) {
-         }
+      recurseChildrenCheck.addSelectionListener(new SelectionAdapter() {
 
          @Override
          public void widgetSelected(SelectionEvent e) {
@@ -87,10 +84,7 @@ public class ActionTeamListDialog extends ArtifactListDialog {
       });
       showFinishedCheck.createWidgets(comp, 2);
       showFinishedCheck.set(showFinished);
-      showFinishedCheck.addSelectionListener(new SelectionListener() {
-         @Override
-         public void widgetDefaultSelected(SelectionEvent e) {
-         }
+      showFinishedCheck.addSelectionListener(new SelectionAdapter() {
 
          @Override
          public void widgetSelected(SelectionEvent e) {
@@ -99,10 +93,7 @@ public class ActionTeamListDialog extends ArtifactListDialog {
       });
       showActionCheck.createWidgets(comp, 2);
       showActionCheck.set(showAction);
-      showActionCheck.addSelectionListener(new SelectionListener() {
-         @Override
-         public void widgetDefaultSelected(SelectionEvent e) {
-         }
+      showActionCheck.addSelectionListener(new SelectionAdapter() {
 
          @Override
          public void widgetSelected(SelectionEvent e) {

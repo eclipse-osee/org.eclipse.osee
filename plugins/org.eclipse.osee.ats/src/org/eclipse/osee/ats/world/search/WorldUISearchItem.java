@@ -96,6 +96,7 @@ public abstract class WorldUISearchItem extends WorldSearchItem {
       return performSearch(searchType);
    }
 
+   @SuppressWarnings("unused")
    public void performUI(SearchType searchType) throws OseeCoreException {
       cancelled = false;
    }

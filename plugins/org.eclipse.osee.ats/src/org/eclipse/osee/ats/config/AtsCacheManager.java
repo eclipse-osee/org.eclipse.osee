@@ -80,7 +80,7 @@ public class AtsCacheManager implements IArtifactEventListener, IArtifactsPurged
       OseeEventManager.addPriorityListener(this);
    }
 
-   public static synchronized void decacheTaskArtifacts(TaskableStateMachineArtifact sma) throws OseeCoreException {
+   public static synchronized void decacheTaskArtifacts(TaskableStateMachineArtifact sma) {
       teamTasksCache.remove(sma);
    }
 
@@ -126,7 +126,7 @@ public class AtsCacheManager implements IArtifactEventListener, IArtifactsPurged
    }
 
    @Override
-   public void handleArtifactsPurgedEvent(Sender sender, LoadedArtifacts loadedArtifacts) throws OseeCoreException {
+   public void handleArtifactsPurgedEvent(Sender sender, LoadedArtifacts loadedArtifacts) {
       if (DbUtil.isDbInit()) {
          OseeEventManager.removeListener(this);
          return;

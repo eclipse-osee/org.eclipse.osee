@@ -44,6 +44,7 @@ public class XCancellationReasonTextWidget extends XText implements IArtifactWid
 
    @Override
    public void revert() {
+      // do nothing
    }
 
    @Override

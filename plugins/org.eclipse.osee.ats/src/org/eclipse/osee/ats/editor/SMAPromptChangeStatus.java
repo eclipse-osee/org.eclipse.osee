@@ -33,11 +33,11 @@ public class SMAPromptChangeStatus {
 
    private final Collection<? extends StateMachineArtifact> smas;
 
-   public SMAPromptChangeStatus(StateMachineArtifact sma) throws OseeCoreException {
+   public SMAPromptChangeStatus(StateMachineArtifact sma) {
       this(Arrays.asList(sma));
    }
 
-   public SMAPromptChangeStatus(final Collection<? extends StateMachineArtifact> smas) throws OseeCoreException {
+   public SMAPromptChangeStatus(final Collection<? extends StateMachineArtifact> smas) {
       this.smas = smas;
    }
 

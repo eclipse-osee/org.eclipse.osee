@@ -644,6 +644,7 @@ public class HyperView extends ViewPart implements IPartListener {
    }
 
    protected void display() {
+      // provided for subclass implementation
    }
 
    private void createConnectionMenuBar(final HyperViewItem hvi) {
@@ -687,12 +688,14 @@ public class HyperView extends ViewPart implements IPartListener {
             }
          }
 
+         @Override
          public void mousePressed(MouseEvent e) {
             if (HyperView.debugOn) {
                System.out.println("mousePressed");
             }
          }
 
+         @Override
          public void mouseReleased(MouseEvent e) {
             if (HyperView.debugOn) {
                System.out.println("mouseReleased");
@@ -721,7 +724,7 @@ public class HyperView extends ViewPart implements IPartListener {
       try {
          nameLabel = new Label(title, hvi.getImage());
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          nameLabel = new Label(title, null);
       }
       Image markImage = hvi.getMarkImage();
@@ -739,12 +742,17 @@ public class HyperView extends ViewPart implements IPartListener {
    private void setContainerMouseListener(Figure figure) {
       MouseListener mouseListener = new MouseListener() {
 
+         @Override
          public void mouseDoubleClicked(MouseEvent e) {
+            // do nothing
          }
 
+         @Override
          public void mousePressed(MouseEvent e) {
+            // do nothing
          }
 
+         @Override
          public void mouseReleased(MouseEvent e) {
             if (e.button == 1) {
                if (dragCenter) {
@@ -770,21 +778,21 @@ public class HyperView extends ViewPart implements IPartListener {
    private void setMouseListener(Figure figure) {
       MouseListener mouseListener = new MouseListener() {
 
+         @Override
          public void mouseDoubleClicked(MouseEvent e) {
             if (e.button == 1 && e.getSource() instanceof NodeFigure) {
                NodeFigure nf = (NodeFigure) e.getSource();
                HyperViewItem si = nf.getSearchItem();
-               try {
-                  handleItemDoubleClick(si);
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-               }
+               handleItemDoubleClick(si);
             }
          }
 
+         @Override
          public void mousePressed(MouseEvent e) {
+            // do nothing
          }
 
+         @Override
          public void mouseReleased(MouseEvent e) {
             // System.out.println("mouseReleased");
             if (hCursor != null) {
@@ -807,7 +815,7 @@ public class HyperView extends ViewPart implements IPartListener {
       figure.addMouseListener(mouseListener);
    }
 
-   public void handleItemDoubleClick(HyperViewItem hvi) throws OseeCoreException {
+   public void handleItemDoubleClick(HyperViewItem hvi) {
       backListAddSearchItem(hvi);
       jumpTo(hvi);
    }
@@ -1123,24 +1131,34 @@ public class HyperView extends ViewPart implements IPartListener {
 
    @Override
    public void dispose() {
+      // do nothing
    }
 
+   @Override
    public void partActivated(IWorkbenchPart part) {
+      // do nothing
    }
 
+   @Override
    public void partBroughtToTop(IWorkbenchPart part) {
+      // do nothing
    }
 
+   @Override
    public void partClosed(IWorkbenchPart part) {
       if (part.equals(this)) {
          dispose();
       }
    }
 
+   @Override
    public void partDeactivated(IWorkbenchPart part) {
+      // do nothing
    }
 
+   @Override
    public void partOpened(IWorkbenchPart part) {
+      // do nothing
    }
 
    public Figure getContainer() {

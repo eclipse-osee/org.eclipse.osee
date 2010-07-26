@@ -12,6 +12,7 @@
 package org.eclipse.osee.ats.util.widgets.dialog;
 
 import java.util.Collection;
+import java.util.logging.Level;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
@@ -43,6 +44,7 @@ public class AITreeContentProvider implements ITreeContentProvider {
             return AtsUtil.getActive(Artifacts.getChildrenOfTypeSet(ai, ActionableItemArtifact.class, false), active,
                ActionableItemArtifact.class).toArray();
          } catch (Exception ex) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          }
       }
       return new Object[] {};
@@ -72,10 +74,12 @@ public class AITreeContentProvider implements ITreeContentProvider {
 
    @Override
    public void dispose() {
+      // do nothing
    }
 
    @Override
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+      // do nothing
    }
 
 }

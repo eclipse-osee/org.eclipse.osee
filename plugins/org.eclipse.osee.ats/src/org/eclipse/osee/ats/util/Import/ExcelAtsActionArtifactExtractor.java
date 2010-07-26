@@ -220,22 +220,27 @@ public class ExcelAtsActionArtifactExtractor {
 
       @Override
       public void processEmptyRow() {
+         // do nothing
       }
 
       @Override
       public void processCommentRow(String[] row) {
+         // do nothing
       }
 
       @Override
       public void reachedEndOfWorksheet() {
+         // do nothing
       }
 
       @Override
       public void detectedRowAndColumnCounts(int rowCount, int columnCount) {
+         // do nothing
       }
 
       @Override
       public void foundStartOfWorksheet(String sheetName) {
+         // do nothing
       }
 
       @Override

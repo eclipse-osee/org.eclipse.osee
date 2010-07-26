@@ -89,7 +89,7 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
    }
 
    protected void createToolBar(IToolBarManager toolBarManager) {
-
+      // provided for subclass implementation
    }
 
    private void createToolBar() {
@@ -179,6 +179,7 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
       buttonComp.layout();
    }
 
+   @SuppressWarnings("unused")
    public IDynamicWidgetLayoutListener getDynamicWidgetLayoutListener() throws OseeCoreException {
       return null;
    }

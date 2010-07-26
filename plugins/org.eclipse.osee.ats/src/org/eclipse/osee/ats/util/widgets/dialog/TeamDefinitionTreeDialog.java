@@ -14,8 +14,8 @@ package org.eclipse.osee.ats.util.widgets.dialog;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
@@ -41,10 +41,7 @@ public class TeamDefinitionTreeDialog extends TeamDefinitionTreeWithChildrenDial
       if (showFinished != null) {
          showFinishedCheck.createWidgets(dialogComp, 2);
          showFinishedCheck.set(showFinished);
-         showFinishedCheck.addSelectionListener(new SelectionListener() {
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-            }
+         showFinishedCheck.addSelectionListener(new SelectionAdapter() {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
@@ -56,10 +53,7 @@ public class TeamDefinitionTreeDialog extends TeamDefinitionTreeWithChildrenDial
       if (showAction != null) {
          showActionCheck.createWidgets(dialogComp, 2);
          showActionCheck.set(showAction);
-         showActionCheck.addSelectionListener(new SelectionListener() {
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-            }
+         showActionCheck.addSelectionListener(new SelectionAdapter() {
 
             @Override
             public void widgetSelected(SelectionEvent e) {

@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.world;
 
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
@@ -34,7 +33,7 @@ public class WorldEditorOperationProvider extends WorldEditorProvider implements
    }
 
    @Override
-   public void run(WorldEditor worldEditor, SearchType searchtype, boolean forcePend) throws OseeCoreException {
+   public void run(WorldEditor worldEditor, SearchType searchtype, boolean forcePend) {
       // WorldEditor is provided to the operation independently
       // Don't need search type cause operation should already handle if it wants to search or re-search
       if (forcePend) {
@@ -45,7 +44,7 @@ public class WorldEditorOperationProvider extends WorldEditorProvider implements
    }
 
    @Override
-   public String getName() throws OseeCoreException {
+   public String getName() {
       return operation.getName();
    }
 

@@ -38,7 +38,7 @@ public class AtsDecisionReviewPrepareStateItem extends AtsStateItem {
    }
 
    @Override
-   public String getDescription() throws OseeCoreException {
+   public String getDescription() {
       return "AtsDecisionReviewPrepareStateItem - Add validation of decision options prior to transitioning.";
    }
 

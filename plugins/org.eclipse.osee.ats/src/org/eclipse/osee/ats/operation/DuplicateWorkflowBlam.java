@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.operation;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -61,11 +60,12 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
    private static String TITLE = "New Title (blank for same title)";
    private Collection<? extends TeamWorkFlowArtifact> defaultTeamWorkflows;
 
-   public DuplicateWorkflowBlam() throws IOException {
+   public DuplicateWorkflowBlam() {
+      // do nothing
    }
 
    @Override
-   public void runOperation(final VariableMap variableMap, IProgressMonitor monitor) throws OseeCoreException {
+   public void runOperation(final VariableMap variableMap, IProgressMonitor monitor) {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {

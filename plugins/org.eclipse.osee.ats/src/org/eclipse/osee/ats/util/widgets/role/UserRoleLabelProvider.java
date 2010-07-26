@@ -32,7 +32,7 @@ public class UserRoleLabelProvider extends XViewerLabelProvider {
    }
 
    @Override
-   public Image getColumnImage(Object element, XViewerColumn dCol, int columnIndex) throws OseeCoreException {
+   public Image getColumnImage(Object element, XViewerColumn dCol, int columnIndex) {
       UserRole roleItem = (UserRole) element;
       if (dCol.equals(UserRoleXViewerFactory.User_Col)) {
          return ArtifactImageManager.getImage(roleItem.getUser());
@@ -76,6 +76,7 @@ public class UserRoleLabelProvider extends XViewerLabelProvider {
 
    @Override
    public void dispose() {
+      // do nothing
    }
 
    @Override
@@ -85,10 +86,12 @@ public class UserRoleLabelProvider extends XViewerLabelProvider {
 
    @Override
    public void addListener(ILabelProviderListener listener) {
+      // do nothing
    }
 
    @Override
    public void removeListener(ILabelProviderListener listener) {
+      // do nothing
    }
 
    public UserRoleXViewer getTreeViewer() {

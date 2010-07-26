@@ -15,7 +15,6 @@ import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
@@ -36,7 +35,7 @@ public class SMAWorkflowMetricsHeader extends Composite {
    private final StateMachineArtifact sma;
    private Label percentLabel, estHoursLabel, hoursSpentLabel, remainHoursLabel;
 
-   public SMAWorkflowMetricsHeader(Composite parent, XFormToolkit toolkit, StateMachineArtifact sma) throws OseeCoreException {
+   public SMAWorkflowMetricsHeader(Composite parent, XFormToolkit toolkit, StateMachineArtifact sma) {
       super(parent, SWT.NONE);
       this.sma = sma;
       try {
@@ -64,7 +63,7 @@ public class SMAWorkflowMetricsHeader extends Composite {
       }
    }
 
-   private void refresh() throws OseeCoreException {
+   private void refresh() {
       if (percentLabel.isDisposed()) {
          return;
       }

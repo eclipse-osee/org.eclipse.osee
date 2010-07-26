@@ -73,6 +73,7 @@ public class NewActionWizard extends Wizard implements INewWizard {
 
    @Override
    public void init(IWorkbench workbench, IStructuredSelection selection) {
+      // do nothing
    }
 
    @Override

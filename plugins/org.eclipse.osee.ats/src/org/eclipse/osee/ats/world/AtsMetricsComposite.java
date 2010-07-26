@@ -321,7 +321,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
       adapt(table);
    }
 
-   public void createHoursRemainingByAssigneesChart(SMAMetrics sMet, Composite parent) throws OseeCoreException {
+   public void createHoursRemainingByAssigneesChart(SMAMetrics sMet, Composite parent) {
       List<XBarGraphLine> lines = new ArrayList<XBarGraphLine>();
       Double hoursRemain = null;
       if (sMet.getEstRelDate() != null) {
@@ -374,6 +374,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
    }
 
    public void disposeComposite() {
+      // provided for subclass implementation
    }
 
    public void adapt(XWidget xWidget) {

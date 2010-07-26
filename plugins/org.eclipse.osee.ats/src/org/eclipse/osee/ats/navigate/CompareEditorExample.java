@@ -11,8 +11,6 @@
 package org.eclipse.osee.ats.navigate;
 
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
@@ -25,16 +23,12 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  */
 public class CompareEditorExample extends XNavigateItemAction {
 
-   /**
-    * @param parent
-    * @throws OseeArgumentException
-    */
-   public CompareEditorExample(XNavigateItem parent) throws OseeArgumentException {
+   public CompareEditorExample(XNavigateItem parent) {
       super(parent, "Compare Editor Example", FrameworkImage.GEAR);
    }
 
    @Override
-   public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
+   public void run(TableLoadOption... tableLoadOptions) {
       if (!MessageDialog.openConfirm(Displays.getActiveShell(), getName(), getName())) {
          return;
       }

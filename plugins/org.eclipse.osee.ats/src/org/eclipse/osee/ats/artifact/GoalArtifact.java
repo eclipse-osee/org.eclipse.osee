@@ -57,7 +57,7 @@ public class GoalArtifact extends StateMachineArtifact {
    }
 
    @Override
-   public ActionArtifact getParentActionArtifact() throws OseeCoreException {
+   public ActionArtifact getParentActionArtifact() {
       return null;
    }
 
@@ -75,32 +75,32 @@ public class GoalArtifact extends StateMachineArtifact {
    }
 
    @Override
-   public TeamWorkFlowArtifact getParentTeamWorkflow() throws OseeCoreException {
+   public TeamWorkFlowArtifact getParentTeamWorkflow() {
       return null;
    }
 
    @Override
-   public Set<User> getPrivilegedUsers() throws OseeCoreException {
+   public Set<User> getPrivilegedUsers() {
       return null;
    }
 
    @Override
-   public boolean isTaskable() throws OseeCoreException {
+   public boolean isTaskable() {
       return false;
    }
 
    @Override
-   public Date getWorldViewReleaseDate() throws OseeCoreException {
+   public Date getWorldViewReleaseDate() {
       return null;
    }
 
    @Override
-   public VersionArtifact getWorldViewTargetedVersion() throws OseeCoreException {
+   public VersionArtifact getWorldViewTargetedVersion() {
       return null;
    }
 
    @Override
-   public String getWorldViewParentID() throws OseeCoreException {
+   public String getWorldViewParentID() {
       return null;
    }
 

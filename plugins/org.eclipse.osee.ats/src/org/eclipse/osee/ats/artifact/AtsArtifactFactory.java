@@ -74,7 +74,7 @@ public class AtsArtifactFactory extends ArtifactFactory {
    }
 
    @Override
-   public Collection<ArtifactType> getEternalArtifactTypes() throws OseeCoreException {
+   public Collection<ArtifactType> getEternalArtifactTypes() {
       List<ArtifactType> artifactTypes = new ArrayList<ArtifactType>();
       try {
          artifactTypes.add(ArtifactTypeManager.getType(AtsArtifactTypes.Version));

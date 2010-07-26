@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.world;
 import java.util.Collection;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 
@@ -41,12 +40,12 @@ public class WorldEditorSimpleProvider extends WorldEditorProvider {
    }
 
    @Override
-   public void run(WorldEditor worldEditor, SearchType searchtype, boolean forcePend) throws OseeCoreException {
+   public void run(WorldEditor worldEditor, SearchType searchtype, boolean forcePend) {
       worldEditor.getWorldComposite().load(name, artifacts, customizeData, getTableLoadOptions());
    }
 
    @Override
-   public String getName() throws OseeCoreException {
+   public String getName() {
       return name;
    }
 

@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.util.widgets.role.UserRole;
 import org.eclipse.osee.ats.util.widgets.role.UserRole.Role;
 import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
@@ -39,11 +38,7 @@ import org.eclipse.osee.support.test.util.DemoUsers;
  */
 public class DoesNotWorkItemDemo extends WorldXNavigateItemAction {
 
-   /**
-    * @param parent
-    * @throws OseeArgumentException
-    */
-   public DoesNotWorkItemDemo(XNavigateItem parent) throws OseeArgumentException {
+   public DoesNotWorkItemDemo(XNavigateItem parent) {
       super(parent, "Does Not Work - Demo - Create peer review", PluginUiImage.ADMIN);
    }
 

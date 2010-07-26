@@ -82,22 +82,14 @@ public class NavigateView extends ViewPart implements IActionable {
    private Composite parent;
    private LoadingComposite loadingComposite;
 
-   public NavigateView() {
-   }
-
    @Override
    public void createPartControl(Composite parent) {
       this.parent = parent;
       loadingComposite = new LoadingComposite(parent);
-
-      try {
-         refreshData();
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-      }
+      refreshData();
    }
 
-   public void refreshData() throws OseeCoreException {
+   public void refreshData() {
       List<IOperation> ops = new ArrayList<IOperation>();
       ops.add(AtsBulkLoad.getConfigLoadingOperation());
       ops.add(new AtsNavigateViewItemsOperation());
@@ -299,6 +291,7 @@ public class NavigateView extends ViewPart implements IActionable {
 
    @Override
    public void setFocus() {
+      // do nothing
    }
 
    @Override

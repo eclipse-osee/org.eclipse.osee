@@ -720,7 +720,7 @@ public class AtsBranchManager {
     * Create a working branch associated with this state machine artifact. This should NOT be called by applications
     * except in test cases or automated tools. Use createWorkingBranchWithPopups
     */
-   public void createWorkingBranch(String pageId, final IOseeBranch parentBranch) throws OseeCoreException {
+   public void createWorkingBranch(String pageId, final IOseeBranch parentBranch) {
       final String branchName = Strings.truncate(teamArt.getBranchName(), 195, true);
 
       IExceptionableRunnable runnable = new IExceptionableRunnable() {

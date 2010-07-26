@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.actions.ExportChangeReportsAction;
 import org.eclipse.osee.ats.export.AtsExportManager;
 import org.eclipse.osee.ats.operation.CancelMultipleWorkflows;
 import org.eclipse.osee.ats.operation.CompleteMultipleWorkflows;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Donald G. Dunne
@@ -26,7 +25,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 public class AtsWorldEditorItem extends AtsWorldEditorItemBase {
 
    @Override
-   public List<? extends Action> getWorldEditorMenuActions(IWorldEditorProvider worldEditorProvider, WorldEditor worldEditor) throws OseeCoreException {
+   public List<? extends Action> getWorldEditorMenuActions(IWorldEditorProvider worldEditorProvider, WorldEditor worldEditor) {
       return Arrays.asList(new AtsExportManager(worldEditor), new ExportChangeReportsAction(worldEditor),
          new DuplicateWorkflowViaWorldEditorAction(worldEditor), new CompleteMultipleWorkflows(worldEditor),
          new CancelMultipleWorkflows(worldEditor));

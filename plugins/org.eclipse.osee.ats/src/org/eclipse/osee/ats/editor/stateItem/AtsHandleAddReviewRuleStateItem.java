@@ -78,7 +78,7 @@ public class AtsHandleAddReviewRuleStateItem extends AtsStateItem {
    }
 
    @Override
-   public String getDescription() throws OseeCoreException {
+   public String getDescription() {
       return "AtsHandleAddReviewRuleStateItem - If AddDecisionReviewRule or AddPeerToPeerReviewRule exists for this state, create review.";
    }
 

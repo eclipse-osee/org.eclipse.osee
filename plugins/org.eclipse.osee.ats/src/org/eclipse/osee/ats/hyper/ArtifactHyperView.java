@@ -49,7 +49,6 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IPerspectiveListener2;
 import org.eclipse.ui.IWorkbenchPage;
@@ -63,7 +62,7 @@ import org.eclipse.ui.PlatformUI;
  * 
  * @author Donald G. Dunne
  */
-public class ArtifactHyperView extends HyperView implements IArtifactEventListener, IFrameworkTransactionEventListener, IPartListener, IActionable, IPerspectiveListener2 {
+public class ArtifactHyperView extends HyperView implements IArtifactEventListener, IFrameworkTransactionEventListener, IActionable, IPerspectiveListener2 {
 
    public static String VIEW_ID = "org.eclipse.osee.ats.hyper.ArtifactHyperView";
    public static ArtifactHyperItem topAHI;
@@ -92,7 +91,7 @@ public class ArtifactHyperView extends HyperView implements IArtifactEventListen
       return null;
    }
 
-   public static void openArtifact(Artifact artifact) throws PartInitException {
+   public static void openArtifact(Artifact artifact) {
       getArtifactHyperView().load(artifact);
    }
 
@@ -248,15 +247,6 @@ public class ArtifactHyperView extends HyperView implements IArtifactEventListen
    @Override
    protected void createActions() {
       super.createActions();
-
-      pinAction = new Action("Pin Viewer", IAction.AS_CHECK_BOX) {
-
-         @Override
-         public void run() {
-         }
-      };
-      pinAction.setToolTipText("Keep viewer from updating based on open Actions.");
-      pinAction.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.PIN_EDITOR));
 
       Action openArtAction = new Action("Open Artifact") {
 

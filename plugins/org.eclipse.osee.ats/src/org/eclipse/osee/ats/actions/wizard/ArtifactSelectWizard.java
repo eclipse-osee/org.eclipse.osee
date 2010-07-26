@@ -20,9 +20,6 @@ public class ArtifactSelectWizard extends Wizard {
 
    private ArtifactSelectWizardPage wizardPage;
 
-   public ArtifactSelectWizard() {
-   }
-
    @Override
    public void addPages() {
       wizardPage = new ArtifactSelectWizardPage();

@@ -175,10 +175,12 @@ public class WorldComposite extends ScrolledComposite implements IWorldViewerEve
 
       @Override
       public void addListener(ILabelProviderListener arg0) {
+         // do nothing
       }
 
       @Override
       public void dispose() {
+         // do nothing
       }
 
       @Override
@@ -188,6 +190,7 @@ public class WorldComposite extends ScrolledComposite implements IWorldViewerEve
 
       @Override
       public void removeListener(ILabelProviderListener arg0) {
+         // do nothing
       }
    }
 
@@ -199,10 +202,12 @@ public class WorldComposite extends ScrolledComposite implements IWorldViewerEve
 
       @Override
       public void dispose() {
+         // do nothing
       }
 
       @Override
       public void inputChanged(Viewer arg0, Object arg1, Object arg2) {
+         // do nothing
       }
    }
 
@@ -241,7 +246,7 @@ public class WorldComposite extends ScrolledComposite implements IWorldViewerEve
    }
 
    @Override
-   public CustomizeData getCustomizeDataCopy() throws OseeCoreException {
+   public CustomizeData getCustomizeDataCopy() {
       return worldXViewer.getCustomizeMgr().generateCustDataFromTable();
    }
 
@@ -251,7 +256,7 @@ public class WorldComposite extends ScrolledComposite implements IWorldViewerEve
    }
 
    @Override
-   public ArrayList<Artifact> getSelectedArtifacts() throws OseeCoreException {
+   public ArrayList<Artifact> getSelectedArtifacts() {
       return worldXViewer.getSelectedArtifacts();
    }
 

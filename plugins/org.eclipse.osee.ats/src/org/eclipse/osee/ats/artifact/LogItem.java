@@ -34,13 +34,10 @@ public class LogItem {
    private String state;
    private User user;
    private LogType type = LogType.None;
-   private String userId;
+   private final String userId;
 
    public String getUserId() {
       return userId;
-   }
-
-   public LogItem() {
    }
 
    public LogItem(LogType type, Date date, User user, String state, String msg, String hrid) throws OseeCoreException {

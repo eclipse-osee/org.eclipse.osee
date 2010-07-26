@@ -181,6 +181,7 @@ public class SMAGoalMembersSection extends SectionPart implements IWorldEditor {
 
    @Override
    public void createToolBarPulldown(Menu menu) {
+      // do nothing
    }
 
    @Override
@@ -199,15 +200,18 @@ public class SMAGoalMembersSection extends SectionPart implements IWorldEditor {
    }
 
    @Override
-   public void reSearch() throws OseeCoreException {
+   public void reSearch() {
+      // do nothing
    }
 
    @Override
    public void reflow() {
+      // do nothing
    }
 
    @Override
    public void setTableTitle(String title, boolean warning) {
+      // do nothing
    }
 
 }

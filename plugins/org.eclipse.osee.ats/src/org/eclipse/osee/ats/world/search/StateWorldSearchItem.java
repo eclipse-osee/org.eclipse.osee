@@ -78,6 +78,7 @@ public class StateWorldSearchItem extends WorldUISearchItem {
 
    }
 
+   @SuppressWarnings("unused")
    @Override
    public void performUI(SearchType searchType) throws OseeCoreException {
       if (stateClass != null) {

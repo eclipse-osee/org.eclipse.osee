@@ -16,7 +16,6 @@ import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.UserCommunityListDialog;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -31,12 +30,12 @@ public class UserCommunitySearchItem extends WorldUISearchItem {
    private String selectedUserComm;
    private final String userCommName;
 
-   public UserCommunitySearchItem(String displayName, String userCommName) throws OseeArgumentException {
+   public UserCommunitySearchItem(String displayName, String userCommName) {
       super(displayName, AtsImage.GLOBE);
       this.userCommName = userCommName;
    }
 
-   public UserCommunitySearchItem() throws OseeArgumentException {
+   public UserCommunitySearchItem() {
       this("User Community Search", null);
    }
 

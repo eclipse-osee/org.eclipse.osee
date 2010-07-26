@@ -25,8 +25,8 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
@@ -44,13 +44,6 @@ public class TaskOptionStatusDialog extends SMAStatusDialog {
    private static String OPTION_MESSAGE =
       "Select resolution, enter percent complete and number of hours you spent since last status.";
 
-   /**
-    * @param parentShell
-    * @param dialogTitle
-    * @param dialogMessage
-    * @param showPercent
-    * @param options
-    */
    public TaskOptionStatusDialog(Shell parentShell, String dialogTitle, String dialogMessage, boolean showPercent, List<TaskResOptionDefinition> options, Collection<? extends StateMachineArtifact> tasks) {
       super(parentShell, dialogTitle, options == null ? MESSAGE : OPTION_MESSAGE, showPercent, tasks);
       this.options = options;
@@ -111,10 +104,7 @@ public class TaskOptionStatusDialog extends SMAStatusDialog {
             OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
          resolutionCombo.getCombo().setVisibleItemCount(20);
-         resolutionCombo.addSelectionListener(new SelectionListener() {
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-            }
+         resolutionCombo.addSelectionListener(new SelectionAdapter() {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
@@ -143,10 +133,12 @@ public class TaskOptionStatusDialog extends SMAStatusDialog {
 
       @Override
       public void addListener(ILabelProviderListener arg0) {
+         // do nothing
       }
 
       @Override
       public void dispose() {
+         // do nothing
       }
 
       @Override
@@ -156,6 +148,7 @@ public class TaskOptionStatusDialog extends SMAStatusDialog {
 
       @Override
       public void removeListener(ILabelProviderListener arg0) {
+         // do nothing
       }
 
    }

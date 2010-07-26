@@ -22,13 +22,10 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 public class NoteItem {
 
    private Date date;
-   private String state;
+   private final String state;
    private String msg;
    private User user;
    private NoteType type = NoteType.Other;
-
-   public NoteItem() {
-   }
 
    public NoteItem(NoteType type, String state, String date, User user, String msg) {
       Long l = new Long(date);

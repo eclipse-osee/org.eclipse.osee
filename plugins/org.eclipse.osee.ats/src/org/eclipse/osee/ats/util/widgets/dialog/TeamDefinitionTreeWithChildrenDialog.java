@@ -24,8 +24,8 @@ import org.eclipse.osee.framework.ui.skynet.util.ArtifactNameSorter;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -45,7 +45,7 @@ public class TeamDefinitionTreeWithChildrenDialog extends CheckedTreeSelectionDi
       this(active, TeamDefinitionArtifact.getTeamTopLevelDefinitions(active));
    }
 
-   public TeamDefinitionTreeWithChildrenDialog(Active active, Collection<TeamDefinitionArtifact> teamDefinitionArtifacts) throws OseeCoreException {
+   public TeamDefinitionTreeWithChildrenDialog(Active active, Collection<TeamDefinitionArtifact> teamDefinitionArtifacts) {
       super(Displays.getActiveShell(), new ArtifactDescriptiveLabelProvider(), new TeamDefinitionTreeContentProvider(
          active));
       setTitle("Select Team Definition");
@@ -79,10 +79,7 @@ public class TeamDefinitionTreeWithChildrenDialog extends CheckedTreeSelectionDi
 
       recurseChildrenCheck.createWidgets(dialogComp, 2);
       recurseChildrenCheck.set(recurseChildren);
-      recurseChildrenCheck.addSelectionListener(new SelectionListener() {
-         @Override
-         public void widgetDefaultSelected(SelectionEvent e) {
-         }
+      recurseChildrenCheck.addSelectionListener(new SelectionAdapter() {
 
          @Override
          public void widgetSelected(SelectionEvent e) {

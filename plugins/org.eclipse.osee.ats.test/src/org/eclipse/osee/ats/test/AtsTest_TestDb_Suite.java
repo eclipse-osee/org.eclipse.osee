@@ -21,5 +21,5 @@ import org.junit.runners.Suite;
  * @author Donald G. Dunne
  */
 public class AtsTest_TestDb_Suite {
-
+   // test provided above
 }

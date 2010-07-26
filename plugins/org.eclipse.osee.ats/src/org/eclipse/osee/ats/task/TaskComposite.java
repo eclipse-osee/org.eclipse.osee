@@ -78,11 +78,11 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
    protected Label showReleaseMetricsLabel;
    private final Set<TaskArtifact> taskArts = new HashSet<TaskArtifact>(200);
 
-   public TaskComposite(IXTaskViewer iXTaskViewer, Composite parent, int style) throws OseeCoreException {
+   public TaskComposite(IXTaskViewer iXTaskViewer, Composite parent, int style) {
       this(iXTaskViewer, parent, style, null);
    }
 
-   public TaskComposite(IXTaskViewer iXTaskViewer, Composite parent, int style, ToolBar toolBar) throws OseeCoreException {
+   public TaskComposite(IXTaskViewer iXTaskViewer, Composite parent, int style, ToolBar toolBar) {
       super(parent, style);
       this.iXTaskViewer = iXTaskViewer;
       AtsBulkLoad.loadConfig(false);
@@ -251,6 +251,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
 
          @Override
          public void dragFinished(DragSourceEvent event) {
+            // do nothing
          }
 
          @Override
@@ -263,6 +264,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
 
          @Override
          public void dragStart(DragSourceEvent event) {
+            // do nothing
          }
       });
 
@@ -283,6 +285,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
 
          @Override
          public void dropAccept(DropTargetEvent event) {
+            // do nothing
          }
       });
    }
@@ -334,7 +337,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
    }
 
    @Override
-   public CustomizeData getCustomizeDataCopy() throws OseeCoreException {
+   public CustomizeData getCustomizeDataCopy() {
       return taskXViewer.getCustomizeMgr().generateCustDataFromTable();
    }
 
@@ -344,7 +347,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
    }
 
    @Override
-   public ArrayList<? extends Artifact> getSelectedArtifacts() throws OseeCoreException {
+   public ArrayList<? extends Artifact> getSelectedArtifacts() {
       return getSelectedTaskArtifactItems();
    }
 

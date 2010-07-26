@@ -16,5 +16,5 @@ import org.eclipse.osee.framework.database.init.AddCommonBranch;
  * @author Donald G. Dunne
  */
 public class AddCommonBranchForAtsDemo extends AddCommonBranch {
-
+   // provided for db init
 }

@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.ats.world.search.TeamWorldSearchItem;
 import org.eclipse.osee.ats.world.search.TeamWorldSearchItem.ReleasedOption;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -58,28 +57,29 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
    protected XCheckBox includeCompletedCancelledCheckbox;
    protected XCheckBox showFlatCheckbox;
 
-   public TeamWorkflowSearchWorkflowSearchItem(String name) throws OseeArgumentException {
+   public TeamWorkflowSearchWorkflowSearchItem(String name) {
       super(name, AtsImage.TEAM_WORKFLOW);
    }
 
-   public TeamWorkflowSearchWorkflowSearchItem() throws OseeArgumentException {
+   public TeamWorkflowSearchWorkflowSearchItem() {
       this("Team Workflow Search");
    }
 
-   public TeamWorkflowSearchWorkflowSearchItem(TeamWorkflowSearchWorkflowSearchItem editTeamWorkflowSearchItem) throws OseeArgumentException {
+   public TeamWorkflowSearchWorkflowSearchItem(TeamWorkflowSearchWorkflowSearchItem editTeamWorkflowSearchItem) {
       super(editTeamWorkflowSearchItem, AtsImage.TEAM_WORKFLOW);
    }
 
    @Override
-   public TeamWorkflowSearchWorkflowSearchItem copy() throws OseeArgumentException {
+   public TeamWorkflowSearchWorkflowSearchItem copy() {
       return new TeamWorkflowSearchWorkflowSearchItem(this);
    }
 
    @Override
-   public TeamWorkflowSearchWorkflowSearchItem copyProvider() throws OseeArgumentException {
+   public TeamWorkflowSearchWorkflowSearchItem copyProvider() {
       return new TeamWorkflowSearchWorkflowSearchItem(this);
    }
 
+   @SuppressWarnings("unused")
    @Override
    public String getParameterXWidgetXml() throws OseeCoreException {
       return "<xWidgets>" +
@@ -146,6 +146,7 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
       return Strings.truncate(getName() + sb.toString(), WorldEditor.TITLE_MAX_LENGTH, true);
    }
 
+   @SuppressWarnings("unused")
    @Override
    public void widgetCreated(XWidget widget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
       if (widget.getLabel().equals("Assignee")) {
@@ -270,7 +271,7 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
       }
    }
 
-   public Collection<TeamDefinitionArtifact> getSelectedTeamDefinitions() throws OseeCoreException {
+   public Collection<TeamDefinitionArtifact> getSelectedTeamDefinitions() {
       if (teamCombo == null) {
          return java.util.Collections.emptyList();
       }
@@ -284,7 +285,7 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
       }
    }
 
-   protected ReleasedOption getSelectedReleased() throws OseeCoreException {
+   protected ReleasedOption getSelectedReleased() {
       if (releasedCombo == null || releasedCombo.get() == null || releasedCombo.get().equals("")) {
          return ReleasedOption.Both;
       }
@@ -298,13 +299,16 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
    }
 
    @Override
-   public void createXWidgetLayoutData(DynamicXWidgetLayoutData layoutData, XWidget widget, FormToolkit toolkit, Artifact art, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
+   public void createXWidgetLayoutData(DynamicXWidgetLayoutData layoutData, XWidget widget, FormToolkit toolkit, Artifact art, XModifiedListener modListener, boolean isEditable) {
+      // do nothing
    }
 
    @Override
-   public void widgetCreating(XWidget widget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
+   public void widgetCreating(XWidget widget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
+      // do nothing
    }
 
+   @SuppressWarnings("unused")
    @Override
    public Result isParameterSelectionValid() throws OseeCoreException {
       try {

@@ -14,7 +14,6 @@ import java.util.Collections;
 import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 
@@ -24,32 +23,32 @@ import org.eclipse.swt.graphics.Image;
 public abstract class AtsWorldEditorItemBase implements IAtsWorldEditorItem {
 
    @Override
-   public Image getColumnImage(Object element, XViewerColumn col, int columnIndex) throws OseeCoreException {
+   public Image getColumnImage(Object element, XViewerColumn col, int columnIndex) {
       return null;
    }
 
    @Override
-   public String getColumnText(Object element, XViewerColumn col, int columnIndex) throws OseeCoreException {
+   public String getColumnText(Object element, XViewerColumn col, int columnIndex) {
       return null;
    }
 
    @Override
-   public Color getForeground(Object element, XViewerColumn col, int columnIndex) throws OseeCoreException {
+   public Color getForeground(Object element, XViewerColumn col, int columnIndex) {
       return null;
    }
 
    @Override
-   public List<XViewerColumn> getXViewerColumns() throws OseeCoreException {
+   public List<XViewerColumn> getXViewerColumns() {
       return Collections.emptyList();
    }
 
    @Override
-   public boolean isXColumnProvider(XViewerColumn col) throws OseeCoreException {
+   public boolean isXColumnProvider(XViewerColumn col) {
       return false;
    }
 
    @Override
-   public List<? extends Action> getWorldEditorMenuActions(IWorldEditorProvider worldEditorProvider, WorldEditor worldEditor) throws OseeCoreException {
+   public List<? extends Action> getWorldEditorMenuActions(IWorldEditorProvider worldEditorProvider, WorldEditor worldEditor) {
       return Collections.emptyList();
    }
 }

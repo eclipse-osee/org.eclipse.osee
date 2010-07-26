@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayou
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkWidgetDefinition;
-import org.junit.Before;
 
 /**
  * This test can be run on a test or production Db
@@ -26,10 +25,6 @@ import org.junit.Before;
  * @author Donald G. Dunne
  */
 public class AtsWorkItemDefinitionTest {
-
-   @Before
-   public void setUp() throws Exception {
-   }
 
    @org.junit.Test
    public void testWorkItemDefinitions() throws Exception {

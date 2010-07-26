@@ -10,7 +10,6 @@
 �*******************************************************************************/
 package org.eclipse.osee.ats.workflow.editor.model;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -49,7 +48,7 @@ public class TransitionConnection extends Connection {
    }
 
    @Override
-   public Result validForSave() throws OseeCoreException {
+   public Result validForSave() {
       System.err.println("Add Connection validations.");
       return Result.TrueResult;
    }
@@ -88,7 +87,7 @@ public class TransitionConnection extends Connection {
    }
 
    @Override
-   public Result doSave(SkynetTransaction transaction) throws OseeCoreException {
+   public Result doSave(SkynetTransaction transaction) {
       return Result.TrueResult;
    }
 

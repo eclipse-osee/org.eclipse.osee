@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -45,7 +44,7 @@ public class StateManager {
    private final XStateDam stateDam;
    private final StateMachineArtifact sma;
 
-   public StateManager(StateMachineArtifact sma) throws OseeStateException {
+   public StateManager(StateMachineArtifact sma) {
       super();
       this.sma = sma;
       currentStateDam = new XCurrentStateDam(sma);

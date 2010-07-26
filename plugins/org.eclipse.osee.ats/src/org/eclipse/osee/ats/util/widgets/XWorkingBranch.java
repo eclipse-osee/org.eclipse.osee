@@ -180,6 +180,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IArtifac
 
    @Override
    public void setFocus() {
+      // do nothing
    }
 
    @Override
@@ -243,6 +244,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IArtifac
 
    @Override
    public void setXmlData(String str) {
+      // do nothing
    }
 
    @Override
@@ -257,10 +259,12 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IArtifac
 
    @Override
    public void revert() {
+      // do nothing
    }
 
    @Override
    public void saveToArtifact() {
+      // do nothing
    }
 
    @Override
@@ -317,6 +321,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IArtifac
 
    @Override
    public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
+      // do nothing
    }
 
 }

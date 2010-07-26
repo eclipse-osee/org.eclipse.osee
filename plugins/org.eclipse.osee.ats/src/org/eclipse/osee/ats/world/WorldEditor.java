@@ -56,6 +56,7 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
 
    @Override
    public void doSave(IProgressMonitor monitor) {
+      // do nothing
    }
 
    public static void open(final IWorldEditorProvider provider) {
@@ -199,12 +200,12 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
       worldXWidgetActionPage.reSearch();
    }
 
-   private void createMainTab() throws OseeCoreException, PartInitException {
+   private void createMainTab() throws PartInitException {
       worldXWidgetActionPage = new WorldXWidgetActionPage(this);
       mainPageIndex = addPage(worldXWidgetActionPage);
    }
 
-   private void createMetricsTab() throws OseeCoreException {
+   private void createMetricsTab() {
       Composite comp = AtsUtil.createCommonPageComposite(getContainer());
       AtsUtil.createCommonToolBar(comp);
       metricsComposite = new AtsMetricsComposite(this, comp, SWT.NONE);
@@ -217,7 +218,7 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
    }
 
    @Override
-   public Collection<? extends Artifact> getMetricsArtifacts() throws OseeCoreException {
+   public Collection<? extends Artifact> getMetricsArtifacts() {
       return getLoadedArtifacts();
    }
 
@@ -273,6 +274,7 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
 
    @Override
    public void doSaveAs() {
+      // do nothing
    }
 
    @Override
@@ -282,5 +284,6 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
 
    @Override
    public void onDirtied() {
+      // do nothing
    }
 }

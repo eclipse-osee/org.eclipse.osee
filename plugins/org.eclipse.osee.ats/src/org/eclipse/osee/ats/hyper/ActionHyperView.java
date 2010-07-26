@@ -47,7 +47,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IPerspectiveListener2;
 import org.eclipse.ui.IViewReference;
@@ -62,7 +61,7 @@ import org.eclipse.ui.PlatformUI;
  * 
  * @author Donald G. Dunne
  */
-public class ActionHyperView extends HyperView implements IPartListener, IActionable, IArtifactEventListener, IFrameworkTransactionEventListener, IPerspectiveListener2 {
+public class ActionHyperView extends HyperView implements IActionable, IArtifactEventListener, IFrameworkTransactionEventListener, IPerspectiveListener2 {
 
    public static String VIEW_ID = "org.eclipse.osee.ats.hyper.ActionHyperView";
    private static String HELP_CONTEXT_ID = "atsActionView";
@@ -120,7 +119,7 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
    }
 
    @Override
-   public void handleItemDoubleClick(HyperViewItem hvi) throws OseeCoreException {
+   public void handleItemDoubleClick(HyperViewItem hvi) {
       Artifact art = ((ActionHyperItem) hvi).getArtifact();
       if (art == null) {
          ((ActionHyperItem) hvi).handleDoubleClick(hvi);

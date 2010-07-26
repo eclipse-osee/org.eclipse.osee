@@ -15,7 +15,6 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -37,7 +36,7 @@ public class AtsWorkflowConfigRenderer extends DefaultArtifactRenderer {
    private static final String COMMAND_ID = "org.eclipse.osee.framework.ui.skynet.atsworkflowconfigeditor.command";
 
    @Override
-   public Image getImage(Artifact artifact) throws OseeCoreException {
+   public Image getImage(Artifact artifact) {
       return ImageManager.getImage(AtsImage.WORKFLOW_CONFIG);
    }
 
@@ -47,12 +46,12 @@ public class AtsWorkflowConfigRenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public AtsWorkflowConfigRenderer newInstance() throws OseeCoreException {
+   public AtsWorkflowConfigRenderer newInstance() {
       return new AtsWorkflowConfigRenderer();
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
       if (artifact.isOfType(CoreArtifactTypes.WorkFlowDefinition)) {
          return PRESENTATION_SUBTYPE_MATCH;
       }
@@ -60,7 +59,7 @@ public class AtsWorkflowConfigRenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public int minimumRanking() throws OseeCoreException {
+   public int minimumRanking() {
       return NO_MATCH;
    }
 

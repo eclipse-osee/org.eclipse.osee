@@ -30,7 +30,6 @@ import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -52,7 +51,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
 
    XResultData resultData;
 
-   public AtsRemoteEventTestItem(XNavigateItem parent) throws OseeArgumentException {
+   public AtsRemoteEventTestItem(XNavigateItem parent) {
       super(parent, "ATS Remote Event Test");
    }
 
@@ -244,7 +243,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       testEquals("State", DefaultTeamState.Analyze.name(), teamArt.getStateMgr().getCurrentStateName());
    }
 
-   private void testEquals(String name, Object expected, Object actual) throws OseeCoreException {
+   private void testEquals(String name, Object expected, Object actual) {
       if (!expected.equals(actual)) {
          resultData.logError(String.format("Error: [%s] - expected [%s] actual[%s]", name, expected, actual));
       } else {

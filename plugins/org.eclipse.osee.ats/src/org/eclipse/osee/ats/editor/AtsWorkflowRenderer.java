@@ -42,7 +42,7 @@ public class AtsWorkflowRenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public Image getImage(Artifact artifact) throws OseeCoreException {
+   public Image getImage(Artifact artifact) {
       return ImageManager.getImage(AtsImage.ACTION);
    }
 
@@ -52,7 +52,7 @@ public class AtsWorkflowRenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public AtsWorkflowRenderer newInstance() throws OseeCoreException {
+   public AtsWorkflowRenderer newInstance() {
       return new AtsWorkflowRenderer();
    }
 
@@ -74,7 +74,7 @@ public class AtsWorkflowRenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public void open(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
+   public void open(List<Artifact> artifacts, PresentationType presentationType) {
       for (Artifact artifact : artifacts) {
          AtsUtil.openATSAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
       }

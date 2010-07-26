@@ -570,7 +570,7 @@ public class AtsNavigateItemsToWorldViewTest {
       }
    }
 
-   public WorldEditor getSingleEditorOrFail() throws OseeCoreException {
+   public WorldEditor getSingleEditorOrFail() {
       // Retrieve results from opened editor and test
       Collection<WorldEditor> editors = WorldEditor.getEditors();
       assertTrue("Expecting 1 editor open, currently " + editors.size(), editors.size() == 1);
@@ -578,11 +578,11 @@ public class AtsNavigateItemsToWorldViewTest {
       return editors.iterator().next();
    }
 
-   public WorldXViewer getXViewer() throws OseeCoreException {
+   public WorldXViewer getXViewer() {
       return getSingleEditorOrFail().getWorldComposite().getXViewer();
    }
 
-   public void handleTableCustomization() throws OseeCoreException {
+   public void handleTableCustomization() {
       // add all columns
       CustomizeDemoTableTestUtil cdialog = new CustomizeDemoTableTestUtil(getXViewer());
       cdialog.createDialogArea(getSingleEditorOrFail().getWorldComposite());
@@ -645,7 +645,7 @@ public class AtsNavigateItemsToWorldViewTest {
       }
    }
 
-   public void verifyXColumns(ITableLabelProvider labelProv, Collection<Artifact> arts, List<XViewerColumn> columns) throws OseeCoreException {
+   public void verifyXColumns(ITableLabelProvider labelProv, Collection<Artifact> arts, List<XViewerColumn> columns) {
       for (XViewerColumn xCol : columns) {
          verifyArtifact(labelProv, arts, getXViewer().getCustomizeMgr().getColumnNumFromXViewerColumn(xCol));
       }

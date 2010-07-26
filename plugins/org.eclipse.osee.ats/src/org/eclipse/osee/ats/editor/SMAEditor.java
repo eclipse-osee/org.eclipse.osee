@@ -43,7 +43,6 @@ import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -103,7 +102,7 @@ import org.eclipse.ui.part.MultiPageEditorPart;
  * 
  * @author Donald G. Dunne
  */
-public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEventHandler, ISelectedAtsArtifacts, IDirtiableEditor, IActionable, IArtifactReloadEventListener, IAtsMetricsProvider, IArtifactsPurgedEventListener, IFrameworkTransactionEventListener, IBranchEventListener, IXTaskViewer {
+public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEventHandler, ISelectedAtsArtifacts, IActionable, IArtifactReloadEventListener, IAtsMetricsProvider, IArtifactsPurgedEventListener, IFrameworkTransactionEventListener, IBranchEventListener, IXTaskViewer {
    public static final String EDITOR_ID = "org.eclipse.osee.ats.editor.SMAEditor";
    private StateMachineArtifact sma;
    private int workFlowPageIndex, metricsPageIndex, attributesPageIndex;
@@ -178,7 +177,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
       enableGlobalPrint();
    }
 
-   private void createTaskTab() throws OseeCoreException, PartInitException {
+   private void createTaskTab() throws PartInitException {
       taskTabXWidgetActionPage = new TaskTabXWidgetActionPage(this);
       addPage(taskTabXWidgetActionPage);
    }
@@ -269,15 +268,10 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
 
    @Override
    public boolean isDirty() {
-      try {
-         return isDirtyResult().isTrue();
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-      }
-      return false;
+      return isDirtyResult().isTrue();
    }
 
-   public Result isDirtyResult() throws OseeStateException {
+   public Result isDirtyResult() {
       if (sma.isDeleted()) {
          return Result.FalseResult;
       }
@@ -506,12 +500,12 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
    }
 
    @Override
-   public IDirtiableEditor getEditor() throws OseeCoreException {
+   public IDirtiableEditor getEditor() {
       return this;
    }
 
    @Override
-   public String getTabName() throws OseeCoreException {
+   public String getTabName() {
       return "Tasks";
    }
 
@@ -544,7 +538,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
    /**
     * @param priviledgedEditMode the priviledgedEditMode to set s * @throws OseeCoreException
     */
-   public void setPriviledgedEditMode(boolean enabled) throws OseeCoreException {
+   public void setPriviledgedEditMode(boolean enabled) {
       this.priviledgedEditModeEnabled = enabled;
       doSave(null);
       workFlowTab.refresh();
@@ -671,7 +665,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
    }
 
    @Override
-   public Collection<? extends Artifact> getMetricsArtifacts() throws OseeCoreException {
+   public Collection<? extends Artifact> getMetricsArtifacts() {
       return Arrays.asList(sma);
    }
 
@@ -681,11 +675,12 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
    }
 
    @Override
-   public void handleRefreshAction() throws OseeCoreException {
+   public void handleRefreshAction() {
+      // do nothing
    }
 
    @Override
-   public boolean isRefreshActionHandled() throws OseeCoreException {
+   public boolean isRefreshActionHandled() {
       return false;
    }
 
@@ -736,12 +731,12 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
    }
 
    @Override
-   public IActionable getActionable() throws OseeCoreException {
+   public IActionable getActionable() {
       return this;
    }
 
    @Override
-   public Set<? extends Artifact> getSelectedSMAArtifacts() throws OseeStateException {
+   public Set<? extends Artifact> getSelectedSMAArtifacts() {
       return Collections.singleton(sma);
    }
 
@@ -775,6 +770,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
 
    @Override
    public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
+      // do nothing
    }
 
    @Override

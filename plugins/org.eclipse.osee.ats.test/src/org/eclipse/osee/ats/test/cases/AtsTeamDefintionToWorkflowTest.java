@@ -16,16 +16,11 @@ import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.junit.Before;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsTeamDefintionToWorkflowTest {
-
-   @Before
-   public void setUp() throws Exception {
-   }
 
    @org.junit.Test
    public void testTeamDefinitionToWorkflow() throws Exception {

@@ -37,9 +37,6 @@ public class DemoTeams {
    };
    private static DemoTeams instance = new DemoTeams();
 
-   private DemoTeams() {
-   }
-
    public static DemoTeams getInstance() {
       return instance;
    }

@@ -28,7 +28,7 @@ public class AtsBulkLoad {
 
    private static boolean atsTypeDataLoadedStarted = false;
 
-   public synchronized static IOperation getConfigLoadingOperation() throws OseeCoreException {
+   public synchronized static IOperation getConfigLoadingOperation() {
       if (atsTypeDataLoadedStarted == false) {
          atsTypeDataLoadedStarted = true;
          return new AtsLoadConfigArtifactsOperation();

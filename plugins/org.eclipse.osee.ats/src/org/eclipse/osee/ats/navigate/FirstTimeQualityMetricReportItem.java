@@ -161,11 +161,8 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
             nextReleaseStartDate = nextVerMet.getReleaseStartDate();
             nextReleaseEndDate = nextVerMet.getVerArt().getReleaseDate();
          }
-         Integer numOrigDurningNextReleaseCycle = null;
+         Integer numOrigDurningNextReleaseCycle = 0;
          if (nextReleaseStartDate != null && nextReleaseEndDate != null) {
-            if (numOrigDurningNextReleaseCycle == null) {
-               numOrigDurningNextReleaseCycle = 0;
-            }
             Collection<TeamWorkFlowArtifact> arts =
                teamMet.getWorkflowsOriginatedBetween(nextReleaseStartDate, nextReleaseEndDate);
             for (TeamWorkFlowArtifact team : arts) {
@@ -187,9 +184,9 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
             verMet.getVerArt().getName(),
             XDate.getDateStr(thisReleaseStartDate, XDate.MMDDYY),
             XDate.getDateStr(thisReleaseEndDate, XDate.MMDDYY),
-            numOrigDurningNextReleaseCycle == null ? "N/A" : String.valueOf(numOrigDurningNextReleaseCycle),
+            numOrigDurningNextReleaseCycle == 0 ? "N/A" : String.valueOf(numOrigDurningNextReleaseCycle),
             numNonSupportReleased == null ? "N/A" : String.valueOf(numNonSupportReleased),
-            numOrigDurningNextReleaseCycle == null || numNonSupportReleased == null || numNonSupportReleased == 0 ? "N/A" : AtsUtil.doubleToI18nString((double) numOrigDurningNextReleaseCycle / (double) numNonSupportReleased)}));
+            numOrigDurningNextReleaseCycle == 0 || numNonSupportReleased == null || numNonSupportReleased == 0 ? "N/A" : AtsUtil.doubleToI18nString((double) numOrigDurningNextReleaseCycle / (double) numNonSupportReleased)}));
          monitor.worked(1);
       }
       sb.append(AHTML.endMultiColumnTable());

@@ -40,7 +40,7 @@ public class AtsExportRenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public Image getImage(Artifact artifact) throws OseeCoreException {
+   public Image getImage(Artifact artifact) {
       return ImageManager.getImage(FrameworkImage.EXPORT_DATA);
    }
 
@@ -50,12 +50,12 @@ public class AtsExportRenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public AtsExportRenderer newInstance() throws OseeCoreException {
+   public AtsExportRenderer newInstance() {
       return new AtsExportRenderer();
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
       if (artifact instanceof IATSArtifact && !artifact.isHistorical()) {
          return PRESENTATION_SUBTYPE_MATCH;
       }
@@ -63,7 +63,7 @@ public class AtsExportRenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public int minimumRanking() throws OseeCoreException {
+   public int minimumRanking() {
       return NO_MATCH;
    }
 

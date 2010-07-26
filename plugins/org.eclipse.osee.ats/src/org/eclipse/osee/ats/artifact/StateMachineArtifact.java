@@ -170,16 +170,19 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return getArtifactTypeName();
    }
 
+   @SuppressWarnings("unused")
    @Override
    public Date getWorldViewDeadlineDate() throws OseeCoreException {
       return null;
    }
 
+   @SuppressWarnings("unused")
    @Override
    public String getWorldViewDeadlineDateStr() throws OseeCoreException {
       return "";
    }
 
+   @SuppressWarnings("unused")
    @Override
    public String getWorldViewDescription() throws OseeCoreException {
       return "";
@@ -202,10 +205,12 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return users;
    }
 
+   @SuppressWarnings("unused")
    public Collection<User> getImplementers() throws OseeCoreException {
       return Collections.emptyList();
    }
 
+   @SuppressWarnings("unused")
    @Override
    public String getWorldViewTeam() throws OseeCoreException {
       return null;
@@ -221,6 +226,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return Artifacts.toString("; ", getRelatedArtifacts(AtsRelationTypes.Goal_Goal));
    }
 
+   @SuppressWarnings("unused")
    @Override
    public double getWorldViewWeeklyBenefit() throws OseeCoreException {
       return 0;
@@ -281,6 +287,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       preSaveOriginator = getOriginator();
    }
 
+   @SuppressWarnings("unused")
    public boolean isValidationRequired() throws OseeCoreException {
       return false;
    }
@@ -306,14 +313,17 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return groupNames;
    }
 
+   @SuppressWarnings("unused")
    public StateMachineArtifact getParentSMA() throws OseeCoreException {
       return parentSma;
    }
 
+   @SuppressWarnings("unused")
    public ActionArtifact getParentActionArtifact() throws OseeCoreException {
       return parentAction;
    }
 
+   @SuppressWarnings("unused")
    public TeamWorkFlowArtifact getParentTeamWorkflow() throws OseeCoreException {
       return parentTeamArt;
    }
@@ -361,6 +371,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return getWorldViewType() + ": " + getName();
    }
 
+   @SuppressWarnings("unused")
    @Override
    public String getWorldViewActionableItems() throws OseeCoreException {
       return "";
@@ -381,7 +392,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return FrameworkArtifactImageProvider.getUserImage(getStateMgr().getAssignees());
    }
 
-   public WorkFlowDefinition getWorkFlowDefinition() throws OseeCoreException {
+   public WorkFlowDefinition getWorkFlowDefinition() {
       if (workFlowDefinition == null) {
          try {
             workFlowDefinition = WorkFlowDefinitionFactory.getWorkFlowDefinition(this);
@@ -473,11 +484,13 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       super.atsDelete(deleteArts, allRelated);
    }
 
+   @SuppressWarnings("unused")
    @Override
    public String getWorldViewType() throws OseeCoreException {
       return getArtifactTypeName();
    }
 
+   @SuppressWarnings("unused")
    @Override
    public String getWorldViewTitle() throws OseeCoreException {
       return getName();
@@ -545,6 +558,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return getOriginator().getName();
    }
 
+   @SuppressWarnings("unused")
    @Override
    public String getWorldViewID() throws OseeCoreException {
       return getHumanReadableId();
@@ -579,6 +593,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    @Override
    public abstract VersionArtifact getWorldViewTargetedVersion() throws OseeCoreException;
 
+   @SuppressWarnings("unused")
    @Override
    public ChangeType getWorldViewChangeType() throws OseeCoreException {
       return ChangeType.None;
@@ -641,11 +656,13 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return getEstimatedHoursTotal();
    }
 
+   @SuppressWarnings("unused")
    @Override
    public String getWorldViewUserCommunity() throws OseeCoreException {
       return "";
    }
 
+   @SuppressWarnings("unused")
    @Override
    public String getWorldViewPriority() throws OseeCoreException {
       return "";
@@ -734,10 +751,12 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return manDaysNeeded;
    }
 
+   @SuppressWarnings("unused")
    public double getManHrsPerDayPreference() throws OseeCoreException {
       return DEFAULT_HOURS_PER_WORK_DAY;
    }
 
+   @SuppressWarnings("unused")
    @Override
    public double getWorldViewAnnualCostAvoidance() throws OseeCoreException {
       return 0;
@@ -835,6 +854,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return String.valueOf(num);
    }
 
+   @SuppressWarnings("unused")
    @Override
    public String getWorldViewRelatedToState() throws OseeCoreException {
       return "";
@@ -893,6 +913,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       }
    }
 
+   @SuppressWarnings("unused")
    public void getSmaArtifactsOneLevel(StateMachineArtifact smaArtifact, Set<Artifact> artifacts) throws OseeCoreException {
       artifacts.add(smaArtifact);
    }
@@ -962,7 +983,9 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
     * 
     * @throws Exception
     */
+   @SuppressWarnings("unused")
    public void transitioned(WorkPageDefinition fromPage, WorkPageDefinition toPage, Collection<User> toAssignees, boolean persist, SkynetTransaction transaction) throws OseeCoreException {
+      // provided for subclass implementation
    }
 
    @Override
@@ -1009,6 +1032,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return this;
    }
 
+   @SuppressWarnings("unused")
    @Override
    public String getWorldViewDecision() throws OseeCoreException {
       return "";
@@ -1027,11 +1051,13 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return "";
    }
 
+   @SuppressWarnings("unused")
    @Override
    public Result isWorldViewDeadlineAlerting() throws OseeCoreException {
       return Result.FalseResult;
    }
 
+   @SuppressWarnings("unused")
    @Override
    public int getWorldViewPercentRework() throws OseeCoreException {
       return 0;
@@ -1073,26 +1099,31 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return result;
    }
 
+   @SuppressWarnings("unused")
    @Override
    public String getWorldViewBranchStatus() throws OseeCoreException {
       return "";
    }
 
+   @SuppressWarnings("unused")
    @Override
    public String getWorldViewReviewAuthor() throws OseeCoreException {
       return "";
    }
 
+   @SuppressWarnings("unused")
    @Override
    public String getWorldViewReviewDecider() throws OseeCoreException {
       return "";
    }
 
+   @SuppressWarnings("unused")
    @Override
    public String getWorldViewReviewModerator() throws OseeCoreException {
       return "";
    }
 
+   @SuppressWarnings("unused")
    @Override
    public String getWorldViewReviewReviewer() throws OseeCoreException {
       return "";
@@ -1341,20 +1372,24 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return XDate.getDateStr(getLog().getLastStatusedDate(), XDate.MMDDYYHHMM);
    }
 
+   @SuppressWarnings("unused")
    public String getWorldViewSWEnhancement() throws OseeCoreException {
       return "";
    }
 
+   @SuppressWarnings("unused")
    @Override
    public String getWorldViewNumberOfReviewIssueDefects() throws OseeCoreException {
       return "";
    }
 
+   @SuppressWarnings("unused")
    @Override
    public String getWorldViewNumberOfReviewMajorDefects() throws OseeCoreException {
       return "";
    }
 
+   @SuppressWarnings("unused")
    @Override
    public String getWorldViewNumberOfReviewMinorDefects() throws OseeCoreException {
       return "";
@@ -1397,12 +1432,13 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return getParentActionArtifact().getWorldViewOriginatingWorkflows();
    }
 
+   @SuppressWarnings("unused")
    @Override
    public String getWorldViewNumberOfTasksRemaining() throws OseeCoreException {
       return "";
    }
 
-   public void closeEditors(boolean save) throws OseeStateException {
+   public void closeEditors(boolean save) {
       SMAEditor.close(java.util.Collections.singleton(this), save);
    }
 
@@ -1433,7 +1469,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return getWorkFlowDefinition().getWorkPageDefinitionById(id);
    }
 
-   public boolean isHistoricalVersion() throws OseeStateException {
+   public boolean isHistoricalVersion() {
       return isHistorical();
    }
 
@@ -1465,7 +1501,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
     * @return true if this is a TeamWorkflow and it uses versions
     * @throws OseeStateException
     */
-   public boolean isTeamUsesVersions() throws OseeStateException {
+   public boolean isTeamUsesVersions() {
       if (!isTeamWorkflow()) {
          return false;
       }
@@ -1791,7 +1827,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return this instanceof TeamWorkFlowArtifact;
    }
 
-   public boolean isTask() throws OseeStateException {
+   public boolean isTask() {
       return this instanceof TaskArtifact;
    }
 
@@ -1827,6 +1863,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    /**
     * Assigned or computed Id that will show at the top of the editor
     */
+   @SuppressWarnings("unused")
    public String getPcrId() throws OseeCoreException {
       return "";
    }

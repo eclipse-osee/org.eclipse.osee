@@ -312,6 +312,7 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
 
    @Override
    public void setXmlData(String str) {
+      // do nothing
    }
 
    @Override
@@ -365,10 +366,12 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
 
    @Override
    public void revert() {
+      // do nothing
    }
 
    @Override
    public void saveToArtifact() {
+      // do nothing
    }
 
    /**
@@ -432,6 +435,7 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
 
    @Override
    public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
+      // do nothing
    }
 
    @Override

@@ -112,25 +112,18 @@ public class TaskTabXWidgetActionPage extends AtsXWidgetActionFormPage implement
    }
 
    @Override
-   public Result isResearchSearchValid() throws OseeCoreException {
+   public Result isResearchSearchValid() {
       return smaEditor.isDirty() ? new Result("Changes un-saved. Save first.") : Result.TrueResult;
    }
 
-   public void reSearch() throws OseeCoreException {
-   }
-
    @Override
-   public String getXWidgetsXml() throws OseeCoreException {
+   public String getXWidgetsXml() {
       return null;
    }
 
    @Override
    public void handleSearchButtonPressed() {
-      try {
-         reSearch();
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
+      // do nothing
    }
 
    @Override
@@ -222,11 +215,6 @@ public class TaskTabXWidgetActionPage extends AtsXWidgetActionFormPage implement
          item.fill(parent, -1);
       }
 
-      @Override
-      public void run() {
-
-      }
-
       void clear() {
          dispose();
       }
@@ -235,6 +223,7 @@ public class TaskTabXWidgetActionPage extends AtsXWidgetActionFormPage implement
          taskComposite.getTaskXViewer().getTree().addKeyListener(new KeyListener() {
             @Override
             public void keyPressed(KeyEvent event) {
+               // do nothing
             }
 
             @Override
@@ -311,6 +300,7 @@ public class TaskTabXWidgetActionPage extends AtsXWidgetActionFormPage implement
 
    @Override
    public void handleSaveButtonPressed() {
+      // do nothing
    }
 
    @Override

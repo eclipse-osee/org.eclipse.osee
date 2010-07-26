@@ -18,7 +18,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -46,7 +45,7 @@ public class ReAssignATSObjectsToUser extends AbstractBlam {
    }
 
    @Override
-   public void runOperation(final VariableMap variableMap, IProgressMonitor monitor) throws OseeCoreException {
+   public void runOperation(final VariableMap variableMap, IProgressMonitor monitor) {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {

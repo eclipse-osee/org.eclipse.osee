@@ -33,7 +33,6 @@ import org.eclipse.osee.ats.actions.WorkflowDebugAction;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
@@ -97,16 +96,12 @@ public class SMAOperationsSection extends SectionPart {
 
          @Override
          public void handleEvent(Event e) {
-            try {
-               createSection(section, toolkit);
-            } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-            }
+            createSection(section, toolkit);
          }
       });
    }
 
-   private synchronized void createSection(Section section, FormToolkit toolkit) throws OseeCoreException {
+   private synchronized void createSection(Section section, FormToolkit toolkit) {
       if (sectionCreated) {
          return;
       }

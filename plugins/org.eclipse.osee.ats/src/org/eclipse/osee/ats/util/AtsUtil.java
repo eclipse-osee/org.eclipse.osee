@@ -108,7 +108,7 @@ public final class AtsUtil {
       return Boolean.valueOf(System.getProperty("osee.isInTest"));
    }
 
-   public static long daysTillToday(Date date) throws OseeCoreException {
+   public static long daysTillToday(Date date) {
       return (date.getTime() - today.getTime()) / MILLISECS_PER_DAY;
    }
 
@@ -361,7 +361,7 @@ public final class AtsUtil {
       return null;
    }
 
-   public static void openInAtsWorldEditor(String name, Collection<Artifact> artifacts) throws OseeCoreException {
+   public static void openInAtsWorldEditor(String name, Collection<Artifact> artifacts) {
       Set<Artifact> otherArts = new HashSet<Artifact>();
       for (Artifact art : artifacts) {
          if (art.isOfType(CoreArtifactTypes.UniversalGroup)) {

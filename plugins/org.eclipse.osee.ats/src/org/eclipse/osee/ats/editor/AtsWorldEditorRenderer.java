@@ -68,17 +68,17 @@ public class AtsWorldEditorRenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public AtsWorldEditorRenderer newInstance() throws OseeCoreException {
+   public AtsWorldEditorRenderer newInstance() {
       return new AtsWorldEditorRenderer();
    }
 
    @Override
-   public Image getImage(Artifact artifact) throws OseeCoreException {
+   public Image getImage(Artifact artifact) {
       return ImageManager.getImage(AtsImage.GLOBE);
    }
 
    @Override
-   public void open(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
+   public void open(List<Artifact> artifacts, PresentationType presentationType) {
       AtsUtil.openInAtsWorldEditor("ATS", artifacts);
    }
 }

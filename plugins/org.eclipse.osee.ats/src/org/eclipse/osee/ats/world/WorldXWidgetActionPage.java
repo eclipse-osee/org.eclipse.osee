@@ -56,8 +56,8 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -158,7 +158,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
    }
 
    @Override
-   public Result isResearchSearchValid() throws OseeCoreException {
+   public Result isResearchSearchValid() {
       return worldEditor.isDirty() ? new Result("Changes un-saved. Save first.") : Result.TrueResult;
    }
 
@@ -248,7 +248,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
 
       @Override
       public void run() {
-
+         // provided for subclass implementation
       }
 
       /**
@@ -270,6 +270,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
          worldComposite.getXViewer().getTree().addKeyListener(new KeyListener() {
             @Override
             public void keyPressed(KeyEvent event) {
+               // do nothing
             }
 
             @Override
@@ -302,10 +303,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
    }
 
    private void addSelectionListener() {
-      worldComposite.getXViewer().getTree().addSelectionListener(new SelectionListener() {
-         @Override
-         public void widgetDefaultSelected(SelectionEvent e) {
-         }
+      worldComposite.getXViewer().getTree().addSelectionListener(new SelectionAdapter() {
 
          @Override
          public void widgetSelected(SelectionEvent e) {

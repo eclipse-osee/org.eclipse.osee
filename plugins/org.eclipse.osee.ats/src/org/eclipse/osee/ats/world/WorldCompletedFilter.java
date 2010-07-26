@@ -22,9 +22,6 @@ public class WorldCompletedFilter extends ViewerFilter {
 
    Pattern p = Pattern.compile("(Completed|Cancelled)");
 
-   public WorldCompletedFilter() {
-   }
-
    @Override
    public boolean select(Viewer viewer, Object parentElement, Object element) {
       try {

@@ -17,7 +17,6 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.widgets.dialog.AICheckTreeDialog;
 import org.eclipse.osee.framework.core.enums.Active;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -38,7 +37,7 @@ public class SubscribeByActionableItem extends XNavigateItemAction {
    }
 
    @Override
-   public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
+   public void run(TableLoadOption... tableLoadOptions) {
       final AICheckTreeDialog diag =
          new AICheckTreeDialog(getName(),
             "Select Actionable Items\n\nEmail will be sent for every Action created against these AIs.", Active.Active);

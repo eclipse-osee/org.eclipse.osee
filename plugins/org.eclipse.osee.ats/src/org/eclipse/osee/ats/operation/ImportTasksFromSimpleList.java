@@ -53,7 +53,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
    }
 
    @Override
-   public void runOperation(final VariableMap variableMap, IProgressMonitor monitor) throws OseeCoreException {
+   public void runOperation(final VariableMap variableMap, IProgressMonitor monitor) {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
@@ -81,7 +81,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
                   AWorkbench.popup("ERROR", "Artifact MUST be Team Workflow");
                   return;
                }
-               if (titles == null || titles.isEmpty()) {
+               if (titles.isEmpty()) {
                   AWorkbench.popup("ERROR", "Must enter title(s).");
                   return;
                }

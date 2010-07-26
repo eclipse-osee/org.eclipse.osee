@@ -34,6 +34,7 @@ public class NewNoteWizard extends Wizard {
    }
 
    public void init(IWorkbench workbench, IStructuredSelection selection) {
+      // do nothing
    }
 
    @Override

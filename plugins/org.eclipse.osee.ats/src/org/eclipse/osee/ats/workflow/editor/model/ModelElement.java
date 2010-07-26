@@ -40,10 +40,11 @@ public abstract class ModelElement implements IPropertySource {
    /** An empty property descriptor. */
    private static final IPropertyDescriptor[] EMPTY_ARRAY = new IPropertyDescriptor[0];
 
-   /** Delegate used to implemenent property-change-support. */
+   /** Delegate used to implement property-change-support. */
    private transient PropertyChangeSupport pcsDelegate = new PropertyChangeSupport(this);
    protected Map<Object, Object> propertyValues;
 
+   @SuppressWarnings("unused")
    protected void initializePropertyValues() throws OseeCoreException {
       if (propertyValues == null) {
          propertyValues = new HashMap<Object, Object>();

@@ -34,7 +34,8 @@ public class ActionHyperItem extends HyperViewItem {
       return iHyperartifact.getHyperType() + " - " + iHyperartifact.getHyperName();
    }
 
-   public void handleDoubleClick(HyperViewItem hyperViewItem) throws OseeCoreException {
+   public void handleDoubleClick(HyperViewItem hyperViewItem) {
+      // provided for subclass implementation
    }
 
    public void calculateCurrent(Artifact currentArtifact) {
@@ -44,6 +45,7 @@ public class ActionHyperItem extends HyperViewItem {
       }
    }
 
+   @SuppressWarnings("unused")
    @Override
    public Image getImage() throws OseeCoreException {
       if (iHyperartifact.getHyperArtifact() == null) {

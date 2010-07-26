@@ -24,9 +24,6 @@ import org.eclipse.swt.graphics.Image;
  */
 public class VersionArtifactLabelProvider extends LabelProvider {
 
-   public VersionArtifactLabelProvider() {
-   }
-
    @Override
    public String getText(Object element) {
       if (element instanceof VersionArtifact) {

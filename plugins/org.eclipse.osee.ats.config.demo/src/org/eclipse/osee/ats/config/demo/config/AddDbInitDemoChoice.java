@@ -15,16 +15,12 @@ import org.eclipse.osee.framework.database.init.GroupSelection;
 import org.eclipse.osee.framework.database.init.IAddDbInitChoice;
 
 /**
+ * * Add the ability to wipe an OSEE database and configure it for the ATS Demo Configuration which will showcase ATS
+ * functionality.
+ * 
  * @author Donald G. Dunne
  */
 public class AddDbInitDemoChoice implements IAddDbInitChoice {
-
-   /**
-    * Add the ability to wipe an OSEE database and configure it for the ATS Demo Configuration which will showcase ATS
-    * functionality.
-    */
-   public AddDbInitDemoChoice() {
-   }
 
    @Override
    public void addDbInitChoice(GroupSelection groupSelection) {

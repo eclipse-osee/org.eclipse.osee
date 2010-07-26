@@ -62,7 +62,7 @@ public class AtsExportPage extends WizardDataTransferPage {
 
    @Override
    public void handleEvent(Event event) {
-
+      // do nothing
    }
 
    @Override

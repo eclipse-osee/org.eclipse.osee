@@ -55,7 +55,7 @@ import org.eclipse.ui.PartInitException;
 /**
  * @author Donald G. Dunne
  */
-public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEditor, IActionable, IAtsMetricsProvider, IXTaskViewer {
+public class TaskEditor extends AbstractArtifactEditor implements IActionable, IAtsMetricsProvider, IXTaskViewer {
    public static final String EDITOR_ID = "org.eclipse.osee.ats.editor.TaskEditor";
    private int mainPageIndex, metricsPageIndex;
    private TaskEditorXWidgetActionPage taskActionPage;
@@ -180,12 +180,12 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
       }
    }
 
-   private void createMainTab() throws OseeCoreException, PartInitException {
+   private void createMainTab() throws PartInitException {
       taskActionPage = new TaskEditorXWidgetActionPage(this);
       mainPageIndex = addPage(taskActionPage);
    }
 
-   private void createMetricsTab() throws OseeCoreException {
+   private void createMetricsTab() {
       Composite comp = AtsUtil.createCommonPageComposite(getContainer());
       AtsUtil.createCommonToolBar(comp);
       metricsComposite = new AtsMetricsComposite(this, comp, SWT.NONE);
@@ -316,7 +316,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
    }
 
    @Override
-   public Collection<? extends Artifact> getMetricsArtifacts() throws OseeCoreException {
+   public Collection<? extends Artifact> getMetricsArtifacts() {
       return tasks;
    }
 
@@ -331,42 +331,42 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
    }
 
    @Override
-   public String getCurrentStateName() throws OseeCoreException {
+   public String getCurrentStateName() {
       return "";
    }
 
    @Override
-   public IDirtiableEditor getEditor() throws OseeCoreException {
+   public IDirtiableEditor getEditor() {
       return this;
    }
 
    @Override
-   public StateMachineArtifact getSma() throws OseeCoreException {
+   public StateMachineArtifact getSma() {
       return null;
    }
 
    @Override
-   public String getTabName() throws OseeCoreException {
+   public String getTabName() {
       return "Tasks";
    }
 
    @Override
-   public Collection<TaskArtifact> getTaskArtifacts(String stateName) throws OseeCoreException {
+   public Collection<TaskArtifact> getTaskArtifacts(String stateName) {
       return tasks;
    }
 
    @Override
-   public boolean isTaskable() throws OseeCoreException {
+   public boolean isTaskable() {
       return false;
    }
 
    @Override
-   public boolean isTasksEditable() throws OseeCoreException {
+   public boolean isTasksEditable() {
       return true;
    }
 
    @Override
-   public boolean isRefreshActionHandled() throws OseeCoreException {
+   public boolean isRefreshActionHandled() {
       return true;
    }
 
@@ -389,7 +389,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
    }
 
    @Override
-   public IActionable getActionable() throws OseeCoreException {
+   public IActionable getActionable() {
       return this;
    }
 

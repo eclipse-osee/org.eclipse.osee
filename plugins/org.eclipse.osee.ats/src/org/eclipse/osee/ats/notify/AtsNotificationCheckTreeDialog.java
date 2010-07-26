@@ -102,10 +102,12 @@ public class AtsNotificationCheckTreeDialog extends CheckedTreeSelectionDialog {
 
       @Override
       public void addListener(ILabelProviderListener listener) {
+         // do nothing
       }
 
       @Override
       public void dispose() {
+         // do nothing
       }
 
       @Override
@@ -115,6 +117,7 @@ public class AtsNotificationCheckTreeDialog extends CheckedTreeSelectionDialog {
 
       @Override
       public void removeListener(ILabelProviderListener listener) {
+         // do nothing
       }
 
    };
@@ -149,10 +152,12 @@ public class AtsNotificationCheckTreeDialog extends CheckedTreeSelectionDialog {
 
       @Override
       public void dispose() {
+         // do nothing
       }
 
       @Override
       public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+         // do nothing
       };
    };
 

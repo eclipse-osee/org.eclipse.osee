@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.workflow.editor.model;
 
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -32,7 +31,7 @@ public class EllipticalShape extends Shape {
    }
 
    @Override
-   public Result validForSave() throws OseeCoreException {
+   public Result validForSave() {
       return Result.TrueResult;
    }
 
@@ -52,7 +51,7 @@ public class EllipticalShape extends Shape {
    }
 
    @Override
-   public Result doSave(SkynetTransaction transaction) throws OseeCoreException {
+   public Result doSave(SkynetTransaction transaction) {
       return Result.TrueResult;
    }
 
