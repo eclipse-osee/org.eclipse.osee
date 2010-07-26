@@ -56,7 +56,7 @@ public class XText extends XWidget {
    private final boolean debug = false;
    private int width = 0;
    private int height = 0;
-   private XTextSpellCheckPaintListener spellPaintListener;
+   private XTextSpellCheckListener spellPaintListener;
    private XTextUrlListener urlListener;
    private XTextSpellModifyDictionary modDict;
    private Font font;
@@ -191,7 +191,7 @@ public class XText extends XWidget {
             sText.setText(text);
          }
          if (spellCheck) {
-            spellPaintListener = new XTextSpellCheckPaintListener(this, OseeDictionary.getInstance());
+            spellPaintListener = new XTextSpellCheckListener(this, OseeDictionary.getInstance());
             sText.addModifyListener(spellPaintListener);
             if (modDict != null) {
                spellPaintListener.addXTextSpellModifyDictionary(modDict);
