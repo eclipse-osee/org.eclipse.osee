@@ -12,6 +12,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.xBranch;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -25,6 +26,7 @@ import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
@@ -41,6 +43,8 @@ import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.action.EditTransactionComment;
+import org.eclipse.osee.framework.ui.skynet.action.ITransactionRecordSelectionProvider;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -54,7 +58,7 @@ import org.eclipse.ui.part.ViewPart;
  * 
  * @author Jeff C. Phillips
  */
-public class BranchView extends ViewPart implements IActionable, IBranchEventListener, ITransactionEventListener, ITransactionsDeletedEventListener {
+public class BranchView extends ViewPart implements IActionable, IBranchEventListener, ITransactionEventListener, ITransactionsDeletedEventListener, ITransactionRecordSelectionProvider {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView";
    private BranchViewPresentationPreferences branchViewPresentationPreferences;
    private static String HELP_CONTEXT_ID = "BranchView";
@@ -77,6 +81,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
 
    @Override
    public void setFocus() {
+      // do nothing
    }
 
    @Override
@@ -97,6 +102,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
 
       branchViewPresentationPreferences = new BranchViewPresentationPreferences(this);
       xBranchWidget.loadData();
+      final BranchView fBranchView = this;
 
       MenuManager menuManager = new MenuManager();
       menuManager.setRemoveAllWhenShown(true);
@@ -106,6 +112,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
             MenuManager menuManager = (MenuManager) manager;
             xBranchWidget.getXViewer().setColumnMultiEditEnabled(true);
             menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+            menuManager.add(new EditTransactionComment(fBranchView));
             menuManager.add(new Separator());
             menuManager.add(new TableCustomizationAction(xBranchWidget.getXViewer()));
             menuManager.add(new ViewTableReportAction(xBranchWidget.getXViewer()));
@@ -187,6 +194,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
 
    @Override
    public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
+      // do nothing
    }
 
    @Override
@@ -281,6 +289,16 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
    @Override
    public List<? extends IEventFilter> getEventFilters() {
       return null;
+   }
+
+   @Override
+   public ArrayList<TransactionRecord> getSelectedTransactionRecords() {
+      return xBranchWidget.getSelectedTransactionRecords();
+   }
+
+   @Override
+   public void refreshUI(ArrayList<TransactionRecord> records) {
+      xBranchWidget.getXViewer().update(records.toArray(new TransactionRecord[records.size()]), null);
    }
 
 }

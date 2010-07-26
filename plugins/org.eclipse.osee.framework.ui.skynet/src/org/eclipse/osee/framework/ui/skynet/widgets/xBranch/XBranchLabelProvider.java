@@ -44,7 +44,7 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
    }
 
    @Override
-   public String getColumnText(Object element, XViewerColumn cCol, int columnIndex) throws OseeCoreException {
+   public String getColumnText(Object element, XViewerColumn cCol, int columnIndex) {
       String columnText = "";
       try {
          if (element instanceof Branch) {
@@ -173,10 +173,12 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
 
    @Override
    public void addListener(ILabelProviderListener listener) {
+      // do nothing
    }
 
    @Override
    public void removeListener(ILabelProviderListener listener) {
+      // do nothing
    }
 
    public BranchXViewer getTreeViewer() {
@@ -184,7 +186,7 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
    }
 
    @Override
-   public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
+   public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) {
       if (xCol.equals(BranchXViewerFactory.associatedArtifact)) {
          if (element instanceof Branch) {
             try {
@@ -216,5 +218,6 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
 
    @Override
    public void dispose() {
+      // do nothing
    }
 }

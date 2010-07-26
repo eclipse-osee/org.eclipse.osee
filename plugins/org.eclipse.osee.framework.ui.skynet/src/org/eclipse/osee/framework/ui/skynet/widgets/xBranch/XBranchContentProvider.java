@@ -64,19 +64,17 @@ public class XBranchContentProvider implements ITreeContentProvider {
 
    @Override
    public Object[] getChildren(Object parentElement) {
-      if (parentElement instanceof BranchManager) {
-         return getBranchManagerChildren((BranchManager) parentElement);
-
-      } else if (parentElement instanceof Branch) {
+      if (parentElement instanceof Branch) {
          return getBranchChildren((Branch) parentElement);
-
       } else if (parentElement instanceof Collection<?>) {
          return ((Collection<?>) parentElement).toArray();
+      } else if (parentElement instanceof Object[]) {
+         return (Object[]) parentElement;
       }
       return EMPTY_ARRAY;
    }
 
-   private Object[] getBranchChildren(Branch branch) {
+   protected Object[] getBranchChildren(Branch branch) {
       try {
          if (showChildBranchesUnderParents) {
             List<Object> items = new LinkedList<Object>();
@@ -96,7 +94,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
       return EMPTY_ARRAY;
    }
 
-   private Object[] getBranchManagerChildren(BranchManager branchManager) {
+   protected Object[] getBranchManagerChildren() {
       BranchArchivedState branchState = BranchArchivedState.UNARCHIVED;
       List<BranchType> branchTypes = new ArrayList<BranchType>(4);
 
@@ -225,10 +223,12 @@ public class XBranchContentProvider implements ITreeContentProvider {
 
    @Override
    public void dispose() {
+      // do nothing
    }
 
    @Override
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+      // do nothing
    }
 
    public BranchXViewer getChangeXViewer() {

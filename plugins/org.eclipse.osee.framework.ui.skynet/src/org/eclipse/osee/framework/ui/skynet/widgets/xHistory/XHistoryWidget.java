@@ -23,6 +23,7 @@ import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -165,7 +166,6 @@ public class XHistoryWidget extends XWidget implements IActionable {
       refresh();
    }
 
-   @SuppressWarnings("unchecked")
    public ArrayList<Branch> getSelectedBranches() {
       ArrayList<Branch> items = new ArrayList<Branch>();
       if (xHistoryViewer == null) {
@@ -174,7 +174,7 @@ public class XHistoryWidget extends XWidget implements IActionable {
       if (xHistoryViewer.getSelection().isEmpty()) {
          return items;
       }
-      Iterator i = ((IStructuredSelection) xHistoryViewer.getSelection()).iterator();
+      Iterator<?> i = ((IStructuredSelection) xHistoryViewer.getSelection()).iterator();
       while (i.hasNext()) {
          Object obj = i.next();
          items.add((Branch) obj);
@@ -280,7 +280,9 @@ public class XHistoryWidget extends XWidget implements IActionable {
 
    @Override
    public void setXmlData(String str) {
+      // do nothing
    }
+
    public class HistoryDragAndDrop extends SkynetDragAndDrop {
 
       public HistoryDragAndDrop(Tree tree, String viewId) {
@@ -324,6 +326,26 @@ public class XHistoryWidget extends XWidget implements IActionable {
 
    public Artifact getArtifact() {
       return artifact;
+   }
+
+   @SuppressWarnings("rawtypes")
+   public ArrayList<TransactionRecord> getSelectedTransactionRecords() {
+      ArrayList<TransactionRecord> items = new ArrayList<TransactionRecord>();
+      if (xHistoryViewer == null) {
+         return items;
+      }
+      if (xHistoryViewer.getSelection().isEmpty()) {
+         return items;
+      }
+      Iterator i = ((IStructuredSelection) xHistoryViewer.getSelection()).iterator();
+      while (i.hasNext()) {
+         Object obj = i.next();
+
+         if (obj instanceof Change) {
+            items.add(((Change) obj).getTxDelta().getEndTx());
+         }
+      }
+      return items;
    }
 
 }

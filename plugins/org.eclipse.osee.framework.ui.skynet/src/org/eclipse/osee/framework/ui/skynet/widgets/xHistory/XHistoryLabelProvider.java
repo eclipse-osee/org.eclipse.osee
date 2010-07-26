@@ -15,7 +15,6 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.change.RelationChange;
@@ -36,7 +35,7 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
    }
 
    @Override
-   public String getColumnText(Object element, XViewerColumn cCol, int columnIndex) throws OseeCoreException {
+   public String getColumnText(Object element, XViewerColumn cCol, int columnIndex) {
       try {
          if (!(element instanceof Change)) {
             return "";
@@ -74,6 +73,7 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
 
    @Override
    public void dispose() {
+      // do nothing
    }
 
    @Override
@@ -83,10 +83,12 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
 
    @Override
    public void addListener(ILabelProviderListener listener) {
+      // do nothing
    }
 
    @Override
    public void removeListener(ILabelProviderListener listener) {
+      // do nothing
    }
 
    public HistoryXViewer getTreeViewer() {
@@ -94,7 +96,7 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
    }
 
    @Override
-   public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
+   public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) {
       try {
          if (!(element instanceof Change)) {
             return null;

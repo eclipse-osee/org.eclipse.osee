@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xBranch;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -23,6 +22,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -122,11 +122,7 @@ public class XBranchWidget extends XWidget implements IActionable {
          toolkit.paintBordersFor(mainComp);
       }
 
-      try {
-         createTaskActionBar(mainComp);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-      }
+      createTaskActionBar(mainComp);
 
       branchXViewer =
          new BranchXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this, filterRealTime, searchRealTime);
@@ -153,7 +149,7 @@ public class XBranchWidget extends XWidget implements IActionable {
       tree.setLinesVisible(true);
    }
 
-   public void createTaskActionBar(Composite parent) throws OseeCoreException {
+   public void createTaskActionBar(Composite parent) {
       // Button composite for state transitions, etc
       Composite composite = new Composite(parent, SWT.NONE);
       //      composite.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_CYAN));
@@ -188,9 +184,28 @@ public class XBranchWidget extends XWidget implements IActionable {
       refresh();
    }
 
-   @SuppressWarnings("unchecked")
    public ArrayList<Branch> getSelectedBranches() {
       ArrayList<Branch> items = new ArrayList<Branch>();
+      if (branchXViewer == null) {
+         return items;
+      }
+      if (branchXViewer.getSelection().isEmpty()) {
+         return items;
+      }
+      Iterator<?> i = ((IStructuredSelection) branchXViewer.getSelection()).iterator();
+      while (i.hasNext()) {
+         Object obj = i.next();
+
+         if (obj instanceof Branch) {
+            items.add((Branch) obj);
+         }
+      }
+      return items;
+   }
+
+   @SuppressWarnings("rawtypes")
+   public ArrayList<TransactionRecord> getSelectedTransactionRecords() {
+      ArrayList<TransactionRecord> items = new ArrayList<TransactionRecord>();
       if (branchXViewer == null) {
          return items;
       }
@@ -201,8 +216,8 @@ public class XBranchWidget extends XWidget implements IActionable {
       while (i.hasNext()) {
          Object obj = i.next();
 
-         if (obj instanceof Branch) {
-            items.add((Branch) obj);
+         if (obj instanceof TransactionRecord) {
+            items.add((TransactionRecord) obj);
          }
       }
       return items;
@@ -252,7 +267,7 @@ public class XBranchWidget extends XWidget implements IActionable {
    }
 
    public void loadData() {
-      loadData(BranchManager.getInstance());
+      loadData(((XBranchContentProvider) branchXViewer.getContentProvider()).getBranchManagerChildren());
    }
 
    public void loadData(final Object input) {
@@ -303,6 +318,7 @@ public class XBranchWidget extends XWidget implements IActionable {
 
    @Override
    public void setXmlData(String str) {
+      // do nothing
    }
 
    @Override

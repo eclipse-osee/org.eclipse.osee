@@ -12,12 +12,14 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.xHistory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -27,6 +29,7 @@ import org.eclipse.nebula.widgets.xviewer.customize.XViewerCustomMenu;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
@@ -46,6 +49,8 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.OpenWithMenuListener;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.action.EditTransactionComment;
+import org.eclipse.osee.framework.ui.skynet.action.ITransactionRecordSelectionProvider;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
 import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
 import org.eclipse.osee.framework.ui.skynet.menu.ArtifactDiffMenu;
@@ -53,10 +58,10 @@ import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MenuAdapter;
 import org.eclipse.swt.events.MenuEvent;
-import org.eclipse.swt.events.MenuListener;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -74,15 +79,12 @@ import org.eclipse.ui.part.ViewPart;
  * 
  * @author Jeff C. Phillips
  */
-public class HistoryView extends ViewPart implements IActionable, IBranchEventListener, IRebuildMenuListener {
+public class HistoryView extends ViewPart implements IActionable, IBranchEventListener, ITransactionRecordSelectionProvider, IRebuildMenuListener {
 
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView";
    private static String HELP_CONTEXT_ID = "HistoryView";
    private XHistoryWidget xHistoryWidget;
    private Artifact artifact;
-
-   public HistoryView() {
-   }
 
    public static void open(Artifact artifact) throws OseeArgumentException {
       if (artifact == null) {
@@ -126,6 +128,7 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
 
    @Override
    public void setFocus() {
+      // do nothing
    }
 
    /*
@@ -176,6 +179,8 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
       createChangeReportMenuItem(popupMenu);
       ArtifactDiffMenu.createDiffMenuItem(popupMenu, xHistoryWidget.getXViewer(), "Compare two Artifacts");
 
+      (new ActionContributionItem(new EditTransactionComment(this))).fill(popupMenu, 3);
+
       // Setup generic xviewer menu items
       XViewerCustomMenu xMenu = new XViewerCustomMenu(xHistoryWidget.getXViewer());
       new MenuItem(popupMenu, SWT.SEPARATOR);
@@ -196,11 +201,7 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
       final MenuItem changeReportMenuItem = new MenuItem(popupMenu, SWT.CASCADE);
       changeReportMenuItem.setText("&Change Report");
       changeReportMenuItem.setImage(ImageManager.getImage(FrameworkImage.BRANCH_CHANGE));
-      popupMenu.addMenuListener(new MenuListener() {
-
-         @Override
-         public void menuHidden(MenuEvent e) {
-         }
+      popupMenu.addMenuListener(new MenuAdapter() {
 
          @Override
          public void menuShown(MenuEvent e) {
@@ -210,11 +211,7 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
 
       });
 
-      changeReportMenuItem.addSelectionListener(new SelectionListener() {
-
-         @Override
-         public void widgetDefaultSelected(SelectionEvent e) {
-         }
+      changeReportMenuItem.addSelectionListener(new SelectionAdapter() {
 
          @Override
          public void widgetSelected(SelectionEvent e) {
@@ -337,6 +334,7 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
 
    @Override
    public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
+      // do nothing
    }
 
    @Override
@@ -345,6 +343,16 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
          return OseeEventManager.getEventFiltersForBranch(artifact.getBranch());
       }
       return null;
+   }
+
+   @Override
+   public ArrayList<TransactionRecord> getSelectedTransactionRecords() {
+      return xHistoryWidget.getSelectedTransactionRecords();
+   }
+
+   @Override
+   public void refreshUI(ArrayList<TransactionRecord> records) {
+      xHistoryWidget.refresh();
    }
 
 }
