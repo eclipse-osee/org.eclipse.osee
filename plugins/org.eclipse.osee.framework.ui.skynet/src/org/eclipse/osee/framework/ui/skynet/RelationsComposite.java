@@ -62,8 +62,6 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MenuEvent;
 import org.eclipse.swt.events.MenuListener;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -186,12 +184,6 @@ public class RelationsComposite extends Composite implements IFrameworkTransacti
          }
       });
 
-      tree.addMouseMoveListener(new MouseMoveListener() {
-         @Override
-         public void mouseMove(MouseEvent e) {
-         }
-      });
-
       expandItemsThatHaveChildren();
       new RelationSkynetDragAndDrop(tree, VIEW_ID);
    }
@@ -284,6 +276,7 @@ public class RelationsComposite extends Composite implements IFrameworkTransacti
                try {
                   checkCurrentOrderStrategy(orderRelationMenuItem.getMenu(), (RelationTypeSideSorter) objects[0]);
                } catch (OseeCoreException ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                }
             } else {
                orderRelationMenuItem.setEnabled(false);
@@ -317,6 +310,7 @@ public class RelationsComposite extends Composite implements IFrameworkTransacti
 
       @Override
       public void widgetDefaultSelected(SelectionEvent e) {
+         // do nothing
       }
 
       @Override
@@ -525,6 +519,7 @@ public class RelationsComposite extends Composite implements IFrameworkTransacti
 
       @Override
       public void menuHidden(MenuEvent e) {
+         // do nothing
       }
 
       @Override
@@ -649,6 +644,7 @@ public class RelationsComposite extends Composite implements IFrameworkTransacti
    private final class KeySelectedListener implements KeyListener {
       @Override
       public void keyPressed(KeyEvent e) {
+         // do nothing
       }
 
       @Override
