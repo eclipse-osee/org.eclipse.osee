@@ -14,23 +14,23 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.StringTokenizer;
 import org.eclipse.osee.framework.ui.skynet.util.OseeDictionary;
-import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.styledText.ASpellWord;
 import org.eclipse.osee.framework.ui.swt.styledText.IDictionary;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.MenuEvent;
 import org.eclipse.swt.events.MenuListener;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
-import org.eclipse.swt.events.PaintEvent;
-import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 
@@ -40,7 +40,7 @@ import org.eclipse.swt.widgets.MenuItem;
  * 
  * @author Donald G. Dunne
  */
-public class XTextSpellCheckPaintListener implements PaintListener {
+public class XTextSpellCheckPaintListener implements ModifyListener {
 
    private final IDictionary dict;
    private final XText xText;
@@ -53,6 +53,7 @@ public class XTextSpellCheckPaintListener implements PaintListener {
       if (modDict != null) {
          addXTextSpellModifyDictionary(modDict);
       }
+      refreshStyleRanges();
    }
 
    public void addXTextSpellModifyDictionary(XTextSpellModifyDictionary modDict) {
@@ -70,24 +71,6 @@ public class XTextSpellCheckPaintListener implements PaintListener {
             xText.getStyledText().removeMouseListener(mouseListener);
          }
       });
-   }
-
-   @Override
-   public void paintControl(PaintEvent e) {
-      if (xText == null || xText.getStyledText() == null || xText.getStyledText().isDisposed()) {
-         return;
-      }
-      GC gc = e.gc;
-      gc.setForeground(Displays.getSystemColor(SWT.COLOR_BLUE));
-      if (xText != null) {
-         String text = xText.getStyledText().getText();
-
-         // Get spelling errors
-         getErrors(text);
-         for (ASpellWord sw : errors) {
-            drawError(sw.start, sw.word.length(), xText.getStyledText(), gc);
-         }
-      }
    }
 
    private final MouseListener mouseListener = new MouseListener() {
@@ -114,10 +97,12 @@ public class XTextSpellCheckPaintListener implements PaintListener {
 
       @Override
       public void mouseDoubleClick(MouseEvent e) {
+         // do nothing
       }
 
       @Override
       public void mouseDown(MouseEvent e) {
+         // do nothing
       }
    };
 
@@ -157,35 +142,27 @@ public class XTextSpellCheckPaintListener implements PaintListener {
 
          @Override
          public void menuShown(MenuEvent e) {
+            // do nothing
          };
       });
    }
 
-   /**
-    * Draws a single spelling error squiggly line
-    * 
-    * @param offset - offset of bad word
-    * @param len - length of bad word
-    */
-   private void drawError(int offset, int len, StyledText sText, GC gc) {
-      if (sText.isDisposed()) {
-         return;
-      }
-      // Convert to coordinates
-      try {
-         Point off1 = sText.getLocationAtOffset(offset);
-         off1.y--;
-         Point off2 = sText.getLocationAtOffset(offset + len);
-         off2.y--;
-         int h = sText.getLineHeight();
-         int[] polyline = computePolyline(off1, off2, h);
-         gc.drawPolyline(polyline);
-      } catch (RuntimeException e) {
+   private void refreshStyleRanges() {
+      String text = xText.getStyledText().getText();
+
+      // Get spelling errors
+      getErrors(text);
+      for (ASpellWord sw : errors) {
+         StyleRange styleRange = new StyleRange();
+         styleRange.underline = true;
+         styleRange.data = sw.word;
+         styleRange.start = sw.start;
+         styleRange.length = sw.word.length();
+         styleRange.underlineColor = Display.getCurrent().getSystemColor(SWT.COLOR_BLUE);
+         xText.getStyledText().setStyleRange(styleRange);
       }
    }
 
-   /**
-    */
    private void getErrors(String str) {
       errors.clear();
       StringTokenizer st = new StringTokenizer(str, "[\t\r\n ]", true);
@@ -194,9 +171,9 @@ public class XTextSpellCheckPaintListener implements PaintListener {
          String string = st.nextToken();
          // if not a whitespace character
          if (!string.matches("^\\s*$")) {
-            // System.out.println("isWord: orig *" + string + "* => *" + word + "*");
+            //            System.out.println("isWord: orig *" + string + "* => *" + string + "*");
             if (!dict.isWord(string)) {
-               // System.out.println("word " + word + " is error");
+               System.out.println("word " + string + " is edrror");
                String cleanError = OseeDictionary.getInstance().getCleanWord(string);
                ASpellWord sw = new ASpellWord(cleanError, loc);
                errors.add(sw);
@@ -206,48 +183,15 @@ public class XTextSpellCheckPaintListener implements PaintListener {
       }
    }
 
-   /**
-    * Computes the squiggly line.
-    * 
-    * @param left the left end point
-    * @param right the right end point
-    * @param height the height of the squiggly line
-    * @return the polyline array
-    */
-   private int[] computePolyline(Point left, Point right, int height) {
-
-      final int WIDTH = 3;
-      final int HEIGHT = 0;
-
-      int w2 = 2 * WIDTH;
-      int peeks = (right.x - left.x) / w2;
-
-      int leftX = left.x;
-
-      // compute (number of points) * 2
-      int length = 4 * peeks + 2;
-      if (length <= 0) {
-         return new int[0];
+   @Override
+   public void modifyText(ModifyEvent e) {
+      if (xText == null || xText.getStyledText() == null || xText.getStyledText().isDisposed()) {
+         return;
+      }
+      if (xText != null) {
+         refreshStyleRanges();
       }
 
-      int[] coordinates = new int[length];
-
-      // compute top and bottom of peeks
-      int bottom = left.y + height;
-      int top = bottom - HEIGHT;
-
-      // populate array with peek coordinates
-      int index = 0;
-      for (int i = 0; i < peeks; i++) {
-         coordinates[index++] = leftX + w2 * i;
-         coordinates[index++] = bottom;
-         coordinates[index++] = coordinates[index - 3] + WIDTH;
-         coordinates[index++] = top;
-      }
-      // add the last down flank
-      coordinates[length - 2] = left.x + w2 * peeks;
-      coordinates[length - 1] = bottom;
-      return coordinates;
    }
 
 }

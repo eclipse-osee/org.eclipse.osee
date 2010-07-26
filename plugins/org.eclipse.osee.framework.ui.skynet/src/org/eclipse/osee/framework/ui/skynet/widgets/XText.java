@@ -57,6 +57,7 @@ public class XText extends XWidget {
    private int width = 0;
    private int height = 0;
    private XTextSpellCheckPaintListener spellPaintListener;
+   private XTextUrlListener urlListener;
    private XTextSpellModifyDictionary modDict;
    private Font font;
 
@@ -191,11 +192,14 @@ public class XText extends XWidget {
          }
          if (spellCheck) {
             spellPaintListener = new XTextSpellCheckPaintListener(this, OseeDictionary.getInstance());
-            sText.addPaintListener(spellPaintListener);
+            sText.addModifyListener(spellPaintListener);
             if (modDict != null) {
                spellPaintListener.addXTextSpellModifyDictionary(modDict);
             }
          }
+         urlListener = new XTextUrlListener(this);
+         sText.addModifyListener(urlListener);
+
          if (width != 0 && height != 0) {
             sText.setSize(width, height);
          }
@@ -291,7 +295,10 @@ public class XText extends XWidget {
       }
       if (sText != null) {
          if (spellPaintListener != null && !sText.isDisposed()) {
-            sText.removePaintListener(spellPaintListener);
+            sText.removeModifyListener(spellPaintListener);
+         }
+         if (urlListener != null && !sText.isDisposed()) {
+            sText.removeModifyListener(urlListener);
          }
          sText.dispose();
       }
@@ -310,9 +317,9 @@ public class XText extends XWidget {
    public void setSpellChecking(boolean spellCheck) {
       if (sText != null) {
          if (spellCheck) {
-            sText.addPaintListener(spellPaintListener);
+            sText.addModifyListener(spellPaintListener);
          } else if (spellPaintListener != null) {
-            sText.removePaintListener(spellPaintListener);
+            sText.removeModifyListener(spellPaintListener);
          }
       }
       this.spellCheck = spellCheck;
@@ -478,6 +485,7 @@ public class XText extends XWidget {
       try {
          percent = new Integer(text);
       } catch (NumberFormatException e) {
+         // do nothing
       }
       return percent.intValue();
    }
@@ -487,7 +495,7 @@ public class XText extends XWidget {
          if (!text.equals(sText.getText())) {
             // Disable Listeners so not to fill Undo List
             sText.setText(text);
-            // Reenable Listeners
+            // Re-enable Listeners
             validate();
          }
       }
