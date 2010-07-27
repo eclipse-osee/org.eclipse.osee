@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.access.test.internal;
+package org.eclipse.osee.framework.core.model.test.access;
 
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 
