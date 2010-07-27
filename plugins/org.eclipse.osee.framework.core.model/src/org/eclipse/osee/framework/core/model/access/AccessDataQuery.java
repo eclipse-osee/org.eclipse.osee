@@ -31,6 +31,11 @@ public class AccessDataQuery {
       this.accessData = accessData;
    }
 
+   @Override
+   public String toString() {
+      return accessData.toString();
+   }
+
    public void branchMatches(PermissionEnum permissionToMatch, IOseeBranch branchToMatch, PermissionStatus permissionStatus) throws OseeCoreException {
       Collection<AccessDetail<?>> branchAccessDetails = accessData.getAccess(branchToMatch);
       checkAccess(branchAccessDetails, branchToMatch, permissionToMatch, permissionStatus);
