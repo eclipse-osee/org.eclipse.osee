@@ -15,11 +15,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
+import org.eclipse.osee.framework.core.enums.BranchState;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidRelationReorder;
 import org.eclipse.osee.framework.core.model.test.mocks.MockOseeDataAccessor;
@@ -265,6 +268,8 @@ public class RelationOrderDataTest {
 
    private static IArtifact createArtifact(String name, String guid) {
       int uniqueId = randomGenerator.nextInt();
+      Branch branch = new Branch(GUID.create(), name + " - branch", BranchType.WORKING, BranchState.MODIFIED, false);
+      ArtifactType artType = new ArtifactType(GUID.create(), name + " - art_type", false);
       return new MockIArtifact(uniqueId, name, guid, null, null);
    }
 

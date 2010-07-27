@@ -22,6 +22,8 @@ import java.util.Map.Entry;
 import java.util.Random;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.enums.BranchState;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
@@ -240,7 +242,9 @@ public class RelationTypeSideSorterTest {
 
    private static IArtifact createArtifact(String name, String guid) {
       int uniqueId = randomGenerator.nextInt();
-      return new MockArtifactWithRelations(uniqueId, name, guid, null, null);
+      Branch branch = new Branch(GUID.create(), name + " - branch", BranchType.WORKING, BranchState.MODIFIED, false);
+      ArtifactType artType = new ArtifactType(GUID.create(), name + " - art_type", false);
+      return new MockArtifactWithRelations(uniqueId, name, guid, branch, artType);
    }
 
    private static RelationType createRelationType(RelationTypeCache cache, String name, String delationRelationOrderGuid) throws OseeCoreException {
