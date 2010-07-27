@@ -1,8 +1,13 @@
-/*
- * Created on Jul 22, 2010
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.framework.core.model.access;
 
 import java.util.Collection;
@@ -10,15 +15,14 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.DefaultBasicArtifact;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 
+/**
+ * @author Jeff C. Phillips
+ * @author Roberto E. Escobar
+ */
 public class AccessDataQuery {
 
    private final AccessData accessData;
@@ -91,12 +95,10 @@ public class AccessDataQuery {
    public void relationTypeMatches(PermissionEnum permissionToMatch) throws OseeCoreException {
    }
 
-   PermissionStatus permissionStatus = new PermissionStatus();
-
    public boolean matchesAll(Collection<IBasicArtifact<?>> toCheck, PermissionEnum permissionToMatch) throws OseeCoreException {
+      PermissionStatus permissionStatus = new PermissionStatus();
       for (IBasicArtifact<?> artifact : toCheck) {
          artifactMatches(permissionToMatch, artifact, permissionStatus);
-
          if (!permissionStatus.matches()) {
             break;
          }
@@ -117,82 +119,4 @@ public class AccessDataQuery {
          }
       }
    }
-
-   //	public PermissionStatus matches(PermissionEnum permissionToMatch, IBasicArtifact<?> artifact, IOseeBranch branchToMatch, IArtifactType artTypeToMatch, IAttributeType attrTypeToMatch, IRelationType relationTypeToMatch) throws OseeCoreException {
-   //		// Filter 1 - Branch - input Branch
-   //		// input branch
-   //		// output matched
-   //		PermissionStatus permissionStatus = new PermissionStatus();
-   //		Collection<AccessDetail<?>> branchAccessDetails = getAccess(branchToMatch);
-   //		checkAccess(branchAccessDetails, branchToMatch, permissionToMatch, permissionStatus);
-   //
-   //		// Filter 5 - RelationType
-   //		// input artifact, relationType
-   //		// output matched
-   //
-   //		Collection<AccessDetail<?>> artifactAccessDetails = getAccess(artifact);
-   //		//		checkAccess(accessDetails, relationTypeToMatch, permissionToMatch, matchResults);
-   //
-   //		if (permissionStatus.matches()) {
-   //			if (permissionStatus.matches()) {
-   //				// Filter 2  - Artifact Type
-   //				// input artifact, artifactType
-   //				// output matched
-   //				checkAccess(artifactAccessDetails, artTypeToMatch, permissionToMatch, permissionStatus);
-   //
-   //				if (permissionStatus.matches()) {
-   //					// Filter 3 - Artifact
-   //					// input artifact
-   //					// output matched
-   //					checkAccess(artifactAccessDetails, artifact, permissionToMatch, permissionStatus);
-   //
-   //					if (permissionStatus.matches()) {
-   //						// Filter 4 - Attribute Type
-   //						// input artifact, attributeType
-   //						// output matched
-   //						checkAccess(artifactAccessDetails, attrTypeToMatch, permissionToMatch, permissionStatus);
-   //					}
-   //				}
-   //			}
-   //		}
-   //		return permissionStatus;
-   //	}
-
-   public static void main(String[] args) throws OseeCoreException {
-      IOseeBranch branchToCheck = CoreBranches.SYSTEM_ROOT;
-      IArtifactType artifactType = CoreArtifactTypes.AbstractSoftwareRequirement;
-      IAttributeType attributeType = CoreAttributeTypes.PARAGRAPH_NUMBER;
-      IAttributeType wordAttributeType = CoreAttributeTypes.WORD_TEMPLATE_CONTENT;
-
-      IBasicArtifact<?> artifactToCheck = new DefaultBasicArtifact(12, GUID.create(), "Hello");
-
-      AccessData data = new AccessData();
-      data.add(branchToCheck, new AccessDetail<IOseeBranch>(branchToCheck, PermissionEnum.WRITE));
-
-      //		data.add(artifactToCheck, new Access<IBasicArtifact<?>>(artifactToCheck, PermissionEnum.READ));
-      data.add(artifactToCheck, new AccessDetail<IBasicArtifact<?>>(artifactToCheck, PermissionEnum.WRITE));
-
-      data.add(artifactToCheck, new AccessDetail<IArtifactType>(artifactType, PermissionEnum.WRITE));
-
-      data.add(artifactToCheck, new AccessDetail<IAttributeType>(attributeType, PermissionEnum.WRITE));
-      data.add(artifactToCheck, new AccessDetail<IAttributeType>(wordAttributeType, PermissionEnum.READ));
-
-      //		System.out.println(data.matches(PermissionEnum.WRITE, artifactToCheck, branchToCheck, artifactType,
-      //					attributeType, null));
-      //		System.out.println(data.matches(PermissionEnum.WRITE, artifactToCheck, branchToCheck, artifactType,
-      //					wordAttributeType, null));
-      System.out.println(data);
-   }
-
-   //	Branch
-   // IBasicArtifact<?>
-   // ArtifactType
-   // AttributeType(s)
-   // RelationType(s)
-
-   // Branch
-   // Artifact, ArtifactType
-   // AttributeType
-   // Branch, ArtifactType
-   // AttributeType ?
 }
