@@ -26,9 +26,7 @@ import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.ITreeViewerListener;
 import org.eclipse.jface.viewers.TextCellEditor;
-import org.eclipse.jface.viewers.TreeExpansionEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
@@ -62,6 +60,8 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MenuEvent;
 import org.eclipse.swt.events.MenuListener;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -90,6 +90,7 @@ public class RelationsComposite extends Composite implements IFrameworkTransacti
    private final IDirtiableEditor editor;
    public static final String VIEW_ID = "osee.define.relation.RelationExplorer";
    public static final String[] columnNames = new String[] {" ", "Rationale"};
+   public static final Integer[] columnLengths = new Integer[] {500, 50};
    // the index of column order
    private static int COLUMN_ORDER = 1;
 
@@ -161,28 +162,24 @@ public class RelationsComposite extends Composite implements IFrameworkTransacti
       treeViewer.setInput(new ArtifactRoot(artifact));
 
       treeViewer.addDoubleClickListener(new DoubleClickListener());
-      tree.addKeyListener(new KeySelectedListener());
-      treeViewer.addTreeListener(new ITreeViewerListener() {
+      treeViewer.getTree().addMouseListener(new MouseListener() {
+
          @Override
-         public void treeCollapsed(TreeExpansionEvent event) {
-            Displays.ensureInDisplayThread(new Runnable() {
-               @Override
-               public void run() {
-                  packColumnData();
-               }
-            });
+         public void mouseUp(MouseEvent e) {
+            packColumnData();
          }
 
          @Override
-         public void treeExpanded(TreeExpansionEvent event) {
-            Displays.ensureInDisplayThread(new Runnable() {
-               @Override
-               public void run() {
-                  packColumnData();
-               }
-            });
+         public void mouseDown(MouseEvent e) {
+            // do nothing
+         }
+
+         @Override
+         public void mouseDoubleClick(MouseEvent e) {
+            // do nothing
          }
       });
+      tree.addKeyListener(new KeySelectedListener());
 
       expandItemsThatHaveChildren();
       new RelationSkynetDragAndDrop(tree, VIEW_ID);
@@ -205,6 +202,7 @@ public class RelationsComposite extends Composite implements IFrameworkTransacti
       for (int index = 0; index < columnNames.length; index++) {
          TreeColumn column = new TreeColumn(tree, SWT.LEFT, index);
          column.setText(columnNames[index]);
+         column.setWidth(columnLengths[index]);
       }
    }
 
