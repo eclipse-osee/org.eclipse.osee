@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.access.AccessDataQuery;
 import org.eclipse.osee.framework.core.services.IAccessControlService;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 
 /**
  * @author Jeff C. Phillips
@@ -34,20 +35,22 @@ public class SkynetTransactionAccessHandler extends SkynetTransactionHandler {
    @Override
    public IStatus onCheck(IProgressMonitor monitor) {
       IStatus status = Status.OK_STATUS;
-      try {
-         AccessDataQuery accessData = service.getAccessData(getUserArtifact(), getItemsToPersist());
-         if (!accessData.matchesAll(getItemsToPersist(), PermissionEnum.WRITE)) {
-            //TODO Make access denied message more descriptive
-            status =
-               new Status(
-                  IStatus.ERROR,
-                  Activator.PLUGIN_ID,
-                  String.format(
-                     "Access Denied - does not have valid permission to edit this artifact\n objects:[%s]\naccessData:[%s]",
-                     getItemsToPersist(), accessData));
+      if (!DbUtil.isDbInit()) {
+         try {
+            AccessDataQuery accessContext = service.getAccessData(getUserArtifact(), getItemsToPersist());
+            if (!accessContext.matchesAll(getItemsToPersist(), PermissionEnum.WRITE)) {
+               //TODO Make access denied message more descriptive
+               status =
+                  new Status(
+                     IStatus.ERROR,
+                     Activator.PLUGIN_ID,
+                     String.format(
+                        "Access Denied - does not have valid permission to edit this artifact\n itemsToPersist:[%s]\n accessContext:[%s]",
+                        getItemsToPersist(), accessContext));
+            }
+         } catch (OseeCoreException ex) {
+            status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error during access check", ex);
          }
-      } catch (OseeCoreException ex) {
-         status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error during access check", ex);
       }
       return status;
    }

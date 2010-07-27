@@ -18,8 +18,12 @@ import org.eclipse.osee.framework.database.core.ConnectionHandler;
 /**
  * @author Donald G. Dunne
  */
-public class DbUtil {
+public final class DbUtil {
    private static boolean isInDbInit;
+
+   private DbUtil() {
+      // Utility Class - class should only have static methods
+   }
 
    public static void getTableRowCounts(Map<String, Integer> tableCount, Collection<String> tableNames) throws OseeDataStoreException {
       for (String tableName : tableNames) {
