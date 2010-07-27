@@ -135,7 +135,7 @@ public class ViewWordChangeAndDiffTest {
    }
 
    private static void checkPermissions(List<Artifact> artifacts) throws OseeCoreException {
-      boolean isReadable = AccessControlManager.checkObjectListPermission(artifacts, PermissionEnum.READ);
+      boolean isReadable = AccessControlManager.hasPermission(artifacts, PermissionEnum.READ);
       assertTrue("Valid object permissions", isReadable);
    }
 
