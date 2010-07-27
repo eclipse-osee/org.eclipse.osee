@@ -42,7 +42,7 @@ public class MessageServiceImpl implements MessageService {
 
    private URI getDefaultURI() {
       URI defaultURI = null;
-      String uri = System.getProperty("osee.broker.primary.uri");
+      String uri = System.getProperty("osee.default.broker.uri");
       if (uri == null) {
          uri = VM_URI;
       }
