@@ -11,6 +11,8 @@
 
 package org.eclipse.osee.framework.access.internal;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -40,7 +42,6 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.access.AccessData;
 import org.eclipse.osee.framework.core.model.access.AccessDataQuery;
-import org.eclipse.osee.framework.core.model.access.PermissionStatus;
 import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
@@ -247,7 +248,7 @@ public class AccessControlService implements IAccessControlService {
       return isValid;
    }
 
-   public boolean checkObjectListPermission(Collection<?> objectList, PermissionEnum permission) throws OseeCoreException {
+   public boolean hasPermission(Collection<?> objectList, PermissionEnum permission) throws OseeCoreException {
       boolean isValid = true;
 
       if (objectList.isEmpty()) {
@@ -262,18 +263,21 @@ public class AccessControlService implements IAccessControlService {
 
    @Override
    public boolean hasPermission(Object object, PermissionEnum permission) throws OseeCoreException {
-      return DbUtil.isDbInit() || hasPermission(UserManager.getUser(), object, permission);
-   }
-
-   public PermissionEnum getObjectPermission(Artifact subject, Object object) throws OseeCoreException {
-      for (PermissionEnum permissionEnum : PermissionEnum.values()) {
-         boolean result = hasPermission(subject, object, permissionEnum);
-         System.out.println("subject " + subject + " object " + object + " permission " + permissionEnum.name() + " -> " + result);
-         if (result) {
-            return permissionEnum;
+      boolean result = true;
+      if (!DbUtil.isDbInit()) {
+         Collection<?> objectsToCheck = null;
+         if (object instanceof Collection<?>) {
+            objectsToCheck = (Collection<?>) object;
+         } else if (object instanceof Array) {
+            objectsToCheck = Arrays.asList((Array) object);
+         } else {
+            objectsToCheck = Collections.singletonList(object);
          }
+         IBasicArtifact<?> subject = UserManager.getUser();
+         AccessDataQuery accessQuery = getAccessData(subject, objectsToCheck);
+         result = accessQuery.matchesAll(permission);
       }
-      return PermissionEnum.FULLACCESS;
+      return result;
    }
 
    @Override
@@ -288,17 +292,6 @@ public class AccessControlService implements IAccessControlService {
          OseeExceptions.wrapAndThrow(ex);
       }
       return new AccessDataQuery(accessData);
-   }
-
-   private boolean hasPermission(IBasicArtifact<?> subject, Object object, PermissionEnum permission) throws OseeCoreException {
-      AccessDataQuery accessQuery = getAccessData(subject, Collections.singletonList(object));
-      PermissionStatus permissionStatus = new PermissionStatus();
-      if (object instanceof Artifact) {
-         accessQuery.artifactMatches(permission, (Artifact) object, permissionStatus);
-      } else if (object instanceof Branch) {
-         accessQuery.branchMatches(permission, (Branch) object, permissionStatus);
-      }
-      return permissionStatus.matches();
    }
 
    private ILifecycleService getLifecycleService() throws OseeCoreException {

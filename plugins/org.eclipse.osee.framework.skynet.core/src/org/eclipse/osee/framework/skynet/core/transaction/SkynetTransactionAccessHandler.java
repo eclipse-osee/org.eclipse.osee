@@ -38,7 +38,7 @@ public class SkynetTransactionAccessHandler extends SkynetTransactionHandler {
       if (!DbUtil.isDbInit()) {
          try {
             AccessDataQuery accessContext = service.getAccessData(getUserArtifact(), getItemsToPersist());
-            if (!accessContext.matchesAll(getItemsToPersist(), PermissionEnum.WRITE)) {
+            if (!accessContext.matchesAll(PermissionEnum.WRITE)) {
                //TODO Make access denied message more descriptive
                status =
                   new Status(

@@ -11,7 +11,9 @@
 package org.eclipse.osee.framework.core.model.access;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map.Entry;
+import java.util.Set;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
@@ -31,6 +33,14 @@ public final class AccessData {
       for (AccessDetail<?> data : datas) {
          add(key, data);
       }
+   }
+
+   public Set<Object> keySet() {
+      Set<Object> toReturn = new HashSet<Object>();
+      for (Pair<Object, Object> key : accessMap.keySet()) {
+         toReturn.add(key.getFirst());
+      }
+      return toReturn;
    }
 
    public void add(Object key, AccessDetail<?> data) throws OseeCoreException {

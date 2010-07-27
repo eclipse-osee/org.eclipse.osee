@@ -19,9 +19,7 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.model.access.AccessDataQuery;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -30,9 +28,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  * @author Jeff C. Phillips
  */
 
-public class AccessControlManager {
+public final class AccessControlManager {
 
    private AccessControlManager() {
+      // Hide constructor
    }
 
    public static AccessControlService getService() {
@@ -41,22 +40,6 @@ public class AccessControlManager {
          OseeLog.log(Activator.class, Level.SEVERE, "Access Service was null");
       }
       return accessService;
-   }
-
-   public static void removeAccessControlDataIf(boolean removeFromDb, AccessControlData data) throws OseeDataStoreException {
-      getService().removeAccessControlDataIf(removeFromDb, data);
-   }
-
-   public static boolean checkObjectListPermission(Collection<?> objectList, PermissionEnum permission) throws OseeCoreException {
-      return getService().checkObjectListPermission(objectList, permission);
-   }
-
-   public static boolean hasPermission(Object object, PermissionEnum permission) throws OseeCoreException {
-      return getService().hasPermission(object, permission);
-   }
-
-   public static void setPermission(Artifact subject, Object object, PermissionEnum permission) {
-      getService().setPermission(subject, object, permission);
    }
 
    public static void lockObjects(Collection<Artifact> objects, Artifact subject) {
@@ -95,16 +78,19 @@ public class AccessControlManager {
       return getService().getAccessObject(object);
    }
 
-   public static void persistPermission(AccessControlData data) {
-      getService().persistPermission(data);
-   }
-
    public static void persistPermission(AccessControlData data, boolean isRecursionAllowed) {
       getService().persistPermission(data, isRecursionAllowed);
    }
 
-   public static AccessDataQuery getAccessData(Collection<?> objectsToCheck) throws OseeCoreException {
-      return getService().getAccessData(UserManager.getUser(), objectsToCheck);
+   public static void removeAccessControlDataIf(boolean removeFromDb, AccessControlData data) throws OseeDataStoreException {
+      getService().removeAccessControlDataIf(removeFromDb, data);
    }
 
+   public static boolean hasPermission(Object object, PermissionEnum permission) throws OseeCoreException {
+      return getService().hasPermission(object, permission);
+   }
+
+   public static void setPermission(Artifact subject, Object object, PermissionEnum permission) {
+      getService().setPermission(subject, object, permission);
+   }
 }

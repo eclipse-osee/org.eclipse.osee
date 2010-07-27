@@ -100,10 +100,14 @@ public class AccessDataQuery {
    public void relationTypeMatches(PermissionEnum permissionToMatch) throws OseeCoreException {
    }
 
-   public boolean matchesAll(Collection<IBasicArtifact<?>> toCheck, PermissionEnum permissionToMatch) throws OseeCoreException {
+   public boolean matchesAll(PermissionEnum permissionToMatch) throws OseeCoreException {
       PermissionStatus permissionStatus = new PermissionStatus();
-      for (IBasicArtifact<?> artifact : toCheck) {
-         artifactMatches(permissionToMatch, artifact, permissionStatus);
+      for (Object objectKey : accessData.keySet()) {
+         if (objectKey instanceof IBasicArtifact<?>) {
+            artifactMatches(permissionToMatch, (IBasicArtifact<?>) objectKey, permissionStatus);
+         } else if (objectKey instanceof IOseeBranch) {
+            branchMatches(permissionToMatch, (IOseeBranch) objectKey, permissionStatus);
+         }
          if (!permissionStatus.matches()) {
             break;
          }
