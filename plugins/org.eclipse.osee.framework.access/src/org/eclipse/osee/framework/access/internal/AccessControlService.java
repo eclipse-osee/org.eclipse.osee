@@ -351,7 +351,9 @@ public class AccessControlService implements IAccessControlService {
          }
       }
 
-      if (userPermission == null && accessObject != null) {
+      if (accessObject == null) {
+         userPermission = PermissionEnum.FULLACCESS;
+      } else if (userPermission == null) {
          userPermission = acquirePermissionRank(subject, accessObject);
       }
       return userPermission;

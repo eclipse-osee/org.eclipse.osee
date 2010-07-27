@@ -44,20 +44,27 @@ public class ObjectAccessProvider implements IAccessProvider {
    }
 
    private void setArtifactAccessData(IBasicArtifact<?> userArtifact, Artifact artifact, AccessData accessData) throws OseeCoreException {
+      setBranchAccessData(userArtifact, artifact.getBranch(), accessData);
+      String reason = "Legacy Artifact Permission";
       PermissionEnum userPermission = accessService.getArtifactPermission(userArtifact, artifact);
 
-      if (userPermission == null || isArtifactReadOnly(artifact)) {
+      if (userPermission == null) {
+         reason = "User Permission was null in setArtifactAccessData  - artifact is read only";
          userPermission = PermissionEnum.READ;
+      } else if (artifact.isHistorical()) {
+         userPermission = PermissionEnum.READ;
+         reason = "User Permission set to Read - artifact is historical  - artifact is read only";
+      } else if (!artifact.getBranch().isEditable()) {
+         userPermission = PermissionEnum.READ;
+         reason = "User Permission set to Read - artifact's branch is not editable - artifact is read only";
       }
-      accessData.add(artifact, new AccessDetail<IBasicArtifact<Artifact>>(artifact, userPermission));
-   }
-
-   public boolean isArtifactReadOnly(Artifact artifact) {
-      return artifact.isDeleted() || artifact.isHistorical() || !artifact.getBranch().isEditable();
+      //artifact.isDeleted()
+      accessData.add(artifact, new AccessDetail<IBasicArtifact<Artifact>>(artifact, userPermission, reason));
    }
 
    private void setBranchAccessData(IBasicArtifact<?> userArtifact, Branch branch, AccessData accessData) throws OseeCoreException {
+      String reason = "Legacy Branch Permission";
       PermissionEnum userPermission = accessService.getBranchPermission(userArtifact, branch);
-      accessData.add(branch, new AccessDetail<IOseeBranch>(branch, userPermission));
+      accessData.add(branch, new AccessDetail<IOseeBranch>(branch, userPermission, reason));
    }
 }
