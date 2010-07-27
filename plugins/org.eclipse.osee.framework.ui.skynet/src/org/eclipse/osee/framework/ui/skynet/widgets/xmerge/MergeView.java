@@ -762,7 +762,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
             }
          }
 
-         return AccessControlManager.checkObjectListPermission(artifacts, PermissionEnum.READ);
+         return AccessControlManager.hasPermission(artifacts, PermissionEnum.READ);
       }
    }
 

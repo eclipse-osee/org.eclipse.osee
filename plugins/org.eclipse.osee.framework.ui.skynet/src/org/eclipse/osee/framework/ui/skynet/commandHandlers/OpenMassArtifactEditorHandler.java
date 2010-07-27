@@ -36,6 +36,6 @@ public class OpenMassArtifactEditorHandler extends CommandHandler {
    @Override
    public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
       artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
-      return AccessControlManager.checkObjectListPermission(artifacts, PermissionEnum.WRITE);
+      return AccessControlManager.hasPermission(artifacts, PermissionEnum.WRITE);
    }
 }

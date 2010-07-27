@@ -36,6 +36,6 @@ public abstract class AbstractEditorHandler extends CommandHandler {
    @Override
    public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
       artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
-      return !artifacts.isEmpty() && AccessControlManager.checkObjectListPermission(artifacts, getPermissionLevel());
+      return !artifacts.isEmpty() && AccessControlManager.hasPermission(artifacts, getPermissionLevel());
    }
 }

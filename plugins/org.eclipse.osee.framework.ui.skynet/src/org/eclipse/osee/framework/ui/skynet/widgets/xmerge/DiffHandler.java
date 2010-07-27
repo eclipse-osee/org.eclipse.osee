@@ -202,6 +202,6 @@ class DiffHandler extends AbstractSelectionEnabledHandler {
          }
 
       }
-      return AccessControlManager.checkObjectListPermission(artifacts, PermissionEnum.READ);
+      return AccessControlManager.hasPermission(artifacts, PermissionEnum.READ);
    }
 }

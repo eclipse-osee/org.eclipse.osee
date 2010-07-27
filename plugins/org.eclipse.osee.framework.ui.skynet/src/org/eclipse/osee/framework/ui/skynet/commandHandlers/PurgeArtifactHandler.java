@@ -69,7 +69,7 @@ public class PurgeArtifactHandler extends CommandHandler {
    @Override
    public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
       artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
-      return AccessControlManager.isOseeAdmin() && AccessControlManager.checkObjectListPermission(artifacts,
+      return AccessControlManager.isOseeAdmin() && AccessControlManager.hasPermission(artifacts,
          PermissionEnum.WRITE);
    }
 }
