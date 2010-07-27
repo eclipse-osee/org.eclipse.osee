@@ -210,6 +210,7 @@ public class EntryDialog extends MessageDialog {
    }
 
    protected void createExtendedArea(Composite parent) {
+      // provided for subclass implementation
    }
 
    public void setInitialButtonState() {
@@ -316,6 +317,20 @@ public class EntryDialog extends MessageDialog {
 
    public void setTextHeight(Integer textHeight) {
       this.textHeight = textHeight;
+   }
+
+   /**
+    * @return the errorString
+    */
+   public String getErrorString() {
+      return errorString;
+   }
+
+   /**
+    * @param errorString the errorString to set
+    */
+   public void setErrorString(String errorString) {
+      this.errorString = errorString;
    }
 
 }

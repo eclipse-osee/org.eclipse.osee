@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -33,6 +32,7 @@ import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Disposition;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -92,8 +92,6 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IArtifact
    private static ToolItem newDefectItem, deleteDefectItem;
    private Label extraInfoLabel;
    private Composite parentComposite;
-   private static ToolItem expandDefectItem, collapseDefectItem;
-   private static Map<IReviewArtifact, Boolean> mapOfReviewArtifacts = new LinkedHashMap<IReviewArtifact, Boolean>();
    private ToolBar toolBar;
    private static Map<IReviewArtifact, Integer> tableHeight = new HashMap<IReviewArtifact, Integer>();
 
@@ -206,28 +204,6 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IArtifact
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
       toolBar.setLayoutData(gd);
       ToolItem item = null;
-
-      expandDefectItem = new ToolItem(toolBar, SWT.PUSH);
-      expandDefectItem.setImage(ImageManager.getImage(FrameworkImage.EXPAND_ALL));
-      expandDefectItem.setToolTipText("Expand Defect List");
-      expandDefectItem.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            mapOfReviewArtifacts.put(reviewArt, true);
-            handleExpandCollapseDefectTableList();
-         }
-      });
-
-      collapseDefectItem = new ToolItem(toolBar, SWT.PUSH);
-      collapseDefectItem.setImage(ImageManager.getImage(FrameworkImage.COLLAPSE_ALL));
-      collapseDefectItem.setToolTipText("Collapse Defect List");
-      collapseDefectItem.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            mapOfReviewArtifacts.put(reviewArt, false);
-            handleExpandCollapseDefectTableList();
-         }
-      });
 
       newDefectItem = new ToolItem(toolBar, SWT.PUSH);
       newDefectItem.setImage(ImageManager.getImage(FrameworkImage.GREEN_PLUS));
@@ -403,13 +379,20 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IArtifact
    }
 
    public void handleNewDefect() {
-      EntryDialog ed =
-         new EntryDialog(Displays.getActiveShell(), "Create New Defect", null, "Enter Defect Description",
-            MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
+      NewDefectDialog ed = new NewDefectDialog();
+      ed.setFillVertically(true);
       if (ed.open() == 0) {
          try {
             SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Add Review Defect");
-            reviewArt.getDefectManager().addDefectItem(ed.getEntry(), false, transaction);
+            DefectItem item = new DefectItem();
+            item.setDescription(ed.getEntry());
+            if (ed.getSeverity() != null) {
+               item.setSeverity(ed.getSeverity());
+            }
+            if (Strings.isValid(ed.getEntry2())) {
+               item.setLocation(ed.getEntry2());
+            }
+            reviewArt.getDefectManager().addOrUpdateDefectItem(item, false, transaction);
             transaction.execute();
             notifyXModifiedListeners();
             loadTable();

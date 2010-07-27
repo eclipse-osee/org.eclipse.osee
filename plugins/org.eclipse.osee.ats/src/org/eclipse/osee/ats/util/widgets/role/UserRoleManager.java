@@ -14,6 +14,7 @@ import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.eclipse.osee.ats.artifact.IReviewArtifact;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
@@ -29,6 +30,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
@@ -38,9 +40,10 @@ public class UserRoleManager {
 
    private final WeakReference<ReviewSMArtifact> artifactRef;
    private boolean enabled = true;
-   private static String ATS_DEFECT_TAG = "AtsRole";
-   private static String DEFECT_ITEM_TAG = "Role";
-   private static String REVIEW_DEFECT_ATTRIBUTE_NAME = "ats.Role";
+   private static String ROLE_ITEM_TAG = "Role";
+   private static String REVIEW_ROLE_ATTRIBUTE_NAME = "ats.Role";
+   private final Matcher roleMatcher = java.util.regex.Pattern.compile(
+      "<" + ROLE_ITEM_TAG + ">(.*?)</" + ROLE_ITEM_TAG + ">", Pattern.DOTALL | Pattern.MULTILINE).matcher("");
 
    public UserRoleManager(ReviewSMArtifact artifact) {
       this.artifactRef = new WeakReference<ReviewSMArtifact>(artifact);
@@ -64,15 +67,15 @@ public class UserRoleManager {
    }
 
    public Set<UserRole> getUserRoles() throws OseeCoreException {
-      Set<UserRole> uRoles = new HashSet<UserRole>();
-      String xml = getArtifact().getSoleAttributeValue(REVIEW_DEFECT_ATTRIBUTE_NAME, "");
-      Matcher m =
-         java.util.regex.Pattern.compile("<" + DEFECT_ITEM_TAG + ">(.*?)</" + DEFECT_ITEM_TAG + ">").matcher(xml);
-      while (m.find()) {
-         UserRole item = new UserRole(m.group());
-         uRoles.add(item);
+      Set<UserRole> roles = new HashSet<UserRole>();
+      for (String xml : getArtifact().getAttributesToStringList(REVIEW_ROLE_ATTRIBUTE_NAME)) {
+         roleMatcher.reset(xml);
+         while (roleMatcher.find()) {
+            UserRole item = new UserRole(roleMatcher.group());
+            roles.add(item);
+         }
       }
-      return uRoles;
+      return roles;
    }
 
    public Set<UserRole> getRoleUsersReviewComplete() throws OseeCoreException {
@@ -117,19 +120,39 @@ public class UserRoleManager {
 
    private void saveRoleItems(Set<UserRole> defectItems, boolean persist, SkynetTransaction transaction) {
       try {
-         StringBuffer sb = new StringBuffer("<" + ATS_DEFECT_TAG + ">");
-         for (UserRole item : defectItems) {
-            sb.append(AXml.addTagData(DEFECT_ITEM_TAG, item.toXml()));
+         // Change existing ones
+         for (Attribute<?> attr : getArtifact().getAttributes(REVIEW_ROLE_ATTRIBUTE_NAME)) {
+            UserRole dbPromoteItem = new UserRole((String) attr.getValue());
+            for (UserRole pItem : defectItems) {
+               if (pItem.equals(dbPromoteItem)) {
+                  attr.setFromString(AXml.addTagData(ROLE_ITEM_TAG, pItem.toXml()));
+               }
+            }
          }
-         sb.append("</" + ATS_DEFECT_TAG + ">");
-         getArtifact().setSoleAttributeValue(REVIEW_DEFECT_ATTRIBUTE_NAME, sb.toString());
+         Set<UserRole> dbPromoteItems = getUserRoles();
+         // Remove deleted ones; items in dbPromoteItems that are not in promoteItems
+         for (UserRole delPromoteItem : org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(
+            dbPromoteItems, defectItems)) {
+            for (Attribute<?> attr : getArtifact().getAttributes(REVIEW_ROLE_ATTRIBUTE_NAME)) {
+               UserRole dbPromoteItem = new UserRole((String) attr.getValue());
+               if (dbPromoteItem.equals(delPromoteItem)) {
+                  attr.delete();
+               }
+            }
+         }
+         // Add new ones: items in promoteItems that are not in dbPromoteItems
+         for (UserRole newPromoteItem : org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(defectItems,
+            dbPromoteItems)) {
+            getArtifact().addAttributeFromString(REVIEW_ROLE_ATTRIBUTE_NAME,
+               AXml.addTagData(ROLE_ITEM_TAG, newPromoteItem.toXml()));
+         }
          updateAssignees();
          if (persist) {
             getArtifact().persist(transaction);
          }
          rollupHoursSpentToReviewState(persist, transaction);
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't create ats review defect document", ex);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't create ats review role document", ex);
       }
    }
 

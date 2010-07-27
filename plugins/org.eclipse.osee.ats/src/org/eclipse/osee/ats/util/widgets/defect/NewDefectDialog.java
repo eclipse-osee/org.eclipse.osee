@@ -8,12 +8,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
+package org.eclipse.osee.ats.util.widgets.defect;
 
+import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
+import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Listener;
 
 /**
@@ -21,18 +28,20 @@ import org.eclipse.swt.widgets.Listener;
  * 
  * @author Donald G. Dunne
  */
-public class EntryEntryDialog extends EntryDialog {
+public class NewDefectDialog extends EntryDialog {
 
    private XText text2;
+   private XCombo severityCombo;
    private String entryText2 = "";
    private final String label2;
    private Listener okListener;
+   private Severity severity;
 
-   public EntryEntryDialog(String dialogTitle, String dialogMessage, String label1, String label2) {
-      super(dialogTitle, dialogMessage);
-      super.setLabel(label1);
+   public NewDefectDialog() {
+      super("Enter New Defect", "Enter Defect Description and Severity");
+      super.setLabel("Enter Defect Description");
       super.setTextHeight(100);
-      this.label2 = label2;
+      this.label2 = "Enter Location of Defect";
    }
 
    @Override
@@ -47,6 +56,23 @@ public class EntryEntryDialog extends EntryDialog {
 
    @Override
    protected void createExtendedArea(Composite parent) {
+
+      severityCombo = new XCombo("Enter Defect Severity");
+      severityCombo.setDataStrings(Severity.strValues().toArray(new String[Severity.strValues().size()]));
+      severityCombo.createWidgets(customAreaParent, 1);
+      severityCombo.addXModifiedListener(new XModifiedListener() {
+
+         @Override
+         public void widgetModified(XWidget widget) {
+            String str = severityCombo.get();
+            if (Strings.isValid(str)) {
+               severity = Severity.valueOf(str);
+            } else {
+               severity = null;
+            }
+            handleModified();
+         }
+      });
 
       text2 = new XText(label2);
       text2.setFillHorizontally(true);
@@ -91,6 +117,34 @@ public class EntryEntryDialog extends EntryDialog {
       if (buttonId == 0 && okListener != null) {
          okListener.handleEvent(null);
       }
+   }
+
+   public Severity getSeverity() {
+      return severity;
+   }
+
+   @Override
+   public boolean isEntryValid() {
+      if (!super.isEntryValid()) {
+         return false;
+      }
+      if (!Strings.isValid(getEntry())) {
+         setErrorString("Must enter Description");
+         return false;
+      }
+
+      if (severity == null) {
+         setErrorString("Must select Severity");
+         return false;
+      }
+      return true;
+   }
+
+   @Override
+   protected Control createButtonBar(Composite parent) {
+      Control control = super.createButtonBar(parent);
+      handleModified();
+      return control;
    }
 
 }
