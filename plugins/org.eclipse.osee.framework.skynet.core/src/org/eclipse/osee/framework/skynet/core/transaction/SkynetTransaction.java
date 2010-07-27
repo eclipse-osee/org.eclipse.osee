@@ -509,7 +509,7 @@ public class SkynetTransaction extends AbstractOperation {
          artifact.getRelationOrderRecords().clear();
       }
 
-      if (artifactEvent.getSkynetTransactionDetails().size() > 0) {
+      if (!artifactEvent.getSkynetTransactionDetails().isEmpty()) {
          OseeEventManager.kickPersistEvent(this, artifactEvent);
       }
    }
