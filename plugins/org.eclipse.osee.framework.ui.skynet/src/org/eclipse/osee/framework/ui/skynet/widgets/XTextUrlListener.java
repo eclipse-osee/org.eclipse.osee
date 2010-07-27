@@ -13,6 +13,11 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.StringTokenizer;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
@@ -96,6 +101,7 @@ public class XTextUrlListener implements ModifyListener {
    private final MouseListener mouseListener = new MouseListener() {
       @Override
       public void mouseUp(org.eclipse.swt.events.MouseEvent e) {
+
          StyledText styledText = xText.getStyledText();
          int offset = 0;
          try {
@@ -127,7 +133,15 @@ public class XTextUrlListener implements ModifyListener {
    };
 
    private void handleSelected(final UrlWord sw) {
-      Program.launch(sw.word);
+      Job job = new Job(String.format("Opening browser for [%s].", sw.word)) {
+
+         @Override
+         protected IStatus run(IProgressMonitor monitor) {
+            Program.launch(sw.word);
+            return Status.OK_STATUS;
+         }
+      };
+      Jobs.startJob(job, true);
    }
 
    @Override
