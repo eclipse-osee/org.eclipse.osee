@@ -122,39 +122,35 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
    }
 
    private void createVersionArtifacts() throws OseeCoreException {
-
+      IOseeBranch atsBranch = AtsUtil.getAtsBranch();
       // Setup some sample builds for Widget A
-      for (String verName : new String[] {DemoSawBuilds.SAW_Bld_1.getName(), DemoSawBuilds.SAW_Bld_2.getName(),
-         DemoSawBuilds.SAW_Bld_3.getName()}) {
-         VersionArtifact ver =
-            (VersionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtil.getAtsBranch(), verName);
-         if (verName.contains("1")) {
-            ver.setReleased(true);
-         }
-         if (verName.contains("2")) {
-            ver.setSoleAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), true);
-            ver.setSoleAttributeValue(ATSAttributes.ALLOW_COMMIT_BRANCH.getStoreName(), true);
-            ver.setSoleAttributeValue(ATSAttributes.ALLOW_CREATE_BRANCH.getStoreName(), true);
-         }
-         DemoTeams.getInstance().getTeamDef(Team.SAW_SW).addRelation(AtsRelationTypes.TeamDefinitionToVersion_Version,
-            ver);
-         ver.persist();
-      }
+      createVersionArtifacts(atsBranch, Team.SAW_SW, DemoSawBuilds.SAW_Bld_1, DemoSawBuilds.SAW_Bld_2,
+         DemoSawBuilds.SAW_Bld_3);
 
       // Setup some sample builds for Widget B
-      for (String verName : new String[] {DemoCISBuilds.CIS_Bld_1.getName(), DemoCISBuilds.CIS_Bld_2.getName(),
-         DemoCISBuilds.CIS_Bld_3.getName()}) {
-         VersionArtifact ver =
-            (VersionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtil.getAtsBranch(), verName);
-         if (verName.contains("1")) {
-            ver.setReleased(true);
+      createVersionArtifacts(atsBranch, Team.CIS_SW, DemoCISBuilds.CIS_Bld_1, DemoCISBuilds.CIS_Bld_2,
+         DemoCISBuilds.CIS_Bld_3);
+   }
+
+   private void createVersionArtifacts(IOseeBranch atsBranch, Team team, IOseeBranch... demoBranches) throws OseeCoreException {
+      TeamDefinitionArtifact teamDef = DemoTeams.getInstance().getTeamDef(team);
+      for (IOseeBranch demoBranch : demoBranches) {
+         String versionName = demoBranch.getName();
+         VersionArtifact versionArtifact =
+            (VersionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, atsBranch, versionName);
+
+         if (DemoCISBuilds.CIS_Bld_1.equals(demoBranch) || DemoSawBuilds.SAW_Bld_1.equals(demoBranch)) {
+            versionArtifact.setReleased(true);
          }
-         if (verName.contains("2")) {
-            ver.setSoleAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), true);
+         if (DemoCISBuilds.CIS_Bld_2.equals(demoBranch) || DemoSawBuilds.SAW_Bld_2.equals(demoBranch)) {
+            versionArtifact.setSoleAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), true);
          }
-         DemoTeams.getInstance().getTeamDef(Team.CIS_SW).addRelation(AtsRelationTypes.TeamDefinitionToVersion_Version,
-            ver);
-         ver.persist();
+         if (DemoSawBuilds.SAW_Bld_2.equals(demoBranch)) {
+            versionArtifact.setSoleAttributeValue(ATSAttributes.ALLOW_COMMIT_BRANCH.getStoreName(), true);
+            versionArtifact.setSoleAttributeValue(ATSAttributes.ALLOW_CREATE_BRANCH.getStoreName(), true);
+         }
+         teamDef.addRelation(AtsRelationTypes.TeamDefinitionToVersion_Version, versionArtifact);
+         versionArtifact.persist();
       }
    }
 }

@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.OseeServerProperties;
+import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.OseeInfo;
@@ -37,16 +38,18 @@ public class DatastoreInitOperation extends AbstractOperation {
    private static final String ADD_PERMISSION =
       "INSERT INTO OSEE_PERMISSION (PERMISSION_ID, PERMISSION_NAME) VALUES (?,?)";
 
+   private final IOseeCachingService cachingService;
    private final IOseeBranchService branchService;
    private final IOseeDatabaseService dbService;
    private final IOseeSchemaProvider schemaProvider;
    private final SchemaCreationOptions options;
    private final IApplicationServerManager appServerManager;
 
-   public DatastoreInitOperation(IApplicationServerManager appServerManager, IOseeDatabaseService dbService, IOseeBranchService branchService, IOseeSchemaProvider schemaProvider, SchemaCreationOptions options) {
+   public DatastoreInitOperation(IApplicationServerManager appServerManager, IOseeDatabaseService dbService, IOseeCachingService cachingService, IOseeBranchService branchService, IOseeSchemaProvider schemaProvider, SchemaCreationOptions options) {
       super("Datastore Initialization", Activator.PLUGIN_ID);
       this.appServerManager = appServerManager;
       this.dbService = dbService;
+      this.cachingService = cachingService;
       this.branchService = branchService;
       this.schemaProvider = schemaProvider;
       this.options = options;
@@ -70,6 +73,8 @@ public class DatastoreInitOperation extends AbstractOperation {
 
       OseeInfo.putValue(OseeInfo.DB_ID_KEY, GUID.create());
       addDefaultPermissions();
+
+      cachingService.clearAll();
 
       subOp = branchService.createSystemRootBranch(monitor);
       doSubWork(subOp, monitor, 0.30);

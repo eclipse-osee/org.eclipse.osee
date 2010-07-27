@@ -46,6 +46,7 @@ import org.eclipse.osee.framework.lifecycle.AbstractLifecycleOperation;
 import org.eclipse.osee.framework.lifecycle.AbstractLifecyclePoint;
 import org.eclipse.osee.framework.lifecycle.ILifecycleService;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
@@ -93,7 +94,7 @@ public class SkynetTransaction extends AbstractOperation {
    private boolean madeChanges = false;
    private boolean executedWithException = false;
    private final String comment;
-
+   private User user;
    private final TransactionMonitor txMonitor = new TransactionMonitor();
 
    public SkynetTransaction(Branch branch, String comment) {
@@ -105,6 +106,13 @@ public class SkynetTransaction extends AbstractOperation {
 
    public SkynetTransaction(IOseeBranch branch, String comment) throws OseeCoreException {
       this(BranchManager.getBranch(branch), comment);
+   }
+
+   private User getAuthor() throws OseeDataStoreException, OseeCoreException {
+      if (user == null) {
+         user = UserManager.getUser();
+      }
+      return user;
    }
 
    /**
@@ -194,7 +202,8 @@ public class SkynetTransaction extends AbstractOperation {
 
    TransactionRecord internalGetTransactionRecord() throws OseeCoreException {
       if (transactionId == null) {
-         transactionId = TransactionManager.internalCreateTransactionRecord(branch, UserManager.getUser(), comment);
+
+         transactionId = TransactionManager.internalCreateTransactionRecord(branch, getAuthor(), comment);
       }
       return transactionId;
    }
@@ -367,7 +376,7 @@ public class SkynetTransaction extends AbstractOperation {
       Set<IBasicArtifact<?>> objectsToCheck = new HashSet<IBasicArtifact<?>>();
       objectsToCheck.addAll(artifactReferences);
       objectsToCheck.addAll(alreadyProcessedArtifacts);
-      AbstractLifecyclePoint<?> lifecyclePoint = new SkynetTransactionCheckPoint(UserManager.getUser(), objectsToCheck);
+      AbstractLifecyclePoint<?> lifecyclePoint = new SkynetTransactionCheckPoint(getAuthor(), objectsToCheck);
       return new LifecycleOperation(this, service, lifecyclePoint, getName());
    }
 

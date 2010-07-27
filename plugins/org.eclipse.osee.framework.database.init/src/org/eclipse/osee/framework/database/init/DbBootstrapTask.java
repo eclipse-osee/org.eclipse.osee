@@ -25,10 +25,12 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.message.DatastoreInitRequest;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.core.util.HttpMessage;
 import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.init.internal.DatabaseInitActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
@@ -50,6 +52,13 @@ public class DbBootstrapTask implements IDbInitializationTask {
       DbUtil.setDbInit(true);
 
       createOseeDatastore();
+
+      IOseeCachingService service = DatabaseInitActivator.getInstance().getCachingService();
+      service.clearAll();
+
+      IOseeDatabaseService databaseService = DatabaseInitActivator.getInstance().getDatabaseService();
+      databaseService.getSequence().clear();
+
       Branch systemRoot = BranchManager.getSystemRootBranch();
       Conditions.checkNotNull(systemRoot, "System root was not created - ");
 

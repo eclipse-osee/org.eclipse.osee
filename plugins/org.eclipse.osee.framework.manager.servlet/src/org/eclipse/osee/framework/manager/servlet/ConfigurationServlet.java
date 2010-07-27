@@ -16,7 +16,6 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.util.logging.Level;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.branch.management.IOseeBranchService;
@@ -32,6 +31,7 @@ import org.eclipse.osee.framework.core.operation.LogProgressMonitor;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.UnsecuredOseeHttpServlet;
+import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -47,18 +47,20 @@ public class ConfigurationServlet extends UnsecuredOseeHttpServlet {
 
    private final IDataTranslationService translationService;
    private final IOseeDatabaseService databaseService;
+   private final IOseeCachingService cachingService;
    private final IOseeBranchService branchService;
    private final IApplicationServerManager appServerService;
 
-   public ConfigurationServlet(IApplicationServerManager appServerService, IDataTranslationService translationService, IOseeDatabaseService databaseService, IOseeBranchService branchService) {
+   public ConfigurationServlet(IApplicationServerManager appServerService, IDataTranslationService translationService, IOseeDatabaseService databaseService, IOseeCachingService cachingService, IOseeBranchService branchService) {
       this.translationService = translationService;
       this.databaseService = databaseService;
       this.branchService = branchService;
+      this.cachingService = cachingService;
       this.appServerService = appServerService;
    }
 
    @Override
-   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
       String servletPath = request.getServletPath();
       String urlPath = request.getRequestURI().replace(servletPath, "");
       if (urlPath.startsWith("/datastore/schema")) {
@@ -83,7 +85,7 @@ public class ConfigurationServlet extends UnsecuredOseeHttpServlet {
    }
 
    @Override
-   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
       String servletPath = request.getServletPath();
       String urlPath = request.getRequestURI().replace(servletPath, "");
       if (urlPath.startsWith("/datastore/initialize")) {
@@ -91,7 +93,8 @@ public class ConfigurationServlet extends UnsecuredOseeHttpServlet {
             SchemaCreationOptions options = getInitOptions(request);
             IOseeSchemaProvider schemaProvider = new OseeSchemaProvider();
             IOperation operation =
-               new DatastoreInitOperation(appServerService, databaseService, branchService, schemaProvider, options);
+               new DatastoreInitOperation(appServerService, databaseService, cachingService, branchService,
+                  schemaProvider, options);
             Operations.executeWorkAndCheckStatus(operation, new LogProgressMonitor(), -1.0);
          } catch (Exception ex) {
             String message = String.format("Datastore Initialization: [%s]\n%s", response.toString(), ex.toString());
