@@ -72,10 +72,14 @@ public class WordTrackedChangesTest {
    }
 
    private String getFileContent(String fileName) throws IOException {
-      InputStream stream = this.getClass().getResourceAsStream(fileName);
-      String returnString = Lib.inputStreamToString(stream);
-      stream.close();
-      return returnString;
+      InputStream stream = null;
+      try {
+         stream = this.getClass().getResourceAsStream(fileName);
+         String returnString = Lib.inputStreamToString(stream);
+         return returnString;
+      } finally {
+         Lib.close(stream);
+      }
    }
 
    @After
