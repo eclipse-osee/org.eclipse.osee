@@ -62,7 +62,7 @@ public abstract class OseeCoverageStore extends CoverageStore {
    public abstract void load(CoverageOptionManager coverageOptionManager) throws OseeCoreException;
 
    @Override
-   public Result save() throws OseeCoreException {
+   public Result save() {
       try {
          SkynetTransaction transaction = new SkynetTransaction(branch, "Coverage Save");
          save(transaction);
@@ -83,7 +83,7 @@ public abstract class OseeCoverageStore extends CoverageStore {
 
    public abstract Result save(SkynetTransaction transaction) throws OseeCoreException;
 
-   public Branch getBranch() throws OseeCoreException {
+   public Branch getBranch() {
       return branch;
    }
 

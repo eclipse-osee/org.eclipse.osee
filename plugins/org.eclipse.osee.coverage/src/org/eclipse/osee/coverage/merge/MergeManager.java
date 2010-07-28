@@ -200,7 +200,7 @@ public class MergeManager {
       return;
    }
 
-   private Entry<List<ICoverage>, List<ICoverage>> getMatchedAndUnMatchedImportCoverageItems(Map<ICoverage, MatchItem> importItemToMatchItem) throws OseeCoreException {
+   private Entry<List<ICoverage>, List<ICoverage>> getMatchedAndUnMatchedImportCoverageItems(Map<ICoverage, MatchItem> importItemToMatchItem) {
       List<ICoverage> unMatchedCoverageItems = new ArrayList<ICoverage>();
       List<ICoverage> matchedCoverageItems = new ArrayList<ICoverage>();
       for (Entry<ICoverage, MatchItem> coverageToMatchItem : importItemToMatchItem.entrySet()) {
@@ -215,7 +215,7 @@ public class MergeManager {
       return new SimpleEntry<List<ICoverage>, List<ICoverage>>(matchedCoverageItems, unMatchedCoverageItems);
    }
 
-   private List<ICoverage> getMatchedPackageCoverageItems(Map<ICoverage, MatchItem> importItemToMatchItem) throws OseeCoreException {
+   private List<ICoverage> getMatchedPackageCoverageItems(Map<ICoverage, MatchItem> importItemToMatchItem) {
       List<ICoverage> matchedPackageCoverageItems = new ArrayList<ICoverage>();
       for (Entry<ICoverage, MatchItem> coverageToMatchItem : importItemToMatchItem.entrySet()) {
          MatchItem childMatchItem = coverageToMatchItem.getValue();

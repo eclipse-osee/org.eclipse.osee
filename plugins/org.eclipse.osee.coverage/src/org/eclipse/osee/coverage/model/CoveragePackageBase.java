@@ -251,7 +251,7 @@ public abstract class CoveragePackageBase implements ICoverage, ICoverageUnitPro
    }
 
    @Override
-   public String getFileContents() throws OseeCoreException {
+   public String getFileContents() {
       return "";
    }
 
@@ -271,7 +271,7 @@ public abstract class CoveragePackageBase implements ICoverage, ICoverageUnitPro
    }
 
    @Override
-   public String getAssignees() throws OseeCoreException {
+   public String getAssignees() {
       return "";
    }
 

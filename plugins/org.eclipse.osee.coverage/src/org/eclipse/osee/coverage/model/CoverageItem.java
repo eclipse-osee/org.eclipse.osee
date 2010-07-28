@@ -58,7 +58,7 @@ public class CoverageItem implements ICoverage {
    /**
     * Copies the coverage unit. Does not copy test units.
     */
-   public CoverageItem copy(CoverageUnit parent) throws OseeCoreException {
+   public CoverageItem copy(CoverageUnit parent) {
       CoverageItem coverageitem = new CoverageItem(parent, coverageMethod, orderNumber);
       coverageitem.setGuid(guid);
       coverageitem.setName(name);
@@ -165,7 +165,7 @@ public class CoverageItem implements ICoverage {
    }
 
    @Override
-   public String getFileContents() throws OseeCoreException {
+   public String getFileContents() {
       return name;
    }
 
@@ -192,7 +192,7 @@ public class CoverageItem implements ICoverage {
    }
 
    @Override
-   public String getAssignees() throws OseeCoreException {
+   public String getAssignees() {
       return "";
    }
 

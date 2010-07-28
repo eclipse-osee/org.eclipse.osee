@@ -147,7 +147,6 @@ public class XCoverageViewer extends XWidget {
       }
    }
 
-   @SuppressWarnings("unchecked")
    public ArrayList<ICoverage> getSelectedCoverageItems() {
       ArrayList<ICoverage> items = new ArrayList<ICoverage>();
       if (xViewer == null) {
@@ -156,7 +155,7 @@ public class XCoverageViewer extends XWidget {
       if (xViewer.getSelection().isEmpty()) {
          return items;
       }
-      Iterator i = ((IStructuredSelection) xViewer.getSelection()).iterator();
+      Iterator<?> i = ((IStructuredSelection) xViewer.getSelection()).iterator();
       while (i.hasNext()) {
          Object obj = i.next();
          items.add((ICoverage) obj);
@@ -194,6 +193,7 @@ public class XCoverageViewer extends XWidget {
 
    @Override
    public void setXmlData(String str) {
+      // do nothing
    }
 
    @Override

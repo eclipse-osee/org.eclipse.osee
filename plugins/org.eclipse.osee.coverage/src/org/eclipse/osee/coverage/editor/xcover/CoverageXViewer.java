@@ -196,11 +196,7 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
       for (TreeItem item : treeItems) {
          coverageItems.add((ICoverage) item.getData());
       }
-      try {
-         promptChangeData((XViewerColumn) treeColumn.getData(), coverageItems, isColumnMultiEditEnabled());
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-      }
+      promptChangeData((XViewerColumn) treeColumn.getData(), coverageItems, isColumnMultiEditEnabled());
    }
 
    @Override
@@ -250,7 +246,7 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
       return Result.TrueResult;
    }
 
-   public boolean promptChangeData(XViewerColumn xCol, Collection<ICoverage> coverageItems, boolean colMultiEdit) throws OseeCoreException {
+   public boolean promptChangeData(XViewerColumn xCol, Collection<ICoverage> coverageItems, boolean colMultiEdit) {
       boolean modified = false;
       if (coverageItems != null && !coverageItems.isEmpty()) {
          //         ICoverage coverageItem = (ICoverage) coverageItems.toArray()[0];
@@ -296,7 +292,7 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
    }
 
    @Override
-   public Result saveImportRecord(SkynetTransaction transaction, CoverageImport coverageImport) throws OseeCoreException {
+   public Result saveImportRecord(SkynetTransaction transaction, CoverageImport coverageImport) {
       return new Result(false, "Invalid for this.");
    }
 

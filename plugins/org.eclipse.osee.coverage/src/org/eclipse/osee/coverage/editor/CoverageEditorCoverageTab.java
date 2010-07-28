@@ -177,7 +177,7 @@ public class CoverageEditorCoverageTab extends FormPage implements ISaveable {
    }
 
    @Override
-   public Result saveImportRecord(SkynetTransaction transaction, CoverageImport coverageImport) throws OseeCoreException {
+   public Result saveImportRecord(SkynetTransaction transaction, CoverageImport coverageImport) {
       return new Result(false, "Not valid for this tab.");
    }
 

@@ -40,7 +40,7 @@ public class MergeItemGroup extends MergeItemBase {
    }
 
    @Override
-   public String getAssignees() throws OseeCoreException {
+   public String getAssignees() {
       return "";
    }
 

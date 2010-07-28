@@ -22,7 +22,6 @@ import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -54,18 +53,6 @@ public class CoverageOptionManagerStoreTest {
          artifact.persist(transaction);
       }
       transaction.execute();
-   }
-
-   private static Artifact getCoveragePackageArt() throws OseeCoreException {
-      try {
-         Artifact artifact =
-            ArtifactQuery.getArtifactFromTypeAndName(CoverageArtifactTypes.CoveragePackage,
-               CoverageOptionManagerStoreTest.class.getSimpleName(), BranchManager.getCommonBranch());
-         return artifact;
-      } catch (ArtifactDoesNotExist ex) {
-         // do nothing
-      }
-      return null;
    }
 
    @Test

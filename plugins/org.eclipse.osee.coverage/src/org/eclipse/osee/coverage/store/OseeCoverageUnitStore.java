@@ -55,7 +55,7 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
       return unitStore.getCoverageUnit();
    }
 
-   public static OseeCoverageUnitStore get(CoverageUnit coverageUnit, Branch branch) throws OseeCoreException {
+   public static OseeCoverageUnitStore get(CoverageUnit coverageUnit, Branch branch) {
       return new OseeCoverageUnitStore(coverageUnit, branch);
    }
 

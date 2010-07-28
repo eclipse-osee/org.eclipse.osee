@@ -55,7 +55,7 @@ public class CoverageLabelProvider extends XViewerLabelProvider {
    }
 
    @Override
-   public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
+   public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) {
       if (element instanceof MessageCoverageItem && xCol.equals(CoverageXViewerFactory.Name)) {
          return ImageManager.getImage(FrameworkImage.X_RED);
       }
@@ -205,6 +205,7 @@ public class CoverageLabelProvider extends XViewerLabelProvider {
 
    @Override
    public void dispose() {
+      // do nothing
    }
 
    @Override
@@ -214,10 +215,12 @@ public class CoverageLabelProvider extends XViewerLabelProvider {
 
    @Override
    public void addListener(ILabelProviderListener listener) {
+      // do nothing
    }
 
    @Override
    public void removeListener(ILabelProviderListener listener) {
+      // do nothing
    }
 
    public CoverageXViewer getTreeViewer() {

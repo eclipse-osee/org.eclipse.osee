@@ -42,7 +42,7 @@ public class SimpleTestUnitProviderTest {
     * @throws OseeCoreException
     */
    @Test
-   public void testAddGetTestUnits() throws OseeCoreException {
+   public void testAddGetTestUnits() {
       provider.addTestUnit(coverageItem1, "Test Unit 1");
       provider.addTestUnit(coverageItem1, "Test Unit 2");
       provider.addTestUnit(coverageItem1, "Test Unit 3");

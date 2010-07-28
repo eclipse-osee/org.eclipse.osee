@@ -139,22 +139,22 @@ public class CoveragePackageImportTest {
          }
 
          @Override
-         public Result save() throws OseeCoreException {
+         public Result save() {
             return Result.TrueResult;
          }
 
          @Override
-         public Result save(Collection<ICoverage> coverages) throws OseeCoreException {
+         public Result save(Collection<ICoverage> coverages) {
             return Result.TrueResult;
          }
 
          @Override
-         public Result saveImportRecord(SkynetTransaction transaction, CoverageImport coverageImport) throws OseeCoreException {
+         public Result saveImportRecord(SkynetTransaction transaction, CoverageImport coverageImport) {
             return Result.TrueResult;
          }
 
          @Override
-         public Branch getBranch() throws OseeCoreException {
+         public Branch getBranch() {
             return commonBranch;
          }
 
@@ -169,22 +169,22 @@ public class CoveragePackageImportTest {
          }
 
          @Override
-         public Result save() throws OseeCoreException {
+         public Result save() {
             return Result.TrueResult;
          }
 
          @Override
-         public Result save(Collection<ICoverage> coverages) throws OseeCoreException {
+         public Result save(Collection<ICoverage> coverages) {
             return Result.TrueResult;
          }
 
          @Override
-         public Result saveImportRecord(SkynetTransaction transaction, CoverageImport coverageImport) throws OseeCoreException {
+         public Result saveImportRecord(SkynetTransaction transaction, CoverageImport coverageImport) {
             return Result.TrueResult;
          }
 
          @Override
-         public Branch getBranch() throws OseeCoreException {
+         public Branch getBranch() {
             return commonBranch;
          }
 
@@ -297,22 +297,22 @@ public class CoveragePackageImportTest {
          }
 
          @Override
-         public Result save() throws OseeCoreException {
+         public Result save() {
             return Result.TrueResult;
          }
 
          @Override
-         public Result save(Collection<ICoverage> coverages) throws OseeCoreException {
+         public Result save(Collection<ICoverage> coverages) {
             return Result.TrueResult;
          }
 
          @Override
-         public Result saveImportRecord(SkynetTransaction transaction, CoverageImport coverageImport) throws OseeCoreException {
+         public Result saveImportRecord(SkynetTransaction transaction, CoverageImport coverageImport) {
             return Result.TrueResult;
          }
 
          @Override
-         public Branch getBranch() throws OseeCoreException {
+         public Branch getBranch() {
             return commonBranch;
          }
 
@@ -398,22 +398,22 @@ public class CoveragePackageImportTest {
          }
 
          @Override
-         public Result save() throws OseeCoreException {
+         public Result save() {
             return Result.TrueResult;
          }
 
          @Override
-         public Result save(Collection<ICoverage> coverages) throws OseeCoreException {
+         public Result save(Collection<ICoverage> coverages) {
             return Result.TrueResult;
          }
 
          @Override
-         public Result saveImportRecord(SkynetTransaction transaction, CoverageImport coverageImport) throws OseeCoreException {
+         public Result saveImportRecord(SkynetTransaction transaction, CoverageImport coverageImport) {
             return Result.TrueResult;
          }
 
          @Override
-         public Branch getBranch() throws OseeCoreException {
+         public Branch getBranch() {
             return commonBranch;
          }
 
@@ -514,22 +514,22 @@ public class CoveragePackageImportTest {
          }
 
          @Override
-         public Result save() throws OseeCoreException {
+         public Result save() {
             return Result.TrueResult;
          }
 
          @Override
-         public Result save(Collection<ICoverage> coverages) throws OseeCoreException {
+         public Result save(Collection<ICoverage> coverages) {
             return Result.TrueResult;
          }
 
          @Override
-         public Result saveImportRecord(SkynetTransaction transaction, CoverageImport coverageImport) throws OseeCoreException {
+         public Result saveImportRecord(SkynetTransaction transaction, CoverageImport coverageImport) {
             return Result.TrueResult;
          }
 
          @Override
-         public Branch getBranch() throws OseeCoreException {
+         public Branch getBranch() {
             return commonBranch;
          }
 
@@ -637,22 +637,22 @@ public class CoveragePackageImportTest {
          }
 
          @Override
-         public Result save() throws OseeCoreException {
+         public Result save() {
             return Result.TrueResult;
          }
 
          @Override
-         public Result save(Collection<ICoverage> coverages) throws OseeCoreException {
+         public Result save(Collection<ICoverage> coverages) {
             return Result.TrueResult;
          }
 
          @Override
-         public Result saveImportRecord(SkynetTransaction transaction, CoverageImport coverageImport) throws OseeCoreException {
+         public Result saveImportRecord(SkynetTransaction transaction, CoverageImport coverageImport) {
             return Result.TrueResult;
          }
 
          @Override
-         public Branch getBranch() throws OseeCoreException {
+         public Branch getBranch() {
             return commonBranch;
          }
 
@@ -753,22 +753,22 @@ public class CoveragePackageImportTest {
          }
 
          @Override
-         public Result save() throws OseeCoreException {
+         public Result save() {
             return Result.TrueResult;
          }
 
          @Override
-         public Result save(Collection<ICoverage> coverages) throws OseeCoreException {
+         public Result save(Collection<ICoverage> coverages) {
             return Result.TrueResult;
          }
 
          @Override
-         public Result saveImportRecord(SkynetTransaction transaction, CoverageImport coverageImport) throws OseeCoreException {
+         public Result saveImportRecord(SkynetTransaction transaction, CoverageImport coverageImport) {
             return Result.TrueResult;
          }
 
          @Override
-         public Branch getBranch() throws OseeCoreException {
+         public Branch getBranch() {
             return commonBranch;
          }
 
@@ -920,22 +920,22 @@ public class CoveragePackageImportTest {
          }
 
          @Override
-         public Result save() throws OseeCoreException {
+         public Result save() {
             return Result.TrueResult;
          }
 
          @Override
-         public Result save(Collection<ICoverage> coverages) throws OseeCoreException {
+         public Result save(Collection<ICoverage> coverages) {
             return Result.TrueResult;
          }
 
          @Override
-         public Result saveImportRecord(SkynetTransaction transaction, CoverageImport coverageImport) throws OseeCoreException {
+         public Result saveImportRecord(SkynetTransaction transaction, CoverageImport coverageImport) {
             return Result.TrueResult;
          }
 
          @Override
-         public Branch getBranch() throws OseeCoreException {
+         public Branch getBranch() {
             return commonBranch;
          }
 
@@ -1071,22 +1071,22 @@ public class CoveragePackageImportTest {
          }
 
          @Override
-         public Result save() throws OseeCoreException {
+         public Result save() {
             return Result.TrueResult;
          }
 
          @Override
-         public Result save(Collection<ICoverage> coverages) throws OseeCoreException {
+         public Result save(Collection<ICoverage> coverages) {
             return Result.TrueResult;
          }
 
          @Override
-         public Result saveImportRecord(SkynetTransaction transaction, CoverageImport coverageImport) throws OseeCoreException {
+         public Result saveImportRecord(SkynetTransaction transaction, CoverageImport coverageImport) {
             return Result.TrueResult;
          }
 
          @Override
-         public Branch getBranch() throws OseeCoreException {
+         public Branch getBranch() {
             return commonBranch;
          }
 
@@ -1193,22 +1193,22 @@ public class CoveragePackageImportTest {
          }
 
          @Override
-         public Result save() throws OseeCoreException {
+         public Result save() {
             return Result.TrueResult;
          }
 
          @Override
-         public Result save(Collection<ICoverage> coverages) throws OseeCoreException {
+         public Result save(Collection<ICoverage> coverages) {
             return Result.TrueResult;
          }
 
          @Override
-         public Result saveImportRecord(SkynetTransaction transaction, CoverageImport coverageImport) throws OseeCoreException {
+         public Result saveImportRecord(SkynetTransaction transaction, CoverageImport coverageImport) {
             return Result.TrueResult;
          }
 
          @Override
-         public Branch getBranch() throws OseeCoreException {
+         public Branch getBranch() {
             return commonBranch;
          }
 

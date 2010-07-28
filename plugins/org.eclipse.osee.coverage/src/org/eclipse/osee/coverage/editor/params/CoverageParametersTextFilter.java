@@ -29,6 +29,7 @@ public class CoverageParametersTextFilter extends ViewerFilter {
    private boolean showAll = true;
 
    public CoverageParametersTextFilter(XViewer xViewer) {
+      // do nothing
    }
 
    @Override

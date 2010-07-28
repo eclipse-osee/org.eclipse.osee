@@ -51,11 +51,9 @@ public class CoverageNavigateView extends ViewPart implements IActionable {
    private XNavigateComposite xNavComp;
    private XBranchSelectWidget xBranchSelectWidget;
 
-   public CoverageNavigateView() {
-   }
-
    @Override
    public void setFocus() {
+      // do nothing
    }
 
    @Override

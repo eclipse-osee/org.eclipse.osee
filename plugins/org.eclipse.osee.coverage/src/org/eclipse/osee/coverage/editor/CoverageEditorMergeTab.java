@@ -260,10 +260,12 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
 
       @Override
       public void aboutToRun(IJobChangeEvent event) {
+         // do nothing
       }
 
       @Override
       public void awake(IJobChangeEvent event) {
+         // do nothing
       }
 
       @Override
@@ -275,6 +277,7 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
 
       @Override
       public void running(IJobChangeEvent event) {
+         // do nothing
       }
 
       @Override
@@ -284,6 +287,7 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
 
       @Override
       public void sleeping(IJobChangeEvent event) {
+         // do nothing
       }
 
    }

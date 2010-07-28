@@ -12,7 +12,6 @@ package org.eclipse.osee.coverage.model;
 
 import java.util.Collection;
 import org.eclipse.osee.coverage.util.CoverageImage;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
@@ -52,7 +51,7 @@ public class CoverageTestUnit implements ICoverage {
    }
 
    @Override
-   public String getAssignees() throws OseeCoreException {
+   public String getAssignees() {
       return "";
    }
 
@@ -129,7 +128,7 @@ public class CoverageTestUnit implements ICoverage {
    }
 
    @Override
-   public String getFileContents() throws OseeCoreException {
+   public String getFileContents() {
       return "";
    }
 

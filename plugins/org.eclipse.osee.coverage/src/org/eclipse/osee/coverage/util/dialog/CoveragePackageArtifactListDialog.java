@@ -28,17 +28,18 @@ public class CoveragePackageArtifactListDialog extends org.eclipse.ui.dialogs.Li
       setMessage(message);
       setContentProvider(new IStructuredContentProvider() {
          @Override
-         @SuppressWarnings("unchecked")
          public Object[] getElements(Object arg0) {
-            return ((Collection) arg0).toArray();
+            return ((Collection<?>) arg0).toArray();
          }
 
          @Override
          public void dispose() {
+            // do nothing
          }
 
          @Override
          public void inputChanged(Viewer arg0, Object arg1, Object arg2) {
+            // do nothing
          }
       });
       setLabelProvider(new LabelProvider() {

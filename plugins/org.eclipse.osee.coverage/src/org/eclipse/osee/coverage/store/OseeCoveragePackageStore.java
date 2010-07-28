@@ -196,7 +196,7 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
    }
 
    @Override
-   public Result save(Collection<ICoverage> coverages) throws OseeCoreException {
+   public Result save(Collection<ICoverage> coverages) {
       try {
          SkynetTransaction transaction = new SkynetTransaction(branch, "Coverage Save");
          save(transaction, coverages);

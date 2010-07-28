@@ -11,7 +11,6 @@
 package org.eclipse.osee.coverage.model;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -28,18 +27,15 @@ public class SimpleTestUnitProvider implements ITestUnitProvider {
    // create a new string for each coverage item.
    final HashCollection<CoverageItem, String> coverageItemToTestUnits = new HashCollection<CoverageItem, String>(1000);
 
-   public SimpleTestUnitProvider() {
-   }
-
    @Override
-   public void addTestUnit(CoverageItem coverageItem, String testUnitName) throws OseeCoreException {
+   public void addTestUnit(CoverageItem coverageItem, String testUnitName) {
       if (!getTestUnits(coverageItem).contains(testUnitName)) {
          coverageItemToTestUnits.put(coverageItem, Strings.intern(testUnitName));
       }
    }
 
    @Override
-   public Collection<String> getTestUnits(CoverageItem coverageItem) throws OseeCoreException {
+   public Collection<String> getTestUnits(CoverageItem coverageItem) {
       if (coverageItemToTestUnits.containsKey(coverageItem)) {
          return coverageItemToTestUnits.getValues(coverageItem);
       }
@@ -47,12 +43,12 @@ public class SimpleTestUnitProvider implements ITestUnitProvider {
    }
 
    @Override
-   public String toXml(CoverageItem coverageItem) throws OseeCoreException {
+   public String toXml(CoverageItem coverageItem) {
       return Collections.toString(";", getTestUnits(coverageItem));
    }
 
    @Override
-   public void fromXml(CoverageItem coverageItem, String testUnitNames) throws OseeCoreException {
+   public void fromXml(CoverageItem coverageItem, String testUnitNames) {
       if (Strings.isValid(testUnitNames)) {
          for (String testName : testUnitNames.split(";")) {
             addTestUnit(coverageItem, testName);
@@ -61,7 +57,7 @@ public class SimpleTestUnitProvider implements ITestUnitProvider {
    }
 
    @Override
-   public void setTestUnits(CoverageItem coverageItem, Collection<String> testUnitNames) throws OseeCoreException {
+   public void setTestUnits(CoverageItem coverageItem, Collection<String> testUnitNames) {
       coverageItemToTestUnits.removeValues(coverageItem);
       for (String testUnitName : testUnitNames) {
          addTestUnit(coverageItem, testUnitName);
@@ -69,7 +65,7 @@ public class SimpleTestUnitProvider implements ITestUnitProvider {
    }
 
    @Override
-   public void removeTestUnit(CoverageItem coverageItem, String testUnitName) throws OseeCoreException {
+   public void removeTestUnit(CoverageItem coverageItem, String testUnitName) {
       coverageItemToTestUnits.removeValue(coverageItem, testUnitName);
    }
 

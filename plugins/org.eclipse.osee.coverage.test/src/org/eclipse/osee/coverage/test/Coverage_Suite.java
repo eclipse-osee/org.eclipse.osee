@@ -14,7 +14,6 @@ import org.eclipse.osee.coverage.test.model.CoverageItemTest;
 import org.eclipse.osee.coverage.test.model.CoverageOptionManagerTest;
 import org.eclipse.osee.coverage.test.model.CoverageUnitTest;
 import org.eclipse.osee.coverage.test.model.SimpleTestUnitProviderTest;
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -25,7 +24,5 @@ import org.junit.runners.Suite;
  * @author Donald G. Dunne
  */
 public class Coverage_Suite {
-   @BeforeClass
-   public static void setUp() throws Exception {
-   }
+   // do nothing
 }

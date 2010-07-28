@@ -72,7 +72,7 @@ public class CoverageEditorInput implements IEditorInput {
       return "";
    }
 
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings("rawtypes")
    @Override
    public Object getAdapter(Class adapter) {
       return null;

@@ -40,7 +40,7 @@ public class CoverageRenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public Image getImage(Artifact artifact) throws OseeCoreException {
+   public Image getImage(Artifact artifact) {
       return ImageManager.getImage(CoverageImage.COVERAGE_PACKAGE);
    }
 
@@ -64,12 +64,12 @@ public class CoverageRenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public CoverageRenderer newInstance() throws OseeCoreException {
+   public CoverageRenderer newInstance() {
       return new CoverageRenderer();
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
       if ((artifact.isOfType(CoverageArtifactTypes.CoveragePackage) || //
       artifact.isOfType(CoverageArtifactTypes.CoverageFolder) || //
       artifact.isOfType(CoverageArtifactTypes.CoverageUnit)) && !artifact.isHistorical()) {

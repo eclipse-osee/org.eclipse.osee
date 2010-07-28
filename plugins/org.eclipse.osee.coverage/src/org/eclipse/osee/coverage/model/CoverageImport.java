@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.KeyValueArtifact;
@@ -27,7 +26,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
  * 
  * @author Donald G. Dunne
  */
-public class CoverageImport extends CoveragePackageBase implements ICoverage {
+public class CoverageImport extends CoveragePackageBase {
 
    private Date runDate;
    private String location = "";
@@ -81,7 +80,7 @@ public class CoverageImport extends CoveragePackageBase implements ICoverage {
    }
 
    @Override
-   public void loadKeyValues(KeyValueArtifact keyValueArtifact) throws OseeCoreException {
+   public void loadKeyValues(KeyValueArtifact keyValueArtifact) {
       if (Strings.isValid(keyValueArtifact.getValue("location"))) {
          setLocation(keyValueArtifact.getValue("location"));
       }
@@ -91,7 +90,7 @@ public class CoverageImport extends CoveragePackageBase implements ICoverage {
    }
 
    @Override
-   public void saveKeyValues(KeyValueArtifact keyValueArtifact) throws OseeCoreException {
+   public void saveKeyValues(KeyValueArtifact keyValueArtifact) {
       keyValueArtifact.setValue("location", location);
       keyValueArtifact.setValue("blamName", blamName);
    }

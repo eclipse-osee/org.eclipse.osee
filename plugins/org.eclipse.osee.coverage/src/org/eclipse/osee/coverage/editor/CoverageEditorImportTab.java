@@ -326,10 +326,12 @@ public class CoverageEditorImportTab extends FormPage {
 
       @Override
       public void addListener(ILabelProviderListener listener) {
+         // do nothing
       }
 
       @Override
       public void dispose() {
+         // do nothing
       }
 
       @Override
@@ -339,6 +341,7 @@ public class CoverageEditorImportTab extends FormPage {
 
       @Override
       public void removeListener(ILabelProviderListener listener) {
+         // do nothing
       }
 
    };

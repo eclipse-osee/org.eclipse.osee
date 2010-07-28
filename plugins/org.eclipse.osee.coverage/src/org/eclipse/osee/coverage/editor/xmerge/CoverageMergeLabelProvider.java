@@ -37,7 +37,7 @@ public class CoverageMergeLabelProvider extends CoverageLabelProvider {
    }
 
    @Override
-   public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
+   public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) {
       if (element instanceof MessageMergeItem && xCol.equals(CoverageXViewerFactory.Name)) {
          return ImageManager.getImage(FrameworkImage.X_RED);
       }
@@ -112,6 +112,7 @@ public class CoverageMergeLabelProvider extends CoverageLabelProvider {
 
    @Override
    public void dispose() {
+      // do nothing
    }
 
    @Override
@@ -121,10 +122,12 @@ public class CoverageMergeLabelProvider extends CoverageLabelProvider {
 
    @Override
    public void addListener(ILabelProviderListener listener) {
+      // do nothing
    }
 
    @Override
    public void removeListener(ILabelProviderListener listener) {
+      // do nothing
    }
 
    @Override

@@ -210,6 +210,7 @@ public class CoverageEditor extends FormEditor implements IActionable {
 
    @Override
    public void doSave(IProgressMonitor monitor) {
+      // do nothing
    }
 
    @Override
@@ -223,11 +224,7 @@ public class CoverageEditor extends FormEditor implements IActionable {
 
    @Override
    public void dispose() {
-      try {
-         CoverageEventManager.getInstance().unregister(this);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
+      CoverageEventManager.getInstance().unregister(this);
       super.dispose();
    }
 
@@ -284,7 +281,7 @@ public class CoverageEditor extends FormEditor implements IActionable {
       });
    }
 
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings("rawtypes")
    @Override
    public Object getAdapter(Class adapter) {
       if (IActionable.class.equals(adapter)) {
@@ -305,6 +302,7 @@ public class CoverageEditor extends FormEditor implements IActionable {
 
    @Override
    public void doSaveAs() {
+      // do nothing
    }
 
    @Override

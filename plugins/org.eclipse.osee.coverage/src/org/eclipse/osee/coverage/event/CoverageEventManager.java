@@ -46,9 +46,6 @@ public class CoverageEventManager implements IArtifactEventListener, OseeMessagi
    private ConnectionNode connectionNode;
    private OseeMessagingTracker oseeMessagingTracker;
 
-   private CoverageEventManager() {
-   }
-
    public static CoverageEventManager getInstance() {
       if (instance == null) {
          instance = new CoverageEventManager();
@@ -111,13 +108,13 @@ public class CoverageEventManager implements IArtifactEventListener, OseeMessagi
       }
    }
 
-   public void register(CoverageEditor coverageEditor) throws OseeCoreException {
+   public void register(CoverageEditor coverageEditor) {
       editors.add(coverageEditor);
       startListeningForRemoteCoverageEvents();
       startListeningForFrameworkEvents();
    }
 
-   public void unregister(CoverageEditor coverageEditor) throws OseeCoreException {
+   public void unregister(CoverageEditor coverageEditor) {
       editors.remove(coverageEditor);
       if (editors.isEmpty()) {
          stopListeningForRemoteCoverageEvents();
@@ -156,6 +153,7 @@ public class CoverageEventManager implements IArtifactEventListener, OseeMessagi
 
    @Override
    public void success() {
+      // do nothing
    }
 
    public class CoverageMessageListener extends OseeMessagingListener {

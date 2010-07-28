@@ -28,7 +28,6 @@ import org.eclipse.osee.coverage.store.CoverageArtifactTypes;
 import org.eclipse.osee.coverage.store.CoverageAttributes;
 import org.eclipse.osee.coverage.store.DbTestUnitProvider;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -60,7 +59,7 @@ public class DoesNotWorkItemCoverage extends XNavigateItemAction {
    }
 
    @Override
-   public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
+   public void run(TableLoadOption... tableLoadOptions) {
       if (!MessageDialog.openConfirm(Displays.getActiveShell(), getName(), getName())) {
          return;
       }

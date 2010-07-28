@@ -20,7 +20,6 @@ import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.dialog.CoveragePackageArtifactListDialog;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -41,7 +40,7 @@ public class CreateTestCoverageUnits extends XNavigateItemAction {
    }
 
    @Override
-   public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
+   public void run(TableLoadOption... tableLoadOptions) {
       if (!MessageDialog.openConfirm(Displays.getActiveShell(), getName(),
          getName() + "\n\nThis will create test CoverageUnits to an existing Coverage Package.")) {
          return;

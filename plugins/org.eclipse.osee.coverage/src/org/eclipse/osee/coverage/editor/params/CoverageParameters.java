@@ -217,7 +217,7 @@ public class CoverageParameters {
       return false;
    }
 
-   public String getSelectedName(/* SearchType searchType */) throws OseeCoreException {
+   public String getSelectedName(/* SearchType searchType */) {
       StringBuffer sb = new StringBuffer();
       if (getAssignee() != null) {
          sb.append(" - Assignee: " + getAssignee());
@@ -253,7 +253,7 @@ public class CoverageParameters {
       return coverageMethods;
    }
 
-   public Result isParameterSelectionValid() throws OseeCoreException {
+   public Result isParameterSelectionValid() {
       try {
          return Result.TrueResult;
       } catch (Exception ex) {

@@ -137,12 +137,12 @@ public class CoverageUnitPersistTest {
          }
 
          @Override
-         public Result save(Collection<ICoverage> coverages) throws OseeCoreException {
+         public Result save(Collection<ICoverage> coverages) {
             return Result.TrueResult;
          }
 
          @Override
-         public Result saveImportRecord(SkynetTransaction transaction, CoverageImport coverageImport) throws OseeCoreException {
+         public Result saveImportRecord(SkynetTransaction transaction, CoverageImport coverageImport) {
             return null;
          }
 

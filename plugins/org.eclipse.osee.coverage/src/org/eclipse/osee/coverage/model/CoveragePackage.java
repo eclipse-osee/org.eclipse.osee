@@ -11,14 +11,13 @@
 package org.eclipse.osee.coverage.model;
 
 import java.util.Date;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.KeyValueArtifact;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 
-public class CoveragePackage extends CoveragePackageBase implements ICoverage {
+public class CoveragePackage extends CoveragePackageBase {
 
    Date creationDate;
 
@@ -50,12 +49,12 @@ public class CoveragePackage extends CoveragePackageBase implements ICoverage {
    }
 
    @Override
-   public void saveKeyValues(KeyValueArtifact keyValueArtifact) throws OseeCoreException {
+   public void saveKeyValues(KeyValueArtifact keyValueArtifact) {
       keyValueArtifact.setValue("date", String.valueOf(creationDate.getTime()));
    }
 
    @Override
-   public void loadKeyValues(KeyValueArtifact keyValueArtifact) throws OseeCoreException {
+   public void loadKeyValues(KeyValueArtifact keyValueArtifact) {
       if (Strings.isValid(keyValueArtifact.getValue("date"))) {
          Date date = new Date();
          date.setTime(new Long(keyValueArtifact.getValue("date")).longValue());

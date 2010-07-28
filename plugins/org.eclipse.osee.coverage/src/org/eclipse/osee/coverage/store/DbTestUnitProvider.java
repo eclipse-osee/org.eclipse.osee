@@ -121,7 +121,7 @@ public class DbTestUnitProvider implements ITestUnitProvider {
    }
 
    @Override
-   public String toXml(CoverageItem coverageItem) throws OseeCoreException {
+   public String toXml(CoverageItem coverageItem) {
       Collection<Integer> testUnitNameIds = coverageItemToTestUnits.getValues(coverageItem);
       if (testUnitNameIds == null) {
          return "";

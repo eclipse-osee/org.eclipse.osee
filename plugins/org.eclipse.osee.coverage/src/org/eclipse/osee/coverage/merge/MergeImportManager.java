@@ -273,7 +273,7 @@ public class MergeImportManager {
       }
    }
 
-   private boolean validateEditable(XResultData rd, ISaveable saveable) throws OseeCoreException {
+   private boolean validateEditable(XResultData rd, ISaveable saveable) {
       Result result = saveable.isEditable();
       if (result.isFalse()) {
          rd.logError(result.getText());
@@ -282,7 +282,7 @@ public class MergeImportManager {
       return true;
    }
 
-   private boolean validateMergeTypes(XResultData rd, Collection<IMergeItem> mergeItems) throws OseeCoreException {
+   private boolean validateMergeTypes(XResultData rd, Collection<IMergeItem> mergeItems) {
       boolean valid = true;
       for (IMergeItem mergeItem : mergeItems) {
          if (mergeItem.getMergeType().isError()) {

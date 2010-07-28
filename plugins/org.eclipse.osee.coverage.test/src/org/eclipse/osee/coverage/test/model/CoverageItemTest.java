@@ -204,7 +204,7 @@ public class CoverageItemTest {
     * @throws OseeCoreException
     */
    @Test
-   public void testSetGetText() throws OseeCoreException {
+   public void testSetGetText() {
       ci1.setName("this is text2");
       Assert.assertEquals("this is text2", ci1.getFileContents());
       ci1.setName("this is text");
@@ -253,7 +253,7 @@ public class CoverageItemTest {
     * Test method for {@link org.eclipse.osee.coverage.model.CoverageItem#getAssignees()}.
     */
    @Test
-   public void testGetAssignees() throws OseeCoreException {
+   public void testGetAssignees() {
       Assert.assertEquals("", ci1.getAssignees());
    }
 

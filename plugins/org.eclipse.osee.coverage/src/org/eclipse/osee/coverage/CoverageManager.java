@@ -17,7 +17,6 @@ import org.eclipse.osee.coverage.blam.AbstractCoverageBlam;
 import org.eclipse.osee.coverage.editor.CoverageEditor;
 import org.eclipse.osee.coverage.editor.CoverageEditorInput;
 import org.eclipse.osee.coverage.model.CoverageImport;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamContributionManager;
 
@@ -26,7 +25,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.BlamContributionManager;
  */
 public class CoverageManager {
 
-   public static void importCoverage(ICoverageImporter coverageImporter) throws OseeCoreException {
+   public static void importCoverage(ICoverageImporter coverageImporter) {
       CoverageImport coverageImport = coverageImporter.run(null);
       CoverageEditor.open(new CoverageEditorInput(coverageImport.getName(), null, coverageImport, false));
    }

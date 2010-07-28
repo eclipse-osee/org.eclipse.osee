@@ -18,9 +18,6 @@ public class LineNumToBranches {
    private int lineNum;
    private int branches;
 
-   public LineNumToBranches() {
-   }
-
    public LineNumToBranches(int lineNum, int branches) {
       this.lineNum = lineNum;
       this.branches = branches;
