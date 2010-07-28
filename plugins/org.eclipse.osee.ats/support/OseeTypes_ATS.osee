@@ -603,7 +603,7 @@ attributeType "ats.Role" extends StringAttribute {
    guid "AAMFEeCqMz0XCSBJ+IQA"
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1
+   max unlimited
 }
 
 relationType "TeamLead" {
