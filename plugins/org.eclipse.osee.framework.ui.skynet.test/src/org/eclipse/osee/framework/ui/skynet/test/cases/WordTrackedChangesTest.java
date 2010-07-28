@@ -12,8 +12,8 @@ package org.eclipse.osee.framework.ui.skynet.test.cases;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -35,9 +35,7 @@ import org.junit.Before;
  * @author Megumi Telles
  */
 public class WordTrackedChangesTest {
-   private static final String TEST_PATH_NAME =
-      "../org.eclipse.osee.framework.ui.skynet.test/src/org/eclipse/osee/framework/ui/skynet/test/cases/support/";
-   private static final String TEST_WORD_EDIT_FILE_NAME = TEST_PATH_NAME + "WordTrackedChangesTest.xml";
+   private static final String TEST_WORD_EDIT_FILE_NAME = "support/WordTrackedChangesTest.xml";
 
    @Before
    public void setUp() throws Exception {
@@ -74,7 +72,10 @@ public class WordTrackedChangesTest {
    }
 
    private String getFileContent(String fileName) throws IOException {
-      return Lib.inputStreamToString(new FileInputStream(fileName));
+      InputStream stream = this.getClass().getResourceAsStream(fileName);
+      String returnString = Lib.inputStreamToString(stream);
+      stream.close();
+      return returnString;
    }
 
    @After
