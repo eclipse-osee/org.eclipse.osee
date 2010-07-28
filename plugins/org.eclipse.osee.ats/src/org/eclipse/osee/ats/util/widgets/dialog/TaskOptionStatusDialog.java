@@ -57,14 +57,11 @@ public class TaskOptionStatusDialog extends SMAStatusDialog {
    @Override
    protected IStatus isComplete() {
       TaskResOptionDefinition trd = getSelectedOptionDef();
-      if (trd == null) {
-         return Status.OK_STATUS;
-      }
       int percentComp = percent.getInt();
-      if (trd.isCompleteable() && percentComp != 100) {
+      if ((trd != null && trd.isCompleteable()) && percentComp != 100) {
          return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, "Completed resolution must have %Complete == 100");
       }
-      if (percentComp == 100 && !trd.isCompleteable()) {
+      if (percentComp == 100 && (trd != null && !trd.isCompleteable())) {
          return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID,
             "Can't have 100% complete with a non-Completed resolution");
       }
