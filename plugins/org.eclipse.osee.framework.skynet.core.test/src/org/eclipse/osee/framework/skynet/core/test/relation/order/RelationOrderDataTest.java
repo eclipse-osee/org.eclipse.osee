@@ -270,7 +270,7 @@ public class RelationOrderDataTest {
       int uniqueId = randomGenerator.nextInt();
       Branch branch = new Branch(GUID.create(), name + " - branch", BranchType.WORKING, BranchState.MODIFIED, false);
       ArtifactType artType = new ArtifactType(GUID.create(), name + " - art_type", false);
-      return new MockIArtifact(uniqueId, name, guid, null, null);
+      return new MockIArtifact(uniqueId, name, guid, branch, artType);
    }
 
    private static RelationType createRelationType(RelationTypeCache cache, String name, String delationRelationOrderGuid) throws OseeCoreException {
