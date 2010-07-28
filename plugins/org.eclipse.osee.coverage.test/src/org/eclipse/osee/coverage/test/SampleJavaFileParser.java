@@ -56,7 +56,7 @@ public class SampleJavaFileParser {
          fileCoverageUnit.setFileContents(fileStr);
          CoverageUnit coverageUnit = null;
          int lineNum = 0;
-         for (String line : fileStr.split("\r\n")) {
+         for (String line : fileStr.split("(\r\n|\n)")) {
             lineNum++;
             // Determine if method; store as CoverageUnit
             m = methodPattern.matcher(line);
