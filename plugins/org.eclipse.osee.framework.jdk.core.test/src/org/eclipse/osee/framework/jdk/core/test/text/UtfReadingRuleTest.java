@@ -82,8 +82,7 @@ public final class UtfReadingRuleTest extends TestCase {
    }
 
    @Test
-   public void testUtf8ReadData() {
-      String expectedUtf8String = "<w:t>â‚¬</w:t>";
+   public void testUtf8ReadData() throws IOException {
       try {
          File inputFile = getInputFile();
          rule.process(inputFile);
@@ -94,6 +93,7 @@ public final class UtfReadingRuleTest extends TestCase {
       }
 
       //trim off extra data
+      String expectedUtf8String = Lib.fileToString(getInputFile());
       String actual = rule.getLastOutput().toString().trim();
       Assert.assertEquals(expectedUtf8String, actual);
    }
