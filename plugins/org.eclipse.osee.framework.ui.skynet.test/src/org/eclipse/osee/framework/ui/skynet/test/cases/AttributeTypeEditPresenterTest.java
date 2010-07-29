@@ -160,10 +160,6 @@ public class AttributeTypeEditPresenterTest {
       private boolean dirty;
       private Artifact artifact;
 
-      public MockEditor() {
-
-      }
-
       public void setDirty(boolean dirty) {
          this.dirty = dirty;
       }
@@ -194,6 +190,11 @@ public class AttributeTypeEditPresenterTest {
 
       public void setArtifact(Artifact artifact) {
          this.artifact = artifact;
+      }
+
+      @Override
+      public void refreshDirtyArtifact() {
+         // do nothing
       }
 
    }

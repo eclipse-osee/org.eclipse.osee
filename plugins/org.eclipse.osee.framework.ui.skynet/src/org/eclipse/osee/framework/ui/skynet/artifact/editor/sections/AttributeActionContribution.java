@@ -56,6 +56,12 @@ public class AttributeActionContribution implements IActionContributor {
       public Artifact getArtifact() {
          return editor.getEditorInput().getArtifact();
       }
+
+      @Override
+      public void refreshDirtyArtifact() {
+         editor.refreshDirtyArtifact();
+      }
+
    }
 
    @Override
@@ -75,6 +81,7 @@ public class AttributeActionContribution implements IActionContributor {
       public void run() {
          try {
             attributeTypeEditor.onAddAttributeType();
+            attributeTypeEditor.refreshDirtyArtifact();
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
@@ -92,6 +99,7 @@ public class AttributeActionContribution implements IActionContributor {
       public void run() {
          try {
             attributeTypeEditor.onRemoveAttributeType();
+            attributeTypeEditor.refreshDirtyArtifact();
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }

@@ -41,6 +41,9 @@ public class AttributeTypeEditPresenter {
       boolean isDirty();
 
       Artifact getArtifact();
+
+      void refreshDirtyArtifact();
+
    }
 
    private final Display display;
@@ -55,6 +58,10 @@ public class AttributeTypeEditPresenter {
       if (model.isDirty()) {
          model.doSave();
       }
+   }
+
+   public void refreshDirtyArtifact() {
+      model.refreshDirtyArtifact();
    }
 
    public void onAddAttributeType() throws OseeCoreException {

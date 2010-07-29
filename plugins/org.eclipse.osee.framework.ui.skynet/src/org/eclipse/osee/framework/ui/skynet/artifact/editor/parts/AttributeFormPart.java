@@ -21,11 +21,12 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
+import org.eclipse.osee.framework.skynet.core.utility.IncrementingNum;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributeTypeUtil;
-import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactStoredWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -169,7 +170,7 @@ public class AttributeFormPart extends AbstractFormPart {
             }
          }
          WorkPage workPage = new WorkPage(concreteWidgets, new DefaultXWidgetOptionResolver());
-         workPage.createBody(getManagedForm(), internalComposite, artifact, null, isEditable);
+         workPage.createBody(getManagedForm(), internalComposite, artifact, widgetModifiedListener, isEditable);
 
       } catch (OseeCoreException ex) {
          toolkit.createLabel(parent, String.format("Error creating controls for: [%s]", attributeType.getName()));
@@ -232,14 +233,22 @@ public class AttributeFormPart extends AbstractFormPart {
       toolkit.paintBordersFor(expandable);
    }
 
+   private final XModifiedListener widgetModifiedListener = new XModifiedListener() {
+
+      @Override
+      public void widgetModified(XWidget widget) {
+         editor.onDirtied();
+      }
+   };
+
    @Override
    public void commit(boolean onSave) {
       int saveCount = 0;
       List<XWidget> widgets = XWidgetUtility.findXWidgetsInControl(composite);
       for (XWidget xWidget : widgets) {
          if (xWidget.isEditable()) {
-            if (xWidget instanceof IArtifactWidget) {
-               IArtifactWidget aWidget = (IArtifactWidget) xWidget;
+            if (xWidget instanceof IArtifactStoredWidget) {
+               IArtifactStoredWidget aWidget = (IArtifactStoredWidget) xWidget;
                try {
                   if (aWidget.isDirty().isTrue()) {
                      aWidget.saveToArtifact();
@@ -267,8 +276,8 @@ public class AttributeFormPart extends AbstractFormPart {
 
       @Override
       public void widgetModified(XWidget xWidget) {
-         if (xWidget != null && xWidget instanceof IArtifactWidget) {
-            IArtifactWidget aWidget = (IArtifactWidget) xWidget;
+         if (xWidget != null && xWidget instanceof IArtifactStoredWidget) {
+            IArtifactStoredWidget aWidget = (IArtifactStoredWidget) xWidget;
             try {
                Result result = aWidget.isDirty();
                if (result.isTrue()) {
@@ -285,4 +294,5 @@ public class AttributeFormPart extends AbstractFormPart {
          }
       }
    }
+
 }
