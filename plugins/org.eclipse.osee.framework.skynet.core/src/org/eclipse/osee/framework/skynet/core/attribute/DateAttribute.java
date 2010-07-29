@@ -55,6 +55,16 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
       return toReturn;
    }
 
+   @Override
+   protected void setToDefaultValue() throws OseeCoreException {
+      String defaultValue = getAttributeType().getDefaultValue();
+      if (Strings.isValid(defaultValue)) {
+         subClassSetValue(convertStringToValue(defaultValue));
+      } else {
+         subClassSetValue(new Date());
+      }
+   }
+
    private Date handleLegacyDates(String rawValue) {
       Date toReturn = null;
       for (DateFormat format : legacyDateFormats) {

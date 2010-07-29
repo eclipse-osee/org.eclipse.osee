@@ -140,7 +140,7 @@ public abstract class Attribute<T> {
       setToDefaultValue();
    }
 
-   private final void setToDefaultValue() throws OseeCoreException {
+   protected void setToDefaultValue() throws OseeCoreException {
       String defaultValue = getAttributeType().getDefaultValue();
       if (defaultValue != null) {
          subClassSetValue(convertStringToValue(defaultValue));
@@ -367,7 +367,7 @@ public abstract class Attribute<T> {
       this.modificationType = modificationType;
    }
 
-   public void internalSetDeletedFromRemoteEvent() throws OseeCoreException {
+   public void internalSetDeletedFromRemoteEvent() {
       internalSetModificationType(ModificationType.DELETED);
    }
 

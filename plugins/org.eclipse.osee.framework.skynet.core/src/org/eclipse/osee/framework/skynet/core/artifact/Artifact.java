@@ -784,7 +784,11 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
    public void deleteSoleAttribute(String attributeTypeName) throws OseeCoreException {
       Attribute<?> attribute = getSoleAttribute(attributeTypeName);
       if (attribute != null) {
-         attribute.delete();
+         if (!attribute.isInDb()) {
+            attributes.removeValue(attributeTypeName, attribute);
+         } else {
+            attribute.delete();
+         }
       }
    }
 
