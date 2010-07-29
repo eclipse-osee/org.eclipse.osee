@@ -93,6 +93,11 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IArtifa
    }
 
    @Override
+   public Artifact getArtifact() {
+      return reviewArt.getArtifact();
+   }
+
+   @Override
    protected void createControls(Composite parent, int horizontalSpan) {
       // Create Text Widgets
       if (isDisplayLabel() && !getLabel().equals("")) {

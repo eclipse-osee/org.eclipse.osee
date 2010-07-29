@@ -28,6 +28,11 @@ public class XIntegerDam extends XInteger implements IAttributeWidget {
    }
 
    @Override
+   public Artifact getArtifact() {
+      return artifact;
+   }
+
+   @Override
    public String getAttributeType() {
       return attributeTypeName;
    }

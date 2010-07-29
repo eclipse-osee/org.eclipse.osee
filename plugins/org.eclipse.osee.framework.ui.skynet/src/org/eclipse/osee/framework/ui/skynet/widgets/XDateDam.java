@@ -31,6 +31,11 @@ public class XDateDam extends XDate implements IAttributeWidget {
    }
 
    @Override
+   public Artifact getArtifact() {
+      return artifact;
+   }
+
+   @Override
    public String getAttributeType() {
       return attributeTypeName;
    }

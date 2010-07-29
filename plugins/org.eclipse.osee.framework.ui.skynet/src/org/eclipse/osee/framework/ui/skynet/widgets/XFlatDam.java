@@ -61,6 +61,11 @@ public class XFlatDam extends XFlatWidget<String> implements IAttributeWidget {
    }
 
    @Override
+   public Artifact getArtifact() {
+      return artifact;
+   }
+
+   @Override
    public String getAttributeType() {
       return attributeTypeName;
    }

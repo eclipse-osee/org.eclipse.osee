@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 /**
@@ -19,6 +20,11 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
  * @author Roberto E. Escobar
  */
 public interface IArtifactStoredWidget {
+
+   /**
+    * @return the artifact
+    */
+   Artifact getArtifact() throws OseeCoreException;
 
    /**
     * Save data changes to artifact

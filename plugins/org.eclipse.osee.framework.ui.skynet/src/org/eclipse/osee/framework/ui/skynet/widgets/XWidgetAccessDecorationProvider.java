@@ -23,9 +23,11 @@ public class XWidgetAccessDecorationProvider implements XWidgetDecorator.Decorat
       if (xWidget instanceof IAttributeWidget) {
          IAttributeWidget attributeWidget = (IAttributeWidget) xWidget;
          attributeWidget.getAttributeType();
-         //       Artifact artifact = null;
+
          PermissionStatus permissionStatus = new PermissionStatus(false, "You are not cool enough");
          //       try {
+
+         //         Artifact artifact = attributeWidget.getArtifact();
          //          AccessDataQuery query = AccessControlManager.getAccessData(null);
          //          query.attributeTypeMatches(PermissionEnum.WRITE, artifact, attributeType, permissionStatus);
          //       } catch (OseeCoreException ex) {

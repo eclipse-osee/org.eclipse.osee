@@ -71,4 +71,9 @@ public class XCheckBoxDam extends XCheckBox implements IAttributeWidget {
       }
       return status;
    }
+
+   @Override
+   public Artifact getArtifact() {
+      return artifact;
+   }
 }

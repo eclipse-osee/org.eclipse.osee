@@ -24,6 +24,11 @@ public class XListDam extends XList implements IAttributeWidget {
    private Artifact artifact;
    private String attributeTypeName;
 
+   @Override
+   public Artifact getArtifact() {
+      return artifact;
+   }
+
    /**
     * @param displayLabel
     */

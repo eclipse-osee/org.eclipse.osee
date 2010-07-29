@@ -31,6 +31,11 @@ public class XComboBooleanDam extends XCombo implements IAttributeWidget {
    }
 
    @Override
+   public Artifact getArtifact() {
+      return artifact;
+   }
+
+   @Override
    public String getAttributeType() {
       return attributeTypeName;
    }

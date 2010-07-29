@@ -27,6 +27,11 @@ public class XComboDam extends XCombo implements IAttributeWidget {
    private Artifact artifact;
    private String attributeTypeName;
 
+   @Override
+   public Artifact getArtifact() {
+      return artifact;
+   }
+
    public XComboDam(String displayLabel) {
       super(displayLabel);
    }

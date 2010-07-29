@@ -41,6 +41,11 @@ public class XLabelDam extends XWidget implements IAttributeWidget {
    }
 
    @Override
+   public Artifact getArtifact() {
+      return artifact;
+   }
+
+   @Override
    public Control getControl() {
       return valueTextWidget;
    }

@@ -83,6 +83,11 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
    }
 
    @Override
+   public TeamWorkFlowArtifact getArtifact() {
+      return teamArt;
+   }
+
+   @Override
    protected void createControls(Composite parent, int horizontalSpan) {
 
       // Create Text Widgets

@@ -41,6 +41,11 @@ public class XSelectFromMultiChoiceDam extends XSelectFromDialog<String> impleme
    }
 
    @Override
+   public Artifact getArtifact() {
+      return artifact;
+   }
+
+   @Override
    public String getAttributeType() {
       return attributeTypeName;
    }

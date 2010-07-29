@@ -36,6 +36,11 @@ public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implemen
    }
 
    @Override
+   public Artifact getArtifact() {
+      return artifact;
+   }
+
+   @Override
    public String getAttributeType() {
       return attributeTypeName;
    }

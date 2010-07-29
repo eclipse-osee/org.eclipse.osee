@@ -27,6 +27,11 @@ public class XTextDam extends XText implements IArtifactWidget, IAttributeWidget
    }
 
    @Override
+   public Artifact getArtifact() throws OseeCoreException {
+      return artifact;
+   }
+
+   @Override
    public void setArtifact(Artifact artifact) throws OseeCoreException {
       this.artifact = artifact;
    }

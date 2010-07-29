@@ -61,6 +61,11 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
    }
 
    @Override
+   public Artifact getArtifact() {
+      return artifact;
+   }
+
+   @Override
    public String getAttributeType() {
       return attributeTypeName;
    }

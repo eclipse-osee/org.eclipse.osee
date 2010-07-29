@@ -79,6 +79,11 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IArtifac
    }
 
    @Override
+   public TeamWorkFlowArtifact getArtifact() {
+      return teamArt;
+   }
+
+   @Override
    protected void createControls(Composite parent, int horizontalSpan) {
       if (horizontalSpan < 2) {
          horizontalSpan = 2;

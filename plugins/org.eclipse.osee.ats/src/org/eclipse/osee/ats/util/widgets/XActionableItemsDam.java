@@ -40,7 +40,8 @@ public class XActionableItemsDam extends XTextDam {
       this.artifactRef = new WeakReference<Artifact>(artifact);
    }
 
-   public Artifact getArtifact() throws OseeStateException {
+   @Override
+   public Artifact getArtifact() throws OseeCoreException {
       if (artifactRef.get() == null) {
          throw new OseeStateException("Artifact has been garbage collected");
       }

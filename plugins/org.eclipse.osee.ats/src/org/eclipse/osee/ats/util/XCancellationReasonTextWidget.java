@@ -62,4 +62,9 @@ public class XCancellationReasonTextWidget extends XText implements IArtifactWid
       }
    }
 
+   @Override
+   public StateMachineArtifact getArtifact() {
+      return sma;
+   }
+
 }

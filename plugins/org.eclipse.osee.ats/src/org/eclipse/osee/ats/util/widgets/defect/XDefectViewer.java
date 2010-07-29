@@ -101,6 +101,11 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IArtifact
    }
 
    @Override
+   public Artifact getArtifact() {
+      return reviewArt.getArtifact();
+   }
+
+   @Override
    protected void createControls(Composite parent, int horizontalSpan) {
 
       parentComposite = parent;
