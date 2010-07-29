@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -124,7 +125,8 @@ public final class RenderingUtil {
          }
          return renderFolder;
       } catch (CoreException ex) {
-         throw new OseeCoreException(ex);
+         OseeExceptions.wrapAndThrow(ex);
+         return null; // this line can never execute since the previous line always throws an exception
       }
    }
 
