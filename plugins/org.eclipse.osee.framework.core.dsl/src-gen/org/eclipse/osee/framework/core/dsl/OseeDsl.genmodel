@@ -19,9 +19,10 @@
       <genEnumLiterals ecoreEnumLiteral="OseeDsl.ecore#//AccessPermissionEnum/ALLOW"/>
       <genEnumLiterals ecoreEnumLiteral="OseeDsl.ecore#//AccessPermissionEnum/DENY"/>
     </genEnums>
-    <genEnums typeSafeEnumCompatible="false" ecoreEnum="OseeDsl.ecore#//RelationTypeSideRestriction">
-      <genEnumLiterals ecoreEnumLiteral="OseeDsl.ecore#//RelationTypeSideRestriction/SIDE_A"/>
-      <genEnumLiterals ecoreEnumLiteral="OseeDsl.ecore#//RelationTypeSideRestriction/SIDE_B"/>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="OseeDsl.ecore#//XRelationSideEnum">
+      <genEnumLiterals ecoreEnumLiteral="OseeDsl.ecore#//XRelationSideEnum/SIDE_A"/>
+      <genEnumLiterals ecoreEnumLiteral="OseeDsl.ecore#//XRelationSideEnum/SIDE_B"/>
+      <genEnumLiterals ecoreEnumLiteral="OseeDsl.ecore#//XRelationSideEnum/BOTH"/>
     </genEnums>
     <genClasses ecoreClass="OseeDsl.ecore#//OseeDsl">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OseeDsl.ecore#//OseeDsl/imports"/>
@@ -104,7 +105,7 @@
     <genClasses ecoreClass="OseeDsl.ecore#//AccessContext">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeDsl.ecore#//AccessContext/name"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference OseeDsl.ecore#//AccessContext/superAccessContexts"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeDsl.ecore#//AccessContext/typeGuid"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeDsl.ecore#//AccessContext/guid"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OseeDsl.ecore#//AccessContext/accessRules"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OseeDsl.ecore#//AccessContext/hierarchyRestrictions"/>
     </genClasses>
@@ -112,27 +113,22 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference OseeDsl.ecore#//HierarchyRestriction/artifact"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OseeDsl.ecore#//HierarchyRestriction/accessRules"/>
     </genClasses>
-    <genClasses ecoreClass="OseeDsl.ecore#//PermissionRule">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeDsl.ecore#//PermissionRule/permission"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OseeDsl.ecore#//PermissionRule/objectRestriction"/>
+    <genClasses ecoreClass="OseeDsl.ecore#//ObjectRestriction">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeDsl.ecore#//ObjectRestriction/permission"/>
     </genClasses>
-    <genClasses ecoreClass="OseeDsl.ecore#//ObjectRestriction"/>
     <genClasses ecoreClass="OseeDsl.ecore#//ArtifactInstanceRestriction">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference OseeDsl.ecore#//ArtifactInstanceRestriction/artifactName"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference OseeDsl.ecore#//ArtifactInstanceRestriction/artifactRef"/>
     </genClasses>
     <genClasses ecoreClass="OseeDsl.ecore#//ArtifactTypeRestriction">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference OseeDsl.ecore#//ArtifactTypeRestriction/artifactType"/>
-    </genClasses>
-    <genClasses ecoreClass="OseeDsl.ecore#//RelationTypeRestriction">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference OseeDsl.ecore#//RelationTypeRestriction/relationType"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeDsl.ecore#//RelationTypeRestriction/restrictedTo"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference OseeDsl.ecore#//ArtifactTypeRestriction/artifactTypeRef"/>
     </genClasses>
     <genClasses ecoreClass="OseeDsl.ecore#//AttributeTypeRestriction">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference OseeDsl.ecore#//AttributeTypeRestriction/attributeType"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference OseeDsl.ecore#//AttributeTypeRestriction/attributeTypeRef"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference OseeDsl.ecore#//AttributeTypeRestriction/artifactTypeRef"/>
     </genClasses>
-    <genClasses ecoreClass="OseeDsl.ecore#//AttributeTypeOfArtifactTypeRestriction">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference OseeDsl.ecore#//AttributeTypeOfArtifactTypeRestriction/attributeType"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference OseeDsl.ecore#//AttributeTypeOfArtifactTypeRestriction/artifactType"/>
+    <genClasses ecoreClass="OseeDsl.ecore#//RelationTypeRestriction">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference OseeDsl.ecore#//RelationTypeRestriction/relationTypeRef"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeDsl.ecore#//RelationTypeRestriction/restrictedToSide"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

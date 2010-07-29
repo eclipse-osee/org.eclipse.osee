@@ -1,0 +1,60 @@
+artifactType "Artifact" {
+   guid "AAMFDh6S7gRLupAMwywA"
+   attribute "Name"
+   attribute "Annotation"
+}
+
+abstract artifactType "Requirement" extends "Artifact" {
+   guid "BOm4NmAq+HC1O2hkMagA"
+   attribute "Qualification Method"
+}
+
+artifactType "Software Requirement" extends "Requirement" {
+   guid "BOm+AIG2snNbAM5FFcwA"
+}
+
+artifactType "System Requirement" extends "Requirement" {
+   guid "BOnAaYTBOG68_Tw5Y_AA"
+}
+
+artifactType "SubSystem Requirement" extends "Requirement" {
+   guid "BOnBhJ1XAFGKcrku3LgA"
+}
+
+attributeType "Name" extends StringAttribute {
+   guid "AAMFEcF1AzV7PKuHmxwA"
+   dataProvider DefaultAttributeDataProvider
+   min 1
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+   description "Descriptive Name"
+   defaultValue "unnamed"
+}
+
+attributeType "Annotation" extends StringAttribute {
+   guid "AAMFEcWy0xc4e3tcemQA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max unlimited
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "Qualification Method" extends StringAttribute {
+   guid "BOk_ZLyYxyTYArzi63QA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max unlimited
+   taggerId DefaultAttributeTaggerProvider
+}
+
+relationType "Requirement" {
+   guid "BOkzi3U9VTe2fcUz_9gA"
+   sideAName "requirement-sideA"
+   sideAArtifactType "Requirement"
+   sideBName "subsystem-sideB"
+   sideBArtifactType "SubSystem Requirement"
+   defaultOrderType Lexicographical_Ascending
+   multiplicity ONE_TO_MANY
+}
+
+   

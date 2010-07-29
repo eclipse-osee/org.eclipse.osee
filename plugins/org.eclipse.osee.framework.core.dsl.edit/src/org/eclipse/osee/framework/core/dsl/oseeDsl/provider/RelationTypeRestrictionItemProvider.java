@@ -6,10 +6,13 @@
  */
 package org.eclipse.osee.framework.core.dsl.oseeDsl.provider;
 
+
 import java.util.Collection;
 import java.util.List;
+
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
+
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
@@ -19,19 +22,29 @@ import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ViewerNotification;
+
+import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessPermissionEnum;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction;
 
 /**
- * This is the item provider adapter for a {@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction}
- * object. <!-- begin-user-doc --> <!-- end-user-doc -->
- * 
+ * This is the item provider adapter for a {@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction} object.
+ * <!-- begin-user-doc -->
+ * <!-- end-user-doc -->
  * @generated
  */
-public class RelationTypeRestrictionItemProvider extends ObjectRestrictionItemProvider implements IEditingDomainItemProvider, IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource {
+public class RelationTypeRestrictionItemProvider
+   extends ObjectRestrictionItemProvider
+   implements
+      IEditingDomainItemProvider,
+      IStructuredItemContentProvider,
+      ITreeItemContentProvider,
+      IItemLabelProvider,
+      IItemPropertySource {
    /**
-    * This constructs an instance from a factory and a notifier. <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    * This constructs an instance from a factory and a notifier.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
     * @generated
     */
    public RelationTypeRestrictionItemProvider(AdapterFactory adapterFactory) {
@@ -39,8 +52,9 @@ public class RelationTypeRestrictionItemProvider extends ObjectRestrictionItemPr
    }
 
    /**
-    * This returns the property descriptors for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    * This returns the property descriptors for the adapted class.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
     * @generated
     */
    @Override
@@ -48,45 +62,60 @@ public class RelationTypeRestrictionItemProvider extends ObjectRestrictionItemPr
       if (itemPropertyDescriptors == null) {
          super.getPropertyDescriptors(object);
 
-         addRelationTypePropertyDescriptor(object);
-         addRestrictedToPropertyDescriptor(object);
+         addRelationTypeRefPropertyDescriptor(object);
+         addRestrictedToSidePropertyDescriptor(object);
       }
       return itemPropertyDescriptors;
    }
 
    /**
-    * This adds a property descriptor for the Relation Type feature. <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    * This adds a property descriptor for the Relation Type Ref feature.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
     * @generated
     */
-   protected void addRelationTypePropertyDescriptor(Object object) {
-      itemPropertyDescriptors.add(createItemPropertyDescriptor(
-         ((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-         getResourceLocator(),
-         getString("_UI_RelationTypeRestriction_relationType_feature"),
-         getString("_UI_PropertyDescriptor_description", "_UI_RelationTypeRestriction_relationType_feature",
-            "_UI_RelationTypeRestriction_type"), OseeDslPackage.Literals.RELATION_TYPE_RESTRICTION__RELATION_TYPE,
-         true, false, true, null, null, null));
+   protected void addRelationTypeRefPropertyDescriptor(Object object) {
+      itemPropertyDescriptors.add
+         (createItemPropertyDescriptor
+            (((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+             getResourceLocator(),
+             getString("_UI_RelationTypeRestriction_relationTypeRef_feature"),
+             getString("_UI_PropertyDescriptor_description", "_UI_RelationTypeRestriction_relationTypeRef_feature", "_UI_RelationTypeRestriction_type"),
+             OseeDslPackage.Literals.RELATION_TYPE_RESTRICTION__RELATION_TYPE_REF,
+             true,
+             false,
+             true,
+             null,
+             null,
+             null));
    }
 
    /**
-    * This adds a property descriptor for the Restricted To feature. <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    * This adds a property descriptor for the Restricted To Side feature.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
     * @generated
     */
-   protected void addRestrictedToPropertyDescriptor(Object object) {
-      itemPropertyDescriptors.add(createItemPropertyDescriptor(
-         ((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-         getResourceLocator(),
-         getString("_UI_RelationTypeRestriction_restrictedTo_feature"),
-         getString("_UI_PropertyDescriptor_description", "_UI_RelationTypeRestriction_restrictedTo_feature",
-            "_UI_RelationTypeRestriction_type"), OseeDslPackage.Literals.RELATION_TYPE_RESTRICTION__RESTRICTED_TO,
-         true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+   protected void addRestrictedToSidePropertyDescriptor(Object object) {
+      itemPropertyDescriptors.add
+         (createItemPropertyDescriptor
+            (((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+             getResourceLocator(),
+             getString("_UI_RelationTypeRestriction_restrictedToSide_feature"),
+             getString("_UI_PropertyDescriptor_description", "_UI_RelationTypeRestriction_restrictedToSide_feature", "_UI_RelationTypeRestriction_type"),
+             OseeDslPackage.Literals.RELATION_TYPE_RESTRICTION__RESTRICTED_TO_SIDE,
+             true,
+             false,
+             false,
+             ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+             null,
+             null));
    }
 
    /**
-    * This returns RelationTypeRestriction.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    * This returns RelationTypeRestriction.gif.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
     * @generated
     */
    @Override
@@ -95,20 +124,25 @@ public class RelationTypeRestrictionItemProvider extends ObjectRestrictionItemPr
    }
 
    /**
-    * This returns the label text for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    * This returns the label text for the adapted class.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
     * @generated
     */
    @Override
    public String getText(Object object) {
-      return getString("_UI_RelationTypeRestriction_type");
+      AccessPermissionEnum labelValue = ((RelationTypeRestriction)object).getPermission();
+      String label = labelValue == null ? null : labelValue.toString();
+      return label == null || label.length() == 0 ?
+         getString("_UI_RelationTypeRestriction_type") :
+         getString("_UI_RelationTypeRestriction_type") + " " + label;
    }
 
    /**
-    * This handles model notifications by calling {@link #updateChildren} to update any cached children and by creating
-    * a viewer notification, which it passes to {@link #fireNotifyChanged}. <!-- begin-user-doc --> <!-- end-user-doc
-    * -->
-    * 
+    * This handles model notifications by calling {@link #updateChildren} to update any cached
+    * children and by creating a viewer notification, which it passes to {@link #fireNotifyChanged}.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
     * @generated
     */
    @Override
@@ -116,7 +150,7 @@ public class RelationTypeRestrictionItemProvider extends ObjectRestrictionItemPr
       updateChildren(notification);
 
       switch (notification.getFeatureID(RelationTypeRestriction.class)) {
-         case OseeDslPackage.RELATION_TYPE_RESTRICTION__RESTRICTED_TO:
+         case OseeDslPackage.RELATION_TYPE_RESTRICTION__RESTRICTED_TO_SIDE:
             fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
             return;
       }
@@ -124,9 +158,10 @@ public class RelationTypeRestrictionItemProvider extends ObjectRestrictionItemPr
    }
 
    /**
-    * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children that can be created under
-    * this object. <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children
+    * that can be created under this object.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
     * @generated
     */
    @Override

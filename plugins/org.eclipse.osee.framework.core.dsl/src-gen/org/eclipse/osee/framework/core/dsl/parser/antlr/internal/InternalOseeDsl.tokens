@@ -35,6 +35,7 @@ RULE_ML_COMMENT=8
 'of'=70
 'edit'=69
 ','=17
+'BOTH'=79
 'IntegerAttribute'=42
 'Unordered'=62
 'defaultValue'=35

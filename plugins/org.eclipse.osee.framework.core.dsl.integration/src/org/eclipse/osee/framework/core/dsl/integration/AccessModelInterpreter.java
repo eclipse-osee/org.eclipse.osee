@@ -24,4 +24,5 @@ public interface AccessModelInterpreter {
    AccessContext getContext(Collection<AccessContext> contexts, AccessContextId contextId) throws OseeCoreException;
 
    void computeAccessDetails(AccessContext context, Object objectToCheck, Collection<AccessDetail<?>> details) throws OseeCoreException;
+
 }

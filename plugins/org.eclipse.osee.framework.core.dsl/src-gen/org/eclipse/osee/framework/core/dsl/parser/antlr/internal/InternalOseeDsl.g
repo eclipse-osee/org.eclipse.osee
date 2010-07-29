@@ -2538,9 +2538,9 @@ ruleAccessContext returns [EObject current=null]
     }
 (
 (
-		lv_typeGuid_8_0=RULE_STRING
+		lv_guid_8_0=RULE_STRING
 		{
-			createLeafNode(grammarAccess.getAccessContextAccess().getTypeGuidSTRINGTerminalRuleCall_5_0(), "typeGuid"); 
+			createLeafNode(grammarAccess.getAccessContextAccess().getGuidSTRINGTerminalRuleCall_5_0(), "guid"); 
 		}
 		{
 	        if ($current==null) {
@@ -2550,8 +2550,8 @@ ruleAccessContext returns [EObject current=null]
 	        try {
 	       		set(
 	       			$current, 
-	       			"typeGuid",
-	        		lv_typeGuid_8_0, 
+	       			"guid",
+	        		lv_guid_8_0, 
 	        		"STRING", 
 	        		lastConsumedNode);
 	        } catch (ValueConverterException vce) {
@@ -2564,12 +2564,12 @@ ruleAccessContext returns [EObject current=null]
     {
         createLeafNode(grammarAccess.getAccessContextAccess().getSemicolonKeyword_6(), null); 
     }
-(
+((
 (
 		{ 
-	        currentNode=createCompositeNode(grammarAccess.getAccessContextAccess().getAccessRulesPermissionRuleParserRuleCall_7_0(), currentNode); 
+	        currentNode=createCompositeNode(grammarAccess.getAccessContextAccess().getAccessRulesObjectRestrictionParserRuleCall_7_0_0(), currentNode); 
 	    }
-		lv_accessRules_10_0=rulePermissionRule		{
+		lv_accessRules_10_0=ruleObjectRestriction		{
 	        if ($current==null) {
 	            $current = factory.create(grammarAccess.getAccessContextRule().getType().getClassifier());
 	            associateNodeWithAstElement(currentNode.getParent(), $current);
@@ -2579,7 +2579,7 @@ ruleAccessContext returns [EObject current=null]
 	       			$current, 
 	       			"accessRules",
 	        		lv_accessRules_10_0, 
-	        		"PermissionRule", 
+	        		"ObjectRestriction", 
 	        		currentNode);
 	        } catch (ValueConverterException vce) {
 				handleValueConverterException(vce);
@@ -2588,10 +2588,11 @@ ruleAccessContext returns [EObject current=null]
 	    }
 
 )
-)*(
+)
+    |(
 (
 		{ 
-	        currentNode=createCompositeNode(grammarAccess.getAccessContextAccess().getHierarchyRestrictionsHierarchyRestrictionParserRuleCall_8_0(), currentNode); 
+	        currentNode=createCompositeNode(grammarAccess.getAccessContextAccess().getHierarchyRestrictionsHierarchyRestrictionParserRuleCall_7_1_0(), currentNode); 
 	    }
 		lv_hierarchyRestrictions_11_0=ruleHierarchyRestriction		{
 	        if ($current==null) {
@@ -2612,9 +2613,9 @@ ruleAccessContext returns [EObject current=null]
 	    }
 
 )
-)*	'}' 
+))+	'}' 
     {
-        createLeafNode(grammarAccess.getAccessContextAccess().getRightCurlyBracketKeyword_9(), null); 
+        createLeafNode(grammarAccess.getAccessContextAccess().getRightCurlyBracketKeyword_8(), null); 
     }
 )
 ;
@@ -2666,9 +2667,9 @@ ruleHierarchyRestriction returns [EObject current=null]
 (
 (
 		{ 
-	        currentNode=createCompositeNode(grammarAccess.getHierarchyRestrictionAccess().getAccessRulesPermissionRuleParserRuleCall_3_0(), currentNode); 
+	        currentNode=createCompositeNode(grammarAccess.getHierarchyRestrictionAccess().getAccessRulesObjectRestrictionParserRuleCall_3_0(), currentNode); 
 	    }
-		lv_accessRules_3_0=rulePermissionRule		{
+		lv_accessRules_3_0=ruleObjectRestriction		{
 	        if ($current==null) {
 	            $current = factory.create(grammarAccess.getHierarchyRestrictionRule().getType().getClassifier());
 	            associateNodeWithAstElement(currentNode.getParent(), $current);
@@ -2678,7 +2679,7 @@ ruleHierarchyRestriction returns [EObject current=null]
 	       			$current, 
 	       			"accessRules",
 	        		lv_accessRules_3_0, 
-	        		"PermissionRule", 
+	        		"ObjectRestriction", 
 	        		currentNode);
 	        } catch (ValueConverterException vce) {
 				handleValueConverterException(vce);
@@ -2692,81 +2693,6 @@ ruleHierarchyRestriction returns [EObject current=null]
         createLeafNode(grammarAccess.getHierarchyRestrictionAccess().getRightCurlyBracketKeyword_4(), null); 
     }
 )
-;
-
-
-
-
-
-// Entry rule entryRulePermissionRule
-entryRulePermissionRule returns [EObject current=null] 
-	:
-	{ currentNode = createCompositeNode(grammarAccess.getPermissionRuleRule(), currentNode); }
-	 iv_rulePermissionRule=rulePermissionRule 
-	 { $current=$iv_rulePermissionRule.current; } 
-	 EOF 
-;
-
-// Rule PermissionRule
-rulePermissionRule returns [EObject current=null] 
-    @init { EObject temp=null; setCurrentLookahead(); resetLookahead(); 
-    }
-    @after { resetLookahead(); 
-    	lastConsumedNode = currentNode;
-    }:
-((
-(
-		{ 
-	        currentNode=createCompositeNode(grammarAccess.getPermissionRuleAccess().getPermissionAccessPermissionEnumEnumRuleCall_0_0(), currentNode); 
-	    }
-		lv_permission_0_0=ruleAccessPermissionEnum		{
-	        if ($current==null) {
-	            $current = factory.create(grammarAccess.getPermissionRuleRule().getType().getClassifier());
-	            associateNodeWithAstElement(currentNode.getParent(), $current);
-	        }
-	        try {
-	       		set(
-	       			$current, 
-	       			"permission",
-	        		lv_permission_0_0, 
-	        		"AccessPermissionEnum", 
-	        		currentNode);
-	        } catch (ValueConverterException vce) {
-				handleValueConverterException(vce);
-	        }
-	        currentNode = currentNode.getParent();
-	    }
-
-)
-)	'edit' 
-    {
-        createLeafNode(grammarAccess.getPermissionRuleAccess().getEditKeyword_1(), null); 
-    }
-(
-(
-		{ 
-	        currentNode=createCompositeNode(grammarAccess.getPermissionRuleAccess().getObjectRestrictionObjectRestrictionParserRuleCall_2_0(), currentNode); 
-	    }
-		lv_objectRestriction_2_0=ruleObjectRestriction		{
-	        if ($current==null) {
-	            $current = factory.create(grammarAccess.getPermissionRuleRule().getType().getClassifier());
-	            associateNodeWithAstElement(currentNode.getParent(), $current);
-	        }
-	        try {
-	       		set(
-	       			$current, 
-	       			"objectRestriction",
-	        		lv_objectRestriction_2_0, 
-	        		"ObjectRestriction", 
-	        		currentNode);
-	        } catch (ValueConverterException vce) {
-				handleValueConverterException(vce);
-	        }
-	        currentNode = currentNode.getParent();
-	    }
-
-)
-))
 ;
 
 
@@ -2791,51 +2717,41 @@ ruleObjectRestriction returns [EObject current=null]
     }:
 (
     { 
-        currentNode=createCompositeNode(grammarAccess.getObjectRestrictionAccess().getArtifactTypeRestrictionParserRuleCall_0(), currentNode); 
+        currentNode=createCompositeNode(grammarAccess.getObjectRestrictionAccess().getArtifactInstanceRestrictionParserRuleCall_0(), currentNode); 
     }
-    this_ArtifactTypeRestriction_0=ruleArtifactTypeRestriction
+    this_ArtifactInstanceRestriction_0=ruleArtifactInstanceRestriction
     { 
-        $current = $this_ArtifactTypeRestriction_0.current; 
+        $current = $this_ArtifactInstanceRestriction_0.current; 
         currentNode = currentNode.getParent();
     }
 
     |
     { 
-        currentNode=createCompositeNode(grammarAccess.getObjectRestrictionAccess().getRelationTypeRestrictionParserRuleCall_1(), currentNode); 
+        currentNode=createCompositeNode(grammarAccess.getObjectRestrictionAccess().getArtifactTypeRestrictionParserRuleCall_1(), currentNode); 
     }
-    this_RelationTypeRestriction_1=ruleRelationTypeRestriction
+    this_ArtifactTypeRestriction_1=ruleArtifactTypeRestriction
     { 
-        $current = $this_RelationTypeRestriction_1.current; 
+        $current = $this_ArtifactTypeRestriction_1.current; 
         currentNode = currentNode.getParent();
     }
 
     |
     { 
-        currentNode=createCompositeNode(grammarAccess.getObjectRestrictionAccess().getAttributeTypeRestrictionParserRuleCall_2(), currentNode); 
+        currentNode=createCompositeNode(grammarAccess.getObjectRestrictionAccess().getRelationTypeRestrictionParserRuleCall_2(), currentNode); 
     }
-    this_AttributeTypeRestriction_2=ruleAttributeTypeRestriction
+    this_RelationTypeRestriction_2=ruleRelationTypeRestriction
     { 
-        $current = $this_AttributeTypeRestriction_2.current; 
+        $current = $this_RelationTypeRestriction_2.current; 
         currentNode = currentNode.getParent();
     }
 
     |
     { 
-        currentNode=createCompositeNode(grammarAccess.getObjectRestrictionAccess().getAttributeTypeOfArtifactTypeRestrictionParserRuleCall_3(), currentNode); 
+        currentNode=createCompositeNode(grammarAccess.getObjectRestrictionAccess().getAttributeTypeRestrictionParserRuleCall_3(), currentNode); 
     }
-    this_AttributeTypeOfArtifactTypeRestriction_3=ruleAttributeTypeOfArtifactTypeRestriction
+    this_AttributeTypeRestriction_3=ruleAttributeTypeRestriction
     { 
-        $current = $this_AttributeTypeOfArtifactTypeRestriction_3.current; 
-        currentNode = currentNode.getParent();
-    }
-
-    |
-    { 
-        currentNode=createCompositeNode(grammarAccess.getObjectRestrictionAccess().getArtifactInstanceRestrictionParserRuleCall_4(), currentNode); 
-    }
-    this_ArtifactInstanceRestriction_4=ruleArtifactInstanceRestriction
-    { 
-        $current = $this_ArtifactInstanceRestriction_4.current; 
+        $current = $this_AttributeTypeRestriction_3.current; 
         currentNode = currentNode.getParent();
     }
 )
@@ -2861,9 +2777,37 @@ ruleArtifactInstanceRestriction returns [EObject current=null]
     @after { resetLookahead(); 
     	lastConsumedNode = currentNode;
     }:
-(	'artifact' 
+((
+(
+		{ 
+	        currentNode=createCompositeNode(grammarAccess.getArtifactInstanceRestrictionAccess().getPermissionAccessPermissionEnumEnumRuleCall_0_0(), currentNode); 
+	    }
+		lv_permission_0_0=ruleAccessPermissionEnum		{
+	        if ($current==null) {
+	            $current = factory.create(grammarAccess.getArtifactInstanceRestrictionRule().getType().getClassifier());
+	            associateNodeWithAstElement(currentNode.getParent(), $current);
+	        }
+	        try {
+	       		set(
+	       			$current, 
+	       			"permission",
+	        		lv_permission_0_0, 
+	        		"AccessPermissionEnum", 
+	        		currentNode);
+	        } catch (ValueConverterException vce) {
+				handleValueConverterException(vce);
+	        }
+	        currentNode = currentNode.getParent();
+	    }
+
+)
+)	'edit' 
     {
-        createLeafNode(grammarAccess.getArtifactInstanceRestrictionAccess().getArtifactKeyword_0(), null); 
+        createLeafNode(grammarAccess.getArtifactInstanceRestrictionAccess().getEditKeyword_1(), null); 
+    }
+	'artifact' 
+    {
+        createLeafNode(grammarAccess.getArtifactInstanceRestrictionAccess().getArtifactKeyword_2(), null); 
     }
 (
 (
@@ -2874,7 +2818,7 @@ ruleArtifactInstanceRestriction returns [EObject current=null]
 	        }
         }
 		{ 
-	        currentNode=createCompositeNode(grammarAccess.getArtifactInstanceRestrictionAccess().getArtifactNameXArtifactRefCrossReference_1_0(), currentNode); 
+	        currentNode=createCompositeNode(grammarAccess.getArtifactInstanceRestrictionAccess().getArtifactRefXArtifactRefCrossReference_3_0(), currentNode); 
 	    }
 		ruleARTIFACT_INSTANCE_REFERENCE		{ 
 	        currentNode = currentNode.getParent();
@@ -2883,7 +2827,7 @@ ruleArtifactInstanceRestriction returns [EObject current=null]
 )
 )	';' 
     {
-        createLeafNode(grammarAccess.getArtifactInstanceRestrictionAccess().getSemicolonKeyword_2(), null); 
+        createLeafNode(grammarAccess.getArtifactInstanceRestrictionAccess().getSemicolonKeyword_4(), null); 
     }
 )
 ;
@@ -2908,9 +2852,37 @@ ruleArtifactTypeRestriction returns [EObject current=null]
     @after { resetLookahead(); 
     	lastConsumedNode = currentNode;
     }:
-(	'artifactType' 
+((
+(
+		{ 
+	        currentNode=createCompositeNode(grammarAccess.getArtifactTypeRestrictionAccess().getPermissionAccessPermissionEnumEnumRuleCall_0_0(), currentNode); 
+	    }
+		lv_permission_0_0=ruleAccessPermissionEnum		{
+	        if ($current==null) {
+	            $current = factory.create(grammarAccess.getArtifactTypeRestrictionRule().getType().getClassifier());
+	            associateNodeWithAstElement(currentNode.getParent(), $current);
+	        }
+	        try {
+	       		set(
+	       			$current, 
+	       			"permission",
+	        		lv_permission_0_0, 
+	        		"AccessPermissionEnum", 
+	        		currentNode);
+	        } catch (ValueConverterException vce) {
+				handleValueConverterException(vce);
+	        }
+	        currentNode = currentNode.getParent();
+	    }
+
+)
+)	'edit' 
     {
-        createLeafNode(grammarAccess.getArtifactTypeRestrictionAccess().getArtifactTypeKeyword_0(), null); 
+        createLeafNode(grammarAccess.getArtifactTypeRestrictionAccess().getEditKeyword_1(), null); 
+    }
+	'artifactType' 
+    {
+        createLeafNode(grammarAccess.getArtifactTypeRestrictionAccess().getArtifactTypeKeyword_2(), null); 
     }
 (
 (
@@ -2921,7 +2893,7 @@ ruleArtifactTypeRestriction returns [EObject current=null]
 	        }
         }
 		{ 
-	        currentNode=createCompositeNode(grammarAccess.getArtifactTypeRestrictionAccess().getArtifactTypeXArtifactTypeCrossReference_1_0(), currentNode); 
+	        currentNode=createCompositeNode(grammarAccess.getArtifactTypeRestrictionAccess().getArtifactTypeRefXArtifactTypeCrossReference_3_0(), currentNode); 
 	    }
 		ruleARTIFACT_TYPE_REFERENCE		{ 
 	        currentNode = currentNode.getParent();
@@ -2930,78 +2902,7 @@ ruleArtifactTypeRestriction returns [EObject current=null]
 )
 )	';' 
     {
-        createLeafNode(grammarAccess.getArtifactTypeRestrictionAccess().getSemicolonKeyword_2(), null); 
-    }
-)
-;
-
-
-
-
-
-// Entry rule entryRuleRelationTypeRestriction
-entryRuleRelationTypeRestriction returns [EObject current=null] 
-	:
-	{ currentNode = createCompositeNode(grammarAccess.getRelationTypeRestrictionRule(), currentNode); }
-	 iv_ruleRelationTypeRestriction=ruleRelationTypeRestriction 
-	 { $current=$iv_ruleRelationTypeRestriction.current; } 
-	 EOF 
-;
-
-// Rule RelationTypeRestriction
-ruleRelationTypeRestriction returns [EObject current=null] 
-    @init { EObject temp=null; setCurrentLookahead(); resetLookahead(); 
-    }
-    @after { resetLookahead(); 
-    	lastConsumedNode = currentNode;
-    }:
-(	'relationType' 
-    {
-        createLeafNode(grammarAccess.getRelationTypeRestrictionAccess().getRelationTypeKeyword_0(), null); 
-    }
-(
-(
-		{
-			if ($current==null) {
-	            $current = factory.create(grammarAccess.getRelationTypeRestrictionRule().getType().getClassifier());
-	            associateNodeWithAstElement(currentNode, $current);
-	        }
-        }
-		{ 
-	        currentNode=createCompositeNode(grammarAccess.getRelationTypeRestrictionAccess().getRelationTypeXRelationTypeCrossReference_1_0(), currentNode); 
-	    }
-		ruleRELATION_TYPE_REFERENCE		{ 
-	        currentNode = currentNode.getParent();
-	    }
-
-)
-)(
-(
-		{ 
-	        currentNode=createCompositeNode(grammarAccess.getRelationTypeRestrictionAccess().getRestrictedToRelationTypeSideRestrictionEnumRuleCall_2_0(), currentNode); 
-	    }
-		lv_restrictedTo_2_0=ruleRelationTypeSideRestriction		{
-	        if ($current==null) {
-	            $current = factory.create(grammarAccess.getRelationTypeRestrictionRule().getType().getClassifier());
-	            associateNodeWithAstElement(currentNode.getParent(), $current);
-	        }
-	        try {
-	       		add(
-	       			$current, 
-	       			"restrictedTo",
-	        		lv_restrictedTo_2_0, 
-	        		"RelationTypeSideRestriction", 
-	        		currentNode);
-	        } catch (ValueConverterException vce) {
-				handleValueConverterException(vce);
-	        }
-	        currentNode = currentNode.getParent();
-	    }
-
-)
-)?	';' 
-    {
-        createLeafNode(grammarAccess.getRelationTypeRestrictionAccess().getSemicolonKeyword_3(), null); 
+        createLeafNode(grammarAccess.getArtifactTypeRestrictionAccess().getSemicolonKeyword_4(), null); 
     }
 )
 ;
@@ -3026,9 +2927,37 @@ ruleAttributeTypeRestriction returns [EObject current=null]
     @after { resetLookahead(); 
     	lastConsumedNode = currentNode;
     }:
-(	'attributeType' 
+((
+(
+		{ 
+	        currentNode=createCompositeNode(grammarAccess.getAttributeTypeRestrictionAccess().getPermissionAccessPermissionEnumEnumRuleCall_0_0(), currentNode); 
+	    }
+		lv_permission_0_0=ruleAccessPermissionEnum		{
+	        if ($current==null) {
+	            $current = factory.create(grammarAccess.getAttributeTypeRestrictionRule().getType().getClassifier());
+	            associateNodeWithAstElement(currentNode.getParent(), $current);
+	        }
+	        try {
+	       		set(
+	       			$current, 
+	       			"permission",
+	        		lv_permission_0_0, 
+	        		"AccessPermissionEnum", 
+	        		currentNode);
+	        } catch (ValueConverterException vce) {
+				handleValueConverterException(vce);
+	        }
+	        currentNode = currentNode.getParent();
+	    }
+
+)
+)	'edit' 
     {
-        createLeafNode(grammarAccess.getAttributeTypeRestrictionAccess().getAttributeTypeKeyword_0(), null); 
+        createLeafNode(grammarAccess.getAttributeTypeRestrictionAccess().getEditKeyword_1(), null); 
+    }
+	'attributeType' 
+    {
+        createLeafNode(grammarAccess.getAttributeTypeRestrictionAccess().getAttributeTypeKeyword_2(), null); 
     }
 (
 (
@@ -3039,87 +2968,139 @@ ruleAttributeTypeRestriction returns [EObject current=null]
 	        }
         }
 		{ 
-	        currentNode=createCompositeNode(grammarAccess.getAttributeTypeRestrictionAccess().getAttributeTypeXAttributeTypeCrossReference_1_0(), currentNode); 
+	        currentNode=createCompositeNode(grammarAccess.getAttributeTypeRestrictionAccess().getAttributeTypeRefXAttributeTypeCrossReference_3_0(), currentNode); 
 	    }
 		ruleATTRIBUTE_TYPE_REFERENCE		{ 
 	        currentNode = currentNode.getParent();
 	    }
 
 )
-)	';' 
+)(	'of' 
     {
-        createLeafNode(grammarAccess.getAttributeTypeRestrictionAccess().getSemicolonKeyword_2(), null); 
-    }
-)
-;
-
-
-
-
-
-// Entry rule entryRuleAttributeTypeOfArtifactTypeRestriction
-entryRuleAttributeTypeOfArtifactTypeRestriction returns [EObject current=null] 
-	:
-	{ currentNode = createCompositeNode(grammarAccess.getAttributeTypeOfArtifactTypeRestrictionRule(), currentNode); }
-	 iv_ruleAttributeTypeOfArtifactTypeRestriction=ruleAttributeTypeOfArtifactTypeRestriction 
-	 { $current=$iv_ruleAttributeTypeOfArtifactTypeRestriction.current; } 
-	 EOF 
-;
-
-// Rule AttributeTypeOfArtifactTypeRestriction
-ruleAttributeTypeOfArtifactTypeRestriction returns [EObject current=null] 
-    @init { EObject temp=null; setCurrentLookahead(); resetLookahead(); 
-    }
-    @after { resetLookahead(); 
-    	lastConsumedNode = currentNode;
-    }:
-(	'attributeType' 
-    {
-        createLeafNode(grammarAccess.getAttributeTypeOfArtifactTypeRestrictionAccess().getAttributeTypeKeyword_0(), null); 
-    }
-(
-(
-		{
-			if ($current==null) {
-	            $current = factory.create(grammarAccess.getAttributeTypeOfArtifactTypeRestrictionRule().getType().getClassifier());
-	            associateNodeWithAstElement(currentNode, $current);
-	        }
-        }
-		{ 
-	        currentNode=createCompositeNode(grammarAccess.getAttributeTypeOfArtifactTypeRestrictionAccess().getAttributeTypeXAttributeTypeCrossReference_1_0(), currentNode); 
-	    }
-		ruleATTRIBUTE_TYPE_REFERENCE		{ 
-	        currentNode = currentNode.getParent();
-	    }
-
-)
-)	'of' 
-    {
-        createLeafNode(grammarAccess.getAttributeTypeOfArtifactTypeRestrictionAccess().getOfKeyword_2(), null); 
+        createLeafNode(grammarAccess.getAttributeTypeRestrictionAccess().getOfKeyword_4_0(), null); 
     }
 	'artifactType' 
     {
-        createLeafNode(grammarAccess.getAttributeTypeOfArtifactTypeRestrictionAccess().getArtifactTypeKeyword_3(), null); 
+        createLeafNode(grammarAccess.getAttributeTypeRestrictionAccess().getArtifactTypeKeyword_4_1(), null); 
     }
 (
 (
 		{
 			if ($current==null) {
-	            $current = factory.create(grammarAccess.getAttributeTypeOfArtifactTypeRestrictionRule().getType().getClassifier());
+	            $current = factory.create(grammarAccess.getAttributeTypeRestrictionRule().getType().getClassifier());
 	            associateNodeWithAstElement(currentNode, $current);
 	        }
         }
 		{ 
-	        currentNode=createCompositeNode(grammarAccess.getAttributeTypeOfArtifactTypeRestrictionAccess().getArtifactTypeXArtifactTypeCrossReference_4_0(), currentNode); 
+	        currentNode=createCompositeNode(grammarAccess.getAttributeTypeRestrictionAccess().getArtifactTypeRefXArtifactTypeCrossReference_4_2_0(), currentNode); 
 	    }
 		ruleARTIFACT_TYPE_REFERENCE		{ 
 	        currentNode = currentNode.getParent();
 	    }
 
 )
+))?	';' 
+    {
+        createLeafNode(grammarAccess.getAttributeTypeRestrictionAccess().getSemicolonKeyword_5(), null); 
+    }
+)
+;
+
+
+
+
+
+// Entry rule entryRuleRelationTypeRestriction
+entryRuleRelationTypeRestriction returns [EObject current=null] 
+	:
+	{ currentNode = createCompositeNode(grammarAccess.getRelationTypeRestrictionRule(), currentNode); }
+	 iv_ruleRelationTypeRestriction=ruleRelationTypeRestriction 
+	 { $current=$iv_ruleRelationTypeRestriction.current; } 
+	 EOF 
+;
+
+// Rule RelationTypeRestriction
+ruleRelationTypeRestriction returns [EObject current=null] 
+    @init { EObject temp=null; setCurrentLookahead(); resetLookahead(); 
+    }
+    @after { resetLookahead(); 
+    	lastConsumedNode = currentNode;
+    }:
+((
+(
+		{ 
+	        currentNode=createCompositeNode(grammarAccess.getRelationTypeRestrictionAccess().getPermissionAccessPermissionEnumEnumRuleCall_0_0(), currentNode); 
+	    }
+		lv_permission_0_0=ruleAccessPermissionEnum		{
+	        if ($current==null) {
+	            $current = factory.create(grammarAccess.getRelationTypeRestrictionRule().getType().getClassifier());
+	            associateNodeWithAstElement(currentNode.getParent(), $current);
+	        }
+	        try {
+	       		set(
+	       			$current, 
+	       			"permission",
+	        		lv_permission_0_0, 
+	        		"AccessPermissionEnum", 
+	        		currentNode);
+	        } catch (ValueConverterException vce) {
+				handleValueConverterException(vce);
+	        }
+	        currentNode = currentNode.getParent();
+	    }
+
+)
+)	'edit' 
+    {
+        createLeafNode(grammarAccess.getRelationTypeRestrictionAccess().getEditKeyword_1(), null); 
+    }
+	'relationType' 
+    {
+        createLeafNode(grammarAccess.getRelationTypeRestrictionAccess().getRelationTypeKeyword_2(), null); 
+    }
+(
+(
+		{
+			if ($current==null) {
+	            $current = factory.create(grammarAccess.getRelationTypeRestrictionRule().getType().getClassifier());
+	            associateNodeWithAstElement(currentNode, $current);
+	        }
+        }
+		{ 
+	        currentNode=createCompositeNode(grammarAccess.getRelationTypeRestrictionAccess().getRelationTypeRefXRelationTypeCrossReference_3_0(), currentNode); 
+	    }
+		ruleRELATION_TYPE_REFERENCE		{ 
+	        currentNode = currentNode.getParent();
+	    }
+
+)
+)(
+(
+		{ 
+	        currentNode=createCompositeNode(grammarAccess.getRelationTypeRestrictionAccess().getRestrictedToSideXRelationSideEnumEnumRuleCall_4_0(), currentNode); 
+	    }
+		lv_restrictedToSide_4_0=ruleXRelationSideEnum		{
+	        if ($current==null) {
+	            $current = factory.create(grammarAccess.getRelationTypeRestrictionRule().getType().getClassifier());
+	            associateNodeWithAstElement(currentNode.getParent(), $current);
+	        }
+	        try {
+	       		set(
+	       			$current, 
+	       			"restrictedToSide",
+	        		lv_restrictedToSide_4_0, 
+	        		"XRelationSideEnum", 
+	        		currentNode);
+	        } catch (ValueConverterException vce) {
+				handleValueConverterException(vce);
+	        }
+	        currentNode = currentNode.getParent();
+	    }
+
+)
 )	';' 
     {
-        createLeafNode(grammarAccess.getAttributeTypeOfArtifactTypeRestrictionAccess().getSemicolonKeyword_5(), null); 
+        createLeafNode(grammarAccess.getRelationTypeRestrictionAccess().getSemicolonKeyword_5(), null); 
     }
 )
 ;
@@ -3182,22 +3163,28 @@ ruleAccessPermissionEnum returns [Enumerator current=null]
 
 
 
-// Rule RelationTypeSideRestriction
-ruleRelationTypeSideRestriction returns [Enumerator current=null] 
+// Rule XRelationSideEnum
+ruleXRelationSideEnum returns [Enumerator current=null] 
     @init { setCurrentLookahead(); resetLookahead(); }
     @after { resetLookahead(); 
     	lastConsumedNode = currentNode;
     }:
 ((	'SIDE_A' 
 	{
-        $current = grammarAccess.getRelationTypeSideRestrictionAccess().getSIDE_AEnumLiteralDeclaration_0().getEnumLiteral().getInstance();
-        createLeafNode(grammarAccess.getRelationTypeSideRestrictionAccess().getSIDE_AEnumLiteralDeclaration_0(), null); 
+        $current = grammarAccess.getXRelationSideEnumAccess().getSIDE_AEnumLiteralDeclaration_0().getEnumLiteral().getInstance();
+        createLeafNode(grammarAccess.getXRelationSideEnumAccess().getSIDE_AEnumLiteralDeclaration_0(), null); 
     }
 )
     |(	'SIDE_B' 
 	{
-        $current = grammarAccess.getRelationTypeSideRestrictionAccess().getSIDE_BEnumLiteralDeclaration_1().getEnumLiteral().getInstance();
-        createLeafNode(grammarAccess.getRelationTypeSideRestrictionAccess().getSIDE_BEnumLiteralDeclaration_1(), null); 
+        $current = grammarAccess.getXRelationSideEnumAccess().getSIDE_BEnumLiteralDeclaration_1().getEnumLiteral().getInstance();
+        createLeafNode(grammarAccess.getXRelationSideEnumAccess().getSIDE_BEnumLiteralDeclaration_1(), null); 
+    }
+)
+    |(	'BOTH' 
+	{
+        $current = grammarAccess.getXRelationSideEnumAccess().getBOTHEnumLiteralDeclaration_2().getEnumLiteral().getInstance();
+        createLeafNode(grammarAccess.getXRelationSideEnumAccess().getBOTHEnumLiteralDeclaration_2(), null); 
     }
 ));
 

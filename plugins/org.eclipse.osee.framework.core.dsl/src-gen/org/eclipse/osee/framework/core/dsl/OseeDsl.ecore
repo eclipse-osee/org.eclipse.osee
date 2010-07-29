@@ -104,48 +104,41 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="superAccessContexts" unique="false"
         upperBound="-1" eType="#//AccessContext"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="typeGuid" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="guid" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="accessRules" upperBound="-1"
-        eType="#//PermissionRule" containment="true"/>
+        eType="#//ObjectRestriction" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="hierarchyRestrictions"
         upperBound="-1" eType="#//HierarchyRestriction" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="HierarchyRestriction">
     <eStructuralFeatures xsi:type="ecore:EReference" name="artifact" eType="#//XArtifactRef"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="accessRules" upperBound="-1"
-        eType="#//PermissionRule" containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="PermissionRule">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="permission" eType="#//AccessPermissionEnum"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="objectRestriction" eType="#//ObjectRestriction"
-        containment="true"/>
+        eType="#//ObjectRestriction" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="AccessPermissionEnum">
     <eLiterals name="ALLOW" literal="ALLOW"/>
     <eLiterals name="DENY" value="1" literal="DENY"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ObjectRestriction"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ObjectRestriction">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="permission" eType="#//AccessPermissionEnum"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ArtifactInstanceRestriction" eSuperTypes="#//ObjectRestriction">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="artifactName" eType="#//XArtifactRef"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="artifactRef" eType="#//XArtifactRef"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ArtifactTypeRestriction" eSuperTypes="#//ObjectRestriction">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="artifactType" eType="#//XArtifactType"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="RelationTypeRestriction" eSuperTypes="#//ObjectRestriction">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="relationType" eType="#//XRelationType"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="restrictedTo" unique="false"
-        upperBound="-1" eType="#//RelationTypeSideRestriction"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EEnum" name="RelationTypeSideRestriction">
-    <eLiterals name="SIDE_A" literal="SIDE_A"/>
-    <eLiterals name="SIDE_B" value="1" literal="SIDE_B"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="artifactTypeRef" eType="#//XArtifactType"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="AttributeTypeRestriction" eSuperTypes="#//ObjectRestriction">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="attributeType" eType="#//XAttributeType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="attributeTypeRef" eType="#//XAttributeType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="artifactTypeRef" eType="#//XArtifactType"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="AttributeTypeOfArtifactTypeRestriction"
-      eSuperTypes="#//ObjectRestriction">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="attributeType" eType="#//XAttributeType"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="artifactType" eType="#//XArtifactType"/>
+  <eClassifiers xsi:type="ecore:EClass" name="RelationTypeRestriction" eSuperTypes="#//ObjectRestriction">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="relationTypeRef" eType="#//XRelationType"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="restrictedToSide" eType="#//XRelationSideEnum"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="XRelationSideEnum">
+    <eLiterals name="SIDE_A" literal="SIDE_A"/>
+    <eLiterals name="SIDE_B" value="1" literal="SIDE_B"/>
+    <eLiterals name="BOTH" value="2" literal="BOTH"/>
   </eClassifiers>
 </ecore:EPackage>

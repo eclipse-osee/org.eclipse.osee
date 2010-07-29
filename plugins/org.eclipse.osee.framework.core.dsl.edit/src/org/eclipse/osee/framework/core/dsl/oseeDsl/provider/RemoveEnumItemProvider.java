@@ -6,10 +6,13 @@
  */
 package org.eclipse.osee.framework.core.dsl.oseeDsl.provider;
 
+
 import java.util.Collection;
 import java.util.List;
+
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
+
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
@@ -17,18 +20,27 @@ import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
+
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage;
 
 /**
- * This is the item provider adapter for a {@link org.eclipse.osee.framework.core.dsl.oseeDsl.RemoveEnum} object. <!--
- * begin-user-doc --> <!-- end-user-doc -->
- * 
+ * This is the item provider adapter for a {@link org.eclipse.osee.framework.core.dsl.oseeDsl.RemoveEnum} object.
+ * <!-- begin-user-doc -->
+ * <!-- end-user-doc -->
  * @generated
  */
-public class RemoveEnumItemProvider extends OverrideOptionItemProvider implements IEditingDomainItemProvider, IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource {
+public class RemoveEnumItemProvider
+   extends OverrideOptionItemProvider
+   implements
+      IEditingDomainItemProvider,
+      IStructuredItemContentProvider,
+      ITreeItemContentProvider,
+      IItemLabelProvider,
+      IItemPropertySource {
    /**
-    * This constructs an instance from a factory and a notifier. <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    * This constructs an instance from a factory and a notifier.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
     * @generated
     */
    public RemoveEnumItemProvider(AdapterFactory adapterFactory) {
@@ -36,8 +48,9 @@ public class RemoveEnumItemProvider extends OverrideOptionItemProvider implement
    }
 
    /**
-    * This returns the property descriptors for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    * This returns the property descriptors for the adapted class.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
     * @generated
     */
    @Override
@@ -51,21 +64,31 @@ public class RemoveEnumItemProvider extends OverrideOptionItemProvider implement
    }
 
    /**
-    * This adds a property descriptor for the Enum Entry feature. <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    * This adds a property descriptor for the Enum Entry feature.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
     * @generated
     */
    protected void addEnumEntryPropertyDescriptor(Object object) {
-      itemPropertyDescriptors.add(createItemPropertyDescriptor(
-         ((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-         getString("_UI_RemoveEnum_enumEntry_feature"),
-         getString("_UI_PropertyDescriptor_description", "_UI_RemoveEnum_enumEntry_feature", "_UI_RemoveEnum_type"),
-         OseeDslPackage.Literals.REMOVE_ENUM__ENUM_ENTRY, true, false, true, null, null, null));
+      itemPropertyDescriptors.add
+         (createItemPropertyDescriptor
+            (((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+             getResourceLocator(),
+             getString("_UI_RemoveEnum_enumEntry_feature"),
+             getString("_UI_PropertyDescriptor_description", "_UI_RemoveEnum_enumEntry_feature", "_UI_RemoveEnum_type"),
+             OseeDslPackage.Literals.REMOVE_ENUM__ENUM_ENTRY,
+             true,
+             false,
+             true,
+             null,
+             null,
+             null));
    }
 
    /**
-    * This returns RemoveEnum.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    * This returns RemoveEnum.gif.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
     * @generated
     */
    @Override
@@ -74,8 +97,9 @@ public class RemoveEnumItemProvider extends OverrideOptionItemProvider implement
    }
 
    /**
-    * This returns the label text for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    * This returns the label text for the adapted class.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
     * @generated
     */
    @Override
@@ -84,10 +108,10 @@ public class RemoveEnumItemProvider extends OverrideOptionItemProvider implement
    }
 
    /**
-    * This handles model notifications by calling {@link #updateChildren} to update any cached children and by creating
-    * a viewer notification, which it passes to {@link #fireNotifyChanged}. <!-- begin-user-doc --> <!-- end-user-doc
-    * -->
-    * 
+    * This handles model notifications by calling {@link #updateChildren} to update any cached
+    * children and by creating a viewer notification, which it passes to {@link #fireNotifyChanged}.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
     * @generated
     */
    @Override
@@ -97,9 +121,10 @@ public class RemoveEnumItemProvider extends OverrideOptionItemProvider implement
    }
 
    /**
-    * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children that can be created under
-    * this object. <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children
+    * that can be created under this object.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
     * @generated
     */
    @Override

@@ -125,43 +125,42 @@ AccessContext:
 	'accessContext' name=ACCESS_CONTEXT_TYPE_REFRENCE ('extends'
 	superAccessContexts+=[AccessContext|ACCESS_CONTEXT_TYPE_REFRENCE] (','
 	superAccessContexts+=[AccessContext|ACCESS_CONTEXT_TYPE_REFRENCE])*)? '{'
-	'guid' typeGuid=STRING ';'
-	//(branchRestrictions+=BranchRestriction)*
-	(accessRules+=PermissionRule)*
-	(hierarchyRestrictions+=HierarchyRestriction)*
+	'guid' guid=STRING ';'
+	(accessRules+=ObjectRestriction | hierarchyRestrictions+=HierarchyRestriction)+
 	'}';
 
 HierarchyRestriction:
-	'childrenOf' artifact=[XArtifactRef|ARTIFACT_INSTANCE_REFERENCE] '{' accessRules+=PermissionRule '}';
-
-//BranchRestriction:
-//	'onBranch' branch=[XBranchRef|BRANCH_INSTANCE_REFERENCE] '{' accessRule+=PermissionRule '}';
-
-PermissionRule:
-	permission=AccessPermissionEnum 'edit' objectRestriction=ObjectRestriction;
+	'childrenOf' artifact=[XArtifactRef|ARTIFACT_INSTANCE_REFERENCE] '{' accessRules+=ObjectRestriction '}';
 
 enum AccessPermissionEnum:
 	ALLOW | DENY;
 
 ObjectRestriction:
-	ArtifactTypeRestriction | RelationTypeRestriction | AttributeTypeRestriction | AttributeTypeOfArtifactTypeRestriction
-	| ArtifactInstanceRestriction;
+	ArtifactInstanceRestriction | ArtifactTypeRestriction | RelationTypeRestriction | AttributeTypeRestriction;
 
 ArtifactInstanceRestriction:
-	'artifact' artifactName=[XArtifactRef|ARTIFACT_INSTANCE_REFERENCE] ';';
+	permission=AccessPermissionEnum 'edit' 'artifact' artifactRef=[XArtifactRef|ARTIFACT_INSTANCE_REFERENCE] ';';
 
 ArtifactTypeRestriction:
-	'artifactType' artifactType=[XArtifactType|ARTIFACT_TYPE_REFERENCE] ';';
-
-RelationTypeRestriction:
-	'relationType' relationType=[XRelationType|RELATION_TYPE_REFERENCE] (restrictedTo+=RelationTypeSideRestriction)? ';';
-
-enum RelationTypeSideRestriction:
-	SIDE_A | SIDE_B;
+	permission=AccessPermissionEnum 'edit' 'artifactType' artifactTypeRef=[XArtifactType|ARTIFACT_TYPE_REFERENCE] ';';
 
 AttributeTypeRestriction:
-	'attributeType' attributeType=[XAttributeType|ATTRIBUTE_TYPE_REFERENCE] ';';
+	permission=AccessPermissionEnum 'edit' 'attributeType' attributeTypeRef=[XAttributeType|ATTRIBUTE_TYPE_REFERENCE]
+	('of'
+	'artifactType' artifactTypeRef=[XArtifactType|ARTIFACT_TYPE_REFERENCE])? ';';
 
-AttributeTypeOfArtifactTypeRestriction:
-	'attributeType' attributeType=[XAttributeType|ATTRIBUTE_TYPE_REFERENCE] 'of' 'artifactType'
-	artifactType=[XArtifactType|ARTIFACT_TYPE_REFERENCE] ';';
+RelationTypeRestriction:
+	permission=AccessPermissionEnum 'edit' 'relationType' relationTypeRef=[XRelationType|RELATION_TYPE_REFERENCE]
+	restrictedToSide=XRelationSideEnum ';';
+
+enum XRelationSideEnum:
+	SIDE_A | SIDE_B | BOTH;
+
+		//BranchRestriction:
+//	'onBranch' branch=[XBranchRef|BRANCH_INSTANCE_REFERENCE] '{' accessRule+=PermissionRule '}';
+
+//AccessSet:
+//	artifactRestrictions+=ArtifactInstanceRestriction
+//	artifactTypeRestrictions+=ArtifactTypeRestriction
+//	attributeTypeRestrictions+=AttributeTypeRestriction
+//	relationTypeRestrictions+=RelationTypeRestriction;

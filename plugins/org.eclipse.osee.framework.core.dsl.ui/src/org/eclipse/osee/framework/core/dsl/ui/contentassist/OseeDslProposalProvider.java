@@ -64,8 +64,8 @@ public class OseeDslProposalProvider extends AbstractOseeDslProposalProvider {
    }
 
    @Override
-   public void completeAccessContext_TypeGuid(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-      super.completeAccessContext_TypeGuid(model, assignment, context, acceptor);
+   public void completeAccessContext_Guid(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+      super.completeAccessContext_Guid(model, assignment, context, acceptor);
       completeGuidGeneration((RuleCall) assignment.getTerminal(), context, acceptor);
    }
 

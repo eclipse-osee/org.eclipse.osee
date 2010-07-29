@@ -582,15 +582,17 @@
         </elements>
         <elements xsi:type="xtext:Keyword" value="{"/>
         <elements xsi:type="xtext:Keyword" value="guid"/>
-        <elements xsi:type="xtext:Assignment" feature="typeGuid" operator="=">
+        <elements xsi:type="xtext:Assignment" feature="guid" operator="=">
           <terminal xsi:type="xtext:RuleCall" rule="/1/@rules.2"/>
         </elements>
         <elements xsi:type="xtext:Keyword" value=";"/>
-        <elements xsi:type="xtext:Assignment" cardinality="*" feature="accessRules" operator="+=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.32"/>
-        </elements>
-        <elements xsi:type="xtext:Assignment" cardinality="*" feature="hierarchyRestrictions" operator="+=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.31"/>
+        <elements xsi:type="xtext:Alternatives" cardinality="+">
+          <elements xsi:type="xtext:Assignment" feature="accessRules" operator="+=">
+            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.33"/>
+          </elements>
+          <elements xsi:type="xtext:Assignment" feature="hierarchyRestrictions" operator="+=">
+            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.31"/>
+          </elements>
         </elements>
         <elements xsi:type="xtext:Keyword" value="}"/>
       </alternatives>
@@ -611,23 +613,9 @@
         </elements>
         <elements xsi:type="xtext:Keyword" value="{"/>
         <elements xsi:type="xtext:Assignment" feature="accessRules" operator="+=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.32"/>
-        </elements>
-        <elements xsi:type="xtext:Keyword" value="}"/>
-      </alternatives>
-    </rules>
-    <rules xsi:type="xtext:ParserRule" name="PermissionRule">
-      <type metamodel="/0/@metamodelDeclarations.0">
-        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/core/dsl/OseeDsl#//PermissionRule"/>
-      </type>
-      <alternatives xsi:type="xtext:Group">
-        <elements xsi:type="xtext:Assignment" feature="permission" operator="=">
           <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.33"/>
         </elements>
-        <elements xsi:type="xtext:Keyword" value="edit"/>
-        <elements xsi:type="xtext:Assignment" feature="objectRestriction" operator="=">
-          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.34"/>
-        </elements>
+        <elements xsi:type="xtext:Keyword" value="}"/>
       </alternatives>
     </rules>
     <rules xsi:type="xtext:EnumRule" name="AccessPermissionEnum">
@@ -650,11 +638,10 @@
         <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/core/dsl/OseeDsl#//ObjectRestriction"/>
       </type>
       <alternatives xsi:type="xtext:Alternatives">
-        <elements xsi:type="xtext:RuleCall" rule="/0/@rules.36"/>
-        <elements xsi:type="xtext:RuleCall" rule="/0/@rules.37"/>
-        <elements xsi:type="xtext:RuleCall" rule="/0/@rules.39"/>
-        <elements xsi:type="xtext:RuleCall" rule="/0/@rules.40"/>
+        <elements xsi:type="xtext:RuleCall" rule="/0/@rules.34"/>
         <elements xsi:type="xtext:RuleCall" rule="/0/@rules.35"/>
+        <elements xsi:type="xtext:RuleCall" rule="/0/@rules.37"/>
+        <elements xsi:type="xtext:RuleCall" rule="/0/@rules.36"/>
       </alternatives>
     </rules>
     <rules xsi:type="xtext:ParserRule" name="ArtifactInstanceRestriction">
@@ -662,8 +649,12 @@
         <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/core/dsl/OseeDsl#//ArtifactInstanceRestriction"/>
       </type>
       <alternatives xsi:type="xtext:Group">
+        <elements xsi:type="xtext:Assignment" feature="permission" operator="=">
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.32"/>
+        </elements>
+        <elements xsi:type="xtext:Keyword" value="edit"/>
         <elements xsi:type="xtext:Keyword" value="artifact"/>
-        <elements xsi:type="xtext:Assignment" feature="artifactName" operator="=">
+        <elements xsi:type="xtext:Assignment" feature="artifactRef" operator="=">
           <terminal xsi:type="xtext:CrossReference">
             <type metamodel="/0/@metamodelDeclarations.0">
               <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/core/dsl/OseeDsl#//XArtifactRef"/>
@@ -679,14 +670,51 @@
         <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/core/dsl/OseeDsl#//ArtifactTypeRestriction"/>
       </type>
       <alternatives xsi:type="xtext:Group">
+        <elements xsi:type="xtext:Assignment" feature="permission" operator="=">
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.32"/>
+        </elements>
+        <elements xsi:type="xtext:Keyword" value="edit"/>
         <elements xsi:type="xtext:Keyword" value="artifactType"/>
-        <elements xsi:type="xtext:Assignment" feature="artifactType" operator="=">
+        <elements xsi:type="xtext:Assignment" feature="artifactTypeRef" operator="=">
           <terminal xsi:type="xtext:CrossReference">
             <type metamodel="/0/@metamodelDeclarations.0">
               <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/core/dsl/OseeDsl#//XArtifactType"/>
             </type>
             <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.5"/>
           </terminal>
+        </elements>
+        <elements xsi:type="xtext:Keyword" value=";"/>
+      </alternatives>
+    </rules>
+    <rules xsi:type="xtext:ParserRule" name="AttributeTypeRestriction">
+      <type metamodel="/0/@metamodelDeclarations.0">
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/core/dsl/OseeDsl#//AttributeTypeRestriction"/>
+      </type>
+      <alternatives xsi:type="xtext:Group">
+        <elements xsi:type="xtext:Assignment" feature="permission" operator="=">
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.32"/>
+        </elements>
+        <elements xsi:type="xtext:Keyword" value="edit"/>
+        <elements xsi:type="xtext:Keyword" value="attributeType"/>
+        <elements xsi:type="xtext:Assignment" feature="attributeTypeRef" operator="=">
+          <terminal xsi:type="xtext:CrossReference">
+            <type metamodel="/0/@metamodelDeclarations.0">
+              <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/core/dsl/OseeDsl#//XAttributeType"/>
+            </type>
+            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.4"/>
+          </terminal>
+        </elements>
+        <elements xsi:type="xtext:Group" cardinality="?">
+          <elements xsi:type="xtext:Keyword" value="of"/>
+          <elements xsi:type="xtext:Keyword" value="artifactType"/>
+          <elements xsi:type="xtext:Assignment" feature="artifactTypeRef" operator="=">
+            <terminal xsi:type="xtext:CrossReference">
+              <type metamodel="/0/@metamodelDeclarations.0">
+                <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/core/dsl/OseeDsl#//XArtifactType"/>
+              </type>
+              <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.5"/>
+            </terminal>
+          </elements>
         </elements>
         <elements xsi:type="xtext:Keyword" value=";"/>
       </alternatives>
@@ -696,8 +724,12 @@
         <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/core/dsl/OseeDsl#//RelationTypeRestriction"/>
       </type>
       <alternatives xsi:type="xtext:Group">
+        <elements xsi:type="xtext:Assignment" feature="permission" operator="=">
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.32"/>
+        </elements>
+        <elements xsi:type="xtext:Keyword" value="edit"/>
         <elements xsi:type="xtext:Keyword" value="relationType"/>
-        <elements xsi:type="xtext:Assignment" feature="relationType" operator="=">
+        <elements xsi:type="xtext:Assignment" feature="relationTypeRef" operator="=">
           <terminal xsi:type="xtext:CrossReference">
             <type metamodel="/0/@metamodelDeclarations.0">
               <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/core/dsl/OseeDsl#//XRelationType"/>
@@ -705,69 +737,29 @@
             <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.6"/>
           </terminal>
         </elements>
-        <elements xsi:type="xtext:Assignment" cardinality="?" feature="restrictedTo" operator="+=">
+        <elements xsi:type="xtext:Assignment" feature="restrictedToSide" operator="=">
           <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.38"/>
         </elements>
         <elements xsi:type="xtext:Keyword" value=";"/>
       </alternatives>
     </rules>
-    <rules xsi:type="xtext:EnumRule" name="RelationTypeSideRestriction">
+    <rules xsi:type="xtext:EnumRule" name="XRelationSideEnum">
       <type metamodel="/0/@metamodelDeclarations.0">
-        <classifier xsi:type="ecore:EEnum" href="http://www.eclipse.org/osee/framework/core/dsl/OseeDsl#//RelationTypeSideRestriction"/>
+        <classifier xsi:type="ecore:EEnum" href="http://www.eclipse.org/osee/framework/core/dsl/OseeDsl#//XRelationSideEnum"/>
       </type>
       <alternatives xsi:type="xtext:Alternatives">
         <elements xsi:type="xtext:EnumLiteralDeclaration">
-          <enumLiteral href="http://www.eclipse.org/osee/framework/core/dsl/OseeDsl#//RelationTypeSideRestriction/SIDE_A"/>
+          <enumLiteral href="http://www.eclipse.org/osee/framework/core/dsl/OseeDsl#//XRelationSideEnum/SIDE_A"/>
           <literal value="SIDE_A"/>
         </elements>
         <elements xsi:type="xtext:EnumLiteralDeclaration">
-          <enumLiteral href="http://www.eclipse.org/osee/framework/core/dsl/OseeDsl#//RelationTypeSideRestriction/SIDE_B"/>
+          <enumLiteral href="http://www.eclipse.org/osee/framework/core/dsl/OseeDsl#//XRelationSideEnum/SIDE_B"/>
           <literal value="SIDE_B"/>
         </elements>
-      </alternatives>
-    </rules>
-    <rules xsi:type="xtext:ParserRule" name="AttributeTypeRestriction">
-      <type metamodel="/0/@metamodelDeclarations.0">
-        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/core/dsl/OseeDsl#//AttributeTypeRestriction"/>
-      </type>
-      <alternatives xsi:type="xtext:Group">
-        <elements xsi:type="xtext:Keyword" value="attributeType"/>
-        <elements xsi:type="xtext:Assignment" feature="attributeType" operator="=">
-          <terminal xsi:type="xtext:CrossReference">
-            <type metamodel="/0/@metamodelDeclarations.0">
-              <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/core/dsl/OseeDsl#//XAttributeType"/>
-            </type>
-            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.4"/>
-          </terminal>
+        <elements xsi:type="xtext:EnumLiteralDeclaration">
+          <enumLiteral href="http://www.eclipse.org/osee/framework/core/dsl/OseeDsl#//XRelationSideEnum/BOTH"/>
+          <literal value="BOTH"/>
         </elements>
-        <elements xsi:type="xtext:Keyword" value=";"/>
-      </alternatives>
-    </rules>
-    <rules xsi:type="xtext:ParserRule" name="AttributeTypeOfArtifactTypeRestriction">
-      <type metamodel="/0/@metamodelDeclarations.0">
-        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/core/dsl/OseeDsl#//AttributeTypeOfArtifactTypeRestriction"/>
-      </type>
-      <alternatives xsi:type="xtext:Group">
-        <elements xsi:type="xtext:Keyword" value="attributeType"/>
-        <elements xsi:type="xtext:Assignment" feature="attributeType" operator="=">
-          <terminal xsi:type="xtext:CrossReference">
-            <type metamodel="/0/@metamodelDeclarations.0">
-              <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/core/dsl/OseeDsl#//XAttributeType"/>
-            </type>
-            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.4"/>
-          </terminal>
-        </elements>
-        <elements xsi:type="xtext:Keyword" value="of"/>
-        <elements xsi:type="xtext:Keyword" value="artifactType"/>
-        <elements xsi:type="xtext:Assignment" feature="artifactType" operator="=">
-          <terminal xsi:type="xtext:CrossReference">
-            <type metamodel="/0/@metamodelDeclarations.0">
-              <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/core/dsl/OseeDsl#//XArtifactType"/>
-            </type>
-            <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.5"/>
-          </terminal>
-        </elements>
-        <elements xsi:type="xtext:Keyword" value=";"/>
       </alternatives>
     </rules>
   </xtext:Grammar>

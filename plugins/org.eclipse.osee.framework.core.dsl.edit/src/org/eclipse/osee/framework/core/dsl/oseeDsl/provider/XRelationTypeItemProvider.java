@@ -6,10 +6,13 @@
  */
 package org.eclipse.osee.framework.core.dsl.oseeDsl.provider;
 
+
 import java.util.Collection;
 import java.util.List;
+
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
+
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
@@ -19,19 +22,28 @@ import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ViewerNotification;
+
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType;
 
 /**
  * This is the item provider adapter for a {@link org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType} object.
- * <!-- begin-user-doc --> <!-- end-user-doc -->
- * 
+ * <!-- begin-user-doc -->
+ * <!-- end-user-doc -->
  * @generated
  */
-public class XRelationTypeItemProvider extends OseeTypeItemProvider implements IEditingDomainItemProvider, IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource {
+public class XRelationTypeItemProvider
+   extends OseeTypeItemProvider
+   implements
+      IEditingDomainItemProvider,
+      IStructuredItemContentProvider,
+      ITreeItemContentProvider,
+      IItemLabelProvider,
+      IItemPropertySource {
    /**
-    * This constructs an instance from a factory and a notifier. <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    * This constructs an instance from a factory and a notifier.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
     * @generated
     */
    public XRelationTypeItemProvider(AdapterFactory adapterFactory) {
@@ -39,8 +51,9 @@ public class XRelationTypeItemProvider extends OseeTypeItemProvider implements I
    }
 
    /**
-    * This returns the property descriptors for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    * This returns the property descriptors for the adapted class.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
     * @generated
     */
    @Override
@@ -59,98 +72,141 @@ public class XRelationTypeItemProvider extends OseeTypeItemProvider implements I
    }
 
    /**
-    * This adds a property descriptor for the Side AName feature. <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    * This adds a property descriptor for the Side AName feature.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
     * @generated
     */
    protected void addSideANamePropertyDescriptor(Object object) {
-      itemPropertyDescriptors.add(createItemPropertyDescriptor(
-         ((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-         getResourceLocator(),
-         getString("_UI_XRelationType_sideAName_feature"),
-         getString("_UI_PropertyDescriptor_description", "_UI_XRelationType_sideAName_feature",
-            "_UI_XRelationType_type"), OseeDslPackage.Literals.XRELATION_TYPE__SIDE_ANAME, true, false, false,
-         ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+      itemPropertyDescriptors.add
+         (createItemPropertyDescriptor
+            (((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+             getResourceLocator(),
+             getString("_UI_XRelationType_sideAName_feature"),
+             getString("_UI_PropertyDescriptor_description", "_UI_XRelationType_sideAName_feature", "_UI_XRelationType_type"),
+             OseeDslPackage.Literals.XRELATION_TYPE__SIDE_ANAME,
+             true,
+             false,
+             false,
+             ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+             null,
+             null));
    }
 
    /**
-    * This adds a property descriptor for the Side AArtifact Type feature. <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    * This adds a property descriptor for the Side AArtifact Type feature.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
     * @generated
     */
    protected void addSideAArtifactTypePropertyDescriptor(Object object) {
-      itemPropertyDescriptors.add(createItemPropertyDescriptor(
-         ((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-         getResourceLocator(),
-         getString("_UI_XRelationType_sideAArtifactType_feature"),
-         getString("_UI_PropertyDescriptor_description", "_UI_XRelationType_sideAArtifactType_feature",
-            "_UI_XRelationType_type"), OseeDslPackage.Literals.XRELATION_TYPE__SIDE_AARTIFACT_TYPE, true, false, true,
-         null, null, null));
+      itemPropertyDescriptors.add
+         (createItemPropertyDescriptor
+            (((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+             getResourceLocator(),
+             getString("_UI_XRelationType_sideAArtifactType_feature"),
+             getString("_UI_PropertyDescriptor_description", "_UI_XRelationType_sideAArtifactType_feature", "_UI_XRelationType_type"),
+             OseeDslPackage.Literals.XRELATION_TYPE__SIDE_AARTIFACT_TYPE,
+             true,
+             false,
+             true,
+             null,
+             null,
+             null));
    }
 
    /**
-    * This adds a property descriptor for the Side BName feature. <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    * This adds a property descriptor for the Side BName feature.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
     * @generated
     */
    protected void addSideBNamePropertyDescriptor(Object object) {
-      itemPropertyDescriptors.add(createItemPropertyDescriptor(
-         ((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-         getResourceLocator(),
-         getString("_UI_XRelationType_sideBName_feature"),
-         getString("_UI_PropertyDescriptor_description", "_UI_XRelationType_sideBName_feature",
-            "_UI_XRelationType_type"), OseeDslPackage.Literals.XRELATION_TYPE__SIDE_BNAME, true, false, false,
-         ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+      itemPropertyDescriptors.add
+         (createItemPropertyDescriptor
+            (((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+             getResourceLocator(),
+             getString("_UI_XRelationType_sideBName_feature"),
+             getString("_UI_PropertyDescriptor_description", "_UI_XRelationType_sideBName_feature", "_UI_XRelationType_type"),
+             OseeDslPackage.Literals.XRELATION_TYPE__SIDE_BNAME,
+             true,
+             false,
+             false,
+             ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+             null,
+             null));
    }
 
    /**
-    * This adds a property descriptor for the Side BArtifact Type feature. <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    * This adds a property descriptor for the Side BArtifact Type feature.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
     * @generated
     */
    protected void addSideBArtifactTypePropertyDescriptor(Object object) {
-      itemPropertyDescriptors.add(createItemPropertyDescriptor(
-         ((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-         getResourceLocator(),
-         getString("_UI_XRelationType_sideBArtifactType_feature"),
-         getString("_UI_PropertyDescriptor_description", "_UI_XRelationType_sideBArtifactType_feature",
-            "_UI_XRelationType_type"), OseeDslPackage.Literals.XRELATION_TYPE__SIDE_BARTIFACT_TYPE, true, false, true,
-         null, null, null));
+      itemPropertyDescriptors.add
+         (createItemPropertyDescriptor
+            (((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+             getResourceLocator(),
+             getString("_UI_XRelationType_sideBArtifactType_feature"),
+             getString("_UI_PropertyDescriptor_description", "_UI_XRelationType_sideBArtifactType_feature", "_UI_XRelationType_type"),
+             OseeDslPackage.Literals.XRELATION_TYPE__SIDE_BARTIFACT_TYPE,
+             true,
+             false,
+             true,
+             null,
+             null,
+             null));
    }
 
    /**
-    * This adds a property descriptor for the Default Order Type feature. <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    * This adds a property descriptor for the Default Order Type feature.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
     * @generated
     */
    protected void addDefaultOrderTypePropertyDescriptor(Object object) {
-      itemPropertyDescriptors.add(createItemPropertyDescriptor(
-         ((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-         getResourceLocator(),
-         getString("_UI_XRelationType_defaultOrderType_feature"),
-         getString("_UI_PropertyDescriptor_description", "_UI_XRelationType_defaultOrderType_feature",
-            "_UI_XRelationType_type"), OseeDslPackage.Literals.XRELATION_TYPE__DEFAULT_ORDER_TYPE, true, false, false,
-         ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+      itemPropertyDescriptors.add
+         (createItemPropertyDescriptor
+            (((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+             getResourceLocator(),
+             getString("_UI_XRelationType_defaultOrderType_feature"),
+             getString("_UI_PropertyDescriptor_description", "_UI_XRelationType_defaultOrderType_feature", "_UI_XRelationType_type"),
+             OseeDslPackage.Literals.XRELATION_TYPE__DEFAULT_ORDER_TYPE,
+             true,
+             false,
+             false,
+             ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+             null,
+             null));
    }
 
    /**
-    * This adds a property descriptor for the Multiplicity feature. <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    * This adds a property descriptor for the Multiplicity feature.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
     * @generated
     */
    protected void addMultiplicityPropertyDescriptor(Object object) {
-      itemPropertyDescriptors.add(createItemPropertyDescriptor(
-         ((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-         getResourceLocator(),
-         getString("_UI_XRelationType_multiplicity_feature"),
-         getString("_UI_PropertyDescriptor_description", "_UI_XRelationType_multiplicity_feature",
-            "_UI_XRelationType_type"), OseeDslPackage.Literals.XRELATION_TYPE__MULTIPLICITY, true, false, false,
-         ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+      itemPropertyDescriptors.add
+         (createItemPropertyDescriptor
+            (((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+             getResourceLocator(),
+             getString("_UI_XRelationType_multiplicity_feature"),
+             getString("_UI_PropertyDescriptor_description", "_UI_XRelationType_multiplicity_feature", "_UI_XRelationType_type"),
+             OseeDslPackage.Literals.XRELATION_TYPE__MULTIPLICITY,
+             true,
+             false,
+             false,
+             ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+             null,
+             null));
    }
 
    /**
-    * This returns XRelationType.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    * This returns XRelationType.gif.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
     * @generated
     */
    @Override
@@ -159,21 +215,24 @@ public class XRelationTypeItemProvider extends OseeTypeItemProvider implements I
    }
 
    /**
-    * This returns the label text for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    * This returns the label text for the adapted class.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
     * @generated
     */
    @Override
    public String getText(Object object) {
-      String label = ((XRelationType) object).getName();
-      return label == null || label.length() == 0 ? getString("_UI_XRelationType_type") : getString("_UI_XRelationType_type") + " " + label;
+      String label = ((XRelationType)object).getName();
+      return label == null || label.length() == 0 ?
+         getString("_UI_XRelationType_type") :
+         getString("_UI_XRelationType_type") + " " + label;
    }
 
    /**
-    * This handles model notifications by calling {@link #updateChildren} to update any cached children and by creating
-    * a viewer notification, which it passes to {@link #fireNotifyChanged}. <!-- begin-user-doc --> <!-- end-user-doc
-    * -->
-    * 
+    * This handles model notifications by calling {@link #updateChildren} to update any cached
+    * children and by creating a viewer notification, which it passes to {@link #fireNotifyChanged}.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
     * @generated
     */
    @Override
@@ -192,9 +251,10 @@ public class XRelationTypeItemProvider extends OseeTypeItemProvider implements I
    }
 
    /**
-    * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children that can be created under
-    * this object. <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children
+    * that can be created under this object.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
     * @generated
     */
    @Override

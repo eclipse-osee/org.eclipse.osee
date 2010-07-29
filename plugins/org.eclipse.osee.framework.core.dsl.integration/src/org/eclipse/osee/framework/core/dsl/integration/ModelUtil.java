@@ -42,6 +42,7 @@ import com.google.inject.Injector;
 public final class ModelUtil {
 
    private ModelUtil() {
+      // Utility Class
    }
 
    //   private void loadDependencies(OseeTypeModel baseModel, List<OseeTypeModel> models) throws OseeCoreException, URISyntaxException {
@@ -186,4 +187,5 @@ public final class ModelUtil {
       }
       return snapshot;
    }
+
 }

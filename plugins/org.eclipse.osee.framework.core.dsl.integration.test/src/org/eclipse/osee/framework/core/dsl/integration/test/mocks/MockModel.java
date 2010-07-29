@@ -8,19 +8,23 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.dsl.integration.test;
+package org.eclipse.osee.framework.core.dsl.integration.test.mocks;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessContext;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslFactory;
 
 /**
  * @author Roberto E. Escobar
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({ //
-OseeModelTestSuite.class, //
-//      OseeTypesAllTests.class, //
-})
-public class OseeTypesTestSuite {
+public final class MockModel {
 
+   private MockModel() {
+   }
+
+   public static AccessContext createAccessContext(String guid, String name) {
+      AccessContext context = OseeDslFactory.eINSTANCE.createAccessContext();
+      context.setGuid(guid);
+      context.setName(name);
+      return context;
+   }
 }

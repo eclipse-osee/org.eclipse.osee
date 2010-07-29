@@ -19,7 +19,9 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ //
 ModeUtilTest.class, //
+   OseeAccessModelInterpreterTest.class, //
+   OseeUtilTest.class, //
 })
-public class OseeModelTestSuite {
-
+public class AllDslIntegrationTestSuite {
+   // Test Suite
 }

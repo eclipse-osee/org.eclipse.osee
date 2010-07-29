@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,8 +78,7 @@ public class RelationContentProvider implements ITreeContentProvider {
       try {
          if (parentElement instanceof ArtifactRoot) {
             Artifact artifact = ((ArtifactRoot) parentElement).getArtifact();
-            List<RelationType> relationTypes =
-               RelationTypeManager.getValidTypes(artifact.getArtifactType(), artifact.getBranch());
+            Collection<RelationType> relationTypes = artifact.getValidRelationTypes();
             for (RelationType type : relationTypes) {
                childToParentMap.put(type, parentElement);
             }

@@ -31,72 +31,73 @@ T32 : 'ALLOW' ;
 T33 : 'DENY' ;
 T34 : 'SIDE_A' ;
 T35 : 'SIDE_B' ;
-T36 : 'import' ;
-T37 : '.' ;
-T38 : 'artifactType' ;
-T39 : '{' ;
-T40 : 'guid' ;
-T41 : '}' ;
-T42 : 'extends' ;
-T43 : ',' ;
-T44 : 'attribute' ;
-T45 : 'branchGuid' ;
-T46 : 'attributeType' ;
-T47 : 'dataProvider' ;
-T48 : 'min' ;
-T49 : 'max' ;
-T50 : 'overrides' ;
-T51 : 'taggerId' ;
-T52 : 'enumType' ;
-T53 : 'description' ;
-T54 : 'defaultValue' ;
-T55 : 'fileExtension' ;
-T56 : 'oseeEnumType' ;
-T57 : 'entry' ;
-T58 : 'entryGuid' ;
-T59 : 'overrides enum' ;
-T60 : 'add' ;
-T61 : 'remove' ;
-T62 : 'relationType' ;
-T63 : 'sideAName' ;
-T64 : 'sideAArtifactType' ;
-T65 : 'sideBName' ;
-T66 : 'sideBArtifactType' ;
-T67 : 'defaultOrderType' ;
-T68 : 'multiplicity' ;
-T69 : 'artifact' ;
-T70 : 'artGuid' ;
-T71 : ';' ;
-T72 : 'branch' ;
-T73 : 'accessContext' ;
-T74 : 'childrenOf' ;
-T75 : 'edit' ;
-T76 : 'of' ;
-T77 : 'abstract' ;
-T78 : 'inheritAll' ;
+T36 : 'BOTH' ;
+T37 : 'import' ;
+T38 : '.' ;
+T39 : 'artifactType' ;
+T40 : '{' ;
+T41 : 'guid' ;
+T42 : '}' ;
+T43 : 'extends' ;
+T44 : ',' ;
+T45 : 'attribute' ;
+T46 : 'branchGuid' ;
+T47 : 'attributeType' ;
+T48 : 'dataProvider' ;
+T49 : 'min' ;
+T50 : 'max' ;
+T51 : 'overrides' ;
+T52 : 'taggerId' ;
+T53 : 'enumType' ;
+T54 : 'description' ;
+T55 : 'defaultValue' ;
+T56 : 'fileExtension' ;
+T57 : 'oseeEnumType' ;
+T58 : 'entry' ;
+T59 : 'entryGuid' ;
+T60 : 'overrides enum' ;
+T61 : 'add' ;
+T62 : 'remove' ;
+T63 : 'relationType' ;
+T64 : 'sideAName' ;
+T65 : 'sideAArtifactType' ;
+T66 : 'sideBName' ;
+T67 : 'sideBArtifactType' ;
+T68 : 'defaultOrderType' ;
+T69 : 'multiplicity' ;
+T70 : 'artifact' ;
+T71 : 'artGuid' ;
+T72 : ';' ;
+T73 : 'branch' ;
+T74 : 'accessContext' ;
+T75 : 'childrenOf' ;
+T76 : 'edit' ;
+T77 : 'of' ;
+T78 : 'abstract' ;
+T79 : 'inheritAll' ;
 
-// $ANTLR src "../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g" 7772
+// $ANTLR src "../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g" 7822
 RULE_WHOLE_NUM_STR : ('0'..'9')+;
 
-// $ANTLR src "../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g" 7774
+// $ANTLR src "../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g" 7824
 RULE_ID : '^'? ('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*;
 
-// $ANTLR src "../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g" 7776
+// $ANTLR src "../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g" 7826
 RULE_INT : ('0'..'9')+;
 
-// $ANTLR src "../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g" 7778
+// $ANTLR src "../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g" 7828
 RULE_STRING : ('"' ('\\' ('b'|'t'|'n'|'f'|'r'|'"'|'\''|'\\')|~(('\\'|'"')))* '"'|'\'' ('\\' ('b'|'t'|'n'|'f'|'r'|'"'|'\''|'\\')|~(('\\'|'\'')))* '\'');
 
-// $ANTLR src "../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g" 7780
+// $ANTLR src "../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g" 7830
 RULE_ML_COMMENT : '/*' ( options {greedy=false;} : . )*'*/';
 
-// $ANTLR src "../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g" 7782
+// $ANTLR src "../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g" 7832
 RULE_SL_COMMENT : '//' ~(('\n'|'\r'))* ('\r'? '\n')?;
 
-// $ANTLR src "../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g" 7784
+// $ANTLR src "../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g" 7834
 RULE_WS : (' '|'\t'|'\r'|'\n')+;
 
-// $ANTLR src "../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g" 7786
+// $ANTLR src "../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g" 7836
 RULE_ANY_OTHER : .;
 
 
