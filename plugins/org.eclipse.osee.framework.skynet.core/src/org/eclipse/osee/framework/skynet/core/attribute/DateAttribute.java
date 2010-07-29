@@ -14,8 +14,11 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Robert A. Fisher
@@ -59,6 +62,7 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
             toReturn = format.parse(rawValue);
             break;
          } catch (ParseException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
       return toReturn;
@@ -100,4 +104,5 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
       Date date = getValue();
       return date != null ? dateFormat.format(getValue()) : "";
    }
+
 }

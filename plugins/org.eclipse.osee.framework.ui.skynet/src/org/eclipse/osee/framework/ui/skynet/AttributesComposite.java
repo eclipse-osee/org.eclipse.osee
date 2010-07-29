@@ -21,7 +21,6 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerEditor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -38,7 +37,6 @@ import org.eclipse.swt.events.MenuEvent;
 import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -254,22 +252,14 @@ public class AttributesComposite extends Composite {
       deleteItem = new MenuItem(parentMenu, SWT.PUSH);
       deleteItem.setImage(null);
       deleteItem.setText("Delete");
-      deleteItem.addSelectionListener(new SelectionListener() {
+      deleteItem.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
             Attribute<?> attribute = getSelectedAttribute();
-            try {
-               attribute.delete();
-               editor.onDirtied();
-               notifyModifyAttribuesListeners();
-               tableViewer.refresh();
-            } catch (OseeStateException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-
-         @Override
-         public void widgetDefaultSelected(SelectionEvent e) {
+            attribute.delete();
+            editor.onDirtied();
+            notifyModifyAttribuesListeners();
+            tableViewer.refresh();
          }
       });
    }
@@ -286,6 +276,7 @@ public class AttributesComposite extends Composite {
    public class AttributeMenuListener implements MenuListener {
       @Override
       public void menuHidden(MenuEvent e) {
+         // do nothing
       }
 
       @Override

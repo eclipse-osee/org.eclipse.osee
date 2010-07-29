@@ -80,7 +80,9 @@ public abstract class Attribute<T> {
     * 
     * @throws OseeCoreException
     */
+   @SuppressWarnings("unused")
    protected void uponInitialize() throws OseeCoreException {
+      // provided for subclass implementation
    }
 
    public void internalInitialize(IAttributeType attributeType, Artifact artifact, ModificationType modificationType, int attributeId, int gammaId, boolean markDirty, boolean setDefaultValue) throws OseeCoreException {
@@ -89,7 +91,7 @@ public abstract class Attribute<T> {
       this.gammaId = gammaId;
    }
 
-   private void markAsNewOrChanged() throws OseeStateException {
+   private void markAsNewOrChanged() {
       if (isInDb()) {
          markAsChanged(ModificationType.MODIFIED);
       } else {
@@ -192,7 +194,7 @@ public abstract class Attribute<T> {
       return dirty;
    }
 
-   protected void markAsChanged(ModificationType modificationType) throws OseeStateException {
+   protected void markAsChanged(ModificationType modificationType) {
       setDirtyFlag(true);
       this.modificationType = modificationType;
 
@@ -270,7 +272,7 @@ public abstract class Attribute<T> {
     * 
     * @throws OseeStateException
     */
-   public final void setArtifactDeleted() throws OseeStateException {
+   public final void setArtifactDeleted() {
       markAsChanged(ModificationType.ARTIFACT_DELETED);
    }
 
@@ -279,7 +281,7 @@ public abstract class Attribute<T> {
     * 
     * @throws OseeStateException
     */
-   public final void delete() throws OseeStateException {
+   public final void delete() {
       markAsChanged(ModificationType.DELETED);
    }
 
