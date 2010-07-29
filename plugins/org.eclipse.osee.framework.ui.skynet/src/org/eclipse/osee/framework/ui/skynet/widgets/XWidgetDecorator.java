@@ -10,33 +10,65 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import org.eclipse.jface.fieldassist.ControlDecoration;
-import org.eclipse.osee.framework.core.model.access.PermissionStatus;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
 
 /**
  * @author Roberto E. Escobar
  */
 public class XWidgetDecorator {
+   private static final Comparator<DecorationProvider> PROVIDER_COMPARATOR = new Comparator<DecorationProvider>() {
+
+      @Override
+      public int compare(DecorationProvider o1, DecorationProvider o2) {
+         return o1.getPriority() - o2.getPriority();
+      }
+   };
+
    private final int decorationPosition = SWT.LEFT | SWT.BOTTOM;
-   private final Map<XWidget, Decorator> decoratorMap = new HashMap<XWidget, Decorator>();
+   private final Map<XWidget, Decorator> decoratorMap;
+   private final List<DecorationProvider> providers;
+
+   public static interface DecorationProvider {
+      int getPriority();
+
+      void onUpdate(XWidget widget, Decorator decorator);
+   }
 
    public XWidgetDecorator() {
+      decoratorMap = new HashMap<XWidget, Decorator>();
+      providers = new ArrayList<DecorationProvider>();
    }
 
    public void addWidget(XWidget xWidget) {
       Control controlToDecorate = xWidget.getErrorMessageControl();
       Decorator decorator = new Decorator(controlToDecorate, decorationPosition);
       decoratorMap.put(xWidget, decorator);
+   }
+
+   public void addProvider(DecorationProvider provider) {
+      providers.add(provider);
+   }
+
+   public void refresh() {
+      Collections.sort(providers, PROVIDER_COMPARATOR);
+
+      for (Entry<XWidget, Decorator> entry : decoratorMap.entrySet()) {
+         for (DecorationProvider provider : providers) {
+            provider.onUpdate(entry.getKey(), entry.getValue());
+         }
+      }
+      update();
    }
 
    public void update() {
@@ -57,7 +89,7 @@ public class XWidgetDecorator {
       decoratorMap.clear();
    }
 
-   private final static class Decorator {
+   public final static class Decorator {
       private ControlDecoration decoration;
       private String description;
       private int position;
@@ -123,53 +155,6 @@ public class XWidgetDecorator {
             decoration.setDescriptionText(null);
             decoration.hide();
          }
-      }
-   }
-
-   //	public static interface DecorationProvider {
-   //		int getPriority();
-   //
-   //		void onUpdate(XWidget widget, Decorator decorator);
-   //	}
-
-   //	public void addProvider(DecorationProvider provider) {
-   //
-   //	}
-
-   public void onUpdate(XWidget xWidget, Decorator decorator) {
-      // TODO separate onUpdate - make extensible
-      // TODO Add AccessControlService
-
-      if (xWidget instanceof IAttributeWidget) {
-         IAttributeWidget attributeWidget = (IAttributeWidget) xWidget;
-         attributeWidget.getAttributeType();
-         //			Artifact artifact = null;
-         PermissionStatus permissionStatus = new PermissionStatus(true, "You are not cool enough");
-         //			try {
-         //				AccessDataQuery query = AccessControlManager.getAccessData(null);
-         //				query.attributeTypeMatches(PermissionEnum.WRITE, artifact, attributeType, permissionStatus);
-         //			} catch (OseeCoreException ex) {
-         //				OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-         //			}
-
-         // Get Info from AccessControlService;
-         boolean isLocked = permissionStatus.matches();
-         String reason = permissionStatus.getReason();
-
-         Control control = xWidget.getControl();
-         if (Widgets.isAccessible(control)) {
-            xWidget.setEditable(!isLocked);
-         }
-         Label label = xWidget.getLabelWidget();
-         if (Widgets.isAccessible(label)) {
-            label.setEnabled(!isLocked);
-         }
-
-         Image image = ImageManager.getImage(FrameworkImage.LOCK_OVERLAY);
-
-         decorator.setImage(isLocked ? image : null);
-         decorator.setDescription(isLocked ? reason : null);
-         decorator.setVisible(isLocked);
       }
    }
 }

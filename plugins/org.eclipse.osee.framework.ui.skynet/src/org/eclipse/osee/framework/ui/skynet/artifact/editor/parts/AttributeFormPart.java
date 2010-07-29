@@ -29,6 +29,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetAccessDecorationProvider;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetDecorator;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.AttributeXWidgetManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DefaultXWidgetOptionResolver;
@@ -59,12 +61,17 @@ public class AttributeFormPart extends AbstractFormPart {
 
    private final ArtifactEditor editor;
    private Composite composite;
+   private final XWidgetDecorator decorator;
 
    public AttributeFormPart(ArtifactEditor editor) {
       this.editor = editor;
+      this.decorator = new XWidgetDecorator();
+      decorator.addProvider(new XWidgetAccessDecorationProvider());
    }
 
    public void createContents(Composite parent) {
+      decorator.dispose();
+
       final FormToolkit toolkit = getManagedForm().getToolkit();
       composite = toolkit.createComposite(parent, SWT.WRAP);
       composite.setLayout(ALayout.getZeroMarginLayout(1, false));
@@ -90,7 +97,9 @@ public class AttributeFormPart extends AbstractFormPart {
 
          for (XWidget xWidget : XWidgetUtility.findXWidgetsInControl(composite)) {
             xWidget.addXModifiedListener(new XWidgetValidationListener());
+            decorator.addWidget(xWidget);
          }
+         decorator.refresh();
          composite.setVisible(true);
 
       } catch (OseeCoreException ex) {

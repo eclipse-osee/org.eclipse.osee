@@ -252,7 +252,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
 
       Label image = new Label(composite, SWT.NONE);
       image.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
-      image.setImage(ImageManager.getImage(FrameworkImage.LOCKED_NO_ACCESS));
+      image.setImage(ImageManager.getImage(FrameworkImage.LOCKED_KEY));
       image.setBackground(Displays.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
 
       Label label = new Label(composite, SWT.NONE);
