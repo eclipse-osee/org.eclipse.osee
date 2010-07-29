@@ -70,9 +70,8 @@ public class CoverageRenderer extends DefaultArtifactRenderer {
 
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
-      if ((artifact.isOfType(CoverageArtifactTypes.CoveragePackage) || //
-      artifact.isOfType(CoverageArtifactTypes.CoverageFolder) || //
-      artifact.isOfType(CoverageArtifactTypes.CoverageUnit)) && !artifact.isHistorical()) {
+      if ((artifact.isOfType(CoverageArtifactTypes.CoveragePackage, CoverageArtifactTypes.CoverageFolder,
+         CoverageArtifactTypes.CoverageUnit)) && !artifact.isHistorical()) {
          return PRESENTATION_SUBTYPE_MATCH;
       }
       return NO_MATCH;
@@ -90,9 +89,8 @@ public class CoverageRenderer extends DefaultArtifactRenderer {
    @Override
    public void open(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
       for (Artifact artifact : artifacts) {
-         if (artifact.isOfType(CoverageArtifactTypes.CoveragePackage) || //
-         artifact.isOfType(CoverageArtifactTypes.CoverageFolder) || //
-         artifact.isOfType(CoverageArtifactTypes.CoverageUnit)) {
+         if (artifact.isOfType(CoverageArtifactTypes.CoveragePackage, CoverageArtifactTypes.CoverageFolder,
+            CoverageArtifactTypes.CoverageUnit)) {
             recurseAndOpenCoveragePackage(artifact);
          }
       }

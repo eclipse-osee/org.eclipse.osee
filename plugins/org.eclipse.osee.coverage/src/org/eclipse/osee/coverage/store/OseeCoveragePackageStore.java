@@ -84,7 +84,7 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
          coveragePackage.setName(artifact.getName());
          coveragePackage.setEditable(artifact.getSoleAttributeValue(CoverageAttributes.ACTIVE.getStoreName(), true));
          for (Artifact childArt : artifact.getChildren()) {
-            if (childArt.isOfType(CoverageArtifactTypes.CoverageUnit) || childArt.isOfType(CoverageArtifactTypes.CoverageFolder)) {
+            if (childArt.isOfType(CoverageArtifactTypes.CoverageUnit, CoverageArtifactTypes.CoverageFolder)) {
                coveragePackage.addCoverageUnit(OseeCoverageUnitStore.get(coveragePackage, childArt,
                   coverageOptionManager));
             }

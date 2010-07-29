@@ -133,7 +133,8 @@ public class AtsCacheManager implements IArtifactEventListener, IArtifactsPurged
       }
       try {
          for (Artifact artifact : loadedArtifacts.getLoadedArtifacts()) {
-            if (artifact.isOfType(CoreArtifactTypes.WorkRuleDefinition) || artifact.isOfType(CoreArtifactTypes.WorkPageDefinition) || artifact.isOfType(CoreArtifactTypes.WorkFlowDefinition) || artifact.isOfType(CoreArtifactTypes.WorkWidgetDefinition)) {
+            if (artifact.isOfType(CoreArtifactTypes.WorkRuleDefinition, CoreArtifactTypes.WorkPageDefinition,
+               CoreArtifactTypes.WorkFlowDefinition, CoreArtifactTypes.WorkWidgetDefinition)) {
                WorkItemDefinitionFactory.deCache(artifact);
             }
             if (artifact instanceof TaskArtifact) {
@@ -158,7 +159,8 @@ public class AtsCacheManager implements IArtifactEventListener, IArtifactsPurged
          return;
       }
       for (Artifact artifact : transData.cacheDeletedArtifacts) {
-         if (artifact.isOfType(CoreArtifactTypes.WorkRuleDefinition) || artifact.isOfType(CoreArtifactTypes.WorkPageDefinition) || artifact.isOfType(CoreArtifactTypes.WorkFlowDefinition) || artifact.isOfType(CoreArtifactTypes.WorkWidgetDefinition)) {
+         if (artifact.isOfType(CoreArtifactTypes.WorkRuleDefinition, CoreArtifactTypes.WorkPageDefinition,
+            CoreArtifactTypes.WorkFlowDefinition, CoreArtifactTypes.WorkWidgetDefinition)) {
             WorkItemDefinitionFactory.deCache(artifact);
          }
          if (artifact instanceof TaskArtifact) {

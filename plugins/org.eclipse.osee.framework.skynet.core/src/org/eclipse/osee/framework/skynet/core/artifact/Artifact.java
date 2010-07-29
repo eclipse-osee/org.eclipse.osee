@@ -314,21 +314,15 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
    }
 
    /**
-    * Determines if this artifact type equals, or is a sub-type of, the artifact type specified by the
-    * <code>otherType</code> parameter.
-    * 
-    * @return whether this artifact's type or any of its super-types (any ancestor type) are the specified type
+    * Determines if this artifact's type equals, or is a sub-type of, at least one of the given artifact types.
     */
-   public boolean isOfType(String artifactTypeName) throws OseeCoreException {
-      return artifactType.inheritsFrom(ArtifactTypeManager.getType(artifactTypeName));
-   }
-
-   /**
-    * Determines if this artifact type equals, or is a sub-type of, the artifact type specified by the
-    * <code>otherType</code> parameter.
-    */
-   public boolean isOfType(IArtifactType oseeType) {
-      return artifactType.inheritsFrom(oseeType);
+   public boolean isOfType(IArtifactType... artifactTypes) {
+      for (IArtifactType otherArtifactType : artifactTypes) {
+         if (artifactType.inheritsFrom(otherArtifactType)) {
+            return true;
+         }
+      }
+      return false;
    }
 
    @Override

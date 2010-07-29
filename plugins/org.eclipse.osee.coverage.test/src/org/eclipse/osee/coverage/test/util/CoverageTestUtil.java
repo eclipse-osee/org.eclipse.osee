@@ -55,7 +55,7 @@ public class CoverageTestUtil {
       StaticIdManager.setSingletonAttributeValue(artifact, CoverageTestUtil.COVERAGE_STATIC_ID);
       if (recurse) {
          for (Artifact childArt : artifact.getChildren()) {
-            if (childArt.isOfType(CoverageArtifactTypes.CoveragePackage) || childArt.isOfType(CoverageArtifactTypes.CoveragePackage)) {
+            if (childArt.isOfType(CoverageArtifactTypes.CoveragePackage, CoverageArtifactTypes.CoveragePackage)) {
                registerAsTestArtifact(childArt, recurse);
             }
          }

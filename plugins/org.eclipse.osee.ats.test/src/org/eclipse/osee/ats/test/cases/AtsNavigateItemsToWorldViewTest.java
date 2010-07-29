@@ -70,6 +70,7 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLo
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IDynamicWidgetLayoutListener;
 import org.eclipse.osee.support.test.util.AtsUserCommunity;
+import org.eclipse.osee.support.test.util.DemoArtifactTypes;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.DemoUsers;
 import org.eclipse.swt.widgets.TreeItem;
@@ -661,7 +662,7 @@ public class AtsNavigateItemsToWorldViewTest {
    public void verifyArtifactsHasErrors(ITableLabelProvider labelProv, Collection<Artifact> arts, XViewerColumn xCol, int colIndex, String attributeToDelete, List<String> actualErrorCols) throws OseeCoreException {
       for (Artifact art : arts) {
          String colText = labelProv.getColumnText(art, colIndex);
-         if (art.isOfType("Demo Code Team Workflow")) {
+         if (art.isOfType(DemoArtifactTypes.DemoCodeTeamWorkflow)) {
             if (colText.contains("!Error")) {
                if (!actualErrorCols.contains(xCol.getId())) {
                   actualErrorCols.add(xCol.getId());
