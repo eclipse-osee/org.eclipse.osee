@@ -799,7 +799,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
       if (myTreeItemObject instanceof Artifact) {
          Artifact myArtifact = (Artifact) myTreeItemObject;
          try {
-            myArtifact.setSoleAttributeValue("Name", newLabel);
+            myArtifact.setName(newLabel);
             myArtifact.persist();
          } catch (Exception ex) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);

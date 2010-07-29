@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IOseeUser;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -182,7 +183,9 @@ public final class UserManager {
       User user = getFromCacheByUserId(userId);
       if (user == null) {
          try {
-            user = (User) ArtifactQuery.getArtifactFromAttribute("User Id", userId, BranchManager.getCommonBranch());
+            user =
+               (User) ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.USER_ID, userId,
+                  BranchManager.getCommonBranch());
          } catch (ArtifactDoesNotExist ex) {
             throw new UserNotInDatabase(String.format("The user with id [%s] was not found.", userId));
          }

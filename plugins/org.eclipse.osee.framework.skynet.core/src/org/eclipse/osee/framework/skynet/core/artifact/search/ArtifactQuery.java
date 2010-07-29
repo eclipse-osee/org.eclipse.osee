@@ -299,7 +299,7 @@ public class ArtifactQuery {
     * @throws ArtifactDoesNotExist if no artifacts are found
     * @throws MultipleArtifactsExist if more than one artifact is found
     */
-   public static Artifact getArtifactFromAttribute(String attributeTypeName, String attributeValue, IOseeBranch branch) throws OseeCoreException {
+   public static Artifact getArtifactFromAttribute(IAttributeType attributeTypeName, String attributeValue, IOseeBranch branch) throws OseeCoreException {
       return new ArtifactQueryBuilder(branch, FULL, EXCLUDE_DELETED, new AttributeCriteria(attributeTypeName,
          attributeValue)).getOrCheckArtifact(QueryType.GET);
    }

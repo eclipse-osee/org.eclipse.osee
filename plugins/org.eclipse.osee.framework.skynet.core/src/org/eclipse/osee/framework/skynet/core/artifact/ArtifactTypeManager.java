@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -29,7 +30,6 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.DbTransaction;
@@ -60,7 +60,7 @@ public class ArtifactTypeManager {
       return Activator.getInstance().getOseeCacheService();
    }
 
-   public static Collection<ArtifactType> getArtifactTypesFromAttributeType(AttributeType attributeType, IOseeBranch branchToken) throws OseeCoreException {
+   public static Collection<ArtifactType> getArtifactTypesFromAttributeType(IAttributeType attributeType, IOseeBranch branchToken) throws OseeCoreException {
       Branch branch = getCacheService().getBranchCache().get(branchToken);
       List<ArtifactType> artifactTypes = new ArrayList<ArtifactType>();
       for (ArtifactType artifactType : getAllTypes()) {

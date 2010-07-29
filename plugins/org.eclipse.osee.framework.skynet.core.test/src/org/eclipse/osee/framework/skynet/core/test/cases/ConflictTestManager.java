@@ -161,7 +161,7 @@ public class ConflictTestManager {
       createConflictDefinitions();
       destBranch = BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_1, DEST_BRANCH, null);
 
-      Artifact rootArtifact = ArtifactQuery.getArtifactFromAttribute("Name", FOLDER, destBranch);
+      Artifact rootArtifact = ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.NAME, FOLDER, destBranch);
 
       // Add artifacts onto the destination Branch
       for (int i = 0; i < NUMBER_OF_ARTIFACTS; i++) {
@@ -293,8 +293,7 @@ public class ConflictTestManager {
    }
 
    protected static Artifact createArtifact(int rootArtifactId, Branch branch, String type, String name) throws OseeCoreException {
-      Artifact rootArtifact = ArtifactQuery.getArtifactFromAttribute("Name", FOLDER, branch);
-      //               ConfigurationPersistenceManager.getArtifactSubtypeDescriptor(conflictDefs[i].artifactType);
+      Artifact rootArtifact = ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.NAME, FOLDER, branch);
       if (rootArtifactId > 0 && rootArtifactId < NUMBER_OF_ARTIFACTS) {
          if (branch.equals(destArtifacts[0].getBranch())) {
             rootArtifact = destArtifacts[rootArtifactId];

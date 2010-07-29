@@ -1001,7 +1001,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
    }
 
    public void setName(String name) throws OseeCoreException {
-      setSoleAttributeValue("Name", name);
+      setSoleAttributeValue(CoreAttributeTypes.NAME, name);
    }
 
    public ArtifactFactory getFactory() {

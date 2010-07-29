@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.relation.explorer;
 
 import java.util.ArrayList;
 import org.eclipse.jface.viewers.StructuredViewer;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.RelationTypeSide;
@@ -294,8 +295,9 @@ public class RelationExplorerWindow {
                if (descriptor != null) {
                   try {
                      artifact = ArtifactTypeManager.makeNewArtifact(descriptor, branch);
-                     artifact.setSoleAttributeValue("Name", model.getName());
-                     artifact.setSoleAttributeValue("Content URL", urls.get(names.indexOf(model.getName())));
+                     artifact.setName(model.getName());
+                     artifact.setSoleAttributeValue(CoreAttributeTypes.ContentURL,
+                        urls.get(names.indexOf(model.getName())));
                      artifact.persist();
                   } catch (Exception ex) {
                      OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);

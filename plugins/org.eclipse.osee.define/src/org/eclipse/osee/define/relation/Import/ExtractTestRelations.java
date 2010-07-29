@@ -21,6 +21,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.osee.define.DefinePlugin;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -127,7 +128,7 @@ public class ExtractTestRelations {
       } catch (ArtifactDoesNotExist ex) {
          Artifact testArtifact =
             ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestCase, branch, testArtifactFile.getName());
-         testArtifact.setSoleAttributeValue("Content URL", testArtifactFile.getFullPath().toString());
+         testArtifact.setSoleAttributeValue(CoreAttributeTypes.ContentURL, testArtifactFile.getFullPath().toString());
          testArtifact.persist();
          return testArtifact;
       }

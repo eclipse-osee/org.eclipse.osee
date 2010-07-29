@@ -17,20 +17,19 @@ import java.util.Collection;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.WorkspaceURL;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
@@ -181,11 +180,10 @@ public class ArtifactDragDropSupport {
       Branch branch = BranchSelectionDialog.getBranchFromUser();
       if (branch != null) {
          try {
-            artifact = ArtifactQuery.getArtifactFromAttribute("Content URL", location, branch);
+            artifact = ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.ContentURL, location, branch);
          } catch (ArtifactDoesNotExist ex) {
-            AttributeType attributeType = AttributeTypeManager.getType("Content URL");
             Collection<ArtifactType> artifactTypes =
-               ArtifactTypeManager.getArtifactTypesFromAttributeType(attributeType, branch);
+               ArtifactTypeManager.getArtifactTypesFromAttributeType(CoreAttributeTypes.ContentURL, branch);
             ArtifactTypeDialog dialog =
                new ArtifactTypeDialog(shell, "Artifact Types", null,
                   "No Artifact could be found for this file. To create one, please select an artfact type.",
@@ -193,8 +191,8 @@ public class ArtifactDragDropSupport {
 
             if (dialog.open() == Window.OK) {
                artifact = ArtifactTypeManager.makeNewArtifact(dialog.getArtifactType(), branch);
-               artifact.setSoleAttributeValue("Content URL", location);
-               artifact.setSoleAttributeValue("Name", new File(location).getName());
+               artifact.setSoleAttributeValue(CoreAttributeTypes.ContentURL, location);
+               artifact.setName(new File(location).getName());
             }
          }
       }
