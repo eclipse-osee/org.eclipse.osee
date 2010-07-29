@@ -45,9 +45,4 @@ public class OpenOfficeWriterRenderer extends FileSystemRenderer implements ITem
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
       return NO_MATCH;
    }
-
-   @Override
-   public int minimumRanking() throws OseeCoreException {
-      return NO_MATCH;
-   }
 }

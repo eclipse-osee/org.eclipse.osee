@@ -59,7 +59,7 @@ public class WholeDocumentRenderer extends WordRenderer {
 
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
-      if (artifact.isAttributeTypeValid(CoreAttributeTypes.WHOLE_WORD_CONTENT) && presentationType != PresentationType.GENERALIZED_EDIT) {
+      if (notGeneralizedEdit(presentationType) && artifact.isAttributeTypeValid(CoreAttributeTypes.WHOLE_WORD_CONTENT)) {
          return PRESENTATION_SUBTYPE_MATCH;
       }
       return NO_MATCH;

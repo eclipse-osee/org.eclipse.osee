@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.export;
 
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERALIZED_EDIT;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.export.AtsExportManager.ExportOption;
@@ -56,14 +57,9 @@ public class AtsExportRenderer extends DefaultArtifactRenderer {
 
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
-      if (artifact instanceof IATSArtifact && !artifact.isHistorical()) {
+      if (artifact instanceof IATSArtifact && !artifact.isHistorical() && presentationType != GENERALIZED_EDIT) {
          return PRESENTATION_SUBTYPE_MATCH;
       }
-      return NO_MATCH;
-   }
-
-   @Override
-   public int minimumRanking() {
       return NO_MATCH;
    }
 

@@ -10,6 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.editor;
 
+import static org.eclipse.osee.coverage.store.CoverageArtifactTypes.CoverageFolder;
+import static org.eclipse.osee.coverage.store.CoverageArtifactTypes.CoveragePackage;
+import static org.eclipse.osee.coverage.store.CoverageArtifactTypes.CoverageUnit;
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERALIZED_EDIT;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.coverage.store.CoverageArtifactTypes;
@@ -70,10 +74,12 @@ public class CoverageRenderer extends DefaultArtifactRenderer {
 
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
-      if ((artifact.isOfType(CoverageArtifactTypes.CoveragePackage, CoverageArtifactTypes.CoverageFolder,
-         CoverageArtifactTypes.CoverageUnit)) && !artifact.isHistorical()) {
-         return PRESENTATION_SUBTYPE_MATCH;
+      if (presentationType != GENERALIZED_EDIT && !artifact.isHistorical()) {
+         if ((artifact.isOfType(CoveragePackage, CoverageFolder, CoverageUnit))) {
+            return PRESENTATION_SUBTYPE_MATCH;
+         }
       }
+
       return NO_MATCH;
    }
 
@@ -89,10 +95,7 @@ public class CoverageRenderer extends DefaultArtifactRenderer {
    @Override
    public void open(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
       for (Artifact artifact : artifacts) {
-         if (artifact.isOfType(CoverageArtifactTypes.CoveragePackage, CoverageArtifactTypes.CoverageFolder,
-            CoverageArtifactTypes.CoverageUnit)) {
-            recurseAndOpenCoveragePackage(artifact);
-         }
+         recurseAndOpenCoveragePackage(artifact);
       }
    }
 }

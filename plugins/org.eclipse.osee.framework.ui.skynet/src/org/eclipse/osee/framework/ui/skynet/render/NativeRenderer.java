@@ -86,9 +86,4 @@ public class NativeRenderer extends FileSystemRenderer {
       Artifact artifact = artifacts.iterator().next();
       return artifact.getSoleAttributeValue(CoreAttributeTypes.NATIVE_CONTENT.getName());
    }
-
-   @Override
-   public int minimumRanking() throws OseeCoreException {
-      return NO_MATCH;
-   }
 }

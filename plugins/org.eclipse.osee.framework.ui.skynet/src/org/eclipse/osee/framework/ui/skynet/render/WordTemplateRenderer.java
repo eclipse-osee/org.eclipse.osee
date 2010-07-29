@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.render;
 
-import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERALIZED_EDIT;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.SPECIALIZED_EDIT;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -138,7 +137,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
 
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
-      if (presentationType != GENERALIZED_EDIT) {
+      if (notGeneralizedEdit(presentationType)) {
          if (artifact.isAttributeTypeValid(CoreAttributeTypes.WORD_TEMPLATE_CONTENT)) {
             return PRESENTATION_SUBTYPE_MATCH;
          }
@@ -146,6 +145,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
             return PRESENTATION_TYPE;
          }
       }
+
       return NO_MATCH;
    }
 

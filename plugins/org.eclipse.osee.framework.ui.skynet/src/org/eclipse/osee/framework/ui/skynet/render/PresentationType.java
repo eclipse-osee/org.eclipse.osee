@@ -11,14 +11,14 @@
 package org.eclipse.osee.framework.ui.skynet.render;
 
 public enum PresentationType {
-   GENERALIZED_EDIT,
-   SPECIALIZED_EDIT,
+   GENERALIZED_EDIT, // open using general editor (i.e. artifact editor)
+   SPECIALIZED_EDIT, // open using application specific editor
    DIFF,
-   PREVIEW,
+   PREVIEW, // open read-only using application specific editor
    PREVIEW_IN_COMPOSITE,
    MERGE,
    MERGE_EDIT,
-   DEFAULT_OPEN,
+   DEFAULT_OPEN, // up to the renderer to determine what is used for default
    PRINT;
 
    public boolean matches(PresentationType... presentationTypes) {

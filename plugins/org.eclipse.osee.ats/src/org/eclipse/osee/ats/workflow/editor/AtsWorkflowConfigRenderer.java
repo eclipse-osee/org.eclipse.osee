@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.workflow.editor;
 
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERALIZED_EDIT;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.CoreException;
@@ -52,14 +53,9 @@ public class AtsWorkflowConfigRenderer extends DefaultArtifactRenderer {
 
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
-      if (artifact.isOfType(CoreArtifactTypes.WorkFlowDefinition)) {
+      if (artifact.isOfType(CoreArtifactTypes.WorkFlowDefinition) && presentationType != GENERALIZED_EDIT) {
          return PRESENTATION_SUBTYPE_MATCH;
       }
-      return NO_MATCH;
-   }
-
-   @Override
-   public int minimumRanking() {
       return NO_MATCH;
    }
 

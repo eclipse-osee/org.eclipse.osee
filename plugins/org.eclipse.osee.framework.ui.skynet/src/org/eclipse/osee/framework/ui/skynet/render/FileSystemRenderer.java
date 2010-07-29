@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.render;
 
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.DEFAULT_OPEN;
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PREVIEW;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
@@ -123,6 +125,10 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
 
    @Override
    public void open(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
+      if (presentationType == DEFAULT_OPEN) {
+         presentationType = PREVIEW;
+      }
+
       IFile file = getRenderedFile(artifacts, presentationType);
       if (file != null) {
          String dummyName = file.getName();

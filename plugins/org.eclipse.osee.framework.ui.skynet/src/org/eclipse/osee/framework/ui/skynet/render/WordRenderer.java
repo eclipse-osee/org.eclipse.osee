@@ -10,11 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.render;
 
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.DEFAULT_OPEN;
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERALIZED_EDIT;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.preferences.EditorsPreferencePage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.program.Program;
@@ -34,11 +37,6 @@ public abstract class WordRenderer extends FileSystemRenderer {
 
    public static ImageDescriptor getImageDescriptor() throws OseeArgumentException {
       return ImageManager.getProgramImageDescriptor("doc");
-   }
-
-   @Override
-   public int minimumRanking() throws OseeCoreException {
-      return NO_MATCH;
    }
 
    @Override
@@ -62,5 +60,9 @@ public abstract class WordRenderer extends FileSystemRenderer {
    @Override
    public boolean supportsCompare() {
       return true;
+   }
+
+   public boolean notGeneralizedEdit(PresentationType presentationType) throws OseeCoreException {
+      return presentationType != GENERALIZED_EDIT && (presentationType != DEFAULT_OPEN || EditorsPreferencePage.isPreviewOnDoubleClickForWordArtifacts());
    }
 }

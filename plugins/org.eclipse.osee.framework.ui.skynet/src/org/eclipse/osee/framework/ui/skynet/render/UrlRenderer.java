@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.render;
 
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERALIZED_EDIT;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -38,10 +39,8 @@ public class UrlRenderer extends DefaultArtifactRenderer {
 
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
-      for (AttributeType attributeType : artifact.getAttributeTypes()) {
-         if (attributeType.equals(contentUrlType)) {
-            return SUBTYPE_TYPE_MATCH;
-         }
+      if (presentationType != GENERALIZED_EDIT && artifact.isAttributeTypeValid(contentUrlType)) {
+         return SUBTYPE_TYPE_MATCH;
       }
       return NO_MATCH;
    }

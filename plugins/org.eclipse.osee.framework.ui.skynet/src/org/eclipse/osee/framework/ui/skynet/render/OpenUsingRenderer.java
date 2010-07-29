@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.render;
 
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.SPECIALIZED_EDIT;
 import java.util.Collection;
 import java.util.LinkedList;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -18,12 +19,11 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.preferences.EditorsPreferencePage;
 
 public class OpenUsingRenderer extends AbstractOperation {
    private final Collection<Artifact> artifacts;
    private final VariableMap options;
-   private PresentationType presentationType;
+   private final PresentationType presentationType;
 
    public OpenUsingRenderer(Collection<Artifact> artifacts, VariableMap options, PresentationType presentationType) {
       super(String.format("Open for %s using renderer", presentationType), SkynetGuiPlugin.PLUGIN_ID);
@@ -34,10 +34,7 @@ public class OpenUsingRenderer extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      if (presentationType == PresentationType.DEFAULT_OPEN) {
-         presentationType =
-            EditorsPreferencePage.isPreviewOnDoubleClickForWordArtifacts() ? PresentationType.PREVIEW : PresentationType.GENERALIZED_EDIT;
-      } else if (presentationType == PresentationType.SPECIALIZED_EDIT && !ArtifactGuis.checkOtherEdit(artifacts)) {
+      if (presentationType == SPECIALIZED_EDIT && !ArtifactGuis.checkOtherEdit(artifacts)) {
          return;
       }
       HashCollection<IRenderer, Artifact> rendererArtifactMap =

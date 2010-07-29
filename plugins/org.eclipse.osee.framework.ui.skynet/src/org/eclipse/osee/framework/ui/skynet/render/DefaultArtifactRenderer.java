@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.render;
 
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERALIZED_EDIT;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -88,7 +89,7 @@ public class DefaultArtifactRenderer implements IRenderer {
 
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
-      if (presentationType == PresentationType.GENERALIZED_EDIT) {
+      if (presentationType == GENERALIZED_EDIT) {
          return PRESENTATION_TYPE;
       }
       return DEFAULT_MATCH;
