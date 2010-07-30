@@ -76,7 +76,7 @@ public class EmailUserGroups extends XNavigateItemAction {
                         if (!EmailUtil.isEmailValid((User) userArt)) {
                            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, String.format(
                               "Invalid email [%s] for user [%s]; skipping", ((User) userArt).getEmail(), userArt));
-                        } else {
+                        } else if (((User) userArt).isActive()) {
                            emails.add(((User) userArt).getEmail());
                         }
                      }
@@ -86,7 +86,7 @@ public class EmailUserGroups extends XNavigateItemAction {
                      if (!EmailUtil.isEmailValid(user)) {
                         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE,
                            String.format("Invalid email [%s] for user [%s]; skipping", user.getEmail(), user));
-                     } else {
+                     } else if (user.isActive()) {
                         emails.add(user.getEmail());
                      }
                   }
