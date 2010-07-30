@@ -402,10 +402,10 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
    }
 
    @Override
-   public synchronized Collection<IHostTestEnvironment> getAvailableTestHosts() {
-      List<IHostTestEnvironment> envs = new ArrayList<IHostTestEnvironment>();
+   public synchronized List<IServiceConnector> getAvailableTestHosts() {
+      List<IServiceConnector> envs = new ArrayList<IServiceConnector>();
       for (IServiceConnector conn : testHosts.values()) {
-         envs.add((IHostTestEnvironment) conn.getService());
+         envs.add(conn);
       }
       return envs;
    }

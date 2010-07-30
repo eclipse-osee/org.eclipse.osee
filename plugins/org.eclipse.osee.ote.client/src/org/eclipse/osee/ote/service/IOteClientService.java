@@ -11,7 +11,7 @@
 package org.eclipse.osee.ote.service;
 
 import java.net.InetAddress;
-import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.ote.core.OSEEPerson1_4;
 import org.eclipse.osee.ote.core.environment.TestEnvironmentConfig;
@@ -137,7 +137,7 @@ public interface IOteClientService {
    /**
     * returns a collection of all the {@link IHostTestEnvironment} that are currently available.
     */
-   Collection<IHostTestEnvironment> getAvailableTestHosts();
+   List<IServiceConnector> getAvailableTestHosts();
 
    IServiceConnector getConnector(IHostTestEnvironment host);
 
