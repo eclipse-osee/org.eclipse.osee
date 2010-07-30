@@ -22,7 +22,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -125,7 +124,6 @@ import org.eclipse.swt.events.MenuEvent;
 import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -180,6 +178,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
    private MenuItem pasteMenuItem;
    private MenuItem pasteSpecialMenuItem;
    private MenuItem renameArtifactMenuItem;
+   private MenuItem refreshMenuItem;
    private MenuItem findOnAnotherBranch;
    private NeedArtifactMenuListener needArtifactListener;
    private NeedProjectMenuListener needProjectListener;
@@ -198,9 +197,6 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
    private StackLayout stackLayout;
    private final ArtifactDecorator artifactDecorator = new ArtifactDecorator(
       SkynetGuiPlugin.ARTIFACT_EXPLORER_ATTRIBUTES_PREF);
-
-   public ArtifactExplorer() {
-   }
 
    public static void explore(Collection<Artifact> artifacts) {
       explore(artifacts, AWorkbench.getActivePage());
@@ -421,6 +417,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
       new MenuItem(popupMenu, SWT.SEPARATOR);
       new GlobalMenu(popupMenu, globalMenuHelper);
       createRenameArtifactMenuItem(popupMenu);
+      createRefreshMenuItem(popupMenu);
       new MenuItem(popupMenu, SWT.SEPARATOR);
       createHistoryMenuItem(popupMenu);
       new MenuItem(popupMenu, SWT.SEPARATOR);
@@ -724,6 +721,26 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
       });
    }
 
+   private void createRefreshMenuItem(Menu parentMenu) {
+      refreshMenuItem = new MenuItem(parentMenu, SWT.PUSH);
+      refreshMenuItem.setText("Refresh");
+      needArtifactListener.add(refreshMenuItem);
+
+      ArtifactMenuListener listener = new ArtifactMenuListener();
+      parentMenu.addMenuListener(listener);
+      refreshMenuItem.addSelectionListener(new SelectionAdapter() {
+
+         @Override
+         public void widgetSelected(SelectionEvent mySelectionEvent) {
+            LinkedList<Artifact> selectedItems = new LinkedList<Artifact>();
+            TreeViewerUtility.getPreorderSelection(treeViewer, selectedItems);
+            for (Artifact artifact : selectedItems) {
+               treeViewer.refresh(artifact);
+            }
+         }
+      });
+   }
+
    private void createRenameArtifactMenuItem(Menu parentMenu) {
       renameArtifactMenuItem = new MenuItem(parentMenu, SWT.PUSH);
       renameArtifactMenuItem.setText("Rename Artifact");
@@ -774,6 +791,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
 
          @Override
          public void focusGained(FocusEvent e) {
+            // do nothing
          }
       });
 
@@ -887,7 +905,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
 
    private void createLockMenuItem(Menu parentMenu) {
       lockMenuItem = new MenuItem(parentMenu, SWT.PUSH);
-      lockMenuItem.addSelectionListener(new SelectionListener() {
+      lockMenuItem.addSelectionListener(new SelectionAdapter() {
 
          @Override
          public void widgetSelected(SelectionEvent e) {
@@ -914,10 +932,6 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
             } catch (Exception ex) {
                OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
-         }
-
-         @Override
-         public void widgetDefaultSelected(SelectionEvent e) {
          }
 
       });
@@ -1039,7 +1053,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
       }
    }
 
-   public void explore(Artifact artifact) throws CoreException, IllegalArgumentException {
+   public void explore(Artifact artifact) {
       if (artifact == null) {
          throw new IllegalArgumentException("Can not explore a null artifact.");
       }
@@ -1100,6 +1114,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
 
       @Override
       public void menuHidden(MenuEvent e) {
+         // do nothing
       }
 
       @Override
@@ -1137,6 +1152,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
 
       @Override
       public void menuHidden(MenuEvent e) {
+         // do nothing
       }
 
       @Override
@@ -1175,6 +1191,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
 
       @Override
       public void menuHidden(MenuEvent e) {
+         // do nothing
       }
 
       @Override
@@ -1281,6 +1298,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
 
       @Override
       public void menuHidden(MenuEvent e) {
+         // do nothing
       }
 
       @Override
@@ -1353,7 +1371,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
    }
 
    @Override
-   public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) throws OseeCoreException {
+   public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) {
       if (branch == null || transData.branchId != branch.getId()) {
          return;
       }
@@ -1373,14 +1391,12 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
                   OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                }
                try {
-                  Set<Artifact> parents = new HashSet<Artifact>();
                   for (Artifact art : transData.getArtifactsInRelations(ChangeType.Added,
                      CoreRelationTypes.Default_Hierarchical__Child)) {
                      if (!art.isDeleted() && art.getParent() != null) {
-                        parents.add(art.getParent());
+                        treeViewer.refresh(art.getParent());
                      }
                   }
-                  treeViewer.refresh(parents);
                } catch (Exception ex) {
                   OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                }
@@ -1437,10 +1453,6 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
       }
-   }
-
-   public void refreshWidgets() {
-
    }
 
    @Override
@@ -1540,6 +1552,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
 
    @Override
    public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
+      // do nothing
    }
 
    public TreeViewer getTreeViewer() {
