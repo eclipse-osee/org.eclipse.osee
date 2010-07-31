@@ -16,7 +16,6 @@ import org.eclipse.osee.framework.skynet.core.importing.parsers.OutlineResolutio
 import org.junit.Test;
 
 /**
- * @link OutlineResolution
  * @author Karol M. Wilk
  */
 public final class OutlineResolutionAndNumberTest extends TestCase {

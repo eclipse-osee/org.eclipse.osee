@@ -62,19 +62,17 @@ public class RelationTypeSideSorterTest {
    private final RelationOrderData orderData;
    private final RelationSorterProvider sorterProvider;
    private final RelationTypeSideSorter sorter;
-   private final List<Object[]> expected;
 
    public RelationTypeSideSorterTest(RelationSorterProvider sorterProvider, RelationType relationType, RelationSide relationSide, RelationOrderData orderData, List<Object[]> expected) {
       this.relationType = relationType;
       this.relationSide = relationSide;
       this.orderData = orderData;
       this.sorterProvider = sorterProvider;
-      this.expected = expected;
       this.sorter = new RelationTypeSideSorter(relationType, relationSide, sorterProvider, orderData);
    }
 
    @Test
-   public void testConstruction() throws OseeCoreException {
+   public void testConstruction() {
       Assert.assertNotNull(sorter);
    }
 
@@ -148,7 +146,7 @@ public class RelationTypeSideSorterTest {
    }
 
    @Test
-   public void testSort() throws OseeCoreException {
+   public void testSort() {
       //      sorter.sort(listToOrder)
       //      RelationSorter sorter = null;
       //      List<IArtifact> sorted = sorter.getSortedRelatives(relatives);
@@ -156,7 +154,7 @@ public class RelationTypeSideSorterTest {
    }
 
    @Test
-   public void testEquals() throws OseeCoreException {
+   public void testEquals() {
       //      RelationSorter a = new RelationSorter(RelationTypeManager.getType(6), RelationSide.SIDE_A);
       //      RelationSorter b = new RelationSorter(RelationTypeManager.getType(7), RelationSide.SIDE_B);
       //      assertFalse(a.equals(b));
@@ -300,7 +298,7 @@ public class RelationTypeSideSorterTest {
       }
 
       @Override
-      public List<? extends IArtifact> getRelatedArtifacts(RelationTypeSide relationTypeSide) throws OseeCoreException {
+      public List<? extends IArtifact> getRelatedArtifacts(RelationTypeSide relationTypeSide) {
          List<? extends IArtifact> related = relatedItemsMap.get(relationTypeSide.getRelationType());
          if (related == null) {
             related = Collections.emptyList();
@@ -316,11 +314,13 @@ public class RelationTypeSideSorterTest {
    private static final class DoNothingAccessor implements IRelationOrderAccessor {
 
       @Override
-      public void load(IArtifact artifact, RelationOrderData orderData) throws OseeCoreException {
+      public void load(IArtifact artifact, RelationOrderData orderData) {
+         // do nothing
       }
 
       @Override
-      public void store(IArtifact artifact, RelationOrderData orderData, DefaultBasicGuidRelationReorder reorderRecord) throws OseeCoreException {
+      public void store(IArtifact artifact, RelationOrderData orderData, DefaultBasicGuidRelationReorder reorderRecord) {
+         // do nothing
       }
    }
 }

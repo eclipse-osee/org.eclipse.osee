@@ -648,7 +648,7 @@ public class ConflictTestManager {
       return queriedArtifacts;
    }
 
-   @SuppressWarnings({"unchecked"})
+   @SuppressWarnings({"rawtypes"})
    public static Object stringToObject(Class clas, String value) {
 
       if (clas.equals(BooleanAttribute.class)) {

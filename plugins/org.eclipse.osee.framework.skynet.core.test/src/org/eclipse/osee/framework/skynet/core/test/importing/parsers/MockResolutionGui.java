@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.test.importing.parsers;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.WordOutlineExtractorDelegate.ContentType;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.WordOutlineExtractorDelegate.IConflictResolvingGui;
 
@@ -32,7 +31,7 @@ public final class MockResolutionGui implements IConflictResolvingGui {
    }
 
    @Override
-   public ContentType determineContentType(Collection<String> paramList) throws OseeCoreException {
+   public ContentType determineContentType(Collection<String> paramList) {
       return resultingEnum;
    }
 }

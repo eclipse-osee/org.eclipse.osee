@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.test.event;
 import java.util.HashSet;
 import java.util.Set;
 import junit.framework.Assert;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidRelation;
@@ -26,7 +25,7 @@ import org.junit.Test;
 public class EventBasicGuidRelationTest {
 
    @Test
-   public void testEqualsEventBasicGuidRelation() throws OseeCoreException {
+   public void testEqualsEventBasicGuidRelation() {
       DefaultBasicGuidArtifact eventArt1 = new DefaultBasicGuidArtifact(GUID.create(), GUID.create(), GUID.create());
       DefaultBasicGuidArtifact eventArt2 =
          new DefaultBasicGuidArtifact(eventArt1.getBranchGuid(), eventArt1.getArtTypeGuid(), eventArt1.getGuid());
@@ -100,7 +99,7 @@ public class EventBasicGuidRelationTest {
    }
 
    @Test
-   public void testEventBasicGuidRelationIs() throws OseeCoreException {
+   public void testEventBasicGuidRelationIs() {
       DefaultBasicGuidArtifact eventArt1 = new DefaultBasicGuidArtifact(GUID.create(), GUID.create(), GUID.create());
       DefaultBasicGuidArtifact eventArt2 =
          new DefaultBasicGuidArtifact(eventArt1.getBranchGuid(), eventArt1.getArtTypeGuid(), eventArt1.getGuid());

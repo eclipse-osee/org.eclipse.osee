@@ -30,7 +30,6 @@ import org.junit.runners.Parameterized.Parameters;
 /**
  * Tests different forms of outline numbers and titles
  * 
- * @link WordOutlineExtractorDelegate
  * @author Karol M. Wilk
  */
 @RunWith(Parameterized.class)

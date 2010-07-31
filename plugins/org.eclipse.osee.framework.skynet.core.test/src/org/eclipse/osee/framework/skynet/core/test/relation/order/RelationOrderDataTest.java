@@ -314,12 +314,12 @@ public class RelationOrderDataTest {
       }
 
       @Override
-      public void load(IArtifact artifact, RelationOrderData orderData) throws OseeCoreException {
+      public void load(IArtifact artifact, RelationOrderData orderData) {
          wasLoadCalled = true;
       }
 
       @Override
-      public void store(IArtifact artifact, RelationOrderData orderData, DefaultBasicGuidRelationReorder reorderRecord) throws OseeCoreException {
+      public void store(IArtifact artifact, RelationOrderData orderData, DefaultBasicGuidRelationReorder reorderRecord) {
          wasStoreCalled = true;
       }
 

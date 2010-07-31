@@ -58,7 +58,7 @@ public class BranchUtilityTest {
    }
 
    @Test
-   public void testBranchToFileNameNullBranch() throws OseeCoreException {
+   public void testBranchToFileNameNullBranch() {
       try {
          BranchUtility.toFileName(null);
          Assert.assertFalse("This line should not be executed", true);

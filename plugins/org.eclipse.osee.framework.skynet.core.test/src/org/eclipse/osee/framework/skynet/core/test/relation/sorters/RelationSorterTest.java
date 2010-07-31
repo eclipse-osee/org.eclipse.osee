@@ -18,7 +18,6 @@ import java.util.Random;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.relation.order.IRelationSorter;
 import org.eclipse.osee.framework.skynet.core.relation.sorters.LexicographicalRelationSorter;
@@ -77,7 +76,7 @@ public class RelationSorterTest {
    }
 
    @Parameters
-   public static Collection<Object[]> data() throws OseeCoreException {
+   public static Collection<Object[]> data() {
       Collection<Object[]> data = new ArrayList<Object[]>();
       data.add(createUnorderedSortTest("4", "2", "1", "5"));
       data.add(createUnorderedSortTest("$", "a", "!", "2"));

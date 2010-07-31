@@ -70,7 +70,7 @@ public class BranchStateTest {
    }
 
    @org.junit.Test
-   public void testModifiedState() throws OseeCoreException, InterruptedException {
+   public void testModifiedState() throws OseeCoreException {
       String originalBranchName = "Modified State Branch";
       Branch workingBranch = null;
       try {

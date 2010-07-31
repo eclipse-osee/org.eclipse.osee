@@ -79,12 +79,14 @@ public class WordMlLinkHandlerTest {
                try {
                   dataStream.close();
                } catch (IOException ex) {
+                  // do nothing
                }
             }
             if (expectedStream != null) {
                try {
                   expectedStream.close();
                } catch (IOException ex) {
+                  // do nothing
                }
             }
          }

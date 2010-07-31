@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.test.event;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
@@ -24,6 +25,7 @@ import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -37,6 +39,7 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.support.test.util.TestUtil;
 
 /**
@@ -321,10 +324,11 @@ public class BranchEventManagerTest {
 
       @Override
       public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
+         // do nothing
       }
 
       @Override
-      public void handleBranchEventREM1(Sender sender, BranchEventType branchModType, int branchId) throws OseeCoreException {
+      public void handleBranchEventREM1(Sender sender, BranchEventType branchModType, int branchId) {
          // do nothing, this is legacy branch handler call
       }
 
@@ -348,7 +352,7 @@ public class BranchEventManagerTest {
             try {
                BranchManager.purgeBranch(branch);
             } catch (OseeCoreException ex) {
-
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
       }
@@ -358,7 +362,7 @@ public class BranchEventManagerTest {
             try {
                BranchManager.purgeBranch(branch);
             } catch (OseeCoreException ex) {
-
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
       }

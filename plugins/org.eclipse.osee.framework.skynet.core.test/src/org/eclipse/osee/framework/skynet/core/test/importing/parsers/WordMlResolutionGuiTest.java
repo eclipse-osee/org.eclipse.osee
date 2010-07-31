@@ -35,8 +35,6 @@ import org.junit.Test;
  *      THESE TESTS MUST RUN AS PART OF THE SUITE, RoughArtifact* classes need
  *      the osee caching service.
  * 
- * @link WordOutlineExtractorDelegate 
- * 
  * @author Karol M. Wilk
  */
 //@formatter:on

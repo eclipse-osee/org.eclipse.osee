@@ -46,7 +46,7 @@ public class RelationOrderParserTest {
    private static String emptyOrderType = "<OrderList>\n<Order relType=\"X\" side=\"SIDE_B\" />\n</OrderList>";
 
    @Test
-   public void testExceptions() throws OseeCoreException {
+   public void testExceptions() {
       RelationOrderParser parser = new RelationOrderParser();
       try {
          parser.loadFromXml(null, "");

@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.test.event;
 import java.util.Arrays;
 import java.util.List;
 import junit.framework.Assert;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkSender;
@@ -107,10 +106,11 @@ public class BranchEventFiltersTest {
 
       @Override
       public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
+         // do nothing
       }
 
       @Override
-      public void handleBranchEventREM1(Sender sender, BranchEventType branchModType, int branchId) throws OseeCoreException {
+      public void handleBranchEventREM1(Sender sender, BranchEventType branchModType, int branchId) {
          // do nothing, this is legacy branch handler call
       }
 

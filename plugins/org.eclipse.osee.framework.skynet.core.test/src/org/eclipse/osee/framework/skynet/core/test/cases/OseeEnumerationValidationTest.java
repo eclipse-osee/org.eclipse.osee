@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -74,7 +73,7 @@ public class OseeEnumerationValidationTest {
    }
 
    @org.junit.Test
-   public void testEnumerationData() throws OseeCoreException {
+   public void testEnumerationData() {
       for (TestData data : getEnumerationCases()) {
          IStatus actual =
             OseeValidator.getInstance().validate(IOseeValidator.SHORT, mockArtifact, enumeratedAttributeType,

@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.test.event;
 import java.util.HashSet;
 import java.util.Set;
 import junit.framework.Assert;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -27,7 +26,7 @@ import org.junit.Test;
 public class EventBasicGuidArtifactTest {
 
    @Test
-   public void testEqualsEventBasicGuidArtifact() throws OseeCoreException {
+   public void testEqualsEventBasicGuidArtifact() {
       EventBasicGuidArtifact eventArt1 =
          new EventBasicGuidArtifact(EventModType.Added, GUID.create(), GUID.create(), GUID.create());
       EventBasicGuidArtifact eventArt2 =
@@ -75,7 +74,7 @@ public class EventBasicGuidArtifactTest {
    }
 
    @Test
-   public void testEqualsBasicGuidArtifact() throws OseeCoreException {
+   public void testEqualsBasicGuidArtifact() {
       EventBasicGuidArtifact eventArt1 =
          new EventBasicGuidArtifact(EventModType.Added, GUID.create(), GUID.create(), GUID.create());
       DefaultBasicGuidArtifact eventArt2 =
@@ -122,7 +121,7 @@ public class EventBasicGuidArtifactTest {
    }
 
    @Test
-   public void testEventBasicGuidArtifactIs() throws OseeCoreException {
+   public void testEventBasicGuidArtifactIs() {
       EventBasicGuidArtifact eventArt1 =
          new EventBasicGuidArtifact(EventModType.Added, GUID.create(), GUID.create(), GUID.create());
       Assert.assertTrue(eventArt1.is(EventModType.Added));

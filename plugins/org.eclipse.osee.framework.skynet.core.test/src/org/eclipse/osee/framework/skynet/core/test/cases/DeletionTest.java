@@ -18,6 +18,7 @@ import java.util.LinkedList;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -34,7 +35,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeTransactionOperation;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.junit.Before;
 
 /**
@@ -74,12 +74,6 @@ public class DeletionTest {
    private static final boolean DELETE_TRANSACTION_TEST = true;
    private static final boolean INDIVIDUAL_DELETE_TEST = true;
 
-   /**
-    * @param name
-    */
-   public DeletionTest(String name) {
-   }
-
    @Before
    protected void setUp() throws Exception {
       assertFalse(ClientSessionManager.isProductionDataStore());
@@ -89,7 +83,7 @@ public class DeletionTest {
     * Test method for
     * {@link org.eclipse.osee.framework.skynet.core.artifact.BranchManager#getMergeBranch(Branch, Branch)} .
     */
-   public void deleteAndCheckTXCurrents() throws OseeCoreException, InterruptedException {
+   public void deleteAndCheckTXCurrents() throws OseeCoreException {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
       Collection<Artifact> artifacts = ConflictTestManager.getArtifacts(true, ConflictTestManager.DELETION_TEST_QUERY);
@@ -275,7 +269,7 @@ public class DeletionTest {
             if (artifactForDeletionCheck != null) {
                Attribute<?> attribute = artifactForDeletionCheck.getAttributes().get(0);
                RelationLink relation =
-                  artifactForDeletionCheck.getRelations(RelationTypeManager.getType("Default Hierarchical")).get(0);
+                  artifactForDeletionCheck.getRelations(CoreRelationTypes.Default_Hierarchical__Child).get(0);
                attribute.delete();
                relation.delete(true);
                artifactForDeletionCheck.persist();

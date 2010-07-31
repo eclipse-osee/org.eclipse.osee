@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.test.event;
 import java.util.HashSet;
 import java.util.Set;
 import junit.framework.Assert;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventChangeTypeBasicGuidArtifact;
@@ -25,7 +24,7 @@ import org.junit.Test;
 public class EventChangeTypeBasicGuidArtifactTest {
 
    @Test
-   public void testEquals() throws OseeCoreException {
+   public void testEquals() {
       EventChangeTypeBasicGuidArtifact eventArt1 =
          new EventChangeTypeBasicGuidArtifact(GUID.create(), GUID.create(), GUID.create(), GUID.create());
       EventChangeTypeBasicGuidArtifact eventArt2 =

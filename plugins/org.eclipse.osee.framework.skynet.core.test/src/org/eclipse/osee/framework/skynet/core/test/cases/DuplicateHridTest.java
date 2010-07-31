@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.support.test.util.TestUtil;
-import org.junit.After;
 import org.junit.Before;
 
 /**
@@ -27,11 +26,6 @@ public class DuplicateHridTest {
    @Before
    public void setUp() throws Exception {
       assertFalse("Not to be run on production datbase.", TestUtil.isProductionDb());
-   }
-
-   @After
-   public void tearDown() throws Exception {
-
    }
 
    @org.junit.Test

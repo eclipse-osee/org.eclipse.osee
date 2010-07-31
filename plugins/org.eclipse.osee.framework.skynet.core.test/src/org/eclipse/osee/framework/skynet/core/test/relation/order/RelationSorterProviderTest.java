@@ -71,7 +71,7 @@ public class RelationSorterProviderTest {
    }
 
    @Test
-   public void testArgumentExceptions() throws OseeCoreException {
+   public void testArgumentExceptions() {
       RelationSorterProvider provider = new RelationSorterProvider();
       try {
          provider.getRelationOrder("ABC");
@@ -82,7 +82,7 @@ public class RelationSorterProviderTest {
    }
 
    @Test
-   public void testNotFoundExceptions() throws OseeCoreException {
+   public void testNotFoundExceptions() {
       RelationSorterProvider provider = new RelationSorterProvider();
       String randomGuid = GUID.create();
       try {

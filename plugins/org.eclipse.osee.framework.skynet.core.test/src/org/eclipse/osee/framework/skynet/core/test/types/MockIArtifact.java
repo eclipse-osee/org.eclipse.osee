@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.test.types;
 import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.NamedIdentity;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.RelationTypeSide;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
@@ -62,7 +61,7 @@ public class MockIArtifact extends NamedIdentity implements IArtifact {
    }
 
    @Override
-   public Artifact getFullArtifact() throws OseeCoreException {
+   public Artifact getFullArtifact() {
       wasGetFullArtifactCalled = true;
       return null;
    }
@@ -73,7 +72,7 @@ public class MockIArtifact extends NamedIdentity implements IArtifact {
    }
 
    @Override
-   public List<? extends IArtifact> getRelatedArtifacts(RelationTypeSide relationTypeSide) throws OseeCoreException {
+   public List<? extends IArtifact> getRelatedArtifacts(RelationTypeSide relationTypeSide) {
       return Collections.emptyList();
    }
 

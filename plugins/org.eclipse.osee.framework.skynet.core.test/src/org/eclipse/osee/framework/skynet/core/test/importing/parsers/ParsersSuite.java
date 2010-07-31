@@ -21,5 +21,5 @@ WordMLExtractorDelegateTableOfContentsTest.class, //
    WordMlResolutionGuiTest.class, //
 })
 public class ParsersSuite {
-
+   // do nothing
 }

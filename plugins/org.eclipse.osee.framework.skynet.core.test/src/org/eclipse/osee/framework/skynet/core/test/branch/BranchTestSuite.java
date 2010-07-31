@@ -21,5 +21,5 @@ import org.junit.runners.Suite;
  *
  */
 public class BranchTestSuite {
-
+   // do nothing
 }

@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.test.importing;
 import java.net.URL;
 import java.util.List;
 import junit.framework.Assert;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
@@ -41,7 +40,7 @@ public final class RoughArtifactUtil {
       Assert.assertTrue(collector.getRoughRelations().isEmpty());
    }
 
-   public static void checkCollectors(RoughArtifactCollector expected, RoughArtifactCollector actual) throws OseeArgumentException {
+   public static void checkCollectors(RoughArtifactCollector expected, RoughArtifactCollector actual) {
       Assert.assertEquals(expected.getParentRoughArtifact(), actual.getParentRoughArtifact());
 
       List<RoughArtifact> expectedItems = expected.getRoughArtifacts();
@@ -70,7 +69,7 @@ public final class RoughArtifactUtil {
       Assert.assertEquals(expected.getBartifactGuid(), actual.getBartifactGuid());
    }
 
-   public static void checkRoughArtifact(RoughArtifact expected, RoughArtifact actual) throws OseeArgumentException {
+   public static void checkRoughArtifact(RoughArtifact expected, RoughArtifact actual) {
       // Randomly generated - just check the format
       Assert.assertTrue(GUID.isValid(actual.getGuid()));
       Assert.assertTrue(HumanReadableId.isValid(actual.getHumanReadableId()));

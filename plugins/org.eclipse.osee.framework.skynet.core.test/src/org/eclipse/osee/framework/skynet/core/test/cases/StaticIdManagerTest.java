@@ -163,7 +163,7 @@ public class StaticIdManagerTest {
     * @throws InterruptedException
     */
    @org.junit.Test
-   public void testGetArtifacts() throws OseeCoreException, InterruptedException {
+   public void testGetArtifacts() throws OseeCoreException {
       SkynetTransaction transaction =
          new SkynetTransaction(BranchManager.getCommonBranch(), "Static Id Manager: create test artifacts");
       // Create three artifacts with ccc staticId
@@ -256,7 +256,7 @@ public class StaticIdManagerTest {
     * @throws InterruptedException
     */
    @org.junit.Test
-   public void testGetSingletonArtifactStringStringBranch() throws OseeCoreException, InterruptedException {
+   public void testGetSingletonArtifactStringStringBranch() throws OseeCoreException {
       List<Artifact> itemsCreated = new ArrayList<Artifact>();
 
       // create single artifact with eee staticId

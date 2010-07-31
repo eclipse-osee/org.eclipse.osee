@@ -33,5 +33,5 @@ import org.junit.runners.Suite;
  * @author Donald G. Dunne
  */
 public class FrameworkCore_TestDb_Suite {
-
+   // do nothing
 }

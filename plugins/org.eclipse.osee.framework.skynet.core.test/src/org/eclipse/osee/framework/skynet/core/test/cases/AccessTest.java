@@ -15,8 +15,6 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.junit.Before;
 
 public class AccessTest {
-   public AccessTest() {
-   }
 
    @Before
    protected void setUp() throws Exception {

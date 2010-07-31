@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifact
 import org.eclipse.osee.framework.skynet.core.importing.parsers.ExcelArtifactExtractor;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactExtractor;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.NativeDocumentExtractor;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -76,10 +75,6 @@ public class ArtifactExtractorTest {
             }
          }
       }
-   }
-
-   @After
-   public void tearDown() throws Exception {
    }
 
    @org.junit.Test
