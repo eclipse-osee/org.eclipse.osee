@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.update.InterArtifactExplorerDropHandler;
-import org.junit.After;
 import org.junit.Before;
 
 /**
@@ -118,7 +117,4 @@ public class InterArtifactDropTest {
       OseeLog.log(SkynetGuiPlugin.class, Level.INFO, "Awake");
    }
 
-   @After
-   public void tearDown() throws Exception {
-   }
 }

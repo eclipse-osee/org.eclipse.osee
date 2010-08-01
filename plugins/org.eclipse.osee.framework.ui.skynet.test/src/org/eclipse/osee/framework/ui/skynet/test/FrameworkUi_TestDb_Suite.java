@@ -25,5 +25,5 @@ import org.junit.runners.Suite;
  * @author Megumi Telles
  */
 public class FrameworkUi_TestDb_Suite {
-
+   // test provided above
 }

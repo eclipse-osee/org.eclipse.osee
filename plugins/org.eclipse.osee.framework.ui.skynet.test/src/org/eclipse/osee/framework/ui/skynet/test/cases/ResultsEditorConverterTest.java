@@ -127,7 +127,7 @@ public class ResultsEditorConverterTest {
       converter.convert(type, writer, provider);
    }
 
-   private String getExpectedHTMLReport(MockResultsProvider provider) throws OseeCoreException {
+   private String getExpectedHTMLReport(MockResultsProvider provider) {
       StringBuilder builder = new StringBuilder();
       builder.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD html 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\"><html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-1\">\n");
       builder.append("<title>Report</title>\n");
@@ -191,7 +191,7 @@ public class ResultsEditorConverterTest {
       return builder.toString();
    }
 
-   private String getExpectedExcelReport(MockResultsProvider provider) throws OseeCoreException {
+   private String getExpectedExcelReport(MockResultsProvider provider) {
       StringBuilder builder = new StringBuilder();
       builder.append("<?xml version=\"1.0\"?><?mso-application progid=\"Excel.Sheet\"?>");
       builder.append("<Workbook");
@@ -250,12 +250,12 @@ public class ResultsEditorConverterTest {
       }
 
       @Override
-      public String getEditorName() throws OseeCoreException {
+      public String getEditorName() {
          return editorName;
       }
 
       @Override
-      public List<IResultsEditorTab> getResultsEditorTabs() throws OseeCoreException {
+      public List<IResultsEditorTab> getResultsEditorTabs() {
          return tabs;
       }
    }
@@ -272,7 +272,7 @@ public class ResultsEditorConverterTest {
       }
 
       @Override
-      public List<XViewerColumn> getTableColumns() throws OseeCoreException {
+      public List<XViewerColumn> getTableColumns() {
          List<XViewerColumn> xColumns = new ArrayList<XViewerColumn>();
          for (String col : columns) {
             xColumns.add(new XViewerColumn("", col, 0, 0, true, SortDataType.String, false, ""));
@@ -281,7 +281,7 @@ public class ResultsEditorConverterTest {
       }
 
       @Override
-      public Collection<IResultsXViewerRow> getTableRows() throws OseeCoreException {
+      public Collection<IResultsXViewerRow> getTableRows() {
          List<IResultsXViewerRow> xRows = new ArrayList<IResultsXViewerRow>();
          for (String[] row : rows) {
             xRows.add(new ResultsXViewerRow(row));
@@ -290,7 +290,7 @@ public class ResultsEditorConverterTest {
       }
 
       @Override
-      public Composite createTab(Composite parent, ResultsEditor resultsEditor) throws OseeCoreException {
+      public Composite createTab(Composite parent, ResultsEditor resultsEditor) {
          return null;
       }
 

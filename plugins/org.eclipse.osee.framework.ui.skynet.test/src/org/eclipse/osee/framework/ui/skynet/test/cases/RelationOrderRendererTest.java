@@ -63,7 +63,7 @@ public class RelationOrderRendererTest {
    }
 
    @Test
-   public void testRenderingAllValid() throws OseeCoreException {
+   public void testRenderingAllValid() {
       RelationOrderData orderData = new MockRelationOrderData();
       List<Object[]> expectedData = new ArrayList<Object[]>();
 
@@ -80,7 +80,7 @@ public class RelationOrderRendererTest {
    }
 
    @Test
-   public void testRenderingOrderTypeNotFoud() throws OseeCoreException {
+   public void testRenderingOrderTypeNotFoud() {
       RelationOrderData orderData = new MockRelationOrderData();
       List<Object[]> expectedData = new ArrayList<Object[]>();
       addData(orderData, expectedData, "Relation 1", "Relation 1_A", RelationSide.SIDE_A, GUID.create(), "0", "1", "2");
@@ -88,7 +88,7 @@ public class RelationOrderRendererTest {
    }
 
    @Test
-   public void testRenderingEmptyGuids() throws OseeCoreException {
+   public void testRenderingEmptyGuids() {
       RelationOrderData orderData = new MockRelationOrderData();
       List<Object[]> expectedData = new ArrayList<Object[]>();
       addData(orderData, expectedData, "Relation 1", "Relation 1_A", RelationSide.SIDE_A,
@@ -97,7 +97,7 @@ public class RelationOrderRendererTest {
    }
 
    @Test
-   public void testEmptyData() throws OseeCoreException {
+   public void testEmptyData() {
       RelationOrderData orderData = new MockRelationOrderData();
       List<Object[]> expectedData = new ArrayList<Object[]>();
       checkRelationOrderRenderer(getExpected(expectedData), orderData);
@@ -179,7 +179,7 @@ public class RelationOrderRendererTest {
       }
    }
 
-   private void checkRelationOrderRenderer(String expected, RelationOrderData orderData) throws OseeCoreException {
+   private void checkRelationOrderRenderer(String expected, RelationOrderData orderData) {
       StringBuilder builder = new StringBuilder();
       WordMLProducer producer = new WordMLProducer(builder);
       renderer.toWordML(producer, null, orderData);
@@ -221,7 +221,7 @@ public class RelationOrderRendererTest {
       }
 
       @Override
-      public List<String> resolveAsOseeLinks(Branch branch, List<String> artifactGuids) throws OseeCoreException {
+      public List<String> resolveAsOseeLinks(Branch branch, List<String> artifactGuids) {
          List<String> values = new ArrayList<String>();
          for (String guid : artifactGuids) {
             values.add(guid);
