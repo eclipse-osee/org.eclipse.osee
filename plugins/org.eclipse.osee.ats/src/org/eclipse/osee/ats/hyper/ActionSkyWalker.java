@@ -255,11 +255,7 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
 
    @Override
    public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
-      try {
-         if (sender.isRemote()) {
-            return;
-         }
-      } catch (OseeCoreException ex) {
+      if (sender.isRemote()) {
          return;
       }
       if (getOptions().getArtifact() == null) {

@@ -588,7 +588,7 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
 
    @Override
    public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
-      if (rootArt == null || branch == null || artifactEvent.getBranchGuid().equals(branch.getGuid())) {
+      if (rootArt == null || branch == null || !artifactEvent.isForBranch(branch)) {
          return;
       }
       try {

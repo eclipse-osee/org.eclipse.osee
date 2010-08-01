@@ -27,7 +27,6 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
@@ -350,12 +349,8 @@ public class RemoteEventManager {
                   Sender sender = new Sender(event.getNetworkSender());
                   // If the sender's sessionId is the same as this client, then this event was
                   // created in this client and returned by remote event manager; ignore and continue
-                  try {
-                     if (sender.isLocal()) {
-                        continue;
-                     }
-                  } catch (OseeAuthenticationRequiredException ex1) {
-                     OseeLog.log(Activator.class, Level.SEVERE, ex1);
+                  if (sender.isLocal()) {
+                     continue;
                   }
 
                   if (event instanceof NetworkAccessControlArtifactsEvent) {

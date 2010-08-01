@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.role.UserRole;
-import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -259,11 +258,7 @@ public class AtsNotifyUsers implements IArtifactEventListener, IFrameworkTransac
          return;
       }
       // Only process notifications if this client is sender
-      try {
-         if (sender.isRemote()) {
-            return;
-         }
-      } catch (OseeAuthenticationRequiredException ex) {
+      if (sender.isRemote()) {
          return;
       }
       boolean notificationAdded = false;

@@ -72,8 +72,7 @@ public class SMAEditorEventManager implements IArtifactEventListener {
       }
       System.out.println("SMAEditor: handleArtifactEvent called [" + artifactEvent + "] - sender " + sender + "");
       try {
-         if (artifactEvent.getBranchGuid() == null || !artifactEvent.getBranchGuid().equals(
-            AtsUtil.getAtsBranch().getGuid())) {
+         if (!artifactEvent.isForBranch(AtsUtil.getAtsBranch())) {
             return;
          }
       } catch (OseeCoreException ex) {

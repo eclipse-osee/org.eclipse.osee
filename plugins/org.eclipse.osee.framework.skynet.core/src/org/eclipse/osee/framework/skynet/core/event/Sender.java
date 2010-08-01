@@ -10,14 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.event;
 
-import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.OseeClientSession;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteNetworkSender1;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkSender;
-import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Donald G. Dunne
@@ -48,13 +45,17 @@ public class Sender {
       this.oseeSession = ClientSessionManager.getSession();
    }
 
-   public boolean isRemote() throws OseeAuthenticationRequiredException {
-      OseeClientSession session = ClientSessionManager.getSession();
-      //Don't add version check here - can't assume events come from clients using the same version - could be old clients;
-      return !oseeSession.getId().equals(session.getId());
+   public boolean isRemote() {
+      try {
+         OseeClientSession session = ClientSessionManager.getSession();
+         //Don't add version check here - can't assume events come from clients using the same version - could be old clients;
+         return !oseeSession.getId().equals(session.getId());
+      } catch (OseeAuthenticationRequiredException ex) {
+         return false;
+      }
    }
 
-   public boolean isLocal() throws OseeAuthenticationRequiredException {
+   public boolean isLocal() {
       return !isRemote();
    }
 
@@ -102,12 +103,7 @@ public class Sender {
 
    @Override
    public String toString() {
-      String remote = "Source Unknown";
-      try {
-         remote = isRemote() ? "Remote" : "Local";
-      } catch (OseeAuthenticationRequiredException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
+      String remote = isRemote() ? "Remote" : "Local";
       return "Sender: " + remote + " [" + oseeSession.toString() + "  [" + sourceObject + "]]";
    }
 }

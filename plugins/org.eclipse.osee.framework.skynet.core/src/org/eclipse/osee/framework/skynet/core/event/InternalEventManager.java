@@ -22,7 +22,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -149,46 +148,42 @@ public class InternalEventManager {
       Runnable runnable = new Runnable() {
          @Override
          public void run() {
-            try {
-               // Log if this is a loopback and what is happening
-               if (enableRemoteEventLoopback) {
-                  OseeLog.log(
-                     InternalEventManager.class,
-                     Level.WARNING,
-                     "IEM1: BranchEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
-               }
+            // Log if this is a loopback and what is happening
+            if (enableRemoteEventLoopback) {
+               OseeLog.log(
+                  InternalEventManager.class,
+                  Level.WARNING,
+                  "IEM1: BranchEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
+            }
 
-               // Kick LOCAL
-               if (!enableRemoteEventLoopback || enableRemoteEventLoopback && branchEventType.isRemoteEventType() && sender.isRemote()) {
-                  if (sender.isRemote() || sender.isLocal() && branchEventType.isLocalEventType()) {
-                     safelyInvokeListeners(IBranchEventListener.class, "handleBranchEventREM1", sender,
-                        branchEventType, branchId);
+            // Kick LOCAL
+            if (!enableRemoteEventLoopback || enableRemoteEventLoopback && branchEventType.isRemoteEventType() && sender.isRemote()) {
+               if (sender.isRemote() || sender.isLocal() && branchEventType.isLocalEventType()) {
+                  safelyInvokeListeners(IBranchEventListener.class, "handleBranchEventREM1", sender, branchEventType,
+                     branchId);
+               }
+            }
+            // Kick REMOTE (If source was Local and this was not a default branch changed event
+
+            if (sender.isLocal() && branchEventType.isRemoteEventType()) {
+               if (branchEventType == BranchEventType.Added) {
+                  RemoteEventManager.kick(new NetworkNewBranchEvent(branchId, sender.getNetworkSender()));
+               } else if (branchEventType == BranchEventType.Deleted) {
+                  RemoteEventManager.kick(new NetworkDeletedBranchEvent(branchId, sender.getNetworkSender()));
+               } else if (branchEventType == BranchEventType.Purged) {
+                  RemoteEventManager.kick(new NetworkPurgeBranchEvent(branchId, sender.getNetworkSender()));
+               } else if (branchEventType == BranchEventType.Committed) {
+                  RemoteEventManager.kick(new NetworkCommitBranchEvent(branchId, sender.getNetworkSender()));
+               } else if (branchEventType == BranchEventType.Renamed) {
+                  Branch branch = null;
+                  try {
+                     branch = BranchManager.getBranch(branchId);
+                     RemoteEventManager.kick(new NetworkRenameBranchEvent(branchId, sender.getNetworkSender(),
+                        branch.getName(), branch.getShortName()));
+                  } catch (OseeCoreException ex) {
+                     // do nothing
                   }
                }
-               // Kick REMOTE (If source was Local and this was not a default branch changed event
-
-               if (sender.isLocal() && branchEventType.isRemoteEventType()) {
-                  if (branchEventType == BranchEventType.Added) {
-                     RemoteEventManager.kick(new NetworkNewBranchEvent(branchId, sender.getNetworkSender()));
-                  } else if (branchEventType == BranchEventType.Deleted) {
-                     RemoteEventManager.kick(new NetworkDeletedBranchEvent(branchId, sender.getNetworkSender()));
-                  } else if (branchEventType == BranchEventType.Purged) {
-                     RemoteEventManager.kick(new NetworkPurgeBranchEvent(branchId, sender.getNetworkSender()));
-                  } else if (branchEventType == BranchEventType.Committed) {
-                     RemoteEventManager.kick(new NetworkCommitBranchEvent(branchId, sender.getNetworkSender()));
-                  } else if (branchEventType == BranchEventType.Renamed) {
-                     Branch branch = null;
-                     try {
-                        branch = BranchManager.getBranch(branchId);
-                        RemoteEventManager.kick(new NetworkRenameBranchEvent(branchId, sender.getNetworkSender(),
-                           branch.getName(), branch.getShortName()));
-                     } catch (OseeCoreException ex) {
-                        // do nothing
-                     }
-                  }
-               }
-            } catch (OseeAuthenticationRequiredException ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
       };

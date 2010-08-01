@@ -25,7 +25,6 @@ import org.eclipse.osee.ats.actions.wizard.ArtifactSelectWizard;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
@@ -361,17 +360,13 @@ public class ArtifactHyperView extends HyperView implements IArtifactEventListen
 
    @Override
    public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
-      try {
-         if (sender.isRemote()) {
-            return;
-         }
-      } catch (OseeAuthenticationRequiredException ex) {
+      if (sender.isRemote()) {
          return;
       }
       if (currentArtifact == null) {
          return;
       }
-      if (currentArtifact.getBranchGuid().equals(artifactEvent.getBranchGuid())) {
+      if (!artifactEvent.isForBranch(currentArtifact.getBranch())) {
          return;
       }
 
@@ -393,5 +388,4 @@ public class ArtifactHyperView extends HyperView implements IArtifactEventListen
       }
 
    }
-
 }

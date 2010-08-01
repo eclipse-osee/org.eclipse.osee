@@ -16,7 +16,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
@@ -81,17 +80,11 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
             @Override
             protected IStatus run(IProgressMonitor monitor) {
 
-               Sender sender = null;
-               try {
-                  sender = new Sender(remoteEvent.getNetworkSender());
-                  // If the sender's sessionId is the same as this client, then this event was
-                  // created in this client and returned by remote event manager; ignore and continue
-                  if (sender.isLocal()) {
-                     return Status.OK_STATUS;
-                  }
-               } catch (OseeAuthenticationRequiredException ex1) {
-                  OseeEventManager.eventLog("REM2: authentication", ex1);
-                  new Status(IStatus.ERROR, Activator.PLUGIN_ID, -1, ex1.getLocalizedMessage(), ex1);
+               Sender sender = new Sender(remoteEvent.getNetworkSender());
+               // If the sender's sessionId is the same as this client, then this event was
+               // created in this client and returned by remote event manager; ignore and continue
+               if (sender.isLocal()) {
+                  return Status.OK_STATUS;
                }
                // Handles TransactionEvents, ArtifactChangeTypeEvents, ArtifactPurgeEvents
                if (remoteEvent instanceof RemotePersistEvent1) {
