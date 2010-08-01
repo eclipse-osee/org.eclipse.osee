@@ -43,7 +43,7 @@ public class ArtifactConflict extends Conflict {
    }
 
    @Override
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings("rawtypes")
    public Object getAdapter(Class adapter) {
       if (adapter == null) {
          throw new IllegalArgumentException("adapter can not be null");
@@ -148,7 +148,7 @@ public class ArtifactConflict extends Conflict {
    }
 
    @Override
-   public boolean applyPreviousMerge(int mergeBranchId, int destBranchId) throws OseeCoreException {
+   public boolean applyPreviousMerge(int mergeBranchId, int destBranchId) {
       return false;
    }
 

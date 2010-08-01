@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -37,8 +38,10 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.Streams;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * Provides utility methods for parsing wordML.
@@ -270,6 +273,7 @@ public class WordUtil {
          spellCheck.reset(content);
          response = spellCheck.replaceAll("");
       } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return response;
    }

@@ -81,9 +81,6 @@ public class WordMlLinkHandler {
 
    private static final OseeLinkBuilder linkBuilder = new OseeLinkBuilder();
 
-   private WordMlLinkHandler() {
-   }
-
    /**
     * Remove WordML hyperlinks and replace with OSEE_LINK marker. It is assumed that an unlink call will be made after a
     * link call. Therefore we expect the input to have links that are recognized by this handler as identified by the

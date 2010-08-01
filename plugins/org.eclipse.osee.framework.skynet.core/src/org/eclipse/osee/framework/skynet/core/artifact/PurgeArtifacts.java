@@ -61,7 +61,7 @@ public class PurgeArtifacts extends DbTransaction {
    /**
     * @param artifactsToPurge
     */
-   public PurgeArtifacts(Collection<? extends Artifact> artifactsToPurge) throws OseeCoreException {
+   public PurgeArtifacts(Collection<? extends Artifact> artifactsToPurge) {
       this.artifactsToPurge = artifactsToPurge;
    }
 

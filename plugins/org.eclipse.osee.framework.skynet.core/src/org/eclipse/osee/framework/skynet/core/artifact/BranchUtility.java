@@ -29,9 +29,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public final class BranchUtility {
 
-   private BranchUtility() {
-   }
-
    public static String toFileName(Branch branch) throws OseeCoreException {
       if (branch == null) {
          throw new OseeArgumentException("branch cannot be null");

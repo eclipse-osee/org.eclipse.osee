@@ -40,12 +40,12 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
    }
 
    @Override
-   public String getDisplayableString() throws OseeDataStoreException {
+   public String getDisplayableString() {
       return displayable;
    }
 
    @Override
-   public void setDisplayableString(String toDisplay) throws OseeDataStoreException {
+   public void setDisplayableString(String toDisplay) {
       this.displayable = toDisplay;
    }
 
@@ -121,12 +121,12 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
    }
 
    @Override
-   public Object[] getData() throws OseeDataStoreException {
+   public Object[] getData() {
       return new Object[] {"", dataStore.getLocator()};
    }
 
    @Override
-   public void loadData(Object... objects) throws OseeCoreException {
+   public void loadData(Object... objects) {
       if (objects != null && objects.length > 1) {
          dataStore.setLocator((String) objects[1]);
       }

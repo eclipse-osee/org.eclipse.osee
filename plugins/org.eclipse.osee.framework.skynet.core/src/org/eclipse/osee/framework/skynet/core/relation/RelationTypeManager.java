@@ -29,9 +29,6 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
  */
 public class RelationTypeManager {
 
-   private RelationTypeManager() {
-   }
-
    public static AbstractOseeCache<RelationType> getCache() {
       return Activator.getInstance().getOseeCacheService().getRelationTypeCache();
    }

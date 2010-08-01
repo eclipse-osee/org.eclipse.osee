@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.util.HttpProcessor;
@@ -37,7 +36,7 @@ public class AttributeTransactionData extends BaseTransactionData {
    private final Attribute<?> attribute;
    private final DAOToSQL daoToSql;
 
-   public AttributeTransactionData(Attribute<?> attribute) throws OseeDataStoreException {
+   public AttributeTransactionData(Attribute<?> attribute) {
       super(attribute.getId(), attribute.getModificationType());
       this.attribute = attribute;
       this.daoToSql = new DAOToSQL();

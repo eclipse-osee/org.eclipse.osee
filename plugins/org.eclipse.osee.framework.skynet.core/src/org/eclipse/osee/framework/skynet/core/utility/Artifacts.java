@@ -191,7 +191,7 @@ public final class Artifacts {
       return details;
    }
 
-   public static String getDetailsFormText(Map<String, String> keyValues) throws OseeCoreException {
+   public static String getDetailsFormText(Map<String, String> keyValues) {
       String template = "<p><b>%s:</b> %s</p>";
       StringBuilder sb = new StringBuilder();
       sb.append("<form>");
@@ -210,7 +210,7 @@ public final class Artifacts {
       return sb.toString();
    }
 
-   public static HashCollection<Branch, Artifact> getBranchArtifactMap(Collection<Artifact> artifacts) throws OseeCoreException {
+   public static HashCollection<Branch, Artifact> getBranchArtifactMap(Collection<Artifact> artifacts) {
       HashCollection<Branch, Artifact> branchMap = new HashCollection<Branch, Artifact>();
       for (Artifact artifact : artifacts) {
          branchMap.put(artifact.getBranch(), artifact);

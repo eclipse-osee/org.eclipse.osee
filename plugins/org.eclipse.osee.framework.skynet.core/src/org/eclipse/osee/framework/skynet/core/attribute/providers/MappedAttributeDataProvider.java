@@ -20,7 +20,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.util.HttpProcessor;
 import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
@@ -48,7 +47,7 @@ public class MappedAttributeDataProvider extends AbstractAttributeDataProvider i
    }
 
    @Override
-   public Object[] getData() throws OseeDataStoreException {
+   public Object[] getData() {
       return new Object[] {"", remoteUri};
    }
 
@@ -58,7 +57,7 @@ public class MappedAttributeDataProvider extends AbstractAttributeDataProvider i
    }
 
    @Override
-   public void loadData(Object... objects) throws OseeCoreException {
+   public void loadData(Object... objects) {
       if (objects != null && objects.length > 1) {
          remoteUri = (String) objects[1];
       }
@@ -131,7 +130,7 @@ public class MappedAttributeDataProvider extends AbstractAttributeDataProvider i
    }
 
    @Override
-   public String getValueAsString() throws OseeCoreException {
+   public String getValueAsString() {
       if (isRemoteUriValid() && isBackingFileValid() != true) {
          try {
             this.backingFile = requestRemoteFile();
@@ -152,7 +151,7 @@ public class MappedAttributeDataProvider extends AbstractAttributeDataProvider i
    }
 
    @Override
-   public boolean setValue(String value) throws OseeCoreException {
+   public boolean setValue(String value) {
       // DO NOTHING
       return false;
    }
@@ -184,6 +183,7 @@ public class MappedAttributeDataProvider extends AbstractAttributeDataProvider i
       try {
          //toReturn |= new TestRunOperator(getAttribute().getArtifact()).isFromLocalWorkspace();
       } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return toReturn;
    }

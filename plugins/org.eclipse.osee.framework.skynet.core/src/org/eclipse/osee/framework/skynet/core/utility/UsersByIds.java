@@ -37,7 +37,7 @@ public class UsersByIds {
       return sb.toString();
    }
 
-   public static Collection<User> getUsers(String sorageString) throws OseeCoreException {
+   public static Collection<User> getUsers(String sorageString) {
       Set<User> users = new HashSet<User>();
       Matcher m = userPattern.matcher(sorageString);
       while (m.find()) {

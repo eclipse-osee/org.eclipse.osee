@@ -64,7 +64,7 @@ public final class ErrorChange extends Change {
       return errorMessage;
    }
 
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings("rawtypes")
    @Override
    public Object getAdapter(Class adapter) {
       return null;

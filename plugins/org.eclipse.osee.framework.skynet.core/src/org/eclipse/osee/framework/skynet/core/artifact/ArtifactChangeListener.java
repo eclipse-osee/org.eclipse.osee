@@ -14,5 +14,5 @@ package org.eclipse.osee.framework.skynet.core.artifact;
  * @author Ryan D. Brooks
  */
 public interface ArtifactChangeListener {
-
+   // do nothing
 }

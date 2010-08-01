@@ -49,9 +49,6 @@ public class ArtifactTypeManager {
 
    private final static ArtifactFactoryManager factoryManager = new ArtifactFactoryManager();
 
-   private ArtifactTypeManager() {
-   }
-
    public static ArtifactTypeCache getCache() {
       return getCacheService().getArtifactTypeCache();
    }

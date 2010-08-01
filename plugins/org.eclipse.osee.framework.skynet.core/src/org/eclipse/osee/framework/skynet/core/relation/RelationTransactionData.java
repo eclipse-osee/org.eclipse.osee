@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.skynet.core.relation;
 
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidRelation;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
@@ -35,7 +34,7 @@ public class RelationTransactionData extends BaseTransactionData {
    private final RelationLink relation;
    private final RelationEventType relationEventType;
 
-   public RelationTransactionData(RelationLink relation, ModificationType modificationType, RelationEventType relationEventType) throws OseeDataStoreException {
+   public RelationTransactionData(RelationLink relation, ModificationType modificationType, RelationEventType relationEventType) {
       super(relation.getId(), modificationType);
       this.relation = relation;
       this.relationEventType = relationEventType;
@@ -67,7 +66,8 @@ public class RelationTransactionData extends BaseTransactionData {
    }
 
    @Override
-   protected void internalOnRollBack() throws OseeCoreException {
+   protected void internalOnRollBack() {
+      // do nothing
    }
 
    @Override

@@ -97,6 +97,7 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
 
       @Override
       public void detectedRowAndColumnCounts(int rowCount, int columnCount) {
+         // do nothing
       }
 
       @Override
@@ -198,6 +199,7 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
 
       @Override
       public void reachedEndOfWorksheet() {
+         // do nothing
       }
 
    }

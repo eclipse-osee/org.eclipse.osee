@@ -107,7 +107,7 @@ public final class AttributeChange extends Change {
       throw new AttributeDoesNotExist(String.format("Could not find Attribute %d on Artifact %d", attrId, getArtId()));
    }
 
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings("rawtypes")
    @Override
    public Object getAdapter(Class adapter) {
       Object toReturn = super.getAdapter(adapter);

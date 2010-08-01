@@ -39,9 +39,6 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
  */
 public class AttributeTypeManager {
 
-   private AttributeTypeManager() {
-   }
-
    public static AbstractOseeCache<AttributeType> getCache() {
       return Activator.getInstance().getOseeCacheService().getAttributeTypeCache();
    }
@@ -170,12 +167,12 @@ public class AttributeTypeManager {
       return getType(typeToken).getId();
    }
 
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings("rawtypes")
    public static boolean isBaseTypeCompatible(Class<? extends Attribute> baseType, String attributeTypeName) throws OseeCoreException {
       return baseType.isAssignableFrom(getAttributeBaseClass(getType(attributeTypeName)));
    }
 
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings("rawtypes")
    public static boolean isBaseTypeCompatible(Class<? extends Attribute> baseType, IAttributeType attributeType) throws OseeCoreException {
       return baseType.isAssignableFrom(getAttributeBaseClass(attributeType));
    }

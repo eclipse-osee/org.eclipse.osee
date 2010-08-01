@@ -23,8 +23,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
  * @author Donald G. Dunne
  */
 public final class GlobalXViewerSettings {
-   private GlobalXViewerSettings() {
-   }
 
    public static Artifact getCustomArtifact() throws OseeCoreException {
       return OseeSystemArtifacts.getCachedArtifact(CoreArtifactTypes.XViewerGlobalCustomization,

@@ -58,7 +58,7 @@ public class HttpCommitDataRequester {
       }
    }
 
-   private static IAccessControlService getAccessControlService() throws OseeCoreException {
+   private static IAccessControlService getAccessControlService() {
       return Activator.getInstance().getAccessControlService();
    }
 

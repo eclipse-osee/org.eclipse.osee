@@ -14,5 +14,5 @@ package org.eclipse.osee.framework.skynet.core.event2;
  * @author Donald G. Dunne
  */
 public class FrameworkEvent {
-
+   // do nothing
 }

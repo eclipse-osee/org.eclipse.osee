@@ -106,7 +106,7 @@ public class ClientDashboardRequestHandler implements IHttpServerRequest {
 
       File file = Platform.getLogFileLocation().removeFileExtension().toFile();
       file = new File(file, ".bak_0.log");
-      if (file != null && file.exists()) {
+      if (file.exists()) {
          files.add(file);
       }
 
@@ -148,9 +148,7 @@ public class ClientDashboardRequestHandler implements IHttpServerRequest {
                   try {
                      Lib.inputStreamToOutputStream(inputStream, outputStream);
                   } finally {
-                     if (inputStream != null) {
-                        inputStream.close();
-                     }
+                     inputStream.close();
                   }
                }
             } finally {

@@ -1077,7 +1077,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
       return hasDirtyAttributes() || hasDirtyRelations() || hasDirtyArtifactType();
    }
 
-   private IAccessControlService getAccessControlService() throws OseeCoreException {
+   private IAccessControlService getAccessControlService() {
       return Activator.getInstance().getAccessControlService();
    }
 

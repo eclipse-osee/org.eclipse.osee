@@ -38,7 +38,7 @@ public class WorkbenchUserService implements IWorkbenchUserService {
       }
 
       @Override
-      public String getName() throws OseeCoreException {
+      public String getName() {
          return user.getName();
       }
 

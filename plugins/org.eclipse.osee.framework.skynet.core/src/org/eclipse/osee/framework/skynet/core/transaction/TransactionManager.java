@@ -71,9 +71,6 @@ public final class TransactionManager {
    private static final HashMap<Integer, List<TransactionRecord>> commitArtifactIdMap =
       new HashMap<Integer, List<TransactionRecord>>();
 
-   private TransactionManager() {
-   }
-
    public static List<TransactionRecord> getTransaction(String comment) throws OseeCoreException {
       ArrayList<TransactionRecord> transactions = new ArrayList<TransactionRecord>();
       IOseeStatement chStmt = ConnectionHandler.getStatement();

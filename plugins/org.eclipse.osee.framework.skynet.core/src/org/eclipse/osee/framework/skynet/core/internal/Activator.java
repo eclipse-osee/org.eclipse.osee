@@ -19,7 +19,6 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.OseeServiceTrackerId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.services.IAccessControlService;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
@@ -131,7 +130,7 @@ public class Activator implements BundleActivator, IOseeModelFactoryServiceProvi
    }
 
    @Override
-   public IOseeModelFactoryService getOseeFactoryService() throws OseeCoreException {
+   public IOseeModelFactoryService getOseeFactoryService() {
       return getTracker(OseeServiceTrackerId.OSEE_FACTORY_SERVICE, IOseeModelFactoryService.class);
    }
 
@@ -146,12 +145,12 @@ public class Activator implements BundleActivator, IOseeModelFactoryServiceProvi
    }
 
    @Override
-   public IOseeDatabaseService getOseeDatabaseService() throws OseeDataStoreException {
+   public IOseeDatabaseService getOseeDatabaseService() {
       return getTracker(OseeServiceTrackerId.OSEE_DATABASE_SERVICE, IOseeDatabaseService.class);
    }
 
    @Override
-   public ILifecycleService getLifecycleServices() throws OseeCoreException {
+   public ILifecycleService getLifecycleServices() {
       return getTracker(OseeServiceTrackerId.LIFECYCLE_SERVER, ILifecycleService.class);
    }
 
@@ -161,7 +160,7 @@ public class Activator implements BundleActivator, IOseeModelFactoryServiceProvi
       return clazz.cast(service);
    }
 
-   public IAccessControlService getAccessControlService() throws OseeCoreException {
+   public IAccessControlService getAccessControlService() {
       try {
          Bundle bundle = Platform.getBundle("org.eclipse.osee.framework.access");
          if (bundle.getState() != Bundle.ACTIVE) {

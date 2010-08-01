@@ -14,7 +14,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -25,9 +24,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 public class BinaryContentUtils {
 
    private final static int MAX_NAME_SIZE = 60;
-
-   private BinaryContentUtils() {
-   }
 
    public static String getContentType(String extension) {
       String contentType = null;
@@ -70,7 +66,7 @@ public class BinaryContentUtils {
       return fileTypeExtension;
    }
 
-   public static String getStorageName(Attribute<?> attribute) throws OseeDataStoreException, OseeStateException {
+   public static String getStorageName(Attribute<?> attribute) throws OseeStateException {
       return attribute.getArtifact().getGuid();
    }
 }

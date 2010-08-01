@@ -26,9 +26,6 @@ public class ArtifactChecks {
    private static final ExtensionDefinedObjects<IArtifactCheck> artifactCheckObjects =
       new ExtensionDefinedObjects<IArtifactCheck>(EXTENSION_ID, ELEMENT_ID, CLASS_NAME_ATTRIBUTE, true);
 
-   private ArtifactChecks() {
-   }
-
    public static List<IArtifactCheck> getArtifactChecks() {
       return artifactCheckObjects.getObjects();
    }

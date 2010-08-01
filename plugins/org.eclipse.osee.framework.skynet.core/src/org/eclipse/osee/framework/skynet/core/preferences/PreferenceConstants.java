@@ -16,9 +16,6 @@ package org.eclipse.osee.framework.skynet.core.preferences;
  */
 public class PreferenceConstants {
 
-   private PreferenceConstants() {
-
-   }
    public static final String WORDWRAP_KEY = "org.eclipse.osee.framework.skynet.core.preferences.WordWrap";
 
 }

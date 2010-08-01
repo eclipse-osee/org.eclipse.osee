@@ -16,7 +16,6 @@ import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
 
 /**
  * @author Ryan D. Brooks
@@ -37,7 +36,7 @@ public class XmlDataSaxHandler extends AbstractSaxHandler {
    }
 
    @Override
-   public void endElementFound(String uri, String localName, String name) throws SAXException {
+   public void endElementFound(String uri, String localName, String name) {
       if (level == 3) {
          roughArtifact.addAttribute(localName, getContents());
       }
@@ -45,7 +44,7 @@ public class XmlDataSaxHandler extends AbstractSaxHandler {
    }
 
    @Override
-   public void startElementFound(String uri, String localName, String name, Attributes attributes) throws SAXException {
+   public void startElementFound(String uri, String localName, String name, Attributes attributes) {
       level++;
 
       if (level == 2) {

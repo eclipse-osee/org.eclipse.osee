@@ -24,9 +24,6 @@ import org.eclipse.osee.framework.core.exception.OseeExceptions;
  */
 public class ArtifactURL {
 
-   private ArtifactURL() {
-   }
-
    public static URL getExternalArtifactLink(final Artifact artifact) throws OseeCoreException {
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("guid", artifact.getGuid());

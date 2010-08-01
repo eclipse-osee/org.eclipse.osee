@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
 
 /**
  * <pre>
@@ -64,7 +63,7 @@ public class ArtifactXmlQueryResultParser extends AbstractSaxHandler {
    }
 
    @Override
-   public void startElementFound(String uri, String localName, String name, Attributes attributes) throws SAXException {
+   public void startElementFound(String uri, String localName, String name, Attributes attributes) {
       try {
          if (name.equalsIgnoreCase("search")) {
             currentResult = new XmlArtifactSearchResult();
@@ -119,9 +118,10 @@ public class ArtifactXmlQueryResultParser extends AbstractSaxHandler {
    }
 
    @Override
-   public void endElementFound(String uri, String localName, String name) throws SAXException {
+   public void endElementFound(String uri, String localName, String name) {
       try {
          if (name.equalsIgnoreCase("search")) {
+            // do nothing
          } else if (name.equalsIgnoreCase("match")) {
             if (currentResult != null) {
                results.add(currentResult);

@@ -24,9 +24,6 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
  */
 public class OseeEnumTypeManager {
 
-   private OseeEnumTypeManager() {
-   }
-
    public static AbstractOseeCache<OseeEnumType> getCache() {
       return Activator.getInstance().getOseeCacheService().getEnumTypeCache();
    }

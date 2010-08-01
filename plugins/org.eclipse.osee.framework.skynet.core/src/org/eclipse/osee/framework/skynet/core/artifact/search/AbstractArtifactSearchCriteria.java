@@ -24,7 +24,9 @@ public abstract class AbstractArtifactSearchCriteria {
 
    public abstract void addJoinArtId(ArtifactQueryBuilder builder, boolean left) throws OseeDataStoreException;
 
+   @SuppressWarnings("unused")
    public void cleanUp() throws OseeDataStoreException {
+      // provided for subclass implementation
    }
 
    @Override

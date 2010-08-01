@@ -49,6 +49,7 @@ public abstract class AbstractClientDataAccessor<T extends IOseeStorable> implem
       }
    }
 
+   @SuppressWarnings("unused")
    @Override
    public void store(Collection<T> types) throws OseeCoreException {
       //do nothing

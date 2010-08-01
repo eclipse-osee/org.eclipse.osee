@@ -47,7 +47,7 @@ public class DefaultAttributeDataProvider extends AbstractAttributeDataProvider 
    }
 
    @Override
-   public void setDisplayableString(String toDisplay) throws OseeDataStoreException {
+   public void setDisplayableString(String toDisplay) {
       throw new UnsupportedOperationException();
    }
 
@@ -100,7 +100,7 @@ public class DefaultAttributeDataProvider extends AbstractAttributeDataProvider 
    }
 
    @Override
-   public Object[] getData() throws OseeDataStoreException {
+   public Object[] getData() {
       return new Object[] {rawStringValue, dataStore.getLocator()};
    }
 

@@ -14,7 +14,6 @@ package org.eclipse.osee.framework.skynet.core.conflict;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.core.exception.BranchMergeException;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 
@@ -38,7 +37,7 @@ public class RelationConflict extends Conflict {
    }
 
    @Override
-   public int getObjectId() throws OseeCoreException {
+   public int getObjectId() {
       return 0;
    }
 
@@ -96,6 +95,7 @@ public class RelationConflict extends Conflict {
       return false;
    }
 
+   @SuppressWarnings("rawtypes")
    @Override
    public Object getAdapter(Class adapter) {
       return null;
@@ -107,7 +107,7 @@ public class RelationConflict extends Conflict {
    }
 
    @Override
-   public boolean applyPreviousMerge(int mergeBranchId, int destBranchId) throws OseeCoreException {
+   public boolean applyPreviousMerge(int mergeBranchId, int destBranchId) {
       return false;
    }
 }

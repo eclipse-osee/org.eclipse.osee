@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.core.exception.BranchMergeException;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
@@ -62,9 +61,6 @@ public class ConflictManagerInternal {
 
    private static final String GET_COMMIT_TRANSACTION_COMMENT =
       "SELECT transaction_id FROM osee_tx_details WHERE osee_comment = ? AND branch_id = ?";
-
-   private ConflictManagerInternal() {
-   }
 
    public static List<Conflict> getConflictsPerBranch(TransactionRecord commitTransaction, IProgressMonitor monitor) throws OseeCoreException {
       monitor.beginTask(String.format("Loading Merge Manager for Transaction %d", commitTransaction.getId()), 100);
@@ -105,10 +101,7 @@ public class ConflictManagerInternal {
       // transaction version
       int commitTransactionId = getCommitTransaction(sourceBranch, destinationBranch);
       if (commitTransactionId > 0) {
-         try {
-            return getConflictsPerBranch(TransactionManager.getTransactionId(commitTransactionId), monitor);
-         } catch (TransactionDoesNotExist ex) {
-         }
+         return getConflictsPerBranch(TransactionManager.getTransactionId(commitTransactionId), monitor);
       }
       if (sourceBranch == null || destinationBranch == null) {
          throw new OseeArgumentException(String.format("Source Branch = %s Destination Branch = %s",

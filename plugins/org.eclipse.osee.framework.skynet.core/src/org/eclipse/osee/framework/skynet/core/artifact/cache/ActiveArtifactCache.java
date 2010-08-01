@@ -14,16 +14,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactKey;
 
@@ -54,14 +51,14 @@ public class ActiveArtifactCache extends AbstractArtifactCache {
    }
 
    @Override
-   public Object cache(Artifact artifact) throws OseeCoreException {
+   public Object cache(Artifact artifact) {
       Object object = super.cache(artifact);
       byArtifactTypeCache.put(artifact.getArtifactType(), new ArtifactKey(artifact), object);
       return object;
    }
 
    @Override
-   public void deCache(Artifact artifact) throws OseeCoreException {
+   public void deCache(Artifact artifact) {
       super.deCache(artifact);
       byArtifactTypeCache.remove(artifact.getArtifactType(), new ArtifactKey(artifact));
       // TODO ?
@@ -69,41 +66,41 @@ public class ActiveArtifactCache extends AbstractArtifactCache {
       //      deCacheFromStaticIdCache(artifact);
    }
 
-   private void deCacheFromTextCache(Artifact artifact) {
-      List<Pair<String, IOseeBranch>> toRemove = new ArrayList<Pair<String, IOseeBranch>>();
-      for (Entry<Pair<String, IOseeBranch>, Object> entry : keyedArtifactCache.entrySet()) {
-         Object object = entry.getValue();
-         Artifact cachedArt = asArtifact(object);
-         if (cachedArt == null || cachedArt.equals(artifact)) {
-            toRemove.add(entry.getKey());
-         }
-      }
-
-      for (Pair<String, IOseeBranch> key : toRemove) {
-         keyedArtifactCache.remove(key.getFirst(), key.getSecond());
-      }
-   }
-
-   private void deCacheFromStaticIdCache(Artifact artifact) {
-      HashCollection<String, Object> keysToRemove = new HashCollection<String, Object>();
-      for (String name : staticIdArtifactCache.keySet()) {
-         Collection<Object> items = staticIdArtifactCache.getValues(name);
-         if (items != null) {
-            for (Object object : items) {
-               Artifact cachedArt = asArtifact(object);
-               if (cachedArt == null || cachedArt.equals(artifact)) {
-                  keysToRemove.put(name, object);
-               }
-            }
-         }
-      }
-
-      for (String name : keysToRemove.keySet()) {
-         for (Object object : keysToRemove.getValues(name)) {
-            staticIdArtifactCache.removeValue(name, object);
-         }
-      }
-   }
+   //   private void deCacheFromTextCache(Artifact artifact) {
+   //      List<Pair<String, IOseeBranch>> toRemove = new ArrayList<Pair<String, IOseeBranch>>();
+   //      for (Entry<Pair<String, IOseeBranch>, Object> entry : keyedArtifactCache.entrySet()) {
+   //         Object object = entry.getValue();
+   //         Artifact cachedArt = asArtifact(object);
+   //         if (cachedArt == null || cachedArt.equals(artifact)) {
+   //            toRemove.add(entry.getKey());
+   //         }
+   //      }
+   //
+   //      for (Pair<String, IOseeBranch> key : toRemove) {
+   //         keyedArtifactCache.remove(key.getFirst(), key.getSecond());
+   //      }
+   //   }
+   //
+   //   private void deCacheFromStaticIdCache(Artifact artifact) {
+   //      HashCollection<String, Object> keysToRemove = new HashCollection<String, Object>();
+   //      for (String name : staticIdArtifactCache.keySet()) {
+   //         Collection<Object> items = staticIdArtifactCache.getValues(name);
+   //         if (items != null) {
+   //            for (Object object : items) {
+   //               Artifact cachedArt = asArtifact(object);
+   //               if (cachedArt == null || cachedArt.equals(artifact)) {
+   //                  keysToRemove.put(name, object);
+   //               }
+   //            }
+   //         }
+   //      }
+   //
+   //      for (String name : keysToRemove.keySet()) {
+   //         for (Object object : keysToRemove.getValues(name)) {
+   //            staticIdArtifactCache.removeValue(name, object);
+   //         }
+   //      }
+   //   }
 
    @Override
    protected Integer getKey2(Artifact artifact) {
@@ -172,7 +169,7 @@ public class ActiveArtifactCache extends AbstractArtifactCache {
     * @returns the previous value associated with keys, or null if there was no mapping for key. (A null return can also
     * indicate that the map previously associated null with key, if the implementation supports null values.)
     */
-   public Artifact cacheByText(String key, Artifact artifact) throws OseeCoreException {
+   public Artifact cacheByText(String key, Artifact artifact) {
       Object object = cache(artifact);
       return asArtifact(keyedArtifactCache.put(key, artifact.getBranch(), object));
    }
@@ -181,7 +178,7 @@ public class ActiveArtifactCache extends AbstractArtifactCache {
     * @returns the previous value associated with keys, or null if there was no mapping for key. (A null return can also
     * indicate that the map previously associated null with key, if the implementation supports null values.)
     */
-   public Artifact cacheByStaticId(String staticId, Artifact artifact) throws OseeCoreException {
+   public Artifact cacheByStaticId(String staticId, Artifact artifact) {
       Object object = cache(artifact);
       return asArtifact(staticIdArtifactCache.put(staticId, object));
    }

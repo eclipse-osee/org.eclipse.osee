@@ -21,8 +21,11 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Robert A. Fisher
@@ -103,7 +106,8 @@ public class RoughArtifact {
          if (type.isEnumerated() && type.getMaxOccurrences() > 1 && value.contains(",")) {
             return true;
          }
-      } catch (OseeCoreException e) {
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return false;
    }

@@ -22,11 +22,13 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 public class ArtifactCheck implements IArtifactCheck {
    public static final IStatus OK_STATUS = new Status(IStatus.OK, Activator.PLUGIN_ID, null);
 
+   @SuppressWarnings("unused")
    @Override
    public IStatus isDeleteable(Collection<Artifact> artifacts) throws OseeCoreException {
       return OK_STATUS;
    }
 
+   @SuppressWarnings("unused")
    @Override
    public IStatus isRenamable(Collection<Artifact> artifacts) throws OseeCoreException {
       return OK_STATUS;

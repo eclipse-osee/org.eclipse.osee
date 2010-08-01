@@ -47,10 +47,6 @@ public final class UserManager {
    private static boolean userCacheIsLoaded = false;
    private static boolean duringMainUserCreation = false;
 
-   private UserManager() {
-
-   }
-
    /**
     * Returns the currently authenticated user
     * 

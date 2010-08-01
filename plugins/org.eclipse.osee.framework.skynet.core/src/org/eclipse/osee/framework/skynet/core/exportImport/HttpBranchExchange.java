@@ -30,9 +30,6 @@ public class HttpBranchExchange {
    private static final String BRANCH_EXPORT = "exportBranch";
    private static final String BRANCH_IMPORT = "importBranch";
 
-   private HttpBranchExchange() {
-   }
-
    public static void exportBranches(String exportFileName, int... branchIds) throws OseeDataStoreException {
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("function", BRANCH_EXPORT);

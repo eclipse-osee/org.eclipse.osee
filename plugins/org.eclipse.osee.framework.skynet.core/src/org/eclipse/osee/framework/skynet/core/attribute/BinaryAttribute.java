@@ -15,5 +15,5 @@ package org.eclipse.osee.framework.skynet.core.attribute;
  * @author Ryan D. Brooks
  */
 public abstract class BinaryAttribute<T> extends BinaryBackedAttribute<T> {
-
+   // do nothing
 }

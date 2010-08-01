@@ -47,9 +47,6 @@ public class RelationOrderParser {
 
    };
 
-   public RelationOrderParser() {
-   }
-
    public synchronized void loadFromXml(RelationOrderData data, String value) throws OseeCoreException {
       if (data == null) {
          throw new OseeArgumentException("RelationOrderData object cannot be null");
@@ -131,11 +128,12 @@ public class RelationOrderParser {
       }
 
       @Override
-      public void endElementFound(String uri, String localName, String qName) throws SAXException {
+      public void endElementFound(String uri, String localName, String qName) {
+         // do nothing
       }
 
       @Override
-      public void startElementFound(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+      public void startElementFound(String uri, String localName, String qName, Attributes attributes) {
          if ("Order".equals(localName)) {
             String relationType = attributes.getValue("relType");
             String relationSide = attributes.getValue("side");

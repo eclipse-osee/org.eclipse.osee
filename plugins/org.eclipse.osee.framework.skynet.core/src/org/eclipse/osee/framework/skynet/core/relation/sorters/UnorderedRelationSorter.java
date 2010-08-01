@@ -28,5 +28,6 @@ public class UnorderedRelationSorter implements IRelationSorter {
 
    @Override
    public void sort(List<? extends IArtifact> relatives, List<String> relativeSequence) {
+      // do nothing
    }
 }

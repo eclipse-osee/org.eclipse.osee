@@ -11,9 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.change;
 
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
@@ -23,24 +20,12 @@ import org.eclipse.osee.framework.core.model.type.ArtifactType;
  */
 public class ArtifactChangeBuilder extends ChangeBuilder {
 
-   /**
-    * @param sourceGamma
-    * @param artId
-    * @param toTransactionId
-    * @param fromTransactionId
-    * @param artifact
-    * @param modType
-    * @param changeType
-    * @param branch
-    * @param artifactType
-    * @param isHistorical
-    */
    public ArtifactChangeBuilder(Branch branch, ArtifactType artifactType, int sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, boolean isHistorical) {
       super(branch, artifactType, sourceGamma, artId, txDelta, modType, isHistorical);
    }
 
    @Override
-   public Change build(Branch branch) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
+   public Change build(Branch branch) {
       return new ArtifactChange(branch, getSourceGamma(), getArtId(), getTxDelta(), getModType(), isHistorical(),
          loadArtifact(), new ArtifactDelta(getTxDelta(), loadArtifact(), null));
    }

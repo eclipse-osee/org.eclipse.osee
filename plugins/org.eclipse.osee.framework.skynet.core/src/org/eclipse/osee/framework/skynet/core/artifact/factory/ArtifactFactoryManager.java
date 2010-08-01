@@ -15,7 +15,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
@@ -37,10 +36,7 @@ public final class ArtifactFactoryManager {
    private static final DefaultArtifactFactory defaultArtifactFactory = new DefaultArtifactFactory();
    private static Set<ArtifactType> eternalArtifactTypes = null;
 
-   public ArtifactFactoryManager() {
-   }
-
-   public ArtifactFactory getFactory(String artifactTypeName) throws OseeCoreException {
+   public ArtifactFactory getFactory(String artifactTypeName) {
       ArtifactFactory responsibleFactory = null;
       for (ArtifactFactory factory : getFactories()) {
          if (factory.isResponsibleFor(artifactTypeName)) {
@@ -61,7 +57,7 @@ public final class ArtifactFactoryManager {
       return getDefaultArtifactFactory();
    }
 
-   public static synchronized Collection<ArtifactType> getEternalArtifactTypes() throws OseeCoreException {
+   public static synchronized Collection<ArtifactType> getEternalArtifactTypes() {
       if (eternalArtifactTypes == null) {
          eternalArtifactTypes = new HashSet<ArtifactType>();
          for (ArtifactFactory factory : getFactories()) {

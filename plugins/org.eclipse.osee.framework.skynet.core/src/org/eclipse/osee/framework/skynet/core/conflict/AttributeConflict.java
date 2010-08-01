@@ -188,7 +188,7 @@ public class AttributeConflict extends Conflict {
    }
 
    @Override
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings("rawtypes")
    public Object getAdapter(Class adapter) {
       if (adapter == null) {
          throw new IllegalArgumentException("adapter can not be null");
@@ -203,6 +203,7 @@ public class AttributeConflict extends Conflict {
          try {
             attribute = getSourceAttribute(true);
          } catch (AttributeDoesNotExist ex) {
+            // do nothing
          }
          if (adapter.isInstance(attribute)) {
             return attribute;
@@ -247,17 +248,17 @@ public class AttributeConflict extends Conflict {
    }
 
    @Override
-   public boolean mergeEqualsSource() throws OseeCoreException {
+   public boolean mergeEqualsSource() {
       return mergeEqualsSource;
    }
 
    @Override
-   public boolean mergeEqualsDestination() throws OseeCoreException {
+   public boolean mergeEqualsDestination() {
       return mergeEqualsDest;
    }
 
    @Override
-   public boolean sourceEqualsDestination() throws OseeCoreException {
+   public boolean sourceEqualsDestination() {
       return sourceEqualsDest;
    }
 
@@ -418,7 +419,7 @@ public class AttributeConflict extends Conflict {
    }
 
    @Override
-   public int getObjectId() throws OseeCoreException {
+   public int getObjectId() {
       return attrId;
    }
 

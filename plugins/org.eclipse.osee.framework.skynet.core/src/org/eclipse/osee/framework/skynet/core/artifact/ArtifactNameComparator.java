@@ -20,10 +20,6 @@ public class ArtifactNameComparator implements Comparator<IArtifact> {
    private final Matcher numberMatcher = numberPattern.matcher("");
    private boolean descending = false;
 
-   public ArtifactNameComparator() {
-
-   }
-
    public ArtifactNameComparator(boolean descending) {
       this.descending = descending;
    }

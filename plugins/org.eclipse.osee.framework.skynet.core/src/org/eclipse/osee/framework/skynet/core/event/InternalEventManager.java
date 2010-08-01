@@ -82,7 +82,7 @@ public class InternalEventManager {
    private static boolean enableRemoteEventLoopback = false;
 
    // Kick LOCAL "remote event manager" event
-   static void kickRemoteEventManagerEvent(final Sender sender, final RemoteEventServiceEventType remoteEventServiceEventType) throws OseeCoreException {
+   static void kickRemoteEventManagerEvent(final Sender sender, final RemoteEventServiceEventType remoteEventServiceEventType) {
       if (isDisableEvents()) {
          return;
       }
@@ -107,7 +107,7 @@ public class InternalEventManager {
    /*
     * Kick LOCAL and REMOTE broadcast event
     */
-   static void kickBroadcastEvent(final Sender sender, final BroadcastEventType broadcastEventType, final String[] userIds, final String message) throws OseeCoreException {
+   static void kickBroadcastEvent(final Sender sender, final BroadcastEventType broadcastEventType, final String[] userIds, final String message) {
       if (isDisableEvents()) {
          return;
       }
@@ -266,17 +266,15 @@ public class InternalEventManager {
             try {
                if (sender.isLocal() && accessControlEvent.getEventType().isRemoteEventType()) {
                   Integer branchId = null;
-                  if (loadedArtifacts != null && !loadedArtifacts.getLoadedArtifacts().isEmpty()) {
+                  if (loadedArtifacts.getLoadedArtifacts().isEmpty()) {
                      branchId = loadedArtifacts.getLoadedArtifacts().iterator().next().getBranch().getId();
                   }
-                  if (loadedArtifacts != null) {
-                     Collection<Integer> artifactIds = loadedArtifacts.getAllArtifactIds();
-                     Collection<Integer> artifactTypeIds = loadedArtifacts.getAllArtifactTypeIds();
+                  Collection<Integer> artifactIds = loadedArtifacts.getAllArtifactIds();
+                  Collection<Integer> artifactTypeIds = loadedArtifacts.getAllArtifactTypeIds();
 
-                     RemoteEventManager.kick(new NetworkAccessControlArtifactsEvent(
-                        accessControlEvent.getEventType().name(), branchId == null ? -1 : branchId, artifactIds,
-                        artifactTypeIds, sender.getNetworkSender()));
-                  }
+                  RemoteEventManager.kick(new NetworkAccessControlArtifactsEvent(
+                     accessControlEvent.getEventType().name(), branchId == null ? -1 : branchId, artifactIds,
+                     artifactTypeIds, sender.getNetworkSender()));
                }
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -287,7 +285,7 @@ public class InternalEventManager {
    }
 
    // Kick LOCAL artifact modified event; This event does NOT go external
-   static void kickArtifactModifiedEvent(final Sender sender, final ArtifactModType artifactModType, final Artifact artifact) throws OseeCoreException {
+   static void kickArtifactModifiedEvent(final Sender sender, final ArtifactModType artifactModType, final Artifact artifact) {
       //      OseeEventManager.eventLog("IEM1: kickArtifactModifiedEvent - " + artifactModType + " - " + artifact.getGuid() + " - " + sender + " - " + artifact.getDirtySkynetAttributeChanges());
       Runnable runnable = new Runnable() {
          @Override
@@ -301,7 +299,7 @@ public class InternalEventManager {
    }
 
    // Kick LOCAL relation modified event; This event does NOT go external
-   static void kickRelationModifiedEvent(final Sender sender, final RelationEventType relationEventType, final RelationLink link, final Branch branch, final String relationType) throws OseeCoreException {
+   static void kickRelationModifiedEvent(final Sender sender, final RelationEventType relationEventType, final RelationLink link, final Branch branch, final String relationType) {
       //      OseeEventManager.eventLog("IEM1: kickRelationModifiedEvent - " + relationEventType + " - " + link + " - " + sender);
       Runnable runnable = new Runnable() {
          @Override
@@ -315,7 +313,7 @@ public class InternalEventManager {
    }
 
    // Kick LOCAL and REMOTE purged event depending on sender
-   static void kickArtifactsPurgedEvent(final Sender sender, final LoadedArtifacts loadedArtifacts) throws OseeCoreException {
+   static void kickArtifactsPurgedEvent(final Sender sender, final LoadedArtifacts loadedArtifacts) {
       if (isDisableEvents()) {
          return;
       }
@@ -343,7 +341,7 @@ public class InternalEventManager {
    }
 
    // Kick LOCAL and REMOTE artifact change type depending on sender
-   static void kickArtifactsChangeTypeEvent(final Sender sender, final int toArtifactTypeId, final LoadedArtifacts loadedArtifacts) throws OseeCoreException {
+   static void kickArtifactsChangeTypeEvent(final Sender sender, final int toArtifactTypeId, final LoadedArtifacts loadedArtifacts) {
       if (isDisableEvents()) {
          return;
       }
@@ -371,7 +369,7 @@ public class InternalEventManager {
    }
 
    // Kick LOCAL and remote transaction deleted event
-   static void kickTransactionsPurgedEvent(final Sender sender, final int[] transactionIds) throws OseeCoreException {
+   static void kickTransactionsPurgedEvent(final Sender sender, final int[] transactionIds) {
       //TODO This needs to be converted into the individual artifacts and relations that were deleted/modified
       if (isDisableEvents()) {
          return;

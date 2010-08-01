@@ -27,9 +27,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class AttributeURL {
 
-   private AttributeURL() {
-   }
-
    public static URL getStorageURL(int gammaId, String artifactGuid, String extension) throws OseeDataStoreException, MalformedURLException, OseeAuthenticationRequiredException {
       Map<String, String> parameterMap = new HashMap<String, String>();
       parameterMap.put("sessionId", ClientSessionManager.getSessionId());

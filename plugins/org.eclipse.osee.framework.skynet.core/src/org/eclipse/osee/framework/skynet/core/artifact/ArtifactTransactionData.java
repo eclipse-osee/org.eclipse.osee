@@ -57,10 +57,12 @@ public class ArtifactTransactionData extends BaseTransactionData {
 
    @Override
    protected void internalClearDirtyState() {
+      // provided for subclass implementation
    }
 
    @Override
-   protected void internalOnRollBack() throws OseeCoreException {
+   protected void internalOnRollBack() {
+      // provided for subclass implementation
    }
 
    @Override

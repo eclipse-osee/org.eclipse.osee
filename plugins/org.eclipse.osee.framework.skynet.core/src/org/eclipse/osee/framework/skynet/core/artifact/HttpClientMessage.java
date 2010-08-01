@@ -24,9 +24,6 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
  */
 public class HttpClientMessage {
 
-   private HttpClientMessage() {
-   }
-
    public static <J, K> J send(String context, Map<String, String> parameters, ITranslatorId requestId, K requestData, ITranslatorId responseId) throws OseeCoreException {
       if (!parameters.containsKey("sessionId")) {
          parameters.put("sessionId", ClientSessionManager.getSessionId());

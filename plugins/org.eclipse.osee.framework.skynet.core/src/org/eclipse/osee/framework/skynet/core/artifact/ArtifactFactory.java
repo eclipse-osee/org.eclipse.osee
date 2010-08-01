@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
@@ -104,7 +103,7 @@ public abstract class ArtifactFactory {
    /**
     * Return true if this artifact factory is responsible for creating artifactType.
     */
-   public boolean isResponsibleFor(String artifactTypeName) throws OseeDataStoreException {
+   public boolean isResponsibleFor(String artifactTypeName) {
       return artifactTypeNames != null && artifactTypeNames.contains(artifactTypeName);
    }
 
@@ -112,7 +111,7 @@ public abstract class ArtifactFactory {
     * Return any artifact types of artifacts that should never be garbage collected. This includes artifacts like user
     * artifacts and config artifacts that should always stay loaded for performance reasons.
     */
-   public Collection<ArtifactType> getEternalArtifactTypes() throws OseeCoreException {
+   public Collection<ArtifactType> getEternalArtifactTypes() {
       return Collections.emptyList();
    }
 }

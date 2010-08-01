@@ -37,7 +37,7 @@ public abstract class AbstractArtifactCache {
       guidCache = new CompositeKeyHashMap<String, Integer, Object>(initialCapacity, true);
    }
 
-   public Object cache(Artifact artifact) throws OseeCoreException {
+   public Object cache(Artifact artifact) {
       Object object = asCacheObject(artifact);
       Integer key2 = getKey2(artifact);
       idCache.put(artifact.getArtId(), key2, object);
@@ -45,7 +45,7 @@ public abstract class AbstractArtifactCache {
       return object;
    }
 
-   public void deCache(Artifact artifact) throws OseeCoreException {
+   public void deCache(Artifact artifact) {
       Integer key2 = getKey2(artifact);
       idCache.remove(artifact.getArtId(), key2);
       guidCache.remove(artifact.getGuid(), key2);
@@ -90,7 +90,7 @@ public abstract class AbstractArtifactCache {
       return idCache.get(uniqueId, key2);
    }
 
-   private Object asCacheObject(Artifact artifact) throws OseeCoreException {
+   private Object asCacheObject(Artifact artifact) {
       if (ArtifactFactoryManager.getEternalArtifactTypes().contains(artifact.getArtifactType())) {
          return artifact;
       } else if (artifact.isDirty()) {

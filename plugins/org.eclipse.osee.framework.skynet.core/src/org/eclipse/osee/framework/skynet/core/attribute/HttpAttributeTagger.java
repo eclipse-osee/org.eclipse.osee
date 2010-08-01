@@ -146,6 +146,7 @@ public class HttpAttributeTagger {
    private final class EventRelay implements IArtifactEventListener, IFrameworkTransactionEventListener, IBranchEventListener, IArtifactsPurgedEventListener, IArtifactsChangeTypeEventListener, ITransactionEventListener, ITransactionsDeletedEventListener {
       @Override
       public void handleBranchEventREM1(Sender sender, BranchEventType branchModType, int branchId) {
+         // do nothing
       }
 
       @Override
@@ -171,6 +172,7 @@ public class HttpAttributeTagger {
 
       @Override
       public void handleArtifactsChangeTypeEvent(Sender sender, int toArtifactTypeId, LoadedArtifacts loadedArtifacts) {
+         // Need to fix tags based on this event
       }
 
       @Override
@@ -249,10 +251,12 @@ public class HttpAttributeTagger {
 
       @Override
       public void handleBranchEvent(Sender sender, BranchEvent branchEvent) {
+         // Need to fix tags based on this event
       }
 
       @Override
       public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
+         // Need to fix tags based on this event
       }
 
    }

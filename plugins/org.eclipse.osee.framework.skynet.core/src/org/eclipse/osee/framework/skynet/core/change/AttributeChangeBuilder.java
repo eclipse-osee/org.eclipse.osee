@@ -11,9 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.change;
 
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
@@ -47,7 +44,7 @@ public final class AttributeChangeBuilder extends ChangeBuilder {
    }
 
    @Override
-   public Change build(Branch branch) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
+   public Change build(Branch branch) {
       return new AttributeChange(branch, getSourceGamma(), getArtId(), getTxDelta(), getModType(), isValue, wasValue,
          attrId, attributeType, artModType, isHistorical(), loadArtifact(), new ArtifactDelta(getTxDelta(),
             loadArtifact(), null));

@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.skynet.core.conflict;
 
 import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.INCLUDE_DELETED;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ConflictType;
@@ -19,8 +20,10 @@ import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
@@ -137,7 +140,7 @@ public abstract class Conflict implements IAdaptable {
       return commitTransactionId;
    }
 
-   public boolean okToOverwriteMerge() throws OseeCoreException {
+   public boolean okToOverwriteMerge() {
       if (status.equals(ConflictStatus.RESOLVED) || status.equals(ConflictStatus.COMMITTED)) {
          return false;
       }
@@ -153,6 +156,7 @@ public abstract class Conflict implements IAdaptable {
             passedStatus = ConflictStatus.RESOLVED;
          }
       } catch (AttributeDoesNotExist ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       status =
          ConflictStatusManager.computeStatus(sourceGamma, destGamma, mergeBranch.getId(), objectID,
@@ -256,7 +260,9 @@ public abstract class Conflict implements IAdaptable {
       return status;
    }
 
+   @SuppressWarnings("unused")
    public void computeEqualsValues() throws OseeCoreException {
+      // provided for subclass implementation
    }
 
    public abstract String getSourceDisplayData() throws OseeCoreException;

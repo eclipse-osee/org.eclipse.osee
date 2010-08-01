@@ -16,7 +16,6 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.JoinUtility.CharJoinQuery;
@@ -50,7 +49,7 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
       this(attributeTypeName, value, false);
    }
 
-   public AttributeCriteria(IAttributeType attributeType, String value) throws OseeDataStoreException, OseeTypeDoesNotExist {
+   public AttributeCriteria(IAttributeType attributeType, String value) throws OseeDataStoreException {
       this(attributeType, value, null, false, Operator.EQUAL);
    }
 
@@ -122,7 +121,7 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
       return values;
    }
 
-   public AttributeCriteria(IAttributeType attributeType, String value, Collection<String> values, boolean historical, Operator operator) throws OseeDataStoreException, OseeTypeDoesNotExist {
+   public AttributeCriteria(IAttributeType attributeType, String value, Collection<String> values, boolean historical, Operator operator) throws OseeDataStoreException {
       this.attributeType = attributeType;
 
       if (values == null) {

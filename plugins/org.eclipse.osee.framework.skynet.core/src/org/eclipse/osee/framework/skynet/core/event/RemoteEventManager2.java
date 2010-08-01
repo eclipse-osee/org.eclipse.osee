@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.event;
 
-import java.rmi.RemoteException;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -74,7 +73,7 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
    }
 
    @Override
-   public void onEvent(final RemoteEvent remoteEvent) throws RemoteException {
+   public void onEvent(final RemoteEvent remoteEvent) {
       Job job =
          new Job(String.format("[%s] - receiving [%s]", getClass().getSimpleName(),
             remoteEvent.getClass().getSimpleName())) {
@@ -385,13 +384,9 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
          Thread thread = new Thread() {
             @Override
             public void run() {
-               try {
-                  String newSessionId = GUID.create();
-                  remoteEvent.getNetworkSender().setSessionId(newSessionId);
-                  instance.onEvent(remoteEvent);
-               } catch (RemoteException ex) {
-                  OseeEventManager.eventLog("REM2: kick w/ loopback", ex);
-               }
+               String newSessionId = GUID.create();
+               remoteEvent.getNetworkSender().setSessionId(newSessionId);
+               instance.onEvent(remoteEvent);
             }
          };
          thread.start();

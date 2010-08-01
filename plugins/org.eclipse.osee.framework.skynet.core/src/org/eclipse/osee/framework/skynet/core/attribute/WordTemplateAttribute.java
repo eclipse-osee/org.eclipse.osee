@@ -15,4 +15,5 @@ package org.eclipse.osee.framework.skynet.core.attribute;
  * @author Jeff C. Phillips
  */
 public class WordTemplateAttribute extends WordAttribute {
+   // do nothing
 }

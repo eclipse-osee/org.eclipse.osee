@@ -44,7 +44,7 @@ public class UserArtifactFactory extends ArtifactFactory {
    }
 
    @Override
-   public Collection<ArtifactType> getEternalArtifactTypes() throws OseeCoreException {
+   public Collection<ArtifactType> getEternalArtifactTypes() {
       List<ArtifactType> artifactTypes = new ArrayList<ArtifactType>();
       try {
          artifactTypes.add(ArtifactTypeManager.getTypeByGuid(CoreArtifactTypes.User.getGuid()));

@@ -313,6 +313,7 @@ public class RemoteEventManager {
 
       @Override
       public void serviceRemoved(ServiceItem serviceItem) {
+         // do nothing
       }
    }
 
@@ -332,7 +333,7 @@ public class RemoteEventManager {
       };
 
       @Override
-      public void onEvent(final ISkynetEvent[] events) throws RemoteException {
+      public void onEvent(final ISkynetEvent[] events) {
 
          final List<ArtifactTransactionModifiedEvent> xModifiedEvents =
             new LinkedList<ArtifactTransactionModifiedEvent>();

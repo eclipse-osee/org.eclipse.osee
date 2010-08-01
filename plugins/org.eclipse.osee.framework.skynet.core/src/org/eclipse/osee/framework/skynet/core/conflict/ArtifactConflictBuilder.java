@@ -12,7 +12,6 @@
 package org.eclipse.osee.framework.skynet.core.conflict;
 
 import java.util.Set;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 
@@ -32,7 +31,7 @@ public class ArtifactConflictBuilder extends ConflictBuilder {
    }
 
    @Override
-   public Conflict getConflict(Branch mergeBranch, Set<Integer> artIdSet) throws OseeCoreException {
+   public Conflict getConflict(Branch mergeBranch, Set<Integer> artIdSet) {
       return new ArtifactConflict(sourceGamma, destGamma, artId, toTransactionId, mergeBranch, sourceBranch,
          destBranch, sourceModType, destModType, artTypeId);
    }

@@ -11,8 +11,6 @@
 package org.eclipse.osee.framework.ui.admin;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -68,12 +66,7 @@ public class ClientsStatsTab {
    }
 
    private void refreshReport() {
-      try {
-         reportText.append(ArtifactCache.report() + "\n");
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AdminPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-
+      reportText.append(ArtifactCache.report() + "\n");
    }
 
 }

@@ -81,6 +81,7 @@ public class AttributeLoader {
       public String uri = "";
 
       public AttrData() {
+         // do nothing
       }
 
       public AttrData(IOseeStatement chStmt, boolean historical) throws OseeDataStoreException {

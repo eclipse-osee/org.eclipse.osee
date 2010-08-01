@@ -69,7 +69,7 @@ public final class ArtifactCache {
       return arts;
    }
 
-   public static String report() throws OseeCoreException {
+   public static String report() {
       StringBuilder sb = new StringBuilder();
       sb.append("Active:");
       sb.append(ACTIVE_CACHE.toString());
@@ -79,7 +79,7 @@ public final class ArtifactCache {
       return sb.toString();
    }
 
-   public static Collection<Artifact> getDirtyArtifacts() throws OseeCoreException {
+   public static Collection<Artifact> getDirtyArtifacts() {
       return ACTIVE_CACHE.getAllDirties();
    }
 

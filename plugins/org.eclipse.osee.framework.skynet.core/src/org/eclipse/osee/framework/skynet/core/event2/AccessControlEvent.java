@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.skynet.core.event2;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkSender;
@@ -72,7 +71,7 @@ public class AccessControlEvent extends FrameworkEvent {
       this.eventType = eventType;
    }
 
-   public boolean isForBranch(Branch branch) throws OseeCoreException {
+   public boolean isForBranch(Branch branch) {
       for (DefaultBasicGuidArtifact guidArt : getArtifacts()) {
          if (branch.getGuid().equals(guidArt.getBranchGuid())) {
             return true;

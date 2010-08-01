@@ -51,12 +51,12 @@ public class ClientTransactionAccessor implements ITransactionDataAccessor {
    }
 
    @Override
-   public void loadTransactionRecord(TransactionCache cache, Branch branch) throws OseeCoreException {
+   public void loadTransactionRecord(TransactionCache cache, Branch branch) {
       System.out.println("Transaction Loading");
    }
 
    @Override
-   public TransactionRecord loadTransactionRecord(TransactionCache cache, Branch branch, TransactionVersion transactionType) throws OseeCoreException {
+   public TransactionRecord loadTransactionRecord(TransactionCache cache, Branch branch, TransactionVersion transactionType) {
       System.out.println("Transaction Loading");
       return null;
    }

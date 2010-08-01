@@ -31,9 +31,6 @@ import org.eclipse.osee.framework.skynet.core.internal.accessors.ClientTransacti
  */
 public class ClientCachingServiceFactory {
 
-   public ClientCachingServiceFactory() {
-   }
-
    public IOseeCachingService createService(IOseeModelFactoryServiceProvider factoryProvider) {
       TransactionCache transactionCache = new TransactionCache();
       ClientBranchAccessor clientBranchAccessor = new ClientBranchAccessor(factoryProvider, transactionCache);

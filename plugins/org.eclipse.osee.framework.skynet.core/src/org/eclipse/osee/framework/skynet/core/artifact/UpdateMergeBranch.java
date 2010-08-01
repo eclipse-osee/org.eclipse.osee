@@ -71,7 +71,7 @@ public class UpdateMergeBranch extends DbTransaction {
     * @param mergeBranch
     * @param sourceBranch
     */
-   public UpdateMergeBranch(Branch mergeBranch, ArrayList<Integer> expectedArtIds, Branch destBranch, Branch sourceBranch) throws OseeCoreException {
+   public UpdateMergeBranch(Branch mergeBranch, ArrayList<Integer> expectedArtIds, Branch destBranch, Branch sourceBranch) {
       this.destBranch = destBranch;
       this.expectedArtIds = expectedArtIds;
       this.mergeBranch = mergeBranch;

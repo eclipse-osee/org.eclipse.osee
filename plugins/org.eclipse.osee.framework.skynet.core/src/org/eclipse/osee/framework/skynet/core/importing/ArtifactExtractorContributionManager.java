@@ -31,9 +31,6 @@ public class ArtifactExtractorContributionManager {
    private static final String PARSER_DELEGATE_EXTENSION = Activator.PLUGIN_ID + "." + PARSER_DELEGATE_ELEMENT;
    private static final String CLASS_NAME_ATTRIBUTE = "classname";
 
-   public ArtifactExtractorContributionManager() {
-   }
-
    public List<IArtifactExtractor> getExtractors() {
       ExtensionDefinedObjects<IArtifactExtractor> definedObjects =
          new ExtensionDefinedObjects<IArtifactExtractor>(PARSER_EXTENSION, PARSER_ELEMENT, CLASS_NAME_ATTRIBUTE, true);

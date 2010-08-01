@@ -46,12 +46,14 @@ public final class JavaObjectAttribute extends BinaryAttribute<Object> {
                inputStream.reset();
             }
          } catch (IOException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
          try {
             if (objectStream != null) {
                objectStream.close();
             }
          } catch (IOException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
       return obj;
@@ -74,7 +76,7 @@ public final class JavaObjectAttribute extends BinaryAttribute<Object> {
    }
 
    @Override
-   protected Object convertStringToValue(String value) throws OseeCoreException {
+   protected Object convertStringToValue(String value) {
       if (value == null) {
          return null;
       }

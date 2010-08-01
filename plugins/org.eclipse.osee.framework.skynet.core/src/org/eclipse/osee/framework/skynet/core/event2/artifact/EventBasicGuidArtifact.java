@@ -37,11 +37,11 @@ public class EventBasicGuidArtifact extends DefaultBasicGuidArtifact {
       this.eventModType = eventModType;
    }
 
-   public EventBasicGuidArtifact(EventModType eventModType, Artifact artifact) throws OseeCoreException {
+   public EventBasicGuidArtifact(EventModType eventModType, Artifact artifact) {
       this(eventModType, artifact.getBranch().getGuid(), artifact.getArtifactType().getGuid(), artifact.getGuid());
    }
 
-   public EventBasicGuidArtifact(EventModType eventModType, IBasicGuidArtifact basicGuidArtifact) throws OseeCoreException {
+   public EventBasicGuidArtifact(EventModType eventModType, IBasicGuidArtifact basicGuidArtifact) {
       this(eventModType, basicGuidArtifact.getBranchGuid(), basicGuidArtifact.getArtTypeGuid(),
          basicGuidArtifact.getGuid());
    }

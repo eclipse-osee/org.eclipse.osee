@@ -134,7 +134,7 @@ public abstract class Change implements IAdaptable {
    public abstract int getItemId();
 
    @Override
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings("rawtypes")
    public Object getAdapter(Class adapter) {
       if (adapter == null) {
          throw new IllegalArgumentException("adapter can not be null");

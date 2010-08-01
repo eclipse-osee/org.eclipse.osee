@@ -35,7 +35,9 @@ public class IncrementingNum {
             try {
                atsDevNum = new Integer(AFile.readFile(numFile).replaceAll("\\s", ""));
             } catch (NumberFormatException ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             } catch (NullPointerException ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
          atsDevNum++;
