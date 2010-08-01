@@ -51,6 +51,7 @@ public abstract class OSEECheckedFilteredTreeDialog extends MessageDialog {
    }
 
    protected void createPreCustomArea(Composite parent) {
+      // provided for subclass implementation
    }
 
    /**

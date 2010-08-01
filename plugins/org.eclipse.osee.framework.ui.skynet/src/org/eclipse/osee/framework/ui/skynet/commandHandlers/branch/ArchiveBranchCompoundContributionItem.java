@@ -13,19 +13,15 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers.branch;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
 import org.eclipse.core.commands.Command;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
@@ -62,21 +58,17 @@ public class ArchiveBranchCompoundContributionItem extends CompoundContributionI
          if (!branches.isEmpty()) {
             Branch selectedBranch = branches.iterator().next();
             if (selectedBranch != null) {
-               try {
-                  String commandId = "org.eclipse.osee.framework.ui.skynet.branch.BranchView.archiveBranch";
-                  Command command = commandService.getCommand(commandId);
-                  CommandContributionItem contributionItem = null;
-                  BranchArchivedState archivedState = selectedBranch.getArchiveState();
-                  String label = (archivedState.isArchived() ? "Unarchive" : "Archive") + " Branch(s)";
-                  ImageDescriptor descriptor =
-                     archivedState.isArchived() ? ImageManager.getImageDescriptor(FrameworkImage.UN_ARCHIVE) : ImageManager.getImageDescriptor(FrameworkImage.ARCHIVE);
-                  contributionItem = createCommand(label, selectedBranch, commandId, descriptor);
+               String commandId = "org.eclipse.osee.framework.ui.skynet.branch.BranchView.archiveBranch";
+               Command command = commandService.getCommand(commandId);
+               CommandContributionItem contributionItem = null;
+               BranchArchivedState archivedState = selectedBranch.getArchiveState();
+               String label = (archivedState.isArchived() ? "Unarchive" : "Archive") + " Branch(s)";
+               ImageDescriptor descriptor =
+                  archivedState.isArchived() ? ImageManager.getImageDescriptor(FrameworkImage.UN_ARCHIVE) : ImageManager.getImageDescriptor(FrameworkImage.ARCHIVE);
+               contributionItem = createCommand(label, selectedBranch, commandId, descriptor);
 
-                  if (command != null && command.isEnabled()) {
-                     contributionItems.add(contributionItem);
-                  }
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               if (command != null && command.isEnabled()) {
+                  contributionItems.add(contributionItem);
                }
             }
          }
@@ -84,7 +76,7 @@ public class ArchiveBranchCompoundContributionItem extends CompoundContributionI
       return contributionItems.toArray(new IContributionItem[0]);
    }
 
-   private CommandContributionItem createCommand(String label, Branch branch, String commandId, ImageDescriptor descriptor) throws OseeCoreException {
+   private CommandContributionItem createCommand(String label, Branch branch, String commandId, ImageDescriptor descriptor) {
       CommandContributionItem contributionItem;
 
       contributionItem =

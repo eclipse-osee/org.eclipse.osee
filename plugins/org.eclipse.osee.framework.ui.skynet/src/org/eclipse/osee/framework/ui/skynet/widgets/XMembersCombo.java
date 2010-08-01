@@ -162,6 +162,7 @@ public class XMembersCombo extends XWidget {
 
          @Override
          public void focusLost(FocusEvent e) {
+            // do nothing
          }
       });
 
@@ -279,6 +280,7 @@ public class XMembersCombo extends XWidget {
 
    @Override
    public void setXmlData(String str) {
+      // do nothing
    }
 
    private void updateComboWidget() {

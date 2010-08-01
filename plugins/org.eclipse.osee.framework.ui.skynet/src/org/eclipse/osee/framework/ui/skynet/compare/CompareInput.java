@@ -74,4 +74,9 @@ public class CompareInput extends CompareEditorInput {
       }
       return false;
    }
+
+   @Override
+   public int hashCode() {
+      return super.hashCode();
+   }
 }

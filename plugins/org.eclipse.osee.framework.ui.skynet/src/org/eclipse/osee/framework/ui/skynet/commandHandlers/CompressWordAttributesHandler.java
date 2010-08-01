@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 import java.util.List;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -40,7 +39,7 @@ public class CompressWordAttributesHandler extends AbstractHandler {
    private List<Artifact> artifacts;
 
    @Override
-   public Object execute(ExecutionEvent event) throws ExecutionException {
+   public Object execute(ExecutionEvent event) {
       Jobs.startJob(new Job("Compress Word Attributes") {
 
          @Override

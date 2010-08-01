@@ -361,10 +361,12 @@ public class EmailWizardPage extends WizardPage {
 
       @Override
       public void addListener(ILabelProviderListener arg0) {
+         // do nothing
       }
 
       @Override
       public void dispose() {
+         // do nothing
       }
 
       @Override
@@ -374,6 +376,7 @@ public class EmailWizardPage extends WizardPage {
 
       @Override
       public void removeListener(ILabelProviderListener arg0) {
+         // do nothing
       }
    }
 }

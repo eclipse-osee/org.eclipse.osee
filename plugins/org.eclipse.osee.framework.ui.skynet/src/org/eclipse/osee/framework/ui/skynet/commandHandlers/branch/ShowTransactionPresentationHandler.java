@@ -42,6 +42,7 @@ public class ShowTransactionPresentationHandler extends AbstractHandler implemen
       return null;
    }
 
+   @SuppressWarnings("rawtypes")
    @Override
    public void updateElement(UIElement element, Map parameters) {
       itemChk =

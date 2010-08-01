@@ -131,17 +131,13 @@ public class XResultData {
       return sb.toString();
    }
 
-   public void report(final String title) throws OseeCoreException {
+   public void report(final String title) {
       report(title, Manipulations.ALL);
    }
 
-   public void report(final String title, final Manipulations... manipulations) throws OseeCoreException {
+   public void report(final String title, final Manipulations... manipulations) {
       final String html = getReport(title, manipulations).getManipulatedHtml();
-      try {
-         ResultsEditor.open("Results", title, html);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
+      ResultsEditor.open("Results", title, html);
    }
 
    public XResultPage getReport(final String title) {

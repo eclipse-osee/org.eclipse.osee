@@ -72,7 +72,7 @@ public class RelationOrderRenderer {
 
    }
 
-   public void toWordML(Producer producer, Branch branch, RelationOrderData relationOrderData) throws OseeCoreException {
+   public void toWordML(Producer producer, Branch branch, RelationOrderData relationOrderData) {
       try {
          WordMLProducer writer = (WordMLProducer) producer;
          writer.startTable();

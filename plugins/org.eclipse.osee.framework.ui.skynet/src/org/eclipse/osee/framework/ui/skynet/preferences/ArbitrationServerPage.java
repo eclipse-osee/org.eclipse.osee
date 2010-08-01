@@ -119,10 +119,6 @@ public class ArbitrationServerPage extends PreferencePage implements IWorkbenchP
          this.valueColor = valueColor;
       }
 
-      public Data(String label, Color labelColor, String value) {
-         this(label, labelColor, value, Displays.getSystemColor(SWT.COLOR_BLACK));
-      }
-
       public Data(String label, String value, Color valueColor) {
          this(label, Displays.getSystemColor(SWT.COLOR_BLUE), value, valueColor);
       }

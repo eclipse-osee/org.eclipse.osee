@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.ui.plugin.util.ObjectList;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
@@ -219,15 +220,12 @@ public class ArtifactTypeDialog extends IconAndMessageDialog {
          descriptorsList.select(0);
       }
 
-      descriptorsList.addSelectionListener(new SelectionListener() {
+      descriptorsList.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
             updateButtons();
          }
 
-         @Override
-         public void widgetDefaultSelected(SelectionEvent e) {
-         }
       });
       descriptorsList.setFocus();
 

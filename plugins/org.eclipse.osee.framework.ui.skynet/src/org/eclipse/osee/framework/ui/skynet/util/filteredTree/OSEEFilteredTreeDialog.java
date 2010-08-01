@@ -54,6 +54,7 @@ public abstract class OSEEFilteredTreeDialog<T> extends MessageDialog {
    }
 
    protected void createPreCustomArea(Composite parent) {
+      // provided for subclass implementation
    }
 
    /**
@@ -74,8 +75,6 @@ public abstract class OSEEFilteredTreeDialog<T> extends MessageDialog {
 
    /**
     * Sets the initial selection. Convenience method.
-    * 
-    * @param object the initial selection.
     */
    public void setInitialSelections(T initialSelections) {
       this.initialSelections = initialSelections;
@@ -84,7 +83,7 @@ public abstract class OSEEFilteredTreeDialog<T> extends MessageDialog {
       }
    }
 
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings("rawtypes")
    private void updateInitialSelections(T object) {
       if (object != null) {
          ISelection selection;

@@ -54,6 +54,7 @@ public abstract class AbstractEventArtifactEditor extends AbstractArtifactEditor
 
    @Override
    protected void addPages() {
+      // do nothing
    }
 
    @Override
@@ -199,6 +200,7 @@ public abstract class AbstractEventArtifactEditor extends AbstractArtifactEditor
 
       @Override
       public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
+         // do nothing
       }
 
       @Override

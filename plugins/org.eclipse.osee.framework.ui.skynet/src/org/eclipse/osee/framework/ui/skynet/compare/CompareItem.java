@@ -17,7 +17,6 @@ import org.eclipse.compare.IEditableContent;
 import org.eclipse.compare.IModificationDate;
 import org.eclipse.compare.IStreamContentAccessor;
 import org.eclipse.compare.ITypedElement;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -43,7 +42,7 @@ public class CompareItem implements IStreamContentAccessor, ITypedElement, IModi
    }
 
    @Override
-   public InputStream getContents() throws CoreException {
+   public InputStream getContents() {
       try {
          return new ByteArrayInputStream(contents.getBytes("UTF-8"));
       } catch (UnsupportedEncodingException ex) {
@@ -98,5 +97,6 @@ public class CompareItem implements IStreamContentAccessor, ITypedElement, IModi
     * This method must be overridden by a subclass if they want to be notified when the compare editor has been saved
     */
    public void persistContent() {
+      // provided for subclass implementation
    }
 }

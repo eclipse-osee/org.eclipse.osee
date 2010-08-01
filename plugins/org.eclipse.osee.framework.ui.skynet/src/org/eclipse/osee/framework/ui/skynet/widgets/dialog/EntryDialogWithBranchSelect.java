@@ -114,10 +114,9 @@ public class EntryDialogWithBranchSelect extends MessageDialog {
 
    /**
     * Override to provide other widgets
-    * 
-    * @param parent
     */
    protected void createExtendedArea(Composite parent) {
+      // provided for subclass implementation
    }
 
    public void setInitialButtonState() {

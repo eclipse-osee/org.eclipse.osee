@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
  * @author Theron Virgin
@@ -38,6 +39,7 @@ public class WordImageChecker {
       try {
          downArrow = new String(new byte[] {(byte) 0xE2, (byte) 0x86, (byte) 0x93}, "UTF-8");
       } catch (UnsupportedEncodingException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
       String MODIFIED_STRING =
          "<w:t>" + downArrow + " OSEE Detected Image Modification " + downArrow + "</w:t></w:r></w:p><w:p><w:r></w:r></w:p><w:p><w:r>";
@@ -68,11 +70,7 @@ public class WordImageChecker {
       return null;
    }
 
-   /**
-    * @param oldValue
-    * @return
-    */
-   private static List<WordmlPicture> createPictureList(String wordml, Attribute attribute) {
+   private static List<WordmlPicture> createPictureList(String wordml, Attribute<String> attribute) {
       int startIndex = 0;
       List<WordmlPicture> pictures = new LinkedList<WordmlPicture>();
       while (wordml.indexOf("<w:pict>", startIndex) > 0) {

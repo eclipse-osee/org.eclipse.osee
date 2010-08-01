@@ -41,6 +41,7 @@ public class ArtifactSaveNotificationHandler implements IWorkbenchListener {
 
    @Override
    public void postShutdown(IWorkbench arg0) {
+      // do nothing
    }
 
    @Override

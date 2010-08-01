@@ -42,6 +42,7 @@ public class ShowFavoriteBranchesFirstHandler extends AbstractHandler implements
       return null;
    }
 
+   @SuppressWarnings("rawtypes")
    @Override
    public void updateElement(UIElement element, Map parameters) {
       itemChk =

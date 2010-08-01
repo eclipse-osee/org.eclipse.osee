@@ -32,7 +32,7 @@ public class TISAttributeHandler implements ITemplateAttributeHandler {
    }
 
    @Override
-   public boolean canHandle(Artifact artifact, TemplateAttribute attribute) throws OseeCoreException {
+   public boolean canHandle(Artifact artifact, TemplateAttribute attribute) {
       return attribute.getName().equals("TIS Traceability");
    }
 

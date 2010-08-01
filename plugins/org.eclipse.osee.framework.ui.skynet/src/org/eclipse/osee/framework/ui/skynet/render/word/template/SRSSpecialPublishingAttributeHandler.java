@@ -22,12 +22,9 @@ import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
  */
 public class SRSSpecialPublishingAttributeHandler implements ITemplateAttributeHandler {
 
-   public SRSSpecialPublishingAttributeHandler() {
-   }
-
    @Override
    public void process(WordMLProducer wordMl, Artifact artifact, TemplateAttribute attribute) {
-
+      // do nothing
    }
 
    @Override

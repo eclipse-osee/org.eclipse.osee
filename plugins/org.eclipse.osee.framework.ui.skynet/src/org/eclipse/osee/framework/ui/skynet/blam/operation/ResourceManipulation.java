@@ -79,6 +79,7 @@ public class ResourceManipulation extends AbstractBlam {
       return "Resource Manipulation";
    }
 
+   @SuppressWarnings("unused")
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       File backupFolder = createTempFolder();
@@ -355,7 +356,8 @@ public class ResourceManipulation extends AbstractBlam {
       private final String sourcePath;
 
       private byte[] data;
-      private String encoding;
+
+      //      private String encoding;
 
       private Resource(String sourcePath, AcquireResult result, byte[] rawBytes) throws IOException {
          this.rawBytes = rawBytes;
@@ -367,12 +369,12 @@ public class ResourceManipulation extends AbstractBlam {
          if (wasZipped) {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             this.entryName = decompressStream(new ByteArrayInputStream(rawBytes), outputStream);
-            this.encoding = "UTF-8";
+            //            this.encoding = "UTF-8";
             this.data = outputStream.toByteArray();
          } else {
             this.data = rawBytes;
             this.entryName = null;
-            this.encoding = result.getEncoding();
+            //            this.encoding = result.getEncoding();
          }
       }
    }

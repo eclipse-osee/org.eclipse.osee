@@ -48,6 +48,7 @@ public class ShowArchivedBranchHandler extends AbstractHandler implements IEleme
       return null;
    }
 
+   @SuppressWarnings("rawtypes")
    @Override
    public void updateElement(UIElement element, Map parameters) {
       itemChk =

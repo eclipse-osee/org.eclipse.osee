@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.word.WordAnnotationHandler;
 
@@ -34,7 +33,7 @@ public class WordAttributeTrackChangeHealthOperation extends AbstractWordAttribu
    }
 
    @Override
-   protected void applyFix(AttrData attrData) throws OseeCoreException {
+   protected void applyFix(AttrData attrData) {
       String fixedData = WordAnnotationHandler.removeAnnotations(attrData.getResource().getData());
       attrData.getResource().setData(fixedData);
    }
@@ -45,7 +44,7 @@ public class WordAttributeTrackChangeHealthOperation extends AbstractWordAttribu
    }
 
    @Override
-   protected boolean isFixRequired(AttrData attrData, Resource resource) throws OseeCoreException {
+   protected boolean isFixRequired(AttrData attrData, Resource resource) {
       boolean result = false;
       String data = resource.getData();
       if (Strings.isValid(data)) {

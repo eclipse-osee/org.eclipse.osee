@@ -38,10 +38,6 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
 
    private List<Artifact> templates;
 
-   public ArtifactTemplateProvider() {
-
-   }
-
    private synchronized void ensureTemplateCachePopulated() throws OseeCoreException {
       if (templateMap == null) {
          templateMap = new HashMap<String, Artifact>();

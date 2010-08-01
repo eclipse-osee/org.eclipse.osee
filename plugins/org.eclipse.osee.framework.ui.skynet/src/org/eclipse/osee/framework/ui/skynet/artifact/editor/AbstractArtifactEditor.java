@@ -41,10 +41,12 @@ public abstract class AbstractArtifactEditor extends FormEditor implements IDirt
 
    @Override
    public void doSave(IProgressMonitor monitor) {
+      // do nothing
    }
 
    @Override
    public void doSaveAs() {
+      // do nothing
    }
 
    @Override
@@ -54,6 +56,7 @@ public abstract class AbstractArtifactEditor extends FormEditor implements IDirt
 
    @Override
    public void onDirtied() {
+      // do nothing
    }
 
    @Override
@@ -80,6 +83,7 @@ public abstract class AbstractArtifactEditor extends FormEditor implements IDirt
 
       @Override
       public void addSelectionChangedListener(ISelectionChangedListener listener) {
+         // do nothing
       }
 
       @Override
@@ -89,6 +93,7 @@ public abstract class AbstractArtifactEditor extends FormEditor implements IDirt
 
       @Override
       public void removeSelectionChangedListener(ISelectionChangedListener listener) {
+         // do nothing
       }
 
       @Override

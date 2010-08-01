@@ -12,12 +12,8 @@ package org.eclipse.osee.framework.ui.skynet.util;
 
 import java.util.Collection;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
@@ -25,9 +21,6 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  * @author Megumi Telles
  */
 public final class WordUiUtil {
-
-   private WordUiUtil() {
-   }
 
    public static void displayErrorMessageDialog(final String title, final String message) {
       Displays.pendInDisplayThread(new Runnable() {
@@ -62,11 +55,7 @@ public final class WordUiUtil {
                      XResultData.getHyperlink(artifact)}));
                }
                rd.addRaw(AHTML.endMultiColumnTable());
-               try {
-                  rd.report("Artifacts With Tracked Changes");
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-               }
+               rd.report("Artifacts With Tracked Changes");
             }
          });
       }
@@ -87,11 +76,7 @@ public final class WordUiUtil {
                      XResultData.getHyperlink(artifact)}));
                }
                rd.addRaw(AHTML.endMultiColumnTable());
-               try {
-                  rd.report("Unhandled Artifacts");
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-               }
+               rd.report("Unhandled Artifacts");
             }
          });
       }

@@ -133,10 +133,12 @@ public class XLabelDam extends XWidget implements IAttributeWidget {
 
    @Override
    public void setFocus() {
+      // do nothing
    }
 
    @Override
    public void setXmlData(String str) {
+      // do nothing
    }
 
    @Override

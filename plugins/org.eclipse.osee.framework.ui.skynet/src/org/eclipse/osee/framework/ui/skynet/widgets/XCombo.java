@@ -210,6 +210,7 @@ public class XCombo extends XWidget {
       this.dataStringToXmlString = dataStringToXmlString;
    }
 
+   @SuppressWarnings("unchecked")
    @Override
    public void setFromXml(String xml) throws IllegalStateException {
       Matcher m;
@@ -230,7 +231,7 @@ public class XCombo extends XWidget {
          // ie. bems number => full name
          if (dataStringToXmlString != null) {
             if (dataStringToXmlString.containsValue(str)) {
-               for (Iterator iter = dataStringToXmlString.entrySet().iterator(); iter.hasNext();) {
+               for (Iterator<?> iter = dataStringToXmlString.entrySet().iterator(); iter.hasNext();) {
                   Map.Entry<String, String> entry = (Map.Entry<String, String>) iter.next();
                   if (str.equals(entry.getValue())) {
                      transStr = entry.getKey();
@@ -299,6 +300,7 @@ public class XCombo extends XWidget {
 
    @Override
    public void setXmlData(String str) {
+      // do nothing
    }
 
    private void updateComboWidget() {

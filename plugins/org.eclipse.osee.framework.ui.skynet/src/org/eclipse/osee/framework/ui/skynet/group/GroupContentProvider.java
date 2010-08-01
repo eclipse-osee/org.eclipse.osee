@@ -24,15 +24,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactChangeListener;
 public class GroupContentProvider implements ITreeContentProvider, ArtifactChangeListener {
    protected TreeViewer viewer;
 
-   public GroupContentProvider(GroupExplorer groupExplorer) {
-   }
-
    @Override
    public void dispose() {
+      // do nothing
    }
 
-   /**
-    */
    @Override
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
       this.viewer = (TreeViewer) viewer;
@@ -46,9 +42,6 @@ public class GroupContentProvider implements ITreeContentProvider, ArtifactChang
       return new Object[] {};
    }
 
-   /*
-    * @see ITreeContentProvider#getParent(Object)
-    */
    @Override
    public Object getParent(Object element) {
       if (element instanceof GroupExplorerItem) {

@@ -30,10 +30,6 @@ public class FilterArtifactSearchQuery extends AbstractLegacyArtifactSearchQuery
    private final Branch branch;
    private String criteriaLabel = "";
 
-   /**
-    * @param filterList
-    * @param branch
-    */
    public FilterArtifactSearchQuery(FilterModelList filterList, Branch branch) {
       this.filterList = filterList;
       this.branch = branch;

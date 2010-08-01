@@ -27,14 +27,9 @@ public class ArtifactTreeContentProvider implements ITreeContentProvider {
    private static Object[] EMPTY_ARRAY = new Object[0];
    protected TreeViewer viewer;
 
-   public ArtifactTreeContentProvider() {
-   }
-
-   /*
-    * @see IContentProvider#dispose()
-    */
    @Override
    public void dispose() {
+      // do nothing
    }
 
    /**
@@ -69,10 +64,9 @@ public class ArtifactTreeContentProvider implements ITreeContentProvider {
     * @see ITreeContentProvider#getChildren(Object)
     */
    @Override
-   @SuppressWarnings("unchecked")
    public Object[] getChildren(Object parentElement) {
       if (parentElement instanceof Collection) {
-         return ((Collection) parentElement).toArray();
+         return ((Collection<?>) parentElement).toArray();
       }
       return EMPTY_ARRAY;
    }

@@ -40,7 +40,7 @@ public class WholeDocumentRenderer extends WordRenderer {
    }
 
    @Override
-   public WholeDocumentRenderer newInstance() throws OseeCoreException {
+   public WholeDocumentRenderer newInstance() {
       return new WholeDocumentRenderer();
    }
 

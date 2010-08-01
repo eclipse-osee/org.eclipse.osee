@@ -230,10 +230,8 @@ public class QuickSearchOptionComposite extends Composite {
          filterConfig.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-               if (configHandler != null) {
-                  configHandler.configure();
-                  text.setText(configHandler.toString());
-               }
+               configHandler.configure();
+               text.setText(configHandler.toString());
             }
          });
       } else {

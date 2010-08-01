@@ -137,10 +137,12 @@ public class XMergeLabelProvider extends XViewerLabelProvider {
 
    @Override
    public void addListener(ILabelProviderListener listener) {
+      // do nothing
    }
 
    @Override
    public void removeListener(ILabelProviderListener listener) {
+      // do nothing
    }
 
    public MergeXViewer getTreeViewer() {
@@ -148,7 +150,7 @@ public class XMergeLabelProvider extends XViewerLabelProvider {
    }
 
    @Override
-   public Image getColumnImage(Object element, XViewerColumn dCol, int columnIndex) throws OseeCoreException {
+   public Image getColumnImage(Object element, XViewerColumn dCol, int columnIndex) {
       if (element instanceof Conflict) {
          try {
             Conflict conflict = (Conflict) element;

@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.render;
 
 import java.io.InputStream;
 import java.util.List;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.swt.program.Program;
 
@@ -22,7 +21,7 @@ import org.eclipse.swt.program.Program;
 public class OpenOfficeWriterRenderer extends FileSystemRenderer implements ITemplateRenderer {
 
    @Override
-   public OpenOfficeWriterRenderer newInstance() throws OseeCoreException {
+   public OpenOfficeWriterRenderer newInstance() {
       return new OpenOfficeWriterRenderer();
    }
 
@@ -32,17 +31,17 @@ public class OpenOfficeWriterRenderer extends FileSystemRenderer implements ITem
    }
 
    @Override
-   public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) throws OseeCoreException {
+   public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) {
       throw new UnsupportedOperationException();
    }
 
    @Override
-   public Program getAssociatedProgram(Artifact artifact) throws OseeCoreException {
+   public Program getAssociatedProgram(Artifact artifact) {
       throw new UnsupportedOperationException();
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
       return NO_MATCH;
    }
 }

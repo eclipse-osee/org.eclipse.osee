@@ -16,9 +16,6 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
-import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -68,17 +65,6 @@ public class ArtifactTransfer extends ByteArrayTransfer {
 
    private static final int TYPEID = registerType(TYPE_NAME);
 
-   /**
-    * Creates a new transfer object.
-    */
-   private ArtifactTransfer() {
-   }
-
-   /**
-    * Returns the singleton instance.
-    * 
-    * @return the singleton instance
-    */
    public static ArtifactTransfer getInstance() {
       return instance;
    }
@@ -167,14 +153,6 @@ public class ArtifactTransfer extends ByteArrayTransfer {
 
    /**
     * Reads a resource from the given stream.
-    * 
-    * @param dataIn the input stream
-    * @return the resource
-    * @throws IllegalArgumentException
-    * @throws MultipleArtifactsExist
-    * @throws ArtifactDoesNotExist
-    * @throws IOException
-    * @throws BranchDoesNotExist
     */
    private Artifact readArtifact(DataInputStream dataIn) throws OseeCoreException, IOException {
       int artID = dataIn.readInt();
@@ -184,10 +162,6 @@ public class ArtifactTransfer extends ByteArrayTransfer {
 
    /**
     * Writes the given resource to the given stream.
-    * 
-    * @param dataOut the output stream
-    * @param artifact the artifact
-    * @throws IOException if there is a problem writing to the stream
     */
    private void writeArtifact(DataOutputStream dataOut, Artifact artifact) throws IOException {
       dataOut.writeInt(artifact.getArtId());

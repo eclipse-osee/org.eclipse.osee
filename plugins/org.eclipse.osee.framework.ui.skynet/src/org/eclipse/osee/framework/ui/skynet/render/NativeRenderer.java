@@ -51,7 +51,7 @@ public class NativeRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public NativeRenderer newInstance() throws OseeCoreException {
+   public NativeRenderer newInstance() {
       return new NativeRenderer();
    }
 

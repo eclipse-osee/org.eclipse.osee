@@ -14,7 +14,6 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 import java.util.List;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -29,7 +28,7 @@ public class RevealInArtifactExplorer extends AbstractHandler {
    private Artifact artifact;
 
    @Override
-   public Object execute(ExecutionEvent arg0) throws ExecutionException {
+   public Object execute(ExecutionEvent arg0) {
       ArtifactExplorer.revealArtifact(artifact);
       return null;
    }

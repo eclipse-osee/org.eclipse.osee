@@ -27,9 +27,7 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -145,12 +143,6 @@ public class MergeXWidget extends XWidget implements IAdaptable {
       mergeXViewer.setSorter(new MergeXViewerSorter(mergeXViewer, labelProvider));
       mergeXViewer.setContentProvider(new XMergeContentProvider());
       mergeXViewer.setLabelProvider(new XMergeLabelProvider(mergeXViewer));
-      mergeXViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-         @Override
-         public void selectionChanged(SelectionChangedEvent event) {
-            refreshActionEnablement();
-         }
-      });
    }
 
    private void createTree(Tree tree) {
@@ -259,10 +251,6 @@ public class MergeXWidget extends XWidget implements IAdaptable {
       });
    }
 
-   public void refreshActionEnablement() {
-
-   }
-
    public void loadTable() {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
@@ -307,7 +295,6 @@ public class MergeXWidget extends XWidget implements IAdaptable {
    public void refresh() {
       mergeXViewer.refresh();
       validate();
-      refreshActionEnablement();
       mergeView.showConflicts(true);
       int resolved = 0;
       int informational = 0;
@@ -346,6 +333,7 @@ public class MergeXWidget extends XWidget implements IAdaptable {
 
    @Override
    public void setXmlData(String str) {
+      // do nothing
    }
 
    @Override
@@ -464,7 +452,7 @@ public class MergeXWidget extends XWidget implements IAdaptable {
          }
       }
       mergeXViewer.setConflicts(conflicts);
-      if (conflicts != null && conflicts.length != 0) {
+      if (conflicts.length != 0) {
          if (sourceBranch != null) {
             displayLabelText =
                "Source Branch :  " + sourceBranch.getName() + "\nDestination Branch :  " + destBranch.getName();

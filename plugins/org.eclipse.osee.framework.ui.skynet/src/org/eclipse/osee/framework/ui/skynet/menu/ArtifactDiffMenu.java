@@ -11,16 +11,19 @@
 package org.eclipse.osee.framework.ui.skynet.menu;
 
 import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.INCLUDE_DELETED;
+import java.util.logging.Level;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.util.Conditions;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.change.Change;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
@@ -36,9 +39,6 @@ import org.eclipse.swt.widgets.MenuItem;
  * @author Jeff C. Phillips
  */
 public final class ArtifactDiffMenu {
-
-   private ArtifactDiffMenu() {
-   }
 
    public static void createDiffMenuItem(Menu parentMenu, Viewer viewer, String subMenuText) {
       MenuItem diffMenuItem = new MenuItem(parentMenu, SWT.CASCADE);
@@ -59,6 +59,7 @@ public final class ArtifactDiffMenu {
 
       @Override
       public void menuHidden(MenuEvent e) {
+         // do nothing
       }
 
       @Override
@@ -86,6 +87,7 @@ public final class ArtifactDiffMenu {
                   isValidSelection = renderer.supportsCompare();
                }
             } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
          }
          return isValidSelection;
@@ -105,6 +107,7 @@ public final class ArtifactDiffMenu {
          try {
             processSelectedArtifacts();
          } catch (Exception ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
       }
 

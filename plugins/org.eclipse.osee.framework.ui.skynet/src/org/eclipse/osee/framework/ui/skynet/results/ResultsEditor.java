@@ -120,6 +120,7 @@ public class ResultsEditor extends AbstractArtifactEditor implements IActionable
 
    @Override
    public void doSave(IProgressMonitor monitor) {
+      // do nothing
    }
 
    @Override
@@ -146,16 +147,16 @@ public class ResultsEditor extends AbstractArtifactEditor implements IActionable
       return null;
    }
 
-   public static void open(final String tabName, final String title, final String html) throws OseeCoreException {
+   public static void open(final String tabName, final String title, final String html) {
       ResultsEditor.open(new IResultsEditorProvider() {
 
          @Override
-         public String getEditorName() throws OseeCoreException {
+         public String getEditorName() {
             return title;
          }
 
          @Override
-         public List<IResultsEditorTab> getResultsEditorTabs() throws OseeCoreException {
+         public List<IResultsEditorTab> getResultsEditorTabs() {
             List<IResultsEditorTab> tabs = new ArrayList<IResultsEditorTab>();
             tabs.add(new ResultsEditorHtmlTab(title, tabName, html));
             return tabs;
@@ -163,16 +164,16 @@ public class ResultsEditor extends AbstractArtifactEditor implements IActionable
       });
    }
 
-   public static void open(final XResultPage xResultPage) throws OseeCoreException {
+   public static void open(final XResultPage xResultPage) {
       ResultsEditor.open(new IResultsEditorProvider() {
 
          @Override
-         public String getEditorName() throws OseeCoreException {
+         public String getEditorName() {
             return xResultPage.getTitle();
          }
 
          @Override
-         public List<IResultsEditorTab> getResultsEditorTabs() throws OseeCoreException {
+         public List<IResultsEditorTab> getResultsEditorTabs() {
             List<IResultsEditorTab> tabs = new ArrayList<IResultsEditorTab>();
             tabs.add(new ResultsEditorHtmlTab(xResultPage));
             return tabs;
@@ -180,11 +181,11 @@ public class ResultsEditor extends AbstractArtifactEditor implements IActionable
       });
    }
 
-   public static void open(final IResultsEditorProvider provider) throws OseeCoreException {
+   public static void open(final IResultsEditorProvider provider) {
       open(provider, false);
    }
 
-   public static void open(final IResultsEditorProvider provider, boolean forcePend) throws OseeCoreException {
+   public static void open(final IResultsEditorProvider provider, boolean forcePend) {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.util;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.HtmlDialog;
@@ -37,7 +36,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
  */
 public class FormsUtil {
 
-   public static void createLabelText(XFormToolkit toolkit, Composite comp, String labelStr, String valueStr) throws OseeCoreException {
+   public static void createLabelText(XFormToolkit toolkit, Composite comp, String labelStr, String valueStr) {
       createLabelText(toolkit, comp, labelStr, valueStr, null);
    }
 
@@ -62,7 +61,7 @@ public class FormsUtil {
       }
    }
 
-   public static Text createLabelText(XFormToolkit toolkit, Composite comp, String labelStr, String valueStr, String tooltip) throws OseeCoreException {
+   public static Text createLabelText(XFormToolkit toolkit, Composite comp, String labelStr, String valueStr, String tooltip) {
       Composite topLineComp = new Composite(comp, SWT.NONE);
       topLineComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       topLineComp.setLayout(ALayout.getZeroMarginLayout(2, false));
@@ -83,11 +82,11 @@ public class FormsUtil {
       return text;
    }
 
-   public static void createLabelValue(XFormToolkit toolkit, Composite comp, String labelStr, String valueStr) throws OseeCoreException {
+   public static void createLabelValue(XFormToolkit toolkit, Composite comp, String labelStr, String valueStr) {
       createLabelValue(toolkit, comp, labelStr, valueStr, null);
    }
 
-   public static Label createLabelValue(XFormToolkit toolkit, Composite comp, String labelStr, String valueStr, String tooltip) throws OseeCoreException {
+   public static Label createLabelValue(XFormToolkit toolkit, Composite comp, String labelStr, String valueStr, String tooltip) {
       Composite topLineComp = new Composite(comp, SWT.NONE);
       topLineComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       topLineComp.setLayout(ALayout.getZeroMarginLayout(2, false));

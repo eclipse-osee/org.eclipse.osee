@@ -34,15 +34,11 @@ import org.eclipse.ui.PlatformUI;
  */
 public class ArtifactPasteSpecialDialog extends TitleAreaDialog {
 
-   private final Artifact destinationArtifact;
-   private final Collection<Artifact> copiedArtifacts;
    private final ArtifactPasteConfiguration config;
 
    public ArtifactPasteSpecialDialog(Shell parentShell, ArtifactPasteConfiguration config, Artifact destinationArtifact, Collection<Artifact> copiedArtifacts) {
       super(parentShell);
       this.config = config;
-      this.destinationArtifact = destinationArtifact;
-      this.copiedArtifacts = copiedArtifacts;
       setShellStyle(SWT.RESIZE | getShellStyle());
       setTitle("Artifact Paste Special");
       setTitleImage(ImageManager.getImage(FrameworkImage.PASTE_SPECIAL_WIZ));

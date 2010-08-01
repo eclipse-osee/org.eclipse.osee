@@ -47,7 +47,7 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
    }
 
    @Override
-   public List<DynamicXWidgetLayoutData> getDynamicXWidgetLayoutData(AttributeType attributeType) throws OseeCoreException {
+   public List<DynamicXWidgetLayoutData> getDynamicXWidgetLayoutData(AttributeType attributeType) {
       int minOccurrence = attributeType.getMinOccurrences();
       int maxOccurrence = attributeType.getMaxOccurrences();
 

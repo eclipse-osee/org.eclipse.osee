@@ -33,7 +33,7 @@ public class TemplateAttribute implements ITemplateTask {
    private boolean paragraphWrap = true;
 
    public TemplateAttribute() {
-
+      // do nothing
    }
 
    public TemplateAttribute(TemplateAttribute copyMe, String name) {

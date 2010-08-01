@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.ui.skynet.render.word.template.WordTemplateMan
 public class TisRenderer extends WordTemplateRenderer {
 
    @Override
-   public TisRenderer newInstance() throws OseeCoreException {
+   public TisRenderer newInstance() {
       return new TisRenderer();
    }
 

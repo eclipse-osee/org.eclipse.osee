@@ -17,7 +17,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.access.AccessControlManager;
@@ -38,11 +37,8 @@ import org.eclipse.ui.PlatformUI;
 public class RevertArtifactHandler extends AbstractHandler {
    private List<Change> changes;
 
-   public RevertArtifactHandler() {
-   }
-
    @Override
-   public Object execute(ExecutionEvent event) throws ExecutionException {
+   public Object execute(ExecutionEvent event) {
       // This is serious stuff, make sure the user understands the impact.
 
       List<List<Artifact>> artifacts = new LinkedList<List<Artifact>>();

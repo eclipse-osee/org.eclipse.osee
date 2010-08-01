@@ -108,7 +108,7 @@ public class VariableMap {
       return clazz.cast(value);
    }
 
-   public Object getValue(String variableName) throws OseeArgumentException {
+   public Object getValue(String variableName) {
       return variableMap.get(variableName);
    }
 }

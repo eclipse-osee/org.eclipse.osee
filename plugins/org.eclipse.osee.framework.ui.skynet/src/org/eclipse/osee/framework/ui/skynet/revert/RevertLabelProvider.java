@@ -81,7 +81,6 @@ public class RevertLabelProvider extends LabelProvider {
          if (!rootArtifact) {
             if (linkToDelete && !rootArtifact) {
                name += " --<Will be Orphaned>--";
-            } else {
             }
          }
          return name;

@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -31,7 +30,7 @@ import org.eclipse.ui.PlatformUI;
 public class ChangeReportHandler extends AbstractHandler {
 
    @Override
-   public Object execute(ExecutionEvent arg0) throws ExecutionException {
+   public Object execute(ExecutionEvent arg0) {
       IStructuredSelection selection =
          (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
       if (!selection.isEmpty()) {

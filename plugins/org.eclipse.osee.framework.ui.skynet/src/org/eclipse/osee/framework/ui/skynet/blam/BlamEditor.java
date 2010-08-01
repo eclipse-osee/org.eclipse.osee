@@ -14,7 +14,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -73,7 +72,7 @@ public class BlamEditor extends FormEditor implements IDirtiableEditor {
       }
    }
 
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings("rawtypes")
    @Override
    public Object getAdapter(Class adapter) {
       if (adapter == IActionable.class) {
@@ -109,7 +108,7 @@ public class BlamEditor extends FormEditor implements IDirtiableEditor {
       });
    }
 
-   public static void edit(AbstractBlam blamOperation) throws OseeCoreException {
+   public static void edit(AbstractBlam blamOperation) {
       BlamEditor.edit(new BlamEditorInput(blamOperation));
    }
 
@@ -141,18 +140,22 @@ public class BlamEditor extends FormEditor implements IDirtiableEditor {
 
    @Override
    public void doSave(IProgressMonitor monitor) {
+      // do nothing
    }
 
    @Override
    public void doSaveAs() {
+      // do nothing
    }
 
    @Override
    public boolean isSaveAsAllowed() {
+      // do nothing
       return false;
    }
 
    @Override
    public void onDirtied() {
+      // do nothing
    }
 }

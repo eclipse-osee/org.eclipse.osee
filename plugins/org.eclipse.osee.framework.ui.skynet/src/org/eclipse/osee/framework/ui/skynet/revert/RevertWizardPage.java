@@ -74,6 +74,7 @@ public class RevertWizardPage extends WizardPage {
                }
             }
             if (event.widget == revertAllButton || event.widget == revertSelectedButton) {
+               // TODO What is this for?
             }
             if (event.widget == artifactSelectionBox) {
                treeViewer.setInput(artifacts.get(artifactSelectionBox.getSelectionIndex()));

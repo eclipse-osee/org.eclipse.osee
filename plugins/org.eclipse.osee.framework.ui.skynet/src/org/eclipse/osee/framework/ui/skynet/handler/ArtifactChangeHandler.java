@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.handler;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.debug.core.IStatusHandler;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -23,7 +22,7 @@ import org.eclipse.ui.PlatformUI;
  */
 public class ArtifactChangeHandler implements IStatusHandler {
    @Override
-   public Object handleStatus(IStatus status, Object source) throws CoreException {
+   public Object handleStatus(IStatus status, Object source) {
       final MutableInteger result = new MutableInteger(0);
       final String message = (String) source;
 

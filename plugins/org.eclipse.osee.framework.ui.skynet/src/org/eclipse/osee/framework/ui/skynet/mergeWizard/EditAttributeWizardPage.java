@@ -47,8 +47,6 @@ public class EditAttributeWizardPage extends WizardPage {
    private static final String DEST_BUTTON_TEXT = "Load Destination Data";
    private static final String DEST_TEXT = ConflictResolutionWizard.DEST_TITLE;
    private static final String DEST_TOOLTIP = "Load the Editor with the Destination Branch Attribute Value";
-   private static final String CLEAR_BUTTON_TEXT = "Clear the Editor Value";
-   private static final String CLEAR_TOOLTIP = "Clear the Editor Value";
    private static final int NUM_COLUMNS = 1;
    private IEmbeddedAttributeEditor editor;
 

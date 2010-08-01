@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam.sections;
 
-import java.io.IOException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
@@ -128,7 +127,7 @@ public class BlamOutputSection extends BaseBlamSection {
       }
 
       @Override
-      public Appendable append(CharSequence csq) throws IOException {
+      public Appendable append(CharSequence csq) {
          if (csq == null) {
             write("null");
          } else {
@@ -138,13 +137,13 @@ public class BlamOutputSection extends BaseBlamSection {
       }
 
       @Override
-      public Appendable append(char c) throws IOException {
+      public Appendable append(char c) {
          write(new String(new char[] {c}));
          return this;
       }
 
       @Override
-      public Appendable append(CharSequence csq, int start, int end) throws IOException {
+      public Appendable append(CharSequence csq, int start, int end) {
          CharSequence cs = csq == null ? "null" : csq;
          write(cs.subSequence(start, end).toString());
          return this;

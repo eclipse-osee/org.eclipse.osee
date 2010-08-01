@@ -31,10 +31,12 @@ public class PolicyContentProvider implements ITreeContentProvider {
 
    @Override
    public void inputChanged(Viewer v, Object oldInput, Object newInput) {
+      // do nothing
    }
 
    @Override
    public void dispose() {
+      // do nothing
    }
 
    @Override

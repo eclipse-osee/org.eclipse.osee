@@ -32,8 +32,6 @@ public class EmbededAttributeEditorFactory {
 
    private final static String VALID_FLOAT_REG_EX = "^[0-9\\.]+$";
    private final static String VALID_INTEGER_REG_EX = "^[0-9]+$";
-   private final static String VALID_PERCENT_REG_EX =
-      "^(0*100{1,1}\\.?((?<=\\.)0*)?%?$)|(^0*\\d{0,2}\\.?((?<=\\.)\\d*)?%?)$";
 
    public static IEmbeddedAttributeEditor getEmbeddedEditor(IAttributeType attributeType, String displayName, final Collection<?> attributeHolder, boolean persist) {
       try {

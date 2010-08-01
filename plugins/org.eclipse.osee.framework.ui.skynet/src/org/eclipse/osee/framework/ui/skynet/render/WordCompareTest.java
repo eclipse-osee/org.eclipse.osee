@@ -72,6 +72,7 @@ public class WordCompareTest {
                      result = new URL(result, classAsResource);
                   }
                } catch (MalformedURLException ignore) {
+                  // do nothing
                }
             }
          }

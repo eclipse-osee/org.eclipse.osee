@@ -137,10 +137,12 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
 
       @Override
       public void dispose() {
+         // do nothing
       }
 
       @Override
       public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+         // do nothing
       }
 
       @Override
@@ -175,7 +177,6 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
             return editor;
          } else if (element instanceof String) {
             return editor;
-         } else if (element instanceof AttributeType) {
          }
          return null;
       }

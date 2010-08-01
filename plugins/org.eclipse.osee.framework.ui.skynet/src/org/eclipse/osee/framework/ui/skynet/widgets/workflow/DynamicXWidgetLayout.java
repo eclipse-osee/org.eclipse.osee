@@ -444,7 +444,7 @@ public class DynamicXWidgetLayout {
       }
    }
 
-   protected void processLayoutDatas(Element element) throws IOException, ParserConfigurationException, SAXException {
+   protected void processLayoutDatas(Element element) {
       List<DynamicXWidgetLayoutData> layoutDatas = XWidgetParser.extractlayoutDatas(this, element);
       for (DynamicXWidgetLayoutData layoutData : layoutDatas) {
          nameToLayoutData.put(layoutData.getName(), layoutData);

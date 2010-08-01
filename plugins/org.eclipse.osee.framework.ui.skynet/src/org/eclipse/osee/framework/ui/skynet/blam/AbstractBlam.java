@@ -107,20 +107,27 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
       }
    }
 
+   @SuppressWarnings("unused")
    public List<DynamicXWidgetLayoutData> getLayoutDatas() throws IllegalArgumentException, ParserConfigurationException, SAXException, IOException, CoreException {
       return XWidgetParser.extractWorkAttributes(new DynamicXWidgetLayout(), getXWidgetsXml());
    }
 
+   @SuppressWarnings("unused")
    @Override
    public void createXWidgetLayoutData(DynamicXWidgetLayoutData layoutData, XWidget xWidget, FormToolkit toolkit, Artifact art, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
+      // provided for subclass implementation
    }
 
+   @SuppressWarnings("unused")
    @Override
    public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
+      // provided for subclass implementation
    }
 
+   @SuppressWarnings("unused")
    @Override
    public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
+      // provided for subclass implementation
    }
 
 }

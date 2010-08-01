@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -23,12 +22,8 @@ public class ArtifactDecoratorPreferences implements IArtifactDecoratorPreferenc
    private boolean isShowBranchAllowed;
    private boolean isShowArtVersionAllowed;
 
-   public ArtifactDecoratorPreferences() {
-
-   }
-
    @Override
-   public String getSelectedAttributeData(Artifact artifact) throws OseeCoreException {
+   public String getSelectedAttributeData(Artifact artifact) {
       return "";
    }
 

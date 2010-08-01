@@ -11,13 +11,11 @@
 
 package org.eclipse.osee.framework.ui.skynet.render.artifactElement;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.linking.OseeLinkBuilder;
 import org.eclipse.osee.framework.skynet.core.linking.OseeLinkParser;
@@ -27,7 +25,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 /**
  * @author Jeff C. Phillips
@@ -66,7 +63,7 @@ public class WordArtifactElementExtractor implements IElementExtractor {
    }
 
    @Override
-   public List<Element> extractElements() throws DOMException, ParserConfigurationException, SAXException, IOException, OseeCoreException {
+   public List<Element> extractElements() throws DOMException, OseeCoreException {
       final List<Element> artifactElements = new LinkedList<Element>();
       Element rootElement = document.getDocumentElement();
       pictureMap.clear();

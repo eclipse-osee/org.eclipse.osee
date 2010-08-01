@@ -210,6 +210,7 @@ public class XList extends XWidget {
 
    @Override
    public void setFocus() {
+      // do nothing
    }
 
    /**

@@ -51,7 +51,7 @@ public class XWidgetParser {
       return extractWorkAttribute(dynamicXWidgetLayout, rootElement);
    }
 
-   public static List<DynamicXWidgetLayoutData> extractlayoutDatas(DynamicXWidgetLayout dynamicXWidgetLayout, Element xWidgets) throws ParserConfigurationException, SAXException, IOException {
+   public static List<DynamicXWidgetLayoutData> extractlayoutDatas(DynamicXWidgetLayout dynamicXWidgetLayout, Element xWidgets) {
       NodeList widgets = xWidgets.getElementsByTagName(DynamicXWidgetLayout.XWIDGET);
       List<DynamicXWidgetLayoutData> layoutDatas = new ArrayList<DynamicXWidgetLayoutData>(widgets.getLength());
 

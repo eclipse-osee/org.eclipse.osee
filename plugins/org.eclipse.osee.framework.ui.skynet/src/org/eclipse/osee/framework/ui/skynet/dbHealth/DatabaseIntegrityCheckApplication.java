@@ -22,7 +22,6 @@ import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -133,6 +132,7 @@ public class DatabaseIntegrityCheckApplication implements IApplication {
 
    @Override
    public void stop() {
+      // do nothing
    }
 
    private final class SummaryTab implements IResultsEditorProvider {
@@ -179,12 +179,12 @@ public class DatabaseIntegrityCheckApplication implements IApplication {
       }
 
       @Override
-      public String getEditorName() throws OseeCoreException {
+      public String getEditorName() {
          return title;
       }
 
       @Override
-      public List<IResultsEditorTab> getResultsEditorTabs() throws OseeCoreException {
+      public List<IResultsEditorTab> getResultsEditorTabs() {
          return tabs;
       }
 

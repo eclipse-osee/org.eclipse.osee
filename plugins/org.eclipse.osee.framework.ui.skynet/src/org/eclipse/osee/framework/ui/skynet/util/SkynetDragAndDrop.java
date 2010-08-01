@@ -48,10 +48,6 @@ public abstract class SkynetDragAndDrop {
 
    /**
     * Caller may optionally pass null for either the dragSource or dropTarget when both are not needed
-    * 
-    * @param dragSource
-    * @param dropTarget
-    * @param viewId
     */
    public SkynetDragAndDrop(Control dragSource, Control dropTarget, String viewId) {
       this.viewId = viewId;
@@ -72,6 +68,7 @@ public abstract class SkynetDragAndDrop {
 
          @Override
          public void dragFinished(DragSourceEvent event) {
+            // do nothing
          }
 
          @Override
@@ -81,6 +78,7 @@ public abstract class SkynetDragAndDrop {
 
          @Override
          public void dragStart(DragSourceEvent event) {
+            // do nothing
          }
       });
    }
@@ -121,11 +119,14 @@ public abstract class SkynetDragAndDrop {
 
          @Override
          public void dropAccept(DropTargetEvent event) {
+            // do nothing
          }
       });
    }
 
+   @SuppressWarnings("unused")
    public void performDragOver(DropTargetEvent event) throws OseeCoreException {
+      // provided for subclass implementation
    }
 
    public void artifactTransferDragSetData(DragSourceEvent event) {
@@ -184,6 +185,7 @@ public abstract class SkynetDragAndDrop {
    }
 
    public void operationChanged(DropTargetEvent event) {
+      // provided for subclass implementation
    }
 
    /**
@@ -193,7 +195,7 @@ public abstract class SkynetDragAndDrop {
     * @param text
     */
    public void performTextDrop(String text) {
-
+      // provided for subclass implementation
    }
 
    /**
@@ -203,7 +205,7 @@ public abstract class SkynetDragAndDrop {
     * @param dropArtifacts
     */
    public void performArtifactDrop(Artifact[] dropArtifacts) {
-
+      // provided for subclass implementation
    }
 
    /**
@@ -213,6 +215,6 @@ public abstract class SkynetDragAndDrop {
     * @param fileNames
     */
    public void performFileDrop(String[] fileNames) {
-
+      // provided for subclass implementation
    }
 }

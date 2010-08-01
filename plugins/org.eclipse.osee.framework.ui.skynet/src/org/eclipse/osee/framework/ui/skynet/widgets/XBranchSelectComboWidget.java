@@ -119,6 +119,7 @@ public class XBranchSelectComboWidget extends XWidget implements Listener {
 
    @Override
    public void refresh() {
+      // do nothing
    }
 
    @Override

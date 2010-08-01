@@ -28,7 +28,7 @@ public class ExperimentalBlam extends AbstractBlam {
 
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-
+      // provided for subclass implementation
    }
 
    @Override

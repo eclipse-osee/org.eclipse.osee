@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -26,7 +25,7 @@ public class CollapseTreeHandler extends AbstractHandler {
    private TreeViewer treeViewer;
 
    @Override
-   public Object execute(ExecutionEvent arg0) throws ExecutionException {
+   public Object execute(ExecutionEvent arg0) {
       treeViewer.collapseAll();
       return null;
    }

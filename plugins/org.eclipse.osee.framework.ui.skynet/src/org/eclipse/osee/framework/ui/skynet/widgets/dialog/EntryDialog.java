@@ -15,12 +15,8 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.IShellCloseEvent;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -120,11 +116,7 @@ public class EntryDialog extends MessageDialog {
             public void handleEvent(Event event) {
                XResultData resultData = new XResultData();
                resultData.addRaw(entryText);
-               try {
-                  resultData.report(dialogTitle);
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-               }
+               resultData.report(dialogTitle);
                close();
             }
          });

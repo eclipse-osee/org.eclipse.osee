@@ -35,7 +35,6 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -253,6 +252,7 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
       try {
          elementLimit = getSettings().getInt(KEY_LIMIT);
       } catch (NumberFormatException e) {
+         // do nothing
       }
       if (memento != null) {
          Integer value = memento.getInteger(KEY_LIMIT);
@@ -443,7 +443,7 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
    }
 
    @Override
-   public void handleFrameworkTransactionEvent(final Sender sender, final FrameworkTransactionData transData) throws OseeCoreException {
+   public void handleFrameworkTransactionEvent(final Sender sender, final FrameworkTransactionData transData) {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
@@ -464,7 +464,7 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
    }
 
    @Override
-   public void handleArtifactsPurgedEvent(Sender sender, final LoadedArtifacts loadedArtifacts) throws OseeCoreException {
+   public void handleArtifactsPurgedEvent(Sender sender, final LoadedArtifacts loadedArtifacts) {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
@@ -491,7 +491,7 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
    private class SearchSelectionProvider implements ISelectionProvider {
       @Override
       public void addSelectionChangedListener(ISelectionChangedListener listener) {
-
+         // do nothing
       }
 
       @Override
@@ -501,12 +501,12 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
 
       @Override
       public void removeSelectionChangedListener(ISelectionChangedListener listener) {
-
+         // do nothing
       }
 
       @Override
       public void setSelection(ISelection selection) {
-
+         // do nothing
       }
    }
 

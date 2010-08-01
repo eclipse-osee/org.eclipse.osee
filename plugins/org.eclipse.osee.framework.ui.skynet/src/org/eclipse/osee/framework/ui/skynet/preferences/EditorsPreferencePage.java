@@ -78,10 +78,12 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
     */
    @Override
    public void init(IWorkbench workbench) {
+      // do nothing
    }
 
    @Override
    protected void performDefaults() {
+      // do nothing
    }
 
    @Override

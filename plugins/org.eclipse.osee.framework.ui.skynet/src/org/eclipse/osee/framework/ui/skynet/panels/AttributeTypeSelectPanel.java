@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.panels;
 import java.util.Collection;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.AttributeTypeCheckTreeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.AttributeTypeLabelProvider;
@@ -47,7 +46,7 @@ public class AttributeTypeSelectPanel extends AbstractItemSelectPanel<Collection
    }
 
    @Override
-   protected Dialog createSelectDialog(Shell shell, Collection<AttributeType> lastSelected) throws OseeCoreException {
+   protected Dialog createSelectDialog(Shell shell, Collection<AttributeType> lastSelected) {
       AttributeTypeCheckTreeDialog dialog = new AttributeTypeCheckTreeDialog(attributeTypes);
       dialog.setTitle(title);
       dialog.setMessage(message);

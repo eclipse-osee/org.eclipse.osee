@@ -41,6 +41,7 @@ public class ExportBranchWizard extends Wizard implements IExportWizard {
 
    @Override
    public void init(IWorkbench workbench, IStructuredSelection selection) {
+      // do nothing
    }
 
    @Override

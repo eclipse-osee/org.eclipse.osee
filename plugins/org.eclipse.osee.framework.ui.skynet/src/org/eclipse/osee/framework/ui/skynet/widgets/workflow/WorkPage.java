@@ -90,14 +90,20 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
       this(null, null, (String) null, optionResolver, null);
    }
 
+   @SuppressWarnings("unused")
    public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, WorkPage page, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
+      // provided for subclass implementation
    }
 
+   @SuppressWarnings("unused")
    public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, WorkPage page, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
+      // provided for subclass implementation
    }
 
+   @SuppressWarnings("unused")
    @Override
    public void createXWidgetLayoutData(DynamicXWidgetLayoutData workAttr, XWidget xWidget, FormToolkit toolkit, Artifact art, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
+      // provided for subclass implementation
    }
 
    @Override
@@ -223,16 +229,10 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
       return workPageDefinition.id;
    }
 
-   /**
-    * @return Returns the toPages.
-    */
    public List<WorkPageDefinition> getToPages() throws OseeCoreException {
       return workFlowDefinition.getToPages(workPageDefinition);
    }
 
-   /**
-    * @return Returns the toPages.
-    */
    public List<WorkPageDefinition> getReturnPages() throws OseeCoreException {
       return workFlowDefinition.getReturnPages(workPageDefinition);
    }
@@ -241,32 +241,25 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
       return getReturnPages().contains(page);
    }
 
-   /**
-    * @return Returns the defaultToPage.
-    */
    public WorkPageDefinition getDefaultToPage() throws OseeCoreException {
       return workFlowDefinition.getDefaultToPage(workPageDefinition);
    }
 
-   /**
-    * @return the workPageDefinition
-    */
    public WorkPageDefinition getWorkPageDefinition() {
       return workPageDefinition;
    }
 
-   /**
-    * @return the workFlowDefinition
-    */
    public WorkFlowDefinition getWorkFlowDefinition() {
       return workFlowDefinition;
    }
 
-   /**
-    * @return the dynamicXWidgetLayout
-    */
    public DynamicXWidgetLayout getDynamicXWidgetLayout() {
       return dynamicXWidgetLayout;
+   }
+
+   @Override
+   public int hashCode() {
+      return super.hashCode();
    }
 
 }

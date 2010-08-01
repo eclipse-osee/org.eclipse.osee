@@ -383,7 +383,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
                attributeTypeSelectPanel.setAllowedAttributeTypes(getArtifactType().getAttributeTypes(
                   getDestinationArtifact().getBranch()));
             } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex.getLocalizedMessage());
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
          } else {
             attributeTypeSelectPanel.setAllowedAttributeTypes(new ArrayList<AttributeType>());
@@ -442,6 +442,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
                      getDestinationArtifact().getBranch()));
                }
             } catch (Exception ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
          }
       }
@@ -514,9 +515,6 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       protected File sourceFile;
       protected IArtifactExtractor extractor;
       protected IArtifactExtractorDelegate delegate;
-
-      private SelectionData() {
-      }
 
       public void setValues(Artifact destinationArtifact, File sourceFile, IArtifactExtractor extractor) {
          this.destinationArtifact = destinationArtifact;

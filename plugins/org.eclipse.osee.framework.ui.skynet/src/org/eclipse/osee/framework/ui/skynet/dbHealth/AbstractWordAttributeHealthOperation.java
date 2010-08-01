@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -155,7 +154,7 @@ public abstract class AbstractWordAttributeHealthOperation extends DatabaseHealt
          }
       }
 
-      private List<AttrData> loadAttributeData(IProgressMonitor monitor, AttributeType attributeType) throws OseeDataStoreException, OseeTypeDoesNotExist {
+      private List<AttrData> loadAttributeData(IProgressMonitor monitor, AttributeType attributeType) throws OseeDataStoreException {
          List<AttrData> attrData = new ArrayList<AttrData>();
          IOseeStatement chStmt = ConnectionHandler.getStatement();
          try {
@@ -175,8 +174,6 @@ public abstract class AbstractWordAttributeHealthOperation extends DatabaseHealt
    }
 
    private final static class ResourceUtil {
-      private ResourceUtil() {
-      }
 
       public static Resource getResource(String resourcePath) throws OseeCoreException {
          Resource toReturn = null;

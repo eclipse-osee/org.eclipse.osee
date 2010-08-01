@@ -81,7 +81,7 @@ public final class BasicTemplateAttributeHandler implements ITemplateAttributeHa
    }
 
    @Override
-   public boolean canHandle(Artifact artifact, TemplateAttribute attribute) throws OseeCoreException {
+   public boolean canHandle(Artifact artifact, TemplateAttribute attribute) {
       return true;
    }
 

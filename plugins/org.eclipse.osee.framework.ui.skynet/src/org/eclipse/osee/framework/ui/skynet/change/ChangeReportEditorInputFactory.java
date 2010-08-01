@@ -31,9 +31,6 @@ public class ChangeReportEditorInputFactory implements IElementFactory {
    private final static String END_TX_KEY = "org.eclipse.osee.framework.ui.skynet.change.transaction.end"; //$NON-NLS-1$
    private final static String COMPARE_TYPE = "org.eclipse.osee.framework.ui.skynet.change.compareType"; //$NON-NLS-1$
 
-   public ChangeReportEditorInputFactory() {
-   }
-
    @Override
    public IAdaptable createElement(IMemento memento) {
       ChangeReportEditorInput toReturn = null;

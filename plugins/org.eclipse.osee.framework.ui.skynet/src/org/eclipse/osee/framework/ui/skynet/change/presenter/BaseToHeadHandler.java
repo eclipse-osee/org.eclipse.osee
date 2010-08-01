@@ -67,7 +67,7 @@ public final class BaseToHeadHandler implements IChangeReportUiHandler {
    }
 
    @Override
-   public void appendTransactionInfoHtml(StringBuilder sb, ChangeUiData changeUiData) throws OseeCoreException {
+   public void appendTransactionInfoHtml(StringBuilder sb, ChangeUiData changeUiData) {
       TransactionDelta txDelta = changeUiData.getTxDelta();
       sb.append("<b>Created: </b><br/>");
       ChangeReportInfoPresenter.addTransactionInfo(sb, txDelta.getStartTx());

@@ -28,7 +28,7 @@ public class RelTypeContentProvider implements ITreeContentProvider {
    }
 
    @Override
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings("rawtypes")
    public Object[] getChildren(Object parentElement) {
       if (parentElement instanceof Collection) {
          return ((Collection) parentElement).toArray();
@@ -58,10 +58,12 @@ public class RelTypeContentProvider implements ITreeContentProvider {
 
    @Override
    public void dispose() {
+      // do nothing
    }
 
    @Override
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+      // do nothing
    }
 
 }

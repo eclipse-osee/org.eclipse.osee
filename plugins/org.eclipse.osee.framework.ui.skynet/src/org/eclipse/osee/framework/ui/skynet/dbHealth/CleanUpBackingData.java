@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -41,7 +40,7 @@ public class CleanUpBackingData extends DatabaseHealthOperation {
       super("Data with no TXS Addressing and empty transactions");
    }
 
-   private void processNotAddressedGammas(String tableName) throws OseeDataStoreException, IOException {
+   private void processNotAddressedGammas(String tableName) throws OseeDataStoreException {
       checkForCancelledStatus(monitor);
 
       List<Object[]> notAddressedGammas = new LinkedList<Object[]>();
@@ -71,7 +70,7 @@ public class CleanUpBackingData extends DatabaseHealthOperation {
       monitor.worked(calculateWork(0.10));
    }
 
-   private void processEmptyTransactions() throws OseeDataStoreException, IOException {
+   private void processEmptyTransactions() throws OseeDataStoreException {
       checkForCancelledStatus(monitor);
 
       List<Object[]> emptyTransactions = new LinkedList<Object[]>();

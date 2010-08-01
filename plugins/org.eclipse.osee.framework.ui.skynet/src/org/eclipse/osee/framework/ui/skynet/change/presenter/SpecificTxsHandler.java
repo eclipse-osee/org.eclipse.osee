@@ -72,7 +72,7 @@ public final class SpecificTxsHandler implements IChangeReportUiHandler {
    }
 
    @Override
-   public void appendTransactionInfoHtml(StringBuilder sb, ChangeUiData changeUiData) throws OseeCoreException {
+   public void appendTransactionInfoHtml(StringBuilder sb, ChangeUiData changeUiData) {
       TransactionDelta txDelta = changeUiData.getTxDelta();
       //      sb.append("<b>Branch 1 Last Modified</b>:<br/>");
       //      ChangeReportInfoPresenter.addTransactionInfo(sb, txDelta.getStartTx());

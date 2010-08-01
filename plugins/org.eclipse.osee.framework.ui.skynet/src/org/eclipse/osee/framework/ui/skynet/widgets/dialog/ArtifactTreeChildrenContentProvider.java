@@ -43,6 +43,7 @@ public class ArtifactTreeChildrenContentProvider implements ITreeContentProvider
     */
    @Override
    public void dispose() {
+      // do nothing
    }
 
    /**
@@ -71,10 +72,9 @@ public class ArtifactTreeChildrenContentProvider implements ITreeContentProvider
     * @see ITreeContentProvider#getChildren(Object)
     */
    @Override
-   @SuppressWarnings("unchecked")
    public Object[] getChildren(Object parentElement) {
       if (parentElement instanceof Collection) {
-         return ((Collection) parentElement).toArray();
+         return ((Collection<?>) parentElement).toArray();
       }
       if (parentElement.getClass().equals(clazz)) {
          try {

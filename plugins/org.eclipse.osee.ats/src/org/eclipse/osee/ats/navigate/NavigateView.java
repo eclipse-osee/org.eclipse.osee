@@ -39,7 +39,6 @@ import org.eclipse.osee.ats.config.AtsBulkLoad;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -58,6 +57,8 @@ import org.eclipse.osee.framework.ui.skynet.util.LoadingComposite;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -137,7 +138,14 @@ public class NavigateView extends ViewPart implements IActionable {
                   createToolBar();
 
                   // add search text box      
-                  new AtsQuickSearchComposite(xNavComp, SWT.NONE);
+                  AtsQuickSearchComposite composite = new AtsQuickSearchComposite(xNavComp, SWT.NONE);
+                  composite.addDisposeListener(new DisposeListener() {
+
+                     @Override
+                     public void widgetDisposed(DisposeEvent e) {
+                        OseeNotificationManager.getInstance().sendNotifications();
+                     }
+                  });
 
                   if (savedFilterStr != null) {
                      xNavComp.getFilteredTree().getFilterControl().setText(savedFilterStr);
@@ -292,16 +300,6 @@ public class NavigateView extends ViewPart implements IActionable {
    @Override
    public void setFocus() {
       // do nothing
-   }
-
-   @Override
-   public void dispose() {
-      try {
-         OseeNotificationManager.getInstance().sendNotifications();
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-      }
-      super.dispose();
    }
 
 }

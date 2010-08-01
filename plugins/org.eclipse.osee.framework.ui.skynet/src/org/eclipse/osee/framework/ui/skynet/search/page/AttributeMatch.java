@@ -65,6 +65,7 @@ public class AttributeMatch extends Match implements IAdaptable {
       return fLineElement;
    }
 
+   @SuppressWarnings("rawtypes")
    @Override
    public Object getAdapter(Class adapter) {
       if (Artifact.class.equals(adapter)) {

@@ -147,6 +147,7 @@ public class OseePreferencePage extends PreferencePage implements IWorkbenchPref
 
    @Override
    protected void performDefaults() {
+      // do nothing
    }
 
    @Override

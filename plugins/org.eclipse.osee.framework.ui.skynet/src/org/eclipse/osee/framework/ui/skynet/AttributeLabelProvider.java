@@ -22,9 +22,6 @@ import org.eclipse.swt.graphics.Image;
  */
 public class AttributeLabelProvider implements ITableLabelProvider {
 
-   /**
-    * 
-    */
    public AttributeLabelProvider() {
       super();
    }
@@ -49,10 +46,12 @@ public class AttributeLabelProvider implements ITableLabelProvider {
 
    @Override
    public void addListener(ILabelProviderListener listener) {
+      // do nothing
    }
 
    @Override
    public void dispose() {
+      // do nothing
    }
 
    @Override
@@ -62,6 +61,7 @@ public class AttributeLabelProvider implements ITableLabelProvider {
 
    @Override
    public void removeListener(ILabelProviderListener listener) {
+      // do nothing
    }
 
 }

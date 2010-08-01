@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -196,10 +197,7 @@ public class XListViewer extends XWidget {
       }
       listViewer.setInput(input);
       listViewer.getTable().setMenu(listMenu);
-      listViewer.getTable().addSelectionListener(new SelectionListener() {
-         @Override
-         public void widgetDefaultSelected(SelectionEvent e) {
-         }
+      listViewer.getTable().addSelectionListener(new SelectionAdapter() {
 
          @Override
          public void widgetSelected(SelectionEvent e) {
@@ -241,6 +239,7 @@ public class XListViewer extends XWidget {
 
    @Override
    public void setFocus() {
+      // do nothing
    }
 
    /**
@@ -273,11 +272,10 @@ public class XListViewer extends XWidget {
       listViewer.getTable().addSelectionListener(selectionListener);
    }
 
-   @SuppressWarnings("unchecked")
    public ArrayList<Object> getSelected() {
       ArrayList<Object> selected = new ArrayList<Object>();
       IStructuredSelection selection = (IStructuredSelection) listViewer.getSelection();
-      Iterator i = selection.iterator();
+      Iterator<?> i = selection.iterator();
       while (i.hasNext()) {
          selected.add(i.next());
       }
@@ -286,6 +284,7 @@ public class XListViewer extends XWidget {
 
    @Override
    public void setFromXml(String xml) {
+      // do nothing
    }
 
    public Table getTable() {

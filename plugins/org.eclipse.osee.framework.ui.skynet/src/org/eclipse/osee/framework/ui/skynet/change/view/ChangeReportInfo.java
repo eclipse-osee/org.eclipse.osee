@@ -31,9 +31,6 @@ public class ChangeReportInfo implements ChangeReportInfoPresenter.Display {
    private Label label;
    private ScrolledForm form;
 
-   public ChangeReportInfo() {
-   }
-
    @Override
    public void onCreate(IManagedForm managedForm, Composite parent) {
       FormToolkit toolkit = managedForm.getToolkit();

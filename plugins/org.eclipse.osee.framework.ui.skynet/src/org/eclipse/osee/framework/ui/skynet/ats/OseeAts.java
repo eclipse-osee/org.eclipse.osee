@@ -20,9 +20,6 @@ public final class OseeAts {
 
    private static IOseeAtsService oseeAtsInstance;
 
-   private OseeAts() {
-   }
-
    public static IOseeAtsService getInstance() {
       try {
          if (Platform.getExtensionRegistry() == null) {

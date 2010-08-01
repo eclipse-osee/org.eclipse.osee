@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers;
 
 import java.util.logging.Level;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -36,7 +35,7 @@ import org.eclipse.ui.part.FileEditorInput;
 public class OtherEditorHandler extends AbstractEditorHandler {
 
    @Override
-   public Object execute(ExecutionEvent event) throws ExecutionException {
+   public Object execute(ExecutionEvent event) {
       if (!artifacts.isEmpty()) {
          try {
             EditorSelectionDialog dialog =

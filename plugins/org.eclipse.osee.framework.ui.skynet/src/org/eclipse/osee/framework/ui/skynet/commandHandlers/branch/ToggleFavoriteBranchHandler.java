@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers.branch;
 
 import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -35,7 +34,7 @@ public class ToggleFavoriteBranchHandler extends CommandHandler {
       "org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.ToggleFavoriteBranchHandler";
 
    @Override
-   public Object execute(ExecutionEvent arg0) throws ExecutionException {
+   public Object execute(ExecutionEvent arg0) {
       IStructuredSelection selection =
          (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
       Branch selectedBranch = Handlers.getBranchesFromStructuredSelection(selection).iterator().next();
@@ -53,7 +52,7 @@ public class ToggleFavoriteBranchHandler extends CommandHandler {
    }
 
    @Override
-   public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
+   public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
       List<Branch> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
       return branches.size() == 1;
    }

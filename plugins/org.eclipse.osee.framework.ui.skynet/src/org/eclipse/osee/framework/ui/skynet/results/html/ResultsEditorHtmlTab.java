@@ -14,7 +14,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.action.ActionContributionItem;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -71,7 +70,7 @@ public class ResultsEditorHtmlTab implements IResultsEditorHtmlTab, IBrowserActi
    }
 
    @Override
-   public String getReportHtml() throws OseeCoreException {
+   public String getReportHtml() {
       return xResultPage.getManipulatedHtml();
    }
 
@@ -81,7 +80,7 @@ public class ResultsEditorHtmlTab implements IResultsEditorHtmlTab, IBrowserActi
    }
 
    @Override
-   public Composite createTab(Composite parent, ResultsEditor resultsEditor) throws OseeCoreException {
+   public Composite createTab(Composite parent, ResultsEditor resultsEditor) {
       this.resultsEditor = resultsEditor;
 
       Composite comp = ALayout.createCommonPageComposite(parent);

@@ -25,9 +25,6 @@ public enum MatchingStrategy {
    GUID(),
    NONE();
 
-   private MatchingStrategy() {
-   }
-
    public IArtifactImportResolver getResolver(ArtifactType primaryArtifactType, Collection<AttributeType> nonChangingAttributes, boolean createNewIfNotExist, boolean deleteUnmatchedArtifacts) throws OseeCoreException {
       ArtifactType secondaryArtifactType = ArtifactTypeManager.getType("Heading");
       if (this == ATTRIBUTE) {

@@ -86,7 +86,7 @@ public class GroupExplorerItem implements IAdaptable {
       }
    }
 
-   public boolean isUniversalGroup() throws OseeCoreException {
+   public boolean isUniversalGroup() {
       if (artifact == null || artifact.isDeleted()) {
          return false;
       }
@@ -187,6 +187,7 @@ public class GroupExplorerItem implements IAdaptable {
       return artifact.getGuid().hashCode() + (getParentItem() != null ? getParentItem().getArtifact().getGuid().hashCode() : 0);
    }
 
+   @SuppressWarnings("rawtypes")
    @Override
    public Object getAdapter(Class adapter) {
       if (adapter == null) {

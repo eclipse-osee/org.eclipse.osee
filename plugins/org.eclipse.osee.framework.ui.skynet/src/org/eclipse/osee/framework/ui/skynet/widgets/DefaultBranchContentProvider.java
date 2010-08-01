@@ -42,6 +42,7 @@ public class DefaultBranchContentProvider implements ITreeContentProvider, IBran
 
    @Override
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+      // do nothing
    }
 
    @Override
@@ -71,14 +72,17 @@ public class DefaultBranchContentProvider implements ITreeContentProvider, IBran
 
    @Override
    public void handleBranchEventREM1(Sender sender, BranchEventType branchModType, final int branchId) {
+      // do nothing
    }
 
    @Override
    public void handleBranchEvent(Sender sender, BranchEvent branchEvent) {
+      // do nothing
    }
 
    @Override
    public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
+      // do nothing
    }
 
    @Override

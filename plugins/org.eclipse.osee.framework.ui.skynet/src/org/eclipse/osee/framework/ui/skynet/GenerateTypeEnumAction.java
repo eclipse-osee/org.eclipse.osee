@@ -51,30 +51,27 @@ public class GenerateTypeEnumAction implements IActionDelegate {
    }
 
    @Override
-   @SuppressWarnings("unchecked")
    public void run(IAction action) {
       try {
          StructuredSelection sel = AWorkspace.getSelection();
-         Iterator i = sel.iterator();
+         Iterator<?> i = sel.iterator();
          File selection = null;
          while (i.hasNext()) {
             Object obj = i.next();
             if (obj instanceof IResource) {
                IResource resource = (IResource) obj;
-               if (resource != null) {
-                  selection = resource.getLocation().toFile();
-                  if (selection != null) {
+               selection = resource.getLocation().toFile();
+               if (selection != null) {
 
-                     Object destinationObj = getFolderToStoreAutoGenFilesIn(resource);
-                     if (destinationObj instanceof IContainer) {
-                        IContainer destinationFolder = (IContainer) destinationObj;
-                        File storeAt = destinationFolder.getLocation().toFile();
-                        SkynetTypesEnumGenerator gen = new SkynetTypesEnumGenerator();
-                        gen.extractTypesFromSheet(selection, storeAt);
-                        gen.finish();
+                  Object destinationObj = getFolderToStoreAutoGenFilesIn(resource);
+                  if (destinationObj instanceof IContainer) {
+                     IContainer destinationFolder = (IContainer) destinationObj;
+                     File storeAt = destinationFolder.getLocation().toFile();
+                     SkynetTypesEnumGenerator gen = new SkynetTypesEnumGenerator();
+                     gen.extractTypesFromSheet(selection, storeAt);
+                     gen.finish();
 
-                        destinationFolder.refreshLocal(IResource.DEPTH_INFINITE, null);
-                     }
+                     destinationFolder.refreshLocal(IResource.DEPTH_INFINITE, null);
                   }
                }
             }
@@ -125,6 +122,7 @@ public class GenerateTypeEnumAction implements IActionDelegate {
 
    @Override
    public void selectionChanged(IAction action, ISelection selection) {
+      // do nothing
    }
 
    private final class ResourceSelectionTree extends CheckedTreeSelectionDialog {

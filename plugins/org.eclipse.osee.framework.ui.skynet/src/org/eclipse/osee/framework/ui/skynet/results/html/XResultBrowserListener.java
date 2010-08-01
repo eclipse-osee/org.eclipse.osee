@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.results.html;
 
 import java.net.URL;
 import java.util.regex.Pattern;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -105,12 +104,13 @@ public class XResultBrowserListener implements LocationListener {
       }
    }
 
-   private void openArtifact(String guid, OseeEditor view) throws OseeCoreException {
+   private void openArtifact(String guid, OseeEditor view) {
       OseeAts.getInstance().openArtifact(guid, view);
    }
 
    @Override
    public void changed(LocationEvent event) {
+      // do nothing
    }
 
 }

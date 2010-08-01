@@ -66,5 +66,6 @@ public class OpenArtifactAction implements IObjectActionDelegate {
 
    @Override
    public void selectionChanged(IAction action, ISelection selection) {
+      // do nothing
    }
 }

@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.util.widgets;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DefaultAttributeXWidgetProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
@@ -33,7 +32,7 @@ public class AtsAttributeXWidgetProvider extends DefaultAttributeXWidgetProvider
       ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName());
 
    @Override
-   public List<DynamicXWidgetLayoutData> getDynamicXWidgetLayoutData(AttributeType attributeType) throws OseeCoreException {
+   public List<DynamicXWidgetLayoutData> getDynamicXWidgetLayoutData(AttributeType attributeType) {
       DynamicXWidgetLayoutData layoutData = super.getDynamicXWidgetLayoutData(attributeType).iterator().next();
       if (attributeNames.contains(attributeType.getName())) {
          layoutData.setXWidgetName("XFlatDam");

@@ -29,9 +29,6 @@ public class DatabaseHealthOpsExtensionManager {
    private static final Map<String, DatabaseHealthOperation> fixOps = new TreeMap<String, DatabaseHealthOperation>();
    private static final Map<String, DatabaseHealthOperation> verifyOps = new TreeMap<String, DatabaseHealthOperation>();
 
-   private DatabaseHealthOpsExtensionManager() {
-   }
-
    public static Set<String> getFixOperationNames() {
       return getOperationNames(true);
    }

@@ -69,14 +69,17 @@ public class FilterModelLabelProvider implements ITableLabelProvider {
 
    @Override
    public void dispose() {
+      // do nothing
    }
 
    @Override
    public void removeListener(ILabelProviderListener listener) {
+      // do nothing
    }
 
    @Override
    public void addListener(ILabelProviderListener listener) {
+      // do nothing
    }
 
    @Override

@@ -109,7 +109,7 @@ public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implemen
    }
 
    @Override
-   public void revert() throws OseeCoreException {
+   public void revert() {
       setAttributeType(artifact, attributeTypeName);
    }
 }

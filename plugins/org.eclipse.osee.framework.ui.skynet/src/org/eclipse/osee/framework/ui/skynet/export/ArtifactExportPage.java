@@ -72,7 +72,7 @@ public class ArtifactExportPage extends WizardDataTransferPage {
 
    @Override
    public void handleEvent(Event event) {
-
+      // do nothing
    }
 
    @Override

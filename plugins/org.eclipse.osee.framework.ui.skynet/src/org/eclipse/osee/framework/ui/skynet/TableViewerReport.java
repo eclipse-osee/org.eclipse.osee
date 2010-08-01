@@ -16,10 +16,7 @@ import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 import org.eclipse.swt.widgets.TableColumn;
@@ -47,11 +44,7 @@ public class TableViewerReport {
       String html = getHtml(items);
       XResultData xResultData = new XResultData();
       xResultData.addRaw(html);
-      try {
-         xResultData.report(title, Manipulations.RAW_HTML);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
+      xResultData.report(title, Manipulations.RAW_HTML);
    }
 
    public String getHtml(TableItem items[]) {

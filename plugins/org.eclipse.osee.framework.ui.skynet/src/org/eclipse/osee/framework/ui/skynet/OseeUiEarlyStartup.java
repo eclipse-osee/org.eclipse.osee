@@ -58,10 +58,12 @@ public class OseeUiEarlyStartup implements IStartup {
 
                      @Override
                      public void partClosed(IWorkbenchPart part) {
+                        // do nothing
                      }
 
                      @Override
                      public void partDeactivated(IWorkbenchPart part) {
+                        // do nothing
                      }
 
                      @Override

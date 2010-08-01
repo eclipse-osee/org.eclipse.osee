@@ -28,7 +28,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -97,9 +96,6 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
    private MenuItem openMenuItem;
    IGlobalMenuHelper globalMenuHelper;
 
-   public GroupExplorer() {
-   }
-
    @Override
    public void createPartControl(Composite parent) {
 
@@ -140,7 +136,7 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
       });
 
       treeViewer = new GroupTreeViewer(this, parent);
-      treeViewer.setContentProvider(new GroupContentProvider(this));
+      treeViewer.setContentProvider(new GroupContentProvider());
       treeViewer.setLabelProvider(new GroupLabelProvider());
       treeViewer.setUseHashlookup(true);
       treeViewer.getTree().addListener(SWT.MouseDoubleClick, new Listener() {
@@ -270,6 +266,7 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
 
       @Override
       public void menuHidden(MenuEvent e) {
+         // do nothing
       }
 
       @Override
@@ -325,7 +322,7 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
       }
    }
 
-   private void handleRemoveFromGroup() throws OseeCoreException {
+   private void handleRemoveFromGroup() {
       if (getSelectedUniversalGroupItems().size() > 0) {
          AWorkbench.popup("ERROR", "Can't remove Group, use \"Delete Group\".");
          return;
@@ -351,7 +348,7 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
       }
    }
 
-   private void handleDeleteGroup() throws OseeCoreException {
+   private void handleDeleteGroup() {
       final ArrayList<GroupExplorerItem> items = getSelectedUniversalGroupItems();
       if (items.isEmpty()) {
          AWorkbench.popup("ERROR", "No groups selected.");
@@ -431,7 +428,7 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
       return arts;
    }
 
-   private ArrayList<GroupExplorerItem> getSelectedUniversalGroupItems() throws OseeCoreException {
+   private ArrayList<GroupExplorerItem> getSelectedUniversalGroupItems() {
       ArrayList<GroupExplorerItem> arts = new ArrayList<GroupExplorerItem>();
       Iterator<?> i = ((IStructuredSelection) treeViewer.getSelection()).iterator();
       while (i.hasNext()) {
@@ -452,6 +449,7 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
 
    @Override
    public void setFocus() {
+      // do nothing
    }
 
    public void refresh() {
@@ -495,7 +493,7 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
    }
 
    @Override
-   public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
+   public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) {
       if (rootArt != null && transData.branchId != rootArt.getBranch().getId()) {
          return;
       }
@@ -525,6 +523,7 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
 
       @Override
       public void menuHidden(MenuEvent e) {
+         // do nothing
       }
 
       @Override

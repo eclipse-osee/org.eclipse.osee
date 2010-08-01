@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers.branch;
 
 import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
@@ -36,7 +35,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 public class PurgeTransactionHandler extends CommandHandler {
 
    @Override
-   public Object execute(ExecutionEvent arg0) throws ExecutionException {
+   public Object execute(ExecutionEvent arg0) {
       IStructuredSelection selection =
          (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
 

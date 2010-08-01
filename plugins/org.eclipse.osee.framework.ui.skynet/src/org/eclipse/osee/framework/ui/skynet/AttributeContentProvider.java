@@ -23,9 +23,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public class AttributeContentProvider implements IStructuredContentProvider {
    private final Object[] dummyArray = new Object[0];
 
-   /**
-    * 
-    */
    public AttributeContentProvider() {
       super();
    }
@@ -44,10 +41,11 @@ public class AttributeContentProvider implements IStructuredContentProvider {
 
    @Override
    public void dispose() {
+      // do nothing
    }
 
    @Override
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-
+      // do nothing
    }
 }

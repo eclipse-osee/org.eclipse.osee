@@ -37,9 +37,6 @@ public class DatabaseHealth extends AbstractBlam {
    private static final String CLEAN_ALL_PROMPT = "Run all the Cleanup Operations";
    private static final String SHOW_ALL_PROMPT = "Run all the Verification Operations";;
 
-   public DatabaseHealth() {
-   }
-
    @Override
    public String getName() {
       return "Database Health";

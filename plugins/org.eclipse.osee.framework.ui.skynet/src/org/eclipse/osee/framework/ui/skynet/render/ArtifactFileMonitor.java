@@ -68,6 +68,7 @@ final class ArtifactFileMonitor {
 
                @Override
                public void postShutdown(IWorkbench workbench) {
+                  // do nothing
                }
 
                @Override

@@ -11,17 +11,14 @@
 
 package org.eclipse.osee.framework.ui.skynet.render.artifactElement;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
-import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 /**
  * @author Jeff C. Phillips
@@ -41,7 +38,7 @@ public class MergeEditArtifactElementExtractor implements IElementExtractor {
    }
 
    @Override
-   public Collection<Element> extractElements() throws DOMException, ParserConfigurationException, SAXException, IOException, OseeCoreException {
+   public Collection<Element> extractElements() throws DOMException, OseeCoreException {
       final Collection<Element> artifactElements = new LinkedList<Element>();
       Collection<Element> sectList = new LinkedList<Element>();
       Element rootElement = document.getDocumentElement();
@@ -53,9 +50,7 @@ public class MergeEditArtifactElementExtractor implements IElementExtractor {
          Element element = (Element) nodeList.item(i);
          if (element.getNodeName().endsWith("wx:sect")) {
             //handle the case where there exists two wx:sext elements
-            if (element != null) {
-               sectList.add(element);
-            }
+            sectList.add(element);
          }
          if (element.getNodeName().endsWith("body")) {
             artifactElements.add(element);

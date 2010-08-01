@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public class UrlRenderer extends DefaultArtifactRenderer {
 
    @Override
-   public UrlRenderer newInstance() throws OseeCoreException {
+   public UrlRenderer newInstance() {
       return new UrlRenderer();
    }
 

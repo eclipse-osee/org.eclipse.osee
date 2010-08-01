@@ -30,9 +30,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemBlam;
  */
 public class BlamContributionManager {
 
-   private BlamContributionManager() {
-   }
-
    public static Collection<AbstractBlam> getBlamOperationsNameSort() {
       ArrayList<AbstractBlam> blamsSortedByName = new ArrayList<AbstractBlam>();
       Map<String, AbstractBlam> blamMap = new HashMap<String, AbstractBlam>();

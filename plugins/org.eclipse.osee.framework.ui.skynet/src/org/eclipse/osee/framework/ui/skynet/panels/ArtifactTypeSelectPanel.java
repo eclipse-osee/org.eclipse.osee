@@ -17,7 +17,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactTypeLabelProvider;
@@ -57,7 +56,7 @@ public class ArtifactTypeSelectPanel extends AbstractItemSelectPanel<ArtifactTyp
    }
 
    @Override
-   protected Dialog createSelectDialog(Shell shell, ArtifactType lastSelected) throws OseeCoreException {
+   protected Dialog createSelectDialog(Shell shell, ArtifactType lastSelected) {
       ArtifactTypeFilteredTreeDialog dialog = new ArtifactTypeFilteredTreeDialog(title, message);
       dialog.setMultiSelect(false);
       if (lastSelected != null) {

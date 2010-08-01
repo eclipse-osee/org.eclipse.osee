@@ -45,6 +45,7 @@ public class PreviewWordHandler extends AbstractEditorHandler {
     * 
     * @return
     */
+   @SuppressWarnings("unused")
    protected VariableMap getOptions() throws OseeArgumentException {
       return null;
    }

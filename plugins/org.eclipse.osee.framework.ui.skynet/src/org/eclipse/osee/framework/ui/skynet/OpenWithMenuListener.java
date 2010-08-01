@@ -59,6 +59,7 @@ public class OpenWithMenuListener implements MenuListener {
 
    @Override
    public void menuHidden(MenuEvent e) {
+      // do nothing
    }
 
    @Override

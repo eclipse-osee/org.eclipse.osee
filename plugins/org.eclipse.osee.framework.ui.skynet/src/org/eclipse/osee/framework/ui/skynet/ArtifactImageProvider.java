@@ -31,10 +31,12 @@ public abstract class ArtifactImageProvider {
     * @param artifact
     * @throws OseeCoreException
     */
+   @SuppressWarnings("unused")
    public String setupImage(Artifact artifact) throws OseeCoreException {
       return ArtifactImageManager.setupImageNoProviders(artifact);
    }
 
+   @SuppressWarnings("unused")
    public String setupImage(ArtifactType artifactType) throws OseeCoreException {
       return ArtifactImageManager.setupImage(BaseImage.getBaseImageEnum(artifactType));
    }

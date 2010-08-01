@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButton.ButtonType;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -32,10 +32,7 @@ public class XRadioButtonTest extends Composite {
 
       final XRadioButton rb = new XRadioButton("Single Button", "singleButton");
       rb.createWidgets(c, 2);
-      rb.addSelectionListener(new SelectionListener() {
-         @Override
-         public void widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent e) {
-         };
+      rb.addSelectionListener(new SelectionAdapter() {
 
          @Override
          public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
@@ -55,10 +52,7 @@ public class XRadioButtonTest extends Composite {
       final XRadioButton rb2 = new XRadioButton("Label After", "labelAfter");
       rb2.setLabelAfter(true);
       rb2.createWidgets(c, 2);
-      rb2.addSelectionListener(new SelectionListener() {
-         @Override
-         public void widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent e) {
-         };
+      rb2.addSelectionListener(new SelectionAdapter() {
 
          @Override
          public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
@@ -80,10 +74,7 @@ public class XRadioButtonTest extends Composite {
       rb3.setLabelAfter(true);
       rb3.createWidgets(c, 2);
 
-      rb3.addSelectionListener(new SelectionListener() {
-         @Override
-         public void widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent e) {
-         };
+      rb3.addSelectionListener(new SelectionAdapter() {
 
          @Override
          public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
@@ -105,10 +96,7 @@ public class XRadioButtonTest extends Composite {
       rb4.addButton("ccccc", "2nd tool tip");
       rb4.addButton("bbbbb", "3rd tool tip");
       rb4.createWidgets(c, 1);
-      rb4.addSelectionListener(new SelectionListener() {
-         @Override
-         public void widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent e) {
-         };
+      rb4.addSelectionListener(new SelectionAdapter() {
 
          @Override
          public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
@@ -127,10 +115,7 @@ public class XRadioButtonTest extends Composite {
       rb4.setLabel("Sorted Radios");
       rb4.setSortNames(true);
       rb4.createWidgets(c, 7);
-      rb4.addSelectionListener(new SelectionListener() {
-         @Override
-         public void widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent e) {
-         };
+      rb4.addSelectionListener(new SelectionAdapter() {
 
          @Override
          public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
@@ -153,10 +138,7 @@ public class XRadioButtonTest extends Composite {
       rb5.addButton("ccccc", "3rd tool tip");
       rb5.setMultiSelect(true);
       rb5.createWidgets(c, 11);
-      rb5.addSelectionListener(new SelectionListener() {
-         @Override
-         public void widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent e) {
-         };
+      rb5.addSelectionListener(new SelectionAdapter() {
 
          @Override
          public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
@@ -175,10 +157,7 @@ public class XRadioButtonTest extends Composite {
       rb5.setLabel("Sorted Multi Select");
       rb5.setSortNames(true);
       rb5.createWidgets(c, 11);
-      rb5.addSelectionListener(new SelectionListener() {
-         @Override
-         public void widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent e) {
-         };
+      rb5.addSelectionListener(new SelectionAdapter() {
 
          @Override
          public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
@@ -199,10 +178,7 @@ public class XRadioButtonTest extends Composite {
       rb6.setSortNames(true);
       rb6.setMultiSelect(true);
       rb6.createWidgets(c, 11);
-      rb6.addSelectionListener(new SelectionListener() {
-         @Override
-         public void widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent e) {
-         };
+      rb6.addSelectionListener(new SelectionAdapter() {
 
          @Override
          public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {

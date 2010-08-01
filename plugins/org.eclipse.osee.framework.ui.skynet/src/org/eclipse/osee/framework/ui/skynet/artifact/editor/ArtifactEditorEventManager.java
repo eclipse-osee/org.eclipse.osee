@@ -107,6 +107,7 @@ public class ArtifactEditorEventManager implements IArtifactEventListener, IBran
     */
    @Override
    public void handleBranchEventREM1(Sender sender, final BranchEventType branchModType, final int branchId) {
+      // do nothing
    }
 
    @Override
@@ -129,6 +130,7 @@ public class ArtifactEditorEventManager implements IArtifactEventListener, IBran
 
    @Override
    public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
+      // do nothing
    }
 
    @Override

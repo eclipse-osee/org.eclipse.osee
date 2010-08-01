@@ -49,10 +49,6 @@ public class DiffWizardPage extends WizardPage {
    private Button sourceMergeDiffButton;
    private Button destMergeDiffButton;
    private Label imageLabel;
-   private static final String SOURCE_VALUE = "Current Source(%s) Artifact";
-   private static final String DESTINATION_VALUE = "Current Destination(%s) Artifact";
-   private static final String BASELINE_VALUE = "Common Artifact Version (Baseline)";
-   private static final String MERGE_VALUE = "Current Merge Artifact";
    private static final String EDIT_TEXT = "Edit Merge Artifact";
    private static final String EDIT_TOOLTIP = "Make additional changes using the Document/Merge Editor";
    private static final String MERGE_TEXT = "Generate Three Way Merge (Developmental)";

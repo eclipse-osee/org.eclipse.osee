@@ -57,12 +57,7 @@ public class RelationTableViewer {
    public static final int INVALID_REASON_NUM = 1;
 
    public ArrayList<ArtifactType> fullDescriptorList;
-   private ArtifactType defaultArtifactType;
 
-   /**
-    * @param validTable -
-    * @param invalidTable -
-    */
    public RelationTableViewer(Table validTable, Table invalidTable, Branch branch) {
       try {
          fullDescriptorList = new ArrayList<ArtifactType>(ArtifactTypeManager.getValidArtifactTypes(branch));
@@ -108,8 +103,7 @@ public class RelationTableViewer {
 
       CellEditor[] validEditors = new CellEditor[validColumnNames.length];
       validEditors[ADD_NUM] = new CheckboxCellEditor(validTable, SWT.CENTER);
-      validEditors[ARTIFACT_NAME_NUM] = new TextCellEditor(validTable) {
-      };
+      validEditors[ARTIFACT_NAME_NUM] = new TextCellEditor(validTable);
 
       String[] items = new String[fullDescriptorList.size()];
       for (int i = 0; i < items.length; i++) {

@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.commit;
 import java.util.Collections;
 import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.access.AccessControlManager;
@@ -43,7 +42,7 @@ public class CommitIntoHandler extends CommitHandler {
    }
 
    @Override
-   public Object execute(ExecutionEvent arg0) throws ExecutionException {
+   public Object execute(ExecutionEvent arg0) {
       IStructuredSelection selection =
          (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
       Branch sourceBranch = Handlers.getBranchesFromStructuredSelection(selection).iterator().next();

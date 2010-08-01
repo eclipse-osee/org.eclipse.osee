@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.results;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation;
 
 /**
@@ -28,12 +27,12 @@ public class MultiPageResultsProvider implements IResultsEditorProvider {
    }
 
    @Override
-   public String getEditorName() throws OseeCoreException {
+   public String getEditorName() {
       return healthOperation.getName();
    }
 
    @Override
-   public List<IResultsEditorTab> getResultsEditorTabs() throws OseeCoreException {
+   public List<IResultsEditorTab> getResultsEditorTabs() {
       return resultsTabs;
    }
 

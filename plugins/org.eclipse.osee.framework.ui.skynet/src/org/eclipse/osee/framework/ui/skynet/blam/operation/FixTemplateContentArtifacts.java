@@ -81,6 +81,7 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
       return "Fix Template Content Artifacts";
    }
 
+   @SuppressWarnings("unused")
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       if (true) {
@@ -326,7 +327,7 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
    }
 
    //To handle the case of sub-sections
-   private boolean isBadParagraph(Element paragraph) throws OseeCoreException {
+   private boolean isBadParagraph(Element paragraph) {
       boolean badParagraph = false;
       String content = paragraph.getTextContent();
       if (content != null && content.contains("LISTNUM \"listreset\"")) {

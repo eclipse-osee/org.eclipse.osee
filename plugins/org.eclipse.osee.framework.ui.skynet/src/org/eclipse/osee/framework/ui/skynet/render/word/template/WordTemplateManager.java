@@ -48,19 +48,6 @@ public class WordTemplateManager {
    //			Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE)
    //			.matcher("");
 
-   private static final Matcher nameMatcher = Pattern.compile("<((\\w+:)?(Name))>(.*?)</\\1>",
-      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher("");
-   private static final Matcher outlineTypeMatcher = Pattern.compile("<((\\w+:)?(OutlineType))>(.*?)</\\1>",
-      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher("");
-   private static final Matcher outlineNumberMatcher = Pattern.compile("<((\\w+:)?(Number))>(.*?)</\\1>",
-      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher("");
-   private static final Matcher argumentElementsMatcher = Pattern.compile("<((\\w+:)?(Argument))>(.*?)</\\1>",
-      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher("");
-   private static final Matcher keyValueElementsMatcher = Pattern.compile("<((\\w+:)?(Key|Value))>(.*?)</\\1>",
-      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher("");
-   private static final Matcher subDocElementsMatcher = Pattern.compile("<((\\w+:)?(SubDoc))>(.*?)</\\1>",
-      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher("");
-
    private static final Matcher setNameMatcher = Pattern.compile("<(\\w+:)?Set_Name>(.*?)</(\\w+:)?Set_Name>",
       Pattern.DOTALL | Pattern.MULTILINE).matcher("");
    private static final Matcher headElementsMatcher = Pattern.compile(
@@ -152,16 +139,6 @@ public class WordTemplateManager {
          }
       }
       innerTasks.add(new AddTemplateText(last, newtext.length(), newtext));
-   }
-
-   private String sanatize(String template) {
-      Matcher matcher = Pattern.compile("<w:proofErr w:type=\".*?\"/>").matcher("");
-      matcher.reset(template);
-      while (matcher.find()) {
-         System.out.println("sanatize " + matcher.group(0));
-      }
-      template = matcher.replaceAll("");
-      return template;
    }
 
    private void preProcessTemplatePositions() {

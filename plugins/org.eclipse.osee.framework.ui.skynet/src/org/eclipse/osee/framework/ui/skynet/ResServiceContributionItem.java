@@ -57,7 +57,7 @@ public class ResServiceContributionItem extends OseeContributionItem implements 
 
    public ResServiceContributionItem() {
       super(ID);
-      updateStatus(RemoteEventManager2.getInstance().isConnected());
+      updateStatus(RemoteEventManager2.isConnected());
       OseeEventManager.addListener(this);
       icons.add(this);
       createUpdateThread();
@@ -95,7 +95,7 @@ public class ResServiceContributionItem extends OseeContributionItem implements 
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            updateStatus(RemoteEventManager2.getInstance().isConnected());
+            updateStatus(RemoteEventManager2.isConnected());
          }
       });
    }

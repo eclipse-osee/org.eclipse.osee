@@ -18,7 +18,6 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerTreeReport;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.TableWriterAdaptor;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -71,12 +70,12 @@ public class ResultsEditorTableTab implements IResultsEditorTableTab {
    }
 
    @Override
-   public List<XViewerColumn> getTableColumns() throws OseeCoreException {
+   public List<XViewerColumn> getTableColumns() {
       return columns;
    }
 
    @Override
-   public Collection<IResultsXViewerRow> getTableRows() throws OseeCoreException {
+   public Collection<IResultsXViewerRow> getTableRows() {
       return rows;
    }
 
@@ -86,7 +85,7 @@ public class ResultsEditorTableTab implements IResultsEditorTableTab {
    }
 
    @Override
-   public Composite createTab(Composite parent, ResultsEditor resultsEditor) throws OseeCoreException {
+   public Composite createTab(Composite parent, ResultsEditor resultsEditor) {
       Composite comp = ALayout.createCommonPageComposite(parent);
       ToolBar toolBar = resultsEditor.createToolBar(comp);
       addToolBarItems(toolBar);

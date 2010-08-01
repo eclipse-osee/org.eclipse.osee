@@ -123,6 +123,7 @@ public class XBranchSelectWidget extends XWidget implements Listener {
 
    @Override
    public void refresh() {
+      // do nothing
    }
 
    @Override

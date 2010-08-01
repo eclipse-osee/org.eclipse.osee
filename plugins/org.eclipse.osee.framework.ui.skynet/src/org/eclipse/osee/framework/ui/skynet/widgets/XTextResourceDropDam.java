@@ -33,9 +33,6 @@ import org.eclipse.ui.part.ResourceTransfer;
  */
 public class XTextResourceDropDam extends XTextDam {
 
-   /**
-    * @param displayLabel
-    */
    public XTextResourceDropDam(String displayLabel) {
       super(displayLabel);
    }
@@ -66,6 +63,7 @@ public class XTextResourceDropDam extends XTextDam {
 
          @Override
          public void dropAccept(DropTargetEvent event) {
+            // do nothing
          }
       });
    }
@@ -84,25 +82,21 @@ public class XTextResourceDropDam extends XTextDam {
             StringBuffer sb = new StringBuffer();
             if (obj instanceof IFile) {
                IFile iFile = (IFile) obj;
-               if (iFile != null) {
-                  File file = AWorkspace.iFileToFile(iFile);
-                  try {
-                     String javaPkg = AJavaProject.getJavaPackage(file);
-                     if (javaPkg != null && !javaPkg.equals("")) {
-                        sb.append(javaPkg + " - ");
-                     }
-                  } catch (Exception ex) {
-                     // do nothing
+               File file = AWorkspace.iFileToFile(iFile);
+               try {
+                  String javaPkg = AJavaProject.getJavaPackage(file);
+                  if (javaPkg != null && !javaPkg.equals("")) {
+                     sb.append(javaPkg + " - ");
                   }
-                  sb.append(iFile.getName());
-                  String ver = "unknown";//TODO properly abstract out version control (team providers?) so that we can get the version - VersionControl.getInstance().getRepositoryEntry(file).getVersion();
-                  if (ver != null) {
-                     if (ver.equals("unknown")) {
-                        ver = "enter version here";
-                     }
-                     sb.append(" (" + ver + ")");
-                  }
+               } catch (Exception ex) {
+                  // do nothing
                }
+               sb.append(iFile.getName());
+               String ver = "unknown"; //TODO properly abstract out version control (team providers?) so that we can get the version - VersionControl.getInstance().getRepositoryEntry(file).getVersion();
+               if (ver.equals("unknown")) {
+                  ver = "enter version here";
+               }
+               sb.append(" (" + ver + ")");
             }
             if (!sb.toString().equals("")) {
                strs.add(sb.toString());

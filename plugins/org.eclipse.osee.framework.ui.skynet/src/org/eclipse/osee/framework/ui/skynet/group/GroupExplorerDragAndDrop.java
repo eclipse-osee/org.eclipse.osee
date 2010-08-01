@@ -22,7 +22,6 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -100,7 +99,7 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
    }
 
    @Override
-   public void performDragOver(DropTargetEvent event) throws OseeCoreException {
+   public void performDragOver(DropTargetEvent event) {
       if (!ArtifactTransfer.getInstance().isSupportedType(event.currentDataType)) {
          event.detail = DND.DROP_NONE;
          return;

@@ -35,8 +35,8 @@ public class ArtifactTreeContentProvider implements ITreeContentProvider, IArtif
    private AbstractArtifactSearchResult fResult;
    private final ArtifactSearchPage fPage;
    private final AbstractTreeViewer fTreeViewer;
-   @SuppressWarnings("unchecked")
-   private Map fChildrenMap;
+   @SuppressWarnings("rawtypes")
+   private Map<Object, Set> fChildrenMap;
 
    ArtifactTreeContentProvider(ArtifactSearchPage page, AbstractTreeViewer viewer) {
       fPage = page;
@@ -71,10 +71,10 @@ public class ArtifactTreeContentProvider implements ITreeContentProvider, IArtif
       }
    }
 
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings("rawtypes")
    private synchronized void initialize(AbstractArtifactSearchResult result) {
       fResult = result;
-      fChildrenMap = new HashMap();
+      fChildrenMap = new HashMap<Object, Set>();
       boolean showLineMatches = fResult.hasAttributeMatches();
 
       if (result != null) {
@@ -123,23 +123,20 @@ public class ArtifactTreeContentProvider implements ITreeContentProvider, IArtif
    /**
     * returns true if the child already was a child of parent.
     * 
-    * @param parent
-    * @param child
     * @return Returns <code>true</code> if the child was added
     */
    @SuppressWarnings("unchecked")
    private boolean insertChild(Object parent, Object child) {
-      Set children = (Set) fChildrenMap.get(parent);
+      Set<Object> children = fChildrenMap.get(parent);
       if (children == null) {
-         children = new HashSet();
+         children = new HashSet<Object>();
          fChildrenMap.put(parent, children);
       }
       return children.add(child);
    }
 
-   @SuppressWarnings("unchecked")
    private boolean hasChild(Object parent, Object child) {
-      Set children = (Set) fChildrenMap.get(parent);
+      Set<?> children = fChildrenMap.get(parent);
       return children != null && children.contains(child);
    }
 
@@ -177,18 +174,16 @@ public class ArtifactTreeContentProvider implements ITreeContentProvider, IArtif
       return fResult.getMatchCount(element) > 0;
    }
 
-   @SuppressWarnings("unchecked")
    private void removeFromSiblings(Object element, Object parent) {
-      Set siblings = (Set) fChildrenMap.get(parent);
+      Set<?> siblings = fChildrenMap.get(parent);
       if (siblings != null) {
          siblings.remove(element);
       }
    }
 
    @Override
-   @SuppressWarnings("unchecked")
    public Object[] getChildren(Object parentElement) {
-      Set children = (Set) fChildrenMap.get(parentElement);
+      Set<?> children = fChildrenMap.get(parentElement);
       if (children == null) {
          return EMPTY_ARR;
       }

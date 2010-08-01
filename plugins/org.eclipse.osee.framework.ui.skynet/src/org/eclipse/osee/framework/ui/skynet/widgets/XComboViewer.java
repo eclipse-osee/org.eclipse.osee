@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -156,10 +157,7 @@ public class XComboViewer extends XWidget {
          comboViewer.setSorter(sorter);
       }
       comboViewer.setInput(input);
-      comboViewer.getCombo().addSelectionListener(new SelectionListener() {
-         @Override
-         public void widgetDefaultSelected(SelectionEvent e) {
-         }
+      comboViewer.getCombo().addSelectionListener(new SelectionAdapter() {
 
          @Override
          public void widgetSelected(SelectionEvent e) {
@@ -195,6 +193,7 @@ public class XComboViewer extends XWidget {
 
    @Override
    public void setFocus() {
+      // do nothing
    }
 
    /**
@@ -227,10 +226,9 @@ public class XComboViewer extends XWidget {
       comboViewer.getCombo().addSelectionListener(selectionListener);
    }
 
-   @SuppressWarnings("unchecked")
    public Object getSelected() {
       IStructuredSelection selection = (IStructuredSelection) comboViewer.getSelection();
-      Iterator iter = selection.iterator();
+      Iterator<?> iter = selection.iterator();
       if (iter.hasNext()) {
          return iter.next();
       }
@@ -239,6 +237,7 @@ public class XComboViewer extends XWidget {
 
    @Override
    public void setFromXml(String xml) {
+      // do nothing
    }
 
    public Combo getCombo() {

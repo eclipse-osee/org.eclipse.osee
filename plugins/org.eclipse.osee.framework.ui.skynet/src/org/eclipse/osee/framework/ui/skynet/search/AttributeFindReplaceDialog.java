@@ -220,10 +220,12 @@ public class AttributeFindReplaceDialog extends Dialog {
 
       @Override
       public void addListener(ILabelProviderListener listener) {
+         // do nothing
       }
 
       @Override
       public void dispose() {
+         // do nothing
       }
 
       @Override
@@ -233,6 +235,7 @@ public class AttributeFindReplaceDialog extends Dialog {
 
       @Override
       public void removeListener(ILabelProviderListener listener) {
+         // do nothing
       }
    }
 }

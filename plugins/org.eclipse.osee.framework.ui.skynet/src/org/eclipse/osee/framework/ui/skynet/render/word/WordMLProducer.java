@@ -295,7 +295,7 @@ public class WordMLProducer extends Producer {
       append("</w:docOleData>");
    }
 
-   private CharSequence getOutlineNumber() throws OseeCoreException {
+   private CharSequence getOutlineNumber() {
       StringBuilder strB = new StringBuilder();
       for (int i = 1; i < outlineLevel; i++) {
          strB.append(String.valueOf(outlineNumber[i]));

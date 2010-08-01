@@ -28,8 +28,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
@@ -234,26 +234,20 @@ public class RelationExplorerWindow {
       }
 
       // Add Listeners to buttons
-      okButton.addSelectionListener(new SelectionListener() {
+      okButton.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
             okSelected();
          }
 
-         @Override
-         public void widgetDefaultSelected(SelectionEvent e) {
-         }
       });
 
-      cancelButton.addSelectionListener(new SelectionListener() {
+      cancelButton.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
             cancelSelected();
          }
 
-         @Override
-         public void widgetDefaultSelected(SelectionEvent e) {
-         }
       });
 
       // Add shell resize listener
@@ -261,6 +255,7 @@ public class RelationExplorerWindow {
 
          @Override
          public void controlMoved(ControlEvent e) {
+            // do nothing
          }
 
          @Override

@@ -125,10 +125,12 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
 
    @Override
    public void doSave(IProgressMonitor monitor) {
+      // do nothing
    }
 
    @Override
    public void doSaveAs() {
+      // do nothing
    }
 
    @Override
@@ -239,6 +241,7 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
 
       @Override
       public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
+         // do nothing
       }
 
       @Override

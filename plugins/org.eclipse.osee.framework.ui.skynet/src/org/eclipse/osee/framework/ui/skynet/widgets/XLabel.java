@@ -58,10 +58,12 @@ public class XLabel extends XWidget {
 
    @Override
    public void setFocus() {
+      // do nothing
    }
 
    @Override
    public void dispose() {
+      // do nothing
    }
 
    @Override
@@ -91,10 +93,12 @@ public class XLabel extends XWidget {
 
    @Override
    public void refresh() {
+      // do nothing
    }
 
    @Override
    public void setXmlData(String str) {
+      // do nothing
    }
 
    @Override

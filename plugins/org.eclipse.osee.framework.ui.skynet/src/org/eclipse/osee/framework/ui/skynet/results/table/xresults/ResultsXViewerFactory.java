@@ -22,11 +22,9 @@ import org.eclipse.nebula.widgets.xviewer.customize.XViewerCustomizations;
 public class ResultsXViewerFactory extends XViewerFactory {
 
    private static String COLUMN_NAMESPACE = "org.eclipse.osee.table";
-   private final List<XViewerColumn> columns;
 
    public ResultsXViewerFactory(List<XViewerColumn> columns) {
       super("xviewer.test");
-      this.columns = columns;
       for (XViewerColumn xCol : columns) {
          registerColumns(xCol);
       }
@@ -40,6 +38,11 @@ public class ResultsXViewerFactory extends XViewerFactory {
    @Override
    public boolean isAdmin() {
       return true;
+   }
+
+   @Override
+   public String getNamespace() {
+      return COLUMN_NAMESPACE;
    }
 
 }

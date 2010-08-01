@@ -56,6 +56,7 @@ public class ChangeXViewer extends XViewer {
    private class KeySelectedListener implements KeyListener {
       @Override
       public void keyPressed(KeyEvent e) {
+         // do nothing
       }
 
       @Override

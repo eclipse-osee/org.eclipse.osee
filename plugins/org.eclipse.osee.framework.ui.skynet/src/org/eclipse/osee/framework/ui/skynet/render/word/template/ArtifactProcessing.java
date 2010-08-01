@@ -38,12 +38,9 @@ public class ArtifactProcessing implements ITemplateTask {
    private static final Matcher internalOutlineElementsMatcher = Pattern.compile(
       "<((\\w+:)?(HeadingAttribute|RecurseChildren|Number))>(.*?)</\\1>",
       Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher("");
+   private static final Matcher setNameMatcher = Pattern.compile("<(\\w+:)?Set_Name>(.*?)</(\\w+:)?Set_Name>",
+      Pattern.DOTALL | Pattern.MULTILINE).matcher("");
 
-   /**
-    * @param innerTasks
-    * @param artifactSection
-    * @param elementType
-    */
    public ArtifactProcessing(List<ITemplateTask> innerTasks, String artifactSection, String elementType) {
       this.innerTasks = innerTasks;
       extractInformation(artifactSection, elementType);
@@ -56,10 +53,8 @@ public class ArtifactProcessing implements ITemplateTask {
 
    @Override
    public void process(WordMLProducer wordMl, Artifact artifact, List<ITemplateAttributeHandler> handlers) {
-
+      // do nothing
    }
-   private static final Matcher setNameMatcher = Pattern.compile("<(\\w+:)?Set_Name>(.*?)</(\\w+:)?Set_Name>",
-      Pattern.DOTALL | Pattern.MULTILINE).matcher("");
 
    public List<ITemplateTask> getTasks() {
       return innerTasks;
@@ -101,50 +96,39 @@ public class ArtifactProcessing implements ITemplateTask {
       cleanedText = outlineElementsMatcher.replaceAll("");
    }
 
-   /**
-    * @return the innerTasks
-    */
    public List<ITemplateTask> getInnerTasks() {
       return innerTasks;
    }
 
-   /**
-    * @return the outlining
-    */
    public boolean isOutlining() {
       return outlining;
    }
 
-   /**
-    * @return the recurseChildren
-    */
    public boolean isRecurseChildren() {
       return recurseChildren;
    }
 
-   /**
-    * @return the outlineRelation
-    */
    public CoreRelationTypes getOutlineRelation() {
       return outlineRelation;
    }
 
-   /**
-    * @return the headingAttributeName
-    */
    public String getHeadingAttributeName() {
       return headingAttributeName;
    }
 
-   /**
-    * @return the outlineNumber
-    */
    public String getOutlineNumber() {
       return outlineNumber;
    }
 
    public String getText() {
       return this.cleanedText;
+   }
+
+   /**
+    * @return the artifactSetName
+    */
+   public String getArtifactSetName() {
+      return artifactSetName;
    }
 
 }

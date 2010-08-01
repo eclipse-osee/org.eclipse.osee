@@ -43,6 +43,7 @@ public class HierarchicalPresentationHandler extends AbstractHandler implements 
       return null;
    }
 
+   @SuppressWarnings("rawtypes")
    @Override
    public void updateElement(UIElement element, Map parameters) {
       element.setChecked(!Platform.getPreferencesService().getRootNode().node(InstanceScope.SCOPE).node(

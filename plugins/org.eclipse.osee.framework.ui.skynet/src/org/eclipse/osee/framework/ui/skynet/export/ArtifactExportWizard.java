@@ -26,9 +26,6 @@ import org.eclipse.ui.IWorkbench;
 public class ArtifactExportWizard extends Wizard implements IExportWizard {
    private ArtifactExportPage mainPage;
 
-   public ArtifactExportWizard() {
-   }
-
    @Override
    public boolean performFinish() {
       try {

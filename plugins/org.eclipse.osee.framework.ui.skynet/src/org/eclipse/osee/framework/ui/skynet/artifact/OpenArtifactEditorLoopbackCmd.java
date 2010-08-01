@@ -85,6 +85,7 @@ public class OpenArtifactEditorLoopbackCmd extends BaseArtifactLoopbackCmd {
                   try {
                      Thread.sleep(350);
                   } catch (InterruptedException ex) {
+                     OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                   }
                   count++;
                }

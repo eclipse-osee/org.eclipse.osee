@@ -606,20 +606,10 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
       new SMAOriginatorHeader(topLineComp, SWT.NONE, sma, toolkit);
 
-      try {
-         if (sma.isTeamWorkflow()) {
-            FormsUtil.createLabelText(toolkit, topLineComp, "Team: ", ((TeamWorkFlowArtifact) sma).getTeamName());
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      if (sma.isTeamWorkflow()) {
+         FormsUtil.createLabelText(toolkit, topLineComp, "Team: ", ((TeamWorkFlowArtifact) sma).getTeamName());
       }
-
-      try {
-         FormsUtil.createLabelText(toolkit, topLineComp, sma.getArtifactSuperTypeName() + "Id: ",
-            sma.getHumanReadableId());
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-      }
+      FormsUtil.createLabelText(toolkit, topLineComp, sma.getArtifactSuperTypeName() + "Id: ", sma.getHumanReadableId());
 
       try {
          if (Strings.isValid(sma.getPcrId())) {

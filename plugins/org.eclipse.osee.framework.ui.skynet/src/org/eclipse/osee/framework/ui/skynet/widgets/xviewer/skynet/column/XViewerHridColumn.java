@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
-import org.eclipse.nebula.widgets.xviewer.util.XViewerException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.swt.SWT;
@@ -48,7 +47,7 @@ public class XViewerHridColumn extends XViewerValueColumn {
    }
 
    @Override
-   public String getColumnText(Object element, XViewerColumn column, int columnIndex) throws XViewerException {
+   public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
          if (element instanceof Artifact) {
             return ((Artifact) element).getHumanReadableId();

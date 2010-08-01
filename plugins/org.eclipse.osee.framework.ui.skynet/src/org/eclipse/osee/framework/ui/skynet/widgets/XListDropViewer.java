@@ -23,8 +23,8 @@ import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
@@ -38,9 +38,6 @@ public class XListDropViewer extends XListViewer {
    private ArrayContentProvider myArrayContentProvider = null;
    private ArtifactLabelProvider myArtifactLabelProvider = null;
 
-   /**
-    * @param displayLabel
-    */
    public XListDropViewer(String displayLabel) {
       super(displayLabel);
       this.myArrayContentProvider = new ArrayContentProvider();
@@ -65,7 +62,7 @@ public class XListDropViewer extends XListViewer {
    private void createRemoveFromMenuItem(Menu popupMenu) {
       removeFromMenuItem = new MenuItem(popupMenu, SWT.PUSH);
       removeFromMenuItem.setText("Remove From This Blam's Parameters ");
-      removeFromMenuItem.addSelectionListener(new SelectionListener() {
+      removeFromMenuItem.addSelectionListener(new SelectionAdapter() {
 
          @Override
          public void widgetSelected(SelectionEvent event) {
@@ -83,9 +80,6 @@ public class XListDropViewer extends XListViewer {
             refresh();
          }
 
-         @Override
-         public void widgetDefaultSelected(SelectionEvent ev) {
-         }
       });
    }
 

@@ -101,6 +101,7 @@ public class XRadioButton extends XWidget {
     */
    @Override
    public void setXmlData(String str) {
+      // do nothing
    }
 
    /**

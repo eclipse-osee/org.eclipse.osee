@@ -26,7 +26,6 @@ import java.util.regex.Pattern;
 import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -65,8 +64,6 @@ public class UpdateArtifactJob extends UpdateJob {
    private static final Pattern multiPattern = Pattern.compile(".*[^()]*");
    private Element oleDataElement;
    private String singleGuid = null;
-   private static final boolean DEBUG =
-      "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Renderer"));
 
    public UpdateArtifactJob() {
       super("Update Artifact");

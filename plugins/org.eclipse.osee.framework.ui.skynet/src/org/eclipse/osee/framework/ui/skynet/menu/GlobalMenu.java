@@ -97,6 +97,7 @@ public class GlobalMenu {
 
       @Override
       public void menuHidden(MenuEvent e) {
+         // do nothing
       }
 
       @Override

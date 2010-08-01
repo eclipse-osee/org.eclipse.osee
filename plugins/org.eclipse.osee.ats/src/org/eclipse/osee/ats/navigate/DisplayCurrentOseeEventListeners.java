@@ -11,15 +11,11 @@
 
 package org.eclipse.osee.ats.navigate;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage;
 
@@ -38,11 +34,7 @@ public class DisplayCurrentOseeEventListeners extends XNavigateItemAction {
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
       String str = OseeEventManager.getListenerReport();
-      try {
-         ResultsEditor.open(new XResultPage(getName(), str));
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
+      ResultsEditor.open(new XResultPage(getName(), str));
    }
 
 }

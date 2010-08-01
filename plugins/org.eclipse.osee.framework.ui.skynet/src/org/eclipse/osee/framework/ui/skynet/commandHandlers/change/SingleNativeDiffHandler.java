@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers.change;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
@@ -46,7 +45,7 @@ public class SingleNativeDiffHandler extends CommandHandler {
    }
 
    @Override
-   public Object execute(ExecutionEvent event) throws ExecutionException {
+   public Object execute(ExecutionEvent event) {
       Collection<ArtifactDelta> compareArtifacts = ChangeManager.getCompareArtifacts(changes);
       for (ArtifactDelta delta : compareArtifacts) {
          try {

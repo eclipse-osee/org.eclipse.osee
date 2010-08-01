@@ -55,6 +55,7 @@ public class XRadioButtons extends XWidget {
 
    @Override
    public void setFocus() {
+      // do nothing
    }
 
    @Override

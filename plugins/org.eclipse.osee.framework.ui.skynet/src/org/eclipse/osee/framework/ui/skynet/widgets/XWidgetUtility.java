@@ -21,9 +21,6 @@ import org.eclipse.swt.widgets.Widget;
  */
 public final class XWidgetUtility {
 
-   private XWidgetUtility() {
-   }
-
    public static boolean isWidgetAccesible(Widget widget) {
       return widget != null && !widget.isDisposed();
    }

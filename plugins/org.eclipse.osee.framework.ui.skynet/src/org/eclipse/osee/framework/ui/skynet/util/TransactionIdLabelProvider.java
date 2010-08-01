@@ -18,9 +18,6 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
  */
 public class TransactionIdLabelProvider extends LabelProvider {
 
-   public TransactionIdLabelProvider() {
-   }
-
    @Override
    public String getText(Object element) {
       return ((TransactionRecord) element).toString() + " - " + ((TransactionRecord) element).getComment();

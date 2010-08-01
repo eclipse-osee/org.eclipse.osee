@@ -57,10 +57,12 @@ public class DefaultWithStringAndIntegerFields extends FieldEditor {
 
    @Override
    protected void adjustForNumColumns(int numColumns) {
+      // do nothing
    }
 
    @Override
    protected void doFillIntoGrid(Composite parent, int numColumns) {
+      // do nothing
    }
 
    @Override
@@ -155,11 +157,10 @@ public class DefaultWithStringAndIntegerFields extends FieldEditor {
       boolean toReturn = false;
       if (Strings.isValid(textField)) {
          try {
-            Integer integer = new Integer(integerField);
-            if (integer != null) {
-               toReturn = true;
-            }
+            new Integer(integerField);
+            toReturn = true;
          } catch (NumberFormatException ex) {
+            // do nothing
          }
       }
       return toReturn;

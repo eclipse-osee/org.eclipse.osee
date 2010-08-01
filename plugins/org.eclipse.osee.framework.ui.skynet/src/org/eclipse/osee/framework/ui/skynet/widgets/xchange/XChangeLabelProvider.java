@@ -18,7 +18,6 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
@@ -41,7 +40,7 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
    }
 
    @Override
-   public String getColumnText(Object element, XViewerColumn cCol, int columnIndex) throws OseeCoreException {
+   public String getColumnText(Object element, XViewerColumn cCol, int columnIndex) {
       try {
          if (element instanceof String && columnIndex == 0) {
             return String.valueOf(element);
@@ -99,10 +98,12 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
 
    @Override
    public void addListener(ILabelProviderListener listener) {
+      // do nothing
    }
 
    @Override
    public void removeListener(ILabelProviderListener listener) {
+      // do nothing
    }
 
    public ChangeXViewer getTreeViewer() {
@@ -110,7 +111,7 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
    }
 
    @Override
-   public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
+   public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) {
       try {
          if (!(element instanceof Change)) {
             return null;

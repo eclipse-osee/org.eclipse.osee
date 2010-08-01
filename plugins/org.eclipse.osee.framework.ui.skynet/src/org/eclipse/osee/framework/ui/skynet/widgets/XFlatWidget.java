@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -249,7 +248,6 @@ public abstract class XFlatWidget<T> extends XLabel {
                      imageName = ISharedImages.IMG_OBJS_WARN_TSK;
                      break;
                   default:
-                     imageName = null;
                      break;
                }
                Image image =
@@ -280,20 +278,6 @@ public abstract class XFlatWidget<T> extends XLabel {
       @Override
       public void run() {
          flatControl.addPage((T) null);
-      }
-   }
-
-   private final class RemovePage extends Action {
-      public RemovePage() {
-         super();
-         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.REMOVE));
-         setToolTipText("Removes a page");
-      }
-
-      @Override
-      public void run() {
-         AWorkbench.popup("Not implemented yet");
-         flatControl.removePage("here");
       }
    }
 

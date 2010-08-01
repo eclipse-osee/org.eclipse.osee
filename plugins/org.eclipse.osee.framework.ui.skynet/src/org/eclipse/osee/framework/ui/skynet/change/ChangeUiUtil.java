@@ -29,9 +29,6 @@ import org.eclipse.ui.progress.UIJob;
 
 public final class ChangeUiUtil {
 
-   private ChangeUiUtil() {
-   }
-
    public static void open(Branch branch) throws OseeCoreException {
       Conditions.checkNotNull(branch, "Branch");
       open(createInput(branch, true));

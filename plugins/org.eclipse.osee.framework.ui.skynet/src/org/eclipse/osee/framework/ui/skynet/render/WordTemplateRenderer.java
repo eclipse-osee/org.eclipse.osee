@@ -86,7 +86,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    }
 
    @Override
-   public WordTemplateRenderer newInstance() throws OseeCoreException {
+   public WordTemplateRenderer newInstance() {
       return new WordTemplateRenderer();
    }
 

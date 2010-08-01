@@ -83,10 +83,11 @@ public class DefaultArtifactRenderer implements IRenderer {
    }
 
    @Override
-   public DefaultArtifactRenderer newInstance() throws OseeCoreException {
+   public DefaultArtifactRenderer newInstance() {
       return new DefaultArtifactRenderer();
    }
 
+   @SuppressWarnings("unused")
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
       if (presentationType == GENERALIZED_EDIT) {
@@ -95,6 +96,7 @@ public class DefaultArtifactRenderer implements IRenderer {
       return DEFAULT_MATCH;
    }
 
+   @SuppressWarnings("unused")
    @Override
    public int minimumRanking() throws OseeCoreException {
       return NO_MATCH;
@@ -144,7 +146,7 @@ public class DefaultArtifactRenderer implements IRenderer {
    }
 
    @Override
-   public Image getImage(Artifact artifact) throws OseeCoreException {
+   public Image getImage(Artifact artifact) {
       return ArtifactImageManager.getImage(artifact);
    }
 
@@ -184,6 +186,7 @@ public class DefaultArtifactRenderer implements IRenderer {
       return orderedAttributeTypes;
    }
 
+   @SuppressWarnings("unused")
    @Override
    public void open(final List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
       Displays.ensureInDisplayThread(new Runnable() {

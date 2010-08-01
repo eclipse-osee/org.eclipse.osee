@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.DEFAULT_OPEN;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERALIZED_EDIT;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -31,11 +30,11 @@ public abstract class WordRenderer extends FileSystemRenderer {
    private static final Program wordApp = Program.findProgram("doc");
 
    @Override
-   public Image getImage(Artifact artifact) throws OseeCoreException {
+   public Image getImage(Artifact artifact) {
       return ImageManager.getProgramImage("doc");
    }
 
-   public static ImageDescriptor getImageDescriptor() throws OseeArgumentException {
+   public static ImageDescriptor getImageDescriptor() {
       return ImageManager.getProgramImageDescriptor("doc");
    }
 
@@ -45,7 +44,7 @@ public abstract class WordRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public String getAssociatedExtension(Artifact artifact) throws OseeCoreException {
+   public String getAssociatedExtension(Artifact artifact) {
       return "xml";
    }
 

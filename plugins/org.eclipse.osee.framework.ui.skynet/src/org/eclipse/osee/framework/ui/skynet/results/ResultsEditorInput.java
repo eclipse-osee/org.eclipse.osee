@@ -61,6 +61,7 @@ public class ResultsEditorInput implements IEditorInput {
       return "";
    }
 
+   @SuppressWarnings("rawtypes")
    @Override
    public Object getAdapter(Class adapter) {
       return null;
@@ -74,5 +75,10 @@ public class ResultsEditorInput implements IEditorInput {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          return "Exception getting name: " + ex.getLocalizedMessage();
       }
+   }
+
+   @Override
+   public int hashCode() {
+      return super.hashCode();
    }
 }

@@ -73,9 +73,6 @@ public final class ArtifactImageManager {
       loadCache();
    }
 
-   private ArtifactImageManager() {
-   }
-
    public synchronized static void loadCache() {
       artifactTypeImagesLoaded = false;
 

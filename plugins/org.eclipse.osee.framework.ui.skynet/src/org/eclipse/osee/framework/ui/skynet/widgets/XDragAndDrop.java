@@ -19,10 +19,6 @@ import org.eclipse.swt.widgets.Control;
  */
 public class XDragAndDrop extends SkynetDragAndDrop {
 
-   /**
-    * @param control
-    * @param viewId
-    */
    public XDragAndDrop(Control control, String viewId) {
       super(control, viewId);
    }
@@ -34,7 +30,7 @@ public class XDragAndDrop extends SkynetDragAndDrop {
 
    @Override
    public void performArtifactDrop(Artifact[] dropArtifacts) {
-
+      // provided for subclass implementation
    }
 
 }

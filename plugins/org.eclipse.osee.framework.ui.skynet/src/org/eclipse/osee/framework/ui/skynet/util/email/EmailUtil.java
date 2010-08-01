@@ -38,7 +38,7 @@ public class EmailUtil {
       return isEmailValid(user.getEmail());
    }
 
-   public static Collection<User> getValidEmailUsers(Collection<User> users) throws OseeCoreException {
+   public static Collection<User> getValidEmailUsers(Collection<User> users) {
       Set<User> validUsers = new HashSet<User>();
       for (User user : users) {
          try {

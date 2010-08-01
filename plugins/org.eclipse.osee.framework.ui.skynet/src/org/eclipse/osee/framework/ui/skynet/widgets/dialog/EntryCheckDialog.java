@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
@@ -46,11 +47,7 @@ public class EntryCheckDialog extends EntryDialog {
       text.set(checked);
       text.createWidgets(parent, 2);
 
-      SelectionListener selectionListener = new SelectionListener() {
-
-         @Override
-         public void widgetDefaultSelected(SelectionEvent e) {
-         }
+      SelectionListener selectionListener = new SelectionAdapter() {
 
          @Override
          public void widgetSelected(SelectionEvent e) {

@@ -93,6 +93,7 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
 
             @Override
             public void postShutdown(IWorkbench workbench) {
+               // do nothing
             }
 
             @Override

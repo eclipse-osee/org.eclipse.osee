@@ -75,7 +75,7 @@ public class ToggleFavoriteBranchContributionItem extends CompoundContributionIt
       return contributionItems.toArray(new IContributionItem[0]);
    }
 
-   private CommandContributionItem createCommand(String label, Branch branch, String commandId) throws OseeCoreException {
+   private CommandContributionItem createCommand(String label, Branch branch, String commandId) {
       CommandContributionItem contributionItem;
 
       contributionItem =

@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 import java.util.List;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -28,11 +27,9 @@ import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
  * @author Paul K. Waldfogel
  */
 public class ShowPreviewHandler extends AbstractHandler {
-   public ShowPreviewHandler() {
-   }
 
    @Override
-   public Object execute(ExecutionEvent event) throws ExecutionException {
+   public Object execute(ExecutionEvent event) {
       ISelectionProvider selectionProvider =
          AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
 

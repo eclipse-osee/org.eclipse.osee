@@ -18,18 +18,14 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
  * @author Theron Virgin
  */
 public class WordmlPicture {
-   private int pictureStartIndex;
+   private final int pictureStartIndex;
    private String binaryData;
-   private String pictureDefinition;
-   private Attribute attribute;
+   private final String pictureDefinition;
+   private final Attribute<?> attribute;
    private static final boolean DEBUG =
       "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Word"));
 
-   public WordmlPicture() {
-
-   }
-
-   public WordmlPicture(int pictureStartIndex, String pictureDefinition, String document, Attribute attribute) throws OseeCoreException {
+   public WordmlPicture(int pictureStartIndex, String pictureDefinition, String document, Attribute<?> attribute) throws OseeCoreException {
       this.pictureStartIndex = pictureStartIndex;
       this.pictureDefinition = pictureDefinition;
       this.attribute = attribute;

@@ -34,11 +34,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactChangeListener;
 public class ArtifactContentProvider implements ITreeContentProvider, ArtifactChangeListener {
    private static Object[] EMPTY_ARRAY = new Object[0];
 
-   /*
-    * @see IContentProvider#dispose()
-    */
    @Override
    public void dispose() {
+      // do nothing
    }
 
    /**
@@ -56,6 +54,7 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
     */
    @Override
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+      // do nothing
    }
 
    /**
@@ -66,7 +65,6 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
     * @see ITreeContentProvider#getChildren(Object)
     */
    @Override
-   @SuppressWarnings("unchecked")
    public Object[] getChildren(Object parentElement) {
       if (parentElement instanceof Artifact) {
          Artifact parentItem = (Artifact) parentElement;
@@ -81,7 +79,7 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
       } else if (parentElement instanceof Collection) {
-         return ((Collection) parentElement).toArray();
+         return ((Collection<?>) parentElement).toArray();
       }
       return EMPTY_ARRAY;
    }

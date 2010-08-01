@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
@@ -48,7 +47,7 @@ public class OseeNotificationManager implements INotificationManager {
    }
 
    @Override
-   public void sendNotifications() throws OseeCoreException {
+   public void sendNotifications() {
       if (!emailEnabled) {
          OseeLog.log(SkynetGuiPlugin.class, Level.INFO, "Osee Notification Disabled");
          return;

@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.results.chart;
 
 import org.eclipse.birt.chart.model.Chart;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.util.ImageCapture;
@@ -43,7 +42,7 @@ public class ResultsEditorChartTab implements IResultsEditorChartTab {
    }
 
    @Override
-   public Chart getChart() throws OseeCoreException {
+   public Chart getChart() {
       return chart;
    }
 
@@ -53,7 +52,7 @@ public class ResultsEditorChartTab implements IResultsEditorChartTab {
    }
 
    @Override
-   public Composite createTab(Composite parent, ResultsEditor resultsEditor) throws OseeCoreException {
+   public Composite createTab(Composite parent, ResultsEditor resultsEditor) {
       Chart chart = getChart();
       chartComposite = ALayout.createCommonPageComposite(parent);
       ToolBar toolBar = resultsEditor.createToolBar(chartComposite);

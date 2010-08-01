@@ -17,7 +17,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-import javax.mail.MessagingException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -43,7 +42,7 @@ public class OseeNotifyUsersJob extends Job {
    private final boolean testing = false; // Email goes to current user
    private final Collection<? extends OseeNotificationEvent> notificationEvents;
 
-   public OseeNotifyUsersJob(Collection<? extends OseeNotificationEvent> notificationEvents) throws OseeCoreException {
+   public OseeNotifyUsersJob(Collection<? extends OseeNotificationEvent> notificationEvents) {
       super("Notifying Users");
       this.notificationEvents = notificationEvents;
       if (testing) {
@@ -98,7 +97,7 @@ public class OseeNotifyUsersJob extends Job {
       return Strings.isValid(notificationEvent.getUrl()) ? AHTML.getHyperlink(notificationEvent.getUrl(), "More Info") : "";
    }
 
-   private void notifyUser(User user, List<OseeNotificationEvent> notificationEvents, XResultData resultData) throws MessagingException, OseeCoreException {
+   private void notifyUser(User user, List<OseeNotificationEvent> notificationEvents, XResultData resultData) throws OseeCoreException {
       if (user == UserManager.getUser(SystemUser.OseeSystem) || user == UserManager.getUser(SystemUser.UnAssigned) || user == UserManager.getUser(SystemUser.Guest)) {
          // do nothing
          return;

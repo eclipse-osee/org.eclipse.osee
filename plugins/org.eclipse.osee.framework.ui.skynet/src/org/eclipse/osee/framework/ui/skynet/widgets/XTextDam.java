@@ -26,11 +26,13 @@ public class XTextDam extends XText implements IArtifactWidget, IAttributeWidget
       super(displayLabel);
    }
 
+   @SuppressWarnings("unused")
    @Override
    public Artifact getArtifact() throws OseeCoreException {
       return artifact;
    }
 
+   @SuppressWarnings("unused")
    @Override
    public void setArtifact(Artifact artifact) throws OseeCoreException {
       this.artifact = artifact;

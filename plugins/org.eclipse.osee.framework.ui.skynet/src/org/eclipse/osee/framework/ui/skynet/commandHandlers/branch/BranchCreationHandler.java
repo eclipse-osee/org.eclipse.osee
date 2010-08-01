@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.commandHandlers.branch;
 
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -44,7 +43,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 public class BranchCreationHandler extends CommandHandler {
 
    @Override
-   public Object execute(ExecutionEvent arg0) throws ExecutionException {
+   public Object execute(ExecutionEvent arg0) {
       IStructuredSelection selection =
          (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
       Object backingData = selection.getFirstElement();

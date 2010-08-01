@@ -103,7 +103,7 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
                   RelationManager.getRelationRationale(wrapper.getArtifactA(), wrapper.getArtifactB(),
                      wrapper.getRelationType());
             } catch (OseeCoreException ex) {
-
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
             return rationale;
          }
@@ -113,10 +113,12 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
 
    @Override
    public void addListener(ILabelProviderListener listener) {
+      // do nothing
    }
 
    @Override
    public void dispose() {
+      // do nothing
    }
 
    @Override
@@ -126,6 +128,7 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
 
    @Override
    public void removeListener(ILabelProviderListener listener) {
+      // do nothing
    }
 
    @Override

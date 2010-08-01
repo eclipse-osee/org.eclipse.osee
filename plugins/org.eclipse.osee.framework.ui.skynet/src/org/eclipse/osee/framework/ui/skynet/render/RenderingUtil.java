@@ -41,9 +41,6 @@ public final class RenderingUtil {
    private static IFolder mergeEditFolder;
    private static boolean arePopupsAllowed = true;
 
-   private RenderingUtil() {
-   }
-
    public static void setPopupsAllowed(boolean popupsAllowed) {
       arePopupsAllowed = popupsAllowed;
    }

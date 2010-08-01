@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 import java.util.List;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -43,11 +42,8 @@ import org.eclipse.ui.PlatformUI;
 public class RevertAttributeHandler extends AbstractHandler {
    private List<Attribute> attributes;
 
-   public RevertAttributeHandler() {
-   }
-
    @Override
-   public Object execute(ExecutionEvent event) throws ExecutionException {
+   public Object execute(ExecutionEvent event) {
       // This is serious stuff, make sure the user understands the impact.
       if (MessageDialog.openConfirm(
          Displays.getActiveShell(),
@@ -114,9 +110,6 @@ public class RevertAttributeHandler extends AbstractHandler {
             this.attributes = changes;
 
             for (Attribute<?> attribute : attributes) {
-               if (attributes == null) {
-
-               }
                isEnabled = AccessControlManager.hasPermission(attribute.getArtifact(), PermissionEnum.WRITE);
                if (!isEnabled) {
                   break;

@@ -68,7 +68,7 @@ public class ChangeReportEditorInput implements IEditorInput, IPersistableElemen
       return getName();
    }
 
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings("rawtypes")
    @Override
    public Object getAdapter(Class adapter) {
       return null;

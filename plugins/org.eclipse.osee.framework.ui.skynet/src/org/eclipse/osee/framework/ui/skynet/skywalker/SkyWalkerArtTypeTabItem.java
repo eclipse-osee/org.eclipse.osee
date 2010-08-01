@@ -25,8 +25,8 @@ import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.skywalker.ISkyWalkerOptionsChangeListener.ModType;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
@@ -85,10 +85,7 @@ public class SkyWalkerArtTypeTabItem {
 
       selectAll = new Button(buttonComp, SWT.PUSH);
       selectAll.setText("Select All");
-      selectAll.addSelectionListener(new SelectionListener() {
-         @Override
-         public void widgetDefaultSelected(SelectionEvent e) {
-         }
+      selectAll.addSelectionListener(new SelectionAdapter() {
 
          @Override
          public void widgetSelected(SelectionEvent e) {
@@ -99,10 +96,7 @@ public class SkyWalkerArtTypeTabItem {
 
       deSelectAll = new Button(buttonComp, SWT.PUSH);
       deSelectAll.setText("De-Select All");
-      deSelectAll.addSelectionListener(new SelectionListener() {
-         @Override
-         public void widgetDefaultSelected(SelectionEvent e) {
-         }
+      deSelectAll.addSelectionListener(new SelectionAdapter() {
 
          @Override
          public void widgetSelected(SelectionEvent e) {

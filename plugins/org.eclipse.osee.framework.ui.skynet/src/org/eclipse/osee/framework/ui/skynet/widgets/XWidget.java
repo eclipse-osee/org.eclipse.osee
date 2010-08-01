@@ -177,10 +177,12 @@ public abstract class XWidget {
 
                      @Override
                      public void mouseDown(MouseEvent e) {
+                        // do nothing
                      }
 
                      @Override
                      public void mouseUp(MouseEvent e) {
+                        // do nothing
                      }
                   };
                   labelWidget.addMouseListener(mouseLabelListener);
@@ -218,7 +220,7 @@ public abstract class XWidget {
    }
 
    protected void createControls(Composite parent, int horizontalSpan) {
-
+      // provided for subclass implementation
    }
 
    public final void createWidgets(Composite parent, int horizontalSpan) {

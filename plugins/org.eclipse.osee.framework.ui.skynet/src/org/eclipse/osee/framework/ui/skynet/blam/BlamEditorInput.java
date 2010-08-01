@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.blam;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
@@ -25,7 +24,7 @@ public class BlamEditorInput implements IEditorInput {
 
    private final AbstractBlam blamOperation;
 
-   public BlamEditorInput(AbstractBlam blamOperation) throws OseeCoreException {
+   public BlamEditorInput(AbstractBlam blamOperation) {
       this.blamOperation = blamOperation;
    }
 
@@ -70,10 +69,15 @@ public class BlamEditorInput implements IEditorInput {
       return "";
    }
 
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings("rawtypes")
    @Override
    public Object getAdapter(Class arg0) {
       return null;
+   }
+
+   @Override
+   public int hashCode() {
+      return super.hashCode();
    }
 
 }

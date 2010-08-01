@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -52,12 +51,12 @@ public class XViewerExample extends XNavigateItemAction {
       ResultsEditor.open(new IResultsEditorProvider() {
 
          @Override
-         public String getEditorName() throws OseeCoreException {
+         public String getEditorName() {
             return TITLE;
          }
 
          @Override
-         public List<IResultsEditorTab> getResultsEditorTabs() throws OseeCoreException {
+         public List<IResultsEditorTab> getResultsEditorTabs() {
             List<IResultsXViewerRow> rows = new ArrayList<IResultsXViewerRow>();
             List<IResultsXViewerRow> bigRows = new ArrayList<IResultsXViewerRow>();
             for (int x = 0; x < 50000; x++) {

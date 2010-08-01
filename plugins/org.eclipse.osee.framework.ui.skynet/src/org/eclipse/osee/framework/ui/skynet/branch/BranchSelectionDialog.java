@@ -24,8 +24,8 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -83,6 +83,7 @@ public class BranchSelectionDialog extends MessageDialog {
 
          @Override
          public void keyPressed(KeyEvent e) {
+            // do nothing
          }
       });
       if (branches != null) {
@@ -101,16 +102,13 @@ public class BranchSelectionDialog extends MessageDialog {
             handleDoubleClick();
          }
       });
-      branchWidget.getXViewer().getTree().addSelectionListener(new SelectionListener() {
+      branchWidget.getXViewer().getTree().addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
             getButton(IDialogConstants.OK_ID).setEnabled(true);
             storeSelectedBranch();
          }
 
-         @Override
-         public void widgetDefaultSelected(SelectionEvent e) {
-         }
       });
       return branchWidget.getControl();
    }

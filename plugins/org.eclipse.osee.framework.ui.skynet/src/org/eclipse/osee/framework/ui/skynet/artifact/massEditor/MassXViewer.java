@@ -185,6 +185,7 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler, IFr
 
          @Override
          public void dropAccept(DropTargetEvent event) {
+            // do nothing
          }
       });
    }

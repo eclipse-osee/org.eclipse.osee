@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers.branch;
 
 import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -61,7 +60,7 @@ public class RenameBranchHandler extends CommandHandler {
    }
 
    @Override
-   public Object execute(ExecutionEvent event) throws ExecutionException {
+   public Object execute(ExecutionEvent event) {
       ISelectionProvider selectionProvider =
          AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
 
@@ -101,6 +100,7 @@ public class RenameBranchHandler extends CommandHandler {
 
             @Override
             public void focusGained(FocusEvent e) {
+               // do nothing
             }
          });
          textBeingRenamed.addKeyListener(new KeyAdapter() {

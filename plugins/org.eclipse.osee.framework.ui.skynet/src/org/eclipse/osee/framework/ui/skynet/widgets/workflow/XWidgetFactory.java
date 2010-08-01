@@ -76,10 +76,6 @@ public class XWidgetFactory {
 
    private static final XWidgetFactory reference = new XWidgetFactory();
 
-   private XWidgetFactory() {
-
-   }
-
    public static XWidgetFactory getInstance() {
       return reference;
    }

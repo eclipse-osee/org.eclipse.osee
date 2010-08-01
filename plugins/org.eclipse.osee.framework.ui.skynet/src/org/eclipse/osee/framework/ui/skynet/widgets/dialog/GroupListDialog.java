@@ -98,10 +98,12 @@ public class GroupListDialog extends ArtifactListDialog {
 
       @Override
       public void addListener(ILabelProviderListener arg0) {
+         // do nothing
       }
 
       @Override
       public void dispose() {
+         // do nothing
       }
 
       @Override
@@ -111,6 +113,7 @@ public class GroupListDialog extends ArtifactListDialog {
 
       @Override
       public void removeListener(ILabelProviderListener arg0) {
+         // do nothing
       }
 
    }

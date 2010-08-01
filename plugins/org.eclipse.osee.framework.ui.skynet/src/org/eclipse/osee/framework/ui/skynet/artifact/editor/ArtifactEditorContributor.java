@@ -52,6 +52,7 @@ public class ArtifactEditorContributor extends MultiPageEditorActionBarContribut
 
    @Override
    public void setActivePage(IEditorPart part) {
+      // do nothing
    }
 
    private void createActions() {

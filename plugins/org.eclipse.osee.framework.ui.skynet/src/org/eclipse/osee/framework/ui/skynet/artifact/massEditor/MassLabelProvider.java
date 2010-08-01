@@ -99,10 +99,12 @@ public class MassLabelProvider extends XViewerLabelProvider {
 
    @Override
    public void addListener(ILabelProviderListener listener) {
+      // do nothing
    }
 
    @Override
    public void removeListener(ILabelProviderListener listener) {
+      // do nothing
    }
 
    public MassXViewer getTreeViewer() {
@@ -111,5 +113,6 @@ public class MassLabelProvider extends XViewerLabelProvider {
 
    @Override
    public void dispose() {
+      // do nothing
    }
 }

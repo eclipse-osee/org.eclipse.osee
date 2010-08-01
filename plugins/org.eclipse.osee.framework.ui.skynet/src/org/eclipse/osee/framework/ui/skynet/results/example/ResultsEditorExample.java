@@ -41,7 +41,6 @@ import org.eclipse.birt.chart.model.type.LineSeries;
 import org.eclipse.birt.chart.model.type.impl.LineSeriesImpl;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
@@ -191,12 +190,12 @@ public class ResultsEditorExample extends XNavigateItemAction {
       ResultsEditor.open(new IResultsEditorProvider() {
 
          @Override
-         public String getEditorName() throws OseeCoreException {
+         public String getEditorName() {
             return TITLE;
          }
 
          @Override
-         public List<IResultsEditorTab> getResultsEditorTabs() throws OseeCoreException {
+         public List<IResultsEditorTab> getResultsEditorTabs() {
             List<IResultsXViewerRow> rows = new ArrayList<IResultsXViewerRow>();
             for (int x = 0; x < chartDateStrs.size(); x++) {
                rows.add(new ResultsXViewerRow(new String[] {chartDateStrs.get(x),

@@ -190,10 +190,6 @@
 	<extension point="org.eclipse.search.searchResultViewPages">
 		<viewPage class="org.eclipse.osee.framework.ui.skynet.search.page.ArtifactSearchPage" id="org.eclipse.osee.framework.ui.skynet.ArtifactSearchViewPage" searchResultClass="org.eclipse.osee.framework.ui.skynet.search.ArtifactSearchResult"/>
 	</extension>
-	<extension point="org.eclipse.ui.newWizards">
-		<wizard class="org.eclipse.osee.framework.ui.skynet.branch.RootBranchWizard" icon="images/branch.gif" id="org.eclipse.osee.framework.ui.skynet.rootBranchWizard" name="Root Branch">
-         </wizard>
-	</extension>
 	<extension id="PruneWorkspace" name="PruneWorkspace" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
 		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.PruneWorkspace"/>
 	</extension>

@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -38,7 +37,7 @@ public class PurgeArtifactHandler extends CommandHandler {
    private List<Artifact> artifacts;
 
    @Override
-   public Object execute(ExecutionEvent event) throws ExecutionException {
+   public Object execute(ExecutionEvent event) {
       if (MessageDialog.openConfirm(
          PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
          "Confirm Artifact Purge ",
@@ -69,7 +68,6 @@ public class PurgeArtifactHandler extends CommandHandler {
    @Override
    public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
       artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
-      return AccessControlManager.isOseeAdmin() && AccessControlManager.hasPermission(artifacts,
-         PermissionEnum.WRITE);
+      return AccessControlManager.isOseeAdmin() && AccessControlManager.hasPermission(artifacts, PermissionEnum.WRITE);
    }
 }

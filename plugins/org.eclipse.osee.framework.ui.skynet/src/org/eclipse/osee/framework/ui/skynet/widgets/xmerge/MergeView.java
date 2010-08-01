@@ -17,7 +17,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -368,7 +367,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
          private AttributeConflict attributeConflict;
 
          @Override
-         public Object execute(ExecutionEvent event) throws ExecutionException {
+         public Object execute(ExecutionEvent event) {
             if (attributeConflict != null) {
                try {
                   if (MergeUtility.okToOverwriteEditedValue(attributeConflict, Displays.getActiveShell().getShell(),
@@ -385,7 +384,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
          }
 
          @Override
-         public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
+         public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
             List<Conflict> conflicts = mergeXWidget.getSelectedConflicts();
             attributeConflict = null;
             if (conflicts == null || conflicts.size() != 1 || !(conflicts.get(0) instanceof AttributeConflict) || !conflicts.get(
@@ -406,7 +405,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
          private AttributeConflict attributeConflict;
 
          @Override
-         public Object execute(ExecutionEvent event) throws ExecutionException {
+         public Object execute(ExecutionEvent event) {
             if (attributeConflict != null) {
                try {
                   HistoryView.open(attributeConflict.getSourceArtifact());
@@ -418,7 +417,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
          }
 
          @Override
-         public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
+         public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
             List<Conflict> conflicts = mergeXWidget.getSelectedConflicts();
             attributeConflict = null;
             if (conflicts == null || conflicts.size() != 1) {
@@ -438,7 +437,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
          private AttributeConflict attributeConflict;
 
          @Override
-         public Object execute(ExecutionEvent event) throws ExecutionException {
+         public Object execute(ExecutionEvent event) {
             if (attributeConflict != null) {
                try {
                   HistoryView.open(attributeConflict.getDestArtifact());
@@ -450,7 +449,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
          }
 
          @Override
-         public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
+         public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
             List<Conflict> conflicts = mergeXWidget.getSelectedConflicts();
             attributeConflict = null;
             if (conflicts == null || conflicts.size() != 1) {
@@ -470,7 +469,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
          private AttributeConflict attributeConflict;
 
          @Override
-         public Object execute(ExecutionEvent event) throws ExecutionException {
+         public Object execute(ExecutionEvent event) {
             if (attributeConflict != null) {
                try {
                   ArtifactExplorer.revealArtifact(attributeConflict.getSourceArtifact());
@@ -482,7 +481,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
          }
 
          @Override
-         public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
+         public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
             List<Conflict> conflicts = mergeXWidget.getSelectedConflicts();
             attributeConflict = null;
             if (conflicts == null || conflicts.size() != 1) {
@@ -502,7 +501,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
          private AttributeConflict attributeConflict;
 
          @Override
-         public Object execute(ExecutionEvent event) throws ExecutionException {
+         public Object execute(ExecutionEvent event) {
             if (attributeConflict != null) {
                try {
                   ArtifactExplorer.revealArtifact(attributeConflict.getDestArtifact());
@@ -514,7 +513,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
          }
 
          @Override
-         public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
+         public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
             List<Conflict> conflicts = mergeXWidget.getSelectedConflicts();
             attributeConflict = null;
             if (conflicts == null || conflicts.size() != 1) {
@@ -533,7 +532,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
             List<Conflict> selectedConflicts;
 
             @Override
-            public Object execute(ExecutionEvent event) throws ExecutionException {
+            public Object execute(ExecutionEvent event) {
                RevertWizard wizard = new RevertWizard(revertList);
                NonmodalWizardDialog wizardDialog = new NonmodalWizardDialog(Displays.getActiveShell(), wizard);
                wizardDialog.create();
@@ -542,7 +541,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
             }
 
             @Override
-            public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
+            public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
                selectedConflicts = mergeXWidget.getSelectedConflicts();
                revertList = new ArrayList<List<Artifact>>();
                populateRevertList();
@@ -590,7 +589,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
          private AttributeConflict attributeConflict;
 
          @Override
-         public Object execute(ExecutionEvent event) throws ExecutionException {
+         public Object execute(ExecutionEvent event) {
             if (attributeConflict != null) {
                MergeUtility.launchMerge(attributeConflict, Displays.getActiveShell().getShell());
             }
@@ -598,7 +597,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
          }
 
          @Override
-         public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
+         public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
             List<Conflict> conflicts = mergeXWidget.getSelectedConflicts();
             attributeConflict = null;
             if (conflicts == null || conflicts.size() != 1 || !(conflicts.get(0) instanceof AttributeConflict) || !conflicts.get(
@@ -781,7 +780,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
    }
 
    @Override
-   public void handleFrameworkTransactionEvent(final Sender sender, final FrameworkTransactionData transData) throws OseeCoreException {
+   public void handleFrameworkTransactionEvent(final Sender sender, final FrameworkTransactionData transData) {
       try {
          if (sourceBranch == null || destBranch == null) {
             return;
@@ -886,6 +885,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
 
    @Override
    public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
+      // do nothing
    }
 
    @Override

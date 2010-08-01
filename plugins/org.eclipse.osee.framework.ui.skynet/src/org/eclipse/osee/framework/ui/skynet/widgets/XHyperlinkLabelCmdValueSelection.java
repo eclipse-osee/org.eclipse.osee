@@ -183,6 +183,7 @@ public abstract class XHyperlinkLabelCmdValueSelection extends XWidget {
 
    @Override
    public void dispose() {
+      // do nothing
    }
 
    @Override
@@ -207,10 +208,12 @@ public abstract class XHyperlinkLabelCmdValueSelection extends XWidget {
 
    @Override
    public void setFocus() {
+      // do nothing
    }
 
    @Override
    public void setXmlData(String str) {
+      // do nothing
    }
 
    public Integer getTruncateValueLength() {

@@ -41,11 +41,9 @@ public class RelationContentProvider implements ITreeContentProvider {
    private ArtifactRoot artifact;
    private final Map<Object, Object> childToParentMap = new HashMap<Object, Object>();
 
-   /*
-    * @see IContentProvider#dispose()
-    */
    @Override
    public void dispose() {
+      // do nothing
    }
 
    /**
