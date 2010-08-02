@@ -20,5 +20,5 @@ import org.junit.runners.Suite;
  * @author Donald G. Dunne
  */
 public class FrameworkRes_TestDb_Suite {
-
+   // test provided above
 }
