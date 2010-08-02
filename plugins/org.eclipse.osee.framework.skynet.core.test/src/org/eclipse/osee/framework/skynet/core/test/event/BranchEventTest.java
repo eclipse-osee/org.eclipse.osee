@@ -45,7 +45,7 @@ import org.eclipse.osee.support.test.util.TestUtil;
 /**
  * @author Donald G. Dunne
  */
-public class BranchEventManagerTest {
+public class BranchEventTest {
 
    private BranchEvent resultBranchEvent = null;
    private Sender resultSender = null;

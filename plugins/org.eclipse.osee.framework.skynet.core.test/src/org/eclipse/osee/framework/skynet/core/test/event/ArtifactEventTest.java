@@ -21,11 +21,15 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidRelationReorder;
+import org.eclipse.osee.framework.core.model.event.RelationOrderModType;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.messaging.event.res.AttributeEventModificationType;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteAttributeChange1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBasicGuidArtifact1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBasicGuidRelation1;
+import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBasicGuidRelationReorder1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemotePersistEvent1;
 import org.eclipse.osee.framework.messaging.event.res.test.cases.RemoteNetworkSenderTest;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
@@ -57,10 +61,11 @@ import org.eclipse.osee.support.test.util.TestUtil;
 /**
  * @author Donald G. Dunne
  */
-public class ArtifactEventManagerTest {
+public class ArtifactEventTest {
 
    final Set<EventBasicGuidArtifact> resultEventArtifacts = new HashSet<EventBasicGuidArtifact>();
    final Set<EventBasicGuidRelation> resultEventRelations = new HashSet<EventBasicGuidRelation>();
+   final Set<DefaultBasicGuidRelationReorder> resultEventReorders = new HashSet<DefaultBasicGuidRelationReorder>();
    public static Sender resultSender = null;
    public static List<String> ignoreLoggingRemote = Arrays.asList("OEM: ArtifactEvent Loopback enabled",
       "OEM: kickArtifactReloadEvent Loopback enabled", "OEM2: ArtifactEvent Loopback enabled",
@@ -72,6 +77,7 @@ public class ArtifactEventManagerTest {
       public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
          resultEventArtifacts.addAll(artifactEvent.getArtifacts());
          resultEventRelations.addAll(artifactEvent.getRelations());
+         resultEventReorders.addAll(artifactEvent.getRelationOrderRecords());
          resultSender = sender;
       }
 
@@ -141,6 +147,7 @@ public class ArtifactEventManagerTest {
       remoteInjection_relations_deleteRelation(rootArt, injectArt);
       remoteInjection_relations_addNewRelationWithRationale(rootArt, injectArt);
       remoteInjection_relations_modifyRelationRationale(rootArt, injectArt);
+      remoteInjection_relations_reorderRelation(rootArt, injectArt);
 
       TestUtil.severeLoggingEnd(monitorLog,
          (isRemoteTest() ? ignoreLoggingRemote : Arrays.asList("Duplicate relation objects")));
@@ -377,6 +384,52 @@ public class ArtifactEventManagerTest {
       Assert.assertEquals(0, injectArt.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Parent).size());
       Assert.assertFalse(injectArt.isDirty());
       Assert.assertFalse(rootArt.isDirty());
+
+      return injectArt;
+   }
+
+   private Artifact remoteInjection_relations_reorderRelation(Artifact rootArt, Artifact injectArt) throws Exception {
+
+      clearEventCollections();
+
+      // Create fake remote event that would come in from another client
+      RemotePersistEvent1 remoteEvent = new RemotePersistEvent1();
+      // Set sender to something other than this client so event system will think came from another client
+      remoteEvent.setNetworkSender(RemoteNetworkSenderTest.networkSender);
+      remoteEvent.setTransactionId(1000);
+      remoteEvent.setBranchGuid(BranchManager.getCommonBranch().getGuid());
+
+      RemoteBasicGuidRelationReorder1 remoteReorder = new RemoteBasicGuidRelationReorder1();
+      remoteReorder.setBranchGuid(BranchManager.getCommonBranch().getGuid());
+      remoteReorder.setModTypeGuid(RelationOrderModType.Absolute.getGuid());
+      remoteReorder.setRelTypeGuid(CoreRelationTypes.Default_Hierarchical__Child.getGuid());
+
+      RemoteBasicGuidArtifact1 parentRemGuidArt = new RemoteBasicGuidArtifact1();
+      parentRemGuidArt.setModTypeGuid(EventModType.Modified.getGuid());
+      parentRemGuidArt.setBranchGuid(BranchManager.getCommonBranch().getGuid());
+      parentRemGuidArt.setArtTypeGuid(CoreArtifactTypes.GeneralData.getGuid());
+      parentRemGuidArt.setArtGuid(GUID.create());
+
+      remoteReorder.setParentArt(parentRemGuidArt);
+      remoteEvent.getRelationReorders().add(remoteReorder);
+
+      // Send
+      RemoteEventManager2.getInstance().onEvent(remoteEvent);
+
+      // Wait for event to propagate
+      Thread.sleep(4000);
+
+      Assert.assertEquals("No artifact events should be sent", 0, resultEventArtifacts.size());
+      Assert.assertEquals("No relations events should be sent", 0, resultEventRelations.size());
+      Assert.assertEquals("1 reorder events should be sent", 1, resultEventReorders.size());
+      Assert.assertTrue(resultSender.isRemote());
+      DefaultBasicGuidRelationReorder guidReorder = resultEventReorders.iterator().next();
+      Assert.assertEquals(RelationOrderModType.Absolute, guidReorder.getModType());
+      Assert.assertEquals(parentRemGuidArt.getArtGuid(), guidReorder.getParentArt().getGuid());
+      Assert.assertEquals(parentRemGuidArt.getArtTypeGuid(), guidReorder.getParentArt().getArtTypeGuid());
+      Assert.assertEquals(parentRemGuidArt.getBranchGuid(), guidReorder.getParentArt().getBranchGuid());
+      Assert.assertEquals(CoreRelationTypes.Default_Hierarchical__Child.getGuid(), guidReorder.getRelTypeGuid());
+      Assert.assertEquals(injectArt.getBranch().getGuid(), guidReorder.getBranchGuid());
 
       return injectArt;
    }

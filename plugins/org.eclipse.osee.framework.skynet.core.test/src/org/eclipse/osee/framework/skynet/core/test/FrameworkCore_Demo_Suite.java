@@ -34,11 +34,11 @@ import org.eclipse.osee.framework.skynet.core.test.cases.SevereLogMonitorTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.StaticIdManagerTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.TransactionManagerTest;
 import org.eclipse.osee.framework.skynet.core.test.event.ArtifactEventFiltersTest;
-import org.eclipse.osee.framework.skynet.core.test.event.ArtifactEventManagerLoopbackTest;
-import org.eclipse.osee.framework.skynet.core.test.event.ArtifactEventManagerTest;
+import org.eclipse.osee.framework.skynet.core.test.event.ArtifactEventLoopbackTest;
+import org.eclipse.osee.framework.skynet.core.test.event.ArtifactEventTest;
 import org.eclipse.osee.framework.skynet.core.test.event.BranchEventFiltersTest;
-import org.eclipse.osee.framework.skynet.core.test.event.BranchEventManagerLoopbackTest;
-import org.eclipse.osee.framework.skynet.core.test.event.BranchEventManagerTest;
+import org.eclipse.osee.framework.skynet.core.test.event.BranchEventLoopbackTest;
+import org.eclipse.osee.framework.skynet.core.test.event.BranchEventTest;
 import org.eclipse.osee.framework.skynet.core.test.event.TransactionEventLoopbackTest;
 import org.eclipse.osee.framework.skynet.core.test.event.TransactionEventTest;
 import org.eclipse.osee.framework.skynet.core.test.importing.ReqNumberingTest;
@@ -49,9 +49,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ArtifactEventFiltersTest.class, BranchEventFiltersTest.class, BranchEventManagerTest.class,
-   BranchEventManagerLoopbackTest.class, ArtifactLoaderTest.class, ArtifactEventManagerTest.class,
-   ArtifactEventManagerLoopbackTest.class, TransactionEventTest.class, TransactionEventLoopbackTest.class,
+@Suite.SuiteClasses({ArtifactEventFiltersTest.class, BranchEventFiltersTest.class, BranchEventTest.class,
+   BranchEventLoopbackTest.class, ArtifactLoaderTest.class, ArtifactEventTest.class,
+   ArtifactEventLoopbackTest.class, TransactionEventTest.class, TransactionEventLoopbackTest.class,
    ArtifactQueryTestDemo.class, TransactionManagerTest.class, BranchTestSuite.class, BranchManagerTest.class,
    RelationTestSuite.class, ArtifactTypeInheritanceTest.class, ArtifactPurgeTest.class, BranchPurgeTest.class,
    PurgeTransactionTest.class, Artifact_setAttributeValues.class, Artifact_getLastModified.class,

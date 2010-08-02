@@ -20,7 +20,7 @@ import org.junit.BeforeClass;
  * 
  * @author Donald G. Dunne
  */
-public class ArtifactEventManagerLoopbackTest extends ArtifactEventManagerTest {
+public class ArtifactEventLoopbackTest extends ArtifactEventTest {
 
    @BeforeClass
    public static void setUp() {

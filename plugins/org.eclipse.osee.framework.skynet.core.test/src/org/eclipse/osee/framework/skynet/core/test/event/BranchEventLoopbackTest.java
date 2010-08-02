@@ -20,7 +20,7 @@ import org.junit.BeforeClass;
  * 
  * @author Donald G. Dunne
  */
-public class BranchEventManagerLoopbackTest extends BranchEventManagerTest {
+public class BranchEventLoopbackTest extends BranchEventTest {
 
    @BeforeClass
    public static void setUp() {
