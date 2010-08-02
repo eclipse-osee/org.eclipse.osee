@@ -273,11 +273,11 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
          try {
             for (Entry<MessageConsumer, OseeMessagingListener> entry : listeners.entrySet()) {
                if (entry.getValue().equals(listener)) {
-                  entry.getKey().setMessageListener(null);
                   consumersToRemove.add(entry.getKey());
                }
             }
             for (MessageConsumer messageConsumer : consumersToRemove) {
+               listeners.remove(messageConsumer);
                messageConsumer.setMessageListener(null);
                messageConsumer.close();
             }
