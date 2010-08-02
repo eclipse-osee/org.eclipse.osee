@@ -55,6 +55,7 @@ import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactEventList
 import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.IncrementingNum;
 import org.eclipse.osee.support.test.util.TestUtil;
 
@@ -669,6 +670,80 @@ public class ArtifactEventTest {
       // Validate that artifact was updated
       Assert.assertEquals(0, injectArt.getAttributes(CoreAttributeTypes.GENERAL_STRING_DATA).size());
       return injectArt;
+   }
+
+   @org.junit.Test
+   public void testArtifactRelationReorderEvents() throws Exception {
+
+      SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
+      InternalEventManager2.internalRemoveAllListeners();
+      Assert.assertEquals(0, InternalEventManager2.getNumberOfListeners());
+
+      // Setup artifact and children to reorder
+      SkynetTransaction transaction =
+         new SkynetTransaction(BranchManager.getCommonBranch(), getClass().getSimpleName());
+      Artifact newArt =
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, BranchManager.getCommonBranch(),
+            getClass().getSimpleName() + " - testArtifactRelationReorderEvents");
+      newArt.persist(transaction);
+      for (int x = 1; x < 6; x++) {
+         Artifact childArt =
+            ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, BranchManager.getCommonBranch(),
+               "testRelationReorder - child " + x);
+         newArt.addChild(childArt);
+         newArt.persist(transaction);
+      }
+      transaction.execute();
+
+      Thread.sleep(4000);
+
+      OseeEventManager.addListener(artifactEventListener);
+      Assert.assertEquals(1, InternalEventManager2.getNumberOfListeners());
+
+      List<Artifact> orderedChildren = newArt.getChildren();
+      Assert.assertEquals(5, orderedChildren.size());
+      Assert.assertTrue(orderedChildren.get(0).getName().endsWith(" 1"));
+      Assert.assertTrue(orderedChildren.get(1).getName().endsWith(" 2"));
+      Assert.assertTrue(orderedChildren.get(2).getName().endsWith(" 3"));
+      Assert.assertTrue(orderedChildren.get(3).getName().endsWith(" 4"));
+      Assert.assertTrue(orderedChildren.get(4).getName().endsWith(" 5"));
+
+      List<Artifact> artifactsInNewOrder = new ArrayList<Artifact>();
+      artifactsInNewOrder.add(orderedChildren.get(0));
+      artifactsInNewOrder.add(orderedChildren.get(1));
+      artifactsInNewOrder.add(orderedChildren.get(3));
+      artifactsInNewOrder.add(orderedChildren.get(2));
+      artifactsInNewOrder.add(orderedChildren.get(4));
+      newArt.setRelationOrder(CoreRelationTypes.Default_Hierarchical__Child, artifactsInNewOrder);
+      newArt.persist();
+
+      Thread.sleep(4000);
+
+      Assert.assertEquals("newArt will change cause attribute modified", 1, resultEventArtifacts.size());
+      Assert.assertEquals("No relations events should be sent", 0, resultEventRelations.size());
+      Assert.assertEquals("1 reorder events should be sent", 1, resultEventReorders.size());
+      if (isRemoteTest()) {
+         Assert.assertTrue(resultSender.isRemote());
+      } else {
+         Assert.assertTrue(resultSender.isLocal());
+      }
+      DefaultBasicGuidRelationReorder guidReorder = resultEventReorders.iterator().next();
+      Assert.assertEquals(RelationOrderModType.Absolute, guidReorder.getModType());
+      Assert.assertEquals(newArt.getGuid(), guidReorder.getParentArt().getGuid());
+      Assert.assertEquals(newArt.getArtTypeGuid(), guidReorder.getParentArt().getArtTypeGuid());
+      Assert.assertEquals(newArt.getBranchGuid(), guidReorder.getParentArt().getBranchGuid());
+      Assert.assertEquals(CoreRelationTypes.Default_Hierarchical__Child.getGuid(), guidReorder.getRelTypeGuid());
+
+      List<Artifact> newOrderedChildren = newArt.getChildren();
+      Assert.assertEquals(5, newOrderedChildren.size());
+      Assert.assertTrue(newOrderedChildren.get(0).getName().endsWith(" 1"));
+      Assert.assertTrue(newOrderedChildren.get(1).getName().endsWith(" 2"));
+      Assert.assertTrue(newOrderedChildren.get(2).getName().endsWith(" 4"));
+      Assert.assertTrue(newOrderedChildren.get(3).getName().endsWith(" 3"));
+      Assert.assertTrue(newOrderedChildren.get(4).getName().endsWith(" 5"));
+
+      TestUtil.severeLoggingEnd(monitorLog, (isRemoteTest() ? ignoreLoggingRemote : new ArrayList<String>()));
+
    }
 
    private RemotePersistEvent1 getFakeGeneralDataArtifactRemoteEventForArtifactModified(Artifact modifiedArt) throws OseeCoreException {
