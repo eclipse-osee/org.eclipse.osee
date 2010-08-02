@@ -278,7 +278,6 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
             }
             for (MessageConsumer messageConsumer : consumersToRemove) {
                listeners.remove(messageConsumer);
-              // messageConsumer.setMessageListener(null);
                messageConsumer.close();
             }
          } catch (JMSException ex) {
