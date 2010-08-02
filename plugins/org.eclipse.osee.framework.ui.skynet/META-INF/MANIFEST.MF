@@ -31,7 +31,8 @@ Require-Bundle: javax.mail.glassfish,
  org.eclipse.zest.core,
  org.eclipse.osee.framework.jdk.core,
  org.eclipse.osee.framework.ui.ws,
- org.eclipse.osee.framework.help.ui;bundle-version="0.9.4";resolution:=optional
+ org.eclipse.osee.framework.help.ui;bundle-version="0.9.4";resolution:=optional,
+ org.eclipse.osee.framework.access;bundle-version="0.9.5"
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Import-Package: com.lowagie.text;version="2.1.7",
@@ -84,6 +85,7 @@ Export-Package: org.eclipse.osee.framework.ui.skynet,
  org.eclipse.osee.framework.ui.skynet.artifact.editor.parts,
  org.eclipse.osee.framework.ui.skynet.artifact.editor.sections,
  org.eclipse.osee.framework.ui.skynet.artifact.massEditor,
+ org.eclipse.osee.framework.ui.skynet.artifact.prompt,
  org.eclipse.osee.framework.ui.skynet.ats,
  org.eclipse.osee.framework.ui.skynet.blam,
  org.eclipse.osee.framework.ui.skynet.blam.operation,

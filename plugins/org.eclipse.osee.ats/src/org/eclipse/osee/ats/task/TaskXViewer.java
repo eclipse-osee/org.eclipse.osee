@@ -222,8 +222,7 @@ public class TaskXViewer extends WorldXViewer {
          public void run() {
             try {
                boolean success =
-                  ArtifactPromptChange.promptChangeFloatAttribute(
-                     ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(),
+                  ArtifactPromptChange.promptChangeAttribute(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(),
                      ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getDisplayName(), getSelectedTaskArtifacts(), false);
                if (success) {
                   editor.onDirtied();
@@ -380,7 +379,7 @@ public class TaskXViewer extends WorldXViewer {
 
          if (isSelectedTaskArtifactsAreInWork() && xCol.equals(WorldXViewerFactory.Estimated_Hours_Col)) {
             modified =
-               PromptChangeUtil.promptChangeFloatAttribute(taskArt, ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE, false);
+               PromptChangeUtil.promptChangeAttribute(taskArt, ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE, false, true);
          } else if (isSelectedTaskArtifactsAreInWork() && xCol.equals(WorldXViewerFactory.Title_Col)) {
             modified = PromptChangeUtil.promptChangeAttribute(taskArt, ATSAttributes.TITLE_ATTRIBUTE, false, false);
          } else if (isSelectedTaskArtifactsAreInWork() && xCol.equals(WorldXViewerFactory.Related_To_State_Col)) {

@@ -90,9 +90,13 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler, IFr
       for (TreeItem item : treeItems) {
          useArts.add((Artifact) item.getData());
       }
-      if (ArtifactPromptChange.promptChangeAttribute(colName, colName, useArts, false)) {
-         refresh();
-         editor.onDirtied();
+      try {
+         if (ArtifactPromptChange.promptChangeAttribute(colName, colName, useArts, false)) {
+            refresh();
+            editor.onDirtied();
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -111,10 +115,16 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler, IFr
 
    @Override
    public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
-      return handleAltLeftClick(treeColumn, treeItem, false);
+      boolean toReturn = false;
+      try {
+         toReturn = handleAltLeftClick(treeColumn, treeItem, false);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+      return toReturn;
    }
 
-   public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem, boolean persist) {
+   public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem, boolean persist) throws OseeCoreException {
       super.handleAltLeftClick(treeColumn, treeItem);
       String colName = treeColumn.getText();
       if (EXTRA_COLUMNS.contains(colName)) {

@@ -361,19 +361,9 @@ public class PromptChangeUtil {
       }
    }
 
-   public static boolean promptChangeFloatAttribute(StateMachineArtifact sma, ATSAttributes atsAttr, boolean persist) {
-      try {
-         return ArtifactPromptChange.promptChangeFloatAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
-            Arrays.asList(sma), persist);
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-      return false;
-   }
-
    public static boolean promptChangeIntegerAttribute(StateMachineArtifact sma, ATSAttributes atsAttr, boolean persist) {
       try {
-         return ArtifactPromptChange.promptChangeIntegerAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
+         return ArtifactPromptChange.promptChangeAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
             Arrays.asList(sma), persist);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -383,7 +373,7 @@ public class PromptChangeUtil {
 
    public static boolean promptChangePercentAttribute(StateMachineArtifact sma, ATSAttributes atsAttr, boolean persist) {
       try {
-         return ArtifactPromptChange.promptChangePercentAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
+         return ArtifactPromptChange.promptChangeAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
             Arrays.asList(new Artifact[] {sma}), persist);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -391,24 +381,14 @@ public class PromptChangeUtil {
       return false;
    }
 
-   public static boolean promptChangeBoolean(StateMachineArtifact sma, ATSAttributes atsAttr, String toggleMessage, boolean persist) {
-      try {
-         return ArtifactPromptChange.promptChangeBoolean(atsAttr.getStoreName(), atsAttr.getDisplayName(),
-            Arrays.asList(sma), toggleMessage, persist);
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-      return false;
-   }
-
    public static boolean promptChangeAttribute(final Collection<? extends StateMachineArtifact> smas, ATSAttributes atsAttr, boolean persist, boolean multiLine) throws OseeCoreException {
-      return ArtifactPromptChange.promptChangeStringAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(), smas,
+      return ArtifactPromptChange.promptChangeAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(), smas,
          persist, multiLine);
    }
 
    public static boolean promptChangeAttribute(final Artifact sma, ATSAttributes atsAttr, boolean persist, boolean multiLine) {
       try {
-         return ArtifactPromptChange.promptChangeStringAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
+         return ArtifactPromptChange.promptChangeAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
             Arrays.asList(new Artifact[] {sma}), persist, multiLine);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -418,7 +398,7 @@ public class PromptChangeUtil {
 
    public static boolean promptChangeAttribute(StateMachineArtifact sma, ATSAttributes atsAttr, final boolean persist, boolean multiLine) {
       try {
-         return ArtifactPromptChange.promptChangeStringAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
+         return ArtifactPromptChange.promptChangeAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
             Arrays.asList(sma), persist, multiLine);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -428,7 +408,8 @@ public class PromptChangeUtil {
 
    public static boolean promptChangeDate(StateMachineArtifact sma, ATSAttributes atsAttr, boolean persist) {
       try {
-         return ArtifactPromptChange.promptChangeDate(atsAttr.getStoreName(), atsAttr.getDisplayName(), sma, persist);
+         return ArtifactPromptChange.promptChangeAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
+            Arrays.asList(sma), persist);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP,
             "Can't save " + atsAttr.getDisplayName() + " date to artifact " + sma.getHumanReadableId(), ex);
