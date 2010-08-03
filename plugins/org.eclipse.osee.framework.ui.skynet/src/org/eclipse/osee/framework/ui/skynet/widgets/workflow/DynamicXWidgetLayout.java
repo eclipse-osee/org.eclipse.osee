@@ -10,23 +10,26 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.XWidgetParser;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
@@ -47,25 +50,23 @@ import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
 
 /**
  * @author Jeff C. Phillips
  */
 public class DynamicXWidgetLayout {
+   public static final String XWIDGET = "XWidget";
 
    private final Set<DynamicXWidgetLayoutData> datas = new LinkedHashSet<DynamicXWidgetLayoutData>();
    private final Map<String, DynamicXWidgetLayoutData> nameToLayoutData =
       new HashMap<String, DynamicXWidgetLayoutData>();
-   private final ArrayList<ArrayList<String>> orRequired = new ArrayList<ArrayList<String>>();
-   private final ArrayList<ArrayList<String>> xorRequired = new ArrayList<ArrayList<String>>();
-   public static String OR_REQUIRED = "OrRequired";
-   public static String XOR_REQUIRED = "XOrRequired";
-   public static String XWIDGET = "XWidget";
-   public static String XWIDGETS_LIST = "xWidgets";
+
+   private final Collection<ArrayList<String>> orRequired = new ArrayList<ArrayList<String>>();
+   private final Collection<ArrayList<String>> xorRequired = new ArrayList<ArrayList<String>>();
+
    private final IDynamicWidgetLayoutListener dynamicWidgetLayoutListener;
    private final IXWidgetOptionResolver optionResolver;
-   private final List<XWidget> xWidgets = new ArrayList<XWidget>();
+   private final Collection<XWidget> xWidgets = new ArrayList<XWidget>();
 
    public DynamicXWidgetLayout() {
       this(null, new DefaultXWidgetOptionResolver());
@@ -81,11 +82,9 @@ public class DynamicXWidgetLayout {
    }
 
    public void createBody(IManagedForm managedForm, Composite parent, Artifact artifact, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
-      Composite attrComp = null;
-
       final FormToolkit toolkit = managedForm != null ? managedForm.getToolkit() : null;
 
-      attrComp = createComposite(parent, toolkit);
+      Composite attrComp = createComposite(parent, toolkit);
 
       GridLayout layout = new GridLayout(1, false);
       layout.marginWidth = 2;
@@ -170,7 +169,9 @@ public class DynamicXWidgetLayout {
          if (artifact != null) {
             if (xWidget instanceof IAttributeWidget) {
                try {
-                  ((IAttributeWidget) xWidget).setAttributeType(artifact, xWidgetLayoutData.getStorageName());
+                  IAttributeType attributeType =
+                     AttributeTypeManager.getType(xWidgetLayoutData.getStoreName());
+                  ((IAttributeWidget) xWidget).setAttributeType(artifact, attributeType);
                } catch (Exception ex) {
                   OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }
@@ -277,9 +278,9 @@ public class DynamicXWidgetLayout {
     * 
     * @throws OseeArgumentException
     */
-   private void refreshOrAndXOrRequiredFlags() throws OseeArgumentException {
+   private void refreshOrAndXOrRequiredFlags() throws OseeCoreException {
       // Handle orRequired
-      for (ArrayList<String> orReq : orRequired) {
+      for (Collection<String> orReq : orRequired) {
          // If group is complete, change all to black, else all red
          boolean isComplete = isOrGroupFromAttrNameComplete(orReq.iterator().next());
          for (String aName : orReq) {
@@ -291,7 +292,7 @@ public class DynamicXWidgetLayout {
          }
       }
       // Handle xorRequired
-      for (ArrayList<String> xorReq : xorRequired) {
+      for (Collection<String> xorReq : xorRequired) {
          // If group is complete, change all to black, else all red
          boolean isComplete = isXOrGroupFromAttrNameComplete(xorReq.iterator().next());
          for (String aName : xorReq) {
@@ -310,7 +311,7 @@ public class DynamicXWidgetLayout {
             IStatus valid = data.getXWidget().isValid();
             if (!valid.isOK()) {
                // Check to see if widget is part of a completed OR or XOR group
-               if (!isOrGroupFromAttrNameComplete(data.getStorageName()) && !isXOrGroupFromAttrNameComplete(data.getStorageName())) {
+               if (!isOrGroupFromAttrNameComplete(data.getStoreName()) && !isXOrGroupFromAttrNameComplete(data.getStoreName())) {
                   return valid;
                }
             }
@@ -343,7 +344,7 @@ public class DynamicXWidgetLayout {
 
    public DynamicXWidgetLayoutData getLayoutData(String attrName) {
       for (DynamicXWidgetLayoutData layoutData : datas) {
-         if (layoutData.getStorageName().equals(attrName)) {
+         if (layoutData.getStoreName().equals(attrName)) {
             return layoutData;
          }
       }
@@ -358,23 +359,23 @@ public class DynamicXWidgetLayout {
       return !getXOrRequiredGroup(attrName).isEmpty();
    }
 
-   public ArrayList<String> getOrRequiredGroup(String attrName) {
+   private Collection<String> getOrRequiredGroup(String attrName) {
       return getRequiredGroup(orRequired, attrName);
    }
 
-   public ArrayList<String> getXOrRequiredGroup(String attrName) {
+   private Collection<String> getXOrRequiredGroup(String attrName) {
       return getRequiredGroup(xorRequired, attrName);
    }
 
-   private ArrayList<String> getRequiredGroup(ArrayList<ArrayList<String>> requiredList, String attrName) {
-      for (ArrayList<String> list : requiredList) {
+   private Collection<String> getRequiredGroup(Collection<ArrayList<String>> requiredList, String attrName) {
+      for (Collection<String> list : requiredList) {
          for (String aName : list) {
             if (aName.equals(attrName)) {
                return list;
             }
          }
       }
-      return new ArrayList<String>();
+      return Collections.emptyList();
    }
 
    /**
@@ -382,7 +383,7 @@ public class DynamicXWidgetLayout {
     * @return true if ANY item in group is entered
     * @throws OseeArgumentException
     */
-   public boolean isOrGroupFromAttrNameComplete(String name) throws OseeArgumentException {
+   public boolean isOrGroupFromAttrNameComplete(String name) throws OseeCoreException {
       for (String aName : getOrRequiredGroup(name)) {
          DynamicXWidgetLayoutData layoutData = getLayoutData(aName);
          if (layoutData.getXWidget() != null && layoutData.getXWidget().isValid().isOK()) {
@@ -397,7 +398,7 @@ public class DynamicXWidgetLayout {
     * @return true if only ONE item in group is entered
     * @throws OseeArgumentException
     */
-   public boolean isXOrGroupFromAttrNameComplete(String attrName) throws OseeArgumentException {
+   public boolean isXOrGroupFromAttrNameComplete(String attrName) throws OseeCoreException {
       boolean oneFound = false;
       for (String aName : getXOrRequiredGroup(attrName)) {
          DynamicXWidgetLayoutData layoutData = getLayoutData(aName);
@@ -433,18 +434,22 @@ public class DynamicXWidgetLayout {
       xorRequired.add(names);
    }
 
-   protected void processlayoutDatas(String xWidgetXml) throws IOException, ParserConfigurationException, SAXException {
-      Document document = Jaxp.readXmlDocument(xWidgetXml);
-      Element rootElement = document.getDocumentElement();
+   protected void processlayoutDatas(String xWidgetXml) throws OseeCoreException {
+      try {
+         Document document = Jaxp.readXmlDocument(xWidgetXml);
+         Element rootElement = document.getDocumentElement();
 
-      List<DynamicXWidgetLayoutData> attrs = XWidgetParser.extractlayoutDatas(this, rootElement);
-      for (DynamicXWidgetLayoutData attr : attrs) {
-         nameToLayoutData.put(attr.getName(), attr);
-         datas.add(attr);
+         List<DynamicXWidgetLayoutData> attrs = XWidgetParser.extractlayoutDatas(this, rootElement);
+         for (DynamicXWidgetLayoutData attr : attrs) {
+            nameToLayoutData.put(attr.getName(), attr);
+            datas.add(attr);
+         }
+      } catch (Exception ex) {
+         OseeExceptions.wrapAndThrow(ex);
       }
    }
 
-   protected void processLayoutDatas(Element element) {
+   protected void processLayoutDatas(Element element) throws OseeCoreException {
       List<DynamicXWidgetLayoutData> layoutDatas = XWidgetParser.extractlayoutDatas(this, element);
       for (DynamicXWidgetLayoutData layoutData : layoutDatas) {
          nameToLayoutData.put(layoutData.getName(), layoutData);
@@ -462,7 +467,7 @@ public class DynamicXWidgetLayout {
    /**
     * @return the xWidgets
     */
-   public List<XWidget> getXWidgets() {
+   public Collection<XWidget> getXWidgets() {
       return xWidgets;
    }
 }
