@@ -55,7 +55,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
-import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactStoredWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XLabelValue;
@@ -319,7 +319,7 @@ public class SMAWorkFlowSection extends SectionPart {
 
    public Result isXWidgetSavable() {
       for (XWidget widget : allXWidgets) {
-         if (widget instanceof IArtifactWidget) {
+         if (widget instanceof IArtifactStoredWidget) {
             IStatus status = widget.isValid();
             if (!status.isOK()) {
                return new Result(false, status.getMessage());
@@ -336,8 +336,8 @@ public class SMAWorkFlowSection extends SectionPart {
 
    public Result isXWidgetDirty() throws OseeCoreException {
       for (XWidget widget : allXWidgets) {
-         if (widget instanceof IArtifactWidget) {
-            Result result = ((IArtifactWidget) widget).isDirty();
+         if (widget instanceof IArtifactStoredWidget) {
+            Result result = ((IArtifactStoredWidget) widget).isDirty();
             if (result.isTrue()) {
                return result;
             }
@@ -346,11 +346,11 @@ public class SMAWorkFlowSection extends SectionPart {
       return Result.FalseResult;
    }
 
-   public void getDirtyIArtifactWidgets(List<IArtifactWidget> widgets) throws OseeCoreException {
+   public void getDirtyIArtifactWidgets(List<IArtifactStoredWidget> widgets) throws OseeCoreException {
       for (XWidget widget : allXWidgets) {
-         if (widget instanceof IArtifactWidget) {
-            if (((IArtifactWidget) widget).isDirty().isTrue()) {
-               widgets.add((IArtifactWidget) widget);
+         if (widget instanceof IArtifactStoredWidget) {
+            if (((IArtifactStoredWidget) widget).isDirty().isTrue()) {
+               widgets.add((IArtifactStoredWidget) widget);
             }
          }
       }

@@ -63,7 +63,7 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.parts.MessageSummary
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.skynet.util.LoadingComposite;
 import org.eclipse.osee.framework.ui.skynet.util.OseeDictionary;
-import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactStoredWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -499,12 +499,12 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    }
 
    public void saveXWidgetToArtifact() throws OseeCoreException {
-      List<IArtifactWidget> artWidgets = new ArrayList<IArtifactWidget>();
+      List<IArtifactStoredWidget> artWidgets = new ArrayList<IArtifactStoredWidget>();
       // Collect all dirty widgets first (so same attribute shown on different sections don't colide
       for (SMAWorkFlowSection section : sections) {
          section.getDirtyIArtifactWidgets(artWidgets);
       }
-      for (IArtifactWidget widget : artWidgets) {
+      for (IArtifactStoredWidget widget : artWidgets) {
          widget.saveToArtifact();
       }
    }
