@@ -110,14 +110,14 @@ public class WorkItemDefinitionFactory {
 
    public static void relateWorkItemDefinitions(String parentWorkflowId, String childWorkflowId) throws OseeCoreException {
       List<Artifact> parentArts =
-         ArtifactQuery.getArtifactListFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(),
-            parentWorkflowId, BranchManager.getCommonBranch());
+         ArtifactQuery.getArtifactListFromAttribute(WorkItemAttributes.WORK_ID, parentWorkflowId,
+            BranchManager.getCommonBranch());
       if (parentArts == null || parentArts.isEmpty()) {
          throw new IllegalArgumentException("Can't access parentWorkflowId " + parentWorkflowId);
       }
       Artifact parentArt = parentArts.iterator().next();
       List<Artifact> childArts =
-         ArtifactQuery.getArtifactListFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(), childWorkflowId,
+         ArtifactQuery.getArtifactListFromAttribute(WorkItemAttributes.WORK_ID, childWorkflowId,
             BranchManager.getCommonBranch());
       if (childArts == null || childArts.isEmpty()) {
          throw new IllegalArgumentException("Can't access childWorkflowId " + childWorkflowId);
@@ -182,8 +182,8 @@ public class WorkItemDefinitionFactory {
       WorkItemDefinition wid = itemIdToDefinition.get(id);
       if (wid == null) {
          // Attempt to get from DB
-         loadDefinitions(ArtifactQuery.getArtifactListFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(),
-            id, BranchManager.getCommonBranch()));
+         loadDefinitions(ArtifactQuery.getArtifactListFromAttribute(WorkItemAttributes.WORK_ID, id,
+            BranchManager.getCommonBranch()));
       }
       return itemIdToDefinition.get(id);
    }
@@ -196,8 +196,8 @@ public class WorkItemDefinitionFactory {
       Artifact art = itemIdToWidArtifact.get(id);
       if (art == null) {
          // Attempt to get from DB
-         loadDefinitions(ArtifactQuery.getArtifactListFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(),
-            id, BranchManager.getCommonBranch()));
+         loadDefinitions(ArtifactQuery.getArtifactListFromAttribute(WorkItemAttributes.WORK_ID, id,
+            BranchManager.getCommonBranch()));
       }
       return itemIdToWidArtifact.get(id);
    }

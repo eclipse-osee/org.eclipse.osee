@@ -30,7 +30,7 @@ public abstract class WorkItemWithChildrenDefinition extends WorkItemDefinition 
    public WorkItemWithChildrenDefinition(Artifact artifact, String itemName, String pageName, String pageId, String parentId) throws OseeCoreException {
       this(itemName, pageId, parentId);
       for (Artifact art : artifact.getRelatedArtifacts(CoreRelationTypes.WorkItem__Child)) {
-         String widId = art.getSoleAttributeValue(WorkItemAttributes.WORK_ID.getAttributeTypeName(), (String) null);
+         String widId = art.getSoleAttributeValue(WorkItemAttributes.WORK_ID, (String) null);
          workItemIds.add(widId);
       }
    }

@@ -64,17 +64,16 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
    }
 
    public WorkFlowDefinition(Artifact artifact) throws OseeCoreException {
-      this(artifact.getName(), artifact.getSoleAttributeValue(WorkItemAttributes.WORK_ID.getAttributeTypeName(), ""),
-         artifact.getSoleAttributeValue(WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName(), (String) null));
-      setType(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_TYPE.getAttributeTypeName(), (String) null));
+      this(artifact.getName(), artifact.getSoleAttributeValue(WorkItemAttributes.WORK_ID, ""),
+         artifact.getSoleAttributeValue(WorkItemAttributes.WORK_PARENT_ID, (String) null));
+      setType(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_TYPE, (String) null));
       loadWorkDataKeyValueMap(artifact);
 
       // Add local transitions from this artifact
       addTransitionsFromArtifact(artifact, pageIdToPageIdsViaTransitionType, getId());
 
       // Read in this workflow's start page
-      startPageId =
-         artifact.getSoleAttributeValue(WorkItemAttributes.START_PAGE.getAttributeTypeName(), null, String.class);
+      startPageId = artifact.getSoleAttributeValue(WorkItemAttributes.WORK_START_PAGE, (String) null);
 
       this.artifact = artifact;
    }
@@ -89,7 +88,7 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
       }
       // Only store start page if it's part of this definition
       if (startPageId != null) {
-         art.setSoleAttributeFromString(WorkItemAttributes.START_PAGE.getAttributeTypeName(), startPageId);
+         art.setSoleAttributeFromString(WorkItemAttributes.WORK_START_PAGE, startPageId);
       }
       // Store transition items declared as part of this definition
       List<String> transitionItems = new ArrayList<String>();
@@ -102,7 +101,7 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
          }
       }
       if (transitionItems.size() > 0) {
-         art.setAttributeValues(WorkItemAttributes.TRANSITION.getAttributeTypeName(), transitionItems);
+         art.setAttributeValues(WorkItemAttributes.WORK_TRANSITION, transitionItems);
       }
       return art;
    }
@@ -209,7 +208,7 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
       // Get work rules from team definition
       for (Artifact art : WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(getId()).getRelatedArtifacts(
          CoreRelationTypes.WorkItem__Child)) {
-         String id = art.getSoleAttributeValue(WorkItemAttributes.WORK_ID.getAttributeTypeName(), "");
+         String id = art.getSoleAttributeValue(WorkItemAttributes.WORK_ID, "");
          if (id != null && !id.equals("")) {
             workRules.add((WorkRuleDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(id));
          }
@@ -248,7 +247,7 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
          return;
       }
       // Read in this workflow's transition information
-      for (String transition : artifact.getAttributesToStringList(WorkItemAttributes.TRANSITION.getAttributeTypeName())) {
+      for (String transition : artifact.getAttributesToStringList(WorkItemAttributes.WORK_TRANSITION)) {
          String[] strs = transition.split(";");
          if (strs.length != 3) {
             OseeLog.log(

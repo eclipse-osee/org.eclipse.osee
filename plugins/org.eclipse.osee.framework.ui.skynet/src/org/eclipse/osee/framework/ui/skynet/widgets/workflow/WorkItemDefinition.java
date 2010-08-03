@@ -168,7 +168,7 @@ public abstract class WorkItemDefinition {
       Artifact artifact = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(getId());
       if (writeType == WriteType.New) {
          // Double-check that doesn't already exist in db.  If so, exception cause duplicates
-         if (ArtifactQuery.getArtifactListFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(), getId(),
+         if (ArtifactQuery.getArtifactListFromAttribute(WorkItemAttributes.WORK_ID, getId(),
             BranchManager.getCommonBranch()).size() > 0) {
             throw new IllegalStateException(
                "WorkItemDefinition artifact creation failed.  \"" + getId() + "\" already exists.");
@@ -184,21 +184,21 @@ public abstract class WorkItemDefinition {
       //      }
       artifact.setName(getName());
       if (getParentId() != null && !getParentId().equals("")) {
-         artifact.setSoleAttributeValue(WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName(), getParentId());
+         artifact.setSoleAttributeValue(WorkItemAttributes.WORK_PARENT_ID, getParentId());
       }
       if (getDescription() != null) {
-         artifact.setSoleAttributeValue(WorkItemAttributes.WORK_DESCRIPTION.getAttributeTypeName(), getDescription());
+         artifact.setSoleAttributeValue(WorkItemAttributes.WORK_DESCRIPTION, getDescription());
       }
-      artifact.setSoleAttributeValue(WorkItemAttributes.WORK_ID.getAttributeTypeName(), getId());
+      artifact.setSoleAttributeValue(WorkItemAttributes.WORK_ID, getId());
       if (getType() != null) {
-         artifact.setSoleAttributeValue(WorkItemAttributes.WORK_TYPE.getAttributeTypeName(), getType());
+         artifact.setSoleAttributeValue(WorkItemAttributes.WORK_TYPE, getType());
       }
       if (workDataKeyValueMap.size() > 0) {
          Set<String> keyValues = new HashSet<String>();
          for (Entry<String, String> entry : workDataKeyValueMap.entrySet()) {
             keyValues.add(entry.getKey() + "=" + entry.getValue());
          }
-         artifact.setAttributeValues(WorkItemAttributes.WORK_DATA.getAttributeTypeName(), keyValues);
+         artifact.setAttributeValues(WorkItemAttributes.WORK_DATA, keyValues);
       }
       WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(writeType, this, artifact);
       return artifact;
@@ -211,7 +211,7 @@ public abstract class WorkItemDefinition {
    }
 
    public void loadWorkDataKeyValueMap(Artifact artifact) throws OseeCoreException {
-      for (String value : artifact.getAttributesToStringList(WorkItemAttributes.WORK_DATA.getAttributeTypeName())) {
+      for (String value : artifact.getAttributesToStringList(WorkItemAttributes.WORK_DATA)) {
          Matcher m = keyValuePattern.matcher(value);
          if (m.find()) {
             addWorkDataKeyValue(m.group(1), m.group(2));
