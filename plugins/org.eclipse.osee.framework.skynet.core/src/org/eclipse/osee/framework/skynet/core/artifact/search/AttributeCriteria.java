@@ -97,6 +97,10 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
       this(toAttributeType(attributeTypeName), null, validate(values), false, operator);
    }
 
+   public AttributeCriteria(IAttributeType attributeType, Collection<String> values, Operator operator) throws OseeCoreException {
+      this(attributeType, null, validate(values), false, operator);
+   }
+
    /**
     * Constructor for search criteria that finds an attribute of the given type with its current value equal to the
     * given value.

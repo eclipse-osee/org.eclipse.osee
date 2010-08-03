@@ -281,7 +281,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
     * initially created. When called upon initial creation, it is called after <code>onBirth()</code>. This allows
     * sub-class artifacts to set default attributes or do default processing.
     */
-   public void onInitializationComplete() {
+   public void onInitializationComplete() throws OseeCoreException {
       // provided for subclass implementation
    }
 
@@ -787,9 +787,9 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
          if (!attribute.isInDb()) {
             attributes.removeValue(attributeTypeName, attribute);
          } else {
-            attribute.delete();
-         }
+         attribute.delete();
       }
+   }
    }
 
    public void deleteSoleAttribute(IAttributeType attributeType) throws OseeCoreException {
@@ -941,8 +941,8 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
    /**
     * adds a new attribute of the type named attributeTypeName and assigns it the given value
     */
-   public void addAttributeFromString(String attributeTypeName, String value) throws OseeCoreException {
-      initializeAttribute(AttributeTypeManager.getType(attributeTypeName), ModificationType.NEW, true, false).setFromString(
+   public void addAttributeFromString(IAttributeType attributeType, String value) throws OseeCoreException {
+      initializeAttribute(AttributeTypeManager.getType(attributeType), ModificationType.NEW, true, false).setFromString(
          value);
    }
 

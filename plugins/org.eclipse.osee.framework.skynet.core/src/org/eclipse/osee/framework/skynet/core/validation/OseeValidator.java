@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.validation;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
@@ -42,6 +43,17 @@ public class OseeValidator {
    }
 
    public IStatus validate(int requiredQualityOfService, Artifact artifact, String attributeTypeName, Object proposedValue) {
+      IStatus status = Status.OK_STATUS;
+      try {
+         AttributeType attributeType = AttributeTypeManager.getType(attributeTypeName);
+         status = validate(requiredQualityOfService, artifact, attributeType, proposedValue);
+      } catch (Exception ex) {
+         status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, ex.getLocalizedMessage(), ex);
+      }
+      return status;
+   }
+
+   public IStatus validate(int requiredQualityOfService, Artifact artifact, IAttributeType attributeTypeName, Object proposedValue) {
       IStatus status = Status.OK_STATUS;
       try {
          AttributeType attributeType = AttributeTypeManager.getType(attributeTypeName);

@@ -291,6 +291,11 @@ public class ArtifactQuery {
          QueryType.GET);
    }
 
+   public static Artifact getArtifactFromTypeAndAttribute(IArtifactType artifactType, IAttributeType attributeType, String attributeValue, IOseeBranch branch) throws OseeCoreException {
+      return queryFromTypeAndAttribute(artifactType, attributeType, attributeValue, branch).getOrCheckArtifact(
+         QueryType.GET);
+   }
+
    /**
     * search for exactly one artifact based on its type and an attribute of a given type and value - otherwise throw an
     * exception
@@ -453,6 +458,10 @@ public class ArtifactQuery {
    private static ArtifactQueryBuilder queryFromTypeAndAttribute(IArtifactType artifactType, String attributeTypeName, String attributeValue, IOseeBranch branch) throws OseeCoreException {
       return queryFromTypeAndAttribute(ArtifactTypeManager.getType(artifactType), attributeTypeName, attributeValue,
          branch);
+   }
+
+   private static ArtifactQueryBuilder queryFromTypeAndAttribute(IArtifactType artifactType, IAttributeType attributeType, String attributeValue, IOseeBranch branch) throws OseeCoreException {
+      return new ArtifactQueryBuilder(artifactType, branch, FULL, new AttributeCriteria(attributeType, attributeValue));
    }
 
    private static ArtifactQueryBuilder queryFromTypeAndAttribute(ArtifactType artifactType, String attributeTypeName, String attributeValue, IOseeBranch branch) throws OseeCoreException {
