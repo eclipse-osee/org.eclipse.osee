@@ -37,7 +37,7 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
    private DynamicXWidgetLayoutData createDynamicXWidgetLayout(AttributeType attributeType) {
       DynamicXWidgetLayoutData defaultData = new DynamicXWidgetLayoutData(null);
       defaultData.setName(attributeType.getName());
-      defaultData.setStorageName(attributeType.getName());
+      defaultData.setStoreName(attributeType.getName());
       defaultData.setToolTip(attributeType.getDescription());
       if (attributeType.getMinOccurrences() > 0) {
          defaultData.getXOptionHandler().add(XOption.REQUIRED);
