@@ -55,6 +55,9 @@ public class OteAttributeTypes extends NamedIdentity implements IAttributeType {
    public static final OteAttributeTypes TOTAL_TEST_POINTS = new OteAttributeTypes("AAMFEW05hBfECFGfZkgA",
       "Total Test Points");
 
+   public static final OteAttributeTypes TEST_DISPOSITION =
+      new OteAttributeTypes("AAMFEXfoPWRZHNiOR3gA", "Disposition");
+
    private OteAttributeTypes(String guid, String name) {
       super(guid, name);
    }

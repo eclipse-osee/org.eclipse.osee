@@ -22,6 +22,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.XViewerTreeReport;
 import org.eclipse.nebula.widgets.xviewer.customize.IXViewerCustomizations;
 import org.eclipse.nebula.widgets.xviewer.customize.XViewerCustomizations;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -97,9 +98,9 @@ public class SkynetXViewerFactory extends XViewerFactory {
       return columns;
    }
 
-   public static XViewerColumn getAttributeColumn(AttributeType attributeType) throws OseeCoreException {
-      return new XViewerAttributeColumn("attribute." + attributeType.getName(), attributeType.getName(),
-         attributeType.getName(), 75, SWT.LEFT, false, XViewerAttributeSortDataType.get(attributeType), false, null);
+   public static XViewerColumn getAttributeColumn(IAttributeType attributeType) throws OseeCoreException {
+      return new XViewerAttributeColumn("attribute." + attributeType.getName(), attributeType.getName(), attributeType,
+         75, SWT.LEFT, false, XViewerAttributeSortDataType.get(attributeType), false, null);
    }
 
    /**

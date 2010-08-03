@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.util.XViewerException;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
@@ -23,7 +24,7 @@ import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
  */
 public class XViewerAttributeColumn extends XViewerValueColumn {
 
-   private final String attributeTypeName;
+   private final IAttributeType attributeType;
 
    /**
     * XViewer uses copies of column definitions so originals that are registered are not corrupted. Classes extending
@@ -33,26 +34,26 @@ public class XViewerAttributeColumn extends XViewerValueColumn {
     */
    @Override
    public XViewerAttributeColumn copy() {
-      return new XViewerAttributeColumn(getId(), getName(), getAttributeTypeName(), getWidth(), getAlign(), isShow(),
+      return new XViewerAttributeColumn(getId(), getName(), getAttributeType(), getWidth(), getAlign(), isShow(),
          getSortDataType(), isMultiColumnEditable(), getDescription());
    }
 
-   public XViewerAttributeColumn(String id, String name, String attributeTypeName, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
+   public XViewerAttributeColumn(String id, String name, IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
       super(id, name, width, align, show, sortDataType, multiColumnEditable, description);
-      this.attributeTypeName = attributeTypeName;
+      this.attributeType = attributeType;
    }
 
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) throws XViewerException {
       try {
          if (element instanceof Artifact) {
-            return ((Artifact) element).getAttributesToString(attributeTypeName);
+            return ((Artifact) element).getAttributesToString(getAttributeType());
          }
          if (element instanceof Change) {
-            return ((Change) element).getChangeArtifact().getAttributesToString(attributeTypeName);
+            return ((Change) element).getChangeArtifact().getAttributesToString(getAttributeType());
          }
          if (element instanceof Conflict) {
-            return ((Conflict) element).getArtifact().getAttributesToString(attributeTypeName);
+            return ((Conflict) element).getArtifact().getAttributesToString(getAttributeType());
          }
          return "";
       } catch (OseeCoreException ex) {
@@ -60,7 +61,7 @@ public class XViewerAttributeColumn extends XViewerValueColumn {
       }
    }
 
-   public String getAttributeTypeName() {
-      return attributeTypeName;
+   public IAttributeType getAttributeType() {
+      return attributeType;
    }
 }
