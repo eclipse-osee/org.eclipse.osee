@@ -47,6 +47,7 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 public final class MockDataFactory {
 
    private MockDataFactory() {
+      // Utility Class
    }
 
    public static IBasicArtifact<?> createArtifact(int index) {

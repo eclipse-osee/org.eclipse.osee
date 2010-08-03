@@ -54,22 +54,28 @@ public class MockOseeTransactionDataAccessor implements ITransactionDataAccessor
    //      setStoreCalled(true);
    //   }
 
+   @SuppressWarnings("unused")
    @Override
    public void loadTransactionRecord(TransactionCache cache, Collection<Integer> transactionIds) throws OseeCoreException {
       wasLoadCalled = true;
    }
 
+   @SuppressWarnings("unused")
    @Override
    public void loadTransactionRecord(TransactionCache cache, Branch branch) throws OseeCoreException {
+      // Empty
    }
 
+   @SuppressWarnings("unused")
    @Override
    public TransactionRecord loadTransactionRecord(TransactionCache cache, Branch branch, TransactionVersion transactionType) throws OseeCoreException {
       return null;
    }
 
+   @SuppressWarnings("unused")
    @Override
    public void load(TransactionCache transactionCache) throws OseeCoreException {
+      // Empty
    }
 
 }

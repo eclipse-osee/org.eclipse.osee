@@ -40,7 +40,7 @@ import org.eclipse.osee.framework.core.model.type.RelationType;
 public class ModelAsserts {
 
    private ModelAsserts() {
-
+      // Utility Class
    }
 
    public static void assertTypeSetGet(AbstractOseeType type, String fieldName, String getMethodName, String setMethodName, Object expectedValue, Object newValue) throws Exception {
@@ -142,7 +142,7 @@ public class ModelAsserts {
       return relationType;
    }
 
-   public static Branch createBranch(String guid, String name, BranchType branchType, BranchState branchState, boolean isArchived) throws OseeCoreException {
+   public static Branch createBranch(String guid, String name, BranchType branchType, BranchState branchState, boolean isArchived) {
       Branch branch;
       if (branchType.isMergeBranch()) {
          branch = new MergeBranch(guid, name, branchType, branchState, isArchived);
@@ -153,7 +153,7 @@ public class ModelAsserts {
       return branch;
    }
 
-   public static AttributeType createAttributeType(String guid, String name) throws OseeCoreException {
+   public static AttributeType createAttributeType(String guid, String name) {
       AttributeType attributeType =
          new AttributeType(guid, name, "DummyBase", "DummyProvider", "none", "none", 1, 1, "test data", null);
       Assert.assertNotNull(attributeType);
@@ -195,7 +195,7 @@ public class ModelAsserts {
       }
    }
 
-   public static void checkEnumEntry(String expectedName, int expectedOrdinal, OseeEnumType parent, OseeEnumEntry entry) throws OseeCoreException {
+   public static void checkEnumEntry(String expectedName, int expectedOrdinal, OseeEnumType parent, OseeEnumEntry entry) {
       assertEquals(expectedName, entry.getName());
       assertEquals(expectedOrdinal, entry.ordinal());
       //      assertEquals(parent, entry.getDeclaringClass());
@@ -219,7 +219,7 @@ public class ModelAsserts {
       }
    }
 
-   public static void checkEnumEntry(OseeEnumEntry expected, OseeEnumEntry actual) throws OseeCoreException {
+   public static void checkEnumEntry(OseeEnumEntry expected, OseeEnumEntry actual) {
       Assert.assertEquals(expected.getName(), actual.getName());
       Assert.assertEquals(expected.ordinal(), actual.ordinal());
       //      Assert.assertEquals(expected.getDeclaringClass(), actual.getDeclaringClass());

@@ -15,7 +15,6 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
@@ -52,7 +51,7 @@ public class MockArtifact extends NamedIdentity implements IBasicArtifact<Object
    }
 
    @Override
-   public Object getFullArtifact() throws OseeCoreException {
+   public Object getFullArtifact() {
       return null;
    }
 
