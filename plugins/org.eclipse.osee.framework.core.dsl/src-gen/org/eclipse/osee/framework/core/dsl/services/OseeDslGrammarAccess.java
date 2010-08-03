@@ -1390,10 +1390,10 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cRightCurlyBracketKeyword_4 = (Keyword)cGroup.eContents().get(4);
 		
 		//HierarchyRestriction:
-		//	"childrenOf" artifact=[XArtifactRef|ARTIFACT_INSTANCE_REFERENCE] "{" accessRules+=ObjectRestriction "}";
+		//	"childrenOf" artifact=[XArtifactRef|ARTIFACT_INSTANCE_REFERENCE] "{" accessRules+=ObjectRestriction+ "}";
 		public ParserRule getRule() { return rule; }
 
-		//"childrenOf" artifact=[XArtifactRef|ARTIFACT_INSTANCE_REFERENCE] "{" accessRules+=ObjectRestriction "}"
+		//"childrenOf" artifact=[XArtifactRef|ARTIFACT_INSTANCE_REFERENCE] "{" accessRules+=ObjectRestriction+ "}"
 		public Group getGroup() { return cGroup; }
 
 		//"childrenOf"
@@ -1411,7 +1411,7 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		//"{"
 		public Keyword getLeftCurlyBracketKeyword_2() { return cLeftCurlyBracketKeyword_2; }
 
-		//accessRules+=ObjectRestriction
+		//accessRules+=ObjectRestriction+
 		public Assignment getAccessRulesAssignment_3() { return cAccessRulesAssignment_3; }
 
 		//ObjectRestriction
@@ -2177,7 +2177,7 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//HierarchyRestriction:
-	//	"childrenOf" artifact=[XArtifactRef|ARTIFACT_INSTANCE_REFERENCE] "{" accessRules+=ObjectRestriction "}";
+	//	"childrenOf" artifact=[XArtifactRef|ARTIFACT_INSTANCE_REFERENCE] "{" accessRules+=ObjectRestriction+ "}";
 	public HierarchyRestrictionElements getHierarchyRestrictionAccess() {
 		return (pHierarchyRestriction != null) ? pHierarchyRestriction : (pHierarchyRestriction = new HierarchyRestrictionElements());
 	}

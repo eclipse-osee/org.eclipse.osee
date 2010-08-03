@@ -27,7 +27,7 @@ import org.junit.Test;
  * 
  * @author Roberto E. Escobar
  */
-public class ModeUtilTest {
+public class ModelUtilTest {
 
    private static final String TYPE_TEST_INPUT = "testTypeModel.osee";
    private static final String ACCESS_TEST_INPUT = "testAccessModel.osee";

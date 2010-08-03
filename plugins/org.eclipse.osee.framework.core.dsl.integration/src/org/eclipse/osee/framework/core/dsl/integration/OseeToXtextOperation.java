@@ -26,8 +26,6 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeTypeRef;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumEntry;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType;
-import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.OseeEnumEntry;
@@ -36,6 +34,7 @@ import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.model.type.OseeEnumType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Roberto E. Escobar
@@ -96,7 +95,7 @@ public class OseeToXtextOperation extends AbstractOperation {
          OseeDsl model = getModelByNamespace(getNamespace(enumType.getName()));
          model.getEnumTypes().add(modelType);
 
-         modelType.setName(asQuoted(enumType.getName()));
+         modelType.setName(Strings.quote(enumType.getName()));
          modelType.setTypeGuid(enumType.getGuid());
 
          for (OseeEnumEntry entry : enumType.values()) {
@@ -104,7 +103,7 @@ public class OseeToXtextOperation extends AbstractOperation {
             XOseeEnumEntry entryModelType = getFactory().createXOseeEnumEntry();
             modelType.getEnumEntries().add(entryModelType);
 
-            entryModelType.setName(asQuoted(entry.getName()));
+            entryModelType.setName(Strings.quote(entry.getName()));
             entryModelType.setOrdinal(String.valueOf(entry.ordinal()));
          }
       }
@@ -121,7 +120,7 @@ public class OseeToXtextOperation extends AbstractOperation {
          OseeDsl model = getModelByNamespace(getNamespace(attributeType.getName()));
          model.getAttributeTypes().add(modelType);
 
-         modelType.setName(asQuoted(attributeType.getName()));
+         modelType.setName(Strings.quote(attributeType.getName()));
          modelType.setTypeGuid(attributeType.getGuid());
          modelType.setBaseAttributeType(asPrimitiveType(attributeType.getBaseAttributeTypeId()));
          modelType.setDataProvider(asPrimitiveType(attributeType.getAttributeProviderId()));
@@ -161,7 +160,7 @@ public class OseeToXtextOperation extends AbstractOperation {
          OseeDsl model = getModelByNamespace(getNamespace(artifactType.getName()));
          model.getArtifactTypes().add(modelType);
 
-         modelType.setName(asQuoted(artifactType.getName()));
+         modelType.setName(Strings.quote(artifactType.getName()));
          modelType.setTypeGuid(artifactType.getGuid());
 
       }
@@ -232,10 +231,10 @@ public class OseeToXtextOperation extends AbstractOperation {
          OseeDsl model = getModelByNamespace(getNamespace(relationType.getName()));
          model.getRelationTypes().add(modelType);
 
-         modelType.setName(asQuoted(relationType.getName()));
+         modelType.setName(Strings.quote(relationType.getName()));
          modelType.setTypeGuid(relationType.getGuid());
 
-         modelType.setDefaultOrderType(getRelationOrderType(relationType.getDefaultOrderTypeGuid()));
+         modelType.setDefaultOrderType(OseeUtil.getRelationOrderType(relationType.getDefaultOrderTypeGuid()));
          modelType.setMultiplicity(RelationMultiplicityEnum.getByName(relationType.getMultiplicity().name()));
 
          modelType.setSideAName(relationType.getSideAName());
@@ -265,12 +264,4 @@ public class OseeToXtextOperation extends AbstractOperation {
       return null;
    }
 
-   private String getRelationOrderType(String guid) throws OseeArgumentException {
-      RelationOrderBaseTypes type = RelationOrderBaseTypes.getFromGuid(guid);
-      return type.getName().replaceAll(" ", "_");
-   }
-
-   private String asQuoted(String name) {
-      return "\"" + name + "\"";
-   }
 }

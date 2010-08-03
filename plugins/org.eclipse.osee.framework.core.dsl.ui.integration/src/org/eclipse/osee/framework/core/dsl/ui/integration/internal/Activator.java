@@ -11,31 +11,35 @@
 package org.eclipse.osee.framework.core.dsl.ui.integration.internal;
 
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.core.util.ServiceDependencyTracker;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
 
 public class Activator implements BundleActivator {
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.core.dsl.ui.integration";
-   private static BundleContext context;
-   private static Activator instance;
-   private ServiceTracker cacheServiceTracker;
 
-   static BundleContext getContext() {
-      return context;
-   }
+   private static Activator instance;
+
+   private ServiceTracker cacheServiceTracker;
+   private ServiceDependencyTracker dependencyTracker;
 
    @Override
-   public void start(BundleContext bundleContext) throws Exception {
+   public void start(BundleContext context) throws Exception {
       Activator.instance = this;
-      Activator.context = bundleContext;
+
+      dependencyTracker = new ServiceDependencyTracker(context, new ArtifactDataProviderServiceRegHandler());
+      dependencyTracker.open();
+
       cacheServiceTracker = new ServiceTracker(context, IOseeCachingService.class.getName(), null);
       cacheServiceTracker.open(true);
    }
 
    @Override
    public void stop(BundleContext bundleContext) throws Exception {
-      Activator.context = null;
+      Lib.close(dependencyTracker);
+
       if (cacheServiceTracker != null) {
          cacheServiceTracker.close();
       }

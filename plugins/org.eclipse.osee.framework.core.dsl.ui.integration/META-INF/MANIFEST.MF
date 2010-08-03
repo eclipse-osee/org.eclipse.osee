@@ -60,4 +60,3 @@ Require-Bundle: org.eclipse.osee.framework.core.dsl,
  org.eclipse.ui.views,
  org.eclipse.jface,
  org.eclipse.xtext
-Export-Package: org.eclipse.osee.framework.core.dsl.ui.integration

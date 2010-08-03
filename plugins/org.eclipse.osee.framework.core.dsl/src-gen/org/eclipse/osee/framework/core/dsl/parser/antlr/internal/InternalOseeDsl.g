@@ -2688,7 +2688,7 @@ ruleHierarchyRestriction returns [EObject current=null]
 	    }
 
 )
-)	'}' 
+)+	'}' 
     {
         createLeafNode(grammarAccess.getHierarchyRestrictionAccess().getRightCurlyBracketKeyword_4(), null); 
     }

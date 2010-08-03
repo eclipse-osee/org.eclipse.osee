@@ -8,14 +8,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.dsl.integration.test;
+package org.eclipse.osee.framework.core.dsl.integration.test.internal;
 
 import java.util.Arrays;
 import java.util.Collection;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider;
 import org.eclipse.osee.framework.core.dsl.integration.ModelUtil;
-import org.eclipse.osee.framework.core.dsl.integration.OseeAccessModelInterpreter;
+import org.eclipse.osee.framework.core.dsl.integration.internal.AccessModelInterpreterImpl;
 import org.eclipse.osee.framework.core.dsl.integration.test.mocks.MockAccessContextId;
 import org.eclipse.osee.framework.core.dsl.integration.test.mocks.MockModel;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessContext;
@@ -33,12 +33,12 @@ public class OseeAccessModelInterpreterTest {
    private static final MockAccessContextId CONTEXT_2 = new MockAccessContextId(GUID.create(), "Context 2");
    private static final MockAccessContextId FULL_CONTEXT = null;
 
-   private OseeAccessModelInterpreter interpreter;
+   private AccessModelInterpreterImpl interpreter;
 
    @Before
    public void setup() {
       ArtifactDataProvider accessor = null;
-      interpreter = new OseeAccessModelInterpreter(accessor);
+      interpreter = new AccessModelInterpreterImpl(accessor);
    }
 
    @Test

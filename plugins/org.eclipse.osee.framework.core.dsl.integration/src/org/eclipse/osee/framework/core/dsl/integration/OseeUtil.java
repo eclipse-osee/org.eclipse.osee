@@ -21,9 +21,11 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationSideEnum;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
+import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Roberto E. Escobar
@@ -48,27 +50,26 @@ public final class OseeUtil {
 
    private final static class ArtifactTypeToken extends NamedIdentity implements IArtifactType {
       public ArtifactTypeToken(XArtifactType model) {
-         super(model.getTypeGuid(), unquote(model.getName()));
+         super(model.getTypeGuid(), Strings.unquote(model.getName()));
       }
    }
 
    private final static class AttributeTypeToken extends NamedIdentity implements IAttributeType {
       public AttributeTypeToken(XAttributeType model) {
-         super(model.getTypeGuid(), unquote(model.getName()));
+         super(model.getTypeGuid(), Strings.unquote(model.getName()));
       }
    }
 
    private final static class RelationTypeToken extends NamedIdentity implements IRelationType {
       public RelationTypeToken(XRelationType model) {
-         super(model.getTypeGuid(), unquote(model.getName()));
+         super(model.getTypeGuid(), Strings.unquote(model.getName()));
       }
    }
 
-   private static String unquote(String nameReference) {
-      return nameReference != null ? nameReference.substring(1, nameReference.length() - 1) : nameReference;
-   }
+   public static boolean isRestrictedSide(XRelationSideEnum relationSideEnum, RelationSide relationSide) throws OseeCoreException {
+      Conditions.checkNotNull(relationSideEnum, "relation side restriction");
+      Conditions.checkNotNull(relationSide, "relation side");
 
-   public static boolean isRestrictedSide(XRelationSideEnum relationSideEnum, RelationSide relationSide) {
       boolean toReturn = false;
       switch (relationSideEnum) {
          case BOTH:
@@ -98,4 +99,15 @@ public final class OseeUtil {
       }
       return toReturn;
    }
+
+   public static String getRelationOrderType(String guid) throws OseeCoreException {
+      RelationOrderBaseTypes type = RelationOrderBaseTypes.getFromGuid(guid);
+      return type.getName().replaceAll(" ", "_");
+   }
+
+   public static String orderTypeNameToGuid(String orderTypeName) throws OseeCoreException {
+      Conditions.checkNotNull(orderTypeName, "orderTypeName");
+      return RelationOrderBaseTypes.getFromOrderTypeName(orderTypeName.replaceAll("_", " ")).getGuid();
+   }
+
 }

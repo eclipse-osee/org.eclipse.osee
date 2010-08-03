@@ -1,13 +1,3 @@
-/*******************************************************************************
- * Copyright (c) 2010 Boeing.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     Boeing - initial API and implementation
- *******************************************************************************/
 package org.eclipse.osee.framework.core.dsl.ui.contentassist.antlr.internal; 
 
 import java.io.InputStream;
@@ -3801,14 +3791,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
                         alt11=2;
                         }
                         break;
-                    case 47:
-                        {
-                        alt11=4;
-                        }
-                        break;
                     case 70:
                         {
                         alt11=1;
+                        }
+                        break;
+                    case 47:
+                        {
+                        alt11=4;
                         }
                         break;
                     default:
@@ -3841,14 +3831,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
                         alt11=2;
                         }
                         break;
-                    case 47:
-                        {
-                        alt11=4;
-                        }
-                        break;
                     case 70:
                         {
                         alt11=1;
+                        }
+                        break;
+                    case 47:
+                        {
+                        alt11=4;
                         }
                         break;
                     default:
@@ -15022,23 +15012,26 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__HierarchyRestriction__Group__3__Impl
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5783:1: rule__HierarchyRestriction__Group__3__Impl : ( ( rule__HierarchyRestriction__AccessRulesAssignment_3 ) ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5783:1: rule__HierarchyRestriction__Group__3__Impl : ( ( ( rule__HierarchyRestriction__AccessRulesAssignment_3 ) ) ( ( rule__HierarchyRestriction__AccessRulesAssignment_3 )* ) ) ;
     public final void rule__HierarchyRestriction__Group__3__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5787:1: ( ( ( rule__HierarchyRestriction__AccessRulesAssignment_3 ) ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5788:1: ( ( rule__HierarchyRestriction__AccessRulesAssignment_3 ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5787:1: ( ( ( ( rule__HierarchyRestriction__AccessRulesAssignment_3 ) ) ( ( rule__HierarchyRestriction__AccessRulesAssignment_3 )* ) ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5788:1: ( ( ( rule__HierarchyRestriction__AccessRulesAssignment_3 ) ) ( ( rule__HierarchyRestriction__AccessRulesAssignment_3 )* ) )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5788:1: ( ( rule__HierarchyRestriction__AccessRulesAssignment_3 ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5789:1: ( rule__HierarchyRestriction__AccessRulesAssignment_3 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5788:1: ( ( ( rule__HierarchyRestriction__AccessRulesAssignment_3 ) ) ( ( rule__HierarchyRestriction__AccessRulesAssignment_3 )* ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5789:1: ( ( rule__HierarchyRestriction__AccessRulesAssignment_3 ) ) ( ( rule__HierarchyRestriction__AccessRulesAssignment_3 )* )
+            {
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5789:1: ( ( rule__HierarchyRestriction__AccessRulesAssignment_3 ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5790:1: ( rule__HierarchyRestriction__AccessRulesAssignment_3 )
             {
              before(grammarAccess.getHierarchyRestrictionAccess().getAccessRulesAssignment_3()); 
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5790:1: ( rule__HierarchyRestriction__AccessRulesAssignment_3 )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5790:2: rule__HierarchyRestriction__AccessRulesAssignment_3
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5791:1: ( rule__HierarchyRestriction__AccessRulesAssignment_3 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5791:2: rule__HierarchyRestriction__AccessRulesAssignment_3
             {
-            pushFollow(FOLLOW_rule__HierarchyRestriction__AccessRulesAssignment_3_in_rule__HierarchyRestriction__Group__3__Impl11693);
+            pushFollow(FOLLOW_rule__HierarchyRestriction__AccessRulesAssignment_3_in_rule__HierarchyRestriction__Group__3__Impl11695);
             rule__HierarchyRestriction__AccessRulesAssignment_3();
             _fsp--;
 
@@ -15046,6 +15039,45 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
             }
 
              after(grammarAccess.getHierarchyRestrictionAccess().getAccessRulesAssignment_3()); 
+
+            }
+
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5794:1: ( ( rule__HierarchyRestriction__AccessRulesAssignment_3 )* )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5795:1: ( rule__HierarchyRestriction__AccessRulesAssignment_3 )*
+            {
+             before(grammarAccess.getHierarchyRestrictionAccess().getAccessRulesAssignment_3()); 
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5796:1: ( rule__HierarchyRestriction__AccessRulesAssignment_3 )*
+            loop41:
+            do {
+                int alt41=2;
+                int LA41_0 = input.LA(1);
+
+                if ( ((LA41_0>=32 && LA41_0<=33)) ) {
+                    alt41=1;
+                }
+
+
+                switch (alt41) {
+            	case 1 :
+            	    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5796:2: rule__HierarchyRestriction__AccessRulesAssignment_3
+            	    {
+            	    pushFollow(FOLLOW_rule__HierarchyRestriction__AccessRulesAssignment_3_in_rule__HierarchyRestriction__Group__3__Impl11707);
+            	    rule__HierarchyRestriction__AccessRulesAssignment_3();
+            	    _fsp--;
+
+
+            	    }
+            	    break;
+
+            	default :
+            	    break loop41;
+                }
+            } while (true);
+
+             after(grammarAccess.getHierarchyRestrictionAccess().getAccessRulesAssignment_3()); 
+
+            }
+
 
             }
 
@@ -15068,16 +15100,16 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__HierarchyRestriction__Group__4
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5800:1: rule__HierarchyRestriction__Group__4 : rule__HierarchyRestriction__Group__4__Impl ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5807:1: rule__HierarchyRestriction__Group__4 : rule__HierarchyRestriction__Group__4__Impl ;
     public final void rule__HierarchyRestriction__Group__4() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5804:1: ( rule__HierarchyRestriction__Group__4__Impl )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5805:2: rule__HierarchyRestriction__Group__4__Impl
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5811:1: ( rule__HierarchyRestriction__Group__4__Impl )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5812:2: rule__HierarchyRestriction__Group__4__Impl
             {
-            pushFollow(FOLLOW_rule__HierarchyRestriction__Group__4__Impl_in_rule__HierarchyRestriction__Group__411723);
+            pushFollow(FOLLOW_rule__HierarchyRestriction__Group__4__Impl_in_rule__HierarchyRestriction__Group__411740);
             rule__HierarchyRestriction__Group__4__Impl();
             _fsp--;
 
@@ -15100,20 +15132,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__HierarchyRestriction__Group__4__Impl
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5811:1: rule__HierarchyRestriction__Group__4__Impl : ( '}' ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5818:1: rule__HierarchyRestriction__Group__4__Impl : ( '}' ) ;
     public final void rule__HierarchyRestriction__Group__4__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5815:1: ( ( '}' ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5816:1: ( '}' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5822:1: ( ( '}' ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5823:1: ( '}' )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5816:1: ( '}' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5817:1: '}'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5823:1: ( '}' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5824:1: '}'
             {
              before(grammarAccess.getHierarchyRestrictionAccess().getRightCurlyBracketKeyword_4()); 
-            match(input,42,FOLLOW_42_in_rule__HierarchyRestriction__Group__4__Impl11751); 
+            match(input,42,FOLLOW_42_in_rule__HierarchyRestriction__Group__4__Impl11768); 
              after(grammarAccess.getHierarchyRestrictionAccess().getRightCurlyBracketKeyword_4()); 
 
             }
@@ -15137,20 +15169,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__ArtifactInstanceRestriction__Group__0
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5840:1: rule__ArtifactInstanceRestriction__Group__0 : rule__ArtifactInstanceRestriction__Group__0__Impl rule__ArtifactInstanceRestriction__Group__1 ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5847:1: rule__ArtifactInstanceRestriction__Group__0 : rule__ArtifactInstanceRestriction__Group__0__Impl rule__ArtifactInstanceRestriction__Group__1 ;
     public final void rule__ArtifactInstanceRestriction__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5844:1: ( rule__ArtifactInstanceRestriction__Group__0__Impl rule__ArtifactInstanceRestriction__Group__1 )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5845:2: rule__ArtifactInstanceRestriction__Group__0__Impl rule__ArtifactInstanceRestriction__Group__1
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5851:1: ( rule__ArtifactInstanceRestriction__Group__0__Impl rule__ArtifactInstanceRestriction__Group__1 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5852:2: rule__ArtifactInstanceRestriction__Group__0__Impl rule__ArtifactInstanceRestriction__Group__1
             {
-            pushFollow(FOLLOW_rule__ArtifactInstanceRestriction__Group__0__Impl_in_rule__ArtifactInstanceRestriction__Group__011792);
+            pushFollow(FOLLOW_rule__ArtifactInstanceRestriction__Group__0__Impl_in_rule__ArtifactInstanceRestriction__Group__011809);
             rule__ArtifactInstanceRestriction__Group__0__Impl();
             _fsp--;
 
-            pushFollow(FOLLOW_rule__ArtifactInstanceRestriction__Group__1_in_rule__ArtifactInstanceRestriction__Group__011795);
+            pushFollow(FOLLOW_rule__ArtifactInstanceRestriction__Group__1_in_rule__ArtifactInstanceRestriction__Group__011812);
             rule__ArtifactInstanceRestriction__Group__1();
             _fsp--;
 
@@ -15173,23 +15205,23 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__ArtifactInstanceRestriction__Group__0__Impl
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5852:1: rule__ArtifactInstanceRestriction__Group__0__Impl : ( ( rule__ArtifactInstanceRestriction__PermissionAssignment_0 ) ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5859:1: rule__ArtifactInstanceRestriction__Group__0__Impl : ( ( rule__ArtifactInstanceRestriction__PermissionAssignment_0 ) ) ;
     public final void rule__ArtifactInstanceRestriction__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5856:1: ( ( ( rule__ArtifactInstanceRestriction__PermissionAssignment_0 ) ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5857:1: ( ( rule__ArtifactInstanceRestriction__PermissionAssignment_0 ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5863:1: ( ( ( rule__ArtifactInstanceRestriction__PermissionAssignment_0 ) ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5864:1: ( ( rule__ArtifactInstanceRestriction__PermissionAssignment_0 ) )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5857:1: ( ( rule__ArtifactInstanceRestriction__PermissionAssignment_0 ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5858:1: ( rule__ArtifactInstanceRestriction__PermissionAssignment_0 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5864:1: ( ( rule__ArtifactInstanceRestriction__PermissionAssignment_0 ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5865:1: ( rule__ArtifactInstanceRestriction__PermissionAssignment_0 )
             {
              before(grammarAccess.getArtifactInstanceRestrictionAccess().getPermissionAssignment_0()); 
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5859:1: ( rule__ArtifactInstanceRestriction__PermissionAssignment_0 )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5859:2: rule__ArtifactInstanceRestriction__PermissionAssignment_0
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5866:1: ( rule__ArtifactInstanceRestriction__PermissionAssignment_0 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5866:2: rule__ArtifactInstanceRestriction__PermissionAssignment_0
             {
-            pushFollow(FOLLOW_rule__ArtifactInstanceRestriction__PermissionAssignment_0_in_rule__ArtifactInstanceRestriction__Group__0__Impl11822);
+            pushFollow(FOLLOW_rule__ArtifactInstanceRestriction__PermissionAssignment_0_in_rule__ArtifactInstanceRestriction__Group__0__Impl11839);
             rule__ArtifactInstanceRestriction__PermissionAssignment_0();
             _fsp--;
 
@@ -15219,20 +15251,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__ArtifactInstanceRestriction__Group__1
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5869:1: rule__ArtifactInstanceRestriction__Group__1 : rule__ArtifactInstanceRestriction__Group__1__Impl rule__ArtifactInstanceRestriction__Group__2 ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5876:1: rule__ArtifactInstanceRestriction__Group__1 : rule__ArtifactInstanceRestriction__Group__1__Impl rule__ArtifactInstanceRestriction__Group__2 ;
     public final void rule__ArtifactInstanceRestriction__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5873:1: ( rule__ArtifactInstanceRestriction__Group__1__Impl rule__ArtifactInstanceRestriction__Group__2 )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5874:2: rule__ArtifactInstanceRestriction__Group__1__Impl rule__ArtifactInstanceRestriction__Group__2
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5880:1: ( rule__ArtifactInstanceRestriction__Group__1__Impl rule__ArtifactInstanceRestriction__Group__2 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5881:2: rule__ArtifactInstanceRestriction__Group__1__Impl rule__ArtifactInstanceRestriction__Group__2
             {
-            pushFollow(FOLLOW_rule__ArtifactInstanceRestriction__Group__1__Impl_in_rule__ArtifactInstanceRestriction__Group__111852);
+            pushFollow(FOLLOW_rule__ArtifactInstanceRestriction__Group__1__Impl_in_rule__ArtifactInstanceRestriction__Group__111869);
             rule__ArtifactInstanceRestriction__Group__1__Impl();
             _fsp--;
 
-            pushFollow(FOLLOW_rule__ArtifactInstanceRestriction__Group__2_in_rule__ArtifactInstanceRestriction__Group__111855);
+            pushFollow(FOLLOW_rule__ArtifactInstanceRestriction__Group__2_in_rule__ArtifactInstanceRestriction__Group__111872);
             rule__ArtifactInstanceRestriction__Group__2();
             _fsp--;
 
@@ -15255,20 +15287,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__ArtifactInstanceRestriction__Group__1__Impl
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5881:1: rule__ArtifactInstanceRestriction__Group__1__Impl : ( 'edit' ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5888:1: rule__ArtifactInstanceRestriction__Group__1__Impl : ( 'edit' ) ;
     public final void rule__ArtifactInstanceRestriction__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5885:1: ( ( 'edit' ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5886:1: ( 'edit' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5892:1: ( ( 'edit' ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5893:1: ( 'edit' )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5886:1: ( 'edit' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5887:1: 'edit'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5893:1: ( 'edit' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5894:1: 'edit'
             {
              before(grammarAccess.getArtifactInstanceRestrictionAccess().getEditKeyword_1()); 
-            match(input,76,FOLLOW_76_in_rule__ArtifactInstanceRestriction__Group__1__Impl11883); 
+            match(input,76,FOLLOW_76_in_rule__ArtifactInstanceRestriction__Group__1__Impl11900); 
              after(grammarAccess.getArtifactInstanceRestrictionAccess().getEditKeyword_1()); 
 
             }
@@ -15292,20 +15324,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__ArtifactInstanceRestriction__Group__2
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5900:1: rule__ArtifactInstanceRestriction__Group__2 : rule__ArtifactInstanceRestriction__Group__2__Impl rule__ArtifactInstanceRestriction__Group__3 ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5907:1: rule__ArtifactInstanceRestriction__Group__2 : rule__ArtifactInstanceRestriction__Group__2__Impl rule__ArtifactInstanceRestriction__Group__3 ;
     public final void rule__ArtifactInstanceRestriction__Group__2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5904:1: ( rule__ArtifactInstanceRestriction__Group__2__Impl rule__ArtifactInstanceRestriction__Group__3 )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5905:2: rule__ArtifactInstanceRestriction__Group__2__Impl rule__ArtifactInstanceRestriction__Group__3
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5911:1: ( rule__ArtifactInstanceRestriction__Group__2__Impl rule__ArtifactInstanceRestriction__Group__3 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5912:2: rule__ArtifactInstanceRestriction__Group__2__Impl rule__ArtifactInstanceRestriction__Group__3
             {
-            pushFollow(FOLLOW_rule__ArtifactInstanceRestriction__Group__2__Impl_in_rule__ArtifactInstanceRestriction__Group__211914);
+            pushFollow(FOLLOW_rule__ArtifactInstanceRestriction__Group__2__Impl_in_rule__ArtifactInstanceRestriction__Group__211931);
             rule__ArtifactInstanceRestriction__Group__2__Impl();
             _fsp--;
 
-            pushFollow(FOLLOW_rule__ArtifactInstanceRestriction__Group__3_in_rule__ArtifactInstanceRestriction__Group__211917);
+            pushFollow(FOLLOW_rule__ArtifactInstanceRestriction__Group__3_in_rule__ArtifactInstanceRestriction__Group__211934);
             rule__ArtifactInstanceRestriction__Group__3();
             _fsp--;
 
@@ -15328,20 +15360,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__ArtifactInstanceRestriction__Group__2__Impl
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5912:1: rule__ArtifactInstanceRestriction__Group__2__Impl : ( 'artifact' ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5919:1: rule__ArtifactInstanceRestriction__Group__2__Impl : ( 'artifact' ) ;
     public final void rule__ArtifactInstanceRestriction__Group__2__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5916:1: ( ( 'artifact' ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5917:1: ( 'artifact' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5923:1: ( ( 'artifact' ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5924:1: ( 'artifact' )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5917:1: ( 'artifact' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5918:1: 'artifact'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5924:1: ( 'artifact' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5925:1: 'artifact'
             {
              before(grammarAccess.getArtifactInstanceRestrictionAccess().getArtifactKeyword_2()); 
-            match(input,70,FOLLOW_70_in_rule__ArtifactInstanceRestriction__Group__2__Impl11945); 
+            match(input,70,FOLLOW_70_in_rule__ArtifactInstanceRestriction__Group__2__Impl11962); 
              after(grammarAccess.getArtifactInstanceRestrictionAccess().getArtifactKeyword_2()); 
 
             }
@@ -15365,20 +15397,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__ArtifactInstanceRestriction__Group__3
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5931:1: rule__ArtifactInstanceRestriction__Group__3 : rule__ArtifactInstanceRestriction__Group__3__Impl rule__ArtifactInstanceRestriction__Group__4 ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5938:1: rule__ArtifactInstanceRestriction__Group__3 : rule__ArtifactInstanceRestriction__Group__3__Impl rule__ArtifactInstanceRestriction__Group__4 ;
     public final void rule__ArtifactInstanceRestriction__Group__3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5935:1: ( rule__ArtifactInstanceRestriction__Group__3__Impl rule__ArtifactInstanceRestriction__Group__4 )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5936:2: rule__ArtifactInstanceRestriction__Group__3__Impl rule__ArtifactInstanceRestriction__Group__4
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5942:1: ( rule__ArtifactInstanceRestriction__Group__3__Impl rule__ArtifactInstanceRestriction__Group__4 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5943:2: rule__ArtifactInstanceRestriction__Group__3__Impl rule__ArtifactInstanceRestriction__Group__4
             {
-            pushFollow(FOLLOW_rule__ArtifactInstanceRestriction__Group__3__Impl_in_rule__ArtifactInstanceRestriction__Group__311976);
+            pushFollow(FOLLOW_rule__ArtifactInstanceRestriction__Group__3__Impl_in_rule__ArtifactInstanceRestriction__Group__311993);
             rule__ArtifactInstanceRestriction__Group__3__Impl();
             _fsp--;
 
-            pushFollow(FOLLOW_rule__ArtifactInstanceRestriction__Group__4_in_rule__ArtifactInstanceRestriction__Group__311979);
+            pushFollow(FOLLOW_rule__ArtifactInstanceRestriction__Group__4_in_rule__ArtifactInstanceRestriction__Group__311996);
             rule__ArtifactInstanceRestriction__Group__4();
             _fsp--;
 
@@ -15401,23 +15433,23 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__ArtifactInstanceRestriction__Group__3__Impl
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5943:1: rule__ArtifactInstanceRestriction__Group__3__Impl : ( ( rule__ArtifactInstanceRestriction__ArtifactRefAssignment_3 ) ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5950:1: rule__ArtifactInstanceRestriction__Group__3__Impl : ( ( rule__ArtifactInstanceRestriction__ArtifactRefAssignment_3 ) ) ;
     public final void rule__ArtifactInstanceRestriction__Group__3__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5947:1: ( ( ( rule__ArtifactInstanceRestriction__ArtifactRefAssignment_3 ) ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5948:1: ( ( rule__ArtifactInstanceRestriction__ArtifactRefAssignment_3 ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5954:1: ( ( ( rule__ArtifactInstanceRestriction__ArtifactRefAssignment_3 ) ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5955:1: ( ( rule__ArtifactInstanceRestriction__ArtifactRefAssignment_3 ) )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5948:1: ( ( rule__ArtifactInstanceRestriction__ArtifactRefAssignment_3 ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5949:1: ( rule__ArtifactInstanceRestriction__ArtifactRefAssignment_3 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5955:1: ( ( rule__ArtifactInstanceRestriction__ArtifactRefAssignment_3 ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5956:1: ( rule__ArtifactInstanceRestriction__ArtifactRefAssignment_3 )
             {
              before(grammarAccess.getArtifactInstanceRestrictionAccess().getArtifactRefAssignment_3()); 
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5950:1: ( rule__ArtifactInstanceRestriction__ArtifactRefAssignment_3 )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5950:2: rule__ArtifactInstanceRestriction__ArtifactRefAssignment_3
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5957:1: ( rule__ArtifactInstanceRestriction__ArtifactRefAssignment_3 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5957:2: rule__ArtifactInstanceRestriction__ArtifactRefAssignment_3
             {
-            pushFollow(FOLLOW_rule__ArtifactInstanceRestriction__ArtifactRefAssignment_3_in_rule__ArtifactInstanceRestriction__Group__3__Impl12006);
+            pushFollow(FOLLOW_rule__ArtifactInstanceRestriction__ArtifactRefAssignment_3_in_rule__ArtifactInstanceRestriction__Group__3__Impl12023);
             rule__ArtifactInstanceRestriction__ArtifactRefAssignment_3();
             _fsp--;
 
@@ -15447,16 +15479,16 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__ArtifactInstanceRestriction__Group__4
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5960:1: rule__ArtifactInstanceRestriction__Group__4 : rule__ArtifactInstanceRestriction__Group__4__Impl ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5967:1: rule__ArtifactInstanceRestriction__Group__4 : rule__ArtifactInstanceRestriction__Group__4__Impl ;
     public final void rule__ArtifactInstanceRestriction__Group__4() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5964:1: ( rule__ArtifactInstanceRestriction__Group__4__Impl )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5965:2: rule__ArtifactInstanceRestriction__Group__4__Impl
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5971:1: ( rule__ArtifactInstanceRestriction__Group__4__Impl )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5972:2: rule__ArtifactInstanceRestriction__Group__4__Impl
             {
-            pushFollow(FOLLOW_rule__ArtifactInstanceRestriction__Group__4__Impl_in_rule__ArtifactInstanceRestriction__Group__412036);
+            pushFollow(FOLLOW_rule__ArtifactInstanceRestriction__Group__4__Impl_in_rule__ArtifactInstanceRestriction__Group__412053);
             rule__ArtifactInstanceRestriction__Group__4__Impl();
             _fsp--;
 
@@ -15479,20 +15511,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__ArtifactInstanceRestriction__Group__4__Impl
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5971:1: rule__ArtifactInstanceRestriction__Group__4__Impl : ( ';' ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5978:1: rule__ArtifactInstanceRestriction__Group__4__Impl : ( ';' ) ;
     public final void rule__ArtifactInstanceRestriction__Group__4__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5975:1: ( ( ';' ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5976:1: ( ';' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5982:1: ( ( ';' ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5983:1: ( ';' )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5976:1: ( ';' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5977:1: ';'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5983:1: ( ';' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:5984:1: ';'
             {
              before(grammarAccess.getArtifactInstanceRestrictionAccess().getSemicolonKeyword_4()); 
-            match(input,72,FOLLOW_72_in_rule__ArtifactInstanceRestriction__Group__4__Impl12064); 
+            match(input,72,FOLLOW_72_in_rule__ArtifactInstanceRestriction__Group__4__Impl12081); 
              after(grammarAccess.getArtifactInstanceRestrictionAccess().getSemicolonKeyword_4()); 
 
             }
@@ -15516,20 +15548,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__ArtifactTypeRestriction__Group__0
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6000:1: rule__ArtifactTypeRestriction__Group__0 : rule__ArtifactTypeRestriction__Group__0__Impl rule__ArtifactTypeRestriction__Group__1 ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6007:1: rule__ArtifactTypeRestriction__Group__0 : rule__ArtifactTypeRestriction__Group__0__Impl rule__ArtifactTypeRestriction__Group__1 ;
     public final void rule__ArtifactTypeRestriction__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6004:1: ( rule__ArtifactTypeRestriction__Group__0__Impl rule__ArtifactTypeRestriction__Group__1 )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6005:2: rule__ArtifactTypeRestriction__Group__0__Impl rule__ArtifactTypeRestriction__Group__1
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6011:1: ( rule__ArtifactTypeRestriction__Group__0__Impl rule__ArtifactTypeRestriction__Group__1 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6012:2: rule__ArtifactTypeRestriction__Group__0__Impl rule__ArtifactTypeRestriction__Group__1
             {
-            pushFollow(FOLLOW_rule__ArtifactTypeRestriction__Group__0__Impl_in_rule__ArtifactTypeRestriction__Group__012105);
+            pushFollow(FOLLOW_rule__ArtifactTypeRestriction__Group__0__Impl_in_rule__ArtifactTypeRestriction__Group__012122);
             rule__ArtifactTypeRestriction__Group__0__Impl();
             _fsp--;
 
-            pushFollow(FOLLOW_rule__ArtifactTypeRestriction__Group__1_in_rule__ArtifactTypeRestriction__Group__012108);
+            pushFollow(FOLLOW_rule__ArtifactTypeRestriction__Group__1_in_rule__ArtifactTypeRestriction__Group__012125);
             rule__ArtifactTypeRestriction__Group__1();
             _fsp--;
 
@@ -15552,23 +15584,23 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__ArtifactTypeRestriction__Group__0__Impl
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6012:1: rule__ArtifactTypeRestriction__Group__0__Impl : ( ( rule__ArtifactTypeRestriction__PermissionAssignment_0 ) ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6019:1: rule__ArtifactTypeRestriction__Group__0__Impl : ( ( rule__ArtifactTypeRestriction__PermissionAssignment_0 ) ) ;
     public final void rule__ArtifactTypeRestriction__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6016:1: ( ( ( rule__ArtifactTypeRestriction__PermissionAssignment_0 ) ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6017:1: ( ( rule__ArtifactTypeRestriction__PermissionAssignment_0 ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6023:1: ( ( ( rule__ArtifactTypeRestriction__PermissionAssignment_0 ) ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6024:1: ( ( rule__ArtifactTypeRestriction__PermissionAssignment_0 ) )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6017:1: ( ( rule__ArtifactTypeRestriction__PermissionAssignment_0 ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6018:1: ( rule__ArtifactTypeRestriction__PermissionAssignment_0 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6024:1: ( ( rule__ArtifactTypeRestriction__PermissionAssignment_0 ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6025:1: ( rule__ArtifactTypeRestriction__PermissionAssignment_0 )
             {
              before(grammarAccess.getArtifactTypeRestrictionAccess().getPermissionAssignment_0()); 
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6019:1: ( rule__ArtifactTypeRestriction__PermissionAssignment_0 )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6019:2: rule__ArtifactTypeRestriction__PermissionAssignment_0
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6026:1: ( rule__ArtifactTypeRestriction__PermissionAssignment_0 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6026:2: rule__ArtifactTypeRestriction__PermissionAssignment_0
             {
-            pushFollow(FOLLOW_rule__ArtifactTypeRestriction__PermissionAssignment_0_in_rule__ArtifactTypeRestriction__Group__0__Impl12135);
+            pushFollow(FOLLOW_rule__ArtifactTypeRestriction__PermissionAssignment_0_in_rule__ArtifactTypeRestriction__Group__0__Impl12152);
             rule__ArtifactTypeRestriction__PermissionAssignment_0();
             _fsp--;
 
@@ -15598,20 +15630,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__ArtifactTypeRestriction__Group__1
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6029:1: rule__ArtifactTypeRestriction__Group__1 : rule__ArtifactTypeRestriction__Group__1__Impl rule__ArtifactTypeRestriction__Group__2 ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6036:1: rule__ArtifactTypeRestriction__Group__1 : rule__ArtifactTypeRestriction__Group__1__Impl rule__ArtifactTypeRestriction__Group__2 ;
     public final void rule__ArtifactTypeRestriction__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6033:1: ( rule__ArtifactTypeRestriction__Group__1__Impl rule__ArtifactTypeRestriction__Group__2 )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6034:2: rule__ArtifactTypeRestriction__Group__1__Impl rule__ArtifactTypeRestriction__Group__2
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6040:1: ( rule__ArtifactTypeRestriction__Group__1__Impl rule__ArtifactTypeRestriction__Group__2 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6041:2: rule__ArtifactTypeRestriction__Group__1__Impl rule__ArtifactTypeRestriction__Group__2
             {
-            pushFollow(FOLLOW_rule__ArtifactTypeRestriction__Group__1__Impl_in_rule__ArtifactTypeRestriction__Group__112165);
+            pushFollow(FOLLOW_rule__ArtifactTypeRestriction__Group__1__Impl_in_rule__ArtifactTypeRestriction__Group__112182);
             rule__ArtifactTypeRestriction__Group__1__Impl();
             _fsp--;
 
-            pushFollow(FOLLOW_rule__ArtifactTypeRestriction__Group__2_in_rule__ArtifactTypeRestriction__Group__112168);
+            pushFollow(FOLLOW_rule__ArtifactTypeRestriction__Group__2_in_rule__ArtifactTypeRestriction__Group__112185);
             rule__ArtifactTypeRestriction__Group__2();
             _fsp--;
 
@@ -15634,20 +15666,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__ArtifactTypeRestriction__Group__1__Impl
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6041:1: rule__ArtifactTypeRestriction__Group__1__Impl : ( 'edit' ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6048:1: rule__ArtifactTypeRestriction__Group__1__Impl : ( 'edit' ) ;
     public final void rule__ArtifactTypeRestriction__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6045:1: ( ( 'edit' ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6046:1: ( 'edit' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6052:1: ( ( 'edit' ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6053:1: ( 'edit' )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6046:1: ( 'edit' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6047:1: 'edit'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6053:1: ( 'edit' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6054:1: 'edit'
             {
              before(grammarAccess.getArtifactTypeRestrictionAccess().getEditKeyword_1()); 
-            match(input,76,FOLLOW_76_in_rule__ArtifactTypeRestriction__Group__1__Impl12196); 
+            match(input,76,FOLLOW_76_in_rule__ArtifactTypeRestriction__Group__1__Impl12213); 
              after(grammarAccess.getArtifactTypeRestrictionAccess().getEditKeyword_1()); 
 
             }
@@ -15671,20 +15703,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__ArtifactTypeRestriction__Group__2
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6060:1: rule__ArtifactTypeRestriction__Group__2 : rule__ArtifactTypeRestriction__Group__2__Impl rule__ArtifactTypeRestriction__Group__3 ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6067:1: rule__ArtifactTypeRestriction__Group__2 : rule__ArtifactTypeRestriction__Group__2__Impl rule__ArtifactTypeRestriction__Group__3 ;
     public final void rule__ArtifactTypeRestriction__Group__2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6064:1: ( rule__ArtifactTypeRestriction__Group__2__Impl rule__ArtifactTypeRestriction__Group__3 )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6065:2: rule__ArtifactTypeRestriction__Group__2__Impl rule__ArtifactTypeRestriction__Group__3
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6071:1: ( rule__ArtifactTypeRestriction__Group__2__Impl rule__ArtifactTypeRestriction__Group__3 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6072:2: rule__ArtifactTypeRestriction__Group__2__Impl rule__ArtifactTypeRestriction__Group__3
             {
-            pushFollow(FOLLOW_rule__ArtifactTypeRestriction__Group__2__Impl_in_rule__ArtifactTypeRestriction__Group__212227);
+            pushFollow(FOLLOW_rule__ArtifactTypeRestriction__Group__2__Impl_in_rule__ArtifactTypeRestriction__Group__212244);
             rule__ArtifactTypeRestriction__Group__2__Impl();
             _fsp--;
 
-            pushFollow(FOLLOW_rule__ArtifactTypeRestriction__Group__3_in_rule__ArtifactTypeRestriction__Group__212230);
+            pushFollow(FOLLOW_rule__ArtifactTypeRestriction__Group__3_in_rule__ArtifactTypeRestriction__Group__212247);
             rule__ArtifactTypeRestriction__Group__3();
             _fsp--;
 
@@ -15707,20 +15739,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__ArtifactTypeRestriction__Group__2__Impl
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6072:1: rule__ArtifactTypeRestriction__Group__2__Impl : ( 'artifactType' ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6079:1: rule__ArtifactTypeRestriction__Group__2__Impl : ( 'artifactType' ) ;
     public final void rule__ArtifactTypeRestriction__Group__2__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6076:1: ( ( 'artifactType' ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6077:1: ( 'artifactType' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6083:1: ( ( 'artifactType' ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6084:1: ( 'artifactType' )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6077:1: ( 'artifactType' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6078:1: 'artifactType'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6084:1: ( 'artifactType' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6085:1: 'artifactType'
             {
              before(grammarAccess.getArtifactTypeRestrictionAccess().getArtifactTypeKeyword_2()); 
-            match(input,39,FOLLOW_39_in_rule__ArtifactTypeRestriction__Group__2__Impl12258); 
+            match(input,39,FOLLOW_39_in_rule__ArtifactTypeRestriction__Group__2__Impl12275); 
              after(grammarAccess.getArtifactTypeRestrictionAccess().getArtifactTypeKeyword_2()); 
 
             }
@@ -15744,20 +15776,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__ArtifactTypeRestriction__Group__3
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6091:1: rule__ArtifactTypeRestriction__Group__3 : rule__ArtifactTypeRestriction__Group__3__Impl rule__ArtifactTypeRestriction__Group__4 ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6098:1: rule__ArtifactTypeRestriction__Group__3 : rule__ArtifactTypeRestriction__Group__3__Impl rule__ArtifactTypeRestriction__Group__4 ;
     public final void rule__ArtifactTypeRestriction__Group__3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6095:1: ( rule__ArtifactTypeRestriction__Group__3__Impl rule__ArtifactTypeRestriction__Group__4 )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6096:2: rule__ArtifactTypeRestriction__Group__3__Impl rule__ArtifactTypeRestriction__Group__4
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6102:1: ( rule__ArtifactTypeRestriction__Group__3__Impl rule__ArtifactTypeRestriction__Group__4 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6103:2: rule__ArtifactTypeRestriction__Group__3__Impl rule__ArtifactTypeRestriction__Group__4
             {
-            pushFollow(FOLLOW_rule__ArtifactTypeRestriction__Group__3__Impl_in_rule__ArtifactTypeRestriction__Group__312289);
+            pushFollow(FOLLOW_rule__ArtifactTypeRestriction__Group__3__Impl_in_rule__ArtifactTypeRestriction__Group__312306);
             rule__ArtifactTypeRestriction__Group__3__Impl();
             _fsp--;
 
-            pushFollow(FOLLOW_rule__ArtifactTypeRestriction__Group__4_in_rule__ArtifactTypeRestriction__Group__312292);
+            pushFollow(FOLLOW_rule__ArtifactTypeRestriction__Group__4_in_rule__ArtifactTypeRestriction__Group__312309);
             rule__ArtifactTypeRestriction__Group__4();
             _fsp--;
 
@@ -15780,23 +15812,23 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__ArtifactTypeRestriction__Group__3__Impl
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6103:1: rule__ArtifactTypeRestriction__Group__3__Impl : ( ( rule__ArtifactTypeRestriction__ArtifactTypeRefAssignment_3 ) ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6110:1: rule__ArtifactTypeRestriction__Group__3__Impl : ( ( rule__ArtifactTypeRestriction__ArtifactTypeRefAssignment_3 ) ) ;
     public final void rule__ArtifactTypeRestriction__Group__3__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6107:1: ( ( ( rule__ArtifactTypeRestriction__ArtifactTypeRefAssignment_3 ) ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6108:1: ( ( rule__ArtifactTypeRestriction__ArtifactTypeRefAssignment_3 ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6114:1: ( ( ( rule__ArtifactTypeRestriction__ArtifactTypeRefAssignment_3 ) ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6115:1: ( ( rule__ArtifactTypeRestriction__ArtifactTypeRefAssignment_3 ) )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6108:1: ( ( rule__ArtifactTypeRestriction__ArtifactTypeRefAssignment_3 ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6109:1: ( rule__ArtifactTypeRestriction__ArtifactTypeRefAssignment_3 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6115:1: ( ( rule__ArtifactTypeRestriction__ArtifactTypeRefAssignment_3 ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6116:1: ( rule__ArtifactTypeRestriction__ArtifactTypeRefAssignment_3 )
             {
              before(grammarAccess.getArtifactTypeRestrictionAccess().getArtifactTypeRefAssignment_3()); 
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6110:1: ( rule__ArtifactTypeRestriction__ArtifactTypeRefAssignment_3 )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6110:2: rule__ArtifactTypeRestriction__ArtifactTypeRefAssignment_3
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6117:1: ( rule__ArtifactTypeRestriction__ArtifactTypeRefAssignment_3 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6117:2: rule__ArtifactTypeRestriction__ArtifactTypeRefAssignment_3
             {
-            pushFollow(FOLLOW_rule__ArtifactTypeRestriction__ArtifactTypeRefAssignment_3_in_rule__ArtifactTypeRestriction__Group__3__Impl12319);
+            pushFollow(FOLLOW_rule__ArtifactTypeRestriction__ArtifactTypeRefAssignment_3_in_rule__ArtifactTypeRestriction__Group__3__Impl12336);
             rule__ArtifactTypeRestriction__ArtifactTypeRefAssignment_3();
             _fsp--;
 
@@ -15826,16 +15858,16 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__ArtifactTypeRestriction__Group__4
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6120:1: rule__ArtifactTypeRestriction__Group__4 : rule__ArtifactTypeRestriction__Group__4__Impl ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6127:1: rule__ArtifactTypeRestriction__Group__4 : rule__ArtifactTypeRestriction__Group__4__Impl ;
     public final void rule__ArtifactTypeRestriction__Group__4() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6124:1: ( rule__ArtifactTypeRestriction__Group__4__Impl )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6125:2: rule__ArtifactTypeRestriction__Group__4__Impl
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6131:1: ( rule__ArtifactTypeRestriction__Group__4__Impl )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6132:2: rule__ArtifactTypeRestriction__Group__4__Impl
             {
-            pushFollow(FOLLOW_rule__ArtifactTypeRestriction__Group__4__Impl_in_rule__ArtifactTypeRestriction__Group__412349);
+            pushFollow(FOLLOW_rule__ArtifactTypeRestriction__Group__4__Impl_in_rule__ArtifactTypeRestriction__Group__412366);
             rule__ArtifactTypeRestriction__Group__4__Impl();
             _fsp--;
 
@@ -15858,20 +15890,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__ArtifactTypeRestriction__Group__4__Impl
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6131:1: rule__ArtifactTypeRestriction__Group__4__Impl : ( ';' ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6138:1: rule__ArtifactTypeRestriction__Group__4__Impl : ( ';' ) ;
     public final void rule__ArtifactTypeRestriction__Group__4__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6135:1: ( ( ';' ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6136:1: ( ';' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6142:1: ( ( ';' ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6143:1: ( ';' )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6136:1: ( ';' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6137:1: ';'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6143:1: ( ';' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6144:1: ';'
             {
              before(grammarAccess.getArtifactTypeRestrictionAccess().getSemicolonKeyword_4()); 
-            match(input,72,FOLLOW_72_in_rule__ArtifactTypeRestriction__Group__4__Impl12377); 
+            match(input,72,FOLLOW_72_in_rule__ArtifactTypeRestriction__Group__4__Impl12394); 
              after(grammarAccess.getArtifactTypeRestrictionAccess().getSemicolonKeyword_4()); 
 
             }
@@ -15895,20 +15927,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__AttributeTypeRestriction__Group__0
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6160:1: rule__AttributeTypeRestriction__Group__0 : rule__AttributeTypeRestriction__Group__0__Impl rule__AttributeTypeRestriction__Group__1 ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6167:1: rule__AttributeTypeRestriction__Group__0 : rule__AttributeTypeRestriction__Group__0__Impl rule__AttributeTypeRestriction__Group__1 ;
     public final void rule__AttributeTypeRestriction__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6164:1: ( rule__AttributeTypeRestriction__Group__0__Impl rule__AttributeTypeRestriction__Group__1 )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6165:2: rule__AttributeTypeRestriction__Group__0__Impl rule__AttributeTypeRestriction__Group__1
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6171:1: ( rule__AttributeTypeRestriction__Group__0__Impl rule__AttributeTypeRestriction__Group__1 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6172:2: rule__AttributeTypeRestriction__Group__0__Impl rule__AttributeTypeRestriction__Group__1
             {
-            pushFollow(FOLLOW_rule__AttributeTypeRestriction__Group__0__Impl_in_rule__AttributeTypeRestriction__Group__012418);
+            pushFollow(FOLLOW_rule__AttributeTypeRestriction__Group__0__Impl_in_rule__AttributeTypeRestriction__Group__012435);
             rule__AttributeTypeRestriction__Group__0__Impl();
             _fsp--;
 
-            pushFollow(FOLLOW_rule__AttributeTypeRestriction__Group__1_in_rule__AttributeTypeRestriction__Group__012421);
+            pushFollow(FOLLOW_rule__AttributeTypeRestriction__Group__1_in_rule__AttributeTypeRestriction__Group__012438);
             rule__AttributeTypeRestriction__Group__1();
             _fsp--;
 
@@ -15931,23 +15963,23 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__AttributeTypeRestriction__Group__0__Impl
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6172:1: rule__AttributeTypeRestriction__Group__0__Impl : ( ( rule__AttributeTypeRestriction__PermissionAssignment_0 ) ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6179:1: rule__AttributeTypeRestriction__Group__0__Impl : ( ( rule__AttributeTypeRestriction__PermissionAssignment_0 ) ) ;
     public final void rule__AttributeTypeRestriction__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6176:1: ( ( ( rule__AttributeTypeRestriction__PermissionAssignment_0 ) ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6177:1: ( ( rule__AttributeTypeRestriction__PermissionAssignment_0 ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6183:1: ( ( ( rule__AttributeTypeRestriction__PermissionAssignment_0 ) ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6184:1: ( ( rule__AttributeTypeRestriction__PermissionAssignment_0 ) )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6177:1: ( ( rule__AttributeTypeRestriction__PermissionAssignment_0 ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6178:1: ( rule__AttributeTypeRestriction__PermissionAssignment_0 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6184:1: ( ( rule__AttributeTypeRestriction__PermissionAssignment_0 ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6185:1: ( rule__AttributeTypeRestriction__PermissionAssignment_0 )
             {
              before(grammarAccess.getAttributeTypeRestrictionAccess().getPermissionAssignment_0()); 
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6179:1: ( rule__AttributeTypeRestriction__PermissionAssignment_0 )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6179:2: rule__AttributeTypeRestriction__PermissionAssignment_0
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6186:1: ( rule__AttributeTypeRestriction__PermissionAssignment_0 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6186:2: rule__AttributeTypeRestriction__PermissionAssignment_0
             {
-            pushFollow(FOLLOW_rule__AttributeTypeRestriction__PermissionAssignment_0_in_rule__AttributeTypeRestriction__Group__0__Impl12448);
+            pushFollow(FOLLOW_rule__AttributeTypeRestriction__PermissionAssignment_0_in_rule__AttributeTypeRestriction__Group__0__Impl12465);
             rule__AttributeTypeRestriction__PermissionAssignment_0();
             _fsp--;
 
@@ -15977,20 +16009,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__AttributeTypeRestriction__Group__1
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6189:1: rule__AttributeTypeRestriction__Group__1 : rule__AttributeTypeRestriction__Group__1__Impl rule__AttributeTypeRestriction__Group__2 ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6196:1: rule__AttributeTypeRestriction__Group__1 : rule__AttributeTypeRestriction__Group__1__Impl rule__AttributeTypeRestriction__Group__2 ;
     public final void rule__AttributeTypeRestriction__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6193:1: ( rule__AttributeTypeRestriction__Group__1__Impl rule__AttributeTypeRestriction__Group__2 )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6194:2: rule__AttributeTypeRestriction__Group__1__Impl rule__AttributeTypeRestriction__Group__2
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6200:1: ( rule__AttributeTypeRestriction__Group__1__Impl rule__AttributeTypeRestriction__Group__2 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6201:2: rule__AttributeTypeRestriction__Group__1__Impl rule__AttributeTypeRestriction__Group__2
             {
-            pushFollow(FOLLOW_rule__AttributeTypeRestriction__Group__1__Impl_in_rule__AttributeTypeRestriction__Group__112478);
+            pushFollow(FOLLOW_rule__AttributeTypeRestriction__Group__1__Impl_in_rule__AttributeTypeRestriction__Group__112495);
             rule__AttributeTypeRestriction__Group__1__Impl();
             _fsp--;
 
-            pushFollow(FOLLOW_rule__AttributeTypeRestriction__Group__2_in_rule__AttributeTypeRestriction__Group__112481);
+            pushFollow(FOLLOW_rule__AttributeTypeRestriction__Group__2_in_rule__AttributeTypeRestriction__Group__112498);
             rule__AttributeTypeRestriction__Group__2();
             _fsp--;
 
@@ -16013,20 +16045,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__AttributeTypeRestriction__Group__1__Impl
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6201:1: rule__AttributeTypeRestriction__Group__1__Impl : ( 'edit' ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6208:1: rule__AttributeTypeRestriction__Group__1__Impl : ( 'edit' ) ;
     public final void rule__AttributeTypeRestriction__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6205:1: ( ( 'edit' ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6206:1: ( 'edit' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6212:1: ( ( 'edit' ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6213:1: ( 'edit' )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6206:1: ( 'edit' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6207:1: 'edit'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6213:1: ( 'edit' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6214:1: 'edit'
             {
              before(grammarAccess.getAttributeTypeRestrictionAccess().getEditKeyword_1()); 
-            match(input,76,FOLLOW_76_in_rule__AttributeTypeRestriction__Group__1__Impl12509); 
+            match(input,76,FOLLOW_76_in_rule__AttributeTypeRestriction__Group__1__Impl12526); 
              after(grammarAccess.getAttributeTypeRestrictionAccess().getEditKeyword_1()); 
 
             }
@@ -16050,20 +16082,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__AttributeTypeRestriction__Group__2
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6220:1: rule__AttributeTypeRestriction__Group__2 : rule__AttributeTypeRestriction__Group__2__Impl rule__AttributeTypeRestriction__Group__3 ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6227:1: rule__AttributeTypeRestriction__Group__2 : rule__AttributeTypeRestriction__Group__2__Impl rule__AttributeTypeRestriction__Group__3 ;
     public final void rule__AttributeTypeRestriction__Group__2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6224:1: ( rule__AttributeTypeRestriction__Group__2__Impl rule__AttributeTypeRestriction__Group__3 )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6225:2: rule__AttributeTypeRestriction__Group__2__Impl rule__AttributeTypeRestriction__Group__3
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6231:1: ( rule__AttributeTypeRestriction__Group__2__Impl rule__AttributeTypeRestriction__Group__3 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6232:2: rule__AttributeTypeRestriction__Group__2__Impl rule__AttributeTypeRestriction__Group__3
             {
-            pushFollow(FOLLOW_rule__AttributeTypeRestriction__Group__2__Impl_in_rule__AttributeTypeRestriction__Group__212540);
+            pushFollow(FOLLOW_rule__AttributeTypeRestriction__Group__2__Impl_in_rule__AttributeTypeRestriction__Group__212557);
             rule__AttributeTypeRestriction__Group__2__Impl();
             _fsp--;
 
-            pushFollow(FOLLOW_rule__AttributeTypeRestriction__Group__3_in_rule__AttributeTypeRestriction__Group__212543);
+            pushFollow(FOLLOW_rule__AttributeTypeRestriction__Group__3_in_rule__AttributeTypeRestriction__Group__212560);
             rule__AttributeTypeRestriction__Group__3();
             _fsp--;
 
@@ -16086,20 +16118,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__AttributeTypeRestriction__Group__2__Impl
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6232:1: rule__AttributeTypeRestriction__Group__2__Impl : ( 'attributeType' ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6239:1: rule__AttributeTypeRestriction__Group__2__Impl : ( 'attributeType' ) ;
     public final void rule__AttributeTypeRestriction__Group__2__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6236:1: ( ( 'attributeType' ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6237:1: ( 'attributeType' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6243:1: ( ( 'attributeType' ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6244:1: ( 'attributeType' )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6237:1: ( 'attributeType' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6238:1: 'attributeType'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6244:1: ( 'attributeType' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6245:1: 'attributeType'
             {
              before(grammarAccess.getAttributeTypeRestrictionAccess().getAttributeTypeKeyword_2()); 
-            match(input,47,FOLLOW_47_in_rule__AttributeTypeRestriction__Group__2__Impl12571); 
+            match(input,47,FOLLOW_47_in_rule__AttributeTypeRestriction__Group__2__Impl12588); 
              after(grammarAccess.getAttributeTypeRestrictionAccess().getAttributeTypeKeyword_2()); 
 
             }
@@ -16123,20 +16155,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__AttributeTypeRestriction__Group__3
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6251:1: rule__AttributeTypeRestriction__Group__3 : rule__AttributeTypeRestriction__Group__3__Impl rule__AttributeTypeRestriction__Group__4 ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6258:1: rule__AttributeTypeRestriction__Group__3 : rule__AttributeTypeRestriction__Group__3__Impl rule__AttributeTypeRestriction__Group__4 ;
     public final void rule__AttributeTypeRestriction__Group__3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6255:1: ( rule__AttributeTypeRestriction__Group__3__Impl rule__AttributeTypeRestriction__Group__4 )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6256:2: rule__AttributeTypeRestriction__Group__3__Impl rule__AttributeTypeRestriction__Group__4
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6262:1: ( rule__AttributeTypeRestriction__Group__3__Impl rule__AttributeTypeRestriction__Group__4 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6263:2: rule__AttributeTypeRestriction__Group__3__Impl rule__AttributeTypeRestriction__Group__4
             {
-            pushFollow(FOLLOW_rule__AttributeTypeRestriction__Group__3__Impl_in_rule__AttributeTypeRestriction__Group__312602);
+            pushFollow(FOLLOW_rule__AttributeTypeRestriction__Group__3__Impl_in_rule__AttributeTypeRestriction__Group__312619);
             rule__AttributeTypeRestriction__Group__3__Impl();
             _fsp--;
 
-            pushFollow(FOLLOW_rule__AttributeTypeRestriction__Group__4_in_rule__AttributeTypeRestriction__Group__312605);
+            pushFollow(FOLLOW_rule__AttributeTypeRestriction__Group__4_in_rule__AttributeTypeRestriction__Group__312622);
             rule__AttributeTypeRestriction__Group__4();
             _fsp--;
 
@@ -16159,23 +16191,23 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__AttributeTypeRestriction__Group__3__Impl
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6263:1: rule__AttributeTypeRestriction__Group__3__Impl : ( ( rule__AttributeTypeRestriction__AttributeTypeRefAssignment_3 ) ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6270:1: rule__AttributeTypeRestriction__Group__3__Impl : ( ( rule__AttributeTypeRestriction__AttributeTypeRefAssignment_3 ) ) ;
     public final void rule__AttributeTypeRestriction__Group__3__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6267:1: ( ( ( rule__AttributeTypeRestriction__AttributeTypeRefAssignment_3 ) ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6268:1: ( ( rule__AttributeTypeRestriction__AttributeTypeRefAssignment_3 ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6274:1: ( ( ( rule__AttributeTypeRestriction__AttributeTypeRefAssignment_3 ) ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6275:1: ( ( rule__AttributeTypeRestriction__AttributeTypeRefAssignment_3 ) )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6268:1: ( ( rule__AttributeTypeRestriction__AttributeTypeRefAssignment_3 ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6269:1: ( rule__AttributeTypeRestriction__AttributeTypeRefAssignment_3 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6275:1: ( ( rule__AttributeTypeRestriction__AttributeTypeRefAssignment_3 ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6276:1: ( rule__AttributeTypeRestriction__AttributeTypeRefAssignment_3 )
             {
              before(grammarAccess.getAttributeTypeRestrictionAccess().getAttributeTypeRefAssignment_3()); 
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6270:1: ( rule__AttributeTypeRestriction__AttributeTypeRefAssignment_3 )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6270:2: rule__AttributeTypeRestriction__AttributeTypeRefAssignment_3
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6277:1: ( rule__AttributeTypeRestriction__AttributeTypeRefAssignment_3 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6277:2: rule__AttributeTypeRestriction__AttributeTypeRefAssignment_3
             {
-            pushFollow(FOLLOW_rule__AttributeTypeRestriction__AttributeTypeRefAssignment_3_in_rule__AttributeTypeRestriction__Group__3__Impl12632);
+            pushFollow(FOLLOW_rule__AttributeTypeRestriction__AttributeTypeRefAssignment_3_in_rule__AttributeTypeRestriction__Group__3__Impl12649);
             rule__AttributeTypeRestriction__AttributeTypeRefAssignment_3();
             _fsp--;
 
@@ -16205,20 +16237,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__AttributeTypeRestriction__Group__4
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6280:1: rule__AttributeTypeRestriction__Group__4 : rule__AttributeTypeRestriction__Group__4__Impl rule__AttributeTypeRestriction__Group__5 ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6287:1: rule__AttributeTypeRestriction__Group__4 : rule__AttributeTypeRestriction__Group__4__Impl rule__AttributeTypeRestriction__Group__5 ;
     public final void rule__AttributeTypeRestriction__Group__4() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6284:1: ( rule__AttributeTypeRestriction__Group__4__Impl rule__AttributeTypeRestriction__Group__5 )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6285:2: rule__AttributeTypeRestriction__Group__4__Impl rule__AttributeTypeRestriction__Group__5
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6291:1: ( rule__AttributeTypeRestriction__Group__4__Impl rule__AttributeTypeRestriction__Group__5 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6292:2: rule__AttributeTypeRestriction__Group__4__Impl rule__AttributeTypeRestriction__Group__5
             {
-            pushFollow(FOLLOW_rule__AttributeTypeRestriction__Group__4__Impl_in_rule__AttributeTypeRestriction__Group__412662);
+            pushFollow(FOLLOW_rule__AttributeTypeRestriction__Group__4__Impl_in_rule__AttributeTypeRestriction__Group__412679);
             rule__AttributeTypeRestriction__Group__4__Impl();
             _fsp--;
 
-            pushFollow(FOLLOW_rule__AttributeTypeRestriction__Group__5_in_rule__AttributeTypeRestriction__Group__412665);
+            pushFollow(FOLLOW_rule__AttributeTypeRestriction__Group__5_in_rule__AttributeTypeRestriction__Group__412682);
             rule__AttributeTypeRestriction__Group__5();
             _fsp--;
 
@@ -16241,31 +16273,31 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__AttributeTypeRestriction__Group__4__Impl
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6292:1: rule__AttributeTypeRestriction__Group__4__Impl : ( ( rule__AttributeTypeRestriction__Group_4__0 )? ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6299:1: rule__AttributeTypeRestriction__Group__4__Impl : ( ( rule__AttributeTypeRestriction__Group_4__0 )? ) ;
     public final void rule__AttributeTypeRestriction__Group__4__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6296:1: ( ( ( rule__AttributeTypeRestriction__Group_4__0 )? ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6297:1: ( ( rule__AttributeTypeRestriction__Group_4__0 )? )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6303:1: ( ( ( rule__AttributeTypeRestriction__Group_4__0 )? ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6304:1: ( ( rule__AttributeTypeRestriction__Group_4__0 )? )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6297:1: ( ( rule__AttributeTypeRestriction__Group_4__0 )? )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6298:1: ( rule__AttributeTypeRestriction__Group_4__0 )?
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6304:1: ( ( rule__AttributeTypeRestriction__Group_4__0 )? )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6305:1: ( rule__AttributeTypeRestriction__Group_4__0 )?
             {
              before(grammarAccess.getAttributeTypeRestrictionAccess().getGroup_4()); 
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6299:1: ( rule__AttributeTypeRestriction__Group_4__0 )?
-            int alt41=2;
-            int LA41_0 = input.LA(1);
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6306:1: ( rule__AttributeTypeRestriction__Group_4__0 )?
+            int alt42=2;
+            int LA42_0 = input.LA(1);
 
-            if ( (LA41_0==77) ) {
-                alt41=1;
+            if ( (LA42_0==77) ) {
+                alt42=1;
             }
-            switch (alt41) {
+            switch (alt42) {
                 case 1 :
-                    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6299:2: rule__AttributeTypeRestriction__Group_4__0
+                    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6306:2: rule__AttributeTypeRestriction__Group_4__0
                     {
-                    pushFollow(FOLLOW_rule__AttributeTypeRestriction__Group_4__0_in_rule__AttributeTypeRestriction__Group__4__Impl12692);
+                    pushFollow(FOLLOW_rule__AttributeTypeRestriction__Group_4__0_in_rule__AttributeTypeRestriction__Group__4__Impl12709);
                     rule__AttributeTypeRestriction__Group_4__0();
                     _fsp--;
 
@@ -16298,16 +16330,16 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__AttributeTypeRestriction__Group__5
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6309:1: rule__AttributeTypeRestriction__Group__5 : rule__AttributeTypeRestriction__Group__5__Impl ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6316:1: rule__AttributeTypeRestriction__Group__5 : rule__AttributeTypeRestriction__Group__5__Impl ;
     public final void rule__AttributeTypeRestriction__Group__5() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6313:1: ( rule__AttributeTypeRestriction__Group__5__Impl )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6314:2: rule__AttributeTypeRestriction__Group__5__Impl
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6320:1: ( rule__AttributeTypeRestriction__Group__5__Impl )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6321:2: rule__AttributeTypeRestriction__Group__5__Impl
             {
-            pushFollow(FOLLOW_rule__AttributeTypeRestriction__Group__5__Impl_in_rule__AttributeTypeRestriction__Group__512723);
+            pushFollow(FOLLOW_rule__AttributeTypeRestriction__Group__5__Impl_in_rule__AttributeTypeRestriction__Group__512740);
             rule__AttributeTypeRestriction__Group__5__Impl();
             _fsp--;
 
@@ -16330,20 +16362,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__AttributeTypeRestriction__Group__5__Impl
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6320:1: rule__AttributeTypeRestriction__Group__5__Impl : ( ';' ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6327:1: rule__AttributeTypeRestriction__Group__5__Impl : ( ';' ) ;
     public final void rule__AttributeTypeRestriction__Group__5__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6324:1: ( ( ';' ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6325:1: ( ';' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6331:1: ( ( ';' ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6332:1: ( ';' )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6325:1: ( ';' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6326:1: ';'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6332:1: ( ';' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6333:1: ';'
             {
              before(grammarAccess.getAttributeTypeRestrictionAccess().getSemicolonKeyword_5()); 
-            match(input,72,FOLLOW_72_in_rule__AttributeTypeRestriction__Group__5__Impl12751); 
+            match(input,72,FOLLOW_72_in_rule__AttributeTypeRestriction__Group__5__Impl12768); 
              after(grammarAccess.getAttributeTypeRestrictionAccess().getSemicolonKeyword_5()); 
 
             }
@@ -16367,20 +16399,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__AttributeTypeRestriction__Group_4__0
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6351:1: rule__AttributeTypeRestriction__Group_4__0 : rule__AttributeTypeRestriction__Group_4__0__Impl rule__AttributeTypeRestriction__Group_4__1 ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6358:1: rule__AttributeTypeRestriction__Group_4__0 : rule__AttributeTypeRestriction__Group_4__0__Impl rule__AttributeTypeRestriction__Group_4__1 ;
     public final void rule__AttributeTypeRestriction__Group_4__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6355:1: ( rule__AttributeTypeRestriction__Group_4__0__Impl rule__AttributeTypeRestriction__Group_4__1 )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6356:2: rule__AttributeTypeRestriction__Group_4__0__Impl rule__AttributeTypeRestriction__Group_4__1
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6362:1: ( rule__AttributeTypeRestriction__Group_4__0__Impl rule__AttributeTypeRestriction__Group_4__1 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6363:2: rule__AttributeTypeRestriction__Group_4__0__Impl rule__AttributeTypeRestriction__Group_4__1
             {
-            pushFollow(FOLLOW_rule__AttributeTypeRestriction__Group_4__0__Impl_in_rule__AttributeTypeRestriction__Group_4__012794);
+            pushFollow(FOLLOW_rule__AttributeTypeRestriction__Group_4__0__Impl_in_rule__AttributeTypeRestriction__Group_4__012811);
             rule__AttributeTypeRestriction__Group_4__0__Impl();
             _fsp--;
 
-            pushFollow(FOLLOW_rule__AttributeTypeRestriction__Group_4__1_in_rule__AttributeTypeRestriction__Group_4__012797);
+            pushFollow(FOLLOW_rule__AttributeTypeRestriction__Group_4__1_in_rule__AttributeTypeRestriction__Group_4__012814);
             rule__AttributeTypeRestriction__Group_4__1();
             _fsp--;
 
@@ -16403,20 +16435,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__AttributeTypeRestriction__Group_4__0__Impl
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6363:1: rule__AttributeTypeRestriction__Group_4__0__Impl : ( 'of' ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6370:1: rule__AttributeTypeRestriction__Group_4__0__Impl : ( 'of' ) ;
     public final void rule__AttributeTypeRestriction__Group_4__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6367:1: ( ( 'of' ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6368:1: ( 'of' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6374:1: ( ( 'of' ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6375:1: ( 'of' )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6368:1: ( 'of' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6369:1: 'of'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6375:1: ( 'of' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6376:1: 'of'
             {
              before(grammarAccess.getAttributeTypeRestrictionAccess().getOfKeyword_4_0()); 
-            match(input,77,FOLLOW_77_in_rule__AttributeTypeRestriction__Group_4__0__Impl12825); 
+            match(input,77,FOLLOW_77_in_rule__AttributeTypeRestriction__Group_4__0__Impl12842); 
              after(grammarAccess.getAttributeTypeRestrictionAccess().getOfKeyword_4_0()); 
 
             }
@@ -16440,20 +16472,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__AttributeTypeRestriction__Group_4__1
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6382:1: rule__AttributeTypeRestriction__Group_4__1 : rule__AttributeTypeRestriction__Group_4__1__Impl rule__AttributeTypeRestriction__Group_4__2 ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6389:1: rule__AttributeTypeRestriction__Group_4__1 : rule__AttributeTypeRestriction__Group_4__1__Impl rule__AttributeTypeRestriction__Group_4__2 ;
     public final void rule__AttributeTypeRestriction__Group_4__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6386:1: ( rule__AttributeTypeRestriction__Group_4__1__Impl rule__AttributeTypeRestriction__Group_4__2 )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6387:2: rule__AttributeTypeRestriction__Group_4__1__Impl rule__AttributeTypeRestriction__Group_4__2
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6393:1: ( rule__AttributeTypeRestriction__Group_4__1__Impl rule__AttributeTypeRestriction__Group_4__2 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6394:2: rule__AttributeTypeRestriction__Group_4__1__Impl rule__AttributeTypeRestriction__Group_4__2
             {
-            pushFollow(FOLLOW_rule__AttributeTypeRestriction__Group_4__1__Impl_in_rule__AttributeTypeRestriction__Group_4__112856);
+            pushFollow(FOLLOW_rule__AttributeTypeRestriction__Group_4__1__Impl_in_rule__AttributeTypeRestriction__Group_4__112873);
             rule__AttributeTypeRestriction__Group_4__1__Impl();
             _fsp--;
 
-            pushFollow(FOLLOW_rule__AttributeTypeRestriction__Group_4__2_in_rule__AttributeTypeRestriction__Group_4__112859);
+            pushFollow(FOLLOW_rule__AttributeTypeRestriction__Group_4__2_in_rule__AttributeTypeRestriction__Group_4__112876);
             rule__AttributeTypeRestriction__Group_4__2();
             _fsp--;
 
@@ -16476,20 +16508,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__AttributeTypeRestriction__Group_4__1__Impl
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6394:1: rule__AttributeTypeRestriction__Group_4__1__Impl : ( 'artifactType' ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6401:1: rule__AttributeTypeRestriction__Group_4__1__Impl : ( 'artifactType' ) ;
     public final void rule__AttributeTypeRestriction__Group_4__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6398:1: ( ( 'artifactType' ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6399:1: ( 'artifactType' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6405:1: ( ( 'artifactType' ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6406:1: ( 'artifactType' )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6399:1: ( 'artifactType' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6400:1: 'artifactType'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6406:1: ( 'artifactType' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6407:1: 'artifactType'
             {
              before(grammarAccess.getAttributeTypeRestrictionAccess().getArtifactTypeKeyword_4_1()); 
-            match(input,39,FOLLOW_39_in_rule__AttributeTypeRestriction__Group_4__1__Impl12887); 
+            match(input,39,FOLLOW_39_in_rule__AttributeTypeRestriction__Group_4__1__Impl12904); 
              after(grammarAccess.getAttributeTypeRestrictionAccess().getArtifactTypeKeyword_4_1()); 
 
             }
@@ -16513,16 +16545,16 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__AttributeTypeRestriction__Group_4__2
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6413:1: rule__AttributeTypeRestriction__Group_4__2 : rule__AttributeTypeRestriction__Group_4__2__Impl ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6420:1: rule__AttributeTypeRestriction__Group_4__2 : rule__AttributeTypeRestriction__Group_4__2__Impl ;
     public final void rule__AttributeTypeRestriction__Group_4__2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6417:1: ( rule__AttributeTypeRestriction__Group_4__2__Impl )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6418:2: rule__AttributeTypeRestriction__Group_4__2__Impl
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6424:1: ( rule__AttributeTypeRestriction__Group_4__2__Impl )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6425:2: rule__AttributeTypeRestriction__Group_4__2__Impl
             {
-            pushFollow(FOLLOW_rule__AttributeTypeRestriction__Group_4__2__Impl_in_rule__AttributeTypeRestriction__Group_4__212918);
+            pushFollow(FOLLOW_rule__AttributeTypeRestriction__Group_4__2__Impl_in_rule__AttributeTypeRestriction__Group_4__212935);
             rule__AttributeTypeRestriction__Group_4__2__Impl();
             _fsp--;
 
@@ -16545,23 +16577,23 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__AttributeTypeRestriction__Group_4__2__Impl
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6424:1: rule__AttributeTypeRestriction__Group_4__2__Impl : ( ( rule__AttributeTypeRestriction__ArtifactTypeRefAssignment_4_2 ) ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6431:1: rule__AttributeTypeRestriction__Group_4__2__Impl : ( ( rule__AttributeTypeRestriction__ArtifactTypeRefAssignment_4_2 ) ) ;
     public final void rule__AttributeTypeRestriction__Group_4__2__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6428:1: ( ( ( rule__AttributeTypeRestriction__ArtifactTypeRefAssignment_4_2 ) ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6429:1: ( ( rule__AttributeTypeRestriction__ArtifactTypeRefAssignment_4_2 ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6435:1: ( ( ( rule__AttributeTypeRestriction__ArtifactTypeRefAssignment_4_2 ) ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6436:1: ( ( rule__AttributeTypeRestriction__ArtifactTypeRefAssignment_4_2 ) )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6429:1: ( ( rule__AttributeTypeRestriction__ArtifactTypeRefAssignment_4_2 ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6430:1: ( rule__AttributeTypeRestriction__ArtifactTypeRefAssignment_4_2 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6436:1: ( ( rule__AttributeTypeRestriction__ArtifactTypeRefAssignment_4_2 ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6437:1: ( rule__AttributeTypeRestriction__ArtifactTypeRefAssignment_4_2 )
             {
              before(grammarAccess.getAttributeTypeRestrictionAccess().getArtifactTypeRefAssignment_4_2()); 
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6431:1: ( rule__AttributeTypeRestriction__ArtifactTypeRefAssignment_4_2 )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6431:2: rule__AttributeTypeRestriction__ArtifactTypeRefAssignment_4_2
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6438:1: ( rule__AttributeTypeRestriction__ArtifactTypeRefAssignment_4_2 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6438:2: rule__AttributeTypeRestriction__ArtifactTypeRefAssignment_4_2
             {
-            pushFollow(FOLLOW_rule__AttributeTypeRestriction__ArtifactTypeRefAssignment_4_2_in_rule__AttributeTypeRestriction__Group_4__2__Impl12945);
+            pushFollow(FOLLOW_rule__AttributeTypeRestriction__ArtifactTypeRefAssignment_4_2_in_rule__AttributeTypeRestriction__Group_4__2__Impl12962);
             rule__AttributeTypeRestriction__ArtifactTypeRefAssignment_4_2();
             _fsp--;
 
@@ -16591,20 +16623,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__RelationTypeRestriction__Group__0
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6447:1: rule__RelationTypeRestriction__Group__0 : rule__RelationTypeRestriction__Group__0__Impl rule__RelationTypeRestriction__Group__1 ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6454:1: rule__RelationTypeRestriction__Group__0 : rule__RelationTypeRestriction__Group__0__Impl rule__RelationTypeRestriction__Group__1 ;
     public final void rule__RelationTypeRestriction__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6451:1: ( rule__RelationTypeRestriction__Group__0__Impl rule__RelationTypeRestriction__Group__1 )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6452:2: rule__RelationTypeRestriction__Group__0__Impl rule__RelationTypeRestriction__Group__1
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6458:1: ( rule__RelationTypeRestriction__Group__0__Impl rule__RelationTypeRestriction__Group__1 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6459:2: rule__RelationTypeRestriction__Group__0__Impl rule__RelationTypeRestriction__Group__1
             {
-            pushFollow(FOLLOW_rule__RelationTypeRestriction__Group__0__Impl_in_rule__RelationTypeRestriction__Group__012981);
+            pushFollow(FOLLOW_rule__RelationTypeRestriction__Group__0__Impl_in_rule__RelationTypeRestriction__Group__012998);
             rule__RelationTypeRestriction__Group__0__Impl();
             _fsp--;
 
-            pushFollow(FOLLOW_rule__RelationTypeRestriction__Group__1_in_rule__RelationTypeRestriction__Group__012984);
+            pushFollow(FOLLOW_rule__RelationTypeRestriction__Group__1_in_rule__RelationTypeRestriction__Group__013001);
             rule__RelationTypeRestriction__Group__1();
             _fsp--;
 
@@ -16627,23 +16659,23 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__RelationTypeRestriction__Group__0__Impl
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6459:1: rule__RelationTypeRestriction__Group__0__Impl : ( ( rule__RelationTypeRestriction__PermissionAssignment_0 ) ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6466:1: rule__RelationTypeRestriction__Group__0__Impl : ( ( rule__RelationTypeRestriction__PermissionAssignment_0 ) ) ;
     public final void rule__RelationTypeRestriction__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6463:1: ( ( ( rule__RelationTypeRestriction__PermissionAssignment_0 ) ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6464:1: ( ( rule__RelationTypeRestriction__PermissionAssignment_0 ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6470:1: ( ( ( rule__RelationTypeRestriction__PermissionAssignment_0 ) ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6471:1: ( ( rule__RelationTypeRestriction__PermissionAssignment_0 ) )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6464:1: ( ( rule__RelationTypeRestriction__PermissionAssignment_0 ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6465:1: ( rule__RelationTypeRestriction__PermissionAssignment_0 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6471:1: ( ( rule__RelationTypeRestriction__PermissionAssignment_0 ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6472:1: ( rule__RelationTypeRestriction__PermissionAssignment_0 )
             {
              before(grammarAccess.getRelationTypeRestrictionAccess().getPermissionAssignment_0()); 
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6466:1: ( rule__RelationTypeRestriction__PermissionAssignment_0 )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6466:2: rule__RelationTypeRestriction__PermissionAssignment_0
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6473:1: ( rule__RelationTypeRestriction__PermissionAssignment_0 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6473:2: rule__RelationTypeRestriction__PermissionAssignment_0
             {
-            pushFollow(FOLLOW_rule__RelationTypeRestriction__PermissionAssignment_0_in_rule__RelationTypeRestriction__Group__0__Impl13011);
+            pushFollow(FOLLOW_rule__RelationTypeRestriction__PermissionAssignment_0_in_rule__RelationTypeRestriction__Group__0__Impl13028);
             rule__RelationTypeRestriction__PermissionAssignment_0();
             _fsp--;
 
@@ -16673,20 +16705,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__RelationTypeRestriction__Group__1
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6476:1: rule__RelationTypeRestriction__Group__1 : rule__RelationTypeRestriction__Group__1__Impl rule__RelationTypeRestriction__Group__2 ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6483:1: rule__RelationTypeRestriction__Group__1 : rule__RelationTypeRestriction__Group__1__Impl rule__RelationTypeRestriction__Group__2 ;
     public final void rule__RelationTypeRestriction__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6480:1: ( rule__RelationTypeRestriction__Group__1__Impl rule__RelationTypeRestriction__Group__2 )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6481:2: rule__RelationTypeRestriction__Group__1__Impl rule__RelationTypeRestriction__Group__2
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6487:1: ( rule__RelationTypeRestriction__Group__1__Impl rule__RelationTypeRestriction__Group__2 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6488:2: rule__RelationTypeRestriction__Group__1__Impl rule__RelationTypeRestriction__Group__2
             {
-            pushFollow(FOLLOW_rule__RelationTypeRestriction__Group__1__Impl_in_rule__RelationTypeRestriction__Group__113041);
+            pushFollow(FOLLOW_rule__RelationTypeRestriction__Group__1__Impl_in_rule__RelationTypeRestriction__Group__113058);
             rule__RelationTypeRestriction__Group__1__Impl();
             _fsp--;
 
-            pushFollow(FOLLOW_rule__RelationTypeRestriction__Group__2_in_rule__RelationTypeRestriction__Group__113044);
+            pushFollow(FOLLOW_rule__RelationTypeRestriction__Group__2_in_rule__RelationTypeRestriction__Group__113061);
             rule__RelationTypeRestriction__Group__2();
             _fsp--;
 
@@ -16709,20 +16741,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__RelationTypeRestriction__Group__1__Impl
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6488:1: rule__RelationTypeRestriction__Group__1__Impl : ( 'edit' ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6495:1: rule__RelationTypeRestriction__Group__1__Impl : ( 'edit' ) ;
     public final void rule__RelationTypeRestriction__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6492:1: ( ( 'edit' ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6493:1: ( 'edit' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6499:1: ( ( 'edit' ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6500:1: ( 'edit' )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6493:1: ( 'edit' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6494:1: 'edit'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6500:1: ( 'edit' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6501:1: 'edit'
             {
              before(grammarAccess.getRelationTypeRestrictionAccess().getEditKeyword_1()); 
-            match(input,76,FOLLOW_76_in_rule__RelationTypeRestriction__Group__1__Impl13072); 
+            match(input,76,FOLLOW_76_in_rule__RelationTypeRestriction__Group__1__Impl13089); 
              after(grammarAccess.getRelationTypeRestrictionAccess().getEditKeyword_1()); 
 
             }
@@ -16746,20 +16778,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__RelationTypeRestriction__Group__2
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6507:1: rule__RelationTypeRestriction__Group__2 : rule__RelationTypeRestriction__Group__2__Impl rule__RelationTypeRestriction__Group__3 ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6514:1: rule__RelationTypeRestriction__Group__2 : rule__RelationTypeRestriction__Group__2__Impl rule__RelationTypeRestriction__Group__3 ;
     public final void rule__RelationTypeRestriction__Group__2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6511:1: ( rule__RelationTypeRestriction__Group__2__Impl rule__RelationTypeRestriction__Group__3 )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6512:2: rule__RelationTypeRestriction__Group__2__Impl rule__RelationTypeRestriction__Group__3
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6518:1: ( rule__RelationTypeRestriction__Group__2__Impl rule__RelationTypeRestriction__Group__3 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6519:2: rule__RelationTypeRestriction__Group__2__Impl rule__RelationTypeRestriction__Group__3
             {
-            pushFollow(FOLLOW_rule__RelationTypeRestriction__Group__2__Impl_in_rule__RelationTypeRestriction__Group__213103);
+            pushFollow(FOLLOW_rule__RelationTypeRestriction__Group__2__Impl_in_rule__RelationTypeRestriction__Group__213120);
             rule__RelationTypeRestriction__Group__2__Impl();
             _fsp--;
 
-            pushFollow(FOLLOW_rule__RelationTypeRestriction__Group__3_in_rule__RelationTypeRestriction__Group__213106);
+            pushFollow(FOLLOW_rule__RelationTypeRestriction__Group__3_in_rule__RelationTypeRestriction__Group__213123);
             rule__RelationTypeRestriction__Group__3();
             _fsp--;
 
@@ -16782,20 +16814,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__RelationTypeRestriction__Group__2__Impl
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6519:1: rule__RelationTypeRestriction__Group__2__Impl : ( 'relationType' ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6526:1: rule__RelationTypeRestriction__Group__2__Impl : ( 'relationType' ) ;
     public final void rule__RelationTypeRestriction__Group__2__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6523:1: ( ( 'relationType' ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6524:1: ( 'relationType' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6530:1: ( ( 'relationType' ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6531:1: ( 'relationType' )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6524:1: ( 'relationType' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6525:1: 'relationType'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6531:1: ( 'relationType' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6532:1: 'relationType'
             {
              before(grammarAccess.getRelationTypeRestrictionAccess().getRelationTypeKeyword_2()); 
-            match(input,63,FOLLOW_63_in_rule__RelationTypeRestriction__Group__2__Impl13134); 
+            match(input,63,FOLLOW_63_in_rule__RelationTypeRestriction__Group__2__Impl13151); 
              after(grammarAccess.getRelationTypeRestrictionAccess().getRelationTypeKeyword_2()); 
 
             }
@@ -16819,20 +16851,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__RelationTypeRestriction__Group__3
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6538:1: rule__RelationTypeRestriction__Group__3 : rule__RelationTypeRestriction__Group__3__Impl rule__RelationTypeRestriction__Group__4 ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6545:1: rule__RelationTypeRestriction__Group__3 : rule__RelationTypeRestriction__Group__3__Impl rule__RelationTypeRestriction__Group__4 ;
     public final void rule__RelationTypeRestriction__Group__3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6542:1: ( rule__RelationTypeRestriction__Group__3__Impl rule__RelationTypeRestriction__Group__4 )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6543:2: rule__RelationTypeRestriction__Group__3__Impl rule__RelationTypeRestriction__Group__4
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6549:1: ( rule__RelationTypeRestriction__Group__3__Impl rule__RelationTypeRestriction__Group__4 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6550:2: rule__RelationTypeRestriction__Group__3__Impl rule__RelationTypeRestriction__Group__4
             {
-            pushFollow(FOLLOW_rule__RelationTypeRestriction__Group__3__Impl_in_rule__RelationTypeRestriction__Group__313165);
+            pushFollow(FOLLOW_rule__RelationTypeRestriction__Group__3__Impl_in_rule__RelationTypeRestriction__Group__313182);
             rule__RelationTypeRestriction__Group__3__Impl();
             _fsp--;
 
-            pushFollow(FOLLOW_rule__RelationTypeRestriction__Group__4_in_rule__RelationTypeRestriction__Group__313168);
+            pushFollow(FOLLOW_rule__RelationTypeRestriction__Group__4_in_rule__RelationTypeRestriction__Group__313185);
             rule__RelationTypeRestriction__Group__4();
             _fsp--;
 
@@ -16855,23 +16887,23 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__RelationTypeRestriction__Group__3__Impl
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6550:1: rule__RelationTypeRestriction__Group__3__Impl : ( ( rule__RelationTypeRestriction__RelationTypeRefAssignment_3 ) ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6557:1: rule__RelationTypeRestriction__Group__3__Impl : ( ( rule__RelationTypeRestriction__RelationTypeRefAssignment_3 ) ) ;
     public final void rule__RelationTypeRestriction__Group__3__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6554:1: ( ( ( rule__RelationTypeRestriction__RelationTypeRefAssignment_3 ) ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6555:1: ( ( rule__RelationTypeRestriction__RelationTypeRefAssignment_3 ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6561:1: ( ( ( rule__RelationTypeRestriction__RelationTypeRefAssignment_3 ) ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6562:1: ( ( rule__RelationTypeRestriction__RelationTypeRefAssignment_3 ) )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6555:1: ( ( rule__RelationTypeRestriction__RelationTypeRefAssignment_3 ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6556:1: ( rule__RelationTypeRestriction__RelationTypeRefAssignment_3 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6562:1: ( ( rule__RelationTypeRestriction__RelationTypeRefAssignment_3 ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6563:1: ( rule__RelationTypeRestriction__RelationTypeRefAssignment_3 )
             {
              before(grammarAccess.getRelationTypeRestrictionAccess().getRelationTypeRefAssignment_3()); 
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6557:1: ( rule__RelationTypeRestriction__RelationTypeRefAssignment_3 )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6557:2: rule__RelationTypeRestriction__RelationTypeRefAssignment_3
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6564:1: ( rule__RelationTypeRestriction__RelationTypeRefAssignment_3 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6564:2: rule__RelationTypeRestriction__RelationTypeRefAssignment_3
             {
-            pushFollow(FOLLOW_rule__RelationTypeRestriction__RelationTypeRefAssignment_3_in_rule__RelationTypeRestriction__Group__3__Impl13195);
+            pushFollow(FOLLOW_rule__RelationTypeRestriction__RelationTypeRefAssignment_3_in_rule__RelationTypeRestriction__Group__3__Impl13212);
             rule__RelationTypeRestriction__RelationTypeRefAssignment_3();
             _fsp--;
 
@@ -16901,20 +16933,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__RelationTypeRestriction__Group__4
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6567:1: rule__RelationTypeRestriction__Group__4 : rule__RelationTypeRestriction__Group__4__Impl rule__RelationTypeRestriction__Group__5 ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6574:1: rule__RelationTypeRestriction__Group__4 : rule__RelationTypeRestriction__Group__4__Impl rule__RelationTypeRestriction__Group__5 ;
     public final void rule__RelationTypeRestriction__Group__4() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6571:1: ( rule__RelationTypeRestriction__Group__4__Impl rule__RelationTypeRestriction__Group__5 )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6572:2: rule__RelationTypeRestriction__Group__4__Impl rule__RelationTypeRestriction__Group__5
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6578:1: ( rule__RelationTypeRestriction__Group__4__Impl rule__RelationTypeRestriction__Group__5 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6579:2: rule__RelationTypeRestriction__Group__4__Impl rule__RelationTypeRestriction__Group__5
             {
-            pushFollow(FOLLOW_rule__RelationTypeRestriction__Group__4__Impl_in_rule__RelationTypeRestriction__Group__413225);
+            pushFollow(FOLLOW_rule__RelationTypeRestriction__Group__4__Impl_in_rule__RelationTypeRestriction__Group__413242);
             rule__RelationTypeRestriction__Group__4__Impl();
             _fsp--;
 
-            pushFollow(FOLLOW_rule__RelationTypeRestriction__Group__5_in_rule__RelationTypeRestriction__Group__413228);
+            pushFollow(FOLLOW_rule__RelationTypeRestriction__Group__5_in_rule__RelationTypeRestriction__Group__413245);
             rule__RelationTypeRestriction__Group__5();
             _fsp--;
 
@@ -16937,23 +16969,23 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__RelationTypeRestriction__Group__4__Impl
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6579:1: rule__RelationTypeRestriction__Group__4__Impl : ( ( rule__RelationTypeRestriction__RestrictedToSideAssignment_4 ) ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6586:1: rule__RelationTypeRestriction__Group__4__Impl : ( ( rule__RelationTypeRestriction__RestrictedToSideAssignment_4 ) ) ;
     public final void rule__RelationTypeRestriction__Group__4__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6583:1: ( ( ( rule__RelationTypeRestriction__RestrictedToSideAssignment_4 ) ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6584:1: ( ( rule__RelationTypeRestriction__RestrictedToSideAssignment_4 ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6590:1: ( ( ( rule__RelationTypeRestriction__RestrictedToSideAssignment_4 ) ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6591:1: ( ( rule__RelationTypeRestriction__RestrictedToSideAssignment_4 ) )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6584:1: ( ( rule__RelationTypeRestriction__RestrictedToSideAssignment_4 ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6585:1: ( rule__RelationTypeRestriction__RestrictedToSideAssignment_4 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6591:1: ( ( rule__RelationTypeRestriction__RestrictedToSideAssignment_4 ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6592:1: ( rule__RelationTypeRestriction__RestrictedToSideAssignment_4 )
             {
              before(grammarAccess.getRelationTypeRestrictionAccess().getRestrictedToSideAssignment_4()); 
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6586:1: ( rule__RelationTypeRestriction__RestrictedToSideAssignment_4 )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6586:2: rule__RelationTypeRestriction__RestrictedToSideAssignment_4
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6593:1: ( rule__RelationTypeRestriction__RestrictedToSideAssignment_4 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6593:2: rule__RelationTypeRestriction__RestrictedToSideAssignment_4
             {
-            pushFollow(FOLLOW_rule__RelationTypeRestriction__RestrictedToSideAssignment_4_in_rule__RelationTypeRestriction__Group__4__Impl13255);
+            pushFollow(FOLLOW_rule__RelationTypeRestriction__RestrictedToSideAssignment_4_in_rule__RelationTypeRestriction__Group__4__Impl13272);
             rule__RelationTypeRestriction__RestrictedToSideAssignment_4();
             _fsp--;
 
@@ -16983,16 +17015,16 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__RelationTypeRestriction__Group__5
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6596:1: rule__RelationTypeRestriction__Group__5 : rule__RelationTypeRestriction__Group__5__Impl ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6603:1: rule__RelationTypeRestriction__Group__5 : rule__RelationTypeRestriction__Group__5__Impl ;
     public final void rule__RelationTypeRestriction__Group__5() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6600:1: ( rule__RelationTypeRestriction__Group__5__Impl )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6601:2: rule__RelationTypeRestriction__Group__5__Impl
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6607:1: ( rule__RelationTypeRestriction__Group__5__Impl )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6608:2: rule__RelationTypeRestriction__Group__5__Impl
             {
-            pushFollow(FOLLOW_rule__RelationTypeRestriction__Group__5__Impl_in_rule__RelationTypeRestriction__Group__513285);
+            pushFollow(FOLLOW_rule__RelationTypeRestriction__Group__5__Impl_in_rule__RelationTypeRestriction__Group__513302);
             rule__RelationTypeRestriction__Group__5__Impl();
             _fsp--;
 
@@ -17015,20 +17047,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__RelationTypeRestriction__Group__5__Impl
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6607:1: rule__RelationTypeRestriction__Group__5__Impl : ( ';' ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6614:1: rule__RelationTypeRestriction__Group__5__Impl : ( ';' ) ;
     public final void rule__RelationTypeRestriction__Group__5__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6611:1: ( ( ';' ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6612:1: ( ';' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6618:1: ( ( ';' ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6619:1: ( ';' )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6612:1: ( ';' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6613:1: ';'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6619:1: ( ';' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6620:1: ';'
             {
              before(grammarAccess.getRelationTypeRestrictionAccess().getSemicolonKeyword_5()); 
-            match(input,72,FOLLOW_72_in_rule__RelationTypeRestriction__Group__5__Impl13313); 
+            match(input,72,FOLLOW_72_in_rule__RelationTypeRestriction__Group__5__Impl13330); 
              after(grammarAccess.getRelationTypeRestrictionAccess().getSemicolonKeyword_5()); 
 
             }
@@ -17052,20 +17084,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__OseeDsl__ImportsAssignment_0
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6639:1: rule__OseeDsl__ImportsAssignment_0 : ( ruleImport ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6646:1: rule__OseeDsl__ImportsAssignment_0 : ( ruleImport ) ;
     public final void rule__OseeDsl__ImportsAssignment_0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6643:1: ( ( ruleImport ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6644:1: ( ruleImport )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6650:1: ( ( ruleImport ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6651:1: ( ruleImport )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6644:1: ( ruleImport )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6645:1: ruleImport
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6651:1: ( ruleImport )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6652:1: ruleImport
             {
              before(grammarAccess.getOseeDslAccess().getImportsImportParserRuleCall_0_0()); 
-            pushFollow(FOLLOW_ruleImport_in_rule__OseeDsl__ImportsAssignment_013361);
+            pushFollow(FOLLOW_ruleImport_in_rule__OseeDsl__ImportsAssignment_013378);
             ruleImport();
             _fsp--;
 
@@ -17092,20 +17124,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__OseeDsl__ArtifactTypesAssignment_1_0
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6654:1: rule__OseeDsl__ArtifactTypesAssignment_1_0 : ( ruleXArtifactType ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6661:1: rule__OseeDsl__ArtifactTypesAssignment_1_0 : ( ruleXArtifactType ) ;
     public final void rule__OseeDsl__ArtifactTypesAssignment_1_0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6658:1: ( ( ruleXArtifactType ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6659:1: ( ruleXArtifactType )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6665:1: ( ( ruleXArtifactType ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6666:1: ( ruleXArtifactType )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6659:1: ( ruleXArtifactType )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6660:1: ruleXArtifactType
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6666:1: ( ruleXArtifactType )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6667:1: ruleXArtifactType
             {
              before(grammarAccess.getOseeDslAccess().getArtifactTypesXArtifactTypeParserRuleCall_1_0_0()); 
-            pushFollow(FOLLOW_ruleXArtifactType_in_rule__OseeDsl__ArtifactTypesAssignment_1_013392);
+            pushFollow(FOLLOW_ruleXArtifactType_in_rule__OseeDsl__ArtifactTypesAssignment_1_013409);
             ruleXArtifactType();
             _fsp--;
 
@@ -17132,20 +17164,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__OseeDsl__RelationTypesAssignment_1_1
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6669:1: rule__OseeDsl__RelationTypesAssignment_1_1 : ( ruleXRelationType ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6676:1: rule__OseeDsl__RelationTypesAssignment_1_1 : ( ruleXRelationType ) ;
     public final void rule__OseeDsl__RelationTypesAssignment_1_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6673:1: ( ( ruleXRelationType ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6674:1: ( ruleXRelationType )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6680:1: ( ( ruleXRelationType ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6681:1: ( ruleXRelationType )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6674:1: ( ruleXRelationType )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6675:1: ruleXRelationType
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6681:1: ( ruleXRelationType )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6682:1: ruleXRelationType
             {
              before(grammarAccess.getOseeDslAccess().getRelationTypesXRelationTypeParserRuleCall_1_1_0()); 
-            pushFollow(FOLLOW_ruleXRelationType_in_rule__OseeDsl__RelationTypesAssignment_1_113423);
+            pushFollow(FOLLOW_ruleXRelationType_in_rule__OseeDsl__RelationTypesAssignment_1_113440);
             ruleXRelationType();
             _fsp--;
 
@@ -17172,20 +17204,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__OseeDsl__AttributeTypesAssignment_1_2
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6684:1: rule__OseeDsl__AttributeTypesAssignment_1_2 : ( ruleXAttributeType ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6691:1: rule__OseeDsl__AttributeTypesAssignment_1_2 : ( ruleXAttributeType ) ;
     public final void rule__OseeDsl__AttributeTypesAssignment_1_2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6688:1: ( ( ruleXAttributeType ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6689:1: ( ruleXAttributeType )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6695:1: ( ( ruleXAttributeType ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6696:1: ( ruleXAttributeType )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6689:1: ( ruleXAttributeType )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6690:1: ruleXAttributeType
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6696:1: ( ruleXAttributeType )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6697:1: ruleXAttributeType
             {
              before(grammarAccess.getOseeDslAccess().getAttributeTypesXAttributeTypeParserRuleCall_1_2_0()); 
-            pushFollow(FOLLOW_ruleXAttributeType_in_rule__OseeDsl__AttributeTypesAssignment_1_213454);
+            pushFollow(FOLLOW_ruleXAttributeType_in_rule__OseeDsl__AttributeTypesAssignment_1_213471);
             ruleXAttributeType();
             _fsp--;
 
@@ -17212,20 +17244,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__OseeDsl__EnumTypesAssignment_1_3
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6699:1: rule__OseeDsl__EnumTypesAssignment_1_3 : ( ruleXOseeEnumType ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6706:1: rule__OseeDsl__EnumTypesAssignment_1_3 : ( ruleXOseeEnumType ) ;
     public final void rule__OseeDsl__EnumTypesAssignment_1_3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6703:1: ( ( ruleXOseeEnumType ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6704:1: ( ruleXOseeEnumType )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6710:1: ( ( ruleXOseeEnumType ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6711:1: ( ruleXOseeEnumType )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6704:1: ( ruleXOseeEnumType )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6705:1: ruleXOseeEnumType
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6711:1: ( ruleXOseeEnumType )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6712:1: ruleXOseeEnumType
             {
              before(grammarAccess.getOseeDslAccess().getEnumTypesXOseeEnumTypeParserRuleCall_1_3_0()); 
-            pushFollow(FOLLOW_ruleXOseeEnumType_in_rule__OseeDsl__EnumTypesAssignment_1_313485);
+            pushFollow(FOLLOW_ruleXOseeEnumType_in_rule__OseeDsl__EnumTypesAssignment_1_313502);
             ruleXOseeEnumType();
             _fsp--;
 
@@ -17252,20 +17284,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__OseeDsl__EnumOverridesAssignment_1_4
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6714:1: rule__OseeDsl__EnumOverridesAssignment_1_4 : ( ruleXOseeEnumOverride ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6721:1: rule__OseeDsl__EnumOverridesAssignment_1_4 : ( ruleXOseeEnumOverride ) ;
     public final void rule__OseeDsl__EnumOverridesAssignment_1_4() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6718:1: ( ( ruleXOseeEnumOverride ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6719:1: ( ruleXOseeEnumOverride )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6725:1: ( ( ruleXOseeEnumOverride ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6726:1: ( ruleXOseeEnumOverride )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6719:1: ( ruleXOseeEnumOverride )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6720:1: ruleXOseeEnumOverride
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6726:1: ( ruleXOseeEnumOverride )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6727:1: ruleXOseeEnumOverride
             {
              before(grammarAccess.getOseeDslAccess().getEnumOverridesXOseeEnumOverrideParserRuleCall_1_4_0()); 
-            pushFollow(FOLLOW_ruleXOseeEnumOverride_in_rule__OseeDsl__EnumOverridesAssignment_1_413516);
+            pushFollow(FOLLOW_ruleXOseeEnumOverride_in_rule__OseeDsl__EnumOverridesAssignment_1_413533);
             ruleXOseeEnumOverride();
             _fsp--;
 
@@ -17292,20 +17324,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__OseeDsl__BranchRefsAssignment_2_0
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6729:1: rule__OseeDsl__BranchRefsAssignment_2_0 : ( ruleXBranchRef ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6736:1: rule__OseeDsl__BranchRefsAssignment_2_0 : ( ruleXBranchRef ) ;
     public final void rule__OseeDsl__BranchRefsAssignment_2_0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6733:1: ( ( ruleXBranchRef ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6734:1: ( ruleXBranchRef )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6740:1: ( ( ruleXBranchRef ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6741:1: ( ruleXBranchRef )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6734:1: ( ruleXBranchRef )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6735:1: ruleXBranchRef
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6741:1: ( ruleXBranchRef )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6742:1: ruleXBranchRef
             {
              before(grammarAccess.getOseeDslAccess().getBranchRefsXBranchRefParserRuleCall_2_0_0()); 
-            pushFollow(FOLLOW_ruleXBranchRef_in_rule__OseeDsl__BranchRefsAssignment_2_013547);
+            pushFollow(FOLLOW_ruleXBranchRef_in_rule__OseeDsl__BranchRefsAssignment_2_013564);
             ruleXBranchRef();
             _fsp--;
 
@@ -17332,20 +17364,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__OseeDsl__ArtifactRefsAssignment_2_1
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6744:1: rule__OseeDsl__ArtifactRefsAssignment_2_1 : ( ruleXArtifactRef ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6751:1: rule__OseeDsl__ArtifactRefsAssignment_2_1 : ( ruleXArtifactRef ) ;
     public final void rule__OseeDsl__ArtifactRefsAssignment_2_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6748:1: ( ( ruleXArtifactRef ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6749:1: ( ruleXArtifactRef )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6755:1: ( ( ruleXArtifactRef ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6756:1: ( ruleXArtifactRef )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6749:1: ( ruleXArtifactRef )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6750:1: ruleXArtifactRef
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6756:1: ( ruleXArtifactRef )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6757:1: ruleXArtifactRef
             {
              before(grammarAccess.getOseeDslAccess().getArtifactRefsXArtifactRefParserRuleCall_2_1_0()); 
-            pushFollow(FOLLOW_ruleXArtifactRef_in_rule__OseeDsl__ArtifactRefsAssignment_2_113578);
+            pushFollow(FOLLOW_ruleXArtifactRef_in_rule__OseeDsl__ArtifactRefsAssignment_2_113595);
             ruleXArtifactRef();
             _fsp--;
 
@@ -17372,20 +17404,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__OseeDsl__AccessDeclarationsAssignment_3
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6759:1: rule__OseeDsl__AccessDeclarationsAssignment_3 : ( ruleAccessContext ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6766:1: rule__OseeDsl__AccessDeclarationsAssignment_3 : ( ruleAccessContext ) ;
     public final void rule__OseeDsl__AccessDeclarationsAssignment_3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6763:1: ( ( ruleAccessContext ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6764:1: ( ruleAccessContext )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6770:1: ( ( ruleAccessContext ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6771:1: ( ruleAccessContext )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6764:1: ( ruleAccessContext )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6765:1: ruleAccessContext
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6771:1: ( ruleAccessContext )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6772:1: ruleAccessContext
             {
              before(grammarAccess.getOseeDslAccess().getAccessDeclarationsAccessContextParserRuleCall_3_0()); 
-            pushFollow(FOLLOW_ruleAccessContext_in_rule__OseeDsl__AccessDeclarationsAssignment_313609);
+            pushFollow(FOLLOW_ruleAccessContext_in_rule__OseeDsl__AccessDeclarationsAssignment_313626);
             ruleAccessContext();
             _fsp--;
 
@@ -17412,20 +17444,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__Import__ImportURIAssignment_1
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6774:1: rule__Import__ImportURIAssignment_1 : ( RULE_STRING ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6781:1: rule__Import__ImportURIAssignment_1 : ( RULE_STRING ) ;
     public final void rule__Import__ImportURIAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6778:1: ( ( RULE_STRING ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6779:1: ( RULE_STRING )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6785:1: ( ( RULE_STRING ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6786:1: ( RULE_STRING )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6779:1: ( RULE_STRING )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6780:1: RULE_STRING
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6786:1: ( RULE_STRING )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6787:1: RULE_STRING
             {
              before(grammarAccess.getImportAccess().getImportURISTRINGTerminalRuleCall_1_0()); 
-            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__Import__ImportURIAssignment_113640); 
+            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__Import__ImportURIAssignment_113657); 
              after(grammarAccess.getImportAccess().getImportURISTRINGTerminalRuleCall_1_0()); 
 
             }
@@ -17449,24 +17481,24 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__XArtifactType__AbstractAssignment_0
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6789:1: rule__XArtifactType__AbstractAssignment_0 : ( ( 'abstract' ) ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6796:1: rule__XArtifactType__AbstractAssignment_0 : ( ( 'abstract' ) ) ;
     public final void rule__XArtifactType__AbstractAssignment_0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6793:1: ( ( ( 'abstract' ) ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6794:1: ( ( 'abstract' ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6800:1: ( ( ( 'abstract' ) ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6801:1: ( ( 'abstract' ) )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6794:1: ( ( 'abstract' ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6795:1: ( 'abstract' )
-            {
-             before(grammarAccess.getXArtifactTypeAccess().getAbstractAbstractKeyword_0_0()); 
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6796:1: ( 'abstract' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6797:1: 'abstract'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6801:1: ( ( 'abstract' ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6802:1: ( 'abstract' )
             {
              before(grammarAccess.getXArtifactTypeAccess().getAbstractAbstractKeyword_0_0()); 
-            match(input,78,FOLLOW_78_in_rule__XArtifactType__AbstractAssignment_013676); 
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6803:1: ( 'abstract' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6804:1: 'abstract'
+            {
+             before(grammarAccess.getXArtifactTypeAccess().getAbstractAbstractKeyword_0_0()); 
+            match(input,78,FOLLOW_78_in_rule__XArtifactType__AbstractAssignment_013693); 
              after(grammarAccess.getXArtifactTypeAccess().getAbstractAbstractKeyword_0_0()); 
 
             }
@@ -17494,20 +17526,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__XArtifactType__NameAssignment_2
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6812:1: rule__XArtifactType__NameAssignment_2 : ( ruleARTIFACT_TYPE_REFERENCE ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6819:1: rule__XArtifactType__NameAssignment_2 : ( ruleARTIFACT_TYPE_REFERENCE ) ;
     public final void rule__XArtifactType__NameAssignment_2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6816:1: ( ( ruleARTIFACT_TYPE_REFERENCE ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6817:1: ( ruleARTIFACT_TYPE_REFERENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6823:1: ( ( ruleARTIFACT_TYPE_REFERENCE ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6824:1: ( ruleARTIFACT_TYPE_REFERENCE )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6817:1: ( ruleARTIFACT_TYPE_REFERENCE )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6818:1: ruleARTIFACT_TYPE_REFERENCE
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6824:1: ( ruleARTIFACT_TYPE_REFERENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6825:1: ruleARTIFACT_TYPE_REFERENCE
             {
              before(grammarAccess.getXArtifactTypeAccess().getNameARTIFACT_TYPE_REFERENCEParserRuleCall_2_0()); 
-            pushFollow(FOLLOW_ruleARTIFACT_TYPE_REFERENCE_in_rule__XArtifactType__NameAssignment_213715);
+            pushFollow(FOLLOW_ruleARTIFACT_TYPE_REFERENCE_in_rule__XArtifactType__NameAssignment_213732);
             ruleARTIFACT_TYPE_REFERENCE();
             _fsp--;
 
@@ -17534,24 +17566,24 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__XArtifactType__SuperArtifactTypesAssignment_3_1
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6827:1: rule__XArtifactType__SuperArtifactTypesAssignment_3_1 : ( ( ruleARTIFACT_TYPE_REFERENCE ) ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6834:1: rule__XArtifactType__SuperArtifactTypesAssignment_3_1 : ( ( ruleARTIFACT_TYPE_REFERENCE ) ) ;
     public final void rule__XArtifactType__SuperArtifactTypesAssignment_3_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6831:1: ( ( ( ruleARTIFACT_TYPE_REFERENCE ) ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6832:1: ( ( ruleARTIFACT_TYPE_REFERENCE ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6838:1: ( ( ( ruleARTIFACT_TYPE_REFERENCE ) ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6839:1: ( ( ruleARTIFACT_TYPE_REFERENCE ) )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6832:1: ( ( ruleARTIFACT_TYPE_REFERENCE ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6833:1: ( ruleARTIFACT_TYPE_REFERENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6839:1: ( ( ruleARTIFACT_TYPE_REFERENCE ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6840:1: ( ruleARTIFACT_TYPE_REFERENCE )
             {
              before(grammarAccess.getXArtifactTypeAccess().getSuperArtifactTypesXArtifactTypeCrossReference_3_1_0()); 
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6834:1: ( ruleARTIFACT_TYPE_REFERENCE )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6835:1: ruleARTIFACT_TYPE_REFERENCE
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6841:1: ( ruleARTIFACT_TYPE_REFERENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6842:1: ruleARTIFACT_TYPE_REFERENCE
             {
              before(grammarAccess.getXArtifactTypeAccess().getSuperArtifactTypesXArtifactTypeARTIFACT_TYPE_REFERENCEParserRuleCall_3_1_0_1()); 
-            pushFollow(FOLLOW_ruleARTIFACT_TYPE_REFERENCE_in_rule__XArtifactType__SuperArtifactTypesAssignment_3_113750);
+            pushFollow(FOLLOW_ruleARTIFACT_TYPE_REFERENCE_in_rule__XArtifactType__SuperArtifactTypesAssignment_3_113767);
             ruleARTIFACT_TYPE_REFERENCE();
             _fsp--;
 
@@ -17582,24 +17614,24 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__XArtifactType__SuperArtifactTypesAssignment_3_2_1
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6846:1: rule__XArtifactType__SuperArtifactTypesAssignment_3_2_1 : ( ( ruleARTIFACT_TYPE_REFERENCE ) ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6853:1: rule__XArtifactType__SuperArtifactTypesAssignment_3_2_1 : ( ( ruleARTIFACT_TYPE_REFERENCE ) ) ;
     public final void rule__XArtifactType__SuperArtifactTypesAssignment_3_2_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6850:1: ( ( ( ruleARTIFACT_TYPE_REFERENCE ) ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6851:1: ( ( ruleARTIFACT_TYPE_REFERENCE ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6857:1: ( ( ( ruleARTIFACT_TYPE_REFERENCE ) ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6858:1: ( ( ruleARTIFACT_TYPE_REFERENCE ) )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6851:1: ( ( ruleARTIFACT_TYPE_REFERENCE ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6852:1: ( ruleARTIFACT_TYPE_REFERENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6858:1: ( ( ruleARTIFACT_TYPE_REFERENCE ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6859:1: ( ruleARTIFACT_TYPE_REFERENCE )
             {
              before(grammarAccess.getXArtifactTypeAccess().getSuperArtifactTypesXArtifactTypeCrossReference_3_2_1_0()); 
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6853:1: ( ruleARTIFACT_TYPE_REFERENCE )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6854:1: ruleARTIFACT_TYPE_REFERENCE
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6860:1: ( ruleARTIFACT_TYPE_REFERENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6861:1: ruleARTIFACT_TYPE_REFERENCE
             {
              before(grammarAccess.getXArtifactTypeAccess().getSuperArtifactTypesXArtifactTypeARTIFACT_TYPE_REFERENCEParserRuleCall_3_2_1_0_1()); 
-            pushFollow(FOLLOW_ruleARTIFACT_TYPE_REFERENCE_in_rule__XArtifactType__SuperArtifactTypesAssignment_3_2_113789);
+            pushFollow(FOLLOW_ruleARTIFACT_TYPE_REFERENCE_in_rule__XArtifactType__SuperArtifactTypesAssignment_3_2_113806);
             ruleARTIFACT_TYPE_REFERENCE();
             _fsp--;
 
@@ -17630,20 +17662,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__XArtifactType__TypeGuidAssignment_6
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6865:1: rule__XArtifactType__TypeGuidAssignment_6 : ( RULE_STRING ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6872:1: rule__XArtifactType__TypeGuidAssignment_6 : ( RULE_STRING ) ;
     public final void rule__XArtifactType__TypeGuidAssignment_6() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6869:1: ( ( RULE_STRING ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6870:1: ( RULE_STRING )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6876:1: ( ( RULE_STRING ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6877:1: ( RULE_STRING )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6870:1: ( RULE_STRING )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6871:1: RULE_STRING
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6877:1: ( RULE_STRING )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6878:1: RULE_STRING
             {
              before(grammarAccess.getXArtifactTypeAccess().getTypeGuidSTRINGTerminalRuleCall_6_0()); 
-            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__XArtifactType__TypeGuidAssignment_613824); 
+            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__XArtifactType__TypeGuidAssignment_613841); 
              after(grammarAccess.getXArtifactTypeAccess().getTypeGuidSTRINGTerminalRuleCall_6_0()); 
 
             }
@@ -17667,20 +17699,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__XArtifactType__ValidAttributeTypesAssignment_7
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6880:1: rule__XArtifactType__ValidAttributeTypesAssignment_7 : ( ruleXAttributeTypeRef ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6887:1: rule__XArtifactType__ValidAttributeTypesAssignment_7 : ( ruleXAttributeTypeRef ) ;
     public final void rule__XArtifactType__ValidAttributeTypesAssignment_7() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6884:1: ( ( ruleXAttributeTypeRef ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6885:1: ( ruleXAttributeTypeRef )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6891:1: ( ( ruleXAttributeTypeRef ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6892:1: ( ruleXAttributeTypeRef )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6885:1: ( ruleXAttributeTypeRef )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6886:1: ruleXAttributeTypeRef
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6892:1: ( ruleXAttributeTypeRef )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6893:1: ruleXAttributeTypeRef
             {
              before(grammarAccess.getXArtifactTypeAccess().getValidAttributeTypesXAttributeTypeRefParserRuleCall_7_0()); 
-            pushFollow(FOLLOW_ruleXAttributeTypeRef_in_rule__XArtifactType__ValidAttributeTypesAssignment_713855);
+            pushFollow(FOLLOW_ruleXAttributeTypeRef_in_rule__XArtifactType__ValidAttributeTypesAssignment_713872);
             ruleXAttributeTypeRef();
             _fsp--;
 
@@ -17707,24 +17739,24 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__XAttributeTypeRef__ValidAttributeTypeAssignment_1
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6895:1: rule__XAttributeTypeRef__ValidAttributeTypeAssignment_1 : ( ( ruleATTRIBUTE_TYPE_REFERENCE ) ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6902:1: rule__XAttributeTypeRef__ValidAttributeTypeAssignment_1 : ( ( ruleATTRIBUTE_TYPE_REFERENCE ) ) ;
     public final void rule__XAttributeTypeRef__ValidAttributeTypeAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6899:1: ( ( ( ruleATTRIBUTE_TYPE_REFERENCE ) ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6900:1: ( ( ruleATTRIBUTE_TYPE_REFERENCE ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6906:1: ( ( ( ruleATTRIBUTE_TYPE_REFERENCE ) ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6907:1: ( ( ruleATTRIBUTE_TYPE_REFERENCE ) )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6900:1: ( ( ruleATTRIBUTE_TYPE_REFERENCE ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6901:1: ( ruleATTRIBUTE_TYPE_REFERENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6907:1: ( ( ruleATTRIBUTE_TYPE_REFERENCE ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6908:1: ( ruleATTRIBUTE_TYPE_REFERENCE )
             {
              before(grammarAccess.getXAttributeTypeRefAccess().getValidAttributeTypeXAttributeTypeCrossReference_1_0()); 
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6902:1: ( ruleATTRIBUTE_TYPE_REFERENCE )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6903:1: ruleATTRIBUTE_TYPE_REFERENCE
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6909:1: ( ruleATTRIBUTE_TYPE_REFERENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6910:1: ruleATTRIBUTE_TYPE_REFERENCE
             {
              before(grammarAccess.getXAttributeTypeRefAccess().getValidAttributeTypeXAttributeTypeATTRIBUTE_TYPE_REFERENCEParserRuleCall_1_0_1()); 
-            pushFollow(FOLLOW_ruleATTRIBUTE_TYPE_REFERENCE_in_rule__XAttributeTypeRef__ValidAttributeTypeAssignment_113890);
+            pushFollow(FOLLOW_ruleATTRIBUTE_TYPE_REFERENCE_in_rule__XAttributeTypeRef__ValidAttributeTypeAssignment_113907);
             ruleATTRIBUTE_TYPE_REFERENCE();
             _fsp--;
 
@@ -17755,20 +17787,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__XAttributeTypeRef__BranchGuidAssignment_2_1
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6914:1: rule__XAttributeTypeRef__BranchGuidAssignment_2_1 : ( RULE_STRING ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6921:1: rule__XAttributeTypeRef__BranchGuidAssignment_2_1 : ( RULE_STRING ) ;
     public final void rule__XAttributeTypeRef__BranchGuidAssignment_2_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6918:1: ( ( RULE_STRING ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6919:1: ( RULE_STRING )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6925:1: ( ( RULE_STRING ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6926:1: ( RULE_STRING )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6919:1: ( RULE_STRING )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6920:1: RULE_STRING
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6926:1: ( RULE_STRING )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6927:1: RULE_STRING
             {
              before(grammarAccess.getXAttributeTypeRefAccess().getBranchGuidSTRINGTerminalRuleCall_2_1_0()); 
-            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__XAttributeTypeRef__BranchGuidAssignment_2_113925); 
+            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__XAttributeTypeRef__BranchGuidAssignment_2_113942); 
              after(grammarAccess.getXAttributeTypeRefAccess().getBranchGuidSTRINGTerminalRuleCall_2_1_0()); 
 
             }
@@ -17792,20 +17824,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__XAttributeType__NameAssignment_1
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6929:1: rule__XAttributeType__NameAssignment_1 : ( ruleATTRIBUTE_TYPE_REFERENCE ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6936:1: rule__XAttributeType__NameAssignment_1 : ( ruleATTRIBUTE_TYPE_REFERENCE ) ;
     public final void rule__XAttributeType__NameAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6933:1: ( ( ruleATTRIBUTE_TYPE_REFERENCE ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6934:1: ( ruleATTRIBUTE_TYPE_REFERENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6940:1: ( ( ruleATTRIBUTE_TYPE_REFERENCE ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6941:1: ( ruleATTRIBUTE_TYPE_REFERENCE )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6934:1: ( ruleATTRIBUTE_TYPE_REFERENCE )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6935:1: ruleATTRIBUTE_TYPE_REFERENCE
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6941:1: ( ruleATTRIBUTE_TYPE_REFERENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6942:1: ruleATTRIBUTE_TYPE_REFERENCE
             {
              before(grammarAccess.getXAttributeTypeAccess().getNameATTRIBUTE_TYPE_REFERENCEParserRuleCall_1_0()); 
-            pushFollow(FOLLOW_ruleATTRIBUTE_TYPE_REFERENCE_in_rule__XAttributeType__NameAssignment_113956);
+            pushFollow(FOLLOW_ruleATTRIBUTE_TYPE_REFERENCE_in_rule__XAttributeType__NameAssignment_113973);
             ruleATTRIBUTE_TYPE_REFERENCE();
             _fsp--;
 
@@ -17832,20 +17864,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__XAttributeType__BaseAttributeTypeAssignment_2_1
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6944:1: rule__XAttributeType__BaseAttributeTypeAssignment_2_1 : ( ruleAttributeBaseType ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6951:1: rule__XAttributeType__BaseAttributeTypeAssignment_2_1 : ( ruleAttributeBaseType ) ;
     public final void rule__XAttributeType__BaseAttributeTypeAssignment_2_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6948:1: ( ( ruleAttributeBaseType ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6949:1: ( ruleAttributeBaseType )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6955:1: ( ( ruleAttributeBaseType ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6956:1: ( ruleAttributeBaseType )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6949:1: ( ruleAttributeBaseType )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6950:1: ruleAttributeBaseType
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6956:1: ( ruleAttributeBaseType )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6957:1: ruleAttributeBaseType
             {
              before(grammarAccess.getXAttributeTypeAccess().getBaseAttributeTypeAttributeBaseTypeParserRuleCall_2_1_0()); 
-            pushFollow(FOLLOW_ruleAttributeBaseType_in_rule__XAttributeType__BaseAttributeTypeAssignment_2_113987);
+            pushFollow(FOLLOW_ruleAttributeBaseType_in_rule__XAttributeType__BaseAttributeTypeAssignment_2_114004);
             ruleAttributeBaseType();
             _fsp--;
 
@@ -17872,24 +17904,24 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__XAttributeType__OverrideAssignment_3_1
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6959:1: rule__XAttributeType__OverrideAssignment_3_1 : ( ( ruleATTRIBUTE_TYPE_REFERENCE ) ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6966:1: rule__XAttributeType__OverrideAssignment_3_1 : ( ( ruleATTRIBUTE_TYPE_REFERENCE ) ) ;
     public final void rule__XAttributeType__OverrideAssignment_3_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6963:1: ( ( ( ruleATTRIBUTE_TYPE_REFERENCE ) ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6964:1: ( ( ruleATTRIBUTE_TYPE_REFERENCE ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6970:1: ( ( ( ruleATTRIBUTE_TYPE_REFERENCE ) ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6971:1: ( ( ruleATTRIBUTE_TYPE_REFERENCE ) )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6964:1: ( ( ruleATTRIBUTE_TYPE_REFERENCE ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6965:1: ( ruleATTRIBUTE_TYPE_REFERENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6971:1: ( ( ruleATTRIBUTE_TYPE_REFERENCE ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6972:1: ( ruleATTRIBUTE_TYPE_REFERENCE )
             {
              before(grammarAccess.getXAttributeTypeAccess().getOverrideXAttributeTypeCrossReference_3_1_0()); 
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6966:1: ( ruleATTRIBUTE_TYPE_REFERENCE )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6967:1: ruleATTRIBUTE_TYPE_REFERENCE
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6973:1: ( ruleATTRIBUTE_TYPE_REFERENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6974:1: ruleATTRIBUTE_TYPE_REFERENCE
             {
              before(grammarAccess.getXAttributeTypeAccess().getOverrideXAttributeTypeATTRIBUTE_TYPE_REFERENCEParserRuleCall_3_1_0_1()); 
-            pushFollow(FOLLOW_ruleATTRIBUTE_TYPE_REFERENCE_in_rule__XAttributeType__OverrideAssignment_3_114022);
+            pushFollow(FOLLOW_ruleATTRIBUTE_TYPE_REFERENCE_in_rule__XAttributeType__OverrideAssignment_3_114039);
             ruleATTRIBUTE_TYPE_REFERENCE();
             _fsp--;
 
@@ -17920,20 +17952,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__XAttributeType__TypeGuidAssignment_6
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6978:1: rule__XAttributeType__TypeGuidAssignment_6 : ( RULE_STRING ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6985:1: rule__XAttributeType__TypeGuidAssignment_6 : ( RULE_STRING ) ;
     public final void rule__XAttributeType__TypeGuidAssignment_6() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6982:1: ( ( RULE_STRING ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6983:1: ( RULE_STRING )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6989:1: ( ( RULE_STRING ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6990:1: ( RULE_STRING )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6983:1: ( RULE_STRING )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6984:1: RULE_STRING
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6990:1: ( RULE_STRING )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6991:1: RULE_STRING
             {
              before(grammarAccess.getXAttributeTypeAccess().getTypeGuidSTRINGTerminalRuleCall_6_0()); 
-            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__XAttributeType__TypeGuidAssignment_614057); 
+            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__XAttributeType__TypeGuidAssignment_614074); 
              after(grammarAccess.getXAttributeTypeAccess().getTypeGuidSTRINGTerminalRuleCall_6_0()); 
 
             }
@@ -17957,23 +17989,23 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__XAttributeType__DataProviderAssignment_8
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6993:1: rule__XAttributeType__DataProviderAssignment_8 : ( ( rule__XAttributeType__DataProviderAlternatives_8_0 ) ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7000:1: rule__XAttributeType__DataProviderAssignment_8 : ( ( rule__XAttributeType__DataProviderAlternatives_8_0 ) ) ;
     public final void rule__XAttributeType__DataProviderAssignment_8() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6997:1: ( ( ( rule__XAttributeType__DataProviderAlternatives_8_0 ) ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6998:1: ( ( rule__XAttributeType__DataProviderAlternatives_8_0 ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7004:1: ( ( ( rule__XAttributeType__DataProviderAlternatives_8_0 ) ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7005:1: ( ( rule__XAttributeType__DataProviderAlternatives_8_0 ) )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6998:1: ( ( rule__XAttributeType__DataProviderAlternatives_8_0 ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:6999:1: ( rule__XAttributeType__DataProviderAlternatives_8_0 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7005:1: ( ( rule__XAttributeType__DataProviderAlternatives_8_0 ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7006:1: ( rule__XAttributeType__DataProviderAlternatives_8_0 )
             {
              before(grammarAccess.getXAttributeTypeAccess().getDataProviderAlternatives_8_0()); 
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7000:1: ( rule__XAttributeType__DataProviderAlternatives_8_0 )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7000:2: rule__XAttributeType__DataProviderAlternatives_8_0
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7007:1: ( rule__XAttributeType__DataProviderAlternatives_8_0 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7007:2: rule__XAttributeType__DataProviderAlternatives_8_0
             {
-            pushFollow(FOLLOW_rule__XAttributeType__DataProviderAlternatives_8_0_in_rule__XAttributeType__DataProviderAssignment_814088);
+            pushFollow(FOLLOW_rule__XAttributeType__DataProviderAlternatives_8_0_in_rule__XAttributeType__DataProviderAssignment_814105);
             rule__XAttributeType__DataProviderAlternatives_8_0();
             _fsp--;
 
@@ -18003,20 +18035,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__XAttributeType__MinAssignment_10
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7009:1: rule__XAttributeType__MinAssignment_10 : ( RULE_WHOLE_NUM_STR ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7016:1: rule__XAttributeType__MinAssignment_10 : ( RULE_WHOLE_NUM_STR ) ;
     public final void rule__XAttributeType__MinAssignment_10() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7013:1: ( ( RULE_WHOLE_NUM_STR ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7014:1: ( RULE_WHOLE_NUM_STR )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7020:1: ( ( RULE_WHOLE_NUM_STR ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7021:1: ( RULE_WHOLE_NUM_STR )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7014:1: ( RULE_WHOLE_NUM_STR )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7015:1: RULE_WHOLE_NUM_STR
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7021:1: ( RULE_WHOLE_NUM_STR )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7022:1: RULE_WHOLE_NUM_STR
             {
              before(grammarAccess.getXAttributeTypeAccess().getMinWHOLE_NUM_STRTerminalRuleCall_10_0()); 
-            match(input,RULE_WHOLE_NUM_STR,FOLLOW_RULE_WHOLE_NUM_STR_in_rule__XAttributeType__MinAssignment_1014121); 
+            match(input,RULE_WHOLE_NUM_STR,FOLLOW_RULE_WHOLE_NUM_STR_in_rule__XAttributeType__MinAssignment_1014138); 
              after(grammarAccess.getXAttributeTypeAccess().getMinWHOLE_NUM_STRTerminalRuleCall_10_0()); 
 
             }
@@ -18040,23 +18072,23 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__XAttributeType__MaxAssignment_12
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7024:1: rule__XAttributeType__MaxAssignment_12 : ( ( rule__XAttributeType__MaxAlternatives_12_0 ) ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7031:1: rule__XAttributeType__MaxAssignment_12 : ( ( rule__XAttributeType__MaxAlternatives_12_0 ) ) ;
     public final void rule__XAttributeType__MaxAssignment_12() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7028:1: ( ( ( rule__XAttributeType__MaxAlternatives_12_0 ) ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7029:1: ( ( rule__XAttributeType__MaxAlternatives_12_0 ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7035:1: ( ( ( rule__XAttributeType__MaxAlternatives_12_0 ) ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7036:1: ( ( rule__XAttributeType__MaxAlternatives_12_0 ) )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7029:1: ( ( rule__XAttributeType__MaxAlternatives_12_0 ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7030:1: ( rule__XAttributeType__MaxAlternatives_12_0 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7036:1: ( ( rule__XAttributeType__MaxAlternatives_12_0 ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7037:1: ( rule__XAttributeType__MaxAlternatives_12_0 )
             {
              before(grammarAccess.getXAttributeTypeAccess().getMaxAlternatives_12_0()); 
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7031:1: ( rule__XAttributeType__MaxAlternatives_12_0 )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7031:2: rule__XAttributeType__MaxAlternatives_12_0
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7038:1: ( rule__XAttributeType__MaxAlternatives_12_0 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7038:2: rule__XAttributeType__MaxAlternatives_12_0
             {
-            pushFollow(FOLLOW_rule__XAttributeType__MaxAlternatives_12_0_in_rule__XAttributeType__MaxAssignment_1214152);
+            pushFollow(FOLLOW_rule__XAttributeType__MaxAlternatives_12_0_in_rule__XAttributeType__MaxAssignment_1214169);
             rule__XAttributeType__MaxAlternatives_12_0();
             _fsp--;
 
@@ -18086,23 +18118,23 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__XAttributeType__TaggerIdAssignment_13_1
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7040:1: rule__XAttributeType__TaggerIdAssignment_13_1 : ( ( rule__XAttributeType__TaggerIdAlternatives_13_1_0 ) ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7047:1: rule__XAttributeType__TaggerIdAssignment_13_1 : ( ( rule__XAttributeType__TaggerIdAlternatives_13_1_0 ) ) ;
     public final void rule__XAttributeType__TaggerIdAssignment_13_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7044:1: ( ( ( rule__XAttributeType__TaggerIdAlternatives_13_1_0 ) ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7045:1: ( ( rule__XAttributeType__TaggerIdAlternatives_13_1_0 ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7051:1: ( ( ( rule__XAttributeType__TaggerIdAlternatives_13_1_0 ) ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7052:1: ( ( rule__XAttributeType__TaggerIdAlternatives_13_1_0 ) )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7045:1: ( ( rule__XAttributeType__TaggerIdAlternatives_13_1_0 ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7046:1: ( rule__XAttributeType__TaggerIdAlternatives_13_1_0 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7052:1: ( ( rule__XAttributeType__TaggerIdAlternatives_13_1_0 ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7053:1: ( rule__XAttributeType__TaggerIdAlternatives_13_1_0 )
             {
              before(grammarAccess.getXAttributeTypeAccess().getTaggerIdAlternatives_13_1_0()); 
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7047:1: ( rule__XAttributeType__TaggerIdAlternatives_13_1_0 )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7047:2: rule__XAttributeType__TaggerIdAlternatives_13_1_0
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7054:1: ( rule__XAttributeType__TaggerIdAlternatives_13_1_0 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7054:2: rule__XAttributeType__TaggerIdAlternatives_13_1_0
             {
-            pushFollow(FOLLOW_rule__XAttributeType__TaggerIdAlternatives_13_1_0_in_rule__XAttributeType__TaggerIdAssignment_13_114185);
+            pushFollow(FOLLOW_rule__XAttributeType__TaggerIdAlternatives_13_1_0_in_rule__XAttributeType__TaggerIdAssignment_13_114202);
             rule__XAttributeType__TaggerIdAlternatives_13_1_0();
             _fsp--;
 
@@ -18132,24 +18164,24 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__XAttributeType__EnumTypeAssignment_14_1
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7056:1: rule__XAttributeType__EnumTypeAssignment_14_1 : ( ( ruleENUM_TYPE_REFERENCE ) ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7063:1: rule__XAttributeType__EnumTypeAssignment_14_1 : ( ( ruleENUM_TYPE_REFERENCE ) ) ;
     public final void rule__XAttributeType__EnumTypeAssignment_14_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7060:1: ( ( ( ruleENUM_TYPE_REFERENCE ) ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7061:1: ( ( ruleENUM_TYPE_REFERENCE ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7067:1: ( ( ( ruleENUM_TYPE_REFERENCE ) ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7068:1: ( ( ruleENUM_TYPE_REFERENCE ) )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7061:1: ( ( ruleENUM_TYPE_REFERENCE ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7062:1: ( ruleENUM_TYPE_REFERENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7068:1: ( ( ruleENUM_TYPE_REFERENCE ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7069:1: ( ruleENUM_TYPE_REFERENCE )
             {
              before(grammarAccess.getXAttributeTypeAccess().getEnumTypeXOseeEnumTypeCrossReference_14_1_0()); 
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7063:1: ( ruleENUM_TYPE_REFERENCE )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7064:1: ruleENUM_TYPE_REFERENCE
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7070:1: ( ruleENUM_TYPE_REFERENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7071:1: ruleENUM_TYPE_REFERENCE
             {
              before(grammarAccess.getXAttributeTypeAccess().getEnumTypeXOseeEnumTypeENUM_TYPE_REFERENCEParserRuleCall_14_1_0_1()); 
-            pushFollow(FOLLOW_ruleENUM_TYPE_REFERENCE_in_rule__XAttributeType__EnumTypeAssignment_14_114222);
+            pushFollow(FOLLOW_ruleENUM_TYPE_REFERENCE_in_rule__XAttributeType__EnumTypeAssignment_14_114239);
             ruleENUM_TYPE_REFERENCE();
             _fsp--;
 
@@ -18180,20 +18212,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__XAttributeType__DescriptionAssignment_15_1
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7075:1: rule__XAttributeType__DescriptionAssignment_15_1 : ( RULE_STRING ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7082:1: rule__XAttributeType__DescriptionAssignment_15_1 : ( RULE_STRING ) ;
     public final void rule__XAttributeType__DescriptionAssignment_15_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7079:1: ( ( RULE_STRING ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7080:1: ( RULE_STRING )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7086:1: ( ( RULE_STRING ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7087:1: ( RULE_STRING )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7080:1: ( RULE_STRING )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7081:1: RULE_STRING
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7087:1: ( RULE_STRING )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7088:1: RULE_STRING
             {
              before(grammarAccess.getXAttributeTypeAccess().getDescriptionSTRINGTerminalRuleCall_15_1_0()); 
-            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__XAttributeType__DescriptionAssignment_15_114257); 
+            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__XAttributeType__DescriptionAssignment_15_114274); 
              after(grammarAccess.getXAttributeTypeAccess().getDescriptionSTRINGTerminalRuleCall_15_1_0()); 
 
             }
@@ -18217,20 +18249,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__XAttributeType__DefaultValueAssignment_16_1
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7090:1: rule__XAttributeType__DefaultValueAssignment_16_1 : ( RULE_STRING ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7097:1: rule__XAttributeType__DefaultValueAssignment_16_1 : ( RULE_STRING ) ;
     public final void rule__XAttributeType__DefaultValueAssignment_16_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7094:1: ( ( RULE_STRING ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7095:1: ( RULE_STRING )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7101:1: ( ( RULE_STRING ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7102:1: ( RULE_STRING )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7095:1: ( RULE_STRING )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7096:1: RULE_STRING
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7102:1: ( RULE_STRING )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7103:1: RULE_STRING
             {
              before(grammarAccess.getXAttributeTypeAccess().getDefaultValueSTRINGTerminalRuleCall_16_1_0()); 
-            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__XAttributeType__DefaultValueAssignment_16_114288); 
+            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__XAttributeType__DefaultValueAssignment_16_114305); 
              after(grammarAccess.getXAttributeTypeAccess().getDefaultValueSTRINGTerminalRuleCall_16_1_0()); 
 
             }
@@ -18254,20 +18286,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__XAttributeType__FileExtensionAssignment_17_1
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7105:1: rule__XAttributeType__FileExtensionAssignment_17_1 : ( RULE_STRING ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7112:1: rule__XAttributeType__FileExtensionAssignment_17_1 : ( RULE_STRING ) ;
     public final void rule__XAttributeType__FileExtensionAssignment_17_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7109:1: ( ( RULE_STRING ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7110:1: ( RULE_STRING )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7116:1: ( ( RULE_STRING ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7117:1: ( RULE_STRING )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7110:1: ( RULE_STRING )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7111:1: RULE_STRING
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7117:1: ( RULE_STRING )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7118:1: RULE_STRING
             {
              before(grammarAccess.getXAttributeTypeAccess().getFileExtensionSTRINGTerminalRuleCall_17_1_0()); 
-            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__XAttributeType__FileExtensionAssignment_17_114319); 
+            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__XAttributeType__FileExtensionAssignment_17_114336); 
              after(grammarAccess.getXAttributeTypeAccess().getFileExtensionSTRINGTerminalRuleCall_17_1_0()); 
 
             }
@@ -18291,20 +18323,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__XOseeEnumType__NameAssignment_1
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7120:1: rule__XOseeEnumType__NameAssignment_1 : ( ruleENUM_TYPE_REFERENCE ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7127:1: rule__XOseeEnumType__NameAssignment_1 : ( ruleENUM_TYPE_REFERENCE ) ;
     public final void rule__XOseeEnumType__NameAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7124:1: ( ( ruleENUM_TYPE_REFERENCE ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7125:1: ( ruleENUM_TYPE_REFERENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7131:1: ( ( ruleENUM_TYPE_REFERENCE ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7132:1: ( ruleENUM_TYPE_REFERENCE )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7125:1: ( ruleENUM_TYPE_REFERENCE )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7126:1: ruleENUM_TYPE_REFERENCE
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7132:1: ( ruleENUM_TYPE_REFERENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7133:1: ruleENUM_TYPE_REFERENCE
             {
              before(grammarAccess.getXOseeEnumTypeAccess().getNameENUM_TYPE_REFERENCEParserRuleCall_1_0()); 
-            pushFollow(FOLLOW_ruleENUM_TYPE_REFERENCE_in_rule__XOseeEnumType__NameAssignment_114350);
+            pushFollow(FOLLOW_ruleENUM_TYPE_REFERENCE_in_rule__XOseeEnumType__NameAssignment_114367);
             ruleENUM_TYPE_REFERENCE();
             _fsp--;
 
@@ -18331,20 +18363,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__XOseeEnumType__TypeGuidAssignment_4
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7135:1: rule__XOseeEnumType__TypeGuidAssignment_4 : ( RULE_STRING ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7142:1: rule__XOseeEnumType__TypeGuidAssignment_4 : ( RULE_STRING ) ;
     public final void rule__XOseeEnumType__TypeGuidAssignment_4() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7139:1: ( ( RULE_STRING ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7140:1: ( RULE_STRING )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7146:1: ( ( RULE_STRING ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7147:1: ( RULE_STRING )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7140:1: ( RULE_STRING )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7141:1: RULE_STRING
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7147:1: ( RULE_STRING )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7148:1: RULE_STRING
             {
              before(grammarAccess.getXOseeEnumTypeAccess().getTypeGuidSTRINGTerminalRuleCall_4_0()); 
-            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__XOseeEnumType__TypeGuidAssignment_414381); 
+            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__XOseeEnumType__TypeGuidAssignment_414398); 
              after(grammarAccess.getXOseeEnumTypeAccess().getTypeGuidSTRINGTerminalRuleCall_4_0()); 
 
             }
@@ -18368,20 +18400,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__XOseeEnumType__EnumEntriesAssignment_5
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7150:1: rule__XOseeEnumType__EnumEntriesAssignment_5 : ( ruleXOseeEnumEntry ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7157:1: rule__XOseeEnumType__EnumEntriesAssignment_5 : ( ruleXOseeEnumEntry ) ;
     public final void rule__XOseeEnumType__EnumEntriesAssignment_5() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7154:1: ( ( ruleXOseeEnumEntry ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7155:1: ( ruleXOseeEnumEntry )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7161:1: ( ( ruleXOseeEnumEntry ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7162:1: ( ruleXOseeEnumEntry )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7155:1: ( ruleXOseeEnumEntry )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7156:1: ruleXOseeEnumEntry
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7162:1: ( ruleXOseeEnumEntry )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7163:1: ruleXOseeEnumEntry
             {
              before(grammarAccess.getXOseeEnumTypeAccess().getEnumEntriesXOseeEnumEntryParserRuleCall_5_0()); 
-            pushFollow(FOLLOW_ruleXOseeEnumEntry_in_rule__XOseeEnumType__EnumEntriesAssignment_514412);
+            pushFollow(FOLLOW_ruleXOseeEnumEntry_in_rule__XOseeEnumType__EnumEntriesAssignment_514429);
             ruleXOseeEnumEntry();
             _fsp--;
 
@@ -18408,20 +18440,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__XOseeEnumEntry__NameAssignment_1
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7165:1: rule__XOseeEnumEntry__NameAssignment_1 : ( ruleENUM_ENTRY_TYPE_REFERENCE ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7172:1: rule__XOseeEnumEntry__NameAssignment_1 : ( ruleENUM_ENTRY_TYPE_REFERENCE ) ;
     public final void rule__XOseeEnumEntry__NameAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7169:1: ( ( ruleENUM_ENTRY_TYPE_REFERENCE ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7170:1: ( ruleENUM_ENTRY_TYPE_REFERENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7176:1: ( ( ruleENUM_ENTRY_TYPE_REFERENCE ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7177:1: ( ruleENUM_ENTRY_TYPE_REFERENCE )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7170:1: ( ruleENUM_ENTRY_TYPE_REFERENCE )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7171:1: ruleENUM_ENTRY_TYPE_REFERENCE
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7177:1: ( ruleENUM_ENTRY_TYPE_REFERENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7178:1: ruleENUM_ENTRY_TYPE_REFERENCE
             {
              before(grammarAccess.getXOseeEnumEntryAccess().getNameENUM_ENTRY_TYPE_REFERENCEParserRuleCall_1_0()); 
-            pushFollow(FOLLOW_ruleENUM_ENTRY_TYPE_REFERENCE_in_rule__XOseeEnumEntry__NameAssignment_114443);
+            pushFollow(FOLLOW_ruleENUM_ENTRY_TYPE_REFERENCE_in_rule__XOseeEnumEntry__NameAssignment_114460);
             ruleENUM_ENTRY_TYPE_REFERENCE();
             _fsp--;
 
@@ -18448,20 +18480,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__XOseeEnumEntry__OrdinalAssignment_2
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7180:1: rule__XOseeEnumEntry__OrdinalAssignment_2 : ( RULE_WHOLE_NUM_STR ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7187:1: rule__XOseeEnumEntry__OrdinalAssignment_2 : ( RULE_WHOLE_NUM_STR ) ;
     public final void rule__XOseeEnumEntry__OrdinalAssignment_2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7184:1: ( ( RULE_WHOLE_NUM_STR ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7185:1: ( RULE_WHOLE_NUM_STR )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7191:1: ( ( RULE_WHOLE_NUM_STR ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7192:1: ( RULE_WHOLE_NUM_STR )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7185:1: ( RULE_WHOLE_NUM_STR )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7186:1: RULE_WHOLE_NUM_STR
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7192:1: ( RULE_WHOLE_NUM_STR )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7193:1: RULE_WHOLE_NUM_STR
             {
              before(grammarAccess.getXOseeEnumEntryAccess().getOrdinalWHOLE_NUM_STRTerminalRuleCall_2_0()); 
-            match(input,RULE_WHOLE_NUM_STR,FOLLOW_RULE_WHOLE_NUM_STR_in_rule__XOseeEnumEntry__OrdinalAssignment_214474); 
+            match(input,RULE_WHOLE_NUM_STR,FOLLOW_RULE_WHOLE_NUM_STR_in_rule__XOseeEnumEntry__OrdinalAssignment_214491); 
              after(grammarAccess.getXOseeEnumEntryAccess().getOrdinalWHOLE_NUM_STRTerminalRuleCall_2_0()); 
 
             }
@@ -18485,20 +18517,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__XOseeEnumEntry__EntryGuidAssignment_3_1
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7195:1: rule__XOseeEnumEntry__EntryGuidAssignment_3_1 : ( RULE_STRING ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7202:1: rule__XOseeEnumEntry__EntryGuidAssignment_3_1 : ( RULE_STRING ) ;
     public final void rule__XOseeEnumEntry__EntryGuidAssignment_3_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7199:1: ( ( RULE_STRING ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7200:1: ( RULE_STRING )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7206:1: ( ( RULE_STRING ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7207:1: ( RULE_STRING )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7200:1: ( RULE_STRING )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7201:1: RULE_STRING
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7207:1: ( RULE_STRING )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7208:1: RULE_STRING
             {
              before(grammarAccess.getXOseeEnumEntryAccess().getEntryGuidSTRINGTerminalRuleCall_3_1_0()); 
-            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__XOseeEnumEntry__EntryGuidAssignment_3_114505); 
+            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__XOseeEnumEntry__EntryGuidAssignment_3_114522); 
              after(grammarAccess.getXOseeEnumEntryAccess().getEntryGuidSTRINGTerminalRuleCall_3_1_0()); 
 
             }
@@ -18522,24 +18554,24 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__XOseeEnumOverride__OverridenEnumTypeAssignment_1
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7210:1: rule__XOseeEnumOverride__OverridenEnumTypeAssignment_1 : ( ( ruleENUM_TYPE_REFERENCE ) ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7217:1: rule__XOseeEnumOverride__OverridenEnumTypeAssignment_1 : ( ( ruleENUM_TYPE_REFERENCE ) ) ;
     public final void rule__XOseeEnumOverride__OverridenEnumTypeAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7214:1: ( ( ( ruleENUM_TYPE_REFERENCE ) ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7215:1: ( ( ruleENUM_TYPE_REFERENCE ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7221:1: ( ( ( ruleENUM_TYPE_REFERENCE ) ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7222:1: ( ( ruleENUM_TYPE_REFERENCE ) )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7215:1: ( ( ruleENUM_TYPE_REFERENCE ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7216:1: ( ruleENUM_TYPE_REFERENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7222:1: ( ( ruleENUM_TYPE_REFERENCE ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7223:1: ( ruleENUM_TYPE_REFERENCE )
             {
              before(grammarAccess.getXOseeEnumOverrideAccess().getOverridenEnumTypeXOseeEnumTypeCrossReference_1_0()); 
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7217:1: ( ruleENUM_TYPE_REFERENCE )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7218:1: ruleENUM_TYPE_REFERENCE
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7224:1: ( ruleENUM_TYPE_REFERENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7225:1: ruleENUM_TYPE_REFERENCE
             {
              before(grammarAccess.getXOseeEnumOverrideAccess().getOverridenEnumTypeXOseeEnumTypeENUM_TYPE_REFERENCEParserRuleCall_1_0_1()); 
-            pushFollow(FOLLOW_ruleENUM_TYPE_REFERENCE_in_rule__XOseeEnumOverride__OverridenEnumTypeAssignment_114540);
+            pushFollow(FOLLOW_ruleENUM_TYPE_REFERENCE_in_rule__XOseeEnumOverride__OverridenEnumTypeAssignment_114557);
             ruleENUM_TYPE_REFERENCE();
             _fsp--;
 
@@ -18570,24 +18602,24 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__XOseeEnumOverride__InheritAllAssignment_3
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7229:1: rule__XOseeEnumOverride__InheritAllAssignment_3 : ( ( 'inheritAll' ) ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7236:1: rule__XOseeEnumOverride__InheritAllAssignment_3 : ( ( 'inheritAll' ) ) ;
     public final void rule__XOseeEnumOverride__InheritAllAssignment_3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7233:1: ( ( ( 'inheritAll' ) ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7234:1: ( ( 'inheritAll' ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7240:1: ( ( ( 'inheritAll' ) ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7241:1: ( ( 'inheritAll' ) )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7234:1: ( ( 'inheritAll' ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7235:1: ( 'inheritAll' )
-            {
-             before(grammarAccess.getXOseeEnumOverrideAccess().getInheritAllInheritAllKeyword_3_0()); 
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7236:1: ( 'inheritAll' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7237:1: 'inheritAll'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7241:1: ( ( 'inheritAll' ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7242:1: ( 'inheritAll' )
             {
              before(grammarAccess.getXOseeEnumOverrideAccess().getInheritAllInheritAllKeyword_3_0()); 
-            match(input,79,FOLLOW_79_in_rule__XOseeEnumOverride__InheritAllAssignment_314580); 
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7243:1: ( 'inheritAll' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7244:1: 'inheritAll'
+            {
+             before(grammarAccess.getXOseeEnumOverrideAccess().getInheritAllInheritAllKeyword_3_0()); 
+            match(input,79,FOLLOW_79_in_rule__XOseeEnumOverride__InheritAllAssignment_314597); 
              after(grammarAccess.getXOseeEnumOverrideAccess().getInheritAllInheritAllKeyword_3_0()); 
 
             }
@@ -18615,20 +18647,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__XOseeEnumOverride__OverrideOptionsAssignment_4
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7252:1: rule__XOseeEnumOverride__OverrideOptionsAssignment_4 : ( ruleOverrideOption ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7259:1: rule__XOseeEnumOverride__OverrideOptionsAssignment_4 : ( ruleOverrideOption ) ;
     public final void rule__XOseeEnumOverride__OverrideOptionsAssignment_4() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7256:1: ( ( ruleOverrideOption ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7257:1: ( ruleOverrideOption )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7263:1: ( ( ruleOverrideOption ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7264:1: ( ruleOverrideOption )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7257:1: ( ruleOverrideOption )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7258:1: ruleOverrideOption
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7264:1: ( ruleOverrideOption )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7265:1: ruleOverrideOption
             {
              before(grammarAccess.getXOseeEnumOverrideAccess().getOverrideOptionsOverrideOptionParserRuleCall_4_0()); 
-            pushFollow(FOLLOW_ruleOverrideOption_in_rule__XOseeEnumOverride__OverrideOptionsAssignment_414619);
+            pushFollow(FOLLOW_ruleOverrideOption_in_rule__XOseeEnumOverride__OverrideOptionsAssignment_414636);
             ruleOverrideOption();
             _fsp--;
 
@@ -18655,20 +18687,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__AddEnum__EnumEntryAssignment_1
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7267:1: rule__AddEnum__EnumEntryAssignment_1 : ( ruleENUM_ENTRY_TYPE_REFERENCE ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7274:1: rule__AddEnum__EnumEntryAssignment_1 : ( ruleENUM_ENTRY_TYPE_REFERENCE ) ;
     public final void rule__AddEnum__EnumEntryAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7271:1: ( ( ruleENUM_ENTRY_TYPE_REFERENCE ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7272:1: ( ruleENUM_ENTRY_TYPE_REFERENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7278:1: ( ( ruleENUM_ENTRY_TYPE_REFERENCE ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7279:1: ( ruleENUM_ENTRY_TYPE_REFERENCE )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7272:1: ( ruleENUM_ENTRY_TYPE_REFERENCE )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7273:1: ruleENUM_ENTRY_TYPE_REFERENCE
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7279:1: ( ruleENUM_ENTRY_TYPE_REFERENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7280:1: ruleENUM_ENTRY_TYPE_REFERENCE
             {
              before(grammarAccess.getAddEnumAccess().getEnumEntryENUM_ENTRY_TYPE_REFERENCEParserRuleCall_1_0()); 
-            pushFollow(FOLLOW_ruleENUM_ENTRY_TYPE_REFERENCE_in_rule__AddEnum__EnumEntryAssignment_114650);
+            pushFollow(FOLLOW_ruleENUM_ENTRY_TYPE_REFERENCE_in_rule__AddEnum__EnumEntryAssignment_114667);
             ruleENUM_ENTRY_TYPE_REFERENCE();
             _fsp--;
 
@@ -18695,20 +18727,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__AddEnum__OrdinalAssignment_2
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7282:1: rule__AddEnum__OrdinalAssignment_2 : ( RULE_WHOLE_NUM_STR ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7289:1: rule__AddEnum__OrdinalAssignment_2 : ( RULE_WHOLE_NUM_STR ) ;
     public final void rule__AddEnum__OrdinalAssignment_2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7286:1: ( ( RULE_WHOLE_NUM_STR ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7287:1: ( RULE_WHOLE_NUM_STR )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7293:1: ( ( RULE_WHOLE_NUM_STR ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7294:1: ( RULE_WHOLE_NUM_STR )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7287:1: ( RULE_WHOLE_NUM_STR )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7288:1: RULE_WHOLE_NUM_STR
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7294:1: ( RULE_WHOLE_NUM_STR )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7295:1: RULE_WHOLE_NUM_STR
             {
              before(grammarAccess.getAddEnumAccess().getOrdinalWHOLE_NUM_STRTerminalRuleCall_2_0()); 
-            match(input,RULE_WHOLE_NUM_STR,FOLLOW_RULE_WHOLE_NUM_STR_in_rule__AddEnum__OrdinalAssignment_214681); 
+            match(input,RULE_WHOLE_NUM_STR,FOLLOW_RULE_WHOLE_NUM_STR_in_rule__AddEnum__OrdinalAssignment_214698); 
              after(grammarAccess.getAddEnumAccess().getOrdinalWHOLE_NUM_STRTerminalRuleCall_2_0()); 
 
             }
@@ -18732,20 +18764,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__AddEnum__EntryGuidAssignment_3_1
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7297:1: rule__AddEnum__EntryGuidAssignment_3_1 : ( RULE_STRING ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7304:1: rule__AddEnum__EntryGuidAssignment_3_1 : ( RULE_STRING ) ;
     public final void rule__AddEnum__EntryGuidAssignment_3_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7301:1: ( ( RULE_STRING ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7302:1: ( RULE_STRING )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7308:1: ( ( RULE_STRING ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7309:1: ( RULE_STRING )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7302:1: ( RULE_STRING )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7303:1: RULE_STRING
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7309:1: ( RULE_STRING )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7310:1: RULE_STRING
             {
              before(grammarAccess.getAddEnumAccess().getEntryGuidSTRINGTerminalRuleCall_3_1_0()); 
-            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__AddEnum__EntryGuidAssignment_3_114712); 
+            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__AddEnum__EntryGuidAssignment_3_114729); 
              after(grammarAccess.getAddEnumAccess().getEntryGuidSTRINGTerminalRuleCall_3_1_0()); 
 
             }
@@ -18769,24 +18801,24 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__RemoveEnum__EnumEntryAssignment_1
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7312:1: rule__RemoveEnum__EnumEntryAssignment_1 : ( ( ruleENUM_ENTRY_TYPE_REFERENCE ) ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7319:1: rule__RemoveEnum__EnumEntryAssignment_1 : ( ( ruleENUM_ENTRY_TYPE_REFERENCE ) ) ;
     public final void rule__RemoveEnum__EnumEntryAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7316:1: ( ( ( ruleENUM_ENTRY_TYPE_REFERENCE ) ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7317:1: ( ( ruleENUM_ENTRY_TYPE_REFERENCE ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7323:1: ( ( ( ruleENUM_ENTRY_TYPE_REFERENCE ) ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7324:1: ( ( ruleENUM_ENTRY_TYPE_REFERENCE ) )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7317:1: ( ( ruleENUM_ENTRY_TYPE_REFERENCE ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7318:1: ( ruleENUM_ENTRY_TYPE_REFERENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7324:1: ( ( ruleENUM_ENTRY_TYPE_REFERENCE ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7325:1: ( ruleENUM_ENTRY_TYPE_REFERENCE )
             {
              before(grammarAccess.getRemoveEnumAccess().getEnumEntryXOseeEnumEntryCrossReference_1_0()); 
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7319:1: ( ruleENUM_ENTRY_TYPE_REFERENCE )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7320:1: ruleENUM_ENTRY_TYPE_REFERENCE
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7326:1: ( ruleENUM_ENTRY_TYPE_REFERENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7327:1: ruleENUM_ENTRY_TYPE_REFERENCE
             {
              before(grammarAccess.getRemoveEnumAccess().getEnumEntryXOseeEnumEntryENUM_ENTRY_TYPE_REFERENCEParserRuleCall_1_0_1()); 
-            pushFollow(FOLLOW_ruleENUM_ENTRY_TYPE_REFERENCE_in_rule__RemoveEnum__EnumEntryAssignment_114747);
+            pushFollow(FOLLOW_ruleENUM_ENTRY_TYPE_REFERENCE_in_rule__RemoveEnum__EnumEntryAssignment_114764);
             ruleENUM_ENTRY_TYPE_REFERENCE();
             _fsp--;
 
@@ -18817,20 +18849,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__XRelationType__NameAssignment_1
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7331:1: rule__XRelationType__NameAssignment_1 : ( ruleRELATION_TYPE_REFERENCE ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7338:1: rule__XRelationType__NameAssignment_1 : ( ruleRELATION_TYPE_REFERENCE ) ;
     public final void rule__XRelationType__NameAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7335:1: ( ( ruleRELATION_TYPE_REFERENCE ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7336:1: ( ruleRELATION_TYPE_REFERENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7342:1: ( ( ruleRELATION_TYPE_REFERENCE ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7343:1: ( ruleRELATION_TYPE_REFERENCE )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7336:1: ( ruleRELATION_TYPE_REFERENCE )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7337:1: ruleRELATION_TYPE_REFERENCE
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7343:1: ( ruleRELATION_TYPE_REFERENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7344:1: ruleRELATION_TYPE_REFERENCE
             {
              before(grammarAccess.getXRelationTypeAccess().getNameRELATION_TYPE_REFERENCEParserRuleCall_1_0()); 
-            pushFollow(FOLLOW_ruleRELATION_TYPE_REFERENCE_in_rule__XRelationType__NameAssignment_114782);
+            pushFollow(FOLLOW_ruleRELATION_TYPE_REFERENCE_in_rule__XRelationType__NameAssignment_114799);
             ruleRELATION_TYPE_REFERENCE();
             _fsp--;
 
@@ -18857,20 +18889,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__XRelationType__TypeGuidAssignment_4
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7346:1: rule__XRelationType__TypeGuidAssignment_4 : ( RULE_STRING ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7353:1: rule__XRelationType__TypeGuidAssignment_4 : ( RULE_STRING ) ;
     public final void rule__XRelationType__TypeGuidAssignment_4() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7350:1: ( ( RULE_STRING ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7351:1: ( RULE_STRING )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7357:1: ( ( RULE_STRING ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7358:1: ( RULE_STRING )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7351:1: ( RULE_STRING )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7352:1: RULE_STRING
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7358:1: ( RULE_STRING )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7359:1: RULE_STRING
             {
              before(grammarAccess.getXRelationTypeAccess().getTypeGuidSTRINGTerminalRuleCall_4_0()); 
-            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__XRelationType__TypeGuidAssignment_414813); 
+            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__XRelationType__TypeGuidAssignment_414830); 
              after(grammarAccess.getXRelationTypeAccess().getTypeGuidSTRINGTerminalRuleCall_4_0()); 
 
             }
@@ -18894,20 +18926,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__XRelationType__SideANameAssignment_6
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7361:1: rule__XRelationType__SideANameAssignment_6 : ( RULE_STRING ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7368:1: rule__XRelationType__SideANameAssignment_6 : ( RULE_STRING ) ;
     public final void rule__XRelationType__SideANameAssignment_6() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7365:1: ( ( RULE_STRING ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7366:1: ( RULE_STRING )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7372:1: ( ( RULE_STRING ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7373:1: ( RULE_STRING )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7366:1: ( RULE_STRING )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7367:1: RULE_STRING
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7373:1: ( RULE_STRING )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7374:1: RULE_STRING
             {
              before(grammarAccess.getXRelationTypeAccess().getSideANameSTRINGTerminalRuleCall_6_0()); 
-            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__XRelationType__SideANameAssignment_614844); 
+            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__XRelationType__SideANameAssignment_614861); 
              after(grammarAccess.getXRelationTypeAccess().getSideANameSTRINGTerminalRuleCall_6_0()); 
 
             }
@@ -18931,24 +18963,24 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__XRelationType__SideAArtifactTypeAssignment_8
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7376:1: rule__XRelationType__SideAArtifactTypeAssignment_8 : ( ( ruleARTIFACT_TYPE_REFERENCE ) ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7383:1: rule__XRelationType__SideAArtifactTypeAssignment_8 : ( ( ruleARTIFACT_TYPE_REFERENCE ) ) ;
     public final void rule__XRelationType__SideAArtifactTypeAssignment_8() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7380:1: ( ( ( ruleARTIFACT_TYPE_REFERENCE ) ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7381:1: ( ( ruleARTIFACT_TYPE_REFERENCE ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7387:1: ( ( ( ruleARTIFACT_TYPE_REFERENCE ) ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7388:1: ( ( ruleARTIFACT_TYPE_REFERENCE ) )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7381:1: ( ( ruleARTIFACT_TYPE_REFERENCE ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7382:1: ( ruleARTIFACT_TYPE_REFERENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7388:1: ( ( ruleARTIFACT_TYPE_REFERENCE ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7389:1: ( ruleARTIFACT_TYPE_REFERENCE )
             {
              before(grammarAccess.getXRelationTypeAccess().getSideAArtifactTypeXArtifactTypeCrossReference_8_0()); 
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7383:1: ( ruleARTIFACT_TYPE_REFERENCE )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7384:1: ruleARTIFACT_TYPE_REFERENCE
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7390:1: ( ruleARTIFACT_TYPE_REFERENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7391:1: ruleARTIFACT_TYPE_REFERENCE
             {
              before(grammarAccess.getXRelationTypeAccess().getSideAArtifactTypeXArtifactTypeARTIFACT_TYPE_REFERENCEParserRuleCall_8_0_1()); 
-            pushFollow(FOLLOW_ruleARTIFACT_TYPE_REFERENCE_in_rule__XRelationType__SideAArtifactTypeAssignment_814879);
+            pushFollow(FOLLOW_ruleARTIFACT_TYPE_REFERENCE_in_rule__XRelationType__SideAArtifactTypeAssignment_814896);
             ruleARTIFACT_TYPE_REFERENCE();
             _fsp--;
 
@@ -18979,20 +19011,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__XRelationType__SideBNameAssignment_10
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7395:1: rule__XRelationType__SideBNameAssignment_10 : ( RULE_STRING ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7402:1: rule__XRelationType__SideBNameAssignment_10 : ( RULE_STRING ) ;
     public final void rule__XRelationType__SideBNameAssignment_10() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7399:1: ( ( RULE_STRING ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7400:1: ( RULE_STRING )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7406:1: ( ( RULE_STRING ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7407:1: ( RULE_STRING )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7400:1: ( RULE_STRING )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7401:1: RULE_STRING
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7407:1: ( RULE_STRING )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7408:1: RULE_STRING
             {
              before(grammarAccess.getXRelationTypeAccess().getSideBNameSTRINGTerminalRuleCall_10_0()); 
-            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__XRelationType__SideBNameAssignment_1014914); 
+            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__XRelationType__SideBNameAssignment_1014931); 
              after(grammarAccess.getXRelationTypeAccess().getSideBNameSTRINGTerminalRuleCall_10_0()); 
 
             }
@@ -19016,24 +19048,24 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__XRelationType__SideBArtifactTypeAssignment_12
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7410:1: rule__XRelationType__SideBArtifactTypeAssignment_12 : ( ( ruleARTIFACT_TYPE_REFERENCE ) ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7417:1: rule__XRelationType__SideBArtifactTypeAssignment_12 : ( ( ruleARTIFACT_TYPE_REFERENCE ) ) ;
     public final void rule__XRelationType__SideBArtifactTypeAssignment_12() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7414:1: ( ( ( ruleARTIFACT_TYPE_REFERENCE ) ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7415:1: ( ( ruleARTIFACT_TYPE_REFERENCE ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7421:1: ( ( ( ruleARTIFACT_TYPE_REFERENCE ) ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7422:1: ( ( ruleARTIFACT_TYPE_REFERENCE ) )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7415:1: ( ( ruleARTIFACT_TYPE_REFERENCE ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7416:1: ( ruleARTIFACT_TYPE_REFERENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7422:1: ( ( ruleARTIFACT_TYPE_REFERENCE ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7423:1: ( ruleARTIFACT_TYPE_REFERENCE )
             {
              before(grammarAccess.getXRelationTypeAccess().getSideBArtifactTypeXArtifactTypeCrossReference_12_0()); 
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7417:1: ( ruleARTIFACT_TYPE_REFERENCE )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7418:1: ruleARTIFACT_TYPE_REFERENCE
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7424:1: ( ruleARTIFACT_TYPE_REFERENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7425:1: ruleARTIFACT_TYPE_REFERENCE
             {
              before(grammarAccess.getXRelationTypeAccess().getSideBArtifactTypeXArtifactTypeARTIFACT_TYPE_REFERENCEParserRuleCall_12_0_1()); 
-            pushFollow(FOLLOW_ruleARTIFACT_TYPE_REFERENCE_in_rule__XRelationType__SideBArtifactTypeAssignment_1214949);
+            pushFollow(FOLLOW_ruleARTIFACT_TYPE_REFERENCE_in_rule__XRelationType__SideBArtifactTypeAssignment_1214966);
             ruleARTIFACT_TYPE_REFERENCE();
             _fsp--;
 
@@ -19064,20 +19096,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__XRelationType__DefaultOrderTypeAssignment_14
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7429:1: rule__XRelationType__DefaultOrderTypeAssignment_14 : ( ruleRelationOrderType ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7436:1: rule__XRelationType__DefaultOrderTypeAssignment_14 : ( ruleRelationOrderType ) ;
     public final void rule__XRelationType__DefaultOrderTypeAssignment_14() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7433:1: ( ( ruleRelationOrderType ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7434:1: ( ruleRelationOrderType )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7440:1: ( ( ruleRelationOrderType ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7441:1: ( ruleRelationOrderType )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7434:1: ( ruleRelationOrderType )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7435:1: ruleRelationOrderType
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7441:1: ( ruleRelationOrderType )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7442:1: ruleRelationOrderType
             {
              before(grammarAccess.getXRelationTypeAccess().getDefaultOrderTypeRelationOrderTypeParserRuleCall_14_0()); 
-            pushFollow(FOLLOW_ruleRelationOrderType_in_rule__XRelationType__DefaultOrderTypeAssignment_1414984);
+            pushFollow(FOLLOW_ruleRelationOrderType_in_rule__XRelationType__DefaultOrderTypeAssignment_1415001);
             ruleRelationOrderType();
             _fsp--;
 
@@ -19104,20 +19136,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__XRelationType__MultiplicityAssignment_16
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7444:1: rule__XRelationType__MultiplicityAssignment_16 : ( ruleRelationMultiplicityEnum ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7451:1: rule__XRelationType__MultiplicityAssignment_16 : ( ruleRelationMultiplicityEnum ) ;
     public final void rule__XRelationType__MultiplicityAssignment_16() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7448:1: ( ( ruleRelationMultiplicityEnum ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7449:1: ( ruleRelationMultiplicityEnum )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7455:1: ( ( ruleRelationMultiplicityEnum ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7456:1: ( ruleRelationMultiplicityEnum )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7449:1: ( ruleRelationMultiplicityEnum )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7450:1: ruleRelationMultiplicityEnum
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7456:1: ( ruleRelationMultiplicityEnum )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7457:1: ruleRelationMultiplicityEnum
             {
              before(grammarAccess.getXRelationTypeAccess().getMultiplicityRelationMultiplicityEnumEnumRuleCall_16_0()); 
-            pushFollow(FOLLOW_ruleRelationMultiplicityEnum_in_rule__XRelationType__MultiplicityAssignment_1615015);
+            pushFollow(FOLLOW_ruleRelationMultiplicityEnum_in_rule__XRelationType__MultiplicityAssignment_1615032);
             ruleRelationMultiplicityEnum();
             _fsp--;
 
@@ -19144,20 +19176,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__XArtifactRef__NameAssignment_1
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7459:1: rule__XArtifactRef__NameAssignment_1 : ( ruleARTIFACT_INSTANCE_REFERENCE ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7466:1: rule__XArtifactRef__NameAssignment_1 : ( ruleARTIFACT_INSTANCE_REFERENCE ) ;
     public final void rule__XArtifactRef__NameAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7463:1: ( ( ruleARTIFACT_INSTANCE_REFERENCE ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7464:1: ( ruleARTIFACT_INSTANCE_REFERENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7470:1: ( ( ruleARTIFACT_INSTANCE_REFERENCE ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7471:1: ( ruleARTIFACT_INSTANCE_REFERENCE )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7464:1: ( ruleARTIFACT_INSTANCE_REFERENCE )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7465:1: ruleARTIFACT_INSTANCE_REFERENCE
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7471:1: ( ruleARTIFACT_INSTANCE_REFERENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7472:1: ruleARTIFACT_INSTANCE_REFERENCE
             {
              before(grammarAccess.getXArtifactRefAccess().getNameARTIFACT_INSTANCE_REFERENCEParserRuleCall_1_0()); 
-            pushFollow(FOLLOW_ruleARTIFACT_INSTANCE_REFERENCE_in_rule__XArtifactRef__NameAssignment_115046);
+            pushFollow(FOLLOW_ruleARTIFACT_INSTANCE_REFERENCE_in_rule__XArtifactRef__NameAssignment_115063);
             ruleARTIFACT_INSTANCE_REFERENCE();
             _fsp--;
 
@@ -19184,20 +19216,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__XArtifactRef__GuidAssignment_3
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7474:1: rule__XArtifactRef__GuidAssignment_3 : ( RULE_STRING ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7481:1: rule__XArtifactRef__GuidAssignment_3 : ( RULE_STRING ) ;
     public final void rule__XArtifactRef__GuidAssignment_3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7478:1: ( ( RULE_STRING ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7479:1: ( RULE_STRING )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7485:1: ( ( RULE_STRING ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7486:1: ( RULE_STRING )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7479:1: ( RULE_STRING )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7480:1: RULE_STRING
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7486:1: ( RULE_STRING )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7487:1: RULE_STRING
             {
              before(grammarAccess.getXArtifactRefAccess().getGuidSTRINGTerminalRuleCall_3_0()); 
-            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__XArtifactRef__GuidAssignment_315077); 
+            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__XArtifactRef__GuidAssignment_315094); 
              after(grammarAccess.getXArtifactRefAccess().getGuidSTRINGTerminalRuleCall_3_0()); 
 
             }
@@ -19221,20 +19253,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__XBranchRef__NameAssignment_1
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7489:1: rule__XBranchRef__NameAssignment_1 : ( ruleBRANCH_INSTANCE_REFERENCE ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7496:1: rule__XBranchRef__NameAssignment_1 : ( ruleBRANCH_INSTANCE_REFERENCE ) ;
     public final void rule__XBranchRef__NameAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7493:1: ( ( ruleBRANCH_INSTANCE_REFERENCE ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7494:1: ( ruleBRANCH_INSTANCE_REFERENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7500:1: ( ( ruleBRANCH_INSTANCE_REFERENCE ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7501:1: ( ruleBRANCH_INSTANCE_REFERENCE )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7494:1: ( ruleBRANCH_INSTANCE_REFERENCE )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7495:1: ruleBRANCH_INSTANCE_REFERENCE
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7501:1: ( ruleBRANCH_INSTANCE_REFERENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7502:1: ruleBRANCH_INSTANCE_REFERENCE
             {
              before(grammarAccess.getXBranchRefAccess().getNameBRANCH_INSTANCE_REFERENCEParserRuleCall_1_0()); 
-            pushFollow(FOLLOW_ruleBRANCH_INSTANCE_REFERENCE_in_rule__XBranchRef__NameAssignment_115108);
+            pushFollow(FOLLOW_ruleBRANCH_INSTANCE_REFERENCE_in_rule__XBranchRef__NameAssignment_115125);
             ruleBRANCH_INSTANCE_REFERENCE();
             _fsp--;
 
@@ -19261,20 +19293,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__XBranchRef__GuidAssignment_3
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7504:1: rule__XBranchRef__GuidAssignment_3 : ( RULE_STRING ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7511:1: rule__XBranchRef__GuidAssignment_3 : ( RULE_STRING ) ;
     public final void rule__XBranchRef__GuidAssignment_3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7508:1: ( ( RULE_STRING ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7509:1: ( RULE_STRING )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7515:1: ( ( RULE_STRING ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7516:1: ( RULE_STRING )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7509:1: ( RULE_STRING )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7510:1: RULE_STRING
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7516:1: ( RULE_STRING )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7517:1: RULE_STRING
             {
              before(grammarAccess.getXBranchRefAccess().getGuidSTRINGTerminalRuleCall_3_0()); 
-            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__XBranchRef__GuidAssignment_315139); 
+            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__XBranchRef__GuidAssignment_315156); 
              after(grammarAccess.getXBranchRefAccess().getGuidSTRINGTerminalRuleCall_3_0()); 
 
             }
@@ -19298,20 +19330,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__AccessContext__NameAssignment_1
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7519:1: rule__AccessContext__NameAssignment_1 : ( ruleACCESS_CONTEXT_TYPE_REFRENCE ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7526:1: rule__AccessContext__NameAssignment_1 : ( ruleACCESS_CONTEXT_TYPE_REFRENCE ) ;
     public final void rule__AccessContext__NameAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7523:1: ( ( ruleACCESS_CONTEXT_TYPE_REFRENCE ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7524:1: ( ruleACCESS_CONTEXT_TYPE_REFRENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7530:1: ( ( ruleACCESS_CONTEXT_TYPE_REFRENCE ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7531:1: ( ruleACCESS_CONTEXT_TYPE_REFRENCE )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7524:1: ( ruleACCESS_CONTEXT_TYPE_REFRENCE )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7525:1: ruleACCESS_CONTEXT_TYPE_REFRENCE
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7531:1: ( ruleACCESS_CONTEXT_TYPE_REFRENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7532:1: ruleACCESS_CONTEXT_TYPE_REFRENCE
             {
              before(grammarAccess.getAccessContextAccess().getNameACCESS_CONTEXT_TYPE_REFRENCEParserRuleCall_1_0()); 
-            pushFollow(FOLLOW_ruleACCESS_CONTEXT_TYPE_REFRENCE_in_rule__AccessContext__NameAssignment_115170);
+            pushFollow(FOLLOW_ruleACCESS_CONTEXT_TYPE_REFRENCE_in_rule__AccessContext__NameAssignment_115187);
             ruleACCESS_CONTEXT_TYPE_REFRENCE();
             _fsp--;
 
@@ -19338,24 +19370,24 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__AccessContext__SuperAccessContextsAssignment_2_1
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7534:1: rule__AccessContext__SuperAccessContextsAssignment_2_1 : ( ( ruleACCESS_CONTEXT_TYPE_REFRENCE ) ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7541:1: rule__AccessContext__SuperAccessContextsAssignment_2_1 : ( ( ruleACCESS_CONTEXT_TYPE_REFRENCE ) ) ;
     public final void rule__AccessContext__SuperAccessContextsAssignment_2_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7538:1: ( ( ( ruleACCESS_CONTEXT_TYPE_REFRENCE ) ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7539:1: ( ( ruleACCESS_CONTEXT_TYPE_REFRENCE ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7545:1: ( ( ( ruleACCESS_CONTEXT_TYPE_REFRENCE ) ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7546:1: ( ( ruleACCESS_CONTEXT_TYPE_REFRENCE ) )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7539:1: ( ( ruleACCESS_CONTEXT_TYPE_REFRENCE ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7540:1: ( ruleACCESS_CONTEXT_TYPE_REFRENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7546:1: ( ( ruleACCESS_CONTEXT_TYPE_REFRENCE ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7547:1: ( ruleACCESS_CONTEXT_TYPE_REFRENCE )
             {
              before(grammarAccess.getAccessContextAccess().getSuperAccessContextsAccessContextCrossReference_2_1_0()); 
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7541:1: ( ruleACCESS_CONTEXT_TYPE_REFRENCE )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7542:1: ruleACCESS_CONTEXT_TYPE_REFRENCE
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7548:1: ( ruleACCESS_CONTEXT_TYPE_REFRENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7549:1: ruleACCESS_CONTEXT_TYPE_REFRENCE
             {
              before(grammarAccess.getAccessContextAccess().getSuperAccessContextsAccessContextACCESS_CONTEXT_TYPE_REFRENCEParserRuleCall_2_1_0_1()); 
-            pushFollow(FOLLOW_ruleACCESS_CONTEXT_TYPE_REFRENCE_in_rule__AccessContext__SuperAccessContextsAssignment_2_115205);
+            pushFollow(FOLLOW_ruleACCESS_CONTEXT_TYPE_REFRENCE_in_rule__AccessContext__SuperAccessContextsAssignment_2_115222);
             ruleACCESS_CONTEXT_TYPE_REFRENCE();
             _fsp--;
 
@@ -19386,24 +19418,24 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__AccessContext__SuperAccessContextsAssignment_2_2_1
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7553:1: rule__AccessContext__SuperAccessContextsAssignment_2_2_1 : ( ( ruleACCESS_CONTEXT_TYPE_REFRENCE ) ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7560:1: rule__AccessContext__SuperAccessContextsAssignment_2_2_1 : ( ( ruleACCESS_CONTEXT_TYPE_REFRENCE ) ) ;
     public final void rule__AccessContext__SuperAccessContextsAssignment_2_2_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7557:1: ( ( ( ruleACCESS_CONTEXT_TYPE_REFRENCE ) ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7558:1: ( ( ruleACCESS_CONTEXT_TYPE_REFRENCE ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7564:1: ( ( ( ruleACCESS_CONTEXT_TYPE_REFRENCE ) ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7565:1: ( ( ruleACCESS_CONTEXT_TYPE_REFRENCE ) )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7558:1: ( ( ruleACCESS_CONTEXT_TYPE_REFRENCE ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7559:1: ( ruleACCESS_CONTEXT_TYPE_REFRENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7565:1: ( ( ruleACCESS_CONTEXT_TYPE_REFRENCE ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7566:1: ( ruleACCESS_CONTEXT_TYPE_REFRENCE )
             {
              before(grammarAccess.getAccessContextAccess().getSuperAccessContextsAccessContextCrossReference_2_2_1_0()); 
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7560:1: ( ruleACCESS_CONTEXT_TYPE_REFRENCE )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7561:1: ruleACCESS_CONTEXT_TYPE_REFRENCE
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7567:1: ( ruleACCESS_CONTEXT_TYPE_REFRENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7568:1: ruleACCESS_CONTEXT_TYPE_REFRENCE
             {
              before(grammarAccess.getAccessContextAccess().getSuperAccessContextsAccessContextACCESS_CONTEXT_TYPE_REFRENCEParserRuleCall_2_2_1_0_1()); 
-            pushFollow(FOLLOW_ruleACCESS_CONTEXT_TYPE_REFRENCE_in_rule__AccessContext__SuperAccessContextsAssignment_2_2_115244);
+            pushFollow(FOLLOW_ruleACCESS_CONTEXT_TYPE_REFRENCE_in_rule__AccessContext__SuperAccessContextsAssignment_2_2_115261);
             ruleACCESS_CONTEXT_TYPE_REFRENCE();
             _fsp--;
 
@@ -19434,20 +19466,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__AccessContext__GuidAssignment_5
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7572:1: rule__AccessContext__GuidAssignment_5 : ( RULE_STRING ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7579:1: rule__AccessContext__GuidAssignment_5 : ( RULE_STRING ) ;
     public final void rule__AccessContext__GuidAssignment_5() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7576:1: ( ( RULE_STRING ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7577:1: ( RULE_STRING )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7583:1: ( ( RULE_STRING ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7584:1: ( RULE_STRING )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7577:1: ( RULE_STRING )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7578:1: RULE_STRING
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7584:1: ( RULE_STRING )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7585:1: RULE_STRING
             {
              before(grammarAccess.getAccessContextAccess().getGuidSTRINGTerminalRuleCall_5_0()); 
-            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__AccessContext__GuidAssignment_515279); 
+            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__AccessContext__GuidAssignment_515296); 
              after(grammarAccess.getAccessContextAccess().getGuidSTRINGTerminalRuleCall_5_0()); 
 
             }
@@ -19471,20 +19503,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__AccessContext__AccessRulesAssignment_7_0
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7587:1: rule__AccessContext__AccessRulesAssignment_7_0 : ( ruleObjectRestriction ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7594:1: rule__AccessContext__AccessRulesAssignment_7_0 : ( ruleObjectRestriction ) ;
     public final void rule__AccessContext__AccessRulesAssignment_7_0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7591:1: ( ( ruleObjectRestriction ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7592:1: ( ruleObjectRestriction )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7598:1: ( ( ruleObjectRestriction ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7599:1: ( ruleObjectRestriction )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7592:1: ( ruleObjectRestriction )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7593:1: ruleObjectRestriction
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7599:1: ( ruleObjectRestriction )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7600:1: ruleObjectRestriction
             {
              before(grammarAccess.getAccessContextAccess().getAccessRulesObjectRestrictionParserRuleCall_7_0_0()); 
-            pushFollow(FOLLOW_ruleObjectRestriction_in_rule__AccessContext__AccessRulesAssignment_7_015310);
+            pushFollow(FOLLOW_ruleObjectRestriction_in_rule__AccessContext__AccessRulesAssignment_7_015327);
             ruleObjectRestriction();
             _fsp--;
 
@@ -19511,20 +19543,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__AccessContext__HierarchyRestrictionsAssignment_7_1
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7602:1: rule__AccessContext__HierarchyRestrictionsAssignment_7_1 : ( ruleHierarchyRestriction ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7609:1: rule__AccessContext__HierarchyRestrictionsAssignment_7_1 : ( ruleHierarchyRestriction ) ;
     public final void rule__AccessContext__HierarchyRestrictionsAssignment_7_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7606:1: ( ( ruleHierarchyRestriction ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7607:1: ( ruleHierarchyRestriction )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7613:1: ( ( ruleHierarchyRestriction ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7614:1: ( ruleHierarchyRestriction )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7607:1: ( ruleHierarchyRestriction )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7608:1: ruleHierarchyRestriction
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7614:1: ( ruleHierarchyRestriction )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7615:1: ruleHierarchyRestriction
             {
              before(grammarAccess.getAccessContextAccess().getHierarchyRestrictionsHierarchyRestrictionParserRuleCall_7_1_0()); 
-            pushFollow(FOLLOW_ruleHierarchyRestriction_in_rule__AccessContext__HierarchyRestrictionsAssignment_7_115341);
+            pushFollow(FOLLOW_ruleHierarchyRestriction_in_rule__AccessContext__HierarchyRestrictionsAssignment_7_115358);
             ruleHierarchyRestriction();
             _fsp--;
 
@@ -19551,24 +19583,24 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__HierarchyRestriction__ArtifactAssignment_1
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7617:1: rule__HierarchyRestriction__ArtifactAssignment_1 : ( ( ruleARTIFACT_INSTANCE_REFERENCE ) ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7624:1: rule__HierarchyRestriction__ArtifactAssignment_1 : ( ( ruleARTIFACT_INSTANCE_REFERENCE ) ) ;
     public final void rule__HierarchyRestriction__ArtifactAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7621:1: ( ( ( ruleARTIFACT_INSTANCE_REFERENCE ) ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7622:1: ( ( ruleARTIFACT_INSTANCE_REFERENCE ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7628:1: ( ( ( ruleARTIFACT_INSTANCE_REFERENCE ) ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7629:1: ( ( ruleARTIFACT_INSTANCE_REFERENCE ) )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7622:1: ( ( ruleARTIFACT_INSTANCE_REFERENCE ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7623:1: ( ruleARTIFACT_INSTANCE_REFERENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7629:1: ( ( ruleARTIFACT_INSTANCE_REFERENCE ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7630:1: ( ruleARTIFACT_INSTANCE_REFERENCE )
             {
              before(grammarAccess.getHierarchyRestrictionAccess().getArtifactXArtifactRefCrossReference_1_0()); 
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7624:1: ( ruleARTIFACT_INSTANCE_REFERENCE )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7625:1: ruleARTIFACT_INSTANCE_REFERENCE
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7631:1: ( ruleARTIFACT_INSTANCE_REFERENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7632:1: ruleARTIFACT_INSTANCE_REFERENCE
             {
              before(grammarAccess.getHierarchyRestrictionAccess().getArtifactXArtifactRefARTIFACT_INSTANCE_REFERENCEParserRuleCall_1_0_1()); 
-            pushFollow(FOLLOW_ruleARTIFACT_INSTANCE_REFERENCE_in_rule__HierarchyRestriction__ArtifactAssignment_115376);
+            pushFollow(FOLLOW_ruleARTIFACT_INSTANCE_REFERENCE_in_rule__HierarchyRestriction__ArtifactAssignment_115393);
             ruleARTIFACT_INSTANCE_REFERENCE();
             _fsp--;
 
@@ -19599,20 +19631,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__HierarchyRestriction__AccessRulesAssignment_3
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7636:1: rule__HierarchyRestriction__AccessRulesAssignment_3 : ( ruleObjectRestriction ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7643:1: rule__HierarchyRestriction__AccessRulesAssignment_3 : ( ruleObjectRestriction ) ;
     public final void rule__HierarchyRestriction__AccessRulesAssignment_3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7640:1: ( ( ruleObjectRestriction ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7641:1: ( ruleObjectRestriction )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7647:1: ( ( ruleObjectRestriction ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7648:1: ( ruleObjectRestriction )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7641:1: ( ruleObjectRestriction )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7642:1: ruleObjectRestriction
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7648:1: ( ruleObjectRestriction )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7649:1: ruleObjectRestriction
             {
              before(grammarAccess.getHierarchyRestrictionAccess().getAccessRulesObjectRestrictionParserRuleCall_3_0()); 
-            pushFollow(FOLLOW_ruleObjectRestriction_in_rule__HierarchyRestriction__AccessRulesAssignment_315411);
+            pushFollow(FOLLOW_ruleObjectRestriction_in_rule__HierarchyRestriction__AccessRulesAssignment_315428);
             ruleObjectRestriction();
             _fsp--;
 
@@ -19639,20 +19671,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__ArtifactInstanceRestriction__PermissionAssignment_0
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7651:1: rule__ArtifactInstanceRestriction__PermissionAssignment_0 : ( ruleAccessPermissionEnum ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7658:1: rule__ArtifactInstanceRestriction__PermissionAssignment_0 : ( ruleAccessPermissionEnum ) ;
     public final void rule__ArtifactInstanceRestriction__PermissionAssignment_0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7655:1: ( ( ruleAccessPermissionEnum ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7656:1: ( ruleAccessPermissionEnum )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7662:1: ( ( ruleAccessPermissionEnum ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7663:1: ( ruleAccessPermissionEnum )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7656:1: ( ruleAccessPermissionEnum )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7657:1: ruleAccessPermissionEnum
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7663:1: ( ruleAccessPermissionEnum )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7664:1: ruleAccessPermissionEnum
             {
              before(grammarAccess.getArtifactInstanceRestrictionAccess().getPermissionAccessPermissionEnumEnumRuleCall_0_0()); 
-            pushFollow(FOLLOW_ruleAccessPermissionEnum_in_rule__ArtifactInstanceRestriction__PermissionAssignment_015442);
+            pushFollow(FOLLOW_ruleAccessPermissionEnum_in_rule__ArtifactInstanceRestriction__PermissionAssignment_015459);
             ruleAccessPermissionEnum();
             _fsp--;
 
@@ -19679,24 +19711,24 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__ArtifactInstanceRestriction__ArtifactRefAssignment_3
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7666:1: rule__ArtifactInstanceRestriction__ArtifactRefAssignment_3 : ( ( ruleARTIFACT_INSTANCE_REFERENCE ) ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7673:1: rule__ArtifactInstanceRestriction__ArtifactRefAssignment_3 : ( ( ruleARTIFACT_INSTANCE_REFERENCE ) ) ;
     public final void rule__ArtifactInstanceRestriction__ArtifactRefAssignment_3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7670:1: ( ( ( ruleARTIFACT_INSTANCE_REFERENCE ) ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7671:1: ( ( ruleARTIFACT_INSTANCE_REFERENCE ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7677:1: ( ( ( ruleARTIFACT_INSTANCE_REFERENCE ) ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7678:1: ( ( ruleARTIFACT_INSTANCE_REFERENCE ) )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7671:1: ( ( ruleARTIFACT_INSTANCE_REFERENCE ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7672:1: ( ruleARTIFACT_INSTANCE_REFERENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7678:1: ( ( ruleARTIFACT_INSTANCE_REFERENCE ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7679:1: ( ruleARTIFACT_INSTANCE_REFERENCE )
             {
              before(grammarAccess.getArtifactInstanceRestrictionAccess().getArtifactRefXArtifactRefCrossReference_3_0()); 
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7673:1: ( ruleARTIFACT_INSTANCE_REFERENCE )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7674:1: ruleARTIFACT_INSTANCE_REFERENCE
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7680:1: ( ruleARTIFACT_INSTANCE_REFERENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7681:1: ruleARTIFACT_INSTANCE_REFERENCE
             {
              before(grammarAccess.getArtifactInstanceRestrictionAccess().getArtifactRefXArtifactRefARTIFACT_INSTANCE_REFERENCEParserRuleCall_3_0_1()); 
-            pushFollow(FOLLOW_ruleARTIFACT_INSTANCE_REFERENCE_in_rule__ArtifactInstanceRestriction__ArtifactRefAssignment_315477);
+            pushFollow(FOLLOW_ruleARTIFACT_INSTANCE_REFERENCE_in_rule__ArtifactInstanceRestriction__ArtifactRefAssignment_315494);
             ruleARTIFACT_INSTANCE_REFERENCE();
             _fsp--;
 
@@ -19727,20 +19759,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__ArtifactTypeRestriction__PermissionAssignment_0
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7685:1: rule__ArtifactTypeRestriction__PermissionAssignment_0 : ( ruleAccessPermissionEnum ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7692:1: rule__ArtifactTypeRestriction__PermissionAssignment_0 : ( ruleAccessPermissionEnum ) ;
     public final void rule__ArtifactTypeRestriction__PermissionAssignment_0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7689:1: ( ( ruleAccessPermissionEnum ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7690:1: ( ruleAccessPermissionEnum )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7696:1: ( ( ruleAccessPermissionEnum ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7697:1: ( ruleAccessPermissionEnum )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7690:1: ( ruleAccessPermissionEnum )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7691:1: ruleAccessPermissionEnum
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7697:1: ( ruleAccessPermissionEnum )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7698:1: ruleAccessPermissionEnum
             {
              before(grammarAccess.getArtifactTypeRestrictionAccess().getPermissionAccessPermissionEnumEnumRuleCall_0_0()); 
-            pushFollow(FOLLOW_ruleAccessPermissionEnum_in_rule__ArtifactTypeRestriction__PermissionAssignment_015512);
+            pushFollow(FOLLOW_ruleAccessPermissionEnum_in_rule__ArtifactTypeRestriction__PermissionAssignment_015529);
             ruleAccessPermissionEnum();
             _fsp--;
 
@@ -19767,24 +19799,24 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__ArtifactTypeRestriction__ArtifactTypeRefAssignment_3
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7700:1: rule__ArtifactTypeRestriction__ArtifactTypeRefAssignment_3 : ( ( ruleARTIFACT_TYPE_REFERENCE ) ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7707:1: rule__ArtifactTypeRestriction__ArtifactTypeRefAssignment_3 : ( ( ruleARTIFACT_TYPE_REFERENCE ) ) ;
     public final void rule__ArtifactTypeRestriction__ArtifactTypeRefAssignment_3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7704:1: ( ( ( ruleARTIFACT_TYPE_REFERENCE ) ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7705:1: ( ( ruleARTIFACT_TYPE_REFERENCE ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7711:1: ( ( ( ruleARTIFACT_TYPE_REFERENCE ) ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7712:1: ( ( ruleARTIFACT_TYPE_REFERENCE ) )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7705:1: ( ( ruleARTIFACT_TYPE_REFERENCE ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7706:1: ( ruleARTIFACT_TYPE_REFERENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7712:1: ( ( ruleARTIFACT_TYPE_REFERENCE ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7713:1: ( ruleARTIFACT_TYPE_REFERENCE )
             {
              before(grammarAccess.getArtifactTypeRestrictionAccess().getArtifactTypeRefXArtifactTypeCrossReference_3_0()); 
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7707:1: ( ruleARTIFACT_TYPE_REFERENCE )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7708:1: ruleARTIFACT_TYPE_REFERENCE
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7714:1: ( ruleARTIFACT_TYPE_REFERENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7715:1: ruleARTIFACT_TYPE_REFERENCE
             {
              before(grammarAccess.getArtifactTypeRestrictionAccess().getArtifactTypeRefXArtifactTypeARTIFACT_TYPE_REFERENCEParserRuleCall_3_0_1()); 
-            pushFollow(FOLLOW_ruleARTIFACT_TYPE_REFERENCE_in_rule__ArtifactTypeRestriction__ArtifactTypeRefAssignment_315547);
+            pushFollow(FOLLOW_ruleARTIFACT_TYPE_REFERENCE_in_rule__ArtifactTypeRestriction__ArtifactTypeRefAssignment_315564);
             ruleARTIFACT_TYPE_REFERENCE();
             _fsp--;
 
@@ -19815,20 +19847,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__AttributeTypeRestriction__PermissionAssignment_0
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7719:1: rule__AttributeTypeRestriction__PermissionAssignment_0 : ( ruleAccessPermissionEnum ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7726:1: rule__AttributeTypeRestriction__PermissionAssignment_0 : ( ruleAccessPermissionEnum ) ;
     public final void rule__AttributeTypeRestriction__PermissionAssignment_0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7723:1: ( ( ruleAccessPermissionEnum ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7724:1: ( ruleAccessPermissionEnum )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7730:1: ( ( ruleAccessPermissionEnum ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7731:1: ( ruleAccessPermissionEnum )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7724:1: ( ruleAccessPermissionEnum )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7725:1: ruleAccessPermissionEnum
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7731:1: ( ruleAccessPermissionEnum )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7732:1: ruleAccessPermissionEnum
             {
              before(grammarAccess.getAttributeTypeRestrictionAccess().getPermissionAccessPermissionEnumEnumRuleCall_0_0()); 
-            pushFollow(FOLLOW_ruleAccessPermissionEnum_in_rule__AttributeTypeRestriction__PermissionAssignment_015582);
+            pushFollow(FOLLOW_ruleAccessPermissionEnum_in_rule__AttributeTypeRestriction__PermissionAssignment_015599);
             ruleAccessPermissionEnum();
             _fsp--;
 
@@ -19855,24 +19887,24 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__AttributeTypeRestriction__AttributeTypeRefAssignment_3
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7734:1: rule__AttributeTypeRestriction__AttributeTypeRefAssignment_3 : ( ( ruleATTRIBUTE_TYPE_REFERENCE ) ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7741:1: rule__AttributeTypeRestriction__AttributeTypeRefAssignment_3 : ( ( ruleATTRIBUTE_TYPE_REFERENCE ) ) ;
     public final void rule__AttributeTypeRestriction__AttributeTypeRefAssignment_3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7738:1: ( ( ( ruleATTRIBUTE_TYPE_REFERENCE ) ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7739:1: ( ( ruleATTRIBUTE_TYPE_REFERENCE ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7745:1: ( ( ( ruleATTRIBUTE_TYPE_REFERENCE ) ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7746:1: ( ( ruleATTRIBUTE_TYPE_REFERENCE ) )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7739:1: ( ( ruleATTRIBUTE_TYPE_REFERENCE ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7740:1: ( ruleATTRIBUTE_TYPE_REFERENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7746:1: ( ( ruleATTRIBUTE_TYPE_REFERENCE ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7747:1: ( ruleATTRIBUTE_TYPE_REFERENCE )
             {
              before(grammarAccess.getAttributeTypeRestrictionAccess().getAttributeTypeRefXAttributeTypeCrossReference_3_0()); 
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7741:1: ( ruleATTRIBUTE_TYPE_REFERENCE )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7742:1: ruleATTRIBUTE_TYPE_REFERENCE
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7748:1: ( ruleATTRIBUTE_TYPE_REFERENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7749:1: ruleATTRIBUTE_TYPE_REFERENCE
             {
              before(grammarAccess.getAttributeTypeRestrictionAccess().getAttributeTypeRefXAttributeTypeATTRIBUTE_TYPE_REFERENCEParserRuleCall_3_0_1()); 
-            pushFollow(FOLLOW_ruleATTRIBUTE_TYPE_REFERENCE_in_rule__AttributeTypeRestriction__AttributeTypeRefAssignment_315617);
+            pushFollow(FOLLOW_ruleATTRIBUTE_TYPE_REFERENCE_in_rule__AttributeTypeRestriction__AttributeTypeRefAssignment_315634);
             ruleATTRIBUTE_TYPE_REFERENCE();
             _fsp--;
 
@@ -19903,24 +19935,24 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__AttributeTypeRestriction__ArtifactTypeRefAssignment_4_2
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7753:1: rule__AttributeTypeRestriction__ArtifactTypeRefAssignment_4_2 : ( ( ruleARTIFACT_TYPE_REFERENCE ) ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7760:1: rule__AttributeTypeRestriction__ArtifactTypeRefAssignment_4_2 : ( ( ruleARTIFACT_TYPE_REFERENCE ) ) ;
     public final void rule__AttributeTypeRestriction__ArtifactTypeRefAssignment_4_2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7757:1: ( ( ( ruleARTIFACT_TYPE_REFERENCE ) ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7758:1: ( ( ruleARTIFACT_TYPE_REFERENCE ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7764:1: ( ( ( ruleARTIFACT_TYPE_REFERENCE ) ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7765:1: ( ( ruleARTIFACT_TYPE_REFERENCE ) )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7758:1: ( ( ruleARTIFACT_TYPE_REFERENCE ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7759:1: ( ruleARTIFACT_TYPE_REFERENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7765:1: ( ( ruleARTIFACT_TYPE_REFERENCE ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7766:1: ( ruleARTIFACT_TYPE_REFERENCE )
             {
              before(grammarAccess.getAttributeTypeRestrictionAccess().getArtifactTypeRefXArtifactTypeCrossReference_4_2_0()); 
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7760:1: ( ruleARTIFACT_TYPE_REFERENCE )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7761:1: ruleARTIFACT_TYPE_REFERENCE
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7767:1: ( ruleARTIFACT_TYPE_REFERENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7768:1: ruleARTIFACT_TYPE_REFERENCE
             {
              before(grammarAccess.getAttributeTypeRestrictionAccess().getArtifactTypeRefXArtifactTypeARTIFACT_TYPE_REFERENCEParserRuleCall_4_2_0_1()); 
-            pushFollow(FOLLOW_ruleARTIFACT_TYPE_REFERENCE_in_rule__AttributeTypeRestriction__ArtifactTypeRefAssignment_4_215656);
+            pushFollow(FOLLOW_ruleARTIFACT_TYPE_REFERENCE_in_rule__AttributeTypeRestriction__ArtifactTypeRefAssignment_4_215673);
             ruleARTIFACT_TYPE_REFERENCE();
             _fsp--;
 
@@ -19951,20 +19983,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__RelationTypeRestriction__PermissionAssignment_0
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7772:1: rule__RelationTypeRestriction__PermissionAssignment_0 : ( ruleAccessPermissionEnum ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7779:1: rule__RelationTypeRestriction__PermissionAssignment_0 : ( ruleAccessPermissionEnum ) ;
     public final void rule__RelationTypeRestriction__PermissionAssignment_0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7776:1: ( ( ruleAccessPermissionEnum ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7777:1: ( ruleAccessPermissionEnum )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7783:1: ( ( ruleAccessPermissionEnum ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7784:1: ( ruleAccessPermissionEnum )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7777:1: ( ruleAccessPermissionEnum )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7778:1: ruleAccessPermissionEnum
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7784:1: ( ruleAccessPermissionEnum )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7785:1: ruleAccessPermissionEnum
             {
              before(grammarAccess.getRelationTypeRestrictionAccess().getPermissionAccessPermissionEnumEnumRuleCall_0_0()); 
-            pushFollow(FOLLOW_ruleAccessPermissionEnum_in_rule__RelationTypeRestriction__PermissionAssignment_015691);
+            pushFollow(FOLLOW_ruleAccessPermissionEnum_in_rule__RelationTypeRestriction__PermissionAssignment_015708);
             ruleAccessPermissionEnum();
             _fsp--;
 
@@ -19991,24 +20023,24 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__RelationTypeRestriction__RelationTypeRefAssignment_3
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7787:1: rule__RelationTypeRestriction__RelationTypeRefAssignment_3 : ( ( ruleRELATION_TYPE_REFERENCE ) ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7794:1: rule__RelationTypeRestriction__RelationTypeRefAssignment_3 : ( ( ruleRELATION_TYPE_REFERENCE ) ) ;
     public final void rule__RelationTypeRestriction__RelationTypeRefAssignment_3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7791:1: ( ( ( ruleRELATION_TYPE_REFERENCE ) ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7792:1: ( ( ruleRELATION_TYPE_REFERENCE ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7798:1: ( ( ( ruleRELATION_TYPE_REFERENCE ) ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7799:1: ( ( ruleRELATION_TYPE_REFERENCE ) )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7792:1: ( ( ruleRELATION_TYPE_REFERENCE ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7793:1: ( ruleRELATION_TYPE_REFERENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7799:1: ( ( ruleRELATION_TYPE_REFERENCE ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7800:1: ( ruleRELATION_TYPE_REFERENCE )
             {
              before(grammarAccess.getRelationTypeRestrictionAccess().getRelationTypeRefXRelationTypeCrossReference_3_0()); 
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7794:1: ( ruleRELATION_TYPE_REFERENCE )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7795:1: ruleRELATION_TYPE_REFERENCE
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7801:1: ( ruleRELATION_TYPE_REFERENCE )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7802:1: ruleRELATION_TYPE_REFERENCE
             {
              before(grammarAccess.getRelationTypeRestrictionAccess().getRelationTypeRefXRelationTypeRELATION_TYPE_REFERENCEParserRuleCall_3_0_1()); 
-            pushFollow(FOLLOW_ruleRELATION_TYPE_REFERENCE_in_rule__RelationTypeRestriction__RelationTypeRefAssignment_315726);
+            pushFollow(FOLLOW_ruleRELATION_TYPE_REFERENCE_in_rule__RelationTypeRestriction__RelationTypeRefAssignment_315743);
             ruleRELATION_TYPE_REFERENCE();
             _fsp--;
 
@@ -20039,20 +20071,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start rule__RelationTypeRestriction__RestrictedToSideAssignment_4
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7806:1: rule__RelationTypeRestriction__RestrictedToSideAssignment_4 : ( ruleXRelationSideEnum ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7813:1: rule__RelationTypeRestriction__RestrictedToSideAssignment_4 : ( ruleXRelationSideEnum ) ;
     public final void rule__RelationTypeRestriction__RestrictedToSideAssignment_4() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7810:1: ( ( ruleXRelationSideEnum ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7811:1: ( ruleXRelationSideEnum )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7817:1: ( ( ruleXRelationSideEnum ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7818:1: ( ruleXRelationSideEnum )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7811:1: ( ruleXRelationSideEnum )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7812:1: ruleXRelationSideEnum
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7818:1: ( ruleXRelationSideEnum )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7819:1: ruleXRelationSideEnum
             {
              before(grammarAccess.getRelationTypeRestrictionAccess().getRestrictedToSideXRelationSideEnumEnumRuleCall_4_0()); 
-            pushFollow(FOLLOW_ruleXRelationSideEnum_in_rule__RelationTypeRestriction__RestrictedToSideAssignment_415761);
+            pushFollow(FOLLOW_ruleXRelationSideEnum_in_rule__RelationTypeRestriction__RestrictedToSideAssignment_415778);
             ruleXRelationSideEnum();
             _fsp--;
 
@@ -20606,151 +20638,152 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
     public static final BitSet FOLLOW_40_in_rule__HierarchyRestriction__Group__2__Impl11632 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__HierarchyRestriction__Group__3__Impl_in_rule__HierarchyRestriction__Group__311663 = new BitSet(new long[]{0x0000040000000000L});
     public static final BitSet FOLLOW_rule__HierarchyRestriction__Group__4_in_rule__HierarchyRestriction__Group__311666 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__HierarchyRestriction__AccessRulesAssignment_3_in_rule__HierarchyRestriction__Group__3__Impl11693 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__HierarchyRestriction__Group__4__Impl_in_rule__HierarchyRestriction__Group__411723 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_42_in_rule__HierarchyRestriction__Group__4__Impl11751 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__ArtifactInstanceRestriction__Group__0__Impl_in_rule__ArtifactInstanceRestriction__Group__011792 = new BitSet(new long[]{0x0000000000000000L,0x0000000000001000L});
-    public static final BitSet FOLLOW_rule__ArtifactInstanceRestriction__Group__1_in_rule__ArtifactInstanceRestriction__Group__011795 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__ArtifactInstanceRestriction__PermissionAssignment_0_in_rule__ArtifactInstanceRestriction__Group__0__Impl11822 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__ArtifactInstanceRestriction__Group__1__Impl_in_rule__ArtifactInstanceRestriction__Group__111852 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000040L});
-    public static final BitSet FOLLOW_rule__ArtifactInstanceRestriction__Group__2_in_rule__ArtifactInstanceRestriction__Group__111855 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_76_in_rule__ArtifactInstanceRestriction__Group__1__Impl11883 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__ArtifactInstanceRestriction__Group__2__Impl_in_rule__ArtifactInstanceRestriction__Group__211914 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_rule__ArtifactInstanceRestriction__Group__3_in_rule__ArtifactInstanceRestriction__Group__211917 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_70_in_rule__ArtifactInstanceRestriction__Group__2__Impl11945 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__ArtifactInstanceRestriction__Group__3__Impl_in_rule__ArtifactInstanceRestriction__Group__311976 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000100L});
-    public static final BitSet FOLLOW_rule__ArtifactInstanceRestriction__Group__4_in_rule__ArtifactInstanceRestriction__Group__311979 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__ArtifactInstanceRestriction__ArtifactRefAssignment_3_in_rule__ArtifactInstanceRestriction__Group__3__Impl12006 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__ArtifactInstanceRestriction__Group__4__Impl_in_rule__ArtifactInstanceRestriction__Group__412036 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_72_in_rule__ArtifactInstanceRestriction__Group__4__Impl12064 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__ArtifactTypeRestriction__Group__0__Impl_in_rule__ArtifactTypeRestriction__Group__012105 = new BitSet(new long[]{0x0000000000000000L,0x0000000000001000L});
-    public static final BitSet FOLLOW_rule__ArtifactTypeRestriction__Group__1_in_rule__ArtifactTypeRestriction__Group__012108 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__ArtifactTypeRestriction__PermissionAssignment_0_in_rule__ArtifactTypeRestriction__Group__0__Impl12135 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__ArtifactTypeRestriction__Group__1__Impl_in_rule__ArtifactTypeRestriction__Group__112165 = new BitSet(new long[]{0x0000008000000000L});
-    public static final BitSet FOLLOW_rule__ArtifactTypeRestriction__Group__2_in_rule__ArtifactTypeRestriction__Group__112168 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_76_in_rule__ArtifactTypeRestriction__Group__1__Impl12196 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__ArtifactTypeRestriction__Group__2__Impl_in_rule__ArtifactTypeRestriction__Group__212227 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_rule__ArtifactTypeRestriction__Group__3_in_rule__ArtifactTypeRestriction__Group__212230 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_39_in_rule__ArtifactTypeRestriction__Group__2__Impl12258 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__ArtifactTypeRestriction__Group__3__Impl_in_rule__ArtifactTypeRestriction__Group__312289 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000100L});
-    public static final BitSet FOLLOW_rule__ArtifactTypeRestriction__Group__4_in_rule__ArtifactTypeRestriction__Group__312292 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__ArtifactTypeRestriction__ArtifactTypeRefAssignment_3_in_rule__ArtifactTypeRestriction__Group__3__Impl12319 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__ArtifactTypeRestriction__Group__4__Impl_in_rule__ArtifactTypeRestriction__Group__412349 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_72_in_rule__ArtifactTypeRestriction__Group__4__Impl12377 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__AttributeTypeRestriction__Group__0__Impl_in_rule__AttributeTypeRestriction__Group__012418 = new BitSet(new long[]{0x0000000000000000L,0x0000000000001000L});
-    public static final BitSet FOLLOW_rule__AttributeTypeRestriction__Group__1_in_rule__AttributeTypeRestriction__Group__012421 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__AttributeTypeRestriction__PermissionAssignment_0_in_rule__AttributeTypeRestriction__Group__0__Impl12448 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__AttributeTypeRestriction__Group__1__Impl_in_rule__AttributeTypeRestriction__Group__112478 = new BitSet(new long[]{0x0000800000000000L});
-    public static final BitSet FOLLOW_rule__AttributeTypeRestriction__Group__2_in_rule__AttributeTypeRestriction__Group__112481 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_76_in_rule__AttributeTypeRestriction__Group__1__Impl12509 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__AttributeTypeRestriction__Group__2__Impl_in_rule__AttributeTypeRestriction__Group__212540 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_rule__AttributeTypeRestriction__Group__3_in_rule__AttributeTypeRestriction__Group__212543 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_47_in_rule__AttributeTypeRestriction__Group__2__Impl12571 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__AttributeTypeRestriction__Group__3__Impl_in_rule__AttributeTypeRestriction__Group__312602 = new BitSet(new long[]{0x0000000000000000L,0x0000000000002100L});
-    public static final BitSet FOLLOW_rule__AttributeTypeRestriction__Group__4_in_rule__AttributeTypeRestriction__Group__312605 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__AttributeTypeRestriction__AttributeTypeRefAssignment_3_in_rule__AttributeTypeRestriction__Group__3__Impl12632 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__AttributeTypeRestriction__Group__4__Impl_in_rule__AttributeTypeRestriction__Group__412662 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000100L});
-    public static final BitSet FOLLOW_rule__AttributeTypeRestriction__Group__5_in_rule__AttributeTypeRestriction__Group__412665 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__AttributeTypeRestriction__Group_4__0_in_rule__AttributeTypeRestriction__Group__4__Impl12692 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__AttributeTypeRestriction__Group__5__Impl_in_rule__AttributeTypeRestriction__Group__512723 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_72_in_rule__AttributeTypeRestriction__Group__5__Impl12751 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__AttributeTypeRestriction__Group_4__0__Impl_in_rule__AttributeTypeRestriction__Group_4__012794 = new BitSet(new long[]{0x0000008000000000L});
-    public static final BitSet FOLLOW_rule__AttributeTypeRestriction__Group_4__1_in_rule__AttributeTypeRestriction__Group_4__012797 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_77_in_rule__AttributeTypeRestriction__Group_4__0__Impl12825 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__AttributeTypeRestriction__Group_4__1__Impl_in_rule__AttributeTypeRestriction__Group_4__112856 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_rule__AttributeTypeRestriction__Group_4__2_in_rule__AttributeTypeRestriction__Group_4__112859 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_39_in_rule__AttributeTypeRestriction__Group_4__1__Impl12887 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__AttributeTypeRestriction__Group_4__2__Impl_in_rule__AttributeTypeRestriction__Group_4__212918 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__AttributeTypeRestriction__ArtifactTypeRefAssignment_4_2_in_rule__AttributeTypeRestriction__Group_4__2__Impl12945 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__RelationTypeRestriction__Group__0__Impl_in_rule__RelationTypeRestriction__Group__012981 = new BitSet(new long[]{0x0000000000000000L,0x0000000000001000L});
-    public static final BitSet FOLLOW_rule__RelationTypeRestriction__Group__1_in_rule__RelationTypeRestriction__Group__012984 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__RelationTypeRestriction__PermissionAssignment_0_in_rule__RelationTypeRestriction__Group__0__Impl13011 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__RelationTypeRestriction__Group__1__Impl_in_rule__RelationTypeRestriction__Group__113041 = new BitSet(new long[]{0x8000000000000000L});
-    public static final BitSet FOLLOW_rule__RelationTypeRestriction__Group__2_in_rule__RelationTypeRestriction__Group__113044 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_76_in_rule__RelationTypeRestriction__Group__1__Impl13072 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__RelationTypeRestriction__Group__2__Impl_in_rule__RelationTypeRestriction__Group__213103 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_rule__RelationTypeRestriction__Group__3_in_rule__RelationTypeRestriction__Group__213106 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_63_in_rule__RelationTypeRestriction__Group__2__Impl13134 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__RelationTypeRestriction__Group__3__Impl_in_rule__RelationTypeRestriction__Group__313165 = new BitSet(new long[]{0x0000001C00000000L});
-    public static final BitSet FOLLOW_rule__RelationTypeRestriction__Group__4_in_rule__RelationTypeRestriction__Group__313168 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__RelationTypeRestriction__RelationTypeRefAssignment_3_in_rule__RelationTypeRestriction__Group__3__Impl13195 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__RelationTypeRestriction__Group__4__Impl_in_rule__RelationTypeRestriction__Group__413225 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000100L});
-    public static final BitSet FOLLOW_rule__RelationTypeRestriction__Group__5_in_rule__RelationTypeRestriction__Group__413228 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__RelationTypeRestriction__RestrictedToSideAssignment_4_in_rule__RelationTypeRestriction__Group__4__Impl13255 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__RelationTypeRestriction__Group__5__Impl_in_rule__RelationTypeRestriction__Group__513285 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_72_in_rule__RelationTypeRestriction__Group__5__Impl13313 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleImport_in_rule__OseeDsl__ImportsAssignment_013361 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleXArtifactType_in_rule__OseeDsl__ArtifactTypesAssignment_1_013392 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleXRelationType_in_rule__OseeDsl__RelationTypesAssignment_1_113423 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleXAttributeType_in_rule__OseeDsl__AttributeTypesAssignment_1_213454 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleXOseeEnumType_in_rule__OseeDsl__EnumTypesAssignment_1_313485 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleXOseeEnumOverride_in_rule__OseeDsl__EnumOverridesAssignment_1_413516 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleXBranchRef_in_rule__OseeDsl__BranchRefsAssignment_2_013547 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleXArtifactRef_in_rule__OseeDsl__ArtifactRefsAssignment_2_113578 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleAccessContext_in_rule__OseeDsl__AccessDeclarationsAssignment_313609 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_STRING_in_rule__Import__ImportURIAssignment_113640 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_78_in_rule__XArtifactType__AbstractAssignment_013676 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleARTIFACT_TYPE_REFERENCE_in_rule__XArtifactType__NameAssignment_213715 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleARTIFACT_TYPE_REFERENCE_in_rule__XArtifactType__SuperArtifactTypesAssignment_3_113750 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleARTIFACT_TYPE_REFERENCE_in_rule__XArtifactType__SuperArtifactTypesAssignment_3_2_113789 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_STRING_in_rule__XArtifactType__TypeGuidAssignment_613824 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleXAttributeTypeRef_in_rule__XArtifactType__ValidAttributeTypesAssignment_713855 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleATTRIBUTE_TYPE_REFERENCE_in_rule__XAttributeTypeRef__ValidAttributeTypeAssignment_113890 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_STRING_in_rule__XAttributeTypeRef__BranchGuidAssignment_2_113925 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleATTRIBUTE_TYPE_REFERENCE_in_rule__XAttributeType__NameAssignment_113956 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleAttributeBaseType_in_rule__XAttributeType__BaseAttributeTypeAssignment_2_113987 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleATTRIBUTE_TYPE_REFERENCE_in_rule__XAttributeType__OverrideAssignment_3_114022 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_STRING_in_rule__XAttributeType__TypeGuidAssignment_614057 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__XAttributeType__DataProviderAlternatives_8_0_in_rule__XAttributeType__DataProviderAssignment_814088 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_WHOLE_NUM_STR_in_rule__XAttributeType__MinAssignment_1014121 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__XAttributeType__MaxAlternatives_12_0_in_rule__XAttributeType__MaxAssignment_1214152 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__XAttributeType__TaggerIdAlternatives_13_1_0_in_rule__XAttributeType__TaggerIdAssignment_13_114185 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleENUM_TYPE_REFERENCE_in_rule__XAttributeType__EnumTypeAssignment_14_114222 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_STRING_in_rule__XAttributeType__DescriptionAssignment_15_114257 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_STRING_in_rule__XAttributeType__DefaultValueAssignment_16_114288 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_STRING_in_rule__XAttributeType__FileExtensionAssignment_17_114319 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleENUM_TYPE_REFERENCE_in_rule__XOseeEnumType__NameAssignment_114350 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_STRING_in_rule__XOseeEnumType__TypeGuidAssignment_414381 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleXOseeEnumEntry_in_rule__XOseeEnumType__EnumEntriesAssignment_514412 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleENUM_ENTRY_TYPE_REFERENCE_in_rule__XOseeEnumEntry__NameAssignment_114443 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_WHOLE_NUM_STR_in_rule__XOseeEnumEntry__OrdinalAssignment_214474 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_STRING_in_rule__XOseeEnumEntry__EntryGuidAssignment_3_114505 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleENUM_TYPE_REFERENCE_in_rule__XOseeEnumOverride__OverridenEnumTypeAssignment_114540 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_79_in_rule__XOseeEnumOverride__InheritAllAssignment_314580 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleOverrideOption_in_rule__XOseeEnumOverride__OverrideOptionsAssignment_414619 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleENUM_ENTRY_TYPE_REFERENCE_in_rule__AddEnum__EnumEntryAssignment_114650 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_WHOLE_NUM_STR_in_rule__AddEnum__OrdinalAssignment_214681 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_STRING_in_rule__AddEnum__EntryGuidAssignment_3_114712 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleENUM_ENTRY_TYPE_REFERENCE_in_rule__RemoveEnum__EnumEntryAssignment_114747 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleRELATION_TYPE_REFERENCE_in_rule__XRelationType__NameAssignment_114782 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_STRING_in_rule__XRelationType__TypeGuidAssignment_414813 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_STRING_in_rule__XRelationType__SideANameAssignment_614844 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleARTIFACT_TYPE_REFERENCE_in_rule__XRelationType__SideAArtifactTypeAssignment_814879 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_STRING_in_rule__XRelationType__SideBNameAssignment_1014914 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleARTIFACT_TYPE_REFERENCE_in_rule__XRelationType__SideBArtifactTypeAssignment_1214949 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleRelationOrderType_in_rule__XRelationType__DefaultOrderTypeAssignment_1414984 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleRelationMultiplicityEnum_in_rule__XRelationType__MultiplicityAssignment_1615015 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleARTIFACT_INSTANCE_REFERENCE_in_rule__XArtifactRef__NameAssignment_115046 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_STRING_in_rule__XArtifactRef__GuidAssignment_315077 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleBRANCH_INSTANCE_REFERENCE_in_rule__XBranchRef__NameAssignment_115108 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_STRING_in_rule__XBranchRef__GuidAssignment_315139 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleACCESS_CONTEXT_TYPE_REFRENCE_in_rule__AccessContext__NameAssignment_115170 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleACCESS_CONTEXT_TYPE_REFRENCE_in_rule__AccessContext__SuperAccessContextsAssignment_2_115205 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleACCESS_CONTEXT_TYPE_REFRENCE_in_rule__AccessContext__SuperAccessContextsAssignment_2_2_115244 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_STRING_in_rule__AccessContext__GuidAssignment_515279 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleObjectRestriction_in_rule__AccessContext__AccessRulesAssignment_7_015310 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleHierarchyRestriction_in_rule__AccessContext__HierarchyRestrictionsAssignment_7_115341 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleARTIFACT_INSTANCE_REFERENCE_in_rule__HierarchyRestriction__ArtifactAssignment_115376 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleObjectRestriction_in_rule__HierarchyRestriction__AccessRulesAssignment_315411 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleAccessPermissionEnum_in_rule__ArtifactInstanceRestriction__PermissionAssignment_015442 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleARTIFACT_INSTANCE_REFERENCE_in_rule__ArtifactInstanceRestriction__ArtifactRefAssignment_315477 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleAccessPermissionEnum_in_rule__ArtifactTypeRestriction__PermissionAssignment_015512 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleARTIFACT_TYPE_REFERENCE_in_rule__ArtifactTypeRestriction__ArtifactTypeRefAssignment_315547 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleAccessPermissionEnum_in_rule__AttributeTypeRestriction__PermissionAssignment_015582 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleATTRIBUTE_TYPE_REFERENCE_in_rule__AttributeTypeRestriction__AttributeTypeRefAssignment_315617 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleARTIFACT_TYPE_REFERENCE_in_rule__AttributeTypeRestriction__ArtifactTypeRefAssignment_4_215656 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleAccessPermissionEnum_in_rule__RelationTypeRestriction__PermissionAssignment_015691 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleRELATION_TYPE_REFERENCE_in_rule__RelationTypeRestriction__RelationTypeRefAssignment_315726 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleXRelationSideEnum_in_rule__RelationTypeRestriction__RestrictedToSideAssignment_415761 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__HierarchyRestriction__AccessRulesAssignment_3_in_rule__HierarchyRestriction__Group__3__Impl11695 = new BitSet(new long[]{0x0000000300000002L});
+    public static final BitSet FOLLOW_rule__HierarchyRestriction__AccessRulesAssignment_3_in_rule__HierarchyRestriction__Group__3__Impl11707 = new BitSet(new long[]{0x0000000300000002L});
+    public static final BitSet FOLLOW_rule__HierarchyRestriction__Group__4__Impl_in_rule__HierarchyRestriction__Group__411740 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_42_in_rule__HierarchyRestriction__Group__4__Impl11768 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__ArtifactInstanceRestriction__Group__0__Impl_in_rule__ArtifactInstanceRestriction__Group__011809 = new BitSet(new long[]{0x0000000000000000L,0x0000000000001000L});
+    public static final BitSet FOLLOW_rule__ArtifactInstanceRestriction__Group__1_in_rule__ArtifactInstanceRestriction__Group__011812 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__ArtifactInstanceRestriction__PermissionAssignment_0_in_rule__ArtifactInstanceRestriction__Group__0__Impl11839 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__ArtifactInstanceRestriction__Group__1__Impl_in_rule__ArtifactInstanceRestriction__Group__111869 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000040L});
+    public static final BitSet FOLLOW_rule__ArtifactInstanceRestriction__Group__2_in_rule__ArtifactInstanceRestriction__Group__111872 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_76_in_rule__ArtifactInstanceRestriction__Group__1__Impl11900 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__ArtifactInstanceRestriction__Group__2__Impl_in_rule__ArtifactInstanceRestriction__Group__211931 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_rule__ArtifactInstanceRestriction__Group__3_in_rule__ArtifactInstanceRestriction__Group__211934 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_70_in_rule__ArtifactInstanceRestriction__Group__2__Impl11962 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__ArtifactInstanceRestriction__Group__3__Impl_in_rule__ArtifactInstanceRestriction__Group__311993 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000100L});
+    public static final BitSet FOLLOW_rule__ArtifactInstanceRestriction__Group__4_in_rule__ArtifactInstanceRestriction__Group__311996 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__ArtifactInstanceRestriction__ArtifactRefAssignment_3_in_rule__ArtifactInstanceRestriction__Group__3__Impl12023 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__ArtifactInstanceRestriction__Group__4__Impl_in_rule__ArtifactInstanceRestriction__Group__412053 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_72_in_rule__ArtifactInstanceRestriction__Group__4__Impl12081 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__ArtifactTypeRestriction__Group__0__Impl_in_rule__ArtifactTypeRestriction__Group__012122 = new BitSet(new long[]{0x0000000000000000L,0x0000000000001000L});
+    public static final BitSet FOLLOW_rule__ArtifactTypeRestriction__Group__1_in_rule__ArtifactTypeRestriction__Group__012125 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__ArtifactTypeRestriction__PermissionAssignment_0_in_rule__ArtifactTypeRestriction__Group__0__Impl12152 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__ArtifactTypeRestriction__Group__1__Impl_in_rule__ArtifactTypeRestriction__Group__112182 = new BitSet(new long[]{0x0000008000000000L});
+    public static final BitSet FOLLOW_rule__ArtifactTypeRestriction__Group__2_in_rule__ArtifactTypeRestriction__Group__112185 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_76_in_rule__ArtifactTypeRestriction__Group__1__Impl12213 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__ArtifactTypeRestriction__Group__2__Impl_in_rule__ArtifactTypeRestriction__Group__212244 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_rule__ArtifactTypeRestriction__Group__3_in_rule__ArtifactTypeRestriction__Group__212247 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_39_in_rule__ArtifactTypeRestriction__Group__2__Impl12275 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__ArtifactTypeRestriction__Group__3__Impl_in_rule__ArtifactTypeRestriction__Group__312306 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000100L});
+    public static final BitSet FOLLOW_rule__ArtifactTypeRestriction__Group__4_in_rule__ArtifactTypeRestriction__Group__312309 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__ArtifactTypeRestriction__ArtifactTypeRefAssignment_3_in_rule__ArtifactTypeRestriction__Group__3__Impl12336 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__ArtifactTypeRestriction__Group__4__Impl_in_rule__ArtifactTypeRestriction__Group__412366 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_72_in_rule__ArtifactTypeRestriction__Group__4__Impl12394 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__AttributeTypeRestriction__Group__0__Impl_in_rule__AttributeTypeRestriction__Group__012435 = new BitSet(new long[]{0x0000000000000000L,0x0000000000001000L});
+    public static final BitSet FOLLOW_rule__AttributeTypeRestriction__Group__1_in_rule__AttributeTypeRestriction__Group__012438 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__AttributeTypeRestriction__PermissionAssignment_0_in_rule__AttributeTypeRestriction__Group__0__Impl12465 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__AttributeTypeRestriction__Group__1__Impl_in_rule__AttributeTypeRestriction__Group__112495 = new BitSet(new long[]{0x0000800000000000L});
+    public static final BitSet FOLLOW_rule__AttributeTypeRestriction__Group__2_in_rule__AttributeTypeRestriction__Group__112498 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_76_in_rule__AttributeTypeRestriction__Group__1__Impl12526 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__AttributeTypeRestriction__Group__2__Impl_in_rule__AttributeTypeRestriction__Group__212557 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_rule__AttributeTypeRestriction__Group__3_in_rule__AttributeTypeRestriction__Group__212560 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_47_in_rule__AttributeTypeRestriction__Group__2__Impl12588 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__AttributeTypeRestriction__Group__3__Impl_in_rule__AttributeTypeRestriction__Group__312619 = new BitSet(new long[]{0x0000000000000000L,0x0000000000002100L});
+    public static final BitSet FOLLOW_rule__AttributeTypeRestriction__Group__4_in_rule__AttributeTypeRestriction__Group__312622 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__AttributeTypeRestriction__AttributeTypeRefAssignment_3_in_rule__AttributeTypeRestriction__Group__3__Impl12649 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__AttributeTypeRestriction__Group__4__Impl_in_rule__AttributeTypeRestriction__Group__412679 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000100L});
+    public static final BitSet FOLLOW_rule__AttributeTypeRestriction__Group__5_in_rule__AttributeTypeRestriction__Group__412682 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__AttributeTypeRestriction__Group_4__0_in_rule__AttributeTypeRestriction__Group__4__Impl12709 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__AttributeTypeRestriction__Group__5__Impl_in_rule__AttributeTypeRestriction__Group__512740 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_72_in_rule__AttributeTypeRestriction__Group__5__Impl12768 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__AttributeTypeRestriction__Group_4__0__Impl_in_rule__AttributeTypeRestriction__Group_4__012811 = new BitSet(new long[]{0x0000008000000000L});
+    public static final BitSet FOLLOW_rule__AttributeTypeRestriction__Group_4__1_in_rule__AttributeTypeRestriction__Group_4__012814 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_77_in_rule__AttributeTypeRestriction__Group_4__0__Impl12842 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__AttributeTypeRestriction__Group_4__1__Impl_in_rule__AttributeTypeRestriction__Group_4__112873 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_rule__AttributeTypeRestriction__Group_4__2_in_rule__AttributeTypeRestriction__Group_4__112876 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_39_in_rule__AttributeTypeRestriction__Group_4__1__Impl12904 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__AttributeTypeRestriction__Group_4__2__Impl_in_rule__AttributeTypeRestriction__Group_4__212935 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__AttributeTypeRestriction__ArtifactTypeRefAssignment_4_2_in_rule__AttributeTypeRestriction__Group_4__2__Impl12962 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__RelationTypeRestriction__Group__0__Impl_in_rule__RelationTypeRestriction__Group__012998 = new BitSet(new long[]{0x0000000000000000L,0x0000000000001000L});
+    public static final BitSet FOLLOW_rule__RelationTypeRestriction__Group__1_in_rule__RelationTypeRestriction__Group__013001 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__RelationTypeRestriction__PermissionAssignment_0_in_rule__RelationTypeRestriction__Group__0__Impl13028 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__RelationTypeRestriction__Group__1__Impl_in_rule__RelationTypeRestriction__Group__113058 = new BitSet(new long[]{0x8000000000000000L});
+    public static final BitSet FOLLOW_rule__RelationTypeRestriction__Group__2_in_rule__RelationTypeRestriction__Group__113061 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_76_in_rule__RelationTypeRestriction__Group__1__Impl13089 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__RelationTypeRestriction__Group__2__Impl_in_rule__RelationTypeRestriction__Group__213120 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_rule__RelationTypeRestriction__Group__3_in_rule__RelationTypeRestriction__Group__213123 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_63_in_rule__RelationTypeRestriction__Group__2__Impl13151 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__RelationTypeRestriction__Group__3__Impl_in_rule__RelationTypeRestriction__Group__313182 = new BitSet(new long[]{0x0000001C00000000L});
+    public static final BitSet FOLLOW_rule__RelationTypeRestriction__Group__4_in_rule__RelationTypeRestriction__Group__313185 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__RelationTypeRestriction__RelationTypeRefAssignment_3_in_rule__RelationTypeRestriction__Group__3__Impl13212 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__RelationTypeRestriction__Group__4__Impl_in_rule__RelationTypeRestriction__Group__413242 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000100L});
+    public static final BitSet FOLLOW_rule__RelationTypeRestriction__Group__5_in_rule__RelationTypeRestriction__Group__413245 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__RelationTypeRestriction__RestrictedToSideAssignment_4_in_rule__RelationTypeRestriction__Group__4__Impl13272 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__RelationTypeRestriction__Group__5__Impl_in_rule__RelationTypeRestriction__Group__513302 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_72_in_rule__RelationTypeRestriction__Group__5__Impl13330 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleImport_in_rule__OseeDsl__ImportsAssignment_013378 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleXArtifactType_in_rule__OseeDsl__ArtifactTypesAssignment_1_013409 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleXRelationType_in_rule__OseeDsl__RelationTypesAssignment_1_113440 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleXAttributeType_in_rule__OseeDsl__AttributeTypesAssignment_1_213471 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleXOseeEnumType_in_rule__OseeDsl__EnumTypesAssignment_1_313502 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleXOseeEnumOverride_in_rule__OseeDsl__EnumOverridesAssignment_1_413533 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleXBranchRef_in_rule__OseeDsl__BranchRefsAssignment_2_013564 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleXArtifactRef_in_rule__OseeDsl__ArtifactRefsAssignment_2_113595 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleAccessContext_in_rule__OseeDsl__AccessDeclarationsAssignment_313626 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_STRING_in_rule__Import__ImportURIAssignment_113657 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_78_in_rule__XArtifactType__AbstractAssignment_013693 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleARTIFACT_TYPE_REFERENCE_in_rule__XArtifactType__NameAssignment_213732 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleARTIFACT_TYPE_REFERENCE_in_rule__XArtifactType__SuperArtifactTypesAssignment_3_113767 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleARTIFACT_TYPE_REFERENCE_in_rule__XArtifactType__SuperArtifactTypesAssignment_3_2_113806 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_STRING_in_rule__XArtifactType__TypeGuidAssignment_613841 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleXAttributeTypeRef_in_rule__XArtifactType__ValidAttributeTypesAssignment_713872 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleATTRIBUTE_TYPE_REFERENCE_in_rule__XAttributeTypeRef__ValidAttributeTypeAssignment_113907 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_STRING_in_rule__XAttributeTypeRef__BranchGuidAssignment_2_113942 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleATTRIBUTE_TYPE_REFERENCE_in_rule__XAttributeType__NameAssignment_113973 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleAttributeBaseType_in_rule__XAttributeType__BaseAttributeTypeAssignment_2_114004 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleATTRIBUTE_TYPE_REFERENCE_in_rule__XAttributeType__OverrideAssignment_3_114039 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_STRING_in_rule__XAttributeType__TypeGuidAssignment_614074 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__XAttributeType__DataProviderAlternatives_8_0_in_rule__XAttributeType__DataProviderAssignment_814105 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_WHOLE_NUM_STR_in_rule__XAttributeType__MinAssignment_1014138 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__XAttributeType__MaxAlternatives_12_0_in_rule__XAttributeType__MaxAssignment_1214169 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__XAttributeType__TaggerIdAlternatives_13_1_0_in_rule__XAttributeType__TaggerIdAssignment_13_114202 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleENUM_TYPE_REFERENCE_in_rule__XAttributeType__EnumTypeAssignment_14_114239 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_STRING_in_rule__XAttributeType__DescriptionAssignment_15_114274 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_STRING_in_rule__XAttributeType__DefaultValueAssignment_16_114305 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_STRING_in_rule__XAttributeType__FileExtensionAssignment_17_114336 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleENUM_TYPE_REFERENCE_in_rule__XOseeEnumType__NameAssignment_114367 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_STRING_in_rule__XOseeEnumType__TypeGuidAssignment_414398 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleXOseeEnumEntry_in_rule__XOseeEnumType__EnumEntriesAssignment_514429 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleENUM_ENTRY_TYPE_REFERENCE_in_rule__XOseeEnumEntry__NameAssignment_114460 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_WHOLE_NUM_STR_in_rule__XOseeEnumEntry__OrdinalAssignment_214491 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_STRING_in_rule__XOseeEnumEntry__EntryGuidAssignment_3_114522 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleENUM_TYPE_REFERENCE_in_rule__XOseeEnumOverride__OverridenEnumTypeAssignment_114557 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_79_in_rule__XOseeEnumOverride__InheritAllAssignment_314597 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleOverrideOption_in_rule__XOseeEnumOverride__OverrideOptionsAssignment_414636 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleENUM_ENTRY_TYPE_REFERENCE_in_rule__AddEnum__EnumEntryAssignment_114667 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_WHOLE_NUM_STR_in_rule__AddEnum__OrdinalAssignment_214698 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_STRING_in_rule__AddEnum__EntryGuidAssignment_3_114729 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleENUM_ENTRY_TYPE_REFERENCE_in_rule__RemoveEnum__EnumEntryAssignment_114764 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleRELATION_TYPE_REFERENCE_in_rule__XRelationType__NameAssignment_114799 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_STRING_in_rule__XRelationType__TypeGuidAssignment_414830 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_STRING_in_rule__XRelationType__SideANameAssignment_614861 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleARTIFACT_TYPE_REFERENCE_in_rule__XRelationType__SideAArtifactTypeAssignment_814896 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_STRING_in_rule__XRelationType__SideBNameAssignment_1014931 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleARTIFACT_TYPE_REFERENCE_in_rule__XRelationType__SideBArtifactTypeAssignment_1214966 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleRelationOrderType_in_rule__XRelationType__DefaultOrderTypeAssignment_1415001 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleRelationMultiplicityEnum_in_rule__XRelationType__MultiplicityAssignment_1615032 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleARTIFACT_INSTANCE_REFERENCE_in_rule__XArtifactRef__NameAssignment_115063 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_STRING_in_rule__XArtifactRef__GuidAssignment_315094 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleBRANCH_INSTANCE_REFERENCE_in_rule__XBranchRef__NameAssignment_115125 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_STRING_in_rule__XBranchRef__GuidAssignment_315156 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleACCESS_CONTEXT_TYPE_REFRENCE_in_rule__AccessContext__NameAssignment_115187 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleACCESS_CONTEXT_TYPE_REFRENCE_in_rule__AccessContext__SuperAccessContextsAssignment_2_115222 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleACCESS_CONTEXT_TYPE_REFRENCE_in_rule__AccessContext__SuperAccessContextsAssignment_2_2_115261 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_STRING_in_rule__AccessContext__GuidAssignment_515296 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleObjectRestriction_in_rule__AccessContext__AccessRulesAssignment_7_015327 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleHierarchyRestriction_in_rule__AccessContext__HierarchyRestrictionsAssignment_7_115358 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleARTIFACT_INSTANCE_REFERENCE_in_rule__HierarchyRestriction__ArtifactAssignment_115393 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleObjectRestriction_in_rule__HierarchyRestriction__AccessRulesAssignment_315428 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleAccessPermissionEnum_in_rule__ArtifactInstanceRestriction__PermissionAssignment_015459 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleARTIFACT_INSTANCE_REFERENCE_in_rule__ArtifactInstanceRestriction__ArtifactRefAssignment_315494 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleAccessPermissionEnum_in_rule__ArtifactTypeRestriction__PermissionAssignment_015529 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleARTIFACT_TYPE_REFERENCE_in_rule__ArtifactTypeRestriction__ArtifactTypeRefAssignment_315564 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleAccessPermissionEnum_in_rule__AttributeTypeRestriction__PermissionAssignment_015599 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleATTRIBUTE_TYPE_REFERENCE_in_rule__AttributeTypeRestriction__AttributeTypeRefAssignment_315634 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleARTIFACT_TYPE_REFERENCE_in_rule__AttributeTypeRestriction__ArtifactTypeRefAssignment_4_215673 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleAccessPermissionEnum_in_rule__RelationTypeRestriction__PermissionAssignment_015708 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleRELATION_TYPE_REFERENCE_in_rule__RelationTypeRestriction__RelationTypeRefAssignment_315743 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleXRelationSideEnum_in_rule__RelationTypeRestriction__RestrictedToSideAssignment_415778 = new BitSet(new long[]{0x0000000000000002L});
 
 }

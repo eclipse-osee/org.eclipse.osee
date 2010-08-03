@@ -31,9 +31,7 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumEntry;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumOverride;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType;
-import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -121,7 +119,7 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
    private void translateSuperTypes(ArtifactType targetArtifactType, XArtifactType xArtifactType) throws OseeCoreException {
       Set<ArtifactType> oseeSuperTypes = new HashSet<ArtifactType>();
       for (XArtifactType xSuperType : xArtifactType.getSuperArtifactTypes()) {
-         String superTypeName = removeQuotes(xSuperType.getName());
+         String superTypeName = Strings.unquote(xSuperType.getName());
          ArtifactType oseeSuperType = typeCache.getArtifactTypeCache().getUniqueByName(superTypeName);
          oseeSuperTypes.add(oseeSuperType);
       }
@@ -158,12 +156,8 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
       }
    }
 
-   private String removeQuotes(String nameReference) {
-      return nameReference != null ? nameReference.substring(1, nameReference.length() - 1) : nameReference;
-   }
-
    private void translateXArtifactType(XArtifactType xArtifactType) throws OseeCoreException {
-      String artifactTypeName = removeQuotes(xArtifactType.getName());
+      String artifactTypeName = Strings.unquote(xArtifactType.getName());
 
       ArtifactType oseeArtifactType =
          provider.getArtifactTypeFactory().createOrUpdate(typeCache.getArtifactTypeCache(),
@@ -172,7 +166,7 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
    }
 
    private void translateXEnumType(XOseeEnumType xEnumType) throws OseeCoreException {
-      String enumTypeName = removeQuotes(xEnumType.getName());
+      String enumTypeName = Strings.unquote(xEnumType.getName());
 
       OseeEnumType oseeEnumType =
          provider.getOseeEnumTypeFactory().createOrUpdate(typeCache.getEnumTypeCache(), xEnumType.getTypeGuid(),
@@ -181,7 +175,7 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
       int lastOrdinal = 0;
       List<OseeEnumEntry> oseeEnumEntries = new ArrayList<OseeEnumEntry>();
       for (XOseeEnumEntry xEnumEntry : xEnumType.getEnumEntries()) {
-         String entryName = removeQuotes(xEnumEntry.getName());
+         String entryName = Strings.unquote(xEnumEntry.getName());
          String ordinal = xEnumEntry.getOrdinal();
          if (Strings.isValid(ordinal)) {
             lastOrdinal = Integer.parseInt(ordinal);
@@ -232,7 +226,7 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
       AttributeTypeCache cache = typeCache.getAttributeTypeCache();
       AttributeType oseeAttributeType = provider.getAttributeTypeFactory().createOrUpdate(cache, //
          xAttributeType.getTypeGuid(), //
-         removeQuotes(xAttributeType.getName()), //
+         Strings.unquote(xAttributeType.getName()), //
          getQualifiedTypeName(xAttributeType.getBaseAttributeType()), //
          getQualifiedTypeName(xAttributeType.getDataProvider()), //
          xAttributeType.getFileExtension(), //
@@ -258,8 +252,8 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
       RelationTypeMultiplicity multiplicity =
          RelationTypeMultiplicity.getFromString(xRelationType.getMultiplicity().name());
 
-      String sideATypeName = removeQuotes(xRelationType.getSideAArtifactType().getName());
-      String sideBTypeName = removeQuotes(xRelationType.getSideBArtifactType().getName());
+      String sideATypeName = Strings.unquote(xRelationType.getSideAArtifactType().getName());
+      String sideBTypeName = Strings.unquote(xRelationType.getSideBArtifactType().getName());
 
       ArtifactType sideAType = typeCache.getArtifactTypeCache().getUniqueByName(sideATypeName);
       ArtifactType sideBType = typeCache.getArtifactTypeCache().getUniqueByName(sideBTypeName);
@@ -267,20 +261,16 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
       RelationType oseeRelationType =
          provider.getRelationTypeFactory().createOrUpdate(typeCache.getRelationTypeCache(), //
             xRelationType.getTypeGuid(), //
-            removeQuotes(xRelationType.getName()), //
+            Strings.unquote(xRelationType.getName()), //
             xRelationType.getSideAName(), //
             xRelationType.getSideBName(), //
             sideAType, //
             sideBType, //
             multiplicity, //
-            convertOrderTypeNameToGuid(xRelationType.getDefaultOrderType()) //
+            OseeUtil.orderTypeNameToGuid(xRelationType.getDefaultOrderType()) //
          );
 
       xRelationType.setTypeGuid(oseeRelationType.getGuid());
-   }
-
-   private String convertOrderTypeNameToGuid(String orderTypeName) throws OseeArgumentException {
-      return RelationOrderBaseTypes.getFromOrderTypeName(orderTypeName.replaceAll("_", " ")).getGuid();
    }
 
 }

@@ -130,7 +130,7 @@ AccessContext:
 	'}';
 
 HierarchyRestriction:
-	'childrenOf' artifact=[XArtifactRef|ARTIFACT_INSTANCE_REFERENCE] '{' accessRules+=ObjectRestriction '}';
+	'childrenOf' artifact=[XArtifactRef|ARTIFACT_INSTANCE_REFERENCE] '{' (accessRules+=ObjectRestriction)+ '}';
 
 enum AccessPermissionEnum:
 	ALLOW | DENY;

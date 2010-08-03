@@ -19,16 +19,21 @@ public class Activator implements BundleActivator {
 
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.core.dsl.integration";
 
-   private ServiceDependencyTracker dependencyTracker;
+   private ServiceDependencyTracker dependencyTracker1;
+   private ServiceDependencyTracker dependencyTracker2;
 
    @Override
    public void start(BundleContext context) throws Exception {
-      dependencyTracker = new ServiceDependencyTracker(context, new OseeModelingServiceRegHandler());
-      dependencyTracker.open();
+      dependencyTracker1 = new ServiceDependencyTracker(context, new OseeModelingServiceRegHandler());
+      dependencyTracker1.open();
+
+      dependencyTracker2 = new ServiceDependencyTracker(context, new AccessModelInterpreterServiceRegHandler());
+      dependencyTracker2.open();
    }
 
    @Override
    public void stop(BundleContext context) throws Exception {
-      Lib.close(dependencyTracker);
+      Lib.close(dependencyTracker1);
+      Lib.close(dependencyTracker2);
    }
 }

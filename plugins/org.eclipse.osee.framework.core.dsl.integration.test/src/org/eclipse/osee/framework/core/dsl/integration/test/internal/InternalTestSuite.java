@@ -8,9 +8,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.dsl.integration.test;
+package org.eclipse.osee.framework.core.dsl.integration.test.internal;
 
-import org.eclipse.osee.framework.core.dsl.integration.test.internal.InternalTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -19,10 +18,12 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ //
-InternalTestSuite.class, //
-   ModelUtilTest.class, //
-   OseeUtilTest.class, //
+ArtifactInstanceRestrictionHandlerTest.class, //
+   ArtifactTypeRestrictionHandlerTest.class, //
+   AttributeTypeRestrictionHandlerTest.class, //
+   RelationTypeRestrictionHandlerTest.class, //
+   OseeAccessModelInterpreterTest.class, //
 })
-public class AllDslIntegrationTestSuite {
+public class InternalTestSuite {
    // Test Suite
 }

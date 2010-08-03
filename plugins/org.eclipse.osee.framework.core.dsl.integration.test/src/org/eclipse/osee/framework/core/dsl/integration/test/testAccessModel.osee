@@ -1,44 +1,62 @@
 import "testTypeModel.osee"
 
-//artifact "Software Items" artGuid "AAMFEcWy0xc4e3tcem99";
-//artifact "Systems" artGuid "AAMFEcWy0xc4e3tcem88";
-//artifact "SubSystems" artGuid "AAMFEcWy0xc4e3tcem77";
+artifactType "Artifact" {
+   guid "BZOUrxO35x+LBZkEYzAA"
+}
 
+artifactType "Software Requirement" extends "Artifact" {
+   guid "BZO4PuM+Oz58hpAcTGwA"
+}
 
-//accessContext "System Context" {
-//   guid "AAMFEcWy0xc4e3tcem11";
-//   
-////	DENY edit artifactType "Artifact";
-//	
-////	childrenOf "Software Items" {
-////		DENY edit artifactType "Artifact";
-////	}
-////	
-////	childrenOf "Systems" {
-////		DENY edit artifactType "Artifact";
-////	}
-////	
-////	childrenOf "SubSystems" {
-////		DENY edit artifactType "Artifact";
-////	}
-//}
+attributeType "Qualification Method" extends StringAttribute {
+   guid "BZPB25t9fRVnLuII6+wA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   defaultValue "test"
+}
 
-//accessContext "subsystem.requirement.writer" extends "System Context" {
-//	guid "AAMFEcWy0xc4e3tcem22";
-//	
-//	DENY edit attributeType "Qualification Method" of artifactType "Software Requirement";
-//	ALLOW edit attributeType "Annotation" of artifactType "Software Requirement";
-//	DENY edit attributeType "Qualification Method" of artifactType "Software Requirement";
-//	ALLOW edit attributeType "Qualification Method" of artifactType "Software Requirement";
-//	
-//	childrenOf "SubSystem Requirement" { 
-//		ALLOW edit artifactType "Artifact";
-//	}
-//}
-//
-//accessContext "software.requirement.writer" extends "System Context" {
-//	guid "AAMFEcWy0xc4e3tcem33";
-//	childrenOf "SubSystem Requirement" { 
-//		ALLOW edit artifactType "Artifact";
-//	}
-//}
+artifact "Software Items" artGuid "AAMFEcWy0xc4e3tcem99";
+artifact "Systems" artGuid "AAMFEcWy0xc4e3tcem88";
+artifact "SubSystems" artGuid "AAMFEcWy0xc4e3tcem77";
+
+// Access Contexts
+
+accessContext "System Context" {
+   guid "AAMFEcWy0xc4e3tcem11";
+   DENY edit artifactType "Artifact";
+
+   childrenOf "Software Items" {
+      DENY edit artifactType "Artifact";
+   }
+
+   childrenOf "Systems" {
+      DENY edit artifactType "Artifact";
+   }
+
+   childrenOf "SubSystems" {
+      DENY edit artifactType "Artifact";
+   }
+
+}
+
+accessContext "subsystem.requirement.writer" extends "System Context" {
+   guid "AAMFEcWy0xc4e3tcem22";
+   DENY edit attributeType "Qualification Method" of artifactType "Software Requirement";
+
+   //	ALLOW edit attributeType "Annotation" of artifactType "Software Requirement";
+   ALLOW edit attributeType "Qualification Method" of artifactType "Software Requirement";
+   ALLOW edit attributeType "Qualification Method" of artifactType "Software Requirement";
+
+   //   childrenOf "SubSystem Requirement" {
+   //      ALLOW edit artifactType "Artifact";
+   //   }
+   //}
+   //
+   //accessContext "software.requirement.writer" extends "System Context" {
+   //	guid "AAMFEcWy0xc4e3tcem33";
+   //	childrenOf "SubSystem Requirement" { 
+   //		ALLOW edit artifactType "Artifact";
+   //	}
+
+}

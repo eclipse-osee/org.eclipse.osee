@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.dsl.integration.test;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -28,7 +31,9 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
+import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.junit.Test;
 
@@ -40,10 +45,20 @@ import org.junit.Test;
 public class OseeUtilTest {
 
    @Test
-   public void testIsSideRestricted() {
+   public void testIsSideRestricted() throws OseeCoreException {
       checkIsRestricted(XRelationSideEnum.BOTH, true, true);
       checkIsRestricted(XRelationSideEnum.SIDE_A, true, false);
       checkIsRestricted(XRelationSideEnum.SIDE_B, false, true);
+   }
+
+   @Test(expected = OseeArgumentException.class)
+   public void testIsSideRestrictionXRelationSideEnumNullCheck() throws OseeCoreException {
+      OseeUtil.isRestrictedSide(null, RelationSide.SIDE_A);
+   }
+
+   @Test(expected = OseeArgumentException.class)
+   public void testIsSideRestrictionRelationSideNullCheck() throws OseeCoreException {
+      OseeUtil.isRestrictedSide(XRelationSideEnum.BOTH, null);
    }
 
    @Test
@@ -108,6 +123,64 @@ public class OseeUtilTest {
       Assert.assertFalse(expected.equals(actual));
    }
 
+   @Test(expected = OseeArgumentException.class)
+   public void testGetRelationOrderTypeNullCheck() throws OseeCoreException {
+      OseeUtil.getRelationOrderType(null);
+   }
+
+   @Test(expected = OseeArgumentException.class)
+   public void testGetRelationOrderTypeEmptyCheck() throws OseeCoreException {
+      OseeUtil.getRelationOrderType("");
+   }
+
+   @Test(expected = OseeArgumentException.class)
+   public void testGetRelationOrderTypeNotFoundCheck() throws OseeCoreException {
+      OseeUtil.getRelationOrderType("a");
+   }
+
+   @Test
+   public void testGetRelationOrderType() throws OseeCoreException {
+      Map<String, String> testData = new HashMap<String, String>();
+      testData.put(RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC.getGuid(), "Lexicographical_Ascending");
+      testData.put(RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC.getGuid(), "Lexicographical_Descending");
+      testData.put(RelationOrderBaseTypes.UNORDERED.getGuid(), "Unordered");
+      testData.put(RelationOrderBaseTypes.USER_DEFINED.getGuid(), "User_Defined");
+      for (Entry<String, String> entry : testData.entrySet()) {
+         String actualName = OseeUtil.getRelationOrderType(entry.getKey());
+         String expectedName = entry.getValue();
+         Assert.assertEquals(expectedName, actualName);
+      }
+   }
+
+   @Test(expected = OseeArgumentException.class)
+   public void testOrderTypeNameToGuidNullCheck() throws OseeCoreException {
+      OseeUtil.orderTypeNameToGuid(null);
+   }
+
+   @Test(expected = OseeArgumentException.class)
+   public void testOrderTypeNameToGuidEmptyCheck() throws OseeCoreException {
+      OseeUtil.orderTypeNameToGuid("");
+   }
+
+   @Test(expected = OseeArgumentException.class)
+   public void testOrderTypeNameToGuidNotFoundCheck() throws OseeCoreException {
+      OseeUtil.orderTypeNameToGuid("a");
+   }
+
+   @Test
+   public void testOrderTypeNameToGuid() throws OseeCoreException {
+      Map<String, String> testData = new HashMap<String, String>();
+      testData.put("Lexicographical_Ascending", RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC.getGuid());
+      testData.put("Lexicographical_Descending", RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC.getGuid());
+      testData.put("Unordered", RelationOrderBaseTypes.UNORDERED.getGuid());
+      testData.put("User_Defined", RelationOrderBaseTypes.USER_DEFINED.getGuid());
+      for (Entry<String, String> entry : testData.entrySet()) {
+         String actualGuid = OseeUtil.orderTypeNameToGuid(entry.getKey());
+         String expectedGuid = entry.getValue();
+         Assert.assertEquals(expectedGuid, actualGuid);
+      }
+   }
+
    private static void setupToToken(OseeType typeToCheck, Identity expected) {
       String name = "bogus name"; // This should not affect equality
       String guid = expected.getGuid();
@@ -119,7 +192,7 @@ public class OseeUtilTest {
 
    }
 
-   private static void checkIsRestricted(XRelationSideEnum side, boolean expectedSideA, boolean expectedSideB) {
+   private static void checkIsRestricted(XRelationSideEnum side, boolean expectedSideA, boolean expectedSideB) throws OseeCoreException {
       boolean actual = OseeUtil.isRestrictedSide(side, RelationSide.SIDE_A);
       String message = String.format("[%s] - Side A error - expected[%s] actual[%s]", side, expectedSideA, actual);
       Assert.assertEquals(message, expectedSideA, actual);

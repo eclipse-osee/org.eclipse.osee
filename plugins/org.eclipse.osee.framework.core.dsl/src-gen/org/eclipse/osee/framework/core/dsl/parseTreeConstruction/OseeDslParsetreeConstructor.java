@@ -5108,11 +5108,11 @@ protected class AccessContext_RightCurlyBracketKeyword_8 extends KeywordToken  {
 /************ begin Rule HierarchyRestriction ****************
  *
  * HierarchyRestriction:
- * 	"childrenOf" artifact=[XArtifactRef|ARTIFACT_INSTANCE_REFERENCE] "{" accessRules+=ObjectRestriction "}";
+ * 	"childrenOf" artifact=[XArtifactRef|ARTIFACT_INSTANCE_REFERENCE] "{" accessRules+=ObjectRestriction+ "}";
  *
  **/
 
-// "childrenOf" artifact=[XArtifactRef|ARTIFACT_INSTANCE_REFERENCE] "{" accessRules+=ObjectRestriction "}"
+// "childrenOf" artifact=[XArtifactRef|ARTIFACT_INSTANCE_REFERENCE] "{" accessRules+=ObjectRestriction+ "}"
 protected class HierarchyRestriction_Group extends GroupToken {
 	
 	public HierarchyRestriction_Group(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -5221,7 +5221,7 @@ protected class HierarchyRestriction_LeftCurlyBracketKeyword_2 extends KeywordTo
 
 }
 
-// accessRules+=ObjectRestriction
+// accessRules+=ObjectRestriction+
 protected class HierarchyRestriction_AccessRulesAssignment_3 extends AssignmentToken  {
 	
 	public HierarchyRestriction_AccessRulesAssignment_3(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -5261,7 +5261,8 @@ protected class HierarchyRestriction_AccessRulesAssignment_3 extends AssignmentT
 	public AbstractToken createFollowerAfterReturn(AbstractToken next,	int actIndex, int index, IEObjectConsumer inst) {
 		if(value == inst.getEObject() && !inst.isConsumed()) return null;
 		switch(index) {
-			case 0: return new HierarchyRestriction_LeftCurlyBracketKeyword_2(lastRuleCallOrigin, next, actIndex, consumed);
+			case 0: return new HierarchyRestriction_AccessRulesAssignment_3(lastRuleCallOrigin, next, actIndex, consumed);
+			case 1: return new HierarchyRestriction_LeftCurlyBracketKeyword_2(lastRuleCallOrigin, next, actIndex, consumed);
 			default: return null;
 		}	
 	}	

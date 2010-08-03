@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.dsl.ui.integration;
+package org.eclipse.osee.framework.core.dsl.ui.integration.internal;
 
 import java.util.Collection;
 import java.util.HashSet;

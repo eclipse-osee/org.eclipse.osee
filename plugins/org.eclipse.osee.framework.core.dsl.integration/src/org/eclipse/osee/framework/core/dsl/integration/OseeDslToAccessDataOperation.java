@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.AccessContextId;
+import org.eclipse.osee.framework.core.dsl.integration.AccessModelInterpreter.AccessDetailCollector;
 import org.eclipse.osee.framework.core.dsl.integration.internal.Activator;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessContext;
 import org.eclipse.osee.framework.core.model.access.AccessData;
@@ -54,10 +55,30 @@ public class OseeDslToAccessDataOperation extends AbstractOperation {
          for (Object objectToCheck : objectsToCheck) {
             checkForCancelledStatus(monitor);
             Collection<AccessDetail<?>> accessDetail = new HashSet<AccessDetail<?>>();
-            interpreter.computeAccessDetails(context, objectToCheck, accessDetail);
+
+            AccessDetailCollector collector = new AccessDataCollector(accessDetail);
+            interpreter.computeAccessDetails(collector, context, objectToCheck);
             accessData.addAll(objectToCheck, accessDetail);
             monitor.worked(step);
          }
       }
+   }
+
+   private static final class AccessDataCollector implements AccessDetailCollector {
+      private final Collection<AccessDetail<?>> accessDetails;
+
+      public AccessDataCollector(Collection<AccessDetail<?>> accessDetails) {
+         this.accessDetails = accessDetails;
+      }
+
+      @Override
+      public void collect(AccessDetail<?> accessDetail) {
+         if (accessDetail != null) {
+            if (!accessDetails.contains(accessDetail)) {
+               accessDetails.add(accessDetail);
+            }
+         }
+      }
+
    }
 }

@@ -5786,9 +5786,16 @@ rule__HierarchyRestriction__Group__3__Impl
     }
 :
 (
+(
 { before(grammarAccess.getHierarchyRestrictionAccess().getAccessRulesAssignment_3()); }
 (rule__HierarchyRestriction__AccessRulesAssignment_3)
 { after(grammarAccess.getHierarchyRestrictionAccess().getAccessRulesAssignment_3()); }
+)
+(
+{ before(grammarAccess.getHierarchyRestrictionAccess().getAccessRulesAssignment_3()); }
+(rule__HierarchyRestriction__AccessRulesAssignment_3)*
+{ after(grammarAccess.getHierarchyRestrictionAccess().getAccessRulesAssignment_3()); }
+)
 )
 
 ;
