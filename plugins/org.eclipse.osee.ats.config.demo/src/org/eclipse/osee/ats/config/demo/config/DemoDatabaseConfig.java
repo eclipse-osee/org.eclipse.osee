@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.config.demo.config;
 
-import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.config.demo.DemoCISBuilds;
@@ -94,7 +94,7 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
    public static void mapTeamVersionToBranch(TeamDefinitionArtifact teamDef, String versionName, String branchName, SkynetTransaction transaction) throws OseeCoreException {
       Branch branch = BranchManager.getBranch(branchName);
       VersionArtifact verArt = teamDef.getVersionArtifact(versionName, false);
-      verArt.setSoleAttributeValue(ATSAttributes.BASELINE_BRANCH_GUID_ATTRIBUTE.getStoreName(), branch.getGuid());
+      verArt.setSoleAttributeValue(AtsAttributeTypes.ATS_BASELINE_BRANCH_GUID, branch.getGuid());
       verArt.persist(transaction);
    }
 
@@ -143,11 +143,11 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
             versionArtifact.setReleased(true);
          }
          if (DemoCISBuilds.CIS_Bld_2.equals(demoBranch) || DemoSawBuilds.SAW_Bld_2.equals(demoBranch)) {
-            versionArtifact.setSoleAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), true);
+            versionArtifact.setSoleAttributeValue(AtsAttributeTypes.ATS_NEXT_VERSION, true);
          }
          if (DemoSawBuilds.SAW_Bld_2.equals(demoBranch)) {
-            versionArtifact.setSoleAttributeValue(ATSAttributes.ALLOW_COMMIT_BRANCH.getStoreName(), true);
-            versionArtifact.setSoleAttributeValue(ATSAttributes.ALLOW_CREATE_BRANCH.getStoreName(), true);
+            versionArtifact.setSoleAttributeValue(AtsAttributeTypes.ATS_ALLOW_COMMIT_BRANCH, true);
+            versionArtifact.setSoleAttributeValue(AtsAttributeTypes.ATS_ALLOW_CREATE_BRANCH, true);
          }
          teamDef.addRelation(AtsRelationTypes.TeamDefinitionToVersion_Version, versionArtifact);
          versionArtifact.persist();
