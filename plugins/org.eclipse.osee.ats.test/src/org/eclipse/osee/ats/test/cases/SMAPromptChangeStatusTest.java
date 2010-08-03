@@ -14,7 +14,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import java.util.Collection;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact.TransitionOption;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact.TaskStates;
@@ -165,7 +165,7 @@ public class SMAPromptChangeStatusTest {
 
       // test that if task not in related-to state of workflows's current status, can't change status
       transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
-      taskArt.setSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(),
+      taskArt.setSoleAttributeValue(AtsAttributeTypes.ATS_RELATED_TO_STATE,
          DefaultTeamState.Analyze.name());
       transaction.execute();
       SMAPromptChangeStatus promptChangeStatus = new SMAPromptChangeStatus(tasks);
