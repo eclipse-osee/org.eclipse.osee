@@ -34,9 +34,6 @@ public final class AccessPolicyHandler {
       AccessDataQuery query = accessControlService.getAccessData(user, artifacts);
       PermissionStatus permissionStatus = new PermissionStatus();
 
-      if (true) {
-         return permissionStatus;
-      }
       if (artifacts != null) {
          for (IBasicArtifact<?> artifact : artifacts) {
             query.attributeTypeMatches(PermissionEnum.WRITE, artifact, attributeType, permissionStatus);
