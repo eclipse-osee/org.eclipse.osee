@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.artifact.prompt;
 import java.util.Collection;
 import java.util.Date;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -27,19 +28,19 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.DateSelectionDialog;
 public class DateHandlePromptChange implements IHandlePromptChange {
    private final DateSelectionDialog diag;
    private final Collection<? extends Artifact> artifacts;
-   private final String attributeName;
+   private final IAttributeType attributeType;
    private final boolean persist;
 
-   public DateHandlePromptChange(Collection<? extends Artifact> artifacts, String attributeName, String displayName, boolean persist) {
+   public DateHandlePromptChange(Collection<? extends Artifact> artifacts, IAttributeType attributeType, String displayName, boolean persist) {
       super();
       this.artifacts = artifacts;
-      this.attributeName = attributeName;
+      this.attributeType = attributeType;
       this.persist = persist;
       String diagTitle = "Select " + displayName;
       Date currentDate = null;
       try {
          currentDate =
-            artifacts.size() == 1 ? artifacts.iterator().next().getSoleAttributeValue(attributeName, null, Date.class) : null;
+            artifacts.size() == 1 ? artifacts.iterator().next().getSoleAttributeValue(attributeType, (Date) null) : null;
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -55,9 +56,9 @@ public class DateHandlePromptChange implements IHandlePromptChange {
    public boolean store() throws OseeCoreException {
       for (Artifact artifact : artifacts) {
          if (diag.isNoneSelected()) {
-            artifact.deleteSoleAttribute(attributeName);
+            artifact.deleteSoleAttribute(attributeType);
          } else {
-            artifact.setSoleAttributeValue(attributeName, diag.getSelectedDate());
+            artifact.setSoleAttributeValue(attributeType, diag.getSelectedDate());
          }
       }
 

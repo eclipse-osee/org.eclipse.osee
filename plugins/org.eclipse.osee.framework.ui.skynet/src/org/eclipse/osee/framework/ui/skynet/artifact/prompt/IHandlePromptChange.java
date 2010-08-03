@@ -12,6 +12,9 @@ package org.eclipse.osee.framework.ui.skynet.artifact.prompt;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
+/**
+ * @author Jeff C. Phillips
+ */
 public interface IHandlePromptChange {
    boolean promptOk() throws OseeCoreException;
 

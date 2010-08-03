@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -28,15 +29,15 @@ import org.eclipse.osee.framework.ui.skynet.artifact.EnumSelectionDialog.Selecti
 public class EnumeratedHandlePromptChange implements IHandlePromptChange {
    private final EnumSelectionDialog dialog;
    private final Collection<? extends Artifact> artifacts;
-   private final String attributeName;
+   private final IAttributeType attributeType;
    private final boolean persist;
 
-   public EnumeratedHandlePromptChange(Collection<? extends Artifact> artifacts, String attributeName, String displayName, boolean persist) {
+   public EnumeratedHandlePromptChange(Collection<? extends Artifact> artifacts, IAttributeType attributeType, String displayName, boolean persist) {
       super();
       this.artifacts = artifacts;
-      this.attributeName = attributeName;
+      this.attributeType = attributeType;
       this.persist = persist;
-      this.dialog = new EnumSelectionDialog(attributeName, artifacts);
+      this.dialog = new EnumSelectionDialog(attributeType, artifacts);
    }
 
    @Override
@@ -55,15 +56,15 @@ public class EnumeratedHandlePromptChange implements IHandlePromptChange {
             !persist ? null : new SkynetTransaction(artifacts.iterator().next().getBranch(),
                "Change enumerated attribute");
          for (Artifact artifact : artifacts) {
-            List<String> current = artifact.getAttributesToStringList(attributeName);
+            List<String> current = artifact.getAttributesToStringList(attributeType);
             if (dialog.getSelected() == Selection.AddSelection) {
                current.addAll(selected);
-               artifact.setAttributeValues(attributeName, current);
+               artifact.setAttributeValues(attributeType, current);
             } else if (dialog.getSelected() == Selection.DeleteSelected) {
                current.removeAll(selected);
-               artifact.setAttributeValues(attributeName, current);
+               artifact.setAttributeValues(attributeType, current);
             } else if (dialog.getSelected() == Selection.ReplaceAll) {
-               artifact.setAttributeValues(attributeName, selected);
+               artifact.setAttributeValues(attributeType, selected);
             } else {
                AWorkbench.popup("ERROR", "Unhandled selection type => " + dialog.getSelected().name());
                return false;

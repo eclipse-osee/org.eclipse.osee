@@ -14,6 +14,7 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Collection;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -25,15 +26,15 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
  */
 public class StringHandlePromptChange implements IHandlePromptChange {
    private final EntryDialog entryDialog;
-   private final String attributeName;
+   private final IAttributeType attributeType;
    private final boolean persist;
    private final boolean multiLine;
    private final Collection<? extends Artifact> artifacts;
    private final NumberFormat format;
 
-   public StringHandlePromptChange(String attributeName, boolean persist, String displayName, Collection<? extends Artifact> artifacts, NumberFormat format, boolean multiLine) {
+   public StringHandlePromptChange(IAttributeType attributeType, boolean persist, String displayName, Collection<? extends Artifact> artifacts, NumberFormat format, boolean multiLine) {
       super();
-      this.attributeName = attributeName;
+      this.attributeType = attributeType;
       this.persist = persist;
       this.artifacts = artifacts;
       this.multiLine = multiLine;
@@ -44,23 +45,23 @@ public class StringHandlePromptChange implements IHandlePromptChange {
    @Override
    public boolean promptOk() throws OseeCoreException {
       entryDialog.setFillVertically(multiLine);
-      setInitialText(artifacts, entryDialog, format, attributeName);
+      setInitialText(artifacts, entryDialog, format, attributeType);
       entryDialog.setNumberFormat(format);
       return entryDialog.open() == Window.OK;
    }
 
    @Override
    public boolean store() throws OseeCoreException {
-      updateSmaAttributes(artifacts, attributeName, format, entryDialog);
+      updateSmaAttributes(artifacts, attributeType, format, entryDialog);
       if (persist) {
          persistSmaAttributes(artifacts);
       }
       return true;
    }
 
-   private static void setInitialText(Collection<? extends Artifact> artifacts, EntryDialog entryDialog, NumberFormat format, String attributeName) throws OseeCoreException {
+   private static void setInitialText(Collection<? extends Artifact> artifacts, EntryDialog entryDialog, NumberFormat format, IAttributeType attributeType) throws OseeCoreException {
       if (artifacts.size() == 1) {
-         Object smaObj = artifacts.iterator().next().getSoleAttributeValue(attributeName, "");
+         Object smaObj = artifacts.iterator().next().getSoleAttributeValue(attributeType, "");
          String initialText = smaObj.equals("") ? "" : formatObject(smaObj, format);
          entryDialog.setEntry(initialText);
       } else {
@@ -68,11 +69,11 @@ public class StringHandlePromptChange implements IHandlePromptChange {
       }
    }
 
-   private static void updateSmaAttributes(final Collection<? extends Artifact> artifacts, String attributeName, NumberFormat format, EntryDialog entryDialog) throws OseeCoreException {
+   private static void updateSmaAttributes(final Collection<? extends Artifact> artifacts, IAttributeType attributeType, NumberFormat format, EntryDialog entryDialog) throws OseeCoreException {
       for (Artifact artifact : artifacts) {
          String value = entryDialog.getEntry();
          String safeValue = getSafeValue(value, format);
-         artifact.setSoleAttributeFromString(attributeName, safeValue);
+         artifact.setSoleAttributeFromString(attributeType, safeValue);
       }
    }
 

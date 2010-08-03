@@ -15,6 +15,7 @@ import java.util.Collection;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -29,19 +30,19 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 public class BooleanHandlePromptChange implements IHandlePromptChange {
    private final MessageDialogWithToggle dialog;
    private final Collection<? extends Artifact> artifacts;
-   private final String attributeName;
+   private final IAttributeType attributeType;
    private final boolean persist;
 
-   public BooleanHandlePromptChange(Collection<? extends Artifact> artifacts, String attributeName, String displayName, boolean persist, String toggleMessage) {
+   public BooleanHandlePromptChange(Collection<? extends Artifact> artifacts, IAttributeType attributeType, String displayName, boolean persist, String toggleMessage) {
       super();
       this.artifacts = artifacts;
-      this.attributeName = attributeName;
+      this.attributeType = attributeType;
       this.persist = persist;
 
       boolean set = false;
       if (artifacts.size() == 1) {
          try {
-            set = artifacts.iterator().next().getSoleAttributeValue(attributeName, false);
+            set = artifacts.iterator().next().getSoleAttributeValue(attributeType, false);
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
@@ -64,7 +65,7 @@ public class BooleanHandlePromptChange implements IHandlePromptChange {
          SkynetTransaction transaction =
             !persist ? null : new SkynetTransaction(artifacts.iterator().next().getBranch(), "Prompt change boolean");
          for (Artifact artifact : artifacts) {
-            artifact.setSoleAttributeValue(attributeName, dialog.getToggleState());
+            artifact.setSoleAttributeValue(attributeType, dialog.getToggleState());
             if (persist) {
                artifact.persist();
             }
