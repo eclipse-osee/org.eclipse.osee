@@ -18,11 +18,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IArtifactsChangeTypeEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener;
@@ -86,12 +88,13 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler, IFr
    @Override
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
       String colName = treeColumn.getText();
-      Set<Artifact> useArts = new HashSet<Artifact>();
+      Set<Artifact> artifacts = new HashSet<Artifact>();
       for (TreeItem item : treeItems) {
-         useArts.add((Artifact) item.getData());
+         artifacts.add((Artifact) item.getData());
       }
       try {
-         if (ArtifactPromptChange.promptChangeAttribute(colName, colName, useArts, false)) {
+         IAttributeType attributeType = AttributeTypeManager.getType(colName);
+         if (ArtifactPromptChange.promptChangeAttribute(attributeType, colName, artifacts, false)) {
             refresh();
             editor.onDirtied();
          }
@@ -115,26 +118,22 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler, IFr
 
    @Override
    public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
-      boolean toReturn = false;
-      try {
-         toReturn = handleAltLeftClick(treeColumn, treeItem, false);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-      return toReturn;
-   }
-
-   public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem, boolean persist) throws OseeCoreException {
       super.handleAltLeftClick(treeColumn, treeItem);
       String colName = treeColumn.getText();
       if (EXTRA_COLUMNS.contains(colName)) {
          AWorkbench.popup("ERROR", "Can't change the field " + colName);
       }
-      Artifact useArt = (Artifact) treeItem.getData();
-      if (ArtifactPromptChange.promptChangeAttribute(colName, colName, Arrays.asList(useArt), persist)) {
-         refresh();
-         editor.onDirtied();
-         return true;
+      try {
+         IAttributeType attributeType = AttributeTypeManager.getType(colName);
+         Artifact useArt = (Artifact) treeItem.getData();
+         boolean persist = false;
+         if (ArtifactPromptChange.promptChangeAttribute(attributeType, colName, Arrays.asList(useArt), persist)) {
+            refresh();
+            editor.onDirtied();
+            return true;
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return false;
    }

@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.artifact;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -50,13 +51,13 @@ public class EnumSelectionDialog extends CheckedTreeSelectionDialog {
     * @param parent
     * @param artifacts
     */
-   public EnumSelectionDialog(String attributeName, Collection<? extends Artifact> artifacts) {
+   public EnumSelectionDialog(IAttributeType attributeType, Collection<? extends Artifact> artifacts) {
       super(Displays.getActiveShell(), new StringLabelProvider(), new ArrayTreeContentProvider());
       setTitle("Select Options");
       setMessage("Select option(s) to add, delete or replace.");
       Set<String> options;
       try {
-         options = AttributeTypeManager.getEnumerationValues(attributeName);
+         options = AttributeTypeManager.getEnumerationValues(attributeType);
       } catch (OseeCoreException ex) {
          options = new HashSet<String>();
          options.add(ex.getLocalizedMessage());

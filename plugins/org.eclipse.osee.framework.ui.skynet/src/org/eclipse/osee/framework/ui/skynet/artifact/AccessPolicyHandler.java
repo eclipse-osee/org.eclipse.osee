@@ -6,12 +6,12 @@
 package org.eclipse.osee.framework.ui.skynet.artifact;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.access.AccessDataQuery;
 import org.eclipse.osee.framework.core.model.access.PermissionStatus;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.services.IAccessControlService;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -30,7 +30,7 @@ public final class AccessPolicyHandler {
       this.artifacts = artifacts;
    }
 
-   public PermissionStatus hasAttributeTypePermission(AttributeType attributeType, PermissionEnum permission, boolean displayMessage) throws OseeCoreException {
+   public PermissionStatus hasAttributeTypePermission(IAttributeType attributeType, PermissionEnum permission, boolean displayMessage) throws OseeCoreException {
       AccessDataQuery query = accessControlService.getAccessData(user, artifacts);
       PermissionStatus permissionStatus = new PermissionStatus();
 

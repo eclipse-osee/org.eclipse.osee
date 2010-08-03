@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.artifact;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
@@ -33,22 +34,23 @@ import org.eclipse.osee.framework.ui.skynet.artifact.prompt.PromptFactory;
  */
 public final class ArtifactPromptChange {
 
-   public static boolean promptChangeAttribute(String attributeName, String displayName, final Collection<? extends Artifact> artifacts, boolean persist) throws OseeCoreException {
-      return promptChangeAttribute(attributeName, displayName, artifacts, persist, true);
+   public static boolean promptChangeAttribute(IAttributeType attributeType, String displayName, final Collection<? extends Artifact> artifacts, boolean persist) throws OseeCoreException {
+      return promptChangeAttribute(attributeType, displayName, artifacts, persist, true);
    }
 
-   public static boolean promptChangeAttribute(String attributeName, String displayName, final Collection<? extends Artifact> artifacts, boolean persist, boolean multiLine) throws OseeCoreException {
-      return promptChangeAttribute(UserManager.getUser(), AccessControlManager.getService(), new PromptFactory(
-         attributeName, displayName, artifacts, persist, multiLine), attributeName, artifacts);
+   public static boolean promptChangeAttribute(IAttributeType attributeType, String displayName, final Collection<? extends Artifact> artifacts, boolean persist, boolean multiLine) throws OseeCoreException {
+      PromptFactory promptFactory = new PromptFactory(attributeType, displayName, artifacts, persist, multiLine);
+      return promptChangeAttribute(UserManager.getUser(), AccessControlManager.getService(), promptFactory,
+         attributeType, artifacts);
    }
 
-   public static boolean promptChangeAttribute(IBasicArtifact<?> userArtifact, IAccessControlService accessControlService, IPromptFactory promptFactory, String attributeName, final Collection<? extends Artifact> artifacts) {
+   public static boolean promptChangeAttribute(IBasicArtifact<?> userArtifact, IAccessControlService accessControlService, IPromptFactory promptFactory, IAttributeType attributeType, final Collection<? extends Artifact> artifacts) {
       boolean toReturn = false;
       try {
          AccessPolicyHandler accessPolicyHandler =
             new AccessPolicyHandler(userArtifact, accessControlService, artifacts);
          toReturn =
-            accessPolicyHandler.hasAttributeTypePermission(AttributeTypeManager.getType(attributeName),
+            accessPolicyHandler.hasAttributeTypePermission(AttributeTypeManager.getType(attributeType),
                PermissionEnum.WRITE, true).matched();
 
          if (toReturn) {
