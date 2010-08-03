@@ -10,13 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.IAttributeWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOptionHandler;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -25,13 +20,16 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
  * @author Donald G. Dunne
  */
 public class DynamicXWidgetLayoutData implements Cloneable {
+
    private static final XWidgetFactory xWidgetFactory = XWidgetFactory.getInstance();
+   private static final String UNKNOWN = "Unknown";
    private static final int DEFAULT_HEIGHT = 9999;
+
    private String name = "Unknown";
    private String id = "";
-   private String storageName = "";
+   private String storeName = "";
    private String xWidgetName = UNKNOWN;
-   private static String UNKNOWN = "Unknown";
+
    private XWidget xWidget;
    private int beginComposite = 0; // If >0, indicates new child composite with columns == value
    private int beginGroupComposite = 0; // If >0, indicates new child composite with columns == value
@@ -69,16 +67,18 @@ public class DynamicXWidgetLayoutData implements Cloneable {
       return name.replaceFirst("^.*?\\.", "");
    }
 
-   public String getStorageName() {
-      return storageName;
+   public String getStoreName() {
+      return storeName;
    }
 
-   public void setStorageName(String storageName) {
-      this.storageName = storageName;
+   public void setStoreName(String storeName) {
+      this.storeName = storeName;
    }
 
    public boolean isRequired() {
-      return xOptionHandler.contains(XOption.REQUIRED) || dynamicXWidgetLayout.isOrRequired(storageName) || dynamicXWidgetLayout.isXOrRequired(storageName);
+      return xOptionHandler.contains(XOption.REQUIRED) || //
+      dynamicXWidgetLayout.isOrRequired(getStoreName()) || //
+      dynamicXWidgetLayout.isXOrRequired(getStoreName());
    }
 
    public String getXWidgetName() {
@@ -94,20 +94,9 @@ public class DynamicXWidgetLayoutData implements Cloneable {
    }
 
    // TODO This method will need to be removed
-   public XWidget getXWidget() throws OseeArgumentException {
+   public XWidget getXWidget() throws OseeCoreException {
       if (xWidget == null) {
          xWidget = xWidgetFactory.createXWidget(this);
-         if (artifact != null) {
-            try {
-               if (xWidget instanceof IAttributeWidget) {
-                  ((IAttributeWidget) xWidget).setAttributeType(artifact, getStorageName());
-               } else if (xWidget instanceof IArtifactWidget) {
-                  ((IArtifactWidget) xWidget).setArtifact(artifact);
-               }
-            } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
       }
       return xWidget;
    }
