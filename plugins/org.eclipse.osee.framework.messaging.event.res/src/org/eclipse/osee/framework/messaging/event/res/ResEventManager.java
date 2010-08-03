@@ -32,7 +32,7 @@ public class ResEventManager implements OseeMessagingStatusCallback {
    private ConnectionNode connectionNode;
    private ResMessagingTracker resMessagingTracker;
    private IFrameworkEventListener frameworkEventListener;
-   private ResConnectionListener connectionListener;
+   private ConnectionListener connectionListener;
 
    private ResEventManager() {
       // private
@@ -66,32 +66,10 @@ public class ResEventManager implements OseeMessagingStatusCallback {
       System.out.println("De-Registering Client for Remote Events\n");
       resMessagingTracker.close();
       resMessagingTracker = null;
-      connectionListener = null;
-   }
-
-   public boolean isConnected() {
-      if (resMessagingTracker != null && resMessagingTracker.getConnectionNode() != null && connectionListener != null && connectionListener.isConnected()) {
-         return true;
-      }
-      return false;
-   }
-
-   public String getConnectionInfo() {
-      if (resMessagingTracker == null) {
-         return "Can't get RES Message Tracker";
-      }
-      if (resMessagingTracker.getConnectionNode() == null) {
-         return "RES Connection Node == null";
-      }
-      if (connectionListener == null || !connectionListener.isConnected()) {
-         return "ActiveMQ JMS Service is down";
-      }
-      return "Connected";
    }
 
    public void addingRemoteEventService(ConnectionNode connectionNode) {
       this.connectionNode = connectionNode;
-      connectionListener = new ResConnectionListener();
       connectionNode.addConnectionListener(connectionListener);
 
       connectionNode.subscribe(ResMessages.RemoteTransactionEvent1, new RemoteTransactionEvent1Listener(), instance);
@@ -133,27 +111,6 @@ public class ResEventManager implements OseeMessagingStatusCallback {
    public void stop() {
       this.frameworkEventListener = null;
       stopListeningForRemoteCoverageEvents();
-   }
-
-   private class ResConnectionListener implements ConnectionListener {
-
-      private boolean isConnected = false;
-
-      @Override
-      public void connected(ConnectionNode node) {
-         System.out.println("connected from res listner");
-         isConnected = true;
-      }
-
-      public boolean isConnected() {
-         return isConnected;
-      }
-
-      @Override
-      public void notConnected(ConnectionNode node) {
-         System.out.println("not connected from res listener");
-         isConnected = false;
-      }
    }
 
    @Override
@@ -259,6 +216,17 @@ public class ResEventManager implements OseeMessagingStatusCallback {
          } catch (RemoteException ex) {
             System.err.println(getClass().getSimpleName() + " - process: " + ex.getLocalizedMessage());
          }
+      }
+   }
+
+   public ConnectionListener getConnectionListener() {
+      return connectionListener;
+   }
+
+   public void setConnectionListener(ConnectionListener connectionListener) {
+      this.connectionListener = connectionListener;
+      if (connectionNode != null) {
+         connectionNode.addConnectionListener(connectionListener);
       }
    }
 

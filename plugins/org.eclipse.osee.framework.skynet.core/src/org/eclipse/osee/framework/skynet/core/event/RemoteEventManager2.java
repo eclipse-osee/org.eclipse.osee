@@ -23,6 +23,8 @@ import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.messaging.ConnectionListener;
+import org.eclipse.osee.framework.messaging.ConnectionNode;
 import org.eclipse.osee.framework.messaging.event.res.AttributeEventModificationType;
 import org.eclipse.osee.framework.messaging.event.res.IFrameworkEventListener;
 import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
@@ -62,13 +64,47 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
  */
 public class RemoteEventManager2 implements IFrameworkEventListener {
    private static final RemoteEventManager2 instance = new RemoteEventManager2();
+   private static ResConnectionListener connectionListener;
 
    private RemoteEventManager2() {
       super();
+      connectionListener = new ResConnectionListener();
+      ResEventManager.getInstance().setConnectionListener(connectionListener);
    }
 
    public static RemoteEventManager2 getInstance() {
       return instance;
+   }
+
+   private static class ResConnectionListener implements ConnectionListener {
+
+      private boolean isConnected = false;
+
+      @Override
+      public void connected(ConnectionNode node) {
+         isConnected = true;
+         try {
+            OseeEventManager.kickLocalRemEvent(this, RemoteEventServiceEventType.Rem2_Connected);
+            OseeLog.log(Activator.class, Level.INFO, "RES2 Connected");
+         } catch (OseeCoreException ex) {
+            OseeEventManager.eventLog("REM2: ResConnectionListener", ex);
+         }
+      }
+
+      public boolean isConnected() {
+         return isConnected;
+      }
+
+      @Override
+      public void notConnected(ConnectionNode node) {
+         isConnected = false;
+         try {
+            OseeEventManager.kickLocalRemEvent(this, RemoteEventServiceEventType.Rem2_DisConnected);
+            OseeLog.log(Activator.class, Level.INFO, "RES2 Dis-Connected");
+         } catch (OseeCoreException ex) {
+            OseeEventManager.eventLog("REM2: ResConnectionListener", ex);
+         }
+      }
    }
 
    @Override
@@ -341,14 +377,7 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
    }
 
    public static boolean isConnected() {
-      return OseeEventManager.isNewEvents() && ResEventManager.getInstance().isConnected();
-   }
-
-   public String getConnectionInfo() {
-      if (!OseeEventManager.isNewEvents()) {
-         return "New Events == OFF";
-      }
-      return ResEventManager.getInstance().getConnectionInfo();
+      return OseeEventManager.isNewEvents() && connectionListener.isConnected();
    }
 
    public String getConnectionProperties() {
@@ -399,6 +428,16 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
          };
          thread.start();
       }
+   }
+
+   public String getConnectionInfo() {
+      if (!OseeEventManager.isNewEvents()) {
+         return "New Events == OFF";
+      }
+      if (connectionListener == null || !connectionListener.isConnected()) {
+         return "ActiveMQ JMS Service is down";
+      }
+      return "Connected";
    }
 
 }

@@ -33,8 +33,8 @@ public class ResServiceContributionItem extends OseeContributionItem implements 
    private static final Image ENABLED_IMAGE = ImageManager.getImageDescriptor(FrameworkImage.RES).createImage();
    private static final Image DISABLED_IMAGE = new OverlayImage(ENABLED_IMAGE,
       ImageManager.getImageDescriptor(FrameworkImage.SLASH_RED_OVERLAY)).createImage();
-   private static final String ENABLED_TOOLTIP = "New RES is connected.";
-   private static final String DISABLED_TOOLTIP = "New RES is disconnected.";
+   private static final String ENABLED_TOOLTIP = "Event Service is connected.";
+   private static final String DISABLED_TOOLTIP = "Event Service is disconnected.";
    private static Thread updateThread = null;
    private static ArrayList<ResServiceContributionItem> icons = new ArrayList<ResServiceContributionItem>();
    private static final int FOUR_MINUTES = 1000 * 60 * 4;
