@@ -46,10 +46,10 @@ public class AccessDataQueryTest {
       PermissionStatus status = new PermissionStatus();
 
       query.branchMatches(PermissionEnum.WRITE, branchToCheck, status);
-      Assert.assertTrue(status.matches());
+      Assert.assertTrue(status.matched());
 
       query.branchMatches(PermissionEnum.FULLACCESS, branchToCheck, status);
-      Assert.assertFalse(status.matches());
+      Assert.assertFalse(status.matched());
    }
 
    @Test
@@ -62,10 +62,10 @@ public class AccessDataQueryTest {
       PermissionStatus status = new PermissionStatus();
 
       query.artifactTypeMatches(PermissionEnum.WRITE, artifactToCheck, status);
-      Assert.assertTrue(status.matches());
+      Assert.assertTrue(status.matched());
 
       query.artifactTypeMatches(PermissionEnum.FULLACCESS, artifactToCheck, status);
-      Assert.assertFalse(status.matches());
+      Assert.assertFalse(status.matched());
    }
 
    @Test
@@ -78,7 +78,7 @@ public class AccessDataQueryTest {
       PermissionStatus status = new PermissionStatus();
 
       query.artifactMatches(PermissionEnum.WRITE, artifactToCheck, status);
-      Assert.assertTrue(status.matches());
+      Assert.assertTrue(status.matched());
    }
 
    @Test
@@ -97,19 +97,51 @@ public class AccessDataQueryTest {
       PermissionStatus status = new PermissionStatus();
 
       query.artifactMatches(PermissionEnum.WRITE, artifactToCheck, status);
-      Assert.assertTrue(status.matches());
+      Assert.assertTrue(status.matched());
 
       query.attributeTypeMatches(PermissionEnum.READ, artifactToCheck, wordAttributeType, status);
-      Assert.assertTrue(status.matches());
+      Assert.assertTrue(status.matched());
 
       query.attributeTypeMatches(PermissionEnum.WRITE, artifactToCheck, wordAttributeType, status);
-      Assert.assertFalse(status.matches());
+      Assert.assertFalse(status.matched());
 
       query.artifactTypeMatches(PermissionEnum.WRITE, artifactToCheck, status);
-      Assert.assertTrue(status.matches());
+      Assert.assertTrue(status.matched());
 
       query.artifactTypeMatches(PermissionEnum.FULLACCESS, artifactToCheck, status);
-      Assert.assertFalse(status.matches());
+      Assert.assertFalse(status.matched());
+   }
+
+   @Test
+   public void testArtifactMatchesAll() throws OseeCoreException {
+      AccessData data = new AccessData();
+      IOseeBranch branch = CoreBranches.COMMON;
+      IArtifactType artifactType = CoreArtifactTypes.AbstractSoftwareRequirement;
+      IBasicArtifact<?> artifact1 = new MockArtifact("1", "one", branch, artifactType, 1);
+      IBasicArtifact<?> artifact2 = new MockArtifact("2", "two", branch, artifactType, 2);
+
+      data.add(artifact1, new AccessDetail<IBasicArtifact<?>>(artifact1, PermissionEnum.READ));
+      data.add(artifact2, new AccessDetail<IBasicArtifact<?>>(artifact2, PermissionEnum.WRITE));
+
+      AccessDataQuery query = new AccessDataQuery(data);
+
+      Assert.assertTrue(query.matchesAll(PermissionEnum.READ));
+      Assert.assertFalse(query.matchesAll(PermissionEnum.WRITE));
+   }
+
+   @Test
+   public void testBranchMatchesAll() throws OseeCoreException {
+      AccessData data = new AccessData();
+      IOseeBranch common = CoreBranches.COMMON;
+      IOseeBranch branch = CoreBranches.SYSTEM_ROOT;
+
+      data.add(common, new AccessDetail<IOseeBranch>(common, PermissionEnum.READ));
+      data.add(branch, new AccessDetail<IOseeBranch>(branch, PermissionEnum.WRITE));
+
+      AccessDataQuery query = new AccessDataQuery(data);
+
+      Assert.assertTrue(query.matchesAll(PermissionEnum.READ));
+      Assert.assertFalse(query.matchesAll(PermissionEnum.WRITE));
    }
 
    private TestObject getTestData() throws OseeCoreException {

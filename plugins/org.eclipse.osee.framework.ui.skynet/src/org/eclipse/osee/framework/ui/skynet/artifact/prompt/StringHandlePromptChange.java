@@ -1,8 +1,13 @@
-/*
- * Created on Jul 29, 2010
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.artifact.prompt;
 
 import java.text.NumberFormat;
@@ -19,7 +24,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
  * @author Jeff C. Phillips
  */
 public class StringHandlePromptChange implements IHandlePromptChange {
-   private final EntryDialog ed;
+   private final EntryDialog entryDialog;
    private final String attributeName;
    private final boolean persist;
    private final boolean multiLine;
@@ -33,41 +38,41 @@ public class StringHandlePromptChange implements IHandlePromptChange {
       this.artifacts = artifacts;
       this.multiLine = multiLine;
       this.format = format;
-      this.ed = new EntryDialog("Enter " + displayName, "Enter " + displayName);
+      this.entryDialog = new EntryDialog("Enter " + displayName, "Enter " + displayName);
    }
 
    @Override
    public boolean promptOk() throws OseeCoreException {
-      ed.setFillVertically(multiLine);
-      setInitialText(artifacts, ed, format, attributeName);
-      ed.setNumberFormat(format);
-      return ed.open() == Window.OK;
+      entryDialog.setFillVertically(multiLine);
+      setInitialText(artifacts, entryDialog, format, attributeName);
+      entryDialog.setNumberFormat(format);
+      return entryDialog.open() == Window.OK;
    }
 
    @Override
    public boolean store() throws OseeCoreException {
-      updateSmaAttributes(artifacts, attributeName, format, ed);
+      updateSmaAttributes(artifacts, attributeName, format, entryDialog);
       if (persist) {
          persistSmaAttributes(artifacts);
       }
       return true;
    }
 
-   private static void setInitialText(Collection<? extends Artifact> smas, EntryDialog ed, NumberFormat format, String attributeName) throws OseeCoreException {
-      if (smas.size() == 1) {
-         Object smaObj = smas.iterator().next().getSoleAttributeValue(attributeName, "");
+   private static void setInitialText(Collection<? extends Artifact> artifacts, EntryDialog entryDialog, NumberFormat format, String attributeName) throws OseeCoreException {
+      if (artifacts.size() == 1) {
+         Object smaObj = artifacts.iterator().next().getSoleAttributeValue(attributeName, "");
          String initialText = smaObj.equals("") ? "" : formatObject(smaObj, format);
-         ed.setEntry(initialText);
+         entryDialog.setEntry(initialText);
       } else {
-         ed.setEntry("");
+         entryDialog.setEntry("");
       }
    }
 
-   private static void updateSmaAttributes(final Collection<? extends Artifact> smas, String attributeName, NumberFormat format, EntryDialog ed) throws OseeCoreException {
-      for (Artifact sma : smas) {
-         String value = ed.getEntry();
+   private static void updateSmaAttributes(final Collection<? extends Artifact> artifacts, String attributeName, NumberFormat format, EntryDialog entryDialog) throws OseeCoreException {
+      for (Artifact artifact : artifacts) {
+         String value = entryDialog.getEntry();
          String safeValue = getSafeValue(value, format);
-         sma.setSoleAttributeFromString(attributeName, safeValue);
+         artifact.setSoleAttributeFromString(attributeName, safeValue);
       }
    }
 
@@ -83,11 +88,11 @@ public class StringHandlePromptChange implements IHandlePromptChange {
       return toReturn;
    }
 
-   private static void persistSmaAttributes(final Collection<? extends Artifact> smas) throws OseeCoreException {
+   private static void persistSmaAttributes(final Collection<? extends Artifact> artifacts) throws OseeCoreException {
       SkynetTransaction transaction =
-         new SkynetTransaction(smas.iterator().next().getBranch(), "Persist SMA attributes");
-      for (Artifact sma : smas) {
-         sma.persist(transaction);
+         new SkynetTransaction(artifacts.iterator().next().getBranch(), "Persist SMA attributes");
+      for (Artifact artifact : artifacts) {
+         artifact.persist(transaction);
       }
       transaction.execute();
    }

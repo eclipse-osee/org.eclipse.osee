@@ -19,7 +19,9 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.model.access.AccessDataQuery;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -92,5 +94,9 @@ public final class AccessControlManager {
 
    public static void setPermission(Artifact subject, Object object, PermissionEnum permission) {
       getService().setPermission(subject, object, permission);
+   }
+
+   public static AccessDataQuery getAccessData(Collection<?> objectsToCheck) throws OseeCoreException {
+      return getService().getAccessData(UserManager.getUser(), objectsToCheck);
    }
 }

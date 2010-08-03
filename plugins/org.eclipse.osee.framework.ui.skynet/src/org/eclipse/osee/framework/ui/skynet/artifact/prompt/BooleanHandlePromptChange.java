@@ -1,8 +1,14 @@
-/*
- * Created on Jul 29, 2010
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+
 package org.eclipse.osee.framework.ui.skynet.artifact.prompt;
 
 import java.util.Collection;
@@ -57,10 +63,10 @@ public class BooleanHandlePromptChange implements IHandlePromptChange {
       if (artifacts.size() > 0) {
          SkynetTransaction transaction =
             !persist ? null : new SkynetTransaction(artifacts.iterator().next().getBranch(), "Prompt change boolean");
-         for (Artifact sma : artifacts) {
-            sma.setSoleAttributeValue(attributeName, dialog.getToggleState());
+         for (Artifact artifact : artifacts) {
+            artifact.setSoleAttributeValue(attributeName, dialog.getToggleState());
             if (persist) {
-               sma.persist();
+               artifact.persist();
             }
          }
          if (persist) {

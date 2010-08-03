@@ -30,7 +30,7 @@ public final class PermissionStatus {
       append(reason);
    }
 
-   public boolean matches() {
+   public boolean matched() {
       return matchedPermission;
    }
 
@@ -45,6 +45,7 @@ public final class PermissionStatus {
    }
 
    void setReason(String reason) {
+      append(reason);
    }
 
    void setMatches(boolean matchedPermission) {

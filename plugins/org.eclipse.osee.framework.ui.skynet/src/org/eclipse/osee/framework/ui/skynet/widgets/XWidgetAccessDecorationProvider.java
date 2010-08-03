@@ -10,8 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
+import java.util.logging.Level;
+import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.access.PermissionStatus;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.artifact.AccessPolicyHandler;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetDecorator.Decorator;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -32,20 +43,23 @@ public class XWidgetAccessDecorationProvider implements XWidgetDecorator.Decorat
    public void onUpdate(XWidget xWidget, Decorator decorator) {
       if (xWidget instanceof IAttributeWidget) {
          IAttributeWidget attributeWidget = (IAttributeWidget) xWidget;
-         attributeWidget.getAttributeType();
+         String attributeTypeString = attributeWidget.getAttributeType();
 
-         PermissionStatus permissionStatus = new PermissionStatus(false, "You are not cool enough");
-         //       try {
-
-         //         Artifact artifact = attributeWidget.getArtifact();
-         //          AccessDataQuery query = AccessControlManager.getAccessData(null);
-         //          query.attributeTypeMatches(PermissionEnum.WRITE, artifact, attributeType, permissionStatus);
-         //       } catch (OseeCoreException ex) {
-         //          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-         //       }
+         PermissionStatus permissionStatus = new PermissionStatus();
+         try {
+            Artifact artifact = attributeWidget.getArtifact();
+            AccessPolicyHandler accessPolicyHandler =
+               new AccessPolicyHandler(UserManager.getUser(), AccessControlManager.getService(),
+                  Collections.asCollection(artifact));
+            permissionStatus =
+               accessPolicyHandler.hasAttributeTypePermission(AttributeTypeManager.getType(attributeTypeString),
+                  PermissionEnum.WRITE, false);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         }
 
          // Get Info from AccessControlService;
-         boolean isLocked = permissionStatus.matches();
+         boolean isLocked = !permissionStatus.matched();
          String reason = permissionStatus.getReason();
 
          Control control = xWidget.getControl();

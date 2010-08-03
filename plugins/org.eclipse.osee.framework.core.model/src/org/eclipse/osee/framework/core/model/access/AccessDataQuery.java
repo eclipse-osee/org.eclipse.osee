@@ -43,7 +43,7 @@ public class AccessDataQuery {
 
    public void branchArtifactTypeMatches(PermissionEnum permissionToMatch, IOseeBranch branchToMatch, IArtifactType artifactType, PermissionStatus permissionStatus) throws OseeCoreException {
       branchMatches(permissionToMatch, branchToMatch, permissionStatus);
-      if (permissionStatus.matches()) {
+      if (permissionStatus.matched()) {
          Collection<AccessDetail<?>> branchAccessDetails = accessData.getAccess(branchToMatch);
          checkAccess(branchAccessDetails, artifactType, permissionToMatch, permissionStatus);
       }
@@ -51,7 +51,7 @@ public class AccessDataQuery {
 
    public void branchAttributeTypeMatches(PermissionEnum permissionToMatch, IOseeBranch branchToMatch, IAttributeType attributeType, PermissionStatus permissionStatus) throws OseeCoreException {
       branchMatches(permissionToMatch, branchToMatch, permissionStatus);
-      if (permissionStatus.matches()) {
+      if (permissionStatus.matched()) {
          Collection<AccessDetail<?>> branchAccessDetails = accessData.getAccess(branchToMatch);
          checkAccess(branchAccessDetails, attributeType, permissionToMatch, permissionStatus);
       }
@@ -59,7 +59,7 @@ public class AccessDataQuery {
 
    public void branchRelationTypeMatches(PermissionEnum permissionToMatch, IOseeBranch branchToMatch, IRelationType relationType, PermissionStatus permissionStatus) throws OseeCoreException {
       branchMatches(permissionToMatch, branchToMatch, permissionStatus);
-      if (permissionStatus.matches()) {
+      if (permissionStatus.matched()) {
          Collection<AccessDetail<?>> branchAccessDetails = accessData.getAccess(branchToMatch);
          checkAccess(branchAccessDetails, relationType, permissionToMatch, permissionStatus);
       }
@@ -69,7 +69,7 @@ public class AccessDataQuery {
       IArtifactType typeToMatch = artifact.getArtifactType();
       IOseeBranch branchToMatch = artifact.getBranch();
       branchArtifactTypeMatches(permissionToMatch, branchToMatch, typeToMatch, permissionStatus);
-      if (permissionStatus.matches()) {
+      if (permissionStatus.matched()) {
          Collection<AccessDetail<?>> artifactAccessDetails = accessData.getAccess(artifact);
          checkAccess(artifactAccessDetails, typeToMatch, permissionToMatch, permissionStatus);
       }
@@ -77,7 +77,7 @@ public class AccessDataQuery {
 
    public void artifactMatches(PermissionEnum permissionToMatch, IBasicArtifact<?> artifact, PermissionStatus permissionStatus) throws OseeCoreException {
       artifactTypeMatches(permissionToMatch, artifact, permissionStatus);
-      if (permissionStatus.matches()) {
+      if (permissionStatus.matched()) {
          Collection<AccessDetail<?>> artifactAccessDetails = accessData.getAccess(artifact);
          checkAccess(artifactAccessDetails, artifact, permissionToMatch, permissionStatus);
       }
@@ -85,12 +85,12 @@ public class AccessDataQuery {
 
    public void attributeTypeMatches(PermissionEnum permissionToMatch, IBasicArtifact<?> artifact, IAttributeType attributeType, PermissionStatus permissionStatus) throws OseeCoreException {
       artifactMatches(permissionToMatch, artifact, permissionStatus);
-      if (permissionStatus.matches()) {
+      if (permissionStatus.matched()) {
 
          Collection<AccessDetail<?>> branchAccessDetails = accessData.getAccess(artifact.getBranch());
          checkAccess(branchAccessDetails, attributeType, permissionToMatch, permissionStatus);
 
-         if (permissionStatus.matches()) {
+         if (permissionStatus.matched()) {
             Collection<AccessDetail<?>> artifactAccessDetails = accessData.getAccess(artifact);
             checkAccess(artifactAccessDetails, attributeType, permissionToMatch, permissionStatus);
          }
@@ -108,11 +108,11 @@ public class AccessDataQuery {
          } else if (objectKey instanceof IOseeBranch) {
             branchMatches(permissionToMatch, (IOseeBranch) objectKey, permissionStatus);
          }
-         if (!permissionStatus.matches()) {
+         if (!permissionStatus.matched()) {
             break;
          }
       }
-      return permissionStatus.matches();
+      return permissionStatus.matched();
    }
 
    private <T> void checkAccess(Collection<AccessDetail<?>> accessList, T itemToMatch, PermissionEnum permissionToMatch, PermissionStatus status) {
