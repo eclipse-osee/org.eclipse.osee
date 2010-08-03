@@ -14,7 +14,9 @@ package org.eclipse.osee.framework.ui.skynet.test.artifact;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.DefaultBasicArtifact;
@@ -30,11 +32,11 @@ import org.junit.Test;
 
 /**
  * Test Case for {@link ArtifactPromptChange}
- *
+ * 
  * @author Jeff C. Phillips
  */
 public class ArtifactPromptChangeTest {
-   private static String ATTR_NAME = "attributeName";
+   private static IAttributeType TEST_ATTRIBUTE_TYPE = CoreAttributeTypes.NAME;
 
    @Test
    public void test() {
@@ -42,14 +44,16 @@ public class ArtifactPromptChangeTest {
       List<Artifact> artifacts = new ArrayList<Artifact>();
       IBasicArtifact<?> user = new DefaultBasicArtifact(1, "1", "one");
 
-      Assert.assertFalse(ArtifactPromptChange.promptChangeAttribute(user, new MockAccessControlService(),
-         new TestPromptFactory("attributeNam", persist), ATTR_NAME, artifacts));
+      IAccessControlService accessService = new MockAccessControlService();
 
-      Assert.assertTrue(ArtifactPromptChange.promptChangeAttribute(user, new MockAccessControlService(),
-         new TestPromptFactory(ATTR_NAME, persist), ATTR_NAME, artifacts));
+      Assert.assertFalse(ArtifactPromptChange.promptChangeAttribute(user, accessService, new TestPromptFactory(
+         CoreAttributeTypes.Annotation, persist), TEST_ATTRIBUTE_TYPE, artifacts));
+
+      Assert.assertTrue(ArtifactPromptChange.promptChangeAttribute(user, accessService, new TestPromptFactory(
+         TEST_ATTRIBUTE_TYPE, persist), TEST_ATTRIBUTE_TYPE, artifacts));
    }
 
-   private class MockAccessControlService implements IAccessControlService {
+   private static class MockAccessControlService implements IAccessControlService {
 
       @SuppressWarnings("unused")
       @Override
@@ -71,29 +75,29 @@ public class ArtifactPromptChangeTest {
 
    }
 
-   private class TestPromptFactory implements IPromptFactory {
-      private final String attributeName;
+   private static class TestPromptFactory implements IPromptFactory {
+      private final IAttributeType attributeType;
       private final boolean persist;
 
-      public TestPromptFactory(String attributeName, boolean persist) {
+      public TestPromptFactory(IAttributeType attributeType, boolean persist) {
          super();
-         this.attributeName = attributeName;
+         this.attributeType = attributeType;
          this.persist = persist;
       }
 
       @SuppressWarnings("unused")
       @Override
       public IHandlePromptChange createPrompt() throws OseeCoreException, UnsupportedOperationException {
-         return new TestPromptChange(attributeName, persist);
+         return new TestPromptChange(attributeType, persist);
       }
    }
-   private class TestPromptChange implements IHandlePromptChange {
-      private final String attributeName;
+   private static class TestPromptChange implements IHandlePromptChange {
+      private final IAttributeType attributeType;
       private final boolean persist;
 
-      public TestPromptChange(String attributeName, boolean persist) {
+      public TestPromptChange(IAttributeType attributeType, boolean persist) {
          super();
-         this.attributeName = attributeName;
+         this.attributeType = attributeType;
          this.persist = persist;
       }
 
@@ -106,7 +110,7 @@ public class ArtifactPromptChangeTest {
       @SuppressWarnings("unused")
       @Override
       public boolean store() throws OseeCoreException {
-         return persist && attributeName.equals(ATTR_NAME);
+         return persist && attributeType.equals(TEST_ATTRIBUTE_TYPE);
       }
    }
 }
