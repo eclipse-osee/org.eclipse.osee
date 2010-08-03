@@ -152,6 +152,7 @@ public class XTextSpellCheckListener implements ModifyListener {
 
       // Get spelling errors
       getErrors(text);
+      xText.getStyledText().setStyleRanges(new StyleRange[] {});
       for (ASpellWord sw : errors) {
          StyleRange styleRange = new StyleRange();
          styleRange.underline = true;
@@ -161,6 +162,7 @@ public class XTextSpellCheckListener implements ModifyListener {
          styleRange.underlineColor = Display.getCurrent().getSystemColor(SWT.COLOR_BLUE);
          xText.getStyledText().setStyleRange(styleRange);
       }
+
    }
 
    private void getErrors(String str) {

@@ -95,6 +95,7 @@ public class XTextUrlListener implements ModifyListener {
          styleRange.length = sw.word.length();
          styleRange.foreground = Display.getCurrent().getSystemColor(SWT.COLOR_BLUE);
          xText.getStyledText().setStyleRange(styleRange);
+
       }
    }
 
