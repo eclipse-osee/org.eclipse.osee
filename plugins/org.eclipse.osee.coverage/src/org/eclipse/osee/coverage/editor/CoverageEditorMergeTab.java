@@ -43,7 +43,6 @@ import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.coverage.util.NotSaveable;
 import org.eclipse.osee.coverage.util.widget.XHyperlabelCoverageMethodSelection;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -373,7 +372,7 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
       };
    };
 
-   public void simulateSearchAll() throws OseeArgumentException {
+   public void simulateSearchAll() throws OseeCoreException {
       XHyperlabelCoverageMethodSelection methodSelectionWidget =
          coverageParametersComposite.getCoverageMethodHyperlinkSelection();
       List<CoverageOption> values = new ArrayList<CoverageOption>();

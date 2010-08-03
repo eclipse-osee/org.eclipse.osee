@@ -172,80 +172,80 @@ public class CoverageParametersComposite extends Composite {
       }
    }
 
-   public boolean isShowAll() throws OseeArgumentException {
+   public boolean isShowAll() throws OseeCoreException {
       if (getShowAllCheckbox() == null) {
          return false;
       }
       return getShowAllCheckbox().isSelected();
    }
 
-   public String getNotesStr() throws OseeArgumentException {
+   public String getNotesStr() throws OseeCoreException {
       if (getNotesXText() != null) {
          return getNotesXText().get();
       }
       return "";
    }
 
-   public String getNameStr() throws OseeArgumentException {
+   public String getNameStr() throws OseeCoreException {
       if (getNameXText() != null) {
          return getNameXText().get();
       }
       return "";
    }
 
-   public String getNamespaceStr() throws OseeArgumentException {
+   public String getNamespaceStr() throws OseeCoreException {
       if (getNamespaceXText() != null) {
          return getNamespaceXText().get();
       }
       return "";
    }
 
-   public String getRationaleStr() throws OseeArgumentException {
+   public String getRationaleStr() throws OseeCoreException {
       if (getRationaleXText() != null) {
          return getRationaleXText().get();
       }
       return "";
    }
 
-   public XMembersCombo getAssigeeCombo() throws OseeArgumentException {
+   public XMembersCombo getAssigeeCombo() throws OseeCoreException {
       return (XMembersCombo) getXWidget("Coverage Unit Assignee");
    }
 
-   public XText getNotesXText() throws OseeArgumentException {
+   public XText getNotesXText() throws OseeCoreException {
       return (XText) getXWidget("Coverage Unit Notes");
    }
 
-   public XText getNameXText() throws OseeArgumentException {
+   public XText getNameXText() throws OseeCoreException {
       return (XText) getXWidget("Name");
    }
 
-   public XText getNamespaceXText() throws OseeArgumentException {
+   public XText getNamespaceXText() throws OseeCoreException {
       return (XText) getXWidget("Namespace");
    }
 
-   public XText getRationaleXText() throws OseeArgumentException {
+   public XText getRationaleXText() throws OseeCoreException {
       return (XText) getXWidget("Rationale");
    }
 
-   public XCheckBox getShowAllCheckbox() throws OseeArgumentException {
+   public XCheckBox getShowAllCheckbox() throws OseeCoreException {
       return (XCheckBox) getXWidget("Show All");
    }
 
-   public User getAssignee() throws OseeArgumentException {
+   public User getAssignee() throws OseeCoreException {
       if (getAssigeeCombo() == null) {
          return null;
       }
       return getAssigeeCombo().getUser();
    }
 
-   public Collection<CoverageOption> getSelectedCoverageMethods() throws OseeArgumentException {
+   public Collection<CoverageOption> getSelectedCoverageMethods() throws OseeCoreException {
       if (getCoverageMethodHyperlinkSelection() == null) {
          return Collections.emptyList();
       }
       return getCoverageMethodHyperlinkSelection().getSelectedCoverageMethods();
    }
 
-   public XWidget getXWidget(String attrName) throws OseeArgumentException {
+   public XWidget getXWidget(String attrName) throws OseeCoreException {
       if (page == null) {
          throw new OseeArgumentException("WorkPage == null");
       }
@@ -255,7 +255,7 @@ public class CoverageParametersComposite extends Composite {
       return page.getLayoutData(attrName).getXWidget();
    }
 
-   public XHyperlabelCoverageMethodSelection getCoverageMethodHyperlinkSelection() throws OseeArgumentException {
+   public XHyperlabelCoverageMethodSelection getCoverageMethodHyperlinkSelection() throws OseeCoreException {
       return (XHyperlabelCoverageMethodSelection) getXWidget("Coverage Method");
    }
 

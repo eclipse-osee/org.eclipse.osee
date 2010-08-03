@@ -162,7 +162,7 @@ public class CoverageEditor extends FormEditor implements IActionable {
       coverageEditorImportTab.simulateImport(importName);
    }
 
-   public void simulateImportPostRun() throws OseeArgumentException {
+   public void simulateImportPostRun() throws OseeCoreException {
       setActivePage(5);
       coverageEditorImportTab.simulateImportSearch();
    }

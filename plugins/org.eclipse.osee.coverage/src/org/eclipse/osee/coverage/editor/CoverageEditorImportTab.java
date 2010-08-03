@@ -137,7 +137,7 @@ public class CoverageEditorImportTab extends FormPage {
       isSimulateImput = true;
    }
 
-   public void simulateImportSearch() throws OseeArgumentException {
+   public void simulateImportSearch() throws OseeCoreException {
       coverageEditorMergeTab.simulateSearchAll();
    }
 
