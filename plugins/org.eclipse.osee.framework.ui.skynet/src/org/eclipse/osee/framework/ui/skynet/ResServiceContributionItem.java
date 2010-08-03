@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.RemoteEventManager2;
 import org.eclipse.osee.framework.skynet.core.event.RemoteEventServiceEventType;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.ui.skynet.OseeBuildTypeContributionItem.OpenConfigDetailsAction;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.OverlayImage;
@@ -59,6 +60,7 @@ public class ResServiceContributionItem extends OseeContributionItem implements 
       super(ID);
       updateStatus(RemoteEventManager2.isConnected());
       OseeEventManager.addListener(this);
+      setActionHandler(new OpenConfigDetailsAction());
       icons.add(this);
       createUpdateThread();
    }

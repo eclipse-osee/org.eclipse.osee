@@ -99,7 +99,7 @@ public class OseeBuildTypeContributionItem extends OseeContributionItem {
       }
    }
 
-   private final static class OpenConfigDetailsAction extends Action {
+   public final static class OpenConfigDetailsAction extends Action {
 
       private final MutableBoolean isSelectionAllowed;
 

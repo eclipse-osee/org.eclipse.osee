@@ -344,6 +344,21 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
       return OseeEventManager.isNewEvents() && ResEventManager.getInstance().isConnected();
    }
 
+   public String getConnectionInfo() {
+      if (!OseeEventManager.isNewEvents()) {
+         return "New Events == OFF";
+      }
+      return ResEventManager.getInstance().getConnectionInfo();
+   }
+
+   public String getConnectionProperties() {
+      StringBuilder sb = new StringBuilder();
+      sb.append("osee.default.broker.uri [" + System.getProperty("osee.default.broker.uri") + "]");
+      sb.append("eventDebug [" + System.getProperty("eventDebug") + "]");
+      sb.append("eventSystem [" + System.getProperty("eventSystem") + "]");
+      return sb.toString();
+   }
+
    /**
     * InternalEventManager.enableRemoteEventLoopback will enable a testing loopback that will take the kicked remote
     * events and loop them back as if they came from an external client. It will allow for the testing of the OEM -> REM

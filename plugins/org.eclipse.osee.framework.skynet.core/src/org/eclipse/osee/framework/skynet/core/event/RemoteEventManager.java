@@ -157,6 +157,14 @@ public class RemoteEventManager {
       return OseeEventManager.isOldEvents() && getEventServiceManager().isValid();
    }
 
+   public static String getConnectionProperties() {
+      StringBuilder sb = new StringBuilder();
+      sb.append("osee.jini.lookup.groups [" + System.getProperty("osee.jini.lookup.groups") + "]");
+      sb.append("eventSystem [" + System.getProperty("eventSystem") + "]");
+
+      return sb.toString();
+   }
+
    public static void kick(final ISkynetEvent... events) {
       if (OseeEventManager.isOldEvents() && isConnected()) {
          Job job = new Job("Send Event") {

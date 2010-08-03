@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.AccessControlEventType;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
@@ -69,12 +70,13 @@ public class ArtifactEditorEventManager implements IArtifactEventListener, IBran
             handlers.remove(handler);
          }
       }
-      System.out.println("ArtifactEditorEventManager: handleArtifactEvent called [" + artifactEvent + "] - sender " + sender + "");
+      OseeEventManager.eventLog("ArtifactEditorEventManager: handleArtifactEvent called [" + artifactEvent + "] - sender " + sender + "");
       final Collection<Artifact> modifiedArts =
          artifactEvent.getCacheArtifacts(EventModType.Modified, EventModType.Reloaded);
       final Collection<Artifact> relModifiedArts = artifactEvent.getRelCacheArtifacts();
       final Collection<EventBasicGuidArtifact> deletedPurgedChangedArts =
          artifactEvent.get(EventModType.Deleted, EventModType.Purged);
+      final Collection<DefaultBasicGuidArtifact> relOrderChangedArtifacts = artifactEvent.getRelOrderChangedArtifacts();
 
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
@@ -86,15 +88,19 @@ public class ArtifactEditorEventManager implements IArtifactEventListener, IBran
                   }
                }
             }
-            for (IArtifactEditorEventHandler handler : handlers) {
-               if (!handler.isDisposed()) {
-                  if (handler.getArtifactFromEditorInput() != null && modifiedArts.contains(handler.getArtifactFromEditorInput())) {
-                     handler.refreshDirtyArtifact();
-                  }
+            if (!modifiedArts.isEmpty() || !relModifiedArts.isEmpty() || !relOrderChangedArtifacts.isEmpty()) {
+               for (IArtifactEditorEventHandler handler : handlers) {
+                  if (!handler.isDisposed()) {
+                     if (handler.getArtifactFromEditorInput() != null && modifiedArts.contains(handler.getArtifactFromEditorInput())) {
+                        handler.refreshDirtyArtifact();
+                     }
 
-                  if (handler.getArtifactFromEditorInput() != null && relModifiedArts.contains(handler.getArtifactFromEditorInput())) {
-                     handler.refreshRelations();
-                     handler.getEditor().onDirtied();
+                     boolean relModified = relModifiedArts.contains(handler.getArtifactFromEditorInput());
+                     boolean reorderArt = relOrderChangedArtifacts.contains(handler.getArtifactFromEditorInput());
+                     if (handler.getArtifactFromEditorInput() != null && (relModified || reorderArt)) {
+                        handler.refreshRelations();
+                        handler.getEditor().onDirtied();
+                     }
                   }
                }
             }

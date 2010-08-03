@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.messaging.event.res;
 
 import java.rmi.RemoteException;
 import java.util.Map;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.messaging.ConnectionListener;
 import org.eclipse.osee.framework.messaging.ConnectionNode;
 import org.eclipse.osee.framework.messaging.OseeMessagingListener;
 import org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback;
@@ -32,8 +32,10 @@ public class ResEventManager implements OseeMessagingStatusCallback {
    private ConnectionNode connectionNode;
    private ResMessagingTracker resMessagingTracker;
    private IFrameworkEventListener frameworkEventListener;
+   private ResConnectionListener connectionListener;
 
    private ResEventManager() {
+      // private
    }
 
    public static ResEventManager getInstance() {
@@ -64,14 +66,34 @@ public class ResEventManager implements OseeMessagingStatusCallback {
       System.out.println("De-Registering Client for Remote Events\n");
       resMessagingTracker.close();
       resMessagingTracker = null;
+      connectionListener = null;
    }
 
    public boolean isConnected() {
-      return resMessagingTracker != null;
+      if (resMessagingTracker != null && resMessagingTracker.getConnectionNode() != null && connectionListener != null && connectionListener.isConnected()) {
+         return true;
+      }
+      return false;
+   }
+
+   public String getConnectionInfo() {
+      if (resMessagingTracker == null) {
+         return "Can't get RES Message Tracker";
+      }
+      if (resMessagingTracker.getConnectionNode() == null) {
+         return "RES Connection Node == null";
+      }
+      if (connectionListener == null || !connectionListener.isConnected()) {
+         return "ActiveMQ JMS Service is down";
+      }
+      return "Connected";
    }
 
    public void addingRemoteEventService(ConnectionNode connectionNode) {
       this.connectionNode = connectionNode;
+      connectionListener = new ResConnectionListener();
+      connectionNode.addConnectionListener(connectionListener);
+
       connectionNode.subscribe(ResMessages.RemoteTransactionEvent1, new RemoteTransactionEvent1Listener(), instance);
       connectionNode.subscribe(ResMessages.RemotePersistEvent1, new RemotePersistEvent1Listener(), instance);
       connectionNode.subscribe(ResMessages.RemoteBranchEvent1, new RemoteBranchEvent1Listener(), instance);
@@ -103,14 +125,35 @@ public class ResEventManager implements OseeMessagingStatusCallback {
       }
    }
 
-   public void start(IFrameworkEventListener frameworkEventListener) throws OseeCoreException {
+   public void start(IFrameworkEventListener frameworkEventListener) {
       this.frameworkEventListener = frameworkEventListener;
       startListeningForRemoteCoverageEvents();
    }
 
-   public void stop() throws OseeCoreException {
+   public void stop() {
       this.frameworkEventListener = null;
       stopListeningForRemoteCoverageEvents();
+   }
+
+   private class ResConnectionListener implements ConnectionListener {
+
+      private boolean isConnected = false;
+
+      @Override
+      public void connected(ConnectionNode node) {
+         System.out.println("connected from res listner");
+         isConnected = true;
+      }
+
+      public boolean isConnected() {
+         return isConnected;
+      }
+
+      @Override
+      public void notConnected(ConnectionNode node) {
+         System.out.println("not connected from res listener");
+         isConnected = false;
+      }
    }
 
    @Override
@@ -121,6 +164,7 @@ public class ResEventManager implements OseeMessagingStatusCallback {
 
    @Override
    public void success() {
+      // do nothing
    }
 
    public class RemoteAccessControlEvent1Listener extends OseeMessagingListener {

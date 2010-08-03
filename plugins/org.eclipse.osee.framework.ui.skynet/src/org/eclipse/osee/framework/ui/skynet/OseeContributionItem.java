@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet;
 
 import org.eclipse.jface.action.IStatusLineManager;
+import org.eclipse.osee.framework.skynet.core.event.RemoteEventManager2;
 import org.eclipse.osee.framework.ui.skynet.ats.IOseeAtsService;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -65,7 +66,9 @@ public abstract class OseeContributionItem extends StatusLineContributionItem {
       if (atsService != null && atsService.isAtsAdmin()) {
          AdminContributionItem.addTo(manager);
       }
-      SkynetServiceContributionItem.addTo(manager);
+      if (!RemoteEventManager2.isConnected()) {
+         SkynetServiceContributionItem.addTo(manager);
+      }
       OseeServicesStatusContributionItem.addTo(manager);
       SessionContributionItem.addTo(manager);
    }
