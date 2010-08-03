@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.ote.define.AUTOGEN.OteAttributeTypes;
 import org.eclipse.osee.ote.ui.define.OteDefineImage;
 import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
 import org.eclipse.osee.ote.ui.define.jobs.CommitTestRunJob;
@@ -279,8 +280,8 @@ public class TestRunXViewer extends XViewer {
       }
       try {
          returnValue =
-            ArtifactPromptChange.promptChangeAttribute("Disposition", "Edit Disposition", dispositionArtifacts, true,
-               false);
+            ArtifactPromptChange.promptChangeAttribute(OteAttributeTypes.TEST_DISPOSITION, "Edit Disposition",
+               dispositionArtifacts, true, false);
          refresh();
       } catch (Exception ex) {
          OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, ex);
