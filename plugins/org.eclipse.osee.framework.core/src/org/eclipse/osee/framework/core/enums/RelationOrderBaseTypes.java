@@ -13,6 +13,8 @@ package org.eclipse.osee.framework.core.enums;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.Conditions;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -38,7 +40,8 @@ public class RelationOrderBaseTypes extends NamedIdentity implements IRelationSo
       return String.format("[%s,%s]", getName(), getGuid());
    }
 
-   public static RelationOrderBaseTypes getFromGuid(String guid) throws OseeArgumentException {
+   public static RelationOrderBaseTypes getFromGuid(String guid) throws OseeCoreException {
+      Conditions.checkNotNullOrEmpty(guid, "guid");
       for (RelationOrderBaseTypes type : values) {
          if (type.getGuid().equals(guid)) {
             return type;
@@ -47,7 +50,8 @@ public class RelationOrderBaseTypes extends NamedIdentity implements IRelationSo
       throw new OseeArgumentException("Order type guid does not map to an enum");
    }
 
-   public static RelationOrderBaseTypes getFromOrderTypeName(String orderTypeName) throws OseeArgumentException {
+   public static RelationOrderBaseTypes getFromOrderTypeName(String orderTypeName) throws OseeCoreException {
+      Conditions.checkNotNullOrEmpty(orderTypeName, "orderTypeName");
       for (RelationOrderBaseTypes type : values) {
          if (type.getName().equals(orderTypeName)) {
             return type;

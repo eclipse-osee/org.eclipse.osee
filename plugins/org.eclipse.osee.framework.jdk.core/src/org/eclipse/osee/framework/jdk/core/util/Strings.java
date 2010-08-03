@@ -19,6 +19,10 @@ package org.eclipse.osee.framework.jdk.core.util;
 public class Strings {
    private final static String EMPTY_STRING = "";
 
+   private Strings() {
+      // Utility class
+   }
+
    public static boolean isValid(String value) {
       return value != null && value.length() > 0;
    }
@@ -53,18 +57,34 @@ public class Strings {
     */
    public static String truncate(String value, int length, boolean addDots) {
       if (value == null) {
-         return "";
+         return emptyString();
       }
       String toReturn = value;
       if (Strings.isValid(value) && value.length() > length) {
          int len = addDots && length - 3 > 0 ? length - 3 : length;
-         toReturn = value.substring(0, Math.min(length, len)) + (addDots ? "..." : "");
+         toReturn = value.substring(0, Math.min(length, len)) + (addDots ? "..." : emptyString());
       }
       return toReturn;
    }
 
    public static String truncate(String value, int length) {
       return truncate(value, length, false);
+   }
+
+   public static String unquote(String nameReference) {
+      String toReturn = nameReference;
+      if (Strings.isValid(nameReference) && nameReference.contains("\"")) {
+         toReturn = nameReference.replaceAll("\\\"", emptyString());
+      }
+      return toReturn;
+   }
+
+   public static String quote(String nameReference) {
+      String toReturn = nameReference;
+      if (Strings.isValid(nameReference)) {
+         toReturn = String.format("\"%s\"", nameReference);
+      }
+      return toReturn;
    }
 
 }

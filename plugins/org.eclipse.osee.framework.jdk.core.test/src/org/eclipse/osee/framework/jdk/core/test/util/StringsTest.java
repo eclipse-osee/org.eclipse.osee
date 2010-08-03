@@ -22,6 +22,7 @@ package org.eclipse.osee.framework.jdk.core.test.util;
 
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * @author Donald G Dunne
@@ -40,4 +41,30 @@ public class StringsTest {
       Assert.assertEquals(withDots, "Now is the time f...");
    }
 
+   @Test
+   public void testUnQuote() {
+      String actual = Strings.unquote(null);
+      Assert.assertNull(actual);
+
+      actual = Strings.unquote("");
+      Assert.assertEquals("", actual);
+
+      actual = Strings.unquote("hello");
+      Assert.assertEquals("hello", actual);
+
+      actual = Strings.unquote("\"hello\"");
+      Assert.assertEquals("hello", actual);
+   }
+
+   @Test
+   public void testQuote() {
+      String actual = Strings.quote(null);
+      Assert.assertNull(actual);
+
+      actual = Strings.quote("");
+      Assert.assertEquals("", actual);
+
+      actual = Strings.quote("hello");
+      Assert.assertEquals("\"hello\"", actual);
+   }
 }
