@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.prompt.IHandlePromptChange;
 import org.eclipse.osee.framework.ui.skynet.artifact.prompt.IPromptFactory;
@@ -53,12 +52,8 @@ public final class ArtifactPromptChange {
                PermissionEnum.WRITE, true).matched();
 
          if (toReturn) {
-            try {
-               IHandlePromptChange promptChange = promptFactory.createPrompt();
-               toReturn = handlePromptChange(promptChange);
-            } catch (UnsupportedOperationException ex) {
-               AWorkbench.popup(ex.getMessage());
-            }
+            IHandlePromptChange promptChange = promptFactory.createPrompt();
+            toReturn = handlePromptChange(promptChange);
          }
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);

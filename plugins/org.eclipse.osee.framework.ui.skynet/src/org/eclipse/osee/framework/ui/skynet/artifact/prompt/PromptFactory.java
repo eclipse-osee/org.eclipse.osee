@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.artifact.prompt;
 import java.text.NumberFormat;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
@@ -42,7 +43,7 @@ public final class PromptFactory implements IPromptFactory {
    }
 
    @Override
-   public IHandlePromptChange createPrompt() throws UnsupportedOperationException, OseeCoreException {
+   public IHandlePromptChange createPrompt() throws OseeCoreException {
       IHandlePromptChange promptChange;
 
       if (AttributeTypeManager.isBaseTypeCompatible(DateAttribute.class, attributeName)) {
@@ -62,7 +63,7 @@ public final class PromptFactory implements IPromptFactory {
       } else if (AttributeTypeManager.isBaseTypeCompatible(StringAttribute.class, attributeName)) {
          promptChange = new StringHandlePromptChange(attributeName, persist, displayName, artifacts, null, multiLine);
       } else {
-         throw new UnsupportedOperationException("Unhandled attribute type.  Can't edit through this view");
+         throw new OseeStateException("Unhandled attribute type.  Can't edit through this view");
       }
       return promptChange;
    }
