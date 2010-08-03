@@ -46,6 +46,7 @@ public class XTextSpellCheckListener implements ModifyListener {
    private final XText xText;
    private final Set<ASpellWord> errors = new HashSet<ASpellWord>();
    private XTextSpellModifyDictionary modDict;
+   private Integer maxLength = 50000;
 
    public XTextSpellCheckListener(final XText xText, IDictionary dict) {
       this.xText = xText;
@@ -149,6 +150,11 @@ public class XTextSpellCheckListener implements ModifyListener {
 
    private void refreshStyleRanges() {
       String text = xText.getStyledText().getText();
+      // Only handle urls if widget is under maxLength size
+      if (text.length() > maxLength) {
+         xText.getStyledText().setStyleRanges(new StyleRange[] {});
+         return;
+      }
 
       // Get spelling errors
       getErrors(text);
@@ -194,6 +200,20 @@ public class XTextSpellCheckListener implements ModifyListener {
          refreshStyleRanges();
       }
 
+   }
+
+   /**
+    * @return the maxLength
+    */
+   public Integer getMaxLength() {
+      return maxLength;
+   }
+
+   /**
+    * @param maxLength the maxLength to set
+    */
+   public void setMaxLength(Integer maxLength) {
+      this.maxLength = maxLength;
    }
 
 }

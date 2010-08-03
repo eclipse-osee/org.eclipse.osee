@@ -40,6 +40,7 @@ public class XTextUrlListener implements ModifyListener {
 
    private final XText xText;
    private final Set<UrlWord> urls = new HashSet<UrlWord>();
+   private Integer maxLength = 50000;
 
    public class UrlWord {
       public String word;
@@ -83,6 +84,11 @@ public class XTextUrlListener implements ModifyListener {
 
    private void refreshStyleRanges() {
       String text = xText.getStyledText().getText();
+      // Only handle urls if widget is under maxLength size
+      if (text.length() > maxLength) {
+         xText.getStyledText().setStyleRanges(new StyleRange[] {});
+         return;
+      }
 
       // Get spelling errors
       getErrors(text);
@@ -95,7 +101,6 @@ public class XTextUrlListener implements ModifyListener {
          styleRange.length = sw.word.length();
          styleRange.foreground = Display.getCurrent().getSystemColor(SWT.COLOR_BLUE);
          xText.getStyledText().setStyleRange(styleRange);
-
       }
    }
 
@@ -153,5 +158,13 @@ public class XTextUrlListener implements ModifyListener {
       if (xText != null) {
          refreshStyleRanges();
       }
+   }
+
+   public Integer getMaxLength() {
+      return maxLength;
+   }
+
+   public void setMaxLength(Integer maxLength) {
+      this.maxLength = maxLength;
    }
 }
