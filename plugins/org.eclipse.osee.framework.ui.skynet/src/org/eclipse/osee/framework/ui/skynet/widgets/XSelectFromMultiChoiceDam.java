@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -33,7 +34,7 @@ import org.eclipse.osee.framework.ui.skynet.util.filteredTree.SimpleCheckFiltere
 public class XSelectFromMultiChoiceDam extends XSelectFromDialog<String> implements IAttributeWidget {
 
    private Artifact artifact;
-   private String attributeTypeName;
+   private IAttributeType attributeType;
 
    public XSelectFromMultiChoiceDam(String displayLabel) {
       super(displayLabel);
@@ -46,17 +47,17 @@ public class XSelectFromMultiChoiceDam extends XSelectFromDialog<String> impleme
    }
 
    @Override
-   public String getAttributeType() {
-      return attributeTypeName;
+   public IAttributeType getAttributeType() {
+      return attributeType;
    }
 
    @Override
-   public void setAttributeType(Artifact artifact, String attributeTypeName) throws OseeCoreException {
+   public void setAttributeType(Artifact artifact, IAttributeType attributeType) throws OseeCoreException {
       this.artifact = artifact;
-      this.attributeTypeName = attributeTypeName;
-      AttributeType attributeType = AttributeTypeManager.getType(attributeTypeName);
-      int minOccurrence = attributeType.getMinOccurrences();
-      int maxOccurrence = attributeType.getMaxOccurrences();
+      this.attributeType = attributeType;
+      AttributeType theAttributeType = AttributeTypeManager.getType(getAttributeType());
+      int minOccurrence = theAttributeType.getMinOccurrences();
+      int maxOccurrence = theAttributeType.getMaxOccurrences();
 
       setRequiredSelection(minOccurrence, maxOccurrence);
       setSelected(getStored());
@@ -72,7 +73,7 @@ public class XSelectFromMultiChoiceDam extends XSelectFromDialog<String> impleme
    }
 
    public Collection<String> getStored() throws OseeCoreException {
-      return artifact.getAttributesToStringList(attributeTypeName);
+      return getArtifact().getAttributesToStringList(getAttributeType());
    }
 
    @Override
@@ -81,7 +82,7 @@ public class XSelectFromMultiChoiceDam extends XSelectFromDialog<String> impleme
          Collection<String> enteredValues = getSelected();
          Collection<String> storedValues = getStored();
          if (!Collections.isEqual(enteredValues, storedValues)) {
-            return new Result(true, attributeTypeName + " is dirty");
+            return new Result(true, getAttributeType() + " is dirty");
          }
       } catch (NumberFormatException ex) {
          // do nothing
@@ -91,12 +92,12 @@ public class XSelectFromMultiChoiceDam extends XSelectFromDialog<String> impleme
 
    @Override
    public void revert() throws OseeCoreException {
-      setAttributeType(artifact, attributeTypeName);
+      setAttributeType(getArtifact(), getAttributeType());
    }
 
    @Override
    public void saveToArtifact() throws OseeCoreException {
-      artifact.setAttributeValues(attributeTypeName, getSelected());
+      getArtifact().setAttributeValues(getAttributeType(), getSelected());
    }
 
    @Override
@@ -105,7 +106,8 @@ public class XSelectFromMultiChoiceDam extends XSelectFromDialog<String> impleme
       if (status.isOK()) {
          List<String> items = getSelected();
          for (String item : items) {
-            status = OseeValidator.getInstance().validate(IOseeValidator.SHORT, artifact, attributeTypeName, item);
+            status =
+               OseeValidator.getInstance().validate(IOseeValidator.SHORT, getArtifact(), getAttributeType(), item);
             if (!status.isOK()) {
                break;
             }

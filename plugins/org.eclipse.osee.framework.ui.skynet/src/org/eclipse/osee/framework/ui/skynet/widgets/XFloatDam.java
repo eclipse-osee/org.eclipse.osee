@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.text.NumberFormat;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -24,7 +25,7 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 public class XFloatDam extends XFloat implements IAttributeWidget {
 
    private Artifact artifact;
-   private String attributeTypeName;
+   private IAttributeType attributeType;
 
    public XFloatDam(String displayLabel) {
       super(displayLabel);
@@ -40,15 +41,15 @@ public class XFloatDam extends XFloat implements IAttributeWidget {
    }
 
    @Override
-   public String getAttributeType() {
-      return attributeTypeName;
+   public IAttributeType getAttributeType() {
+      return attributeType;
    }
 
    @Override
-   public void setAttributeType(Artifact artifact, String attrName) throws OseeCoreException {
+   public void setAttributeType(Artifact artifact, IAttributeType attrName) throws OseeCoreException {
       this.artifact = artifact;
-      this.attributeTypeName = attrName;
-      Double value = artifact.getSoleAttributeValue(attributeTypeName, null);
+      this.attributeType = attrName;
+      Double value = artifact.getSoleAttributeValue(getAttributeType(), null);
       super.set(value == null ? "" : NumberFormat.getInstance().format(value));
    }
 
@@ -56,10 +57,10 @@ public class XFloatDam extends XFloat implements IAttributeWidget {
    public void saveToArtifact() {
       try {
          if (text == null || text.equals("")) {
-            artifact.deleteSoleAttribute(attributeTypeName);
+            getArtifact().deleteSoleAttribute(getAttributeType());
          } else {
             Double enteredValue = getFloat();
-            artifact.setSoleAttributeValue(attributeTypeName, enteredValue);
+            getArtifact().setSoleAttributeValue(getAttributeType(), enteredValue);
          }
       } catch (NumberFormatException ex) {
          // do nothing
@@ -71,15 +72,15 @@ public class XFloatDam extends XFloat implements IAttributeWidget {
    @Override
    public Result isDirty() throws OseeCoreException {
       Double enteredValue = getFloat();
-      Double storedValue = artifact.getSoleAttributeValue(attributeTypeName, 0.0);
+      Double storedValue = getArtifact().getSoleAttributeValue(getAttributeType(), 0.0);
       if (enteredValue.doubleValue() != storedValue.doubleValue()) {
-         return new Result(true, attributeTypeName + " is dirty");
+         return new Result(true, getAttributeType() + " is dirty");
       }
       return Result.FalseResult;
    }
 
    @Override
    public void revert() throws OseeCoreException {
-      setAttributeType(artifact, attributeTypeName);
+      setAttributeType(getArtifact(), getAttributeType());
    }
 }

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -23,7 +24,7 @@ public class XTextDescriptiveName extends XTextDam {
 
    @Override
    public void setArtifact(Artifact artifact) throws OseeCoreException {
-      super.setAttributeType(artifact, "Name");
+      super.setAttributeType(artifact, CoreAttributeTypes.NAME);
    }
 
 }

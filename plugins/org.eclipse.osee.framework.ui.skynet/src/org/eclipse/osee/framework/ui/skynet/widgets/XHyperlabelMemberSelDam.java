@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
@@ -28,8 +29,10 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implements IAttributeWidget {
 
+   private static final Pattern USER_PATTERN = Pattern.compile("<userId>(.*?)</userId>");
+
    private Artifact artifact;
-   private String attributeTypeName;
+   private IAttributeType attributeType;
 
    public XHyperlabelMemberSelDam(String displayLabel) {
       super(displayLabel);
@@ -41,14 +44,14 @@ public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implemen
    }
 
    @Override
-   public String getAttributeType() {
-      return attributeTypeName;
+   public IAttributeType getAttributeType() {
+      return attributeType;
    }
 
    @Override
-   public void setAttributeType(Artifact artifact, String attrName) {
+   public void setAttributeType(Artifact artifact, IAttributeType attributeType) {
       this.artifact = artifact;
-      this.attributeTypeName = attrName;
+      this.attributeType = attributeType;
 
       super.setSelectedUsers(getUsers());
    }
@@ -56,8 +59,8 @@ public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implemen
    public Set<User> getUsers() {
       Set<User> users = new HashSet<User>();
       try {
-         Matcher m =
-            Pattern.compile("<userId>(.*?)</userId>").matcher(artifact.getSoleAttributeValue(attributeTypeName, ""));
+         String value = getArtifact().getSoleAttributeValue(getAttributeType(), "");
+         Matcher m = USER_PATTERN.matcher(value);
          while (m.find()) {
             users.add(UserManager.getUserByUserId(m.group(1)));
          }
@@ -73,9 +76,9 @@ public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implemen
       try {
          String selectedStrValue = getSelectedStringValue();
          if (selectedStrValue == null || selectedStrValue.equals("")) {
-            artifact.deleteSoleAttribute(attributeTypeName);
+            getArtifact().deleteSoleAttribute(getAttributeType());
          } else {
-            artifact.setSoleAttributeValue(attributeTypeName, selectedStrValue);
+            getArtifact().setSoleAttributeValue(getAttributeType(), selectedStrValue);
          }
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -94,13 +97,13 @@ public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implemen
    public Result isDirty() throws OseeCoreException {
       try {
          String enteredValue = getSelectedStringValue();
-         String storedValue = artifact.getSoleAttributeValue(attributeTypeName);
+         String storedValue = artifact.getSoleAttributeValue(attributeType);
          if (!enteredValue.equals(storedValue)) {
-            return new Result(true, attributeTypeName + " is dirty");
+            return new Result(true, attributeType + " is dirty");
          }
       } catch (AttributeDoesNotExist ex) {
-         if (!artifact.getSoleAttributeValue(attributeTypeName, "").equals("")) {
-            return new Result(true, attributeTypeName + " is dirty");
+         if (!artifact.getSoleAttributeValue(attributeType, "").equals("")) {
+            return new Result(true, attributeType + " is dirty");
          }
       } catch (NumberFormatException ex) {
          // do nothing
@@ -110,6 +113,6 @@ public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implemen
 
    @Override
    public void revert() {
-      setAttributeType(artifact, attributeTypeName);
+      setAttributeType(getArtifact(), getAttributeType());
    }
 }

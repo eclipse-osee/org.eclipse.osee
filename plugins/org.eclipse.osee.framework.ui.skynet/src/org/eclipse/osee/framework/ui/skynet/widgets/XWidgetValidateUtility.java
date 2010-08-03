@@ -20,6 +20,10 @@ import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
  */
 public final class XWidgetValidateUtility {
 
+   private XWidgetValidateUtility() {
+      // Utility class
+   }
+
    public static void validate(int requiredQualityOfService, XWidget xWidget, Artifact artifact, String attributeTypeName, Object proposedValue) {
       IStatus status =
          OseeValidator.getInstance().validate(requiredQualityOfService, artifact, attributeTypeName, proposedValue);

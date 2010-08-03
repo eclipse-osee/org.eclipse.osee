@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -24,7 +25,7 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 public class XComboBooleanDam extends XCombo implements IAttributeWidget {
 
    private Artifact artifact;
-   private String attributeTypeName;
+   private IAttributeType attributeType;
 
    public XComboBooleanDam(String displayLabel) {
       super(displayLabel);
@@ -36,15 +37,15 @@ public class XComboBooleanDam extends XCombo implements IAttributeWidget {
    }
 
    @Override
-   public String getAttributeType() {
-      return attributeTypeName;
+   public IAttributeType getAttributeType() {
+      return attributeType;
    }
 
    @Override
-   public void setAttributeType(Artifact artifact, String attrName) throws OseeCoreException {
+   public void setAttributeType(Artifact artifact, IAttributeType attributeType) throws OseeCoreException {
       this.artifact = artifact;
-      this.attributeTypeName = attrName;
-      Boolean result = artifact.getSoleAttributeValue(attrName, null);
+      this.attributeType = attributeType;
+      Boolean result = artifact.getSoleAttributeValue(this.attributeType, null);
       if (result == null) {
          super.set("");
       } else {
@@ -56,10 +57,10 @@ public class XComboBooleanDam extends XCombo implements IAttributeWidget {
    public void saveToArtifact() {
       try {
          if (data == null || data.equals("")) {
-            artifact.deleteSoleAttribute(attributeTypeName);
+            artifact.deleteSoleAttribute(attributeType);
          } else {
             String enteredValue = get();
-            artifact.setSoleAttributeValue(attributeTypeName, (enteredValue != null && enteredValue.equals("yes")));
+            artifact.setSoleAttributeValue(attributeType, (enteredValue != null && enteredValue.equals("yes")));
          }
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -70,13 +71,13 @@ public class XComboBooleanDam extends XCombo implements IAttributeWidget {
    public Result isDirty() throws OseeCoreException {
       try {
          String enteredValue = get();
-         boolean storedValue = artifact.getSoleAttributeValue(attributeTypeName);
+         boolean storedValue = artifact.getSoleAttributeValue(attributeType);
          if (enteredValue.equals("yes") != storedValue) {
-            return new Result(true, attributeTypeName + " is dirty");
+            return new Result(true, attributeType + " is dirty");
          }
       } catch (AttributeDoesNotExist ex) {
          if (!get().equals("")) {
-            return new Result(true, attributeTypeName + " is dirty");
+            return new Result(true, attributeType + " is dirty");
          }
       }
       return Result.FalseResult;
@@ -84,14 +85,14 @@ public class XComboBooleanDam extends XCombo implements IAttributeWidget {
 
    @Override
    public void revert() throws OseeCoreException {
-      setAttributeType(artifact, attributeTypeName);
+      setAttributeType(artifact, attributeType);
    }
 
    @Override
    public IStatus isValid() {
       IStatus status = super.isValid();
       if (status.isOK()) {
-         status = OseeValidator.getInstance().validate(IOseeValidator.SHORT, artifact, attributeTypeName, get());
+         status = OseeValidator.getInstance().validate(IOseeValidator.SHORT, artifact, attributeType, get());
       }
       return status;
    }

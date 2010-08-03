@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -22,7 +23,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
 public class XListDam extends XList implements IAttributeWidget {
 
    private Artifact artifact;
-   private String attributeTypeName;
+   private IAttributeType attributeType;
 
    @Override
    public Artifact getArtifact() {
@@ -37,24 +38,24 @@ public class XListDam extends XList implements IAttributeWidget {
    }
 
    @Override
-   public String getAttributeType() {
-      return attributeTypeName;
+   public IAttributeType getAttributeType() {
+      return attributeType;
    }
 
    @Override
-   public void setAttributeType(Artifact artifact, String attrName) throws OseeCoreException {
+   public void setAttributeType(Artifact artifact, IAttributeType attrName) throws OseeCoreException {
       this.artifact = artifact;
-      this.attributeTypeName = attrName;
+      this.attributeType = attrName;
       super.setSelected(getStoredStrs());
    }
 
    @Override
    public void saveToArtifact() throws OseeCoreException {
-      artifact.setAttributeValues(attributeTypeName, getSelectedStrs());
+      getArtifact().setAttributeValues(getAttributeType(), getSelectedStrs());
    }
 
    public Collection<String> getStoredStrs() throws OseeCoreException {
-      return artifact.getAttributesToStringList(attributeTypeName);
+      return getArtifact().getAttributesToStringList(getAttributeType());
    }
 
    @Override
@@ -63,7 +64,7 @@ public class XListDam extends XList implements IAttributeWidget {
          Collection<String> enteredValues = getSelectedStrs();
          Collection<String> storedValues = getStoredStrs();
          if (!Collections.isEqual(enteredValues, storedValues)) {
-            return new Result(true, attributeTypeName + " is dirty");
+            return new Result(true, getAttributeType() + " is dirty");
          }
       } catch (NumberFormatException ex) {
          // do nothing
@@ -73,7 +74,7 @@ public class XListDam extends XList implements IAttributeWidget {
 
    @Override
    public void revert() throws OseeCoreException {
-      setAttributeType(artifact, attributeTypeName);
+      setAttributeType(getArtifact(), getAttributeType());
    }
 
 }

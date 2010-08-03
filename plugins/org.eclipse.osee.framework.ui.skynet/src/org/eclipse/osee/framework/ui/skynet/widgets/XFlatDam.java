@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -44,7 +45,7 @@ import org.eclipse.ui.progress.UIJob;
 
 public class XFlatDam extends XFlatWidget<String> implements IAttributeWidget {
    private Artifact artifact;
-   private String attributeTypeName;
+   private IAttributeType attributeType;
    private final Map<String, XWidget> xWidgets;
    private final XModifiedListener xModifiedListener;
 
@@ -66,18 +67,18 @@ public class XFlatDam extends XFlatWidget<String> implements IAttributeWidget {
    }
 
    @Override
-   public String getAttributeType() {
-      return attributeTypeName;
+   public IAttributeType getAttributeType() {
+      return attributeType;
    }
 
    @Override
-   public void setAttributeType(Artifact artifact, String attributeTypeName) throws OseeCoreException {
+   public void setAttributeType(Artifact artifact, IAttributeType attributeType) throws OseeCoreException {
       this.artifact = artifact;
-      this.attributeTypeName = attributeTypeName;
-      AttributeType attributeType = AttributeTypeManager.getType(attributeTypeName);
+      this.attributeType = attributeType;
+      AttributeType theAttributeType = AttributeTypeManager.getType(getAttributeType());
 
-      int minOccurrence = attributeType.getMinOccurrences();
-      int maxOccurrence = attributeType.getMaxOccurrences();
+      int minOccurrence = theAttributeType.getMinOccurrences();
+      int maxOccurrence = theAttributeType.getMaxOccurrences();
 
       if (minOccurrence == 0) {
          minOccurrence = 1;
@@ -136,7 +137,7 @@ public class XFlatDam extends XFlatWidget<String> implements IAttributeWidget {
    }
 
    public Collection<String> getStored() throws OseeCoreException {
-      return artifact.getAttributesToStringList(attributeTypeName);
+      return artifact.getAttributesToStringList(getAttributeType());
    }
 
    @Override
@@ -145,7 +146,7 @@ public class XFlatDam extends XFlatWidget<String> implements IAttributeWidget {
          Collection<String> enteredValues = new ArrayList<String>();//getSelected();
          Collection<String> storedValues = getStored();
          if (!Collections.isEqual(enteredValues, storedValues)) {
-            return new Result(true, attributeTypeName + " is dirty");
+            return new Result(true, getAttributeType() + " is dirty");
          }
       } catch (NumberFormatException ex) {
          // do nothing
@@ -155,19 +156,19 @@ public class XFlatDam extends XFlatWidget<String> implements IAttributeWidget {
 
    @Override
    public void revert() throws OseeCoreException {
-      setAttributeType(artifact, attributeTypeName);
+      setAttributeType(artifact, getAttributeType());
    }
 
    @Override
    public void saveToArtifact() throws OseeCoreException {
-      artifact.setAttributeValues(attributeTypeName, getInput());
+      artifact.setAttributeValues(getAttributeType(), getInput());
    }
 
    @Override
    protected void createPage(final String id, Composite parent, String initialInput) {
       if (!xWidgets.containsKey(id)) {
          try {
-            XWidget xWidget = getWidget(attributeTypeName, parent, initialInput);
+            XWidget xWidget = getWidget(getAttributeType(), parent, initialInput);
             xWidget.setEditable(isEditable());
             xWidgets.put(id, xWidget);
 
@@ -214,7 +215,7 @@ public class XFlatDam extends XFlatWidget<String> implements IAttributeWidget {
       return new Date();
    }
 
-   private XWidget getWidget(String attributeType, Composite parent, String initialInput) throws OseeCoreException {
+   private XWidget getWidget(IAttributeType attributeType, Composite parent, String initialInput) throws OseeCoreException {
       XWidget xWidget = null;
 
       if (AttributeTypeManager.isBaseTypeCompatible(IntegerAttribute.class, attributeType)) {

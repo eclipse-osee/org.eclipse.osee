@@ -13,11 +13,13 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -32,7 +34,7 @@ import org.eclipse.swt.widgets.Text;
 public class XLabelDam extends XWidget implements IAttributeWidget {
 
    private Artifact artifact;
-   private String attributeTypeName;
+   private IAttributeType attributeType;
    private Text valueTextWidget;
    private Composite parent;
 
@@ -70,14 +72,14 @@ public class XLabelDam extends XWidget implements IAttributeWidget {
    }
 
    @Override
-   public String getAttributeType() {
-      return attributeTypeName;
+   public IAttributeType getAttributeType() {
+      return attributeType;
    }
 
    @Override
-   public void setAttributeType(Artifact artifact, String attrName) {
+   public void setAttributeType(Artifact artifact, IAttributeType attributeType) {
       this.artifact = artifact;
-      this.attributeTypeName = attrName;
+      this.attributeType = attributeType;
 
       refresh();
    }
@@ -94,9 +96,11 @@ public class XLabelDam extends XWidget implements IAttributeWidget {
 
    @Override
    public void refresh() {
-      if (artifact != null && valueTextWidget != null && !valueTextWidget.isDisposed()) {
+      Artifact artifact = getArtifact();
+      if (artifact != null && Widgets.isAccessible(valueTextWidget)) {
          try {
-            valueTextWidget.setText(artifact.getAttributesToString(attributeTypeName));
+            String value = artifact.getAttributesToString(getAttributeType());
+            valueTextWidget.setText(value);
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }

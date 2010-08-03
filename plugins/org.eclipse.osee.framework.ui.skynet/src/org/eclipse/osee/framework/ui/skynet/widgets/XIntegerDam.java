@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -21,7 +23,7 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 public class XIntegerDam extends XInteger implements IAttributeWidget {
 
    private Artifact artifact;
-   private String attributeTypeName;
+   private IAttributeType attributeType;
 
    public XIntegerDam(String displayLabel) {
       super(displayLabel);
@@ -33,16 +35,16 @@ public class XIntegerDam extends XInteger implements IAttributeWidget {
    }
 
    @Override
-   public String getAttributeType() {
-      return attributeTypeName;
+   public IAttributeType getAttributeType() {
+      return attributeType;
    }
 
    @Override
-   public void setAttributeType(Artifact artifact, String attrName) throws OseeCoreException {
+   public void setAttributeType(Artifact artifact, IAttributeType attrName) throws OseeCoreException {
       this.artifact = artifact;
-      this.attributeTypeName = attrName;
+      this.attributeType = attrName;
       try {
-         Integer value = artifact.getSoleAttributeValue(attributeTypeName);
+         Integer value = artifact.getSoleAttributeValue(getAttributeType());
          super.set(value.toString());
       } catch (AttributeDoesNotExist ex) {
          super.set("");
@@ -52,11 +54,11 @@ public class XIntegerDam extends XInteger implements IAttributeWidget {
    @Override
    public void saveToArtifact() {
       try {
-         if (text == null || text.equals("")) {
-            artifact.deleteSoleAttribute(attributeTypeName);
+         if (!Strings.isValid(text)) {
+            getArtifact().deleteSoleAttribute(getAttributeType());
          } else {
             Integer enteredValue = getInteger();
-            artifact.setSoleAttributeValue(attributeTypeName, enteredValue);
+            getArtifact().setSoleAttributeValue(getAttributeType(), enteredValue);
          }
       } catch (NumberFormatException ex) {
          // do nothing
@@ -69,13 +71,13 @@ public class XIntegerDam extends XInteger implements IAttributeWidget {
    public Result isDirty() throws OseeCoreException {
       try {
          Integer enteredValue = getInteger();
-         Integer storedValue = artifact.getSoleAttributeValue(attributeTypeName);
+         Integer storedValue = getArtifact().getSoleAttributeValue(getAttributeType());
          if (enteredValue.doubleValue() != storedValue.doubleValue()) {
-            return new Result(true, attributeTypeName + " is dirty");
+            return new Result(true, getAttributeType() + " is dirty");
          }
       } catch (AttributeDoesNotExist ex) {
          if (!get().equals("")) {
-            return new Result(true, attributeTypeName + " is dirty");
+            return new Result(true, getAttributeType() + " is dirty");
          }
       } catch (NumberFormatException ex) {
          // do nothing
@@ -85,7 +87,7 @@ public class XIntegerDam extends XInteger implements IAttributeWidget {
 
    @Override
    public void revert() throws OseeCoreException {
-      setAttributeType(artifact, attributeTypeName);
+      setAttributeType(getArtifact(), getAttributeType());
    }
 
 }

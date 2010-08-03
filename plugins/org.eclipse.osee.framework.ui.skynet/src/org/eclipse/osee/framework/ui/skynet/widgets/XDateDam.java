@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.util.Date;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -24,7 +25,7 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 public class XDateDam extends XDate implements IAttributeWidget {
 
    private Artifact artifact;
-   private String attributeTypeName;
+   private IAttributeType attributeType;
 
    public XDateDam(String displayLabel) {
       super(displayLabel);
@@ -36,15 +37,15 @@ public class XDateDam extends XDate implements IAttributeWidget {
    }
 
    @Override
-   public String getAttributeType() {
-      return attributeTypeName;
+   public IAttributeType getAttributeType() {
+      return attributeType;
    }
 
    @Override
-   public void setAttributeType(Artifact artifact, String attrName) throws OseeCoreException {
+   public void setAttributeType(Artifact artifact, IAttributeType IAttributeType) throws OseeCoreException {
       this.artifact = artifact;
-      this.attributeTypeName = attrName;
-      Date value = artifact.getSoleAttributeValue(attributeTypeName, null);
+      this.attributeType = IAttributeType;
+      Date value = artifact.getSoleAttributeValue(getAttributeType(), null);
       if (value != null) {
          super.setDate(value);
       }
@@ -54,10 +55,10 @@ public class XDateDam extends XDate implements IAttributeWidget {
    public void saveToArtifact() {
       try {
          if (date == null) {
-            artifact.deleteSoleAttribute(attributeTypeName);
+            getArtifact().deleteSoleAttribute(getAttributeType());
          } else {
             Date enteredValue = getDate();
-            artifact.setSoleAttributeValue(attributeTypeName, enteredValue);
+            getArtifact().setSoleAttributeValue(getAttributeType(), enteredValue);
          }
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -67,32 +68,32 @@ public class XDateDam extends XDate implements IAttributeWidget {
    @Override
    public Result isDirty() throws OseeCoreException {
       Date enteredValue = getDate();
-      Date storedValue = artifact.getSoleAttributeValue(attributeTypeName, null);
+      Date storedValue = getArtifact().getSoleAttributeValue(getAttributeType(), null);
       if (enteredValue == null && storedValue == null) {
          return Result.FalseResult;
       }
       if (enteredValue == null && storedValue != null) {
-         return new Result(true, attributeTypeName + " is dirty");
+         return new Result(true, getAttributeType() + " is dirty");
       }
       if (enteredValue != null && storedValue == null) {
-         return new Result(true, attributeTypeName + " is dirty");
+         return new Result(true, getAttributeType() + " is dirty");
       }
       if (enteredValue.getTime() != storedValue.getTime()) {
-         return new Result(true, attributeTypeName + " is dirty");
+         return new Result(true, getAttributeType() + " is dirty");
       }
       return Result.FalseResult;
    }
 
    @Override
    public void revert() throws OseeCoreException {
-      setAttributeType(artifact, attributeTypeName);
+      setAttributeType(getArtifact(), getAttributeType());
    }
 
    @Override
    public IStatus isValid() {
       IStatus status = super.isValid();
       if (status.isOK()) {
-         status = OseeValidator.getInstance().validate(IOseeValidator.SHORT, artifact, attributeTypeName, get());
+         status = OseeValidator.getInstance().validate(IOseeValidator.SHORT, getArtifact(), getAttributeType(), get());
       }
       return status;
    }
