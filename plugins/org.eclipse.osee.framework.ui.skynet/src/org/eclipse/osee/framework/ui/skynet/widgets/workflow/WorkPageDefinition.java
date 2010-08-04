@@ -35,14 +35,13 @@ public class WorkPageDefinition extends WorkItemWithChildrenDefinition {
 
    public WorkPageDefinition(Artifact artifact) throws OseeCoreException {
       super(artifact, artifact.getName(), //
-         artifact.getSoleAttributeValue(WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName(), (String) null),// 
-         artifact.getSoleAttributeValue(WorkItemAttributes.WORK_ID.getAttributeTypeName(), (String) null), //
-         artifact.getSoleAttributeValue(WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName(), (String) null)//
+         artifact.getSoleAttributeValue(WorkItemAttributes.WORK_PAGE_NAME, (String) null),// 
+         artifact.getSoleAttributeValue(WorkItemAttributes.WORK_ID, (String) null), //
+         artifact.getSoleAttributeValue(WorkItemAttributes.WORK_PARENT_ID, (String) null)//
       );
-      setType(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_TYPE.getAttributeTypeName(), (String) null));
+      setType(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_TYPE, (String) null));
       loadWorkDataKeyValueMap(artifact);
-      setPageName(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName(),
-         (String) null));
+      setPageName(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_PAGE_NAME, (String) null));
 
    }
 
@@ -67,7 +66,7 @@ public class WorkPageDefinition extends WorkItemWithChildrenDefinition {
       Artifact art = super.toArtifact(writeType);
       // Only store start page if it's part of this definition
       if (pageName != null) {
-         art.setSoleAttributeFromString(WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName(), pageName);
+         art.setSoleAttributeFromString(WorkItemAttributes.WORK_PAGE_NAME, pageName);
       }
       return art;
    }

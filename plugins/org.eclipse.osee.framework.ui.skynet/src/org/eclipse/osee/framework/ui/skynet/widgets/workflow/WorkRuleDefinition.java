@@ -43,10 +43,9 @@ public class WorkRuleDefinition extends WorkItemDefinition {
    }
 
    public WorkRuleDefinition(Artifact artifact) throws OseeCoreException {
-      this(artifact.getName(), artifact.getSoleAttributeValue(WorkItemAttributes.WORK_ID.getAttributeTypeName(), ""),
-         null, null);
-      setDescription(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_DESCRIPTION.getAttributeTypeName(), ""));
-      setType(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_TYPE.getAttributeTypeName(), (String) null));
+      this(artifact.getName(), artifact.getSoleAttributeValue(WorkItemAttributes.WORK_ID, ""), null, null);
+      setDescription(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_DESCRIPTION, ""));
+      setType(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_TYPE, (String) null));
       loadWorkDataKeyValueMap(artifact);
    }
 

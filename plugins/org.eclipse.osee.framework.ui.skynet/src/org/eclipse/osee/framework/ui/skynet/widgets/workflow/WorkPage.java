@@ -10,12 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-import javax.xml.parsers.ParserConfigurationException;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -31,7 +28,6 @@ import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
 
 /**
  * Instantiation of a workpagedefinition for a given workflow. This contains UI components that are specific to the
@@ -144,7 +140,7 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
          for (DynamicXWidgetLayoutData layoutData : dynamicXWidgetLayout.getLayoutDatas()) {
             if (!layoutData.getXWidget().isValid().isOK()) {
                // Check to see if widget is part of a completed OR or XOR group
-               if (!dynamicXWidgetLayout.isOrGroupFromAttrNameComplete(layoutData.getStorageName()) && !dynamicXWidgetLayout.isXOrGroupFromAttrNameComplete(layoutData.getStorageName())) {
+               if (!dynamicXWidgetLayout.isOrGroupFromAttrNameComplete(layoutData.getStoreName()) && !dynamicXWidgetLayout.isXOrGroupFromAttrNameComplete(layoutData.getStoreName())) {
                   return new Result(layoutData.getXWidget().isValid().getMessage());
                }
             }
@@ -155,11 +151,11 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
       return Result.TrueResult;
    }
 
-   public String getHtml(String backgroundColor) throws OseeArgumentException {
+   public String getHtml(String backgroundColor) throws OseeCoreException {
       return getHtml(backgroundColor, "", "");
    }
 
-   public String getHtml(String backgroundColor, String preHtml, String postHtml) throws OseeArgumentException {
+   public String getHtml(String backgroundColor, String preHtml, String postHtml) throws OseeCoreException {
       StringBuffer sb = new StringBuffer();
       sb.append(AHTML.startBorderTable(100, backgroundColor, getName()));
       if (preHtml != null) {
@@ -209,15 +205,15 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
       return dynamicXWidgetLayout.getLayoutData(layoutName);
    }
 
-   public void processInstructions(Document doc) throws IOException, ParserConfigurationException, SAXException {
+   public void processInstructions(Document doc) throws OseeCoreException {
       processLayoutDatas(doc.getDocumentElement());
    }
 
-   protected void processXmlLayoutDatas(String xWidgetXml) throws IOException, ParserConfigurationException, SAXException {
+   protected void processXmlLayoutDatas(String xWidgetXml) throws OseeCoreException {
       dynamicXWidgetLayout.processlayoutDatas(xWidgetXml);
    }
 
-   protected void processLayoutDatas(Element element) throws IOException, ParserConfigurationException, SAXException {
+   protected void processLayoutDatas(Element element) throws OseeCoreException {
       dynamicXWidgetLayout.processLayoutDatas(element);
    }
 
