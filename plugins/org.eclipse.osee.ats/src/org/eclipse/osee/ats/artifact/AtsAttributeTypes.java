@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.artifact;
 
-import org.eclipse.osee.ats.HasDescription;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -18,7 +17,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 /**
  * @author Ryan D. Brooks
  */
-public class AtsAttributeTypes extends NamedIdentity implements IAttributeType, HasDescription {
+public class AtsAttributeTypes extends NamedIdentity implements IAttributeType {
 
    public static final AtsAttributeTypes ATS_ACTIVE = new AtsAttributeTypes("AAMFEclQOVmzkIvzyWwA", "Active");
    public static final AtsAttributeTypes ATS_RESOLUTION = new AtsAttributeTypes("AAMFEdUMfV1KdbQNaKwA", "Resolution");
@@ -101,74 +100,6 @@ public class AtsAttributeTypes extends NamedIdentity implements IAttributeType, 
 
    public static final AtsAttributeTypes ATS_TITLE = new AtsAttributeTypes(CoreAttributeTypes.NAME);
 
-   //   public static final AtsAttributeTypes ATS_CANCELLED_FROM_STATE = new AtsAttributeTypes("Cancelled From State");
-   //   public static final AtsAttributeTypes ATS_REQUIRES_FOLLOWUP = new AtsAttributeTypes("Requires Followup" );
-   //   public static final AtsAttributeTypes ATS_TASK_USES_RESOLUTION_OPTIONS = new AtsAttributeTypes("Task Uses Resolution Options");
-   //   public static final AtsAttributeTypes ATS_CANCEL_REASON = new AtsAttributeTypes("Cancel Reason");
-   //   public static final AtsAttributeTypes ATS_VALIDATE_REQ_CHANGES_WIDGET = new AtsAttributeTypes("Validate Requirement Changes");
-   //   public static final AtsAttributeTypes ATS_CREATE_CODE_TEST_TASKS_OFF_REQUIREMENTS = new AtsAttributeTypes("Create Code/Test Tasks");
-   //   public static final AtsAttributeTypes ATS_CHECK_SIGNALS_VIA_CDB_WIDGET = new AtsAttributeTypes("Check Signals Via CDB");
-   //   public static final AtsAttributeTypes ATS_SHOW_CDB_DIFF_REPORT_WIDGET = new AtsAttributeTypes("Show CDB Differences Report");
-   //   public static final AtsAttributeTypes ATS_COMMIT_MANAGER_WIDGET = new AtsAttributeTypes("Commit Manager");
-   //   public static final AtsAttributeTypes ATS_WORKING_BRANCH_WIDGET = new AtsAttributeTypes("Working Branch");
-   //   public static final AtsAttributeTypes ATS_ASSIGNEE = new AtsAttributeTypes("Assignees");
-
-   static {
-      ATS_ACTIVE.setDescription("Active ATS configuration object.");
-      ATS_RESOLUTION.setDescription("Implementation details.");
-      ATS_ROLE.setDescription("");
-      ATS_LOG.setDescription("");
-      ATS_STATE.setDescription("States of workflow state machine.");
-      ATS_POINTS.setDescription("Abstract value that describes risk, complexity, and size of Actions.");
-      ATS_NUMERIC_1.setDescription("Open field for user to be able to enter numbers for sorting.");
-      ATS_NUMERIC_2.setDescription("Open field for user to be able to enter numbers for sorting.");
-      ATS_CATEGORY_1.setDescription("Open field for user to be able to enter text to use for categorizing/sorting.");
-      ATS_CATEGORY_2.setDescription("Open field for user to be able to enter text to use for categorizing/sorting.");
-      ATS_CATEGORY_3.setDescription("Open field for user to be able to enter text to use for categorizing/sorting.");
-      ATS_ACTIONABLE.setDescription("True if item can have Action written against or assigned to.");
-      ATS_PROBLEM.setDescription("Problem found during analysis.");
-      ATS_DESCRIPTION.setDescription("Detailed explanation.");
-      ATS_FULL_NAME.setDescription("Expanded and descriptive name.");
-      ATS_LOCATION.setDescription("Enter location of materials to review.");
-      ATS_CHANGE_TYPE.setDescription("Type of change.");
-      ATS_PRIORITY_TYPE.setDescription("1 = High; 5 = Low");
-      ATS_NEED_BY.setDescription("Hard schedule date that workflow must be completed.");
-      ATS_SMA_NOTE.setDescription("Notes applicable to ATS object");
-      ATS_STATE_NOTES.setDescription("");
-      ATS_RELEASED.setDescription("True if object is in a released state.");
-      ATS_DECISION.setDescription("Option selected during decision review.");
-      ATS_DECISION_REVIEW_OPTIONS.setDescription("Options available for selection in review.  Each line is a separate option. Format: <option name>;<state to transition to>;<assignee>");
-      ATS_LEGACY_PCR_ID.setDescription("Field to register problem change report id from legacy items imported into ATS.");
-      ATS_TEAM_DEFINITION.setDescription("");
-      ATS_CURRENT_STATE.setDescription("Current state of workflow state machine.");
-      ATS_ALLOW_CREATE_BRANCH.setDescription("");
-      ATS_ALLOW_COMMIT_BRANCH.setDescription("");
-      ATS_USER_COMMUNITY.setDescription("If working in one of these communities resulted in the creation of this Action, please select.  Otherwise, select Other.");
-      ATS_RELEASE_DATE.setDescription("Date the changes were made available to the users.");
-      ATS_REVIEW_DEFECT.setDescription("");
-      ATS_ESTIMATED_HOURS.setDescription("Hours estimated to implement the changes associated with this Action.\nIncludes estimated hours for workflows, tasks and reviews.");
-      ATS_WEEKLY_BENEFIT.setDescription("Estimated number of hours that will be saved over a single year if this change is completed.");
-      ATS_PERCENT_REWORK.setDescription("");
-      ATS_BLOCKING_REVIEW.setDescription("True if workflow should be blocked from contining until review is completed.");
-      ATS_REVIEW_BLOCKS.setDescription("Review Completion will block it's parent workflow in this manner.");
-      ATS_ACTIONABLE_ITEM.setDescription("Actionable Items that are impacted by this change.");
-      ATS_HOURS_PER_WORK_DAY.setDescription("");
-      ATS_VALIDATION_REQUIRED.setDescription("If selected, originator will be asked to validate the implementation.");
-      ATS_PROPOSED_RESOLUTION.setDescription("Recommended resolution.");
-      ATS_ESTIMATED_RELEASE_DATE.setDescription("Date the changes will be made available to the users.");
-      ATS_ESTIMATED_COMPLETION_DATE.setDescription("Date the changes will be completed.");
-      ATS_WORK_PACKAGE.setDescription("Designated accounting work package for completing workflow.");
-      ATS_GOAL_ORDER_VOTE.setDescription("Vote for order item belongs to within goal.");
-      ATS_TEAM_USES_VERSIONS.setDescription("True if Team Workflow uses versioning/releasing option.");
-      ATS_VERSION_LOCKED.setDescription("True if version artifact is locked.");
-      ATS_NEXT_VERSION.setDescription("True if version artifact is \"Next\" version to be released.");
-      ATS_BASELINE_BRANCH_GUID.setDescription("Baseline branch associated with ATS object.");
-      ATS_RELATED_TO_STATE.setDescription("State of parent workflow this object is related to.");
-      ATS_TITLE.setDescription("Enter clear and consise title that can be generally understood.");
-   }
-
-   private String description;
-
    private AtsAttributeTypes(IAttributeType attributeType) {
       super(attributeType.getGuid(), attributeType.getName());
    }
@@ -177,12 +108,4 @@ public class AtsAttributeTypes extends NamedIdentity implements IAttributeType, 
       super(guid, "ats." + name);
    }
 
-   private void setDescription(String description) {
-      this.description = description;
-   }
-
-   @Override
-   public String getDescription() {
-      return description;
-   }
 }
