@@ -119,7 +119,7 @@ public class ATSLog {
    public List<LogItem> getLogItems() throws OseeCoreException {
       //      System.out.println("getLogItems " + artifact.getHumanReadableId());
       List<LogItem> logItems = new ArrayList<LogItem>();
-      String xml = getArtifact().getSoleAttributeValue(ATSAttributes.LOG_ATTRIBUTE.getStoreName(), "");
+      String xml = getArtifact().getSoleAttributeValue(AtsAttributeTypes.ATS_LOG, "");
       if (!xml.equals("")) {
          Matcher m = LOG_ITEM_PATTERN.matcher(xml);
          while (m.find()) {
@@ -165,7 +165,7 @@ public class ATSLog {
             element.setAttribute("msg", item.getMsg());
             rootElement.appendChild(element);
          }
-         getArtifact().setSoleAttributeValue(ATSAttributes.LOG_ATTRIBUTE.getStoreName(), Jaxp.getDocumentXml(doc));
+         getArtifact().setSoleAttributeValue(AtsAttributeTypes.ATS_LOG, Jaxp.getDocumentXml(doc));
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't create ats log document", ex);
       }

@@ -108,7 +108,7 @@ public class ATSNote {
 
    public List<NoteItem> getNoteItems() {
       try {
-         String xml = getArtifact().getSoleAttributeValue(ATSAttributes.STATE_NOTES_ATTRIBUTE.getStoreName(), "");
+         String xml = getArtifact().getSoleAttributeValue(AtsAttributeTypes.ATS_STATE_NOTES, "");
          if (Strings.isValid(xml)) {
             return getNoteItems(xml, getArtifact().getHumanReadableId());
          }
@@ -132,7 +132,7 @@ public class ATSNote {
             element.setAttribute("msg", item.getMsg());
             rootElement.appendChild(element);
          }
-         getArtifact().setSoleAttributeValue(ATSAttributes.STATE_NOTES_ATTRIBUTE.getStoreName(),
+         getArtifact().setSoleAttributeValue(AtsAttributeTypes.ATS_STATE_NOTES,
             Jaxp.getDocumentXml(doc));
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't create ats note document", ex);
@@ -149,7 +149,7 @@ public class ATSNote {
       ArrayList<NoteItem> showNotes = new ArrayList<NoteItem>();
       List<NoteItem> noteItems = getNoteItems();
       try {
-         if (!getArtifact().isAttributeTypeValid(ATSAttributes.STATE_NOTES_ATTRIBUTE.getStoreName())) {
+         if (!getArtifact().isAttributeTypeValid(AtsAttributeTypes.ATS_STATE_NOTES)) {
             return "";
          }
       } catch (OseeCoreException ex) {
