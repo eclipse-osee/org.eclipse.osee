@@ -18,7 +18,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
@@ -122,15 +121,14 @@ public class GoalSearchItem extends WorldUISearchItem {
       }
       List<AbstractArtifactSearchCriteria> criteria = new ArrayList<AbstractArtifactSearchCriteria>();
       if (!teamDefinitionGuids.isEmpty()) {
-         criteria.add(new AttributeCriteria(AtsAttributeTypes.TeamDefinition, teamDefinitionGuids));
+         criteria.add(new AttributeCriteria(AtsAttributeTypes.ATS_TEAM_DEFINITION, teamDefinitionGuids));
       }
 
       if (!showFinished) {
          List<String> cancelOrComplete = new ArrayList<String>(2);
          cancelOrComplete.add(DefaultTeamState.Cancelled.name() + ";;;");
          cancelOrComplete.add(DefaultTeamState.Completed.name() + ";;;");
-         criteria.add(new AttributeCriteria(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(), cancelOrComplete,
-            Operator.NOT_EQUAL));
+         criteria.add(new AttributeCriteria(AtsAttributeTypes.ATS_CURRENT_STATE, cancelOrComplete, Operator.NOT_EQUAL));
       }
 
       List<Artifact> artifacts =

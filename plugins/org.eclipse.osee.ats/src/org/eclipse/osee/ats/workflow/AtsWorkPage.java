@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResolutionOptionRule;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -76,12 +77,14 @@ public class AtsWorkPage extends WorkPage {
    @Override
    public void createXWidgetLayoutData(DynamicXWidgetLayoutData layoutData, XWidget xWidget, FormToolkit toolkit, Artifact art, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
       super.createXWidgetLayoutData(layoutData, xWidget, toolkit, art, xModListener, isEditable);
-      // If no tooltip, add global tooltip
-      if ((xWidget.getToolTip() == null || xWidget.getToolTip().equals("")) && ATSAttributes.getAtsAttributeByStoreName(layoutData.getStorageName()) != null && ATSAttributes.getAtsAttributeByStoreName(
-         layoutData.getStorageName()).getDescription() != null && !ATSAttributes.getAtsAttributeByStoreName(
-         layoutData.getStorageName()).getDescription().equals("")) {
-         xWidget.setToolTip(ATSAttributes.getAtsAttributeByStoreName(layoutData.getStorageName()).getDescription());
-         layoutData.setToolTip(ATSAttributes.getAtsAttributeByStoreName(layoutData.getStorageName()).getDescription());
+
+      // If no tool tip, add global tool tip
+      if (!Strings.isValid(xWidget.getToolTip())) {
+         ATSAttributes atsAttribute = ATSAttributes.getAtsAttributeByStoreName(layoutData.getId());
+         if (atsAttribute != null && Strings.isValid(atsAttribute.getDescription())) {
+            xWidget.setToolTip(atsAttribute.getDescription());
+            layoutData.setToolTip(atsAttribute.getDescription());
+         }
       }
       // Store workAttr in control for use by help
       if (xWidget.getControl() != null) {

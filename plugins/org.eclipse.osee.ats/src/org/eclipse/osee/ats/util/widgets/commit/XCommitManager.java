@@ -74,7 +74,7 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
    private TeamWorkFlowArtifact teamArt;
    private static final int paddedTableHeightHint = 2;
    private Label extraInfoLabel;
-   public final static String WIDGET_ID = ATSAttributes.COMMIT_MANAGER_WIDGET.getStoreName();
+   public final static String WIDGET_ID = ATSAttributes.COMMIT_MANAGER_WIDGET.getWorkItemId();
    private ToolBar toolBar;
 
    public XCommitManager() {

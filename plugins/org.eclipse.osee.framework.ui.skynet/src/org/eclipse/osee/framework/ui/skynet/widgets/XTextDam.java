@@ -10,35 +10,46 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
+import java.lang.ref.WeakReference;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
 import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
-public class XTextDam extends XText implements IArtifactWidget, IAttributeWidget {
+public class XTextDam extends XText implements IAttributeWidget {
 
-   private Artifact artifact;
+   private Artifact artifactStrongRef;
    private IAttributeType attributeType;
+   private final boolean isWeakReference;
+   private WeakReference<Artifact> artifactRef;
 
    public XTextDam(String displayLabel) {
-      super(displayLabel);
+      this(displayLabel, false);
    }
 
-   @SuppressWarnings("unused")
+   public XTextDam(String displayLabel, boolean isWeakReference) {
+      super(displayLabel);
+      this.isWeakReference = isWeakReference;
+   }
+
    @Override
    public Artifact getArtifact() throws OseeCoreException {
-      return artifact;
-   }
-
-   @SuppressWarnings("unused")
-   @Override
-   public void setArtifact(Artifact artifact) throws OseeCoreException {
-      this.artifact = artifact;
+      Artifact toReturn = null;
+      if (isWeakReference) {
+         if (artifactRef.get() == null) {
+            throw new OseeStateException("Artifact has been garbage collected");
+         }
+         toReturn = artifactRef.get();
+      } else {
+         toReturn = artifactStrongRef;
+      }
+      return toReturn;
    }
 
    @Override
@@ -46,10 +57,22 @@ public class XTextDam extends XText implements IArtifactWidget, IAttributeWidget
       return attributeType;
    }
 
+   private void setArtifact(Artifact artifact) {
+      if (isWeakReference) {
+         this.artifactRef = new WeakReference<Artifact>(artifact);
+      } else {
+         artifactStrongRef = artifact;
+      }
+   }
+
    @Override
    public void setAttributeType(Artifact artifact, IAttributeType attributeType) throws OseeCoreException {
       this.attributeType = attributeType;
       setArtifact(artifact);
+      onAttributeTypeSet();
+   }
+
+   public void onAttributeTypeSet() throws OseeCoreException {
       super.set(getArtifact().getSoleAttributeValue(getAttributeType(), ""));
    }
 

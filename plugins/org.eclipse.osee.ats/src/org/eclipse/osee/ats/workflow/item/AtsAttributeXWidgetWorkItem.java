@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.workflow.item;
 
 import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkWidgetDefinition;
@@ -25,15 +26,27 @@ public class AtsAttributeXWidgetWorkItem extends WorkWidgetDefinition {
       DynamicXWidgetLayoutData data = new DynamicXWidgetLayoutData(null);
       data.setName(name);
       data.setId(id);
-      data.setStorageName(attributeTypeName);
+      data.setStoreName(attributeTypeName);
       data.setXWidgetName(xWidgetName);
       data.getXOptionHandler().add(xOption);
       set(data);
    }
 
    public AtsAttributeXWidgetWorkItem(ATSAttributes atsAttribute, String xWidgetName, XOption... xOption) {
-      this(atsAttribute.getDisplayName(), atsAttribute.getStoreName(), atsAttribute.getStoreName(), xWidgetName,
+      this(atsAttribute.getDisplayName(), atsAttribute.getWorkItemId(), atsAttribute.getWorkItemId(), xWidgetName,
          xOption);
+   }
+
+   public AtsAttributeXWidgetWorkItem(String name, ATSAttributes atsAttribute, String xWidgetName, XOption... xOption) {
+      this(name, atsAttribute.getWorkItemId(), atsAttribute.getWorkItemId(), xWidgetName, xOption);
+   }
+
+   public AtsAttributeXWidgetWorkItem(String name, String id, IAttributeType attributeType, String xWidgetName, XOption... xOption) {
+      this(name, id, attributeType.getName(), xWidgetName, xOption);
+   }
+
+   public AtsAttributeXWidgetWorkItem(String name, IAttributeType attributeType, String xWidgetName, XOption... xOption) {
+      this(name, attributeType.getName(), attributeType.getName(), xWidgetName, xOption);
    }
 
    public void setDefaultValue(String defaultValue) {

@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
@@ -125,16 +125,15 @@ public class VersionReportJob extends Job {
 
    public static String getReleasedString(VersionArtifact verArt) throws OseeCoreException {
       String released = "";
-      if (verArt.isReleased() && verArt.getSoleAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName(), null) != null) {
+      if (verArt.isReleased() && verArt.getSoleAttributeValue(AtsAttributeTypes.ATS_RELEASE_DATE, null) != null) {
          released =
-            " - " + "Released: " + getDateString(verArt.getSoleAttributeValue(
-               ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName(), null, Date.class));
+            " - " + "Released: " + getDateString(verArt.getSoleAttributeValue(AtsAttributeTypes.ATS_RELEASE_DATE,
+               (Date) null));
       }
-      if (verArt.isNextVersion() && verArt.getSoleAttributeValue(
-         ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName(), null) != null) {
+      if (verArt.isNextVersion() && verArt.getSoleAttributeValue(AtsAttributeTypes.ATS_ESTIMATED_RELEASE_DATE, null) != null) {
          released =
             " - " + "Next Release - Estimated Release Date: " + getDateString(verArt.getSoleAttributeValue(
-               ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName(), null, Date.class));
+               AtsAttributeTypes.ATS_ESTIMATED_RELEASE_DATE, (Date) null));
       }
       return released;
    }

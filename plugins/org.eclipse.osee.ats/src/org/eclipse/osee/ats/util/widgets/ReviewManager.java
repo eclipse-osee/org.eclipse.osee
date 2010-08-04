@@ -15,8 +15,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
@@ -76,7 +76,7 @@ public class ReviewManager {
                AtsWorkDefinitions.isValidateReviewBlocking(teamArt.getWorkPageDefinition()) ? ReviewBlockType.Transition : ReviewBlockType.None,
                true);
          decRev.setName(VALIDATE_REVIEW_TITLE);
-         decRev.setSoleAttributeValue(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName(),
+         decRev.setSoleAttributeValue(AtsAttributeTypes.ATS_DECISION_REVIEW_OPTIONS,
             "No;Followup;" + getValidateReviewFollowupUsersStr(teamArt) + "\n" + "Yes;Completed;");
 
          decRev.transition(DecisionReviewArtifact.DecisionReviewState.Decision.name(), teamArt.getOriginator(),
@@ -121,13 +121,12 @@ public class ReviewManager {
       if (teamArt != null) {
          teamArt.addRelation(AtsRelationTypes.TeamWorkflowToReview_Review, peerToPeerRev);
          if (againstState != null) {
-            peerToPeerRev.setSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), againstState);
+            peerToPeerRev.setSoleAttributeValue(AtsAttributeTypes.ATS_RELATED_TO_STATE, againstState);
          }
       }
 
       peerToPeerRev.getLog().addLog(LogType.Originated, "", "", origDate, origUser);
-      peerToPeerRev.setSoleAttributeValue(ATSAttributes.REVIEW_BLOCKS_ATTRIBUTE.getStoreName(),
-         ReviewBlockType.None.name());
+      peerToPeerRev.setSoleAttributeValue(AtsAttributeTypes.ATS_REVIEW_BLOCKS, ReviewBlockType.None.name());
 
       // Initialize state machine
       peerToPeerRev.getStateMgr().initializeStateMachine(DecisionReviewArtifact.DecisionReviewState.Prepare.name());
@@ -212,7 +211,7 @@ public class ReviewManager {
    public static Collection<ReviewSMArtifact> getReviews(TeamWorkFlowArtifact teamArt, String stateName) throws OseeCoreException {
       Set<ReviewSMArtifact> arts = new HashSet<ReviewSMArtifact>();
       for (ReviewSMArtifact revArt : getReviews(teamArt)) {
-         if (revArt.getSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), "").equals(stateName)) {
+         if (revArt.getSoleAttributeValue(AtsAttributeTypes.ATS_RELATED_TO_STATE, "").equals(stateName)) {
             arts.add(revArt);
          }
       }
@@ -297,17 +296,17 @@ public class ReviewManager {
          teamArt.addRelation(AtsRelationTypes.TeamWorkflowToReview_Review, decRev);
       }
       if (relatedToState != null && !relatedToState.equals("")) {
-         decRev.setSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), relatedToState);
+         decRev.setSoleAttributeValue(AtsAttributeTypes.ATS_RELATED_TO_STATE, relatedToState);
       }
       decRev.getLog().addLog(LogType.Originated, "", "");
       if (description != null && !description.equals("")) {
-         decRev.setSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), description);
+         decRev.setSoleAttributeValue(AtsAttributeTypes.ATS_DESCRIPTION, description);
       }
       if (options != null && !options.equals("")) {
-         decRev.setSoleAttributeValue(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName(), options);
+         decRev.setSoleAttributeValue(AtsAttributeTypes.ATS_DECISION_REVIEW_OPTIONS, options);
       }
       if (reviewBlockType != null) {
-         decRev.setSoleAttributeFromString(ATSAttributes.REVIEW_BLOCKS_ATTRIBUTE.getStoreName(), reviewBlockType.name());
+         decRev.setSoleAttributeFromString(AtsAttributeTypes.ATS_REVIEW_BLOCKS, reviewBlockType.name());
       }
 
       // Initialize state machine
@@ -316,7 +315,6 @@ public class ReviewManager {
       if (assignees != null && assignees.size() > 0) {
          decRev.getStateMgr().setAssignees(assignees);
       }
-
       return decRev;
    }
 

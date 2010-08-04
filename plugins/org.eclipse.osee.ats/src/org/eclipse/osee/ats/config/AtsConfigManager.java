@@ -19,8 +19,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsOpenOption;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
@@ -128,7 +128,7 @@ public class AtsConfigManager extends AbstractOperation {
          (TeamDefinitionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.TeamDefinition,
             AtsUtil.getAtsBranch(), teamDefName);
       if (versionNames == null || versionNames.size() > 0) {
-         teamDefinition.setSoleAttributeValue(ATSAttributes.TEAM_USES_VERSIONS_ATTRIBUTE.getStoreName(), true);
+         teamDefinition.setSoleAttributeValue(AtsAttributeTypes.ATS_TEAM_USES_VERSIONS, true);
       }
       teamDefinition.addRelation(AtsRelationTypes.TeamLead_Lead, UserManager.getUser());
       teamDefinition.addRelation(AtsRelationTypes.TeamMember_Member, UserManager.getUser());
@@ -144,7 +144,7 @@ public class AtsConfigManager extends AbstractOperation {
       ActionableItemArtifact topAia =
          (ActionableItemArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.ActionableItem,
             AtsUtil.getAtsBranch(), teamDefName);
-      topAia.setSoleAttributeValue(ATSAttributes.ACTIONABLE_ATTRIBUTE.getStoreName(), false);
+      topAia.setSoleAttributeValue(AtsAttributeTypes.ATS_ACTIONABLE, false);
       topAia.persist(transaction);
 
       AtsFolderUtil.getFolder(AtsFolder.ActionableItem).addChild(topAia);
@@ -158,7 +158,7 @@ public class AtsConfigManager extends AbstractOperation {
          ActionableItemArtifact aia =
             (ActionableItemArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.ActionableItem,
                AtsUtil.getAtsBranch(), name);
-         aia.setSoleAttributeValue(ATSAttributes.ACTIONABLE_ATTRIBUTE.getStoreName(), true);
+         aia.setSoleAttributeValue(AtsAttributeTypes.ATS_ACTIONABLE, true);
          topAia.addChild(aia);
          aia.persist(transaction);
          aias.add(aia);
@@ -225,7 +225,7 @@ public class AtsConfigManager extends AbstractOperation {
             }
          }
          if (state == DefaultTeamState.Completed || state == DefaultTeamState.Cancelled) {
-            newStateArt.setSoleAttributeFromString(WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName(),
+            newStateArt.setSoleAttributeFromString(WorkItemAttributes.WORK_PARENT_ID,
                "osee.ats.teamWorkflow." + state.name());
          }
 

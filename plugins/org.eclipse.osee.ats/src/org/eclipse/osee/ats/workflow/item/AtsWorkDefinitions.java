@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
@@ -31,6 +32,7 @@ import org.eclipse.osee.ats.workflow.flow.PeerToPeerWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.flow.TaskWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsDecisionDecisionWorkPageDefinition;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -57,12 +59,12 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.XWidgetFactory;
  * 
  * @author Donald G. Dunne
  */
-public class AtsWorkDefinitions implements IWorkDefinitionProvider {
+public final class AtsWorkDefinitions implements IWorkDefinitionProvider {
 
-   public static String ATS_TITLE_ID = "ats.Title";
-   public static String ATS_DESCRIPTION_NOT_REQUIRED_ID =
-      ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName() + ".notRequired";
-   public static String ATS_ESTIMATED_HOURS_NOT_REQUIRED_ID = ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE + ".notRequired";
+   public static final String ATS_DESCRIPTION_NOT_REQUIRED_ID = AtsAttributeTypes.ATS_DESCRIPTION + ".notRequired";
+   public static final String ATS_ESTIMATED_HOURS_NOT_REQUIRED_ID =
+      AtsAttributeTypes.ATS_ESTIMATED_HOURS + ".notRequired";
+
    public static enum RuleWorkItemId {
       atsRequireStateHourSpentPrompt("Work Page Option: Will popup a dialog to prompt user for time spent in this state."),
       atsAddDecisionValidateBlockingReview("Work Page Option: Will auto-create a blocking decision review for this state requesting validation for this workflow."),
@@ -124,7 +126,8 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE, "XTextDam"));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.SMA_NOTE_ATTRIBUTE, "XTextDam",
          XOption.FILL_VERTICALLY));
-      workItems.add(new AtsAttributeXWidgetWorkItem("Title", "ats.Title", "Name", "XTextDam", XOption.REQUIRED));
+      workItems.add(new AtsAttributeXWidgetWorkItem("Title", "ats.Title", CoreAttributeTypes.NAME, "XTextDam",
+         XOption.REQUIRED));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.RESOLUTION_ATTRIBUTE, "XTextDam",
          XOption.FILL_VERTICALLY));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE, "XTextDam",
@@ -142,18 +145,21 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
          "XCheckSiganlsViaCDBButton", XOption.NONE));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.SHOW_CDB_DIFF_REPORT_WIDGET,
          "XShowCdbDiffReportButton", XOption.NONE));
+
       workItems.add(new AtsAttributeXWidgetWorkItem("Question",
-         AtsDecisionDecisionWorkPageDefinition.DECISION_QUESTION_LABEL, "Name", "XLabelDam"));
+         AtsDecisionDecisionWorkPageDefinition.DECISION_QUESTION_LABEL, CoreAttributeTypes.NAME, "XLabelDam"));
+
       workItems.add(new AtsAttributeXWidgetWorkItem("Decision",
-         AtsDecisionDecisionWorkPageDefinition.DECISION_ANSWER_LABEL, ATSAttributes.DECISION_ATTRIBUTE.getStoreName(),
-         "XLabelDam"));
+         AtsDecisionDecisionWorkPageDefinition.DECISION_ANSWER_LABEL, AtsAttributeTypes.ATS_DECISION, "XLabelDam"));
+
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.PROPOSED_RESOLUTION_ATTRIBUTE, "XTextDam",
          XOption.FILL_VERTICALLY));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.DESCRIPTION_ATTRIBUTE, "XTextDam", XOption.REQUIRED,
          XOption.FILL_VERTICALLY));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.DESCRIPTION_ATTRIBUTE.getDisplayName(),
-         ATS_DESCRIPTION_NOT_REQUIRED_ID, ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "XTextDam",
-         XOption.NOT_REQUIRED, XOption.FILL_VERTICALLY));
+         ATS_DESCRIPTION_NOT_REQUIRED_ID, AtsAttributeTypes.ATS_DESCRIPTION, "XTextDam", XOption.NOT_REQUIRED,
+         XOption.FILL_VERTICALLY));
+
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.BLOCKING_REVIEW_ATTRIBUTE, "XComboBooleanDam",
          XOption.REQUIRED, XOption.HORIZONTAL_LABEL));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.REVIEW_BLOCKS_ATTRIBUTE,
@@ -162,9 +168,10 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
          XOption.REQUIRED, XOption.HORIZONTAL_LABEL));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE, "XFloatDam",
          XOption.REQUIRED));
+
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getDisplayName(),
-         ATS_ESTIMATED_HOURS_NOT_REQUIRED_ID, ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(), "XFloatDam",
-         XOption.NOT_REQUIRED));
+         ATS_ESTIMATED_HOURS_NOT_REQUIRED_ID, AtsAttributeTypes.ATS_ESTIMATED_HOURS, "XFloatDam", XOption.NOT_REQUIRED));
+
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.ESTIMATED_COMPLETION_DATE_ATTRIBUTE, "XDateDam",
          XOption.HORIZONTAL_LABEL));
       workItems.add(new AtsAttributeSoleComboXWidgetWorkItem(ATSAttributes.CHANGE_TYPE_ATTRIBUTE,
@@ -237,11 +244,11 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
    }
 
    public static boolean isAllowCreateBranch(WorkPageDefinition workPageDefinition) throws OseeCoreException {
-      return workPageDefinition.getWorkItemDefinition(ATSAttributes.WORKING_BRANCH_WIDGET.getStoreName()) != null;
+      return workPageDefinition.getWorkItemDefinition(ATSAttributes.WORKING_BRANCH_WIDGET.getWorkItemId()) != null;
    }
 
    public static boolean isAllowCommitBranch(WorkPageDefinition workPageDefinition) throws OseeCoreException {
-      return workPageDefinition.getWorkItemDefinition(ATSAttributes.COMMIT_MANAGER_WIDGET.getStoreName()) != null;
+      return workPageDefinition.getWorkItemDefinition(ATSAttributes.COMMIT_MANAGER_WIDGET.getWorkItemId()) != null;
    }
 
    public static void importWorkItemDefinitionsIntoDb(WriteType writeType, XResultData resultData, WorkItemDefinition workItemDefinition) throws OseeCoreException {

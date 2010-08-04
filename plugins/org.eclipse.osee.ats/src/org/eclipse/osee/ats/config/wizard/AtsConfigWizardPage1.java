@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
@@ -53,15 +54,15 @@ public class AtsConfigWizardPage1 extends WizardPage {
       }
    };
 
-   public String getNamespace() throws OseeArgumentException {
+   public String getNamespace() throws OseeCoreException {
       return (String) getXWidget(CONFIG_NAMESPACE).getData();
    }
 
-   public String getTeamDefName() throws OseeArgumentException {
+   public String getTeamDefName() throws OseeCoreException {
       return (String) getXWidget(TEAMDEF_NAME).getData();
    }
 
-   public List<String> getActionableItems() throws OseeArgumentException {
+   public List<String> getActionableItems() throws OseeCoreException {
       List<String> aias = new ArrayList<String>();
       for (String aia : ((String) getXWidget(ACTIONABLE_ITEMS).getData()).split(",")) {
          aia = aia.replaceAll("^ *", "");
@@ -73,7 +74,7 @@ public class AtsConfigWizardPage1 extends WizardPage {
       return aias;
    }
 
-   public List<String> getVersions() throws OseeArgumentException {
+   public List<String> getVersions() throws OseeCoreException {
       List<String> versions = new ArrayList<String>();
       for (String version : ((String) getXWidget(VERSIONS).getData()).split(",")) {
          version = version.replaceAll("^ *", "");
@@ -85,7 +86,7 @@ public class AtsConfigWizardPage1 extends WizardPage {
       return versions;
    }
 
-   public String getWorkflowId() throws OseeArgumentException {
+   public String getWorkflowId() throws OseeCoreException {
       return (String) getXWidget(WORKFLOW_ID).getData();
    }
 
@@ -132,7 +133,7 @@ public class AtsConfigWizardPage1 extends WizardPage {
                   ((XText) getXWidget(ACTIONABLE_ITEMS)).set("Lab Station, Lab Computer, Lab Fire System");
                   ((XText) getXWidget(VERSIONS)).set("SAW 1.0, SAW 2.0, SAW 3.0");
                   ((XText) getXWidget(WORKFLOW_ID)).setText("osee.ats.teamWorkflow");
-               } catch (OseeArgumentException ex) {
+               } catch (OseeCoreException ex) {
                   OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }
@@ -146,7 +147,7 @@ public class AtsConfigWizardPage1 extends WizardPage {
       }
    }
 
-   public XWidget getXWidget(String attrName) throws OseeArgumentException {
+   public XWidget getXWidget(String attrName) throws OseeCoreException {
       if (page == null) {
          throw new OseeArgumentException("WorkPage == null");
       }

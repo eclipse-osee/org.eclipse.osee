@@ -10,16 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets;
 
-import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Donald G. Dunne
  */
 public class XStateDam extends XStateAssigneesDam {
 
-   public XStateDam(StateMachineArtifact sma) {
-      super(sma, ATSAttributes.STATE_ATTRIBUTE.getStoreName());
+   public XStateDam(StateMachineArtifact sma) throws OseeCoreException {
+      super(sma, AtsAttributeTypes.ATS_STATE);
    }
 
 }

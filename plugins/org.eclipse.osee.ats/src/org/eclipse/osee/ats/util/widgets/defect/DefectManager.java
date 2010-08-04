@@ -15,8 +15,10 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -38,7 +40,8 @@ public class DefectManager {
    private final WeakReference<Artifact> artifactRef;
    private boolean enabled = true;
    private static String DEFECT_ITEM_TAG = "Item";
-   private static String REVIEW_DEFECT_ATTRIBUTE_NAME = "ats.Review Defect";
+   private static final IAttributeType REVIEW_STORAGE_TYPE = AtsAttributeTypes.ATS_REVIEW_DEFECT;
+
    private final Matcher defectMatcher = java.util.regex.Pattern.compile(
       "<" + DEFECT_ITEM_TAG + ">(.*?)</" + DEFECT_ITEM_TAG + ">", Pattern.DOTALL | Pattern.MULTILINE).matcher("");
 
@@ -65,7 +68,7 @@ public class DefectManager {
 
    public Set<DefectItem> getDefectItems() throws OseeCoreException {
       Set<DefectItem> defectItems = new HashSet<DefectItem>();
-      for (String xml : getArtifact().getAttributesToStringList(REVIEW_DEFECT_ATTRIBUTE_NAME)) {
+      for (String xml : getArtifact().getAttributesToStringList(REVIEW_STORAGE_TYPE)) {
          defectMatcher.reset(xml);
          while (defectMatcher.find()) {
             DefectItem item = new DefectItem(defectMatcher.group());
@@ -108,7 +111,7 @@ public class DefectManager {
    private void saveDefectItems(Set<DefectItem> defectItems, boolean persist, SkynetTransaction transaction) {
       try {
          // Change existing ones
-         for (Attribute<?> attr : getArtifact().getAttributes(REVIEW_DEFECT_ATTRIBUTE_NAME)) {
+         for (Attribute<?> attr : getArtifact().getAttributes(REVIEW_STORAGE_TYPE)) {
             DefectItem dbPromoteItem = new DefectItem((String) attr.getValue());
             for (DefectItem pItem : defectItems) {
                if (pItem.equals(dbPromoteItem)) {
@@ -120,7 +123,7 @@ public class DefectManager {
          // Remove deleted ones; items in dbPromoteItems that are not in promoteItems
          for (DefectItem delPromoteItem : org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(
             dbPromoteItems, defectItems)) {
-            for (Attribute<?> attr : getArtifact().getAttributes(REVIEW_DEFECT_ATTRIBUTE_NAME)) {
+            for (Attribute<?> attr : getArtifact().getAttributes(REVIEW_STORAGE_TYPE)) {
                DefectItem dbPromoteItem = new DefectItem((String) attr.getValue());
                if (dbPromoteItem.equals(delPromoteItem)) {
                   attr.delete();
@@ -130,7 +133,7 @@ public class DefectManager {
          // Add new ones: items in promoteItems that are not in dbPromoteItems
          for (DefectItem newPromoteItem : org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(
             defectItems, dbPromoteItems)) {
-            getArtifact().addAttributeFromString(REVIEW_DEFECT_ATTRIBUTE_NAME,
+            getArtifact().addAttributeFromString(REVIEW_STORAGE_TYPE,
                AXml.addTagData(DEFECT_ITEM_TAG, newPromoteItem.toXml()));
          }
          if (persist) {

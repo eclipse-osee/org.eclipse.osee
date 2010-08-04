@@ -77,7 +77,7 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
 
    @Override
    public String getWorldViewDescription() throws OseeCoreException {
-      return getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
+      return getSoleAttributeValue(AtsAttributeTypes.ATS_DESCRIPTION, "");
    }
 
    @Override

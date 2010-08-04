@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.editor;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -116,7 +116,7 @@ public class SMAPromptChangeStatus {
             sma.getStateMgr().addAssignee(UserManager.getUser());
          }
          if (options != null) {
-            sma.setSoleAttributeValue(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(), selectedOption);
+            sma.setSoleAttributeValue(AtsAttributeTypes.ATS_RESOLUTION, selectedOption);
          }
          if (sma instanceof TaskArtifact) {
             ((TaskArtifact) sma).statusPercentChanged(hours, percent, transaction);

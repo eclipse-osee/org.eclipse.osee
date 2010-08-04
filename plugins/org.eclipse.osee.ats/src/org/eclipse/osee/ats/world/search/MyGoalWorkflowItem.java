@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
@@ -61,7 +61,7 @@ public class MyGoalWorkflowItem extends UserSearchItem {
       if (goalSearchState == GoalSearchState.InWork) {
          artifacts.addAll(RelationManager.getRelatedArtifacts(assigned, 1, AtsRelationTypes.SmaToTask_Sma));
       } else {
-         artifacts.addAll(ArtifactQuery.getArtifactListFromAttribute(ATSAttributes.STATE_ATTRIBUTE.getStoreName(),
+         artifacts.addAll(ArtifactQuery.getArtifactListFromAttribute(AtsAttributeTypes.ATS_STATE,
             "%<" + user.getUserId() + ">%", AtsUtil.getAtsBranch()));
       }
 

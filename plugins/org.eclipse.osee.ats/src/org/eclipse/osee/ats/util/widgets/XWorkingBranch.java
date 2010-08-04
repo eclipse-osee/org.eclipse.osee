@@ -71,7 +71,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IArtifac
       Changes_InProgress,
       Changes_NotPermitted
    }
-   public final static String WIDGET_ID = ATSAttributes.WORKING_BRANCH_WIDGET.getStoreName();
+   public final static String WIDGET_ID = ATSAttributes.WORKING_BRANCH_WIDGET.getWorkItemId();
 
    public XWorkingBranch() {
       super("Working Branch", "");

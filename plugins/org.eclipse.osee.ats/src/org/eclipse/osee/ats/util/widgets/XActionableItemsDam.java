@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets;
 
-import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -18,10 +17,10 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
@@ -33,19 +32,15 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
  */
 public class XActionableItemsDam extends XTextDam {
 
-   private final WeakReference<Artifact> artifactRef;
-
-   public XActionableItemsDam(Artifact artifact) {
-      super(ATSAttributes.ACTIONABLE_ITEM_GUID_ATTRIBUTE.getStoreName());
-      this.artifactRef = new WeakReference<Artifact>(artifact);
+   public XActionableItemsDam(Artifact artifact) throws OseeCoreException {
+      super(ATSAttributes.ACTIONABLE_ITEM_GUID_ATTRIBUTE.getDisplayName(), true);
+      setAttributeType(artifact, AtsAttributeTypes.ATS_ACTIONABLE_ITEM);
    }
 
+   @SuppressWarnings("unused")
    @Override
-   public Artifact getArtifact() throws OseeCoreException {
-      if (artifactRef.get() == null) {
-         throw new OseeStateException("Artifact has been garbage collected");
-      }
-      return artifactRef.get();
+   public void onAttributeTypeSet() throws OseeCoreException {
+      //      super.set(getArtifact().getSoleAttributeValue(getAttributeType(), ""));
    }
 
    public Set<ActionableItemArtifact> getActionableItems() throws OseeCoreException {
@@ -70,17 +65,17 @@ public class XActionableItemsDam extends XTextDam {
    }
 
    public List<String> getActionableItemGuids() throws OseeCoreException {
-      return getArtifact().getAttributesToStringList(ATSAttributes.ACTIONABLE_ITEM_GUID_ATTRIBUTE.getStoreName());
+      return getArtifact().getAttributesToStringList(getAttributeType());
    }
 
    public void addActionableItem(ActionableItemArtifact aia) throws OseeCoreException {
       if (!getActionableItemGuids().contains(aia.getGuid())) {
-         getArtifact().addAttribute(ATSAttributes.ACTIONABLE_ITEM_GUID_ATTRIBUTE.getStoreName(), aia.getGuid());
+         getArtifact().addAttribute(getAttributeType(), aia.getGuid());
       }
    }
 
    public void removeActionableItem(ActionableItemArtifact aia) throws OseeCoreException {
-      getArtifact().deleteAttribute(ATSAttributes.ACTIONABLE_ITEM_GUID_ATTRIBUTE.getStoreName(), aia.getGuid());
+      getArtifact().deleteAttribute(getAttributeType(), aia.getGuid());
    }
 
    public Result setActionableItems(Collection<ActionableItemArtifact> newItems) throws OseeCoreException {

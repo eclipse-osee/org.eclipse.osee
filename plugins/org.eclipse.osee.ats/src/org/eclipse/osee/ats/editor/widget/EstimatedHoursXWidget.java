@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.editor.widget;
 
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -31,7 +32,7 @@ public class EstimatedHoursXWidget extends XFloatDam {
          if (xModListener != null) {
             addXModifiedListener(xModListener);
          }
-         setAttributeType(sma, ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName());
+         setAttributeType(sma, AtsAttributeTypes.ATS_ESTIMATED_HOURS);
          setFillHorizontally(true);
          createWidgets(composite, horizontalSpan);
       } catch (OseeCoreException ex) {

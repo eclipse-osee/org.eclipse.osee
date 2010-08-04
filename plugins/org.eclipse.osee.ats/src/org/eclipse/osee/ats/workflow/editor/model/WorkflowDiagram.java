@@ -198,7 +198,7 @@ public class WorkflowDiagram extends ModelElement {
       for (Shape shape : getChildren()) {
          if (WorkPageShape.class.isAssignableFrom(shape.getClass())) {
             String name =
-               (String) ((WorkPageShape) shape).getPropertyValue(WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName());
+               (String) ((WorkPageShape) shape).getPropertyValue(WorkItemAttributes.WORK_PAGE_NAME.getName());
             if (stateNames.contains(name)) {
                return new Result(
                   "Workflow can not have more than one state of same name.  Multiples found of name " + name);

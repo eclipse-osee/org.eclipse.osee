@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
@@ -50,7 +51,11 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 /**
  * @author Donald G. Dunne
  */
-public class PromptChangeUtil {
+public final class PromptChangeUtil {
+
+   private PromptChangeUtil() {
+      // Utility class
+   }
 
    public static boolean promptChangeGroups(StateMachineArtifact sma, boolean persist) throws OseeCoreException {
       return promptChangeGroups(Arrays.asList(sma), persist);
@@ -305,10 +310,9 @@ public class PromptChangeUtil {
             for (TeamWorkFlowArtifact team : teams) {
                if (dialog.isClearSelected() || !team.getWorldViewPoint().equals(dialog.getSelection())) {
                   if (dialog.isClearSelected()) {
-                     team.deleteAttributes(ATSAttributes.POINTS_ATTRIBUTE.getStoreName());
+                     team.deleteAttributes(AtsAttributeTypes.ATS_POINTS);
                   } else {
-                     team.setSoleAttributeFromString(ATSAttributes.POINTS_ATTRIBUTE.getStoreName(),
-                        dialog.getSelection());
+                     team.setSoleAttributeFromString(AtsAttributeTypes.ATS_POINTS, dialog.getSelection());
                   }
                   team.saveSMA(transaction);
                }
@@ -363,7 +367,7 @@ public class PromptChangeUtil {
 
    public static boolean promptChangeIntegerAttribute(StateMachineArtifact sma, ATSAttributes atsAttr, boolean persist) {
       try {
-         return ArtifactPromptChange.promptChangeAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
+         return ArtifactPromptChange.promptChangeAttribute(atsAttr.getAttributeType(), atsAttr.getDisplayName(),
             Arrays.asList(sma), persist);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -373,7 +377,7 @@ public class PromptChangeUtil {
 
    public static boolean promptChangePercentAttribute(StateMachineArtifact sma, ATSAttributes atsAttr, boolean persist) {
       try {
-         return ArtifactPromptChange.promptChangeAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
+         return ArtifactPromptChange.promptChangeAttribute(atsAttr.getAttributeType(), atsAttr.getDisplayName(),
             Arrays.asList(new Artifact[] {sma}), persist);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -382,13 +386,13 @@ public class PromptChangeUtil {
    }
 
    public static boolean promptChangeAttribute(final Collection<? extends StateMachineArtifact> smas, ATSAttributes atsAttr, boolean persist, boolean multiLine) throws OseeCoreException {
-      return ArtifactPromptChange.promptChangeAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(), smas,
+      return ArtifactPromptChange.promptChangeAttribute(atsAttr.getAttributeType(), atsAttr.getDisplayName(), smas,
          persist, multiLine);
    }
 
    public static boolean promptChangeAttribute(final Artifact sma, ATSAttributes atsAttr, boolean persist, boolean multiLine) {
       try {
-         return ArtifactPromptChange.promptChangeAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
+         return ArtifactPromptChange.promptChangeAttribute(atsAttr.getAttributeType(), atsAttr.getDisplayName(),
             Arrays.asList(new Artifact[] {sma}), persist, multiLine);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -398,7 +402,7 @@ public class PromptChangeUtil {
 
    public static boolean promptChangeAttribute(StateMachineArtifact sma, ATSAttributes atsAttr, final boolean persist, boolean multiLine) {
       try {
-         return ArtifactPromptChange.promptChangeAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
+         return ArtifactPromptChange.promptChangeAttribute(atsAttr.getAttributeType(), atsAttr.getDisplayName(),
             Arrays.asList(sma), persist, multiLine);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -408,8 +412,8 @@ public class PromptChangeUtil {
 
    public static boolean promptChangeDate(StateMachineArtifact sma, ATSAttributes atsAttr, boolean persist) {
       try {
-         return ArtifactPromptChange.promptChangeAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
-            Arrays.asList(sma), persist);
+         return ArtifactPromptChange.promptChangeAttribute(atsAttr.getAttributeType(), atsAttr.getDisplayName(),
+            java.util.Collections.singleton(sma), persist);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP,
             "Can't save " + atsAttr.getDisplayName() + " date to artifact " + sma.getHumanReadableId(), ex);
@@ -436,7 +440,7 @@ public class PromptChangeUtil {
                diag.setSelectedDate(verArt.getReleaseDate());
             }
             if (diag.open() == 0) {
-               verArt.setSoleAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName(), diag.getSelectedDate());
+               verArt.setSoleAttributeValue(AtsAttributeTypes.ATS_RELEASE_DATE, diag.getSelectedDate());
                verArt.persist();
                return true;
             }
@@ -448,7 +452,7 @@ public class PromptChangeUtil {
                diag.setSelectedDate(sma.getWorldViewReleaseDate());
             }
             if (diag.open() == 0) {
-               sma.setSoleAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName(), diag.getSelectedDate());
+               sma.setSoleAttributeValue(AtsAttributeTypes.ATS_RELEASE_DATE, diag.getSelectedDate());
                sma.persist();
                return true;
             }
@@ -474,8 +478,7 @@ public class PromptChangeUtil {
                diag.setSelectedDate(verArt.getEstimatedReleaseDate());
             }
             if (diag.open() == 0) {
-               verArt.setSoleAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName(),
-                  diag.getSelectedDate());
+               verArt.setSoleAttributeValue(AtsAttributeTypes.ATS_ESTIMATED_RELEASE_DATE, diag.getSelectedDate());
                verArt.persist();
                return true;
             }
@@ -489,8 +492,7 @@ public class PromptChangeUtil {
                diag.setSelectedDate(sma.getWorldViewEstimatedReleaseDate());
             }
             if (diag.open() == 0) {
-               sma.setSoleAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName(),
-                  diag.getSelectedDate());
+               sma.setSoleAttributeValue(AtsAttributeTypes.ATS_ESTIMATED_RELEASE_DATE, diag.getSelectedDate());
                sma.persist();
                return true;
             }

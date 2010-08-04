@@ -58,7 +58,7 @@ public class TaskArtifact extends StateMachineArtifact implements IATSStateMachi
    }
 
    @Override
-   public void onInitializationComplete() {
+   public void onInitializationComplete() throws OseeCoreException {
       super.onInitializationComplete();
    }
 
@@ -85,7 +85,7 @@ public class TaskArtifact extends StateMachineArtifact implements IATSStateMachi
          StateMachineArtifact parentSMA = getParentSMA();
          boolean unCancellable =
             parentSMA.getStateMgr().getCurrentStateName().equals(
-               getSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), ""));
+               getSoleAttributeValue(AtsAttributeTypes.ATS_RELATED_TO_STATE, ""));
          if (!unCancellable) {
             return false;
          }
@@ -142,7 +142,7 @@ public class TaskArtifact extends StateMachineArtifact implements IATSStateMachi
    @Override
    public String getDescription() {
       try {
-         return getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
+         return getSoleAttributeValue(AtsAttributeTypes.ATS_DESCRIPTION, "");
       } catch (Exception ex) {
          return "Error: " + ex.getLocalizedMessage();
       }
@@ -150,7 +150,7 @@ public class TaskArtifact extends StateMachineArtifact implements IATSStateMachi
 
    @Override
    public String getWorldViewRelatedToState() throws OseeCoreException {
-      return getSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), "");
+      return getSoleAttributeValue(AtsAttributeTypes.ATS_RELATED_TO_STATE, "");
    }
 
    @Override
@@ -198,7 +198,7 @@ public class TaskArtifact extends StateMachineArtifact implements IATSStateMachi
       if (getStateMgr().getCurrentStateName().equals(DefaultTeamState.Cancelled.name())) {
          return;
       }
-      setSoleAttributeValue(ATSAttributes.CANCEL_REASON_ATTRIBUTE.getStoreName(), reason);
+      setSoleAttributeValue(ATSAttributes.CANCEL_REASON_ATTRIBUTE.getAttributeType(), reason);
       Result result = transition(DefaultTeamState.Cancelled.name(), (User) null, transaction, transitionOption);
       if (result.isFalse()) {
          result.popup();
@@ -275,7 +275,7 @@ public class TaskArtifact extends StateMachineArtifact implements IATSStateMachi
 
    @Override
    public String getWorldViewDescription() throws OseeCoreException {
-      return getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
+      return getSoleAttributeValue(AtsAttributeTypes.ATS_DESCRIPTION, "");
    }
 
    @Override
@@ -288,7 +288,7 @@ public class TaskArtifact extends StateMachineArtifact implements IATSStateMachi
       if (getParentSMA().isTeamWorkflow()) {
          return ((TeamWorkFlowArtifact) getParentSMA()).getWorldViewReleaseDate();
       }
-      return getSoleAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName());
+      return getSoleAttributeValue(AtsAttributeTypes.ATS_RELEASE_DATE);
    }
 
    @Override

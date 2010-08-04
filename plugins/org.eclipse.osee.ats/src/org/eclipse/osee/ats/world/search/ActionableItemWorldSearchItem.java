@@ -17,9 +17,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.config.AtsCacheManager;
@@ -136,14 +136,13 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
       }
       List<AbstractArtifactSearchCriteria> criteria = new ArrayList<AbstractArtifactSearchCriteria>();
 
-      criteria.add(new AttributeCriteria(ATSAttributes.ACTIONABLE_ITEM_GUID_ATTRIBUTE.getStoreName(), actionItemGuids));
+      criteria.add(new AttributeCriteria(AtsAttributeTypes.ATS_ACTIONABLE_ITEM, actionItemGuids));
       // exclude completed or canceled
       if (!selectedShowFinished) {
          List<String> cancelOrComplete = new ArrayList<String>(2);
          cancelOrComplete.add(DefaultTeamState.Cancelled.name() + ";;;");
          cancelOrComplete.add(DefaultTeamState.Completed.name() + ";;;");
-         criteria.add(new AttributeCriteria(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(), cancelOrComplete,
-            Operator.NOT_EQUAL));
+         criteria.add(new AttributeCriteria(AtsAttributeTypes.ATS_CURRENT_STATE, cancelOrComplete, Operator.NOT_EQUAL));
       }
       Collection<Artifact> artifacts =
          ArtifactQuery.getArtifactListFromCriteria(AtsUtil.getAtsBranch(), 1000, criteria);

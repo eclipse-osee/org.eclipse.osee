@@ -33,12 +33,12 @@ public class AtsTaskInWorkPageDefinition extends WorkPageDefinition {
       addWorkItem(RuleWorkItemId.atsRequireStateHourSpentPrompt.name());
       addWorkItem("ats.Title");
       addWorkItem(AtsWorkDefinitions.ATS_DESCRIPTION_NOT_REQUIRED_ID);
-      addWorkItem(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName());
-      addWorkItem(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName());
-      addWorkItem(ATSAttributes.ESTIMATED_COMPLETION_DATE_ATTRIBUTE.getStoreName());
-      addWorkItem(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName());
-      addWorkItem(ATSAttributes.SMA_NOTE_ATTRIBUTE.getStoreName());
-      addWorkItem(ATSAttributes.CATEGORY_ATTRIBUTE.getStoreName());
+      addWorkItem(ATSAttributes.RESOLUTION_ATTRIBUTE.getWorkItemId());
+      addWorkItem(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getWorkItemId());
+      addWorkItem(ATSAttributes.ESTIMATED_COMPLETION_DATE_ATTRIBUTE.getWorkItemId());
+      addWorkItem(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getWorkItemId());
+      addWorkItem(ATSAttributes.SMA_NOTE_ATTRIBUTE.getWorkItemId());
+      addWorkItem(ATSAttributes.CATEGORY_ATTRIBUTE.getWorkItemId());
    }
 
 }

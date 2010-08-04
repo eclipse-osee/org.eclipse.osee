@@ -53,11 +53,11 @@ public class UserRelatedToAtsObjectSearch extends UserSearchItem {
       List<Artifact> arts = new ArrayList<Artifact>();
       if (activeObjectsOnly) {
          arts.addAll(ArtifactQuery.getArtifactListFromAttributeKeywords(AtsUtil.getAtsBranch(), user.getUserId(),
-            false, EXCLUDE_DELETED, false, AtsAttributeTypes.AtsCurrentState));
+            false, EXCLUDE_DELETED, false, AtsAttributeTypes.ATS_CURRENT_STATE));
       } else {
          arts.addAll(ArtifactQuery.getArtifactListFromAttributeKeywords(AtsUtil.getAtsBranch(), user.getUserId(),
-            false, EXCLUDE_DELETED, false, AtsAttributeTypes.AtsCurrentState, AtsAttributeTypes.AtsState,
-            AtsAttributeTypes.AtsLog));
+            false, EXCLUDE_DELETED, false, AtsAttributeTypes.ATS_CURRENT_STATE, AtsAttributeTypes.ATS_STATE,
+            AtsAttributeTypes.ATS_LOG));
       }
       arts.addAll(user.getRelatedArtifacts(AtsRelationTypes.TeamLead_Team));
       arts.addAll(user.getRelatedArtifacts(AtsRelationTypes.TeamMember_Team));

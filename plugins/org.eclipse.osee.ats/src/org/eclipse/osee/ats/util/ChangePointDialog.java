@@ -15,7 +15,7 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -49,7 +49,7 @@ public class ChangePointDialog extends ListDialog {
       setContentProvider(new ArrayContentProvider());
       setLabelProvider(new PointLabelProvider());
       try {
-         setInput(AttributeTypeManager.getEnumerationValues(ATSAttributes.POINTS_ATTRIBUTE.getStoreName()));
+         setInput(AttributeTypeManager.getEnumerationValues(AtsAttributeTypes.ATS_POINTS));
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }

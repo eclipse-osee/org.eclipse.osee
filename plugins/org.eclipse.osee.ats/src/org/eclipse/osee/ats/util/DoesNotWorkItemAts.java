@@ -24,7 +24,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ATSNote;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
@@ -130,7 +129,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
 
       ElapsedTime time = new ElapsedTime("My World via Attribute Search");
       List<Artifact> assignedList =
-         ArtifactQuery.getArtifactListFromAttribute(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(), "%727536%",
+         ArtifactQuery.getArtifactListFromAttribute(AtsAttributeTypes.ATS_CURRENT_STATE, "%727536%",
             AtsUtil.getAtsBranch());
       System.out.println("Returned " + assignedList.size() + " objects");
       time.end();
@@ -439,9 +438,9 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
             "W1TS8", "JM3RD", "7Q0W3", "P9DKR", "BR2RN", "Z6B0Z", "6KT6U", "HPQJX", "QN2K3", "W0VTD", "LDJMH", "6PWYH",
             "T8B4K", "YTNLC", "9557A", "SQQ6T", "D82X9", "2P5GC", "YK58N", "LWVT1", "KCGSQ", "5X2WL", "C8HWW");
       for (Artifact art : ArtifactQuery.getArtifactListFromIds(hrids, AtsUtil.getAtsBranch())) {
-         String str = art.getSoleAttributeValue(ATSAttributes.LOG_ATTRIBUTE.getStoreName(), null);
+         String str = art.getSoleAttributeValue(AtsAttributeTypes.ATS_LOG, null);
          str = str.replaceAll("rj236c", "1779483");
-         art.setSoleAttributeFromString(ATSAttributes.LOG_ATTRIBUTE.getStoreName(), str);
+         art.setSoleAttributeFromString(AtsAttributeTypes.ATS_LOG, str);
          art.persist(transaction);
       }
    }
@@ -449,12 +448,11 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
    @SuppressWarnings("unused")
    private void fixTestTaskResolutions() throws OseeCoreException {
       System.out.println("Started fixTestTaskResolutions...");
-      for (Artifact artifact : ArtifactQuery.getArtifactListFromAttributeType(AtsAttributeTypes.Resolution,
+      for (Artifact artifact : ArtifactQuery.getArtifactListFromAttributeType(AtsAttributeTypes.ATS_RESOLUTION,
          AtsUtil.getAtsBranch())) {
          if (artifact instanceof TaskArtifact) {
             TaskArtifact taskArt = (TaskArtifact) artifact;
-            String resolution =
-               ((TaskArtifact) artifact).getSoleAttributeValue(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(), null);
+            String resolution = ((TaskArtifact) artifact).getSoleAttributeValue(AtsAttributeTypes.ATS_RESOLUTION, null);
             if (resolution == null) {
                System.err.println("Unexpected null resolution." + taskArt.getHumanReadableId());
                //               taskArt.deleteSoleAttribute(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName());
@@ -475,7 +473,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
                   newResolution = "In_DTE_Test";
                }
                if (newResolution != null) {
-                  taskArt.setSoleAttributeFromString(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(), newResolution);
+                  taskArt.setSoleAttributeFromString(AtsAttributeTypes.ATS_RESOLUTION, newResolution);
                   taskArt.persist();
                }
             }

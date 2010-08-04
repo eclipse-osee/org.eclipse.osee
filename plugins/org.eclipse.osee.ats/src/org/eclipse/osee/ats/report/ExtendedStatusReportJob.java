@@ -18,8 +18,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
@@ -168,8 +168,7 @@ public class ExtendedStatusReportJob extends Job {
             if (sma instanceof TaskArtifact) {
                TaskArtifact taskArt = (TaskArtifact) sma;
                desc =
-                  taskArt.getDescription() + " " + taskArt.getSoleAttributeValue(
-                     ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(), "");
+                  taskArt.getDescription() + " " + taskArt.getSoleAttributeValue(AtsAttributeTypes.ATS_RESOLUTION, "");
             }
             if (desc.matches("^ *$")) {
                values.add(".");

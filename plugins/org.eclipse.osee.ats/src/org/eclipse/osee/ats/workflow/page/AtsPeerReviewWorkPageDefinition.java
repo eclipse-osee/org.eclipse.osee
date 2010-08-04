@@ -30,9 +30,9 @@ public class AtsPeerReviewWorkPageDefinition extends WorkPageDefinition {
 
    public AtsPeerReviewWorkPageDefinition(String name, String pageId, String parentId) {
       super(name, pageId, parentId);
-      addWorkItem(ATSAttributes.ROLE_ATTRIBUTE.getStoreName());
-      addWorkItem(ATSAttributes.REVIEW_DEFECT_ATTRIBUTE.getStoreName());
-      addWorkItem(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName());
+      addWorkItem(ATSAttributes.ROLE_ATTRIBUTE.getWorkItemId());
+      addWorkItem(ATSAttributes.REVIEW_DEFECT_ATTRIBUTE.getWorkItemId());
+      addWorkItem(ATSAttributes.RESOLUTION_ATTRIBUTE.getWorkItemId());
       addWorkItem(AtsWorkDefinitions.ATS_DESCRIPTION_NOT_REQUIRED_ID);
    }
 

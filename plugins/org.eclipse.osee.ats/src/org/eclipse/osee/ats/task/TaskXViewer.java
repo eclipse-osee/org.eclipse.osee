@@ -25,6 +25,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.internal.AtsPlugin;
@@ -222,7 +223,7 @@ public class TaskXViewer extends WorldXViewer {
          public void run() {
             try {
                boolean success =
-                  ArtifactPromptChange.promptChangeAttribute(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(),
+                  ArtifactPromptChange.promptChangeAttribute(AtsAttributeTypes.ATS_ESTIMATED_HOURS,
                      ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getDisplayName(), getSelectedTaskArtifacts(), false);
                if (success) {
                   editor.onDirtied();
@@ -379,7 +380,7 @@ public class TaskXViewer extends WorldXViewer {
 
          if (isSelectedTaskArtifactsAreInWork() && xCol.equals(WorldXViewerFactory.Estimated_Hours_Col)) {
             modified =
-               PromptChangeUtil.promptChangeAttribute(taskArt, ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE, false, true);
+               PromptChangeUtil.promptChangeAttribute(taskArt, ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE, false, false);
          } else if (isSelectedTaskArtifactsAreInWork() && xCol.equals(WorldXViewerFactory.Title_Col)) {
             modified = PromptChangeUtil.promptChangeAttribute(taskArt, ATSAttributes.TITLE_ATTRIBUTE, false, false);
          } else if (isSelectedTaskArtifactsAreInWork() && xCol.equals(WorldXViewerFactory.Related_To_State_Col)) {

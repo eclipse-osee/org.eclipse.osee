@@ -14,9 +14,10 @@ import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -28,14 +29,19 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
 public class XDecisionOptions {
 
    private final WeakReference<StateMachineArtifact> smaRef;
+   private final IAttributeType attributeType;
 
    public XDecisionOptions(StateMachineArtifact sma) {
       this.smaRef = new WeakReference<StateMachineArtifact>(sma);
+      this.attributeType = AtsAttributeTypes.ATS_DECISION_REVIEW_OPTIONS;
+   }
+
+   public IAttributeType getAttributeType() {
+      return attributeType;
    }
 
    public Set<DecisionOption> getDecisionOptions() throws OseeCoreException {
-      String decString =
-         getSma().getSoleAttributeValue(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName(), "");
+      String decString = getSma().getSoleAttributeValue(getAttributeType(), "");
       return getDecisionOptions(decString);
    }
 
@@ -70,8 +76,7 @@ public class XDecisionOptions {
    }
 
    public Result validateDecisionOptions() throws OseeCoreException {
-      return validateDecisionOptions(getSma().getSoleAttributeValue(
-         ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName(), ""));
+      return validateDecisionOptions(getSma().getSoleAttributeValue(getAttributeType(), ""));
    }
 
    public static Result validateDecisionOptions(String decisionOptions) {
@@ -94,8 +99,7 @@ public class XDecisionOptions {
    }
 
    public void setDecisionOptions(String decisionOptions) throws OseeCoreException {
-      getSma().setSoleAttributeValue(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName(),
-         toXml(getDecisionOptions(decisionOptions)));
+      getSma().setSoleAttributeValue(getAttributeType(), toXml(getDecisionOptions(decisionOptions)));
    }
 
 }

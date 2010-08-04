@@ -16,6 +16,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeColumn;
@@ -71,7 +72,8 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
    public static final XViewerColumn Notes_Col = new XViewerAtsAttributeColumn(ATSAttributes.SMA_NOTE_ATTRIBUTE, 80,
       SWT.LEFT, true, SortDataType.String, true);
    public static final XViewerColumn Deadline_Col = new XViewerAtsAttributeColumn(COLUMN_NAMESPACE + ".deadline",
-      ATSAttributes.NEED_BY_ATTRIBUTE, 75, SWT.LEFT, true, SortDataType.Date, true, null);
+      ATSAttributes.NEED_BY_ATTRIBUTE.getDisplayName(), AtsAttributeTypes.ATS_NEED_BY, 75, SWT.LEFT, true,
+      SortDataType.Date, true, null);
 
    // Aren't shown by default
    public static final XViewerColumn Annual_Cost_Avoidance_Col =

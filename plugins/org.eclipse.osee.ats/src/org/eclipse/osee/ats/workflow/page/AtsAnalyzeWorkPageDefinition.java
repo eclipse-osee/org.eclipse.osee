@@ -30,13 +30,13 @@ public class AtsAnalyzeWorkPageDefinition extends WorkPageDefinition {
    public AtsAnalyzeWorkPageDefinition(String name, String pageId, String parentId) {
       super(name, pageId, parentId);
       addWorkItem(RuleWorkItemId.atsRequireStateHourSpentPrompt.name());
-      addWorkItem(ATSAttributes.WORK_PACKAGE_ATTRIBUTE.getStoreName());
-      addWorkItem(ATSAttributes.PROBLEM_ATTRIBUTE.getStoreName());
-      addWorkItem(ATSAttributes.PROPOSED_RESOLUTION_ATTRIBUTE.getStoreName());
-      addWorkItem(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName());
-      addWorkItem(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName());
-      addWorkItem(ATSAttributes.NEED_BY_ATTRIBUTE.getStoreName());
-      addWorkItem(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName());
+      addWorkItem(ATSAttributes.WORK_PACKAGE_ATTRIBUTE.getWorkItemId());
+      addWorkItem(ATSAttributes.PROBLEM_ATTRIBUTE.getWorkItemId());
+      addWorkItem(ATSAttributes.PROPOSED_RESOLUTION_ATTRIBUTE.getWorkItemId());
+      addWorkItem(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getWorkItemId());
+      addWorkItem(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getWorkItemId());
+      addWorkItem(ATSAttributes.NEED_BY_ATTRIBUTE.getWorkItemId());
+      addWorkItem(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getWorkItemId());
    }
 
 }

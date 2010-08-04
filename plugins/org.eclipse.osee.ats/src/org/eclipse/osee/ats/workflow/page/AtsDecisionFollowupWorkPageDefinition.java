@@ -29,7 +29,7 @@ public class AtsDecisionFollowupWorkPageDefinition extends WorkPageDefinition {
 
    public AtsDecisionFollowupWorkPageDefinition(String name, String pageId, String parentId) {
       super(name, pageId, parentId);
-      addWorkItem(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName());
+      addWorkItem(ATSAttributes.RESOLUTION_ATTRIBUTE.getWorkItemId());
    }
 
 }

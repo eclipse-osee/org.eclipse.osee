@@ -16,8 +16,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.LogItem;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
@@ -44,7 +44,7 @@ public class StateManager {
    private final XStateDam stateDam;
    private final StateMachineArtifact sma;
 
-   public StateManager(StateMachineArtifact sma) {
+   public StateManager(StateMachineArtifact sma) throws OseeCoreException {
       super();
       this.sma = sma;
       currentStateDam = new XCurrentStateDam(sma);
@@ -393,8 +393,8 @@ public class StateManager {
     */
    public static Set<Artifact> getAssigned(String userId, Class<?> clazz) throws OseeCoreException {
       Set<Artifact> assigned = new HashSet<Artifact>();
-      for (Artifact artifact : ArtifactQuery.getArtifactListFromAttribute(
-         ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(), "%<" + userId + ">%", AtsUtil.getAtsBranch())) {
+      for (Artifact artifact : ArtifactQuery.getArtifactListFromAttribute(AtsAttributeTypes.ATS_CURRENT_STATE,
+         "%<" + userId + ">%", AtsUtil.getAtsBranch())) {
          if (clazz == null || clazz.isInstance(artifact)) {
             assigned.add(artifact);
          }

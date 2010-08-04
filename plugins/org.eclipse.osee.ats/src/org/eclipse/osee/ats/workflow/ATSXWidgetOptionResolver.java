@@ -40,7 +40,7 @@ public class ATSXWidgetOptionResolver extends DefaultXWidgetOptionResolver {
          "ACTIVE_USER_COMMUNITIES")) {
          Set<String> options;
          try {
-            options = AttributeTypeManager.getEnumerationValues(xWidgetData.getStorageName());
+            options = AttributeTypeManager.getEnumerationValues(xWidgetData.getStoreName());
          } catch (OseeCoreException ex) {
             options = new HashSet<String>();
             options.add(ex.getLocalizedMessage());

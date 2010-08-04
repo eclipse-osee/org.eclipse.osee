@@ -31,14 +31,14 @@ public class AtsEndorseWorkPageDefinition extends WorkPageDefinition {
       super(name, pageId, parentId);
       addWorkItem(RuleWorkItemId.atsRequireStateHourSpentPrompt.name());
       addWorkItem("ats.Title");
-      addWorkItem(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName());
-      addWorkItem(ATSAttributes.PROPOSED_RESOLUTION_ATTRIBUTE.getStoreName());
-      addWorkItem(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName());
-      addWorkItem(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName());
-      addWorkItem(ATSAttributes.NEED_BY_ATTRIBUTE.getStoreName());
-      addWorkItem(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName());
-      addWorkItem(ATSAttributes.WORK_PACKAGE_ATTRIBUTE.getStoreName());
-      addWorkItem(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName());
+      addWorkItem(ATSAttributes.DESCRIPTION_ATTRIBUTE.getWorkItemId());
+      addWorkItem(ATSAttributes.PROPOSED_RESOLUTION_ATTRIBUTE.getWorkItemId());
+      addWorkItem(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getWorkItemId());
+      addWorkItem(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getWorkItemId());
+      addWorkItem(ATSAttributes.NEED_BY_ATTRIBUTE.getWorkItemId());
+      addWorkItem(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getWorkItemId());
+      addWorkItem(ATSAttributes.WORK_PACKAGE_ATTRIBUTE.getWorkItemId());
+      addWorkItem(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getWorkItemId());
    }
 
 }

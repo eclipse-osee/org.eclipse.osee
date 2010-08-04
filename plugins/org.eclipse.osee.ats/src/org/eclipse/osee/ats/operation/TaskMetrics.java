@@ -18,7 +18,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact.TaskStates;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
@@ -102,7 +102,7 @@ public class TaskMetrics extends AbstractBlam {
          int percentComplete = state.getPercentComplete();
 
          if (percentComplete == 100) {
-            String resolution = task.getSoleAttributeValue(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(), "");
+            String resolution = task.getSoleAttributeValue(AtsAttributeTypes.ATS_RESOLUTION, "");
 
             if (resolution.equals("Complete")) {
                metrics.put(user, 100);

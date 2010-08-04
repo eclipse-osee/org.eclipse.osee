@@ -88,7 +88,7 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
    }
 
    private DecisionOption getDecisionOption(SMAWorkFlowSection section) throws OseeCoreException {
-      XWidget xWidget = section.getPage().getLayoutData(ATSAttributes.DECISION_ATTRIBUTE.getStoreName()).getXWidget();
+      XWidget xWidget = section.getPage().getLayoutData(ATSAttributes.DECISION_ATTRIBUTE.getWorkItemId()).getXWidget();
       XComboDam decisionComboDam = (XComboDam) xWidget;
       String decision = decisionComboDam.get();
       if (decision.equals("")) {

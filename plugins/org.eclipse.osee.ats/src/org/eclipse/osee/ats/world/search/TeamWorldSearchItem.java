@@ -18,7 +18,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
@@ -152,20 +151,19 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
       }
       List<AbstractArtifactSearchCriteria> criteria = new ArrayList<AbstractArtifactSearchCriteria>();
       if (teamDefinitionGuids.isEmpty()) {
-         criteria.add(new AttributeCriteria(AtsAttributeTypes.TeamDefinition));
+         criteria.add(new AttributeCriteria(AtsAttributeTypes.ATS_TEAM_DEFINITION));
       } else {
-         criteria.add(new AttributeCriteria(AtsAttributeTypes.TeamDefinition, teamDefinitionGuids));
+         criteria.add(new AttributeCriteria(AtsAttributeTypes.ATS_TEAM_DEFINITION, teamDefinitionGuids));
       }
 
       if (!showFinished) {
          List<String> cancelOrComplete = new ArrayList<String>(2);
          cancelOrComplete.add(DefaultTeamState.Cancelled.name() + ";;;");
          cancelOrComplete.add(DefaultTeamState.Completed.name() + ";;;");
-         criteria.add(new AttributeCriteria(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(), cancelOrComplete,
-            Operator.NOT_EQUAL));
+         criteria.add(new AttributeCriteria(AtsAttributeTypes.ATS_CURRENT_STATE, cancelOrComplete, Operator.NOT_EQUAL));
       }
       if (changeType != null) {
-         criteria.add(new AttributeCriteria(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), changeType.name()));
+         criteria.add(new AttributeCriteria(AtsAttributeTypes.ATS_CHANGE_TYPE, changeType.name()));
       }
 
       List<Artifact> artifacts = ArtifactQuery.getArtifactListFromCriteria(AtsUtil.getAtsBranch(), 1000, criteria);

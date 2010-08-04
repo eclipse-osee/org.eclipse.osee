@@ -29,7 +29,7 @@ public class AtsCompletedFromStateWorkItem extends WorkWidgetDefinition {
       data.setName(getName());
       LogItem item = sma.getLog().getStateEvent(LogType.StateComplete);
       data.setDefaultValue(item.getState());
-      data.setStorageName(getId());
+      data.setId(getId());
       data.setXWidgetName("XText");
       data.getXOptionHandler().add(XOption.NOT_EDITABLE);
       data.getXOptionHandler().add(XOption.FILL_HORIZONTALLY);

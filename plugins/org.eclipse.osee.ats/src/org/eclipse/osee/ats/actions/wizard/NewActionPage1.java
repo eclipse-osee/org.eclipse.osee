@@ -19,6 +19,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
@@ -77,7 +78,7 @@ public class NewActionPage1 extends WizardPage {
 
       try {
          String xWidgetXml =
-            "<WorkPage><XWidget displayName=\"Title\" required=\"true\" xwidgetType=\"XText\" toolTip=\"" + AtsAttributeTypes.ATS_TITLE.getDescription() + "\"/></WorkPage>";
+            "<WorkPage><XWidget displayName=\"Title\" required=\"true\" xwidgetType=\"XText\" toolTip=\"" + ATSAttributes.TITLE_ATTRIBUTE.getDescription() + "\"/></WorkPage>";
          Composite comp = new Composite(parent, SWT.NONE);
          comp.setLayout(new GridLayout(1, false));
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));

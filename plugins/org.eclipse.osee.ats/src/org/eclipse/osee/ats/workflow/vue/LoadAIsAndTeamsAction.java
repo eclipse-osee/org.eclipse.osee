@@ -24,8 +24,8 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact.TeamDefinitionOptions;
 import org.eclipse.osee.ats.internal.AtsPlugin;
@@ -255,7 +255,7 @@ public class LoadAIsAndTeamsAction {
             for (String staticId : staticIds) {
                StaticIdManager.setSingletonAttributeValue(teamDefArt, staticId);
             }
-            teamDefArt.setSoleAttributeValue(ATSAttributes.ACTIONABLE_ATTRIBUTE.getStoreName(), actionable);
+            teamDefArt.setSoleAttributeValue(AtsAttributeTypes.ATS_ACTIONABLE, actionable);
          }
          if (!workflowId.equals("")) {
             try {
@@ -326,7 +326,7 @@ public class LoadAIsAndTeamsAction {
       for (DiagramNode childPage : page.getToPages()) {
          addActionableItem(aia, childPage, transaction);
       }
-      aia.setSoleAttributeValue(ATSAttributes.ACTIONABLE_ATTRIBUTE.getStoreName(), actionable);
+      aia.setSoleAttributeValue(AtsAttributeTypes.ATS_ACTIONABLE, actionable);
 
       aia.persist(transaction);
       return aia;

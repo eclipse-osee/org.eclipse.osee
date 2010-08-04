@@ -126,8 +126,8 @@ public class AtsWorkflowConfigCreationWizard extends Wizard implements INewWizar
 
       WorkPageDefinition implementPage = new WorkPageDefinition("Implement", namespace + ".Implement", null);
       implementPage.addWorkItem(RuleWorkItemId.atsRequireStateHourSpentPrompt.name());
-      implementPage.addWorkItem(ATSAttributes.WORK_PACKAGE_ATTRIBUTE.getStoreName());
-      implementPage.addWorkItem(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName());
+      implementPage.addWorkItem(ATSAttributes.WORK_PACKAGE_ATTRIBUTE.getWorkItemId());
+      implementPage.addWorkItem(ATSAttributes.RESOLUTION_ATTRIBUTE.getWorkItemId());
 
       WorkPageDefinition completedPage =
          new WorkPageDefinition("Completed", namespace + ".Completed", AtsCompletedWorkPageDefinition.ID);

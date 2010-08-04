@@ -19,7 +19,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact.TransitionOption;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
@@ -199,22 +199,22 @@ public class ExcelAtsTaskArtifactExtractor {
                } else if (headerRow[i].equalsIgnoreCase("Resolution")) {
                   String str = row[i];
                   if (str != null && !str.equals("")) {
-                     taskArt.setSoleAttributeValue(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(), str);
+                     taskArt.setSoleAttributeValue(AtsAttributeTypes.ATS_RESOLUTION, str);
                   }
                } else if (headerRow[i].equalsIgnoreCase("Description")) {
                   String str = row[i];
                   if (str != null && !str.equals("")) {
-                     taskArt.setSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), str);
+                     taskArt.setSoleAttributeValue(AtsAttributeTypes.ATS_DESCRIPTION, str);
                   }
                } else if (headerRow[i].equalsIgnoreCase("Related to State")) {
                   String str = row[i];
                   if (str != null && !str.equals("")) {
-                     taskArt.setSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), str);
+                     taskArt.setSoleAttributeValue(AtsAttributeTypes.ATS_RELATED_TO_STATE, str);
                   }
                } else if (headerRow[i].equalsIgnoreCase("Notes")) {
                   String str = row[i];
                   if (str != null && !str.equals("")) {
-                     taskArt.setSoleAttributeValue(ATSAttributes.SMA_NOTE_ATTRIBUTE.getStoreName(), str);
+                     taskArt.setSoleAttributeValue(AtsAttributeTypes.ATS_SMA_NOTE, str);
                   }
                } else if (headerRow[i].equalsIgnoreCase("Title")) {
                   String str = row[i];
@@ -260,7 +260,7 @@ public class ExcelAtsTaskArtifactExtractor {
                         throw new OseeArgumentException(String.format("Invalid Estimated Hours \"%s\" for row %d", str,
                            rowNum));
                      }
-                     taskArt.setSoleAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(), hours);
+                     taskArt.setSoleAttributeValue(AtsAttributeTypes.ATS_ESTIMATED_HOURS, hours);
                   }
                } else {
                   OseeLog.log(AtsPlugin.class, Level.SEVERE, "Unhandled column => " + headerRow[i]);

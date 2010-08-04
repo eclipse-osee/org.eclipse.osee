@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.commit.ICommitConfigArtifact;
@@ -103,7 +103,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
       rd.addRaw(AHTML.beginMultiColumnTable(95));
       rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"HRID", "Bulld", "UI", byAttribute, "RPCR", "Change"}));
       for (TeamWorkFlowArtifact teamArt : teamArts) {
-         String rcprId = teamArt.getSoleAttributeValue(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName(), "");
+         String rcprId = teamArt.getSoleAttributeValue(AtsAttributeTypes.ATS_LEGACY_PCR_ID, "");
          String result =
             String.format("Processing %s/%s RPCR %s for \"%s\"", x, teamArts.size(), rcprId,
                teamArt.getTeamDefinition().getName());
@@ -122,7 +122,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
    }
 
    private static void processTeam(TeamWorkFlowArtifact teamArt, String buildId, String byAttribute, ICommitConfigArtifact commitConfigArt, XResultData rd) throws OseeCoreException {
-      String rpcrNum = teamArt.getSoleAttributeValue(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName(), "");
+      String rpcrNum = teamArt.getSoleAttributeValue(AtsAttributeTypes.ATS_LEGACY_PCR_ID, "");
       ChangeData changeData = teamArt.getBranchMgr().getChangeData(commitConfigArt);
       for (Artifact modArt : changeData.getArtifacts(KindType.Artifact, ModificationType.NEW, ModificationType.MODIFIED)) {
          List<String> attrStrs = modArt.getAttributesToStringList(byAttribute);

@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.IReviewArtifact;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
@@ -22,6 +23,7 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
 import org.eclipse.osee.ats.util.widgets.role.UserRole.Role;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -41,7 +43,8 @@ public class UserRoleManager {
    private final WeakReference<ReviewSMArtifact> artifactRef;
    private boolean enabled = true;
    private static String ROLE_ITEM_TAG = "Role";
-   private static String REVIEW_ROLE_ATTRIBUTE_NAME = "ats.Role";
+   private static final IAttributeType ATS_ROLE_STORAGE_TYPE = AtsAttributeTypes.ATS_ROLE;
+
    private final Matcher roleMatcher = java.util.regex.Pattern.compile(
       "<" + ROLE_ITEM_TAG + ">(.*?)</" + ROLE_ITEM_TAG + ">", Pattern.DOTALL | Pattern.MULTILINE).matcher("");
 
@@ -68,7 +71,7 @@ public class UserRoleManager {
 
    public Set<UserRole> getUserRoles() throws OseeCoreException {
       Set<UserRole> roles = new HashSet<UserRole>();
-      for (String xml : getArtifact().getAttributesToStringList(REVIEW_ROLE_ATTRIBUTE_NAME)) {
+      for (String xml : getArtifact().getAttributesToStringList(ATS_ROLE_STORAGE_TYPE)) {
          roleMatcher.reset(xml);
          while (roleMatcher.find()) {
             UserRole item = new UserRole(roleMatcher.group());
@@ -121,7 +124,7 @@ public class UserRoleManager {
    private void saveRoleItems(Set<UserRole> defectItems, boolean persist, SkynetTransaction transaction) {
       try {
          // Change existing ones
-         for (Attribute<?> attr : getArtifact().getAttributes(REVIEW_ROLE_ATTRIBUTE_NAME)) {
+         for (Attribute<?> attr : getArtifact().getAttributes(ATS_ROLE_STORAGE_TYPE)) {
             UserRole dbPromoteItem = new UserRole((String) attr.getValue());
             for (UserRole pItem : defectItems) {
                if (pItem.equals(dbPromoteItem)) {
@@ -133,7 +136,7 @@ public class UserRoleManager {
          // Remove deleted ones; items in dbPromoteItems that are not in promoteItems
          for (UserRole delPromoteItem : org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(
             dbPromoteItems, defectItems)) {
-            for (Attribute<?> attr : getArtifact().getAttributes(REVIEW_ROLE_ATTRIBUTE_NAME)) {
+            for (Attribute<?> attr : getArtifact().getAttributes(ATS_ROLE_STORAGE_TYPE)) {
                UserRole dbPromoteItem = new UserRole((String) attr.getValue());
                if (dbPromoteItem.equals(delPromoteItem)) {
                   attr.delete();
@@ -143,7 +146,7 @@ public class UserRoleManager {
          // Add new ones: items in promoteItems that are not in dbPromoteItems
          for (UserRole newPromoteItem : org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(defectItems,
             dbPromoteItems)) {
-            getArtifact().addAttributeFromString(REVIEW_ROLE_ATTRIBUTE_NAME,
+            getArtifact().addAttributeFromString(ATS_ROLE_STORAGE_TYPE,
                AXml.addTagData(ROLE_ITEM_TAG, newPromoteItem.toXml()));
          }
          updateAssignees();

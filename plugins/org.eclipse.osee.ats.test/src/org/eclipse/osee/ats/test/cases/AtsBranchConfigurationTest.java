@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
@@ -135,11 +136,10 @@ public class AtsBranchConfigurationTest {
             verArtToTarget = vArt;
          }
       }
-      verArtToTarget.setSoleAttributeFromString(ATSAttributes.BASELINE_BRANCH_GUID_ATTRIBUTE.getStoreName(),
-         viaTeamDefBranch.getGuid());
+      verArtToTarget.setSoleAttributeFromString(AtsAttributeTypes.ATS_BASELINE_BRANCH_GUID, viaTeamDefBranch.getGuid());
       // setup team def to allow create/commit of branch
-      verArtToTarget.setSoleAttributeValue(ATSAttributes.ALLOW_COMMIT_BRANCH.getStoreName(), true);
-      verArtToTarget.setSoleAttributeValue(ATSAttributes.ALLOW_CREATE_BRANCH.getStoreName(), true);
+      verArtToTarget.setSoleAttributeValue(AtsAttributeTypes.ATS_ALLOW_COMMIT_BRANCH, true);
+      verArtToTarget.setSoleAttributeValue(AtsAttributeTypes.ATS_ALLOW_CREATE_BRANCH, true);
       verArtToTarget.persist();
 
       TestUtil.sleep(2000);
@@ -232,12 +232,11 @@ public class AtsBranchConfigurationTest {
       TeamDefinitionArtifact teamDef =
          (TeamDefinitionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.TeamDefinition,
             AtsTestBranches.BranchViaTeamDef.getName(), AtsUtil.getAtsBranch());
-      teamDef.setSoleAttributeFromString(ATSAttributes.BASELINE_BRANCH_GUID_ATTRIBUTE.getStoreName(),
-         viaTeamDefBranch.getGuid());
+      teamDef.setSoleAttributeFromString(AtsAttributeTypes.ATS_BASELINE_BRANCH_GUID, viaTeamDefBranch.getGuid());
       // setup team def to allow create/commit of branch
-      teamDef.setSoleAttributeValue(ATSAttributes.ALLOW_COMMIT_BRANCH.getStoreName(), true);
-      teamDef.setSoleAttributeValue(ATSAttributes.ALLOW_CREATE_BRANCH.getStoreName(), true);
-      teamDef.setSoleAttributeValue(ATSAttributes.TEAM_USES_VERSIONS_ATTRIBUTE.getStoreName(), false);
+      teamDef.setSoleAttributeValue(AtsAttributeTypes.ATS_ALLOW_COMMIT_BRANCH, true);
+      teamDef.setSoleAttributeValue(AtsAttributeTypes.ATS_ALLOW_CREATE_BRANCH, true);
+      teamDef.setSoleAttributeValue(AtsAttributeTypes.ATS_TEAM_USES_VERSIONS, false);
       teamDef.persist();
 
       TestUtil.sleep(2000);
@@ -416,9 +415,9 @@ public class AtsBranchConfigurationTest {
       String implementPageId = namespace + ".Implement";
       Artifact implementPageDef = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(implementPageId);
       implementPageDef.addRelation(CoreRelationTypes.WorkItem__Child,
-         WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(ATSAttributes.WORKING_BRANCH_WIDGET.getStoreName()));
+         WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(ATSAttributes.WORKING_BRANCH_WIDGET.getWorkItemId()));
       implementPageDef.addRelation(CoreRelationTypes.WorkItem__Child,
-         WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(ATSAttributes.COMMIT_MANAGER_WIDGET.getStoreName()));
+         WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(ATSAttributes.COMMIT_MANAGER_WIDGET.getWorkItemId()));
       implementPageDef.persist();
       WorkItemDefinitionFactory.updateDefinitions(Collections.singleton(implementPageDef));
    }

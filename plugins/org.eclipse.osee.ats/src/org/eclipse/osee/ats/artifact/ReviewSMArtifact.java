@@ -59,7 +59,7 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
    }
 
    @Override
-   public void onInitializationComplete() {
+   public void onInitializationComplete() throws OseeCoreException {
       super.onInitializationComplete();
       initializeSMA();
    };
@@ -123,10 +123,11 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
    /**
     * Reset managers for case where artifact is re-loaded/initialized
     * 
+    * @throws OseeCoreException
     * @see org.eclipse.osee.ats.artifact.StateMachineArtifact#initialize()
     */
    @Override
-   protected void initializeSMA() {
+   protected void initializeSMA() throws OseeCoreException {
       super.initializeSMA();
       defectManager = new DefectManager(this);
       userRoleManager = new UserRoleManager(this);
@@ -143,10 +144,10 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
    }
 
    public ReviewBlockType getReviewBlockType() throws OseeCoreException {
-      String typeStr = getSoleAttributeValue(ATSAttributes.REVIEW_BLOCKS_ATTRIBUTE.getStoreName(), null);
+      String typeStr = getSoleAttributeValue(AtsAttributeTypes.ATS_REVIEW_BLOCKS, null);
       if (typeStr == null) {
          // Check old attribute value
-         if (getSoleAttributeValue(ATSAttributes.BLOCKING_REVIEW_ATTRIBUTE.getStoreName(), false) == true) {
+         if (getSoleAttributeValue(AtsAttributeTypes.ATS_BLOCKING_REVIEW, false) == true) {
             return ReviewBlockType.Transition;
          }
          return ReviewBlockType.None;
@@ -193,7 +194,7 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
    /**
     * @return the actionableItemsDam
     */
-   public XActionableItemsDam getActionableItemsDam() {
+   public XActionableItemsDam getActionableItemsDam() throws OseeCoreException {
       if (actionableItemsDam == null) {
          actionableItemsDam = new XActionableItemsDam(this);
       }

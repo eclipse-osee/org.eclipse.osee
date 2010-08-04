@@ -115,10 +115,8 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
             validationRequired = true;
          }
       }
-      if (validationRequired != getSoleAttributeValue(
-         AtsAttributeTypes.ATS_VALIDATION_REQUIRED, false)) {
-         setSoleAttributeValue(AtsAttributeTypes.ATS_VALIDATION_REQUIRED,
-            validationRequired);
+      if (validationRequired != getSoleAttributeValue(AtsAttributeTypes.ATS_VALIDATION_REQUIRED, false)) {
+         setSoleAttributeValue(AtsAttributeTypes.ATS_VALIDATION_REQUIRED, validationRequired);
       }
    }
 
@@ -130,8 +128,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
          if (desc.equals("")) {
             desc = team.getSoleAttributeValue(AtsAttributeTypes.ATS_DESCRIPTION, "");
-         } else if (!desc.equals(team.getSoleAttributeValue(
-            AtsAttributeTypes.ATS_DESCRIPTION, ""))) {
+         } else if (!desc.equals(team.getSoleAttributeValue(AtsAttributeTypes.ATS_DESCRIPTION, ""))) {
             return;
          }
       }
@@ -191,28 +188,26 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       Set<String> userComs = new HashSet<String>();
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
          if (!team.isCancelled()) {
-            userComs.addAll(team.getAttributesToStringList(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getAttributeType()));
+            userComs.addAll(team.getAttributesToStringList(AtsAttributeTypes.ATS_USER_COMMUNITY));
          }
       }
-      setAttributeValues(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getAttributeType(), userComs);
+      setAttributeValues(AtsAttributeTypes.ATS_USER_COMMUNITY, userComs);
    }
 
    public void setChangeType(ChangeType type) throws OseeCoreException {
-      setSoleAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getAttributeType(), type.name());
+      setSoleAttributeValue(AtsAttributeTypes.ATS_CHANGE_TYPE, type.name());
    }
 
    public ChangeType getChangeType() throws OseeCoreException {
-      return ChangeType.getChangeType(getSoleAttributeValue(
-         ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getAttributeType(), ""));
+      return ChangeType.getChangeType(getSoleAttributeValue(AtsAttributeTypes.ATS_CHANGE_TYPE, ""));
    }
 
    public PriorityType getPriority() throws OseeCoreException {
-      return PriorityType.getPriority(getSoleAttributeValue(
-         ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getAttributeType(), ""));
+      return PriorityType.getPriority(getSoleAttributeValue(AtsAttributeTypes.ATS_PRIORITY_TYPE, ""));
    }
 
    public void setPriority(PriorityType type) throws OseeCoreException {
-      setSoleAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getAttributeType(), type.getShortName());
+      setSoleAttributeValue(AtsAttributeTypes.ATS_PRIORITY_TYPE, type.getShortName());
    }
 
    public Collection<TeamWorkFlowArtifact> getTeamWorkFlowArtifacts() throws OseeCoreException {
@@ -231,8 +226,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
 
    @Override
    public ChangeType getWorldViewChangeType() throws OseeCoreException {
-      return ChangeType.getChangeType(getSoleAttributeValue(
-         ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getAttributeType(), ""));
+      return ChangeType.getChangeType(getSoleAttributeValue(AtsAttributeTypes.ATS_CHANGE_TYPE, ""));
    }
 
    @Override
@@ -337,8 +331,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
 
    @Override
    public String getWorldViewPriority() throws OseeCoreException {
-      return PriorityType.getPriority(
-         getSoleAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getAttributeType(), "")).getShortName();
+      return PriorityType.getPriority(getSoleAttributeValue(AtsAttributeTypes.ATS_PRIORITY_TYPE, "")).getShortName();
    }
 
    @Override
@@ -354,7 +347,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
 
    @Override
    public String getWorldViewUserCommunity() throws OseeCoreException {
-      return getAttributesToString(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getAttributeType());
+      return getAttributesToString(AtsAttributeTypes.ATS_USER_COMMUNITY);
    }
 
    @Override
@@ -542,7 +535,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
 
    @Override
    public String getWorldViewGoalOrderVote() throws OseeCoreException {
-      return getSoleAttributeValue(ATSAttributes.GOAL_ORDER_VOTE_ATTRIBUTE.getAttributeType(), "");
+      return getSoleAttributeValue(AtsAttributeTypes.ATS_GOAL_ORDER_VOTE, "");
    }
 
    @Override
@@ -807,24 +800,19 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * Set Team Workflow attributes off given action artifact
     */
    public static void setArtifactIdentifyData(ActionArtifact fromAction, TeamWorkFlowArtifact toTeam) throws OseeCoreException {
-      String priorityStr =
-         fromAction.getSoleAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getAttributeType(), "");
+      String priorityStr = fromAction.getSoleAttributeValue(AtsAttributeTypes.ATS_PRIORITY_TYPE, "");
       PriorityType priType = null;
       if (Strings.isValid(priorityStr)) {
          priType = PriorityType.getPriority(priorityStr);
       } else {
          throw new OseeArgumentException("Invalid priority => " + priorityStr);
       }
-      setArtifactIdentifyData(
-         toTeam,
-         fromAction.getName(),
-         fromAction.getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getAttributeType(), ""),
-         ChangeType.getChangeType(fromAction.getSoleAttributeValue(
-            ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getAttributeType(), "")),
-         priType,
-         //            fromAction.getAttributesToStringList(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName()),
-         fromAction.getSoleAttributeValue(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getAttributeType(), false),
-         fromAction.getSoleAttributeValue(ATSAttributes.NEED_BY_ATTRIBUTE.getAttributeType(), (Date) null));
+      setArtifactIdentifyData(toTeam, fromAction.getName(),
+         fromAction.getSoleAttributeValue(AtsAttributeTypes.ATS_DESCRIPTION, ""),
+         ChangeType.getChangeType(fromAction.getSoleAttributeValue(AtsAttributeTypes.ATS_CHANGE_TYPE, "")), priType,
+         //            fromAction.getAttributesToStringList(AtsAttributeTypes.ATS_USER_COMMUNITY),
+         fromAction.getSoleAttributeValue(AtsAttributeTypes.ATS_VALIDATION_REQUIRED, false),
+         fromAction.getSoleAttributeValue(AtsAttributeTypes.ATS_NEED_BY, (Date) null));
    }
 
    /**
@@ -833,19 +821,18 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    public static void setArtifactIdentifyData(Artifact art, String title, String desc, ChangeType changeType, PriorityType priority, Boolean validationRequired, Date needByDate) throws OseeCoreException {
       art.setName(title);
       if (!desc.equals("")) {
-         art.setSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getAttributeType(), desc);
+         art.setSoleAttributeValue(AtsAttributeTypes.ATS_DESCRIPTION, desc);
       }
-      art.setSoleAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getAttributeType(), changeType.name());
+      art.setSoleAttributeValue(AtsAttributeTypes.ATS_CHANGE_TYPE, changeType.name());
       //      art.setAttributeValues(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName(), userComms);
       if (priority != null) {
-         art.setSoleAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getAttributeType(),
-            priority.getShortName());
+         art.setSoleAttributeValue(AtsAttributeTypes.ATS_PRIORITY_TYPE, priority.getShortName());
       }
       if (needByDate != null) {
-         art.setSoleAttributeValue(ATSAttributes.NEED_BY_ATTRIBUTE.getAttributeType(), needByDate);
+         art.setSoleAttributeValue(AtsAttributeTypes.ATS_NEED_BY, needByDate);
       }
       if (validationRequired) {
-         art.setSoleAttributeValue(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getAttributeType(), true);
+         art.setSoleAttributeValue(AtsAttributeTypes.ATS_VALIDATION_REQUIRED, true);
       }
    }
 
@@ -862,7 +849,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    @Override
    public String getWorldViewDescription() {
       try {
-         return getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getAttributeType(), "");
+         return getSoleAttributeValue(AtsAttributeTypes.ATS_DESCRIPTION, "");
       } catch (Exception ex) {
          return XViewerCells.getCellExceptionString(ex);
       }
@@ -871,8 +858,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    @Override
    public String getWorldViewValidationRequiredStr() {
       try {
-         return String.valueOf(getSoleAttributeValue(
-            ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getAttributeType(), false));
+         return String.valueOf(getSoleAttributeValue(AtsAttributeTypes.ATS_VALIDATION_REQUIRED, false));
       } catch (Exception ex) {
          return XViewerCells.getCellExceptionString(ex);
       }

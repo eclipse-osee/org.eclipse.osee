@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
 import org.eclipse.osee.ats.health.change.DataChangeReportComparer;
@@ -153,7 +153,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
                   OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
                }
                sbFull.append(AHTML.addRowMultiColumnTable(teamArt.getHumanReadableId(),
-                  teamArt.getSoleAttributeValue(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName(), ""), resultStr));
+                  teamArt.getSoleAttributeValue(AtsAttributeTypes.ATS_LEGACY_PCR_ID, ""), resultStr));
             }
          } catch (Exception ex) {
             sbFull.append(AHTML.addRowSpanMultiColumnTable("Exception: " + ex.getLocalizedMessage(),

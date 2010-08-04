@@ -14,7 +14,8 @@ package org.eclipse.osee.ats.workflow.editor.wizard;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
@@ -47,11 +48,11 @@ public class NewWorkflowConfigPage1 extends WizardPage {
       }
    };
 
-   public String getNamespace() throws OseeArgumentException {
+   public String getNamespace() throws OseeCoreException {
       return (String) getXWidget("Namespace").getData();
    }
 
-   public String getStartingWorkflow() throws OseeArgumentException {
+   public String getStartingWorkflow() throws OseeCoreException {
       return (String) getXWidget("Starting Workflow").getData();
    }
 
@@ -81,10 +82,8 @@ public class NewWorkflowConfigPage1 extends WizardPage {
       }
    }
 
-   public XWidget getXWidget(String attrName) throws OseeArgumentException {
-      if (page == null) {
-         throw new OseeArgumentException("WorkPage == null");
-      }
+   public XWidget getXWidget(String attrName) throws OseeCoreException {
+      Conditions.checkNotNull(page, "WorkPage");
       return page.getLayoutData(attrName).getXWidget();
    }
 

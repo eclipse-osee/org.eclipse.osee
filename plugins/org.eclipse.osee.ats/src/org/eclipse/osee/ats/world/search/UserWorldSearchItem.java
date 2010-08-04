@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
@@ -73,8 +73,8 @@ public class UserWorldSearchItem {
          // If include cancelled or completed, need to perform extra search
          // Note: Don't need to do this for Originator, Subscribed or Favorites, cause it does completed canceled in it's own searches
          if (options.contains(UserSearchOption.IncludeCancelled) || options.contains(UserSearchOption.IncludeCompleted)) {
-            searchArts.addAll(SMAUtil.getSMAs(ArtifactQuery.getArtifactListFromAttribute(
-               ATSAttributes.STATE_ATTRIBUTE.getStoreName(), "%<" + user.getUserId() + ">%", AtsUtil.getAtsBranch())));
+            searchArts.addAll(SMAUtil.getSMAs(ArtifactQuery.getArtifactListFromAttribute(AtsAttributeTypes.ATS_STATE,
+               "%<" + user.getUserId() + ">%", AtsUtil.getAtsBranch())));
          }
       }
 
@@ -120,7 +120,7 @@ public class UserWorldSearchItem {
    private Collection<StateMachineArtifact> getOriginatorArtifacts() throws OseeCoreException {
       Collection<StateMachineArtifact> originators = new ArrayList<StateMachineArtifact>();
       Collection<StateMachineArtifact> artifacts =
-         Collections.castAll(ArtifactQuery.getArtifactListFromAttribute(ATSAttributes.LOG_ATTRIBUTE.getStoreName(),
+         Collections.castAll(ArtifactQuery.getArtifactListFromAttribute(AtsAttributeTypes.ATS_LOG,
             "%type=\"Originated\" userId=\"" + user.getUserId() + "\"%", AtsUtil.getAtsBranch()));
       // omit historical originators; list current originators
       for (StateMachineArtifact art : artifacts) {

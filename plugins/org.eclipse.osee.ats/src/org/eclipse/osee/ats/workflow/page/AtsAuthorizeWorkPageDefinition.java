@@ -28,8 +28,8 @@ public class AtsAuthorizeWorkPageDefinition extends WorkPageDefinition {
 
    public AtsAuthorizeWorkPageDefinition(String name, String pageId, String parentId) {
       super(name, pageId, parentId);
-      addWorkItem(ATSAttributes.WORK_PACKAGE_ATTRIBUTE.getStoreName());
-      addWorkItem(ATSAttributes.ESTIMATED_COMPLETION_DATE_ATTRIBUTE.getStoreName());
+      addWorkItem(ATSAttributes.WORK_PACKAGE_ATTRIBUTE.getWorkItemId());
+      addWorkItem(ATSAttributes.ESTIMATED_COMPLETION_DATE_ATTRIBUTE.getWorkItemId());
    }
 
 }

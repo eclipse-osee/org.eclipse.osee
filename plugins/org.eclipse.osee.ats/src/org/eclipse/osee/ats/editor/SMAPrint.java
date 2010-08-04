@@ -14,7 +14,7 @@ package org.eclipse.osee.ats.editor;
 import java.util.Arrays;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.NoteItem;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
@@ -129,8 +129,7 @@ public class SMAPrint extends Action {
             rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {art.getName(),
                art.getStateMgr().getCurrentStateName().replaceAll("(Task|State)", ""), art.getWorldViewActivePoc(),
                art.getPercentCompleteSMATotal() + "", art.getHoursSpentSMATotal() + "",
-               art.getSoleAttributeValue(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(), ""),
-               art.getHumanReadableId()}));
+               art.getSoleAttributeValue(AtsAttributeTypes.ATS_RESOLUTION, ""), art.getHumanReadableId()}));
          }
          rd.addRaw(AHTML.endBorderTable());
       } catch (Exception ex) {

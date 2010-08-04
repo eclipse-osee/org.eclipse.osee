@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.world.search;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
@@ -56,9 +55,9 @@ public class LegacyPCRActionsWorldSearchItem extends WorldUISearchItem {
       List<AbstractArtifactSearchCriteria> criteria = new ArrayList<AbstractArtifactSearchCriteria>(4);
 
       if (pcrIds != null && pcrIds.size() > 0) {
-         criteria.add(new AttributeCriteria(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName(), pcrIds));
+         criteria.add(new AttributeCriteria(AtsAttributeTypes.ATS_LEGACY_PCR_ID, pcrIds));
       } else {
-         criteria.add(new AttributeCriteria(AtsAttributeTypes.LegacyPCRId));
+         criteria.add(new AttributeCriteria(AtsAttributeTypes.ATS_LEGACY_PCR_ID));
       }
 
       if (teamDefs != null && teamDefs.size() > 0) {
@@ -66,7 +65,7 @@ public class LegacyPCRActionsWorldSearchItem extends WorldUISearchItem {
          for (TeamDefinitionArtifact teamDef : teamDefs) {
             teamDefGuids.add(teamDef.getGuid());
          }
-         criteria.add(new AttributeCriteria(ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName(), teamDefGuids));
+         criteria.add(new AttributeCriteria(AtsAttributeTypes.ATS_TEAM_DEFINITION, teamDefGuids));
       }
 
       if (returnActions) {

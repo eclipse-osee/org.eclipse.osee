@@ -41,7 +41,7 @@ public class TaskResolutionOptionRule extends WorkRuleDefinition {
 
    public TaskResolutionOptionRule(Artifact artifact) throws OseeCoreException {
       super(artifact);
-      fromXml(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName(), ""));
+      fromXml(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_PARENT_ID, ""));
    }
 
    public static List<TaskResOptionDefinition> getTaskResolutionOptions(WorkPageDefinition workPageDefinition) throws OseeCoreException {

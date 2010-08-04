@@ -117,11 +117,11 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    @Override
    public void onBirth() throws OseeCoreException {
       super.onBirth();
-      setSoleAttributeValue(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(), "");
+      setSoleAttributeValue(AtsAttributeTypes.ATS_CURRENT_STATE, "");
    }
 
    @Override
-   public void onInitializationComplete() {
+   public void onInitializationComplete() throws OseeCoreException {
       super.onInitializationComplete();
       initializeSMA();
    }
@@ -132,7 +132,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       initializeSMA();
    }
 
-   protected void initializeSMA() {
+   protected void initializeSMA() throws OseeCoreException {
       initalizePreSaveCache();
    }
 
@@ -566,8 +566,8 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    @Override
    public String getWorldViewLegacyPCR() throws OseeCoreException {
-      if (isAttributeTypeValid(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName())) {
-         return getSoleAttributeValue(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName(), "");
+      if (isAttributeTypeValid(AtsAttributeTypes.ATS_LEGACY_PCR_ID)) {
+         return getSoleAttributeValue(AtsAttributeTypes.ATS_LEGACY_PCR_ID, "");
       }
       return "";
    }
@@ -609,8 +609,8 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    public double getEstimatedHoursFromArtifact() throws OseeCoreException {
-      if (isAttributeTypeValid(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName())) {
-         return getSoleAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(), 0.0);
+      if (isAttributeTypeValid(AtsAttributeTypes.ATS_ESTIMATED_HOURS)) {
+         return getSoleAttributeValue(AtsAttributeTypes.ATS_ESTIMATED_HOURS, 0.0);
       }
       return 0;
    }
@@ -670,14 +670,14 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    @Override
    public String getWorldViewResolution() throws OseeCoreException {
-      return getAttributesToString(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName());
+      return getAttributesToString(AtsAttributeTypes.ATS_RESOLUTION);
    }
 
    public double getRemainHoursFromArtifact() throws OseeCoreException {
       if (isCompleted() || isCancelled()) {
          return 0;
       }
-      double est = getSoleAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(), 0.0);
+      double est = getSoleAttributeValue(AtsAttributeTypes.ATS_ESTIMATED_HOURS, 0.0);
       if (est == 0) {
          return getEstimatedHoursFromArtifact();
       }
@@ -710,11 +710,11 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    @Override
    public Result isWorldViewRemainHoursValid() throws OseeCoreException {
-      if (!isAttributeTypeValid(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName())) {
+      if (!isAttributeTypeValid(AtsAttributeTypes.ATS_ESTIMATED_HOURS)) {
          return Result.TrueResult;
       }
       try {
-         Double value = getSoleAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(), null);
+         Double value = getSoleAttributeValue(AtsAttributeTypes.ATS_ESTIMATED_HOURS, null);
          if (isCancelled()) {
             return Result.TrueResult;
          }
@@ -764,7 +764,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    @Override
    public Result isWorldViewAnnualCostAvoidanceValid() throws OseeCoreException {
-      if (isAttributeTypeValid(ATSAttributes.WEEKLY_BENEFIT_ATTRIBUTE.getStoreName())) {
+      if (isAttributeTypeValid(AtsAttributeTypes.ATS_WEEKLY_BENEFIT)) {
          return Result.TrueResult;
       }
       Result result = isWorldViewRemainHoursValid();
@@ -773,7 +773,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       }
       String value = null;
       try {
-         value = getSoleAttributeValue(ATSAttributes.WEEKLY_BENEFIT_ATTRIBUTE.getStoreName(), "");
+         value = getSoleAttributeValue(AtsAttributeTypes.ATS_WEEKLY_BENEFIT, "");
          if (value == null || value.equals("")) {
             return new Result("Weekly Benefit Hours not set.");
          }
@@ -793,49 +793,47 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    @Override
    public String getWorldViewNotes() throws OseeCoreException {
-      return getSoleAttributeValue(ATSAttributes.SMA_NOTE_ATTRIBUTE.getStoreName(), "");
+      return getSoleAttributeValue(AtsAttributeTypes.ATS_SMA_NOTE, "");
    }
 
    @Override
    public String getWorldViewWorkPackage() throws OseeCoreException {
-      return getSoleAttributeValue(ATSAttributes.WORK_PACKAGE_ATTRIBUTE.getStoreName(), "");
+      return getSoleAttributeValue(AtsAttributeTypes.ATS_WORK_PACKAGE, "");
    }
 
    @Override
    public String getWorldViewPoint() throws OseeCoreException {
-      return getSoleAttributeValue(ATSAttributes.POINTS_ATTRIBUTE.getStoreName(), "");
+      return getSoleAttributeValue(AtsAttributeTypes.ATS_POINTS, "");
    }
 
    @Override
    public String getWorldViewNumeric1() throws OseeCoreException {
-      return AtsUtil.doubleToI18nString(getSoleAttributeValue(ATSAttributes.NUMERIC1_ATTRIBUTE.getStoreName(), 0.0),
-         true);
+      return AtsUtil.doubleToI18nString(getSoleAttributeValue(AtsAttributeTypes.ATS_NUMERIC_1, 0.0), true);
    }
 
    @Override
    public String getWorldViewNumeric2() throws OseeCoreException {
-      return AtsUtil.doubleToI18nString(getSoleAttributeValue(ATSAttributes.NUMERIC2_ATTRIBUTE.getStoreName(), 0.0),
-         true);
+      return AtsUtil.doubleToI18nString(getSoleAttributeValue(AtsAttributeTypes.ATS_NUMERIC_2, 0.0), true);
    }
 
    @Override
    public String getWorldViewGoalOrderVote() throws OseeCoreException {
-      return getSoleAttributeValue(ATSAttributes.GOAL_ORDER_VOTE_ATTRIBUTE.getStoreName(), "");
+      return getSoleAttributeValue(AtsAttributeTypes.ATS_GOAL_ORDER_VOTE, "");
    }
 
    @Override
    public String getWorldViewCategory() throws OseeCoreException {
-      return getSoleAttributeValue(ATSAttributes.CATEGORY_ATTRIBUTE.getStoreName(), "");
+      return getSoleAttributeValue(AtsAttributeTypes.ATS_CATEGORY_1, "");
    }
 
    @Override
    public String getWorldViewCategory2() throws OseeCoreException {
-      return getSoleAttributeValue(ATSAttributes.CATEGORY2_ATTRIBUTE.getStoreName(), "");
+      return getSoleAttributeValue(AtsAttributeTypes.ATS_CATEGORY_2, "");
    }
 
    @Override
    public String getWorldViewCategory3() throws OseeCoreException {
-      return getSoleAttributeValue(ATSAttributes.CATEGORY3_ATTRIBUTE.getStoreName(), "");
+      return getSoleAttributeValue(AtsAttributeTypes.ATS_CATEGORY_3, "");
    }
 
    public int getWorldViewStatePercentComplete() throws OseeCoreException {
@@ -920,7 +918,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    @Override
    public Date getWorldViewEstimatedReleaseDate() throws OseeCoreException {
-      Date date = getSoleAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName(), null);
+      Date date = getSoleAttributeValue(AtsAttributeTypes.ATS_ESTIMATED_RELEASE_DATE, null);
       Date parentDate = null;
       if (getParentSMA() != null) {
          parentDate = getParentSMA().getWorldViewEstimatedReleaseDate();
@@ -933,7 +931,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    @Override
    public Date getWorldViewEstimatedCompletionDate() throws OseeCoreException {
-      Date date = getSoleAttributeValue(ATSAttributes.ESTIMATED_COMPLETION_DATE_ATTRIBUTE.getStoreName(), null);
+      Date date = getSoleAttributeValue(AtsAttributeTypes.ATS_ESTIMATED_COMPLETION_DATE, null);
       if (date != null) {
          return date;
       }
@@ -1045,8 +1043,8 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    @Override
    public String getWorldViewValidationRequiredStr() throws OseeCoreException {
-      if (isAttributeTypeValid(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName())) {
-         return String.valueOf(getSoleAttributeValue(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), false));
+      if (isAttributeTypeValid(AtsAttributeTypes.ATS_VALIDATION_REQUIRED)) {
+         return String.valueOf(getSoleAttributeValue(AtsAttributeTypes.ATS_VALIDATION_REQUIRED, false));
       }
       return "";
    }

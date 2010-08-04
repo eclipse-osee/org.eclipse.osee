@@ -37,7 +37,7 @@ import org.eclipse.osee.ats.actions.ReloadAction;
 import org.eclipse.osee.ats.actions.ResourceHistoryAction;
 import org.eclipse.osee.ats.actions.ShowChangeReportAction;
 import org.eclipse.osee.ats.actions.ShowMergeManagerAction;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.NoteItem;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
@@ -638,7 +638,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
    public static void createSMANotesHeader(Composite comp, XFormToolkit toolkit, StateMachineArtifact sma, int horizontalSpan) throws OseeCoreException {
       // Display SMA Note
-      String note = sma.getSoleAttributeValue(ATSAttributes.SMA_NOTE_ATTRIBUTE.getStoreName(), "");
+      String note = sma.getSoleAttributeValue(AtsAttributeTypes.ATS_SMA_NOTE, "");
       if (!note.equals("")) {
          FormsUtil.createLabelOrHyperlink(comp, toolkit, horizontalSpan, "Note: " + note);
       }

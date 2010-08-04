@@ -13,8 +13,8 @@ package org.eclipse.osee.ats.workflow.item;
 import java.util.Collection;
 import java.util.Date;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
@@ -94,17 +94,16 @@ public class AtsAddPeerToPeerReviewRule extends WorkRuleDefinition {
             UserManager.getUser(), new Date(), transaction);
       String desc = getValueOrDefault(teamArt, atsAddPeerToPeerReviewRule, PeerToPeerParameter.description);
       if (desc != null && !desc.equals("")) {
-         peerArt.setSoleAttributeFromString(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), desc);
+         peerArt.setSoleAttributeFromString(AtsAttributeTypes.ATS_DESCRIPTION, desc);
       }
       ReviewBlockType reviewBlockType =
          AtsAddDecisionReviewRule.getReviewBlockTypeOrDefault(teamArt, atsAddPeerToPeerReviewRule);
       if (reviewBlockType != null) {
-         peerArt.setSoleAttributeFromString(ATSAttributes.REVIEW_BLOCKS_ATTRIBUTE.getStoreName(),
-            reviewBlockType.name());
+         peerArt.setSoleAttributeFromString(AtsAttributeTypes.ATS_REVIEW_BLOCKS, reviewBlockType.name());
       }
       String location = getValueOrDefault(teamArt, atsAddPeerToPeerReviewRule, PeerToPeerParameter.location);
       if (location != null && location.equals("")) {
-         peerArt.setSoleAttributeFromString(ATSAttributes.LOCATION_ATTRIBUTE.getStoreName(), location);
+         peerArt.setSoleAttributeFromString(AtsAttributeTypes.ATS_LOCATION, location);
       }
       Collection<User> assignees = AtsAddDecisionReviewRule.getAssigneesOrDefault(teamArt, atsAddPeerToPeerReviewRule);
       if (assignees.size() > 0) {

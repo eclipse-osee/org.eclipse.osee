@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.navigate;
 
 import java.util.Date;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
@@ -89,8 +89,8 @@ public class ReleaseVersionItem extends XNavigateItemAction {
                return;
             }
 
-            verArt.setSoleAttributeValue(ATSAttributes.RELEASED_ATTRIBUTE.getStoreName(), true);
-            verArt.setSoleAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName(), new Date());
+            verArt.setSoleAttributeValue(AtsAttributeTypes.ATS_RELEASED, true);
+            verArt.setSoleAttributeValue(AtsAttributeTypes.ATS_RELEASE_DATE, new Date());
             verArt.setNextVersion(false);
             verArt.persist();
 

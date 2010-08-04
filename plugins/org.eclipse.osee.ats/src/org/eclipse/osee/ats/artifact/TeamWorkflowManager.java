@@ -131,7 +131,7 @@ public class TeamWorkflowManager {
       if (!teamArt.getStateMgr().getCurrentStateName().equals("Analyze")) {
          return new Result("Action not in Analyze state");
       }
-      teamArt.setSoleAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(), hourEstimate);
+      teamArt.setSoleAttributeValue(AtsAttributeTypes.ATS_ESTIMATED_HOURS, hourEstimate);
       teamArt.getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
       return Result.TrueResult;
    }

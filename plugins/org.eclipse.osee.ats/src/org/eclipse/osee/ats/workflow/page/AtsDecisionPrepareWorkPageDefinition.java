@@ -31,12 +31,12 @@ public class AtsDecisionPrepareWorkPageDefinition extends WorkPageDefinition {
    public AtsDecisionPrepareWorkPageDefinition(String name, String pageId, String parentId) {
       super(name, pageId, parentId);
       addWorkItem("ats.Title");
-      addWorkItem(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName());
+      addWorkItem(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getWorkItemId());
       addWorkItem(AtsWorkDefinitions.ATS_DESCRIPTION_NOT_REQUIRED_ID);
-      addWorkItem(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName());
-      addWorkItem(ATSAttributes.REVIEW_BLOCKS_ATTRIBUTE.getStoreName());
-      addWorkItem(ATSAttributes.NEED_BY_ATTRIBUTE.getStoreName());
-      addWorkItem(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName());
+      addWorkItem(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getWorkItemId());
+      addWorkItem(ATSAttributes.REVIEW_BLOCKS_ATTRIBUTE.getWorkItemId());
+      addWorkItem(ATSAttributes.NEED_BY_ATTRIBUTE.getWorkItemId());
+      addWorkItem(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getWorkItemId());
    }
 
 }

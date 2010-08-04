@@ -42,6 +42,7 @@ import org.eclipse.osee.ats.actions.OpenInMassEditorAction;
 import org.eclipse.osee.ats.actions.SubscribedAction;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
@@ -58,6 +59,7 @@ import org.eclipse.osee.ats.util.ArtifactEmailWizard;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.PromptChangeUtil;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeColumn;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -272,7 +274,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
                   true, true)) {
                   update(getSelectedSMAArtifacts().toArray(), null);
                }
-            } catch (Exception ex) {
+            } catch (OseeCoreException ex) {
                OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
@@ -286,7 +288,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
                   ATSAttributes.RESOLUTION_ATTRIBUTE, true, true)) {
                   update(getSelectedSMAArtifacts().toArray(), null);
                }
-            } catch (Exception ex) {
+            } catch (OseeCoreException ex) {
                OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
@@ -309,7 +311,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
          @Override
          public void run() {
             try {
-               if (ArtifactPromptChange.promptChangeAttribute(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(),
+               if (ArtifactPromptChange.promptChangeAttribute(AtsAttributeTypes.ATS_ESTIMATED_HOURS,
                   ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getDisplayName(), getSelectedSMAArtifacts(), true)) {
                   update(getSelectedSMAArtifacts().toArray(), null);
                }
@@ -507,16 +509,16 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
       }
 
       XResultData rData = new XResultData();
-      String attrName = null;
+      IAttributeType attributeType = null;
       if (treeColumn.getData() instanceof XViewerAttributeColumn) {
          final XViewerAttributeColumn xCol = (XViewerAttributeColumn) treeColumn.getData();
-         attrName = xCol.getAttributeTypeName();
+         attributeType = xCol.getAttributeType();
       }
       if (treeColumn.getData() instanceof XViewerAtsAttributeColumn) {
          final XViewerAtsAttributeColumn xCol = (XViewerAtsAttributeColumn) treeColumn.getData();
-         attrName = xCol.getAttributeTypeName();
+         attributeType = xCol.getAttributeType();
       }
-      if (attrName == null) {
+      if (attributeType == null) {
          AWorkbench.popup("ERROR", "Can't retrieve attribute name from attribute column " + treeColumn.getText());
          return;
       }
@@ -524,10 +526,10 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
       for (TreeItem item : treeItems) {
          Artifact art = (Artifact) item.getData();
          try {
-            if (art.isAttributeTypeValid(attrName)) {
+            if (art.isAttributeTypeValid(attributeType)) {
                useArts.add(art);
             } else {
-               rData.logError(attrName + " not valid for artifact " + art.getGuid() + " - " + art.getName());
+               rData.logError(attributeType + " not valid for artifact " + art.getGuid() + " - " + art.getName());
             }
          } catch (OseeCoreException ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -541,7 +543,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
             return;
          }
          if (useArts.size() > 0) {
-            ArtifactPromptChange.promptChangeAttribute(attrName, attrName, useArts, persist);
+            ArtifactPromptChange.promptChangeAttribute(attributeType, attributeType.getName(), useArts, persist);
          }
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -559,19 +561,19 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
       if (!((XViewerColumn) treeColumn.getData()).isMultiColumnEditable()) {
          return false;
       }
-      String attrName = null;
+      IAttributeType attributeType = null;
       // Currently don't know how to multi-edit anything but attribute
       if (treeColumn.getData() instanceof XViewerAttributeColumn) {
          XViewerAttributeColumn xCol = (XViewerAttributeColumn) treeColumn.getData();
-         attrName = xCol.getAttributeTypeName();
+         attributeType = xCol.getAttributeType();
       } else if (treeColumn.getData() instanceof XViewerAtsAttributeColumn) {
          XViewerAtsAttributeColumn xCol = (XViewerAtsAttributeColumn) treeColumn.getData();
-         attrName = xCol.getAttributeTypeName();
+         attributeType = xCol.getAttributeType();
       } else {
          return false;
       }
 
-      if (attrName == null) {
+      if (attributeType == null) {
          AWorkbench.popup("ERROR", "Can't retrieve attribute name from attribute column " + treeColumn.getText());
          return false;
       }
@@ -580,7 +582,8 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
             return false;
          }
          try {
-            if (!((Artifact) item.getData()).isAttributeTypeValid(attrName)) {
+            Artifact artifact = (Artifact) item.getData();
+            if (!artifact.isAttributeTypeValid(attributeType)) {
                return false;
             }
          } catch (OseeCoreException ex) {

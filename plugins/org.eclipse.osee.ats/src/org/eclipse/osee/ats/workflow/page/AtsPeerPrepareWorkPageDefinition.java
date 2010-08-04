@@ -31,14 +31,14 @@ public class AtsPeerPrepareWorkPageDefinition extends WorkPageDefinition {
    public AtsPeerPrepareWorkPageDefinition(String name, String pageId, String parentId) {
       super(name, pageId, parentId);
       addWorkItem("ats.Title");
-      addWorkItem(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName());
-      addWorkItem(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName());
-      addWorkItem(ATSAttributes.ROLE_ATTRIBUTE.getStoreName());
-      addWorkItem(ATSAttributes.LOCATION_ATTRIBUTE.getStoreName());
+      addWorkItem(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getWorkItemId());
+      addWorkItem(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getWorkItemId());
+      addWorkItem(ATSAttributes.ROLE_ATTRIBUTE.getWorkItemId());
+      addWorkItem(ATSAttributes.LOCATION_ATTRIBUTE.getWorkItemId());
       addWorkItem(AtsWorkDefinitions.ATS_DESCRIPTION_NOT_REQUIRED_ID);
-      addWorkItem(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName());
-      addWorkItem(ATSAttributes.REVIEW_BLOCKS_ATTRIBUTE.getStoreName());
-      addWorkItem(ATSAttributes.NEED_BY_ATTRIBUTE.getStoreName());
-      addWorkItem(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName());
+      addWorkItem(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getWorkItemId());
+      addWorkItem(ATSAttributes.REVIEW_BLOCKS_ATTRIBUTE.getWorkItemId());
+      addWorkItem(ATSAttributes.NEED_BY_ATTRIBUTE.getWorkItemId());
+      addWorkItem(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getWorkItemId());
    }
 }

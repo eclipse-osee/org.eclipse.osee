@@ -26,11 +26,11 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsOpenOption;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ATSLog;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.LogItem;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
@@ -241,8 +241,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             // Check that duplicate Legacy PCR IDs team arts do not exist with different parent actions 
             if (artifact instanceof TeamWorkFlowArtifact) {
                TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
-               String legacyPcrId =
-                  artifact.getSoleAttributeValueAsString(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName(), null);
+               String legacyPcrId = artifact.getSoleAttributeValueAsString(AtsAttributeTypes.ATS_LEGACY_PCR_ID, null);
                if (legacyPcrId != null) {
                   if (legacyPcrIdToParentHrid.containsKey(legacyPcrId)) {
                      if (!legacyPcrIdToParentHrid.get(legacyPcrId).equals(
@@ -269,8 +268,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             VersionArtifact verArt = (VersionArtifact) artifact;
             try {
                String parentBranchGuid =
-                  verArt.getSoleAttributeValueAsString(ATSAttributes.BASELINE_BRANCH_GUID_ATTRIBUTE.getStoreName(),
-                     null);
+                  verArt.getSoleAttributeValueAsString(AtsAttributeTypes.ATS_BASELINE_BRANCH_GUID, null);
                if (parentBranchGuid != null) {
                   validateBranchGuid(verArt, parentBranchGuid);
                }
@@ -289,8 +287,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             TeamDefinitionArtifact teamDef = (TeamDefinitionArtifact) art;
             try {
                String parentBranchGuid =
-                  teamDef.getSoleAttributeValueAsString(ATSAttributes.BASELINE_BRANCH_GUID_ATTRIBUTE.getStoreName(),
-                     null);
+                  teamDef.getSoleAttributeValueAsString(AtsAttributeTypes.ATS_BASELINE_BRANCH_GUID, null);
                if (parentBranchGuid != null) {
                   validateBranchGuid(teamDef, parentBranchGuid);
                }
@@ -640,12 +637,12 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          if (artifact instanceof ReviewSMArtifact) {
             ReviewSMArtifact reviewArtifact = (ReviewSMArtifact) artifact;
             try {
-               if (reviewArtifact.getAttributes(ATSAttributes.REVIEW_DEFECT_ATTRIBUTE.getStoreName()).size() > 0 && reviewArtifact.getDefectManager().getDefectItems().isEmpty()) {
+               if (reviewArtifact.getAttributes(AtsAttributeTypes.ATS_REVIEW_DEFECT).size() > 0 && reviewArtifact.getDefectManager().getDefectItems().isEmpty()) {
                   testNameToResultsMap.put(
                      "testReviewsHaveValidDefectAndRoleXml",
                      "Error: Review " + XResultData.getHyperlink(reviewArtifact) + " has defect attribute, but no defects (xml parsing error).");
                }
-               if (reviewArtifact.getAttributes(ATSAttributes.ROLE_ATTRIBUTE.getStoreName()).size() > 0 && reviewArtifact.getUserRoleManager().getUserRoles().isEmpty()) {
+               if (reviewArtifact.getAttributes(AtsAttributeTypes.ATS_ROLE).size() > 0 && reviewArtifact.getUserRoleManager().getUserRoles().isEmpty()) {
                   testNameToResultsMap.put(
                      "testReviewsHaveValidDefectAndRoleXml",
                      "Error: Review " + XResultData.getHyperlink(reviewArtifact) + " has role attribute, but no roles (xml parsing error).");

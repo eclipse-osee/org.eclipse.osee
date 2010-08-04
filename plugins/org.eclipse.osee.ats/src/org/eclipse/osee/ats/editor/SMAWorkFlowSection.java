@@ -337,7 +337,8 @@ public class SMAWorkFlowSection extends SectionPart {
    public Result isXWidgetDirty() throws OseeCoreException {
       for (XWidget widget : allXWidgets) {
          if (widget instanceof IArtifactStoredWidget) {
-            Result result = ((IArtifactStoredWidget) widget).isDirty();
+            IArtifactStoredWidget artifactStoredWidget = ((IArtifactStoredWidget) widget);
+            Result result = artifactStoredWidget.isDirty();
             if (result.isTrue()) {
                return result;
             }
@@ -349,8 +350,9 @@ public class SMAWorkFlowSection extends SectionPart {
    public void getDirtyIArtifactWidgets(List<IArtifactStoredWidget> widgets) throws OseeCoreException {
       for (XWidget widget : allXWidgets) {
          if (widget instanceof IArtifactStoredWidget) {
-            if (((IArtifactStoredWidget) widget).isDirty().isTrue()) {
-               widgets.add((IArtifactStoredWidget) widget);
+            IArtifactStoredWidget artifactStoredWidget = ((IArtifactStoredWidget) widget);
+            if (artifactStoredWidget.isDirty().isTrue()) {
+               widgets.add(artifactStoredWidget);
             }
          }
       }

@@ -10,9 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DefaultAttributeXWidgetProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
@@ -25,16 +28,20 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemAttributes;
  */
 public class AtsAttributeXWidgetProvider extends DefaultAttributeXWidgetProvider {
 
-   List<String> attributeNames = Arrays.asList(WorkItemAttributes.TRANSITION.getAttributeTypeName(),
-      WorkItemAttributes.WORK_DATA.getAttributeTypeName(), ATSAttributes.STATE_ATTRIBUTE.getStoreName(),
-      ATSAttributes.ACTIONABLE_ITEM_GUID_ATTRIBUTE.getStoreName(),
-      ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName(),
-      ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName());
+   private static final Collection<IAttributeType> XFLAT_ATTRIBUTE_TYPES = new ArrayList<IAttributeType>();
+   static {
+      XFLAT_ATTRIBUTE_TYPES.add(WorkItemAttributes.WORK_TRANSITION);
+      XFLAT_ATTRIBUTE_TYPES.add(WorkItemAttributes.WORK_DATA);
+      XFLAT_ATTRIBUTE_TYPES.add(AtsAttributeTypes.ATS_STATE);
+      XFLAT_ATTRIBUTE_TYPES.add(AtsAttributeTypes.ATS_ACTIONABLE_ITEM);
+      XFLAT_ATTRIBUTE_TYPES.add(AtsAttributeTypes.ATS_TEAM_DEFINITION);
+   }
 
    @Override
    public List<DynamicXWidgetLayoutData> getDynamicXWidgetLayoutData(AttributeType attributeType) {
-      DynamicXWidgetLayoutData layoutData = super.getDynamicXWidgetLayoutData(attributeType).iterator().next();
-      if (attributeNames.contains(attributeType.getName())) {
+      List<DynamicXWidgetLayoutData> layouts = super.getDynamicXWidgetLayoutData(attributeType);
+      DynamicXWidgetLayoutData layoutData = layouts.get(0);
+      if (XFLAT_ATTRIBUTE_TYPES.contains(attributeType)) {
          layoutData.setXWidgetName("XFlatDam");
       }
       return Arrays.asList(layoutData);

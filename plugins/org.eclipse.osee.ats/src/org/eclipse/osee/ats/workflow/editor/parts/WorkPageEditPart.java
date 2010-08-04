@@ -88,7 +88,7 @@ public class WorkPageEditPart extends ShapeEditPart {
             getFigure().setBackgroundColor(ColorConstants.green);
          }
       }
-      if (WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName().equals(prop)) {
+      if (WorkItemAttributes.WORK_PAGE_NAME.getName().equals(prop)) {
          refreshVisuals();
       }
    }

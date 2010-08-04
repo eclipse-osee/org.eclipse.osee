@@ -68,7 +68,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
 
    @Override
    public Result isCreateBranchAllowed() throws OseeCoreException {
-      if (getSoleAttributeValue(ATSAttributes.ALLOW_CREATE_BRANCH.getStoreName(), false) == false) {
+      if (getSoleAttributeValue(AtsAttributeTypes.ATS_ALLOW_CREATE_BRANCH, false) == false) {
          return new Result(false, "Branch creation disabled for Team Definition [" + this + "]");
       }
       if (getParentBranch() == null) {
@@ -79,7 +79,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
 
    @Override
    public Result isCommitBranchAllowed() throws OseeCoreException {
-      if (getSoleAttributeValue(ATSAttributes.ALLOW_COMMIT_BRANCH.getStoreName(), false) == false) {
+      if (getSoleAttributeValue(AtsAttributeTypes.ATS_ALLOW_COMMIT_BRANCH, false) == false) {
          return new Result(false, "Team Definition [" + this + "] not configured to allow branch commit.");
       }
       if (getParentBranch() == null) {
@@ -91,8 +91,8 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
    public void initialize(String fullname, String description, Collection<User> leads, Collection<User> members, Collection<ActionableItemArtifact> actionableItems, TeamDefinitionOptions... teamDefinitionOptions) throws OseeCoreException {
       List<Object> teamDefOptions = Collections.getAggregate((Object[]) teamDefinitionOptions);
 
-      setSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), description);
-      setSoleAttributeValue(ATSAttributes.FULL_NAME_ATTRIBUTE.getStoreName(), fullname);
+      setSoleAttributeValue(AtsAttributeTypes.ATS_DESCRIPTION, description);
+      setSoleAttributeValue(AtsAttributeTypes.ATS_FULL_NAME, fullname);
       for (User user : leads) {
          addRelation(AtsRelationTypes.TeamLead_Lead, user);
          // All leads are members
@@ -103,7 +103,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
       }
 
       if (teamDefOptions.contains(TeamDefinitionOptions.TeamUsesVersions)) {
-         setSoleAttributeValue(ATSAttributes.TEAM_USES_VERSIONS_ATTRIBUTE.getStoreName(), true);
+         setSoleAttributeValue(AtsAttributeTypes.ATS_TEAM_USES_VERSIONS, true);
       }
       if (teamDefOptions.contains(TeamDefinitionOptions.RequireTargetedVersion)) {
          addWorkRule(RuleWorkItemId.atsRequireTargetedVersion.name());
@@ -128,7 +128,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
    @Override
    public Branch getParentBranch() throws OseeCoreException {
       try {
-         String guid = getSoleAttributeValue(ATSAttributes.BASELINE_BRANCH_GUID_ATTRIBUTE.getStoreName(), "");
+         String guid = getSoleAttributeValue(AtsAttributeTypes.ATS_BASELINE_BRANCH_GUID, "");
          if (GUID.isValid(guid)) {
             return BranchManager.getBranchByGuid(guid);
          }
@@ -185,7 +185,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
    public VersionArtifact getNextReleaseVersion() throws OseeCoreException {
       for (VersionArtifact verArt : getRelatedArtifacts(AtsRelationTypes.TeamDefinitionToVersion_Version,
          VersionArtifact.class)) {
-         if (verArt.getSoleAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), false)) {
+         if (verArt.getSoleAttributeValue(AtsAttributeTypes.ATS_NEXT_VERSION, false)) {
             return verArt;
          }
       }
@@ -327,7 +327,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
       // Get work rules from team definition
       for (Artifact art : getRelatedArtifacts(CoreRelationTypes.WorkItem__Child)) {
          if (art.isOfType(CoreArtifactTypes.WorkRuleDefinition)) {
-            String id = art.getSoleAttributeValue(WorkItemAttributes.WORK_ID.getAttributeTypeName(), "");
+            String id = art.getSoleAttributeValue(WorkItemAttributes.WORK_ID, "");
             if (id != null && !id.equals("")) {
                workRules.add((WorkRuleDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(id));
             }
@@ -343,8 +343,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
     */
    public double getHoursPerWorkDayFromItemAndChildren(TeamDefinitionArtifact teamDef) {
       try {
-         Double manDaysHrs =
-            teamDef.getSoleAttributeValue(ATSAttributes.HOURS_PER_WORK_DAY_ATTRIBUTE.getStoreName(), 0.0);
+         Double manDaysHrs = teamDef.getSoleAttributeValue(AtsAttributeTypes.ATS_HOURS_PER_WORK_DAY, 0.0);
          if (manDaysHrs != null && manDaysHrs != 0) {
             return manDaysHrs;
          }
@@ -455,11 +454,11 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
    }
 
    public boolean isTeamUsesVersions() throws OseeCoreException {
-      return getSoleAttributeValue(ATSAttributes.TEAM_USES_VERSIONS_ATTRIBUTE.getStoreName(), false);
+      return getSoleAttributeValue(AtsAttributeTypes.ATS_TEAM_USES_VERSIONS, false);
    }
 
    public boolean isActionable() throws OseeCoreException {
-      return getSoleAttributeValue(ATSAttributes.ACTIONABLE_ATTRIBUTE.getStoreName(), false);
+      return getSoleAttributeValue(AtsAttributeTypes.ATS_ACTIONABLE, false);
    }
 
    public void addWorkRule(String ruleId) throws OseeCoreException {
@@ -490,7 +489,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
     * If no branch is associated then null will be returned.
     */
    public Branch getTeamBranch() throws OseeCoreException {
-      String guid = getSoleAttributeValue(ATSAttributes.BASELINE_BRANCH_GUID_ATTRIBUTE.getStoreName(), null);
+      String guid = getSoleAttributeValue(AtsAttributeTypes.ATS_BASELINE_BRANCH_GUID, null);
       if (GUID.isValid(guid)) {
          return BranchManager.getBranchByGuid(guid);
       } else {
