@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -28,9 +29,13 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.IAttributeWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.SkynetSpellModifyDictionary;
 import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactList;
 import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactTypeListViewer;
@@ -72,15 +77,19 @@ import org.osgi.framework.Bundle;
 /**
  * @author Jeff C. Phillips
  */
-public class XWidgetFactory {
+public final class XWidgetFactory {
 
    private static final XWidgetFactory reference = new XWidgetFactory();
+
+   private XWidgetFactory() {
+      // Hide Constructor to enforce singleton pattern
+   }
 
    public static XWidgetFactory getInstance() {
       return reference;
    }
 
-   public XWidget createXWidget(DynamicXWidgetLayoutData xWidgetLayoutData) throws OseeArgumentException {
+   public XWidget createXWidget(DynamicXWidgetLayoutData xWidgetLayoutData) throws OseeCoreException {
       String xWidgetName = xWidgetLayoutData.getXWidgetName();
       String name = xWidgetLayoutData.getName();
       XWidget xWidget = null;
@@ -314,6 +323,15 @@ public class XWidgetFactory {
 
       if (xWidget != null && xWidgetLayoutData.getXOptionHandler().contains(XOption.NO_LABEL)) {
          xWidget.setDisplayLabel(false);
+      }
+      Artifact artifact = xWidgetLayoutData.getArtifact();
+      if (artifact != null) {
+         if (xWidget instanceof IAttributeWidget) {
+            IAttributeType attributeType = AttributeTypeManager.getType(xWidgetLayoutData.getStoreName());
+            ((IAttributeWidget) xWidget).setAttributeType(artifact, attributeType);
+         } else if (xWidget instanceof IArtifactWidget) {
+            ((IArtifactWidget) xWidget).setArtifact(artifact);
+         }
       }
       return xWidget;
    }
