@@ -76,7 +76,7 @@ public class ActionableItemArtifact extends Artifact {
    }
 
    public boolean isActionable() throws OseeCoreException {
-      return getSoleAttributeValue(ATSAttributes.ACTIONABLE_ATTRIBUTE.getStoreName(), false);
+      return getSoleAttributeValue(AtsAttributeTypes.ATS_ACTIONABLE, false);
    }
 
    public static Set<ActionableItemArtifact> getActionableItems(Collection<String> actionableItemNames) throws OseeCoreException {
