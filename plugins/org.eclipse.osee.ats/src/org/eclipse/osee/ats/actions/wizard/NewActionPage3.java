@@ -24,7 +24,8 @@ import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -146,10 +147,8 @@ public class NewActionPage3 extends WizardPage {
       return true;
    }
 
-   public XWidget getXWidget(String attrName) throws OseeArgumentException {
-      if (page == null) {
-         throw new OseeArgumentException("WorkPage == null");
-      }
+   public XWidget getXWidget(String attrName) throws OseeCoreException {
+      Conditions.checkNotNull(page, "WorkPage");
       return page.getLayoutData(attrName).getXWidget();
    }
 

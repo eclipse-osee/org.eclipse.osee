@@ -19,15 +19,15 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.dialog.AITreeContentProvider;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.framework.core.enums.Active;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -77,7 +77,7 @@ public class NewActionPage1 extends WizardPage {
 
       try {
          String xWidgetXml =
-            "<WorkPage><XWidget displayName=\"Title\" required=\"true\" xwidgetType=\"XText\" toolTip=\"" + ATSAttributes.TITLE_ATTRIBUTE.getDescription() + "\"/></WorkPage>";
+            "<WorkPage><XWidget displayName=\"Title\" required=\"true\" xwidgetType=\"XText\" toolTip=\"" + AtsAttributeTypes.ATS_TITLE.getDescription() + "\"/></WorkPage>";
          Composite comp = new Composite(parent, SWT.NONE);
          comp.setLayout(new GridLayout(1, false));
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -151,7 +151,7 @@ public class NewActionPage1 extends WizardPage {
          }
          ActionableItemArtifact aia = (ActionableItemArtifact) sel.getFirstElement();
          try {
-            descriptionLabel.setText(aia.getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), ""));
+            descriptionLabel.setText(aia.getSoleAttributeValue(AtsAttributeTypes.ATS_DESCRIPTION, ""));
          } catch (OseeCoreException ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          }
@@ -170,10 +170,8 @@ public class NewActionPage1 extends WizardPage {
       return selected;
    }
 
-   public XWidget getXWidget(String attrName) throws OseeArgumentException {
-      if (page == null) {
-         throw new OseeArgumentException("WorkPage == null");
-      }
+   public XWidget getXWidget(String attrName) throws OseeCoreException {
+      Conditions.checkNotNull(page, "WorkPage");
       return page.getLayoutData(attrName).getXWidget();
    }
 

@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -96,11 +95,11 @@ public class NewActionWizard extends Wizard implements INewWizard {
       }
    }
 
-   public boolean isTTAction() throws OseeArgumentException {
+   public boolean isTTAction() throws OseeCoreException {
       return getTitle().equals("tt");
    }
 
-   public String getTitle() throws OseeArgumentException {
+   public String getTitle() throws OseeCoreException {
       return ((XText) page1.getXWidget("Title")).get();
    }
 
@@ -108,7 +107,7 @@ public class NewActionWizard extends Wizard implements INewWizard {
       return page1.getSelectedActionableItemArtifacts();
    }
 
-   public String getDescription() throws OseeArgumentException {
+   public String getDescription() throws OseeCoreException {
       return ((XText) page2.getXWidget("Description")).get();
    }
 
@@ -117,16 +116,16 @@ public class NewActionWizard extends Wizard implements INewWizard {
       return PriorityType.getPriority(((XCombo) page2.getXWidget("ats.Priority")).get());
    }
 
-   public ChangeType getChangeType() throws OseeArgumentException {
+   public ChangeType getChangeType() throws OseeCoreException {
       // Must use skynet attribute name cause this widget uses the OPTIONS_FROM_ATTRIBUTE_VALIDITY
       return ChangeType.getChangeType(((XCombo) page2.getXWidget("ats.Change Type")).get());
    }
 
-   public boolean getValidation() throws OseeArgumentException {
+   public boolean getValidation() throws OseeCoreException {
       return ((XCheckBox) page2.getXWidget("Validation Required")).get();
    }
 
-   public Date getNeedBy() throws OseeArgumentException {
+   public Date getNeedBy() throws OseeCoreException {
       return ((XDate) page2.getXWidget("Deadline")).getDate();
    }
 
@@ -136,7 +135,7 @@ public class NewActionWizard extends Wizard implements INewWizard {
       }
    }
 
-   public XWidget getExtendedXWidget(String attrName) throws OseeArgumentException {
+   public XWidget getExtendedXWidget(String attrName) throws OseeCoreException {
       if (page3 == null) {
          return null;
       }
