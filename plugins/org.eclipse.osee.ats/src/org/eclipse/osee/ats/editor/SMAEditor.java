@@ -146,8 +146,12 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
       try {
          sma.setEditor(this);
 
-         OseeEventManager.addListener(this); // <REM2> Don't need this cause handled through SMAEditorEventManager
-         SMAEditorEventManager.add(this);
+         if (OseeEventManager.isOldEvents()) {
+            OseeEventManager.addListener(this); // <REM2> Don't need this cause handled through SMAEditorEventManager
+         } else if (OseeEventManager.isNewEvents()) {
+            SMAEditorArtifactEventManager.add(this);
+            SMAEditorBranchEventManager.add(this);
+         }
 
          updatePartName();
 
@@ -251,7 +255,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
    @Override
    public void dispose() {
       OseeEventManager.removeListener(this); // <REM2> Don't need this cause handled through SMAEditorEventManager
-      SMAEditorEventManager.remove(this);
+      SMAEditorArtifactEventManager.remove(this);
       if (sma != null && !sma.isDeleted() && sma.isSMAEditorDirty().isTrue()) {
          sma.revertSMA();
       }

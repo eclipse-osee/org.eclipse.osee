@@ -214,7 +214,7 @@ public class OseeEventManager {
       }
       artifactEvent.setNetworkSender(getSender(source).getNetworkSender());
       if (OseeEventManager.isNewEvents()) {
-         InternalEventManager2.kickPersistEvent(getSender(source), artifactEvent);
+         InternalEventManager2.kickArtifactEvent(getSender(source), artifactEvent);
       }
    }
 

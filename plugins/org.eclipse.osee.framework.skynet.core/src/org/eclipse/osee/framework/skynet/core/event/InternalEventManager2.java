@@ -447,15 +447,15 @@ public class InternalEventManager2 {
    }
 
    // Kick LOCAL and REMOTE ArtifactEvent
-   static void kickPersistEvent(final Sender sender, final ArtifactEvent artifactEvent) {
+   static void kickArtifactEvent(final Sender sender, final ArtifactEvent artifactEvent) {
       if (artifactEvent.getNetworkSender() == null) {
-         OseeEventManager.eventLog("IEM2: kickPersistEvent - ERROR networkSender can't be null.");
+         OseeEventManager.eventLog("IEM2: kickArtifactEvent - ERROR networkSender can't be null.");
          return;
       }
       if (isDisableEvents()) {
          return;
       }
-      OseeEventManager.eventLog("IEM2: kickPersistEvent [" + artifactEvent + "] - " + sender);
+      OseeEventManager.eventLog("IEM2: kickArtifactEvent [" + artifactEvent + "] - " + sender);
       Runnable runnable = new Runnable() {
          @Override
          public void run() {
@@ -478,7 +478,7 @@ public class InternalEventManager2 {
                   RemoteEventManager2.getInstance().kick(FrameworkEventUtil.getRemotePersistEvent(artifactEvent));
                }
             } catch (Exception ex) {
-               OseeEventManager.eventLog("IEM2 kickPersistEvent", ex);
+               OseeEventManager.eventLog("IEM2 kickArtifactEvent", ex);
             }
          }
       };

@@ -129,7 +129,7 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
                      ArtifactEvent transEvent = FrameworkEventUtil.getPersistEvent(event1);
                      updateArtifacts(sender, transEvent);
                      updateRelations(sender, transEvent);
-                     InternalEventManager2.kickPersistEvent(sender, transEvent);
+                     InternalEventManager2.kickArtifactEvent(sender, transEvent);
                   } catch (Exception ex) {
                      OseeEventManager.eventLog("REM2: RemoteTransactionEvent1", ex);
                   }
