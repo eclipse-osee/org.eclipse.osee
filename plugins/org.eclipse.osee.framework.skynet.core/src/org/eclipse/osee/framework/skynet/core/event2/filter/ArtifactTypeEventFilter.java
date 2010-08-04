@@ -10,55 +10,51 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.event2.filter;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidRelation;
+import org.eclipse.osee.framework.core.model.type.ArtifactType;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Donald G. Dunne
  */
 public class ArtifactTypeEventFilter implements IEventFilter {
 
-   private final Collection<String> artTypeGuids;
-
-   /**
-    * Provide artifact types of events to be passed through. All others will be ignored.
-    */
-   public ArtifactTypeEventFilter(String artTypeGuid) {
-      this.artTypeGuids = Arrays.asList(artTypeGuid);
-   }
-
-   /**
-    * Provide artifact types of events to be passed through. All others will be ignored.
-    */
-   public ArtifactTypeEventFilter(Collection<String> artTypeGuids) {
-      this.artTypeGuids = artTypeGuids;
-   }
+   private final Collection<IArtifactType> artifactTypes;
 
    /**
     * Provide artifact types of events to be passed through. All others will be ignored.
     */
    public ArtifactTypeEventFilter(IArtifactType... artifactTypes) {
-      this.artTypeGuids = new HashSet<String>();
-      for (IArtifactType artifactType : artifactTypes) {
-         this.artTypeGuids.add(artifactType.getGuid());
-      }
+      this.artifactTypes = Collections.getAggregate(artifactTypes);
    }
 
    @Override
    public boolean isMatch(IBasicGuidArtifact guidArt) {
-      return this.artTypeGuids.contains(guidArt.getArtTypeGuid());
+      try {
+         ArtifactType artType = ArtifactTypeManager.getTypeByGuid(guidArt.getArtTypeGuid());
+         for (IArtifactType artifactType : artifactTypes) {
+            if (artType.inheritsFrom(artifactType)) {
+               return true;
+            }
+         }
+         return this.artifactTypes.contains(guidArt.getArtTypeGuid());
+
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+      return false;
    }
 
    @Override
    public boolean isMatch(IBasicGuidRelation relArt) {
-      return this.artTypeGuids.contains(relArt.getArtA().getArtTypeGuid()) ||
-      //
-      this.artTypeGuids.contains(relArt.getArtB().getArtTypeGuid());
-
+      return isMatch(relArt.getArtA()) || isMatch(relArt.getArtB());
    }
 
    @Override

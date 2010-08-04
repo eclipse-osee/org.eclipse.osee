@@ -82,7 +82,7 @@ public class SMAEditorBranchEventManager implements IBranchEventListener {
                return;
             }
             if (branchModType == BranchEventType.Added || branchModType == BranchEventType.Deleted || branchModType == BranchEventType.Purged || branchModType == BranchEventType.Committed) {
-               if (((TeamWorkFlowArtifact) sma).getBranchMgr().getId() == null || ((TeamWorkFlowArtifact) sma).getBranchMgr().getId() != branch.getId()) {
+               if (((TeamWorkFlowArtifact) sma).getBranchMgr().getId() != null && ((TeamWorkFlowArtifact) sma).getBranchMgr().getId() != branch.getId()) {
                   return;
                }
                Displays.ensureInDisplayThread(new Runnable() {

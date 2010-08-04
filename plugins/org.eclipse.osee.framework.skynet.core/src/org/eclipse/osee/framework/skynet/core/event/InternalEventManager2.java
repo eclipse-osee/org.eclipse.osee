@@ -433,7 +433,7 @@ public class InternalEventManager2 {
             // Kick LOCAL
             boolean normalOperation = !enableRemoteEventLoopback;
             boolean loopbackTestEnabledAndRemoteEventReturned = enableRemoteEventLoopback && sender.isRemote();
-            if (normalOperation && sender.isLocal() && branchEventType.isLocalEventType() || loopbackTestEnabledAndRemoteEventReturned) {
+            if (normalOperation || loopbackTestEnabledAndRemoteEventReturned) {
                processBranchEvent(sender, branchEvent);
             }
 
