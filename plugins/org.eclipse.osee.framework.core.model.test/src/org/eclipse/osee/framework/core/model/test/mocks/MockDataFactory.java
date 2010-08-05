@@ -8,7 +8,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-
 package org.eclipse.osee.framework.core.model.test.mocks;
 
 import java.util.Date;
