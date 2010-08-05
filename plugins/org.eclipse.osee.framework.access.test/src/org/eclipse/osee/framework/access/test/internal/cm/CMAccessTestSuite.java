@@ -8,16 +8,20 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.access.test;
+package org.eclipse.osee.framework.access.test.internal.cm;
 
-import org.eclipse.osee.framework.access.test.internal.InternalAccessTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ //
-InternalAccessTestSuite.class, //
+CMAccessProviderTest.class, //
+   ConfigurationManagementProviderTest.class, //
+   DefaultConfigurationManagementTest.class, //
 })
-public class AllAccessTestSuite {
+/**
+ * @author Roberto E. Escobar
+ */
+public class CMAccessTestSuite {
    // Test Suite Class
 }
