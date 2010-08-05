@@ -122,8 +122,6 @@ public class WordTemplateFileDiffer {
       @SuppressWarnings("unused")
       Collection<Artifact> bulkLoadedArtifacts =
          ArtifactQuery.getArtifactListFromIds(Artifacts.toGuids(artifacts), startBranch, DeletionFlag.INCLUDE_DELETED);
-      //         ArtifactQuery.getHistoricalArtifactListFromIds(Artifacts.toGuids(artifacts), startTransaction,
-      //            DeletionFlag.INCLUDE_DELETED);
 
       for (Artifact artifact : artifacts) {
          startArtifacts.add(ArtifactCache.getActive(artifact.getArtId(), startBranch));
