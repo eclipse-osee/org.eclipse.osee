@@ -8,28 +8,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.dsl.integration.test.mocks;
+package org.eclipse.osee.framework.core.model.access;
 
-import org.eclipse.osee.framework.core.dsl.integration.AccessModelInterpreter.AccessDetailCollector;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.access.AccessDetail;
 
 /**
  * @author Roberto E. Escobar
  */
-public final class MockAccessDetailCollector implements AccessDetailCollector {
-
-   private AccessDetail<?> actualAccessDetail;
-
-   public AccessDetail<?> getAccessDetails() {
-      return actualAccessDetail;
-   }
-
-   public void clear() {
-      collect(null);
-   }
-
-   @Override
-   public void collect(AccessDetail<?> accessDetail) {
-      this.actualAccessDetail = accessDetail;
-   }
+public interface AccessDetailCollector {
+   void collect(AccessDetail<?> accessDetail) throws OseeCoreException;
 }

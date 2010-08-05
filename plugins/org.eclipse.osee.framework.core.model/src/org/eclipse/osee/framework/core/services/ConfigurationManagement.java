@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2010 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,21 +8,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.dsl.integration;
+package org.eclipse.osee.framework.core.services;
 
-import java.util.Collection;
 import org.eclipse.osee.framework.core.data.AccessContextId;
-import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessContext;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.access.AccessDetailCollector;
+import org.eclipse.osee.framework.core.model.IBasicArtifact;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface AccessModelInterpreter {
+public interface ConfigurationManagement {
 
-   AccessContext getContext(Collection<AccessContext> contexts, AccessContextId contextId) throws OseeCoreException;
+   boolean isApplicable(IBasicArtifact<?> userArtifact, Object object);
 
-   void computeAccessDetails(AccessDetailCollector collector, AccessContext context, Object objectToCheck) throws OseeCoreException;
+   AccessContextId getContextId(IBasicArtifact<?> userArtifact, Object itemToCheck) throws OseeCoreException;
 
 }

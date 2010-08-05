@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.dsl.integration.internal;
 
-import org.eclipse.osee.framework.core.dsl.integration.AccessModelInterpreter.AccessDetailCollector;
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactData;
 import org.eclipse.osee.framework.core.dsl.integration.OseeUtil;
 import org.eclipse.osee.framework.core.dsl.integration.RestrictionHandler;
@@ -21,6 +20,7 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.access.AccessDetail;
+import org.eclipse.osee.framework.core.model.access.AccessDetailCollector;
 
 /**
  * @author Roberto E. Escobar

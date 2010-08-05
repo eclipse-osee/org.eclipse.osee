@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.core.dsl.integration.internal;
 
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.dsl.integration.AccessModelInterpreter.AccessDetailCollector;
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactData;
 import org.eclipse.osee.framework.core.dsl.integration.OseeUtil;
 import org.eclipse.osee.framework.core.dsl.integration.RestrictionHandler;
@@ -23,6 +22,7 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.access.AccessDetail;
+import org.eclipse.osee.framework.core.model.access.AccessDetailCollector;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 
 /**
