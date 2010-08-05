@@ -22,7 +22,7 @@ ArtifactInstanceRestrictionHandlerTest.class, //
    ArtifactTypeRestrictionHandlerTest.class, //
    AttributeTypeRestrictionHandlerTest.class, //
    RelationTypeRestrictionHandlerTest.class, //
-   OseeAccessModelInterpreterTest.class, //
+   AccessModelInterpreterImplTest.class, //
 })
 public class InternalTestSuite {
    // Test Suite

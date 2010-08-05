@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.ObjectRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactRef;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.access.AccessDetailCollector;
+import org.eclipse.osee.framework.core.util.Conditions;
 
 /**
  * @author Roberto E. Escobar
@@ -41,7 +42,9 @@ public class AccessModelInterpreterImpl implements AccessModelInterpreter {
    }
 
    @Override
-   public AccessContext getContext(Collection<AccessContext> contexts, AccessContextId contextId) {
+   public AccessContext getContext(Collection<AccessContext> contexts, AccessContextId contextId) throws OseeCoreException {
+      Conditions.checkNotNull(contexts, "accessContext collection");
+      Conditions.checkNotNull(contextId, "accessContextId");
       AccessContext toReturn = null;
       for (AccessContext accessContext : contexts) {
          if (contextId.getGuid().equals(accessContext.getGuid())) {
@@ -53,8 +56,15 @@ public class AccessModelInterpreterImpl implements AccessModelInterpreter {
 
    @Override
    public void computeAccessDetails(AccessDetailCollector collector, AccessContext context, Object objectToCheck) throws OseeCoreException {
+      Conditions.checkNotNull(collector, "accessDetailCollector");
+      Conditions.checkNotNull(context, "accessContext");
+      Conditions.checkNotNull(objectToCheck, "objectToCheck");
+
       if (provider.isApplicable(objectToCheck)) {
          ArtifactData data = provider.asCastedObject(objectToCheck);
+         Conditions.checkNotNull(data, "artifactData",
+            "artifact data provider returned null - provider has an isApplicable error");
+
          collectApplicable(collector, context, data);
       }
    }
