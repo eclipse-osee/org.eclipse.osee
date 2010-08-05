@@ -8,25 +8,21 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.model.test.fields;
+package org.eclipse.osee.framework.core.model.test.access;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({//
-ArtifactSuperTypeFieldTest.class, //
-   ArtifactTypeAttributesFieldTest.class, //
-   AssociatedArtifactFieldTest.class, //
-   BranchAliasesFieldTest.class, //
-   CollectionFieldTest.class, //
-   EnumEntryFieldTest.class, //
-   OseeFieldMainTest.class, // 
-   UniqueIdFieldTest.class, //
+AccessDataTest.class, //
+   AccessDataQueryTest.class, //
+   AccessDetailTest.class, //
+   PermissionStatusTest.class, //
 })
 /**
  * @author Roberto E. Escobar
  */
-public class FieldTestSuite {
+public class AccessTestSuite {
    // Test Suite
 }

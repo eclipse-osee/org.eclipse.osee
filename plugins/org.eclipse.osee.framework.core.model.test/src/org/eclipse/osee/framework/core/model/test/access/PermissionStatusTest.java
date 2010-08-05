@@ -16,8 +16,9 @@ import org.junit.Test;
 
 /**
  * Test Case for {@link PermissionStatus}
- *
+ * 
  * @author Jeff C. Phillips
+ * @author Roberto E. Escobar
  */
 public class PermissionStatusTest {
 
@@ -25,6 +26,7 @@ public class PermissionStatusTest {
    public void testDefaultConstruction() {
       PermissionStatus permissionStatus = new PermissionStatus();
       Assert.assertTrue(permissionStatus.matched());
+      Assert.assertEquals("", permissionStatus.getReason());
    }
 
    @Test
@@ -32,5 +34,11 @@ public class PermissionStatusTest {
       PermissionStatus permissionStatus = new PermissionStatus(false, "Hello");
       Assert.assertFalse(permissionStatus.matched());
       Assert.assertEquals(permissionStatus.getReason(), "Hello");
+   }
+
+   @Test
+   public void testToString() {
+      PermissionStatus permissionStatus = new PermissionStatus(false, "Hello");
+      Assert.assertEquals("PermissionStatus [reason=Hello, matchedPermission=false]", permissionStatus.toString());
    }
 }

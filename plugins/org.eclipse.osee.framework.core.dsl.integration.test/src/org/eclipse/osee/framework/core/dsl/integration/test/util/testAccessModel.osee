@@ -1,5 +1,4 @@
-import "testTypeModel.osee"
-
+//import "platform:/org.eclipse.osee.framework.core.dsl.integration.test/testTypeModel.osee"
 artifactType "Artifact" {
    guid "BZOUrxO35x+LBZkEYzAA"
 }
@@ -25,7 +24,6 @@ artifact "SubSystems" artGuid "AAMFEcWy0xc4e3tcem77";
 accessContext "System Context" {
    guid "AAMFEcWy0xc4e3tcem11";
    DENY edit artifactType "Artifact";
-
    childrenOf "Software Items" {
       DENY edit artifactType "Artifact";
    }

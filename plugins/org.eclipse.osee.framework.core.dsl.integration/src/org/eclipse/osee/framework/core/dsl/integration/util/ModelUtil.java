@@ -8,12 +8,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.dsl.integration;
+package org.eclipse.osee.framework.core.dsl.integration.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
@@ -45,34 +44,13 @@ public final class ModelUtil {
       // Utility Class
    }
 
-   //   private void loadDependencies(OseeTypeModel baseModel, List<OseeTypeModel> models) throws OseeCoreException, URISyntaxException {
-   //      // This is commented out cause we're using a combined file.  Once combined files
-   //      // are no longer generated, this should be uncommented.
-   //      //      for (Import dependant : baseModel.getImports()) {
-   //      //         OseeTypeModel childModel = OseeTypeModelUtil.loadModel(context, new URI(dependant.getImportURI()));
-   //      //         loadDependencies(childModel, models);
-   //      //         System.out.println("depends on: " + dependant.getImportURI());
-   //      //      }
-   //      //      System.out.println("Added on: " + baseModel.eResource().getURI());
-   //      models.add(baseModel);
-   //
-   //   }
-
-   //   OseeTypeModel targetModel = null;
-   //   try {
-   //      targetModel = OseeTypeModelUtil.loadModel(context, resource);
-   //   } catch (OseeCoreException ex) {
-   //      throw new OseeWrappedException(String.format("Error loading: [%s]", resource), ex);
-   //   }
-   //   loadDependencies(targetModel, models);
-
    public static OseeDsl loadModel(String uri, String xTextData) throws OseeCoreException {
       try {
          OseeDslStandaloneSetup setup = new OseeDslStandaloneSetup();
          Injector injector = setup.createInjectorAndDoEMFRegistration();
          XtextResourceSet set = injector.getInstance(XtextResourceSet.class);
 
-         set.setClasspathURIContext(ModelUtil.class);
+         //         set.setClasspathURIContext(ModelUtil.class);
          set.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
 
          Resource resource = set.createResource(URI.createURI(uri));
@@ -85,57 +63,6 @@ public final class ModelUtil {
       } catch (IOException ex) {
          throw new OseeWrappedException(ex);
       }
-   }
-
-   public static OseeDsl loadModel(InputStream inputStream, boolean isZipped) throws OseeCoreException {
-      Injector injector = new OseeDslStandaloneSetup().createInjectorAndDoEMFRegistration();
-      XtextResource resource = injector.getInstance(XtextResource.class);
-
-      Map<String, Boolean> options = new HashMap<String, Boolean>();
-      options.put(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
-      if (isZipped) {
-         options.put(Resource.OPTION_ZIP, Boolean.TRUE);
-      }
-      try {
-         resource.setURI(URI.createURI("http://www.eclipse.org/osee/framework/OseeTypes"));
-         resource.load(inputStream, options);
-      } catch (IOException ex) {
-         throw new OseeWrappedException(ex);
-      }
-      OseeDsl model = (OseeDsl) resource.getContents().get(0);
-      for (Diagnostic diagnostic : resource.getErrors()) {
-         throw new OseeStateException(diagnostic.toString());
-      }
-      return model;
-   }
-
-   public static OseeDsl loadModel(Object context, java.net.URI target) throws OseeCoreException {
-      String uri = target.toASCIIString();
-      Injector injector = new OseeDslStandaloneSetup().createInjectorAndDoEMFRegistration();
-      XtextResourceSet set = injector.getInstance(XtextResourceSet.class);
-
-      set.setClasspathURIContext(context);
-      set.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
-
-      Resource resource = set.getResource(URI.createURI(uri), true);
-      OseeDsl model = (OseeDsl) resource.getContents().get(0);
-      for (Diagnostic diagnostic : resource.getErrors()) {
-         throw new OseeStateException(diagnostic.toString());
-      }
-      return model;
-   }
-
-   public static void saveModel(java.net.URI uri, OseeDsl model) throws IOException {
-      OseeDslStandaloneSetup.doSetup();
-
-      ResourceSet resourceSet = new ResourceSetImpl();
-      Resource resource = resourceSet.createResource(URI.createURI(uri.toASCIIString()));
-      resource.getContents().add(model);
-
-      Map<String, Boolean> options = new HashMap<String, Boolean>();
-      //		options.put(XtextResource.OPTION_FORMAT, Boolean.TRUE);
-      SaveOptions saveOptions = SaveOptions.getOptions(options);
-      resource.save(saveOptions.toOptionsMap());
    }
 
    public static void saveModel(OseeDsl model, String uri, OutputStream outputStream, boolean isZipped) throws IOException {
@@ -154,8 +81,7 @@ public final class ModelUtil {
       resource.save(outputStream, saveOptions.toOptionsMap());
    }
 
-   private static void storeModel(OutputStream outputStream, EObject object, String uri, Map<String, Boolean> options) throws OseeCoreException {
-      Resource resource = new XMLResourceImpl();
+   private static void storeModel(Resource resource, OutputStream outputStream, EObject object, String uri, Map<String, Boolean> options) throws OseeCoreException {
       try {
          resource.setURI(URI.createURI(uri));
          resource.getContents().add(object);
@@ -165,9 +91,22 @@ public final class ModelUtil {
       }
    }
 
-   public static String modelToString(EObject object, String uri, Map<String, Boolean> options) throws OseeCoreException {
+   public static String modelToStringXML(EObject object, String uri, Map<String, Boolean> options) throws OseeCoreException {
+      return modelToString(new XMLResourceImpl(), object, uri, options);
+   }
+
+   public static String modelToStringXText(EObject object, String uri, Map<String, Boolean> options) throws OseeCoreException {
+      OseeDslStandaloneSetup setup = new OseeDslStandaloneSetup();
+      Injector injector = setup.createInjectorAndDoEMFRegistration();
+      Resource resource = injector.getInstance(XtextResource.class);
+      Map<String, Boolean> options2 = new HashMap<String, Boolean>();
+      options2.put(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
+      return modelToString(resource, object, uri, options2);
+   }
+
+   private static String modelToString(Resource resource, EObject object, String uri, Map<String, Boolean> options) throws OseeCoreException {
       ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      storeModel(outputStream, object, uri, options);
+      storeModel(resource, outputStream, object, uri, options);
       try {
          return outputStream.toString("UTF-8");
       } catch (UnsupportedEncodingException ex) {

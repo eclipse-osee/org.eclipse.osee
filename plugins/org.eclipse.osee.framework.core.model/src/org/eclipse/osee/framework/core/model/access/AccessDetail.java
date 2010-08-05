@@ -48,12 +48,25 @@ public class AccessDetail<T> {
 
    @Override
    public int hashCode() {
-      return accessObject.hashCode();
+      int hashCode = 11;
+      return hashCode * 37 + (accessObject != null ? accessObject.hashCode() : 0);
    }
 
    @Override
    public boolean equals(Object obj) {
-      return accessObject.equals(obj);
+      if (obj instanceof AccessDetail<?>) {
+         AccessDetail<?> other = (AccessDetail<?>) obj;
+         Object object1 = getAccessObject();
+         Object object2 = other.getAccessObject();
+         boolean result = false;
+         if (object1 == null && object2 == null) {
+            result = true;
+         } else if (object1 != null && object2 != null) {
+            result = getAccessObject().equals(other.getAccessObject());
+         }
+         return result;
+      }
+      return false;
    }
 
    @Override

@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.core.dsl.integration.test;
 
 import org.eclipse.osee.framework.core.dsl.integration.test.internal.InternalTestSuite;
+import org.eclipse.osee.framework.core.dsl.integration.test.util.DslUtilTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -20,8 +21,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ //
 InternalTestSuite.class, //
-   ModelUtilTest.class, //
-   OseeUtilTest.class, //
+   DslUtilTestSuite.class, //
 })
 public class AllDslIntegrationTestSuite {
    // Test Suite

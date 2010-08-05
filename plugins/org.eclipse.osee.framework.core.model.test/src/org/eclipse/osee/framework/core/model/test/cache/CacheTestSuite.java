@@ -26,5 +26,5 @@ ArtifactTypeCacheTest.class, //
  * @author Roberto E. Escobar
  */
 public class CacheTestSuite {
-
+   // Test Suite
 }

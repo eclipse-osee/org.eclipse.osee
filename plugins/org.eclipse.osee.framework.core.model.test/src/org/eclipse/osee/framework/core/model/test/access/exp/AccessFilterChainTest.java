@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.model.test.access;
+package org.eclipse.osee.framework.core.model.test.access.exp;
 
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.data.IAttributeType;

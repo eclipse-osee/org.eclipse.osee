@@ -20,10 +20,10 @@ import org.eclipse.emf.compare.diff.metamodel.ComparisonResourceSnapshot;
 import org.eclipse.emf.compare.diff.metamodel.DiffFactory;
 import org.eclipse.osee.framework.core.dsl.integration.CreateOseeTypeChangesReportOperation;
 import org.eclipse.osee.framework.core.dsl.integration.EMFCompareOperation;
-import org.eclipse.osee.framework.core.dsl.integration.ModelUtil;
 import org.eclipse.osee.framework.core.dsl.integration.OseeToXtextOperation;
 import org.eclipse.osee.framework.core.dsl.integration.OseeTypeCache;
 import org.eclipse.osee.framework.core.dsl.integration.XTextToOseeTypeOperation;
+import org.eclipse.osee.framework.core.dsl.integration.util.ModelUtil;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -127,7 +127,7 @@ public class OseeModelingServiceImpl implements IOseeModelingService {
       if (request.isCreateCompareReport()) {
          response.setComparisonSnapshotModelName("osee_compare.diff");
          String modelString =
-            ModelUtil.modelToString(comparisonSnapshot, "osee:/osee_compare.diff",
+            ModelUtil.modelToStringXML(comparisonSnapshot, "osee:/osee_compare.diff",
                Collections.<String, Boolean> emptyMap());
          response.setComparisonSnapshotModel(modelString);
       }

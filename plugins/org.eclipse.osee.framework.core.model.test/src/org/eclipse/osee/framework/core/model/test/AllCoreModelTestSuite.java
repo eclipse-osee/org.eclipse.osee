@@ -10,21 +10,23 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.test;
 
+import org.eclipse.osee.framework.core.model.test.access.AccessTestSuite;
 import org.eclipse.osee.framework.core.model.test.cache.CacheTestSuite;
 import org.eclipse.osee.framework.core.model.test.fields.FieldTestSuite;
-import org.eclipse.osee.framework.core.model.test.type.ModelTestSuite;
+import org.eclipse.osee.framework.core.model.test.type.TypeTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({//
-CacheTestSuite.class, //
+AccessTestSuite.class, //
+   CacheTestSuite.class, //
    FieldTestSuite.class, //
-   ModelTestSuite.class, //
+   TypeTestSuite.class, //
 })
 /**
  * @author Roberto E. Escobar
  */
 public class AllCoreModelTestSuite {
-
+   // Test Suite
 }

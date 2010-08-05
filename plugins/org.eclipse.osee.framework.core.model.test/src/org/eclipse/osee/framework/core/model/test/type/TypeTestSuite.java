@@ -25,6 +25,6 @@ ArtifactTypeTest.class, //
 /**
  * @author Roberto E. Escobar
  */
-public class ModelTestSuite {
-
+public class TypeTestSuite {
+   // Test Suite
 }

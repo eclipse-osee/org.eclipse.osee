@@ -8,18 +8,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.dsl.integration.test;
+package org.eclipse.osee.framework.core.dsl.integration.test.util;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import org.eclipse.osee.framework.core.dsl.integration.ModelUtil;
+import org.eclipse.osee.framework.core.dsl.integration.test.mocks.DslAsserts;
+import org.eclipse.osee.framework.core.dsl.integration.util.ModelUtil;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -57,24 +57,20 @@ public class ModelUtilTest {
       String value = outputStream.toString("UTF-8");
 
       OseeDsl model2 = ModelUtil.loadModel("osee:/text2.osee", value);
-
-      Assert.assertEquals(model1.getArtifactTypes().size(), model2.getArtifactTypes().size());
-      Assert.assertEquals(model1.getAttributeTypes().size(), model2.getAttributeTypes().size());
-      Assert.assertEquals(model1.getRelationTypes().size(), model2.getRelationTypes().size());
-      Assert.assertEquals(model1.getImports().size(), model2.getImports().size());
-      Assert.assertEquals(model1.getEnumOverrides().size(), model2.getEnumOverrides().size());
-      Assert.assertEquals(model1.getEnumTypes().size(), model2.getEnumTypes().size());
+      DslAsserts.assertEquals(model1, model2);
    }
 
-   @Ignore
    @Test
    public void testModelUtilLoadAccess() throws OseeCoreException, IOException {
       String rawXTextData = getRawXTextData(ACCESS_TEST_INPUT);
 
       OseeDsl model1 = ModelUtil.loadModel("osee:/text.osee", rawXTextData);
-      Assert.assertEquals(5, model1.getArtifactTypes().size());
-      Assert.assertEquals(3, model1.getAttributeTypes().size());
-      Assert.assertEquals(1, model1.getRelationTypes().size());
+      Assert.assertEquals(2, model1.getArtifactTypes().size());
+      Assert.assertEquals(1, model1.getAttributeTypes().size());
+      Assert.assertEquals(0, model1.getRelationTypes().size());
+
+      Assert.assertEquals(3, model1.getArtifactRefs().size());
+      Assert.assertEquals(2, model1.getAccessDeclarations().size());
 
       ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       ModelUtil.saveModel(model1, "osee:/text.osee", outputStream, false);
@@ -82,13 +78,11 @@ public class ModelUtilTest {
       String value = outputStream.toString("UTF-8");
 
       OseeDsl model2 = ModelUtil.loadModel("osee:/text2.osee", value);
+      DslAsserts.assertEquals(model1, model2);
 
-      Assert.assertEquals(model1.getArtifactTypes().size(), model2.getArtifactTypes().size());
-      Assert.assertEquals(model1.getAttributeTypes().size(), model2.getAttributeTypes().size());
-      Assert.assertEquals(model1.getRelationTypes().size(), model2.getRelationTypes().size());
-      Assert.assertEquals(model1.getImports().size(), model2.getImports().size());
-      Assert.assertEquals(model1.getEnumOverrides().size(), model2.getEnumOverrides().size());
-      Assert.assertEquals(model1.getEnumTypes().size(), model2.getEnumTypes().size());
+      //      String modelRep =
+      //         ModelUtil.modelToStringXText(model1, "osee:/text.osee", Collections.<String, Boolean> emptyMap());
+      //      OseeDsl model3 = ModelUtil.loadModel("osee:/text3.osee", modelRep);
+      //      DslAsserts.assertEquals(model1, model3);
    }
-
 }

@@ -27,7 +27,9 @@ public final class PermissionStatus {
    public PermissionStatus(boolean matched, String reason) {
       this.reason = new StringBuilder();
       this.matchedPermission = matched;
-      append(reason);
+      if (reason != null) {
+         append(reason);
+      }
    }
 
    public boolean matched() {
@@ -36,6 +38,11 @@ public final class PermissionStatus {
 
    public String getReason() {
       return reason.toString();
+   }
+
+   @Override
+   public String toString() {
+      return "PermissionStatus [reason=" + reason + ", matchedPermission=" + matchedPermission + "]";
    }
 
    void append(String reason) {
