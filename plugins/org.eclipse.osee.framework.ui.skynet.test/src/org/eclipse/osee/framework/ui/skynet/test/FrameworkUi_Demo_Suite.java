@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.test;
 
 import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.ui.skynet.test.artifact.ArtifactPromptChangeTest;
 import org.eclipse.osee.framework.ui.skynet.test.cases.ArtifactPasteConfigurationTest;
 import org.eclipse.osee.framework.ui.skynet.test.cases.ArtifactPasteOperationTest;
 import org.eclipse.osee.framework.ui.skynet.test.cases.AttributeTypeEditPresenterTest;
@@ -31,7 +32,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({ResultsEditorConverterTest.class, ArtifactPasteConfigurationTest.class,
    ArtifactPasteOperationTest.class, RelationOrderRendererTest.class, InterArtifactDropTest.class, WordEditTest.class,
    WordTrackedChangesTest.class, PreviewAndMultiPreviewTest.class, ViewWordChangeAndDiffTest.class,
-   WordArtifactElementExtractorTest.class, AttributeTypeEditPresenterTest.class})
+   WordArtifactElementExtractorTest.class, AttributeTypeEditPresenterTest.class, ArtifactPromptChangeTest.class})
 /**
  * @author Donald G. Dunne
  */

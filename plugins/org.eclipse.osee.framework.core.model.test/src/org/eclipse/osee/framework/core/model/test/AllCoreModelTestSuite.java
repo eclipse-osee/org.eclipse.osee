@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.core.model.test;
 import org.eclipse.osee.framework.core.model.test.access.AccessTestSuite;
 import org.eclipse.osee.framework.core.model.test.cache.CacheTestSuite;
 import org.eclipse.osee.framework.core.model.test.fields.FieldTestSuite;
-import org.eclipse.osee.framework.core.model.test.type.TypeTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -22,7 +21,7 @@ import org.junit.runners.Suite;
 AccessTestSuite.class, //
    CacheTestSuite.class, //
    FieldTestSuite.class, //
-   TypeTestSuite.class, //
+   AccessTestSuite.class,//
 })
 /**
  * @author Roberto E. Escobar

@@ -49,13 +49,14 @@ public final class ArtifactPromptChange {
       try {
          AccessPolicyHandler accessPolicyHandler =
             new AccessPolicyHandler(userArtifact, accessControlService, artifacts);
-         toReturn =
+         boolean hasPermission =
             accessPolicyHandler.hasAttributeTypePermission(AttributeTypeManager.getType(attributeType),
                PermissionEnum.WRITE, true).matched();
 
-         if (toReturn) {
+         if (hasPermission) {
             IHandlePromptChange promptChange = promptFactory.createPrompt();
             toReturn = handlePromptChange(promptChange);
+
          }
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);

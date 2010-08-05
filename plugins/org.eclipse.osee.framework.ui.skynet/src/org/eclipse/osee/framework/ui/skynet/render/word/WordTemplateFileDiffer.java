@@ -11,9 +11,8 @@
 
 package org.eclipse.osee.framework.ui.skynet.render.word;
 
-import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.EXCLUDE_DELETED;
-import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.INCLUDE_DELETED;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
@@ -27,6 +26,7 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
+import org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
@@ -46,7 +46,7 @@ public class WordTemplateFileDiffer {
       this.nextParagraphNumber = nextParagraphNumber;
       this.outlineType = outlineType;
 
-      List<Artifact> newArtifacts = variableMap.getArtifacts("artifacts");
+      List<Artifact> endArtifacts = variableMap.getArtifacts("artifacts");
       variableMap.setValue("fileName", fileName);
       variableMap.setValue("diffReportFolderName", ".preview" + fileName);
       variableMap.setValue("inPublishMode", true);
@@ -66,22 +66,22 @@ public class WordTemplateFileDiffer {
             "Must Select a " + endBranch == null ? "Branch" : "Date" + " to diff against when publishing as Diff");
       }
       TransactionRecord startTransaction;
+      boolean isDiffFromBaseline = false;//variableMap.getBoolean("Diff from Baseline");
 
-      boolean isDiffFromBaseline = variableMap.getBoolean("Diff from Baseline");
-      if (variableMap.getBoolean("Diff from Baseline")) {
+      if (isDiffFromBaseline) {
          startTransaction = endBranch.getBaseTransaction();
          startBranch = endBranch;
       } else {
          startTransaction = TransactionManager.getHeadTransaction(startBranch);
-         startBranch = variableMap.getBranch("compareBranch");
       }
 
-      TransactionDelta txDelta =
-         new TransactionDelta(startTransaction, TransactionManager.getHeadTransaction(endBranch));
+      TransactionRecord endTransaction = TransactionManager.getHeadTransaction(endBranch);
+      TransactionDelta txDelta = new TransactionDelta(startTransaction, endTransaction);
 
-      for (Artifact artifact : newArtifacts) {
+      for (Artifact artifact : endArtifacts) {
          try {
-            diff(isDiffFromBaseline, txDelta, startBranch, artifact, variableMap);
+            diff(isDiffFromBaseline, txDelta, startBranch,
+               ArtifactCache.getActive(artifact.getArtId(), artifact.getBranch()), variableMap);
          } catch (Exception ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
@@ -89,16 +89,8 @@ public class WordTemplateFileDiffer {
    }
 
    private void diff(boolean isDiffFromBaseline, TransactionDelta txDelta, Branch startBranch, Artifact artifact, VariableMap variableMap) throws OseeCoreException {
-      List<Artifact> endArtifacts = new ArrayList<Artifact>();
-      endArtifacts.add(artifact);
-
-      int transactionId;
-      if (isDiffFromBaseline) {
-         transactionId = txDelta.getStartTx().getId();
-      } else {
-         transactionId = txDelta.getEndTx().getId();
-      }
-      List<Artifact> startArtifacts = getStartArtifacts(endArtifacts, transactionId, startBranch.getId());
+      List<Artifact> endArtifacts = Arrays.asList(artifact);
+      List<Artifact> startArtifacts = getStartArtifacts(endArtifacts, startBranch);
 
       Collection<ArtifactDelta> compareItems = new ArrayList<ArtifactDelta>();
       for (int index = 0; index < startArtifacts.size() && index < endArtifacts.size(); index++) {
@@ -125,32 +117,21 @@ public class WordTemplateFileDiffer {
       }
    }
 
-   private List<Artifact> getStartArtifacts(List<Artifact> artifacts, int transactionId, int branchId) throws OseeCoreException {
-      List<Artifact> historicArtifacts = new ArrayList<Artifact>(artifacts.size());
+   private List<Artifact> getStartArtifacts(List<Artifact> artifacts, Branch startBranch) throws OseeCoreException {
+      List<Artifact> startArtifacts = new ArrayList<Artifact>(artifacts.size());
       @SuppressWarnings("unused")
       Collection<Artifact> bulkLoadedArtifacts =
-         ArtifactQuery.getHistoricalArtifactListFromIds(Artifacts.toGuids(artifacts),
-            TransactionManager.getTransactionId(transactionId), INCLUDE_DELETED);
+         ArtifactQuery.getArtifactListFromIds(Artifacts.toGuids(artifacts), startBranch, DeletionFlag.INCLUDE_DELETED);
+      //         ArtifactQuery.getHistoricalArtifactListFromIds(Artifacts.toGuids(artifacts), startTransaction,
+      //            DeletionFlag.INCLUDE_DELETED);
 
       for (Artifact artifact : artifacts) {
-         historicArtifacts.add(ArtifactCache.getActive(artifact.getArtId(), branchId));
+         startArtifacts.add(ArtifactCache.getActive(artifact.getArtId(), startBranch));
       }
-      return historicArtifacts;
+      return startArtifacts;
    }
 
    private boolean isDeleted(Artifact artifact) {
       return artifact != null && artifact.isDeleted();
-   }
-
-   public void populateVariableMap(VariableMap variableMap) throws OseeCoreException {
-      if (variableMap == null) {
-         throw new IllegalArgumentException("variableMap must not be null");
-      }
-
-      String name = variableMap.getString("Name");
-      Branch branch = variableMap.getBranch("Branch");
-
-      List<Artifact> artifacts = ArtifactQuery.getArtifactListFromName(name, branch, EXCLUDE_DELETED);
-      variableMap.setValue("srsProducer.objects", artifacts);
    }
 }

@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -42,6 +43,22 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       populateTemplateList();
       Boolean updateParagraphNumber = variableMap.getBoolean("Update Paragraph Numbers");
+
+      boolean useArtifactNameInLinks = variableMap.getBoolean("Use Artifact Names");
+      boolean useParagraphNumbersInLinks = variableMap.getBoolean("Use Paragraph Numbers");
+
+      if (!useParagraphNumbersInLinks && !useArtifactNameInLinks) {
+         throw new OseeArgumentException("Please select at least one Document Link Format");
+      }
+      LinkType linkType;
+      if (useArtifactNameInLinks && useParagraphNumbersInLinks) {
+         linkType = LinkType.INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER_AND_NAME;
+      } else if (useParagraphNumbersInLinks) {
+         linkType = LinkType.INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER;
+      } else {
+         linkType = LinkType.INTERNAL_DOC_REFERENCE_USE_NAME;
+      }
+
       Artifact master = getTemplate(variableMap.getString("Master Template"));
       Artifact slave = getTemplate(variableMap.getString("Slave Template"));
       Branch branch = variableMap.getBranch("Branch (If Template specifies Artifacts)");
@@ -58,7 +75,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       newVariableMap.setValue("Update Paragraph Numbers", updateParagraphNumber);
       newVariableMap.setValue("Publish As Diff", variableMap.getValue("Publish As Diff"));
       //      newVariableMap.setValue("Diff from Baseline", variableMap.getValue("Diff from Baseline"));
-      newVariableMap.setValue("linkType", LinkType.INTERNAL_DOC_REFERENCE_USE_NAME);
+      newVariableMap.setValue("linkType", linkType);
 
       WordTemplateRenderer renderer = new WordTemplateRenderer();
       SkynetTransaction transaction = new SkynetTransaction(branch, "BLAM: Publish with specified template");
@@ -81,6 +98,10 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       StringBuilder builder = new StringBuilder();
       builder.append("<xWidgets><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Update Paragraph Numbers\" />");
 
+      builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Document Link Format:\"/>");
+      builder.append("<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Use Artifact Names\" />");
+      builder.append("<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Use Paragraph Numbers\" />");
+
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\" \" /><XWidget xwidgetType=\"XCombo(");
       for (Artifact art : templates) {
          builder.append(art.getSafeName());
@@ -95,6 +116,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
 
       builder.append(")\" displayName=\"Slave Template\" horizontalLabel=\"true\"/><XWidget xwidgetType=\"XLabel\" displayName=\" \" />");
       builder.append("<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Branch (If Template specifies Artifacts)\" defaultValue=\"" + BranchManager.getLastBranch().getGuid() + "\" /><XWidget xwidgetType=\"XListDropViewer\" displayName=\"Artifacts (If Not Specified in Template)\" />");
+      builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Generate Differences:\"/>");
       builder.append("<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Publish As Diff\" />");
       //      builder.append("<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Diff from Baseline\" />");
       builder.append("<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Compare Against Another Branch\"/>");

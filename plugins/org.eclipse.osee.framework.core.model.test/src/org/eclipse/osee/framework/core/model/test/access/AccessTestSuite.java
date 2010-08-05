@@ -15,14 +15,14 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({//
-AccessDataTest.class, //
-   AccessDataQueryTest.class, //
-   AccessDetailTest.class, //
+
+AccessDataQueryTest.class, //
+   AccessDataTest.class, //
    PermissionStatusTest.class, //
 })
 /**
  * @author Roberto E. Escobar
  */
 public class AccessTestSuite {
-   // Test Suite
+
 }
