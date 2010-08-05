@@ -58,7 +58,7 @@ public final class AccessData {
       }
    }
 
-   Collection<AccessDetail<?>> getAccess(Object key) throws OseeCoreException {
+   public Collection<AccessDetail<?>> getAccess(Object key) throws OseeCoreException {
       Conditions.checkNotNull(key, "access key");
       return accessMap.getValues(key);
    }
