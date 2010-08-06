@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.core.model.test.mocks;
 
-import static org.junit.Assert.assertEquals;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,6 +25,7 @@ import org.eclipse.osee.framework.core.model.AbstractOseeType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.core.model.OseeEnumEntry;
+import org.eclipse.osee.framework.core.model.access.AccessDetail;
 import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.IOseeTypeFactory;
@@ -187,26 +187,19 @@ public class ModelAsserts {
    }
 
    public static void checkEnumType(String expectedName, String[] expectedEntries, Integer[] expectedOrdinals, OseeEnumType actualEnumType) throws OseeCoreException {
-      assertEquals(expectedName, actualEnumType.getName());
+      Assert.assertEquals(expectedName, actualEnumType.getName());
       OseeEnumEntry[] enumEntries = actualEnumType.values();
-      assertEquals(expectedEntries.length, enumEntries.length);
+      Assert.assertEquals(expectedEntries.length, enumEntries.length);
       for (int index = 0; index < expectedEntries.length && index < expectedOrdinals.length; index++) {
          checkEnumEntry(expectedEntries[index], expectedOrdinals[index], actualEnumType, enumEntries[index]);
       }
    }
 
    public static void checkEnumEntry(String expectedName, int expectedOrdinal, OseeEnumType parent, OseeEnumEntry entry) {
-      assertEquals(expectedName, entry.getName());
-      assertEquals(expectedOrdinal, entry.ordinal());
-      //      assertEquals(parent, entry.getDeclaringClass());
-      assertEquals(parent.getId(), entry.getId());
-      assertEquals(parent.getName(), entry.getName());
-      //      OseeEnumEntry[] expected = parent.values();
-      //      //      OseeEnumEntry[] actual = entry.getDeclaringClass().values();
-      //      assertEquals(expected.length, actual.length);
-      //      for (int index = 0; index < expected.length; index++) {
-      //         assertEquals(expected[index], actual[index]);
-      //      }
+      Assert.assertEquals(expectedName, entry.getName());
+      Assert.assertEquals(expectedOrdinal, entry.ordinal());
+      Assert.assertEquals(parent.getId(), entry.getId());
+      Assert.assertEquals(parent.getName(), entry.getName());
    }
 
    public static void checkEnumType(OseeEnumType expected, OseeEnumType actual) throws OseeCoreException {
@@ -222,7 +215,6 @@ public class ModelAsserts {
    public static void checkEnumEntry(OseeEnumEntry expected, OseeEnumEntry actual) {
       Assert.assertEquals(expected.getName(), actual.getName());
       Assert.assertEquals(expected.ordinal(), actual.ordinal());
-      //      Assert.assertEquals(expected.getDeclaringClass(), actual.getDeclaringClass());
       Assert.assertEquals(expected.getGuid(), actual.getGuid());
    }
 
@@ -329,5 +321,12 @@ public class ModelAsserts {
                String.format("ArtifactType [%s] was allowed even though it should not have been", artifactType), result);
          }
       }
+   }
+
+   public static void assertEquals(AccessDetail<?> expected, AccessDetail<?> actual) {
+      Assert.assertEquals(expected, actual);
+      Assert.assertEquals(expected.getPermission(), actual.getPermission());
+      Assert.assertEquals(expected.getAccessObject(), actual.getAccessObject());
+      Assert.assertEquals(expected.getReason(), actual.getReason());
    }
 }

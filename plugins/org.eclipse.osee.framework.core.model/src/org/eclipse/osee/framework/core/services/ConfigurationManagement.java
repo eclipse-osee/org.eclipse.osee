@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.services;
 
+import java.util.Collection;
 import org.eclipse.osee.framework.core.data.AccessContextId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
@@ -19,8 +20,8 @@ import org.eclipse.osee.framework.core.model.IBasicArtifact;
  */
 public interface ConfigurationManagement {
 
-   boolean isApplicable(IBasicArtifact<?> userArtifact, Object object);
+   boolean isApplicable(IBasicArtifact<?> user, Object object);
 
-   AccessContextId getContextId(IBasicArtifact<?> userArtifact, Object itemToCheck) throws OseeCoreException;
+   Collection<AccessContextId> getContextId(IBasicArtifact<?> user, Object object) throws OseeCoreException;
 
 }

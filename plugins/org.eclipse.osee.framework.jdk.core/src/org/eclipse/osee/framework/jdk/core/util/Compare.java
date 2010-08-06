@@ -18,9 +18,10 @@ import java.util.Set;
 /**
  * @author Roberto E. Escobar
  */
-public class Compare {
+public final class Compare {
 
    private Compare() {
+      // Utility Class
    }
 
    @SuppressWarnings("unchecked")

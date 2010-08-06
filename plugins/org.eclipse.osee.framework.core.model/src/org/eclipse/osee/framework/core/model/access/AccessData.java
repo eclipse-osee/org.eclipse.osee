@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.core.model.access;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -29,7 +28,13 @@ public final class AccessData {
    private final CompositeKeyHashMap<Object, Object, AccessDetail<?>> accessMap =
       new CompositeKeyHashMap<Object, Object, AccessDetail<?>>();
 
+   public AccessData() {
+      super();
+   }
+
    public void addAll(Object key, Collection<AccessDetail<?>> datas) throws OseeCoreException {
+      Conditions.checkNotNull(key, "access key");
+      Conditions.checkNotNull(datas, "accessDetails");
       for (AccessDetail<?> data : datas) {
          add(key, data);
       }
@@ -66,11 +71,20 @@ public final class AccessData {
    @Override
    public String toString() {
       StringBuilder builder = new StringBuilder();
-      for (Entry<Pair<Object, Object>, AccessDetail<?>> entry : accessMap.entrySet()) {
-         builder.append(entry.getKey().getFirst());
-         builder.append(entry.getValue());
-         builder.append(",\n");
+      builder.append("accessData [");
+      if (!accessMap.isEmpty()) {
+         builder.append("\n");
+         for (Object key : keySet()) {
+            for (AccessDetail<?> detail : accessMap.getValues(key)) {
+               builder.append("\t");
+               builder.append(key);
+               builder.append(" - ");
+               builder.append(detail);
+               builder.append(",\n");
+            }
+         }
       }
+      builder.append("]");
       return builder.toString();
    }
 }

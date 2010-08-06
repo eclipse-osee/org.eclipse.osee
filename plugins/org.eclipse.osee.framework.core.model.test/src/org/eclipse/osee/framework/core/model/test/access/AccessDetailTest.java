@@ -94,7 +94,7 @@ public class AccessDetailTest {
    @Test
    public void testToString() {
       String expected =
-         "Access [ accessObject=[" + expAccessObject + "] permission=[" + expPermission + "] reason=[" + expReason + "]]";
+         "accessDetail [ object=[" + expAccessObject + "] permission=[" + expPermission + "] reason=[" + expReason + "]]";
       Assert.assertEquals(expected, target.toString());
    }
 

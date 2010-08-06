@@ -63,4 +63,9 @@ public class RelationTypeSide implements IRelationEnumeration {
    public String getName() {
       return type.getName();
    }
+
+   @Override
+   public String toString() {
+      return "RelationTypeSide [type=" + type + ", side=" + side + "]";
+   }
 }

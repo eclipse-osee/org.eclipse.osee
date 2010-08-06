@@ -71,7 +71,7 @@ public class AccessDetail<T> {
 
    @Override
    public String toString() {
-      return String.format("Access [ accessObject=[%s] permission=[%s] reason=[%s]]", getAccessObject(),
+      return String.format("accessDetail [ object=[%s] permission=[%s] reason=[%s]]", getAccessObject(),
          getPermission(), getReason());
    }
 }

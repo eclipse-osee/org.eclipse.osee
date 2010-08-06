@@ -44,13 +44,15 @@ public class CMAccessProvider implements IAccessProvider {
       for (Object objectToCheck : objToChecks) {
          ConfigurationManagement management = provider.getCmService(userArtifact, objectToCheck);
          if (management instanceof HasAccessModel) {
-            AccessContextId contextId = management.getContextId(userArtifact, objectToCheck);
-            Collection<Object> entries = cmToCheckObjects.get(management, contextId);
-            if (entries == null) {
-               entries = new HashSet<Object>();
-               cmToCheckObjects.put(management, contextId, entries);
+            Collection<AccessContextId> contextIds = management.getContextId(userArtifact, objectToCheck);
+            for (AccessContextId contextId : contextIds) {
+               Collection<Object> entries = cmToCheckObjects.get(management, contextId);
+               if (entries == null) {
+                  entries = new HashSet<Object>();
+                  cmToCheckObjects.put(management, contextId, entries);
+               }
+               entries.add(objectToCheck);
             }
-            entries.add(objectToCheck);
          }
       }
 

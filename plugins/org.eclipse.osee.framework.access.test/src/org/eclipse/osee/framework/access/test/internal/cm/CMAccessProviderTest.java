@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.access.test.internal.cm;
 
-import org.eclipse.osee.framework.access.IAccessProvider;
+import java.util.Collection;
 import org.eclipse.osee.framework.access.internal.cm.CMAccessProvider;
-import org.eclipse.osee.framework.core.services.ConfigurationManagementProvider;
-import org.junit.Assert;
+import org.eclipse.osee.framework.core.data.AccessContextId;
+import org.eclipse.osee.framework.core.model.IBasicArtifact;
+import org.eclipse.osee.framework.core.model.access.AccessData;
+import org.eclipse.osee.framework.core.model.access.AccessModel;
 import org.junit.Test;
 
 /**
@@ -25,9 +27,27 @@ public class CMAccessProviderTest {
 
    @Test
    public void testCMAccessProvider() {
-      Assert.assertFalse(true);
-      ConfigurationManagementProvider provider = null;
-      IAccessProvider accessProvider = new CMAccessProvider(provider);
-      //      accessProvider.computeAccess(userArtifact, objToCheck, accessData);
+      IBasicArtifact<?> expectedUser = null;
+      Object expectedObject = null;
+      //
+      //      AccessData expectedAccessData = new AccessData();
+      //
+      //      AccessModel accessModel = new MockAccessModel();
+      //      ConfigurationManagement cm =
+      //         new MockCMWithAccessModel(accessModel, expectedUser, expectedObject, true,
+      //            Collections.singleton((AccessContextId) CoreAccessContextIds.DEFAULT_SYSTEM_CONTEXT_ID));
+      //      ConfigurationManagementProvider provider =
+      //         new MockConfigurationManagementProvider(expectedUser, expectedObject, cm);
+      //
+      //      IAccessProvider accessProvider = new CMAccessProvider(provider);
+      //      accessProvider.computeAccess(expectedUser, expectedObject, expectedAccessData);
    }
+
+   private final static class MockAccessModel implements AccessModel {
+
+      @Override
+      public void computeAccess(AccessContextId contextId, Collection<Object> objectsToCheck, AccessData accessData) {
+      }
+   }
+
 }

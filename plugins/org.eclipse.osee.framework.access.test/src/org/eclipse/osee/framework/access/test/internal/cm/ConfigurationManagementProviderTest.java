@@ -10,13 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.access.test.internal.cm;
 
+import java.util.Collection;
+import java.util.HashSet;
 import org.eclipse.osee.framework.access.internal.cm.ConfigurationManagementProviderImpl;
-import org.eclipse.osee.framework.core.data.AccessContextId;
+import org.eclipse.osee.framework.access.test.mocks.MockConfigurationManagement;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
+import org.eclipse.osee.framework.core.model.test.mocks.MockDataFactory;
 import org.eclipse.osee.framework.core.services.ConfigurationManagement;
 import org.eclipse.osee.framework.core.services.ConfigurationManagementProvider;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -26,23 +31,51 @@ import org.junit.Test;
  */
 public class ConfigurationManagementProviderTest {
 
-   @Test
-   public void testX() {
-      Assert.assertTrue(false);
-      //      ConfigurationManagementProvider provider = new ConfigurationManagementProviderImpl(ConfigurationManagement defaultCM, Collection<ConfigurationManagement> cmServices);
-      //      ConfigurationManagement getCmService(IBasicArtifact<?> user, Object object)
+   private IBasicArtifact<?> user;
+   private Object objectToCheck;
+
+   @Before
+   public void setup() {
+      user = MockDataFactory.createArtifact(4);
+      objectToCheck = new Object();
    }
 
-   private static final class MockConfigurationManagement implements ConfigurationManagement {
+   @Test
+   public void testNoCms() throws OseeCoreException {
+      assertCMProvider(user, objectToCheck, null);
+   }
 
-      @Override
-      public boolean isApplicable(IBasicArtifact<?> userArtifact, Object object) {
-         return true;
+   @Test
+   public void testCmButNotApplicable() throws OseeCoreException {
+      MockConfigurationManagement cm1 = new MockConfigurationManagement(user, objectToCheck, false, null);
+      assertCMProvider(user, objectToCheck, null, cm1);
+   }
+
+   @Test
+   public void testExtraCmApplicable() throws OseeCoreException {
+      MockConfigurationManagement cm1 = new MockConfigurationManagement(user, objectToCheck, false, null);
+      MockConfigurationManagement cm2 = new MockConfigurationManagement(user, objectToCheck, true, null);
+      assertCMProvider(user, objectToCheck, cm2, cm1, cm2);
+   }
+
+   @Test(expected = OseeStateException.class)
+   public void testMoreThanOneCMApplies() throws OseeCoreException {
+      MockConfigurationManagement cm1 = new MockConfigurationManagement(user, objectToCheck, true, null);
+      MockConfigurationManagement cm2 = new MockConfigurationManagement(user, objectToCheck, true, null);
+      assertCMProvider(user, objectToCheck, null, cm1, cm2);
+   }
+
+   private static void assertCMProvider(IBasicArtifact<?> user, Object objectToCheck, MockConfigurationManagement expectedCM, MockConfigurationManagement... extraCms) throws OseeCoreException {
+      Collection<ConfigurationManagement> cmServices = new HashSet<ConfigurationManagement>();
+      for (ConfigurationManagement extraCm : extraCms) {
+         cmServices.add(extraCm);
       }
-
-      @Override
-      public AccessContextId getContextId(IBasicArtifact<?> userArtifact, Object itemToCheck) throws OseeCoreException {
-         return null;
+      ConfigurationManagementProvider provider = new ConfigurationManagementProviderImpl(cmServices);
+      ConfigurationManagement actualCM = provider.getCmService(user, objectToCheck);
+      Assert.assertEquals(expectedCM, actualCM);
+      for (ConfigurationManagement cmService : cmServices) {
+         MockConfigurationManagement cm = (MockConfigurationManagement) cmService;
+         Assert.assertTrue(cm.wasIsApplicableCalled());
       }
    }
 }

@@ -10,12 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.access.internal.cm;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.services.ConfigurationManagement;
 import org.eclipse.osee.framework.core.services.ConfigurationManagementProvider;
-import org.eclipse.osee.framework.core.services.HasConfigurationManagement;
 
 /**
  * @author Roberto E. Escobar
@@ -23,33 +24,34 @@ import org.eclipse.osee.framework.core.services.HasConfigurationManagement;
 public class ConfigurationManagementProviderImpl implements ConfigurationManagementProvider {
 
    private final Collection<ConfigurationManagement> cmServices;
-   private final ConfigurationManagement defaultCM;
 
-   public ConfigurationManagementProviderImpl(ConfigurationManagement defaultCM, Collection<ConfigurationManagement> cmServices) {
+   public ConfigurationManagementProviderImpl(Collection<ConfigurationManagement> cmServices) {
       this.cmServices = cmServices;
-      this.defaultCM = defaultCM;
    }
 
    @Override
    public ConfigurationManagement getCmService(IBasicArtifact<?> userArtifact, Object object) throws OseeCoreException {
-      ConfigurationManagement cmToReturn = null;
-      if (object instanceof HasConfigurationManagement) {
-         HasConfigurationManagement cmContainer = (HasConfigurationManagement) object;
-         cmToReturn = cmContainer.getCM();
+      Collection<ConfigurationManagement> applicableCms = new ArrayList<ConfigurationManagement>();
+      //      if (object instanceof HasConfigurationManagement) {
+      //         HasConfigurationManagement cmContainer = (HasConfigurationManagement) object;
+      //         cmToReturn = cmContainer.getCM();
+      //      } else {
+      for (ConfigurationManagement cmService : cmServices) {
+         //         if (!cmService.equals(defaultCM)) {
+         if (cmService.isApplicable(userArtifact, object)) {
+            applicableCms.add(cmService);
+         }
+         //         }
+      }
+      ConfigurationManagement cmToReturn;
+      if (applicableCms.isEmpty()) {
+         cmToReturn = null;
+      } else if (applicableCms.size() == 1) {
+         cmToReturn = applicableCms.iterator().next();
       } else {
-         for (ConfigurationManagement cmService : cmServices) {
-            if (!cmService.equals(defaultCM)) {
-               if (cmService.isApplicable(userArtifact, object)) {
-                  cmToReturn = cmService;
-                  break;
-               }
-            }
-         }
-         if (cmToReturn == null) {
-            cmToReturn = defaultCM;
-         }
+         throw new OseeStateException(String.format("Multiple Configuration Management Systems managing: [%s] cms:%s",
+            object, applicableCms));
       }
       return cmToReturn;
    }
-
 }

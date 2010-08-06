@@ -17,7 +17,6 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({ //
 CMAccessProviderTest.class, //
    ConfigurationManagementProviderTest.class, //
-   DefaultConfigurationManagementTest.class, //
 })
 /**
  * @author Roberto E. Escobar
