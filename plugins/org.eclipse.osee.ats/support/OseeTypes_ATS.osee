@@ -13,7 +13,6 @@ abstract artifactType "ats.Ats Artifact" extends "Artifact" {
 artifactType "ats.Review" extends "ats.Ats Artifact" {
    guid "ABMa6P4TwzXA1b8K3RAA"
    attribute "ats.Actionable Item"
-   attribute "ats.Blocking Review"
    attribute "ats.Current State"
    attribute "ats.Estimated Completion Date"
    attribute "ats.Estimated Hours"
@@ -203,14 +202,6 @@ attributeType "ats.Team Uses Versions" extends BooleanAttribute {
 
 attributeType "ats.Require Targeted Version" extends BooleanAttribute {
    guid "AAMFEQUBDxMJ67lodTQA"
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   defaultValue "no"
-}
-
-attributeType "ats.Blocking Review" extends BooleanAttribute {
-   guid "AAMFEctKkjMRrIy1C7gA"
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
