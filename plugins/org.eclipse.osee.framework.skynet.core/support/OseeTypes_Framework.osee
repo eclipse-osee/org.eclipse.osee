@@ -233,7 +233,7 @@ artifactType "Group Artifact" extends "Artifact" {
    guid "ABM4FTvWVzDQsTsM6jQA"
 }
 
-artifactType "User Group" extends "Group Artifact" {
+artifactType "User Group" extends "Abstract Access Controlled", "Group Artifact" {
    guid "AAMFDhrEbXqZKPfWkwAA"
 }
 
@@ -436,6 +436,11 @@ abstract artifactType "MS Word" extends "Artifact" {
    attribute "Imported Paragraph Number"
 }
 
+abstract artifactType "Abstract Access Controlled" extends "Artifact" {
+   guid "AAFVUREVAxmEmLW2KkAA"
+   attribute "Access Context Id"
+}
+
 artifactType "MS Word Whole Document" extends "MS Word" {
    guid "ABM9Dt9SyGjwuvem7SQA"
    attribute "Whole Word Content"
@@ -469,6 +474,13 @@ attributeType "Imported Paragraph Number" extends StringAttribute {
    max 1
    description
    "This is the corresponding section number from the outline of document from which this artifact was imported"
+}
+
+attributeType "Access Context Id" extends StringAttribute {
+   guid "AAFAgR3B7AN_g0NPCLAA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max unlimited
 }
 
 artifactType "Requirement" extends "Artifact" {
