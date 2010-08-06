@@ -10,12 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.access.test.internal;
 
+import org.eclipse.osee.framework.access.test.internal.cm.CMAccessTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ //
-OnEditOperationTest.class, //
+CMAccessTestSuite.class, //
+   OnEditOperationTest.class, //
 })
 public class InternalAccessTestSuite {
    // Test Suite Class
