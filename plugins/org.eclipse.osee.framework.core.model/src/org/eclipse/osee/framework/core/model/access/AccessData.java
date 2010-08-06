@@ -32,6 +32,10 @@ public final class AccessData {
       super();
    }
 
+   public boolean isEmpty() {
+      return accessMap.isEmpty();
+   }
+
    public void addAll(Object key, Collection<AccessDetail<?>> datas) throws OseeCoreException {
       Conditions.checkNotNull(key, "access key");
       Conditions.checkNotNull(datas, "accessDetails");

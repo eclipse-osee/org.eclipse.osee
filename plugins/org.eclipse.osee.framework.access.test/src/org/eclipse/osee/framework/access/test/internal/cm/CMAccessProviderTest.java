@@ -10,12 +10,23 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.access.test.internal.cm;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import org.eclipse.osee.framework.access.IAccessProvider;
 import org.eclipse.osee.framework.access.internal.cm.CMAccessProvider;
+import org.eclipse.osee.framework.access.test.mocks.MockCMWithAccessModel;
+import org.eclipse.osee.framework.access.test.mocks.MockConfigurationManagementProvider;
 import org.eclipse.osee.framework.core.data.AccessContextId;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.access.AccessData;
 import org.eclipse.osee.framework.core.model.access.AccessModel;
+import org.eclipse.osee.framework.core.model.test.mocks.MockDataFactory;
+import org.eclipse.osee.framework.jdk.core.util.Compare;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -24,29 +35,64 @@ import org.junit.Test;
  * @author Roberto E. Escobar
  */
 public class CMAccessProviderTest {
+   private static IBasicArtifact<?> expectedUser;
+   private static Object expectedObject;
+   private static AccessContextId contextId1;
 
-   @Test
-   public void testCMAccessProvider() {
-      IBasicArtifact<?> expectedUser = null;
-      Object expectedObject = null;
-      //
-      //      AccessData expectedAccessData = new AccessData();
-      //
-      //      AccessModel accessModel = new MockAccessModel();
-      //      ConfigurationManagement cm =
-      //         new MockCMWithAccessModel(accessModel, expectedUser, expectedObject, true,
-      //            Collections.singleton((AccessContextId) CoreAccessContextIds.DEFAULT_SYSTEM_CONTEXT_ID));
-      //      ConfigurationManagementProvider provider =
-      //         new MockConfigurationManagementProvider(expectedUser, expectedObject, cm);
-      //
-      //      IAccessProvider accessProvider = new CMAccessProvider(provider);
-      //      accessProvider.computeAccess(expectedUser, expectedObject, expectedAccessData);
+   @BeforeClass
+   public static void setup() {
+      expectedUser = MockDataFactory.createArtifact(13);
+      expectedObject = new Object();
+      contextId1 = MockDataFactory.createAccessContextId(GUID.create(), "context1");
    }
 
-   private final static class MockAccessModel implements AccessModel {
+   @Test
+   public void testCmProviderReturnsNull() throws OseeCoreException {
+      Collection<Object> objects = new ArrayList<Object>();
+      objects.add(expectedObject);
+      MockConfigurationManagementProvider cmProvider =
+         new MockConfigurationManagementProvider(expectedUser, expectedObject, null);
+      IAccessProvider accessProvider = new CMAccessProvider(cmProvider);
+
+      AccessData accessData = new AccessData();
+      accessProvider.computeAccess(expectedUser, objects, accessData);
+      Assert.assertTrue(cmProvider.wasGetCMCalled());
+   }
+
+   @Test
+   public void testCmProvider() throws OseeCoreException {
+      MockAccessModel accessModel = new MockAccessModel();
+      MockCMWithAccessModel cm =
+         new MockCMWithAccessModel(accessModel, expectedUser, expectedObject, false, Collections.singleton(contextId1));
+      Collection<Object> objects = new ArrayList<Object>();
+      objects.add(expectedObject);
+      MockConfigurationManagementProvider cmProvider =
+         new MockConfigurationManagementProvider(expectedUser, expectedObject, cm);
+      IAccessProvider accessProvider = new CMAccessProvider(cmProvider);
+
+      AccessData accessData = new AccessData();
+      accessProvider.computeAccess(expectedUser, objects, accessData);
+      Assert.assertTrue(cmProvider.wasGetCMCalled());
+
+      Assert.assertTrue(accessModel.wasComputeAccessCalled);
+      Assert.assertEquals(contextId1, accessModel.contextId);
+      Assert.assertTrue(!Compare.isDifferent(objects, accessModel.objectsToCheck));
+      Assert.assertEquals(accessData, accessModel.accessData);
+   }
+
+   private final class MockAccessModel implements AccessModel {
+
+      protected boolean wasComputeAccessCalled;
+      protected AccessContextId contextId;
+      protected Collection<Object> objectsToCheck;
+      protected AccessData accessData;
 
       @Override
       public void computeAccess(AccessContextId contextId, Collection<Object> objectsToCheck, AccessData accessData) {
+         wasComputeAccessCalled = true;
+         this.contextId = contextId;
+         this.objectsToCheck = objectsToCheck;
+         this.accessData = accessData;
       }
    }
 

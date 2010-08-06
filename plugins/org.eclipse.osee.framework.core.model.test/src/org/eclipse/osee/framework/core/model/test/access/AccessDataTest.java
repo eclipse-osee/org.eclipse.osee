@@ -72,6 +72,14 @@ public class AccessDataTest {
       artifactToCheck = new DefaultBasicArtifact(12, GUID.create(), "Hello");
    }
 
+   @Test
+   public void testIsEmpty() throws OseeCoreException {
+      AccessData data = new AccessData();
+      Assert.assertTrue(data.isEmpty());
+      data.add(new Object(), createDetail(7, new Object()));
+      Assert.assertFalse(data.isEmpty());
+   }
+
    @Test(expected = OseeArgumentException.class)
    public void testAddNullCheck1() throws OseeCoreException {
       AccessData data = new AccessData();
