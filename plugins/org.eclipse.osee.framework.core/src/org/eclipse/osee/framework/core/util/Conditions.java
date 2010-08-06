@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 public final class Conditions {
 
    private Conditions() {
+      // Utility Class
    }
 
    public static void checkNotNull(Object object, String objectName) throws OseeCoreException {

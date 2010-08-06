@@ -8,21 +8,23 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.test;
+package org.eclipse.osee.framework.core.test.util;
 
-import org.eclipse.osee.framework.core.test.enums.EnumsTestSuite;
-import org.eclipse.osee.framework.core.test.util.UtilCoreTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({//
-EnumsTestSuite.class,//
-   UtilCoreTestSuite.class, //
+AbstractTrackingHandlerTest.class, //
+   MultiServiceBinderTest.class, //
+   SingletonServiceBinderTest.class, //
+   ServiceBinderFactoryTest.class, //
+   ServiceDependencyTrackerTest.class, //
 })
 /**
  * @author Roberto E. Escobar
  */
-public class FrameworkCoreTestSuite {
+public class UtilCoreTestSuite {
+   // Test Suite
 
 }

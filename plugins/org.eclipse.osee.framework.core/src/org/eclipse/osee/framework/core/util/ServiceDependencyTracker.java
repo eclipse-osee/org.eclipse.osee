@@ -14,9 +14,8 @@ import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map.Entry;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
@@ -24,26 +23,33 @@ import org.osgi.util.tracker.ServiceTracker;
  * @author Roberto E. Escobar
  */
 public final class ServiceDependencyTracker implements Closeable {
-   private static final Object NULL_SERVICE = new Object();
 
-   private final BundleContext context;
+   public static interface ServiceBinderFactory {
+      ServiceTracker createTracker(ServiceBindType bindType, Class<?> clazz);
+   }
+
    private final AbstractTrackingHandler handler;
-   private final Map<Class<?>, Object> services;
    private final List<ServiceTracker> trackers;
+   private final ServiceBinderFactory serviceBindFactory;
 
    public ServiceDependencyTracker(BundleContext context, AbstractTrackingHandler handler) {
-      this.services = new ConcurrentHashMap<Class<?>, Object>();
+      this(new ServiceBinderFactoryImpl(context, handler), context, handler);
+   }
+
+   public ServiceDependencyTracker(ServiceBinderFactory factory, BundleContext context, AbstractTrackingHandler handler) {
       this.trackers = new ArrayList<ServiceTracker>();
-      this.context = context;
       this.handler = handler;
+      this.serviceBindFactory = factory;
    }
 
    public void open() {
-      Class<?>[] dependencies = handler.getDependencies();
-      if (dependencies != null) {
-         for (Class<?> clazz : dependencies) {
-            services.put(clazz, NULL_SERVICE);
-            trackers.add(new InternalServiceTracker(this, getBundleContext(), clazz));
+      Map<Class<?>, ServiceBindType> configuration = handler.getConfiguredDependencies();
+      if (configuration != null) {
+         for (Entry<Class<?>, ServiceBindType> entry : configuration.entrySet()) {
+            Class<?> clazz = entry.getKey();
+            ServiceBindType bindType = entry.getValue();
+            ServiceTracker tracker = serviceBindFactory.createTracker(bindType, clazz);
+            trackers.add(tracker);
          }
          for (ServiceTracker tracker : trackers) {
             tracker.open(true);
@@ -56,63 +62,6 @@ public final class ServiceDependencyTracker implements Closeable {
       handler.onDeActivate();
       for (ServiceTracker tracker : trackers) {
          tracker.close();
-      }
-   }
-
-   private BundleContext getBundleContext() {
-      return context;
-   }
-
-   private void onAddingService(Class<?> classKey, Object service) {
-      Object previous = services.put(classKey, service);
-      if (isValidService(previous) && previous != service) {
-         throw new IllegalStateException(String.format("Attempting to overwrite existing service reference: [%s]",
-            previous.getClass().getName()));
-      }
-      if (areServicesReady()) {
-         handler.onActivate(getBundleContext(), services);
-      }
-   }
-
-   private boolean isValidService(Object service) {
-      return service != null && !NULL_SERVICE.equals(service);
-   }
-
-   private boolean areServicesReady() {
-      for (Object service : services.values()) {
-         if (!isValidService(service)) {
-            return false;
-         }
-      }
-      return true;
-   }
-
-   private void onRemovingService(Class<?> classKey) {
-      handler.onDeActivate();
-      services.remove(classKey);
-   }
-
-   private final static class InternalServiceTracker extends ServiceTracker {
-      private final ServiceDependencyTracker parentTracker;
-      private final Class<?> serviceClass;
-
-      public InternalServiceTracker(ServiceDependencyTracker parentTracker, BundleContext context, Class<?> serviceClass) {
-         super(context, serviceClass.getName(), null);
-         this.parentTracker = parentTracker;
-         this.serviceClass = serviceClass;
-      }
-
-      @Override
-      public Object addingService(ServiceReference reference) {
-         Object object = super.addingService(reference);
-         parentTracker.onAddingService(serviceClass, object);
-         return object;
-      }
-
-      @Override
-      public void removedService(ServiceReference reference, Object service) {
-         parentTracker.onRemovingService(serviceClass);
-         super.removedService(reference, service);
       }
    }
 
