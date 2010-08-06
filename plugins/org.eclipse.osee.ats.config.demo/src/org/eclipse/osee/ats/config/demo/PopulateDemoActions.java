@@ -25,7 +25,6 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.artifact.TeamWorkflowManager;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
-import org.eclipse.osee.ats.config.demo.artifact.DemoCodeTeamWorkflowArtifact;
 import org.eclipse.osee.ats.config.demo.config.DemoDatabaseConfig;
 import org.eclipse.osee.ats.config.demo.config.DemoDbActionData;
 import org.eclipse.osee.ats.config.demo.config.DemoDbActionData.CreateReview;
@@ -79,6 +78,7 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportOperationFactory;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.support.test.util.DemoArtifactTypes;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.TestUtil;
 
@@ -163,14 +163,14 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
          // Mark all CIS Code "Team Workflows" as Favorites for "Joe Smith"
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Add Favorites");
-         for (Artifact art : ArtifactQuery.getArtifactListFromTypeAndName(DemoCodeTeamWorkflowArtifact.ARTIFACT_NAME,
+         for (Artifact art : ArtifactQuery.getArtifactListFromTypeAndName(DemoArtifactTypes.DemoCodeTeamWorkflow,
             "%Diagram View%", AtsUtil.getAtsBranch())) {
             new FavoritesManager((StateMachineArtifact) art).toggleFavorite(false);
          }
 
          // Mark all Tools Team "Team Workflows" as Subscribed for "Joe Smith"
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Add Subscribed");
-         for (Artifact art : ArtifactQuery.getArtifactListFromTypeAndName(DemoCodeTeamWorkflowArtifact.ARTIFACT_NAME,
+         for (Artifact art : ArtifactQuery.getArtifactListFromTypeAndName(DemoArtifactTypes.DemoCodeTeamWorkflow,
             "%Even%", AtsUtil.getAtsBranch())) {
             new SubscribeManager((StateMachineArtifact) art).toggleSubscribe(false);
          }

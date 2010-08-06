@@ -16,6 +16,8 @@ import java.util.logging.Level;
 import org.eclipse.jface.viewers.DecorationOverlayIcon;
 import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -125,11 +127,11 @@ public class ArtifactItem extends DataItem implements IXViewerItem, IArtifactEve
                   }
                } else if (colName.equals("Disposition")) {
                   //Special case for the Disposition Artifact
-                  String name = artifact.getSoleAttributeValueAsString("Name", "");
+                  String name = artifact.getSoleAttributeValueAsString(CoreAttributeTypes.NAME, "");
                   if (name != "") {
                      try {
                         Artifact dispoArtifact =
-                           ArtifactQuery.getArtifactFromTypeAndAttribute("Test Run Disposition", "Name", name,
+                           ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.TestRunDisposition, name,
                               artifact.getBranch());
                         if (dispoArtifact != null) {
                            return dispoArtifact.getSoleAttributeValueAsString("Disposition", "");

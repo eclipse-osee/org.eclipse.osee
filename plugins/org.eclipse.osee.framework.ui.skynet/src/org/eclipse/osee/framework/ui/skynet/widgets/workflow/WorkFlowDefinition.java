@@ -34,9 +34,6 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
  * @author Donald G. Dunne
  */
 public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
-
-   public static String ARTIFACT_NAME = "Work Flow Definition";
-
    public static enum TransitionType {
       // Normal transition; will be provided as option in transition pulldown
       ToPage,

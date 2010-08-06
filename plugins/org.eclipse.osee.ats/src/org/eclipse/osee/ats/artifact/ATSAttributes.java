@@ -212,7 +212,7 @@ public class ATSAttributes {
    }
 
    public String getWorkItemId() {
-      return getAttributeType() != null ? getAttributeType().getName() : workItemId;
+      return workItemId;
    }
 
    public String getDescription() {

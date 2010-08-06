@@ -16,6 +16,7 @@ import java.net.URI;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -166,7 +167,7 @@ public class TestRunOperator {
       Artifact fetched = null;
       try {
          fetched =
-            getTestRunFetcher().searchForUniqueArtifactMatching(OteAttributeTypes.CHECKSUM.getName(), getChecksum(),
+            getTestRunFetcher().searchForUniqueArtifactMatching(OteAttributeTypes.CHECKSUM, getChecksum(),
                artifact.getBranch());
       } catch (Exception ex) {
       }
@@ -183,7 +184,8 @@ public class TestRunOperator {
 
    public void createTestScriptSoftLink() throws OseeCoreException {
       Artifact testScript =
-         getTestScriptFetcher().searchForUniqueArtifactMatching("Name", artifact.getName(), artifact.getBranch());
+         getTestScriptFetcher().searchForUniqueArtifactMatching(CoreAttributeTypes.NAME, artifact.getName(),
+            artifact.getBranch());
       if (testScript != null) {
          artifact.setSoleAttributeValue(OteAttributeTypes.TEST_SCRIPT_GUID.getName(), testScript.getGuid());
       }

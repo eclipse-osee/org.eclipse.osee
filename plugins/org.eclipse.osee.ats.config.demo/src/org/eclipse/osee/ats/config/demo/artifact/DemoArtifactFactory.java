@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
+import org.eclipse.osee.support.test.util.DemoArtifactTypes;
 
 /**
  * Provides the factory for the loading of the XYZ demo artifact types.
@@ -25,13 +26,13 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
  */
 public class DemoArtifactFactory extends ArtifactFactory {
    public DemoArtifactFactory() {
-      super(Arrays.asList(DemoCodeTeamWorkflowArtifact.ARTIFACT_NAME, DemoTestTeamWorkflowArtifact.ARTIFACT_NAME,
+      super(Arrays.asList(DemoArtifactTypes.DemoCodeTeamWorkflow.getName(), DemoTestTeamWorkflowArtifact.ARTIFACT_NAME,
          DemoReqTeamWorkflowArtifact.ARTIFACT_NAME));
    }
 
    @Override
    public Artifact getArtifactInstance(String guid, String humandReadableId, Branch branch, ArtifactType artifactType) throws OseeCoreException {
-      if (artifactType.getName().equals(DemoCodeTeamWorkflowArtifact.ARTIFACT_NAME)) {
+      if (artifactType.equals(DemoArtifactTypes.DemoCodeTeamWorkflow)) {
          return new DemoCodeTeamWorkflowArtifact(this, guid, humandReadableId, branch, artifactType);
       }
       if (artifactType.getName().equals(DemoTestTeamWorkflowArtifact.ARTIFACT_NAME)) {

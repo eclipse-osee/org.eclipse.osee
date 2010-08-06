@@ -45,10 +45,6 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
     * @param value to search; supports % wildcard
     * @throws OseeCoreException
     */
-   public AttributeCriteria(String attributeTypeName, String value) throws OseeCoreException {
-      this(attributeTypeName, value, false);
-   }
-
    public AttributeCriteria(IAttributeType attributeType, String value) throws OseeDataStoreException {
       this(attributeType, value, null, false, Operator.EQUAL);
    }

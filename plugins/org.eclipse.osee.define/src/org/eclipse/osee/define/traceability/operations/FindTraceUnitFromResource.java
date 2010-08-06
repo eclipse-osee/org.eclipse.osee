@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
@@ -99,8 +100,8 @@ public class FindTraceUnitFromResource {
             if (items != null) {
                for (String artifactName : items) {
                   try {
-                     artifacts.addAll(ArtifactQuery.getArtifactListFromTypeAndName(artifactTypeName, artifactName,
-                        branch));
+                     artifacts.addAll(ArtifactQuery.getArtifactListFromTypeAndName(
+                        ArtifactTypeManager.getType(artifactTypeName), artifactName, branch));
                   } catch (OseeCoreException ex) {
                      OseeLog.log(DefinePlugin.class, Level.SEVERE, ex);
                   }

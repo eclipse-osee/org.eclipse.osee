@@ -29,7 +29,6 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -265,11 +264,11 @@ public class TestRunXViewer extends XViewer {
                Artifact dispoArtifact = null;
                try {
                   dispoArtifact =
-                     ArtifactQuery.getArtifactFromTypeAndAttribute("Test Run Disposition", "Name", name,
+                     ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.TestRunDisposition, name,
                         artifact.getBranch());
                } catch (ArtifactDoesNotExist ex) {
-                  ArtifactType artifactType = ArtifactTypeManager.getType("Test Run Disposition");
-                  dispoArtifact = ArtifactTypeManager.makeNewArtifact(artifactType, artifact.getBranch());
+                  dispoArtifact =
+                     ArtifactTypeManager.makeNewArtifact(CoreArtifactTypes.TestRunDisposition, artifact.getBranch());
                   dispoArtifact.setName(name);
                }
                if (dispoArtifact != null) {

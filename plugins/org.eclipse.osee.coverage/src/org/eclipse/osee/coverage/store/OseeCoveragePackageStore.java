@@ -82,7 +82,7 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
       if (artifact != null) {
          coveragePackage.setGuid(artifact.getGuid());
          coveragePackage.setName(artifact.getName());
-         coveragePackage.setEditable(artifact.getSoleAttributeValue(CoverageAttributes.ACTIVE.getStoreName(), true));
+         coveragePackage.setEditable(artifact.getSoleAttributeValue(CoreAttributeTypes.Active, true));
          for (Artifact childArt : artifact.getChildren()) {
             if (childArt.isOfType(CoverageArtifactTypes.CoverageUnit, CoverageArtifactTypes.CoverageFolder)) {
                coveragePackage.addCoverageUnit(OseeCoverageUnitStore.get(coveragePackage, childArt,
@@ -99,7 +99,7 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
       CoveragePackageSave coveragePackageSave = new CoveragePackageSave();
       coveragePackageSave.setName(coveragePackage.getName());
       artifact.setName(coveragePackage.getName());
-      artifact.setSoleAttributeValue(CoverageAttributes.ACTIVE.getStoreName(), coveragePackage.isEditable().isTrue());
+      artifact.setSoleAttributeValue(CoreAttributeTypes.Active, coveragePackage.isEditable().isTrue());
       for (CoverageUnit coverageUnit : coveragePackage.getCoverageUnits()) {
          OseeCoverageStore store = new OseeCoverageUnitStore(coverageUnit, artifact.getBranch());
          store.save(transaction);

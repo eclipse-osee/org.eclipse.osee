@@ -123,12 +123,14 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
 
       XNavigateItem adminItems = new XNavigateItem(jhuItem, "JHU Admin", FrameworkImage.LASER);
 
-      new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Actions", "Actions"));
-      new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Decision Review", "Decision Review"));
-      new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all PeerToPeer Review", "PeerToPeer Review"));
+      new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Actions", AtsArtifactTypes.Action));
+      new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Decision Review",
+         AtsArtifactTypes.DecisionReview));
+      new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all PeerToPeer Review",
+         AtsArtifactTypes.PeerToPeerReview));
       new SearchNavigateItem(adminItems, new ArtifactTypeWithInheritenceSearchItem("Show all Team Workflows",
          AtsArtifactTypes.TeamWorkflow));
-      new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Tasks", "Task"));
+      new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Tasks", AtsArtifactTypes.Task));
 
       XNavigateItem healthItems = new XNavigateItem(adminItems, "Health", FrameworkImage.LASER);
       new ValidateAtsDatabase(healthItems);

@@ -49,7 +49,7 @@ public class SimpleTemplateProviderTask implements IDbInitializationTask {
       for (IExtension extension : ep.getExtensions()) {
          for (IConfigurationElement el : extension.getConfigurationElements()) {
             Artifact templateArtifact =
-               ArtifactTypeManager.addArtifact("Renderer Template", BranchManager.getCommonBranch());
+               ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplate, BranchManager.getCommonBranch());
             String filePath = el.getAttribute("File");
             String name = filePath.substring(filePath.lastIndexOf('/') + 1);
             name = name.substring(0, name.lastIndexOf('.'));

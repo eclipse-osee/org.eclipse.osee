@@ -37,6 +37,8 @@ public class CoreArtifactTypes extends NamedIdentity implements IArtifactType {
       "Hardware Requirement");
    public static final CoreArtifactTypes IndirectSoftwareRequirement = new CoreArtifactTypes("AAMFDiC7HRQMqr5S0QwA",
       "Indirect Software Requirement");
+   public static final CoreArtifactTypes RendererTemplate = new CoreArtifactTypes("AAMFDhvZnHKgSeFKMXgA",
+      "Renderer Template");
    public static final CoreArtifactTypes Requirement = new CoreArtifactTypes("ABM_vxEEowY+8i2_q9gA", "Requirement");
    public static final CoreArtifactTypes RootArtifact = new CoreArtifactTypes("AAMFDhHDqlbzKcIxcsAA", "Root Artifact");
    public static final CoreArtifactTypes SoftwareRequirement = new CoreArtifactTypes("AAMFDiAwhRFXwIyapJAA",
@@ -75,6 +77,8 @@ public class CoreArtifactTypes extends NamedIdentity implements IArtifactType {
    public static final CoreArtifactTypes TestResultWML = new CoreArtifactTypes("ATk6NKFFmD_zg1b_eaQA",
       "Test Result WML");
    public static final CoreArtifactTypes TestRun = new CoreArtifactTypes("AAMFDjqDHWo+orlSpaQA", "Test Run");
+   public static final CoreArtifactTypes TestRunDisposition = new CoreArtifactTypes("AAMFDjeNxhi0KmXZcKQA",
+      "Test Run Disposition");
    public static final CoreArtifactTypes TestSupport = new CoreArtifactTypes("AAMFDj+FW0f_Ut72ocQA", "Test Support");
    public static final CoreArtifactTypes TestUnit = new CoreArtifactTypes("ABM2d6uxUw66aSdo0LwA", "Test Unit");
    public static final CoreArtifactTypes UniversalGroup = new CoreArtifactTypes("AAMFDhLY2TnADPA_EQQA",

@@ -216,14 +216,14 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
             new SearchNavigateItem(adminItems, new UserRelatedToAtsObjectSearch(
                "User's All Active Related Objects - Admin Only", null, true, LoadView.WorldEditor));
 
-            new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Actions", "Action"));
-            new SearchNavigateItem(adminItems,
-               new ArtifactTypeSearchItem("Show all Decision Review", "Decision Review"));
+            new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Actions", AtsArtifactTypes.Action));
+            new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Decision Review",
+               AtsArtifactTypes.DecisionReview));
             new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all PeerToPeer Review",
-               "PeerToPeer Review"));
+               AtsArtifactTypes.PeerToPeerReview));
             new SearchNavigateItem(adminItems, new ArtifactTypeWithInheritenceSearchItem("Show all Team Workflows",
                AtsArtifactTypes.TeamWorkflow));
-            new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Tasks", "Task"));
+            new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Tasks", AtsArtifactTypes.Task));
             new CreateGoalTestArtifacts(adminItems);
 
             new DoesNotWorkItemAts(adminItems);

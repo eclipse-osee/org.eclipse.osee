@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -41,7 +42,8 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
    private synchronized void ensureTemplateCachePopulated() throws OseeCoreException {
       if (templateMap == null) {
          templateMap = new HashMap<String, Artifact>();
-         templates = ArtifactQuery.getArtifactListFromType("Renderer Template", BranchManager.getCommonBranch());
+         templates =
+            ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.RendererTemplate, BranchManager.getCommonBranch());
          for (Artifact art : templates) {
             Collection<Attribute<String>> attrs = art.getAttributes("Template Match Criteria");
             for (Attribute<String> attr : attrs) {
@@ -135,7 +137,8 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
    @Override
    public List<Artifact> getAllTemplates() throws OseeCoreException {
       if (templates == null) {
-         templates = ArtifactQuery.getArtifactListFromType("Renderer Template", BranchManager.getCommonBranch());
+         templates =
+            ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.RendererTemplate, BranchManager.getCommonBranch());
       }
       return templates;
    }

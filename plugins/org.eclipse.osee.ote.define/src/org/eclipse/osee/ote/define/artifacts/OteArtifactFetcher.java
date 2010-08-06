@@ -16,12 +16,14 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -61,12 +63,11 @@ public class OteArtifactFetcher<T extends Artifact> {
     * @throws ArtifactDoesNotExist
     */
    @SuppressWarnings("unchecked")
-   public T searchForUniqueArtifactMatching(String attributeTypeName, String attributeValue, Branch branch) throws OseeCoreException {
-      checkForNull(attributeTypeName);
-      checkForNull(attributeValue);
-      checkForNull(branch);
-      return (T) ArtifactQuery.getArtifactFromTypeAndAttribute(oteArtifactType.getName(), attributeTypeName,
-         attributeValue, branch);
+   public T searchForUniqueArtifactMatching(IAttributeType attributeType, String attributeValue, Branch branch) throws OseeCoreException {
+      Conditions.checkNotNull(attributeType, "attributeType");
+      Conditions.checkNotNull(attributeValue, "attributeValue");
+      Conditions.checkNotNull(branch, "branch");
+      return (T) ArtifactQuery.getArtifactFromTypeAndAttribute(oteArtifactType, attributeType, attributeValue, branch);
    }
 
    /**
@@ -81,7 +82,7 @@ public class OteArtifactFetcher<T extends Artifact> {
       checkForNull(branch);
       Set<T> toReturn = new HashSet<T>();
       try {
-         Collection<Artifact> artifacts = ArtifactQuery.getArtifactListFromType(oteArtifactType.getName(), branch);
+         Collection<Artifact> artifacts = ArtifactQuery.getArtifactListFromType(oteArtifactType, branch);
          for (Artifact artifact : artifacts) {
             toReturn.add((T) artifact);
          }

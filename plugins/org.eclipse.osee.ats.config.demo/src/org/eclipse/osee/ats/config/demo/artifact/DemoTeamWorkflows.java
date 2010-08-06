@@ -34,7 +34,7 @@ public class DemoTeamWorkflows implements IAtsTeamWorkflow {
    @Override
    public String getTeamWorkflowArtifactName(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems) {
       if (teamDef.getName().contains("Code")) {
-         return DemoCodeTeamWorkflowArtifact.ARTIFACT_NAME;
+         return DemoArtifactTypes.DemoCodeTeamWorkflow.getName();
       } else if (teamDef.getName().contains("Test")) {
          return DemoTestTeamWorkflowArtifact.ARTIFACT_NAME;
       } else if (teamDef.getName().contains("Requirements")) {

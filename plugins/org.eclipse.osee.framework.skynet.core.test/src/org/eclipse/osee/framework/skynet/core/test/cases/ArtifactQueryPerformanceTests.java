@@ -102,7 +102,8 @@ public class ArtifactQueryPerformanceTests {
    @org.junit.Test
    public void testGetArtifactsByArtType() throws OseeCoreException {
       long startTime = System.currentTimeMillis();
-      List<Artifact> result = ArtifactQuery.getArtifactListFromType("Team Definition", BranchManager.getCommonBranch());
+      List<Artifact> result =
+         ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.WorkFlowDefinition, BranchManager.getCommonBranch());
       long elapsedTime = System.currentTimeMillis() - startTime;
       System.out.println(String.format("testGetArtifactsByArtType took %dms for %d artifacts", elapsedTime,
          result.size()));

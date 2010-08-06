@@ -36,6 +36,7 @@ import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workflow.vue.DiagramNode.PageType;
 import org.eclipse.osee.framework.core.data.OseeUser;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -50,7 +51,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.osgi.framework.Bundle;
 
@@ -260,7 +260,7 @@ public class LoadAIsAndTeamsAction {
          if (!workflowId.equals("")) {
             try {
                Artifact workflowArt =
-                  ArtifactQuery.getArtifactFromTypeAndName(WorkFlowDefinition.ARTIFACT_NAME, workflowId,
+                  ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.WorkFlowDefinition, workflowId,
                      AtsUtil.getAtsBranch());
                if (workflowArt != null) {
                   teamDefArt.addRelation(CoreRelationTypes.WorkItem__Child, workflowArt);

@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.world.search;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -23,24 +24,24 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
  */
 public class ArtifactTypeSearchItem extends WorldUISearchItem {
 
-   private final String artifactTypeName;
+   private final IArtifactType artifactType;
 
-   public ArtifactTypeSearchItem(String name, String artifactTypeName) {
+   public ArtifactTypeSearchItem(String name, IArtifactType artifactType) {
       super(name, FrameworkImage.FLASHLIGHT);
-      this.artifactTypeName = artifactTypeName;
+      this.artifactType = artifactType;
    }
 
    public ArtifactTypeSearchItem(ArtifactTypeSearchItem artifactTypeSearchItem) {
       super(artifactTypeSearchItem, FrameworkImage.FLASHLIGHT);
-      this.artifactTypeName = artifactTypeSearchItem.artifactTypeName;
+      this.artifactType = artifactTypeSearchItem.artifactType;
    }
 
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
-      if (artifactTypeName == null) {
+      if (artifactType == null) {
          throw new OseeArgumentException("Inavlid search \"" + getName() + "\"");
       }
-      return ArtifactQuery.getArtifactListFromType(artifactTypeName, AtsUtil.getAtsBranch());
+      return ArtifactQuery.getArtifactListFromType(artifactType, AtsUtil.getAtsBranch());
    }
 
    @Override
