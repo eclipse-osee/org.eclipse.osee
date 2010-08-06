@@ -14,4 +14,5 @@ package org.eclipse.osee.framework.core.data;
  * @author Roberto E. Escobar
  */
 public interface AccessContextId extends Identity, Named {
+   //
 }
