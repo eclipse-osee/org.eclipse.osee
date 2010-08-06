@@ -53,7 +53,7 @@ artifactType "Action" extends "ats.Ats Artifact" {
    attribute "ats.Validation Required"
 }
 
-artifactType "Team Definition" extends "ats.Ats Artifact" {
+artifactType "Team Definition" extends "ats.Ats Artifact", "Abstract Access Controlled" {
    guid "AAMFDhUrlytusKbaQGAA"
    attribute "ats.Hours Per Work Day"
    attribute "ats.Full Name"
@@ -66,7 +66,7 @@ artifactType "Team Definition" extends "ats.Ats Artifact" {
    attribute "ats.Allow Commit Branch"
 }
 
-artifactType "Actionable Item" extends "ats.Ats Artifact" {
+artifactType "Actionable Item" extends "ats.Ats Artifact", "Abstract Access Controlled" {
    guid "AAMFDhW2LmhtRFsVyzwA"
    attribute "ats.Active"
    attribute "ats.Actionable"
@@ -114,7 +114,7 @@ artifactType "Goal" extends "ats.State Machine" {
    attribute "ats.Goal Order Vote"
 }
 
-artifactType "Team Workflow" extends "ats.State Machine" {
+artifactType "Team Workflow" extends "ats.State Machine", "Abstract Access Controlled" {
    guid "AAMFDhSiF2OD+wiUqugA"
    attribute "ats.Actionable Item"
    attribute "ats.Branch Metrics"

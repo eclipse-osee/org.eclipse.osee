@@ -16,12 +16,12 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 
 /**
  * @author Donald G. Dunne
- * @formatter:off
  */
 public class ATSAttributes {
    private static final Map<String, ATSAttributes> WORK_ITEM_ID_TO_ATS_ATTRIBUTE_MAP =
       new HashMap<String, ATSAttributes>();
 
+   // @formatter:off
    public static final ATSAttributes ALLOW_CREATE_BRANCH = new ATSAttributes(AtsAttributeTypes.ATS_ALLOW_CREATE_BRANCH, ""); 
    public static final ATSAttributes ALLOW_COMMIT_BRANCH = new ATSAttributes(AtsAttributeTypes.ATS_ALLOW_COMMIT_BRANCH, "");
    public static final ATSAttributes WORKING_BRANCH_WIDGET = new ATSAttributes("Working Branch");
@@ -85,6 +85,7 @@ public class ATSAttributes {
    public static final ATSAttributes ESTIMATED_COMPLETION_DATE_ATTRIBUTE = new ATSAttributes( AtsAttributeTypes.ATS_ESTIMATED_COMPLETION_DATE, "Date the changes will be completed.");
    public static final ATSAttributes RELEASE_DATE_ATTRIBUTE = new ATSAttributes(AtsAttributeTypes.ATS_RELEASE_DATE, "Date the changes were made available to the users.");
    public static final ATSAttributes HOURS_PER_WORK_DAY_ATTRIBUTE = new ATSAttributes( AtsAttributeTypes.ATS_HOURS_PER_WORK_DAY, "");
+   // @formatter:on
 
    private final String displayName;
    private IAttributeType attributeType;

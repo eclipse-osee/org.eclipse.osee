@@ -17,6 +17,8 @@ import org.eclipse.osee.framework.core.data.NamedIdentity;
  * @author Ryan D. Brooks
  */
 public class CoreArtifactTypes extends NamedIdentity implements IArtifactType {
+   public static final CoreArtifactTypes AbstractAccessControlled = new CoreArtifactTypes("AAFVUREVAxmEmLW2KkAA",
+      "Abstract Access Controlled");
    public static final CoreArtifactTypes AbstractSoftwareRequirement = new CoreArtifactTypes("ABNAYPwV6H4EkjQ3+QQA",
       "Abstract Software Requirement");
    public static final CoreArtifactTypes AbstractTestResult = new CoreArtifactTypes("ATkaanWmHH3PkhGNVjwA",
