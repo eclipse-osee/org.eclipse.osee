@@ -75,7 +75,6 @@ import org.osgi.util.tracker.ServiceTracker;
  * 
  * @author Jeff C. Phillips
  */
-
 public class AccessControlService implements IAccessControlService {
    private static final String ACCESS_POINT_ID = "osee.access.point";
 
