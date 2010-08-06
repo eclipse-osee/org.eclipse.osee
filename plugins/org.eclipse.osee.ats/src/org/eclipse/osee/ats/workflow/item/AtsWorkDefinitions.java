@@ -160,8 +160,6 @@ public final class AtsWorkDefinitions implements IWorkDefinitionProvider {
          ATS_DESCRIPTION_NOT_REQUIRED_ID, AtsAttributeTypes.ATS_DESCRIPTION, "XTextDam", XOption.NOT_REQUIRED,
          XOption.FILL_VERTICALLY));
 
-      workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.BLOCKING_REVIEW_ATTRIBUTE, "XComboBooleanDam",
-         XOption.REQUIRED, XOption.HORIZONTAL_LABEL));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.REVIEW_BLOCKS_ATTRIBUTE,
          "XComboDam(OPTIONS_FROM_ATTRIBUTE_VALIDITY)", XOption.REQUIRED, XOption.HORIZONTAL_LABEL));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.DECISION_ATTRIBUTE, "XComboDam(1,2,3)",

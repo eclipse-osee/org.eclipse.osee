@@ -78,8 +78,6 @@ public class ATSAttributes {
    public static final ATSAttributes PROBLEM_ATTRIBUTE = new ATSAttributes(AtsAttributeTypes.ATS_PROBLEM, "Problem found during analysis.");
    public static final ATSAttributes REQUIRES_FOLLOWUP_ATTRIBUTE = new ATSAttributes("Requires Followup", "True if review requires someone to folloup after decision.");
    public static final ATSAttributes PROPOSED_RESOLUTION_ATTRIBUTE = new ATSAttributes( AtsAttributeTypes.ATS_PROPOSED_RESOLUTION, "Recommended resolution.");
-   // TODO Remove this after 0.5.0 release
-   public static final ATSAttributes BLOCKING_REVIEW_ATTRIBUTE = new ATSAttributes( AtsAttributeTypes.ATS_BLOCKING_REVIEW, "True if workflow should be blocked from contining until review is completed.");
    public static final ATSAttributes REVIEW_BLOCKS_ATTRIBUTE = new ATSAttributes(AtsAttributeTypes.ATS_REVIEW_BLOCKS, "Review Completion will block it's parent workflow in this manner.");
    public static final ATSAttributes ESTIMATED_RELEASE_DATE_ATTRIBUTE = new ATSAttributes( AtsAttributeTypes.ATS_ESTIMATED_RELEASE_DATE, "Date the changes will be made available to the users.");
    public static final ATSAttributes ESTIMATED_COMPLETION_DATE_ATTRIBUTE = new ATSAttributes( AtsAttributeTypes.ATS_ESTIMATED_COMPLETION_DATE, "Date the changes will be completed.");
