@@ -14,6 +14,8 @@ package org.eclipse.osee.ats.internal;
 import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.ats.util.AtsPreSaveCacheRemoteEventHandler;
+import org.eclipse.osee.framework.core.util.ServiceDependencyTracker;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.plugin.core.IActionReportingService;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.skynet.ats.IOseeAtsService;
@@ -32,6 +34,8 @@ public class AtsPlugin extends OseeUiActivator {
    private ServiceRegistration service1;
    private ServiceRegistration service2;
 
+   private ServiceDependencyTracker tracker;
+
    public AtsPlugin() {
       super();
       pluginInstance = this;
@@ -46,10 +50,14 @@ public class AtsPlugin extends OseeUiActivator {
       service1 =
          context.registerService(IActionReportingService.class.getName(), new AtsActionReportingServiceImpl(), null);
       service2 = context.registerService(IOseeAtsService.class.getName(), new OseeAtsServiceImpl(), null);
+
+      tracker = new ServiceDependencyTracker(context, new AtsConfigurationManagementRegHandler());
+      tracker.open();
    }
 
    @Override
    public void stop(BundleContext context) throws Exception {
+      Lib.close(tracker);
       if (service1 != null) {
          service1.unregister();
       }

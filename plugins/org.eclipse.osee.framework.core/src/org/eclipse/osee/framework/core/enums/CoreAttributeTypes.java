@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.data.NamedIdentity;
 public class CoreAttributeTypes extends NamedIdentity implements IAttributeType {
 
    // @formatter:off
-   public static final CoreAttributeTypes Access_Context_Id = new CoreAttributeTypes("AAFAgR3B7AN_g0NPCLAA", "Access Context Id");
+   public static final CoreAttributeTypes ACCESS_CONTEXT_ID = new CoreAttributeTypes("AAFAgR3B7AN_g0NPCLAA", "Access Context Id");
    public static final CoreAttributeTypes Active = new CoreAttributeTypes("AAMFEbImQyR38BY8A5QA", "Active");
    public static final CoreAttributeTypes Annotation = new CoreAttributeTypes("AAMFEcWy0xc4e3tcemQA", "Annotation");
    public static final CoreAttributeTypes ContentURL = new CoreAttributeTypes("AAMFEcIP+U+ML_gzH7AA", "Content URL");

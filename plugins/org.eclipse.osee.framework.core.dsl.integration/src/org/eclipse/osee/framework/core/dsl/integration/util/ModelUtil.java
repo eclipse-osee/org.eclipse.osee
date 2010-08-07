@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.core.dsl.integration.util;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
@@ -42,6 +43,28 @@ public final class ModelUtil {
 
    private ModelUtil() {
       // Utility Class
+   }
+
+   public static OseeDsl loadModel(InputStream inputStream, boolean isZipped) throws OseeCoreException {
+      Injector injector = new OseeDslStandaloneSetup().createInjectorAndDoEMFRegistration();
+      XtextResource resource = injector.getInstance(XtextResource.class);
+
+      Map<String, Boolean> options = new HashMap<String, Boolean>();
+      options.put(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
+      if (isZipped) {
+         options.put(Resource.OPTION_ZIP, Boolean.TRUE);
+      }
+      try {
+         resource.setURI(URI.createURI("http://www.eclipse.org/osee/framework/OseeTypes"));
+         resource.load(inputStream, options);
+      } catch (IOException ex) {
+         throw new OseeWrappedException(ex);
+      }
+      OseeDsl model = (OseeDsl) resource.getContents().get(0);
+      for (Diagnostic diagnostic : resource.getErrors()) {
+         throw new OseeStateException(diagnostic.toString());
+      }
+      return model;
    }
 
    public static OseeDsl loadModel(String uri, String xTextData) throws OseeCoreException {
