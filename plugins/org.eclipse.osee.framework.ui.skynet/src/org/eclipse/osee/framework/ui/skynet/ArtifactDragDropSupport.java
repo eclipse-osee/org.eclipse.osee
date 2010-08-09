@@ -180,10 +180,10 @@ public class ArtifactDragDropSupport {
       Branch branch = BranchSelectionDialog.getBranchFromUser();
       if (branch != null) {
          try {
-            artifact = ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.ContentURL, location, branch);
+            artifact = ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.ContentUrl, location, branch);
          } catch (ArtifactDoesNotExist ex) {
             Collection<ArtifactType> artifactTypes =
-               ArtifactTypeManager.getArtifactTypesFromAttributeType(CoreAttributeTypes.ContentURL, branch);
+               ArtifactTypeManager.getArtifactTypesFromAttributeType(CoreAttributeTypes.ContentUrl, branch);
             ArtifactTypeDialog dialog =
                new ArtifactTypeDialog(shell, "Artifact Types", null,
                   "No Artifact could be found for this file. To create one, please select an artfact type.",
@@ -191,7 +191,7 @@ public class ArtifactDragDropSupport {
 
             if (dialog.open() == Window.OK) {
                artifact = ArtifactTypeManager.makeNewArtifact(dialog.getArtifactType(), branch);
-               artifact.setSoleAttributeValue(CoreAttributeTypes.ContentURL, location);
+               artifact.setSoleAttributeValue(CoreAttributeTypes.ContentUrl, location);
                artifact.setName(new File(location).getName());
             }
          }

@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.workflow.page;
 
 import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TaskArtifact.TaskStates;
 import org.eclipse.osee.ats.workflow.flow.TaskWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
@@ -33,12 +34,12 @@ public class AtsTaskInWorkPageDefinition extends WorkPageDefinition {
       addWorkItem(RuleWorkItemId.atsRequireStateHourSpentPrompt.name());
       addWorkItem("ats.Title");
       addWorkItem(AtsWorkDefinitions.ATS_DESCRIPTION_NOT_REQUIRED_ID);
-      addWorkItem(ATSAttributes.RESOLUTION_ATTRIBUTE.getWorkItemId());
-      addWorkItem(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getWorkItemId());
-      addWorkItem(ATSAttributes.ESTIMATED_COMPLETION_DATE_ATTRIBUTE.getWorkItemId());
-      addWorkItem(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getWorkItemId());
-      addWorkItem(ATSAttributes.SMA_NOTE_ATTRIBUTE.getWorkItemId());
-      addWorkItem(ATSAttributes.CATEGORY_ATTRIBUTE.getWorkItemId());
+      addWorkItem(AtsAttributeTypes.ATS_RESOLUTION);
+      addWorkItem(AtsAttributeTypes.ATS_ESTIMATED_HOURS);
+      addWorkItem(AtsAttributeTypes.ATS_ESTIMATED_COMPLETION_DATE);
+      addWorkItem(AtsAttributeTypes.ATS_RELATED_TO_STATE);
+      addWorkItem(AtsAttributeTypes.ATS_SMA_NOTE);
+      addWorkItem(AtsAttributeTypes.ATS_CATEGORY_1);
    }
 
 }

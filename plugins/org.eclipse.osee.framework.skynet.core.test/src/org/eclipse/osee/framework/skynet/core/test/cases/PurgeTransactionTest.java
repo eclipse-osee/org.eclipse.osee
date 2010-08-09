@@ -93,7 +93,7 @@ public class PurgeTransactionTest {
       DbUtil.getTableRowCounts(preModifyCount, tables);
       modifyTransaction = new SkynetTransaction(branch, "Purge Transaction Test");
       for (Artifact softArt : softArts) {
-         softArt.addAttribute(CoreAttributeTypes.STATIC_ID, getClass().getSimpleName());
+         softArt.addAttribute(CoreAttributeTypes.StaticId, getClass().getSimpleName());
          softArt.persist(modifyTransaction);
       }
       modifyId = modifyTransaction.getTransactionNumber();

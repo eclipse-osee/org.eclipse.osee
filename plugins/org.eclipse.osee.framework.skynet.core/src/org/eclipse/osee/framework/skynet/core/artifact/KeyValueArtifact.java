@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 
@@ -28,11 +29,11 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 public class KeyValueArtifact {
 
    private final Artifact artifact;
-   private final String keyValueAttributeName;
+   private final IAttributeType keyValueAttributeType;
 
-   public KeyValueArtifact(Artifact artifact, String keyValueAttributeName) throws OseeCoreException {
+   public KeyValueArtifact(Artifact artifact, IAttributeType keyValueAttributeType) throws OseeCoreException {
       this.artifact = artifact;
-      this.keyValueAttributeName = keyValueAttributeName;
+      this.keyValueAttributeType = keyValueAttributeType;
       load();
    }
    protected HashCollection<String, String> keyValueMap = new HashCollection<String, String>(20);
@@ -54,14 +55,14 @@ public class KeyValueArtifact {
                keyValues.add(key + "=" + value);
             }
          }
-         artifact.setAttributeValues(keyValueAttributeName, keyValues);
+         artifact.setAttributeValues(keyValueAttributeType, keyValues);
       } else {
-         artifact.deleteAttributes(keyValueAttributeName);
+         artifact.deleteAttributes(keyValueAttributeType);
       }
    }
 
    public void load() throws OseeCoreException {
-      for (String value : artifact.getAttributesToStringList(keyValueAttributeName)) {
+      for (String value : artifact.getAttributesToStringList(keyValueAttributeType)) {
          Matcher m = keyValuePattern.matcher(value);
          if (m.find()) {
             addValue(m.group(1), m.group(2));

@@ -72,27 +72,27 @@ public class User extends Artifact {
    }
 
    public String getUserId() throws OseeCoreException {
-      return getSoleAttributeValue(CoreAttributeTypes.USER_ID, "");
+      return getSoleAttributeValue(CoreAttributeTypes.UserId, "");
    }
 
    public void setUserID(String userId) throws OseeCoreException {
-      setSoleAttributeValue(CoreAttributeTypes.USER_ID, userId);
+      setSoleAttributeValue(CoreAttributeTypes.UserId, userId);
    }
 
    public String getEmail() throws OseeCoreException {
-      return getSoleAttributeValue(CoreAttributeTypes.EMAIL, "");
+      return getSoleAttributeValue(CoreAttributeTypes.Email, "");
    }
 
    public void setEmail(String email) throws OseeCoreException {
-      setSoleAttributeValue(CoreAttributeTypes.EMAIL, email);
+      setSoleAttributeValue(CoreAttributeTypes.Email, email);
    }
 
    public String getPhone() throws OseeCoreException {
-      return getSoleAttributeValue(CoreAttributeTypes.PHONE, "");
+      return getSoleAttributeValue(CoreAttributeTypes.Phone, "");
    }
 
    public void setPhone(String phone) throws OseeCoreException {
-      setSoleAttributeValue(CoreAttributeTypes.PHONE, phone);
+      setSoleAttributeValue(CoreAttributeTypes.Phone, phone);
    }
 
    public Boolean isActive() throws OseeCoreException {
@@ -111,7 +111,7 @@ public class User extends Artifact {
       }
 
       boolean found = false;
-      Collection<Attribute<String>> attributes = getAttributes(CoreAttributeTypes.FAVORITE_BRANCH.getName());
+      Collection<Attribute<String>> attributes = getAttributes(CoreAttributeTypes.FavoriteBranch.getName());
       for (Attribute<String> attribute : attributes) {
          // Remove attributes that are no longer valid
          if (!branchGuids.contains(attribute.getValue())) {
@@ -124,13 +124,13 @@ public class User extends Artifact {
       }
 
       if (!found) {
-         addAttribute(CoreAttributeTypes.FAVORITE_BRANCH.getName(), favoriteBranch.getGuid());
+         addAttribute(CoreAttributeTypes.FavoriteBranch.getName(), favoriteBranch.getGuid());
       }
-      setSetting(CoreAttributeTypes.FAVORITE_BRANCH.getName(), favoriteBranch.getGuid());
+      setSetting(CoreAttributeTypes.FavoriteBranch.getName(), favoriteBranch.getGuid());
    }
 
    public boolean isFavoriteBranch(Branch branch) throws OseeCoreException {
-      Collection<Attribute<String>> attributes = getAttributes(CoreAttributeTypes.FAVORITE_BRANCH.getName());
+      Collection<Attribute<String>> attributes = getAttributes(CoreAttributeTypes.FavoriteBranch.getName());
       for (Attribute<String> attribute : attributes) {
          if (branch.getGuid().equals(attribute.getValue())) {
             return true;

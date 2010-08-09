@@ -121,7 +121,7 @@ public class UpdateArtifactJob extends UpdateJob {
    }
 
    private void processSingleEdit(Artifact artifact) throws OseeCoreException, ParserConfigurationException, SAXException, IOException {
-      if (artifact.isAttributeTypeValid(CoreAttributeTypes.WORD_TEMPLATE_CONTENT)) {
+      if (artifact.isAttributeTypeValid(CoreAttributeTypes.WordTemplateContent)) {
          WordArtifactElementExtractor elementExtractor = new WordArtifactElementExtractor(extractJaxpDocument());
          wordArtifactUpdate(elementExtractor, artifact.getBranch());
       } else {
@@ -130,10 +130,10 @@ public class UpdateArtifactJob extends UpdateJob {
    }
 
    private void processNativeDocuments(Artifact artifact) throws OseeCoreException, FileNotFoundException {
-      if (artifact.isAttributeTypeValid(CoreAttributeTypes.WHOLE_WORD_CONTENT)) {
-         updateNativeArtifact(artifact, CoreAttributeTypes.WHOLE_WORD_CONTENT);
-      } else if (artifact.isAttributeTypeValid(CoreAttributeTypes.NATIVE_CONTENT)) {
-         updateNativeArtifact(artifact, CoreAttributeTypes.NATIVE_CONTENT);
+      if (artifact.isAttributeTypeValid(CoreAttributeTypes.WholeWordContent)) {
+         updateNativeArtifact(artifact, CoreAttributeTypes.WholeWordContent);
+      } else if (artifact.isAttributeTypeValid(CoreAttributeTypes.NativeContent)) {
+         updateNativeArtifact(artifact, CoreAttributeTypes.NativeContent);
       } else {
          throw new OseeArgumentException("Artifact must be of type WordArtifact or NativeArtifact.");
       }
@@ -182,12 +182,12 @@ public class UpdateArtifactJob extends UpdateJob {
                   logUpdateSkip(artifact);
                   continue;
                }
-               containsOleData = !artifact.getSoleAttributeValue(CoreAttributeTypes.WORD_OLE_DATA, "").equals("");
+               containsOleData = !artifact.getSoleAttributeValue(CoreAttributeTypes.WordOleData, "").equals("");
 
                if (oleDataElement == null && containsOleData) {
-                  artifact.setSoleAttributeValue(CoreAttributeTypes.WORD_OLE_DATA, "");
+                  artifact.setSoleAttributeValue(CoreAttributeTypes.WordOleData, "");
                } else if (oleDataElement != null && singleArtifact) {
-                  artifact.setSoleAttributeFromStream(CoreAttributeTypes.WORD_OLE_DATA, new ByteArrayInputStream(
+                  artifact.setSoleAttributeFromStream(CoreAttributeTypes.WordOleData, new ByteArrayInputStream(
                      WordTemplateRenderer.getFormattedContent(oleDataElement)));
                }
                String content = null;
@@ -203,7 +203,7 @@ public class UpdateArtifactJob extends UpdateJob {
                // the MUTI_EDIT_SAVE_ALL_CHANGES preference is not set).
                boolean multiSave =
                   UserManager.getUser().getBooleanSetting(MsWordPreferencePage.MUTI_EDIT_SAVE_ALL_CHANGES) || !WordUtil.textOnly(
-                     artifact.getSoleAttributeValue(CoreAttributeTypes.WORD_TEMPLATE_CONTENT).toString()).equals(
+                     artifact.getSoleAttributeValue(CoreAttributeTypes.WordTemplateContent).toString()).equals(
                      WordUtil.textOnly(content));
 
                if (singleArtifact || multiSave) {
@@ -216,7 +216,7 @@ public class UpdateArtifactJob extends UpdateJob {
                   }
                   LinkType linkType = LinkType.OSEE_SERVER_LINK;
                   content = WordMlLinkHandler.unlink(linkType, artifact, content);
-                  artifact.setSoleAttributeValue(CoreAttributeTypes.WORD_TEMPLATE_CONTENT, content);
+                  artifact.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent, content);
                }
                artifact.persist();
             }

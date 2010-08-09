@@ -83,9 +83,9 @@ public class ChangeManagerTest {
       modArtifact = ArtifactQuery.getArtifactFromId(modArtifact.getArtId(), branch);
 
       assertTrue("Check artifact new", checkArtifactModType(newArtifact, ModificationType.NEW));
-      newArtifact.setSoleAttributeFromString(CoreAttributeTypes.WORD_TEMPLATE_CONTENT, "new content");
+      newArtifact.setSoleAttributeFromString(CoreAttributeTypes.WordTemplateContent, "new content");
       assertTrue("Check artifact is still new", checkArtifactModType(newArtifact, ModificationType.NEW));
-      modArtifact.setSoleAttributeFromString(CoreAttributeTypes.WORD_TEMPLATE_CONTENT, "changed content");
+      modArtifact.setSoleAttributeFromString(CoreAttributeTypes.WordTemplateContent, "changed content");
       modArtifact.persist();
       assertTrue("Check artifact has changed", checkArtifactModType(modArtifact, ModificationType.NEW));
    }

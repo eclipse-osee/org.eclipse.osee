@@ -93,7 +93,7 @@ public class OseeLinkBuilder {
    private String getLinkText(LinkType linkType, Artifact artifact) throws OseeCoreException {
       StringBuilder builder = new StringBuilder();
       if (isParagraphRequired(linkType)) {
-         builder.append(artifact.getSoleAttributeValue(CoreAttributeTypes.PARAGRAPH_NUMBER, "Undefined"));
+         builder.append(artifact.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "Undefined"));
       }
       if (isArtifactNameRequired(linkType)) {
          if (builder.length() > 0) {

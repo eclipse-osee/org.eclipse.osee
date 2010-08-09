@@ -108,7 +108,7 @@ public class WordUtil {
          throw new IllegalArgumentException("branch can not be null");
       }
 
-      AttributeType attributeDescriptor = AttributeTypeManager.getType(CoreAttributeTypes.WORD_TEMPLATE_CONTENT);
+      AttributeType attributeDescriptor = AttributeTypeManager.getType(CoreAttributeTypes.WordTemplateContent);
 
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {

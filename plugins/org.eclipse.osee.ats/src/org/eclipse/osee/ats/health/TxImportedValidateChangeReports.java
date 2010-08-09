@@ -151,7 +151,7 @@ public class TxImportedValidateChangeReports extends AbstractBlam {
          List<Artifact> artifacts =
             ArtifactQuery.getArtifactListFromTypeAndName(CoreArtifactTypes.GeneralData, "VCR_%", branch);
          for (Artifact artifact : artifacts) {
-            String data = artifact.getSoleAttributeValue(CoreAttributeTypes.GENERAL_STRING_DATA);
+            String data = artifact.getSoleAttributeValue(CoreAttributeTypes.GeneralStringData);
             String name = artifact.getName();
             try {
                String dataDbGuid = getDataDbGuid(data);
@@ -160,7 +160,7 @@ public class TxImportedValidateChangeReports extends AbstractBlam {
                      if (!currentDbGuid.equals(dataDbGuid)) {
                         String modified = translateImportedData(data);
                         modified = updateSourceGuid(currentDbGuid, modified);
-                        artifact.setSoleAttributeValue(CoreAttributeTypes.GENERAL_STRING_DATA, modified);
+                        artifact.setSoleAttributeValue(CoreAttributeTypes.GeneralStringData, modified);
                         artifact.persist(transaction);
                      }
                   }

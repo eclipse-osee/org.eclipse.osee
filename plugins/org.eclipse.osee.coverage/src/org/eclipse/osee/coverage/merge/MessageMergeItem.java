@@ -18,17 +18,8 @@ import org.eclipse.osee.coverage.model.ICoverage;
  * @author Donald G. Dunne
  */
 public class MessageMergeItem extends MergeItem {
-
-   private final String message;
-
    public MessageMergeItem(String message) {
-      super(MergeType.Error__Message, null, null, false);
-      this.message = message;
-   }
-
-   @Override
-   public String getName() {
-      return message;
+      super(MergeType.Error__Message, message);
    }
 
    @Override
@@ -40,5 +31,4 @@ public class MessageMergeItem extends MergeItem {
    public Collection<? extends ICoverage> getChildren(boolean recurse) {
       return Collections.emptyList();
    }
-
 }

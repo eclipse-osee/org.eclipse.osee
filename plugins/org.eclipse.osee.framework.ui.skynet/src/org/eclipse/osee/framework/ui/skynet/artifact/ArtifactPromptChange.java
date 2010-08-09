@@ -51,17 +51,17 @@ public final class ArtifactPromptChange {
       }
    }
 
-   public static boolean promptChangeAttribute(IAttributeType attributeType, String displayName, final Collection<? extends Artifact> artifacts, boolean persist) throws OseeCoreException {
-      return promptChangeAttribute(attributeType, displayName, artifacts, persist, true);
+   public static boolean promptChangeAttribute(IAttributeType attributeType, final Collection<? extends Artifact> artifacts, boolean persist) throws OseeCoreException {
+      return promptChangeAttribute(attributeType, artifacts, persist, true);
    }
 
-   public static boolean promptChangeAttribute(IAttributeType attributeType, String displayName, final Collection<? extends Artifact> artifacts, boolean persist, boolean multiLine) throws OseeCoreException {
+   public static boolean promptChangeAttribute(IAttributeType attributeType, final Collection<? extends Artifact> artifacts, boolean persist, boolean multiLine) throws OseeCoreException {
       ArtifactPromptChange artifactPromptChange = new ArtifactPromptChange();
       artifactPromptChange.dependeices();
-      return artifactPromptChange.promptChangeAttribute(attributeType, artifacts, persist, multiLine, displayName);
+      return artifactPromptChange.internalpromptChangeAttribute(attributeType, artifacts, persist, multiLine);
    }
 
-   public boolean promptChangeAttribute(IAttributeType attributeType, final Collection<? extends Artifact> artifacts, boolean persist, boolean multiLine, String displayName) {
+   private boolean internalpromptChangeAttribute(IAttributeType attributeType, final Collection<? extends Artifact> artifacts, boolean persist, boolean multiLine) {
       boolean toReturn = false;
       try {
 
@@ -71,7 +71,8 @@ public final class ArtifactPromptChange {
 
          if (hasPermission) {
             IHandlePromptChange promptChange =
-               promptFactory.createPrompt(attributeType, displayName, artifacts, persist, multiLine);
+               promptFactory.createPrompt(attributeType, attributeType.getUnqualifiedName(), artifacts, persist,
+                  multiLine);
             toReturn = handlePromptChange(promptChange);
          }
       } catch (Exception ex) {

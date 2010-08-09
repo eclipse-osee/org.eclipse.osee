@@ -27,9 +27,16 @@ public class MergeItem extends MergeItemBase {
    private final ICoverage importItem;
 
    public MergeItem(MergeType mergeType, ICoverage packageItem, ICoverage importItem, boolean isCheckable) {
-      super(mergeType, isCheckable);
+      super(importItem == null ? "" : importItem.getGuid(), importItem == null ? String.format("Package [%s]",
+         packageItem.getName()) : importItem.getName(), mergeType, isCheckable);
       this.packageItem = packageItem;
       this.importItem = importItem;
+   }
+
+   public MergeItem(MergeType mergeType, String name) {
+      super("", name, mergeType, false);
+      this.packageItem = null;
+      this.importItem = null;
    }
 
    public ICoverage getPackageItem() {
@@ -81,28 +88,11 @@ public class MergeItem extends MergeItemBase {
    }
 
    @Override
-   public String getGuid() {
-      if (importItem != null) {
-         return importItem.getGuid();
-      }
-      return "";
-   }
-
-   @Override
    public String getLocation() {
       if (importItem != null) {
          return importItem.getLocation();
       }
       return packageItem.getLocation();
-   }
-
-   @Override
-   public String getName() {
-      if (importItem != null) {
-         return importItem.getName();
-      } else {
-         return String.format("Package [%s]", packageItem.getName());
-      }
    }
 
    @Override

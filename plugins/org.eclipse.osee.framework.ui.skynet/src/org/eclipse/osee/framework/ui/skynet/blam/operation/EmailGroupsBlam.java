@@ -93,7 +93,7 @@ public class EmailGroupsBlam extends AbstractBlam implements XModifiedListener {
    }
 
    private void sendEmailTo(Collection<Artifact> groups, final Artifact user, String subject, String body, boolean bodyIsHtml) throws OseeCoreException {
-      final String emailAddress = user.getSoleAttributeValue(CoreAttributeTypes.EMAIL, "");
+      final String emailAddress = user.getSoleAttributeValue(CoreAttributeTypes.Email, "");
       if (!EmailUtil.isEmailValid(emailAddress)) {
          println(String.format("The email address \"%s\" for user %s is not valid.", emailAddress, user.getName()));
          return;
@@ -162,7 +162,7 @@ public class EmailGroupsBlam extends AbstractBlam implements XModifiedListener {
          if (xWidget == templateList) {
             Artifact template = (Artifact) templateList.getSelected().iterator().next();
             subjectTextBox.set(template.getName());
-            String body = template.getSoleAttributeValue(CoreAttributeTypes.GENERAL_STRING_DATA);
+            String body = template.getSoleAttributeValue(CoreAttributeTypes.GeneralStringData);
             bodyTextBox.set(body);
          } else {
             XArtifactList groupList = (XArtifactList) xWidget;

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.workflow.item;
 
-import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkWidgetDefinition;
@@ -19,9 +19,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkWidgetDefinitio
  * @author Donald G. Dunne
  */
 public class AtsAttributeReviewRolesXWidgetWorkItem extends WorkWidgetDefinition {
-
-   protected AtsAttributeReviewRolesXWidgetWorkItem(ATSAttributes atsAttribute) {
-      super(atsAttribute.getDisplayName() + " - " + atsAttribute.getWorkItemId(), atsAttribute.getWorkItemId());
+   protected AtsAttributeReviewRolesXWidgetWorkItem(IAttributeType attributeType) {
+      super(attributeType.getUnqualifiedName() + " - " + attributeType.getName(), attributeType.getName());
       DynamicXWidgetLayoutData data = new DynamicXWidgetLayoutData(null);
       data.setName(getName());
       data.setStoreName(getId());

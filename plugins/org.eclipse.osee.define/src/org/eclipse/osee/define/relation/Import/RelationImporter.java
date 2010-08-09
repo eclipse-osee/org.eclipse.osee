@@ -69,7 +69,7 @@ public class RelationImporter implements RowProcessor {
          monitor.worked(1);
          Collection<Artifact> artifacts =
             ArtifactQuery.getArtifactListFromTypeAndAttribute(CoreArtifactTypes.SubsystemRequirement,
-               CoreAttributeTypes.PARAGRAPH_NUMBER, row[1], branch);
+               CoreAttributeTypes.ParagraphNumber, row[1], branch);
 
          Artifact rowArtifact;
          try {

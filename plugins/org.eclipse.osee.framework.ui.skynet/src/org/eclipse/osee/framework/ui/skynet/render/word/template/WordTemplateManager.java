@@ -273,9 +273,9 @@ public class WordTemplateManager {
 
             if (!artifacts.isEmpty()) {
                Artifact artifact = artifacts.iterator().next();
-               if (artifact.isAttributeTypeValid(CoreAttributeTypes.PARAGRAPH_NUMBER)) {
-                  if (!artifact.getSoleAttributeValue(CoreAttributeTypes.PARAGRAPH_NUMBER, "").equals("")) {
-                     startParagraphNumber = artifact.getSoleAttributeValue(CoreAttributeTypes.PARAGRAPH_NUMBER, "");
+               if (artifact.isAttributeTypeValid(CoreAttributeTypes.ParagraphNumber)) {
+                  if (!artifact.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "").equals("")) {
+                     startParagraphNumber = artifact.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "");
                   }
                }
             }

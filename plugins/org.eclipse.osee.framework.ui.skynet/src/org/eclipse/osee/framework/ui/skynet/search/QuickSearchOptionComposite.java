@@ -498,7 +498,7 @@ public class QuickSearchOptionComposite extends Composite {
       }
 
       public IAttributeType getDefault() {
-         return CoreAttributeTypes.NAME;
+         return CoreAttributeTypes.Name;
       }
 
       @Override

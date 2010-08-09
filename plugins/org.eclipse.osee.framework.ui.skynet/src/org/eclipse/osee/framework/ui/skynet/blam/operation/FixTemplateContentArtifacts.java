@@ -183,7 +183,7 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(GET_ATTRS,
-            AttributeTypeManager.getType(CoreAttributeTypes.WORD_TEMPLATE_CONTENT).getId());
+            AttributeTypeManager.getType(CoreAttributeTypes.WordTemplateContent).getId());
          while (chStmt.next()) {
             attrData.add(new AttrData(chStmt.getString("gamma_Id"), chStmt.getString("human_readable_id"),
                chStmt.getString("uri")));

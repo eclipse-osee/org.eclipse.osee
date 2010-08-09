@@ -10,19 +10,21 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.merge;
 
+import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 
 /**
  * @author Donald G. Dunne
  */
-public abstract class MergeItemBase implements IMergeItem {
+public abstract class MergeItemBase extends NamedIdentity implements IMergeItem {
 
    private final MergeType mergeType;
    private boolean checked = false;
    private boolean isCheckable = true;
    private boolean importAllowed = true;
 
-   public MergeItemBase(MergeType mergeType, boolean isCheckable) {
+   public MergeItemBase(String guid, String name, MergeType mergeType, boolean isCheckable) {
+      super(guid, name);
       this.mergeType = mergeType;
       this.isCheckable = isCheckable;
    }

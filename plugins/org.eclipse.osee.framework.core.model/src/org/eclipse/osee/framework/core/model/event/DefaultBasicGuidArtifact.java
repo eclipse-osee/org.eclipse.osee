@@ -11,12 +11,11 @@
 package org.eclipse.osee.framework.core.model.event;
 
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.Identity;
 
 /**
  * @author Donald G. Dunne
  */
-public class DefaultBasicGuidArtifact implements Identity, IBasicGuidArtifact {
+public class DefaultBasicGuidArtifact implements IBasicGuidArtifact {
 
    private static final long serialVersionUID = -4997763989583925345L;
    private String branchGuid;

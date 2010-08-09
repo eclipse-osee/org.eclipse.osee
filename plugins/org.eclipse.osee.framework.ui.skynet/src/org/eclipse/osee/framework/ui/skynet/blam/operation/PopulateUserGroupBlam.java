@@ -52,7 +52,7 @@ public class PopulateUserGroupBlam extends AbstractBlam {
 
       emailToUser.clear();
       for (User user : UserManager.getUsers()) {
-         emailToUser.put(user.getSoleAttributeValue(CoreAttributeTypes.EMAIL, ""), user);
+         emailToUser.put(user.getSoleAttributeValue(CoreAttributeTypes.Email, ""), user);
       }
 
       List<User> users = new ArrayList<User>();

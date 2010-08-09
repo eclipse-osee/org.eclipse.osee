@@ -68,14 +68,12 @@ public class CoveragePreferences {
       if (getArtifact() == null) {
          return null;
       }
-      KeyValueArtifact keyValueArt =
-         new KeyValueArtifact(getArtifact(), CoreAttributeTypes.GENERAL_STRING_DATA.getName());
+      KeyValueArtifact keyValueArt = new KeyValueArtifact(getArtifact(), CoreAttributeTypes.GeneralStringData);
       return keyValueArt.getValue("CoverageOptions");
    }
 
    public void setCoverageOptions(String options) throws OseeCoreException {
-      KeyValueArtifact keyValueArt =
-         new KeyValueArtifact(getArtifact(), CoreAttributeTypes.GENERAL_STRING_DATA.getName());
+      KeyValueArtifact keyValueArt = new KeyValueArtifact(getArtifact(), CoreAttributeTypes.GeneralStringData);
       keyValueArt.setValue("CoverageOptions", options);
       keyValueArt.save();
       getArtifact().persist("Coverage Preferences - save");

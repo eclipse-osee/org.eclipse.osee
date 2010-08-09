@@ -194,17 +194,6 @@ public class TaskArtifact extends StateMachineArtifact implements IATSStateMachi
       return getStateMgr().getCurrentStateName().equals(TaskStates.InWork.name());
    }
 
-   public void transitionToCancelled(String reason, SkynetTransaction transaction, TransitionOption transitionOption) throws OseeCoreException {
-      if (getStateMgr().getCurrentStateName().equals(DefaultTeamState.Cancelled.name())) {
-         return;
-      }
-      setSoleAttributeValue(ATSAttributes.CANCEL_REASON_ATTRIBUTE.getAttributeType(), reason);
-      Result result = transition(DefaultTeamState.Cancelled.name(), (User) null, transaction, transitionOption);
-      if (result.isFalse()) {
-         result.popup();
-      }
-   }
-
    public void transitionToCompleted(double additionalHours, SkynetTransaction transaction, TransitionOption... transitionOption) throws OseeCoreException {
       if (getStateMgr().getCurrentStateName().equals(DefaultTeamState.Completed.name())) {
          return;

@@ -94,7 +94,7 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler, IFr
       }
       try {
          IAttributeType attributeType = AttributeTypeManager.getType(colName);
-         if (ArtifactPromptChange.promptChangeAttribute(attributeType, colName, artifacts, false)) {
+         if (ArtifactPromptChange.promptChangeAttribute(attributeType, artifacts, false)) {
             refresh();
             editor.onDirtied();
          }
@@ -127,7 +127,7 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler, IFr
          IAttributeType attributeType = AttributeTypeManager.getType(colName);
          Artifact useArt = (Artifact) treeItem.getData();
          boolean persist = false;
-         if (ArtifactPromptChange.promptChangeAttribute(attributeType, colName, Arrays.asList(useArt), persist)) {
+         if (ArtifactPromptChange.promptChangeAttribute(attributeType, Arrays.asList(useArt), persist)) {
             refresh();
             editor.onDirtied();
             return true;

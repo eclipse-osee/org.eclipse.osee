@@ -338,7 +338,7 @@ public class OseeEmail extends MimeMessage {
       Properties props = System.getProperties();
       props.put(
          emailType,
-         OseeSystemArtifacts.getGlobalPreferenceArtifact().getSoleAttributeValue(CoreAttributeTypes.DEFAULT_MAIL_SERVER));
+         OseeSystemArtifacts.getGlobalPreferenceArtifact().getSoleAttributeValue(CoreAttributeTypes.DefaultMailServer));
 
       return Session.getDefaultInstance(props, null);
    }

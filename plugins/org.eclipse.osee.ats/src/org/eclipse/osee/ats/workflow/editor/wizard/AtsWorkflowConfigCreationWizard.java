@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.config.AtsConfigManager;
 import org.eclipse.osee.ats.internal.AtsPlugin;
@@ -126,8 +126,8 @@ public class AtsWorkflowConfigCreationWizard extends Wizard implements INewWizar
 
       WorkPageDefinition implementPage = new WorkPageDefinition("Implement", namespace + ".Implement", null);
       implementPage.addWorkItem(RuleWorkItemId.atsRequireStateHourSpentPrompt.name());
-      implementPage.addWorkItem(ATSAttributes.WORK_PACKAGE_ATTRIBUTE.getWorkItemId());
-      implementPage.addWorkItem(ATSAttributes.RESOLUTION_ATTRIBUTE.getWorkItemId());
+      implementPage.addWorkItem(AtsAttributeTypes.ATS_WORK_PACKAGE);
+      implementPage.addWorkItem(AtsAttributeTypes.ATS_RESOLUTION);
 
       WorkPageDefinition completedPage =
          new WorkPageDefinition("Completed", namespace + ".Completed", AtsCompletedWorkPageDefinition.ID);

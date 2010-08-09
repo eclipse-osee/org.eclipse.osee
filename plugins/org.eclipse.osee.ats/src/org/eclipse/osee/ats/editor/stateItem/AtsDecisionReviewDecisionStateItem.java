@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.editor.stateItem;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
@@ -49,7 +49,7 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
          throw new OseeCoreException(
             "AtsDecisionReviewDecisionStateItem.xWidgetCreating expected a StateMachineArtifact");
       }
-      if (xWidget.getLabel().equals(ATSAttributes.DECISION_ATTRIBUTE.getDisplayName())) {
+      if (xWidget.getLabel().equals(AtsAttributeTypes.ATS_DECISION.getUnqualifiedName())) {
          XComboDam decisionComboDam = (XComboDam) xWidget;
          List<String> options = new ArrayList<String>();
          XDecisionOptions xDecOptions = new XDecisionOptions((StateMachineArtifact) art);
@@ -88,7 +88,7 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
    }
 
    private DecisionOption getDecisionOption(SMAWorkFlowSection section) throws OseeCoreException {
-      XWidget xWidget = section.getPage().getLayoutData(ATSAttributes.DECISION_ATTRIBUTE.getWorkItemId()).getXWidget();
+      XWidget xWidget = section.getPage().getLayoutData(AtsAttributeTypes.ATS_DECISION.getName()).getXWidget();
       XComboDam decisionComboDam = (XComboDam) xWidget;
       String decision = decisionComboDam.get();
       if (decision.equals("")) {

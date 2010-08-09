@@ -24,7 +24,6 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
@@ -167,8 +166,8 @@ public class TaskXViewer extends WorldXViewer {
          public void run() {
             try {
                boolean success =
-                  PromptChangeUtil.promptChangeAttribute(getSelectedTaskArtifact(), ATSAttributes.TITLE_ATTRIBUTE,
-                     false, false);
+                  PromptChangeUtil.promptChangeAttribute(getSelectedTaskArtifact(), AtsAttributeTypes.ATS_TITLE, false,
+                     false);
                if (success) {
                   editor.onDirtied();
                   update(getSelectedTaskArtifacts().toArray(), null);
@@ -224,7 +223,7 @@ public class TaskXViewer extends WorldXViewer {
             try {
                boolean success =
                   ArtifactPromptChange.promptChangeAttribute(AtsAttributeTypes.ATS_ESTIMATED_HOURS,
-                     ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getDisplayName(), getSelectedTaskArtifacts(), false);
+                     getSelectedTaskArtifacts(), false);
                if (success) {
                   editor.onDirtied();
                   update(getSelectedTaskArtifacts().toArray(), null);
@@ -241,7 +240,7 @@ public class TaskXViewer extends WorldXViewer {
             try {
                boolean success =
                   PromptChangeUtil.promptChangeAttribute(getSelectedTaskArtifacts(),
-                     ATSAttributes.RELATED_TO_STATE_ATTRIBUTE, false, true);
+                     AtsAttributeTypes.ATS_RELATED_TO_STATE, false, true);
                if (success) {
                   editor.onDirtied();
                   update(getSelectedTaskArtifacts().toArray(), null);
@@ -257,7 +256,7 @@ public class TaskXViewer extends WorldXViewer {
          public void run() {
             try {
                boolean success =
-                  PromptChangeUtil.promptChangeAttribute(getSelectedTaskArtifacts(), ATSAttributes.SMA_NOTE_ATTRIBUTE,
+                  PromptChangeUtil.promptChangeAttribute(getSelectedTaskArtifacts(), AtsAttributeTypes.ATS_SMA_NOTE,
                      false, true);
                if (success) {
                   editor.onDirtied();
@@ -358,7 +357,7 @@ public class TaskXViewer extends WorldXViewer {
             update(getSelectedTaskArtifacts().toArray(), null);
             return true;
          }
-      } else if (PromptChangeUtil.promptChangeAttribute(getSelectedTaskArtifacts(), ATSAttributes.RESOLUTION_ATTRIBUTE,
+      } else if (PromptChangeUtil.promptChangeAttribute(getSelectedTaskArtifacts(), AtsAttributeTypes.ATS_RESOLUTION,
          false, false)) {
          editor.onDirtied();
          update(getSelectedTaskArtifacts().toArray(), null);
@@ -380,12 +379,12 @@ public class TaskXViewer extends WorldXViewer {
 
          if (isSelectedTaskArtifactsAreInWork() && xCol.equals(WorldXViewerFactory.Estimated_Hours_Col)) {
             modified =
-               PromptChangeUtil.promptChangeAttribute(taskArt, ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE, false, false);
+               PromptChangeUtil.promptChangeAttribute(taskArt, AtsAttributeTypes.ATS_ESTIMATED_HOURS, false, false);
          } else if (isSelectedTaskArtifactsAreInWork() && xCol.equals(WorldXViewerFactory.Title_Col)) {
-            modified = PromptChangeUtil.promptChangeAttribute(taskArt, ATSAttributes.TITLE_ATTRIBUTE, false, false);
+            modified = PromptChangeUtil.promptChangeAttribute(taskArt, AtsAttributeTypes.ATS_TITLE, false, false);
          } else if (isSelectedTaskArtifactsAreInWork() && xCol.equals(WorldXViewerFactory.Related_To_State_Col)) {
             modified =
-               PromptChangeUtil.promptChangeAttribute(taskArt, ATSAttributes.RELATED_TO_STATE_ATTRIBUTE, false, false);
+               PromptChangeUtil.promptChangeAttribute(taskArt, AtsAttributeTypes.ATS_RELATED_TO_STATE, false, false);
          } else if (isSelectedTaskArtifactsAreInWork() && xCol.equals(WorldXViewerFactory.Assignees_Col)) {
             modified = PromptChangeUtil.promptChangeAssignees(taskArt, false);
          } else if (isUsingTaskResolutionOptions() && (xCol.equals(WorldXViewerFactory.Hours_Spent_State_Col) || xCol.equals(WorldXViewerFactory.Hours_Spent_Total_Col) || xCol.equals(WorldXViewerFactory.Percent_Complete_State_Col) || xCol.equals(WorldXViewerFactory.Percent_Complete_Total_Col))) {

@@ -29,7 +29,10 @@ public class MergeItemGroup extends MergeItemBase {
    private final ICoverage parentCoverage;
 
    public MergeItemGroup(MergeType mergeType, ICoverage parentCoverage, Collection<IMergeItem> mergeItems, boolean isCheckable) {
-      super(mergeType, isCheckable);
+      super(
+         "",
+         mergeType.toString() + " - " + CoverageUtil.getFullPath(parentCoverage) + "[" + parentCoverage.getName() + "]",
+         mergeType, isCheckable);
       this.parentCoverage = parentCoverage;
       this.mergeItems = mergeItems;
    }
@@ -85,18 +88,8 @@ public class MergeItemGroup extends MergeItemBase {
    }
 
    @Override
-   public String getGuid() {
-      return "";
-   }
-
-   @Override
    public String getLocation() {
       return "";
-   }
-
-   @Override
-   public String getName() {
-      return getMergeType().toString() + " - " + CoverageUtil.getFullPath(parentCoverage) + "[" + parentCoverage.getName() + "]";
    }
 
    @Override

@@ -96,13 +96,13 @@ public class TestPlanComplianceReport extends AbstractBlam {
    }
 
    private String getStatus(Artifact testProc) throws OseeCoreException {
-      String returnValue = testProc.getSoleAttributeValue(CoreAttributeTypes.TEST_PROCEDURE_STATUS);
+      String returnValue = testProc.getSoleAttributeValue(CoreAttributeTypes.TestProcedureStatus);
 
       return returnValue;
    }
 
    private String getName(Artifact art) throws OseeCoreException {
-      String testPlanNumber = art.getSoleAttributeValue(CoreAttributeTypes.PARAGRAPH_NUMBER, "");
+      String testPlanNumber = art.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "");
       String testPlanOutput = testPlanNumber + " " + art.getName();
       return testPlanOutput;
    }
@@ -141,7 +141,7 @@ public class TestPlanComplianceReport extends AbstractBlam {
          testPlan.getRelatedArtifacts(CoreRelationTypes.Verification_Plan__Requirement);
       Collection<String> requirementNames = new ArrayList<String>();
       for (Artifact req : requirementArtifacts) {
-         String paragraphNumber = req.getSoleAttributeValue(CoreAttributeTypes.PARAGRAPH_NUMBER, "");
+         String paragraphNumber = req.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "");
          requirementNames.add(paragraphNumber + " " + req.getName());
       }
 

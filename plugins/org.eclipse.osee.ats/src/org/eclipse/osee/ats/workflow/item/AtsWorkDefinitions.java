@@ -10,6 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.workflow.item;
 
+import static org.eclipse.osee.framework.ui.skynet.widgets.XOption.FILL_VERTICALLY;
+import static org.eclipse.osee.framework.ui.skynet.widgets.XOption.HORIZONTAL_LABEL;
+import static org.eclipse.osee.framework.ui.skynet.widgets.XOption.NONE;
+import static org.eclipse.osee.framework.ui.skynet.widgets.XOption.REQUIRED;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -118,73 +122,67 @@ public final class AtsWorkDefinitions implements IWorkDefinitionProvider {
       workItems.add(new AtsStatePercentCompleteWeightPeerToPeerReviewRule());
 
       // Create XWidget work items
-      workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.LOCATION_ATTRIBUTE, "XTextDam", XOption.REQUIRED,
-         XOption.FILL_VERTICALLY));
-      workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE, "XTextDam"));
-      workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.GOAL_ORDER_VOTE_ATTRIBUTE, "XTextDam"));
-      workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.CATEGORY_ATTRIBUTE, "XTextDam"));
-      workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE, "XTextDam"));
-      workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.SMA_NOTE_ATTRIBUTE, "XTextDam",
-         XOption.FILL_VERTICALLY));
-      workItems.add(new AtsAttributeXWidgetWorkItem("Title", "ats.Title", CoreAttributeTypes.NAME, "XTextDam",
-         XOption.REQUIRED));
-      workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.RESOLUTION_ATTRIBUTE, "XTextDam",
-         XOption.FILL_VERTICALLY));
-      workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE, "XTextDam",
-         XOption.FILL_VERTICALLY));
-      workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.PROBLEM_ATTRIBUTE, "XTextDam",
-         XOption.FILL_VERTICALLY));
-      workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.WORK_PACKAGE_ATTRIBUTE, "XTextDam",
-         XOption.HORIZONTAL_LABEL));
-      workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.WORKING_BRANCH_WIDGET, "XWorkingBranch", XOption.NONE));
+      workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.ATS_LOCATION, "XTextDam", XOption.REQUIRED,
+         FILL_VERTICALLY));
+      workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.ATS_LEGACY_PCR_ID, "XTextDam"));
+      workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.ATS_GOAL_ORDER_VOTE, "XTextDam"));
+      workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.ATS_CATEGORY_1, "XTextDam"));
+      workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.ATS_RELATED_TO_STATE, "XTextDam"));
+      workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.ATS_SMA_NOTE, "XTextDam", FILL_VERTICALLY));
+      workItems.add(new AtsAttributeXWidgetWorkItem("Title", "ats.Title", CoreAttributeTypes.Name, "XTextDam", REQUIRED));
+      workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.ATS_RESOLUTION, "XTextDam", FILL_VERTICALLY));
+      workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.ATS_DECISION_REVIEW_OPTIONS, "XTextDam",
+         FILL_VERTICALLY));
+      workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.ATS_PROBLEM, "XTextDam", FILL_VERTICALLY));
+      workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.ATS_WORK_PACKAGE, "XTextDam", HORIZONTAL_LABEL));
+      workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.WORKING_BRANCH_WIDGET, "XWorkingBranch", NONE));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.VALIDATE_REQ_CHANGES_WIDGET,
-         "XValidateReqChangesButton", XOption.NONE));
+         "XValidateReqChangesButton", NONE));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.CREATE_CODE_TEST_TASKS_OFF_REQUIREMENTS,
-         "XCreateCodeTestTasksButton", XOption.NONE));
+         "XCreateCodeTestTasksButton", NONE));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.CHECK_SIGNALS_VIA_CDB_WIDGET,
-         "XCheckSiganlsViaCDBButton", XOption.NONE));
+         "XCheckSiganlsViaCDBButton", NONE));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.SHOW_CDB_DIFF_REPORT_WIDGET,
-         "XShowCdbDiffReportButton", XOption.NONE));
+         "XShowCdbDiffReportButton", NONE));
 
       workItems.add(new AtsAttributeXWidgetWorkItem("Question",
-         AtsDecisionDecisionWorkPageDefinition.DECISION_QUESTION_LABEL, CoreAttributeTypes.NAME, "XLabelDam"));
+         AtsDecisionDecisionWorkPageDefinition.DECISION_QUESTION_LABEL, CoreAttributeTypes.Name, "XLabelDam"));
 
       workItems.add(new AtsAttributeXWidgetWorkItem("Decision",
          AtsDecisionDecisionWorkPageDefinition.DECISION_ANSWER_LABEL, AtsAttributeTypes.ATS_DECISION, "XLabelDam"));
 
-      workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.PROPOSED_RESOLUTION_ATTRIBUTE, "XTextDam",
-         XOption.FILL_VERTICALLY));
-      workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.DESCRIPTION_ATTRIBUTE, "XTextDam", XOption.REQUIRED,
-         XOption.FILL_VERTICALLY));
-      workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.DESCRIPTION_ATTRIBUTE.getDisplayName(),
+      workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.ATS_PROPOSED_RESOLUTION, "XTextDam",
+         FILL_VERTICALLY));
+      workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.ATS_DESCRIPTION, "XTextDam", XOption.REQUIRED,
+         FILL_VERTICALLY));
+      workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.ATS_DESCRIPTION.getUnqualifiedName(),
          ATS_DESCRIPTION_NOT_REQUIRED_ID, AtsAttributeTypes.ATS_DESCRIPTION, "XTextDam", XOption.NOT_REQUIRED,
-         XOption.FILL_VERTICALLY));
+         FILL_VERTICALLY));
 
-      workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.REVIEW_BLOCKS_ATTRIBUTE,
+      workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.ATS_REVIEW_BLOCKS,
          "XComboDam(OPTIONS_FROM_ATTRIBUTE_VALIDITY)", XOption.REQUIRED, XOption.HORIZONTAL_LABEL));
-      workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.DECISION_ATTRIBUTE, "XComboDam(1,2,3)",
-         XOption.REQUIRED, XOption.HORIZONTAL_LABEL));
-      workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE, "XFloatDam",
-         XOption.REQUIRED));
+      workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.ATS_DECISION, "XComboDam(1,2,3)", REQUIRED,
+         HORIZONTAL_LABEL));
+      workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.ATS_ESTIMATED_HOURS, "XFloatDam", REQUIRED));
 
-      workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getDisplayName(),
+      workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.ATS_ESTIMATED_HOURS.getUnqualifiedName(),
          ATS_ESTIMATED_HOURS_NOT_REQUIRED_ID, AtsAttributeTypes.ATS_ESTIMATED_HOURS, "XFloatDam", XOption.NOT_REQUIRED));
 
-      workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.ESTIMATED_COMPLETION_DATE_ATTRIBUTE, "XDateDam",
+      workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.ATS_ESTIMATED_COMPLETION_DATE, "XDateDam",
          XOption.HORIZONTAL_LABEL));
-      workItems.add(new AtsAttributeSoleComboXWidgetWorkItem(ATSAttributes.CHANGE_TYPE_ATTRIBUTE,
+      workItems.add(new AtsAttributeSoleComboXWidgetWorkItem(AtsAttributeTypes.ATS_CHANGE_TYPE,
          "OPTIONS_FROM_ATTRIBUTE_VALIDITY", XOption.REQUIRED, XOption.BEGIN_COMPOSITE_6));
-      workItems.add(new AtsAttributeSoleComboXWidgetWorkItem(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE,
+      workItems.add(new AtsAttributeSoleComboXWidgetWorkItem(AtsAttributeTypes.ATS_PRIORITY_TYPE,
          "OPTIONS_FROM_ATTRIBUTE_VALIDITY", XOption.REQUIRED));
-      workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.NEED_BY_ATTRIBUTE, "XDateDam",
+      workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.ATS_NEED_BY, "XDateDam",
          XOption.HORIZONTAL_LABEL, XOption.END_COMPOSITE));
-      workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE, "XCheckBoxDam",
+      workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.ATS_VALIDATION_REQUIRED, "XCheckBoxDam",
          XOption.HORIZONTAL_LABEL, XOption.LABEL_BEFORE));
-      workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.USER_COMMUNITY_ATTRIBUTE,
+      workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.ATS_USER_COMMUNITY,
          "XListDam(OPTIONS_FROM_ATTRIBUTE_VALIDITY)", XOption.HORIZONTAL_LABEL));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.COMMIT_MANAGER_WIDGET, "XCommitManager"));
-      workItems.add(new AtsAttributeReviewDefectXWidgetWorkItem(ATSAttributes.REVIEW_DEFECT_ATTRIBUTE));
-      workItems.add(new AtsAttributeReviewRolesXWidgetWorkItem(ATSAttributes.ROLE_ATTRIBUTE));
+      workItems.add(new AtsAttributeReviewDefectXWidgetWorkItem(AtsAttributeTypes.ATS_REVIEW_DEFECT));
+      workItems.add(new AtsAttributeReviewRolesXWidgetWorkItem(AtsAttributeTypes.ATS_ROLE));
 
       return workItems;
    }

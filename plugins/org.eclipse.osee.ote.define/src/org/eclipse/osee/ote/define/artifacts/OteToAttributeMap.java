@@ -31,7 +31,7 @@ public class OteToAttributeMap {
    private OteToAttributeMap() {
       outfileFieldToAttributeMap = new HashMap<TestRunField, String>();
 
-      outfileFieldToAttributeMap.put(TestRunField.USER_ID, CoreAttributeTypes.USER_ID.getName());
+      outfileFieldToAttributeMap.put(TestRunField.USER_ID, CoreAttributeTypes.UserId.getName());
 
       outfileFieldToAttributeMap.put(TestRunField.SCRIPT_REVISION, OteAttributeTypes.REVISION.getName());
       outfileFieldToAttributeMap.put(TestRunField.SCRIPT_MODIFIED_FLAG, OteAttributeTypes.MODIFIED_FLAG.getName());

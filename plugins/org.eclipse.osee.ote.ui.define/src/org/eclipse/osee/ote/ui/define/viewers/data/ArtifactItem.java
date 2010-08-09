@@ -127,7 +127,7 @@ public class ArtifactItem extends DataItem implements IXViewerItem, IArtifactEve
                   }
                } else if (colName.equals("Disposition")) {
                   //Special case for the Disposition Artifact
-                  String name = artifact.getSoleAttributeValueAsString(CoreAttributeTypes.NAME, "");
+                  String name = artifact.getSoleAttributeValueAsString(CoreAttributeTypes.Name, "");
                   if (name != "") {
                      try {
                         Artifact dispoArtifact =

@@ -56,7 +56,7 @@ public class StaticIdManagerTest {
       SkynetTransaction transaction =
          new SkynetTransaction(BranchManager.getCommonBranch(), "Static ID Manager test cleanup for re-run");
       for (String staticIdValue : ALL_STATIC_IDS) {
-         for (Artifact artifact : ArtifactQuery.getArtifactListFromAttribute(CoreAttributeTypes.STATIC_ID,
+         for (Artifact artifact : ArtifactQuery.getArtifactListFromAttribute(CoreAttributeTypes.StaticId,
             staticIdValue, BranchManager.getCommonBranch())) {
             artifact.deleteAndPersist(transaction);
             System.out.println("Deleting " + artifact.getGuid());
@@ -86,7 +86,7 @@ public class StaticIdManagerTest {
       Collection<Artifact> artifacts = ArtifactCache.getArtifactsByStaticId(staticId);
       assertTrue("Should be 0; Returned " + artifacts.size(), artifacts.isEmpty());
       Artifact art = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, BranchManager.getCommonBranch());
-      art.addAttribute(CoreAttributeTypes.STATIC_ID, staticId);
+      art.addAttribute(CoreAttributeTypes.StaticId, staticId);
       art.persist();
 
       artifacts = ArtifactCache.getArtifactsByStaticId(staticId);
@@ -128,8 +128,8 @@ public class StaticIdManagerTest {
       // create artifact with two of same static id values
       Artifact artifact =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, BranchManager.getCommonBranch());
-      artifact.addAttribute(CoreAttributeTypes.STATIC_ID, STATIC_ID_BBB);
-      artifact.addAttribute(CoreAttributeTypes.STATIC_ID, STATIC_ID_BBB);
+      artifact.addAttribute(CoreAttributeTypes.StaticId, STATIC_ID_BBB);
+      artifact.addAttribute(CoreAttributeTypes.StaticId, STATIC_ID_BBB);
       artifact.persist();
 
       // call to search for artifact with STATIC_ID_BBB
@@ -139,17 +139,17 @@ public class StaticIdManagerTest {
       assertNotNull(artifactWithDoubleBbb);
 
       // should be two static id attributes
-      int count = artifactWithDoubleBbb.getAttributes(CoreAttributeTypes.STATIC_ID).size();
+      int count = artifactWithDoubleBbb.getAttributes(CoreAttributeTypes.StaticId).size();
       assertTrue("Expected 2 attributes; Returned " + count, count == 2);
 
-      count = artifactWithDoubleBbb.getAttributeCount(CoreAttributeTypes.STATIC_ID);
+      count = artifactWithDoubleBbb.getAttributeCount(CoreAttributeTypes.StaticId);
       assertTrue("Expected 2 attributes; Returned " + count, count == 2);
 
       // call to set singleton which should resolve duplicates
       StaticIdManager.setSingletonAttributeValue(artifactWithDoubleBbb, STATIC_ID_BBB);
 
       // should now be only one static id attributes
-      count = artifactWithDoubleBbb.getAttributeCount(CoreAttributeTypes.STATIC_ID);
+      count = artifactWithDoubleBbb.getAttributeCount(CoreAttributeTypes.StaticId);
       assertTrue("Expected 1 attributes; Returned " + count, count == 1);
 
       deleteArtifacts(Arrays.asList(artifact), STATIC_ID_BBB);

@@ -35,9 +35,9 @@ public class StaticIdManager {
     * same staticId.
     */
    public static void setSingletonAttributeValue(Artifact artifact, String staticId) throws OseeCoreException {
-      List<Attribute<String>> attributes = artifact.getAttributes(CoreAttributeTypes.STATIC_ID, staticId);
+      List<Attribute<String>> attributes = artifact.getAttributes(CoreAttributeTypes.StaticId, staticId);
       if (attributes.isEmpty()) {
-         artifact.addAttribute(CoreAttributeTypes.STATIC_ID, staticId);
+         artifact.addAttribute(CoreAttributeTypes.StaticId, staticId);
       } else if (attributes.size() > 1) {
          // keep one of the attributes
          for (int x = 1; x < attributes.size(); x++) {
@@ -49,7 +49,7 @@ public class StaticIdManager {
    }
 
    public static void deletedStaticIdAttribute(Artifact artifact, String staticId) throws OseeCoreException {
-      List<Attribute<String>> attributes = artifact.getAttributes(CoreAttributeTypes.STATIC_ID, staticId);
+      List<Attribute<String>> attributes = artifact.getAttributes(CoreAttributeTypes.StaticId, staticId);
       for (Attribute<String> attr : attributes) {
          attr.delete();
       }
@@ -57,7 +57,7 @@ public class StaticIdManager {
    }
 
    public static boolean hasValue(Artifact artifact, String staticId) throws OseeCoreException {
-      return artifact.getAttributesToStringList(CoreAttributeTypes.STATIC_ID).contains(staticId);
+      return artifact.getAttributesToStringList(CoreAttributeTypes.StaticId).contains(staticId);
    }
 
    /**
@@ -66,7 +66,7 @@ public class StaticIdManager {
    public static Set<Artifact> getArtifactsFromArtifactQuery(IArtifactType artifactType, String staticId, IOseeBranch branch) throws OseeCoreException {
       Set<Artifact> artifacts = new HashSet<Artifact>();
       // Retrieve database artifacts if cache has none
-      artifacts.addAll(ArtifactQuery.getArtifactListFromTypeAndAttribute(artifactType, CoreAttributeTypes.STATIC_ID,
+      artifacts.addAll(ArtifactQuery.getArtifactListFromTypeAndAttribute(artifactType, CoreAttributeTypes.StaticId,
          staticId, branch));
       return artifacts;
    }

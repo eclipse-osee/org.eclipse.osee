@@ -151,11 +151,11 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
          importRecordArt =
             ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, artifact.getBranch(), IMPORT_RECORD_NAME);
          // must set the extension before setting content
-         importRecordArt.setSoleAttributeFromString(CoreAttributeTypes.NATIVE_EXTENSION, "zip");
+         importRecordArt.setSoleAttributeFromString(CoreAttributeTypes.Extension, "zip");
          getArtifact(false).addChild(importRecordArt);
          getArtifact(false).persist(transaction);
       }
-      importRecordArt.setSoleAttributeFromStream(CoreAttributeTypes.NATIVE_CONTENT, getInputStream(coverageImport));
+      importRecordArt.setSoleAttributeFromStream(CoreAttributeTypes.NativeContent, getInputStream(coverageImport));
       importRecordArt.persist(transaction);
       return Result.TrueResult;
    }

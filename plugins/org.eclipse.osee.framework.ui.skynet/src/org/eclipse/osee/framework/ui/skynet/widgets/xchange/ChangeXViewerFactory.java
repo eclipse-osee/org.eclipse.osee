@@ -41,7 +41,7 @@ public class ChangeXViewerFactory extends SkynetXViewerFactory {
    public static XViewerColumn Was_Value = new XViewerColumn("framework.change.wasValue", "Was Value", 150, SWT.LEFT,
       true, SortDataType.String, false, null);
    public static XViewerColumn paraNumber = new XViewerColumn("attribute.Imported Paragraph Number",
-      CoreAttributeTypes.PARAGRAPH_NUMBER.getName(), 50, SWT.LEFT, false, SortDataType.Paragraph_Number, false, null);
+      CoreAttributeTypes.ParagraphNumber.getName(), 50, SWT.LEFT, false, SortDataType.Paragraph_Number, false, null);
 
    public static String NAMESPACE = "osee.skynet.gui.ChangeXViewer";
 

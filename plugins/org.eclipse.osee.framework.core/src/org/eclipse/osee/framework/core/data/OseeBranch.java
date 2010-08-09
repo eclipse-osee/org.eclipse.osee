@@ -13,25 +13,8 @@ package org.eclipse.osee.framework.core.data;
 /**
  * @author Donald G. Dunne
  */
-public class OseeBranch implements IOseeBranch {
-
-   private final String name;
-   private final String guid;
-
+public class OseeBranch extends NamedIdentity implements IOseeBranch {
    public OseeBranch(String name, String guid) {
-      this.name = name;
-      this.guid = guid;
-
+      super(guid, name);
    }
-
-   @Override
-   public String getGuid() {
-      return guid;
-   }
-
-   @Override
-   public String getName() {
-      return name;
-   }
-
 }

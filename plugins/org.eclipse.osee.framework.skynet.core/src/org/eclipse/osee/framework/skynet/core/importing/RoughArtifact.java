@@ -166,7 +166,7 @@ public class RoughArtifact {
    }
 
    public String getName() {
-      return attributes.getSoleAttributeValue(CoreAttributeTypes.NAME.getName());
+      return attributes.getSoleAttributeValue(CoreAttributeTypes.Name.getName());
    }
 
    public String getRoughAttribute(String attributeName) {

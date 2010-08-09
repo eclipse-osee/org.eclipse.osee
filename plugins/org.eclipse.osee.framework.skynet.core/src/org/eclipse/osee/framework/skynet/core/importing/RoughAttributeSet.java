@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.CaseInsensitiveString;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 
 public final class RoughAttributeSet {
    private final HashCollection<CaseInsensitiveString, String> attributes =
@@ -95,7 +96,8 @@ public final class RoughAttributeSet {
    private void transferBinaryAttributes(Artifact artifact) throws OseeCoreException {
       for (Entry<CaseInsensitiveString, URI> entry : uriAttributes.entrySet()) {
          try {
-            artifact.setSoleAttributeFromStream(entry.getKey().toString(), new BufferedInputStream(
+            IAttributeType attributeType = AttributeTypeManager.getType(entry.getKey().toString());
+            artifact.setSoleAttributeFromStream(attributeType, new BufferedInputStream(
                entry.getValue().toURL().openStream()));
          } catch (Exception ex) {
             OseeExceptions.wrapAndThrow(ex);

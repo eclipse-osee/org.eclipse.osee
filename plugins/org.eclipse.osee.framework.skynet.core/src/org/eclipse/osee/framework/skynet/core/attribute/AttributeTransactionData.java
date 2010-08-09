@@ -62,7 +62,7 @@ public class AttributeTransactionData extends BaseTransactionData {
    protected void internalUpdate(TransactionRecord transactionId) throws OseeCoreException {
       attribute.internalSetGammaId(getGammaId());
 
-      if (attribute.isOfType(CoreAttributeTypes.STATIC_ID)) {
+      if (attribute.isOfType(CoreAttributeTypes.StaticId)) {
          ArtifactCache.cacheByStaticId((String) attribute.getValue(), attribute.getArtifact());
       }
 

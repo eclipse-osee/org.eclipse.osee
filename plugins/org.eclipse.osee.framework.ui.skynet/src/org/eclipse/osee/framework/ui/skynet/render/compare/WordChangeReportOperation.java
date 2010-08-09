@@ -57,7 +57,7 @@ public final class WordChangeReportOperation extends AbstractOperation {
       this.isSuppressWord = isSuppressWord;
       this.reportDirName = Strings.isValid(reportDirName) ? reportDirName : GUID.create();
 
-      this.attributeType = CoreAttributeTypes.WORD_TEMPLATE_CONTENT;
+      this.attributeType = CoreAttributeTypes.WordTemplateContent;
    }
 
    private IFolder getChangeReportFolder() throws OseeCoreException {

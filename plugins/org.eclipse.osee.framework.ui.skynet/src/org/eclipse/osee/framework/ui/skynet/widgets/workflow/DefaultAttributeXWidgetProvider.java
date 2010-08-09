@@ -92,7 +92,7 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
          } else {
             xWidgetName = "XComboBooleanDam";
          }
-      } else if (AttributeTypeManager.isBaseTypeCompatible(WordAttribute.class, attributeType) || attributeType.equals(CoreAttributeTypes.RELATION_ORDER)) {
+      } else if (AttributeTypeManager.isBaseTypeCompatible(WordAttribute.class, attributeType) || attributeType.equals(CoreAttributeTypes.RelationOrder)) {
          xWidgetName = "XStackedDam";
          defaultData.getXOptionHandler().add(XOption.NOT_EDITABLE);
       } else if (AttributeTypeManager.isBaseTypeCompatible(DateAttribute.class, attributeType)) {

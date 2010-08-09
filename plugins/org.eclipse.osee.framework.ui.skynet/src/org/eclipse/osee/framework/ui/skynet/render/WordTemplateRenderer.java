@@ -22,6 +22,7 @@ import java.util.List;
 import javax.xml.namespace.QName;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
@@ -138,10 +139,10 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
       if (notGeneralizedEdit(presentationType)) {
-         if (artifact.isAttributeTypeValid(CoreAttributeTypes.WORD_TEMPLATE_CONTENT)) {
+         if (artifact.isAttributeTypeValid(CoreAttributeTypes.WordTemplateContent)) {
             return PRESENTATION_SUBTYPE_MATCH;
          }
-         if (presentationType != SPECIALIZED_EDIT && !artifact.isAttributeTypeValid(CoreAttributeTypes.NATIVE_CONTENT) && !artifact.isAttributeTypeValid(CoreAttributeTypes.WHOLE_WORD_CONTENT)) {
+         if (presentationType != SPECIALIZED_EDIT && !artifact.isAttributeTypeValid(CoreAttributeTypes.NativeContent) && !artifact.isAttributeTypeValid(CoreAttributeTypes.WholeWordContent)) {
             return PRESENTATION_TYPE;
          }
       }
@@ -150,12 +151,12 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    }
 
    @Override
-   public void renderAttribute(String attributeTypeName, Artifact artifact, PresentationType presentationType, Producer producer, VariableMap map, AttributeElement attributeElement) throws OseeCoreException {
+   public void renderAttribute(IAttributeType attributeType, Artifact artifact, PresentationType presentationType, Producer producer, VariableMap map, AttributeElement attributeElement) throws OseeCoreException {
       String value = "";
       WordMLProducer wordMl = (WordMLProducer) producer;
 
-      if (attributeTypeName.equals(CoreAttributeTypes.WORD_TEMPLATE_CONTENT.getName())) {
-         Attribute<?> wordTempConAttr = artifact.getSoleAttribute(attributeTypeName);
+      if (attributeType.equals(CoreAttributeTypes.WordTemplateContent)) {
+         Attribute<?> wordTempConAttr = artifact.getSoleAttribute(attributeType);
          String data = (String) wordTempConAttr.getValue();
 
          if (attributeElement.getLabel().length() > 0) {
@@ -184,7 +185,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
          wordMl.resetListValue();
 
       } else {
-         super.renderAttribute(attributeTypeName, artifact, PresentationType.SPECIALIZED_EDIT, wordMl, map,
+         super.renderAttribute(attributeType, artifact, PresentationType.SPECIALIZED_EDIT, wordMl, map,
             attributeElement);
       }
    }
@@ -204,7 +205,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
          if (presentationType == PresentationType.SPECIALIZED_EDIT && artifacts.size() > 1) {
             // currently we can't support the editing of multiple artifacts with OLE data
             for (Artifact artifact : artifacts) {
-               if (!artifact.getSoleAttributeValue(CoreAttributeTypes.WORD_OLE_DATA, "").equals("")) {
+               if (!artifact.getSoleAttributeValue(CoreAttributeTypes.WordOleData, "").equals("")) {
                   notMultiEditableArtifacts.add(artifact);
                }
             }
@@ -212,12 +213,12 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
                "Do not support editing of multiple artifacts with OLE data");
             artifacts.removeAll(notMultiEditableArtifacts);
          } else { // support OLE data when appropriate
-            if (!firstArtifact.getSoleAttributeValue(CoreAttributeTypes.WORD_OLE_DATA, "").equals("")) {
+            if (!firstArtifact.getSoleAttributeValue(CoreAttributeTypes.WordOleData, "").equals("")) {
                template = template.replaceAll(EMBEDDED_OBJECT_NO, EMBEDDED_OBJECT_YES);
                template =
                   template.replaceAll(
                      STYLES_END,
-                     STYLES_END + OLE_START + firstArtifact.getSoleAttributeValue(CoreAttributeTypes.WORD_OLE_DATA, "") + OLE_END);
+                     STYLES_END + OLE_START + firstArtifact.getSoleAttributeValue(CoreAttributeTypes.WordOleData, "") + OLE_END);
             }
          }
       }
@@ -231,7 +232,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    protected String getTemplate(Artifact artifact, PresentationType presentationType) throws OseeCoreException {
       Artifact templateArtifact =
          TemplateManager.getTemplate(this, artifact, presentationType.name(), getStringOption(TEMPLATE_OPTION));
-      return templateArtifact.getSoleAttributeValue(CoreAttributeTypes.WHOLE_WORD_CONTENT);
+      return templateArtifact.getSoleAttributeValue(CoreAttributeTypes.WholeWordContent);
    }
 
    @Override

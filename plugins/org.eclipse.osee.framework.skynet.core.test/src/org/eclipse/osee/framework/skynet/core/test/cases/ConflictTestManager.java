@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -29,6 +30,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute;
@@ -78,7 +80,7 @@ public class ConflictTestManager {
    public static int REVERT_REL_LINK_QUERY = 6;
 
    protected static class AttributeValue {
-      protected String attributeName;
+      protected IAttributeType attributeType;
       protected String sourceValue;
       protected String destValue;
       protected String mergeValue;
@@ -86,12 +88,12 @@ public class ConflictTestManager {
       protected boolean sourceDeleted;
       protected boolean destinationDeleted;
 
-      protected AttributeValue(String attributeName, String sourceValue, String destValue, String mergeValue, Class<?> clas) {
+      protected AttributeValue(String attributeName, String sourceValue, String destValue, String mergeValue, Class<?> clas) throws OseeCoreException {
          this(attributeName, sourceValue, destValue, mergeValue, clas, false, false);
       }
 
-      protected AttributeValue(String attributeName, String sourceValue, String destValue, String mergeValue, Class<?> clas, boolean sourceDeleted, boolean destinationDeleted) {
-         this.attributeName = attributeName;
+      protected AttributeValue(String attributeName, String sourceValue, String destValue, String mergeValue, Class<?> clas, boolean sourceDeleted, boolean destinationDeleted) throws OseeCoreException {
+         this.attributeType = AttributeTypeManager.getType(attributeName);
          this.sourceValue = sourceValue;
          this.destValue = destValue;
          this.mergeValue = mergeValue;
@@ -100,12 +102,8 @@ public class ConflictTestManager {
          this.destinationDeleted = destinationDeleted;
       }
 
-      protected AttributeValue(String attributeName, String sourceValue, Class<?> clas) {
-         this.attributeName = attributeName;
-         this.sourceValue = sourceValue;
-         this.clas = clas;
-         sourceDeleted = false;
-         destinationDeleted = false;
+      protected AttributeValue(String attributeName, String sourceValue, Class<?> clas) throws OseeCoreException {
+         this(attributeName, sourceValue, null, null, clas);
       }
    }
 
@@ -161,7 +159,7 @@ public class ConflictTestManager {
       createConflictDefinitions();
       destBranch = BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_1, DEST_BRANCH, null);
 
-      Artifact rootArtifact = ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.NAME, FOLDER, destBranch);
+      Artifact rootArtifact = ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.Name, FOLDER, destBranch);
 
       // Add artifacts onto the destination Branch
       for (int i = 0; i < NUMBER_OF_ARTIFACTS; i++) {
@@ -175,7 +173,7 @@ public class ConflictTestManager {
                rootArtifact.addNewChild(RelationOrderBaseTypes.USER_DEFINED, artType, "Test Artifact Number " + i);
          }
          for (AttributeValue value : conflictDefs[i].newAttributes) {
-            destArtifacts[i].addAttribute(value.attributeName, stringToObject(value.clas, value.sourceValue));
+            destArtifacts[i].addAttribute(value.attributeType, stringToObject(value.clas, value.sourceValue));
          }
          destArtifacts[i].persist();
       }
@@ -192,11 +190,11 @@ public class ConflictTestManager {
          for (AttributeValue value : conflictDefs[i].values) {
             // source objects
             if (value.sourceDeleted) {
-               sourceArtifacts[i].getSoleAttribute(value.attributeName).delete();
+               sourceArtifacts[i].getSoleAttribute(value.attributeType).delete();
             } else {
                if (value.sourceValue != null) {
                   conflictDefs[i].sourceModified = true;
-                  sourceArtifacts[i].setSoleAttributeValue(value.attributeName,
+                  sourceArtifacts[i].setSoleAttributeValue(value.attributeType,
                      stringToObject(value.clas, value.sourceValue));
                }
                if (value.sourceValue != null && value.destValue != null) {
@@ -205,10 +203,10 @@ public class ConflictTestManager {
             }
             // destination objects
             if (value.destinationDeleted) {
-               destArtifacts[i].getSoleAttribute(value.attributeName).delete();
+               destArtifacts[i].getSoleAttribute(value.attributeType).delete();
             } else if (value.destValue != null) {
                conflictDefs[i].destModified = true;
-               destArtifacts[i].setSoleAttributeValue(value.attributeName, stringToObject(value.clas, value.destValue));
+               destArtifacts[i].setSoleAttributeValue(value.attributeType, stringToObject(value.clas, value.destValue));
             }
          }
          sourceArtifacts[i].persist();
@@ -251,8 +249,8 @@ public class ConflictTestManager {
                         modification.name);
                      break;
                   case ATTRIBUTE:
-                     createAttribute((Artifact) modification.object, modification.name, modification.clas,
-                        modification.value);
+                     createAttribute((Artifact) modification.object, AttributeTypeManager.getType(modification.name),
+                        modification.clas, modification.value);
                      break;
                   case RELATION:
                      createRelation((Artifact) modification.object, (Artifact) modification.object2);
@@ -270,8 +268,8 @@ public class ConflictTestManager {
                         modification.name).deleteAndPersist();
                      break;
                   case ATTRIBUTE:
-                     createAttribute((Artifact) modification.object, modification.name, modification.clas,
-                        modification.value);
+                     createAttribute((Artifact) modification.object, AttributeTypeManager.getType(modification.name),
+                        modification.clas, modification.value);
                      ((Artifact) modification.object).deleteSoleAttribute(modification.name);
                      ((Artifact) modification.object).persist();
                      break;
@@ -293,7 +291,7 @@ public class ConflictTestManager {
    }
 
    protected static Artifact createArtifact(int rootArtifactId, Branch branch, String type, String name) throws OseeCoreException {
-      Artifact rootArtifact = ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.NAME, FOLDER, branch);
+      Artifact rootArtifact = ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.Name, FOLDER, branch);
       if (rootArtifactId > 0 && rootArtifactId < NUMBER_OF_ARTIFACTS) {
          if (branch.equals(destArtifacts[0].getBranch())) {
             rootArtifact = destArtifacts[rootArtifactId];
@@ -309,10 +307,10 @@ public class ConflictTestManager {
       return child;
    }
 
-   protected static Attribute<?> createAttribute(Artifact artifact, String name, Class<?> clas, String value) throws OseeCoreException {
-      artifact.addAttribute(name, stringToObject(clas, value));
+   protected static Attribute<?> createAttribute(Artifact artifact, IAttributeType attributeType, Class<?> clas, String value) throws OseeCoreException {
+      artifact.addAttribute(attributeType, stringToObject(clas, value));
       artifact.persist();
-      return artifact.getSoleAttribute(name);
+      return artifact.getSoleAttribute(attributeType);
    }
 
    protected static RelationLink createRelation(Artifact artifact, Artifact artifactB) throws OseeCoreException {
@@ -402,7 +400,7 @@ public class ConflictTestManager {
 
    public static void resolveAttributeConflict(AttributeConflict conflict) throws Exception {
       int sourceArtifactId = conflict.getSourceArtifact().getArtId();
-      String attributeName = conflict.getSourceAttribute(true).getAttributeType().getName();
+      IAttributeType attributeType = conflict.getSourceAttribute(true).getAttributeType();
       AttributeValue aValue = null;
       int artNumber = -1;
       for (int i = 0; i < NUMBER_OF_ARTIFACTS; i++) {
@@ -415,21 +413,21 @@ public class ConflictTestManager {
          // The relation order attribute of the parent folder will have a RelationOrder
          // conflict that is not relevant to this test. -- RS
          if (conflict.getArtifactName().equals("System Requirements") && conflict.getAttributeType().equals(
-            CoreAttributeTypes.RELATION_ORDER)) {
+            CoreAttributeTypes.RelationOrder)) {
             return;
          } else {
             throw new Exception("Source Artifact " + sourceArtifactId + " could not be found in the list of artifatcs");
          }
       }
       for (AttributeValue value : conflictDefs[artNumber].values) {
-         if (value.attributeName.equals(attributeName)) {
+         if (value.attributeType.equals(attributeType)) {
             aValue = value;
             break;
          }
       }
       if (aValue == null) {
          throw new Exception(
-            "Source Artifact " + sourceArtifactId + " does not have a conflict for the" + attributeName + " attribute");
+            "Source Artifact " + sourceArtifactId + " does not have a conflict for the" + attributeType + " attribute");
       }
       if (aValue.mergeValue == null) {
          throw new Exception("Merge Value has a null value so no resolution possible");
@@ -461,15 +459,15 @@ public class ConflictTestManager {
                   expected = value.sourceValue;
                }
                if (value.sourceDeleted) {
-                  if (destArtifacts[i].getSoleAttributeValueAsString(value.attributeName, "Deleted").equals("Deleted")) {
+                  if (destArtifacts[i].getSoleAttributeValueAsString(value.attributeType, "Deleted").equals("Deleted")) {
                      System.err.println("The attribute should have been deleted but wasn't");
                      return false;
                   }
                } else if (!stringToObject(value.clas, expected).toString().equals(
-                  destArtifacts[i].getSoleAttributeValueAsString(value.attributeName, " ")) && !destArtifacts[i].isDeleted()) {
-                  System.err.println("Expected the " + value.attributeName + " attribute to have a value of " + stringToObject(
+                  destArtifacts[i].getSoleAttributeValueAsString(value.attributeType, " ")) && !destArtifacts[i].isDeleted()) {
+                  System.err.println("Expected the " + value.attributeType + " attribute to have a value of " + stringToObject(
                      value.clas, expected) + " but got " + destArtifacts[i].getSoleAttributeValueAsString(
-                     value.attributeName, " ") + " for Artifact " + destArtifacts[i].getArtId() + " conflict index: " + i);
+                     value.attributeType, " ") + " for Artifact " + destArtifacts[i].getArtId() + " conflict index: " + i);
                   return false;
                }
             }
@@ -493,7 +491,7 @@ public class ConflictTestManager {
          sourceArtifacts[7]));
    }
 
-   public static void createConflictDefinitions() {
+   public static void createConflictDefinitions() throws OseeCoreException {
       for (int i = 0; i < NUMBER_OF_ARTIFACTS; i++) {
          conflictDefs[i] = new ConflictDefinition();
       }

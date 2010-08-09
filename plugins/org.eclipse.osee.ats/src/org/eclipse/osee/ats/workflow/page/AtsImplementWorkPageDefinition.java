@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.workflow.page;
 
-import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.workflow.flow.TeamWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions.RuleWorkItemId;
@@ -30,8 +30,8 @@ public class AtsImplementWorkPageDefinition extends WorkPageDefinition {
    public AtsImplementWorkPageDefinition(String name, String pageId, String parentId) {
       super(name, pageId, parentId);
       addWorkItem(RuleWorkItemId.atsRequireStateHourSpentPrompt.name());
-      addWorkItem(ATSAttributes.WORK_PACKAGE_ATTRIBUTE.getWorkItemId());
-      addWorkItem(ATSAttributes.ESTIMATED_COMPLETION_DATE_ATTRIBUTE.getWorkItemId());
-      addWorkItem(ATSAttributes.RESOLUTION_ATTRIBUTE.getWorkItemId());
+      addWorkItem(AtsAttributeTypes.ATS_WORK_PACKAGE);
+      addWorkItem(AtsAttributeTypes.ATS_ESTIMATED_COMPLETION_DATE);
+      addWorkItem(AtsAttributeTypes.ATS_RESOLUTION);
    }
 }

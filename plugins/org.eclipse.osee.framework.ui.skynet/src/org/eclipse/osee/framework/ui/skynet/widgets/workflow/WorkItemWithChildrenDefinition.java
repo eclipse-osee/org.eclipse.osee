@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -62,6 +63,10 @@ public abstract class WorkItemWithChildrenDefinition extends WorkItemDefinition 
 
    public void addWorkItem(String workItemDefintionId) {
       workItemIds.add(workItemDefintionId);
+   }
+
+   public void addWorkItem(IAttributeType workItemType) {
+      workItemIds.add(workItemType.getName());
    }
 
    public void removeWorkItem(String workItemDefintionId) {

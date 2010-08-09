@@ -47,7 +47,7 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
 
    @Test
    public void testProcessDataAttributeTypeNotApplicable() throws OseeCoreException {
-      IAttributeType attributeType = CoreAttributeTypes.NAME;
+      IAttributeType attributeType = CoreAttributeTypes.Name;
 
       XAttributeType attributeTypeRef =
          MockModel.createXAttributeType(attributeType.getGuid(), attributeType.getName());
@@ -64,7 +64,7 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
 
    @Test
    public void testProcessDataAttributeTypeIsApplicable() throws OseeCoreException {
-      IAttributeType attributeType = CoreAttributeTypes.NAME;
+      IAttributeType attributeType = CoreAttributeTypes.Name;
 
       XAttributeType attributeTypeRef =
          MockModel.createXAttributeType(attributeType.getGuid(), attributeType.getName());
@@ -81,7 +81,7 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
 
    @Test
    public void testProcessDataAttributeTypeIsApplicableArtifactTypeBoundedNoMatch() throws OseeCoreException {
-      IAttributeType attributeType = CoreAttributeTypes.NAME;
+      IAttributeType attributeType = CoreAttributeTypes.Name;
 
       XAttributeType attributeTypeRef =
          MockModel.createXAttributeType(attributeType.getGuid(), attributeType.getName());
@@ -105,7 +105,7 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
 
    @Test
    public void testProcessDataAttributeTypeIsApplicableArtifactTypeMatch() throws OseeCoreException {
-      IAttributeType attributeType = CoreAttributeTypes.NAME;
+      IAttributeType attributeType = CoreAttributeTypes.Name;
 
       XAttributeType attributeTypeRef =
          MockModel.createXAttributeType(attributeType.getGuid(), attributeType.getName());
@@ -128,7 +128,7 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
 
    @Test
    public void testProcessDataAttributeTypeIsApplicableArtifactTypeMatchWithInheritance() throws OseeCoreException {
-      IAttributeType attributeType = CoreAttributeTypes.NAME;
+      IAttributeType attributeType = CoreAttributeTypes.Name;
 
       XAttributeType attributeTypeRef =
          MockModel.createXAttributeType(attributeType.getGuid(), attributeType.getName());

@@ -92,10 +92,10 @@ public class SetRequirementCategory extends AbstractBlam {
          }
       } else {
          try {
-            requirement = ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.NAME, requirementName, branch);
+            requirement = ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.Name, requirementName, branch);
          } catch (ArtifactDoesNotExist ex) {
             requirement =
-               ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.NAME, canonicalRequirementName, branch);
+               ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.Name, canonicalRequirementName, branch);
          }
       }
       return requirement;

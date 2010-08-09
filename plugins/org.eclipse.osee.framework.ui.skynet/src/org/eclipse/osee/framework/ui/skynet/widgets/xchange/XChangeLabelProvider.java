@@ -72,8 +72,8 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
          } else if (cCol.equals(ChangeXViewerFactory.paraNumber)) {
             String paragraphNum = "";
             Artifact artifact = change.getChangeArtifact();
-            if (artifact.isAttributeTypeValid(CoreAttributeTypes.PARAGRAPH_NUMBER)) {
-               paragraphNum = artifact.getSoleAttributeValue(CoreAttributeTypes.PARAGRAPH_NUMBER, "");
+            if (artifact.isAttributeTypeValid(CoreAttributeTypes.ParagraphNumber)) {
+               paragraphNum = artifact.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "");
             }
             return paragraphNum;
          }

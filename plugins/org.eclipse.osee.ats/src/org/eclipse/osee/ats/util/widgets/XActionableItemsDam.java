@@ -15,7 +15,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.config.AtsCacheManager;
@@ -33,7 +32,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
 public class XActionableItemsDam extends XTextDam {
 
    public XActionableItemsDam(Artifact artifact) throws OseeCoreException {
-      super(ATSAttributes.ACTIONABLE_ITEM_GUID_ATTRIBUTE.getDisplayName(), true);
+      super(AtsAttributeTypes.ATS_ACTIONABLE_ITEM.getUnqualifiedName(), true);
       setAttributeType(artifact, AtsAttributeTypes.ATS_ACTIONABLE_ITEM);
    }
 

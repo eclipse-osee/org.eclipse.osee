@@ -62,8 +62,8 @@ public class AccessDataTest {
       branchToCheck2 = CoreBranches.COMMON;
 
       artifactType = CoreArtifactTypes.AbstractSoftwareRequirement;
-      attributeType = CoreAttributeTypes.PARAGRAPH_NUMBER;
-      wordAttributeType = CoreAttributeTypes.WORD_TEMPLATE_CONTENT;
+      attributeType = CoreAttributeTypes.ParagraphNumber;
+      wordAttributeType = CoreAttributeTypes.WordTemplateContent;
 
       RelationType relType = MockDataFactory.createRelationType(2, null, null);
       relTypeSide1 = new RelationTypeSide(relType, RelationSide.SIDE_A);

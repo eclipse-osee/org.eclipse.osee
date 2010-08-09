@@ -128,7 +128,7 @@ public class ExtractTestRelations {
       } catch (ArtifactDoesNotExist ex) {
          Artifact testArtifact =
             ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestCase, branch, testArtifactFile.getName());
-         testArtifact.setSoleAttributeValue(CoreAttributeTypes.ContentURL, testArtifactFile.getFullPath().toString());
+         testArtifact.setSoleAttributeValue(CoreAttributeTypes.ContentUrl, testArtifactFile.getFullPath().toString());
          testArtifact.persist();
          return testArtifact;
       }

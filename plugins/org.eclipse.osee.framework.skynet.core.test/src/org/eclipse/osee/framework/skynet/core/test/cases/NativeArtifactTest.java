@@ -47,22 +47,22 @@ public class NativeArtifactTest {
          CsvArtifact.getCsvArtifact(getClass().getSimpleName(), BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1), true);
       assertNotNull(csvArtifact);
       Artifact artifact = csvArtifact.getArtifact();
-      assertTrue(artifact.isAttributeTypeValid(CoreAttributeTypes.NATIVE_CONTENT));
-      assertTrue(artifact.isAttributeTypeValid(CoreAttributeTypes.NATIVE_EXTENSION));
+      assertTrue(artifact.isAttributeTypeValid(CoreAttributeTypes.NativeContent));
+      assertTrue(artifact.isAttributeTypeValid(CoreAttributeTypes.Extension));
    }
 
    @org.junit.Test
    public void testGetFileExtension() throws Exception {
       Artifact nativeArtifact = getNativeArtifact();
-      assertTrue(nativeArtifact.getSoleAttributeValue(CoreAttributeTypes.NATIVE_EXTENSION.getName(), "").equals("csv"));
+      assertTrue(nativeArtifact.getSoleAttributeValue(CoreAttributeTypes.Extension.getName(), "").equals("csv"));
    }
 
    @org.junit.Test
    public void testSetAndGetValueAsString() throws Exception {
       Artifact nativeArtifact = getNativeArtifact();
-      nativeArtifact.setSoleAttributeFromString(CoreAttributeTypes.NATIVE_CONTENT.getName(), "hello world");
+      nativeArtifact.setSoleAttributeFromString(CoreAttributeTypes.NativeContent.getName(), "hello world");
       nativeArtifact.persist();
-      String content = nativeArtifact.getSoleAttributeValueAsString(CoreAttributeTypes.NATIVE_CONTENT.getName(), "");
+      String content = nativeArtifact.getSoleAttributeValueAsString(CoreAttributeTypes.NativeContent.getName(), "");
       assertEquals("hello world", content);
    }
 
@@ -71,11 +71,11 @@ public class NativeArtifactTest {
       File file = OseeData.getFile(GUID.create() + ".txt");
       Lib.writeStringToFile("hello world", file);
       Artifact nativeArtifact = getNativeArtifact();
-      nativeArtifact.setSoleAttributeFromStream(CoreAttributeTypes.NATIVE_CONTENT.getName(), new FileInputStream(file));
+      nativeArtifact.setSoleAttributeFromStream(CoreAttributeTypes.NativeContent, new FileInputStream(file));
       nativeArtifact.persist();
       InputStream inputStream = null;
       try {
-         inputStream = nativeArtifact.getSoleAttributeValue(CoreAttributeTypes.NATIVE_CONTENT.getName(), null);
+         inputStream = nativeArtifact.getSoleAttributeValue(CoreAttributeTypes.NativeContent.getName(), null);
          String content = Lib.inputStreamToString(inputStream);
          assertEquals("hello world", content);
       } finally {

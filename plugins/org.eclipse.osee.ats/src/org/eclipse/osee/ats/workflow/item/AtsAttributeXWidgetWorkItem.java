@@ -37,8 +37,8 @@ public class AtsAttributeXWidgetWorkItem extends WorkWidgetDefinition {
          xOption);
    }
 
-   public AtsAttributeXWidgetWorkItem(String name, ATSAttributes atsAttribute, String xWidgetName, XOption... xOption) {
-      this(name, atsAttribute.getWorkItemId(), atsAttribute.getWorkItemId(), xWidgetName, xOption);
+   public AtsAttributeXWidgetWorkItem(IAttributeType atsAttribute, String xWidgetName, XOption... xOption) {
+      this(atsAttribute.getUnqualifiedName(), atsAttribute.getName(), atsAttribute.getName(), xWidgetName, xOption);
    }
 
    public AtsAttributeXWidgetWorkItem(String name, String id, IAttributeType attributeType, String xWidgetName, XOption... xOption) {

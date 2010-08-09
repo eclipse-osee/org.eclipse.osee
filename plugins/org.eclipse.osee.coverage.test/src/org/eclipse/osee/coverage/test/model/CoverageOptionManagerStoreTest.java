@@ -47,7 +47,7 @@ public class CoverageOptionManagerStoreTest {
          ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.GeneralData, "Coverage Preferences",
             BranchManager.getCommonBranch());
       if (artifact != null) {
-         KeyValueArtifact kvArt = new KeyValueArtifact(artifact, CoreAttributeTypes.GENERAL_STRING_DATA.getName());
+         KeyValueArtifact kvArt = new KeyValueArtifact(artifact, CoreAttributeTypes.GeneralStringData);
          kvArt.removeValues("CoverageOptions");
          kvArt.save();
          artifact.persist(transaction);

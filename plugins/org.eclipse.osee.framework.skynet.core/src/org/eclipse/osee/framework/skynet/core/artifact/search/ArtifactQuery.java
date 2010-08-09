@@ -174,12 +174,12 @@ public class ArtifactQuery {
     * @throws MultipleArtifactsExist if more than one artifact is found
     */
    public static Artifact getArtifactFromTypeAndName(IArtifactType artifactType, String artifactName, IOseeBranch branch) throws OseeCoreException {
-      return queryFromTypeAndAttribute(artifactType, CoreAttributeTypes.NAME, artifactName, branch).getOrCheckArtifact(
+      return queryFromTypeAndAttribute(artifactType, CoreAttributeTypes.Name, artifactName, branch).getOrCheckArtifact(
          QueryType.GET);
    }
 
    public static List<Integer> selectArtifactIdsFromTypeAndName(IArtifactType artifactType, String artifactName, IOseeBranch branch) throws OseeCoreException {
-      return queryFromTypeAndAttribute(artifactType, CoreAttributeTypes.NAME, artifactName, branch).selectArtifacts(2);
+      return queryFromTypeAndAttribute(artifactType, CoreAttributeTypes.Name, artifactName, branch).selectArtifacts(2);
    }
 
    /**
@@ -188,7 +188,7 @@ public class ArtifactQuery {
     * @return one artifact based on its type and name if it exists, otherwise null
     */
    public static Artifact checkArtifactFromTypeAndName(IArtifactType artifactTypeToken, String artifactName, IOseeBranch branch) throws OseeCoreException {
-      return queryFromTypeAndAttribute(artifactTypeToken, CoreAttributeTypes.NAME, artifactName, branch).getOrCheckArtifact(
+      return queryFromTypeAndAttribute(artifactTypeToken, CoreAttributeTypes.Name, artifactName, branch).getOrCheckArtifact(
          QueryType.CHECK);
    }
 
@@ -258,12 +258,12 @@ public class ArtifactQuery {
    }
 
    public static List<Artifact> getArtifactListFromName(String artifactName, IOseeBranch branch, DeletionFlag allowDeleted) throws OseeCoreException {
-      return new ArtifactQueryBuilder(branch, FULL, allowDeleted, new AttributeCriteria(CoreAttributeTypes.NAME,
+      return new ArtifactQueryBuilder(branch, FULL, allowDeleted, new AttributeCriteria(CoreAttributeTypes.Name,
          artifactName)).getArtifacts(30, null);
    }
 
    public static List<Artifact> getArtifactListFromTypeAndName(IArtifactType artifactType, String artifactName, IOseeBranch branch) throws OseeCoreException {
-      return getArtifactListFromTypeAndAttribute(artifactType, CoreAttributeTypes.NAME, artifactName, branch);
+      return getArtifactListFromTypeAndAttribute(artifactType, CoreAttributeTypes.Name, artifactName, branch);
    }
 
    /**

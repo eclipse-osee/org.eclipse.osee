@@ -318,7 +318,7 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
 
    private void setContent() {
       if (roughArtifact != null) {
-         roughArtifact.addAttribute(CoreAttributeTypes.WORD_TEMPLATE_CONTENT, wordFormattedContent.toString());
+         roughArtifact.addAttribute(CoreAttributeTypes.WordTemplateContent, wordFormattedContent.toString());
          wordFormattedContent.setLength(0);
       }
    }
@@ -344,7 +344,7 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
          collector.addRoughArtifact(roughArtifact);
          roughArtifact.setSectionNumber(outlineNumber);
 
-         roughArtifact.addAttribute(CoreAttributeTypes.PARAGRAPH_NUMBER, outlineNumber);
+         roughArtifact.addAttribute(CoreAttributeTypes.ParagraphNumber, outlineNumber);
 
          return roughArtifact;
       } else {

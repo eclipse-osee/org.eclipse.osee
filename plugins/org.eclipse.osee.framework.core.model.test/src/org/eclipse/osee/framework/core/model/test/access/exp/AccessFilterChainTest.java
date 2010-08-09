@@ -34,7 +34,7 @@ public class AccessFilterChainTest {
       //Can we edit this attribute on an artifact
       AccessFilterChain chain = new AccessFilterChain();
       IBasicArtifact<?> basicArtifact = new DefaultBasicArtifact(1, "1", "123");
-      IAttributeType attributeType = CoreAttributeTypes.WORD_TEMPLATE_CONTENT;
+      IAttributeType attributeType = CoreAttributeTypes.WordTemplateContent;
 
       BranchAccessFilter branchAccessFilter = new BranchAccessFilter(basicArtifact, PermissionEnum.READ);
       ArtifactAccessFilter artifactAccessFilter = new ArtifactAccessFilter(basicArtifact, PermissionEnum.WRITE);
@@ -55,7 +55,7 @@ public class AccessFilterChainTest {
       AccessFilterChain chain = new AccessFilterChain();
       IBasicArtifact<?> basicArtifact = new DefaultBasicArtifact(1, "1", "123");
       IBasicArtifact<?> basicArtifact2 = new DefaultBasicArtifact(2, "2", "456");
-      IAttributeType attributeType = CoreAttributeTypes.WORD_TEMPLATE_CONTENT;
+      IAttributeType attributeType = CoreAttributeTypes.WordTemplateContent;
 
       BranchAccessFilter branchAccessFilter = new BranchAccessFilter(basicArtifact, PermissionEnum.READ);
       ArtifactAccessFilter artifactAccessFilter = new ArtifactAccessFilter(basicArtifact, PermissionEnum.WRITE);

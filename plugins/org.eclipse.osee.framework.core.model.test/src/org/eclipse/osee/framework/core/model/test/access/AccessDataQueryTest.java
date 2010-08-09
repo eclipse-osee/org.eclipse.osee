@@ -87,8 +87,8 @@ public class AccessDataQueryTest {
       AccessData data = testObject.getAccessData();
       IBasicArtifact<?> artifactToCheck = testObject.getArtifact();
 
-      IAttributeType attributeType = CoreAttributeTypes.PARAGRAPH_NUMBER;
-      IAttributeType wordAttributeType = CoreAttributeTypes.WORD_TEMPLATE_CONTENT;
+      IAttributeType attributeType = CoreAttributeTypes.ParagraphNumber;
+      IAttributeType wordAttributeType = CoreAttributeTypes.WordTemplateContent;
 
       data.add(artifactToCheck, new AccessDetail<IAttributeType>(attributeType, PermissionEnum.WRITE));
       data.add(artifactToCheck, new AccessDetail<IAttributeType>(wordAttributeType, PermissionEnum.READ));

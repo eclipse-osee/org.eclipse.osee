@@ -98,7 +98,7 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
          if (previewOnDoubleClickForWordArtifacts.getSelection()) {
             StaticIdManager.setSingletonAttributeValue(user, PreviewOnDoubleClickForWordArtifacts);
          } else {
-            user.deleteAttribute(CoreAttributeTypes.STATIC_ID, PreviewOnDoubleClickForWordArtifacts);
+            user.deleteAttribute(CoreAttributeTypes.StaticId, PreviewOnDoubleClickForWordArtifacts);
          }
 
          boolean result = closeChangeReportEditorsOnShutdown.getSelection();

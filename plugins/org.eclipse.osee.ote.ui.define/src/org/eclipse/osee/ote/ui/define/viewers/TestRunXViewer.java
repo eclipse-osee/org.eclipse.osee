@@ -279,8 +279,8 @@ public class TestRunXViewer extends XViewer {
       }
       try {
          returnValue =
-            ArtifactPromptChange.promptChangeAttribute(OteAttributeTypes.TEST_DISPOSITION, "Edit Disposition",
-               dispositionArtifacts, true, false);
+            ArtifactPromptChange.promptChangeAttribute(OteAttributeTypes.TEST_DISPOSITION, dispositionArtifacts, true,
+               false);
          refresh();
       } catch (Exception ex) {
          OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, ex);

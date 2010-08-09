@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -103,7 +104,7 @@ public class DefaultArtifactRenderer implements IRenderer {
    }
 
    @Override
-   public void renderAttribute(String attributeTypeName, Artifact artifact, PresentationType presentationType, Producer producer, VariableMap map, AttributeElement attributeElement) throws OseeCoreException {
+   public void renderAttribute(IAttributeType attributeType, Artifact artifact, PresentationType presentationType, Producer producer, VariableMap map, AttributeElement attributeElement) throws OseeCoreException {
       WordMLProducer wordMl = (WordMLProducer) producer;
       String format = attributeElement.getFormat();
       boolean allAttrs = map.getBoolean("allAttrs");
@@ -111,18 +112,18 @@ public class DefaultArtifactRenderer implements IRenderer {
       wordMl.startParagraph();
 
       if (allAttrs) {
-         wordMl.addWordMl("<w:r><w:t> " + Xml.escape(attributeTypeName) + ": </w:t></w:r>");
+         wordMl.addWordMl("<w:r><w:t> " + Xml.escape(attributeType.getName()) + ": </w:t></w:r>");
       } else {
          // assumption: the label is of the form <w:r><w:t> text </w:t></w:r>
          wordMl.addWordMl(attributeElement.getLabel());
       }
 
-      if (attributeTypeName.equals(CoreAttributeTypes.RELATION_ORDER.getName())) {
+      if (attributeType.equals(CoreAttributeTypes.RelationOrder)) {
          wordMl.endParagraph();
          String data = renderRelationOrder(artifact);
          wordMl.addWordMl(data);
       } else {
-         String valueList = artifact.getAttributesToString(attributeTypeName);
+         String valueList = artifact.getAttributesToString(attributeType);
          if (attributeElement.getFormat().contains(">x<")) {
             wordMl.addWordMl(format.replace(">x<", ">" + Xml.escape(valueList).toString() + "<"));
          } else {
@@ -172,7 +173,7 @@ public class DefaultArtifactRenderer implements IRenderer {
       AttributeType contentType = null;
 
       for (AttributeType attributeType : attributeTypes) {
-         if (attributeType.equals(CoreAttributeTypes.WHOLE_WORD_CONTENT) || attributeType.equals(CoreAttributeTypes.WORD_TEMPLATE_CONTENT)) {
+         if (attributeType.equals(CoreAttributeTypes.WholeWordContent) || attributeType.equals(CoreAttributeTypes.WordTemplateContent)) {
             contentType = attributeType;
          } else {
             orderedAttributeTypes.add(attributeType);

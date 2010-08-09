@@ -57,7 +57,7 @@ public class NativeRenderer extends FileSystemRenderer {
 
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
-      if (artifact.isAttributeTypeValid(CoreAttributeTypes.NATIVE_CONTENT)) {
+      if (artifact.isAttributeTypeValid(CoreAttributeTypes.NativeContent)) {
          if (presentationType.matches(SPECIALIZED_EDIT, PREVIEW)) {
             return PRESENTATION_SUBTYPE_MATCH;
          }
@@ -67,7 +67,7 @@ public class NativeRenderer extends FileSystemRenderer {
 
    @Override
    public String getAssociatedExtension(Artifact artifact) throws OseeCoreException {
-      return artifact.getSoleAttributeValue(CoreAttributeTypes.NATIVE_EXTENSION.getName(), "xml");
+      return artifact.getSoleAttributeValue(CoreAttributeTypes.Extension.getName(), "xml");
    }
 
    @Override
@@ -84,6 +84,6 @@ public class NativeRenderer extends FileSystemRenderer {
    @Override
    public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) throws OseeCoreException {
       Artifact artifact = artifacts.iterator().next();
-      return artifact.getSoleAttributeValue(CoreAttributeTypes.NATIVE_CONTENT.getName());
+      return artifact.getSoleAttributeValue(CoreAttributeTypes.NativeContent.getName());
    }
 }

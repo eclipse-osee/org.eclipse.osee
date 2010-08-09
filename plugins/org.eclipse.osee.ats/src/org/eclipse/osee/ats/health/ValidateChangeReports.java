@@ -188,7 +188,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
          throw new OseeStateException("Multiple artifacts found of name \"" + name + "\"");
       } else if (arts.size() == 1) {
          artifactForStore = arts.iterator().next();
-         storedChangeReport = artifactForStore.getSoleAttributeValue(CoreAttributeTypes.GENERAL_STRING_DATA, null);
+         storedChangeReport = artifactForStore.getSoleAttributeValue(CoreAttributeTypes.GeneralStringData, null);
       }
       // Retrieve current
       ChangeData currentChangeData = teamArt.getBranchMgr().getChangeDataFromEarliestTransactionId();
@@ -199,7 +199,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
             artifactForStore =
                ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, AtsUtil.getAtsBranch(), name);
          }
-         artifactForStore.setSoleAttributeValue(CoreAttributeTypes.GENERAL_STRING_DATA,
+         artifactForStore.setSoleAttributeValue(CoreAttributeTypes.GeneralStringData,
             getReport(currentDbGuid, currentChangeData));
          artifactForStore.persist();
          resultData.log("Stored Change Report for " + teamArt.getHumanReadableId());

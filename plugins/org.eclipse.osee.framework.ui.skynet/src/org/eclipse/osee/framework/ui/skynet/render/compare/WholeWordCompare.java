@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.ui.skynet.render.VbaWordDiffGenerator;
 import org.eclipse.osee.framework.ui.skynet.render.WordImageChecker;
 
 public class WholeWordCompare implements IComparator {
-   private static final IAttributeType ATTRIBUTE_TYPE = CoreAttributeTypes.WHOLE_WORD_CONTENT;
+   private static final IAttributeType ATTRIBUTE_TYPE = CoreAttributeTypes.WholeWordContent;
    private final ArtifactDeltaToFileConverter converter;
 
    public WholeWordCompare(FileSystemRenderer renderer) {

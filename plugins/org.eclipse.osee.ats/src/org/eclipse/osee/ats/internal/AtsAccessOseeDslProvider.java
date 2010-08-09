@@ -38,7 +38,7 @@ public class AtsAccessOseeDslProvider implements OseeDslProvider {
    @Override
    public void loadDsl() throws OseeCoreException {
       Artifact artifact = getStorageArtifact();
-      String accessModel = artifact.getSoleAttributeValue(CoreAttributeTypes.GENERAL_STRING_DATA);
+      String accessModel = artifact.getSoleAttributeValue(CoreAttributeTypes.GeneralStringData);
       oseeDsl = ModelUtil.loadModel("ats:/xtext/cm.access.osee", accessModel);
    }
 
@@ -56,7 +56,7 @@ public class AtsAccessOseeDslProvider implements OseeDslProvider {
       try {
          ModelUtil.saveModel(dsl, "ats:/xtext/cm.access.osee", outputStream, false);
          Artifact artifact = getStorageArtifact();
-         artifact.setSoleAttributeFromString(CoreAttributeTypes.GENERAL_STRING_DATA, outputStream.toString("UTF-8"));
+         artifact.setSoleAttributeFromString(CoreAttributeTypes.GeneralStringData, outputStream.toString("UTF-8"));
       } catch (IOException ex) {
          OseeExceptions.wrapAndThrow(ex);
       }

@@ -52,7 +52,7 @@ public class PurgeDeletedAttributes extends AbstractBlam {
 
       for (Artifact artifact : artifacts) {
          for (AttributeType attributeType : purgeAttributeTypes) {
-            for (Attribute<?> attribute : artifact.getAllAttributesIncludingHardDeleted(attributeType.getName())) {
+            for (Attribute<?> attribute : artifact.getAllAttributesIncludingHardDeleted(attributeType)) {
 
                strB.append(attribute.getAttributeType());
                strB.append(";");

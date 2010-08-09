@@ -170,18 +170,9 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
    }
 
    /**
-    * All the artifacts related to this artifact by relations of type relationTypeName are returned in a list order
-    * based on the stored relation order
-    * 
-    * @param relationTypeName
-    * @return the artifacts related to this artifact by relations of type relationTypeName
-    * @throws OseeCoreException
+    * All the artifacts related to this artifact by relations of type relationType are returned in a list order based on
+    * the stored relation order
     */
-   public List<Artifact> getRelatedArtifacts(String relationTypeName) throws OseeCoreException {
-      RelationType relationType = RelationTypeManager.getType(relationTypeName);
-      return RelationManager.getRelatedArtifacts(this, new RelationTypeSide(relationType, RelationSide.SIDE_B));
-   }
-
    public List<? extends IArtifact> getRelatedArtifacts(RelationType relationType) throws OseeCoreException {
       return RelationManager.getRelatedArtifacts(this, new RelationTypeSide(relationType, RelationSide.SIDE_B));
    }
@@ -498,21 +489,14 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
    /**
     * The use of this method is discouraged since it directly returns Attributes.
     */
-   public <T> List<Attribute<T>> getAttributes(String attributeTypeName, Object value) throws OseeCoreException {
+   public <T> List<Attribute<T>> getAttributes(IAttributeType attributeType, Object value) throws OseeCoreException {
       List<Attribute<?>> filteredList = new ArrayList<Attribute<?>>();
-      for (Attribute<?> attribute : getAttributes(attributeTypeName)) {
+      for (Attribute<?> attribute : getAttributes(attributeType)) {
          if (attribute.getValue().equals(value)) {
             filteredList.add(attribute);
          }
       }
       return Collections.castAll(filteredList);
-   }
-
-   /**
-    * The use of this method is discouraged since it directly returns Attributes.
-    */
-   public <T> List<Attribute<T>> getAttributes(IAttributeType attributeType, Object value) throws OseeCoreException {
-      return getAttributes(attributeType.getName(), value);
    }
 
    /**
@@ -529,8 +513,8 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
     * 
     * @return attributes All attributes of the specified type name including deleted and artifact deleted
     */
-   public List<Attribute<?>> getAllAttributesIncludingHardDeleted(String artifactTypeName) throws OseeCoreException {
-      return getAttributesByModificationType(artifactTypeName, ModificationType.getAllStates());
+   public List<Attribute<?>> getAllAttributesIncludingHardDeleted(IAttributeType attributeType) throws OseeCoreException {
+      return getAttributesByModificationType(attributeType, ModificationType.getAllStates());
    }
 
    /**
@@ -561,8 +545,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
    }
 
    public <T> List<Attribute<T>> getAttributes(IAttributeType attributeType) throws OseeCoreException {
-      return Collections.castAll(getAttributesByModificationType(attributeType.getName(),
-         ModificationType.getCurrentModTypes()));
+      return Collections.castAll(getAttributesByModificationType(attributeType, ModificationType.getCurrentModTypes()));
    }
 
    private List<Attribute<?>> getAttributesByModificationType(Set<ModificationType> allowedModTypes) throws OseeCoreException {
@@ -573,6 +556,10 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
    private List<Attribute<?>> getAttributesByModificationType(String attributeTypeName, Set<ModificationType> allowedModTypes) throws OseeCoreException {
       ensureAttributesLoaded();
       return filterByModificationType(attributes.getValues(attributeTypeName), allowedModTypes);
+   }
+
+   private List<Attribute<?>> getAttributesByModificationType(IAttributeType attributeType, Set<ModificationType> allowedModTypes) throws OseeCoreException {
+      return getAttributesByModificationType(attributeType.getName(), allowedModTypes);
    }
 
    private List<Attribute<?>> filterByModificationType(Collection<Attribute<?>> attributes, Set<ModificationType> allowedModTypes) {
@@ -592,15 +579,6 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
     */
    public List<Attribute<?>> internalGetAttributes() {
       return attributes.getValues();
-   }
-
-   /**
-    * Deletes all attributes of the given type, if any
-    */
-   public void deleteAttributes(String attributeTypeName) throws OseeCoreException {
-      for (Attribute<?> attribute : getAttributes(attributeTypeName)) {
-         attribute.delete();
-      }
    }
 
    /**
@@ -643,11 +621,10 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
       return soleAttributes.iterator().next();
    }
 
-   private <T> Attribute<T> getOrCreateSoleAttribute(String attributeTypeName) throws OseeCoreException {
-      Attribute<T> attribute = getSoleAttribute(attributeTypeName);
+   private <T> Attribute<T> getOrCreateSoleAttribute(IAttributeType attributeType) throws OseeCoreException {
+      Attribute<T> attribute = getSoleAttribute(attributeType);
       if (attribute == null) {
-         attribute =
-            initializeAttribute(AttributeTypeManager.getType(attributeTypeName), ModificationType.NEW, true, true);
+         attribute = initializeAttribute(attributeType, ModificationType.NEW, true, true);
       }
       return attribute;
    }
@@ -656,13 +633,9 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
     * Return he existing attribute value or the default value from a newly initialized attribute if none previously
     * existed
     */
-   public <T> T getOrInitializeSoleAttributeValue(String attributeTypeName) throws OseeCoreException {
-      Attribute<T> attribute = getOrCreateSoleAttribute(attributeTypeName);
-      return attribute.getValue();
-   }
-
    public <T> T getOrInitializeSoleAttributeValue(IAttributeType attributeType) throws OseeCoreException {
-      return getOrInitializeSoleAttributeValue(attributeType.getName());
+      Attribute<T> attribute = getOrCreateSoleAttribute(attributeType);
+      return attribute.getValue();
    }
 
    /**
@@ -787,9 +760,9 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
          if (!attribute.isInDb()) {
             attributes.removeValue(attributeTypeName, attribute);
          } else {
-         attribute.delete();
+            attribute.delete();
+         }
       }
-   }
    }
 
    public void deleteSoleAttribute(IAttributeType attributeType) throws OseeCoreException {
@@ -817,27 +790,23 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
     * a new attribute is added and its value set.
     */
    public <T> void setSoleAttributeValue(String attributeTypeName, T value) throws OseeCoreException {
-      getOrCreateSoleAttribute(attributeTypeName).setValue(value);
+      getOrCreateSoleAttribute(AttributeTypeManager.getType(attributeTypeName)).setValue(value);
    }
 
-   public <T> void setSoleAttributeValue(IAttributeType attributeTypeEnum, T value) throws OseeCoreException {
-      getOrCreateSoleAttribute(attributeTypeEnum.getName()).setValue(value);
+   public <T> void setSoleAttributeValue(IAttributeType attributeType, T value) throws OseeCoreException {
+      getOrCreateSoleAttribute(attributeType).setValue(value);
    }
 
    public <T> void setSoleAttributeFromString(IAttributeType attributeType, String value) throws OseeCoreException {
-      getOrCreateSoleAttribute(attributeType.getName()).setFromString(value);
+      getOrCreateSoleAttribute(attributeType).setFromString(value);
    }
 
    public <T> void setSoleAttributeFromString(String attributeTypeName, String value) throws OseeCoreException {
-      getOrCreateSoleAttribute(attributeTypeName).setFromString(value);
-   }
-
-   public void setSoleAttributeFromStream(String attributeTypeName, InputStream stream) throws OseeCoreException {
-      getOrCreateSoleAttribute(attributeTypeName).setValueFromInputStream(stream);
+      getOrCreateSoleAttribute(AttributeTypeManager.getType(attributeTypeName)).setFromString(value);
    }
 
    public void setSoleAttributeFromStream(IAttributeType attributeType, InputStream stream) throws OseeCoreException {
-      setSoleAttributeFromStream(attributeType.getName(), stream);
+      getOrCreateSoleAttribute(attributeType).setValueFromInputStream(stream);
    }
 
    /**
@@ -987,7 +956,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
          ensureAttributesLoaded();
          // use the first name attribute whether deleted or not.
          for (Attribute<?> attribute : internalGetAttributes()) {
-            if (attribute.isOfType(CoreAttributeTypes.NAME)) {
+            if (attribute.isOfType(CoreAttributeTypes.Name)) {
                name = (String) attribute.getValue();
             }
          }
@@ -1001,7 +970,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
    }
 
    public void setName(String name) throws OseeCoreException {
-      setSoleAttributeValue(CoreAttributeTypes.NAME, name);
+      setSoleAttributeValue(CoreAttributeTypes.Name, name);
    }
 
    public ArtifactFactory getFactory() {
@@ -1449,7 +1418,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
    }
 
    private boolean isCopyAllowed(Attribute<?> attribute) {
-      return attribute != null && !attribute.isOfType(CoreAttributeTypes.RELATION_ORDER);
+      return attribute != null && !attribute.isOfType(CoreAttributeTypes.RelationOrder);
    }
 
    /**

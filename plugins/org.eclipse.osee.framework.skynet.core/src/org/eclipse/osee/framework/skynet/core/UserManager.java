@@ -180,7 +180,7 @@ public final class UserManager {
       if (user == null) {
          try {
             user =
-               (User) ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.USER_ID, userId,
+               (User) ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.UserId, userId,
                   BranchManager.getCommonBranch());
          } catch (ArtifactDoesNotExist ex) {
             throw new UserNotInDatabase(String.format("The user with id [%s] was not found.", userId));

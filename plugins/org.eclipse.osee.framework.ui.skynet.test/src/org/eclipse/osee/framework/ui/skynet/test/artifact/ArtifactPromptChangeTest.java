@@ -35,7 +35,7 @@ import org.junit.Test;
  * @author Jeff C. Phillips
  */
 public class ArtifactPromptChangeTest {
-   private static IAttributeType TEST_ATTRIBUTE_TYPE = CoreAttributeTypes.NAME;
+   private static IAttributeType TEST_ATTRIBUTE_TYPE = CoreAttributeTypes.Name;
 
    @Test
    public void test() throws OseeCoreException {
@@ -46,11 +46,11 @@ public class ArtifactPromptChangeTest {
       MockAccessPolicyHandler policyHandler = new MockAccessPolicyHandler();
       MockPromptFactory.createPrompt(CoreAttributeTypes.Annotation, "", artifacts, persist, false);
 
-      ArtifactPromptChange artifactPromptChange = new ArtifactPromptChange(MockPromptFactory, policyHandler);
+      ArtifactPromptChange artifactPromptChange = new ArtifactPromptChange();
 
-      Assert.assertFalse(artifactPromptChange.promptChangeAttribute(CoreAttributeTypes.Annotation, artifacts, persist,
-         false, ""));
-      Assert.assertTrue(artifactPromptChange.promptChangeAttribute(TEST_ATTRIBUTE_TYPE, artifacts, persist, false, ""));
+      Assert.assertFalse(ArtifactPromptChange.promptChangeAttribute(CoreAttributeTypes.Annotation, artifacts, persist,
+         false));
+      Assert.assertTrue(ArtifactPromptChange.promptChangeAttribute(TEST_ATTRIBUTE_TYPE, artifacts, persist, false));
    }
 
    private static class MockAccessPolicyHandler extends AccessPolicyHandler {

@@ -80,7 +80,7 @@ public class BranchPurgeTest {
 
       // make more changes to artifacts
       for (Artifact softArt : softArts) {
-         softArt.addAttribute(CoreAttributeTypes.STATIC_ID, getClass().getSimpleName());
+         softArt.addAttribute(CoreAttributeTypes.StaticId, getClass().getSimpleName());
          softArt.persist();
       }
 

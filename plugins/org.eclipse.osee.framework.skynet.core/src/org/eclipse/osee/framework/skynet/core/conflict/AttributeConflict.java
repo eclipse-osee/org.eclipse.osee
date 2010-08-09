@@ -72,7 +72,7 @@ public class AttributeConflict extends Conflict {
       this.attrId = attrId;
       this.attrTypeId = attrTypeId;
       this.status = ConflictStatus.EDITED;
-      this.isWordAttribute = getAttributeType().equals(CoreAttributeTypes.WORD_TEMPLATE_CONTENT);
+      this.isWordAttribute = getAttributeType().equals(CoreAttributeTypes.WordTemplateContent);
       computeEqualsValues();
    }
 
@@ -81,7 +81,7 @@ public class AttributeConflict extends Conflict {
       this.attrId = attrId;
       this.attrTypeId = attrTypeId;
       this.status = ConflictStatus.EDITED;
-      this.isWordAttribute = getAttributeType().equals(CoreAttributeTypes.WORD_TEMPLATE_CONTENT);
+      this.isWordAttribute = getAttributeType().equals(CoreAttributeTypes.WordTemplateContent);
       computeEqualsValues();
    }
 
@@ -513,6 +513,6 @@ public class AttributeConflict extends Conflict {
    }
 
    public boolean involvesNativeContent() throws OseeCoreException {
-      return getArtifact().isAttributeTypeValid(CoreAttributeTypes.NATIVE_CONTENT);
+      return getArtifact().isAttributeTypeValid(CoreAttributeTypes.NativeContent);
    }
 }

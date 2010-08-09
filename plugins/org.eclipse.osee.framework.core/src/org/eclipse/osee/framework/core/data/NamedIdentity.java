@@ -14,13 +14,19 @@ package org.eclipse.osee.framework.core.data;
 /**
  * @author Ryan D. Brooks
  */
-public class NamedIdentity implements Identity, Named {
+public class NamedIdentity implements Identity, FullyNamed, Describable {
    private final String guid;
    private final String name;
+   private final String description;
 
    public NamedIdentity(String guid, String name) {
+      this(guid, name, "");
+   }
+
+   public NamedIdentity(String guid, String name, String description) {
       this.guid = guid;
       this.name = name;
+      this.description = description;
    }
 
    @Override
@@ -31,6 +37,11 @@ public class NamedIdentity implements Identity, Named {
    @Override
    public String getName() {
       return name;
+   }
+
+   @Override
+   public String getUnqualifiedName() {
+      return name.substring(name.lastIndexOf('.') + 1);
    }
 
    @Override
@@ -49,5 +60,10 @@ public class NamedIdentity implements Identity, Named {
    @Override
    public String toString() {
       return getName();
+   }
+
+   @Override
+   public String getDescription() {
+      return description;
    }
 }

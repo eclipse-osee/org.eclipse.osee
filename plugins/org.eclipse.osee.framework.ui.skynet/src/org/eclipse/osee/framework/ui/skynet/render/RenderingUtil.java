@@ -165,7 +165,7 @@ public final class RenderingUtil {
 
       if (!UserManager.getUser().getBooleanSetting(MsWordPreferencePage.REMOVE_TRACKED_CHANGES)) {
          if (artifact != null) {
-            Attribute<?> attribute = artifact.getSoleAttribute(CoreAttributeTypes.WORD_TEMPLATE_CONTENT);
+            Attribute<?> attribute = artifact.getSoleAttribute(CoreAttributeTypes.WordTemplateContent);
             if (attribute != null) {
                String value = attribute.getValue().toString();
                // check for track changes

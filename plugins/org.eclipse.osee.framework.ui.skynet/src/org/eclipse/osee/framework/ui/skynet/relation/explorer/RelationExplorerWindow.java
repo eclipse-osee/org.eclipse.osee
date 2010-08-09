@@ -291,7 +291,7 @@ public class RelationExplorerWindow {
                   try {
                      artifact = ArtifactTypeManager.makeNewArtifact(descriptor, branch);
                      artifact.setName(model.getName());
-                     artifact.setSoleAttributeValue(CoreAttributeTypes.ContentURL,
+                     artifact.setSoleAttributeValue(CoreAttributeTypes.ContentUrl,
                         urls.get(names.indexOf(model.getName())));
                      artifact.persist();
                   } catch (Exception ex) {

@@ -93,7 +93,7 @@ public final class ArtifactCache {
 
    static void cachePostAttributeLoad(Artifact artifact) throws OseeCoreException {
       if (!artifact.isHistorical()) {
-         for (String staticId : artifact.getAttributesToStringList(CoreAttributeTypes.STATIC_ID)) {
+         for (String staticId : artifact.getAttributesToStringList(CoreAttributeTypes.StaticId)) {
             cacheByStaticId(staticId, artifact);
          }
       }
@@ -119,7 +119,7 @@ public final class ArtifactCache {
    }
 
    public static void cacheByStaticId(Artifact artifact) throws OseeCoreException {
-      for (String staticId : artifact.getAttributesToStringList(CoreAttributeTypes.STATIC_ID)) {
+      for (String staticId : artifact.getAttributesToStringList(CoreAttributeTypes.StaticId)) {
          ACTIVE_CACHE.cacheByStaticId(staticId, artifact);
       }
    }

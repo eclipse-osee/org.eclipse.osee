@@ -44,7 +44,7 @@ public class SubsystemRequirementVerificationLevel extends AbstractBlam {
    private Collection<Artifact> subsystemRequirements;
    private StringBuilder report;
    private SkynetTransaction transaction;
-   private final String[] columnHeaders = {"Requirement", "Subsystem", CoreAttributeTypes.PARAGRAPH_NUMBER.getName(),
+   private final String[] columnHeaders = {"Requirement", "Subsystem", CoreAttributeTypes.ParagraphNumber.getName(),
       "Current Verification Level", "Changed"};
 
    @SuppressWarnings("unused")
@@ -117,9 +117,9 @@ public class SubsystemRequirementVerificationLevel extends AbstractBlam {
       private void getData() throws OseeCoreException {
          this.hardwareComponents = getHardwareComponentCount();
          this.softwareRequirements = getSoftwareRequirementCount();
-         paragraphNumber = req.getSoleAttributeValue(CoreAttributeTypes.PARAGRAPH_NUMBER, "UNDEFINED");
-         subsystem = req.getSoleAttributeValue(CoreAttributeTypes.SUBSYSTEM, "UNDEFINED");
-         verificationLevel = req.getSoleAttributeValue(CoreAttributeTypes.VERIFICATION_LEVEL, "UNDEFINED");
+         paragraphNumber = req.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "UNDEFINED");
+         subsystem = req.getSoleAttributeValue(CoreAttributeTypes.Subsystem, "UNDEFINED");
+         verificationLevel = req.getSoleAttributeValue(CoreAttributeTypes.VerificationLevel, "UNDEFINED");
       }
 
       private int getHardwareComponentCount() throws OseeCoreException {
@@ -143,7 +143,7 @@ public class SubsystemRequirementVerificationLevel extends AbstractBlam {
       }
 
       private void adjustVerificationLevel() throws OseeCoreException {
-         req.setSoleAttributeValue(CoreAttributeTypes.VERIFICATION_LEVEL, "Component");
+         req.setSoleAttributeValue(CoreAttributeTypes.VerificationLevel, "Component");
          req.persist(SubsystemRequirementVerificationLevel.this.transaction);
       }
 

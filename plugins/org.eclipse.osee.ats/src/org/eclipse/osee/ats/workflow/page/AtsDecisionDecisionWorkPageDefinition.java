@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.workflow.page;
 
-import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.workflow.flow.DecisionWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
@@ -33,9 +33,9 @@ public class AtsDecisionDecisionWorkPageDefinition extends WorkPageDefinition {
    public AtsDecisionDecisionWorkPageDefinition(String name, String pageId, String parentId) {
       super(name, pageId, parentId);
       addWorkItem(AtsDecisionDecisionWorkPageDefinition.DECISION_QUESTION_LABEL);
-      addWorkItem(ATSAttributes.DECISION_ATTRIBUTE.getWorkItemId());
+      addWorkItem(AtsAttributeTypes.ATS_DECISION);
       addWorkItem(AtsWorkDefinitions.ATS_DESCRIPTION_NOT_REQUIRED_ID);
-      addWorkItem(ATSAttributes.RESOLUTION_ATTRIBUTE.getWorkItemId());
+      addWorkItem(AtsAttributeTypes.ATS_RESOLUTION);
    }
 
 }

@@ -84,7 +84,7 @@ public class ArtifactLoaderTest {
             "ArtifactLoaderTest", BranchManager.getCommonBranch());
       for (Artifact artifact : artifacts) {
          artifact.setName("ArtifactLoaderTest");
-         artifact.addAttribute(CoreAttributeTypes.DEFAULT_MAIL_SERVER, ATTRIBUTE_VALUE);
+         artifact.addAttribute(CoreAttributeTypes.DefaultMailServer, ATTRIBUTE_VALUE);
          artifact.persist(transaction);
       }
       transaction.execute();
@@ -125,8 +125,8 @@ public class ArtifactLoaderTest {
       Assert.assertEquals(NUM_ARTIFACTS, artifacts.size());
 
       for (Artifact artifact : artifacts) {
-         Assert.assertEquals(ATTRIBUTE_VALUE, artifact.getSoleAttributeValue(CoreAttributeTypes.DEFAULT_MAIL_SERVER));
-         Assert.assertEquals(1, artifact.getAttributesToStringList(CoreAttributeTypes.DEFAULT_MAIL_SERVER).size());
+         Assert.assertEquals(ATTRIBUTE_VALUE, artifact.getSoleAttributeValue(CoreAttributeTypes.DefaultMailServer));
+         Assert.assertEquals(1, artifact.getAttributesToStringList(CoreAttributeTypes.DefaultMailServer).size());
       }
 
       System.out.println("Completed");

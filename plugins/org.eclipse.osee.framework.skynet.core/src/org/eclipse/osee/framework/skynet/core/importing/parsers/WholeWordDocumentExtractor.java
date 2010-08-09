@@ -34,7 +34,7 @@ public class WholeWordDocumentExtractor extends AbstractArtifactExtractor {
       RoughArtifact roughArtifact =
          new RoughArtifact(RoughArtifactKind.PRIMARY, Lib.removeExtension(new File(source).getName()));
       collector.addRoughArtifact(roughArtifact);
-      roughArtifact.addURIAttribute(CoreAttributeTypes.WHOLE_WORD_CONTENT, source);
+      roughArtifact.addURIAttribute(CoreAttributeTypes.WholeWordContent, source);
    }
 
    @Override

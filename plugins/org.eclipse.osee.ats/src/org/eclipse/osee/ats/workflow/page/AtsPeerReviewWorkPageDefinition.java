@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.workflow.page;
 
 import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.workflow.flow.PeerToPeerWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
@@ -30,9 +31,9 @@ public class AtsPeerReviewWorkPageDefinition extends WorkPageDefinition {
 
    public AtsPeerReviewWorkPageDefinition(String name, String pageId, String parentId) {
       super(name, pageId, parentId);
-      addWorkItem(ATSAttributes.ROLE_ATTRIBUTE.getWorkItemId());
-      addWorkItem(ATSAttributes.REVIEW_DEFECT_ATTRIBUTE.getWorkItemId());
-      addWorkItem(ATSAttributes.RESOLUTION_ATTRIBUTE.getWorkItemId());
+      addWorkItem(AtsAttributeTypes.ATS_ROLE);
+      addWorkItem(AtsAttributeTypes.ATS_REVIEW_DEFECT);
+      addWorkItem(AtsAttributeTypes.ATS_RESOLUTION);
       addWorkItem(AtsWorkDefinitions.ATS_DESCRIPTION_NOT_REQUIRED_ID);
    }
 

@@ -184,7 +184,7 @@ public class TestRunOperator {
 
    public void createTestScriptSoftLink() throws OseeCoreException {
       Artifact testScript =
-         getTestScriptFetcher().searchForUniqueArtifactMatching(CoreAttributeTypes.NAME, artifact.getName(),
+         getTestScriptFetcher().searchForUniqueArtifactMatching(CoreAttributeTypes.Name, artifact.getName(),
             artifact.getBranch());
       if (testScript != null) {
          artifact.setSoleAttributeValue(OteAttributeTypes.TEST_SCRIPT_GUID.getName(), testScript.getGuid());

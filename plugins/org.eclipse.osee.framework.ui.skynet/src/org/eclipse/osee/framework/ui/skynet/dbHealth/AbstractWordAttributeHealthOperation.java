@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
-import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.WHOLE_WORD_CONTENT;
-import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.WORD_TEMPLATE_CONTENT;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.WholeWordContent;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.WordTemplateContent;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -116,7 +116,7 @@ public abstract class AbstractWordAttributeHealthOperation extends DatabaseHealt
 
       @Override
       protected void doWork(IProgressMonitor monitor) throws Exception {
-         IAttributeType[] attributeTypeNames = new IAttributeType[] {WORD_TEMPLATE_CONTENT, WHOLE_WORD_CONTENT};
+         IAttributeType[] attributeTypeNames = new IAttributeType[] {WordTemplateContent, WholeWordContent};
 
          monitor.setTaskName("Load Attribute Data");
          List<AttrData> attrDatas = new ArrayList<AttrData>();

@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
@@ -27,6 +26,7 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.dialog.AtsPriorityDialog;
 import org.eclipse.osee.ats.util.widgets.dialog.VersionListDialog;
 import org.eclipse.osee.ats.world.search.GoalSearchItem;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -365,58 +365,44 @@ public final class PromptChangeUtil {
       }
    }
 
-   public static boolean promptChangeIntegerAttribute(StateMachineArtifact sma, ATSAttributes atsAttr, boolean persist) {
+   public static boolean promptChangePercentAttribute(StateMachineArtifact sma, IAttributeType attributeType, boolean persist) {
       try {
-         return ArtifactPromptChange.promptChangeAttribute(atsAttr.getAttributeType(), atsAttr.getDisplayName(),
-            Arrays.asList(sma), persist);
+         return ArtifactPromptChange.promptChangeAttribute(attributeType, Arrays.asList(new Artifact[] {sma}), persist);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return false;
    }
 
-   public static boolean promptChangePercentAttribute(StateMachineArtifact sma, ATSAttributes atsAttr, boolean persist) {
+   public static boolean promptChangeAttribute(final Collection<? extends StateMachineArtifact> smas, IAttributeType attributeType, boolean persist, boolean multiLine) throws OseeCoreException {
+      return ArtifactPromptChange.promptChangeAttribute(attributeType, smas, persist, multiLine);
+   }
+
+   public static boolean promptChangeAttribute(final Artifact sma, IAttributeType attributeType, boolean persist, boolean multiLine) {
       try {
-         return ArtifactPromptChange.promptChangeAttribute(atsAttr.getAttributeType(), atsAttr.getDisplayName(),
-            Arrays.asList(new Artifact[] {sma}), persist);
+         return ArtifactPromptChange.promptChangeAttribute(attributeType, Arrays.asList(new Artifact[] {sma}), persist,
+            multiLine);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return false;
    }
 
-   public static boolean promptChangeAttribute(final Collection<? extends StateMachineArtifact> smas, ATSAttributes atsAttr, boolean persist, boolean multiLine) throws OseeCoreException {
-      return ArtifactPromptChange.promptChangeAttribute(atsAttr.getAttributeType(), atsAttr.getDisplayName(), smas,
-         persist, multiLine);
-   }
-
-   public static boolean promptChangeAttribute(final Artifact sma, ATSAttributes atsAttr, boolean persist, boolean multiLine) {
+   public static boolean promptChangeAttribute(StateMachineArtifact sma, IAttributeType attributeType, final boolean persist, boolean multiLine) {
       try {
-         return ArtifactPromptChange.promptChangeAttribute(atsAttr.getAttributeType(), atsAttr.getDisplayName(),
-            Arrays.asList(new Artifact[] {sma}), persist, multiLine);
+         return ArtifactPromptChange.promptChangeAttribute(attributeType, Arrays.asList(sma), persist, multiLine);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return false;
    }
 
-   public static boolean promptChangeAttribute(StateMachineArtifact sma, ATSAttributes atsAttr, final boolean persist, boolean multiLine) {
+   public static boolean promptChangeDate(StateMachineArtifact sma, IAttributeType attributeType, boolean persist) {
       try {
-         return ArtifactPromptChange.promptChangeAttribute(atsAttr.getAttributeType(), atsAttr.getDisplayName(),
-            Arrays.asList(sma), persist, multiLine);
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-      return false;
-   }
-
-   public static boolean promptChangeDate(StateMachineArtifact sma, ATSAttributes atsAttr, boolean persist) {
-      try {
-         return ArtifactPromptChange.promptChangeAttribute(atsAttr.getAttributeType(), atsAttr.getDisplayName(),
-            java.util.Collections.singleton(sma), persist);
+         return ArtifactPromptChange.promptChangeAttribute(attributeType, java.util.Collections.singleton(sma), persist);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP,
-            "Can't save " + atsAttr.getDisplayName() + " date to artifact " + sma.getHumanReadableId(), ex);
+            "Can't save " + attributeType.getUnqualifiedName() + " date to artifact " + sma.getHumanReadableId(), ex);
       }
       return false;
    }
@@ -503,5 +489,4 @@ public final class PromptChangeUtil {
       }
       return false;
    }
-
 }

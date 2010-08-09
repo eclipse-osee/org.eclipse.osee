@@ -111,14 +111,14 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
       String[] row = new String[7];
 
       for (Artifact lowLevelReq : lowLevelReqs) {
-         row[0] = correct(lowLevelReq.getSoleAttributeValue(CoreAttributeTypes.PARAGRAPH_NUMBER, ""));
+         row[0] = correct(lowLevelReq.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""));
          row[1] = lowLevelReq.getName();
          if (isLowerLevelRequirement(lowLevelReq)) {
-            row[2] = lowLevelReq.getAttributesToString(CoreAttributeTypes.QUALIFICATION_METHOD);
+            row[2] = lowLevelReq.getAttributesToString(CoreAttributeTypes.QualificationMethod);
 
             for (Artifact subSysReq : lowLevelReq.getRelatedArtifacts(CoreRelationTypes.Requirement_Trace__Higher_Level)) {
                row[3] = getAssociatedSubSystem(subSysReq);
-               row[4] = correct(subSysReq.getSoleAttributeValue(CoreAttributeTypes.PARAGRAPH_NUMBER, ""));
+               row[4] = correct(subSysReq.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""));
                row[5] = subSysReq.getName();
                row[6] = subSysReq.getSoleAttributeValue(Requirements.SUBSYSTEM, "");
                excelWriter.writeRow(row);
@@ -168,12 +168,12 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
 
          for (Artifact higherLevelReq : subsysReqs) {
             if (isAllocated(higherLevelReq)) {
-               row[0] = correct(higherLevelReq.getSoleAttributeValue(CoreAttributeTypes.PARAGRAPH_NUMBER, ""));
+               row[0] = correct(higherLevelReq.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""));
                row[1] = higherLevelReq.getName();
 
                for (Artifact lowerLevelReq : higherLevelReq.getRelatedArtifacts(CoreRelationTypes.Requirement_Trace__Lower_Level)) {
                   if (lowLevelReqs.contains(lowerLevelReq)) {
-                     row[2] = correct(lowerLevelReq.getSoleAttributeValue(CoreAttributeTypes.PARAGRAPH_NUMBER, ""));
+                     row[2] = correct(lowerLevelReq.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""));
                      row[3] = lowerLevelReq.getName();
                      excelWriter.writeRow(row);
                      row[0] = row[1] = null;
@@ -190,7 +190,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
    }
 
    private boolean isAllocated(Artifact higherLevelReq) throws OseeCoreException {
-      for (Artifact component : higherLevelReq.getRelatedArtifacts("Allocation")) {
+      for (Artifact component : higherLevelReq.getRelatedArtifacts(CoreRelationTypes.Allocation__Component)) {
          if (components.contains(component)) {
             return true;
          }

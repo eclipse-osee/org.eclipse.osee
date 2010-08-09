@@ -57,7 +57,7 @@ public class SimpleTemplateProviderTask implements IDbInitializationTask {
 
             if (url != null) {
                templateArtifact.setName(name);
-               templateArtifact.setSoleAttributeFromStream(CoreAttributeTypes.WHOLE_WORD_CONTENT, url.openStream());
+               templateArtifact.setSoleAttributeFromStream(CoreAttributeTypes.WholeWordContent, url.openStream());
                for (IConfigurationElement matchCriteriaEl : el.getChildren()) {
                   String match = matchCriteriaEl.getAttribute("match");
                   templateArtifact.addAttribute("Template Match Criteria", match);

@@ -50,7 +50,7 @@ public class AttributeConflictBuilder extends ConflictBuilder {
             mergeBranch, sourceBranch, destBranch);
       if (attributeConflict.getChangeItem().toString().equals("Word Ole Data")) {
          return null;
-      } else if (attributeConflict.getAttributeType().equals(CoreAttributeTypes.RELATION_ORDER)) {
+      } else if (attributeConflict.getAttributeType().equals(CoreAttributeTypes.RelationOrder)) {
          Artifact left = attributeConflict.getSourceArtifact();
          Artifact right = attributeConflict.getDestArtifact();
          RelationOrderData mergedOrder = RelationOrderMergeUtility.mergeRelationOrder(left, right);

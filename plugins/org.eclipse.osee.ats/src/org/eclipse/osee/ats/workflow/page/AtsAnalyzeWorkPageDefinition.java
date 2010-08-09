@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.workflow.page;
 
-import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.workflow.flow.TeamWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions.RuleWorkItemId;
@@ -30,13 +30,13 @@ public class AtsAnalyzeWorkPageDefinition extends WorkPageDefinition {
    public AtsAnalyzeWorkPageDefinition(String name, String pageId, String parentId) {
       super(name, pageId, parentId);
       addWorkItem(RuleWorkItemId.atsRequireStateHourSpentPrompt.name());
-      addWorkItem(ATSAttributes.WORK_PACKAGE_ATTRIBUTE.getWorkItemId());
-      addWorkItem(ATSAttributes.PROBLEM_ATTRIBUTE.getWorkItemId());
-      addWorkItem(ATSAttributes.PROPOSED_RESOLUTION_ATTRIBUTE.getWorkItemId());
-      addWorkItem(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getWorkItemId());
-      addWorkItem(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getWorkItemId());
-      addWorkItem(ATSAttributes.NEED_BY_ATTRIBUTE.getWorkItemId());
-      addWorkItem(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getWorkItemId());
+      addWorkItem(AtsAttributeTypes.ATS_WORK_PACKAGE);
+      addWorkItem(AtsAttributeTypes.ATS_PROBLEM);
+      addWorkItem(AtsAttributeTypes.ATS_PROPOSED_RESOLUTION);
+      addWorkItem(AtsAttributeTypes.ATS_CHANGE_TYPE);
+      addWorkItem(AtsAttributeTypes.ATS_PRIORITY_TYPE);
+      addWorkItem(AtsAttributeTypes.ATS_NEED_BY);
+      addWorkItem(AtsAttributeTypes.ATS_ESTIMATED_HOURS);
    }
 
 }

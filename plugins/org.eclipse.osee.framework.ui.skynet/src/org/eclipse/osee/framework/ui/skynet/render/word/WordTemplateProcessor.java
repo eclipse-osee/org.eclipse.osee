@@ -123,13 +123,13 @@ public class WordTemplateProcessor {
     * @throws IOException
     */
    public void publishWithExtensionTemplates(VariableMap variableMap, Artifact masterTemplateArtifact, Artifact slaveTemplateArtifact, List<Artifact> artifacts) throws OseeCoreException {
-      String masterTemplate = masterTemplateArtifact.getSoleAttributeValue(CoreAttributeTypes.WHOLE_WORD_CONTENT, "");
+      String masterTemplate = masterTemplateArtifact.getSoleAttributeValue(CoreAttributeTypes.WholeWordContent, "");
       slaveTemplateName = "";
       slaveTemplate = "";
 
       if (slaveTemplateArtifact != null) {
          slaveTemplateName = slaveTemplateArtifact.getSafeName();
-         slaveTemplate = slaveTemplateArtifact.getSoleAttributeValue(CoreAttributeTypes.WHOLE_WORD_CONTENT, "");
+         slaveTemplate = slaveTemplateArtifact.getSoleAttributeValue(CoreAttributeTypes.WholeWordContent, "");
       }
 
       IFolder folder = RenderingUtil.ensureRenderFolderExists(PresentationType.PREVIEW);
@@ -217,8 +217,8 @@ public class WordTemplateProcessor {
             if (elementType.equals(ARTIFACT)) {
                if (!artifacts.isEmpty()) {
                   Artifact artifact = artifacts.iterator().next();
-                  if (artifact.isAttributeTypeValid(CoreAttributeTypes.PARAGRAPH_NUMBER)) {
-                     String paragraphNum = artifact.getSoleAttributeValue(CoreAttributeTypes.PARAGRAPH_NUMBER, "");
+                  if (artifact.isAttributeTypeValid(CoreAttributeTypes.ParagraphNumber)) {
+                     String paragraphNum = artifact.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "");
                      if (Strings.isValid(paragraphNum)) {
                         startParagraphNumber = paragraphNum;
                      }
@@ -367,7 +367,7 @@ public class WordTemplateProcessor {
    }
 
    private void processObjectArtifact(VariableMap variableMap, Artifact artifact, WordMLProducer wordMl, String outlineType, PresentationType presentationType, boolean multipleArtifacts) throws OseeCoreException {
-      if (!artifact.isAttributeTypeValid(CoreAttributeTypes.WHOLE_WORD_CONTENT) && !artifact.isAttributeTypeValid(CoreAttributeTypes.NATIVE_CONTENT)) {
+      if (!artifact.isAttributeTypeValid(CoreAttributeTypes.WholeWordContent) && !artifact.isAttributeTypeValid(CoreAttributeTypes.NativeContent)) {
          //If the artifact has not been processed
          if (!processedArtifacts.contains(artifact)) {
             if (outlining) {
@@ -377,8 +377,8 @@ public class WordTemplateProcessor {
 
                VariableMap options = renderer.getOptions();
                if (renderer.getBooleanOption(WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION)) {
-                  if (artifact.isAttributeTypeValid(CoreAttributeTypes.PARAGRAPH_NUMBER)) {
-                     artifact.setSoleAttributeValue(CoreAttributeTypes.PARAGRAPH_NUMBER, paragraphNumber.toString());
+                  if (artifact.isAttributeTypeValid(CoreAttributeTypes.ParagraphNumber)) {
+                     artifact.setSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, paragraphNumber.toString());
                      artifact.persist((SkynetTransaction) options.getValue(ITemplateRenderer.TRANSACTION_OPTION));
                   }
                }
@@ -426,9 +426,9 @@ public class WordTemplateProcessor {
 
    private void processAttribute(VariableMap variableMap, Artifact artifact, WordMLProducer wordMl, AttributeElement attributeElement, IAttributeType attributeType, boolean allAttrs, PresentationType presentationType, boolean multipleArtifacts) throws OseeCoreException {
       // This is for SRS Publishing. Do not publish unspecified attributes
-      if (!allAttrs && (attributeType.equals(CoreAttributeTypes.PARTITION) || attributeType.equals(CoreAttributeTypes.SAFETY_CRITICALITY))) {
-         if (artifact.isAttributeTypeValid(CoreAttributeTypes.PARTITION)) {
-            for (Attribute<?> partition : artifact.getAttributes(CoreAttributeTypes.PARTITION)) {
+      if (!allAttrs && (attributeType.equals(CoreAttributeTypes.Partition) || attributeType.equals(CoreAttributeTypes.SafetyCriticality))) {
+         if (artifact.isAttributeTypeValid(CoreAttributeTypes.Partition)) {
+            for (Attribute<?> partition : artifact.getAttributes(CoreAttributeTypes.Partition)) {
                if (partition == null || partition.getValue() == null || partition.getValue().equals("Unspecified")) {
                   return;
                }
@@ -437,7 +437,7 @@ public class WordTemplateProcessor {
       }
 
       //Create a wordTemplateContent for new guys when opening them for edit.
-      if (attributeType.equals(CoreAttributeTypes.WORD_TEMPLATE_CONTENT) && presentationType == PresentationType.SPECIALIZED_EDIT) {
+      if (attributeType.equals(CoreAttributeTypes.WordTemplateContent) && presentationType == PresentationType.SPECIALIZED_EDIT) {
          artifact.getOrInitializeSoleAttributeValue(attributeType);
       }
 
@@ -454,12 +454,12 @@ public class WordTemplateProcessor {
             variableMap != null ? Boolean.TRUE.equals(variableMap.getBoolean("inPublishMode")) : false;
          if (variableMap != null && isInPublishMode) {
             // Do not publish relation order during publishing
-            if (CoreAttributeTypes.RELATION_ORDER.equals(attributeType)) {
+            if (CoreAttributeTypes.RelationOrder.equals(attributeType)) {
                return;
             }
          }
 
-         RendererManager.renderAttribute(attributeType.getName(), presentationType, artifact, variableMap, wordMl,
+         RendererManager.renderAttribute(attributeType, presentationType, artifact, variableMap, wordMl,
             attributeElement);
       }
    }

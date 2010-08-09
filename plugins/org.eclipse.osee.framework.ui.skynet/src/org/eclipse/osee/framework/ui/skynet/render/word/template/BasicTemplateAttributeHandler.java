@@ -61,7 +61,7 @@ public final class BasicTemplateAttributeHandler implements ITemplateAttributeHa
          //            }
          //    
          String valueList;
-         if (attributeType.equals(CoreAttributeTypes.WORD_TEMPLATE_CONTENT)) {
+         if (attributeType.equals(CoreAttributeTypes.WordTemplateContent)) {
             wordMl.addWordMl((String) attribute.getValue());
          } else {
             valueList = Collections.toString(", ", artifact.getAttributes(templateAttribute.getName()));

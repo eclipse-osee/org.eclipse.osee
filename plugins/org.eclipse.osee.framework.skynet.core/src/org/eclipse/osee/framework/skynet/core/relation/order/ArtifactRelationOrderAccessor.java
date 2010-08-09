@@ -32,7 +32,7 @@ public class ArtifactRelationOrderAccessor implements IRelationOrderAccessor {
    public void load(IArtifact artifact, RelationOrderData orderData) throws OseeCoreException {
       Artifact fullArtifact = artifact.getFullArtifact();
       String value =
-         fullArtifact.getSoleAttributeValueAsString(CoreAttributeTypes.RELATION_ORDER, Strings.emptyString());
+         fullArtifact.getSoleAttributeValueAsString(CoreAttributeTypes.RelationOrder, Strings.emptyString());
 
       parser.loadFromXml(orderData, value);
    }
@@ -42,9 +42,9 @@ public class ArtifactRelationOrderAccessor implements IRelationOrderAccessor {
       Artifact fullArtifact = artifact.getFullArtifact();
       fullArtifact.getRelationOrderRecords().add(relationOrderRecord);
       if (orderData.hasEntries() && !fullArtifact.isDeleted()) {
-         fullArtifact.setSoleAttributeFromString(CoreAttributeTypes.RELATION_ORDER, parser.toXml(orderData));
+         fullArtifact.setSoleAttributeFromString(CoreAttributeTypes.RelationOrder, parser.toXml(orderData));
       } else {
-         fullArtifact.deleteSoleAttribute(CoreAttributeTypes.RELATION_ORDER.getName());
+         fullArtifact.deleteSoleAttribute(CoreAttributeTypes.RelationOrder.getName());
       }
    }
 }

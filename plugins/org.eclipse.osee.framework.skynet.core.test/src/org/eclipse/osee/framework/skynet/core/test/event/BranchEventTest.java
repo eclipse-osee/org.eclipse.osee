@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import junit.framework.Assert;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.OseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -282,18 +282,8 @@ public class BranchEventTest {
    private Branch testEvents__topLevelAdded() throws Exception {
       clearEventCollections();
       final String guid = GUID.create();
-      Branch branch = BranchManager.createTopLevelBranch(new IOseeBranch() {
-
-         @Override
-         public String getName() {
-            return BRANCH_NAME_PREFIX + " - top level branch";
-         }
-
-         @Override
-         public String getGuid() {
-            return guid;
-         }
-      });
+      Branch branch =
+         BranchManager.createTopLevelBranch(new OseeBranch(BRANCH_NAME_PREFIX + " - top level branch", guid));
 
       Assert.assertNotNull(branch);
 

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.workflow.page;
 
-import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.workflow.flow.PeerToPeerWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
@@ -31,14 +31,14 @@ public class AtsPeerPrepareWorkPageDefinition extends WorkPageDefinition {
    public AtsPeerPrepareWorkPageDefinition(String name, String pageId, String parentId) {
       super(name, pageId, parentId);
       addWorkItem("ats.Title");
-      addWorkItem(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getWorkItemId());
-      addWorkItem(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getWorkItemId());
-      addWorkItem(ATSAttributes.ROLE_ATTRIBUTE.getWorkItemId());
-      addWorkItem(ATSAttributes.LOCATION_ATTRIBUTE.getWorkItemId());
+      addWorkItem(AtsAttributeTypes.ATS_RELATED_TO_STATE);
+      addWorkItem(AtsAttributeTypes.ATS_LEGACY_PCR_ID);
+      addWorkItem(AtsAttributeTypes.ATS_ROLE);
+      addWorkItem(AtsAttributeTypes.ATS_LOCATION);
       addWorkItem(AtsWorkDefinitions.ATS_DESCRIPTION_NOT_REQUIRED_ID);
-      addWorkItem(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getWorkItemId());
-      addWorkItem(ATSAttributes.REVIEW_BLOCKS_ATTRIBUTE.getWorkItemId());
-      addWorkItem(ATSAttributes.NEED_BY_ATTRIBUTE.getWorkItemId());
-      addWorkItem(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getWorkItemId());
+      addWorkItem(AtsAttributeTypes.ATS_RELATED_TO_STATE);
+      addWorkItem(AtsAttributeTypes.ATS_REVIEW_BLOCKS);
+      addWorkItem(AtsAttributeTypes.ATS_NEED_BY);
+      addWorkItem(AtsAttributeTypes.ATS_ESTIMATED_HOURS);
    }
 }

@@ -59,7 +59,7 @@ public class WholeDocumentRenderer extends WordRenderer {
 
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
-      if (notGeneralizedEdit(presentationType) && artifact.isAttributeTypeValid(CoreAttributeTypes.WHOLE_WORD_CONTENT)) {
+      if (notGeneralizedEdit(presentationType) && artifact.isAttributeTypeValid(CoreAttributeTypes.WholeWordContent)) {
          return PRESENTATION_SUBTYPE_MATCH;
       }
       return NO_MATCH;
@@ -73,7 +73,7 @@ public class WholeDocumentRenderer extends WordRenderer {
             stream = Streams.convertStringToInputStream(WordWholeDocumentAttribute.getEmptyDocumentContent(), "UTF-8");
          } else {
             Artifact artifact = artifacts.iterator().next();
-            String content = artifact.getOrInitializeSoleAttributeValue(CoreAttributeTypes.WHOLE_WORD_CONTENT);
+            String content = artifact.getOrInitializeSoleAttributeValue(CoreAttributeTypes.WholeWordContent);
             if (presentationType == PresentationType.DIFF && WordAnnotationHandler.containsWordAnnotations(content)) {
                throw new OseeStateException(
                   "Trying to diff the " + artifact.getName() + " artifact on the " + artifact.getBranch().getShortName() + " branch, which has tracked changes turned on.  All tracked changes must be removed before the artifacts can be compared.");

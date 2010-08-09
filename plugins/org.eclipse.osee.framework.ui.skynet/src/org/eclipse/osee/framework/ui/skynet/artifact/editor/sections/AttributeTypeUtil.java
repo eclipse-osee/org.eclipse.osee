@@ -30,7 +30,7 @@ public class AttributeTypeUtil {
       List<AttributeType> items = new ArrayList<AttributeType>();
       for (AttributeType type : artifact.getAttributeTypes()) {
          String typeName = type.getName();
-         if (!CoreAttributeTypes.NAME.equals(typeName) && artifact.getAttributes(typeName).isEmpty()) {
+         if (!CoreAttributeTypes.Name.equals(typeName) && artifact.getAttributes(typeName).isEmpty()) {
             items.add(type);
          }
       }
@@ -56,7 +56,7 @@ public class AttributeTypeUtil {
       AttributeType annotations = null;
 
       for (AttributeType type : typesInExistence) {
-         if (CoreAttributeTypes.NAME.equals(type)) {
+         if (CoreAttributeTypes.Name.equals(type)) {
             nameType = type;
          } else if (CoreAttributeTypes.Annotation.equals(type)) {
             annotations = type;

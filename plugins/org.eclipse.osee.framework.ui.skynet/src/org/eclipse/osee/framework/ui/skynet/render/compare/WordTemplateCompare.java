@@ -37,7 +37,7 @@ import org.eclipse.osee.framework.ui.skynet.render.WordImageChecker;
 import org.eclipse.osee.framework.ui.skynet.util.WordUiUtil;
 
 public class WordTemplateCompare implements IComparator {
-   private static final IAttributeType ATTRIBUTE_TYPE = CoreAttributeTypes.WORD_TEMPLATE_CONTENT;
+   private static final IAttributeType ATTRIBUTE_TYPE = CoreAttributeTypes.WordTemplateContent;
 
    private final ArtifactDeltaToFileConverter converter;
 

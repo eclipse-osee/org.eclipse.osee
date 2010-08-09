@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.core.model;
 
+import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.model.type.RelationType;
@@ -18,12 +19,13 @@ import org.eclipse.osee.framework.core.model.type.RelationType;
 /**
  * @author Andrew M. Finkbeiner
  */
-public class RelationTypeSide implements IRelationEnumeration {
+public class RelationTypeSide extends NamedIdentity implements IRelationEnumeration {
 
    private final RelationType type;
    private final RelationSide side;
 
    public RelationTypeSide(RelationType type, RelationSide side) {
+      super(type.getGuid(), type.getName());
       this.type = type;
       this.side = side;
    }
@@ -52,16 +54,6 @@ public class RelationTypeSide implements IRelationEnumeration {
       hashCode = hashCode * 31 + type.hashCode();
       hashCode = hashCode * 31 + side.hashCode();
       return hashCode;
-   }
-
-   @Override
-   public String getGuid() {
-      return type.getGuid();
-   }
-
-   @Override
-   public String getName() {
-      return type.getName();
    }
 
    @Override

@@ -52,48 +52,48 @@ public class Artifact_setAttributeValues {
       Branch branch = BranchManager.getBranchByGuid(DemoSawBuilds.SAW_Bld_1.getGuid());
       Assert.assertNotNull(branch);
       Artifact artifact = ArtifactTypeManager.addArtifact("General Document", branch, getClass().getSimpleName());
-      artifact.setAttributeValues(CoreAttributeTypes.STATIC_ID, firstSet);
+      artifact.setAttributeValues(CoreAttributeTypes.StaticId, firstSet);
       artifact.persist();
 
-      assertTrue(Collections.isEqual(firstSet, artifact.getAttributesToStringList(CoreAttributeTypes.STATIC_ID)));
+      assertTrue(Collections.isEqual(firstSet, artifact.getAttributesToStringList(CoreAttributeTypes.StaticId)));
    }
 
    @org.junit.Test
    public void testSetAttributeValuesAddOne() throws Exception {
       Artifact artifact = getArtifact();
-      artifact.setAttributeValues(CoreAttributeTypes.STATIC_ID, addOneSet);
+      artifact.setAttributeValues(CoreAttributeTypes.StaticId, addOneSet);
       artifact.persist();
 
-      assertTrue(Collections.isEqual(addOneSet, artifact.getAttributesToStringList(CoreAttributeTypes.STATIC_ID)));
+      assertTrue(Collections.isEqual(addOneSet, artifact.getAttributesToStringList(CoreAttributeTypes.StaticId)));
    }
 
    @org.junit.Test
    public void testSetAttributeValuesAddOneRemoveOne() throws Exception {
       Artifact artifact = getArtifact();
-      artifact.setAttributeValues(CoreAttributeTypes.STATIC_ID, addOneRemoveOneSet);
+      artifact.setAttributeValues(CoreAttributeTypes.StaticId, addOneRemoveOneSet);
       artifact.persist();
 
       assertTrue(Collections.isEqual(addOneRemoveOneSet,
-         artifact.getAttributesToStringList(CoreAttributeTypes.STATIC_ID)));
+         artifact.getAttributesToStringList(CoreAttributeTypes.StaticId)));
    }
 
    @org.junit.Test
    public void testSetAttributeValuesRemoveAll() throws Exception {
       Artifact artifact = getArtifact();
-      artifact.setAttributeValues(CoreAttributeTypes.STATIC_ID, emptySet);
+      artifact.setAttributeValues(CoreAttributeTypes.StaticId, emptySet);
       artifact.persist();
 
-      assertTrue(artifact.getAttributesToStringList(CoreAttributeTypes.STATIC_ID).isEmpty());
+      assertTrue(artifact.getAttributesToStringList(CoreAttributeTypes.StaticId).isEmpty());
    }
 
    @org.junit.Test
    public void testSetAttributeValuesWithDuplicates() throws Exception {
       Artifact artifact = getArtifact();
-      artifact.setAttributeValues(CoreAttributeTypes.STATIC_ID, addDuplicates_set);
+      artifact.setAttributeValues(CoreAttributeTypes.StaticId, addDuplicates_set);
       artifact.persist();
 
       assertTrue(Collections.isEqual(addDuplicates_result,
-         artifact.getAttributesToStringList(CoreAttributeTypes.STATIC_ID)));
+         artifact.getAttributesToStringList(CoreAttributeTypes.StaticId)));
    }
 
    @AfterClass

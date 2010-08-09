@@ -63,8 +63,8 @@ public class RequirementReorderOperation extends AbstractBlam {
       @Override
       public int compare(Artifact o1, Artifact o2) {
          try {
-            ReqNumbering n1 = new ReqNumbering((String) o1.getSoleAttributeValue(CoreAttributeTypes.PARAGRAPH_NUMBER));
-            ReqNumbering n2 = new ReqNumbering((String) o2.getSoleAttributeValue(CoreAttributeTypes.PARAGRAPH_NUMBER));
+            ReqNumbering n1 = new ReqNumbering((String) o1.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber));
+            ReqNumbering n2 = new ReqNumbering((String) o2.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber));
             return n1.compareTo(n2);
          } catch (OseeCoreException e) {
             return 0;

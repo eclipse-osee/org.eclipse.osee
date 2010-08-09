@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.workflow.page;
 
-import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.GoalArtifact.GoalState;
 import org.eclipse.osee.ats.workflow.flow.GoalWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
@@ -32,7 +32,7 @@ public class AtsGoalInWorkPageDefinition extends WorkPageDefinition {
       addWorkItem("ats.Title");
       addWorkItem(AtsWorkDefinitions.ATS_DESCRIPTION_NOT_REQUIRED_ID);
       addWorkItem(AtsWorkDefinitions.ATS_ESTIMATED_HOURS_NOT_REQUIRED_ID);
-      addWorkItem(ATSAttributes.GOAL_ORDER_VOTE_ATTRIBUTE.getWorkItemId());
+      addWorkItem(AtsAttributeTypes.ATS_GOAL_ORDER_VOTE);
    }
 
 }

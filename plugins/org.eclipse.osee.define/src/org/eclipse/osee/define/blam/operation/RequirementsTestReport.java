@@ -75,8 +75,8 @@ public class RequirementsTestReport extends AbstractBlam {
 
    private void processTestProcedure(Artifact req, Artifact testProc) throws OseeCoreException {
       String testStatus;
-      if (testProc.isAttributeTypeValid(CoreAttributeTypes.TEST_PROCEDURE_STATUS)) {
-         testStatus = testProc.getSoleAttributeValue(CoreAttributeTypes.TEST_PROCEDURE_STATUS, MISSING);
+      if (testProc.isAttributeTypeValid(CoreAttributeTypes.TestProcedureStatus)) {
+         testStatus = testProc.getSoleAttributeValue(CoreAttributeTypes.TestProcedureStatus, MISSING);
       } else {
          testStatus = "N/A (" + testProc.getArtifactTypeName() + ")";
       }
@@ -92,7 +92,7 @@ public class RequirementsTestReport extends AbstractBlam {
    }
 
    private String getReqCellOutput(Artifact req) throws OseeCoreException {
-      String paragraphNumber = req.getSoleAttributeValue(CoreAttributeTypes.PARAGRAPH_NUMBER.getName(), "");
+      String paragraphNumber = req.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber.getName(), "");
       String reqName = req.getName();
       String returnValue = paragraphNumber + SPACE + reqName;
       return returnValue;
