@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.model.access.AccessData;
 import org.eclipse.osee.framework.core.model.access.AccessDetail;
 import org.eclipse.osee.framework.core.model.access.AccessDetailCollector;
 import org.eclipse.osee.framework.core.model.access.AccessModel;
+import org.eclipse.osee.framework.core.util.Conditions;
 
 /**
  * @author Roberto E. Escobar
@@ -35,9 +36,18 @@ public class OseeDslAccessModel implements AccessModel {
 
    @Override
    public void computeAccess(AccessContextId contextId, Collection<Object> objectsToCheck, AccessData accessData) throws OseeCoreException {
+      Conditions.checkNotNull(contextId, "contextId");
+      Conditions.checkNotNull(objectsToCheck, "objectsToCheck");
+      Conditions.checkNotNull(accessData, "accessData");
+
       OseeDsl oseeDsl = dslProvider.getDsl();
+      Conditions.checkNotNull(oseeDsl, "oseeDsl", "dsl provider returned null");
+
       Collection<AccessContext> contexts = oseeDsl.getAccessDeclarations();
       AccessContext context = interpreter.getContext(contexts, contextId);
+      Conditions.checkNotNull(context, "interpreted accessContext",
+         "No matching access context was found in access dsl for [%s]", contextId);
+
       for (Object objectToCheck : objectsToCheck) {
          Collection<AccessDetail<?>> accessDetail = new HashSet<AccessDetail<?>>();
          AccessDetailCollector collector = new AccessDataCollector(accessDetail);

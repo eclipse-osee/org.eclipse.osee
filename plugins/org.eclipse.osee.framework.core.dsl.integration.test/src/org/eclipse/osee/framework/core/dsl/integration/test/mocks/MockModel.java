@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.ArtifactInstanceRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ArtifactTypeRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AttributeTypeRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ObjectRestriction;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslFactory;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactRef;
@@ -30,6 +31,12 @@ public final class MockModel {
 
    private MockModel() {
       // Utility class
+   }
+
+   public static OseeDsl createDsl() {
+      OseeDsl dsl = OseeDslFactory.eINSTANCE.createOseeDsl();
+      Assert.assertNotNull(dsl);
+      return dsl;
    }
 
    public static AccessContext createAccessContext(String guid, String name) {
