@@ -63,4 +63,8 @@ public class AccessPolicyHandler {
       }
       return permissionStatus;
    }
+
+   public PermissionStatus hasAttributeTypePermission(Collection<? extends IBasicArtifact<?>> artifacts, IAttributeType attributeType, PermissionEnum permission, boolean displayMessage) throws OseeCoreException {
+      return new PermissionStatus();
+   }
 }
