@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.test.cases;
+package org.eclipse.osee.ats.test.util;
 
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.framework.ui.skynet.test.cases.ImageManagerTest;

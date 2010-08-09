@@ -56,7 +56,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
  */
 public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArtifact {
 
-   public static Set<TeamDefinitionArtifact> EMPTY_SET = new HashSet<TeamDefinitionArtifact>();
    public static enum TeamDefinitionOptions {
       TeamUsesVersions,
       RequireTargetedVersion

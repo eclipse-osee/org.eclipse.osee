@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.test.cases;
+package org.eclipse.osee.ats.test.artifact;
 
 import static org.junit.Assert.assertFalse;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;

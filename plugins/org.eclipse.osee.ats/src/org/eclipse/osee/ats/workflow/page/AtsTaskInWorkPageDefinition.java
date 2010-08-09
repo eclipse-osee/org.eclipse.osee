@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.workflow.page;
 
-import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TaskArtifact.TaskStates;
 import org.eclipse.osee.ats.workflow.flow.TaskWorkflowDefinition;

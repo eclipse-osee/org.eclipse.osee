@@ -16,7 +16,6 @@ Require-Bundle: org.eclipse.ui,
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.osee.ats.test,
- org.eclipse.osee.ats.test.cases,
  org.eclipse.osee.ats.test.util,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.test,

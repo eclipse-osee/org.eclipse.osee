@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.internal;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.AccessContextId;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.access.AccessModel;
 import org.eclipse.osee.framework.core.model.access.HasAccessModel;
@@ -35,7 +34,7 @@ public class AtsConfigurationManagement implements ConfigurationManagement, HasA
    }
 
    @Override
-   public Collection<AccessContextId> getContextId(IBasicArtifact<?> user, Object object) throws OseeCoreException {
+   public Collection<AccessContextId> getContextId(IBasicArtifact<?> user, Object object) {
       return null;
    }
 

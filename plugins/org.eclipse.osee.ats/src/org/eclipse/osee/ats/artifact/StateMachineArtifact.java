@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
+import org.eclipse.osee.ats.access.AtsBranchObjectManager;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.editor.SMAEditor;
@@ -43,6 +44,7 @@ import org.eclipse.osee.ats.workflow.item.AtsStatePercentCompleteWeightRule;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.data.AccessContextId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -132,6 +134,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       initializeSMA();
    }
 
+   @SuppressWarnings("unused")
    protected void initializeSMA() throws OseeCoreException {
       initalizePreSaveCache();
    }
@@ -1874,6 +1877,10 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       }
       if (!(this instanceof TeamWorkFlowArtifact) && getParentTeamWorkflow() != null) {
          details.put("Parent Team Workflow Id", getParentTeamWorkflow().getHumanReadableId());
+      }
+      if (this.isOfType(AtsArtifactTypes.TeamWorkflow)) {
+         AccessContextId id = AtsBranchObjectManager.getFromWorkflow((TeamWorkFlowArtifact) this);
+         details.put("Access Context Id", id == null ? "NONE" : id.toString());
       }
       return details;
    }

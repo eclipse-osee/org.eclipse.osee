@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.test;
 
-import org.eclipse.osee.ats.test.cases.AtsActionableItemToTeamDefinitionTest;
-import org.eclipse.osee.ats.test.cases.AtsTeamDefintionToWorkflowTest;
-import org.eclipse.osee.ats.test.cases.AtsWorkItemDefinitionTest;
+import org.eclipse.osee.ats.test.artifact.AtsTeamDefintionToWorkflowTest;
+import org.eclipse.osee.ats.test.config.AtsActionableItemToTeamDefinitionTest;
+import org.eclipse.osee.ats.test.workflow.AtsWorkItemDefinitionTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 

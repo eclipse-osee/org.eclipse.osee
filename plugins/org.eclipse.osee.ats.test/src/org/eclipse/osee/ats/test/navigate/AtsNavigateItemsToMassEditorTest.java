@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.test.cases;
+package org.eclipse.osee.ats.test.navigate;
 
 import static org.junit.Assert.assertTrue;
 import java.util.Arrays;

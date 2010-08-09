@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.test.cases;
+package org.eclipse.osee.ats.test.workflow;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;

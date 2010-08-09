@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.actions.wizard;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.access.AtsBranchObjectContextId;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
@@ -21,6 +22,11 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  * @author Donald G. Dunne
  */
 public interface IAtsTeamWorkflow {
+
+   /**
+    * Return the AccessContextId associated with the object given. null otherwise
+    */
+   public AtsBranchObjectContextId getBranchAccessContextIdFromWorkflow(TeamWorkFlowArtifact teamWorkflow) throws OseeCoreException;
 
    /**
     * Return true if this class/plugin is responsible for the creation of the Team Workflow that will be created for the

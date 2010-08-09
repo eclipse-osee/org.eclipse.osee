@@ -150,7 +150,7 @@ public class PurgeUser extends AbstractBlam {
       art.purgeFromBranch();
    }
 
-   private void displayReport(IProgressMonitor monitor, User toUser, User fromUser) throws OseeCoreException {
+   private void displayReport(IProgressMonitor monitor, User toUser, User fromUser) {
       XResultData rd = new XResultData();
       try {
          String[] columnHeaders =

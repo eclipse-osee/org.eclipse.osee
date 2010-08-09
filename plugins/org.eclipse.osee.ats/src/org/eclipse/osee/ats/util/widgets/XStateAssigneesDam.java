@@ -36,9 +36,10 @@ public abstract class XStateAssigneesDam extends XTextDam {
       setAttributeType(sma, attributeType);
    }
 
+   @SuppressWarnings("unused")
    @Override
    public void onAttributeTypeSet() throws OseeCoreException {
-      //      super.set(getArtifact().getSoleAttributeValue(getAttributeType(), ""));
+      // do nothing
    }
 
    @Override

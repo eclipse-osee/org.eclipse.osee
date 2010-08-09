@@ -11,17 +11,17 @@
 package org.eclipse.osee.ats.test;
 
 import static org.junit.Assert.assertTrue;
-import org.eclipse.osee.ats.test.cases.AtsBranchConfigurationTest;
-import org.eclipse.osee.ats.test.cases.AtsDeleteManagerTest;
-import org.eclipse.osee.ats.test.cases.AtsImageTest;
-import org.eclipse.osee.ats.test.cases.AtsNavigateItemsToMassEditorTest;
-import org.eclipse.osee.ats.test.cases.AtsNavigateItemsToTaskEditorTest;
-import org.eclipse.osee.ats.test.cases.AtsNavigateItemsToWorldViewTest;
-import org.eclipse.osee.ats.test.cases.AtsNotifyUsersTest;
-import org.eclipse.osee.ats.test.cases.AtsPurgeTest;
-import org.eclipse.osee.ats.test.cases.AtsValidateAtsDatabaseTest;
-import org.eclipse.osee.ats.test.cases.SMAPrintTest;
-import org.eclipse.osee.ats.test.cases.SMAPromptChangeStatusTest;
+import org.eclipse.osee.ats.test.config.AtsBranchConfigurationTest;
+import org.eclipse.osee.ats.test.editor.SMAPrintTest;
+import org.eclipse.osee.ats.test.health.AtsValidateAtsDatabaseTest;
+import org.eclipse.osee.ats.test.navigate.AtsNavigateItemsToMassEditorTest;
+import org.eclipse.osee.ats.test.navigate.AtsNavigateItemsToTaskEditorTest;
+import org.eclipse.osee.ats.test.navigate.AtsNavigateItemsToWorldViewTest;
+import org.eclipse.osee.ats.test.util.AtsDeleteManagerTest;
+import org.eclipse.osee.ats.test.util.AtsImageTest;
+import org.eclipse.osee.ats.test.util.AtsNotifyUsersTest;
+import org.eclipse.osee.ats.test.util.AtsPurgeTest;
+import org.eclipse.osee.ats.test.workflow.SMAPromptChangeStatusTest;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;

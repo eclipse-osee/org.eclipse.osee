@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.test.cases;
+package org.eclipse.osee.ats.test.util;
 
 import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.EXCLUDE_DELETED;
 import static org.junit.Assert.fail;
@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
-import org.eclipse.osee.ats.test.util.DemoTestUtil;
 import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsDeleteManager;

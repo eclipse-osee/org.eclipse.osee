@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.eclipse.osee.ats">
+<schema targetNamespace="org.eclipse.osee.ats" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
          <meta.schema plugin="org.eclipse.osee.ats" id="AtsTeamWorflow" name="AtsTeamWorflow"/>
@@ -11,6 +11,11 @@
    </annotation>
 
    <element name="extension">
+      <annotation>
+         <appInfo>
+            <meta.element />
+         </appInfo>
+      </annotation>
       <complexType>
          <sequence minOccurs="1" maxOccurs="unbounded">
             <element ref="AtsTeamWorkflow"/>
@@ -50,7 +55,7 @@
                   
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn=":osee.ats.actions.wizard.IAtsTeamWorkflowCreation"/>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.osee.ats.actions.wizard.IAtsTeamWorkflow"/>
                </appInfo>
             </annotation>
          </attribute>
@@ -93,13 +98,5 @@
       </documentation>
    </annotation>
 
-   <annotation>
-      <appInfo>
-         <meta.section type="copyright"/>
-      </appInfo>
-      <documentation>
-         
-      </documentation>
-   </annotation>
 
 </schema>

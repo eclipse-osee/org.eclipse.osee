@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.test;
 
-import org.eclipse.osee.ats.test.cases.AtsBranchConfigurationTest;
-import org.eclipse.osee.ats.test.cases.AtsImageTest;
+import org.eclipse.osee.ats.test.config.AtsBranchConfigurationTest;
+import org.eclipse.osee.ats.test.util.AtsImageTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 

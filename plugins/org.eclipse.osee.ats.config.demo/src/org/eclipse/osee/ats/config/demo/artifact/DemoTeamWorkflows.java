@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import org.eclipse.osee.ats.access.AtsBranchObjectContextId;
 import org.eclipse.osee.ats.actions.wizard.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
@@ -72,6 +73,11 @@ public class DemoTeamWorkflows implements IAtsTeamWorkflow {
    @Override
    public void teamWorkflowDuplicating(TeamWorkFlowArtifact teamArt, TeamWorkFlowArtifact dupTeamArt) {
       // do nothing
+   }
+
+   @Override
+   public AtsBranchObjectContextId getBranchAccessContextIdFromWorkflow(TeamWorkFlowArtifact teamWorkflow) {
+      return AtsBranchObjectContextId.DEFAULT_BRANCH_CONTEXT;
    }
 
 }

@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.test.cases;
+package org.eclipse.osee.ats.test.util;
 
 import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.EXCLUDE_DELETED;
 import java.util.Arrays;
@@ -18,8 +18,6 @@ import junit.framework.Assert;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
-import org.eclipse.osee.ats.test.util.DemoTestUtil;
-import org.eclipse.osee.ats.test.util.TestNotificationManager;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.ats.util.AtsNotifyUsers.NotifyType;
 import org.eclipse.osee.ats.util.AtsUtil;
