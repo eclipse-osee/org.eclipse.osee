@@ -49,10 +49,10 @@ public class XWidgetAccessDecorationProvider implements XWidgetDecorator.Decorat
          try {
             Artifact artifact = attributeWidget.getArtifact();
             AccessPolicyHandler accessPolicyHandler =
-               new AccessPolicyHandler(UserManager.getUser(), AccessControlManager.getService(),
-                  Collections.asCollection(artifact));
+               new AccessPolicyHandler(UserManager.getUser(), AccessControlManager.getService());
             permissionStatus =
-               accessPolicyHandler.hasAttributeTypePermission(attributeType, PermissionEnum.WRITE, false);
+               accessPolicyHandler.hasAttributeTypePermission(Collections.asCollection(artifact), attributeType,
+                  PermissionEnum.WRITE, Level.SEVERE);
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }

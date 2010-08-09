@@ -28,23 +28,9 @@ import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
  * @author Jeff C. Phillips
  */
 public final class PromptFactory implements IPromptFactory {
-   private final IAttributeType attributeType;
-   private final String displayName;
-   private final Collection<? extends Artifact> artifacts;
-   private final boolean persist;
-   private final boolean multiLine;
-
-   public PromptFactory(IAttributeType attributeType, String displayName, Collection<? extends Artifact> artifacts, boolean persist, boolean multiLine) {
-      super();
-      this.attributeType = attributeType;
-      this.displayName = displayName;
-      this.artifacts = artifacts;
-      this.persist = persist;
-      this.multiLine = multiLine;
-   }
 
    @Override
-   public IHandlePromptChange createPrompt() throws OseeCoreException {
+   public IHandlePromptChange createPrompt(IAttributeType attributeType, String displayName, Collection<? extends Artifact> artifacts, boolean persist, boolean multiLine) throws OseeCoreException {
       IHandlePromptChange promptChange;
 
       if (AttributeTypeManager.isBaseTypeCompatible(DateAttribute.class, attributeType)) {

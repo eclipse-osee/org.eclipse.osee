@@ -10,12 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.artifact.prompt;
 
+import java.util.Collection;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Jeff C. Phillips
  */
 public interface IPromptFactory {
 
-   IHandlePromptChange createPrompt() throws OseeCoreException, UnsupportedOperationException;
+   IHandlePromptChange createPrompt(IAttributeType attributeType, String displayName, Collection<? extends Artifact> artifacts, boolean persist, boolean multiLine) throws OseeCoreException;
 }

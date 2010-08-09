@@ -15,15 +15,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.DefaultBasicArtifact;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
-import org.eclipse.osee.framework.core.model.access.AccessDataQuery;
-import org.eclipse.osee.framework.core.services.IAccessControlService;
+import org.eclipse.osee.framework.core.model.access.PermissionStatus;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.artifact.AccessPolicyHandler;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
 import org.eclipse.osee.framework.ui.skynet.artifact.prompt.IHandlePromptChange;
 import org.eclipse.osee.framework.ui.skynet.artifact.prompt.IPromptFactory;
@@ -39,55 +37,39 @@ public class ArtifactPromptChangeTest {
    private static IAttributeType TEST_ATTRIBUTE_TYPE = CoreAttributeTypes.NAME;
 
    @Test
-   public void test() {
+   public void test() throws OseeCoreException {
       boolean persist = true;
       List<Artifact> artifacts = new ArrayList<Artifact>();
-      IBasicArtifact<?> user = new DefaultBasicArtifact(1, "1", "one");
 
-      IAccessControlService accessService = new MockAccessControlService();
+      MockPromptFactory MockPromptFactory = new MockPromptFactory();
+      MockAccessPolicyHandler policyHandler = new MockAccessPolicyHandler();
+      MockPromptFactory.createPrompt(CoreAttributeTypes.Annotation, "", artifacts, persist, false);
 
-      Assert.assertFalse(ArtifactPromptChange.promptChangeAttribute(user, accessService, new TestPromptFactory(
-         CoreAttributeTypes.Annotation, persist), TEST_ATTRIBUTE_TYPE, artifacts));
+      ArtifactPromptChange artifactPromptChange = new ArtifactPromptChange(MockPromptFactory, policyHandler);
 
-      Assert.assertTrue(ArtifactPromptChange.promptChangeAttribute(user, accessService, new TestPromptFactory(
-         TEST_ATTRIBUTE_TYPE, persist), TEST_ATTRIBUTE_TYPE, artifacts));
+      Assert.assertFalse(artifactPromptChange.promptChangeAttribute(CoreAttributeTypes.Annotation, artifacts, persist,
+         false, ""));
+      Assert.assertTrue(artifactPromptChange.promptChangeAttribute(TEST_ATTRIBUTE_TYPE, artifacts, persist, false, ""));
    }
 
-   private static class MockAccessControlService implements IAccessControlService {
+   private static class MockAccessPolicyHandler extends AccessPolicyHandler {
 
-      @SuppressWarnings("unused")
-      @Override
-      public boolean hasPermission(Object object, PermissionEnum permission) throws OseeCoreException {
-         return true;
+      public MockAccessPolicyHandler() {
+         super(null, null);
       }
 
       @SuppressWarnings("unused")
       @Override
-      public void removePermissions(IOseeBranch branch) throws OseeCoreException {
-         boolean removePermission = true;
-      }
-
-      @SuppressWarnings("unused")
-      @Override
-      public AccessDataQuery getAccessData(IBasicArtifact<?> userArtifact, Collection<?> itemsToCheck) throws OseeCoreException {
-         return new AccessDataQuery(null);
+      public PermissionStatus hasAttributeTypePermission(Collection<? extends IBasicArtifact<?>> artifacts, IAttributeType attributeType, PermissionEnum permission, boolean displayMessage) throws OseeCoreException {
+         return new PermissionStatus();
       }
 
    }
 
-   private static class TestPromptFactory implements IPromptFactory {
-      private final IAttributeType attributeType;
-      private final boolean persist;
-
-      public TestPromptFactory(IAttributeType attributeType, boolean persist) {
-         super();
-         this.attributeType = attributeType;
-         this.persist = persist;
-      }
-
+   private static class MockPromptFactory implements IPromptFactory {
       @SuppressWarnings("unused")
       @Override
-      public IHandlePromptChange createPrompt() throws OseeCoreException, UnsupportedOperationException {
+      public IHandlePromptChange createPrompt(IAttributeType attributeType, String displayName, Collection<? extends Artifact> artifacts, boolean persist, boolean multiLine) throws OseeCoreException {
          return new TestPromptChange(attributeType, persist);
       }
    }
