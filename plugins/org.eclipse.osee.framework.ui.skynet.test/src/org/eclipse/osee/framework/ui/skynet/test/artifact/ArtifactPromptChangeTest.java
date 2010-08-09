@@ -22,10 +22,11 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.access.PermissionStatus;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.artifact.AccessPolicyHandler;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
+import org.eclipse.osee.framework.ui.skynet.artifact.IAccessPolicyHandlerService;
 import org.eclipse.osee.framework.ui.skynet.artifact.prompt.IHandlePromptChange;
 import org.eclipse.osee.framework.ui.skynet.artifact.prompt.IPromptFactory;
+import org.eclipse.osee.framework.ui.skynet.internal.ArtifactPromptService;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -43,28 +44,23 @@ public class ArtifactPromptChangeTest {
       List<Artifact> artifacts = new ArrayList<Artifact>();
 
       MockPromptFactory MockPromptFactory = new MockPromptFactory();
-      MockAccessPolicyHandler policyHandler = new MockAccessPolicyHandler();
+      IAccessPolicyHandlerService policyHandler = new MockAccessPolicyHandler();
       MockPromptFactory.createPrompt(CoreAttributeTypes.Annotation, "", artifacts, persist, false);
 
-      ArtifactPromptChange artifactPromptChange = new ArtifactPromptChange();
+      ArtifactPromptService artifactPromptChange = new ArtifactPromptService(MockPromptFactory, policyHandler);
 
-      Assert.assertFalse(ArtifactPromptChange.promptChangeAttribute(CoreAttributeTypes.Annotation, artifacts, persist,
+      Assert.assertFalse(artifactPromptChange.promptChangeAttribute(CoreAttributeTypes.Annotation, artifacts, persist,
          false));
-      Assert.assertTrue(ArtifactPromptChange.promptChangeAttribute(TEST_ATTRIBUTE_TYPE, artifacts, persist, false));
+      Assert.assertTrue(artifactPromptChange.promptChangeAttribute(TEST_ATTRIBUTE_TYPE, artifacts, persist, false));
    }
 
-   private static class MockAccessPolicyHandler extends AccessPolicyHandler {
-
-      public MockAccessPolicyHandler() {
-         super(null, null);
-      }
+   private static class MockAccessPolicyHandler implements IAccessPolicyHandlerService {
 
       @SuppressWarnings("unused")
       @Override
       public PermissionStatus hasAttributeTypePermission(Collection<? extends IBasicArtifact<?>> artifacts, IAttributeType attributeType, PermissionEnum permission, Level level) throws OseeCoreException {
          return new PermissionStatus();
       }
-
    }
 
    private static class MockPromptFactory implements IPromptFactory {

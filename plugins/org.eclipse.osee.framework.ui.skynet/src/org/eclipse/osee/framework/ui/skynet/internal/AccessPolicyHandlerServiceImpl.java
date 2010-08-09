@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.artifact;
+package org.eclipse.osee.framework.ui.skynet.internal;
 
 import java.util.Collection;
 import java.util.logging.Level;
@@ -22,15 +22,17 @@ import org.eclipse.osee.framework.core.services.IAccessControlService;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.artifact.IAccessPolicyHandlerService;
 
 /**
  * @author Jeff C. Phillips
  */
-public class AccessPolicyHandler {
+public class AccessPolicyHandlerServiceImpl implements IAccessPolicyHandlerService {
    private final IBasicArtifact<?> user;
    private final IAccessControlService accessControlService;
 
-   public AccessPolicyHandler(IBasicArtifact<?> user, IAccessControlService accessControlService) {
+   public AccessPolicyHandlerServiceImpl(IBasicArtifact<?> user, IAccessControlService accessControlService) {
+      super();
       this.user = user;
       this.accessControlService = accessControlService;
    }
@@ -44,6 +46,7 @@ public class AccessPolicyHandler {
     * @return PermissionStatus
     * @throws OseeCoreException
     */
+   @Override
    public PermissionStatus hasAttributeTypePermission(Collection<? extends IBasicArtifact<?>> artifacts, IAttributeType attributeType, PermissionEnum permission, Level level) throws OseeCoreException {
       AccessDataQuery query = accessControlService.getAccessData(user, artifacts);
       PermissionStatus permissionStatus = new PermissionStatus();

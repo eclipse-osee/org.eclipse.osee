@@ -10,14 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.core.util.ServiceDependencyTracker;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -29,7 +33,11 @@ import org.eclipse.osee.framework.skynet.core.event2.BroadcastEvent;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.framework.ui.plugin.OseeFormActivator;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactSaveNotificationHandler;
+import org.eclipse.osee.framework.ui.skynet.artifact.IAccessPolicyHandlerService;
 import org.eclipse.osee.framework.ui.skynet.ats.IOseeAtsService;
+import org.eclipse.osee.framework.ui.skynet.internal.AccessPolicyServiceRegHandler;
+import org.eclipse.osee.framework.ui.skynet.internal.ArtifactPromptService;
+import org.eclipse.osee.framework.ui.skynet.internal.ArtifactPromptServiceRegHandler;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchListener;
@@ -53,6 +61,8 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
    private ServiceTracker databaseServiceTracker;
    private ServiceTracker atsServiceTracker;
 
+   private final Map<String, ServiceDependencyTracker> trackers = new HashMap<String, ServiceDependencyTracker>();
+
    public SkynetGuiPlugin() {
       super();
       pluginInstance = this;
@@ -65,11 +75,16 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
       cacheServiceTracker.close();
       databaseServiceTracker.close();
       atsServiceTracker.close();
+
+      for (ServiceDependencyTracker tracker : trackers.values()) {
+         Lib.close(tracker);
+      }
    }
 
    @Override
    public void start(BundleContext context) throws Exception {
       super.start(context);
+
       packageAdminTracker = new ServiceTracker(context, PackageAdmin.class.getName(), null);
       packageAdminTracker.open();
 
@@ -81,6 +96,16 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
 
       atsServiceTracker = new ServiceTracker(context, IOseeAtsService.class.getName(), null);
       atsServiceTracker.open();
+
+      trackers.put(IAccessPolicyHandlerService.class.getName(), new ServiceDependencyTracker(context,
+         new AccessPolicyServiceRegHandler()));
+
+      trackers.put(ArtifactPromptService.class.getName(), new ServiceDependencyTracker(context,
+         new ArtifactPromptServiceRegHandler()));
+
+      for (ServiceDependencyTracker tracker : trackers.values()) {
+         tracker.open();
+      }
 
       OseeEventManager.addListener(this);
 
@@ -137,6 +162,14 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
 
    public IOseeAtsService getOseeAtsService() {
       return (IOseeAtsService) atsServiceTracker.getService();
+   }
+
+   public IAccessPolicyHandlerService getPolicyHandlerService() throws OseeCoreException {
+      return ((AccessPolicyServiceRegHandler) trackers.get(IAccessPolicyHandlerService.class.getName()).getHandler()).getService();
+   }
+
+   public ArtifactPromptService getArtifactPromptService() throws OseeCoreException {
+      return ((ArtifactPromptServiceRegHandler) trackers.get(ArtifactPromptService.class.getName()).getHandler()).getService();
    }
 
    @Override
@@ -198,4 +231,5 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
          }
       }
    }
+
 }

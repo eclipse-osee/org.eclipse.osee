@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.artifact.editor.parts;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -66,7 +67,12 @@ public class AttributeFormPart extends AbstractFormPart {
    public AttributeFormPart(ArtifactEditor editor) {
       this.editor = editor;
       this.decorator = new XWidgetDecorator();
-      decorator.addProvider(new XWidgetAccessDecorationProvider());
+      try {
+         decorator.addProvider(new XWidgetAccessDecorationProvider(
+            SkynetGuiPlugin.getInstance().getPolicyHandlerService()));
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex.toString(), ex);
+      }
    }
 
    public void createContents(Composite parent) {
@@ -176,27 +182,6 @@ public class AttributeFormPart extends AbstractFormPart {
       }
       return internalComposite;
    }
-
-   //	private void setPermissions(Artifact artifact, AttributeType attributeType, List<DynamicXWidgetLayoutData> concreteWidgets) throws OseeCoreException, OseeArgumentException {
-   //		for (DynamicXWidgetLayoutData data : concreteWidgets) {
-   //			if (data.getXWidget() != null && data.getXWidget().getControl() != null && !data.getXWidget().getControl().isDisposed()) {
-   //				AccessData accessData = AccessControlManager.getAccessData(Collections.singletonList(artifact));
-   //				data.getXWidget().setEditable(
-   //							!accessData.getAttributeTypeMatches(artifact, attributeType, PermissionEnum.WRITE).isEmpty());
-   //
-   //				XWidgetValidateUtility.setStatus(new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, ""), data.getXWidget());
-   //				//            data.getXWidget().setControlCausedMessage("1111", "No premission", 1);
-   //			}
-   //		}
-   //	}
-
-   //   private void setPermissions(Composite parent) {
-   //      for (XWidget widget : XWidgetUtility.findXWidgetsInControl(parent)) {
-   //         IAttributeXWidgetProvider xWidgetProvider = AttributeXWidgetManager.getAttributeXWidgetProvider(attributeType);
-   //         List<DynamicXWidgetLayoutData> concreteWidgets = xWidgetProvider.getDynamicXWidgetLayoutData(attributeType);
-   //         setPermissions(artifact, attributeType, concreteWidgets);
-   //      }
-   //   }
 
    private void createAttributeTypeControlsInSection(Composite parent, FormToolkit toolkit, AttributeType attributeType, boolean willHaveASection, boolean isEditable) {
       int style = ExpandableComposite.COMPACT | ExpandableComposite.TREE_NODE;

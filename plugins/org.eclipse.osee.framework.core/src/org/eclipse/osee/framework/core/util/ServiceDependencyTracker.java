@@ -57,6 +57,10 @@ public final class ServiceDependencyTracker implements Closeable {
       }
    }
 
+   public AbstractTrackingHandler getHandler() {
+      return handler;
+   }
+
    @Override
    public void close() {
       handler.onDeActivate();

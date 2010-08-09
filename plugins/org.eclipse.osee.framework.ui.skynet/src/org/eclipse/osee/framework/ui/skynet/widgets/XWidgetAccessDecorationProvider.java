@@ -11,18 +11,16 @@
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.util.logging.Level;
-import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.access.PermissionStatus;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.artifact.AccessPolicyHandler;
+import org.eclipse.osee.framework.ui.skynet.artifact.IAccessPolicyHandlerService;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetDecorator.Decorator;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -33,6 +31,12 @@ import org.eclipse.swt.widgets.Label;
 public class XWidgetAccessDecorationProvider implements XWidgetDecorator.DecorationProvider {
 
    private static final Image LOCK_IMAGE = ImageManager.getImage(FrameworkImage.LOCK_OVERLAY);
+
+   private final IAccessPolicyHandlerService policyHandlerService;
+
+   public XWidgetAccessDecorationProvider(IAccessPolicyHandlerService policyHandlerService) {
+      this.policyHandlerService = policyHandlerService;
+   }
 
    @Override
    public int getPriority() {
@@ -48,10 +52,8 @@ public class XWidgetAccessDecorationProvider implements XWidgetDecorator.Decorat
          PermissionStatus permissionStatus = new PermissionStatus();
          try {
             Artifact artifact = attributeWidget.getArtifact();
-            AccessPolicyHandler accessPolicyHandler =
-               new AccessPolicyHandler(UserManager.getUser(), AccessControlManager.getService());
             permissionStatus =
-               accessPolicyHandler.hasAttributeTypePermission(Collections.asCollection(artifact), attributeType,
+               policyHandlerService.hasAttributeTypePermission(Collections.asCollection(artifact), attributeType,
                   PermissionEnum.WRITE, Level.SEVERE);
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
