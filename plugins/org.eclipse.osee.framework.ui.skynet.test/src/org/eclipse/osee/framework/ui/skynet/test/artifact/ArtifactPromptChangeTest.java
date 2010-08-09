@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.ui.skynet.test.artifact;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
@@ -60,7 +61,7 @@ public class ArtifactPromptChangeTest {
 
       @SuppressWarnings("unused")
       @Override
-      public PermissionStatus hasAttributeTypePermission(Collection<? extends IBasicArtifact<?>> artifacts, IAttributeType attributeType, PermissionEnum permission, boolean displayMessage) throws OseeCoreException {
+      public PermissionStatus hasAttributeTypePermission(Collection<? extends IBasicArtifact<?>> artifacts, IAttributeType attributeType, PermissionEnum permission, Level level) throws OseeCoreException {
          return new PermissionStatus();
       }
 
