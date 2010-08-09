@@ -25,6 +25,8 @@ public class CoreArtifactTypes extends NamedIdentity implements IArtifactType {
       "Abstract Test Result");
    public static final CoreArtifactTypes AbstractTestUnit = new CoreArtifactTypes("AISIbSI6wzEUfPdCQaAA",
       "Abstract Test Unit");
+   public static final CoreArtifactTypes ACCESS_CONTROL_MODEL = new CoreArtifactTypes("CJr1bPfZQkbiuTA4FewA",
+      "Access Control Model");
    public static final CoreArtifactTypes Artifact = new CoreArtifactTypes("AAMFDh6S7gRLupAMwywA", "Artifact");
    public static final CoreArtifactTypes CodeUnit = new CoreArtifactTypes("AAMFDkEh216dzK1mTZgA", "Code Unit");
    public static final CoreArtifactTypes Component = new CoreArtifactTypes("AAMFDkG6omAsD6dXPYgA", "Component");

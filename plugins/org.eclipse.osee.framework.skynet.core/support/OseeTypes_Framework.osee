@@ -6,6 +6,10 @@ artifactType "Artifact" {
    attribute "Relation Order"
 }
 
+artifactType "Access Control Model" extends "General Data" {
+   guid "CJr1bPfZQkbiuTA4FewA"
+}
+
 artifactType "Global Preferences" extends "Artifact" {
    guid "AAMFDho2kBqyoOZEw+gA"
    attribute "Dictionary"
@@ -137,20 +141,25 @@ attributeType "Favorite Branch" extends StringAttribute {
 }
 
 oseeEnumType "enum.test.proc.status" {
-	guid "AKkmjINR11UDdTOE1WAA"
-	entry "Not Performed" entryGuid "APt7jzRPv2HBlrjQZXAA"
-	entry "Completed -- Analysis in Work" entryGuid "APt7j0WUEAIFUyyzVZgA"
-	entry "Completed -- Passed" entryGuid "APt7j0YZq1AjCER1qzAA"
-	entry "Completed -- With Issues" entryGuid "APt7j0aZWF2BJc_BqnQA"
-	entry "Completed -- With Issues Resolved" entryGuid "APt7j0cv9B1ImjckeTAA"
+   guid "AKkmjINR11UDdTOE1WAA"
+   entry "Not Performed"
+   entryGuid "APt7jzRPv2HBlrjQZXAA"
+   entry "Completed -- Analysis in Work"
+   entryGuid "APt7j0WUEAIFUyyzVZgA"
+   entry "Completed -- Passed"
+   entryGuid "APt7j0YZq1AjCER1qzAA"
+   entry "Completed -- With Issues"
+   entryGuid "APt7j0aZWF2BJc_BqnQA"
+   entry "Completed -- With Issues Resolved"
+   entryGuid "APt7j0cv9B1ImjckeTAA"
 }
 
 attributeType "Test Procedure Status" extends EnumeratedAttribute {
-	guid "AKkUuN2K1ilSHnvIMPQA"
-	dataProvider DefaultAttributeDataProvider
-	min 0
-	max 1
-	enumType "enum.test.proc.status" 
+   guid "AKkUuN2K1ilSHnvIMPQA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   enumType "enum.test.proc.status"
 }
 
 attributeType "User Settings" extends StringAttribute {
@@ -233,7 +242,7 @@ artifactType "Group Artifact" extends "Artifact" {
    guid "ABM4FTvWVzDQsTsM6jQA"
 }
 
-artifactType "User Group" extends "Abstract Access Controlled", "Group Artifact" {
+artifactType "User Group" extends "Abstract Access Controlled" , "Group Artifact" {
    guid "AAMFDhrEbXqZKPfWkwAA"
 }
 
@@ -253,8 +262,7 @@ attributeType "Template Match Criteria" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max unlimited
-   description
-   "Criteria that determines what template is selected ie: \'Render Artifact PresentationType Option\'"
+   description "Criteria that determines what template is selected ie: \'Render Artifact PresentationType Option\'"
 }
 
 relationType "Default Hierarchical" {
@@ -323,8 +331,10 @@ attributeType "Description" extends StringAttribute {
 
 oseeEnumType "enum.doc.page.type" {
    guid "ABbjHDYCtmvuIrCz2MAA"
-   entry "Portrait" entryGuid "CArJmR0aZl3A8pWTQ8AA"
-   entry "Landscape" entryGuid "CArJmPtdrFEmxk6+tqQA"
+   entry "Portrait"
+   entryGuid "CArJmR0aZl3A8pWTQ8AA"
+   entry "Landscape"
+   entryGuid "CArJmPtdrFEmxk6+tqQA"
 }
 
 attributeType "Page Type" extends EnumeratedAttribute {
@@ -394,8 +404,7 @@ attributeType "Word Template Content" extends WordAttribute {
    max 1
    taggerId XmlAttributeTaggerProvider
    description "value must comply with WordML xml schema"
-   defaultValue
-   "<w:p xmlns:w=\"http://schemas.microsoft.com/office/word/2003/wordml\"><w:r><w:t></w:t></w:r></w:p>"
+   defaultValue "<w:p xmlns:w=\"http://schemas.microsoft.com/office/word/2003/wordml\"><w:r><w:t></w:t></w:r></w:p>"
    fileExtension "xml"
 }
 
@@ -494,22 +503,24 @@ artifactType "Requirement" extends "Artifact" {
 }
 
 attributeType "Test Frequency" extends EnumeratedAttribute {
-	guid "AS7E+gDvsymdt28Aw3gA"
-	dataProvider DefaultAttributeDataProvider
-	min 0
-	max 1
-	taggerId DefaultAttributeTaggerProvider
-	enumType "enum.req.test.frequency"
+   guid "AS7E+gDvsymdt28Aw3gA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+   enumType "enum.req.test.frequency"
 }
 
 oseeEnumType "enum.req.test.frequency" {
-	guid "AS7K6KiFKy3Fb5j3xlwA"
-	entry "Zero" entryGuid "AS7P7QAx8CQb1qp8BqwA"
-	entry "One" entryGuid "AS7RJUFz2EPIYq+sQvwA"
+   guid "AS7K6KiFKy3Fb5j3xlwA"
+   entry "Zero"
+   entryGuid "AS7P7QAx8CQb1qp8BqwA"
+   entry "One"
+   entryGuid "AS7RJUFz2EPIYq+sQvwA"
 }
 
 abstract artifactType "Direct Software Requirement" extends "Abstract Software Requirement" {
-	guid "BtMwyalHkHkrRo7D0aAA"
+   guid "BtMwyalHkHkrRo7D0aAA"
 }
 
 abstract artifactType "Abstract Software Requirement" extends "Requirement" {
@@ -523,11 +534,11 @@ abstract artifactType "Abstract Software Requirement" extends "Requirement" {
    attribute "Training Effectivity"
 }
 
-artifactType "Software Requirement" extends "MS Word Template", "Direct Software Requirement" {
+artifactType "Software Requirement" extends "MS Word Template" , "Direct Software Requirement" {
    guid "AAMFDiAwhRFXwIyapJAA"
 }
 
-artifactType "Indirect Software Requirement" extends "Abstract Software Requirement", "MS Word Template" {
+artifactType "Indirect Software Requirement" extends "Abstract Software Requirement" , "MS Word Template" {
    guid "AAMFDiC7HRQMqr5S0QwA"
 }
 
@@ -552,28 +563,39 @@ artifactType "System Requirement" extends "Requirement" , "MS Word Template" {
 }
 
 attributeType "Req Type" extends EnumeratedAttribute {
-	guid "AEQ9uyqjH3NpD0eThgAA"
-	dataProvider DefaultAttributeDataProvider
-	min 0
-	max 1
-	taggerId DefaultAttributeTaggerProvider
-	enumType "Req Type Enum"
-	defaultValue "Unspecified"
+   guid "AEQ9uyqjH3NpD0eThgAA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+   enumType "Req Type Enum"
+   defaultValue "Unspecified"
 }
 
 oseeEnumType "Req Type Enum" {
-	guid "AEQpMgL+4CmkHXKP2_AA"
-	entry "DesignConstraint" entryGuid "AEUNGcq8_mdWzYbO9fwA"
-	entry "EnvironmentalReq" entryGuid "AEUQtA+xYml92hqzaLwA"
-	entry "FunctionalReq" entryGuid "AEUTBnJKsXq0_p2GUPgA"
-	entry "Info" entryGuid "AEUUfCXnYg+iTEf1ldQA"
-	entry "InterfaceReq" entryGuid "AEUXWYpm1nsYUIQb3dgA"
-	entry "ModeDef" entryGuid "AEUZNPCyPGq2a0Iy11QA"
-	entry "PerformanceReq" entryGuid "AEUbpIQJJBKjIWEkFGgA"
-	entry "PhysicalReq" entryGuid "AEUeJcW9PQRmtPYk+JQA"
-	entry "Requirement" entryGuid "ASbiRa9+fnprR9wb7bgA"
-	entry "VerificationReq" entryGuid "AEUgQJN+rn32mrPoydgA"
-	entry "Unspecified" entryGuid "AEUiMfEaQG4gCx6FsRwA"
+   guid "AEQpMgL+4CmkHXKP2_AA"
+   entry "DesignConstraint"
+   entryGuid "AEUNGcq8_mdWzYbO9fwA"
+   entry "EnvironmentalReq"
+   entryGuid "AEUQtA+xYml92hqzaLwA"
+   entry "FunctionalReq"
+   entryGuid "AEUTBnJKsXq0_p2GUPgA"
+   entry "Info"
+   entryGuid "AEUUfCXnYg+iTEf1ldQA"
+   entry "InterfaceReq"
+   entryGuid "AEUXWYpm1nsYUIQb3dgA"
+   entry "ModeDef"
+   entryGuid "AEUZNPCyPGq2a0Iy11QA"
+   entry "PerformanceReq"
+   entryGuid "AEUbpIQJJBKjIWEkFGgA"
+   entry "PhysicalReq"
+   entryGuid "AEUeJcW9PQRmtPYk+JQA"
+   entry "Requirement"
+   entryGuid "ASbiRa9+fnprR9wb7bgA"
+   entry "VerificationReq"
+   entryGuid "AEUgQJN+rn32mrPoydgA"
+   entry "Unspecified"
+   entryGuid "AEUiMfEaQG4gCx6FsRwA"
 }
 
 artifactType "Subsystem Requirement" extends "Requirement" , "MS Word Template" {
@@ -614,13 +636,11 @@ abstract artifactType "Abstract Test Result" extends "Artifact" {
    guid "ATkaanWmHH3PkhGNVjwA"
 }
 
-artifactType "Test Result Native" extends "Abstract Test Result" ,
-"Native Artifact" {
+artifactType "Test Result Native" extends "Abstract Test Result" , "Native Artifact" {
    guid "ATk4k88aVV6WqOfBidgA"
 }
 
-artifactType "Test Result WML" extends "Abstract Test Result" ,
-"MS Word Whole Document" {
+artifactType "Test Result WML" extends "Abstract Test Result" , "MS Word Whole Document" {
    guid "ATk6NKFFmD_zg1b_eaQA"
 }
 
@@ -656,8 +676,7 @@ artifactType "Test Procedure" extends "Test Unit" {
    attribute "Test Procedure Status"
 }
 
-artifactType "Test Procedure WML" extends "Test Procedure" , "MS Word Whole Document"
-{
+artifactType "Test Procedure WML" extends "Test Procedure" , "MS Word Whole Document" {
    guid "AAMFDiUeCG3KWx5XqeQA"
 }
 
@@ -695,18 +714,19 @@ attributeType "Legacy Id" extends StringAttribute {
    description "SLATE unique identifier (caution: not guaranteed to be immutable)"
 }
 
-attributeType "Effectivity" extends  EnumeratedAttribute {
-	guid "B1fqGH5hxBMylPX9VEQA"
-	dataProvider DefaultAttributeDataProvider
-	min 0
-	max 1
-	enumType "enum.effectivity"
-	defaultValue "Unspecified"
+attributeType "Effectivity" extends EnumeratedAttribute {
+   guid "B1fqGH5hxBMylPX9VEQA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   enumType "enum.effectivity"
+   defaultValue "Unspecified"
 }
 
 oseeEnumType "enum.effectivity" {
-	guid "B1gfpUSVrEvaDvqLeqQA"
-	entry "Unspecified" entryGuid "B1hxfljxnTDYqcYhlDAA"
+   guid "B1gfpUSVrEvaDvqLeqQA"
+   entry "Unspecified"
+   entryGuid "B1hxfljxnTDYqcYhlDAA"
 }
 
 attributeType "System Security Requirement" extends BooleanAttribute {
@@ -727,12 +747,18 @@ attributeType "Training Effectivity" extends BooleanAttribute {
 
 oseeEnumType "enum.req.partition" {
    guid "ABbjHBzHfCU9H2BPpqAA"
-   entry "Graphics Handler" entryGuid "AHggI+3RUnQwf1KtsqAA"
-   entry "Communication" entryGuid "AHggI+_WjDloKP_beTgA"
-   entry "Flight Control" entryGuid "AHggI_I2olatAugkrrgA"
-   entry "Input/Output Processor" entryGuid "AHggI_cJoCK4KsG6mwgA"
-   entry "Navigation" entryGuid "AHggI_xoLlJwuOWCN3QA"
-   entry "Unspecified" entryGuid "AHggJAD2BiADTH74DhAA"
+   entry "Graphics Handler"
+   entryGuid "AHggI+3RUnQwf1KtsqAA"
+   entry "Communication"
+   entryGuid "AHggI+_WjDloKP_beTgA"
+   entry "Flight Control"
+   entryGuid "AHggI_I2olatAugkrrgA"
+   entry "Input/Output Processor"
+   entryGuid "AHggI_cJoCK4KsG6mwgA"
+   entry "Navigation"
+   entryGuid "AHggI_xoLlJwuOWCN3QA"
+   entry "Unspecified"
+   entryGuid "AHggJAD2BiADTH74DhAA"
 }
 
 attributeType "Partition" extends EnumeratedAttribute {
@@ -747,20 +773,34 @@ attributeType "Partition" extends EnumeratedAttribute {
 
 oseeEnumType "enum.req.subsystem" {
    guid "ABbjHB5dcGIVi9+p9bQA"
-   entry "Robot_API" entryGuid "AHjfb6Ot_Atsy5Hj5xAA"
-   entry "Robot_Survivability_Equipment" entryGuid "AHjfd+vzwB5D1DjSPWgA"
-   entry "Robot_Systems_Management" entryGuid "AHjfd+zuqmUAQPB6MbwA"
-   entry "Chasis" entryGuid "AHjfd+3D_2WDdzxL9hwA"
-   entry "Cognitive_Decision_Aiding" entryGuid "AHjfd+7AwSFsRzmC84QA"
-   entry "Communications" entryGuid "AHjfd++j_hUNRmwobMwA"
-   entry "Data_Management" entryGuid "AHjfd_Cw5zMXN1T21YwA"
-   entry "Electrical" entryGuid "AHjfd_LUzm7Z2jeLDeQA"
-   entry "Controls" entryGuid "AHjfd_RZSXYHzkv1rOQA"
-   entry "Hydraulics" entryGuid "AHjfd_VSQDj9YzYfD7wA"
-   entry "Navigation" entryGuid "AHjfd_ZHOyLb+diLv5gA"
-   entry "Propulsion" entryGuid "AHjfd_c32nOglFGiMxgA"
-   entry "Unknown" entryGuid "AHjfd_kVkkdX2Y9lhIwA"
-   entry "Unspecified" entryGuid "AHjfd_7ljkRqqttzhDQA"
+   entry "Robot_API"
+   entryGuid "AHjfb6Ot_Atsy5Hj5xAA"
+   entry "Robot_Survivability_Equipment"
+   entryGuid "AHjfd+vzwB5D1DjSPWgA"
+   entry "Robot_Systems_Management"
+   entryGuid "AHjfd+zuqmUAQPB6MbwA"
+   entry "Chasis"
+   entryGuid "AHjfd+3D_2WDdzxL9hwA"
+   entry "Cognitive_Decision_Aiding"
+   entryGuid "AHjfd+7AwSFsRzmC84QA"
+   entry "Communications"
+   entryGuid "AHjfd++j_hUNRmwobMwA"
+   entry "Data_Management"
+   entryGuid "AHjfd_Cw5zMXN1T21YwA"
+   entry "Electrical"
+   entryGuid "AHjfd_LUzm7Z2jeLDeQA"
+   entry "Controls"
+   entryGuid "AHjfd_RZSXYHzkv1rOQA"
+   entry "Hydraulics"
+   entryGuid "AHjfd_VSQDj9YzYfD7wA"
+   entry "Navigation"
+   entryGuid "AHjfd_ZHOyLb+diLv5gA"
+   entry "Propulsion"
+   entryGuid "AHjfd_c32nOglFGiMxgA"
+   entry "Unknown"
+   entryGuid "AHjfd_kVkkdX2Y9lhIwA"
+   entry "Unspecified"
+   entryGuid "AHjfd_7ljkRqqttzhDQA"
 }
 
 attributeType "Subsystem" extends EnumeratedAttribute {
@@ -774,14 +814,23 @@ attributeType "Subsystem" extends EnumeratedAttribute {
 
 oseeEnumType "enum.req.qualification.method" {
    guid "ABbjHCAHCGyBB5TlmFQA"
-   entry "Demonstration" entryGuid "CArJmMA53UpBedWUq2wA"
-   entry "Test" entryGuid "CArJmMCo5ABG2ARPMAgA"
-   entry "Analysis" entryGuid "CArJmMEVehxBzLEB5BAA"
-   entry "Inspection" entryGuid "CArJmMGDMTQTjfQ38MAA"
-   entry "Similarity" entryGuid "ASc33qQU1W+9s0suWHwA" // same as Legacy
-   entry "Special Qualification" entryGuid "CArJmMHtrXO88eBgpDwA"
-   entry "Legacy" entryGuid "CArJmMJahR1CShy_tbAA"
-   entry "Unspecified" entryGuid "CArJmMLRzxv5GEsV81gA"
+   entry "Demonstration"
+   entryGuid "CArJmMA53UpBedWUq2wA"
+   entry "Test"
+   entryGuid "CArJmMCo5ABG2ARPMAgA"
+   entry "Analysis"
+   entryGuid "CArJmMEVehxBzLEB5BAA"
+   entry "Inspection"
+   entryGuid "CArJmMGDMTQTjfQ38MAA"
+   entry "Similarity"
+   entryGuid "ASc33qQU1W+9s0suWHwA" // same as Legacy
+
+   entry "Special Qualification"
+   entryGuid "CArJmMHtrXO88eBgpDwA"
+   entry "Legacy"
+   entryGuid "CArJmMJahR1CShy_tbAA"
+   entry "Unspecified"
+   entryGuid "CArJmMLRzxv5GEsV81gA"
 }
 
 attributeType "Qualification Method" extends EnumeratedAttribute {
@@ -797,11 +846,16 @@ attributeType "Qualification Method" extends EnumeratedAttribute {
 
 oseeEnumType "enum.req.safety.criticality" {
    guid "ABbjHCNxJBcbZ6yiZDgA"
-   entry "I" entryGuid "CArJmMT4W0M7RHz21FQA"
-   entry "II" entryGuid "CArJmMVi32d309GaF2QA"
-   entry "III" entryGuid "CArJmMXNMQmB_pYCUmgA"
-   entry "IV" entryGuid "CArJmMZEHicX8fSbRWQA"
-   entry "V" entryGuid "CArJmMa0N3h90kh02XwA"
+   entry "I"
+   entryGuid "CArJmMT4W0M7RHz21FQA"
+   entry "II"
+   entryGuid "CArJmMVi32d309GaF2QA"
+   entry "III"
+   entryGuid "CArJmMXNMQmB_pYCUmgA"
+   entry "IV"
+   entryGuid "CArJmMZEHicX8fSbRWQA"
+   entry "V"
+   entryGuid "CArJmMa0N3h90kh02XwA"
 }
 
 attributeType "Safety Criticality" extends EnumeratedAttribute {
@@ -816,10 +870,14 @@ attributeType "Safety Criticality" extends EnumeratedAttribute {
 
 oseeEnumType "enum.req.verification.level" {
    guid "ABbjHC2WXXrSKP4puzgA"
-   entry "System" entryGuid "AHgseTiNRW1AhGHenkAA"
-   entry "Subsystem" entryGuid "AHgseTubynFhgg9eXjQA"
-   entry "Component" entryGuid "AHgseT6tBlXP7azH7LQA"
-   entry "Unspecified" entryGuid "AHgseUA7nhAJY46rRDQA"
+   entry "System"
+   entryGuid "AHgseTiNRW1AhGHenkAA"
+   entry "Subsystem"
+   entryGuid "AHgseTubynFhgg9eXjQA"
+   entry "Component"
+   entryGuid "AHgseT6tBlXP7azH7LQA"
+   entry "Unspecified"
+   entryGuid "AHgseUA7nhAJY46rRDQA"
 }
 
 attributeType "Verification Level" extends EnumeratedAttribute {
@@ -842,8 +900,10 @@ attributeType "TIS Test Number" extends StringAttribute {
 
 oseeEnumType "enum.test.tis.type" {
    guid "ABbjHCU5SnXJ62yrqgQA"
-   entry "Stationary Vehicle" entryGuid "AHj4p6gxxxlUbouQY4gA"
-   entry "In Operation" entryGuid "AHj4p6kFZ3S4g4sDOEgA"
+   entry "Stationary Vehicle"
+   entryGuid "AHj4p6gxxxlUbouQY4gA"
+   entry "In Operation"
+   entryGuid "AHj4p6kFZ3S4g4sDOEgA"
 }
 
 attributeType "TIS Test Type" extends EnumeratedAttribute {
@@ -858,9 +918,12 @@ attributeType "TIS Test Type" extends EnumeratedAttribute {
 
 oseeEnumType "enum.test.tis.category" {
    guid "ABbjHCbrnnqEZAX3kzwA"
-   entry "SPEC_COMP" entryGuid "CArJmMeaR3xHDdsfMmQA"
-   entry "DEV" entryGuid "CArJmQdaJgLQKdfWuqAA"
-   entry "USG" entryGuid "CArJmQe87RfF8MxEp6AA"
+   entry "SPEC_COMP"
+   entryGuid "CArJmMeaR3xHDdsfMmQA"
+   entry "DEV"
+   entryGuid "CArJmQdaJgLQKdfWuqAA"
+   entry "USG"
+   entryGuid "CArJmQe87RfF8MxEp6AA"
 }
 
 attributeType "TIS Test Category" extends EnumeratedAttribute {
@@ -875,11 +938,16 @@ attributeType "TIS Test Category" extends EnumeratedAttribute {
 
 oseeEnumType "enum.req.development.assurance.level" {
    guid "ABNKg0zpK359Z5qvBsQA"
-   entry "A" entryGuid "CArJmQghfXnRkiCKD5AA"
-   entry "B" entryGuid "CArJmQiEOmcK4CBlp2gA"
-   entry "C" entryGuid "CArJmQjodlQbcdQmm1AA"
-   entry "D" entryGuid "CArJmQlRRwo1OPaSGhwA"
-   entry "E" entryGuid "CArJmQm9Lx76RVS3lIwA"
+   entry "A"
+   entryGuid "CArJmQghfXnRkiCKD5AA"
+   entry "B"
+   entryGuid "CArJmQiEOmcK4CBlp2gA"
+   entry "C"
+   entryGuid "CArJmQjodlQbcdQmm1AA"
+   entry "D"
+   entryGuid "CArJmQlRRwo1OPaSGhwA"
+   entry "E"
+   entryGuid "CArJmQm9Lx76RVS3lIwA"
 }
 
 attributeType "Development Assurance Level" extends EnumeratedAttribute {
@@ -916,7 +984,8 @@ attributeType "Technical Performance Parameter" extends BooleanAttribute {
 
 oseeEnumType "enum.req.verification.event" {
    guid "ABbjHC9L9lc8UkipZnQA"
-   entry "Unspecified" entryGuid "AHgx7FoBjTj1Gjx2lwwA"
+   entry "Unspecified"
+   entryGuid "AHgx7FoBjTj1Gjx2lwwA"
 }
 
 attributeType "Verification Event" extends EnumeratedAttribute {
@@ -930,8 +999,10 @@ attributeType "Verification Event" extends EnumeratedAttribute {
 
 oseeEnumType "enum.req.component" {
    guid "ABbjHCpCFT4BoiZph4gA"
-   entry "Top level product component" entryGuid "AHgx7E8De1cxZ5soXEwA"
-   entry "Unspecified" entryGuid "AHgx7FDclWxiskAifqgA"
+   entry "Top level product component"
+   entryGuid "AHgx7E8De1cxZ5soXEwA"
+   entry "Unspecified"
+   entryGuid "AHgx7FDclWxiskAifqgA"
 }
 
 attributeType "Component" extends EnumeratedAttribute {
@@ -1185,12 +1256,18 @@ relationType "Supercedes" {
 
 oseeEnumType "enum.req.csci" {
    guid "ABbjHCvlIUEX3D7+BywA"
-   entry "CoreUnit" entryGuid "AHkD1ZWRgG65kO2xGawA"
-   entry "Framework" entryGuid "AHkD1ZZ063rhGqAyBOAA"
-   entry "Interface" entryGuid "AHkD1ZgrchP3YIc3P3AA"
-   entry "Navigation" entryGuid "AHkD1ZnJ3kjo0mcY2bgA"
-   entry "Unspecified" entryGuid "AHkD1ZtZdjiGWH2sJvwA"
-   entry "Visual" entryGuid "AHkD1ZxHLlTIDMbxs6QA"
+   entry "CoreUnit"
+   entryGuid "AHkD1ZWRgG65kO2xGawA"
+   entry "Framework"
+   entryGuid "AHkD1ZZ063rhGqAyBOAA"
+   entry "Interface"
+   entryGuid "AHkD1ZgrchP3YIc3P3AA"
+   entry "Navigation"
+   entryGuid "AHkD1ZnJ3kjo0mcY2bgA"
+   entry "Unspecified"
+   entryGuid "AHkD1ZtZdjiGWH2sJvwA"
+   entry "Visual"
+   entryGuid "AHkD1ZxHLlTIDMbxs6QA"
 }
 
 attributeType "CSCI" extends EnumeratedAttribute {
@@ -1270,15 +1347,24 @@ attributeType "SFHA" extends StringAttribute {
 
 oseeEnumType "enum.req.hazard.severity" {
    guid "ABbjHBmFwRMuPIuJlXgA"
-   entry "Catastrophic, I" entryGuid "CArJmKAfM2LFVagvdyAA"
-   entry "Severe-Major, II" entryGuid "CArJmKCbLEwsmEBGn+gA"
-   entry "Critical, II" entryGuid "CArJmKEZuXpODZmFkcQA"
-   entry "Major, III" entryGuid "CArJmKGYAW4oWTiszZgA"
-   entry "Marginal, III" entryGuid "CArJmKIYLBLj6JLdPigA"
-   entry "Minor, IV" entryGuid "CArJmKKX+GP5wM5WJpAA"
-   entry "Negligible, IV" entryGuid "CArJmKMSiWNzklMgHmAA"
-   entry "No Effect, V" entryGuid "CArJmKOJ6x+k2bBnQ2gA"
-   entry "Unspecified" entryGuid "CArJmKQGFVIRln+WloQA"
+   entry "Catastrophic, I"
+   entryGuid "CArJmKAfM2LFVagvdyAA"
+   entry "Severe-Major, II"
+   entryGuid "CArJmKCbLEwsmEBGn+gA"
+   entry "Critical, II"
+   entryGuid "CArJmKEZuXpODZmFkcQA"
+   entry "Major, III"
+   entryGuid "CArJmKGYAW4oWTiszZgA"
+   entry "Marginal, III"
+   entryGuid "CArJmKIYLBLj6JLdPigA"
+   entry "Minor, IV"
+   entryGuid "CArJmKKX+GP5wM5WJpAA"
+   entry "Negligible, IV"
+   entryGuid "CArJmKMSiWNzklMgHmAA"
+   entry "No Effect, V"
+   entryGuid "CArJmKOJ6x+k2bBnQ2gA"
+   entry "Unspecified"
+   entryGuid "CArJmKQGFVIRln+WloQA"
 }
 
 attributeType "Hazard Severity" extends EnumeratedAttribute {
@@ -1308,9 +1394,12 @@ attributeType "FTA Results" extends FloatingPointAttribute {
 
 oseeEnumType "enum.req.gfe.cfe" {
    guid "ABbjHBslh00N4r93HbQA"
-   entry "CFE" entryGuid "CArJmKSDJmlB5eQJFdQA"
-   entry "GFE" entryGuid "CArJmKT8DCOjmZgXRLgA"
-   entry "Unspecified" entryGuid "CArJmKVx8wtiwmzCcugA"
+   entry "CFE"
+   entryGuid "CArJmKSDJmlB5eQJFdQA"
+   entry "GFE"
+   entryGuid "CArJmKT8DCOjmZgXRLgA"
+   entry "Unspecified"
+   entryGuid "CArJmKVx8wtiwmzCcugA"
 }
 
 attributeType "GFE / CFE" extends EnumeratedAttribute {
