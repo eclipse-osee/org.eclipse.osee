@@ -89,10 +89,13 @@ public class OseeEnumType extends AbstractOseeType implements Comparable<OseeEnu
       return toReturn;
    }
 
+   /**
+    * return the enum with the given name. Tolerates leading and trailing whitespace using trim()
+    */
    public OseeEnumEntry valueOf(String entryName) throws OseeCoreException {
       OseeEnumEntry toReturn = null;
       for (OseeEnumEntry oseeEnumEntry : values()) {
-         if (oseeEnumEntry.getName().equals(entryName)) {
+         if (oseeEnumEntry.getName().equals(entryName.trim())) {
             toReturn = oseeEnumEntry;
          }
       }
