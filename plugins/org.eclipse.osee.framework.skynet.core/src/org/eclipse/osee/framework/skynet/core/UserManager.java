@@ -49,9 +49,6 @@ public final class UserManager {
 
    /**
     * Returns the currently authenticated user
-    * 
-    * @return User
-    * @throws OseeCoreException
     */
    public static User getUser() throws OseeCoreException {
       if (duringMainUserCreation || DbUtil.isDbInit() && !BranchManager.branchExists(CoreBranches.COMMON)) {
@@ -97,8 +94,6 @@ public final class UserManager {
 
    /**
     * Return sorted list of active User.getName() in database
-    * 
-    * @return String[]
     */
    public static String[] getUserNames() throws OseeCoreException {
       List<User> allUsers = getFromCache();
@@ -149,9 +144,7 @@ public final class UserManager {
    /**
     * This is not the preferred way to get a user. Most likely getUserByUserId() or getUserByArtId() should be used
     * 
-    * @param name
     * @return the first user found with the given name
-    * @throws OseeCoreException
     */
    public static User getUserByName(String name) throws OseeCoreException {
       for (User tempUser : getFromCache()) {
