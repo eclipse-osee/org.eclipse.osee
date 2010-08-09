@@ -44,7 +44,7 @@ public final class ArtifactPromptChange {
       this.policyHandler = policyHandler;
    }
 
-   public void dependeices() throws OseeCoreException {
+   private void dependeices() throws OseeCoreException {
       if (promptFactory == null && policyHandler == null) {
          promptFactory = new PromptFactory();
          policyHandler = new AccessPolicyHandler(UserManager.getUser(), AccessControlManager.getService());
