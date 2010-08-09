@@ -11,16 +11,17 @@
 package org.eclipse.osee.framework.core.util;
 
 import java.util.Collection;
+import java.util.Map;
 import org.osgi.framework.BundleContext;
 
 /**
  * @author Andrew M. Finkbeiner
  * @author Roberto E. Escobar
  */
-public final class SingletonServiceBinder extends MultiServiceBinder {
+public final class SingletonServiceBinder extends AbstractServiceBinder {
 
-   public SingletonServiceBinder(BundleContext context, AbstractTrackingHandler handler) {
-      super(context, handler);
+   public SingletonServiceBinder(Map<Class<?>, Collection<Object>> serviceMap, BundleContext context, AbstractTrackingHandler handler) {
+      super(serviceMap, context, handler);
    }
 
    @Override

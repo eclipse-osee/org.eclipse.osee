@@ -10,6 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.util;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.CopyOnWriteArraySet;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -19,11 +24,15 @@ import org.osgi.util.tracker.ServiceTracker;
  */
 public abstract class AbstractServiceBinder {
 
+   private final Map<Class<?>, Collection<Object>> serviceMap;
    private final BundleContext bundleContext;
    private final AbstractTrackingHandler handler;
 
-   protected AbstractServiceBinder(BundleContext bundleContext, AbstractTrackingHandler handler) {
+   private boolean isReady;
+
+   protected AbstractServiceBinder(Map<Class<?>, Collection<Object>> serviceMap, BundleContext bundleContext, AbstractTrackingHandler handler) {
       super();
+      this.serviceMap = serviceMap;
       this.bundleContext = bundleContext;
       this.handler = handler;
    }
@@ -37,12 +46,56 @@ public abstract class AbstractServiceBinder {
    }
 
    public ServiceTracker createTracker(Class<?> clazz) {
+      serviceMap.put(clazz, new CopyOnWriteArraySet<Object>());
       return new InternalServiceTracker(this, getBundleContext(), clazz);
    }
 
-   public abstract void onAddingService(Class<?> classKey, Object service);
+   protected abstract void doAdd(Collection<Object> associatedServices, Object service);
 
-   public abstract void onRemovingService(Class<?> classKey, Object service);
+   public void onAddingService(Class<?> classKey, Object service) {
+      Collection<Object> associatedServices = serviceMap.get(classKey);
+      doAdd(associatedServices, service);
+      if (!isReady) {
+         if (areServicesReady()) {
+            isReady = true;
+            Map<Class<?>, Object> services = getSingleServiceMap();
+            getHandler().onActivate(getBundleContext(), services);
+         }
+      } else {
+         getHandler().onServiceAdded(getBundleContext(), classKey, service);
+      }
+   }
+
+   public void onRemovingService(Class<?> classKey, Object service) {
+      Collection<Object> associatedServices = serviceMap.get(classKey);
+      boolean wasRemoved = associatedServices.remove(service);
+      if (!wasRemoved) {
+         throw new IllegalStateException(String.format("Attempting to remove none managed service reference: [%s]",
+            service.getClass().getName()));
+      }
+      getHandler().onServiceRemoved(getBundleContext(), classKey, service);
+      if (associatedServices.isEmpty()) {
+         isReady = false;
+         getHandler().onDeActivate();
+      }
+   }
+
+   protected boolean areServicesReady() {
+      for (Collection<Object> services : serviceMap.values()) {
+         if (services.isEmpty()) {
+            return false;
+         }
+      }
+      return true;
+   }
+
+   private Map<Class<?>, Object> getSingleServiceMap() {
+      Map<Class<?>, Object> items = new HashMap<Class<?>, Object>();
+      for (Entry<Class<?>, Collection<Object>> entry : serviceMap.entrySet()) {
+         items.put(entry.getKey(), entry.getValue().iterator().next());
+      }
+      return items;
+   }
 
    private final static class InternalServiceTracker extends ServiceTracker {
       private final AbstractServiceBinder listener;

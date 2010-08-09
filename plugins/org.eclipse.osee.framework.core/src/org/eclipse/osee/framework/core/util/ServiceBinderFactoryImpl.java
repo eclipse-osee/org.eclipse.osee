@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.util;
 
+import java.util.Collection;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.core.util.ServiceDependencyTracker.ServiceBinderFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
@@ -23,8 +26,9 @@ public final class ServiceBinderFactoryImpl implements ServiceBinderFactory {
 
    public ServiceBinderFactoryImpl(BundleContext context, AbstractTrackingHandler handler) {
       super();
-      singleBinder = new SingletonServiceBinder(context, handler);
-      multiBinder = new MultiServiceBinder(context, handler);
+      Map<Class<?>, Collection<Object>> serviceMap = new ConcurrentHashMap<Class<?>, Collection<Object>>();
+      singleBinder = new SingletonServiceBinder(serviceMap, context, handler);
+      multiBinder = new MultiServiceBinder(serviceMap, context, handler);
    }
 
    @Override

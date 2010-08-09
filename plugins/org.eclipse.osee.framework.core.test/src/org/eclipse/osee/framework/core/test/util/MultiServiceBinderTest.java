@@ -10,7 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.test.util;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.core.test.mocks.MockBundleContext;
 import org.eclipse.osee.framework.core.test.mocks.MockServiceReference;
 import org.eclipse.osee.framework.core.test.mocks.MockTrackingHandler;
@@ -43,6 +46,8 @@ public class MultiServiceBinderTest {
    private static ServiceTracker stringTracker;
    private static ServiceTracker intTracker;
 
+   private static Map<Class<?>, Collection<Object>> serviceMap;
+
    @BeforeClass
    public static void setup() {
       serviceReference1 = new MockServiceReference();
@@ -58,7 +63,9 @@ public class MultiServiceBinderTest {
       };
 
       handler = new MockTrackingHandler(context, Integer.class, String.class);
-      serviceBinder = new MultiServiceBinder(context, handler);
+
+      serviceMap = new ConcurrentHashMap<Class<?>, Collection<Object>>();
+      serviceBinder = new MultiServiceBinder(serviceMap, context, handler);
    }
 
    @Test
@@ -173,6 +180,18 @@ public class MultiServiceBinderTest {
    @Test
    public void testReactivateServiceBinder() {
       handler.reset();
+
+      // Add another dependency to check that onActivate is 
+      // not called when dependencies that might be managed by other binders are missing
+      serviceMap.put(Boolean.class, new HashSet<Object>());
+
+      stringTracker.addingService(serviceReference1);
+      Assert.assertFalse(handler.wasOnActivateCalled());
+      Assert.assertFalse(handler.wasOnServiceAddedCalled());
+      Assert.assertFalse(handler.wasOnServiceRemovedCalled());
+      Assert.assertFalse(handler.wasOnDeactivateCalled());
+
+      serviceMap.remove(Boolean.class);
       stringTracker.addingService(serviceReference1);
       Assert.assertTrue(handler.wasOnActivateCalled());
       Assert.assertFalse(handler.wasOnServiceAddedCalled());
