@@ -40,7 +40,7 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
    // Node: <w:t>1.1.1 or Text</w:t>
    private static final Pattern WT_ELEMENT_REGEX = Pattern.compile("<w:t>(.*?)</w:t>");
    // Node: <wx:t wx:val="1.1.1 "/>
-   private static final Pattern LIST_ITEM_REGEX = Pattern.compile("<wx:t wx:val=\"(.*?)\".*/>");
+   private static final Pattern LIST_ITEM_REGEX = Pattern.compile("<wx:t wx:val=\"([0-9.]+\\s*)\".*/>");
    private static final Pattern OUTLINE_NUMBER = Pattern.compile("((?>\\d+\\.)+\\d*)\\s*");
    private static final Pattern HYPERLINK_PATTERN = Pattern.compile("<w:hlink .*>.*?</w:hlink>", Pattern.DOTALL);
 
