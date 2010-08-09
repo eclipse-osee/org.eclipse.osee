@@ -36,8 +36,6 @@ public class ServiceDependencyTrackerTest {
 
    private static MockBundleContext context;
    private static MockTrackingHandler handler;
-   private static MockServiceBinderFactory factory;
-   private static ServiceDependencyTracker depTracker;
 
    @BeforeClass
    public static void setup() {
@@ -46,7 +44,6 @@ public class ServiceDependencyTrackerTest {
          public Object getService(ServiceReference reference) {
             Assert.assertNotNull(reference);
             return null;
-            //            reference.equals(serviceReference1) ? serviceObject1 : serviceObject2;
          }
       };
 
@@ -61,12 +58,13 @@ public class ServiceDependencyTrackerTest {
          }
 
       };
-      factory = new MockServiceBinderFactory();
-      depTracker = new ServiceDependencyTracker(factory, context, handler);
    }
 
    @Test
    public void testOpen() {
+      MockServiceBinderFactory factory = new MockServiceBinderFactory();
+      ServiceDependencyTracker depTracker = new ServiceDependencyTracker(factory, context, handler);
+
       depTracker.open();
 
       Collection<MockServiceTracker> trackers = factory.getTracker();
@@ -92,6 +90,11 @@ public class ServiceDependencyTrackerTest {
 
    @Test
    public void testClose() {
+      MockServiceBinderFactory factory = new MockServiceBinderFactory();
+      ServiceDependencyTracker depTracker = new ServiceDependencyTracker(factory, context, handler);
+
+      depTracker.open();
+
       Collection<MockServiceTracker> trackers = factory.getTracker();
       Assert.assertEquals(2, trackers.size());
       for (MockServiceTracker tracker : trackers) {
@@ -104,6 +107,7 @@ public class ServiceDependencyTrackerTest {
          Assert.assertTrue(tracker.wasCloseCalled());
       }
    }
+
    private final static class MockServiceBinderFactory implements ServiceBinderFactory {
       private final Collection<MockServiceTracker> trackers = new ArrayList<MockServiceTracker>();
 

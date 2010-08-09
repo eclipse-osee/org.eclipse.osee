@@ -16,8 +16,8 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({//
 AbstractTrackingHandlerTest.class, //
-   MultiServiceBinderTest.class, //
    SingletonServiceBinderTest.class, //
+   MultiServiceBinderTest.class, //
    ServiceBinderFactoryTest.class, //
    ServiceDependencyTrackerTest.class, //
 })

@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.util.AbstractServiceBinder;
 import org.eclipse.osee.framework.core.util.MultiServiceBinder;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.osgi.framework.BundleContext;
@@ -41,12 +42,6 @@ public class MultiServiceBinderTest {
    private static BundleContext context;
 
    private static MockTrackingHandler handler;
-   private static AbstractServiceBinder serviceBinder;
-
-   private static ServiceTracker stringTracker;
-   private static ServiceTracker intTracker;
-
-   private static Map<Class<?>, Collection<Object>> serviceMap;
 
    @BeforeClass
    public static void setup() {
@@ -62,25 +57,45 @@ public class MultiServiceBinderTest {
          }
       };
 
-      handler = new MockTrackingHandler(context, Integer.class, String.class);
+      handler = new MockTrackingHandler(context);
+   }
 
+   private Map<Class<?>, Collection<Object>> serviceMap;
+   private AbstractServiceBinder serviceBinder;
+
+   @Before
+   public void setupTest() {
       serviceMap = new ConcurrentHashMap<Class<?>, Collection<Object>>();
       serviceBinder = new MultiServiceBinder(serviceMap, context, handler);
+      handler.reset();
    }
 
    @Test
    public void testCreateTracker() {
-      stringTracker = serviceBinder.createTracker(String.class);
+      ServiceTracker stringTracker = serviceBinder.createTracker(String.class);
       Assert.assertNotNull(stringTracker);
       stringTracker.open();
 
-      intTracker = serviceBinder.createTracker(Integer.class);
+      ServiceTracker intTracker = serviceBinder.createTracker(Integer.class);
       Assert.assertNotNull(intTracker);
       intTracker.open();
+
+      Assert.assertEquals(2, serviceMap.size());
+      Assert.assertTrue(serviceMap.containsKey(String.class));
+      Assert.assertTrue(serviceMap.containsKey(Integer.class));
    }
 
    @Test
    public void testAddServices() {
+      // Register Two dependencies
+      ServiceTracker stringTracker = serviceBinder.createTracker(String.class);
+      Assert.assertNotNull(stringTracker);
+      stringTracker.open();
+
+      ServiceTracker intTracker = serviceBinder.createTracker(Integer.class);
+      Assert.assertNotNull(intTracker);
+      intTracker.open();
+
       handler.reset();
       stringTracker.addingService(serviceReference1);
       Assert.assertFalse(handler.wasOnActivateCalled());
@@ -102,6 +117,17 @@ public class MultiServiceBinderTest {
 
    @Test
    public void testAddAnotherService() {
+      // Register One Dependency
+      ServiceTracker stringTracker = serviceBinder.createTracker(String.class);
+      Assert.assertNotNull(stringTracker);
+      stringTracker.open();
+
+      stringTracker.addingService(serviceReference1);
+      Assert.assertTrue(handler.wasOnActivateCalled());
+      Assert.assertFalse(handler.wasOnServiceAddedCalled());
+      Assert.assertFalse(handler.wasOnServiceRemovedCalled());
+      Assert.assertFalse(handler.wasOnDeactivateCalled());
+
       handler.reset();
       stringTracker.addingService(serviceReference2);
       Assert.assertFalse(handler.wasOnActivateCalled());
@@ -117,8 +143,19 @@ public class MultiServiceBinderTest {
 
    @Test
    public void testAddSameService() {
+      // Register One Dependency
+      ServiceTracker stringTracker = serviceBinder.createTracker(String.class);
+      Assert.assertNotNull(stringTracker);
+      stringTracker.open();
+
+      stringTracker.addingService(serviceReference1);
+      Assert.assertTrue(handler.wasOnActivateCalled());
+      Assert.assertFalse(handler.wasOnServiceAddedCalled());
+      Assert.assertFalse(handler.wasOnServiceRemovedCalled());
+      Assert.assertFalse(handler.wasOnDeactivateCalled());
+
       handler.reset();
-      stringTracker.addingService(serviceReference2);
+      stringTracker.addingService(serviceReference1);
       Assert.assertFalse(handler.wasOnActivateCalled());
       Assert.assertTrue(handler.wasOnServiceAddedCalled());
       Assert.assertFalse(handler.wasOnServiceRemovedCalled());
@@ -127,11 +164,29 @@ public class MultiServiceBinderTest {
       Pair<Class<?>, Object> addedService = handler.getServiceAdded();
       Assert.assertNotNull(addedService);
       Assert.assertEquals(String.class, addedService.getFirst());
-      Assert.assertEquals(serviceObject2, addedService.getSecond());
+      Assert.assertEquals(serviceObject1, addedService.getSecond());
    }
 
    @Test
    public void testRemoveService() {
+      // Register One Dependency
+      ServiceTracker stringTracker = serviceBinder.createTracker(String.class);
+      Assert.assertNotNull(stringTracker);
+      stringTracker.open();
+
+      stringTracker.addingService(serviceReference1);
+      Assert.assertTrue(handler.wasOnActivateCalled());
+      Assert.assertFalse(handler.wasOnServiceAddedCalled());
+      Assert.assertFalse(handler.wasOnServiceRemovedCalled());
+      Assert.assertFalse(handler.wasOnDeactivateCalled());
+
+      handler.reset();
+      stringTracker.addingService(serviceReference2);
+      Assert.assertFalse(handler.wasOnActivateCalled());
+      Assert.assertTrue(handler.wasOnServiceAddedCalled());
+      Assert.assertFalse(handler.wasOnServiceRemovedCalled());
+      Assert.assertFalse(handler.wasOnDeactivateCalled());
+
       handler.reset();
       stringTracker.removedService(serviceReference2, serviceObject2);
       Assert.assertFalse(handler.wasOnActivateCalled());
@@ -147,31 +202,69 @@ public class MultiServiceBinderTest {
 
    @Test(expected = IllegalStateException.class)
    public void testRemoveSameService() {
+      // Register One Dependency
+      ServiceTracker stringTracker = serviceBinder.createTracker(String.class);
+      Assert.assertNotNull(stringTracker);
+      stringTracker.open();
+
+      stringTracker.addingService(serviceReference2);
+      Assert.assertTrue(handler.wasOnActivateCalled());
+      Assert.assertFalse(handler.wasOnServiceAddedCalled());
+      Assert.assertFalse(handler.wasOnServiceRemovedCalled());
+      Assert.assertFalse(handler.wasOnDeactivateCalled());
+
+      handler.reset();
+      stringTracker.removedService(serviceReference2, serviceObject2);
+      Assert.assertFalse(handler.wasOnActivateCalled());
+      Assert.assertFalse(handler.wasOnServiceAddedCalled());
+      Assert.assertTrue(handler.wasOnServiceRemovedCalled());
+      Assert.assertTrue(handler.wasOnDeactivateCalled());
+
       // Remove Again
       handler.reset();
       stringTracker.removedService(serviceReference2, serviceObject2);
-      //      Assert.assertFalse(handler.wasOnActivateCalled());
-      //      Assert.assertFalse(handler.wasOnServiceAddedCalled());
-      //      Assert.assertTrue(handler.wasOnServiceRemovedCalled());
-      //      Assert.assertFalse(handler.wasOnDeactivateCalled());
-      //
-      //      Pair<Class<?>, Object> removedService = handler.getServiceRemoved();
-      //      Assert.assertNotNull(removedService);
-      //      Assert.assertEquals(String.class, removedService.getFirst());
-      //      Assert.assertEquals(serviceObject2, removedService.getSecond());
    }
 
    @Test
    public void testDeactivateServiceBinder() {
-      handler.reset();
+      // Register One Dependency
+      ServiceTracker stringTracker = serviceBinder.createTracker(String.class);
+      Assert.assertNotNull(stringTracker);
+      stringTracker.open();
 
+      stringTracker.addingService(serviceReference1);
+      Assert.assertTrue(handler.wasOnActivateCalled());
+      Assert.assertFalse(handler.wasOnServiceAddedCalled());
+      Assert.assertFalse(handler.wasOnServiceRemovedCalled());
+      Assert.assertFalse(handler.wasOnDeactivateCalled());
+
+      handler.reset();
+      stringTracker.addingService(serviceReference2);
+      Assert.assertFalse(handler.wasOnActivateCalled());
+      Assert.assertTrue(handler.wasOnServiceAddedCalled());
+      Assert.assertFalse(handler.wasOnServiceRemovedCalled());
+      Assert.assertFalse(handler.wasOnDeactivateCalled());
+
+      handler.reset();
+      stringTracker.removedService(serviceReference2, serviceObject2);
+      Assert.assertFalse(handler.wasOnActivateCalled());
+      Assert.assertFalse(handler.wasOnServiceAddedCalled());
+      Assert.assertTrue(handler.wasOnServiceRemovedCalled());
+      Assert.assertFalse(handler.wasOnDeactivateCalled());
+
+      Pair<Class<?>, Object> removedService = handler.getServiceRemoved();
+      Assert.assertNotNull(removedService);
+      Assert.assertEquals(String.class, removedService.getFirst());
+      Assert.assertEquals(serviceObject2, removedService.getSecond());
+
+      handler.reset();
       stringTracker.removedService(serviceReference1, serviceObject1);
       Assert.assertFalse(handler.wasOnActivateCalled());
       Assert.assertFalse(handler.wasOnServiceAddedCalled());
       Assert.assertTrue(handler.wasOnServiceRemovedCalled());
       Assert.assertTrue(handler.wasOnDeactivateCalled());
 
-      Pair<Class<?>, Object> removedService = handler.getServiceRemoved();
+      removedService = handler.getServiceRemoved();
       Assert.assertNotNull(removedService);
       Assert.assertEquals(String.class, removedService.getFirst());
       Assert.assertEquals(serviceObject1, removedService.getSecond());
@@ -179,6 +272,19 @@ public class MultiServiceBinderTest {
 
    @Test
    public void testReactivateServiceBinder() {
+      // Register One Dependency
+      ServiceTracker stringTracker = serviceBinder.createTracker(String.class);
+      Assert.assertNotNull(stringTracker);
+      stringTracker.open();
+
+      stringTracker.addingService(serviceReference1);
+      handler.reset();
+      stringTracker.removedService(serviceReference1, serviceObject1);
+      Assert.assertFalse(handler.wasOnActivateCalled());
+      Assert.assertFalse(handler.wasOnServiceAddedCalled());
+      Assert.assertTrue(handler.wasOnServiceRemovedCalled());
+      Assert.assertTrue(handler.wasOnDeactivateCalled());
+
       handler.reset();
 
       // Add another dependency to check that onActivate is 
@@ -199,13 +305,24 @@ public class MultiServiceBinderTest {
       Assert.assertFalse(handler.wasOnDeactivateCalled());
 
       Map<Class<?>, Object> activated = handler.getOnActivateServices();
-      Assert.assertEquals(2, activated.size());
+      Assert.assertEquals(1, activated.size());
       Assert.assertEquals(serviceObject1, activated.get(String.class));
-      Assert.assertEquals(serviceObject2, activated.get(Integer.class));
    }
 
    @Test
    public void testDeactivateFollowedByRemoveServiceBinder() {
+      // Register 2 Dependencies
+      ServiceTracker stringTracker = serviceBinder.createTracker(String.class);
+      Assert.assertNotNull(stringTracker);
+      stringTracker.open();
+
+      ServiceTracker intTracker = serviceBinder.createTracker(Integer.class);
+      Assert.assertNotNull(intTracker);
+      intTracker.open();
+
+      stringTracker.addingService(serviceReference1);
+      intTracker.addingService(serviceReference2);
+
       handler.reset();
       stringTracker.removedService(serviceReference1, serviceObject1);
       Assert.assertFalse(handler.wasOnActivateCalled());
