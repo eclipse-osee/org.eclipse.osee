@@ -40,7 +40,6 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -1210,6 +1209,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
             goIntoMenuItem.setEnabled(permiss.isReadPermission());
             copyMenuItem.setEnabled(permiss.isReadPermission());
             pasteMenuItem.setEnabled(permiss.isWritePermission());
+            renameArtifactMenuItem.setEnabled(permiss.isWritePermission());
 
          } catch (Exception ex) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -1293,35 +1293,6 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
    private void setHelpContexts() {
       SkynetGuiPlugin.getInstance().setHelp(treeViewer.getControl(), "artifact_explorer_tree_viewer",
          "org.eclipse.osee.framework.help.ui");
-   }
-   public class MenuEnablingListener implements MenuListener {
-
-      @Override
-      public void menuHidden(MenuEvent e) {
-         // do nothing
-      }
-
-      @Override
-      public void menuShown(MenuEvent e) {
-         TreeItem[] myTreeItems = myTree.getSelection();
-         if (myTreeItems.length != 1) {
-            renameArtifactMenuItem.setEnabled(false);
-            return;
-         }
-         Object myTreeItemObject = myTreeItems[0].getData();
-         if (myTreeItemObject instanceof Artifact) {
-            Artifact mySelectedArtifact = (Artifact) myTreeItemObject;
-            boolean writePermission;
-            try {
-               writePermission = AccessControlManager.hasPermission(mySelectedArtifact, PermissionEnum.WRITE);
-            } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-               writePermission = false;
-            }
-
-            renameArtifactMenuItem.setEnabled(writePermission);
-         }
-      }
    }
 
    @Override

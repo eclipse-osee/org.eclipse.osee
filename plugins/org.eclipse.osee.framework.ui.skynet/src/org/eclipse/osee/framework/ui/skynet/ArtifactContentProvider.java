@@ -76,7 +76,7 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
                }
             }
          } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
       } else if (parentElement instanceof Collection) {
          return ((Collection<?>) parentElement).toArray();
