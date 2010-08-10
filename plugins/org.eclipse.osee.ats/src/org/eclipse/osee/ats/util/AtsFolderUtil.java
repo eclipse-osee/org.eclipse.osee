@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 public class AtsFolderUtil {
 
    public enum AtsFolder {
+      Ats_Config("Config", "ats.ConfigFolder", CoreArtifactTypes.Folder),
       Ats_Heading("Action Tracking System", "ats.HeadingFolder", CoreArtifactTypes.Folder),
       Teams("Teams", "osee.ats.TopTeamDefinition", AtsArtifactTypes.TeamDefinition),
       ActionableItem("Actionable Items", "osee.ats.TopActionableItem", AtsArtifactTypes.ActionableItem),
