@@ -13,8 +13,8 @@ package org.eclipse.osee.framework.ui.skynet.search.page;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
@@ -402,7 +402,7 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
          return Collections.emptyList();
       }
 
-      Set<Artifact> artifacts = new HashSet<Artifact>();
+      Set<Artifact> artifacts = new LinkedHashSet<Artifact>();
       for (Object object : objects) {
          Artifact toAdd = null;
          if (object instanceof AttributeLineElement) {
