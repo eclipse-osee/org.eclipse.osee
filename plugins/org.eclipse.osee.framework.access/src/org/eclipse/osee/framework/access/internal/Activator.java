@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.access.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import org.eclipse.osee.framework.access.internal.cm.CMAccessProviderRegistrationHandler;
+import org.eclipse.osee.framework.access.internal.cm.CmAccessProviderRegistrationHandler;
 import org.eclipse.osee.framework.core.util.ServiceDependencyTracker;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.osgi.framework.BundleActivator;
@@ -31,7 +31,7 @@ public class Activator implements BundleActivator {
       handler = new AccessControlServiceRegHandler();
       trackers.add(new ServiceDependencyTracker(context, handler));
       trackers.add(new ServiceDependencyTracker(context, new ObjectAccessProviderRegistrationHandler()));
-      trackers.add(new ServiceDependencyTracker(context, new CMAccessProviderRegistrationHandler()));
+      trackers.add(new ServiceDependencyTracker(context, new CmAccessProviderRegistrationHandler()));
       for (ServiceDependencyTracker tracker : trackers) {
          tracker.open();
       }

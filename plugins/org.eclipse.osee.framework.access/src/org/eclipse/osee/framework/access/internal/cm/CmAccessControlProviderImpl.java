@@ -15,35 +15,35 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
-import org.eclipse.osee.framework.core.services.ConfigurationManagement;
-import org.eclipse.osee.framework.core.services.ConfigurationManagementProvider;
+import org.eclipse.osee.framework.core.services.CmAccessControl;
+import org.eclipse.osee.framework.core.services.CmAccessControlProvider;
 
 /**
  * @author Roberto E. Escobar
  */
-public class ConfigurationManagementProviderImpl implements ConfigurationManagementProvider {
+public class CmAccessControlProviderImpl implements CmAccessControlProvider {
 
-   private final Collection<ConfigurationManagement> cmServices;
+   private final Collection<CmAccessControl> cmServices;
 
-   public ConfigurationManagementProviderImpl(Collection<ConfigurationManagement> cmServices) {
+   public CmAccessControlProviderImpl(Collection<CmAccessControl> cmServices) {
       this.cmServices = cmServices;
    }
 
    @Override
-   public ConfigurationManagement getCmService(IBasicArtifact<?> userArtifact, Object object) throws OseeCoreException {
-      Collection<ConfigurationManagement> applicableCms = new ArrayList<ConfigurationManagement>();
+   public CmAccessControl getService(IBasicArtifact<?> userArtifact, Object object) throws OseeCoreException {
+      Collection<CmAccessControl> applicableCms = new ArrayList<CmAccessControl>();
       //      if (object instanceof HasConfigurationManagement) {
       //         HasConfigurationManagement cmContainer = (HasConfigurationManagement) object;
       //         cmToReturn = cmContainer.getCM();
       //      } else {
-      for (ConfigurationManagement cmService : cmServices) {
+      for (CmAccessControl cmService : cmServices) {
          //         if (!cmService.equals(defaultCM)) {
          if (cmService.isApplicable(userArtifact, object)) {
             applicableCms.add(cmService);
          }
          //         }
       }
-      ConfigurationManagement cmToReturn;
+      CmAccessControl cmToReturn;
       if (applicableCms.isEmpty()) {
          cmToReturn = null;
       } else if (applicableCms.size() == 1) {

@@ -51,7 +51,7 @@ public class AtsPlugin extends OseeUiActivator {
          context.registerService(IActionReportingService.class.getName(), new AtsActionReportingServiceImpl(), null);
       service2 = context.registerService(IOseeAtsService.class.getName(), new OseeAtsServiceImpl(), null);
 
-      tracker = new ServiceDependencyTracker(context, new AtsConfigurationManagementRegHandler());
+      tracker = new ServiceDependencyTracker(context, new AtsCmAccessControlRegHandler());
       tracker.open();
    }
 

@@ -15,16 +15,16 @@ import org.eclipse.osee.framework.core.data.AccessContextId;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.access.AccessModel;
 import org.eclipse.osee.framework.core.model.access.HasAccessModel;
-import org.eclipse.osee.framework.core.services.ConfigurationManagement;
+import org.eclipse.osee.framework.core.services.CmAccessControl;
 
 /**
  * @author Roberto E. Escobar
  */
-public class AtsConfigurationManagement implements ConfigurationManagement, HasAccessModel {
+public class AtsCmAccessControl implements CmAccessControl, HasAccessModel {
 
    private final AccessModel accessModel;
 
-   public AtsConfigurationManagement(AccessModel accessModel) {
+   public AtsCmAccessControl(AccessModel accessModel) {
       this.accessModel = accessModel;
    }
 

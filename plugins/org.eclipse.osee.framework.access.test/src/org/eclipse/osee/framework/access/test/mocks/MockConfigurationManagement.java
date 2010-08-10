@@ -13,13 +13,13 @@ package org.eclipse.osee.framework.access.test.mocks;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.AccessContextId;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
-import org.eclipse.osee.framework.core.services.ConfigurationManagement;
+import org.eclipse.osee.framework.core.services.CmAccessControl;
 import org.junit.Assert;
 
 /**
  * @author Roberto E. Escobar
  */
-public class MockConfigurationManagement implements ConfigurationManagement {
+public class MockConfigurationManagement implements CmAccessControl {
 
    private final IBasicArtifact<?> expectedUser;
    private final Object expectedObject;

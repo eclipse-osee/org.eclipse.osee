@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.core.dsl.integration.AccessModelInterpreter;
 import org.eclipse.osee.framework.core.dsl.integration.OseeDslAccessModel;
 import org.eclipse.osee.framework.core.dsl.integration.OseeDslProvider;
 import org.eclipse.osee.framework.core.model.access.AccessModel;
-import org.eclipse.osee.framework.core.services.ConfigurationManagement;
+import org.eclipse.osee.framework.core.services.CmAccessControl;
 import org.eclipse.osee.framework.core.util.AbstractTrackingHandler;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -23,7 +23,7 @@ import org.osgi.framework.ServiceRegistration;
 /**
  * @author Roberto E. Escobar
  */
-public class AtsConfigurationManagementRegHandler extends AbstractTrackingHandler {
+public class AtsCmAccessControlRegHandler extends AbstractTrackingHandler {
 
    private static final Class<?>[] SERVICE_DEPENDENCIES = new Class<?>[] {//
       AccessModelInterpreter.class, // 
@@ -41,8 +41,8 @@ public class AtsConfigurationManagementRegHandler extends AbstractTrackingHandle
       AccessModelInterpreter interpreter = getService(AccessModelInterpreter.class, services);
       OseeDslProvider dslProvider = new AtsAccessOseeDslProvider();
       AccessModel accessModel = new OseeDslAccessModel(interpreter, dslProvider);
-      ConfigurationManagement cmService = new AtsConfigurationManagement(accessModel);
-      registration = context.registerService(ConfigurationManagement.class.getName(), cmService, null);
+      CmAccessControl cmService = new AtsCmAccessControl(accessModel);
+      registration = context.registerService(CmAccessControl.class.getName(), cmService, null);
    }
 
    @Override

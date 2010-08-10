@@ -11,20 +11,20 @@
 package org.eclipse.osee.framework.access.test.mocks;
 
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
-import org.eclipse.osee.framework.core.services.ConfigurationManagement;
-import org.eclipse.osee.framework.core.services.ConfigurationManagementProvider;
+import org.eclipse.osee.framework.core.services.CmAccessControl;
+import org.eclipse.osee.framework.core.services.CmAccessControlProvider;
 import org.junit.Assert;
 
 /**
  * @author Roberto E. Escobar
  */
-public class MockConfigurationManagementProvider implements ConfigurationManagementProvider {
+public class MockConfigurationManagementProvider implements CmAccessControlProvider {
    private final IBasicArtifact<?> expectedUser;
    private final Object expectedObject;
-   private final ConfigurationManagement cmToReturn;
+   private final CmAccessControl cmToReturn;
    private boolean wasGetCMCalled;
 
-   public MockConfigurationManagementProvider(IBasicArtifact<?> expectedUser, Object expectedObject, ConfigurationManagement cmToReturn) {
+   public MockConfigurationManagementProvider(IBasicArtifact<?> expectedUser, Object expectedObject, CmAccessControl cmToReturn) {
       super();
       this.expectedUser = expectedUser;
       this.expectedObject = expectedObject;
@@ -32,7 +32,7 @@ public class MockConfigurationManagementProvider implements ConfigurationManagem
    }
 
    @Override
-   public ConfigurationManagement getCmService(IBasicArtifact<?> user, Object object) {
+   public CmAccessControl getService(IBasicArtifact<?> user, Object object) {
       wasGetCMCalled = true;
       Assert.assertEquals(expectedUser, user);
       Assert.assertEquals(expectedObject, object);

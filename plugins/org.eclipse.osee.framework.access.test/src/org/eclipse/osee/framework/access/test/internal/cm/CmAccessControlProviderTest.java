@@ -12,24 +12,24 @@ package org.eclipse.osee.framework.access.test.internal.cm;
 
 import java.util.Collection;
 import java.util.HashSet;
-import org.eclipse.osee.framework.access.internal.cm.ConfigurationManagementProviderImpl;
+import org.eclipse.osee.framework.access.internal.cm.CmAccessControlProviderImpl;
 import org.eclipse.osee.framework.access.test.mocks.MockConfigurationManagement;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.test.mocks.MockDataFactory;
-import org.eclipse.osee.framework.core.services.ConfigurationManagement;
-import org.eclipse.osee.framework.core.services.ConfigurationManagementProvider;
+import org.eclipse.osee.framework.core.services.CmAccessControl;
+import org.eclipse.osee.framework.core.services.CmAccessControlProvider;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test Case for {@link ConfigurationManagementProvider}{@link ConfigurationManagementProviderImpl}
+ * Test Case for {@link CmAccessControlProvider}{@link CmAccessControlProviderImpl}
  * 
  * @author Roberto E. Escobar
  */
-public class ConfigurationManagementProviderTest {
+public class CmAccessControlProviderTest {
 
    private IBasicArtifact<?> user;
    private Object objectToCheck;
@@ -66,14 +66,14 @@ public class ConfigurationManagementProviderTest {
    }
 
    private static void assertCMProvider(IBasicArtifact<?> user, Object objectToCheck, MockConfigurationManagement expectedCM, MockConfigurationManagement... extraCms) throws OseeCoreException {
-      Collection<ConfigurationManagement> cmServices = new HashSet<ConfigurationManagement>();
-      for (ConfigurationManagement extraCm : extraCms) {
+      Collection<CmAccessControl> cmServices = new HashSet<CmAccessControl>();
+      for (CmAccessControl extraCm : extraCms) {
          cmServices.add(extraCm);
       }
-      ConfigurationManagementProvider provider = new ConfigurationManagementProviderImpl(cmServices);
-      ConfigurationManagement actualCM = provider.getCmService(user, objectToCheck);
+      CmAccessControlProvider provider = new CmAccessControlProviderImpl(cmServices);
+      CmAccessControl actualCM = provider.getService(user, objectToCheck);
       Assert.assertEquals(expectedCM, actualCM);
-      for (ConfigurationManagement cmService : cmServices) {
+      for (CmAccessControl cmService : cmServices) {
          MockConfigurationManagement cm = (MockConfigurationManagement) cmService;
          Assert.assertTrue(cm.wasIsApplicableCalled());
       }
