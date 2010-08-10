@@ -11,12 +11,11 @@
 package org.eclipse.osee.framework.core.services;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.IBasicArtifact;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface ConfigurationManagementProvider {
+public interface HasCmAccessControl {
 
-   ConfigurationManagement getCmService(IBasicArtifact<?> user, Object object) throws OseeCoreException;
+   CmAccessControl getAccessControl() throws OseeCoreException;
 }

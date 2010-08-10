@@ -98,6 +98,8 @@ public class AccessDataQuery {
    }
 
    public void relationTypeMatches(PermissionEnum permissionToMatch) throws OseeCoreException {
+      //look  AccessDetail<RelationTypeSide>(new RelationTypeSide(relationType,  relationSide), permission);
+
    }
 
    public boolean matchesAll(PermissionEnum permissionToMatch) throws OseeCoreException {

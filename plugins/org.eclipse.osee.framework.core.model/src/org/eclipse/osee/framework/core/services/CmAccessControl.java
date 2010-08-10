@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.model.IBasicArtifact;
 /**
  * @author Roberto E. Escobar
  */
-public interface ConfigurationManagement {
+public interface CmAccessControl {
 
    boolean isApplicable(IBasicArtifact<?> user, Object object);
 
