@@ -12,26 +12,40 @@ package org.eclipse.osee.framework.core.dsl.ui.integration.internal;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 public final class ArtifactDataAccessor implements ArtifactDataProvider {
 
    @Override
    public boolean isApplicable(Object object) {
-      return asCastedObject(object) != null;
+      boolean result = false;
+      try {
+         result = asCastedObject(object) != null;
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+      return result;
    }
 
    @Override
-   public ArtifactData asCastedObject(Object object) {
+   public ArtifactData asCastedObject(Object object) throws OseeCoreException {
       ArtifactData wrapper = null;
       if (object instanceof Artifact) {
          final Artifact artifact = (Artifact) object;
+         wrapper = new ArtifactWrapper(artifact);
+      } else if (object instanceof Branch) {
+         Branch branch = (Branch) object;
+         final Artifact artifact = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch);
          wrapper = new ArtifactWrapper(artifact);
       }
       return wrapper;

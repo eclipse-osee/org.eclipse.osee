@@ -38,5 +38,5 @@ public interface ArtifactDataProvider {
 
    boolean isApplicable(Object object);
 
-   ArtifactData asCastedObject(Object object);
+   ArtifactData asCastedObject(Object object) throws OseeCoreException;
 }
