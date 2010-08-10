@@ -27,13 +27,6 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 
 public abstract class ATSArtifact extends Artifact implements IHyperArtifact, IATSArtifact {
 
-   /**
-    * @param parentFactory
-    * @param guid
-    * @param humanReadableId
-    * @param branch
-    * @throws OseeDataStoreException
-    */
    public ATSArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
@@ -45,10 +38,6 @@ public abstract class ATSArtifact extends Artifact implements IHyperArtifact, IA
    /**
     * Recursively retrieve artifacts and all its ATS related artifacts such as tasks, notes, subscriptions, etc... for
     * deletion
-    * 
-    * @param deleteArts
-    * @param allRelated
-    * @throws OseeCoreException
     */
    public void atsDelete(Set<Artifact> deleteArts, Map<Artifact, Object> allRelated) throws OseeCoreException {
       deleteArts.add(this);
