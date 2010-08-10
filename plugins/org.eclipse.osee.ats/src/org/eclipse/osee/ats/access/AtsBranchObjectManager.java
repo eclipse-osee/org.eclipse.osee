@@ -12,11 +12,10 @@ package org.eclipse.osee.ats.access;
 
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.actions.wizard.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.services.IAtsAccessControlService;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -26,6 +25,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.osgi.framework.ServiceReference;
 
 /**
  * This class will return access context ids for artifacts stored on a team workflow's related branch
@@ -60,22 +60,29 @@ public class AtsBranchObjectManager {
       return AtsBranchObjectContextId.DEFAULT_BRANCH_CONTEXT;
    }
 
-   public static AtsBranchObjectContextId getFromWorkflow(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
-      for (IAtsTeamWorkflow teamWorkflowExt : TeamWorkflowExtensions.getInstance().getAtsTeamWorkflowExtensions()) {
-         AtsBranchObjectContextId id = teamWorkflowExt.getBranchAccessContextIdFromWorkflow(teamArt);
+   public static AtsBranchObjectContextId getFromWorkflow(TeamWorkFlowArtifact teamArt) {
+      try {
+         for (ServiceReference service : AtsPlugin.getInstance().getBundle().getBundleContext().getServiceReferences(
+            IAtsAccessControlService.class.getName(), null)) {
+            IAtsAccessControlService accessService = (IAtsAccessControlService) service;
+            AtsBranchObjectContextId id = accessService.getBranchAccessContextIdFromWorkflow(teamArt);
+            if (id != null) {
+               return id;
+            }
+         }
+         for (ActionableItemArtifact aia : teamArt.getActionableItemsDam().getActionableItems()) {
+            AtsBranchObjectContextId id = getFromArtifact(aia);
+            if (id != null) {
+               return id;
+            }
+         }
+         AtsBranchObjectContextId id = getFromArtifact(teamArt.getTeamDefinition());
          if (id != null) {
             return id;
          }
-      }
-      for (ActionableItemArtifact aia : teamArt.getActionableItemsDam().getActionableItems()) {
-         AtsBranchObjectContextId id = getFromArtifact(aia);
-         if (id != null) {
-            return id;
-         }
-      }
-      AtsBranchObjectContextId id = getFromArtifact(teamArt.getTeamDefinition());
-      if (id != null) {
-         return id;
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, "Exception obtaining Branch Access Context Id; Deny returned", ex);
+         return AtsBranchObjectContextId.DENY_CONTEXT;
       }
       return null;
    }
