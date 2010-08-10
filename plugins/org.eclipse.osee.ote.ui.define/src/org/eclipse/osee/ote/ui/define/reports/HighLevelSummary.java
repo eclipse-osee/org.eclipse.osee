@@ -16,9 +16,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.ote.define.artifacts.TestRunOperator;
 import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
 
@@ -26,8 +26,8 @@ import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
  * @author Roberto E. Escobar
  */
 public class HighLevelSummary implements ITestRunReport {
-   private static final String[] HEADER = new String[] {Requirements.PARTITION, Requirements.SUBSYSTEM, "ScriptCount",
-      "RunTime Issues", "Scripts with Failures", "Scripts Pass"};
+   private static final String[] HEADER = new String[] {CoreAttributeTypes.Partition.getName(),
+      CoreAttributeTypes.Subsystem.getName(), "ScriptCount", "RunTime Issues", "Scripts with Failures", "Scripts Pass"};
    private final Map<String, CollectedData> dataMap;
 
    public HighLevelSummary() {

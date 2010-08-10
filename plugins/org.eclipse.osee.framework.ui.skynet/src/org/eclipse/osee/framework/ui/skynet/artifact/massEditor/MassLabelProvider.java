@@ -15,6 +15,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.util.XViewerException;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -74,19 +75,19 @@ public class MassLabelProvider extends XViewerLabelProvider {
             return "";
          }
 
-         String colName = col.getName();
-         if (!artifact.isAttributeTypeValid(colName)) {
+         IAttributeType attributeType = AttributeTypeManager.getType(col.getName());
+         if (!artifact.isAttributeTypeValid(attributeType)) {
             return "";
          }
-         if (AttributeTypeManager.isBaseTypeCompatible(DateAttribute.class, colName)) {
+         if (AttributeTypeManager.isBaseTypeCompatible(DateAttribute.class, attributeType)) {
             try {
-               return new DateAttribute().MMDDYYHHMM.format(artifact.getSoleAttributeValue(colName));
+               return new DateAttribute().MMDDYYHHMM.format(artifact.getSoleAttributeValue(attributeType));
             } catch (OseeCoreException ex) {
                return "";
             }
          }
 
-         return artifact.getAttributesToString(colName);
+         return artifact.getAttributesToString(attributeType);
       } catch (OseeCoreException ex) {
          throw new XViewerException(ex);
       }

@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.nebula.widgets.xviewer.customize.IXViewerCustomizations;
 import org.eclipse.nebula.widgets.xviewer.util.XViewerException;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.GlobalXViewerSettings;
@@ -49,7 +50,6 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
    // Storage mechanism (user's User Artifact) for storage of selected default customizations guids for each XViewer namespace
    private final SkynetUserArtifactCustomizeDefaults userArtifactDefaults;
    // Attribute name for storing customizations both locally and globally
-   private static String CUSTOMIZATION_ATTRIBUTE_NAME = "XViewer Customization";
    private final SkynetXViewerFactory skynetXViewerFactory;
    private static SkynetCustomizations instance = new SkynetCustomizations();
 
@@ -82,7 +82,7 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
 
    private static void saveCustomization(CustomizeData custData, Artifact saveArt) throws OseeCoreException {
       boolean found = false;
-      Collection<Attribute<String>> attributes = saveArt.getAttributes(CUSTOMIZATION_ATTRIBUTE_NAME);
+      Collection<Attribute<String>> attributes = saveArt.getAttributes(CoreAttributeTypes.XViewerCustomization);
       for (Attribute<String> attribute : attributes) {
          if (attribute.getDisplayableString().contains("namespace=\"" + custData.getNameSpace() + "\"") && attribute.getDisplayableString().contains(
             "name=\"" + custData.getName() + "\"")) {
@@ -92,7 +92,7 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
          }
       }
       if (!found) {
-         saveArt.addAttribute(CUSTOMIZATION_ATTRIBUTE_NAME, custData.getXml(true));
+         saveArt.addAttribute(CoreAttributeTypes.XViewerCustomization, custData.getXml(true));
       }
       saveArt.persist();
    }
@@ -163,7 +163,7 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
 
    public void deleteCustomization(CustomizeData custData, Artifact deleteArt) throws OseeCoreException {
       Pattern pattern = Pattern.compile("name=\"(.*?)\".*?namespace=\"" + custData.getNameSpace() + "\"");
-      for (Attribute<?> attribute : deleteArt.getAttributes(CUSTOMIZATION_ATTRIBUTE_NAME)) {
+      for (Attribute<?> attribute : deleteArt.getAttributes(CoreAttributeTypes.XViewerCustomization)) {
          String str = attribute.getDisplayableString();
          Matcher m = pattern.matcher(str);
          if (m.find() && m.group(1).equals(custData.getName())) {
@@ -218,7 +218,8 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
       List<CustomizeData> custDatas = new ArrayList<CustomizeData>();
       if (customizationArtifact != null) {
 
-         Collection<Attribute<String>> attributes = customizationArtifact.getAttributes(CUSTOMIZATION_ATTRIBUTE_NAME);
+         Collection<Attribute<String>> attributes =
+            customizationArtifact.getAttributes(CoreAttributeTypes.XViewerCustomization);
          for (Attribute<String> attr : attributes) {
             CustomizeData custData = new CustomizeData(attr.getValue());
             custDatas.add(custData);

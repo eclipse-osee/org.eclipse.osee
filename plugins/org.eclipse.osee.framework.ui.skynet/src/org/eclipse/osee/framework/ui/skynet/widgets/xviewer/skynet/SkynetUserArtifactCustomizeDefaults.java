@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -30,10 +31,7 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
  * @author Donald G. Dunne
  */
 public class SkynetUserArtifactCustomizeDefaults {
-
-   // XViewer.getViewerNamespace, CustomizeData.getName
    Set<String> defaultGuids = new HashSet<String>();
-   private static String XVIEWER_DEFAULT_ATTRIBUTE = "XViewer Defaults";
    private static String DEFAULT_CUST_GUID_TAG = "defaultCustGuid";
    private final User user;
 
@@ -73,7 +71,7 @@ public class SkynetUserArtifactCustomizeDefaults {
       String xml = "";
       if (user != null) {
          try {
-            xml = user.getSoleAttributeValue(XVIEWER_DEFAULT_ATTRIBUTE, "");
+            xml = user.getSoleAttributeValue(CoreAttributeTypes.XViewerDefaults, "");
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             xml = "";
@@ -85,9 +83,9 @@ public class SkynetUserArtifactCustomizeDefaults {
    public void save() {
       try {
          if (defaultGuids.isEmpty()) {
-            user.deleteSoleAttribute(XVIEWER_DEFAULT_ATTRIBUTE);
+            user.deleteSoleAttribute(CoreAttributeTypes.XViewerDefaults);
          } else {
-            user.setSoleAttributeValue(XVIEWER_DEFAULT_ATTRIBUTE, getDefaultCustomizationXml());
+            user.setSoleAttributeValue(CoreAttributeTypes.XViewerDefaults, getDefaultCustomizationXml());
          }
          user.persist();
       } catch (Exception ex) {

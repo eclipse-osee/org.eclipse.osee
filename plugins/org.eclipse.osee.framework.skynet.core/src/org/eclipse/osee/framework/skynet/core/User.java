@@ -111,7 +111,7 @@ public class User extends Artifact {
       }
 
       boolean found = false;
-      Collection<Attribute<String>> attributes = getAttributes(CoreAttributeTypes.FavoriteBranch.getName());
+      Collection<Attribute<String>> attributes = getAttributes(CoreAttributeTypes.FavoriteBranch);
       for (Attribute<String> attribute : attributes) {
          // Remove attributes that are no longer valid
          if (!branchGuids.contains(attribute.getValue())) {
@@ -124,13 +124,13 @@ public class User extends Artifact {
       }
 
       if (!found) {
-         addAttribute(CoreAttributeTypes.FavoriteBranch.getName(), favoriteBranch.getGuid());
+         addAttribute(CoreAttributeTypes.FavoriteBranch, favoriteBranch.getGuid());
       }
       setSetting(CoreAttributeTypes.FavoriteBranch.getName(), favoriteBranch.getGuid());
    }
 
    public boolean isFavoriteBranch(Branch branch) throws OseeCoreException {
-      Collection<Attribute<String>> attributes = getAttributes(CoreAttributeTypes.FavoriteBranch.getName());
+      Collection<Attribute<String>> attributes = getAttributes(CoreAttributeTypes.FavoriteBranch);
       for (Attribute<String> attribute : attributes) {
          if (branch.getGuid().equals(attribute.getValue())) {
             return true;

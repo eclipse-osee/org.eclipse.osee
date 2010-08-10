@@ -44,7 +44,7 @@ public class ArtifactRelationOrderAccessor implements IRelationOrderAccessor {
       if (orderData.hasEntries() && !fullArtifact.isDeleted()) {
          fullArtifact.setSoleAttributeFromString(CoreAttributeTypes.RelationOrder, parser.toXml(orderData));
       } else {
-         fullArtifact.deleteSoleAttribute(CoreAttributeTypes.RelationOrder.getName());
+         fullArtifact.deleteSoleAttribute(CoreAttributeTypes.RelationOrder);
       }
    }
 }

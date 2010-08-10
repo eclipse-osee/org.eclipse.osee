@@ -100,8 +100,8 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
    public static final String AFTER_GUID_STRING = "/AfterGUID";
    public static final int TRANSACTION_SENTINEL = -1;
 
-   private final HashCollection<String, Attribute<?>> attributes = new HashCollection<String, Attribute<?>>(false,
-      LinkedList.class, 12);
+   private final HashCollection<IAttributeType, Attribute<?>> attributes =
+      new HashCollection<IAttributeType, Attribute<?>>(false, LinkedList.class, 12);
    private final Set<DefaultBasicGuidRelationReorder> relationOrderRecords =
       new HashSet<DefaultBasicGuidRelationReorder>();
    private final Branch branch;
@@ -448,7 +448,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
       Attribute<T> attribute = null;
       try {
          attribute = attributeClass.newInstance();
-         attributes.put(attributeType.getName(), attribute);
+         attributes.put(attributeType, attribute);
       } catch (InstantiationException ex) {
          OseeExceptions.wrapAndThrow(ex);
       } catch (IllegalAccessException ex) {
@@ -470,6 +470,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
       return attribute;
    }
 
+   @Deprecated
    public boolean isAttributeTypeValid(String attributeName) throws OseeCoreException {
       return isAttributeTypeValid(AttributeTypeManager.getType(attributeName));
    }
@@ -536,14 +537,15 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
       return attributes;
    }
 
-   /**
-    * The use of this method is discouraged since it directly returns Attributes.
-    */
+   @Deprecated
    public <T> List<Attribute<T>> getAttributes(String attributeTypeName) throws OseeCoreException {
-      return Collections.castAll(getAttributesByModificationType(attributeTypeName,
+      return Collections.castAll(getAttributesByModificationType(AttributeTypeManager.getType(attributeTypeName),
          ModificationType.getCurrentModTypes()));
    }
 
+   /**
+    * The use of this method is discouraged since it directly returns Attributes.
+    */
    public <T> List<Attribute<T>> getAttributes(IAttributeType attributeType) throws OseeCoreException {
       return Collections.castAll(getAttributesByModificationType(attributeType, ModificationType.getCurrentModTypes()));
    }
@@ -553,13 +555,9 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
       return filterByModificationType(attributes.getValues(), allowedModTypes);
    }
 
-   private List<Attribute<?>> getAttributesByModificationType(String attributeTypeName, Set<ModificationType> allowedModTypes) throws OseeCoreException {
-      ensureAttributesLoaded();
-      return filterByModificationType(attributes.getValues(attributeTypeName), allowedModTypes);
-   }
-
    private List<Attribute<?>> getAttributesByModificationType(IAttributeType attributeType, Set<ModificationType> allowedModTypes) throws OseeCoreException {
-      return getAttributesByModificationType(attributeType.getName(), allowedModTypes);
+      ensureAttributesLoaded();
+      return filterByModificationType(attributes.getValues(attributeType), allowedModTypes);
    }
 
    private List<Attribute<?>> filterByModificationType(Collection<Attribute<?>> attributes, Set<ModificationType> allowedModTypes) {
@@ -605,18 +603,14 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
    }
 
    public <T> Attribute<T> getSoleAttribute(IAttributeType attributeType) throws OseeCoreException {
-      return getSoleAttribute(attributeType.getName());
-   }
-
-   public <T> Attribute<T> getSoleAttribute(String attributeTypeName) throws OseeCoreException {
       ensureAttributesLoaded();
-      List<Attribute<T>> soleAttributes = getAttributes(attributeTypeName);
+      List<Attribute<T>> soleAttributes = getAttributes(attributeType);
       if (soleAttributes.isEmpty()) {
          return null;
       } else if (soleAttributes.size() > 1) {
          throw new MultipleAttributesExist(String.format(
             "The attribute \'%s\' can have no more than one instance for sole attribute operations; guid \'%s\'",
-            attributeTypeName, getGuid()));
+            attributeType, getGuid()));
       }
       return soleAttributes.iterator().next();
    }
@@ -638,35 +632,30 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
       return attribute.getValue();
    }
 
+   @Deprecated
+   public <T> T getSoleAttributeValue(String attributeTypeName) throws OseeCoreException {
+      return getSoleAttributeValue(AttributeTypeManager.getType(attributeTypeName));
+   }
+
    /**
     * Return sole attribute value for given attribute type name. Will throw exceptions if "Sole" nature of attribute is
     * invalid.<br>
     * <br>
     * Used for quick access to attribute value that should only have 0 or 1 instances of the attribute.
     */
-   public <T> T getSoleAttributeValue(String attributeTypeName) throws OseeCoreException {
-      List<Attribute<T>> soleAttributes = getAttributes(attributeTypeName);
+   public <T> T getSoleAttributeValue(IAttributeType attributeType) throws OseeCoreException {
+      List<Attribute<T>> soleAttributes = getAttributes(attributeType);
       if (soleAttributes.isEmpty()) {
-         if (!isAttributeTypeValid(attributeTypeName)) {
+         if (!isAttributeTypeValid(attributeType)) {
             throw new OseeArgumentException(String.format(
-               "The attribute type %s is not valid for artifacts of type [%s]", attributeTypeName,
-               getArtifactTypeName()));
+               "The attribute type %s is not valid for artifacts of type [%s]", attributeType, getArtifactTypeName()));
          }
-         throw new AttributeDoesNotExist(
-            "Attribute \"" + attributeTypeName + "\" does not exist for artifact " + getGuid());
+         throw new AttributeDoesNotExist("Attribute \"" + attributeType + "\" does not exist for artifact " + getGuid());
       } else if (soleAttributes.size() > 1) {
          throw new MultipleAttributesExist(
-            "Attribute \"" + attributeTypeName + "\" must have exactly one instance.  It currently has " + soleAttributes.size() + " for artifact " + getGuid());
+            "Attribute \"" + attributeType + "\" must have exactly one instance.  It currently has " + soleAttributes.size() + " for artifact " + getGuid());
       }
       return soleAttributes.iterator().next().getValue();
-   }
-
-   public <T> T getSoleAttributeValue(IAttributeType attributeType) throws OseeCoreException {
-      return getSoleAttributeValue(attributeType.getName());
-   }
-
-   public String getSoleAttributeValueAsString(IAttributeType attributeType, String defaultReturnValue) throws OseeCoreException, MultipleAttributesExist {
-      return getSoleAttributeValueAsString(attributeType.getName(), defaultReturnValue);
    }
 
    /**
@@ -678,9 +667,11 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
     * @param defaultReturnValue return value if attribute instance does not exist
     * @throws MultipleAttributesExist if multiple attribute instances exist
     */
-   public String getSoleAttributeValueAsString(String attributeTypeName, String defaultReturnValue) throws OseeCoreException, MultipleAttributesExist {
+
+   public String getSoleAttributeValueAsString(IAttributeType attributeType, String defaultReturnValue) throws OseeCoreException, MultipleAttributesExist {
+
       String toReturn = null;
-      Object value = getSoleAttributeValue(attributeTypeName, defaultReturnValue);
+      Object value = getSoleAttributeValue(attributeType, defaultReturnValue);
       if (value instanceof InputStream) {
          InputStream inputStream = (InputStream) value;
          try {
@@ -702,6 +693,16 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
       return toReturn;
    }
 
+   @Deprecated
+   public String getSoleAttributeValueAsString(String attributeTypeName, String defaultReturnValue) throws OseeCoreException, MultipleAttributesExist {
+      return getSoleAttributeValueAsString(AttributeTypeManager.getType(attributeTypeName), defaultReturnValue);
+   }
+
+   @Deprecated
+   public <T> T getSoleAttributeValue(String attributeTypeName, T defaultReturnValue) throws OseeCoreException {
+      return getSoleAttributeValue(AttributeTypeManager.getType(attributeTypeName), defaultReturnValue);
+   }
+
    /**
     * Return sole attribute value for given attribute type name Handles AttributeDoesNotExist case by returning
     * defaultReturnValue.<br>
@@ -710,68 +711,36 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
     * 
     * @throws MultipleAttributesExist if multiple attribute instances exist
     */
-   public <T> T getSoleAttributeValue(String attributeTypeName, T defaultReturnValue) throws OseeCoreException {
-      List<Attribute<T>> soleAttributes = getAttributes(attributeTypeName);
+   public <T> T getSoleAttributeValue(IAttributeType attributeType, T defaultReturnValue) throws OseeCoreException {
+      List<Attribute<T>> soleAttributes = getAttributes(attributeType);
       if (soleAttributes.size() == 1) {
          T value = soleAttributes.iterator().next().getValue();
          if (value == null) {
             OseeLog.log(
                Activator.class,
                Level.SEVERE,
-               "Attribute \"" + attributeTypeName + "\" has null value for Artifact " + getGuid() + " \"" + getName() + "\"");
+               "Attribute \"" + attributeType + "\" has null value for Artifact " + getGuid() + " \"" + getName() + "\"");
             return defaultReturnValue;
          }
          return value;
       } else if (soleAttributes.size() > 1) {
          throw new MultipleAttributesExist(
-            "Attribute \"" + attributeTypeName + "\" must have exactly one instance.  It currently has " + soleAttributes.size() + " for artifact " + getGuid());
+            "Attribute \"" + attributeType + "\" must have exactly one instance.  It currently has " + soleAttributes.size() + " for artifact " + getGuid());
       } else {
          return defaultReturnValue;
       }
-   }
-
-   public <T> T getSoleAttributeValue(IAttributeType attributeTypeEnum, T defaultReturnValue) throws OseeCoreException {
-      return getSoleAttributeValue(attributeTypeEnum.getName(), defaultReturnValue);
-   }
-
-   /**
-    * Return sole attribute value for given attribute type name or defaultReturnValue if no attribute instance exists
-    * for this artifact.<br>
-    * <br>
-    * Used for purposes where attribute value of specified type is desired.<br>
-    * <br>
-    * NOTE: Use only for inline calls. This method returns identical data as
-    * getSoleTAttributeValue(attributeTypeName,defaultReturnValue) but provides an extra parameter that allows it to be
-    * called within another method call because it specifically defines the return type as clazz
-    * 
-    * @throws MultipleAttributesExist if multiple attribute instances exist
-    */
-   public <T> T getSoleAttributeValue(String attributeTypeName, T defaultReturnValue, Class<T> clazz) throws OseeCoreException {
-      return getSoleAttributeValue(attributeTypeName, defaultReturnValue);
    }
 
    /**
     * Delete attribute if exactly one exists. Does nothing if attribute does not exist and throw MultipleAttributesExist
     * is more than one instance of the attribute type exsits for this artifact
     */
-   public void deleteSoleAttribute(String attributeTypeName) throws OseeCoreException {
-      Attribute<?> attribute = getSoleAttribute(attributeTypeName);
+   public void deleteSoleAttribute(IAttributeType attributeType) throws OseeCoreException {
+      Attribute<?> attribute = getSoleAttribute(attributeType);
       if (attribute != null) {
          if (!attribute.isInDb()) {
-            attributes.removeValue(attributeTypeName, attribute);
+            attributes.removeValue(attributeType, attribute);
          } else {
-            attribute.delete();
-         }
-      }
-   }
-
-   public void deleteSoleAttribute(IAttributeType attributeType) throws OseeCoreException {
-      deleteSoleAttribute(attributeType.getName());
-   }
-
-   public void deleteAttribute(String attributeTypeName, Object value) throws OseeCoreException {
-      for (Attribute<Object> attribute : getAttributes(attributeTypeName)) {
-         if (attribute.getValue().equals(value)) {
             attribute.delete();
          }
       }
@@ -785,14 +754,15 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
       }
    }
 
-   /**
-    * Used on attribute types with no more than one instance. If the attribute exists, it's value is changed, otherwise
-    * a new attribute is added and its value set.
-    */
+   @Deprecated
    public <T> void setSoleAttributeValue(String attributeTypeName, T value) throws OseeCoreException {
       getOrCreateSoleAttribute(AttributeTypeManager.getType(attributeTypeName)).setValue(value);
    }
 
+   /**
+    * Used on attribute types with no more than one instance. If the attribute exists, it's value is changed, otherwise
+    * a new attribute is added and its value set.
+    */
    public <T> void setSoleAttributeValue(IAttributeType attributeType, T value) throws OseeCoreException {
       getOrCreateSoleAttribute(attributeType).setValue(value);
    }
@@ -801,6 +771,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
       getOrCreateSoleAttribute(attributeType).setFromString(value);
    }
 
+   @Deprecated
    public <T> void setSoleAttributeFromString(String attributeTypeName, String value) throws OseeCoreException {
       getOrCreateSoleAttribute(AttributeTypeManager.getType(attributeTypeName)).setFromString(value);
    }
@@ -809,20 +780,21 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
       getOrCreateSoleAttribute(attributeType).setValueFromInputStream(stream);
    }
 
+   @Deprecated
+   public String getAttributesToString(String attributeTypeName) throws OseeCoreException {
+      return getAttributesToString(AttributeTypeManager.getType(attributeTypeName));
+   }
+
    /**
     * @return comma delimited representation of all the attributes of the type attributeName
     */
-   public String getAttributesToString(String attributeTypeName) throws OseeCoreException {
+   public String getAttributesToString(IAttributeType attributeType) throws OseeCoreException {
       StringBuffer sb = new StringBuffer();
-      for (Attribute<?> attr : getAttributes(attributeTypeName)) {
+      for (Attribute<?> attr : getAttributes(attributeType)) {
          sb.append(attr);
          sb.append(", ");
       }
       return sb.toString().replaceFirst(", $", "");
-   }
-
-   public String getAttributesToString(IAttributeType attributeType) throws OseeCoreException {
-      return getAttributesToString(attributeType.getName());
    }
 
    /**
@@ -831,20 +803,11 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
     * excess attributes will be deleted.
     */
    public void setAttributeValues(IAttributeType attributeType, Collection<String> newValues) throws OseeCoreException {
-      setAttributeValues(attributeType.getName(), newValues);
-   }
-
-   /**
-    * All existing attributes matching a new value will be left untouched. Then for any remaining values, other existing
-    * attributes will be changed to match or if need be new attributes will be added to stored these values. Finally any
-    * excess attributes will be deleted.
-    */
-   public void setAttributeValues(String attributeTypeName, Collection<String> newValues) throws OseeCoreException {
       ensureAttributesLoaded();
       // ensure new values are unique
       HashSet<String> uniqueNewValues = new HashSet<String>(newValues);
 
-      List<Attribute<Object>> remainingAttributes = getAttributes(attributeTypeName);
+      List<Attribute<Object>> remainingAttributes = getAttributes(attributeType);
       List<String> remainingNewValues = new ArrayList<String>(uniqueNewValues.size());
 
       // all existing attributes matching a new value will be left untouched
@@ -864,7 +827,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
 
       for (String newValue : remainingNewValues) {
          if (remainingAttributes.isEmpty()) {
-            setOrAddAttribute(attributeTypeName, newValue);
+            setOrAddAttribute(attributeType, newValue);
          } else {
             int index = remainingAttributes.size() - 1;
             remainingAttributes.get(index).setValue(newValue);
@@ -875,13 +838,6 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
       for (Attribute<Object> attribute : remainingAttributes) {
          attribute.delete();
       }
-   }
-
-   /**
-    * adds a new attribute of the type named attributeTypeName and assigns it the given value
-    */
-   public <T> void addAttribute(String attributeTypeName, T value) throws OseeCoreException {
-      addAttribute(AttributeTypeManager.getType(attributeTypeName), value);
    }
 
    /**
@@ -919,34 +875,27 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
     * we do not what duplicated enumerated values so this method silently returns if the specified attribute type is
     * enumerated and value is already present
     */
-   public <T> void setOrAddAttribute(String attributeTypeName, T value) throws OseeCoreException {
-      List<Attribute<String>> attributes = getAttributes(attributeTypeName);
+   public <T> void setOrAddAttribute(IAttributeType attributeType, T value) throws OseeCoreException {
+      List<Attribute<String>> attributes = getAttributes(attributeType);
       for (Attribute<String> canidateAttribute : attributes) {
          if (canidateAttribute.getValue().equals(value)) {
             return;
          }
       }
-      addAttribute(attributeTypeName, value);
+      addAttribute(attributeType, value);
    }
 
    /**
-    * @return string collection containing of all the attribute values of the type attributeName
+    * @return string collection containing of all the attribute values of type attributeType
     */
-   public List<String> getAttributesToStringList(String attributeTypeName) throws OseeCoreException {
+   public List<String> getAttributesToStringList(IAttributeType attributeType) throws OseeCoreException {
       ensureAttributesLoaded();
 
       List<String> items = new ArrayList<String>();
-      for (Attribute<?> attribute : getAttributes(attributeTypeName)) {
+      for (Attribute<?> attribute : getAttributes(attributeType)) {
          items.add(attribute.getDisplayableString());
       }
       return items;
-   }
-
-   /**
-    * @return string collection containing of all the attribute values of the type attributeName
-    */
-   public List<String> getAttributesToStringList(IAttributeType attributeType) throws OseeCoreException {
-      return getAttributesToStringList(attributeType.getName());
    }
 
    @Override
@@ -1701,11 +1650,6 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
 
    public int getRemainingAttributeCount(AttributeType attributeType) throws OseeCoreException {
       return attributeType.getMaxOccurrences() - getAttributeCount(attributeType);
-   }
-
-   public int getAttributeCount(String attributeTypeName) throws OseeCoreException {
-      ensureAttributesLoaded();
-      return getAttributes(attributeTypeName).size();
    }
 
    public int getAttributeCount(IAttributeType attributeType) throws OseeCoreException {

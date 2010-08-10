@@ -13,6 +13,6 @@ package org.eclipse.osee.framework.core.data;
 /**
  * @author Ryan D. Brooks
  */
-public interface Describable {
+public interface HasDescription {
    public abstract String getDescription();
 }

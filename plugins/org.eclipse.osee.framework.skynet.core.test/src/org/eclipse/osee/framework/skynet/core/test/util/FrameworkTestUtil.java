@@ -23,6 +23,7 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -47,7 +48,7 @@ public class FrameworkTestUtil {
    public static Artifact createSimpleArtifact(IArtifactType artifactType, String name, Branch branch) throws OseeCoreException {
       Artifact softArt = ArtifactTypeManager.addArtifact(artifactType, branch);
       softArt.setName(name);
-      softArt.addAttribute("Subsystem", "Electrical");
+      softArt.addAttribute(CoreAttributeTypes.Subsystem, "Electrical");
       Artifact rootArtifact = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch);
       rootArtifact.addRelation(CoreRelationTypes.Default_Hierarchical__Child, softArt);
       return softArt;

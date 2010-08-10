@@ -40,7 +40,6 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.swt.program.Program;
 
@@ -171,7 +170,7 @@ public class ImportTraceabilityJob extends Job {
 
       for (Artifact artifact : requirementData.getDirectSwRequirements()) {
          excelWriter.writeRow(artifact.getName(), String.valueOf(reqsTraceCounts.get(artifact)),
-            Collections.toString(",", artifact.getAttributesToStringList(Requirements.PARTITION)));
+            Collections.toString(",", artifact.getAttributesToStringList(CoreAttributeTypes.Partition)));
       }
 
       excelWriter.endSheet();

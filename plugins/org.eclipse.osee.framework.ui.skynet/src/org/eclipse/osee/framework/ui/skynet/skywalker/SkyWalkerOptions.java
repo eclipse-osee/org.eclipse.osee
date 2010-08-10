@@ -92,9 +92,9 @@ public class SkyWalkerOptions {
       } else {
          StringBuffer sb = new StringBuffer();
          for (AttributeType attributeType : getSelectedShowAttributeTypes()) {
-            if (artifact.getAttributeCount(attributeType.getName()) > 0) {
+            if (artifact.getAttributeCount(attributeType) > 0) {
                sb.append("\n");
-               sb.append(artifact.getAttributesToString(attributeType.getName()));
+               sb.append(artifact.getAttributesToString(attributeType));
             }
          }
          return sb.toString();

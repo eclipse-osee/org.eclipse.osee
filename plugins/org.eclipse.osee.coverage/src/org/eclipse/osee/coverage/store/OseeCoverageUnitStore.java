@@ -81,21 +81,19 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
       if (artifact != null) {
          coverageUnit.setName(artifact.getName());
          coverageUnit.setGuid(artifact.getGuid());
-         for (String value : artifact.getAttributesToStringList(CoverageAttributes.COVERAGE_ITEM.getStoreName())) {
+         for (String value : artifact.getAttributesToStringList(CoverageAttributeTypes.Item)) {
             CoverageItem item =
                new CoverageItem(coverageUnit, value, coverageOptionManager, DbTestUnitProvider.instance());
             coverageUnit.addCoverageItem(item);
          }
          // Don't load file contents until needed
          coverageUnit.setFileContentsProvider(OseeCoverageUnitFileContentsProvider.getInstance(branch));
-         coverageUnit.setNotes(artifact.getSoleAttributeValueAsString(CoverageAttributes.NOTES.getStoreName(), ""));
+         coverageUnit.setNotes(artifact.getSoleAttributeValueAsString(CoverageAttributeTypes.Notes, ""));
          coverageUnit.setFolder(artifact.isOfType(CoverageArtifactTypes.CoverageFolder));
-         coverageUnit.setAssignees(artifact.getSoleAttributeValueAsString(CoverageAttributes.ASSIGNEES.getStoreName(),
-            ""));
-         coverageUnit.setNamespace(artifact.getSoleAttributeValueAsString(CoverageAttributes.NAMESPACE.getStoreName(),
-            ""));
-         coverageUnit.setOrderNumber(artifact.getSoleAttributeValueAsString(CoverageAttributes.ORDER.getStoreName(), ""));
-         coverageUnit.setLocation(artifact.getSoleAttributeValueAsString(CoverageAttributes.LOCATION.getStoreName(), ""));
+         coverageUnit.setAssignees(artifact.getSoleAttributeValueAsString(CoverageAttributeTypes.Assignees, ""));
+         coverageUnit.setNamespace(artifact.getSoleAttributeValueAsString(CoverageAttributeTypes.Namespace, ""));
+         coverageUnit.setOrderNumber(artifact.getSoleAttributeValueAsString(CoverageAttributeTypes.Order, ""));
+         coverageUnit.setLocation(artifact.getSoleAttributeValueAsString(CoverageAttributeTypes.Location, ""));
          for (Artifact childArt : artifact.getChildren()) {
             if (childArt.isOfType(CoverageArtifactTypes.CoverageUnit, CoverageArtifactTypes.CoverageFolder)) {
                coverageUnit.addCoverageUnit(OseeCoverageUnitStore.get(coverageUnit, childArt, coverageOptionManager));
@@ -121,12 +119,12 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
          }
          items.add(coverageItem.toXml());
       }
-      artifact.setAttributeValues(CoverageAttributes.COVERAGE_ITEM.getStoreName(), items);
+      artifact.setAttributeValues(CoverageAttributeTypes.Item, items);
       if (Strings.isValid(coverageUnit.getNotes())) {
-         artifact.setSoleAttributeFromString(CoverageAttributes.NOTES.getStoreName(), coverageUnit.getNotes());
+         artifact.setSoleAttributeFromString(CoverageAttributeTypes.Notes, coverageUnit.getNotes());
       }
       if (Strings.isValid(coverageUnit.getNamespace())) {
-         artifact.setSoleAttributeFromString(CoverageAttributes.NAMESPACE.getStoreName(), coverageUnit.getNamespace());
+         artifact.setSoleAttributeFromString(CoverageAttributeTypes.Namespace, coverageUnit.getNamespace());
       }
       if (coverageUnit.getFileContentsProvider() != null && coverageUnit.getFileContentsProvider() != OseeCoverageUnitFileContentsProvider.getInstance(branch)) {
          String fileContents = coverageUnit.getFileContents();
@@ -136,13 +134,13 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
          }
       }
       if (Strings.isValid(coverageUnit.getOrderNumber())) {
-         artifact.setSoleAttributeFromString(CoverageAttributes.ORDER.getStoreName(), coverageUnit.getOrderNumber());
+         artifact.setSoleAttributeFromString(CoverageAttributeTypes.Order, coverageUnit.getOrderNumber());
       }
       if (Strings.isValid(coverageUnit.getAssignees())) {
-         artifact.setSoleAttributeFromString(CoverageAttributes.ASSIGNEES.getStoreName(), coverageUnit.getAssignees());
+         artifact.setSoleAttributeFromString(CoverageAttributeTypes.Assignees, coverageUnit.getAssignees());
       }
       if (Strings.isValid(coverageUnit.getLocation())) {
-         artifact.setSoleAttributeFromString(CoverageAttributes.LOCATION.getStoreName(), coverageUnit.getLocation());
+         artifact.setSoleAttributeFromString(CoverageAttributeTypes.Location, coverageUnit.getLocation());
       }
       if (coverageUnit.getParent() != null) {
          Artifact parentArt = ArtifactQuery.getArtifactFromId(coverageUnit.getParent().getGuid(), branch);

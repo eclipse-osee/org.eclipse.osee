@@ -44,7 +44,7 @@ public class OseeCoverageUnitFileContentsProvider implements ICoverageUnitFileCo
          OseeCoverageUnitStore store = new OseeCoverageUnitStore(coverageUnit, branch);
          Artifact artifact = store.getArtifact(false);
          if (artifact != null) {
-            return artifact.getSoleAttributeValue(CoverageAttributes.FILE_CONTENTS.getStoreName(), "");
+            return artifact.getSoleAttributeValue(CoverageAttributeTypes.FileContents, "");
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -58,7 +58,7 @@ public class OseeCoverageUnitFileContentsProvider implements ICoverageUnitFileCo
          OseeCoverageUnitStore store = new OseeCoverageUnitStore(coverageUnit, branch);
          Artifact artifact = store.getArtifact(false);
          if (artifact != null) {
-            artifact.setSoleAttributeValue(CoverageAttributes.FILE_CONTENTS.getStoreName(), fileContents);
+            artifact.setSoleAttributeValue(CoverageAttributeTypes.FileContents, fileContents);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

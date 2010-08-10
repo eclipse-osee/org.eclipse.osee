@@ -270,7 +270,7 @@ public class ConflictTestManager {
                   case ATTRIBUTE:
                      createAttribute((Artifact) modification.object, AttributeTypeManager.getType(modification.name),
                         modification.clas, modification.value);
-                     ((Artifact) modification.object).deleteSoleAttribute(modification.name);
+                     ((Artifact) modification.object).deleteSoleAttribute(AttributeTypeManager.getType(modification.name));
                      ((Artifact) modification.object).persist();
                      break;
                   case RELATION:

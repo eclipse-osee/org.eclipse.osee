@@ -21,8 +21,4 @@ public interface Requirements {
    public final static String SYSTEM_REQUIREMENTS = "System Requirements";
    public final static String SUBSYSTEM_REQUIREMENTS = "Subsystem Requirements";
    public final static String TEST_SUPPORT_UNITS = "Test Support Units";
-
-   public final static String SUBSYSTEM = "Subsystem";
-   public final static String PARTITION = "Partition";
-   public final static String CSCI = "CSCI";
 }

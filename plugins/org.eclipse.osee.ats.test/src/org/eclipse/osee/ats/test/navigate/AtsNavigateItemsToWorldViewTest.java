@@ -24,6 +24,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
@@ -57,6 +58,7 @@ import org.eclipse.osee.ats.world.search.UserCommunitySearchItem;
 import org.eclipse.osee.ats.world.search.UserSearchItem;
 import org.eclipse.osee.ats.world.search.UserWorldSearchItem.UserSearchOption;
 import org.eclipse.osee.ats.world.search.VersionTargetedForTeamSearchItem;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -94,9 +96,9 @@ public class AtsNavigateItemsToWorldViewTest {
       arts.clear();
       NavigateTestUtil.getAllArtifactChildren(getXViewer().getTree().getItems(), arts);
       // delete an artifact, look for expected !Errors in the XCol
-      deleteAttributesForXColErrorTest(arts, "ats.Team Definition");
-      deleteAttributesForXColErrorTest(arts, "ats.Actionable Item");
-      deleteAttributesForXColErrorTest(arts, "ats.Change Type");
+      deleteAttributesForXColErrorTest(arts, AtsAttributeTypes.ATS_TEAM_DEFINITION);
+      deleteAttributesForXColErrorTest(arts, AtsAttributeTypes.ATS_ACTIONABLE_ITEM);
+      deleteAttributesForXColErrorTest(arts, AtsAttributeTypes.ATS_CHANGE_TYPE);
    }
 
    @org.junit.Test
@@ -527,10 +529,10 @@ public class AtsNavigateItemsToWorldViewTest {
       handleTableCustomization();
       afterSize = getXViewer().getCustomizeMgr().getCurrentVisibleTableColumns().size();
       NavigateTestUtil.testExpectedVersusActual("Column Count - ", true, (afterSize >= beforeSize));
-      runGeneralXColTest(itemCount, false, "", testTaskTab);
+      runGeneralXColTest(itemCount, false, null, testTaskTab);
    }
 
-   public void runGeneralXColTest(int expected, boolean isErrorCheck, String attributeToDelete, boolean testTaskTab) throws OseeCoreException {
+   public void runGeneralXColTest(int expected, boolean isErrorCheck, IAttributeType attributeTypeToDelete, boolean testTaskTab) throws OseeCoreException {
       List<Artifact> arts = new ArrayList<Artifact>();
       List<Artifact> taskArts = new ArrayList<Artifact>();
       List<XViewerColumn> columns = getXViewer().getCustomizeMgr().getCurrentTableColumns();
@@ -551,7 +553,7 @@ public class AtsNavigateItemsToWorldViewTest {
          columns = getXViewer().getCustomizeMgr().getCurrentTableColumns();
          verifyXColumns(labelProv, arts, columns);
       } else if (isErrorCheck) {
-         verifyXColumnsHasErrors(labelProv, arts, columns, attributeToDelete);
+         verifyXColumnsHasErrors(labelProv, arts, columns, attributeTypeToDelete);
       } else {
          verifyXColumns(labelProv, arts, columns);
       }
@@ -590,38 +592,38 @@ public class AtsNavigateItemsToWorldViewTest {
       cdialog.handleAddAllItemButtonClick();
    }
 
-   public void deleteAttributesForXColErrorTest(Collection<Artifact> arts, String attributeToDelete) throws Exception {
+   public void deleteAttributesForXColErrorTest(Collection<Artifact> arts, IAttributeType attributeTypeToDelete) throws Exception {
       Map<Artifact, Object> attributeValues = new HashMap<Artifact, Object>();
       getXViewer().expandAll();
       handleTableCustomization();
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Navigate Test");
       // select a workflow artifact; get its attributes; delete an attribute
       for (Artifact art : arts) {
-         attributeValues.put(art, art.getSoleAttributeValue(attributeToDelete));
-         art.deleteAttribute(attributeToDelete, art.getSoleAttributeValue(attributeToDelete));
+         attributeValues.put(art, art.getSoleAttributeValue(attributeTypeToDelete));
+         art.deleteAttribute(attributeTypeToDelete, art.getSoleAttributeValue(attributeTypeToDelete));
          art.persist(transaction);
       }
       transaction.execute();
       try {
-         runGeneralXColTest(20, true, attributeToDelete, false);
+         runGeneralXColTest(20, true, attributeTypeToDelete, false);
       } finally {
          transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Navigate Test");
          // restore the attribute to leave the demo db back in its original state
          for (Artifact art : arts) {
-            art.setSoleAttributeValue(attributeToDelete, attributeValues.get(art));
+            art.setSoleAttributeValue(attributeTypeToDelete, attributeValues.get(art));
             art.persist(transaction);
          }
          transaction.execute();
       }
    }
 
-   public void verifyXColumnsHasErrors(ITableLabelProvider labelProv, List<Artifact> arts, List<XViewerColumn> columns, String attributeToDelete) throws OseeCoreException {
+   public void verifyXColumnsHasErrors(ITableLabelProvider labelProv, List<Artifact> arts, List<XViewerColumn> columns, IAttributeType attributeTypeToDelete) throws OseeCoreException {
       List<String> actualErrorCols = new ArrayList<String>();
       for (XViewerColumn xCol : columns) {
          verifyArtifactsHasErrors(labelProv, arts, xCol,
-            getXViewer().getCustomizeMgr().getColumnNumFromXViewerColumn(xCol), attributeToDelete, actualErrorCols);
+            getXViewer().getCustomizeMgr().getColumnNumFromXViewerColumn(xCol), actualErrorCols);
       }
-      if (!attributeToDelete.equals("ats.Current State") && !attributeToDelete.equals("ats.Priority")) {
+      if (!AtsAttributeTypes.ATS_CURRENT_STATE.equals(attributeTypeToDelete) && !AtsAttributeTypes.ATS_PRIORITY_TYPE.equals(attributeTypeToDelete)) {
          verifyXCol1HasErrors(actualErrorCols);
       } else {
          verifyXCol2HasErrors(actualErrorCols);
@@ -659,7 +661,7 @@ public class AtsNavigateItemsToWorldViewTest {
       }
    }
 
-   public void verifyArtifactsHasErrors(ITableLabelProvider labelProv, Collection<Artifact> arts, XViewerColumn xCol, int colIndex, String attributeToDelete, List<String> actualErrorCols) throws OseeCoreException {
+   public void verifyArtifactsHasErrors(ITableLabelProvider labelProv, Collection<Artifact> arts, XViewerColumn xCol, int colIndex, List<String> actualErrorCols) throws OseeCoreException {
       for (Artifact art : arts) {
          String colText = labelProv.getColumnText(art, colIndex);
          if (art.isOfType(DemoArtifactTypes.DemoCodeTeamWorkflow)) {

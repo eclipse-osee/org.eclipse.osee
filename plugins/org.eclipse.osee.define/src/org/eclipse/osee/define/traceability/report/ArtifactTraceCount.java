@@ -11,16 +11,14 @@
 package org.eclipse.osee.define.traceability.report;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 
 /**
  * @author Roberto E. Escobar
@@ -42,22 +40,15 @@ public class ArtifactTraceCount extends AbstractArtifactRelationReport {
       return header.toArray(new String[header.size()]);
    }
 
-   private String getSubsystemAttributeType(Artifact artifact) {
-      Collection<String> attributeTypes = new ArrayList<String>();
-      try {
-         for (AttributeType type : artifact.getAttributeTypes()) {
-            attributeTypes.add(type.getName());
+   private IAttributeType getSubsystemAttributeType(Artifact artifact) throws OseeCoreException {
+      for (IAttributeType attributeType : artifact.getAttributeTypes()) {
+         if (attributeType.equals(CoreAttributeTypes.Partition)) {
+            return CoreAttributeTypes.Partition;
+         } else if (attributeType.equals(CoreAttributeTypes.Csci)) {
+            return CoreAttributeTypes.Csci;
          }
-      } catch (Exception ex) {
-         // Do Nothing;
       }
-
-      if (attributeTypes.contains(Requirements.PARTITION)) {
-         return Requirements.PARTITION;
-      } else if (attributeTypes.contains(Requirements.CSCI)) {
-         return Requirements.CSCI;
-      }
-      return EMPTY_STRING;
+      return null;
    }
 
    @Override
@@ -73,11 +64,11 @@ public class ArtifactTraceCount extends AbstractArtifactRelationReport {
          for (IRelationEnumeration relationType : relations) {
             rowData[index++] = String.valueOf(art.getRelatedArtifactsCount(relationType));
          }
-         String attributeType = getSubsystemAttributeType(art);
-         if (Strings.isValid(attributeType)) {
-            rowData[index++] = Collections.toString(",", art.getAttributesToStringList(attributeType));
-         } else {
+         IAttributeType attributeType = getSubsystemAttributeType(art);
+         if (attributeType == null) {
             rowData[index++] = "Unspecified";
+         } else {
+            rowData[index++] = Collections.toString(",", art.getAttributesToStringList(attributeType));
          }
          notifyOnRowData(rowData);
       }

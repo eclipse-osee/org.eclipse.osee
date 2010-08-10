@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.commit.ICommitConfigArtifact;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -45,26 +46,26 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  */
 public class CreateActionArtifactChangeReportJob extends Job {
    private final Set<TeamWorkFlowArtifact> teamArts;
-   private final String byAttribute;
+   private final IAttributeType attributeType;
 
-   public CreateActionArtifactChangeReportJob(String jobName, Set<TeamWorkFlowArtifact> teamArts, String byAttribute) {
+   public CreateActionArtifactChangeReportJob(String jobName, Set<TeamWorkFlowArtifact> teamArts, IAttributeType attributeType) {
       super(jobName);
       this.teamArts = teamArts;
-      this.byAttribute = byAttribute;
+      this.attributeType = attributeType;
    }
 
    @Override
    public IStatus run(IProgressMonitor monitor) {
-      return runIt(monitor, getName(), teamArts, byAttribute);
+      return runIt(monitor, getName(), teamArts, attributeType);
    }
 
-   public static IStatus runIt(IProgressMonitor monitor, String jobName, Collection<TeamWorkFlowArtifact> teamArts, String byAttribute) {
+   public static IStatus runIt(IProgressMonitor monitor, String jobName, Collection<TeamWorkFlowArtifact> teamArts, IAttributeType attributeType) {
       XResultData rd = new XResultData();
       try {
          if (teamArts.isEmpty()) {
             throw new OseeStateException("No Actions/Workflows Specified");
          }
-         retrieveData(monitor, teamArts, byAttribute, rd);
+         retrieveData(monitor, teamArts, attributeType, rd);
          if (rd.toString().equals("")) {
             rd.log("No Problems Found");
          }
@@ -96,12 +97,13 @@ public class CreateActionArtifactChangeReportJob extends Job {
     * 
     * @throws Exception
     */
-   private static void retrieveData(IProgressMonitor monitor, Collection<TeamWorkFlowArtifact> teamArts, String byAttribute, XResultData rd) throws OseeCoreException {
+   private static void retrieveData(IProgressMonitor monitor, Collection<TeamWorkFlowArtifact> teamArts, IAttributeType attributeType, XResultData rd) throws OseeCoreException {
       monitor.subTask("Retrieving Actions");
 
       int x = 1;
       rd.addRaw(AHTML.beginMultiColumnTable(95));
-      rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"HRID", "Bulld", "UI", byAttribute, "RPCR", "Change"}));
+      rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"HRID", "Bulld", "UI", attributeType.getName(),
+         "RPCR", "Change"}));
       for (TeamWorkFlowArtifact teamArt : teamArts) {
          String rcprId = teamArt.getSoleAttributeValue(AtsAttributeTypes.ATS_LEGACY_PCR_ID, "");
          String result =
@@ -110,7 +112,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
          monitor.subTask(result);
          rd.log("\nRPCR " + rcprId);
          for (ICommitConfigArtifact commitConfigArt : teamArt.getBranchMgr().getConfigArtifactsConfiguredToCommitTo()) {
-            processTeam(teamArt, commitConfigArt.getParentBranch().getShortName(), byAttribute, commitConfigArt, rd);
+            processTeam(teamArt, commitConfigArt.getParentBranch().getShortName(), attributeType, commitConfigArt, rd);
          }
          x++;
 
@@ -121,11 +123,11 @@ public class CreateActionArtifactChangeReportJob extends Job {
       rd.addRaw(AHTML.endMultiColumnTable());
    }
 
-   private static void processTeam(TeamWorkFlowArtifact teamArt, String buildId, String byAttribute, ICommitConfigArtifact commitConfigArt, XResultData rd) throws OseeCoreException {
+   private static void processTeam(TeamWorkFlowArtifact teamArt, String buildId, IAttributeType attributeType, ICommitConfigArtifact commitConfigArt, XResultData rd) throws OseeCoreException {
       String rpcrNum = teamArt.getSoleAttributeValue(AtsAttributeTypes.ATS_LEGACY_PCR_ID, "");
       ChangeData changeData = teamArt.getBranchMgr().getChangeData(commitConfigArt);
       for (Artifact modArt : changeData.getArtifacts(KindType.Artifact, ModificationType.NEW, ModificationType.MODIFIED)) {
-         List<String> attrStrs = modArt.getAttributesToStringList(byAttribute);
+         List<String> attrStrs = modArt.getAttributesToStringList(attributeType);
          if (attrStrs.isEmpty()) {
             attrStrs.add(EnumeratedAttribute.UNSPECIFIED_VALUE);
          }
@@ -135,7 +137,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
          }
       }
       for (Artifact artChg : changeData.getArtifacts(KindType.Artifact, ModificationType.DELETED)) {
-         List<String> attrStrs = artChg.getAttributesToStringList(byAttribute);
+         List<String> attrStrs = artChg.getAttributesToStringList(attributeType);
          if (attrStrs.isEmpty()) {
             attrStrs.add(EnumeratedAttribute.UNSPECIFIED_VALUE);
          }
@@ -146,7 +148,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
       }
       for (Artifact artChg : changeData.getArtifacts(KindType.RelationOnly, ModificationType.NEW,
          ModificationType.MODIFIED)) {
-         List<String> attrStrs = artChg.getAttributesToStringList(byAttribute);
+         List<String> attrStrs = artChg.getAttributesToStringList(attributeType);
          if (attrStrs.isEmpty()) {
             attrStrs.add(EnumeratedAttribute.UNSPECIFIED_VALUE);
          }

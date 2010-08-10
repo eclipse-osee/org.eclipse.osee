@@ -267,7 +267,7 @@ public class AttributeConflict extends Conflict {
    }
 
    public TreeSet<String> getEnumerationAttributeValues() throws OseeCoreException {
-      return new TreeSet<String>(AttributeTypeManager.getEnumerationValues(getAttributeType().getName()));
+      return new TreeSet<String>(AttributeTypeManager.getEnumerationValues(getAttributeType()));
    }
 
    public boolean setStringAttributeValue(String value) throws OseeCoreException {

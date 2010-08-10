@@ -14,7 +14,7 @@ package org.eclipse.osee.framework.core.data;
 /**
  * @author Ryan D. Brooks
  */
-public class NamedIdentity implements Identity, FullyNamed, Describable {
+public class NamedIdentity implements Identity, FullyNamed, HasDescription {
    private final String guid;
    private final String name;
    private final String description;

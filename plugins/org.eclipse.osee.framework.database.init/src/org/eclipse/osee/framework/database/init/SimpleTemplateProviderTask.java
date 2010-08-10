@@ -60,7 +60,7 @@ public class SimpleTemplateProviderTask implements IDbInitializationTask {
                templateArtifact.setSoleAttributeFromStream(CoreAttributeTypes.WholeWordContent, url.openStream());
                for (IConfigurationElement matchCriteriaEl : el.getChildren()) {
                   String match = matchCriteriaEl.getAttribute("match");
-                  templateArtifact.addAttribute("Template Match Criteria", match);
+                  templateArtifact.addAttribute(CoreAttributeTypes.TemplateMatchCriteria, match);
                }
                templateArtifact.persist();
                templateFolder.addChild(templateArtifact);

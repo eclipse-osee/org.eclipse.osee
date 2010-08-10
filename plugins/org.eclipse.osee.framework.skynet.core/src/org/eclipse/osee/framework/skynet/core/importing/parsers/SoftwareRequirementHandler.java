@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.importing.parsers;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
 
@@ -21,11 +22,11 @@ import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
 public abstract class SoftwareRequirementHandler extends WordOutlineExtractorDelegate {
    private static final Pattern partitionPattern = Pattern.compile("\\[([\\w\\(|\\)]+)\\]");
 
-   private final String attributeName;
+   private final IAttributeType attributeType;
 
-   protected SoftwareRequirementHandler(String attributeName) {
+   protected SoftwareRequirementHandler(IAttributeType attributeType) {
       super();
-      this.attributeName = attributeName;
+      this.attributeType = attributeType;
    }
 
    @Override
@@ -37,7 +38,7 @@ public abstract class SoftwareRequirementHandler extends WordOutlineExtractorDel
       while (matcher.find()) {
          isRequirement = true;
 
-         roughArtifact.addAttribute(attributeName, matcher.group(1).trim());
+         roughArtifact.addAttribute(attributeType, matcher.group(1).trim());
          text.delete(matcher.start(), matcher.end());
          matcher.reset(text);
       }

@@ -25,7 +25,7 @@ import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
 import org.eclipse.osee.coverage.model.SimpleTestUnitProvider;
 import org.eclipse.osee.coverage.store.CoverageArtifactTypes;
-import org.eclipse.osee.coverage.store.CoverageAttributes;
+import org.eclipse.osee.coverage.store.CoverageAttributeTypes;
 import org.eclipse.osee.coverage.store.DbTestUnitProvider;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -102,7 +102,7 @@ public class DoesNotWorkItemCoverage extends XNavigateItemAction {
       for (Artifact artifact : ArtifactQuery.getArtifactListFromType(CoverageArtifactTypes.CoverageUnit, branch)) {
          System.out.println("Processing Item " + artifact);
          totalCoverageUnits++;
-         for (Attribute<?> attr : artifact.getAttributes(CoverageAttributes.COVERAGE_ITEM.getStoreName())) {
+         for (Attribute<?> attr : artifact.getAttributes(CoverageAttributeTypes.Item)) {
             totalCoverageItems++;
             String xml = (String) attr.getValue();
             CoverageItem coverageItem =
@@ -148,7 +148,7 @@ public class DoesNotWorkItemCoverage extends XNavigateItemAction {
       boolean persist = true;
       for (Artifact artifact : ArtifactQuery.getArtifactListFromType(CoverageArtifactTypes.CoverageUnit, branch)) {
          System.out.println("Processing Item " + artifact);
-         for (Attribute<?> attr : artifact.getAttributes(CoverageAttributes.COVERAGE_ITEM.getStoreName())) {
+         for (Attribute<?> attr : artifact.getAttributes(CoverageAttributeTypes.Item)) {
             String attrStr = (String) attr.getValue();
             store.load(attrStr);
             CoverageItem item =
@@ -190,7 +190,7 @@ public class DoesNotWorkItemCoverage extends XNavigateItemAction {
       Set<Artifact> coverageUnitsFixed = new HashSet<Artifact>();
       for (Artifact artifact : ArtifactQuery.getArtifactListFromType(CoverageArtifactTypes.CoverageUnit, branch)) {
          System.out.println("Processing Item " + artifact);
-         for (Attribute<?> attr : artifact.getAttributes(CoverageAttributes.COVERAGE_ITEM.getStoreName())) {
+         for (Attribute<?> attr : artifact.getAttributes(CoverageAttributeTypes.Item)) {
             String str = (String) attr.getValue();
             store.load(str);
             CoverageItem item =
@@ -222,7 +222,7 @@ public class DoesNotWorkItemCoverage extends XNavigateItemAction {
                   System.err.println("Invalid method from artifact " + artifact + " item " + str);
                   continue;
                }
-               artifact.addAttribute(CoverageAttributes.ORDER.getStoreName(), methodNum);
+               artifact.addAttribute(CoverageAttributeTypes.Order, methodNum);
                coverageUnitsFixed.add(artifact);
                System.out.println(String.format("Adding method num [%s] to unit [%s]", methodNum, artifact));
             }

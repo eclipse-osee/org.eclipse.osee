@@ -106,7 +106,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
       excelWriter.writeRow("5.1  Lower Level Requirements Traceability to Subsystem Requirements");
       excelWriter.writeRow("Lower Level Requirements", null, null, "Traceable Subsystem Requirement");
       excelWriter.writeRow("Paragraph #", "Paragraph Title", "Qualification Method", "PIDS", "Paragraph #",
-         "Paragraph Title", Requirements.SUBSYSTEM);
+         "Paragraph Title", CoreAttributeTypes.Subsystem.getName());
 
       String[] row = new String[7];
 
@@ -120,7 +120,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
                row[3] = getAssociatedSubSystem(subSysReq);
                row[4] = correct(subSysReq.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""));
                row[5] = subSysReq.getName();
-               row[6] = subSysReq.getSoleAttributeValue(Requirements.SUBSYSTEM, "");
+               row[6] = subSysReq.getSoleAttributeValue(CoreAttributeTypes.Subsystem, "");
                excelWriter.writeRow(row);
                row[0] = row[1] = row[2] = null;
             }

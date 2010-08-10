@@ -42,8 +42,7 @@ public class CoverageOptionManagerStore {
 
    public String getCoverageOptions() throws MultipleAttributesExist, OseeCoreException {
       String coverageOptions =
-         oseeCoveragePackageStore.getArtifact(true).getSoleAttributeValueAsString(
-            CoverageAttributes.COVERAGE_OPTIONS.getStoreName(), null);
+         oseeCoveragePackageStore.getArtifact(true).getSoleAttributeValueAsString(CoverageAttributeTypes.Options, null);
       if (!Strings.isValid(coverageOptions)) {
          coverageOptions =
             new CoveragePreferences(oseeCoveragePackageStore.getArtifact(true).getBranch()).getCoverageOptions();
@@ -52,8 +51,8 @@ public class CoverageOptionManagerStore {
    }
 
    private String getLocalCoverageOptions() throws OseeCoreException {
-      return oseeCoveragePackageStore.getArtifact(true).getSoleAttributeValueAsString(
-         CoverageAttributes.COVERAGE_OPTIONS.getStoreName(), null);
+      return oseeCoveragePackageStore.getArtifact(true).getSoleAttributeValueAsString(CoverageAttributeTypes.Namespace,
+         null);
    }
 
    private String getGlobalCoverageOptions() throws OseeCoreException {
@@ -111,8 +110,8 @@ public class CoverageOptionManagerStore {
 
    public void store(String coverageOptions, StoreLocation storeLocation) throws OseeCoreException {
       if (storeLocation == StoreLocation.Local) {
-         oseeCoveragePackageStore.getArtifact(true).setSoleAttributeFromString(
-            CoverageAttributes.COVERAGE_OPTIONS.getStoreName(), coverageOptions);
+         oseeCoveragePackageStore.getArtifact(true).setSoleAttributeFromString(CoverageAttributeTypes.Namespace,
+            coverageOptions);
          oseeCoveragePackageStore.getArtifact(true).persist();
       } else if (storeLocation == StoreLocation.Global) {
          new CoveragePreferences(oseeCoveragePackageStore.getArtifact(true).getBranch()).setCoverageOptions(coverageOptions);

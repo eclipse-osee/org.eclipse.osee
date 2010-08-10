@@ -88,7 +88,7 @@ public final class RoughAttributeSet {
    protected void translateAttributes(Artifact artifact) throws OseeCoreException {
       for (CaseInsensitiveString attrTypeName : attributes.keySet()) {
          Collection<String> values = attributes.getValues(attrTypeName);
-         artifact.setAttributeValues(attrTypeName.toString(), values);
+         artifact.setAttributeValues(AttributeTypeManager.getType(attrTypeName.toString()), values);
       }
       transferBinaryAttributes(artifact);
    }

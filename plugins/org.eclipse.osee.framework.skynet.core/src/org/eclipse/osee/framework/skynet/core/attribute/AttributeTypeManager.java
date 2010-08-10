@@ -168,11 +168,6 @@ public class AttributeTypeManager {
    }
 
    @SuppressWarnings("rawtypes")
-   public static boolean isBaseTypeCompatible(Class<? extends Attribute> baseType, String attributeTypeName) throws OseeCoreException {
-      return baseType.isAssignableFrom(getAttributeBaseClass(getType(attributeTypeName)));
-   }
-
-   @SuppressWarnings("rawtypes")
    public static boolean isBaseTypeCompatible(Class<? extends Attribute> baseType, IAttributeType attributeType) throws OseeCoreException {
       return baseType.isAssignableFrom(getAttributeBaseClass(attributeType));
    }
