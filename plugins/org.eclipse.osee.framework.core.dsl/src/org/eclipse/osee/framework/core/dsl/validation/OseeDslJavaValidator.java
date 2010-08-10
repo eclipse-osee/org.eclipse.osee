@@ -28,6 +28,9 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.util.OseeDslSwitch;
 import org.eclipse.xtext.validation.Check;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public class OseeDslJavaValidator extends AbstractOseeDslJavaValidator {
 
    public static final String NON_UNIQUE_HIERARCHY = "non_unique_hierarchy";
@@ -45,10 +48,11 @@ public class OseeDslJavaValidator extends AbstractOseeDslJavaValidator {
    private void checkHierarchyUnique(AccessContext accessContext, Collection<HierarchyRestriction> hierarchy) {
       Map<String, XArtifactRef> references = new HashMap<String, XArtifactRef>();
       for (HierarchyRestriction restriction : hierarchy) {
-         String guid = restriction.getArtifact().getGuid();
+         XArtifactRef artifactRef = restriction.getArtifact();
+         String guid = artifactRef.getGuid();
          XArtifactRef reference = references.get(guid);
          if (reference == null) {
-            references.put(guid, restriction.getArtifact());
+            references.put(guid, artifactRef);
          } else {
             String message =
                String.format("Duplicate hierarchy restriction [%s] in context[%s]", reference.toString(),
@@ -159,12 +163,5 @@ public class OseeDslJavaValidator extends AbstractOseeDslJavaValidator {
       }
 
    }
-
-   //	@Check
-   //	public void checkGreetingStartsWithCapital(Greeting greeting) {
-   //		if (!Character.isUpperCase(greeting.getName().charAt(0))) {
-   //			warning("Name should start with a capital", MyDslPackage.GREETING__NAME);
-   //		}
-   //	}
 
 }

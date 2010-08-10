@@ -30,4 +30,32 @@
             classname="org.eclipse.osee.framework.core.dsl.ui.integration.operations.XtextOseeTypesHandler">
       </OseeTypesHandler>
    </extension>
+   <extension
+         point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
+      <Renderer
+            classname="org.eclipse.osee.framework.core.dsl.ui.integration.internal.OseeDslRenderer">
+      </Renderer>
+   </extension>
+  <extension
+         point="org.eclipse.ui.commands">
+      <command
+            id="org.eclipse.osee.framework.core.dsl.OseeDsl.editor.command"
+            name="OseeDsl Editor">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="org.eclipse.osee.framework.core.dsl.ui.integration.internal.OseeDslEditorHandler"
+            commandId="org.eclipse.osee.framework.core.dsl.OseeDsl.editor.command">
+         <enabledWhen>
+            <with
+                  variable="selection">
+               <count
+                     value="+">
+               </count>
+            </with>
+         </enabledWhen>
+      </handler>
+   </extension>
 </plugin>
