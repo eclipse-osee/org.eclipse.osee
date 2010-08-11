@@ -70,7 +70,7 @@ public final class WordOutlineTest {
       data.add(new Object[] {
          numberEmbeddedInTheContent,
          new DelegateData[] {data("1.", "SCOPE", ""),
-            data("1.", "SCOPE", "This 1.6 is some interesting content 2.3SAMPL-10.")}});
+            data("1.", "SCOPE", "This 1.6 is some interesting content 2.3SAMPLâ€“10.")}});
       return data;
    }
 
