@@ -50,11 +50,7 @@ public final class ArtifactLoader {
 
    private static final String INSERT_JOIN_ARTIFACT =
       "INSERT INTO osee_join_artifact (query_id, insert_time, art_id, branch_id, transaction_id) VALUES (?, ?, ?, ?, ?)";
-
    private static final String DELETE_FROM_JOIN_ARTIFACT = "DELETE FROM osee_join_artifact WHERE query_id = ?";
-
-   private static final boolean DEBUG =
-      "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core/debug/Loading"));
 
    /**
     * (re)loads the artifacts selected by sql and then returns them in a list
@@ -276,9 +272,6 @@ public final class ArtifactLoader {
          chStmt.runPreparedQuery(artifactCountEstimate, sql, queryParameters);
          Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
 
-         if (DEBUG) {
-            System.out.println("ArtifactLoader: Found the following Artifacts");
-         }
          while (chStmt.next()) {
             int artId = chStmt.getInt("art_id");
             int branchId = chStmt.getInt("branch_id");
