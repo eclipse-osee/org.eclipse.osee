@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
@@ -117,11 +116,9 @@ public final class OseeUiActions {
             public void widgetSelected(SelectionEvent e) {
                String version = (String) oseePlugin.getBundle().getHeaders().get("Bundle-Version");
                String desc = String.format("\n\nItem: %s\nVersion: %s", editorId, version);
-               if (actionableObject != null) {
-                  String moreDesc = actionableObject.getActionDescription();
-                  if (moreDesc != null && !moreDesc.equals("")) {
-                     desc += "\n" + moreDesc;
-                  }
+               String moreDesc = actionableObject.getActionDescription();
+               if (moreDesc != null && !moreDesc.equals("")) {
+                  desc += "\n" + moreDesc;
                }
                reportLogException(actionableItem, desc);
             }
@@ -130,21 +127,15 @@ public final class OseeUiActions {
          Button bugButton = new Button(comp, SWT.PUSH);
          bugButton.setToolTipText(BUG_TITLE);
          bugButton.setImage(ImageManager.getImage(PluginUiImage.BUG));
-         bugButton.addSelectionListener(new SelectionListener() {
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-            }
+         bugButton.addSelectionListener(new SelectionAdapter() {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
                String version = (String) oseePlugin.getBundle().getHeaders().get("Bundle-Version");
                String desc = String.format("\n\nItem: %s\nVersion: %s", editorId, version);
-               if (actionableObject != null) {
-                  String moreDesc = actionableObject.getActionDescription();
-                  if (moreDesc != null && !moreDesc.equals("")) {
-                     desc += "\n" + moreDesc;
-                  }
+               String moreDesc = actionableObject.getActionDescription();
+               if (moreDesc != null && !moreDesc.equals("")) {
+                  desc += "\n" + moreDesc;
                }
                reportLogException(actionableItem, desc);
             }
