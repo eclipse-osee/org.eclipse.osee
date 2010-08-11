@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.internal;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import org.eclipse.osee.ats.access.AtsAccessUtil;
 import org.eclipse.osee.framework.core.dsl.integration.OseeDslProvider;
 import org.eclipse.osee.framework.core.dsl.integration.util.ModelUtil;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
@@ -31,8 +32,8 @@ public class AtsAccessOseeDslProvider implements OseeDslProvider {
    private OseeDsl oseeDsl;
 
    private Artifact getStorageArtifact() throws OseeCoreException {
-      return ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.AccessControlModel, "ATS CM Access Control",
-         BranchManager.getCommonBranch());
+      return ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.AccessControlModel,
+         AtsAccessUtil.ATS_ACCESS_MODEL_NAME, BranchManager.getCommonBranch());
    }
 
    @Override
@@ -58,6 +59,7 @@ public class AtsAccessOseeDslProvider implements OseeDslProvider {
          Artifact artifact = getStorageArtifact();
          artifact.setSoleAttributeFromString(CoreAttributeTypes.GeneralStringData, outputStream.toString("UTF-8"));
          artifact.persist();
+         loadDsl();
       } catch (IOException ex) {
          OseeExceptions.wrapAndThrow(ex);
       }
