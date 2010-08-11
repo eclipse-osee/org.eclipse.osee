@@ -44,7 +44,7 @@ public class CmAccessProvider implements IAccessProvider {
       for (Object objectToCheck : objToChecks) {
          CmAccessControl management = provider.getService(userArtifact, objectToCheck);
          if (management instanceof HasAccessModel) {
-            Collection<AccessContextId> contextIds = management.getContextId(userArtifact, objectToCheck);
+            Collection<? extends AccessContextId> contextIds = management.getContextId(userArtifact, objectToCheck);
             for (AccessContextId contextId : contextIds) {
                Collection<Object> entries = cmToCheckObjects.get(management, contextId);
                if (entries == null) {

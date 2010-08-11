@@ -3,9 +3,8 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.ats.services;
+package org.eclipse.osee.ats.access;
 
-import org.eclipse.osee.ats.access.AtsBranchObjectContextId;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 

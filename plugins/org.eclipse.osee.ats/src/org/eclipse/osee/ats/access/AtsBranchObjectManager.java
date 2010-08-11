@@ -10,64 +10,77 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.access;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.services.IAtsAccessControlService;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
+import org.eclipse.osee.framework.core.data.AccessContextId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.osgi.framework.ServiceReference;
 
 /**
  * This class will return access context ids for artifacts stored on a team workflow's related branch
  */
 public class AtsBranchObjectManager {
 
-   public static AtsBranchObjectContextId getContextId(Artifact artifact) {
-      try {
-         // If artifact has a context id on it, use that
-         AtsBranchObjectContextId id = getFromArtifact(artifact);
-         if (id != null) {
-            return id;
-         }
-         // Else, get branch associated artifact to determine permissions
-         Artifact branchAssocArt =
-            ArtifactQuery.getArtifactFromId(artifact.getBranch().getAssociatedArtifactId(),
-               BranchManager.getCommonBranch());
-         if (branchAssocArt != null) {
-            if (branchAssocArt.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-               id = getFromWorkflow((TeamWorkFlowArtifact) branchAssocArt);
-               if (id != null) {
-                  return id;
-               }
-            } else if (branchAssocArt instanceof IATSArtifact) {
-               return AtsBranchObjectContextId.DENY_CONTEXT;
+   private static Collection<IAtsAccessControlService> atsAccessServices;
+
+   public AtsBranchObjectManager(Collection<IAtsAccessControlService> atsAccessServices) {
+      AtsBranchObjectManager.atsAccessServices = atsAccessServices;
+   }
+
+   public Collection<? extends AccessContextId> getContextId(IBasicArtifact<?> user, Object object) {
+      if (object instanceof Artifact) {
+         try {
+            Artifact artifact = (Artifact) object;
+            // If artifact has a context id on it, use that
+            AtsBranchObjectContextId id = getFromArtifact(artifact);
+            if (id != null) {
+               return Arrays.asList(id);
             }
+            // Else, get branch associated artifact to determine permissions
+            Artifact branchAssocArt =
+               ArtifactQuery.getArtifactFromId(artifact.getBranch().getAssociatedArtifactId(),
+                  BranchManager.getCommonBranch());
+            if (branchAssocArt != null) {
+               if (branchAssocArt.isOfType(AtsArtifactTypes.TeamWorkflow)) {
+                  id = getFromWorkflow((TeamWorkFlowArtifact) branchAssocArt);
+                  if (id != null) {
+                     return Arrays.asList(id);
+                  }
+               } else if (branchAssocArt instanceof IATSArtifact) {
+                  return Arrays.asList(AtsBranchObjectContextId.DENY_CONTEXT);
+               }
+            }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, "Exception obtaining Branch Access Context Id; Deny returned",
+               ex);
+            return Arrays.asList(AtsBranchObjectContextId.DENY_CONTEXT);
          }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, "Exception obtaining Branch Access Context Id; Deny returned", ex);
-         return AtsBranchObjectContextId.DENY_CONTEXT;
       }
-      return AtsBranchObjectContextId.DEFAULT_BRANCH_CONTEXT;
+      return Arrays.asList(AtsBranchObjectContextId.DEFAULT_BRANCH_CONTEXT);
    }
 
    public static AtsBranchObjectContextId getFromWorkflow(TeamWorkFlowArtifact teamArt) {
       try {
-         for (ServiceReference service : AtsPlugin.getInstance().getBundle().getBundleContext().getServiceReferences(
-            IAtsAccessControlService.class.getName(), null)) {
-            IAtsAccessControlService accessService = (IAtsAccessControlService) service;
-            AtsBranchObjectContextId id = accessService.getBranchAccessContextIdFromWorkflow(teamArt);
-            if (id != null) {
-               return id;
+         if (atsAccessServices != null) {
+            for (IAtsAccessControlService service : atsAccessServices) {
+               IAtsAccessControlService accessService = service;
+               AtsBranchObjectContextId id = accessService.getBranchAccessContextIdFromWorkflow(teamArt);
+               if (id != null) {
+                  return id;
+               }
             }
          }
          for (ActionableItemArtifact aia : teamArt.getActionableItemsDam().getActionableItems()) {

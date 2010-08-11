@@ -11,21 +11,32 @@
 package org.eclipse.osee.ats.internal;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.access.AtsBranchObjectManager;
+import org.eclipse.osee.ats.access.AtsObjectAccessManager;
+import org.eclipse.osee.ats.access.IAtsAccessControlService;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.AccessContextId;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.access.AccessModel;
 import org.eclipse.osee.framework.core.model.access.HasAccessModel;
 import org.eclipse.osee.framework.core.services.CmAccessControl;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Roberto E. Escobar
+ * @author Donald G. Dunne
  */
 public class AtsCmAccessControl implements CmAccessControl, HasAccessModel {
 
    private final AccessModel accessModel;
+   private final AtsObjectAccessManager atsObjectAccessManager;
+   private final AtsBranchObjectManager atsBranchObjectManager;
 
-   public AtsCmAccessControl(AccessModel accessModel) {
+   public AtsCmAccessControl(AccessModel accessModel, Collection<IAtsAccessControlService> atsAccessServices) {
       this.accessModel = accessModel;
+      atsBranchObjectManager = new AtsBranchObjectManager(atsAccessServices);
+      atsObjectAccessManager = new AtsObjectAccessManager();
    }
 
    @Override
@@ -34,12 +45,19 @@ public class AtsCmAccessControl implements CmAccessControl, HasAccessModel {
    }
 
    @Override
-   public Collection<AccessContextId> getContextId(IBasicArtifact<?> user, Object object) {
-      return null;
+   public AccessModel getAccessModel() {
+      return accessModel;
    }
 
    @Override
-   public AccessModel getAccessModel() {
-      return accessModel;
+   public Collection<? extends AccessContextId> getContextId(IBasicArtifact<?> user, Object object) throws OseeCoreException {
+      if (object instanceof Artifact) {
+         if (((Artifact) object).getBranch().equals(AtsUtil.getAtsBranch())) {
+            return atsObjectAccessManager.getContextId(user, object, AtsUtil.isAtsAdmin());
+         } else {
+            return atsBranchObjectManager.getContextId(user, object);
+         }
+      }
+      return null;
    }
 }

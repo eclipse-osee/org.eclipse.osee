@@ -22,6 +22,6 @@ public interface CmAccessControl {
 
    boolean isApplicable(IBasicArtifact<?> user, Object object);
 
-   Collection<AccessContextId> getContextId(IBasicArtifact<?> user, Object object) throws OseeCoreException;
+   Collection<? extends AccessContextId> getContextId(IBasicArtifact<?> user, Object object) throws OseeCoreException;
 
 }

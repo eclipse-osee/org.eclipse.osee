@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.services.CmAccessControl;
 import org.eclipse.osee.framework.core.services.CmAccessControlProvider;
+import org.eclipse.osee.framework.core.services.HasCmAccessControl;
 
 /**
  * @author Roberto E. Escobar
@@ -31,27 +32,26 @@ public class CmAccessControlProviderImpl implements CmAccessControlProvider {
 
    @Override
    public CmAccessControl getService(IBasicArtifact<?> userArtifact, Object object) throws OseeCoreException {
-      Collection<CmAccessControl> applicableCms = new ArrayList<CmAccessControl>();
-      //      if (object instanceof HasConfigurationManagement) {
-      //         HasConfigurationManagement cmContainer = (HasConfigurationManagement) object;
-      //         cmToReturn = cmContainer.getCM();
-      //      } else {
-      for (CmAccessControl cmService : cmServices) {
-         //         if (!cmService.equals(defaultCM)) {
-         if (cmService.isApplicable(userArtifact, object)) {
-            applicableCms.add(cmService);
-         }
-         //         }
-      }
-      CmAccessControl cmToReturn;
-      if (applicableCms.isEmpty()) {
-         cmToReturn = null;
-      } else if (applicableCms.size() == 1) {
-         cmToReturn = applicableCms.iterator().next();
+      if (object instanceof HasCmAccessControl) {
+         HasCmAccessControl cmContainer = (HasCmAccessControl) object;
+         return cmContainer.getAccessControl();
       } else {
-         throw new OseeStateException(String.format("Multiple Configuration Management Systems managing: [%s] cms:%s",
-            object, applicableCms));
+         CmAccessControl cmToReturn;
+         Collection<CmAccessControl> applicableCms = new ArrayList<CmAccessControl>();
+         for (CmAccessControl cmService : cmServices) {
+            if (cmService.isApplicable(userArtifact, object)) {
+               applicableCms.add(cmService);
+            }
+         }
+         if (applicableCms.isEmpty()) {
+            cmToReturn = null;
+         } else if (applicableCms.size() == 1) {
+            cmToReturn = applicableCms.iterator().next();
+         } else {
+            throw new OseeStateException(String.format(
+               "Multiple Configuration Management Systems managing: [%s] cms:%s", object, applicableCms));
+         }
+         return cmToReturn;
       }
-      return cmToReturn;
    }
 }
