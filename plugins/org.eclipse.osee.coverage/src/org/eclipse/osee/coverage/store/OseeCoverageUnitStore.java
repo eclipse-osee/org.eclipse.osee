@@ -77,6 +77,7 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
    public void load(CoverageOptionManager coverageOptionManager) throws OseeCoreException {
       coverageUnit.clearCoverageUnits();
       coverageUnit.clearCoverageItems();
+      Artifact artifact = getArtifact(false);
       if (artifact != null) {
          for (String value : artifact.getAttributesToStringList(CoverageAttributeTypes.Item)) {
             CoverageItem item =
@@ -187,11 +188,11 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
       return UsersByIds.getStorageString(users);
    }
 
-   public static Collection<User> getAssignees(CoverageUnit coverageUnit) throws OseeCoreException {
+   public static Collection<User> getAssignees(CoverageUnit coverageUnit) {
       return getAssigneesFromString(coverageUnit.getAssignees());
    }
 
-   private static Collection<User> getAssigneesFromString(String string) throws OseeCoreException {
+   private static Collection<User> getAssigneesFromString(String string) {
       if (!Strings.isValid(string)) {
          return Collections.emptyList();
       }

@@ -64,7 +64,7 @@ public class CoverageItem extends NamedIdentity implements ICoverage {
 
       CoverageItem item =
          new CoverageItem(store.get("guid"), parentCoverageUnit, CoverageOptionManager.Not_Covered, "0");
-
+      item.testUnitProvider = testUnitProvider;
       item.setFromPropertyStore(store, coverageOptionManager);
 
       return item;
@@ -72,8 +72,6 @@ public class CoverageItem extends NamedIdentity implements ICoverage {
 
    /**
     * Copies the coverage unit. Does not copy test units.
-    *
-    * @throws OseeCoreException
     */
    public CoverageItem copy(CoverageUnit parent) throws OseeCoreException {
       CoverageItem coverageitem = new CoverageItem(getGuid(), parent, coverageMethod, orderNumber);

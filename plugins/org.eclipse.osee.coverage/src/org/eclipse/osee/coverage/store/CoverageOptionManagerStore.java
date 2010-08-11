@@ -51,7 +51,7 @@ public class CoverageOptionManagerStore {
    }
 
    private String getLocalCoverageOptions() throws OseeCoreException {
-      return oseeCoveragePackageStore.getArtifact(true).getSoleAttributeValueAsString(CoverageAttributeTypes.Namespace,
+      return oseeCoveragePackageStore.getArtifact(true).getSoleAttributeValueAsString(CoverageAttributeTypes.Options,
          null);
    }
 
@@ -110,7 +110,7 @@ public class CoverageOptionManagerStore {
 
    public void store(String coverageOptions, StoreLocation storeLocation) throws OseeCoreException {
       if (storeLocation == StoreLocation.Local) {
-         oseeCoveragePackageStore.getArtifact(true).setSoleAttributeFromString(CoverageAttributeTypes.Namespace,
+         oseeCoveragePackageStore.getArtifact(true).setSoleAttributeFromString(CoverageAttributeTypes.Options,
             coverageOptions);
          oseeCoveragePackageStore.getArtifact(true).persist();
       } else if (storeLocation == StoreLocation.Global) {
