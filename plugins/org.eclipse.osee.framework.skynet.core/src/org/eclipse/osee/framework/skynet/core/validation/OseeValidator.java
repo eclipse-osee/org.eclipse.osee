@@ -10,12 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.validation;
 
-import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -54,16 +52,6 @@ public class OseeValidator {
    }
 
    public IStatus validate(int requiredQualityOfService, Artifact artifact, IAttributeType attributeType, Object proposedValue) {
-      IStatus status = Status.OK_STATUS;
-      try {
-         status = validate(requiredQualityOfService, artifact, attributeType, proposedValue);
-      } catch (Exception ex) {
-         status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, ex.getLocalizedMessage(), ex);
-      }
-      return status;
-   }
-
-   public IStatus validate(int requiredQualityOfService, Artifact artifact, AttributeType attributeType, Object proposedValue) {
       for (IOseeValidator validator : loadedObjects.getObjects()) {
          if (requiredQualityOfService >= validator.getQualityOfService()) {
             try {
@@ -78,7 +66,7 @@ public class OseeValidator {
                   }
                }
             } catch (Exception ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex);
+               return new Status(IStatus.ERROR, Activator.PLUGIN_ID, ex.getLocalizedMessage(), ex);
             }
          }
       }
