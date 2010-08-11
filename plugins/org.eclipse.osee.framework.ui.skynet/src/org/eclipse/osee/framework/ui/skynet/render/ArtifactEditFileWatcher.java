@@ -15,16 +15,21 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.utility.FileWatcher;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 final class ArtifactEditFileWatcher extends FileWatcher {
 
-   public ArtifactEditFileWatcher(long time, TimeUnit unit) {
+   private final IArtifactUpdateOperationFactory opFactory;
+
+   public ArtifactEditFileWatcher(IArtifactUpdateOperationFactory opFactory, long time, TimeUnit unit) {
       super(time, unit);
+      this.opFactory = opFactory;
    }
 
    @Override
@@ -44,9 +49,8 @@ final class ArtifactEditFileWatcher extends FileWatcher {
             }
 
             if (requiresUpdate) {
-               UpdateArtifactJob updateJob = new UpdateArtifactJob();
-               updateJob.setWorkingFile(file);
-               updateJob.addJobChangeListener(new JobChangeAdapter() {
+               IOperation op = opFactory.createUpdateOp(file);
+               Operations.executeAsJob(op, false, Job.LONG, new JobChangeAdapter() {
 
                   @Override
                   public void done(IJobChangeEvent event) {
@@ -56,7 +60,6 @@ final class ArtifactEditFileWatcher extends FileWatcher {
                      }
                   }
                });
-               Jobs.startJob(updateJob);
             }
          }
       } catch (Exception ex) {

@@ -11,29 +11,54 @@
 package org.eclipse.osee.framework.core.dsl.ui.integration.internal;
 
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERALIZED_EDIT;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.osee.framework.core.dsl.integration.util.OseeUtil;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.BaseArtifactEditorInput;
 import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.IArtifactUpdateOperationFactory;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.program.Program;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.ide.IDE;
 
 /**
  * @author Roberto E. Escobar
  */
-public final class OseeDslRenderer extends DefaultArtifactRenderer {
+public final class OseeDslRenderer extends FileSystemRenderer {
 
-   private static final String OSEE_DSL_EDITOR_ID = "org.eclipse.osee.framework.core.dsl.OseeDsl";
    private static final String COMMAND_ID = "org.eclipse.osee.framework.core.dsl.OseeDsl.editor.command";
+
+   private static final class OseeDslArtifactUpdateOperationFactory implements IArtifactUpdateOperationFactory {
+
+      @SuppressWarnings("unused")
+      @Override
+      public IOperation createUpdateOp(File file) throws OseeCoreException {
+         return new OseeDslArtifactUpdateOperation(file);
+      }
+   };
+
+   public OseeDslRenderer() {
+      super(new OseeDslArtifactUpdateOperationFactory());
+   }
 
    @Override
    public String getName() {
@@ -70,48 +95,58 @@ public final class OseeDslRenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public void open(final List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            try {
-               for (Artifact artifact : artifacts) {
-                  //                  String value = artifact.getSoleAttributeValueAsString(CoreAttributeTypes.GeneralStringData, "");
-                  AWorkbench.getActivePage().openEditor(new XtextArtifactEditorInput(artifact), OSEE_DSL_EDITOR_ID);
-               }
-            } catch (CoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-      });
-
-   }
-
-   @Override
    public boolean supportsCompare() {
       return true;
    }
 
-   private final static class XtextArtifactEditorInput extends BaseArtifactEditorInput {
-
-      public XtextArtifactEditorInput(Artifact artifact) {
-         super(artifact);
-      }
-
-      @Override
-      public boolean equals(Object obj) {
-         if (obj instanceof XtextArtifactEditorInput) {
-            return super.equals(obj);
+   @SuppressWarnings("unused")
+   @Override
+   public void open(final List<Artifact> artifacts, final PresentationType presentationType) throws OseeCoreException {
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            if (!artifacts.isEmpty()) {
+               try {
+                  IFile file = getRenderedFile(artifacts, presentationType);
+                  if (file != null) {
+                     IWorkbench workbench = PlatformUI.getWorkbench();
+                     IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
+                     IDE.openEditor(page, file);
+                  }
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+               } catch (PartInitException ex) {
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+               }
+            }
          }
-         return false;
-      }
-
-      @Override
-      public Object getAdapter(Class adapter) {
-         System.out.println(adapter);
-         return super.getAdapter(adapter);
-      }
-
+      });
    }
 
+   @SuppressWarnings("unused")
+   @Override
+   public String getAssociatedExtension(Artifact artifact) throws OseeCoreException {
+      return "osee";
+   }
+
+   @Override
+   public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) throws OseeCoreException {
+      Artifact artifact = artifacts.iterator().next();
+      StringBuilder builder = new StringBuilder();
+      builder.append(OseeUtil.getOseeDslArtifactSource(artifact));
+      builder.append("\n");
+      builder.append(artifact.getSoleAttributeValueAsString(CoreAttributeTypes.GeneralStringData, ""));
+      InputStream inputStream = null;
+      try {
+         inputStream = new ByteArrayInputStream(builder.toString().getBytes("UTF-8"));
+      } catch (UnsupportedEncodingException ex) {
+         OseeExceptions.wrapAndThrow(ex);
+      }
+      return inputStream;
+   }
+
+   @Override
+   public Program getAssociatedProgram(Artifact artifact) throws OseeCoreException {
+      throw new OseeCoreException("should not be called");
+   }
 }

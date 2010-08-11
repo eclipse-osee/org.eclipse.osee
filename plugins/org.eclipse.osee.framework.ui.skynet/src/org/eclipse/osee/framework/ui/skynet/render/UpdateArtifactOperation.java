@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.render;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -25,14 +26,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
@@ -59,24 +59,21 @@ import org.xml.sax.SAXException;
 /**
  * @author Ryan D. Brooks
  */
-public class UpdateArtifactJob extends UpdateJob {
+public class UpdateArtifactOperation extends AbstractOperation {
    private static final Pattern guidPattern = Pattern.compile(".*\\(([^)]+)\\)[^()]*");
    private static final Pattern multiPattern = Pattern.compile(".*[^()]*");
    private Element oleDataElement;
    private String singleGuid = null;
+   private final File workingFile;
 
-   public UpdateArtifactJob() {
-      super("Update Artifact");
+   public UpdateArtifactOperation(File workingFile) {
+      super("Update Artifact", SkynetGuiPlugin.PLUGIN_ID);
+      this.workingFile = workingFile;
    }
 
    @Override
-   protected IStatus run(IProgressMonitor monitor) {
-      try {
-         processUpdate();
-      } catch (Exception ex) {
-         return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, IStatus.OK, ex.getLocalizedMessage(), ex);
-      }
-      return Status.OK_STATUS;
+   protected void doWork(IProgressMonitor monitor) throws Exception {
+      processUpdate();
    }
 
    private void processUpdate() throws Exception {
@@ -245,4 +242,5 @@ public class UpdateArtifactJob extends UpdateJob {
       }
       throw new OseeArgumentException("didn't find the guid attribure in element: " + artifactElement);
    }
+
 }

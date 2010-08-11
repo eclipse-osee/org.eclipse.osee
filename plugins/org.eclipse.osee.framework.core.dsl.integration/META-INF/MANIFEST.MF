@@ -22,6 +22,7 @@ Import-Package: org.eclipse.core.runtime,
  org.eclipse.osee.framework.core.operation,
  org.eclipse.osee.framework.core.services,
  org.eclipse.osee.framework.core.util,
+ org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.osgi.framework,
  org.osgi.util.tracker

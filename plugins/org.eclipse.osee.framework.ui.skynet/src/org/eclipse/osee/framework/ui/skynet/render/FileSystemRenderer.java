@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.render;
 
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.DEFAULT_OPEN;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PREVIEW;
+import java.io.File;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
@@ -20,6 +21,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.util.FileUiUtil;
@@ -37,7 +39,28 @@ import org.eclipse.ui.part.FileEditorInput;
  */
 public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
 
-   private static final ArtifactFileMonitor FILE_MONITOR = new ArtifactFileMonitor();
+   private static final ArtifactFileMonitor DEFAULT_FILE_MONITOR = new ArtifactFileMonitor(
+      new UpdateArtifactJobFactory());
+
+   private static final class UpdateArtifactJobFactory implements IArtifactUpdateOperationFactory {
+
+      @SuppressWarnings("unused")
+      @Override
+      public IOperation createUpdateOp(File file) throws OseeCoreException {
+         return new UpdateArtifactOperation(file);
+      }
+   }
+
+   private final ArtifactFileMonitor fileMonitor;
+
+   public FileSystemRenderer() {
+      this.fileMonitor = DEFAULT_FILE_MONITOR;
+   }
+
+   protected FileSystemRenderer(IArtifactUpdateOperationFactory jobFactory) {
+      super();
+      this.fileMonitor = new ArtifactFileMonitor(jobFactory);
+   }
 
    public IFile getRenderedFileForOpen(List<Artifact> artifacts) throws OseeCoreException {
       return getRenderedFile(artifacts, PresentationType.SPECIALIZED_EDIT);
@@ -91,16 +114,16 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
       AIFile.writeToFile(workingFile, renderInputStream);
 
       if (presentationType == PresentationType.SPECIALIZED_EDIT || presentationType == PresentationType.MERGE_EDIT) {
-         FILE_MONITOR.addFile(workingFile);
+         getFileMonitor().addFile(workingFile);
       } else if (presentationType == PresentationType.PREVIEW) {
-         FILE_MONITOR.markAsReadOnly(workingFile);
+         getFileMonitor().markAsReadOnly(workingFile);
       }
       return workingFile;
    }
 
    public void addFileToWatcher(IFolder baseFolder, String fileName) {
       IFile workingFile = baseFolder.getFile(fileName);
-      FILE_MONITOR.addFile(workingFile);
+      getFileMonitor().addFile(workingFile);
    }
 
    public abstract InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) throws OseeCoreException;
@@ -113,14 +136,18 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
     * @return the workbenchSavePopUpDisabled
     */
    public static boolean isWorkbenchSavePopUpDisabled() {
-      return FILE_MONITOR.isWorkbenchSavePopUpDisabled();
+      return DEFAULT_FILE_MONITOR.isWorkbenchSavePopUpDisabled();
    }
 
    /**
     * @param workbenchSavePopUpDisabled the workbenchSavePopUpDisabled to set
     */
    public static void setWorkbenchSavePopUpDisabled(boolean workbenchSavePopUpDisabled) {
-      FILE_MONITOR.setWorkbenchSavePopUpDisabled(workbenchSavePopUpDisabled);
+      DEFAULT_FILE_MONITOR.setWorkbenchSavePopUpDisabled(workbenchSavePopUpDisabled);
+   }
+
+   protected ArtifactFileMonitor getFileMonitor() {
+      return fileMonitor;
    }
 
    @Override

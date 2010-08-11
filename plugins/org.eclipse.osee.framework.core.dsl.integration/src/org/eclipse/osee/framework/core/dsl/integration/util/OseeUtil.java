@@ -10,8 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.dsl.integration.util;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessPermissionEnum;
@@ -24,7 +27,9 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -108,6 +113,31 @@ public final class OseeUtil {
    public static String orderTypeNameToGuid(String orderTypeName) throws OseeCoreException {
       Conditions.checkNotNull(orderTypeName, "orderTypeName");
       return RelationOrderBaseTypes.getFromOrderTypeName(orderTypeName.replaceAll("_", " ")).getGuid();
+   }
+
+   public static final String getOseeDslArtifactSource(IBasicArtifact<?> artifact) throws OseeCoreException {
+      Conditions.checkNotNull(artifact, "artifact");
+      IOseeBranch branch = artifact.getBranch();
+      Conditions.checkNotNull(branch, "branch");
+      return String.format("//@artifact_source branch/%s/artifact/%s/ (%s:%s)", branch.getGuid(), artifact.getGuid(),
+         branch.getName(), artifact.getName());
+   }
+
+   public static final Pair<String, String> fromOseeDslArtifactSource(String source) throws OseeCoreException {
+      Conditions.checkNotNull(source, "artifact source data");
+      String branchGuid = null;
+      String artifactGuid = null;
+      Pattern pattern = Pattern.compile("@artifact_source\\s+branch/(.*?)/artifact/(.*?)/");
+      Matcher matcher = pattern.matcher(source);
+      while (matcher.find()) {
+         branchGuid = matcher.group(1);
+         artifactGuid = matcher.group(2);
+      }
+      Pair<String, String> toReturn = null;
+      if (Strings.isValid(branchGuid) && Strings.isValid(artifactGuid)) {
+         toReturn = new Pair<String, String>(branchGuid, artifactGuid);
+      }
+      return toReturn;
    }
 
 }

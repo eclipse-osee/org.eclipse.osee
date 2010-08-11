@@ -29,12 +29,12 @@ final class ArtifactFileMonitor {
    private boolean firstTime;
    private boolean workbenchSavePopUpDisabled;
 
-   public ArtifactFileMonitor() {
+   public ArtifactFileMonitor(IArtifactUpdateOperationFactory jobFactory) {
       firstTime = true;
       readonlyfileAttributes = new ResourceAttributes();
       readonlyfileAttributes.setReadOnly(true);
 
-      watcher = new ArtifactEditFileWatcher(3, TimeUnit.SECONDS);
+      watcher = new ArtifactEditFileWatcher(jobFactory, 3, TimeUnit.SECONDS);
       watcher.start();
    }
 

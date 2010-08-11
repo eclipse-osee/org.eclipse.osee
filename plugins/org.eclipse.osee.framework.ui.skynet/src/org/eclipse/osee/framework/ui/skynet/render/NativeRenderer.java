@@ -67,7 +67,7 @@ public class NativeRenderer extends FileSystemRenderer {
 
    @Override
    public String getAssociatedExtension(Artifact artifact) throws OseeCoreException {
-      return artifact.getSoleAttributeValue(CoreAttributeTypes.Extension.getName(), "xml");
+      return artifact.getSoleAttributeValue(CoreAttributeTypes.Extension, "xml");
    }
 
    @Override
@@ -84,6 +84,6 @@ public class NativeRenderer extends FileSystemRenderer {
    @Override
    public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) throws OseeCoreException {
       Artifact artifact = artifacts.iterator().next();
-      return artifact.getSoleAttributeValue(CoreAttributeTypes.NativeContent.getName());
+      return artifact.getSoleAttributeValue(CoreAttributeTypes.NativeContent);
    }
 }
