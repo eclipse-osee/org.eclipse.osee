@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -168,7 +169,7 @@ public abstract class WorkItemDefinition {
       Artifact artifact = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(getId());
       if (writeType == WriteType.New) {
          // Double-check that doesn't already exist in db.  If so, exception cause duplicates
-         if (ArtifactQuery.getArtifactListFromAttribute(WorkItemAttributes.WORK_ID, getId(),
+         if (ArtifactQuery.getArtifactListFromAttribute(CoreAttributeTypes.WorkId, getId(),
             BranchManager.getCommonBranch()).size() > 0) {
             throw new IllegalStateException(
                "WorkItemDefinition artifact creation failed.  \"" + getId() + "\" already exists.");
@@ -184,21 +185,21 @@ public abstract class WorkItemDefinition {
       //      }
       artifact.setName(getName());
       if (getParentId() != null && !getParentId().equals("")) {
-         artifact.setSoleAttributeValue(WorkItemAttributes.WORK_PARENT_ID, getParentId());
+         artifact.setSoleAttributeValue(CoreAttributeTypes.WorkParentId, getParentId());
       }
       if (getDescription() != null) {
-         artifact.setSoleAttributeValue(WorkItemAttributes.WORK_DESCRIPTION, getDescription());
+         artifact.setSoleAttributeValue(CoreAttributeTypes.WorkDescription, getDescription());
       }
-      artifact.setSoleAttributeValue(WorkItemAttributes.WORK_ID, getId());
+      artifact.setSoleAttributeValue(CoreAttributeTypes.WorkId, getId());
       if (getType() != null) {
-         artifact.setSoleAttributeValue(WorkItemAttributes.WORK_TYPE, getType());
+         artifact.setSoleAttributeValue(CoreAttributeTypes.WorkType, getType());
       }
       if (workDataKeyValueMap.size() > 0) {
          Set<String> keyValues = new HashSet<String>();
          for (Entry<String, String> entry : workDataKeyValueMap.entrySet()) {
             keyValues.add(entry.getKey() + "=" + entry.getValue());
          }
-         artifact.setAttributeValues(WorkItemAttributes.WORK_DATA, keyValues);
+         artifact.setAttributeValues(CoreAttributeTypes.WorkData, keyValues);
       }
       WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(writeType, this, artifact);
       return artifact;
@@ -211,7 +212,7 @@ public abstract class WorkItemDefinition {
    }
 
    public void loadWorkDataKeyValueMap(Artifact artifact) throws OseeCoreException {
-      for (String value : artifact.getAttributesToStringList(WorkItemAttributes.WORK_DATA)) {
+      for (String value : artifact.getAttributesToStringList(CoreAttributeTypes.WorkData)) {
          Matcher m = keyValuePattern.matcher(value);
          if (m.find()) {
             addWorkDataKeyValue(m.group(1), m.group(2));

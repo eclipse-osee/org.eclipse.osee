@@ -433,7 +433,7 @@ public final class AtsUtil {
             results.add((A) art);
          } else {
             // assume active unless otherwise specified
-            boolean attributeActive = ((A) art).getSoleAttributeValue(AtsAttributeTypes.ATS_ACTIVE, false);
+            boolean attributeActive = ((A) art).getSoleAttributeValue(AtsAttributeTypes.Active, false);
             if (active == Active.Active && attributeActive) {
                results.add((A) art);
             } else if (active == Active.InActive && !attributeActive) {

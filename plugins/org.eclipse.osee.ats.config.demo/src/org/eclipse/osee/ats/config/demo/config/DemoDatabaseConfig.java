@@ -94,7 +94,7 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
    public static void mapTeamVersionToBranch(TeamDefinitionArtifact teamDef, String versionName, String branchName, SkynetTransaction transaction) throws OseeCoreException {
       Branch branch = BranchManager.getBranch(branchName);
       VersionArtifact verArt = teamDef.getVersionArtifact(versionName, false);
-      verArt.setSoleAttributeValue(AtsAttributeTypes.ATS_BASELINE_BRANCH_GUID, branch.getGuid());
+      verArt.setSoleAttributeValue(AtsAttributeTypes.BaselineBranchGuid, branch.getGuid());
       verArt.persist(transaction);
    }
 
@@ -143,11 +143,11 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
             versionArtifact.setReleased(true);
          }
          if (DemoCISBuilds.CIS_Bld_2.equals(demoBranch) || DemoSawBuilds.SAW_Bld_2.equals(demoBranch)) {
-            versionArtifact.setSoleAttributeValue(AtsAttributeTypes.ATS_NEXT_VERSION, true);
+            versionArtifact.setSoleAttributeValue(AtsAttributeTypes.NextVersion, true);
          }
          if (DemoSawBuilds.SAW_Bld_2.equals(demoBranch)) {
-            versionArtifact.setSoleAttributeValue(AtsAttributeTypes.ATS_ALLOW_COMMIT_BRANCH, true);
-            versionArtifact.setSoleAttributeValue(AtsAttributeTypes.ATS_ALLOW_CREATE_BRANCH, true);
+            versionArtifact.setSoleAttributeValue(AtsAttributeTypes.AllowCommitBranch, true);
+            versionArtifact.setSoleAttributeValue(AtsAttributeTypes.AllowCreateBranch, true);
          }
          teamDef.addRelation(AtsRelationTypes.TeamDefinitionToVersion_Version, versionArtifact);
          versionArtifact.persist();

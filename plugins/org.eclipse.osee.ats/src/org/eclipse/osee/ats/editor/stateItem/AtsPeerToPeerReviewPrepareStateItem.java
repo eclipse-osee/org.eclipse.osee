@@ -38,7 +38,7 @@ public class AtsPeerToPeerReviewPrepareStateItem extends AtsStateItem {
       super.xWidgetCreated(widget, toolkit, page, art, modListener, isEditable);
       try {
          if (art instanceof ReviewSMArtifact && ((ReviewSMArtifact) art).getParentSMA() == null) {
-            if (widget.getLabel().equals(AtsAttributeTypes.ATS_REVIEW_BLOCKS.getUnqualifiedName())) {
+            if (widget.getLabel().equals(AtsAttributeTypes.ReviewBlocks.getUnqualifiedName())) {
                XComboDam decisionComboDam = (XComboDam) widget;
                decisionComboDam.setEnabled(false);
                decisionComboDam.setRequiredEntry(false);

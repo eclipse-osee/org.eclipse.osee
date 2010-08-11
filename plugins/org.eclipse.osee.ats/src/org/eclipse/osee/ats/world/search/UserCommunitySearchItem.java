@@ -73,7 +73,7 @@ public class UserCommunitySearchItem extends WorldUISearchItem {
       }
 
       return ArtifactQuery.getArtifactListFromTypeAndAttribute(AtsArtifactTypes.TeamWorkflow,
-         AtsAttributeTypes.ATS_USER_COMMUNITY, getSearchUserComm(), AtsUtil.getAtsBranch());
+         AtsAttributeTypes.UserCommunity, getSearchUserComm(), AtsUtil.getAtsBranch());
    }
 
    @Override

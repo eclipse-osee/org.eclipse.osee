@@ -241,7 +241,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             // Check that duplicate Legacy PCR IDs team arts do not exist with different parent actions 
             if (artifact instanceof TeamWorkFlowArtifact) {
                TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
-               String legacyPcrId = artifact.getSoleAttributeValueAsString(AtsAttributeTypes.ATS_LEGACY_PCR_ID, null);
+               String legacyPcrId = artifact.getSoleAttributeValueAsString(AtsAttributeTypes.LegacyPcrId, null);
                if (legacyPcrId != null) {
                   if (legacyPcrIdToParentHrid.containsKey(legacyPcrId)) {
                      if (!legacyPcrIdToParentHrid.get(legacyPcrId).equals(
@@ -268,7 +268,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             VersionArtifact verArt = (VersionArtifact) artifact;
             try {
                String parentBranchGuid =
-                  verArt.getSoleAttributeValueAsString(AtsAttributeTypes.ATS_BASELINE_BRANCH_GUID, null);
+                  verArt.getSoleAttributeValueAsString(AtsAttributeTypes.BaselineBranchGuid, null);
                if (parentBranchGuid != null) {
                   validateBranchGuid(verArt, parentBranchGuid);
                }
@@ -287,7 +287,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             TeamDefinitionArtifact teamDef = (TeamDefinitionArtifact) art;
             try {
                String parentBranchGuid =
-                  teamDef.getSoleAttributeValueAsString(AtsAttributeTypes.ATS_BASELINE_BRANCH_GUID, null);
+                  teamDef.getSoleAttributeValueAsString(AtsAttributeTypes.BaselineBranchGuid, null);
                if (parentBranchGuid != null) {
                   validateBranchGuid(teamDef, parentBranchGuid);
                }
@@ -453,11 +453,11 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   String.format(
                      "Error: Artifact: " + XResultData.getHyperlink(artifact) + " Type [%s] AttrType [%s] Max [%d] Actual [%d] Values [%s] ",
                      artifact.getArtifactTypeName(), attrType.getName(), attrType.getMaxOccurrences(), count,
-                     artifact.getAttributesToString(attrType.getName()));
+                     artifact.getAttributesToString(attrType));
                Map<String, Attribute<?>> valuesAttrMap = new HashMap<String, Attribute<?>>();
                int latestGamma = 0;
                String fixInfo = " - FIX AVAILABLE";
-               for (Attribute<?> attr : artifact.getAttributes(attrType.getName())) {
+               for (Attribute<?> attr : artifact.getAttributes(attrType)) {
                   if (attr.getGammaId() > latestGamma) {
                      latestGamma = attr.getGammaId();
                   }
@@ -469,7 +469,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                if (latestGamma != 0) {
                   result += fixInfo;
                   if (fixAttributeValues) {
-                     for (Attribute<?> attr : artifact.getAttributes(attrType.getName())) {
+                     for (Attribute<?> attr : artifact.getAttributes(attrType)) {
                         if (attr.getGammaId() != latestGamma) {
                            attr.delete();
                         }
@@ -637,12 +637,12 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          if (artifact instanceof ReviewSMArtifact) {
             ReviewSMArtifact reviewArtifact = (ReviewSMArtifact) artifact;
             try {
-               if (reviewArtifact.getAttributes(AtsAttributeTypes.ATS_REVIEW_DEFECT).size() > 0 && reviewArtifact.getDefectManager().getDefectItems().isEmpty()) {
+               if (reviewArtifact.getAttributes(AtsAttributeTypes.ReviewDefect).size() > 0 && reviewArtifact.getDefectManager().getDefectItems().isEmpty()) {
                   testNameToResultsMap.put(
                      "testReviewsHaveValidDefectAndRoleXml",
                      "Error: Review " + XResultData.getHyperlink(reviewArtifact) + " has defect attribute, but no defects (xml parsing error).");
                }
-               if (reviewArtifact.getAttributes(AtsAttributeTypes.ATS_ROLE).size() > 0 && reviewArtifact.getUserRoleManager().getUserRoles().isEmpty()) {
+               if (reviewArtifact.getAttributes(AtsAttributeTypes.Role).size() > 0 && reviewArtifact.getUserRoleManager().getUserRoles().isEmpty()) {
                   testNameToResultsMap.put(
                      "testReviewsHaveValidDefectAndRoleXml",
                      "Error: Review " + XResultData.getHyperlink(reviewArtifact) + " has role attribute, but no roles (xml parsing error).");

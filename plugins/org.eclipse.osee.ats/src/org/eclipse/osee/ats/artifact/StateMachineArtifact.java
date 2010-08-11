@@ -119,7 +119,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    @Override
    public void onBirth() throws OseeCoreException {
       super.onBirth();
-      setSoleAttributeValue(AtsAttributeTypes.ATS_CURRENT_STATE, "");
+      setSoleAttributeValue(AtsAttributeTypes.CurrentState, "");
    }
 
    @Override
@@ -569,8 +569,8 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    @Override
    public String getWorldViewLegacyPCR() throws OseeCoreException {
-      if (isAttributeTypeValid(AtsAttributeTypes.ATS_LEGACY_PCR_ID)) {
-         return getSoleAttributeValue(AtsAttributeTypes.ATS_LEGACY_PCR_ID, "");
+      if (isAttributeTypeValid(AtsAttributeTypes.LegacyPcrId)) {
+         return getSoleAttributeValue(AtsAttributeTypes.LegacyPcrId, "");
       }
       return "";
    }
@@ -612,8 +612,8 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    public double getEstimatedHoursFromArtifact() throws OseeCoreException {
-      if (isAttributeTypeValid(AtsAttributeTypes.ATS_ESTIMATED_HOURS)) {
-         return getSoleAttributeValue(AtsAttributeTypes.ATS_ESTIMATED_HOURS, 0.0);
+      if (isAttributeTypeValid(AtsAttributeTypes.EstimatedHours)) {
+         return getSoleAttributeValue(AtsAttributeTypes.EstimatedHours, 0.0);
       }
       return 0;
    }
@@ -673,14 +673,14 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    @Override
    public String getWorldViewResolution() throws OseeCoreException {
-      return getAttributesToString(AtsAttributeTypes.ATS_RESOLUTION);
+      return getAttributesToString(AtsAttributeTypes.Resolution);
    }
 
    public double getRemainHoursFromArtifact() throws OseeCoreException {
       if (isCompleted() || isCancelled()) {
          return 0;
       }
-      double est = getSoleAttributeValue(AtsAttributeTypes.ATS_ESTIMATED_HOURS, 0.0);
+      double est = getSoleAttributeValue(AtsAttributeTypes.EstimatedHours, 0.0);
       if (est == 0) {
          return getEstimatedHoursFromArtifact();
       }
@@ -713,11 +713,11 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    @Override
    public Result isWorldViewRemainHoursValid() throws OseeCoreException {
-      if (!isAttributeTypeValid(AtsAttributeTypes.ATS_ESTIMATED_HOURS)) {
+      if (!isAttributeTypeValid(AtsAttributeTypes.EstimatedHours)) {
          return Result.TrueResult;
       }
       try {
-         Double value = getSoleAttributeValue(AtsAttributeTypes.ATS_ESTIMATED_HOURS, null);
+         Double value = getSoleAttributeValue(AtsAttributeTypes.EstimatedHours, null);
          if (isCancelled()) {
             return Result.TrueResult;
          }
@@ -767,7 +767,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    @Override
    public Result isWorldViewAnnualCostAvoidanceValid() throws OseeCoreException {
-      if (isAttributeTypeValid(AtsAttributeTypes.ATS_WEEKLY_BENEFIT)) {
+      if (isAttributeTypeValid(AtsAttributeTypes.WeeklyBenefit)) {
          return Result.TrueResult;
       }
       Result result = isWorldViewRemainHoursValid();
@@ -776,7 +776,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       }
       String value = null;
       try {
-         value = getSoleAttributeValue(AtsAttributeTypes.ATS_WEEKLY_BENEFIT, "");
+         value = getSoleAttributeValue(AtsAttributeTypes.WeeklyBenefit, "");
          if (value == null || value.equals("")) {
             return new Result("Weekly Benefit Hours not set.");
          }
@@ -796,47 +796,47 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    @Override
    public String getWorldViewNotes() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.ATS_SMA_NOTE, "");
+      return getSoleAttributeValue(AtsAttributeTypes.SmaNote, "");
    }
 
    @Override
    public String getWorldViewWorkPackage() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.ATS_WORK_PACKAGE, "");
+      return getSoleAttributeValue(AtsAttributeTypes.WorkPackage, "");
    }
 
    @Override
    public String getWorldViewPoint() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.ATS_POINTS, "");
+      return getSoleAttributeValue(AtsAttributeTypes.Points, "");
    }
 
    @Override
    public String getWorldViewNumeric1() throws OseeCoreException {
-      return AtsUtil.doubleToI18nString(getSoleAttributeValue(AtsAttributeTypes.ATS_NUMERIC_1, 0.0), true);
+      return AtsUtil.doubleToI18nString(getSoleAttributeValue(AtsAttributeTypes.Numeric1, 0.0), true);
    }
 
    @Override
    public String getWorldViewNumeric2() throws OseeCoreException {
-      return AtsUtil.doubleToI18nString(getSoleAttributeValue(AtsAttributeTypes.ATS_NUMERIC_2, 0.0), true);
+      return AtsUtil.doubleToI18nString(getSoleAttributeValue(AtsAttributeTypes.Numeric2, 0.0), true);
    }
 
    @Override
    public String getWorldViewGoalOrderVote() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.ATS_GOAL_ORDER_VOTE, "");
+      return getSoleAttributeValue(AtsAttributeTypes.GoalOrderVote, "");
    }
 
    @Override
    public String getWorldViewCategory() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.ATS_CATEGORY_1, "");
+      return getSoleAttributeValue(AtsAttributeTypes.Category1, "");
    }
 
    @Override
    public String getWorldViewCategory2() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.ATS_CATEGORY_2, "");
+      return getSoleAttributeValue(AtsAttributeTypes.Category2, "");
    }
 
    @Override
    public String getWorldViewCategory3() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.ATS_CATEGORY_3, "");
+      return getSoleAttributeValue(AtsAttributeTypes.Category3, "");
    }
 
    public int getWorldViewStatePercentComplete() throws OseeCoreException {
@@ -921,7 +921,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    @Override
    public Date getWorldViewEstimatedReleaseDate() throws OseeCoreException {
-      Date date = getSoleAttributeValue(AtsAttributeTypes.ATS_ESTIMATED_RELEASE_DATE, null);
+      Date date = getSoleAttributeValue(AtsAttributeTypes.EstimatedReleaseDate, null);
       Date parentDate = null;
       if (getParentSMA() != null) {
          parentDate = getParentSMA().getWorldViewEstimatedReleaseDate();
@@ -934,7 +934,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    @Override
    public Date getWorldViewEstimatedCompletionDate() throws OseeCoreException {
-      Date date = getSoleAttributeValue(AtsAttributeTypes.ATS_ESTIMATED_COMPLETION_DATE, null);
+      Date date = getSoleAttributeValue(AtsAttributeTypes.EstimatedCompletionDate, null);
       if (date != null) {
          return date;
       }
@@ -1046,8 +1046,8 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    @Override
    public String getWorldViewValidationRequiredStr() throws OseeCoreException {
-      if (isAttributeTypeValid(AtsAttributeTypes.ATS_VALIDATION_REQUIRED)) {
-         return String.valueOf(getSoleAttributeValue(AtsAttributeTypes.ATS_VALIDATION_REQUIRED, false));
+      if (isAttributeTypeValid(AtsAttributeTypes.ValidationRequired)) {
+         return String.valueOf(getSoleAttributeValue(AtsAttributeTypes.ValidationRequired, false));
       }
       return "";
    }

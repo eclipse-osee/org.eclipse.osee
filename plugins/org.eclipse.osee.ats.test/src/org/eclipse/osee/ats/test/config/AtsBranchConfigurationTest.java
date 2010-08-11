@@ -136,10 +136,10 @@ public class AtsBranchConfigurationTest {
             verArtToTarget = vArt;
          }
       }
-      verArtToTarget.setSoleAttributeFromString(AtsAttributeTypes.ATS_BASELINE_BRANCH_GUID, viaTeamDefBranch.getGuid());
+      verArtToTarget.setSoleAttributeFromString(AtsAttributeTypes.BaselineBranchGuid, viaTeamDefBranch.getGuid());
       // setup team def to allow create/commit of branch
-      verArtToTarget.setSoleAttributeValue(AtsAttributeTypes.ATS_ALLOW_COMMIT_BRANCH, true);
-      verArtToTarget.setSoleAttributeValue(AtsAttributeTypes.ATS_ALLOW_CREATE_BRANCH, true);
+      verArtToTarget.setSoleAttributeValue(AtsAttributeTypes.AllowCommitBranch, true);
+      verArtToTarget.setSoleAttributeValue(AtsAttributeTypes.AllowCreateBranch, true);
       verArtToTarget.persist();
 
       TestUtil.sleep(2000);
@@ -232,11 +232,11 @@ public class AtsBranchConfigurationTest {
       TeamDefinitionArtifact teamDef =
          (TeamDefinitionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.TeamDefinition,
             AtsTestBranches.BranchViaTeamDef.getName(), AtsUtil.getAtsBranch());
-      teamDef.setSoleAttributeFromString(AtsAttributeTypes.ATS_BASELINE_BRANCH_GUID, viaTeamDefBranch.getGuid());
+      teamDef.setSoleAttributeFromString(AtsAttributeTypes.BaselineBranchGuid, viaTeamDefBranch.getGuid());
       // setup team def to allow create/commit of branch
-      teamDef.setSoleAttributeValue(AtsAttributeTypes.ATS_ALLOW_COMMIT_BRANCH, true);
-      teamDef.setSoleAttributeValue(AtsAttributeTypes.ATS_ALLOW_CREATE_BRANCH, true);
-      teamDef.setSoleAttributeValue(AtsAttributeTypes.ATS_TEAM_USES_VERSIONS, false);
+      teamDef.setSoleAttributeValue(AtsAttributeTypes.AllowCommitBranch, true);
+      teamDef.setSoleAttributeValue(AtsAttributeTypes.AllowCreateBranch, true);
+      teamDef.setSoleAttributeValue(AtsAttributeTypes.TeamUsesVersions, false);
       teamDef.persist();
 
       TestUtil.sleep(2000);

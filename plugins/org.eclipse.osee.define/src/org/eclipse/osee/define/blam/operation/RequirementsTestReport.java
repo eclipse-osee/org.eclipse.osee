@@ -92,7 +92,7 @@ public class RequirementsTestReport extends AbstractBlam {
    }
 
    private String getReqCellOutput(Artifact req) throws OseeCoreException {
-      String paragraphNumber = req.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber.getName(), "");
+      String paragraphNumber = req.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "");
       String reqName = req.getName();
       String returnValue = paragraphNumber + SPACE + reqName;
       return returnValue;

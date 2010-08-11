@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
@@ -47,7 +48,7 @@ public class VersionArtifact extends Artifact implements ICommitConfigArtifact {
 
    @Override
    public Result isCreateBranchAllowed() throws OseeCoreException {
-      if (getSoleAttributeValue(AtsAttributeTypes.ATS_ALLOW_CREATE_BRANCH, false) == false) {
+      if (getSoleAttributeValue(AtsAttributeTypes.AllowCreateBranch, false) == false) {
          return new Result(false, "Branch creation disabled for Version [" + this + "]");
       }
       if (getParentBranch() == null) {
@@ -58,7 +59,7 @@ public class VersionArtifact extends Artifact implements ICommitConfigArtifact {
 
    @Override
    public Result isCommitBranchAllowed() throws OseeCoreException {
-      if (getSoleAttributeValue(AtsAttributeTypes.ATS_ALLOW_COMMIT_BRANCH, false) == false) {
+      if (getSoleAttributeValue(AtsAttributeTypes.AllowCommitBranch, false) == false) {
          return new Result(false, "Version [" + this + "] not configured to allow branch commit.");
       }
       if (getParentBranch() == null) {
@@ -70,7 +71,7 @@ public class VersionArtifact extends Artifact implements ICommitConfigArtifact {
    @Override
    public Branch getParentBranch() throws OseeCoreException {
       try {
-         String guid = getSoleAttributeValue(AtsAttributeTypes.ATS_BASELINE_BRANCH_GUID, "");
+         String guid = getSoleAttributeValue(AtsAttributeTypes.BaselineBranchGuid, "");
          if (GUID.isValid(guid)) {
             return BranchManager.getBranchByGuid(guid);
          }
@@ -85,11 +86,11 @@ public class VersionArtifact extends Artifact implements ICommitConfigArtifact {
    }
 
    public Boolean isReleased() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.ATS_RELEASED, false);
+      return getSoleAttributeValue(AtsAttributeTypes.Released, false);
    }
 
    public Boolean isNextVersion() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.ATS_NEXT_VERSION, false);
+      return getSoleAttributeValue(AtsAttributeTypes.NextVersion, false);
    }
 
    public void getParallelVersions(Set<ICommitConfigArtifact> configArts) throws OseeCoreException {
@@ -100,7 +101,7 @@ public class VersionArtifact extends Artifact implements ICommitConfigArtifact {
    }
 
    public Boolean isVersionLocked() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.ATS_VERSION_LOCKED, false);
+      return getSoleAttributeValue(AtsAttributeTypes.VersionLocked, false);
    }
 
    @Override
@@ -109,31 +110,27 @@ public class VersionArtifact extends Artifact implements ICommitConfigArtifact {
    }
 
    public void setReleased(boolean released) throws OseeCoreException {
-      setSoleAttributeValue(AtsAttributeTypes.ATS_RELEASED, released);
+      setSoleAttributeValue(AtsAttributeTypes.Released, released);
    }
 
    public void setNextVersion(boolean nextVersion) throws OseeCoreException {
-      setSoleAttributeValue(AtsAttributeTypes.ATS_NEXT_VERSION, nextVersion);
+      setSoleAttributeValue(AtsAttributeTypes.NextVersion, nextVersion);
    }
 
    public void setVersionLocked(boolean locked) throws OseeCoreException {
-      setSoleAttributeValue(AtsAttributeTypes.ATS_VERSION_LOCKED, locked);
+      setSoleAttributeValue(AtsAttributeTypes.VersionLocked, locked);
    }
 
    public String getFullName() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.ATS_FULL_NAME, "");
+      return getSoleAttributeValue(AtsAttributeTypes.FullName, "");
    }
 
    public void setFullName(String name) throws OseeCoreException {
-      setSoleAttributeValue(AtsAttributeTypes.ATS_FULL_NAME, name);
-   }
-
-   public String getDescription() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.ATS_DESCRIPTION, "");
+      setSoleAttributeValue(AtsAttributeTypes.FullName, name);
    }
 
    public void setDescription(String desc) throws OseeCoreException {
-      setSoleAttributeValue(AtsAttributeTypes.ATS_DESCRIPTION, desc);
+      setSoleAttributeValue(AtsAttributeTypes.Description, desc);
    }
 
    public Collection<TeamWorkFlowArtifact> getTargetedForTeamArtifacts() throws OseeCoreException {
@@ -153,11 +150,12 @@ public class VersionArtifact extends Artifact implements ICommitConfigArtifact {
             str += " - " + getFullName();
          }
       }
-      if (!getDescription().equals("")) {
+      String description = getSoleAttributeValue(AtsAttributeTypes.Description, "");
+      if (Strings.isValid(description)) {
          if (str.equals("")) {
-            str = getDescription();
+            str = description;
          } else {
-            str += " - " + getDescription();
+            str += " - " + description;
          }
       }
       return str;
@@ -172,11 +170,11 @@ public class VersionArtifact extends Artifact implements ICommitConfigArtifact {
    }
 
    public Date getEstimatedReleaseDate() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.ATS_ESTIMATED_RELEASE_DATE, null);
+      return getSoleAttributeValue(AtsAttributeTypes.EstimatedReleaseDate, null);
    }
 
    public Date getReleaseDate() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.ATS_ESTIMATED_RELEASE_DATE, null);
+      return getSoleAttributeValue(AtsAttributeTypes.EstimatedReleaseDate, null);
    }
 
    public static Set<VersionArtifact> getVersions(Collection<String> teamDefNames) throws OseeCoreException {

@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -68,7 +69,6 @@ import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -94,7 +94,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.osgi.framework.Bundle;
 
-public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IBasicGuidArtifact {
+public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Comparable<Artifact>, IBasicGuidArtifact {
    public static final String UNNAMED = "Unnamed";
    public static final String BEFORE_GUID_STRING = "/BeforeGUID/PrePend";
    public static final String AFTER_GUID_STRING = "/AfterGUID";
@@ -105,7 +105,6 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
    private final Set<DefaultBasicGuidRelationReorder> relationOrderRecords =
       new HashSet<DefaultBasicGuidRelationReorder>();
    private final Branch branch;
-   private final String guid;
    private String humanReadableId;
    private ArtifactType artifactType;
    private final ArtifactFactory parentFactory;
@@ -120,13 +119,9 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
    private EditState objectEditState;
 
    public Artifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
+      super(guid, "");
       objectEditState = EditState.NO_CHANGE;
       modType = ModificationType.NEW;
-      if (guid == null) {
-         this.guid = GUID.create();
-      } else {
-         this.guid = guid;
-      }
 
       if (humanReadableId == null) {
          populateHumanReadableID();
@@ -293,11 +288,6 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
    @Override
    public Branch getBranch() {
       return branch;
-   }
-
-   @Override
-   public String getGuid() {
-      return guid;
    }
 
    public String getArtifactTypeName() {
@@ -470,11 +460,6 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
       return attribute;
    }
 
-   @Deprecated
-   public boolean isAttributeTypeValid(String attributeName) throws OseeCoreException {
-      return isAttributeTypeValid(AttributeTypeManager.getType(attributeName));
-   }
-
    public boolean isAttributeTypeValid(IAttributeType attributeType) throws OseeCoreException {
       return getArtifactType().isValidAttributeType(attributeType, branch);
    }
@@ -535,12 +520,6 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
          attributes = getAttributesByModificationType(ModificationType.getCurrentModTypes());
       }
       return attributes;
-   }
-
-   @Deprecated
-   public <T> List<Attribute<T>> getAttributes(String attributeTypeName) throws OseeCoreException {
-      return Collections.castAll(getAttributesByModificationType(AttributeTypeManager.getType(attributeTypeName),
-         ModificationType.getCurrentModTypes()));
    }
 
    /**
@@ -632,11 +611,6 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
       return attribute.getValue();
    }
 
-   @Deprecated
-   public <T> T getSoleAttributeValue(String attributeTypeName) throws OseeCoreException {
-      return getSoleAttributeValue(AttributeTypeManager.getType(attributeTypeName));
-   }
-
    /**
     * Return sole attribute value for given attribute type name. Will throw exceptions if "Sole" nature of attribute is
     * invalid.<br>
@@ -693,16 +667,6 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
       return toReturn;
    }
 
-   @Deprecated
-   public String getSoleAttributeValueAsString(String attributeTypeName, String defaultReturnValue) throws OseeCoreException, MultipleAttributesExist {
-      return getSoleAttributeValueAsString(AttributeTypeManager.getType(attributeTypeName), defaultReturnValue);
-   }
-
-   @Deprecated
-   public <T> T getSoleAttributeValue(String attributeTypeName, T defaultReturnValue) throws OseeCoreException {
-      return getSoleAttributeValue(AttributeTypeManager.getType(attributeTypeName), defaultReturnValue);
-   }
-
    /**
     * Return sole attribute value for given attribute type name Handles AttributeDoesNotExist case by returning
     * defaultReturnValue.<br>
@@ -747,16 +711,11 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
    }
 
    public void deleteAttribute(IAttributeType attributeType, Object value) throws OseeCoreException {
-      for (Attribute<Object> attribute : getAttributes(attributeType.getName())) {
+      for (Attribute<Object> attribute : getAttributes(attributeType)) {
          if (attribute.getValue().equals(value)) {
             attribute.delete();
          }
       }
-   }
-
-   @Deprecated
-   public <T> void setSoleAttributeValue(String attributeTypeName, T value) throws OseeCoreException {
-      getOrCreateSoleAttribute(AttributeTypeManager.getType(attributeTypeName)).setValue(value);
    }
 
    /**
@@ -771,18 +730,8 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
       getOrCreateSoleAttribute(attributeType).setFromString(value);
    }
 
-   @Deprecated
-   public <T> void setSoleAttributeFromString(String attributeTypeName, String value) throws OseeCoreException {
-      getOrCreateSoleAttribute(AttributeTypeManager.getType(attributeTypeName)).setFromString(value);
-   }
-
    public void setSoleAttributeFromStream(IAttributeType attributeType, InputStream stream) throws OseeCoreException {
       getOrCreateSoleAttribute(attributeType).setValueFromInputStream(stream);
-   }
-
-   @Deprecated
-   public String getAttributesToString(String attributeTypeName) throws OseeCoreException {
-      return getAttributesToString(AttributeTypeManager.getType(attributeTypeName));
    }
 
    /**
@@ -867,8 +816,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
     * adds a new attribute of the type named attributeTypeName and assigns it the given value
     */
    public void addAttributeFromString(IAttributeType attributeType, String value) throws OseeCoreException {
-      initializeAttribute(AttributeTypeManager.getType(attributeType), ModificationType.NEW, true, false).setFromString(
-         value);
+      initializeAttribute(attributeType, ModificationType.NEW, true, false).setFromString(value);
    }
 
    /**
@@ -918,6 +866,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
       return name;
    }
 
+   @Override
    public void setName(String name) throws OseeCoreException {
       setSoleAttributeValue(CoreAttributeTypes.Name, name);
    }
@@ -1385,7 +1334,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IB
 
    private Artifact reflectHelper(IOseeBranch branch) throws OseeCoreException {
       Artifact reflectedArtifact =
-         ArtifactTypeManager.getFactory(artifactType).reflectExisitingArtifact(artId, guid, humanReadableId,
+         ArtifactTypeManager.getFactory(artifactType).reflectExisitingArtifact(artId, getGuid(), humanReadableId,
             artifactType, gammaId, branch, ModificationType.INTRODUCED);
 
       for (Attribute<?> sourceAttribute : attributes.getValues()) {

@@ -11,20 +11,31 @@
 
 package org.eclipse.osee.framework.core.data;
 
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
+
 /**
  * @author Ryan D. Brooks
  */
 public class NamedIdentity implements Identity, FullyNamed, HasDescription {
    private final String guid;
-   private final String name;
+   private String name;
    private final String description;
+
+   public NamedIdentity(String name) {
+      this(null, name);
+   }
 
    public NamedIdentity(String guid, String name) {
       this(guid, name, "");
    }
 
    public NamedIdentity(String guid, String name, String description) {
-      this.guid = guid;
+      if (guid == null) {
+         this.guid = GUID.create();
+      } else {
+         this.guid = guid;
+      }
       this.name = name;
       this.description = description;
    }
@@ -65,5 +76,19 @@ public class NamedIdentity implements Identity, FullyNamed, HasDescription {
    @Override
    public String getDescription() {
       return description;
+   }
+
+   @Override
+   public boolean matches(Identity... identities) {
+      for (Identity identity : identities) {
+         if (equals(identity)) {
+            return true;
+         }
+      }
+      return false;
+   }
+
+   public void setName(String name) throws OseeCoreException {
+      this.name = name;
    }
 }

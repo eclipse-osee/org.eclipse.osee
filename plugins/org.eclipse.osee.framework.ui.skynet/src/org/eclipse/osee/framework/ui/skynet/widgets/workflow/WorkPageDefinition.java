@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -35,13 +36,13 @@ public class WorkPageDefinition extends WorkItemWithChildrenDefinition {
 
    public WorkPageDefinition(Artifact artifact) throws OseeCoreException {
       super(artifact, artifact.getName(), //
-         artifact.getSoleAttributeValue(WorkItemAttributes.WORK_PAGE_NAME, (String) null),// 
-         artifact.getSoleAttributeValue(WorkItemAttributes.WORK_ID, (String) null), //
-         artifact.getSoleAttributeValue(WorkItemAttributes.WORK_PARENT_ID, (String) null)//
+         artifact.getSoleAttributeValue(CoreAttributeTypes.WorkPageName, (String) null),//
+         artifact.getSoleAttributeValue(CoreAttributeTypes.WorkId, (String) null), //
+         artifact.getSoleAttributeValue(CoreAttributeTypes.WorkParentId, (String) null)//
       );
-      setType(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_TYPE, (String) null));
+      setType(artifact.getSoleAttributeValue(CoreAttributeTypes.WorkType, (String) null));
       loadWorkDataKeyValueMap(artifact);
-      setPageName(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_PAGE_NAME, (String) null));
+      setPageName(artifact.getSoleAttributeValue(CoreAttributeTypes.WorkPageName, (String) null));
 
    }
 
@@ -66,7 +67,7 @@ public class WorkPageDefinition extends WorkItemWithChildrenDefinition {
       Artifact art = super.toArtifact(writeType);
       // Only store start page if it's part of this definition
       if (pageName != null) {
-         art.setSoleAttributeFromString(WorkItemAttributes.WORK_PAGE_NAME, pageName);
+         art.setSoleAttributeFromString(CoreAttributeTypes.WorkPageName, pageName);
       }
       return art;
    }

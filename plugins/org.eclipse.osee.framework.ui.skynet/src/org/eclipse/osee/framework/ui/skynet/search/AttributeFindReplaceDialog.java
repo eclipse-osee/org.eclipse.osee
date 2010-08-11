@@ -29,6 +29,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
@@ -158,8 +159,8 @@ public class AttributeFindReplaceDialog extends Dialog {
    protected void okPressed() {
       final Pattern pattern = Pattern.compile(txtFindRegEx.getText());
       final String replaceText = txtReplaceStr.getText();
-      final String attributeName =
-         ((AttributeType) ((IStructuredSelection) cmbAttributeDescriptors.getSelection()).getFirstElement()).getName();
+      final IAttributeType attributeType =
+         ((IAttributeType) ((IStructuredSelection) cmbAttributeDescriptors.getSelection()).getFirstElement());
 
       Job job = new Job("Find/Replace") {
 
@@ -168,12 +169,12 @@ public class AttributeFindReplaceDialog extends Dialog {
             IStatus toReturn = Status.CANCEL_STATUS;
             Branch branch = artifacts.get(0).getBranch();
             try {
-               monitor.beginTask("Find/Replace " + attributeName + " Attribute Value", artifacts.size());
+               monitor.beginTask("Find/Replace " + attributeType + " Attribute Value", artifacts.size());
 
                SkynetTransaction transaction = new SkynetTransaction(branch, "Attribute find replace dialog");
                for (Artifact artifact : artifacts) {
                   monitor.subTask("Modifying " + artifact.getName());
-                  for (Attribute<?> attribute : artifact.getAttributes(attributeName)) {
+                  for (Attribute<?> attribute : artifact.getAttributes(attributeType)) {
                      Matcher matcher = pattern.matcher(attribute.toString());
                      attribute.setFromString(matcher.replaceAll(replaceText));
                   }

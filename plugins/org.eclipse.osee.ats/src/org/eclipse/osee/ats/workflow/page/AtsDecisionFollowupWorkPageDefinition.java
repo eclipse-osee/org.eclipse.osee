@@ -29,6 +29,6 @@ public class AtsDecisionFollowupWorkPageDefinition extends WorkPageDefinition {
 
    public AtsDecisionFollowupWorkPageDefinition(String name, String pageId, String parentId) {
       super(name, pageId, parentId);
-      addWorkItem(AtsAttributeTypes.ATS_RESOLUTION);
+      addWorkItem(AtsAttributeTypes.Resolution);
    }
 }

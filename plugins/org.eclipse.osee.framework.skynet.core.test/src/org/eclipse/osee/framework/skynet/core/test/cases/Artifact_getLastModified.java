@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.Date;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.data.SystemUser;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -45,7 +46,7 @@ public class Artifact_getLastModified {
    @org.junit.Test
    public void testGetLastModified() throws Exception {
       Artifact artifact =
-         ArtifactTypeManager.addArtifact("General Document", BranchManager.getCommonBranch(),
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, BranchManager.getCommonBranch(),
             getClass().getSimpleName());
 
       Assert.assertNotNull(artifact.getLastModified());

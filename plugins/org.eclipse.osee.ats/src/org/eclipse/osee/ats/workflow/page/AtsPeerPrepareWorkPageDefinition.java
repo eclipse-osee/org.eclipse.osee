@@ -31,14 +31,14 @@ public class AtsPeerPrepareWorkPageDefinition extends WorkPageDefinition {
    public AtsPeerPrepareWorkPageDefinition(String name, String pageId, String parentId) {
       super(name, pageId, parentId);
       addWorkItem("ats.Title");
-      addWorkItem(AtsAttributeTypes.ATS_RELATED_TO_STATE);
-      addWorkItem(AtsAttributeTypes.ATS_LEGACY_PCR_ID);
-      addWorkItem(AtsAttributeTypes.ATS_ROLE);
-      addWorkItem(AtsAttributeTypes.ATS_LOCATION);
+      addWorkItem(AtsAttributeTypes.RelatedToState);
+      addWorkItem(AtsAttributeTypes.LegacyPcrId);
+      addWorkItem(AtsAttributeTypes.Role);
+      addWorkItem(AtsAttributeTypes.Location);
       addWorkItem(AtsWorkDefinitions.ATS_DESCRIPTION_NOT_REQUIRED_ID);
-      addWorkItem(AtsAttributeTypes.ATS_RELATED_TO_STATE);
-      addWorkItem(AtsAttributeTypes.ATS_REVIEW_BLOCKS);
-      addWorkItem(AtsAttributeTypes.ATS_NEED_BY);
-      addWorkItem(AtsAttributeTypes.ATS_ESTIMATED_HOURS);
+      addWorkItem(AtsAttributeTypes.RelatedToState);
+      addWorkItem(AtsAttributeTypes.ReviewBlocks);
+      addWorkItem(AtsAttributeTypes.NeedBy);
+      addWorkItem(AtsAttributeTypes.EstimatedHours);
    }
 }

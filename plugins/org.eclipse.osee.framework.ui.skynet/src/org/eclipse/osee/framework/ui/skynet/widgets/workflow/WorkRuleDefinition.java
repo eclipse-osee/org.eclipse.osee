@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -43,9 +44,9 @@ public class WorkRuleDefinition extends WorkItemDefinition {
    }
 
    public WorkRuleDefinition(Artifact artifact) throws OseeCoreException {
-      this(artifact.getName(), artifact.getSoleAttributeValue(WorkItemAttributes.WORK_ID, ""), null, null);
-      setDescription(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_DESCRIPTION, ""));
-      setType(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_TYPE, (String) null));
+      this(artifact.getName(), artifact.getSoleAttributeValue(CoreAttributeTypes.WorkId, ""), null, null);
+      setDescription(artifact.getSoleAttributeValue(CoreAttributeTypes.WorkDescription, ""));
+      setType(artifact.getSoleAttributeValue(CoreAttributeTypes.WorkType, (String) null));
       loadWorkDataKeyValueMap(artifact);
    }
 

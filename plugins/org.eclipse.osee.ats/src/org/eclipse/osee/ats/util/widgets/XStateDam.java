@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 public class XStateDam extends XStateAssigneesDam {
 
    public XStateDam(StateMachineArtifact sma) throws OseeCoreException {
-      super(sma, AtsAttributeTypes.ATS_STATE);
+      super(sma, AtsAttributeTypes.State);
    }
 
 }

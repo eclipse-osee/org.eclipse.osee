@@ -85,7 +85,7 @@ public class TaskArtifact extends StateMachineArtifact implements IATSStateMachi
          StateMachineArtifact parentSMA = getParentSMA();
          boolean unCancellable =
             parentSMA.getStateMgr().getCurrentStateName().equals(
-               getSoleAttributeValue(AtsAttributeTypes.ATS_RELATED_TO_STATE, ""));
+               getSoleAttributeValue(AtsAttributeTypes.RelatedToState, ""));
          if (!unCancellable) {
             return false;
          }
@@ -142,7 +142,7 @@ public class TaskArtifact extends StateMachineArtifact implements IATSStateMachi
    @Override
    public String getDescription() {
       try {
-         return getSoleAttributeValue(AtsAttributeTypes.ATS_DESCRIPTION, "");
+         return getSoleAttributeValue(AtsAttributeTypes.Description, "");
       } catch (Exception ex) {
          return "Error: " + ex.getLocalizedMessage();
       }
@@ -150,7 +150,7 @@ public class TaskArtifact extends StateMachineArtifact implements IATSStateMachi
 
    @Override
    public String getWorldViewRelatedToState() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.ATS_RELATED_TO_STATE, "");
+      return getSoleAttributeValue(AtsAttributeTypes.RelatedToState, "");
    }
 
    @Override
@@ -264,7 +264,7 @@ public class TaskArtifact extends StateMachineArtifact implements IATSStateMachi
 
    @Override
    public String getWorldViewDescription() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.ATS_DESCRIPTION, "");
+      return getSoleAttributeValue(AtsAttributeTypes.Description, "");
    }
 
    @Override
@@ -277,7 +277,7 @@ public class TaskArtifact extends StateMachineArtifact implements IATSStateMachi
       if (getParentSMA().isTeamWorkflow()) {
          return ((TeamWorkFlowArtifact) getParentSMA()).getWorldViewReleaseDate();
       }
-      return getSoleAttributeValue(AtsAttributeTypes.ATS_RELEASE_DATE);
+      return getSoleAttributeValue(AtsAttributeTypes.ReleaseDate);
    }
 
    @Override

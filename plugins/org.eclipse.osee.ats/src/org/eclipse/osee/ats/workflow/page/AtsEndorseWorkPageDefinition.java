@@ -31,14 +31,14 @@ public class AtsEndorseWorkPageDefinition extends WorkPageDefinition {
       super(name, pageId, parentId);
       addWorkItem(RuleWorkItemId.atsRequireStateHourSpentPrompt.name());
       addWorkItem("ats.Title");
-      addWorkItem(AtsAttributeTypes.ATS_DESCRIPTION);
-      addWorkItem(AtsAttributeTypes.ATS_PROPOSED_RESOLUTION);
-      addWorkItem(AtsAttributeTypes.ATS_CHANGE_TYPE);
-      addWorkItem(AtsAttributeTypes.ATS_PRIORITY_TYPE);
-      addWorkItem(AtsAttributeTypes.ATS_NEED_BY);
-      addWorkItem(AtsAttributeTypes.ATS_VALIDATION_REQUIRED);
-      addWorkItem(AtsAttributeTypes.ATS_WORK_PACKAGE);
-      addWorkItem(AtsAttributeTypes.ATS_USER_COMMUNITY);
+      addWorkItem(AtsAttributeTypes.Description);
+      addWorkItem(AtsAttributeTypes.ProposedResolution);
+      addWorkItem(AtsAttributeTypes.ChangeType);
+      addWorkItem(AtsAttributeTypes.PriorityType);
+      addWorkItem(AtsAttributeTypes.NeedBy);
+      addWorkItem(AtsAttributeTypes.ValidationRequired);
+      addWorkItem(AtsAttributeTypes.WorkPackage);
+      addWorkItem(AtsAttributeTypes.UserCommunity);
    }
 
 }

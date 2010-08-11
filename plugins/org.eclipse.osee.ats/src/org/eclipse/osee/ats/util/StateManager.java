@@ -393,7 +393,7 @@ public class StateManager {
     */
    public static Set<Artifact> getAssigned(String userId, Class<?> clazz) throws OseeCoreException {
       Set<Artifact> assigned = new HashSet<Artifact>();
-      for (Artifact artifact : ArtifactQuery.getArtifactListFromAttribute(AtsAttributeTypes.ATS_CURRENT_STATE,
+      for (Artifact artifact : ArtifactQuery.getArtifactListFromAttribute(AtsAttributeTypes.CurrentState,
          "%<" + userId + ">%", AtsUtil.getAtsBranch())) {
          if (clazz == null || clazz.isInstance(artifact)) {
             assigned.add(artifact);

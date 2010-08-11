@@ -12,11 +12,11 @@ package org.eclipse.osee.ats.util.widgets.dialog;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemAttributes;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
@@ -41,7 +41,7 @@ public class TaskResolutionOptionRule extends WorkRuleDefinition {
 
    public TaskResolutionOptionRule(Artifact artifact) throws OseeCoreException {
       super(artifact);
-      fromXml(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_PARENT_ID, ""));
+      fromXml(artifact.getSoleAttributeValue(CoreAttributeTypes.WorkParentId, ""));
    }
 
    public static List<TaskResOptionDefinition> getTaskResolutionOptions(WorkPageDefinition workPageDefinition) throws OseeCoreException {

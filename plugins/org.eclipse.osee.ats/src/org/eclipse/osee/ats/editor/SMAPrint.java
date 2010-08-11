@@ -129,7 +129,7 @@ public class SMAPrint extends Action {
             rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {art.getName(),
                art.getStateMgr().getCurrentStateName().replaceAll("(Task|State)", ""), art.getWorldViewActivePoc(),
                art.getPercentCompleteSMATotal() + "", art.getHoursSpentSMATotal() + "",
-               art.getSoleAttributeValue(AtsAttributeTypes.ATS_RESOLUTION, ""), art.getHumanReadableId()}));
+               art.getSoleAttributeValue(AtsAttributeTypes.Resolution, ""), art.getHumanReadableId()}));
          }
          rd.addRaw(AHTML.endBorderTable());
       } catch (Exception ex) {

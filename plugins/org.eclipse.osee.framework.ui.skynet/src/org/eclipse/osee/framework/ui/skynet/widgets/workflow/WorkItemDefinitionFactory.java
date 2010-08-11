@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -110,14 +111,14 @@ public class WorkItemDefinitionFactory {
 
    public static void relateWorkItemDefinitions(String parentWorkflowId, String childWorkflowId) throws OseeCoreException {
       List<Artifact> parentArts =
-         ArtifactQuery.getArtifactListFromAttribute(WorkItemAttributes.WORK_ID, parentWorkflowId,
+         ArtifactQuery.getArtifactListFromAttribute(CoreAttributeTypes.WorkId, parentWorkflowId,
             BranchManager.getCommonBranch());
       if (parentArts == null || parentArts.isEmpty()) {
          throw new IllegalArgumentException("Can't access parentWorkflowId " + parentWorkflowId);
       }
       Artifact parentArt = parentArts.iterator().next();
       List<Artifact> childArts =
-         ArtifactQuery.getArtifactListFromAttribute(WorkItemAttributes.WORK_ID, childWorkflowId,
+         ArtifactQuery.getArtifactListFromAttribute(CoreAttributeTypes.WorkId, childWorkflowId,
             BranchManager.getCommonBranch());
       if (childArts == null || childArts.isEmpty()) {
          throw new IllegalArgumentException("Can't access childWorkflowId " + childWorkflowId);
@@ -182,7 +183,7 @@ public class WorkItemDefinitionFactory {
       WorkItemDefinition wid = itemIdToDefinition.get(id);
       if (wid == null) {
          // Attempt to get from DB
-         loadDefinitions(ArtifactQuery.getArtifactListFromAttribute(WorkItemAttributes.WORK_ID, id,
+         loadDefinitions(ArtifactQuery.getArtifactListFromAttribute(CoreAttributeTypes.WorkId, id,
             BranchManager.getCommonBranch()));
       }
       return itemIdToDefinition.get(id);
@@ -196,7 +197,7 @@ public class WorkItemDefinitionFactory {
       Artifact art = itemIdToWidArtifact.get(id);
       if (art == null) {
          // Attempt to get from DB
-         loadDefinitions(ArtifactQuery.getArtifactListFromAttribute(WorkItemAttributes.WORK_ID, id,
+         loadDefinitions(ArtifactQuery.getArtifactListFromAttribute(CoreAttributeTypes.WorkId, id,
             BranchManager.getCommonBranch()));
       }
       return itemIdToWidArtifact.get(id);

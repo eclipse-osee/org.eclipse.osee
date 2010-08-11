@@ -16,8 +16,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -34,9 +34,9 @@ import org.eclipse.osee.ote.define.OteDefinePlugin;
  * @author Roberto E. Escobar
  */
 public class OteArtifactFetcher<T extends Artifact> {
-   private final CoreArtifactTypes oteArtifactType;
+   private final IArtifactType oteArtifactType;
 
-   protected OteArtifactFetcher(CoreArtifactTypes oteArtifactType) {
+   protected OteArtifactFetcher(IArtifactType oteArtifactType) {
       this.oteArtifactType = oteArtifactType;
    }
 
@@ -49,7 +49,7 @@ public class OteArtifactFetcher<T extends Artifact> {
    @SuppressWarnings("unchecked")
    public T getNewArtifact(Branch branch) throws OseeCoreException {
       checkForNull(branch);
-      return (T) ArtifactTypeManager.addArtifact(oteArtifactType.getName(), branch);
+      return (T) ArtifactTypeManager.addArtifact(oteArtifactType, branch);
    }
 
    /**

@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.Date;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
@@ -87,35 +88,35 @@ public class TestRunOperator {
    }
 
    public String getScriptRevision() throws OseeCoreException {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.REVISION.getName(), "");
+      return artifact.getSoleAttributeValue(OteAttributeTypes.REVISION, "");
    }
 
    public String getScriptUrl() throws OseeCoreException {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.TEST_SCRIPT_URL.getName(), "");
+      return artifact.getSoleAttributeValue(OteAttributeTypes.TEST_SCRIPT_URL, "");
    }
 
    public void setLastDateUploaded(Date value) throws OseeCoreException {
-      artifact.setSoleAttributeValue(OteAttributeTypes.LAST_DATE_UPLOADED.getName(), value);
+      artifact.setSoleAttributeValue(OteAttributeTypes.LAST_DATE_UPLOADED, value);
    }
 
    public Date getLastDateUploaded() throws OseeCoreException {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.LAST_DATE_UPLOADED.getName(), null);
+      return artifact.getSoleAttributeValue(OteAttributeTypes.LAST_DATE_UPLOADED, null);
    }
 
    public void setChecksum(String value) throws OseeCoreException {
-      artifact.setSoleAttributeValue(OteAttributeTypes.CHECKSUM.getName(), value);
+      artifact.setSoleAttributeValue(OteAttributeTypes.CHECKSUM, value);
    }
 
    public String getChecksum() throws OseeCoreException {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.CHECKSUM.getName(), "");
+      return artifact.getSoleAttributeValue(OteAttributeTypes.CHECKSUM, "");
    }
 
    public String getOutfileExtension() throws OseeCoreException {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.EXTENSION.getName(), "");
+      return artifact.getSoleAttributeValue(OteAttributeTypes.EXTENSION, "");
    }
 
    public void setOutfileExtension(String outfile) throws OseeCoreException {
-      artifact.setSoleAttributeValue(OteAttributeTypes.EXTENSION.getName(), outfile);
+      artifact.setSoleAttributeValue(OteAttributeTypes.EXTENSION, outfile);
    }
 
    public boolean isFromLocalWorkspace() throws OseeCoreException, AttributeDoesNotExist {
@@ -130,7 +131,7 @@ public class TestRunOperator {
    }
 
    public String getOutfileUrl() throws OseeCoreException {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.OUTFILE_URL.getName());
+      return artifact.getSoleAttributeValue(OteAttributeTypes.OUTFILE_URL);
    }
 
    public String getOutfileContents() throws OseeCoreException {
@@ -144,7 +145,7 @@ public class TestRunOperator {
    }
 
    public Attribute<InputStream> getOutfileAttribute() throws AttributeDoesNotExist, OseeCoreException {
-      List<Attribute<InputStream>> attributes = artifact.getAttributes(OteAttributeTypes.OUTFILE_URL.getName());
+      List<Attribute<InputStream>> attributes = artifact.getAttributes(OteAttributeTypes.OUTFILE_URL);
       return attributes != null && attributes.size() > 0 ? attributes.get(0) : null;
    }
 
@@ -187,7 +188,7 @@ public class TestRunOperator {
          getTestScriptFetcher().searchForUniqueArtifactMatching(CoreAttributeTypes.Name, artifact.getName(),
             artifact.getBranch());
       if (testScript != null) {
-         artifact.setSoleAttributeValue(OteAttributeTypes.TEST_SCRIPT_GUID.getName(), testScript.getGuid());
+         artifact.setSoleAttributeValue(CoreAttributeTypes.TestScriptGuid, testScript.getGuid());
       }
    }
 
@@ -210,15 +211,15 @@ public class TestRunOperator {
    }
 
    public int getTestPointsPassed() throws OseeCoreException {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.PASSED.getName());
+      return artifact.getSoleAttributeValue(OteAttributeTypes.PASSED);
    }
 
    public int getTestPointsFailed() throws OseeCoreException {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.FAILED.getName());
+      return artifact.getSoleAttributeValue(OteAttributeTypes.FAILED);
    }
 
    public int getTotalTestPoints() throws OseeCoreException {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.TOTAL_TEST_POINTS.getName());
+      return artifact.getSoleAttributeValue(OteAttributeTypes.TOTAL_TEST_POINTS);
    }
 
    public Date getEndDate() throws OseeCoreException {
@@ -233,8 +234,8 @@ public class TestRunOperator {
       return processDateAttribute(OteAttributeTypes.START_DATE);
    }
 
-   private Date processDateAttribute(OteAttributeTypes attributeType) throws OseeCoreException {
-      Date date = artifact.getSoleAttributeValue(attributeType.getName(), null);
+   private Date processDateAttribute(IAttributeType attributeType) throws OseeCoreException {
+      Date date = artifact.getSoleAttributeValue(attributeType, null);
       if (date == null) {
          date = new Date(0);
       }
@@ -244,7 +245,7 @@ public class TestRunOperator {
    public boolean wasAborted() {
       boolean toReturn = true;
       try {
-         toReturn = artifact.getSoleAttributeValue(OteAttributeTypes.SCRIPT_ABORTED.getName(), false);
+         toReturn = artifact.getSoleAttributeValue(OteAttributeTypes.SCRIPT_ABORTED, false);
       } catch (Exception ex) {
       }
       return toReturn;
@@ -269,46 +270,46 @@ public class TestRunOperator {
    public boolean isBatchModeAllowed() {
       boolean toReturn = false;
       try {
-         toReturn = artifact.getSoleAttributeValue(OteAttributeTypes.IS_BATCH_MODE_ALLOWED.getName(), false);
+         toReturn = artifact.getSoleAttributeValue(OteAttributeTypes.IS_BATCH_MODE_ALLOWED, false);
       } catch (Exception ex) {
       }
       return toReturn;
    }
 
    public String getOseeVersion() throws OseeCoreException {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.OSEE_VERSION.getName(), "").trim();
+      return artifact.getSoleAttributeValue(OteAttributeTypes.OSEE_VERSION, "").trim();
    }
 
    public String getOseeServerTitle() throws OseeCoreException {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.OSEE_SERVER_TITLE.getName(), "").trim();
+      return artifact.getSoleAttributeValue(OteAttributeTypes.OSEE_SERVER_TITLE, "").trim();
    }
 
    public String getOseeServerVersion() throws OseeCoreException {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.OSEE_SERVER_JAR_VERSION.getName(), "").trim();
+      return artifact.getSoleAttributeValue(OteAttributeTypes.OSEE_SERVER_JAR_VERSION, "").trim();
    }
 
    public String getProcessorId() throws OseeCoreException {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.PROCESSOR_ID.getName(), "");
+      return artifact.getSoleAttributeValue(OteAttributeTypes.PROCESSOR_ID, "");
    }
 
    public String getRunDuration() throws OseeCoreException {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.ELAPSED_DATE.getName(), "");
+      return artifact.getSoleAttributeValue(OteAttributeTypes.ELAPSED_DATE, "");
    }
 
    public String getQualificationLevel() throws OseeCoreException {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.QUALIFICATION_LEVEL.getName(), "");
+      return artifact.getSoleAttributeValue(OteAttributeTypes.QUALIFICATION_LEVEL, "");
    }
 
    public String getBuildId() throws OseeCoreException {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.BUILD_ID.getName(), "");
+      return artifact.getSoleAttributeValue(OteAttributeTypes.BUILD_ID, "");
    }
 
    public String getRanOnOperatingSystem() throws OseeCoreException {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.OS_NAME.getName(), "");
+      return artifact.getSoleAttributeValue(OteAttributeTypes.OS_NAME, "");
    }
 
    public String getLastAuthor() throws OseeCoreException {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.LAST_AUTHOR.getName(), null);
+      return artifact.getSoleAttributeValue(OteAttributeTypes.LAST_AUTHOR, null);
    }
 
    public String getScriptSimpleName() {

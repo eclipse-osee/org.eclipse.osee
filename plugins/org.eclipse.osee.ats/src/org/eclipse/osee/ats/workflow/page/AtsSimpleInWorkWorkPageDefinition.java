@@ -30,6 +30,6 @@ public class AtsSimpleInWorkWorkPageDefinition extends WorkPageDefinition {
    public AtsSimpleInWorkWorkPageDefinition(String name, String pageId, String parentId) {
       super(name, pageId, parentId);
       addWorkItem(RuleWorkItemId.atsRequireStateHourSpentPrompt.name());
-      addWorkItem(AtsAttributeTypes.ATS_RESOLUTION);
+      addWorkItem(AtsAttributeTypes.Resolution);
    }
 }

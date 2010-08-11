@@ -49,7 +49,7 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
          throw new OseeCoreException(
             "AtsDecisionReviewDecisionStateItem.xWidgetCreating expected a StateMachineArtifact");
       }
-      if (xWidget.getLabel().equals(AtsAttributeTypes.ATS_DECISION.getUnqualifiedName())) {
+      if (xWidget.getLabel().equals(AtsAttributeTypes.Decision.getUnqualifiedName())) {
          XComboDam decisionComboDam = (XComboDam) xWidget;
          List<String> options = new ArrayList<String>();
          XDecisionOptions xDecOptions = new XDecisionOptions((StateMachineArtifact) art);
@@ -88,7 +88,7 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
    }
 
    private DecisionOption getDecisionOption(SMAWorkFlowSection section) throws OseeCoreException {
-      XWidget xWidget = section.getPage().getLayoutData(AtsAttributeTypes.ATS_DECISION.getName()).getXWidget();
+      XWidget xWidget = section.getPage().getLayoutData(AtsAttributeTypes.Decision.getName()).getXWidget();
       XComboDam decisionComboDam = (XComboDam) xWidget;
       String decision = decisionComboDam.get();
       if (decision.equals("")) {

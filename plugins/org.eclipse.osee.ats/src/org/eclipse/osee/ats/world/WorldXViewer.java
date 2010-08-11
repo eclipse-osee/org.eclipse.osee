@@ -269,7 +269,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
          @Override
          public void run() {
             try {
-               if (PromptChangeUtil.promptChangeAttribute(getSelectedSMAArtifacts(), AtsAttributeTypes.ATS_SMA_NOTE,
+               if (PromptChangeUtil.promptChangeAttribute(getSelectedSMAArtifacts(), AtsAttributeTypes.SmaNote,
                   true, true)) {
                   update(getSelectedSMAArtifacts().toArray(), null);
                }
@@ -283,7 +283,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
          @Override
          public void run() {
             try {
-               if (PromptChangeUtil.promptChangeAttribute(getSelectedSMAArtifacts(), AtsAttributeTypes.ATS_RESOLUTION,
+               if (PromptChangeUtil.promptChangeAttribute(getSelectedSMAArtifacts(), AtsAttributeTypes.Resolution,
                   true, true)) {
                   update(getSelectedSMAArtifacts().toArray(), null);
                }
@@ -310,7 +310,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
          @Override
          public void run() {
             try {
-               if (ArtifactPromptChange.promptChangeAttribute(AtsAttributeTypes.ATS_ESTIMATED_HOURS,
+               if (ArtifactPromptChange.promptChangeAttribute(AtsAttributeTypes.EstimatedHours,
                   getSelectedSMAArtifacts(), true)) {
                   update(getSelectedSMAArtifacts().toArray(), null);
                }
@@ -954,7 +954,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
                return false;
             } else if (xCol.equals(WorldXViewerFactory.Goal_Order_Vote_Col)) {
                modified =
-                  PromptChangeUtil.promptChangeAttribute(useArt, AtsAttributeTypes.ATS_GOAL_ORDER_VOTE, persist, true);
+                  PromptChangeUtil.promptChangeAttribute(useArt, AtsAttributeTypes.GoalOrderVote, persist, true);
             } else if (xCol.equals(WorldXViewerFactory.Goals_Col)) {
                modified = PromptChangeUtil.promptChangeGoals(useArt, persist);
             }
@@ -977,24 +977,24 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
                PromptChangeUtil.promptChangeVersion(sma,
                   AtsUtil.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased, true);
          } else if (xCol.equals(WorldXViewerFactory.Notes_Col)) {
-            modified = PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.ATS_SMA_NOTE, persist, true);
+            modified = PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.SmaNote, persist, true);
          } else if (xCol.equals(WorldXViewerFactory.Percent_Rework_Col)) {
             modified =
-               PromptChangeUtil.promptChangePercentAttribute(sma, AtsAttributeTypes.ATS_PERCENT_REWORK, persist);
+               PromptChangeUtil.promptChangePercentAttribute(sma, AtsAttributeTypes.PercentRework, persist);
          } else if (xCol.equals(WorldXViewerFactory.Estimated_Hours_Col)) {
             modified =
-               PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.ATS_ESTIMATED_HOURS, persist, false);
+               PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.EstimatedHours, persist, false);
          } else if (xCol.equals(WorldXViewerFactory.Weekly_Benefit_Hrs_Col)) {
             modified =
-               PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.ATS_WEEKLY_BENEFIT, persist, false);
+               PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.WeeklyBenefit, persist, false);
          } else if (xCol.equals(WorldXViewerFactory.Estimated_Release_Date_Col)) {
             modified = PromptChangeUtil.promptChangeEstimatedReleaseDate(sma);
          } else if (xCol.equals(WorldXViewerFactory.Groups_Col)) {
             modified = PromptChangeUtil.promptChangeGroups(sma, persist);
          } else if (xCol.equals(WorldXViewerFactory.Estimated_Completion_Date_Col)) {
-            modified = PromptChangeUtil.promptChangeDate(sma, AtsAttributeTypes.ATS_ESTIMATED_COMPLETION_DATE, persist);
+            modified = PromptChangeUtil.promptChangeDate(sma, AtsAttributeTypes.EstimatedCompletionDate, persist);
          } else if (xCol.equals(WorldXViewerFactory.Deadline_Col)) {
-            modified = PromptChangeUtil.promptChangeDate(sma, AtsAttributeTypes.ATS_NEED_BY, persist);
+            modified = PromptChangeUtil.promptChangeDate(sma, AtsAttributeTypes.NeedBy, persist);
          } else if (xCol.equals(WorldXViewerFactory.Assignees_Col)) {
             modified = PromptChangeUtil.promptChangeAssignees(sma, persist);
          } else if (xCol.equals(WorldXViewerFactory.Remaining_Hours_Col)) {
@@ -1009,21 +1009,21 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
          } else if (xCol.equals(WorldXViewerFactory.Release_Date_Col)) {
             modified = PromptChangeUtil.promptChangeReleaseDate(sma);
          } else if (xCol.equals(WorldXViewerFactory.Work_Package_Col)) {
-            modified = PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.ATS_WORK_PACKAGE, persist, false);
+            modified = PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.WorkPackage, persist, false);
          } else if (xCol.equals(WorldXViewerFactory.Points_Col)) {
             modified = PromptChangeUtil.promptChangePoints(sma, persist);
          } else if (xCol.equals(WorldXViewerFactory.Numeric1_Col)) {
-            modified = PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.ATS_NUMERIC_1, persist, false);
+            modified = PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.Numeric1, persist, false);
          } else if (xCol.equals(WorldXViewerFactory.Numeric2_Col)) {
-            modified = PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.ATS_NUMERIC_2, persist, false);
+            modified = PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.Numeric2, persist, false);
          } else if (xCol.equals(WorldXViewerFactory.Category_Col)) {
-            modified = PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.ATS_CATEGORY_1, persist, true);
+            modified = PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.Category1, persist, true);
          } else if (xCol.equals(WorldXViewerFactory.Resolution_Col)) {
-            modified = PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.ATS_RESOLUTION, persist, true);
+            modified = PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.Resolution, persist, true);
          } else if (xCol.equals(WorldXViewerFactory.Category2_Col)) {
-            modified = PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.ATS_CATEGORY_2, persist, true);
+            modified = PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.Category2, persist, true);
          } else if (xCol.equals(WorldXViewerFactory.Category3_Col)) {
-            modified = PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.ATS_CATEGORY_3, persist, true);
+            modified = PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.Category3, persist, true);
          } else if (xCol.equals(WorldXViewerFactory.Change_Type_Col)) {
             modified = PromptChangeUtil.promptChangeType(sma, persist);
          } else if (xCol.equals(WorldXViewerFactory.Priority_Col)) {

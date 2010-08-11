@@ -52,8 +52,8 @@ public class SimpleTestUnitProviderTest {
       Assert.assertEquals(4, provider.getTestUnits(coverageItem1).size());
 
       // Should equal cause CoverageItems are "equal" (guids are same)
-      CoverageItem coverageItem1b = new CoverageItem(null, CoverageOptionManager.Not_Covered, "1");
-      coverageItem1b.setGuid(coverageItem1.getGuid());
+      CoverageItem coverageItem1b =
+         new CoverageItem(coverageItem1.getGuid(), null, CoverageOptionManager.Not_Covered, "1");
       Assert.assertEquals(4, provider.getTestUnits(coverageItem1b).size());
 
       Assert.assertEquals(0, provider.getTestUnits(coverageItem2).size());
@@ -69,7 +69,7 @@ public class SimpleTestUnitProviderTest {
    @Test
    public void testToFromXml() throws OseeCoreException {
       CoverageItem newCoverageItem =
-         new CoverageItem(null, coverageItem1.toXml(), CoverageOptionManagerDefault.instance(),
+         CoverageItem.createCoverageItem(null, coverageItem1.toXml(), CoverageOptionManagerDefault.instance(),
             new SimpleTestUnitProvider());
       Assert.assertEquals(coverageItem1.getName(), newCoverageItem.getName());
       Assert.assertEquals(coverageItem1.getGuid(), newCoverageItem.getGuid());

@@ -99,7 +99,7 @@ public class OpenWithContributionItem extends CompoundContributionItem {
          if (render instanceof WordRenderer) {
             imageDescriptor = WordRenderer.getImageDescriptor();
          } else if (render instanceof NativeRenderer) {
-            String fileExtension = firstArtifact.getSoleAttributeValue(CoreAttributeTypes.Extension.getName());
+            String fileExtension = firstArtifact.getSoleAttributeValue(CoreAttributeTypes.Extension);
             if (Strings.isValid(fileExtension)) {
                imageDescriptor = ImageManager.getProgramImageDescriptor(fileExtension);
             }

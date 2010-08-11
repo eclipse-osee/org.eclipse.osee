@@ -24,9 +24,9 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.workflow.editor.actions.EditAction;
 import org.eclipse.osee.ats.workflow.editor.model.ReturnTransitionConnection;
 import org.eclipse.osee.ats.workflow.editor.model.WorkPageShape;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemAttributes;
 
 /**
  * @author Donald G. Dunne
@@ -88,7 +88,7 @@ public class WorkPageEditPart extends ShapeEditPart {
             getFigure().setBackgroundColor(ColorConstants.green);
          }
       }
-      if (WorkItemAttributes.WORK_PAGE_NAME.getName().equals(prop)) {
+      if (CoreAttributeTypes.WorkPageName.getName().equals(prop)) {
          refreshVisuals();
       }
    }

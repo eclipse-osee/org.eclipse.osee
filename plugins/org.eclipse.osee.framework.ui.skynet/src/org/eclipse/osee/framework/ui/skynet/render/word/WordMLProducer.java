@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
@@ -337,8 +338,8 @@ public class WordMLProducer extends Producer {
     */
    public void setPageLayout(Artifact artifact) throws OseeCoreException {
       String pageTypeValue = null;
-      if (artifact.isAttributeTypeValid("Page Type")) {
-         pageTypeValue = artifact.getSoleAttributeValue("Page Type", "Portrait");
+      if (artifact.isAttributeTypeValid(CoreAttributeTypes.PageType)) {
+         pageTypeValue = artifact.getSoleAttributeValue(CoreAttributeTypes.PageType, "Portrait");
       }
 
       boolean landscape = pageTypeValue != null && pageTypeValue.equals("Landscape");

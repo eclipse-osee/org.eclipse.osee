@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.OverlayImage;
 import org.eclipse.osee.framework.ui.swt.OverlayImage.Location;
+import org.eclipse.osee.ote.define.AUTOGEN.OteAttributeTypes;
 import org.eclipse.osee.ote.define.artifacts.TestRunOperator;
 import org.eclipse.osee.ote.ui.define.OteDefineImage;
 import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
@@ -134,7 +135,7 @@ public class ArtifactItem extends DataItem implements IXViewerItem, IArtifactEve
                            ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.TestRunDisposition, name,
                               artifact.getBranch());
                         if (dispoArtifact != null) {
-                           return dispoArtifact.getSoleAttributeValueAsString("Disposition", "");
+                           return dispoArtifact.getSoleAttributeValueAsString(OteAttributeTypes.TestDisposition, "");
                         }
                      } catch (ArtifactDoesNotExist ex) {
                         //ignore if not defined
@@ -142,12 +143,12 @@ public class ArtifactItem extends DataItem implements IXViewerItem, IArtifactEve
                   }
                   return "";
                } else {
-                  if (artifact.isAttributeTypeValid(colName)) {
-                     AttributeType attributeType = AttributeTypeManager.getType(colName);
+                  AttributeType attributeType = AttributeTypeManager.getType(colName);
+                  if (artifact.isAttributeTypeValid(attributeType)) {
                      if (AttributeTypeManager.isBaseTypeCompatible(DateAttribute.class, attributeType)) {
                         Date date = null;
                         try {
-                           date = artifact.getSoleAttributeValue(colName);
+                           date = artifact.getSoleAttributeValue(attributeType);
                         } catch (Exception ex) {
                            // Do Nothing;
                         }
@@ -157,7 +158,7 @@ public class ArtifactItem extends DataItem implements IXViewerItem, IArtifactEve
                            toReturn = "NOT SET";
                         }
                      } else {
-                        toReturn = artifact.getAttributesToString(colName);
+                        toReturn = artifact.getAttributesToString(attributeType);
                         if (colName.equals("Name")) {
                            toReturn = getArtifactName(toReturn);
                         }
@@ -166,14 +167,14 @@ public class ArtifactItem extends DataItem implements IXViewerItem, IArtifactEve
                }
             }
          }
-      } catch (Exception ex) {
+      } catch (OseeCoreException ex) {
          OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, ex);
          toReturn = ex.getLocalizedMessage();
       }
       return toReturn;
    }
 
-   private String getArtifactName(String rawName) throws Exception {
+   private String getArtifactName(String rawName) throws OseeCoreException {
       String name = rawName;
       if (isFullDescriptionModeEnabled() != true) {
          String[] qualifiers = rawName.split("\\.");

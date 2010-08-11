@@ -16,12 +16,12 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
 import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
@@ -34,22 +34,19 @@ import org.junit.Before;
 public class OseeEnumerationValidationTest {
 
    private Artifact mockArtifact;
-   private AttributeType enumeratedAttributeType;
 
    @Before
    public void setUp() throws Exception {
       Branch branch = BranchManager.getCommonBranch();
       // Create an artifact having an enumerated attribute
 
-      enumeratedAttributeType = AttributeTypeManager.getType("GFE / CFE");
-      mockArtifact = ArtifactTypeManager.addArtifact("Component", branch);
+      mockArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Component, branch);
    }
 
    @After
    public void tearDown() throws Exception {
       mockArtifact.deleteAndPersist();
       mockArtifact = null;
-      enumeratedAttributeType = null;
    }
 
    public List<TestData> getEnumerationCases() {
@@ -76,7 +73,7 @@ public class OseeEnumerationValidationTest {
    public void testEnumerationData() {
       for (TestData data : getEnumerationCases()) {
          IStatus actual =
-            OseeValidator.getInstance().validate(IOseeValidator.SHORT, mockArtifact, enumeratedAttributeType,
+            OseeValidator.getInstance().validate(IOseeValidator.SHORT, mockArtifact, CoreAttributeTypes.GfeCfe,
                data.getValue());
          checkStatus(data.getMessage(), data.getExpected(), actual);
       }

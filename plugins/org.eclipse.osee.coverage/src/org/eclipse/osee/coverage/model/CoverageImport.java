@@ -39,7 +39,7 @@ public class CoverageImport extends CoveragePackageBase {
    }
 
    public CoverageImport(String name, Date runDate) {
-      super(name, CoverageOptionManagerDefault.instance());
+      super(null, name, CoverageOptionManagerDefault.instance());
       this.runDate = runDate;
    }
 

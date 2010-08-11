@@ -33,7 +33,7 @@ public class XDecisionOptions {
 
    public XDecisionOptions(StateMachineArtifact sma) {
       this.smaRef = new WeakReference<StateMachineArtifact>(sma);
-      this.attributeType = AtsAttributeTypes.ATS_DECISION_REVIEW_OPTIONS;
+      this.attributeType = AtsAttributeTypes.DecisionReviewOptions;
    }
 
    public IAttributeType getAttributeType() {

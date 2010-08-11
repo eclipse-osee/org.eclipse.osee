@@ -53,7 +53,7 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
       super(null, CoverageArtifactTypes.CoveragePackage, artifact.getBranch());
       this.artifact = artifact;
       coverageOptionManager = new CoverageOptionManagerStore(this).getCoverageOptionManager();
-      this.coveragePackage = new CoveragePackage(artifact.getName(), coverageOptionManager);
+      this.coveragePackage = new CoveragePackage(artifact.getGuid(), artifact.getName(), coverageOptionManager);
       load(coverageOptionManager);
    }
 
@@ -75,13 +75,9 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
       return packageStore.getCoveragePackage();
    }
 
-   @Override
-   public void load(CoverageOptionManager coverageOptionManager) throws OseeCoreException {
+   private void load(CoverageOptionManager coverageOptionManager) throws OseeCoreException {
       coveragePackage.clearCoverageUnits();
-      getArtifact(false);
       if (artifact != null) {
-         coveragePackage.setGuid(artifact.getGuid());
-         coveragePackage.setName(artifact.getName());
          coveragePackage.setEditable(artifact.getSoleAttributeValue(CoreAttributeTypes.Active, true));
          for (Artifact childArt : artifact.getChildren()) {
             if (childArt.isOfType(CoverageArtifactTypes.CoverageUnit, CoverageArtifactTypes.CoverageFolder)) {

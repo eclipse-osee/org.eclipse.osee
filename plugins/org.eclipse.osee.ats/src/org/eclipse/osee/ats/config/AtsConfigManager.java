@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workflow.editor.wizard.AtsWorkflowConfigCreationWizard.WorkflowData;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -52,7 +53,6 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemAttributes;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
 import org.eclipse.ui.progress.UIJob;
@@ -128,7 +128,7 @@ public class AtsConfigManager extends AbstractOperation {
          (TeamDefinitionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.TeamDefinition,
             AtsUtil.getAtsBranch(), teamDefName);
       if (versionNames == null || versionNames.size() > 0) {
-         teamDefinition.setSoleAttributeValue(AtsAttributeTypes.ATS_TEAM_USES_VERSIONS, true);
+         teamDefinition.setSoleAttributeValue(AtsAttributeTypes.TeamUsesVersions, true);
       }
       teamDefinition.addRelation(AtsRelationTypes.TeamLead_Lead, UserManager.getUser());
       teamDefinition.addRelation(AtsRelationTypes.TeamMember_Member, UserManager.getUser());
@@ -144,7 +144,7 @@ public class AtsConfigManager extends AbstractOperation {
       ActionableItemArtifact topAia =
          (ActionableItemArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.ActionableItem,
             AtsUtil.getAtsBranch(), teamDefName);
-      topAia.setSoleAttributeValue(AtsAttributeTypes.ATS_ACTIONABLE, false);
+      topAia.setSoleAttributeValue(AtsAttributeTypes.Actionable, false);
       topAia.persist(transaction);
 
       AtsFolderUtil.getFolder(AtsFolder.ActionableItem).addChild(topAia);
@@ -158,7 +158,7 @@ public class AtsConfigManager extends AbstractOperation {
          ActionableItemArtifact aia =
             (ActionableItemArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.ActionableItem,
                AtsUtil.getAtsBranch(), name);
-         aia.setSoleAttributeValue(AtsAttributeTypes.ATS_ACTIONABLE, true);
+         aia.setSoleAttributeValue(AtsAttributeTypes.Actionable, true);
          topAia.addChild(aia);
          aia.persist(transaction);
          aias.add(aia);
@@ -225,7 +225,7 @@ public class AtsConfigManager extends AbstractOperation {
             }
          }
          if (state == DefaultTeamState.Completed || state == DefaultTeamState.Cancelled) {
-            newStateArt.setSoleAttributeFromString(WorkItemAttributes.WORK_PARENT_ID,
+            newStateArt.setSoleAttributeFromString(CoreAttributeTypes.WorkParentId,
                "osee.ats.teamWorkflow." + state.name());
          }
 

@@ -33,9 +33,9 @@ public class AtsDecisionDecisionWorkPageDefinition extends WorkPageDefinition {
    public AtsDecisionDecisionWorkPageDefinition(String name, String pageId, String parentId) {
       super(name, pageId, parentId);
       addWorkItem(AtsDecisionDecisionWorkPageDefinition.DECISION_QUESTION_LABEL);
-      addWorkItem(AtsAttributeTypes.ATS_DECISION);
+      addWorkItem(AtsAttributeTypes.Decision);
       addWorkItem(AtsWorkDefinitions.ATS_DESCRIPTION_NOT_REQUIRED_ID);
-      addWorkItem(AtsAttributeTypes.ATS_RESOLUTION);
+      addWorkItem(AtsAttributeTypes.Resolution);
    }
 
 }

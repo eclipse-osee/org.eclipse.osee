@@ -32,7 +32,7 @@ public class AtsGoalInWorkPageDefinition extends WorkPageDefinition {
       addWorkItem("ats.Title");
       addWorkItem(AtsWorkDefinitions.ATS_DESCRIPTION_NOT_REQUIRED_ID);
       addWorkItem(AtsWorkDefinitions.ATS_ESTIMATED_HOURS_NOT_REQUIRED_ID);
-      addWorkItem(AtsAttributeTypes.ATS_GOAL_ORDER_VOTE);
+      addWorkItem(AtsAttributeTypes.GoalOrderVote);
    }
 
 }

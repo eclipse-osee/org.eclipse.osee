@@ -16,13 +16,13 @@ import org.eclipse.osee.framework.core.data.NamedIdentity;
 /**
  * @author Don Dunne
  */
-public class CoverageArtifactTypes extends NamedIdentity implements IArtifactType {
-   public static final CoverageArtifactTypes CoveragePackage = new CoverageArtifactTypes("AARFcyA9zyD3uEK8akgA",
-      "Coverage Package");
-   public static final CoverageArtifactTypes CoverageUnit = new CoverageArtifactTypes("ALZS3MQdCCIUvEYlZeAA",
-      "Coverage Unit");
-   public static final CoverageArtifactTypes CoverageFolder = new CoverageArtifactTypes("ALZR_AbpJTTf6QQn2iAA",
-      "Coverage Folder");
+public final class CoverageArtifactTypes extends NamedIdentity implements IArtifactType {
+
+   // @formatter:off
+   public static final IArtifactType CoveragePackage = new CoverageArtifactTypes("AARFcyA9zyD3uEK8akgA", "Coverage Package");
+   public static final IArtifactType CoverageUnit = new CoverageArtifactTypes("ALZS3MQdCCIUvEYlZeAA", "Coverage Unit");
+   public static final IArtifactType CoverageFolder = new CoverageArtifactTypes("ALZR_AbpJTTf6QQn2iAA", "Coverage Folder");
+   // @formatter:on
 
    private CoverageArtifactTypes(String guid, String name) {
       super(guid, name);

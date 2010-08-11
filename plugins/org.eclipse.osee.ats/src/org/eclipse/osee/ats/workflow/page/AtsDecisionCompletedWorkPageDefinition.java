@@ -32,7 +32,7 @@ public class AtsDecisionCompletedWorkPageDefinition extends WorkPageDefinition {
       addWorkItem(RuleWorkItemId.atsAddDecisionValidateBlockingReview.name());
       addWorkItem(AtsDecisionDecisionWorkPageDefinition.DECISION_QUESTION_LABEL);
       addWorkItem(AtsDecisionDecisionWorkPageDefinition.DECISION_ANSWER_LABEL);
-      addWorkItem(AtsAttributeTypes.ATS_RESOLUTION);
+      addWorkItem(AtsAttributeTypes.Resolution);
    }
 
 }

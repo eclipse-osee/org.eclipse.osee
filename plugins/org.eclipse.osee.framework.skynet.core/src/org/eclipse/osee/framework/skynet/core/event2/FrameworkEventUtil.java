@@ -314,11 +314,8 @@ public class FrameworkEventUtil {
    }
 
    public static DefaultBasicGuidArtifact getBasicGuidArtifact(RemoteBasicGuidArtifact1 remGuidArt) {
-      DefaultBasicGuidArtifact guidArt = new DefaultBasicGuidArtifact();
-      guidArt.setGuid(remGuidArt.getArtGuid());
-      guidArt.setBranchGuid(remGuidArt.getBranchGuid());
-      guidArt.setArtTypeGuid(remGuidArt.getArtTypeGuid());
-      return guidArt;
+      return new DefaultBasicGuidArtifact(remGuidArt.getBranchGuid(), remGuidArt.getArtTypeGuid(),
+         remGuidArt.getArtGuid());
    }
 
    public static RemoteBasicGuidArtifact1 getRemoteBasicGuidArtifact(String modTypeGuid, DefaultBasicGuidArtifact guidArt, Collection<AttributeChange> attributeChanges) {

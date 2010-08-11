@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 
 /**
@@ -26,7 +27,8 @@ public final class WordAttributeTypeAttributeHandler implements ITemplateAttribu
 
    @Override
    public void process(WordMLProducer wordMl, Artifact artifact, TemplateAttribute templateAttribute) throws OseeCoreException {
-      Collection<Attribute<Object>> attributes = artifact.getAttributes(templateAttribute.getName());
+      Collection<Attribute<Object>> attributes =
+         artifact.getAttributes(AttributeTypeManager.getType(templateAttribute.getName()));
 
       if (!attributes.isEmpty()) {
          Attribute<Object> attribute = attributes.iterator().next();

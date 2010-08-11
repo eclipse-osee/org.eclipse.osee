@@ -16,10 +16,10 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DefaultAttributeXWidgetProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemAttributes;
 
 /**
  * Provides XFlatDam as default widget for specified attribute types
@@ -30,11 +30,11 @@ public class AtsAttributeXWidgetProvider extends DefaultAttributeXWidgetProvider
 
    private static final Collection<IAttributeType> XFLAT_ATTRIBUTE_TYPES = new ArrayList<IAttributeType>();
    static {
-      XFLAT_ATTRIBUTE_TYPES.add(WorkItemAttributes.WORK_TRANSITION);
-      XFLAT_ATTRIBUTE_TYPES.add(WorkItemAttributes.WORK_DATA);
-      XFLAT_ATTRIBUTE_TYPES.add(AtsAttributeTypes.ATS_STATE);
-      XFLAT_ATTRIBUTE_TYPES.add(AtsAttributeTypes.ATS_ACTIONABLE_ITEM);
-      XFLAT_ATTRIBUTE_TYPES.add(AtsAttributeTypes.ATS_TEAM_DEFINITION);
+      XFLAT_ATTRIBUTE_TYPES.add(CoreAttributeTypes.WorkTransition);
+      XFLAT_ATTRIBUTE_TYPES.add(CoreAttributeTypes.WorkData);
+      XFLAT_ATTRIBUTE_TYPES.add(AtsAttributeTypes.State);
+      XFLAT_ATTRIBUTE_TYPES.add(AtsAttributeTypes.ActionableItem);
+      XFLAT_ATTRIBUTE_TYPES.add(AtsAttributeTypes.TeamDefinition);
    }
 
    @Override

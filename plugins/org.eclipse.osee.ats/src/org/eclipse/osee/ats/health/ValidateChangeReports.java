@@ -153,7 +153,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
                   OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
                }
                sbFull.append(AHTML.addRowMultiColumnTable(teamArt.getHumanReadableId(),
-                  teamArt.getSoleAttributeValue(AtsAttributeTypes.ATS_LEGACY_PCR_ID, ""), resultStr));
+                  teamArt.getSoleAttributeValue(AtsAttributeTypes.LegacyPcrId, ""), resultStr));
             }
          } catch (Exception ex) {
             sbFull.append(AHTML.addRowSpanMultiColumnTable("Exception: " + ex.getLocalizedMessage(),

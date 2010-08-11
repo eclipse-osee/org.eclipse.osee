@@ -166,7 +166,7 @@ public class TaskXViewer extends WorldXViewer {
          public void run() {
             try {
                boolean success =
-                  PromptChangeUtil.promptChangeAttribute(getSelectedTaskArtifact(), AtsAttributeTypes.ATS_TITLE, false,
+                  PromptChangeUtil.promptChangeAttribute(getSelectedTaskArtifact(), AtsAttributeTypes.Title, false,
                      false);
                if (success) {
                   editor.onDirtied();
@@ -222,7 +222,7 @@ public class TaskXViewer extends WorldXViewer {
          public void run() {
             try {
                boolean success =
-                  ArtifactPromptChange.promptChangeAttribute(AtsAttributeTypes.ATS_ESTIMATED_HOURS,
+                  ArtifactPromptChange.promptChangeAttribute(AtsAttributeTypes.EstimatedHours,
                      getSelectedTaskArtifacts(), false);
                if (success) {
                   editor.onDirtied();
@@ -240,7 +240,7 @@ public class TaskXViewer extends WorldXViewer {
             try {
                boolean success =
                   PromptChangeUtil.promptChangeAttribute(getSelectedTaskArtifacts(),
-                     AtsAttributeTypes.ATS_RELATED_TO_STATE, false, true);
+                     AtsAttributeTypes.RelatedToState, false, true);
                if (success) {
                   editor.onDirtied();
                   update(getSelectedTaskArtifacts().toArray(), null);
@@ -256,7 +256,7 @@ public class TaskXViewer extends WorldXViewer {
          public void run() {
             try {
                boolean success =
-                  PromptChangeUtil.promptChangeAttribute(getSelectedTaskArtifacts(), AtsAttributeTypes.ATS_SMA_NOTE,
+                  PromptChangeUtil.promptChangeAttribute(getSelectedTaskArtifacts(), AtsAttributeTypes.SmaNote,
                      false, true);
                if (success) {
                   editor.onDirtied();
@@ -357,7 +357,7 @@ public class TaskXViewer extends WorldXViewer {
             update(getSelectedTaskArtifacts().toArray(), null);
             return true;
          }
-      } else if (PromptChangeUtil.promptChangeAttribute(getSelectedTaskArtifacts(), AtsAttributeTypes.ATS_RESOLUTION,
+      } else if (PromptChangeUtil.promptChangeAttribute(getSelectedTaskArtifacts(), AtsAttributeTypes.Resolution,
          false, false)) {
          editor.onDirtied();
          update(getSelectedTaskArtifacts().toArray(), null);
@@ -379,12 +379,12 @@ public class TaskXViewer extends WorldXViewer {
 
          if (isSelectedTaskArtifactsAreInWork() && xCol.equals(WorldXViewerFactory.Estimated_Hours_Col)) {
             modified =
-               PromptChangeUtil.promptChangeAttribute(taskArt, AtsAttributeTypes.ATS_ESTIMATED_HOURS, false, false);
+               PromptChangeUtil.promptChangeAttribute(taskArt, AtsAttributeTypes.EstimatedHours, false, false);
          } else if (isSelectedTaskArtifactsAreInWork() && xCol.equals(WorldXViewerFactory.Title_Col)) {
-            modified = PromptChangeUtil.promptChangeAttribute(taskArt, AtsAttributeTypes.ATS_TITLE, false, false);
+            modified = PromptChangeUtil.promptChangeAttribute(taskArt, AtsAttributeTypes.Title, false, false);
          } else if (isSelectedTaskArtifactsAreInWork() && xCol.equals(WorldXViewerFactory.Related_To_State_Col)) {
             modified =
-               PromptChangeUtil.promptChangeAttribute(taskArt, AtsAttributeTypes.ATS_RELATED_TO_STATE, false, false);
+               PromptChangeUtil.promptChangeAttribute(taskArt, AtsAttributeTypes.RelatedToState, false, false);
          } else if (isSelectedTaskArtifactsAreInWork() && xCol.equals(WorldXViewerFactory.Assignees_Col)) {
             modified = PromptChangeUtil.promptChangeAssignees(taskArt, false);
          } else if (isUsingTaskResolutionOptions() && (xCol.equals(WorldXViewerFactory.Hours_Spent_State_Col) || xCol.equals(WorldXViewerFactory.Hours_Spent_Total_Col) || xCol.equals(WorldXViewerFactory.Percent_Complete_State_Col) || xCol.equals(WorldXViewerFactory.Percent_Complete_Total_Col))) {

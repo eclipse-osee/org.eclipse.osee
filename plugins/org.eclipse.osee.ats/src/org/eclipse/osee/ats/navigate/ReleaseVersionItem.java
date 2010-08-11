@@ -89,8 +89,8 @@ public class ReleaseVersionItem extends XNavigateItemAction {
                return;
             }
 
-            verArt.setSoleAttributeValue(AtsAttributeTypes.ATS_RELEASED, true);
-            verArt.setSoleAttributeValue(AtsAttributeTypes.ATS_RELEASE_DATE, new Date());
+            verArt.setSoleAttributeValue(AtsAttributeTypes.Released, true);
+            verArt.setSoleAttributeValue(AtsAttributeTypes.ReleaseDate, new Date());
             verArt.setNextVersion(false);
             verArt.persist();
 

@@ -310,9 +310,9 @@ public final class PromptChangeUtil {
             for (TeamWorkFlowArtifact team : teams) {
                if (dialog.isClearSelected() || !team.getWorldViewPoint().equals(dialog.getSelection())) {
                   if (dialog.isClearSelected()) {
-                     team.deleteAttributes(AtsAttributeTypes.ATS_POINTS);
+                     team.deleteAttributes(AtsAttributeTypes.Points);
                   } else {
-                     team.setSoleAttributeFromString(AtsAttributeTypes.ATS_POINTS, dialog.getSelection());
+                     team.setSoleAttributeFromString(AtsAttributeTypes.Points, dialog.getSelection());
                   }
                   team.saveSMA(transaction);
                }
@@ -426,7 +426,7 @@ public final class PromptChangeUtil {
                diag.setSelectedDate(verArt.getReleaseDate());
             }
             if (diag.open() == 0) {
-               verArt.setSoleAttributeValue(AtsAttributeTypes.ATS_RELEASE_DATE, diag.getSelectedDate());
+               verArt.setSoleAttributeValue(AtsAttributeTypes.ReleaseDate, diag.getSelectedDate());
                verArt.persist();
                return true;
             }
@@ -438,7 +438,7 @@ public final class PromptChangeUtil {
                diag.setSelectedDate(sma.getWorldViewReleaseDate());
             }
             if (diag.open() == 0) {
-               sma.setSoleAttributeValue(AtsAttributeTypes.ATS_RELEASE_DATE, diag.getSelectedDate());
+               sma.setSoleAttributeValue(AtsAttributeTypes.ReleaseDate, diag.getSelectedDate());
                sma.persist();
                return true;
             }
@@ -464,7 +464,7 @@ public final class PromptChangeUtil {
                diag.setSelectedDate(verArt.getEstimatedReleaseDate());
             }
             if (diag.open() == 0) {
-               verArt.setSoleAttributeValue(AtsAttributeTypes.ATS_ESTIMATED_RELEASE_DATE, diag.getSelectedDate());
+               verArt.setSoleAttributeValue(AtsAttributeTypes.EstimatedReleaseDate, diag.getSelectedDate());
                verArt.persist();
                return true;
             }
@@ -478,7 +478,7 @@ public final class PromptChangeUtil {
                diag.setSelectedDate(sma.getWorldViewEstimatedReleaseDate());
             }
             if (diag.open() == 0) {
-               sma.setSoleAttributeValue(AtsAttributeTypes.ATS_ESTIMATED_RELEASE_DATE, diag.getSelectedDate());
+               sma.setSoleAttributeValue(AtsAttributeTypes.EstimatedReleaseDate, diag.getSelectedDate());
                sma.persist();
                return true;
             }

@@ -144,10 +144,10 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
    }
 
    public ReviewBlockType getReviewBlockType() throws OseeCoreException {
-      String typeStr = getSoleAttributeValue(AtsAttributeTypes.ATS_REVIEW_BLOCKS, null);
+      String typeStr = getSoleAttributeValue(AtsAttributeTypes.ReviewBlocks, null);
       if (typeStr == null) {
          // Check old attribute value
-         if (getSoleAttributeValue(AtsAttributeTypes.ATS_BLOCKING_REVIEW, false) == true) {
+         if (getSoleAttributeValue(AtsAttributeTypes.BlockingReview, false) == true) {
             return ReviewBlockType.Transition;
          }
          return ReviewBlockType.None;

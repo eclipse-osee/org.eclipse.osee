@@ -118,46 +118,46 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
 
       // Make changes and persist
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Remote Event Test");
-      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ATS_DESCRIPTION, "description 2");
-      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ATS_CHANGE_TYPE, ChangeType.Problem.name());
-      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ATS_PRIORITY_TYPE, PriorityType.Priority_2.getShortName());
-      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ATS_VALIDATION_REQUIRED, "yes");
+      teamArt.setSoleAttributeFromString(AtsAttributeTypes.Description, "description 2");
+      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ChangeType, ChangeType.Problem.name());
+      teamArt.setSoleAttributeFromString(AtsAttributeTypes.PriorityType, PriorityType.Priority_2.getShortName());
+      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ValidationRequired, "yes");
       teamArt.addRelation(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, getVersion256());
       teamArt.persist(transaction);
       transaction.execute();
 
       // Make changes and persist
-      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ATS_DESCRIPTION, "description 3");
-      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ATS_PROPOSED_RESOLUTION, "this is resolution");
+      teamArt.setSoleAttributeFromString(AtsAttributeTypes.Description, "description 3");
+      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ProposedResolution, "this is resolution");
       teamArt.persist();
 
       // Make changes and persist
       teamArt.deleteRelation(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, getVersion256());
       teamArt.addRelation(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, getVersion257());
-      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ATS_VALIDATION_REQUIRED, "no");
+      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ValidationRequired, "no");
       teamArt.persist();
 
       // Make changes and persist
       transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Remote Event Test");
-      teamArt.deleteAttributes(AtsAttributeTypes.ATS_VALIDATION_REQUIRED);
-      teamArt.deleteAttributes(AtsAttributeTypes.ATS_RESOLUTION);
-      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ATS_DESCRIPTION, "description 4");
-      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ATS_CHANGE_TYPE, ChangeType.Support.name());
-      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ATS_PRIORITY_TYPE, PriorityType.Priority_3.getShortName());
+      teamArt.deleteAttributes(AtsAttributeTypes.ValidationRequired);
+      teamArt.deleteAttributes(AtsAttributeTypes.Resolution);
+      teamArt.setSoleAttributeFromString(AtsAttributeTypes.Description, "description 4");
+      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ChangeType, ChangeType.Support.name());
+      teamArt.setSoleAttributeFromString(AtsAttributeTypes.PriorityType, PriorityType.Priority_3.getShortName());
       teamArt.setRelations(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version,
          Collections.singleton(getVersion258()));
       teamArt.persist(transaction);
       transaction.execute();
 
       // Make changes and persist
-      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ATS_VALIDATION_REQUIRED, "yes");
+      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ValidationRequired, "yes");
       teamArt.persist();
 
       // Make changes and transition
       transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Remote Event Test");
       teamArt.setRelations(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version,
          Collections.singleton(getVersion257()));
-      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ATS_VALIDATION_REQUIRED, "no");
+      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ValidationRequired, "no");
       teamArt.persist(transaction);
       transaction.execute();
 
@@ -206,11 +206,11 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
 
       // Validate values
       TeamWorkFlowArtifact teamArt = actionArt.getTeamWorkFlowArtifacts().iterator().next();
-      testEquals("Description", "description", teamArt.getSoleAttributeValue(AtsAttributeTypes.ATS_DESCRIPTION, null));
+      testEquals("Description", "description", teamArt.getSoleAttributeValue(AtsAttributeTypes.Description, null));
       testEquals("Change Type", ChangeType.Improvement.name(),
-         teamArt.getSoleAttributeValue(AtsAttributeTypes.ATS_CHANGE_TYPE, null));
+         teamArt.getSoleAttributeValue(AtsAttributeTypes.ChangeType, null));
       testEquals("Priority", PriorityType.Priority_1.getShortName(),
-         teamArt.getSoleAttributeValue(AtsAttributeTypes.ATS_PRIORITY_TYPE, null));
+         teamArt.getSoleAttributeValue(AtsAttributeTypes.PriorityType, null));
    }
 
    private void validateActionAtEnd(ActionArtifact actionArt) throws OseeCoreException {
@@ -224,13 +224,13 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
 
       // Validate values
       TeamWorkFlowArtifact teamArt = actionArt.getTeamWorkFlowArtifacts().iterator().next();
-      testEquals("Description", "description 4", teamArt.getSoleAttributeValue(AtsAttributeTypes.ATS_DESCRIPTION, null));
+      testEquals("Description", "description 4", teamArt.getSoleAttributeValue(AtsAttributeTypes.Description, null));
       testEquals("Change Type", ChangeType.Support.name(),
-         teamArt.getSoleAttributeValue(AtsAttributeTypes.ATS_CHANGE_TYPE, null));
+         teamArt.getSoleAttributeValue(AtsAttributeTypes.ChangeType, null));
       testEquals("Priority", PriorityType.Priority_3.getShortName(),
-         teamArt.getSoleAttributeValue(AtsAttributeTypes.ATS_PRIORITY_TYPE, null));
+         teamArt.getSoleAttributeValue(AtsAttributeTypes.PriorityType, null));
       testEquals("Validation Required", "false",
-         String.valueOf(teamArt.getSoleAttributeValue(AtsAttributeTypes.ATS_VALIDATION_REQUIRED, null)));
+         String.valueOf(teamArt.getSoleAttributeValue(AtsAttributeTypes.ValidationRequired, null)));
       testEquals("Targeted Version",
          (teamArt.getTargetedForVersion() != null ? teamArt.getTargetedForVersion().toString() : "not set"), "2.5.7");
       testEquals("State", DefaultTeamState.Analyze.name(), teamArt.getStateMgr().getCurrentStateName());

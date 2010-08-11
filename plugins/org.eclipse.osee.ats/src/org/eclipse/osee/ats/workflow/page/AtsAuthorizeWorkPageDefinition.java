@@ -28,7 +28,7 @@ public class AtsAuthorizeWorkPageDefinition extends WorkPageDefinition {
 
    public AtsAuthorizeWorkPageDefinition(String name, String pageId, String parentId) {
       super(name, pageId, parentId);
-      addWorkItem(AtsAttributeTypes.ATS_WORK_PACKAGE);
-      addWorkItem(AtsAttributeTypes.ATS_ESTIMATED_COMPLETION_DATE);
+      addWorkItem(AtsAttributeTypes.WorkPackage);
+      addWorkItem(AtsAttributeTypes.EstimatedCompletionDate);
    }
 }

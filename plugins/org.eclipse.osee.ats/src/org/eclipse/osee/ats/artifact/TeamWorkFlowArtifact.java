@@ -108,7 +108,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    @Override
    public String getDescription() {
       try {
-         return getSoleAttributeValue(AtsAttributeTypes.ATS_DESCRIPTION, "");
+         return getSoleAttributeValue(AtsAttributeTypes.Description, "");
       } catch (Exception ex) {
          return "Error: " + ex.getLocalizedMessage();
       }
@@ -116,12 +116,12 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
 
    @Override
    public boolean isValidationRequired() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.ATS_VALIDATION_REQUIRED, false);
+      return getSoleAttributeValue(AtsAttributeTypes.ValidationRequired, false);
    }
 
    @Override
    public int getWorldViewPercentRework() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.ATS_PERCENT_REWORK, 0);
+      return getSoleAttributeValue(AtsAttributeTypes.PercentRework, 0);
    }
 
    @Override
@@ -186,19 +186,19 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    }
 
    public ChangeType getChangeType() throws OseeCoreException {
-      return ChangeType.getChangeType(getSoleAttributeValue(AtsAttributeTypes.ATS_CHANGE_TYPE, ""));
+      return ChangeType.getChangeType(getSoleAttributeValue(AtsAttributeTypes.ChangeType, ""));
    }
 
    public void setChangeType(ChangeType type) throws OseeCoreException {
-      setSoleAttributeValue(AtsAttributeTypes.ATS_CHANGE_TYPE, type.name());
+      setSoleAttributeValue(AtsAttributeTypes.ChangeType, type.name());
    }
 
    public PriorityType getPriority() throws OseeCoreException {
-      return PriorityType.getPriority(getSoleAttributeValue(AtsAttributeTypes.ATS_PRIORITY_TYPE, ""));
+      return PriorityType.getPriority(getSoleAttributeValue(AtsAttributeTypes.PriorityType, ""));
    }
 
    public void setPriority(PriorityType type) throws OseeCoreException {
-      setSoleAttributeValue(AtsAttributeTypes.ATS_PRIORITY_TYPE, type.getShortName());
+      setSoleAttributeValue(AtsAttributeTypes.PriorityType, type.getShortName());
    }
 
    /**
@@ -209,11 +209,11 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    }
 
    public void setTeamDefinition(TeamDefinitionArtifact tda) throws OseeCoreException {
-      this.setSoleAttributeValue(AtsAttributeTypes.ATS_TEAM_DEFINITION, tda.getGuid());
+      this.setSoleAttributeValue(AtsAttributeTypes.TeamDefinition, tda.getGuid());
    }
 
    public TeamDefinitionArtifact getTeamDefinition() throws OseeCoreException, OseeCoreException {
-      String guid = this.getSoleAttributeValue(AtsAttributeTypes.ATS_TEAM_DEFINITION, "");
+      String guid = this.getSoleAttributeValue(AtsAttributeTypes.TeamDefinition, "");
       if (!Strings.isValid(guid)) {
          throw new OseeArgumentException(
             "TeamWorkflow [" + getHumanReadableId() + "] has no TeamDefinition associated.");
@@ -237,17 +237,17 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
 
    @Override
    public ChangeType getWorldViewChangeType() throws OseeCoreException {
-      return ChangeType.getChangeType(getSoleAttributeValue(AtsAttributeTypes.ATS_CHANGE_TYPE, ""));
+      return ChangeType.getChangeType(getSoleAttributeValue(AtsAttributeTypes.ChangeType, ""));
    }
 
    @Override
    public String getWorldViewPriority() throws OseeCoreException {
-      return PriorityType.getPriority(getSoleAttributeValue(AtsAttributeTypes.ATS_PRIORITY_TYPE, "")).getShortName();
+      return PriorityType.getPriority(getSoleAttributeValue(AtsAttributeTypes.PriorityType, "")).getShortName();
    }
 
    @Override
    public String getWorldViewUserCommunity() throws OseeCoreException {
-      return getAttributesToString(AtsAttributeTypes.ATS_USER_COMMUNITY);
+      return getAttributesToString(AtsAttributeTypes.UserCommunity);
    }
 
    @Override
@@ -314,7 +314,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
          return XViewerCells.getCellExceptionString(errStr);
       }
       VersionArtifact verArt = verArts.iterator().next();
-      if (!isCompleted() && !isCancelled() && verArt.getSoleAttributeValue(AtsAttributeTypes.ATS_RELEASED, false)) {
+      if (!isCompleted() && !isCancelled() && verArt.getSoleAttributeValue(AtsAttributeTypes.Released, false)) {
          String errStr =
             "Workflow " + getHumanReadableId() + " targeted for released version, but not completed: " + verArt;
          if (!targetedErrorLogged) {
@@ -436,7 +436,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
 
    @Override
    public String getWorldViewDescription() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.ATS_DESCRIPTION, "");
+      return getSoleAttributeValue(AtsAttributeTypes.Description, "");
    }
 
    /**
@@ -451,10 +451,10 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       if (vers.size() > 0) {
          date = vers.iterator().next().getEstimatedReleaseDate();
          if (date == null) {
-            date = getSoleAttributeValue(AtsAttributeTypes.ATS_ESTIMATED_RELEASE_DATE, null);
+            date = getSoleAttributeValue(AtsAttributeTypes.EstimatedReleaseDate, null);
          }
       } else {
-         date = getSoleAttributeValue(AtsAttributeTypes.ATS_ESTIMATED_RELEASE_DATE, null);
+         date = getSoleAttributeValue(AtsAttributeTypes.EstimatedReleaseDate, null);
       }
       return date;
    }
@@ -471,10 +471,10 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       if (vers.size() > 0) {
          date = vers.iterator().next().getReleaseDate();
          if (date == null) {
-            date = getSoleAttributeValue(AtsAttributeTypes.ATS_RELEASE_DATE, null);
+            date = getSoleAttributeValue(AtsAttributeTypes.ReleaseDate, null);
          }
       } else {
-         date = getSoleAttributeValue(AtsAttributeTypes.ATS_RELEASE_DATE, null);
+         date = getSoleAttributeValue(AtsAttributeTypes.ReleaseDate, null);
       }
       return date;
    }
@@ -495,15 +495,15 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
 
    @Override
    public Date getWorldViewDeadlineDate() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.ATS_NEED_BY, null);
+      return getSoleAttributeValue(AtsAttributeTypes.NeedBy, null);
    }
 
    @Override
    public double getWorldViewWeeklyBenefit() throws OseeCoreException {
-      if (isAttributeTypeValid(AtsAttributeTypes.ATS_WEEKLY_BENEFIT)) {
+      if (isAttributeTypeValid(AtsAttributeTypes.WeeklyBenefit)) {
          return 0;
       }
-      String value = getSoleAttributeValue(AtsAttributeTypes.ATS_WEEKLY_BENEFIT, "");
+      String value = getSoleAttributeValue(AtsAttributeTypes.WeeklyBenefit, "");
       if (value == null || value.equals("")) {
          return 0;
       }

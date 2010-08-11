@@ -638,7 +638,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
    public static void createSMANotesHeader(Composite comp, XFormToolkit toolkit, StateMachineArtifact sma, int horizontalSpan) throws OseeCoreException {
       // Display SMA Note
-      String note = sma.getSoleAttributeValue(AtsAttributeTypes.ATS_SMA_NOTE, "");
+      String note = sma.getSoleAttributeValue(AtsAttributeTypes.SmaNote, "");
       if (!note.equals("")) {
          FormsUtil.createLabelOrHyperlink(comp, toolkit, horizontalSpan, "Note: " + note);
       }

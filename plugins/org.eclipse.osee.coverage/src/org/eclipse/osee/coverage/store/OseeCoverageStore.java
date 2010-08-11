@@ -12,7 +12,6 @@ package org.eclipse.osee.coverage.store;
 
 import java.util.logging.Level;
 import org.eclipse.osee.coverage.internal.Activator;
-import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -57,9 +56,6 @@ public abstract class OseeCoverageStore extends CoverageStore {
    }
 
    public abstract void delete(SkynetTransaction transaction, boolean purge) throws OseeCoreException;
-
-   @Override
-   public abstract void load(CoverageOptionManager coverageOptionManager) throws OseeCoreException;
 
    @Override
    public Result save() {

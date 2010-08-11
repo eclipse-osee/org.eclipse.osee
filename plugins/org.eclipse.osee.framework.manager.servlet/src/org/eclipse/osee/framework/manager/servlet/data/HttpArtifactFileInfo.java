@@ -11,12 +11,11 @@
 package org.eclipse.osee.framework.manager.servlet.data;
 
 import javax.servlet.http.HttpServletRequest;
-import org.eclipse.osee.framework.core.data.Identity;
 
 /**
  * @author Roberto E. Escobar
  */
-public class HttpArtifactFileInfo implements Identity {
+public class HttpArtifactFileInfo {
    private static final int INVALID_BRANCH_ID = -1;
    private static final String GUID_KEY = "guid";
    private static final String BRANCH_NAME_KEY = "branch";
@@ -36,7 +35,6 @@ public class HttpArtifactFileInfo implements Identity {
       this(request.getParameter(GUID_KEY), request.getParameter(BRANCH_NAME_KEY), request.getParameter(BRANCH_ID_KEY));
    }
 
-   @Override
    public String getGuid() {
       return guid;
    }

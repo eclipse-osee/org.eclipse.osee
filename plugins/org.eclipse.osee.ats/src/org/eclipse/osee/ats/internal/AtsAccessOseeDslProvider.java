@@ -12,8 +12,6 @@ package org.eclipse.osee.ats.internal;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import org.eclipse.osee.ats.access.AtsAccessUtil;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.dsl.integration.OseeDslProvider;
 import org.eclipse.osee.framework.core.dsl.integration.util.ModelUtil;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
@@ -22,6 +20,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
@@ -32,8 +31,8 @@ public class AtsAccessOseeDslProvider implements OseeDslProvider {
    private OseeDsl oseeDsl;
 
    private Artifact getStorageArtifact() throws OseeCoreException {
-      return ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.ACCESS_CONTROL_MODEL,
-         AtsAccessUtil.ATS_ACCESS_MODEL_NAME, AtsUtil.getAtsBranch());
+      return ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.AccessControlModel, "ATS CM Access Control",
+         BranchManager.getCommonBranch());
    }
 
    @Override

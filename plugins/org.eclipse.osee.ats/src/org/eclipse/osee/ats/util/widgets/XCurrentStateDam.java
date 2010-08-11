@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.skynet.core.User;
 public class XCurrentStateDam extends XStateAssigneesDam {
 
    public XCurrentStateDam(StateMachineArtifact sma) throws OseeCoreException {
-      super(sma, AtsAttributeTypes.ATS_CURRENT_STATE);
+      super(sma, AtsAttributeTypes.CurrentState);
    }
 
    @Override

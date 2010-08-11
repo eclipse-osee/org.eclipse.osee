@@ -89,7 +89,7 @@ public class AttributeConflict extends Conflict {
       if (attribute != null) {
          return attribute;
       }
-      Collection<Attribute<Object>> localAttributes = getArtifact().getAttributes(getAttributeType().getName());
+      Collection<Attribute<Object>> localAttributes = getArtifact().getAttributes(getAttributeType());
       for (Attribute<Object> localAttribute : localAttributes) {
          if (localAttribute.getId() == attrId) {
             attribute = localAttribute;
@@ -124,7 +124,7 @@ public class AttributeConflict extends Conflict {
       if (destAttribute != null) {
          return destAttribute;
       }
-      Collection<Attribute<Object>> localAttributes = getDestArtifact().getAttributes(getAttributeType().getName());
+      Collection<Attribute<Object>> localAttributes = getDestArtifact().getAttributes(getAttributeType());
       for (Attribute<Object> localAttribute : localAttributes) {
          if (localAttribute.getId() == attrId) {
             destAttribute = localAttribute;
@@ -139,7 +139,7 @@ public class AttributeConflict extends Conflict {
 
    private Attribute<?> getAttribute(Artifact artifact) throws OseeCoreException {
       Attribute<?> attribute = null;
-      Collection<Attribute<Object>> localAttributes = artifact.getAttributes(getAttributeType().getName());
+      Collection<Attribute<Object>> localAttributes = artifact.getAttributes(getAttributeType());
       for (Attribute<Object> localAttribute : localAttributes) {
          if (localAttribute.getId() == attrId) {
             attribute = localAttribute;
@@ -281,7 +281,7 @@ public class AttributeConflict extends Conflict {
       if (DEBUG) {
          System.out.println(String.format("AttributeConflict: Set the Merge Value for attr_id %d", getAttrId()));
       }
-      getArtifact().setSoleAttributeFromString(getAttributeType().getName(), value);
+      getArtifact().setSoleAttributeFromString(getAttributeType(), value);
       getArtifact().persist();
       markStatusToReflectEdit();
       return true;
@@ -298,7 +298,7 @@ public class AttributeConflict extends Conflict {
       if (DEBUG) {
          System.out.println(String.format("AttributeConflict: Set the Merge Value for attr_id %d", getAttrId()));
       }
-      getArtifact().setSoleAttributeValue(getAttributeType().getName(), value);
+      getArtifact().setSoleAttributeValue(getAttributeType(), value);
       getArtifact().persist();
       markStatusToReflectEdit();
       return true;
@@ -317,7 +317,7 @@ public class AttributeConflict extends Conflict {
          System.out.println(String.format("AttributeConflict: Set the Merge Value to the Source Value for attr_id %d",
             getAttrId()));
       }
-      getArtifact().setSoleAttributeValue(getAttributeType().getName(), getSourceObject());
+      getArtifact().setSoleAttributeValue(getAttributeType(), getSourceObject());
       getArtifact().persist();
       markStatusToReflectEdit();
       return true;
@@ -336,7 +336,7 @@ public class AttributeConflict extends Conflict {
          System.out.println(String.format("AttributeConflict: Set the Merge Value to the Dest Value for attr_id %d",
             getAttrId()));
       }
-      getArtifact().setSoleAttributeValue(getAttributeType().getName(), getDestObject());
+      getArtifact().setSoleAttributeValue(getAttributeType(), getDestObject());
       getArtifact().persist();
       markStatusToReflectEdit();
       return true;
@@ -359,7 +359,7 @@ public class AttributeConflict extends Conflict {
          getAttribute().resetToDefaultValue();
          getArtifact().persist();
       } else {
-         getArtifact().setSoleAttributeFromString(getAttributeType().getName(), NO_VALUE);
+         getArtifact().setSoleAttributeFromString(getAttributeType(), NO_VALUE);
          getArtifact().persist();
       }
       computeEqualsValues();

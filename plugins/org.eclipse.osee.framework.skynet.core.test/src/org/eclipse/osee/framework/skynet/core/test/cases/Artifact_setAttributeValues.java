@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import junit.framework.Assert;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -51,7 +52,8 @@ public class Artifact_setAttributeValues {
    public void testSetAttributeValues() throws Exception {
       Branch branch = BranchManager.getBranchByGuid(DemoSawBuilds.SAW_Bld_1.getGuid());
       Assert.assertNotNull(branch);
-      Artifact artifact = ArtifactTypeManager.addArtifact("General Document", branch, getClass().getSimpleName());
+      Artifact artifact =
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, branch, getClass().getSimpleName());
       artifact.setAttributeValues(CoreAttributeTypes.StaticId, firstSet);
       artifact.persist();
 

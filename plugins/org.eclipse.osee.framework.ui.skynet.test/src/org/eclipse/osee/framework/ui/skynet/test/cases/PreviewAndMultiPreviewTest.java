@@ -79,7 +79,8 @@ public class PreviewAndMultiPreviewTest {
          try {
             monitorLog = TestUtil.severeLoggingStart();
             Artifact childArt =
-               ArtifactTypeManager.addArtifact("General Document", branch, getClass().getSimpleName() + "1");
+               ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch,
+                  getClass().getSimpleName() + "1");
             childArt.persist();
             newArt.addChild(childArt);
             WordTemplateRenderer renderer = new WordTemplateRenderer();
@@ -102,7 +103,8 @@ public class PreviewAndMultiPreviewTest {
          try {
             monitorLog = TestUtil.severeLoggingStart();
             Artifact childArt =
-               ArtifactTypeManager.addArtifact("General Document", branch, getClass().getSimpleName() + "1");
+               ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, branch,
+                  getClass().getSimpleName() + "1");
             childArt.persist();
             newArt.addChild(childArt);
             RendererManager.openInJob(artifacts, PresentationType.PREVIEW);
@@ -174,7 +176,8 @@ public class PreviewAndMultiPreviewTest {
          try {
             monitorLog = TestUtil.severeLoggingStart();
             Artifact childArt =
-               ArtifactTypeManager.addArtifact("General Document", branch, getClass().getSimpleName() + "1");
+               ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, branch,
+                  getClass().getSimpleName() + "1");
             childArt.persist();
             newArt.addChild(childArt);
             WordTemplateRenderer renderer = new WordTemplateRenderer();
@@ -204,7 +207,8 @@ public class PreviewAndMultiPreviewTest {
          try {
             monitorLog = TestUtil.severeLoggingStart();
             Artifact childArt =
-               ArtifactTypeManager.addArtifact("General Document", branch, getClass().getSimpleName() + "1");
+               ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, branch,
+                  getClass().getSimpleName() + "1");
             childArt.persist();
             newArt.addChild(childArt);
             RendererManager.openInJob(artifacts, PresentationType.PREVIEW);

@@ -209,7 +209,7 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
          List<String> info = new ArrayList<String>();
          for (IAttributeType attributeType : artifact.getAttributeTypes()) {
             if (selectedItems.contains(attributeType.getGuid())) {
-               String value = artifact.getAttributesToString(attributeType.getName());
+               String value = artifact.getAttributesToString(attributeType);
                if (Strings.isValid(value)) {
                   info.add(value);
                } else {

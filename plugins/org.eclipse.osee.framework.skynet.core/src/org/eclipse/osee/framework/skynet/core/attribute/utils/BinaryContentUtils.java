@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.attribute.utils;
 import java.io.UnsupportedEncodingException;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -61,7 +62,7 @@ public class BinaryContentUtils {
    private static String getExtension(Attribute<?> attribute) throws OseeCoreException {
       String fileTypeExtension = attribute.getAttributeType().getFileTypeExtension();
       if (attribute.isOfType("Native Content")) {
-         fileTypeExtension = attribute.getArtifact().getSoleAttributeValue("Extension", "");
+         fileTypeExtension = attribute.getArtifact().getSoleAttributeValue(CoreAttributeTypes.Extension, "");
       }
       return fileTypeExtension;
    }

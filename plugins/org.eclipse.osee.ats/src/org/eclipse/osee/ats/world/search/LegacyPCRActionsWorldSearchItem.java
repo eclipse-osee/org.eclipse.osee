@@ -55,9 +55,9 @@ public class LegacyPCRActionsWorldSearchItem extends WorldUISearchItem {
       List<AbstractArtifactSearchCriteria> criteria = new ArrayList<AbstractArtifactSearchCriteria>(4);
 
       if (pcrIds != null && pcrIds.size() > 0) {
-         criteria.add(new AttributeCriteria(AtsAttributeTypes.ATS_LEGACY_PCR_ID, pcrIds));
+         criteria.add(new AttributeCriteria(AtsAttributeTypes.LegacyPcrId, pcrIds));
       } else {
-         criteria.add(new AttributeCriteria(AtsAttributeTypes.ATS_LEGACY_PCR_ID));
+         criteria.add(new AttributeCriteria(AtsAttributeTypes.LegacyPcrId));
       }
 
       if (teamDefs != null && teamDefs.size() > 0) {
@@ -65,7 +65,7 @@ public class LegacyPCRActionsWorldSearchItem extends WorldUISearchItem {
          for (TeamDefinitionArtifact teamDef : teamDefs) {
             teamDefGuids.add(teamDef.getGuid());
          }
-         criteria.add(new AttributeCriteria(AtsAttributeTypes.ATS_TEAM_DEFINITION, teamDefGuids));
+         criteria.add(new AttributeCriteria(AtsAttributeTypes.TeamDefinition, teamDefGuids));
       }
 
       if (returnActions) {

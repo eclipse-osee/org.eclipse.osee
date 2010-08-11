@@ -13,6 +13,7 @@ package org.eclipse.osee.ote.define.utilities;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -43,12 +44,12 @@ public class OutfileDataCollector implements IDataListener {
    public void populate(Artifact artifact) throws OseeCoreException {
       Conditions.checkNotNull(artifact, "artifact");
       for (String fieldName : collectedData.keySet()) {
-         String attribute = oteToAttributeMap.getAttributeName(fieldName);
-         if (Strings.isValid(attribute) && artifact.isAttributeTypeValid(attribute)) {
+         IAttributeType attributeType = oteToAttributeMap.getAttributeType(fieldName);
+         if (attributeType != null && artifact.isAttributeTypeValid(attributeType)) {
             try {
                String value = collectedData.get(fieldName);
-               Object object = oteToAttributeMap.asTypedObject(attribute, value);
-               artifact.setSoleAttributeValue(attribute, object);
+               Object object = oteToAttributeMap.asTypedObject(attributeType, value);
+               artifact.setSoleAttributeValue(attributeType, object);
             } catch (Exception ex) {
                OseeLog.log(OteDefinePlugin.class, Level.SEVERE, ex);
             }

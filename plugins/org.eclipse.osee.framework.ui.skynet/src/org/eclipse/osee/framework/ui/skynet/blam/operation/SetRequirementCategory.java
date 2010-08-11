@@ -76,7 +76,7 @@ public class SetRequirementCategory extends AbstractBlam {
       try {
          String canonicalRequirementName = requirementName.trim();
          Artifact requirement = getRequirement(requirementName, canonicalRequirementName);
-         requirement.setSoleAttributeValue("Category", reqPriorities.get(canonicalRequirementName));
+         requirement.setSoleAttributeValue(CoreAttributeTypes.Category, reqPriorities.get(canonicalRequirementName));
          requirement.persist(transaction);
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);

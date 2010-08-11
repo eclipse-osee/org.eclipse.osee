@@ -32,8 +32,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
 public class XActionableItemsDam extends XTextDam {
 
    public XActionableItemsDam(Artifact artifact) throws OseeCoreException {
-      super(AtsAttributeTypes.ATS_ACTIONABLE_ITEM.getUnqualifiedName(), true);
-      setAttributeType(artifact, AtsAttributeTypes.ATS_ACTIONABLE_ITEM);
+      super(AtsAttributeTypes.ActionableItem.getUnqualifiedName(), true);
+      setAttributeType(artifact, AtsAttributeTypes.ActionableItem);
    }
 
    @SuppressWarnings("unused")

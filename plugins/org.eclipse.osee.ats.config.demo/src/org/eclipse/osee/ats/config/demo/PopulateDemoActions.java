@@ -48,6 +48,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -238,9 +239,9 @@ public class PopulateDemoActions extends XNavigateItemAction {
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(SoftwareRequirementStrs.Robot, reqTeam.getWorkingBranch())) {
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
             new StringBuilder("Modifying artifact => ").append(art).toString());
-         art.setSoleAttributeValue(DemoProgramAttributes.CSCI.name(), DemoCscis.Navigation.name());
-         art.setSoleAttributeValue(DemoProgramAttributes.Safety_Criticality.toString(), "I");
-         art.setSoleAttributeValue(DemoProgramAttributes.Subsystem.name(), DemoSubsystems.Navigation.name());
+         art.setSoleAttributeValue(CoreAttributeTypes.Csci, DemoCscis.Navigation.name());
+         art.setSoleAttributeValue(CoreAttributeTypes.SafetyCriticality, "I");
+         art.setSoleAttributeValue(CoreAttributeTypes.Subsystem, DemoSubsystems.Navigation.name());
          Artifact navArt =
             ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Component, DemoSubsystems.Navigation.name(),
                reqTeam.getWorkingBranch());
@@ -251,9 +252,9 @@ public class PopulateDemoActions extends XNavigateItemAction {
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(SoftwareRequirementStrs.Event, reqTeam.getWorkingBranch())) {
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
             new StringBuilder("Modifying artifact => ").append(art).toString());
-         art.setSoleAttributeValue(DemoProgramAttributes.CSCI.name(), DemoCscis.Interface.name());
-         art.setSoleAttributeValue(DemoProgramAttributes.Safety_Criticality.toString(), "IV");
-         art.setSoleAttributeValue(DemoProgramAttributes.Subsystem.name(), DemoSubsystems.Communications.name());
+         art.setSoleAttributeValue(CoreAttributeTypes.Csci, DemoCscis.Interface.name());
+         art.setSoleAttributeValue(CoreAttributeTypes.SafetyCriticality, "IV");
+         art.setSoleAttributeValue(CoreAttributeTypes.Subsystem, DemoSubsystems.Communications.name());
          Artifact robotArt =
             ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Component, DemoSubsystems.Robot_API.name(),
                reqTeam.getWorkingBranch());
@@ -276,8 +277,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Adding artifact => " + name);
          Artifact newArt =
             ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, parentArt.getBranch(), name);
-         newArt.setSoleAttributeValue(DemoProgramAttributes.Safety_Criticality.toString(), "IV");
-         newArt.setSoleAttributeValue(DemoProgramAttributes.Subsystem.name(), DemoSubsystems.Communications.name());
+         newArt.setSoleAttributeValue(CoreAttributeTypes.SafetyCriticality, "IV");
+         newArt.setSoleAttributeValue(CoreAttributeTypes.Subsystem, DemoSubsystems.Communications.name());
          newArt.persist();
          parentArt.addChild(newArt);
          parentArt.persist();
@@ -321,9 +322,9 @@ public class PopulateDemoActions extends XNavigateItemAction {
             reqTeam.getWorkingBranch()).iterator().next();
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
          new StringBuilder("Modifying branch artifact => ").append(branchArtifact).toString());
-      branchArtifact.setSoleAttributeValue(DemoProgramAttributes.CSCI.name(), DemoCscis.Interface.name());
-      branchArtifact.setSoleAttributeValue(DemoProgramAttributes.Safety_Criticality.toString(), "IV");
-      branchArtifact.setSoleAttributeValue(DemoProgramAttributes.Subsystem.name(), DemoSubsystems.Communications.name());
+      branchArtifact.setSoleAttributeValue(CoreAttributeTypes.Csci, DemoCscis.Interface.name());
+      branchArtifact.setSoleAttributeValue(CoreAttributeTypes.SafetyCriticality, "IV");
+      branchArtifact.setSoleAttributeValue(CoreAttributeTypes.Subsystem, DemoSubsystems.Communications.name());
       Artifact comArt =
          ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Component, DemoSubsystems.Robot_API.name(),
             reqTeam.getWorkingBranch());
@@ -335,9 +336,9 @@ public class PopulateDemoActions extends XNavigateItemAction {
             reqTeam.getWorkingBranch()).iterator().next();
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
          new StringBuilder("Modifying parent artifact => ").append(parentArtifact).toString());
-      parentArtifact.setSoleAttributeValue(DemoProgramAttributes.CSCI.name(), DemoCscis.Navigation.name());
-      parentArtifact.setSoleAttributeValue(DemoProgramAttributes.Safety_Criticality.toString(), "V");
-      parentArtifact.setSoleAttributeValue(DemoProgramAttributes.Subsystem.name(),
+      parentArtifact.setSoleAttributeValue(CoreAttributeTypes.Csci, DemoCscis.Navigation.name());
+      parentArtifact.setSoleAttributeValue(CoreAttributeTypes.SafetyCriticality, "V");
+      parentArtifact.setSoleAttributeValue(CoreAttributeTypes.Subsystem,
          DemoSubsystems.Cognitive_Decision_Aiding.name());
       parentArtifact.persist();
 
@@ -367,9 +368,9 @@ public class PopulateDemoActions extends XNavigateItemAction {
          reqTeam.getWorkingBranch())) {
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
             new StringBuilder("Modifying artifact => ").append(art).toString());
-         art.setSoleAttributeValue(DemoProgramAttributes.CSCI.name(), DemoCscis.Interface.name());
-         art.setSoleAttributeValue(DemoProgramAttributes.Safety_Criticality.toString(), "IV");
-         art.setSoleAttributeValue(DemoProgramAttributes.Subsystem.name(), DemoSubsystems.Communications.name());
+         art.setSoleAttributeValue(CoreAttributeTypes.Csci, DemoCscis.Interface.name());
+         art.setSoleAttributeValue(CoreAttributeTypes.SafetyCriticality, "IV");
+         art.setSoleAttributeValue(CoreAttributeTypes.Subsystem, DemoSubsystems.Communications.name());
          Artifact comArt =
             ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Component, DemoSubsystems.Robot_API.name(),
                reqTeam.getWorkingBranch());
@@ -392,8 +393,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Adding artifact => " + name);
          Artifact newArt =
             ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, parentArt.getBranch(), name);
-         newArt.setSoleAttributeValue(DemoProgramAttributes.Safety_Criticality.toString(), "IV");
-         newArt.setSoleAttributeValue(DemoProgramAttributes.Subsystem.name(), DemoSubsystems.Communications.name());
+         newArt.setSoleAttributeValue(CoreAttributeTypes.SafetyCriticality, "IV");
+         newArt.setSoleAttributeValue(CoreAttributeTypes.Subsystem, DemoSubsystems.Communications.name());
          parentArt.addChild(newArt);
 
          newArt.persist();
@@ -434,7 +435,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
                if (aData.getCreateReviews().length > 0) {
                   for (CreateReview createReview : aData.getCreateReviews()) {
                      if (createReview == CreateReview.Decision) {
-                        teamWf.setSoleAttributeValue(AtsAttributeTypes.ATS_VALIDATION_REQUIRED, true);
+                        teamWf.setSoleAttributeValue(AtsAttributeTypes.ValidationRequired, true);
                      }
                   }
                }

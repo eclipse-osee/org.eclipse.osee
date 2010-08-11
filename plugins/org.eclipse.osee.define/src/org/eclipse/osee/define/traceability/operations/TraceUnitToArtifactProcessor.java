@@ -28,6 +28,7 @@ import org.eclipse.osee.define.traceability.data.TestUnitData;
 import org.eclipse.osee.define.traceability.data.TraceMark;
 import org.eclipse.osee.define.traceability.data.TraceUnit;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -136,7 +137,8 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       Artifact traceUnitArtifact = getArtifactFromCache(monitor, traceUnitType, traceUnit.getName());
       if (traceUnitArtifact == null) {
          traceUnitArtifact =
-            ArtifactTypeManager.addArtifact(traceUnit.getTraceUnitType(), transaction.getBranch(), traceUnit.getName());
+            ArtifactTypeManager.addArtifact(ArtifactTypeManager.getType(traceUnit.getTraceUnitType()),
+               transaction.getBranch(), traceUnit.getName());
          artifactWasCreated = true;
       }
 
@@ -235,7 +237,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
 
       private static void createGuidLink(Artifact testCase, Artifact testRun) throws OseeCoreException {
          if (testCase != null) {
-            testRun.setSoleAttributeValue("Test Script GUID", testCase.getGuid());
+            testRun.setSoleAttributeValue(CoreAttributeTypes.TestScriptGuid, testCase.getGuid());
          }
       }
 

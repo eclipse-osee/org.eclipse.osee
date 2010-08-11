@@ -73,7 +73,7 @@ public final class OseeDslRenderer extends FileSystemRenderer {
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
       if (presentationType != GENERALIZED_EDIT && !artifact.isHistorical()) {
-         if (artifact.isOfType(CoreArtifactTypes.ACCESS_CONTROL_MODEL)) {
+         if (artifact.isOfType(CoreArtifactTypes.AccessControlModel)) {
             return SUBTYPE_TYPE_MATCH;
          }
       }

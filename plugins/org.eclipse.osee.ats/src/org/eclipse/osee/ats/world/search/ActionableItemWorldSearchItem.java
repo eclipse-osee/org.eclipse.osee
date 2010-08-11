@@ -136,13 +136,13 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
       }
       List<AbstractArtifactSearchCriteria> criteria = new ArrayList<AbstractArtifactSearchCriteria>();
 
-      criteria.add(new AttributeCriteria(AtsAttributeTypes.ATS_ACTIONABLE_ITEM, actionItemGuids));
+      criteria.add(new AttributeCriteria(AtsAttributeTypes.ActionableItem, actionItemGuids));
       // exclude completed or canceled
       if (!selectedShowFinished) {
          List<String> cancelOrComplete = new ArrayList<String>(2);
          cancelOrComplete.add(DefaultTeamState.Cancelled.name() + ";;;");
          cancelOrComplete.add(DefaultTeamState.Completed.name() + ";;;");
-         criteria.add(new AttributeCriteria(AtsAttributeTypes.ATS_CURRENT_STATE, cancelOrComplete, Operator.NOT_EQUAL));
+         criteria.add(new AttributeCriteria(AtsAttributeTypes.CurrentState, cancelOrComplete, Operator.NOT_EQUAL));
       }
       Collection<Artifact> artifacts =
          ArtifactQuery.getArtifactListFromCriteria(AtsUtil.getAtsBranch(), 1000, criteria);

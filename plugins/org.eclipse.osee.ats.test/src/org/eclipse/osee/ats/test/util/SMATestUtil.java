@@ -34,13 +34,13 @@ public class SMATestUtil {
          if (sma.isCancelledOrCompleted()) {
             Assert.assertEquals("ats.CurrentState wrong " + sma.getHumanReadableId(),
                sma.getStateMgr().getCurrentStateName() + ";;;",
-               sma.getSoleAttributeValue(AtsAttributeTypes.ATS_CURRENT_STATE));
+               sma.getSoleAttributeValue(AtsAttributeTypes.CurrentState));
          }
          Assert.assertEquals("Percent wrong for " + sma.getHumanReadableId(), sma.getWorldViewPercentCompleteTotal(),
             totalPercent);
          Assert.assertEquals("Hours Spent wrong for " + sma.getHumanReadableId(), sma.getWorldViewHoursSpentTotal(),
             hoursSpent);
-         for (String stateValue : sma.getAttributesToStringList(AtsAttributeTypes.ATS_CURRENT_STATE)) {
+         for (String stateValue : sma.getAttributesToStringList(AtsAttributeTypes.CurrentState)) {
             if (stateValue.startsWith(DefaultTeamState.Completed.name())) {
                Assert.assertEquals("ats.State wrong " + sma.getHumanReadableId(), stateValue, "Completed;;;");
             } else if (stateValue.startsWith(DefaultTeamState.Cancelled.name())) {

@@ -29,8 +29,7 @@ public class AttributeTypeUtil {
    public static AttributeType[] getEmptyTypes(Artifact artifact) throws OseeCoreException {
       List<AttributeType> items = new ArrayList<AttributeType>();
       for (AttributeType type : artifact.getAttributeTypes()) {
-         String typeName = type.getName();
-         if (!CoreAttributeTypes.Name.equals(typeName) && artifact.getAttributes(typeName).isEmpty()) {
+         if (!CoreAttributeTypes.Name.equals(type) && artifact.getAttributes(type).isEmpty()) {
             items.add(type);
          }
       }

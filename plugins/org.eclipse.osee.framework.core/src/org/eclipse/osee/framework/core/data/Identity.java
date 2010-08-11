@@ -16,4 +16,6 @@ package org.eclipse.osee.framework.core.data;
  */
 public interface Identity {
    public abstract String getGuid();
+
+   public abstract boolean matches(Identity... identities);
 }

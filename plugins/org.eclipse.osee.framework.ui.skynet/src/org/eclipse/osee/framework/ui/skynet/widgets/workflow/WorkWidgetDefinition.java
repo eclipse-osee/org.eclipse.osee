@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -42,8 +43,8 @@ public class WorkWidgetDefinition extends WorkItemDefinition {
    }
 
    public WorkWidgetDefinition(Artifact artifact) throws OseeCoreException {
-      this(artifact.getName(), artifact.getSoleAttributeValue(WorkItemAttributes.WORK_ID, artifact.getName()));
-      setType(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_TYPE, (String) null));
+      this(artifact.getName(), artifact.getSoleAttributeValue(CoreAttributeTypes.WorkId, artifact.getName()));
+      setType(artifact.getSoleAttributeValue(CoreAttributeTypes.WorkType, (String) null));
       loadWorkDataKeyValueMap(artifact);
 
       DynamicXWidgetLayoutData data = getFromXml(getWorkDataValue(tagName));
@@ -53,7 +54,7 @@ public class WorkWidgetDefinition extends WorkItemDefinition {
    @Override
    public Artifact toArtifact(WriteType writeType) throws OseeCoreException {
       Artifact art = super.toArtifact(writeType);
-      art.setSoleAttributeFromString(WorkItemAttributes.WORK_DATA, tagName + "=" + XWidgetParser.toXml(get()));
+      art.setSoleAttributeFromString(CoreAttributeTypes.WorkData, tagName + "=" + XWidgetParser.toXml(get()));
       return art;
    }
 

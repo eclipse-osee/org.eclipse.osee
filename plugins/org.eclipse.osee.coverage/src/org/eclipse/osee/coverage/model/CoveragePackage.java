@@ -21,12 +21,16 @@ public class CoveragePackage extends CoveragePackageBase {
 
    Date creationDate;
 
-   public CoveragePackage(String name, CoverageOptionManager coverageOptionManager) {
-      this(name, new Date(), coverageOptionManager);
+   public CoveragePackage(String guid, String name, CoverageOptionManager coverageOptionManager) {
+      this(guid, name, new Date(), coverageOptionManager);
    }
 
-   public CoveragePackage(String name, Date runDate, CoverageOptionManager coverageOptionManager) {
-      super(name, coverageOptionManager);
+   public CoveragePackage(String name, CoverageOptionManager coverageOptionManager) {
+      this(null, name, coverageOptionManager);
+   }
+
+   public CoveragePackage(String guid, String name, Date runDate, CoverageOptionManager coverageOptionManager) {
+      super(guid, name, coverageOptionManager);
       this.creationDate = runDate;
    }
 

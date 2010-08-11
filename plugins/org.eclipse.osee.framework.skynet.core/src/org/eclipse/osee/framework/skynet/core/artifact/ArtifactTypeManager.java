@@ -133,12 +133,12 @@ public class ArtifactTypeManager {
       return artifactType;
    }
 
-   public static ArtifactType getType(IArtifactType typeToken) throws OseeCoreException {
-      return getTypeByGuid(typeToken.getGuid());
+   public static ArtifactType getType(IArtifactType artifactType) throws OseeCoreException {
+      return getTypeByGuid(artifactType.getGuid());
    }
 
-   public static int getTypeId(IArtifactType typeToken) throws OseeCoreException {
-      return getType(typeToken).getId();
+   public static int getTypeId(IArtifactType artifactType) throws OseeCoreException {
+      return getType(artifactType).getId();
    }
 
    /**
@@ -171,32 +171,14 @@ public class ArtifactTypeManager {
 
    /**
     * Get a new instance of type artifactTypeName
-    * 
-    * @param artifactTypeName
-    * @param branch
-    * @throws OseeCoreException
     */
-   public static Artifact addArtifact(String artifactTypeName, IOseeBranch branch) throws OseeCoreException {
-      return makeNewArtifact(getType(artifactTypeName), branch);
-   }
-
    public static Artifact addArtifact(IArtifactType artifactType, IOseeBranch branch) throws OseeCoreException {
       return makeNewArtifact(getType(artifactType), branch);
    }
 
    /**
     * Get a new instance of type artifactTypeName and set it's name.
-    * 
-    * @param artifactTypeName
-    * @param branch
-    * @param name
     */
-   public static Artifact addArtifact(String artifactTypeName, IOseeBranch branch, String name) throws OseeCoreException {
-      Artifact artifact = addArtifact(artifactTypeName, branch);
-      artifact.setName(name);
-      return artifact;
-   }
-
    public static Artifact addArtifact(IArtifactType artifactType, IOseeBranch branch, String name) throws OseeCoreException {
       Artifact artifact = makeNewArtifact(getType(artifactType), branch);
       artifact.setName(name);

@@ -92,7 +92,7 @@ public class PeerToPeerReviewWorkflowManager {
             reviewArt.getUserRoleManager().addOrUpdateUserRole(role, false, transaction);
          }
       }
-      reviewArt.setSoleAttributeValue(AtsAttributeTypes.ATS_LOCATION, reviewMaterials);
+      reviewArt.setSoleAttributeValue(AtsAttributeTypes.Location, reviewMaterials);
       reviewArt.getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
       return Result.TrueResult;
    }

@@ -30,8 +30,8 @@ public class AtsImplementWorkPageDefinition extends WorkPageDefinition {
    public AtsImplementWorkPageDefinition(String name, String pageId, String parentId) {
       super(name, pageId, parentId);
       addWorkItem(RuleWorkItemId.atsRequireStateHourSpentPrompt.name());
-      addWorkItem(AtsAttributeTypes.ATS_WORK_PACKAGE);
-      addWorkItem(AtsAttributeTypes.ATS_ESTIMATED_COMPLETION_DATE);
-      addWorkItem(AtsAttributeTypes.ATS_RESOLUTION);
+      addWorkItem(AtsAttributeTypes.WorkPackage);
+      addWorkItem(AtsAttributeTypes.EstimatedCompletionDate);
+      addWorkItem(AtsAttributeTypes.Resolution);
    }
 }

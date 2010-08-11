@@ -151,19 +151,19 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
       }
       List<AbstractArtifactSearchCriteria> criteria = new ArrayList<AbstractArtifactSearchCriteria>();
       if (teamDefinitionGuids.isEmpty()) {
-         criteria.add(new AttributeCriteria(AtsAttributeTypes.ATS_TEAM_DEFINITION));
+         criteria.add(new AttributeCriteria(AtsAttributeTypes.TeamDefinition));
       } else {
-         criteria.add(new AttributeCriteria(AtsAttributeTypes.ATS_TEAM_DEFINITION, teamDefinitionGuids));
+         criteria.add(new AttributeCriteria(AtsAttributeTypes.TeamDefinition, teamDefinitionGuids));
       }
 
       if (!showFinished) {
          List<String> cancelOrComplete = new ArrayList<String>(2);
          cancelOrComplete.add(DefaultTeamState.Cancelled.name() + ";;;");
          cancelOrComplete.add(DefaultTeamState.Completed.name() + ";;;");
-         criteria.add(new AttributeCriteria(AtsAttributeTypes.ATS_CURRENT_STATE, cancelOrComplete, Operator.NOT_EQUAL));
+         criteria.add(new AttributeCriteria(AtsAttributeTypes.CurrentState, cancelOrComplete, Operator.NOT_EQUAL));
       }
       if (changeType != null) {
-         criteria.add(new AttributeCriteria(AtsAttributeTypes.ATS_CHANGE_TYPE, changeType.name()));
+         criteria.add(new AttributeCriteria(AtsAttributeTypes.ChangeType, changeType.name()));
       }
 
       List<Artifact> artifacts = ArtifactQuery.getArtifactListFromCriteria(AtsUtil.getAtsBranch(), 1000, criteria);

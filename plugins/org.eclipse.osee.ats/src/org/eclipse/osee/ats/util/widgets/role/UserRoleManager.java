@@ -43,7 +43,7 @@ public class UserRoleManager {
    private final WeakReference<ReviewSMArtifact> artifactRef;
    private boolean enabled = true;
    private static String ROLE_ITEM_TAG = "Role";
-   private static final IAttributeType ATS_ROLE_STORAGE_TYPE = AtsAttributeTypes.ATS_ROLE;
+   private static final IAttributeType ATS_ROLE_STORAGE_TYPE = AtsAttributeTypes.Role;
 
    private final Matcher roleMatcher = java.util.regex.Pattern.compile(
       "<" + ROLE_ITEM_TAG + ">(.*?)</" + ROLE_ITEM_TAG + ">", Pattern.DOTALL | Pattern.MULTILINE).matcher("");

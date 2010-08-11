@@ -104,7 +104,7 @@ public class ExportChangeReportsAction extends Action {
          List<TeamWorkFlowArtifact> workflows = new ArrayList<TeamWorkFlowArtifact>();
          if (workflows.isEmpty()) {
             List<Artifact> artifacts =
-               ArtifactQuery.getArtifactListFromAttributeValues(AtsAttributeTypes.ATS_LEGACY_PCR_ID, legacyIds,
+               ArtifactQuery.getArtifactListFromAttributeValues(AtsAttributeTypes.LegacyPcrId, legacyIds,
                   CoreBranches.COMMON, legacyIds.size());
             for (Artifact artifact : artifacts) {
                if (artifact.getArtifactType().getGuid().equals("AAMFDjZ1UVAQTXHk2GgA")) {
@@ -194,7 +194,7 @@ public class ExportChangeReportsAction extends Action {
                doSubWork(operation, monitor, 0.50);
             }
             if (!changes.isEmpty() && changes.size() < 4000) {
-               String folderName = workflow.getSoleAttributeValueAsString(AtsAttributeTypes.ATS_LEGACY_PCR_ID, null);
+               String folderName = workflow.getSoleAttributeValueAsString(AtsAttributeTypes.LegacyPcrId, null);
                IOperation subOp = new WordChangeReportOperation(changes, true, folderName);
                doSubWork(subOp, monitor, 0.50);
             } else {

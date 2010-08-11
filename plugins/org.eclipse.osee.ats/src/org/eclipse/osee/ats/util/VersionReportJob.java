@@ -125,15 +125,15 @@ public class VersionReportJob extends Job {
 
    public static String getReleasedString(VersionArtifact verArt) throws OseeCoreException {
       String released = "";
-      if (verArt.isReleased() && verArt.getSoleAttributeValue(AtsAttributeTypes.ATS_RELEASE_DATE, null) != null) {
+      if (verArt.isReleased() && verArt.getSoleAttributeValue(AtsAttributeTypes.ReleaseDate, null) != null) {
          released =
-            " - " + "Released: " + getDateString(verArt.getSoleAttributeValue(AtsAttributeTypes.ATS_RELEASE_DATE,
+            " - " + "Released: " + getDateString(verArt.getSoleAttributeValue(AtsAttributeTypes.ReleaseDate,
                (Date) null));
       }
-      if (verArt.isNextVersion() && verArt.getSoleAttributeValue(AtsAttributeTypes.ATS_ESTIMATED_RELEASE_DATE, null) != null) {
+      if (verArt.isNextVersion() && verArt.getSoleAttributeValue(AtsAttributeTypes.EstimatedReleaseDate, null) != null) {
          released =
             " - " + "Next Release - Estimated Release Date: " + getDateString(verArt.getSoleAttributeValue(
-               AtsAttributeTypes.ATS_ESTIMATED_RELEASE_DATE, (Date) null));
+               AtsAttributeTypes.EstimatedReleaseDate, (Date) null));
       }
       return released;
    }

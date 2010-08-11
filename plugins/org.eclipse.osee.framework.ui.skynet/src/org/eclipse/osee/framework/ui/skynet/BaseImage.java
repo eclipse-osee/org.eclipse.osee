@@ -69,7 +69,7 @@ public class BaseImage implements KeyedImage {
          return ArtifactImageManager.getOverrideImageEnum();
       }
       try {
-         String extension = artifact.getSoleAttributeValue(CoreAttributeTypes.Extension.getName(), "");
+         String extension = artifact.getSoleAttributeValue(CoreAttributeTypes.Extension, "");
          if (Strings.isValid(extension)) {
             return new ProgramImage(extension);
          }

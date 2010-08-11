@@ -231,7 +231,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
             "Targeted Version - Estimated Release Date",
             0,
             iAtsMetricsProvider.getMetricsVersionArtifact() == null ? "Not Set" : iAtsMetricsProvider.getMetricsVersionArtifact().getSoleAttributeValueAsString(
-               AtsAttributeTypes.ATS_ESTIMATED_RELEASE_DATE, "Not Set")));
+               AtsAttributeTypes.EstimatedReleaseDate, "Not Set")));
          lines.add(new XBarGraphLine("Metrics Estimated Release Date", 0,
             getEstimatedReleaseDate() == null ? "Not Set" : getEstimatedReleaseDate().toString()));
          lines.add(new XBarGraphLine("Work-Days Till Release", 0,

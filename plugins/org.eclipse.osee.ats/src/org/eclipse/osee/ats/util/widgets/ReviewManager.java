@@ -76,7 +76,7 @@ public class ReviewManager {
                AtsWorkDefinitions.isValidateReviewBlocking(teamArt.getWorkPageDefinition()) ? ReviewBlockType.Transition : ReviewBlockType.None,
                true);
          decRev.setName(VALIDATE_REVIEW_TITLE);
-         decRev.setSoleAttributeValue(AtsAttributeTypes.ATS_DECISION_REVIEW_OPTIONS,
+         decRev.setSoleAttributeValue(AtsAttributeTypes.DecisionReviewOptions,
             "No;Followup;" + getValidateReviewFollowupUsersStr(teamArt) + "\n" + "Yes;Completed;");
 
          decRev.transition(DecisionReviewArtifact.DecisionReviewState.Decision.name(), teamArt.getOriginator(),
@@ -115,18 +115,18 @@ public class ReviewManager {
 
    public static PeerToPeerReviewArtifact createNewPeerToPeerReview(TeamWorkFlowArtifact teamArt, String reviewTitle, String againstState, User origUser, Date origDate, SkynetTransaction transaction) throws OseeCoreException {
       PeerToPeerReviewArtifact peerToPeerRev =
-         (PeerToPeerReviewArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.PeerToPeerReview.getName(),
+         (PeerToPeerReviewArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.PeerToPeerReview,
             AtsUtil.getAtsBranch(), reviewTitle == null ? "Peer to Peer Review" : reviewTitle);
 
       if (teamArt != null) {
          teamArt.addRelation(AtsRelationTypes.TeamWorkflowToReview_Review, peerToPeerRev);
          if (againstState != null) {
-            peerToPeerRev.setSoleAttributeValue(AtsAttributeTypes.ATS_RELATED_TO_STATE, againstState);
+            peerToPeerRev.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, againstState);
          }
       }
 
       peerToPeerRev.getLog().addLog(LogType.Originated, "", "", origDate, origUser);
-      peerToPeerRev.setSoleAttributeValue(AtsAttributeTypes.ATS_REVIEW_BLOCKS, ReviewBlockType.None.name());
+      peerToPeerRev.setSoleAttributeValue(AtsAttributeTypes.ReviewBlocks, ReviewBlockType.None.name());
 
       // Initialize state machine
       peerToPeerRev.getStateMgr().initializeStateMachine(DecisionReviewArtifact.DecisionReviewState.Prepare.name());
@@ -211,7 +211,7 @@ public class ReviewManager {
    public static Collection<ReviewSMArtifact> getReviews(TeamWorkFlowArtifact teamArt, String stateName) throws OseeCoreException {
       Set<ReviewSMArtifact> arts = new HashSet<ReviewSMArtifact>();
       for (ReviewSMArtifact revArt : getReviews(teamArt)) {
-         if (revArt.getSoleAttributeValue(AtsAttributeTypes.ATS_RELATED_TO_STATE, "").equals(stateName)) {
+         if (revArt.getSoleAttributeValue(AtsAttributeTypes.RelatedToState, "").equals(stateName)) {
             arts.add(revArt);
          }
       }
@@ -289,24 +289,24 @@ public class ReviewManager {
 
    public static DecisionReviewArtifact createNewDecisionReview(TeamWorkFlowArtifact teamArt, ReviewBlockType reviewBlockType, String title, String relatedToState, String description, String options, Collection<User> assignees) throws OseeCoreException {
       DecisionReviewArtifact decRev =
-         (DecisionReviewArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.DecisionReview.getName(),
+         (DecisionReviewArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.DecisionReview,
             AtsUtil.getAtsBranch(), title);
 
       if (teamArt != null) {
          teamArt.addRelation(AtsRelationTypes.TeamWorkflowToReview_Review, decRev);
       }
       if (relatedToState != null && !relatedToState.equals("")) {
-         decRev.setSoleAttributeValue(AtsAttributeTypes.ATS_RELATED_TO_STATE, relatedToState);
+         decRev.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, relatedToState);
       }
       decRev.getLog().addLog(LogType.Originated, "", "");
       if (description != null && !description.equals("")) {
-         decRev.setSoleAttributeValue(AtsAttributeTypes.ATS_DESCRIPTION, description);
+         decRev.setSoleAttributeValue(AtsAttributeTypes.Description, description);
       }
       if (options != null && !options.equals("")) {
-         decRev.setSoleAttributeValue(AtsAttributeTypes.ATS_DECISION_REVIEW_OPTIONS, options);
+         decRev.setSoleAttributeValue(AtsAttributeTypes.DecisionReviewOptions, options);
       }
       if (reviewBlockType != null) {
-         decRev.setSoleAttributeFromString(AtsAttributeTypes.ATS_REVIEW_BLOCKS, reviewBlockType.name());
+         decRev.setSoleAttributeFromString(AtsAttributeTypes.ReviewBlocks, reviewBlockType.name());
       }
 
       // Initialize state machine

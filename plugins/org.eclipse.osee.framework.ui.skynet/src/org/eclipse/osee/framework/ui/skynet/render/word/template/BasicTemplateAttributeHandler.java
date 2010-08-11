@@ -37,7 +37,7 @@ public final class BasicTemplateAttributeHandler implements ITemplateAttributeHa
    @Override
    public void process(WordMLProducer wordMl, Artifact artifact, TemplateAttribute templateAttribute) throws OseeCoreException {
       AttributeType attributeType = AttributeTypeManager.getType(templateAttribute.getName());
-      Collection<Attribute<Object>> attributes = artifact.getAttributes(attributeType.getName());
+      Collection<Attribute<Object>> attributes = artifact.getAttributes(attributeType);
       if (!attributes.isEmpty()) {
          Attribute<Object> attribute = attributes.iterator().next();
          attributeType = attribute.getAttributeType();
@@ -64,7 +64,7 @@ public final class BasicTemplateAttributeHandler implements ITemplateAttributeHa
          if (attributeType.equals(CoreAttributeTypes.WordTemplateContent)) {
             wordMl.addWordMl((String) attribute.getValue());
          } else {
-            valueList = Collections.toString(", ", artifact.getAttributes(templateAttribute.getName()));
+            valueList = Collections.toString(", ", artifact.getAttributes(attributeType));
             if (templateAttribute.hasFormatting()) {
                if (templateAttribute.getFormat().contains(">x<")) {
                   wordMl.addWordMl(templateAttribute.getFormat().replace(">x<", ">" + valueList + "<"));

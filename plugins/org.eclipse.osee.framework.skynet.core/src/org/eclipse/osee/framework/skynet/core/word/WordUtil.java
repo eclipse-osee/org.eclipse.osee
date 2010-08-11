@@ -29,7 +29,6 @@ import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
@@ -108,11 +107,10 @@ public class WordUtil {
          throw new IllegalArgumentException("branch can not be null");
       }
 
-      AttributeType attributeDescriptor = AttributeTypeManager.getType(CoreAttributeTypes.WordTemplateContent);
-
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
-         chStmt.runPreparedQuery(SELECT_WORD_VALUES, artId, attributeDescriptor.getId(), branch.getId());
+         chStmt.runPreparedQuery(SELECT_WORD_VALUES, artId,
+            AttributeTypeManager.getTypeId(CoreAttributeTypes.WordTemplateContent), branch.getId());
 
          List<Pair<String, Integer>> values = new LinkedList<Pair<String, Integer>>();
          while (chStmt.next()) {

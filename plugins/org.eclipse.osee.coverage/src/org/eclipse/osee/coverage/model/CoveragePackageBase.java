@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.coverage.util.CoverageUtil;
+import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.KeyValueArtifact;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
@@ -28,17 +28,15 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
 /**
  * @author Donald G. Dunne
  */
-public abstract class CoveragePackageBase implements ICoverage, ICoverageUnitProvider {
+public abstract class CoveragePackageBase extends NamedIdentity implements ICoverage, ICoverageUnitProvider {
    List<CoverageUnit> coverageUnits = new ArrayList<CoverageUnit>();
    final XResultData logResultData = new XResultData(false);
-   String guid = GUID.create();
-   String name;
    boolean editable = true;
    protected final CoverageOptionManager coverageOptionManager;
    protected ICoverageUnitFileContentsProvider coverageUnitFileContentsProvider;
 
-   public CoveragePackageBase(String name, CoverageOptionManager coverageOptionManager) {
-      this.name = name;
+   public CoveragePackageBase(String guid, String name, CoverageOptionManager coverageOptionManager) {
+      super(guid, name);
       this.coverageOptionManager = coverageOptionManager;
    }
 
@@ -173,26 +171,12 @@ public abstract class CoveragePackageBase implements ICoverage, ICoverageUnitPro
       return null;
    }
 
-   @Override
-   public String getGuid() {
-      return guid;
-   }
-
    public void setCoverageUnits(List<CoverageUnit> coverageUnits) {
       this.coverageUnits = coverageUnits;
    }
 
-   @Override
-   public String getName() {
-      return name;
-   }
-
    public XResultData getLog() {
       return logResultData;
-   }
-
-   public void setName(String name) {
-      this.name = name;
    }
 
    public boolean isImportAllowed() {
@@ -202,10 +186,6 @@ public abstract class CoveragePackageBase implements ICoverage, ICoverageUnitPro
    @Override
    public boolean isAssignable() {
       return isEditable().isTrue();
-   }
-
-   public void setGuid(String guid) {
-      this.guid = guid;
    }
 
    @Override
@@ -280,36 +260,6 @@ public abstract class CoveragePackageBase implements ICoverage, ICoverageUnitPro
    public abstract void loadKeyValues(KeyValueArtifact keyValueArtifact) throws OseeCoreException;
 
    @Override
-   public int hashCode() {
-      final int prime = 31;
-      int result = 1;
-      result = prime * result + (getGuid() == null ? 0 : getGuid().hashCode());
-      return result;
-   }
-
-   @Override
-   public boolean equals(Object obj) {
-      if (this == obj) {
-         return true;
-      }
-      if (obj == null) {
-         return false;
-      }
-      if (getClass() != obj.getClass()) {
-         return false;
-      }
-      CoveragePackageBase other = (CoveragePackageBase) obj;
-      if (getGuid() == null) {
-         if (other.getGuid() != null) {
-            return false;
-         }
-      } else if (!getGuid().equals(other.getGuid())) {
-         return false;
-      }
-      return true;
-   }
-
-   @Override
    public boolean isFolder() {
       return false;
    }
@@ -334,5 +284,4 @@ public abstract class CoveragePackageBase implements ICoverage, ICoverageUnitPro
    public CoverageUnit createCoverageUnit(ICoverage parent, String name, String location) {
       return new CoverageUnit(parent, name, location, coverageUnitFileContentsProvider);
    }
-
 }

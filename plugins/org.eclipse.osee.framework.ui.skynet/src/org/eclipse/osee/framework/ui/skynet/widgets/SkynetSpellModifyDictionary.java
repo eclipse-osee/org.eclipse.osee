@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -29,8 +30,6 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  * @author Donald G. Dunne
  */
 public class SkynetSpellModifyDictionary implements XTextSpellModifyDictionary, IOseeDictionary {
-
-   private static String ATTRIBUTE_NAME = "Dictionary";
    private static Set<String> dictionary;
    private final boolean debug = false;
 
@@ -59,11 +58,11 @@ public class SkynetSpellModifyDictionary implements XTextSpellModifyDictionary, 
          "Add \"" + word + "\" to " + type + " Dictionary")) {
          try {
             Set<String> words = new HashSet<String>();
-            for (String str : art.getSoleAttributeValue(ATTRIBUTE_NAME, "").split(";")) {
+            for (String str : art.getSoleAttributeValue(CoreAttributeTypes.Dictionary, "").split(";")) {
                words.add(str);
             }
             words.add(word);
-            art.setSoleAttributeValue(ATTRIBUTE_NAME, Collections.toString(";", words));
+            art.setSoleAttributeValue(CoreAttributeTypes.Dictionary, Collections.toString(";", words));
             art.persist();
             loadDictionary(true);
             return true;
@@ -95,7 +94,7 @@ public class SkynetSpellModifyDictionary implements XTextSpellModifyDictionary, 
          dictionary = new HashSet<String>();
          User user = UserManager.getUser();
          if (user != null) {
-            String value = user.getSoleAttributeValue(ATTRIBUTE_NAME, "");
+            String value = user.getSoleAttributeValue(CoreAttributeTypes.Dictionary, "");
             if (value != null) {
                String[] entries = value.split(";");
                for (String str : entries) {
@@ -107,7 +106,7 @@ public class SkynetSpellModifyDictionary implements XTextSpellModifyDictionary, 
                   }
                }
                for (String str : OseeSystemArtifacts.getGlobalPreferenceArtifact().getSoleAttributeValue(
-                  ATTRIBUTE_NAME, "").split(";")) {
+                  CoreAttributeTypes.Dictionary, "").split(";")) {
                   if (debug) {
                      System.out.println("Adding Global => \"" + str + "\"");
                   }

@@ -15,12 +15,12 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.coverage.util.CoverageUtil;
+import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
@@ -28,19 +28,21 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
 /**
  * @author Donald G. Dunne
  */
-public class CoverageItem implements ICoverage {
+public class CoverageItem extends NamedIdentity implements ICoverage {
 
    CoverageOption coverageMethod = CoverageOptionManager.Not_Covered;
    String rationale;
    String orderNumber;
-   String name;
    private final CoverageUnit coverageUnit;
-   String guid = GUID.create();
    private static String PROPERTY_STORE_ID = "coverage.item";
    private ITestUnitProvider testUnitProvider;
 
    public CoverageItem(CoverageUnit coverageUnit, CoverageOption coverageMethod, String orderNumber) {
-      super();
+      this(null, coverageUnit, coverageMethod, orderNumber);
+   }
+
+   public CoverageItem(String guid, CoverageUnit coverageUnit, CoverageOption coverageMethod, String orderNumber) {
+      super(guid, "");
       this.coverageUnit = coverageUnit;
       this.coverageMethod = coverageMethod;
       this.orderNumber = orderNumber;
@@ -49,19 +51,33 @@ public class CoverageItem implements ICoverage {
       }
    }
 
-   public CoverageItem(CoverageUnit parentCoverageUnit, String xml, CoverageOptionManager coverageOptionManager, ITestUnitProvider testUnitProvider) throws OseeCoreException {
-      this(parentCoverageUnit, CoverageOptionManager.Not_Covered, "0");
-      this.testUnitProvider = testUnitProvider;
-      fromXml(xml, coverageOptionManager);
+   public static CoverageItem createCoverageItem(CoverageUnit parentCoverageUnit, String xml, CoverageOptionManager coverageOptionManager, ITestUnitProvider testUnitProvider) throws OseeCoreException {
+      PropertyStore store = new PropertyStore();
+      try {
+         store.load(xml);
+      } catch (Exception ex) {
+         OseeExceptions.wrapAndThrow(ex);
+      }
+      if (!store.getId().equals(PROPERTY_STORE_ID)) {
+         throw new OseeArgumentException(String.format("Invalid store id [%s] for CoverageItem", store.getId()));
+      }
+
+      CoverageItem item =
+         new CoverageItem(store.get("guid"), parentCoverageUnit, CoverageOptionManager.Not_Covered, "0");
+
+      item.setFromPropertyStore(store, coverageOptionManager);
+
+      return item;
    }
 
    /**
     * Copies the coverage unit. Does not copy test units.
+    *
+    * @throws OseeCoreException
     */
-   public CoverageItem copy(CoverageUnit parent) {
-      CoverageItem coverageitem = new CoverageItem(parent, coverageMethod, orderNumber);
-      coverageitem.setGuid(guid);
-      coverageitem.setName(name);
+   public CoverageItem copy(CoverageUnit parent) throws OseeCoreException {
+      CoverageItem coverageitem = new CoverageItem(getGuid(), parent, coverageMethod, orderNumber);
+      coverageitem.setName(getName());
       coverageitem.setOrderNumber(orderNumber);
       coverageitem.setRationale(rationale);
       coverageitem.setTestUnitProvider(testUnitProvider);
@@ -113,12 +129,7 @@ public class CoverageItem implements ICoverage {
    }
 
    public String getNameFull() {
-      return String.format("%s:%s [%s]", getCoverageUnit().getOrderNumber(), orderNumber, name);
-   }
-
-   @Override
-   public String getName() {
-      return name;
+      return String.format("%s:%s [%s]", getCoverageUnit().getOrderNumber(), orderNumber, getName());
    }
 
    @Override
@@ -135,17 +146,8 @@ public class CoverageItem implements ICoverage {
    }
 
    @Override
-   public String getGuid() {
-      return guid;
-   }
-
-   @Override
    public ICoverage getParent() {
       return coverageUnit;
-   }
-
-   public void setGuid(String guid) {
-      this.guid = guid;
    }
 
    public String getTestUnitNames(Collection<CoverageTestUnit> testUnits) {
@@ -166,11 +168,7 @@ public class CoverageItem implements ICoverage {
 
    @Override
    public String getFileContents() {
-      return name;
-   }
-
-   public void setName(String name) {
-      this.name = name;
+      return getName();
    }
 
    @Override
@@ -242,22 +240,11 @@ public class CoverageItem implements ICoverage {
       this.testUnitProvider = testUnitProvider;
    }
 
-   public void fromXml(String xml, CoverageOptionManager coverageOptionManager) throws OseeCoreException {
-      PropertyStore store = new PropertyStore();
-      //      PropertyStoreRegEx store = new PropertyStoreRegEx();
-      try {
-         store.load(xml);
-      } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
-      }
-      if (!store.getId().equals(PROPERTY_STORE_ID)) {
-         throw new OseeArgumentException(String.format("Invalid store id [%s] for CoverageItem", store.getId()));
-      }
+   private void setFromPropertyStore(PropertyStore store, CoverageOptionManager coverageOptionManager) throws OseeCoreException {
       setCoverageMethod(coverageOptionManager.get(store.get("methodType")));
       if (Strings.isValid(store.get("order"))) {
          setOrderNumber(store.get("order"));
       }
-      setGuid(store.get("guid"));
       if (Strings.isValid(store.get("name"))) {
          setName(store.get("name"));
       }
@@ -279,7 +266,7 @@ public class CoverageItem implements ICoverage {
 
    public String toXml(ITestUnitProvider testUnitProvider) throws OseeCoreException {
       PropertyStore store = new PropertyStore(PROPERTY_STORE_ID);
-      store.put("guid", guid);
+      store.put("guid", getGuid());
       if (Strings.isValid(getRationale())) {
          store.put("rationale", rationale);
       }
@@ -292,8 +279,8 @@ public class CoverageItem implements ICoverage {
             store.put("testUnits", testUnitProvider.toXml(this));
          }
       }
-      if (Strings.isValid(name)) {
-         store.put("name", name);
+      if (Strings.isValid(getName())) {
+         store.put("name", getName());
       }
       String toReturn = null;
       try {
@@ -304,38 +291,7 @@ public class CoverageItem implements ICoverage {
       return toReturn;
    }
 
-   @Override
-   public int hashCode() {
-      final int prime = 31;
-      int result = 1;
-      result = prime * result + (guid == null ? 0 : guid.hashCode());
-      return result;
-   }
-
-   @Override
-   public boolean equals(Object obj) {
-      if (this == obj) {
-         return true;
-      }
-      if (obj == null) {
-         return false;
-      }
-      if (getClass() != obj.getClass()) {
-         return false;
-      }
-      CoverageItem other = (CoverageItem) obj;
-      if (guid == null) {
-         if (other.guid != null) {
-            return false;
-         }
-      } else if (!guid.equals(other.guid)) {
-         return false;
-      }
-      return true;
-   }
-
    public ITestUnitProvider getTestUnitProvider() {
       return testUnitProvider;
    }
-
 }

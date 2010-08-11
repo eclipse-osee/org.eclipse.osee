@@ -199,22 +199,22 @@ public class ExcelAtsTaskArtifactExtractor {
                } else if (headerRow[i].equalsIgnoreCase("Resolution")) {
                   String str = row[i];
                   if (str != null && !str.equals("")) {
-                     taskArt.setSoleAttributeValue(AtsAttributeTypes.ATS_RESOLUTION, str);
+                     taskArt.setSoleAttributeValue(AtsAttributeTypes.Resolution, str);
                   }
                } else if (headerRow[i].equalsIgnoreCase("Description")) {
                   String str = row[i];
                   if (str != null && !str.equals("")) {
-                     taskArt.setSoleAttributeValue(AtsAttributeTypes.ATS_DESCRIPTION, str);
+                     taskArt.setSoleAttributeValue(AtsAttributeTypes.Description, str);
                   }
                } else if (headerRow[i].equalsIgnoreCase("Related to State")) {
                   String str = row[i];
                   if (str != null && !str.equals("")) {
-                     taskArt.setSoleAttributeValue(AtsAttributeTypes.ATS_RELATED_TO_STATE, str);
+                     taskArt.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, str);
                   }
                } else if (headerRow[i].equalsIgnoreCase("Notes")) {
                   String str = row[i];
                   if (str != null && !str.equals("")) {
-                     taskArt.setSoleAttributeValue(AtsAttributeTypes.ATS_SMA_NOTE, str);
+                     taskArt.setSoleAttributeValue(AtsAttributeTypes.SmaNote, str);
                   }
                } else if (headerRow[i].equalsIgnoreCase("Title")) {
                   String str = row[i];
@@ -260,7 +260,7 @@ public class ExcelAtsTaskArtifactExtractor {
                         throw new OseeArgumentException(String.format("Invalid Estimated Hours \"%s\" for row %d", str,
                            rowNum));
                      }
-                     taskArt.setSoleAttributeValue(AtsAttributeTypes.ATS_ESTIMATED_HOURS, hours);
+                     taskArt.setSoleAttributeValue(AtsAttributeTypes.EstimatedHours, hours);
                   }
                } else {
                   OseeLog.log(AtsPlugin.class, Level.SEVERE, "Unhandled column => " + headerRow[i]);

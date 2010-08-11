@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
  * @author Roberto E. Escobar
  */
 public class OseeGroup {
-   private static final String GROUP_ARTIFACT_TYPE = "User Group";
    private static final String USERS_GROUP_FOLDER_NAME = "User Groups";
 
    private final String groupName;
@@ -83,14 +82,14 @@ public class OseeGroup {
 
    private Artifact getOrCreateGroupArtifact(String groupName) throws OseeCoreException {
       Branch branch = BranchManager.getCommonBranch();
-      String cacheKey = GROUP_ARTIFACT_TYPE + "." + groupName;
+      String cacheKey = CoreArtifactTypes.UserGroup + "." + groupName;
       Artifact groupArtifact = ArtifactCache.getByTextId(cacheKey, branch);
 
       if (groupArtifact == null) {
          groupArtifact = ArtifactQuery.checkArtifactFromTypeAndName(CoreArtifactTypes.UserGroup, groupName, branch);
          if (groupArtifact == null) {
             Artifact userGroupsFolder = getOrCreateUserGroupsFolder(branch);
-            groupArtifact = ArtifactTypeManager.addArtifact(GROUP_ARTIFACT_TYPE, branch, groupName);
+            groupArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.UserGroup, branch, groupName);
             userGroupsFolder.addChild(groupArtifact);
          }
          ArtifactCache.cacheByTextId(cacheKey, groupArtifact);

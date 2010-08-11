@@ -32,7 +32,7 @@ public class CoverageUnitTest {
       new SimpleCoverageUnitFileContentsProvider();
 
    @Before
-   public void testSetup() {
+   public void testSetup() throws OseeCoreException {
       cu = new CoverageUnit(null, "Top CU", "C:/UserData/", fileContentsProvider);
       cu.setOrderNumber("33");
       ci1 = new CoverageItem(cu, CoverageOptionManager.Test_Unit, "1");
@@ -135,9 +135,11 @@ public class CoverageUnitTest {
 
    /**
     * Test method for {@link org.eclipse.osee.coverage.model.CoverageUnit#setName(java.lang.String)}.
+    *
+    * @throws OseeCoreException
     */
    @Test
-   public void testSetName() {
+   public void testSetName() throws OseeCoreException {
       String current = cu.getName();
       cu.setName("New Name");
       Assert.assertEquals("New Name", cu.getName());
@@ -240,18 +242,6 @@ public class CoverageUnitTest {
       Assert.assertNull(childCu.getParent());
       childCu.setParent(cu);
       Assert.assertEquals(cu, childCu.getParent());
-   }
-
-   /**
-    * Test method for {@link org.eclipse.osee.coverage.model.CoverageUnit#setGuid(java.lang.String)}.
-    */
-   @Test
-   public void testSetGuid() {
-      String current = cu.getGuid();
-      cu.setGuid("New GUID");
-      Assert.assertEquals("New GUID", cu.getGuid());
-      cu.setGuid(current);
-      Assert.assertEquals(current, cu.getGuid());
    }
 
    /**

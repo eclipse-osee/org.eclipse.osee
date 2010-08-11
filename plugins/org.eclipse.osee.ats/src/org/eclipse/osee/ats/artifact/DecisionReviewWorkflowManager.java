@@ -92,7 +92,7 @@ public class DecisionReviewWorkflowManager {
          DecisionReviewArtifact.DecisionReviewState.Prepare.name())) {
          return new Result("Action not in Prepare state");
       }
-      reviewArt.setSoleAttributeValue(AtsAttributeTypes.ATS_ESTIMATED_HOURS, estimateHours);
+      reviewArt.setSoleAttributeValue(AtsAttributeTypes.EstimatedHours, estimateHours);
       reviewArt.getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
       return Result.TrueResult;
    }
@@ -102,7 +102,7 @@ public class DecisionReviewWorkflowManager {
          DecisionReviewArtifact.DecisionReviewState.Decision.name())) {
          return new Result("Action not in Decision state");
       }
-      reviewArt.setSoleAttributeValue(AtsAttributeTypes.ATS_DECISION, decision ? "Yes" : "No");
+      reviewArt.setSoleAttributeValue(AtsAttributeTypes.Decision, decision ? "Yes" : "No");
       reviewArt.getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
       return Result.TrueResult;
    }

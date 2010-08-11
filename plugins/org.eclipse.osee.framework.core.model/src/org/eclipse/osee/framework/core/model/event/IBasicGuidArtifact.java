@@ -10,15 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.event;
 
-import org.eclipse.osee.framework.core.data.Identity;
-
 /**
  * @author Donald G. Dunne
  */
-public interface IBasicGuidArtifact extends Identity {
+public interface IBasicGuidArtifact {
+   public abstract String getGuid();
 
-   String getArtTypeGuid();
+   public abstract String getArtTypeGuid();
 
-   String getBranchGuid();
-
+   public abstract String getBranchGuid();
 }

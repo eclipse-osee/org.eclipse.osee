@@ -94,16 +94,16 @@ public class AtsAddPeerToPeerReviewRule extends WorkRuleDefinition {
             UserManager.getUser(), new Date(), transaction);
       String desc = getValueOrDefault(teamArt, atsAddPeerToPeerReviewRule, PeerToPeerParameter.description);
       if (desc != null && !desc.equals("")) {
-         peerArt.setSoleAttributeFromString(AtsAttributeTypes.ATS_DESCRIPTION, desc);
+         peerArt.setSoleAttributeFromString(AtsAttributeTypes.Description, desc);
       }
       ReviewBlockType reviewBlockType =
          AtsAddDecisionReviewRule.getReviewBlockTypeOrDefault(teamArt, atsAddPeerToPeerReviewRule);
       if (reviewBlockType != null) {
-         peerArt.setSoleAttributeFromString(AtsAttributeTypes.ATS_REVIEW_BLOCKS, reviewBlockType.name());
+         peerArt.setSoleAttributeFromString(AtsAttributeTypes.ReviewBlocks, reviewBlockType.name());
       }
       String location = getValueOrDefault(teamArt, atsAddPeerToPeerReviewRule, PeerToPeerParameter.location);
       if (location != null && location.equals("")) {
-         peerArt.setSoleAttributeFromString(AtsAttributeTypes.ATS_LOCATION, location);
+         peerArt.setSoleAttributeFromString(AtsAttributeTypes.Location, location);
       }
       Collection<User> assignees = AtsAddDecisionReviewRule.getAssigneesOrDefault(teamArt, atsAddPeerToPeerReviewRule);
       if (assignees.size() > 0) {

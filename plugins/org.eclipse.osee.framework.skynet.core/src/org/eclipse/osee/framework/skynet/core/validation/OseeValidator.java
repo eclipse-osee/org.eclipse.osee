@@ -53,10 +53,9 @@ public class OseeValidator {
       return status;
    }
 
-   public IStatus validate(int requiredQualityOfService, Artifact artifact, IAttributeType attributeTypeName, Object proposedValue) {
+   public IStatus validate(int requiredQualityOfService, Artifact artifact, IAttributeType attributeType, Object proposedValue) {
       IStatus status = Status.OK_STATUS;
       try {
-         AttributeType attributeType = AttributeTypeManager.getType(attributeTypeName);
          status = validate(requiredQualityOfService, artifact, attributeType, proposedValue);
       } catch (Exception ex) {
          status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, ex.getLocalizedMessage(), ex);
@@ -89,8 +88,7 @@ public class OseeValidator {
    public IStatus validate(int requiredQualityOfService, Artifact artifact) {
       try {
          for (AttributeType attributeType : artifact.getAttributeTypes()) {
-            String attributeTypeName = attributeType.getName();
-            for (Attribute<?> attribute : artifact.getAttributes(attributeTypeName)) {
+            for (Attribute<?> attribute : artifact.getAttributes(attributeType)) {
                IStatus status = validate(requiredQualityOfService, artifact, attributeType, attribute.getValue());
                if (!status.isOK()) {
                   return status;

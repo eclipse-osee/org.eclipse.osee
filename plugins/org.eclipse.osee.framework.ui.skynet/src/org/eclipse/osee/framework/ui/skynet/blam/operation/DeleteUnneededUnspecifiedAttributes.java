@@ -43,7 +43,7 @@ public class DeleteUnneededUnspecifiedAttributes extends AbstractBlam {
       SkynetTransaction transaction = new SkynetTransaction(branch, "BLAM: Delete unneeded unspecified attributes");
 
       for (Artifact artifact : artifacts) {
-         Collection<Attribute<String>> attributes = artifact.getAttributes(attributeType.getName());
+         Collection<Attribute<String>> attributes = artifact.getAttributes(attributeType);
          for (Attribute<String> attribute1 : attributes) {
             if (!attribute1.getValue().equals(EnumeratedAttribute.UNSPECIFIED_VALUE)) {
                for (Attribute<String> attribute : attributes) {

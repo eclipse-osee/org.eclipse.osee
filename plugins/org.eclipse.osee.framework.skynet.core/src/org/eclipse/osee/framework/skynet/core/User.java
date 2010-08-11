@@ -162,7 +162,7 @@ public class User extends Artifact {
          } catch (Exception ex) {
             OseeExceptions.wrapAndThrow(ex);
          }
-         setSoleAttributeFromString("User Settings", stringWriter.toString());
+         setSoleAttributeFromString(CoreAttributeTypes.UserSettings, stringWriter.toString());
          persist();
       }
    }
@@ -171,7 +171,7 @@ public class User extends Artifact {
       if (userSettings == null) {
          PropertyStore store = new PropertyStore(getGuid());
          try {
-            String settings = getSoleAttributeValue("User Settings", null);
+            String settings = getSoleAttributeValue(CoreAttributeTypes.UserSettings, null);
             if (settings != null) {
                store.load(new StringReader(settings));
             }

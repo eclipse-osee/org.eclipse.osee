@@ -73,7 +73,7 @@ public class UserWorldSearchItem {
          // If include cancelled or completed, need to perform extra search
          // Note: Don't need to do this for Originator, Subscribed or Favorites, cause it does completed canceled in it's own searches
          if (options.contains(UserSearchOption.IncludeCancelled) || options.contains(UserSearchOption.IncludeCompleted)) {
-            searchArts.addAll(SMAUtil.getSMAs(ArtifactQuery.getArtifactListFromAttribute(AtsAttributeTypes.ATS_STATE,
+            searchArts.addAll(SMAUtil.getSMAs(ArtifactQuery.getArtifactListFromAttribute(AtsAttributeTypes.State,
                "%<" + user.getUserId() + ">%", AtsUtil.getAtsBranch())));
          }
       }
@@ -120,7 +120,7 @@ public class UserWorldSearchItem {
    private Collection<StateMachineArtifact> getOriginatorArtifacts() throws OseeCoreException {
       Collection<StateMachineArtifact> originators = new ArrayList<StateMachineArtifact>();
       Collection<StateMachineArtifact> artifacts =
-         Collections.castAll(ArtifactQuery.getArtifactListFromAttribute(AtsAttributeTypes.ATS_LOG,
+         Collections.castAll(ArtifactQuery.getArtifactListFromAttribute(AtsAttributeTypes.Log,
             "%type=\"Originated\" userId=\"" + user.getUserId() + "\"%", AtsUtil.getAtsBranch()));
       // omit historical originators; list current originators
       for (StateMachineArtifact art : artifacts) {

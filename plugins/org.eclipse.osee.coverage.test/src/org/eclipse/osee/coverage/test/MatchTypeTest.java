@@ -31,7 +31,7 @@ public class MatchTypeTest {
 
    public static ICoverageUnitFileContentsProvider fileContentsProvider = new SimpleCoverageUnitFileContentsProvider();
 
-   public CoveragePackage getCoveragePackage() {
+   public CoveragePackage getCoveragePackage() throws OseeCoreException {
       CoveragePackage coveragePackage = new CoveragePackage("Package", CoverageOptionManagerDefault.instance());
       CoverageUnit packageCu = new CoverageUnit(coveragePackage, "Top", "C:/UserData/", fileContentsProvider);
       packageCu.setNamespace("org.this");
@@ -42,7 +42,7 @@ public class MatchTypeTest {
       return coveragePackage;
    }
 
-   public CoverageImport getCoverageImport() {
+   public CoverageImport getCoverageImport() throws OseeCoreException {
       CoverageImport coverageImport = new CoverageImport("Import");
       CoverageUnit importCu = new CoverageUnit(coverageImport, "Top", "C:/UserData/", fileContentsProvider);
       importCu.setNamespace("org.this");

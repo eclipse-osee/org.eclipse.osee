@@ -37,13 +37,13 @@ public class CsvArtifact {
    }
 
    public void setCsvData(String csvData) throws OseeCoreException {
-      artifact.setSoleAttributeFromString(CoreAttributeTypes.NativeContent.getName(), csvData);
+      artifact.setSoleAttributeFromString(CoreAttributeTypes.NativeContent, csvData);
    }
 
    public String getCsvData() throws OseeCoreException {
       String csvData = null;
       if (artifact != null) {
-         csvData = artifact.getSoleAttributeValueAsString(CoreAttributeTypes.NativeContent.getName(), null);
+         csvData = artifact.getSoleAttributeValueAsString(CoreAttributeTypes.NativeContent, null);
       }
       return csvData;
    }
@@ -69,10 +69,10 @@ public class CsvArtifact {
     * @throws OseeCoreException
     */
    public static CsvArtifact generateCsvArtifact(String staticId, String artifactName, String csvData, IOseeBranch branch) throws OseeCoreException {
-      Artifact artifact = ArtifactTypeManager.addArtifact("General Document", branch);
+      Artifact artifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, branch);
       artifact.setName(artifactName);
-      artifact.setSoleAttributeValue("Extension", "csv");
-      artifact.setSoleAttributeFromString(CoreAttributeTypes.NativeContent.getName(), csvData);
+      artifact.setSoleAttributeValue(CoreAttributeTypes.Extension, "csv");
+      artifact.setSoleAttributeFromString(CoreAttributeTypes.NativeContent, csvData);
       StaticIdManager.setSingletonAttributeValue(artifact, staticId);
       return new CsvArtifact(artifact);
    }

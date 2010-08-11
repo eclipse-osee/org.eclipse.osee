@@ -412,9 +412,8 @@ public class WordTemplateProcessor {
                }
             }
          } else {
-
-            if (artifact.isAttributeTypeValid(attributeName)) {
-               AttributeType attributeType = AttributeTypeManager.getType(attributeName);
+            AttributeType attributeType = AttributeTypeManager.getType(attributeName);
+            if (artifact.isAttributeTypeValid(attributeType)) {
                processAttribute(variableMap, artifact, wordMl, attributeElement, attributeType, false,
                   presentationType, multipleArtifacts);
             }

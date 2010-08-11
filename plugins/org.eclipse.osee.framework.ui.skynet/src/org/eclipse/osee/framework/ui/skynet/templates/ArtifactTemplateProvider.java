@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -45,7 +46,7 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
          templates =
             ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.RendererTemplate, BranchManager.getCommonBranch());
          for (Artifact art : templates) {
-            Collection<Attribute<String>> attrs = art.getAttributes("Template Match Criteria");
+            Collection<Attribute<String>> attrs = art.getAttributes(CoreAttributeTypes.TemplateMatchCriteria);
             for (Attribute<String> attr : attrs) {
                String matchCriteria = attr.getValue();
                Artifact cachedArt = templateMap.get(matchCriteria);

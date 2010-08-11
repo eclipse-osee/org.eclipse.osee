@@ -77,7 +77,7 @@ public class NewActionPage1 extends WizardPage {
 
       try {
          String xWidgetXml =
-            "<WorkPage><XWidget displayName=\"Title\" required=\"true\" xwidgetType=\"XText\" toolTip=\"" + AtsAttributeTypes.ATS_TITLE.getDescription() + "\"/></WorkPage>";
+            "<WorkPage><XWidget displayName=\"Title\" required=\"true\" xwidgetType=\"XText\" toolTip=\"" + AtsAttributeTypes.Title.getDescription() + "\"/></WorkPage>";
          Composite comp = new Composite(parent, SWT.NONE);
          comp.setLayout(new GridLayout(1, false));
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -151,7 +151,7 @@ public class NewActionPage1 extends WizardPage {
          }
          ActionableItemArtifact aia = (ActionableItemArtifact) sel.getFirstElement();
          try {
-            descriptionLabel.setText(aia.getSoleAttributeValue(AtsAttributeTypes.ATS_DESCRIPTION, ""));
+            descriptionLabel.setText(aia.getSoleAttributeValue(AtsAttributeTypes.Description, ""));
          } catch (OseeCoreException ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          }

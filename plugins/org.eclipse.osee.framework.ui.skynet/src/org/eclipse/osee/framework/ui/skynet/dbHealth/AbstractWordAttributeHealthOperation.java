@@ -31,9 +31,7 @@ import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.util.HttpProcessor;
@@ -116,12 +114,11 @@ public abstract class AbstractWordAttributeHealthOperation extends DatabaseHealt
 
       @Override
       protected void doWork(IProgressMonitor monitor) throws Exception {
-         IAttributeType[] attributeTypeNames = new IAttributeType[] {WordTemplateContent, WholeWordContent};
+         IAttributeType[] attributeTypes = new IAttributeType[] {WordTemplateContent, WholeWordContent};
 
          monitor.setTaskName("Load Attribute Data");
          List<AttrData> attrDatas = new ArrayList<AttrData>();
-         for (IAttributeType attributeTypeName : attributeTypeNames) {
-            AttributeType attributeType = AttributeTypeManager.getType(attributeTypeName);
+         for (IAttributeType attributeType : attributeTypes) {
             attrDatas.addAll(loadAttributeData(monitor, attributeType));
          }
          monitor.worked(calculateWork(0.20));
@@ -154,11 +151,11 @@ public abstract class AbstractWordAttributeHealthOperation extends DatabaseHealt
          }
       }
 
-      private List<AttrData> loadAttributeData(IProgressMonitor monitor, AttributeType attributeType) throws OseeDataStoreException {
+      private List<AttrData> loadAttributeData(IProgressMonitor monitor, IAttributeType attributeType) throws OseeCoreException {
          List<AttrData> attrData = new ArrayList<AttrData>();
          IOseeStatement chStmt = ConnectionHandler.getStatement();
          try {
-            chStmt.runPreparedQuery(GET_ATTRS, attributeType.getId());
+            chStmt.runPreparedQuery(GET_ATTRS, AttributeTypeManager.getTypeId(attributeType));
             while (chStmt.next()) {
                checkForCancelledStatus(monitor);
                String uri = chStmt.getString("uri");

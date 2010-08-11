@@ -30,13 +30,13 @@ public class AtsAnalyzeWorkPageDefinition extends WorkPageDefinition {
    public AtsAnalyzeWorkPageDefinition(String name, String pageId, String parentId) {
       super(name, pageId, parentId);
       addWorkItem(RuleWorkItemId.atsRequireStateHourSpentPrompt.name());
-      addWorkItem(AtsAttributeTypes.ATS_WORK_PACKAGE);
-      addWorkItem(AtsAttributeTypes.ATS_PROBLEM);
-      addWorkItem(AtsAttributeTypes.ATS_PROPOSED_RESOLUTION);
-      addWorkItem(AtsAttributeTypes.ATS_CHANGE_TYPE);
-      addWorkItem(AtsAttributeTypes.ATS_PRIORITY_TYPE);
-      addWorkItem(AtsAttributeTypes.ATS_NEED_BY);
-      addWorkItem(AtsAttributeTypes.ATS_ESTIMATED_HOURS);
+      addWorkItem(AtsAttributeTypes.WorkPackage);
+      addWorkItem(AtsAttributeTypes.Problem);
+      addWorkItem(AtsAttributeTypes.ProposedResolution);
+      addWorkItem(AtsAttributeTypes.ChangeType);
+      addWorkItem(AtsAttributeTypes.PriorityType);
+      addWorkItem(AtsAttributeTypes.NeedBy);
+      addWorkItem(AtsAttributeTypes.EstimatedHours);
    }
 
 }

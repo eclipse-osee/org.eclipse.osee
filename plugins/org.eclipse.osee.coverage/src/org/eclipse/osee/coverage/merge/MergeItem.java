@@ -27,14 +27,14 @@ public class MergeItem extends MergeItemBase {
    private final ICoverage importItem;
 
    public MergeItem(MergeType mergeType, ICoverage packageItem, ICoverage importItem, boolean isCheckable) {
-      super(importItem == null ? "" : importItem.getGuid(), importItem == null ? String.format("Package [%s]",
+      super(importItem == null ? null : importItem.getGuid(), importItem == null ? String.format("Package [%s]",
          packageItem.getName()) : importItem.getName(), mergeType, isCheckable);
       this.packageItem = packageItem;
       this.importItem = importItem;
    }
 
    public MergeItem(MergeType mergeType, String name) {
-      super("", name, mergeType, false);
+      super(null, name, mergeType, false);
       this.packageItem = null;
       this.importItem = null;
    }

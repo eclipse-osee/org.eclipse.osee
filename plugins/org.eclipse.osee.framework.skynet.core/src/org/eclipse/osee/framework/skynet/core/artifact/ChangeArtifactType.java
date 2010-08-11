@@ -141,7 +141,7 @@ public class ChangeArtifactType {
 
       for (AttributeType attributeType : artifact.getAttributeTypes()) {
          if (!artifactType.isValidAttributeType(attributeType, artifact.getBranch())) {
-            attributesToPurge.addAll(artifact.getAttributes(attributeType.getName()));
+            attributesToPurge.addAll(artifact.getAttributes(attributeType));
          }
       }
    }

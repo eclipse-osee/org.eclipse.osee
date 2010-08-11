@@ -259,8 +259,8 @@ public class TestRunXViewer extends XViewer {
       ArrayList<Artifact> dispositionArtifacts = new ArrayList<Artifact>();
       for (Artifact artifact : selectedArtifacts) {
          if (artifact.isOfType(CoreArtifactTypes.TestRun)) {
-            String name = artifact.getSoleAttributeValueAsString("Name", "");
-            if (name != "") {
+            String name = artifact.getName();
+            if (!name.equals(Artifact.UNNAMED)) {
                Artifact dispoArtifact = null;
                try {
                   dispoArtifact =
@@ -279,7 +279,7 @@ public class TestRunXViewer extends XViewer {
       }
       try {
          returnValue =
-            ArtifactPromptChange.promptChangeAttribute(OteAttributeTypes.TEST_DISPOSITION, dispositionArtifacts, true,
+            ArtifactPromptChange.promptChangeAttribute(OteAttributeTypes.TestDisposition, dispositionArtifacts, true,
                false);
          refresh();
       } catch (Exception ex) {

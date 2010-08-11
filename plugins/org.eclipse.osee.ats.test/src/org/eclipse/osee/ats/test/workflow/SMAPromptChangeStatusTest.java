@@ -165,7 +165,7 @@ public class SMAPromptChangeStatusTest {
 
       // test that if task not in related-to state of workflows's current status, can't change status
       transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
-      taskArt.setSoleAttributeValue(AtsAttributeTypes.ATS_RELATED_TO_STATE,
+      taskArt.setSoleAttributeValue(AtsAttributeTypes.RelatedToState,
          DefaultTeamState.Analyze.name());
       transaction.execute();
       SMAPromptChangeStatus promptChangeStatus = new SMAPromptChangeStatus(tasks);

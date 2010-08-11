@@ -17,12 +17,12 @@ import org.eclipse.osee.framework.core.data.NamedIdentity;
  * @author Ryan D. Brooks
  */
 public class DemoArtifactTypes extends NamedIdentity implements IArtifactType {
-   public static final DemoArtifactTypes DemoCodeTeamWorkflow = new DemoArtifactTypes("ABRNqDKnpGEKAyUm49gA",
-      "Demo Code Team Workflow");
-   public static final DemoArtifactTypes DemoReqTeamWorkflow = new DemoArtifactTypes("ABRO5pC6kCmP35t06RwA",
-      "Demo Req Team Workflow");
-   public static final DemoArtifactTypes DemoTestTeamWorkflow = new DemoArtifactTypes("ABRPeQO1qlCd4J7Bv5AA",
-      "Demo Test Team Workflow");
+
+   // @formatter:off
+   public static final IArtifactType DemoCodeTeamWorkflow = new DemoArtifactTypes("ABRNqDKnpGEKAyUm49gA", "Demo Code Team Workflow");
+   public static final IArtifactType DemoReqTeamWorkflow = new DemoArtifactTypes("ABRO5pC6kCmP35t06RwA", "Demo Req Team Workflow");
+   public static final IArtifactType DemoTestTeamWorkflow = new DemoArtifactTypes("ABRPeQO1qlCd4J7Bv5AA", "Demo Test Team Workflow");
+   // @formatter:on
 
    private DemoArtifactTypes(String guid, String name) {
       super(guid, name);

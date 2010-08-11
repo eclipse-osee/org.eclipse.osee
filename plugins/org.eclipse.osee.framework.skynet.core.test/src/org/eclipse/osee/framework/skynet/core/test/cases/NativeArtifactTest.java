@@ -54,15 +54,15 @@ public class NativeArtifactTest {
    @org.junit.Test
    public void testGetFileExtension() throws Exception {
       Artifact nativeArtifact = getNativeArtifact();
-      assertTrue(nativeArtifact.getSoleAttributeValue(CoreAttributeTypes.Extension.getName(), "").equals("csv"));
+      assertTrue(nativeArtifact.getSoleAttributeValue(CoreAttributeTypes.Extension, "").equals("csv"));
    }
 
    @org.junit.Test
    public void testSetAndGetValueAsString() throws Exception {
       Artifact nativeArtifact = getNativeArtifact();
-      nativeArtifact.setSoleAttributeFromString(CoreAttributeTypes.NativeContent.getName(), "hello world");
+      nativeArtifact.setSoleAttributeFromString(CoreAttributeTypes.NativeContent, "hello world");
       nativeArtifact.persist();
-      String content = nativeArtifact.getSoleAttributeValueAsString(CoreAttributeTypes.NativeContent.getName(), "");
+      String content = nativeArtifact.getSoleAttributeValueAsString(CoreAttributeTypes.NativeContent, "");
       assertEquals("hello world", content);
    }
 
@@ -75,7 +75,7 @@ public class NativeArtifactTest {
       nativeArtifact.persist();
       InputStream inputStream = null;
       try {
-         inputStream = nativeArtifact.getSoleAttributeValue(CoreAttributeTypes.NativeContent.getName(), null);
+         inputStream = nativeArtifact.getSoleAttributeValue(CoreAttributeTypes.NativeContent, null);
          String content = Lib.inputStreamToString(inputStream);
          assertEquals("hello world", content);
       } finally {

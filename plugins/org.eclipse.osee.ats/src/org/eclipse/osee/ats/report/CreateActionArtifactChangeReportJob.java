@@ -105,7 +105,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
       rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"HRID", "Bulld", "UI", attributeType.getName(),
          "RPCR", "Change"}));
       for (TeamWorkFlowArtifact teamArt : teamArts) {
-         String rcprId = teamArt.getSoleAttributeValue(AtsAttributeTypes.ATS_LEGACY_PCR_ID, "");
+         String rcprId = teamArt.getSoleAttributeValue(AtsAttributeTypes.LegacyPcrId, "");
          String result =
             String.format("Processing %s/%s RPCR %s for \"%s\"", x, teamArts.size(), rcprId,
                teamArt.getTeamDefinition().getName());
@@ -124,7 +124,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
    }
 
    private static void processTeam(TeamWorkFlowArtifact teamArt, String buildId, IAttributeType attributeType, ICommitConfigArtifact commitConfigArt, XResultData rd) throws OseeCoreException {
-      String rpcrNum = teamArt.getSoleAttributeValue(AtsAttributeTypes.ATS_LEGACY_PCR_ID, "");
+      String rpcrNum = teamArt.getSoleAttributeValue(AtsAttributeTypes.LegacyPcrId, "");
       ChangeData changeData = teamArt.getBranchMgr().getChangeData(commitConfigArt);
       for (Artifact modArt : changeData.getArtifacts(KindType.Artifact, ModificationType.NEW, ModificationType.MODIFIED)) {
          List<String> attrStrs = modArt.getAttributesToStringList(attributeType);

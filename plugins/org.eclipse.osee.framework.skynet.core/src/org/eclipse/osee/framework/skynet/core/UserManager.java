@@ -235,7 +235,7 @@ public final class UserManager {
          user.setActive(userEnum.isActive());
       } else {
          user =
-            (User) ArtifactTypeManager.addArtifact(CoreArtifactTypes.User.getName(), BranchManager.getCommonBranch(),
+            (User) ArtifactTypeManager.addArtifact(CoreArtifactTypes.User, BranchManager.getCommonBranch(),
                userEnum.getName());
          user.setActive(userEnum.isActive());
          user.setUserID(userEnum.getUserID());

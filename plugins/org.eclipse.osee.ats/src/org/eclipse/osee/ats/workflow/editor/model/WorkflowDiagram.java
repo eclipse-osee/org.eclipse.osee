@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -24,7 +25,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition.TransitionType;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemAttributes;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.WriteType;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
@@ -197,8 +197,7 @@ public class WorkflowDiagram extends ModelElement {
       List<String> stateNames = new ArrayList<String>();
       for (Shape shape : getChildren()) {
          if (WorkPageShape.class.isAssignableFrom(shape.getClass())) {
-            String name =
-               (String) ((WorkPageShape) shape).getPropertyValue(WorkItemAttributes.WORK_PAGE_NAME.getName());
+            String name = (String) ((WorkPageShape) shape).getPropertyValue(CoreAttributeTypes.WorkPageName);
             if (stateNames.contains(name)) {
                return new Result(
                   "Workflow can not have more than one state of same name.  Multiples found of name " + name);

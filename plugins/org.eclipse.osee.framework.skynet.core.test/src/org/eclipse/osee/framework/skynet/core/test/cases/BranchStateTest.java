@@ -80,7 +80,8 @@ public class BranchStateTest {
          assertTrue(workingBranch.isEditable());
 
          Artifact change =
-            ArtifactTypeManager.addArtifact("Software Requirement", workingBranch, "Test Object on Working Branch");
+            ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, workingBranch,
+               "Test Object on Working Branch");
          change.persist();
 
          assertEquals(BranchState.MODIFIED, workingBranch.getBranchState());
@@ -128,7 +129,8 @@ public class BranchStateTest {
          assertEquals(BranchState.CREATED, workingBranch.getBranchState());
          assertTrue(workingBranch.isEditable());
 
-         change = ArtifactTypeManager.addArtifact("Software Requirement", workingBranch, "A commit change");
+         change =
+            ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, workingBranch, "A commit change");
          change.persist();
 
          assertEquals(BranchState.MODIFIED, workingBranch.getBranchState());
@@ -194,8 +196,10 @@ public class BranchStateTest {
       Branch workingBranch = null;
       Artifact change = null;
       try {
-         baseArtifact = ArtifactTypeManager.addArtifact("Software Requirement", DemoSawBuilds.SAW_Bld_1, "Test Object");
-         baseArtifact.setSoleAttributeFromString("Annotation", "This is the base annotation");
+         baseArtifact =
+            ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, DemoSawBuilds.SAW_Bld_1,
+               "Test Object");
+         baseArtifact.setSoleAttributeFromString(CoreAttributeTypes.Annotation, "This is the base annotation");
          baseArtifact.persist();
 
          User user = UserManager.getUser(SystemUser.OseeSystem);
@@ -203,11 +207,12 @@ public class BranchStateTest {
 
          // Add a new artifact on the working branch
          change =
-            ArtifactTypeManager.addArtifact("Software Requirement", workingBranch, "Test Object on Working Branch");
+            ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, workingBranch,
+               "Test Object on Working Branch");
          change.persist();
 
          // Make a change on the parent
-         baseArtifact.setSoleAttributeFromString("Annotation", "This is the updated annotation");
+         baseArtifact.setSoleAttributeFromString(CoreAttributeTypes.Annotation, "This is the updated annotation");
          baseArtifact.persist();
 
          // Update the branch

@@ -64,7 +64,7 @@ public class AtsQueryPerformanceTests {
       List<User> users = UserManager.getUsers();
       User andy = null;
       for (User usr : users) {
-         if (usr.getSoleAttributeValueAsString("Name", "unknown").contains("Finkbeiner")) {
+         if (usr.getName().contains("Finkbeiner")) {
             andy = usr;
             break;
          }

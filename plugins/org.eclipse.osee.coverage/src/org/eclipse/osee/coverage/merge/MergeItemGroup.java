@@ -30,7 +30,7 @@ public class MergeItemGroup extends MergeItemBase {
 
    public MergeItemGroup(MergeType mergeType, ICoverage parentCoverage, Collection<IMergeItem> mergeItems, boolean isCheckable) {
       super(
-         "",
+         null,
          mergeType.toString() + " - " + CoverageUtil.getFullPath(parentCoverage) + "[" + parentCoverage.getName() + "]",
          mergeType, isCheckable);
       this.parentCoverage = parentCoverage;

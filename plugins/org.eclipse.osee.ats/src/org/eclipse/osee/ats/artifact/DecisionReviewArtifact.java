@@ -51,12 +51,12 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
 
    @Override
    public String getWorldViewDecision() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.ATS_DECISION, "");
+      return getSoleAttributeValue(AtsAttributeTypes.Decision, "");
    }
 
    @Override
    public String getWorldViewDescription() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.ATS_DESCRIPTION, "");
+      return getSoleAttributeValue(AtsAttributeTypes.Description, "");
    }
 
    @Override

@@ -40,7 +40,8 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
       super(null, artifact.getArtifactType(), artifact.getBranch());
       this.artifact = artifact;
       this.coverageUnit =
-         new CoverageUnit(parent, artifact.getName(), "", OseeCoverageUnitFileContentsProvider.getInstance(branch));
+         new CoverageUnit(artifact.getGuid(), parent, artifact.getName(), "",
+            OseeCoverageUnitFileContentsProvider.getInstance(branch));
       load(coverageOptionManager);
    }
 
@@ -73,17 +74,14 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
       }
    }
 
-   @Override
    public void load(CoverageOptionManager coverageOptionManager) throws OseeCoreException {
       coverageUnit.clearCoverageUnits();
       coverageUnit.clearCoverageItems();
-      Artifact artifact = getArtifact(false);
       if (artifact != null) {
-         coverageUnit.setName(artifact.getName());
-         coverageUnit.setGuid(artifact.getGuid());
          for (String value : artifact.getAttributesToStringList(CoverageAttributeTypes.Item)) {
             CoverageItem item =
-               new CoverageItem(coverageUnit, value, coverageOptionManager, DbTestUnitProvider.instance());
+               CoverageItem.createCoverageItem(coverageUnit, value, coverageOptionManager,
+                  DbTestUnitProvider.instance());
             coverageUnit.addCoverageItem(item);
          }
          // Don't load file contents until needed

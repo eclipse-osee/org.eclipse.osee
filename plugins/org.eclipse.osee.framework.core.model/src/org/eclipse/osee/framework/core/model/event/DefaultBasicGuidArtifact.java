@@ -16,14 +16,10 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
  * @author Donald G. Dunne
  */
 public class DefaultBasicGuidArtifact implements IBasicGuidArtifact {
-
    private static final long serialVersionUID = -4997763989583925345L;
-   private String branchGuid;
+   private final String branchGuid;
    private String artTypeGuid;
-   private String artGuid;
-
-   public DefaultBasicGuidArtifact() {
-   }
+   private final String artGuid;
 
    public DefaultBasicGuidArtifact(String branchGuid, String artTypeGuid, String guid) {
       this.branchGuid = branchGuid;
@@ -89,16 +85,8 @@ public class DefaultBasicGuidArtifact implements IBasicGuidArtifact {
       return artGuid;
    }
 
-   public void setBranchGuid(String branchGuid) {
-      this.branchGuid = branchGuid;
-   }
-
    public void setArtTypeGuid(String artTypeGuid) {
       this.artTypeGuid = artTypeGuid;
-   }
-
-   public void setGuid(String guid) {
-      this.artGuid = guid;
    }
 
    public boolean is(IArtifactType... artifactTypes) {
@@ -109,5 +97,4 @@ public class DefaultBasicGuidArtifact implements IBasicGuidArtifact {
       }
       return false;
    }
-
 }

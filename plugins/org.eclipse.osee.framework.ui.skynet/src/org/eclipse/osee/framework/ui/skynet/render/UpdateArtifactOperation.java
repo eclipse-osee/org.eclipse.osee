@@ -26,6 +26,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -145,7 +146,7 @@ public class UpdateArtifactOperation extends AbstractOperation {
          String.format("Skipping update - artifact [%s] is read-only", artifact.toString()));
    }
 
-   private void updateNativeArtifact(Artifact artifact, CoreAttributeTypes attributeType) throws OseeCoreException, FileNotFoundException {
+   private void updateNativeArtifact(Artifact artifact, IAttributeType attributeType) throws OseeCoreException, FileNotFoundException {
       if (!artifact.isReadOnly()) {
          InputStream stream = null;
          try {

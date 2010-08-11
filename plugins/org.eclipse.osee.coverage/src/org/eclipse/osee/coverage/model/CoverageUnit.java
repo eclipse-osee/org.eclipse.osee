@@ -17,10 +17,10 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.coverage.util.CoverageUtil;
+import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
@@ -30,14 +30,12 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
  * 
  * @author Donald G. Dunne
  */
-public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverageItemProvider {
+public class CoverageUnit extends NamedIdentity implements ICoverage, ICoverageUnitProvider, ICoverageItemProvider {
 
-   String name;
    String namespace;
    boolean folder;
    String notes;
    String assignees;
-   String guid = GUID.create();
    final List<CoverageItem> coverageItems = new ArrayList<CoverageItem>();
    String location;
    String orderNumber = "";
@@ -46,9 +44,12 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
    ICoverageUnitFileContentsProvider fileContentsProvider;
 
    public CoverageUnit(ICoverage parent, String name, String location, ICoverageUnitFileContentsProvider coverageUnitFileContentsProvider) {
-      super();
+      this(null, parent, name, location, coverageUnitFileContentsProvider);
+   }
+
+   public CoverageUnit(String guid, ICoverage parent, String name, String location, ICoverageUnitFileContentsProvider coverageUnitFileContentsProvider) {
+      super(guid, name);
       this.parent = parent;
-      this.name = name;
       this.location = location;
       this.fileContentsProvider = coverageUnitFileContentsProvider;
       if (parent != null && parent instanceof ICoverageUnitProvider) {
@@ -120,15 +121,6 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
    }
 
    @Override
-   public String getName() {
-      return name;
-   }
-
-   public void setName(String name) {
-      this.name = name;
-   }
-
-   @Override
    public String getLocation() {
       return location;
    }
@@ -150,11 +142,6 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
          throw new OseeStateException("No File Contents Provider Specified");
       }
       this.fileContentsProvider.setFileContents(this, fileContents);
-   }
-
-   @Override
-   public String getGuid() {
-      return guid;
    }
 
    public CoverageUnit getParentCoverageUnit() {
@@ -201,42 +188,8 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
    }
 
    @Override
-   public int hashCode() {
-      final int prime = 31;
-      int result = 1;
-      result = prime * result + (guid == null ? 0 : guid.hashCode());
-      return result;
-   }
-
-   @Override
-   public boolean equals(Object obj) {
-      if (this == obj) {
-         return true;
-      }
-      if (obj == null) {
-         return false;
-      }
-      if (getClass() != obj.getClass()) {
-         return false;
-      }
-      CoverageUnit other = (CoverageUnit) obj;
-      if (guid == null) {
-         if (other.guid != null) {
-            return false;
-         }
-      } else if (!guid.equals(other.guid)) {
-         return false;
-      }
-      return true;
-   }
-
-   @Override
    public ICoverage getParent() {
       return parent;
-   }
-
-   public void setGuid(String guid) {
-      this.guid = guid;
    }
 
    @Override
@@ -332,8 +285,7 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
    }
 
    public CoverageUnit copy(boolean includeItems) throws OseeCoreException {
-      CoverageUnit coverageUnit = new CoverageUnit(parent, name, location, fileContentsProvider);
-      coverageUnit.setGuid(guid);
+      CoverageUnit coverageUnit = new CoverageUnit(getGuid(), parent, getName(), location, fileContentsProvider);
       coverageUnit.setNamespace(namespace);
       coverageUnit.setNotes(notes);
       coverageUnit.setOrderNumber(orderNumber);
@@ -343,8 +295,8 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
       if (includeItems) {
          for (CoverageItem coverageItem : coverageItems) {
             CoverageItem newCoverageItem =
-               new CoverageItem(coverageUnit, coverageItem.toXml(), CoverageOptionManagerDefault.instance(),
-                  coverageItem.getTestUnitProvider());
+               CoverageItem.createCoverageItem(coverageUnit, coverageItem.toXml(),
+                  CoverageOptionManagerDefault.instance(), coverageItem.getTestUnitProvider());
             newCoverageItem.setTestUnitProvider(coverageItem.getTestUnitProvider());
             coverageUnit.addCoverageItem(newCoverageItem);
          }

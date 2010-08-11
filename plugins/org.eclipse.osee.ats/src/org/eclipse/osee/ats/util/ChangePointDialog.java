@@ -49,7 +49,7 @@ public class ChangePointDialog extends ListDialog {
       setContentProvider(new ArrayContentProvider());
       setLabelProvider(new PointLabelProvider());
       try {
-         setInput(AttributeTypeManager.getEnumerationValues(AtsAttributeTypes.ATS_POINTS));
+         setInput(AttributeTypeManager.getEnumerationValues(AtsAttributeTypes.Points));
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }

@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 
@@ -190,7 +191,8 @@ public class WordTemplateManager {
                   performedOutLining = true;
 
                   String headingText =
-                     artifact.getSoleAttributeValue(artifactProcessingTask.getHeadingAttributeName(), "");
+                     artifact.getSoleAttributeValue(
+                        AttributeTypeManager.getType(artifactProcessingTask.getHeadingAttributeName()), "");
                   wordMl.startOutlineSubSection("Times New Roman", headingText, null);
                }
 

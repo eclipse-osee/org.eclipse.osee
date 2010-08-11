@@ -69,13 +69,13 @@ public class RelationOrderingTest {
       parent = createArtifact(CoreArtifactTypes.Folder, branch);
 
       child1 = createArtifact(CoreArtifactTypes.Folder, branch);
-      child1.setSoleAttributeFromString("Name", "a_child");
+      child1.setName("a_child");
 
       child2 = createArtifact(CoreArtifactTypes.Folder, branch);
-      child2.setSoleAttributeFromString("Name", "b_child");
+      child2.setName("b_child");
 
       child3 = createArtifact(CoreArtifactTypes.Folder, branch);
-      child3.setSoleAttributeFromString("Name", "c_child");
+      child3.setName("c_child");
 
       parent.addRelation(CoreRelationTypes.Default_Hierarchical__Child, child1);
       parent.addRelation(CoreRelationTypes.Default_Hierarchical__Child, child2);
@@ -108,9 +108,9 @@ public class RelationOrderingTest {
       checkDesc();
 
       Artifact child4 = createArtifact(CoreArtifactTypes.User, branch);
-      child1.setSoleAttributeFromString("Name", "a_child");
+      child1.setName("a_child");
       Artifact child5 = createArtifact(CoreArtifactTypes.User, branch);
-      child2.setSoleAttributeFromString("Name", "b_child");
+      child2.setName("b_child");
       Artifact child6 = createArtifact(CoreArtifactTypes.User, branch);
 
       parent.addRelation(CoreRelationTypes.Users_User, child4);

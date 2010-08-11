@@ -148,7 +148,7 @@ public abstract class TaskableStateMachineArtifact extends StateMachineArtifact 
    public Collection<TaskArtifact> getTaskArtifacts(String stateName) throws OseeCoreException {
       List<TaskArtifact> arts = new ArrayList<TaskArtifact>();
       for (TaskArtifact taskArt : getTaskArtifacts()) {
-         if (taskArt.getSoleAttributeValue(AtsAttributeTypes.ATS_RELATED_TO_STATE, "").equals(stateName)) {
+         if (taskArt.getSoleAttributeValue(AtsAttributeTypes.RelatedToState, "").equals(stateName)) {
             arts.add(taskArt);
          }
       }
@@ -182,7 +182,7 @@ public abstract class TaskableStateMachineArtifact extends StateMachineArtifact 
       taskArt.getLog().addLog(LogType.StateEntered, "InWork", "");
 
       // Set parent state task is related to
-      taskArt.setSoleAttributeValue(AtsAttributeTypes.ATS_RELATED_TO_STATE, getStateMgr().getCurrentStateName());
+      taskArt.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, getStateMgr().getCurrentStateName());
 
       addRelation(AtsRelationTypes.SmaToTask_Task, taskArt);
 

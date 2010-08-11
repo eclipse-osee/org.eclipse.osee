@@ -255,7 +255,7 @@ public class LoadAIsAndTeamsAction {
             for (String staticId : staticIds) {
                StaticIdManager.setSingletonAttributeValue(teamDefArt, staticId);
             }
-            teamDefArt.setSoleAttributeValue(AtsAttributeTypes.ATS_ACTIONABLE, actionable);
+            teamDefArt.setSoleAttributeValue(AtsAttributeTypes.Actionable, actionable);
          }
          if (!workflowId.equals("")) {
             try {
@@ -326,7 +326,7 @@ public class LoadAIsAndTeamsAction {
       for (DiagramNode childPage : page.getToPages()) {
          addActionableItem(aia, childPage, transaction);
       }
-      aia.setSoleAttributeValue(AtsAttributeTypes.ATS_ACTIONABLE, actionable);
+      aia.setSoleAttributeValue(AtsAttributeTypes.Actionable, actionable);
 
       aia.persist(transaction);
       return aia;

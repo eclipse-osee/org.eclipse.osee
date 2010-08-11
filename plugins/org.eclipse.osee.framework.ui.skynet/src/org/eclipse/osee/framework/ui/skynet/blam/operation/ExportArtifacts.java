@@ -85,7 +85,7 @@ public class ExportArtifacts extends AbstractBlam {
          row[3] = artifact.getName();
          for (AttributeType attributeType : artifact.getAttributeTypes()) {
             if (!attributeType.equals(nameAttributeType)) {
-               String value = artifact.getAttributesToString(attributeType.getName());
+               String value = artifact.getAttributesToString(attributeType);
                if (!value.equals("")) {
                   row[NUM_FIXED_COLUMNS + Arrays.binarySearch(attributeColumns, attributeType)] = value;
                }

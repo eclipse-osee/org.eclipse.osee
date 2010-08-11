@@ -12,7 +12,7 @@ package org.eclipse.osee.coverage.model;
 
 import java.util.Collection;
 import org.eclipse.osee.coverage.util.CoverageImage;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
@@ -21,28 +21,9 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
  * 
  * @author Donald G. Dunne
  */
-public class CoverageTestUnit implements ICoverage {
-
-   String name;
-   String guid = GUID.create();
-
+public class CoverageTestUnit extends NamedIdentity implements ICoverage {
    public CoverageTestUnit(String name) {
-      super();
-      this.name = name;
-   }
-
-   @Override
-   public String getName() {
-      return name;
-   }
-
-   public void setName(String name) {
-      this.name = name;
-   }
-
-   @Override
-   public String getGuid() {
-      return guid;
+      super(null, name);
    }
 
    @Override
@@ -76,10 +57,6 @@ public class CoverageTestUnit implements ICoverage {
    @Override
    public ICoverage getParent() {
       return null;
-   }
-
-   public void setGuid(String guid) {
-      this.guid = guid;
    }
 
    @Override
@@ -136,5 +113,4 @@ public class CoverageTestUnit implements ICoverage {
    public String getOrderNumber() {
       return "";
    }
-
 }

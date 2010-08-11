@@ -59,7 +59,7 @@ public class ShowOpenWorkflowsByArtifactType extends WorldUISearchItem {
          List<String> cancelOrComplete = new ArrayList<String>(2);
          cancelOrComplete.add(DefaultTeamState.Cancelled.name() + ";;;");
          cancelOrComplete.add(DefaultTeamState.Completed.name() + ";;;");
-         criteria.add(new AttributeCriteria(AtsAttributeTypes.ATS_CURRENT_STATE, cancelOrComplete, Operator.NOT_EQUAL));
+         criteria.add(new AttributeCriteria(AtsAttributeTypes.CurrentState, cancelOrComplete, Operator.NOT_EQUAL));
          artifacts = ArtifactQuery.getArtifactListFromTypeAnd(artifactType, AtsUtil.getAtsBranch(), 500, criteria);
       } else {
          artifacts = ArtifactQuery.getArtifactListFromType(artifactType, AtsUtil.getAtsBranch());

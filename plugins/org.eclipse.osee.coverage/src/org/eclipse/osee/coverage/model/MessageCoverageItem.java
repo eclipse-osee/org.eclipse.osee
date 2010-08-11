@@ -12,6 +12,7 @@ package org.eclipse.osee.coverage.model;
 
 import java.util.Collection;
 import java.util.Collections;
+import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
@@ -19,17 +20,10 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
 /**
  * @author Donald G. Dunne
  */
-public class MessageCoverageItem implements ICoverage {
-
-   private final String message;
+public class MessageCoverageItem extends NamedIdentity implements ICoverage {
 
    public MessageCoverageItem(String message) {
-      this.message = message;
-   }
-
-   @Override
-   public String getName() {
-      return message;
+      super(null, message);
    }
 
    @Override
@@ -59,11 +53,6 @@ public class MessageCoverageItem implements ICoverage {
 
    @Override
    public String getFileContents() {
-      return null;
-   }
-
-   @Override
-   public String getGuid() {
       return null;
    }
 
@@ -116,5 +105,4 @@ public class MessageCoverageItem implements ICoverage {
    public String getOrderNumber() {
       return "";
    }
-
 }

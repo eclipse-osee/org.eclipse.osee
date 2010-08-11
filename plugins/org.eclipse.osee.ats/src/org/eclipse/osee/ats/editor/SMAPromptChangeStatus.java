@@ -116,7 +116,7 @@ public class SMAPromptChangeStatus {
             sma.getStateMgr().addAssignee(UserManager.getUser());
          }
          if (options != null) {
-            sma.setSoleAttributeValue(AtsAttributeTypes.ATS_RESOLUTION, selectedOption);
+            sma.setSoleAttributeValue(AtsAttributeTypes.Resolution, selectedOption);
          }
          if (sma instanceof TaskArtifact) {
             ((TaskArtifact) sma).statusPercentChanged(hours, percent, transaction);

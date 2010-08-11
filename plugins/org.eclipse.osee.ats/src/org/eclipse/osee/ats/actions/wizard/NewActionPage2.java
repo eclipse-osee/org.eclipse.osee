@@ -74,11 +74,11 @@ public class NewActionPage2 extends WizardPage {
 
       try {
          StringBuffer sb = new StringBuffer("<WorkPage>");
-         sb.append("<XWidget displayName=\"Description\" height=\"80\" required=\"true\" xwidgetType=\"XText\" fill=\"Vertically\" toolTip=\"" + AtsAttributeTypes.ATS_DESCRIPTION.getDescription() + "\"/>");
-         sb.append("<XWidget displayName=\"Change Type\" storageName=\"ats.Change Type\" xwidgetType=\"XCombo(" + ATSXWidgetOptionResolver.OPTIONS_FROM_ATTRIBUTE_VALIDITY + ")\" required=\"true\" horizontalLabel=\"true\" toolTip=\"" + AtsAttributeTypes.ATS_CHANGE_TYPE.getDescription() + "\"/>");
+         sb.append("<XWidget displayName=\"Description\" height=\"80\" required=\"true\" xwidgetType=\"XText\" fill=\"Vertically\" toolTip=\"" + AtsAttributeTypes.Description.getDescription() + "\"/>");
+         sb.append("<XWidget displayName=\"Change Type\" storageName=\"ats.Change Type\" xwidgetType=\"XCombo(" + ATSXWidgetOptionResolver.OPTIONS_FROM_ATTRIBUTE_VALIDITY + ")\" required=\"true\" horizontalLabel=\"true\" toolTip=\"" + AtsAttributeTypes.ChangeType.getDescription() + "\"/>");
          sb.append("<XWidget displayName=\"Priority\" storageName=\"ats.Priority\" xwidgetType=\"XCombo(" + ATSXWidgetOptionResolver.OPTIONS_FROM_ATTRIBUTE_VALIDITY + ")\" required=\"true\" horizontalLabel=\"true\"/>");
-         sb.append("<XWidget displayName=\"Deadline\" xwidgetType=\"XDate\" horizontalLabel=\"true\" toolTip=\"" + AtsAttributeTypes.ATS_NEED_BY.getDescription() + "\"/>");
-         sb.append("<XWidget displayName=\"Validation Required\" xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" toolTip=\"" + AtsAttributeTypes.ATS_VALIDATION_REQUIRED.getDescription() + "\"/>");
+         sb.append("<XWidget displayName=\"Deadline\" xwidgetType=\"XDate\" horizontalLabel=\"true\" toolTip=\"" + AtsAttributeTypes.NeedBy.getDescription() + "\"/>");
+         sb.append("<XWidget displayName=\"Validation Required\" xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" toolTip=\"" + AtsAttributeTypes.ValidationRequired.getDescription() + "\"/>");
          sb.append("</WorkPage>");
 
          Composite comp = new Composite(parent, SWT.NONE);
