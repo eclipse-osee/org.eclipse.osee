@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -73,6 +72,9 @@ public class SMAEditorBranchEventManager implements IBranchEventListener {
 
    private void handleBranchEvent(BranchEventType branchModType, Branch branch) {
       for (final ISMAEditorEventHandler handler : handlers) {
+         if (handler.isDisposed()) {
+            System.out.println("Unexpected handler disposed but not unregistered.");
+         }
          final StateMachineArtifact sma = handler.getSMAEditor().getSma();
          try {
             if (!sma.isTeamWorkflow()) {
@@ -82,7 +84,7 @@ public class SMAEditorBranchEventManager implements IBranchEventListener {
                return;
             }
             if (branchModType == BranchEventType.Added || branchModType == BranchEventType.Deleted || branchModType == BranchEventType.Purged || branchModType == BranchEventType.Committed) {
-               if (((TeamWorkFlowArtifact) sma).getBranchMgr().getId() != null && ((TeamWorkFlowArtifact) sma).getBranchMgr().getId() != branch.getId()) {
+               if (branch.getAssociatedArtifactId() != sma.getArtId()) {
                   return;
                }
                Displays.ensureInDisplayThread(new Runnable() {

@@ -256,6 +256,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
    public void dispose() {
       OseeEventManager.removeListener(this); // <REM2> Don't need this cause handled through SMAEditorEventManager
       SMAEditorArtifactEventManager.remove(this);
+      SMAEditorBranchEventManager.remove(this);
       if (sma != null && !sma.isDeleted() && sma.isSMAEditorDirty().isTrue()) {
          sma.revertSMA();
       }
