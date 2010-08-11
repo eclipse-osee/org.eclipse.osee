@@ -267,6 +267,7 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
     * initially created. When called upon initial creation, it is called after <code>onBirth()</code>. This allows
     * sub-class artifacts to set default attributes or do default processing.
     */
+   @SuppressWarnings("unused")
    public void onInitializationComplete() throws OseeCoreException {
       // provided for subclass implementation
    }
