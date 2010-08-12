@@ -18,7 +18,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.osee.framework.core.dsl.integration.util.OseeUtil;
+import org.eclipse.osee.framework.core.dsl.integration.util.OseeDslSegmentParser;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -47,12 +47,13 @@ public final class OseeDslRenderer extends FileSystemRenderer {
 
    private static final String COMMAND_ID = "org.eclipse.osee.framework.core.dsl.OseeDsl.editor.command";
 
+   private static final OseeDslSegmentParser parser = new OseeDslSegmentParser();
    private static final class OseeDslArtifactUpdateOperationFactory implements IArtifactUpdateOperationFactory {
 
       @SuppressWarnings("unused")
       @Override
       public IOperation createUpdateOp(File file) throws OseeCoreException {
-         return new OseeDslArtifactUpdateOperation(file);
+         return new OseeDslArtifactUpdateOperation(parser, file);
       }
    };
 
@@ -74,7 +75,7 @@ public final class OseeDslRenderer extends FileSystemRenderer {
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
       if (presentationType != GENERALIZED_EDIT && !artifact.isHistorical()) {
          if (artifact.isOfType(CoreArtifactTypes.AccessControlModel)) {
-            return SUBTYPE_TYPE_MATCH;
+            return ARTIFACT_TYPE_MATCH;
          }
       }
       return NO_MATCH;
@@ -133,9 +134,11 @@ public final class OseeDslRenderer extends FileSystemRenderer {
    public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) throws OseeCoreException {
       Artifact artifact = artifacts.iterator().next();
       StringBuilder builder = new StringBuilder();
-      builder.append(OseeUtil.getOseeDslArtifactSource(artifact));
+      builder.append(parser.getStartTag(artifact));
       builder.append("\n");
       builder.append(artifact.getSoleAttributeValueAsString(CoreAttributeTypes.GeneralStringData, ""));
+      builder.append("\n");
+      builder.append(parser.getEndTag(artifact));
       InputStream inputStream = null;
       try {
          inputStream = new ByteArrayInputStream(builder.toString().getBytes("UTF-8"));

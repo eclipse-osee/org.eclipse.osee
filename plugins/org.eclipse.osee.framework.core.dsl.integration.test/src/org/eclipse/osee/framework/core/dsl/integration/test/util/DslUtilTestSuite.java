@@ -19,6 +19,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ //
 ModelUtilTest.class, //
+   OseeDslSegmentParserTest.class, //
    OseeUtilTest.class, //
 })
 public class DslUtilTestSuite {

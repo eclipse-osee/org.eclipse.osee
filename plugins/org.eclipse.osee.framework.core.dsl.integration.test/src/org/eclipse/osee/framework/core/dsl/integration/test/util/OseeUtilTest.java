@@ -16,7 +16,6 @@ import java.util.Map.Entry;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.dsl.integration.util.OseeUtil;
@@ -30,18 +29,12 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationSideEnum;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.DefaultBasicArtifact;
-import org.eclipse.osee.framework.core.model.IBasicArtifact;
-import org.eclipse.osee.framework.core.model.test.mocks.MockArtifact;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.junit.Test;
 
 /**
@@ -185,61 +178,6 @@ public class OseeUtilTest {
          String actualGuid = OseeUtil.orderTypeNameToGuid(entry.getKey());
          String expectedGuid = entry.getValue();
          Assert.assertEquals(expectedGuid, actualGuid);
-      }
-   }
-
-   @Test(expected = OseeArgumentException.class)
-   public void testGetOseeDslArtifactSourceNullCheck1() throws OseeCoreException {
-      OseeUtil.getOseeDslArtifactSource(null);
-   }
-
-   @Test(expected = OseeArgumentException.class)
-   public void testGetOseeDslArtifactSourceNullCheck2() throws OseeCoreException {
-      IBasicArtifact<?> artifact = new DefaultBasicArtifact(45, "abc", "name");
-      OseeUtil.getOseeDslArtifactSource(artifact);
-   }
-
-   @Test
-   public void testGetOseeDslArtifactSource() throws OseeCoreException {
-      IOseeBranch branch = CoreBranches.COMMON;
-      final String artifactGuid = GUID.create();
-      final String artifactName = "artifactTest";
-      final String branchName = branch.getName();
-      final String branchGuid = branch.getGuid();
-
-      IBasicArtifact<?> artifact = new MockArtifact(artifactGuid, artifactName, branch, CoreArtifactTypes.Artifact, 45);
-
-      String actual = OseeUtil.getOseeDslArtifactSource(artifact);
-      String expected =
-         String.format("//@artifact_source branch/%s/artifact/%s/ (%s:%s)", branchGuid, artifactGuid, branchName,
-            artifactName);
-      Assert.assertEquals(expected, actual);
-   }
-
-   @Test(expected = OseeArgumentException.class)
-   public void testFromOseeDslArtifactSourceNull() throws OseeCoreException {
-      OseeUtil.fromOseeDslArtifactSource(null);
-   }
-
-   @Test
-   public void testFromOseeDslArtifactSource() throws OseeCoreException {
-      final String artifactGuid = GUID.create();
-      final String branchGuid = CoreBranches.COMMON.getGuid();
-      String data = String.format("//@artifact_source branch/%s/artifact/%s/", branchGuid, artifactGuid);
-      checkFromOseeDslSource(data, new Pair<String, String>(branchGuid, artifactGuid));
-
-      data = "//@artifact_source branch//artifact/";
-      checkFromOseeDslSource(data, null);
-   }
-
-   private static void checkFromOseeDslSource(String source, Pair<String, String> expected) throws OseeCoreException {
-      Pair<String, String> actual = OseeUtil.fromOseeDslArtifactSource(source);
-      if (expected == null) {
-         Assert.assertNull(actual);
-      } else {
-         Assert.assertNotNull(actual);
-         Assert.assertEquals(expected.getFirst(), actual.getFirst());
-         Assert.assertEquals(expected.getSecond(), actual.getSecond());
       }
    }
 
