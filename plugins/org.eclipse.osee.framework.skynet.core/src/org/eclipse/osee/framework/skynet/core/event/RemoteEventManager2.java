@@ -109,54 +109,48 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
 
    @Override
    public void onEvent(final RemoteEvent remoteEvent) {
-      Job job =
-         new Job(String.format("[%s] - receiving [%s]", getClass().getSimpleName(),
-            remoteEvent.getClass().getSimpleName())) {
+      Runnable job = new Runnable() {
 
-            @Override
-            protected IStatus run(IProgressMonitor monitor) {
+         @Override
+         public void run() {
 
-               Sender sender = new Sender(remoteEvent.getNetworkSender());
-               // If the sender's sessionId is the same as this client, then this event was
-               // created in this client and returned by remote event manager; ignore and continue
-               if (sender.isLocal()) {
-                  return Status.OK_STATUS;
-               }
-               // Handles TransactionEvents, ArtifactChangeTypeEvents, ArtifactPurgeEvents
-               if (remoteEvent instanceof RemotePersistEvent1) {
-                  try {
-                     RemotePersistEvent1 event1 = (RemotePersistEvent1) remoteEvent;
-                     ArtifactEvent transEvent = FrameworkEventUtil.getPersistEvent(event1);
-                     updateArtifacts(sender, transEvent);
-                     updateRelations(sender, transEvent);
-                     InternalEventManager2.kickArtifactEvent(sender, transEvent);
-                  } catch (Exception ex) {
-                     OseeEventManager.eventLog("REM2: RemoteTransactionEvent1", ex);
-                  }
-               } else if (remoteEvent instanceof RemoteBranchEvent1) {
-                  try {
-                     BranchEvent branchEvent = FrameworkEventUtil.getBranchEvent((RemoteBranchEvent1) remoteEvent);
-                     updateBranches(sender, branchEvent);
-                     InternalEventManager2.kickBranchEvent(sender, branchEvent);
-                  } catch (Exception ex) {
-                     OseeEventManager.eventLog("REM2: RemoteBranchEvent1", ex);
-                  }
-               } else if (remoteEvent instanceof RemoteTransactionEvent1) {
-                  try {
-                     TransactionEvent transEvent =
-                        FrameworkEventUtil.getTransactionEvent((RemoteTransactionEvent1) remoteEvent);
-                     handleTransactionEvent(sender, transEvent);
-                  } catch (Exception ex) {
-                     OseeEventManager.eventLog("REM2: RemoteBranchEvent1", ex);
-                  }
-               }
-               monitor.done();
-               return Status.OK_STATUS;
+            Sender sender = new Sender(remoteEvent.getNetworkSender());
+            // If the sender's sessionId is the same as this client, then this event was
+            // created in this client and returned by remote event manager; ignore and continue
+            if (sender.isLocal()) {
+               return;
             }
-         };
-      job.setSystem(true);
-      job.setUser(false);
-      job.schedule();
+            // Handles TransactionEvents, ArtifactChangeTypeEvents, ArtifactPurgeEvents
+            if (remoteEvent instanceof RemotePersistEvent1) {
+               try {
+                  RemotePersistEvent1 event1 = (RemotePersistEvent1) remoteEvent;
+                  ArtifactEvent transEvent = FrameworkEventUtil.getPersistEvent(event1);
+                  updateArtifacts(sender, transEvent);
+                  updateRelations(sender, transEvent);
+                  InternalEventManager2.kickArtifactEvent(sender, transEvent);
+               } catch (Exception ex) {
+                  OseeEventManager.eventLog("REM2: RemoteTransactionEvent1", ex);
+               }
+            } else if (remoteEvent instanceof RemoteBranchEvent1) {
+               try {
+                  BranchEvent branchEvent = FrameworkEventUtil.getBranchEvent((RemoteBranchEvent1) remoteEvent);
+                  updateBranches(sender, branchEvent);
+                  InternalEventManager2.kickBranchEvent(sender, branchEvent);
+               } catch (Exception ex) {
+                  OseeEventManager.eventLog("REM2: RemoteBranchEvent1", ex);
+               }
+            } else if (remoteEvent instanceof RemoteTransactionEvent1) {
+               try {
+                  TransactionEvent transEvent =
+                     FrameworkEventUtil.getTransactionEvent((RemoteTransactionEvent1) remoteEvent);
+                  handleTransactionEvent(sender, transEvent);
+               } catch (Exception ex) {
+                  OseeEventManager.eventLog("REM2: RemoteBranchEvent1", ex);
+               }
+            }
+         }
+      };
+      job.run();
    }
 
    private void handleTransactionEvent(Sender sender, TransactionEvent transEvent) {

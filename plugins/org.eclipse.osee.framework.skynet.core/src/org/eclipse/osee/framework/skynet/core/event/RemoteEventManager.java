@@ -344,10 +344,11 @@ public class RemoteEventManager {
 
          final List<ArtifactTransactionModifiedEvent> xModifiedEvents =
             new LinkedList<ArtifactTransactionModifiedEvent>();
-         Job job = new Job("Receive Event") {
+         // Don't use Job cause don't want popups on exceptions
+         Runnable job = new Runnable() {
 
             @Override
-            protected IStatus run(IProgressMonitor monitor) {
+            public void run() {
                //               Arrays.sort(events);
 
                Sender lastArtifactRelationModChangeSender = null;
@@ -524,14 +525,9 @@ public class RemoteEventManager {
                      new Sender("RemoteEventManager", lastArtifactRelationModChangeSender.getOseeSession());
                   InternalEventManager.kickPersistEvent(transactionSender, xModifiedEvents);
                }
-
-               return Status.OK_STATUS;
             }
          };
-         job.setSystem(true);
-         job.setUser(false);
-         job.setRule(mutexRule);
-         job.schedule();
+         job.run();
       }
 
       /**
