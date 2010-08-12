@@ -50,7 +50,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData.In
  * @author Ryan D. Brooks
  * @author Jeff C. Phillips
  */
-public final class SkynetPersistOperation extends AbstractLifecycleOperation implements IDbTransactionWork, InsertDataCollector {
+public final class StoreSkynetTransactionOperation extends AbstractLifecycleOperation implements IDbTransactionWork, InsertDataCollector {
    private static final String UPDATE_TXS_NOT_CURRENT =
       "UPDATE osee_txs txs1 SET tx_current = " + TxChange.NOT_CURRENT.getValue() + " WHERE txs1.transaction_id = ? AND txs1.gamma_id = ?";
 
@@ -64,7 +64,7 @@ public final class SkynetPersistOperation extends AbstractLifecycleOperation imp
 
    private boolean executedWithException;
 
-   public SkynetPersistOperation(String name, ILifecycleService service, AbstractLifecyclePoint<?> lifecyclePoint, Branch branch, TransactionRecord transactionRecord, Collection<BaseTransactionData> txDatas, Collection<Artifact> artifactReferences) {
+   public StoreSkynetTransactionOperation(String name, ILifecycleService service, AbstractLifecyclePoint<?> lifecyclePoint, Branch branch, TransactionRecord transactionRecord, Collection<BaseTransactionData> txDatas, Collection<Artifact> artifactReferences) {
       super(service, lifecyclePoint, name, Activator.PLUGIN_ID);
       this.branch = branch;
       this.transactionRecord = transactionRecord;

@@ -348,7 +348,7 @@ public final class SkynetTransaction extends AbstractOperation {
       objectsToCheck.addAll(getArtifactReferences());
       objectsToCheck.addAll(alreadyProcessedArtifacts);
       AbstractLifecyclePoint<?> lifecyclePoint = new SkynetTransactionCheckPoint(getAuthor(), objectsToCheck);
-      return new SkynetPersistOperation(getName(), service, lifecyclePoint, getBranch(), getTransactionRecord(),
+      return new StoreSkynetTransactionOperation(getName(), service, lifecyclePoint, getBranch(), getTransactionRecord(),
          getTransactionData(), getArtifactReferences());
    }
 
