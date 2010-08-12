@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.lifecycle.internal.OperationPointId;
 public abstract class AbstractLifecyclePoint<H extends LifecycleOpHandler> extends AbstractLifecycleVisitor<H> {
 
    protected AbstractLifecyclePoint() {
+      // Protect empty constructor
    }
 
    /**

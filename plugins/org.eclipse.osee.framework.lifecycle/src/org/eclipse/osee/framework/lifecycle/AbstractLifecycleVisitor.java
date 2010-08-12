@@ -39,6 +39,7 @@ public abstract class AbstractLifecycleVisitor<H extends LifecycleHandler> {
    }
 
    protected AbstractLifecycleVisitor() {
+      // Protect empty constructor
    }
 
    public abstract Type<H> getAssociatedType();

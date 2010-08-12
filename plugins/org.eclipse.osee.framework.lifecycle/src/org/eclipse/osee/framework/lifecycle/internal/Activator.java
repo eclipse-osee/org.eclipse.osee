@@ -24,9 +24,6 @@ public class Activator implements BundleActivator {
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.lifecycle";
    private ServiceRegistration service;
 
-   public Activator() {
-   }
-
    @Override
    public void start(BundleContext context) throws Exception {
       service = context.registerService(ILifecycleService.class.getName(), new LifecycleServiceImpl(), null);

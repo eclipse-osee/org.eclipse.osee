@@ -26,10 +26,6 @@ public class LifecycleServiceImpl implements ILifecycleService {
 
    private final HashCollection<AbstractLifecycleVisitor.Type<?>, LifecycleHandler> handlersByType =
       new HashCollection<AbstractLifecycleVisitor.Type<?>, LifecycleHandler>();
-   private final HashCollection<String, LifecycleHandler> handlersById = new HashCollection<String, LifecycleHandler>();
-
-   public LifecycleServiceImpl() {
-   }
 
    @Override
    public Collection<AbstractLifecycleVisitor.Type<?>> getHandlerTypes() {
@@ -68,8 +64,6 @@ public class LifecycleServiceImpl implements ILifecycleService {
       Conditions.checkNotNull(type, "handler type");
       Conditions.checkNotNull(handler, "handler");
       handlersByType.put(type, handler);
-
-      handlersById.put("", handler);
    }
 
    @Override

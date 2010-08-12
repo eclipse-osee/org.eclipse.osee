@@ -15,5 +15,5 @@ package org.eclipse.osee.framework.lifecycle;
  * @author Jeff C. Phillips
  */
 public interface LifecycleHandler {
-
+   // Empty Interface
 }
