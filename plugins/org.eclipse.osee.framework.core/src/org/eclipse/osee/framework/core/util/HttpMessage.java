@@ -15,7 +15,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.URL;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.core.translation.ITranslatorId;
 import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 /**
  * @author Roberto E. Escobar
  */
-public class HttpMessage {
+public final class HttpMessage {
 
    private HttpMessage() {
    }
@@ -46,7 +46,8 @@ public class HttpMessage {
             throw new OseeCoreException(String.format("Request [%s] failed.", urlString));
          }
       } catch (Exception ex) {
-         throw new OseeWrappedException(String.format("Error with [%s]", requestId.toString()), ex);
+         OseeExceptions.wrapAndThrow(ex);
+         return null; // this line is not reachable since wrapAndThrow always throws an exception
       } finally {
          Lib.close(inputStream);
       }
