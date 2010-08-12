@@ -237,14 +237,14 @@ public class WatchList implements ITreeContentProvider {
 
    private ElementNode createDescendants(MessageNode messageNode, ElementPath elementPath) {
       ElementPath subElementPath = elementPath.subElementPath(1);
-      ElementNode elementNode = messageNode.findChildElement(subElementPath);
+      ElementNode elementNode = messageNode.findDescendant(subElementPath);
       if (elementNode == null) {
          elementNode = createElementCommon(messageNode, subElementPath);
       }
       ElementNode parentNode = elementNode;
       for (int i = 2; i < elementPath.size() - 1; i++) {
          subElementPath = elementPath.subElementPath(i);
-         elementNode = messageNode.findChildElement(subElementPath);
+         elementNode = messageNode.findDescendant(subElementPath);
          if (elementNode == null) {
             elementNode = createElementCommon(parentNode, subElementPath);
          }
