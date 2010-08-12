@@ -100,6 +100,7 @@ public final class TransactionRecord implements IAdaptable {
       return false;
    }
 
+   @SuppressWarnings("rawtypes")
    @Override
    public Object getAdapter(Class adapter) {
       if (adapter != null && getClass().isAssignableFrom(adapter)) {
@@ -129,6 +130,7 @@ public final class TransactionRecord implements IAdaptable {
    }
 
    public void clearDirty() {
+      //
    }
 
    public void setBranchCache(BranchCache branchCache) {
