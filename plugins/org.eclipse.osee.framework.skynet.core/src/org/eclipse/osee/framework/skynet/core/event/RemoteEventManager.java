@@ -22,7 +22,6 @@ import net.jini.core.lookup.ServiceItem;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -326,18 +325,6 @@ public class RemoteEventManager {
 
    private static class EventListener extends ASkynetEventListener {
       private static final long serialVersionUID = -3017349745450262540L;
-      private static final ISchedulingRule mutexRule = new ISchedulingRule() {
-
-         @Override
-         public boolean contains(ISchedulingRule rule) {
-            return rule == this;
-         }
-
-         @Override
-         public boolean isConflicting(ISchedulingRule rule) {
-            return rule == this;
-         }
-      };
 
       @Override
       public void onEvent(final ISkynetEvent[] events) {
