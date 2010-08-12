@@ -46,6 +46,7 @@ import org.osgi.framework.ServiceRegistration;
 public class AtsCmAccessControlRegHandler extends AbstractTrackingHandler {
 
    private final Map<Class<?>, ServiceBindType> serviceDeps = new HashMap<Class<?>, ServiceBindType>();
+   private static CmAccessControl cmService;
 
    public AtsCmAccessControlRegHandler() {
       serviceDeps.put(AccessModelInterpreter.class, ServiceBindType.SINGLETON);
@@ -53,7 +54,6 @@ public class AtsCmAccessControlRegHandler extends AbstractTrackingHandler {
    }
    private final Collection<IAtsAccessControlService> atsAccessServices =
       new CopyOnWriteArraySet<IAtsAccessControlService>();
-
    private ServiceRegistration registration;
    private IEventListener listener;
 
@@ -72,10 +72,9 @@ public class AtsCmAccessControlRegHandler extends AbstractTrackingHandler {
       AccessModelInterpreter interpreter = getService(AccessModelInterpreter.class, services);
       IAtsAccessControlService atsService = getService(IAtsAccessControlService.class, services);
       atsAccessServices.add(atsService);
-
       OseeDslProvider dslProvider = new AtsAccessOseeDslProvider();
       AccessModel accessModel = new OseeDslAccessModel(interpreter, dslProvider);
-      CmAccessControl cmService = new AtsCmAccessControl(accessModel, atsAccessServices);
+      cmService = new AtsCmAccessControl(accessModel, atsAccessServices);
       registration = context.registerService(CmAccessControl.class.getName(), cmService, null);
 
       listener = new OseeDslProviderUpdateListener(dslProvider);
@@ -103,6 +102,9 @@ public class AtsCmAccessControlRegHandler extends AbstractTrackingHandler {
       atsAccessServices.remove(service);
    }
 
+   public static CmAccessControl getCmService() {
+      return cmService;
+   }
    private static final class OseeDslProviderUpdateListener implements IArtifactEventListener {
 
       //@formatter:off
@@ -133,4 +135,5 @@ public class AtsCmAccessControlRegHandler extends AbstractTrackingHandler {
          }
       }
    }
+
 }

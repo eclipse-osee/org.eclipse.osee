@@ -11,9 +11,11 @@
 package org.eclipse.osee.ats.internal;
 
 import java.util.Collection;
+import java.util.logging.Level;
 import org.eclipse.osee.ats.access.AtsBranchObjectManager;
 import org.eclipse.osee.ats.access.AtsObjectAccessManager;
 import org.eclipse.osee.ats.access.IAtsAccessControlService;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.AccessContextId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -21,7 +23,9 @@ import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.access.AccessModel;
 import org.eclipse.osee.framework.core.model.access.HasAccessModel;
 import org.eclipse.osee.framework.core.services.CmAccessControl;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * @author Roberto E. Escobar
@@ -41,7 +45,28 @@ public class AtsCmAccessControl implements CmAccessControl, HasAccessModel {
 
    @Override
    public boolean isApplicable(IBasicArtifact<?> user, Object object) {
-      return false;
+      boolean result = false;
+      if (object instanceof Artifact) {
+         try {
+            result = isAtsObject((Artifact) object) || isAtsCmManagedObject((Artifact) object);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, "Error determining access applicibility", ex);
+         }
+      }
+      return result;
+   }
+
+   public boolean isAtsCmManagedObject(Artifact artifact) throws OseeCoreException {
+      return (!artifact.getBranch().equals(AtsUtil.getAtsBranch()) &&
+      //
+      ArtifactQuery.getArtifactFromId(artifact.getBranch().getAssociatedArtifactId(), AtsUtil.getAtsBranch()).isOfType(
+         AtsArtifactTypes.TeamWorkflow));
+   }
+
+   public boolean isAtsObject(Artifact artifact) throws OseeCoreException {
+      return artifact.getBranch().equals(AtsUtil.getAtsBranch()) && artifact.isOfType(
+         AtsArtifactTypes.StateMachineArtifact, AtsArtifactTypes.Action, AtsArtifactTypes.Version,
+         AtsArtifactTypes.TeamDefinition);
    }
 
    @Override

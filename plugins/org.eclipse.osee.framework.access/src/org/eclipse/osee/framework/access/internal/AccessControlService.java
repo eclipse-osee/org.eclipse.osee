@@ -264,6 +264,7 @@ public class AccessControlService implements IAccessControlService {
    public boolean hasPermission(Object object, PermissionEnum permission) throws OseeCoreException {
       boolean result = true;
       if (!DbUtil.isDbInit()) {
+        // System.out.println(String.format("hasPermission: obj [%s] request [%s]", object, permission));
          Collection<?> objectsToCheck = null;
          if (object instanceof Collection<?>) {
             objectsToCheck = (Collection<?>) object;
@@ -274,7 +275,9 @@ public class AccessControlService implements IAccessControlService {
          }
          IBasicArtifact<?> subject = UserManager.getUser();
          AccessDataQuery accessQuery = getAccessData(subject, objectsToCheck);
+        // System.out.println(String.format("hasPermission: accessQuery [%s]", accessQuery));
          result = accessQuery.matchesAll(permission);
+        // System.out.println(String.format("hasPermission: result [%s]", result));
       }
       return result;
    }

@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItems;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
+import org.eclipse.osee.ats.internal.AtsCmAccessControlRegHandler;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
@@ -56,6 +57,8 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
+import org.eclipse.osee.framework.core.services.CmAccessControl;
+import org.eclipse.osee.framework.core.services.HasCmAccessControl;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -83,7 +86,7 @@ import org.eclipse.swt.graphics.Image;
 /**
  * @author Donald G. Dunne
  */
-public abstract class StateMachineArtifact extends ATSArtifact implements IGroupExplorerProvider, IWorldViewArtifact, ISubscribableArtifact, IFavoriteableArtifact {
+public abstract class StateMachineArtifact extends ATSArtifact implements HasCmAccessControl, IGroupExplorerProvider, IWorldViewArtifact, ISubscribableArtifact, IFavoriteableArtifact {
 
    private final Set<IRelationEnumeration> atsWorldRelations = new HashSet<IRelationEnumeration>();
    private Collection<User> preSaveStateAssignees;
@@ -297,6 +300,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    public abstract Set<User> getPrivilegedUsers() throws OseeCoreException;
 
+   @Override
    public String getDescription() {
       return "";
    }
@@ -1893,6 +1897,11 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       if (tda.getParent() != null && tda.getParent() instanceof TeamDefinitionArtifact) {
          addPriviledgedUsersUpTeamDefinitionTree((TeamDefinitionArtifact) tda.getParent(), users);
       }
+   }
+
+   @Override
+   public CmAccessControl getAccessControl() {
+      return AtsCmAccessControlRegHandler.getCmService();
    }
 
 }
