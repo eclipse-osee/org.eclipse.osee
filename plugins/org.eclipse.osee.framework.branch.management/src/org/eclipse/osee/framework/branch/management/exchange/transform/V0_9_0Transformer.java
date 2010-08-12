@@ -32,7 +32,7 @@ public class V0_9_0Transformer implements IOseeExchangeVersionTransformer {
    }
 
    @Override
-   public String applyTransform(ExchangeDataProcessor processor) throws OseeCoreException {
+   public Version applyTransform(ExchangeDataProcessor processor) throws OseeCoreException {
       replaceDataTypeIdsWithGuids(processor, cachingService.getArtifactTypeCache(), ExportItem.OSEE_ARTIFACT_DATA,
          "art_type_id", "name");
       replaceDataTypeIdsWithGuids(processor, cachingService.getAttributeTypeCache(), ExportItem.OSEE_ATTRIBUTE_DATA,
@@ -50,7 +50,7 @@ public class V0_9_0Transformer implements IOseeExchangeVersionTransformer {
       processor.transform(ExportItem.EXPORT_MANIFEST, new ReplaceAll(
          "<entry id=\"osee\\.(?:branch\\.definitions|(?:.*?.data.type))\\.xml.*\\s+", ""));
 
-      return MAX_VERSION.toString();
+      return MAX_VERSION;
    }
 
    private void replaceDataTypeIdsWithGuids(ExchangeDataProcessor processor, AbstractOseeCache<?> cache, ExportItem exportItem, String typeIdColumn, String typeNameColumn) throws OseeCoreException {

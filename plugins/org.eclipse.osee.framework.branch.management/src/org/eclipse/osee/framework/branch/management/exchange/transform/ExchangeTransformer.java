@@ -34,11 +34,11 @@ public class ExchangeTransformer {
       transformers = provider.getApplicableTransformers(exchangeVersion);
 
       ManifestVersionRule versionRule = new ManifestVersionRule();
-      versionRule.setVersion(exchangeVersion.toString());
+      versionRule.setVersion(exchangeVersion);
       versionRule.setReplaceVersion(true);
 
       for (IOseeExchangeVersionTransformer transformer : transformers) {
-         String newVersion = transformer.applyTransform(processor);
+         Version newVersion = transformer.applyTransform(processor);
          versionRule.setVersion(newVersion);
          processor.transform(ExportItem.EXPORT_MANIFEST, versionRule);
       }

@@ -14,6 +14,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.text.Rule;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
+import org.osgi.framework.Version;
 
 public class ManifestVersionRule extends Rule {
    private static final Pattern exportPattern = Pattern.compile("<export ");
@@ -48,8 +49,8 @@ public class ManifestVersionRule extends Rule {
       return changeSet;
    }
 
-   public void setVersion(String version) {
-      this.version = version;
+   public void setVersion(Version version) {
+      this.version = version.toString();
    }
 
    public String getVersion() {

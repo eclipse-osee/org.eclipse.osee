@@ -55,7 +55,7 @@ public class V0_9_2Transformer implements IOseeExchangeVersionTransformer {
    }
 
    @Override
-   public String applyTransform(ExchangeDataProcessor processor) throws OseeCoreException {
+   public Version applyTransform(ExchangeDataProcessor processor) throws OseeCoreException {
       List<Integer> branchIds = convertBranchTable(processor);
 
       Map<Long, Long> artifactGammaToNetGammaId = convertArtifactAndConflicts(processor);
@@ -69,7 +69,7 @@ public class V0_9_2Transformer implements IOseeExchangeVersionTransformer {
       processor.transform(ExportItem.EXPORT_MANIFEST, new ReplaceAll("<entry id=\"osee.artifact.version.data.xml[^<]+",
          ""));
       processor.deleteExportItem("osee.artifact.version.data.xml");
-      return getMaxVersion().toString();
+      return getMaxVersion();
    }
 
    @Override
@@ -121,7 +121,6 @@ public class V0_9_2Transformer implements IOseeExchangeVersionTransformer {
             }
             addressMap.clear();
          }
-         //fileWriter.write("\n</data>\n\n");
          tempFile.delete();
       } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);

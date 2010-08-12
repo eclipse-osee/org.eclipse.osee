@@ -24,7 +24,7 @@ public class V0_8_3Transformer implements IOseeExchangeVersionTransformer {
    private static final Version MAX_VERSION = new Version("0.8.3");
 
    @Override
-   public String applyTransform(ExchangeDataProcessor processor) throws OseeCoreException {
+   public Version applyTransform(ExchangeDataProcessor processor) throws OseeCoreException {
 
       HashCollection<String, String> tableToColumns = new HashCollection<String, String>();
       tableToColumns.put("osee_txs", "<column id=\"branch_id\" type=\"INTEGER\" />\n");
@@ -36,7 +36,7 @@ public class V0_8_3Transformer implements IOseeExchangeVersionTransformer {
          new ReplaceAll(Pattern.compile("\\s+<table name=\"osee_\\w+_type\".*?</table>", Pattern.DOTALL), ""));
 
       processor.transform(ExportItem.OSEE_BRANCH_DATA, new V0_8_3_BranchRule());
-      return getMaxVersion().toString();
+      return getMaxVersion();
    }
 
    @Override

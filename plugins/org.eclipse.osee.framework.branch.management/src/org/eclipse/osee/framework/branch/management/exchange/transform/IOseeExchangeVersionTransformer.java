@@ -17,7 +17,7 @@ import org.osgi.framework.Version;
  */
 public interface IOseeExchangeVersionTransformer {
 
-   public abstract String applyTransform(ExchangeDataProcessor processor) throws Exception;
+   public abstract Version applyTransform(ExchangeDataProcessor processor) throws Exception;
 
    public abstract Version getMaxVersion();
 

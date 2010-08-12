@@ -22,11 +22,11 @@ public class V0_9_4Transformer implements IOseeExchangeVersionTransformer {
    private static final Version MAX_VERSION = new Version("0.9.4");
 
    @Override
-   public String applyTransform(ExchangeDataProcessor processor) throws OseeCoreException {
+   public Version applyTransform(ExchangeDataProcessor processor) throws OseeCoreException {
 
       processor.transform(ExportItem.EXPORT_DB_SCHEMA, new ReplaceAll("\\s+<table name=\"osee_\\w+_type\".*?</table>",
          ""));
-      return getMaxVersion().toString();
+      return getMaxVersion();
    }
 
    @Override
