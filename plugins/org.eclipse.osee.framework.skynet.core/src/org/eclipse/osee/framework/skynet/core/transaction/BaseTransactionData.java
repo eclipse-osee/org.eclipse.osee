@@ -22,6 +22,16 @@ import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
  * @author Roberto E. Escobar
  */
 public abstract class BaseTransactionData {
+
+   public static interface InsertDataCollector {
+
+      int getTransactionNumber();
+
+      int getBranchId();
+
+      void internalAddInsertToBatch(int insertPriority, String insertSql, Object... data);
+   }
+
    private static final String INSERT_INTO_TRANSACTION_TABLE =
       "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current, branch_id) VALUES (?, ?, ?, ?, ?)";
 
@@ -59,10 +69,10 @@ public abstract class BaseTransactionData {
       return itemId * PRIME_NUMBER * this.getClass().hashCode();
    }
 
-   protected void addInsertToBatch(SkynetTransaction transaction) throws OseeCoreException {
-      internalAddInsertToBatch(transaction, Integer.MAX_VALUE, INSERT_INTO_TRANSACTION_TABLE,
-         transaction.getTransactionNumber(), getGammaId(), getModificationType().getValue(),
-         TxChange.getCurrent(getModificationType()).getValue(), transaction.getBranch().getId());
+   protected void addInsertToBatch(InsertDataCollector collector) throws OseeCoreException {
+      internalAddInsertToBatch(collector, Integer.MAX_VALUE, INSERT_INTO_TRANSACTION_TABLE,
+         collector.getTransactionNumber(), getGammaId(), getModificationType().getValue(),
+         TxChange.getCurrent(getModificationType()).getValue(), collector.getBranchId());
    }
 
    protected final int getItemId() {
@@ -89,8 +99,8 @@ public abstract class BaseTransactionData {
    /**
     * Should be called by child classes during their implementation of addInsertToBatch.
     */
-   protected final void internalAddInsertToBatch(SkynetTransaction transaction, int insertPriority, String insertSql, Object... data) {
-      transaction.internalAddInsertToBatch(insertPriority, insertSql, data);
+   protected final void internalAddInsertToBatch(InsertDataCollector collector, int insertPriority, String insertSql, Object... data) {
+      collector.internalAddInsertToBatch(insertPriority, insertSql, data);
    }
 
    /**

@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
 import org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Jeff C. Phillips
@@ -42,10 +41,10 @@ public class ArtifactTransactionData extends BaseTransactionData {
    }
 
    @Override
-   protected void addInsertToBatch(SkynetTransaction transaction) throws OseeCoreException {
-      super.addInsertToBatch(transaction);
+   protected void addInsertToBatch(InsertDataCollector collector) throws OseeCoreException {
+      super.addInsertToBatch(collector);
       if (!useExistingBackingData()) {
-         internalAddInsertToBatch(transaction, 1, INSERT_ARTIFACT, getGammaId(), artifact.getArtId(),
+         internalAddInsertToBatch(collector, 1, INSERT_ARTIFACT, getGammaId(), artifact.getArtId(),
             artifact.getArtTypeId(), artifact.getGuid(), artifact.getHumanReadableId());
       }
    }

@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.AttributeURL;
 import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Jeff C. Phillips
@@ -48,12 +47,12 @@ public class AttributeTransactionData extends BaseTransactionData {
    }
 
    @Override
-   protected void addInsertToBatch(SkynetTransaction transaction) throws OseeCoreException {
-      super.addInsertToBatch(transaction);
+   protected void addInsertToBatch(InsertDataCollector collector) throws OseeCoreException {
+      super.addInsertToBatch(collector);
       if (!useExistingBackingData()) {
          attribute.getAttributeDataProvider().persist(getGammaId());
          daoToSql.setData(attribute.getAttributeDataProvider().getData());
-         internalAddInsertToBatch(transaction, 3, INSERT_ATTRIBUTE, attribute.getArtifact().getArtId(), getItemId(),
+         internalAddInsertToBatch(collector, 3, INSERT_ATTRIBUTE, attribute.getArtifact().getArtId(), getItemId(),
             attribute.getAttributeType().getId(), daoToSql.getValue(), getGammaId(), daoToSql.getUri());
       }
    }
