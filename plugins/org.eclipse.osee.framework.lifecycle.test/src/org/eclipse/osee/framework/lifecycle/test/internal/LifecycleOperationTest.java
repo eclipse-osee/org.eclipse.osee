@@ -53,6 +53,7 @@ public class LifecycleOperationTest {
 
       @Override
       protected void doCoreWork(IProgressMonitor monitor) throws Exception {
+         // Empty
       }
    }
 

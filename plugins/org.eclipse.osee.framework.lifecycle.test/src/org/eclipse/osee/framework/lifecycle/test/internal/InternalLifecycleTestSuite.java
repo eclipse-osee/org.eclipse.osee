@@ -19,5 +19,5 @@ LifecycleServiceTest.class, //
    LifecycleOperationTest.class, //
 })
 public class InternalLifecycleTestSuite {
-
+   // Test Suite
 }
