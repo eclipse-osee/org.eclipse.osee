@@ -47,7 +47,7 @@ attributeType "Qualification Method" extends StringAttribute {
    taggerId DefaultAttributeTaggerProvider
 }
 
-relationType "Requirement" {
+relationType "Requirement Relation" {
    guid "BOkzi3U9VTe2fcUz_9gA"
    sideAName "requirement-sideA"
    sideAArtifactType "Requirement"
