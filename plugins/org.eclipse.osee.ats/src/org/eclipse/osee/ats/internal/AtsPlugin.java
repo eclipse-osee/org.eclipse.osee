@@ -51,13 +51,18 @@ public class AtsPlugin extends OseeUiActivator {
          context.registerService(IActionReportingService.class.getName(), new AtsActionReportingServiceImpl(), null);
       service2 = context.registerService(IOseeAtsService.class.getName(), new OseeAtsServiceImpl(), null);
 
-      tracker = new ServiceDependencyTracker(context, new AtsCmAccessControlRegHandler());
-      tracker.open();
+      // TODO Uncomment to re-enable ATS CM Access providing
+      //      if (OseeInfo.isEnabled("atsAccessEnabled")) {
+      //         tracker = new ServiceDependencyTracker(context, new AtsCmAccessControlRegHandler());
+      //         tracker.open();
+      //      }
    }
 
    @Override
    public void stop(BundleContext context) throws Exception {
-      Lib.close(tracker);
+      if (tracker != null) {
+         Lib.close(tracker);
+      }
       if (service1 != null) {
          service1.unregister();
       }

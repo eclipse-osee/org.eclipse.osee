@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.database.core;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Donald G. Dunne
@@ -43,6 +44,39 @@ public class OseeInfo {
       }
 
       return cacheValue;
+   }
+
+   /**
+    * Return true if key is set in osee_info table and value = "true". Return false if key is either not in osee_info
+    * table OR value != "true".<br>
+    * <br>
+    * Note: This call will hit the database every time, so shouldn't be used for often repeated calls. use
+    * isCacheEnabled that will cache the value
+    */
+   public static boolean isEnabled(String key) throws OseeDataStoreException {
+      String dbProperty = OseeInfo.getValue(key);
+      if (Strings.isValid(dbProperty)) {
+         return dbProperty.equals("true");
+      }
+      return false;
+   }
+
+   /**
+    * Return true if key is set in osee_info table and value = "true". Return false if key is either not in osee_info
+    * table OR value != "true".<br>
+    * <br>
+    * Return cached value (value only loaded once per session. Restart will reset value if changed in osee_info
+    */
+   public static boolean isCacheEnabled(String key) throws OseeDataStoreException {
+      String dbProperty = OseeInfo.getCachedValue(key);
+      if (Strings.isValid(dbProperty)) {
+         return dbProperty.equals("true");
+      }
+      return false;
+   }
+
+   public static void setEnabled(String key, boolean enabled) throws OseeDataStoreException {
+      putValue(key, String.valueOf(enabled));
    }
 
    public static void putValue(String key, String value) throws OseeDataStoreException {
