@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 public final class DatabaseTransactions {
 
    private DatabaseTransactions() {
+      // Utility class
    }
 
    public static void execute(IDbTransactionWork dbWork) throws OseeCoreException {

@@ -75,7 +75,7 @@ public abstract class AbstractOperation implements IOperation {
     * @param monitor
     */
    protected void doFinally(IProgressMonitor monitor) {
-
+      //
    }
 
    /**
