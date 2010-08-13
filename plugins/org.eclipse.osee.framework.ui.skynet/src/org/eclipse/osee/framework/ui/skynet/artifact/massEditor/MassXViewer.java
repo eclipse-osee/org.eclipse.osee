@@ -216,7 +216,7 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler, IFr
       if (getSelectedArtifacts().isEmpty()) {
          return;
       }
-      RendererManager.openInJob(getSelectedArtifacts(), PresentationType.GENERALIZED_EDIT);
+      RendererManager.openInJob(getSelectedArtifacts(), PresentationType.DEFAULT_OPEN);
    }
 
    public ArrayList<Artifact> getLoadedArtifacts() {
