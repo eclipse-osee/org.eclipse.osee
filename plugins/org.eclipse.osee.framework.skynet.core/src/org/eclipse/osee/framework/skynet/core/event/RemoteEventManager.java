@@ -22,6 +22,7 @@ import net.jini.core.lookup.ServiceItem;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -325,196 +326,215 @@ public class RemoteEventManager {
 
    private static class EventListener extends ASkynetEventListener {
       private static final long serialVersionUID = -3017349745450262540L;
+      private static final ISchedulingRule mutexRule = new ISchedulingRule() {
+
+         @Override
+         public boolean contains(ISchedulingRule rule) {
+            return rule == this;
+         }
+
+         @Override
+         public boolean isConflicting(ISchedulingRule rule) {
+            return rule == this;
+         }
+      };
 
       @Override
       public void onEvent(final ISkynetEvent[] events) {
 
          final List<ArtifactTransactionModifiedEvent> xModifiedEvents =
             new LinkedList<ArtifactTransactionModifiedEvent>();
-         // Don't use Job cause don't want popups on exceptions
-         Runnable job = new Runnable() {
+         Job job = new Job("Receive Event") {
 
             @Override
-            public void run() {
-               //               Arrays.sort(events);
+            protected IStatus run(IProgressMonitor monitor) {
+               try {
+                  Sender lastArtifactRelationModChangeSender = null;
 
-               Sender lastArtifactRelationModChangeSender = null;
+                  for (ISkynetEvent event : events) {
 
-               for (ISkynetEvent event : events) {
-
-                  Sender sender = new Sender(event.getNetworkSender());
-                  // If the sender's sessionId is the same as this client, then this event was
-                  // created in this client and returned by remote event manager; ignore and continue
-                  if (sender.isLocal()) {
-                     continue;
-                  }
-
-                  if (event instanceof NetworkAccessControlArtifactsEvent) {
-                     try {
-                        AccessControlEvent accessControlEvent = new AccessControlEvent();
-                        AccessControlEventType accessControlModType =
-                           AccessControlEventType.valueOf(((NetworkAccessControlArtifactsEvent) event).getAccessControlModTypeName());
-                        accessControlEvent.setEventType(accessControlModType);
-                        NetworkAccessControlArtifactsEvent accessEvent = (NetworkAccessControlArtifactsEvent) event;
-                        Integer[] artIds =
-                           accessEvent.getArtifactIds().toArray(new Integer[accessEvent.getArtifactIds().size()]);
-                        Branch branch = BranchManager.getBranch(accessEvent.getId());
-                        for (int x = 0; x < accessEvent.getArtifactIds().size(); x++) {
-                           Artifact cachedArt = ArtifactQuery.getArtifactFromId(artIds[x], branch);
-                           if (cachedArt != null) {
-                              accessControlEvent.getArtifacts().add(cachedArt.getBasicGuidArtifact());
-                           }
-                        }
-                        LoadedArtifacts loadedArtifacts =
-                           new LoadedArtifacts(accessEvent.getId(), accessEvent.getArtifactIds(),
-                              accessEvent.getArtifactTypeIds());
-                        InternalEventManager.kickAccessControlArtifactsEvent(sender, accessControlEvent,
-                           loadedArtifacts);
-                     } catch (Exception ex) {
-                        OseeLog.log(Activator.class, Level.SEVERE, ex);
+                     Sender sender = new Sender(event.getNetworkSender());
+                     // If the sender's sessionId is the same as this client, then this event was
+                     // created in this client and returned by remote event manager; ignore and continue
+                     if (sender.isLocal()) {
+                        continue;
                      }
-                  } else if (event instanceof NetworkRenameBranchEvent) {
-                     int branchId = ((NetworkRenameBranchEvent) event).getId();
-                     try {
-                        Branch branch = BranchManager.getBranch(branchId);
-                        branch.setName(((NetworkRenameBranchEvent) event).getBranchName());
-                        branch.clearDirty();
+
+                     if (event instanceof NetworkAccessControlArtifactsEvent) {
                         try {
-                           InternalEventManager.kickBranchEvent(sender, BranchEventType.Renamed, branchId);
+                           AccessControlEvent accessControlEvent = new AccessControlEvent();
+                           AccessControlEventType accessControlModType =
+                              AccessControlEventType.valueOf(((NetworkAccessControlArtifactsEvent) event).getAccessControlModTypeName());
+                           accessControlEvent.setEventType(accessControlModType);
+                           NetworkAccessControlArtifactsEvent accessEvent = (NetworkAccessControlArtifactsEvent) event;
+                           Integer[] artIds =
+                              accessEvent.getArtifactIds().toArray(new Integer[accessEvent.getArtifactIds().size()]);
+                           Branch branch = BranchManager.getBranch(accessEvent.getId());
+                           for (int x = 0; x < accessEvent.getArtifactIds().size(); x++) {
+                              Artifact cachedArt = ArtifactQuery.getArtifactFromId(artIds[x], branch);
+                              if (cachedArt != null) {
+                                 accessControlEvent.getArtifacts().add(cachedArt.getBasicGuidArtifact());
+                              }
+                           }
+                           LoadedArtifacts loadedArtifacts =
+                              new LoadedArtifacts(accessEvent.getId(), accessEvent.getArtifactIds(),
+                                 accessEvent.getArtifactTypeIds());
+                           InternalEventManager.kickAccessControlArtifactsEvent(sender, accessControlEvent,
+                              loadedArtifacts);
                         } catch (Exception ex) {
                            OseeLog.log(Activator.class, Level.SEVERE, ex);
                         }
-                     } catch (Exception ex) {
-                        OseeLog.log(Activator.class, Level.SEVERE, ex);
-                     }
-                  } else if (event instanceof NetworkNewBranchEvent) {
-                     int branchId = ((NetworkNewBranchEvent) event).getId();
-                     try {
-                        InternalEventManager.kickBranchEvent(sender, BranchEventType.Added, branchId);
-                     } catch (Exception ex) {
-                        OseeLog.log(Activator.class, Level.SEVERE, ex);
-                     }
-                  } else if (event instanceof NetworkDeletedBranchEvent) {
-                     int branchId = ((NetworkDeletedBranchEvent) event).getId();
-                     try {
-                        Branch branch =
-                           Activator.getInstance().getOseeCacheService().getBranchCache().getById(branchId);
-                        if (branch != null) {
-                           branch.setBranchState(BranchState.DELETED);
-                           branch.clearDirty();
-                        }
-                        InternalEventManager.kickBranchEvent(sender, BranchEventType.Deleted, branchId);
-                     } catch (Exception ex) {
-                        OseeLog.log(Activator.class, Level.SEVERE, ex);
-                     }
-                  } else if (event instanceof NetworkPurgeBranchEvent) {
-                     int branchId = ((NetworkPurgeBranchEvent) event).getId();
-                     try {
-                        BranchCache cache = Activator.getInstance().getOseeCacheService().getBranchCache();
-                        Branch branch = cache.getById(branchId);
-                        if (branch != null) {
-                           cache.decache(branch);
-                        }
-                        InternalEventManager.kickBranchEvent(sender, BranchEventType.Purged, branchId);
-                     } catch (Exception ex) {
-                        OseeLog.log(Activator.class, Level.SEVERE, ex);
-                     }
-                  } else if (event instanceof NetworkCommitBranchEvent) {
-                     int branchId = ((NetworkCommitBranchEvent) event).getId();
-                     try {
+                     } else if (event instanceof NetworkRenameBranchEvent) {
+                        int branchId = ((NetworkRenameBranchEvent) event).getId();
                         try {
-                           TransactionManager.clearCommitArtifactCacheForAssociatedArtifact(BranchManager.getAssociatedArtifact(BranchManager.getBranch(branchId)));
-                        } catch (OseeCoreException ex) {
+                           Branch branch = BranchManager.getBranch(branchId);
+                           branch.setName(((NetworkRenameBranchEvent) event).getBranchName());
+                           branch.clearDirty();
+                           try {
+                              InternalEventManager.kickBranchEvent(sender, BranchEventType.Renamed, branchId);
+                           } catch (Exception ex) {
+                              OseeLog.log(Activator.class, Level.SEVERE, ex);
+                           }
+                        } catch (Exception ex) {
                            OseeLog.log(Activator.class, Level.SEVERE, ex);
                         }
-                        InternalEventManager.kickBranchEvent(sender, BranchEventType.Committed, branchId);
-                     } catch (Exception ex) {
-                        OseeLog.log(Activator.class, Level.SEVERE, ex);
-                     }
-                  } else if (event instanceof NetworkBroadcastEvent) {
-                     try {
-                        final BroadcastEventType broadcastEventType =
-                           BroadcastEventType.valueOf(((NetworkBroadcastEvent) event).getBroadcastEventTypeName());
-                        if (broadcastEventType == null) {
-                           OseeLog.log(
-                              Activator.class,
-                              Level.SEVERE,
-                              "Unknown broadcast event type \"" + ((NetworkBroadcastEvent) event).getBroadcastEventTypeName() + "\"",
-                              new IllegalArgumentException());
-                        } else {
-                           InternalEventManager.kickBroadcastEvent(sender, broadcastEventType,
-                              ((NetworkBroadcastEvent) event).getUserIds(),
-                              ((NetworkBroadcastEvent) event).getMessage());
+                     } else if (event instanceof NetworkNewBranchEvent) {
+                        int branchId = ((NetworkNewBranchEvent) event).getId();
+                        try {
+                           InternalEventManager.kickBranchEvent(sender, BranchEventType.Added, branchId);
+                        } catch (Exception ex) {
+                           OseeLog.log(Activator.class, Level.SEVERE, ex);
                         }
-                     } catch (Exception ex) {
-                        OseeLog.log(Activator.class, Level.SEVERE, ex);
-                     }
-                  } else if (event instanceof ISkynetArtifactEvent) {
-                     try {
-                        updateArtifacts(sender, (ISkynetArtifactEvent) event, xModifiedEvents);
-                        lastArtifactRelationModChangeSender = sender;
-                     } catch (Exception ex) {
-                        OseeLog.log(Activator.class, Level.SEVERE, ex);
-                     }
-                  } else if (event instanceof ISkynetRelationLinkEvent) {
-                     try {
-                        updateRelations(sender, (ISkynetRelationLinkEvent) event, xModifiedEvents);
-                        lastArtifactRelationModChangeSender = sender;
-                     } catch (Exception ex) {
-                        OseeLog.log(Activator.class, Level.SEVERE, ex);
-                     }
-                  } else if (event instanceof NetworkArtifactChangeTypeEvent) {
-                     try {
-                        LoadedArtifacts loadedArtifacts =
-                           new LoadedArtifacts(((NetworkArtifactChangeTypeEvent) event).getId(),
-                              ((NetworkArtifactChangeTypeEvent) event).getArtifactIds(),
-                              ((NetworkArtifactChangeTypeEvent) event).getArtifactTypeIds());
-                        InternalEventManager.kickArtifactsChangeTypeEvent(sender,
-                           ((NetworkArtifactChangeTypeEvent) event).getToArtifactTypeId(), loadedArtifacts);
-                     } catch (Exception ex) {
-                        OseeLog.log(Activator.class, Level.SEVERE, ex);
-                     }
-                  } else if (event instanceof NetworkArtifactPurgeEvent) {
-                     try {
-                        LoadedArtifacts loadedArtifacts =
-                           new LoadedArtifacts(((NetworkArtifactPurgeEvent) event).getId(),
-                              ((NetworkArtifactPurgeEvent) event).getArtifactIds(),
-                              ((NetworkArtifactPurgeEvent) event).getArtifactTypeIds());
-                        for (Artifact artifact : loadedArtifacts.getLoadedArtifacts()) {
-                           //This is because applications may still have a reference to the artifact
-                           for (RelationLink link : RelationManager.getRelationsAll(artifact.getArtId(),
-                              artifact.getBranch().getId(), false)) {
-                              link.internalRemoteEventDelete();
+                     } else if (event instanceof NetworkDeletedBranchEvent) {
+                        int branchId = ((NetworkDeletedBranchEvent) event).getId();
+                        try {
+                           Branch branch =
+                              Activator.getInstance().getOseeCacheService().getBranchCache().getById(branchId);
+                           if (branch != null) {
+                              branch.setBranchState(BranchState.DELETED);
+                              branch.clearDirty();
                            }
-                           ArtifactCache.deCache(artifact);
-                           artifact.internalSetDeleted();
+                           InternalEventManager.kickBranchEvent(sender, BranchEventType.Deleted, branchId);
+                        } catch (Exception ex) {
+                           OseeLog.log(Activator.class, Level.SEVERE, ex);
                         }
-                        InternalEventManager.kickArtifactsPurgedEvent(sender, loadedArtifacts);
-                     } catch (Exception ex) {
-                        OseeLog.log(Activator.class, Level.SEVERE, ex);
-                     }
-                  } else if (event instanceof NetworkTransactionDeletedEvent) {
-                     try {
-                        InternalEventManager.kickTransactionsPurgedEvent(sender,
-                           ((NetworkTransactionDeletedEvent) event).getTransactionIds());
-                     } catch (Exception ex) {
-                        OseeLog.log(Activator.class, Level.SEVERE, ex);
+                     } else if (event instanceof NetworkPurgeBranchEvent) {
+                        int branchId = ((NetworkPurgeBranchEvent) event).getId();
+                        try {
+                           BranchCache cache = Activator.getInstance().getOseeCacheService().getBranchCache();
+                           Branch branch = cache.getById(branchId);
+                           if (branch != null) {
+                              cache.decache(branch);
+                           }
+                           InternalEventManager.kickBranchEvent(sender, BranchEventType.Purged, branchId);
+                        } catch (Exception ex) {
+                           OseeLog.log(Activator.class, Level.SEVERE, ex);
+                        }
+                     } else if (event instanceof NetworkCommitBranchEvent) {
+                        int branchId = ((NetworkCommitBranchEvent) event).getId();
+                        try {
+                           try {
+                              TransactionManager.clearCommitArtifactCacheForAssociatedArtifact(BranchManager.getAssociatedArtifact(BranchManager.getBranch(branchId)));
+                           } catch (OseeCoreException ex) {
+                              OseeLog.log(Activator.class, Level.SEVERE, ex);
+                           }
+                           InternalEventManager.kickBranchEvent(sender, BranchEventType.Committed, branchId);
+                        } catch (Exception ex) {
+                           OseeLog.log(Activator.class, Level.SEVERE, ex);
+                        }
+                     } else if (event instanceof NetworkBroadcastEvent) {
+                        try {
+                           final BroadcastEventType broadcastEventType =
+                              BroadcastEventType.valueOf(((NetworkBroadcastEvent) event).getBroadcastEventTypeName());
+                           if (broadcastEventType == null) {
+                              OseeLog.log(
+                                 Activator.class,
+                                 Level.SEVERE,
+                                 "Unknown broadcast event type \"" + ((NetworkBroadcastEvent) event).getBroadcastEventTypeName() + "\"",
+                                 new IllegalArgumentException());
+                           } else {
+                              InternalEventManager.kickBroadcastEvent(sender, broadcastEventType,
+                                 ((NetworkBroadcastEvent) event).getUserIds(),
+                                 ((NetworkBroadcastEvent) event).getMessage());
+                           }
+                        } catch (Exception ex) {
+                           OseeLog.log(Activator.class, Level.SEVERE, ex);
+                        }
+                     } else if (event instanceof ISkynetArtifactEvent) {
+                        try {
+                           updateArtifacts(sender, (ISkynetArtifactEvent) event, xModifiedEvents);
+                           lastArtifactRelationModChangeSender = sender;
+                        } catch (Exception ex) {
+                           OseeLog.log(Activator.class, Level.SEVERE, ex);
+                        }
+                     } else if (event instanceof ISkynetRelationLinkEvent) {
+                        try {
+                           updateRelations(sender, (ISkynetRelationLinkEvent) event, xModifiedEvents);
+                           lastArtifactRelationModChangeSender = sender;
+                        } catch (Exception ex) {
+                           OseeLog.log(Activator.class, Level.SEVERE, ex);
+                        }
+                     } else if (event instanceof NetworkArtifactChangeTypeEvent) {
+                        try {
+                           LoadedArtifacts loadedArtifacts =
+                              new LoadedArtifacts(((NetworkArtifactChangeTypeEvent) event).getId(),
+                                 ((NetworkArtifactChangeTypeEvent) event).getArtifactIds(),
+                                 ((NetworkArtifactChangeTypeEvent) event).getArtifactTypeIds());
+                           InternalEventManager.kickArtifactsChangeTypeEvent(sender,
+                              ((NetworkArtifactChangeTypeEvent) event).getToArtifactTypeId(), loadedArtifacts);
+                        } catch (Exception ex) {
+                           OseeLog.log(Activator.class, Level.SEVERE, ex);
+                        }
+                     } else if (event instanceof NetworkArtifactPurgeEvent) {
+                        try {
+                           LoadedArtifacts loadedArtifacts =
+                              new LoadedArtifacts(((NetworkArtifactPurgeEvent) event).getId(),
+                                 ((NetworkArtifactPurgeEvent) event).getArtifactIds(),
+                                 ((NetworkArtifactPurgeEvent) event).getArtifactTypeIds());
+                           for (Artifact artifact : loadedArtifacts.getLoadedArtifacts()) {
+                              //This is because applications may still have a reference to the artifact
+                              for (RelationLink link : RelationManager.getRelationsAll(artifact.getArtId(),
+                                 artifact.getBranch().getId(), false)) {
+                                 link.internalRemoteEventDelete();
+                              }
+                              ArtifactCache.deCache(artifact);
+                              artifact.internalSetDeleted();
+                           }
+                           InternalEventManager.kickArtifactsPurgedEvent(sender, loadedArtifacts);
+                        } catch (Exception ex) {
+                           OseeLog.log(Activator.class, Level.SEVERE, ex);
+                        }
+                     } else if (event instanceof NetworkTransactionDeletedEvent) {
+                        try {
+                           InternalEventManager.kickTransactionsPurgedEvent(sender,
+                              ((NetworkTransactionDeletedEvent) event).getTransactionIds());
+                        } catch (Exception ex) {
+                           OseeLog.log(Activator.class, Level.SEVERE, ex);
+                        }
                      }
                   }
-               }
 
-               if (xModifiedEvents.size() > 0) {
-                  /*
-                   * Since transaction events are a collection of ArtifactModfied and RelationModified events, create a
-                   * new Sender based on the last sender for these events.
-                   */
-                  Sender transactionSender =
-                     new Sender("RemoteEventManager", lastArtifactRelationModChangeSender.getOseeSession());
-                  InternalEventManager.kickPersistEvent(transactionSender, xModifiedEvents);
+                  if (xModifiedEvents.size() > 0) {
+                     /*
+                      * Since transaction events are a collection of ArtifactModfied and RelationModified events, create
+                      * a new Sender based on the last sender for these events.
+                      */
+                     Sender transactionSender =
+                        new Sender("RemoteEventManager", lastArtifactRelationModChangeSender.getOseeSession());
+                     InternalEventManager.kickPersistEvent(transactionSender, xModifiedEvents);
+                  }
+               } catch (Exception ex) {
+                  // don't want exceptions poping up; just log and return nicely
+                  OseeLog.log(Activator.class, Level.SEVERE, "REM Receive Event Exception", ex);
                }
+               return Status.OK_STATUS;
             }
+
          };
-         job.run();
+         job.setSystem(true);
+         job.setUser(false);
+         job.setRule(mutexRule);
+         job.schedule();
       }
 
       /**

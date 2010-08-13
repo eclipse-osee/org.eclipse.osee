@@ -14,6 +14,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -106,51 +107,75 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
          }
       }
    }
+   private static final ISchedulingRule mutexRule = new ISchedulingRule() {
+
+      @Override
+      public boolean contains(ISchedulingRule rule) {
+         return rule == this;
+      }
+
+      @Override
+      public boolean isConflicting(ISchedulingRule rule) {
+         return rule == this;
+      }
+   };
 
    @Override
    public void onEvent(final RemoteEvent remoteEvent) {
-      Runnable job = new Runnable() {
+      Job job =
+         new Job(String.format("[%s] - receiving [%s]", getClass().getSimpleName(),
+            remoteEvent.getClass().getSimpleName())) {
 
-         @Override
-         public void run() {
+            @Override
+            protected IStatus run(IProgressMonitor monitor) {
 
-            Sender sender = new Sender(remoteEvent.getNetworkSender());
-            // If the sender's sessionId is the same as this client, then this event was
-            // created in this client and returned by remote event manager; ignore and continue
-            if (sender.isLocal()) {
-               return;
+               try {
+                  Sender sender = new Sender(remoteEvent.getNetworkSender());
+                  // If the sender's sessionId is the same as this client, then this event was
+                  // created in this client and returned by remote event manager; ignore and continue
+                  if (sender.isLocal()) {
+                     return Status.OK_STATUS;
+                  }
+                  // Handles TransactionEvents, ArtifactChangeTypeEvents, ArtifactPurgeEvents
+                  if (remoteEvent instanceof RemotePersistEvent1) {
+                     try {
+                        RemotePersistEvent1 event1 = (RemotePersistEvent1) remoteEvent;
+                        ArtifactEvent transEvent = FrameworkEventUtil.getPersistEvent(event1);
+                        updateArtifacts(sender, transEvent);
+                        updateRelations(sender, transEvent);
+                        InternalEventManager2.kickArtifactEvent(sender, transEvent);
+                     } catch (Exception ex) {
+                        OseeEventManager.eventLog("REM2: RemoteTransactionEvent1", ex);
+                     }
+                  } else if (remoteEvent instanceof RemoteBranchEvent1) {
+                     try {
+                        BranchEvent branchEvent = FrameworkEventUtil.getBranchEvent((RemoteBranchEvent1) remoteEvent);
+                        updateBranches(sender, branchEvent);
+                        InternalEventManager2.kickBranchEvent(sender, branchEvent);
+                     } catch (Exception ex) {
+                        OseeEventManager.eventLog("REM2: RemoteBranchEvent1", ex);
+                     }
+                  } else if (remoteEvent instanceof RemoteTransactionEvent1) {
+                     try {
+                        TransactionEvent transEvent =
+                           FrameworkEventUtil.getTransactionEvent((RemoteTransactionEvent1) remoteEvent);
+                        handleTransactionEvent(sender, transEvent);
+                     } catch (Exception ex) {
+                        OseeEventManager.eventLog("REM2: RemoteBranchEvent1", ex);
+                     }
+                  }
+               } catch (Exception ex) {
+                  // don't want exceptions poping up; just log and return nicely
+                  OseeLog.log(Activator.class, Level.SEVERE, "REM2 Receive Event Exception", ex);
+               }
+               monitor.done();
+               return Status.OK_STATUS;
             }
-            // Handles TransactionEvents, ArtifactChangeTypeEvents, ArtifactPurgeEvents
-            if (remoteEvent instanceof RemotePersistEvent1) {
-               try {
-                  RemotePersistEvent1 event1 = (RemotePersistEvent1) remoteEvent;
-                  ArtifactEvent transEvent = FrameworkEventUtil.getPersistEvent(event1);
-                  updateArtifacts(sender, transEvent);
-                  updateRelations(sender, transEvent);
-                  InternalEventManager2.kickArtifactEvent(sender, transEvent);
-               } catch (Exception ex) {
-                  OseeEventManager.eventLog("REM2: RemoteTransactionEvent1", ex);
-               }
-            } else if (remoteEvent instanceof RemoteBranchEvent1) {
-               try {
-                  BranchEvent branchEvent = FrameworkEventUtil.getBranchEvent((RemoteBranchEvent1) remoteEvent);
-                  updateBranches(sender, branchEvent);
-                  InternalEventManager2.kickBranchEvent(sender, branchEvent);
-               } catch (Exception ex) {
-                  OseeEventManager.eventLog("REM2: RemoteBranchEvent1", ex);
-               }
-            } else if (remoteEvent instanceof RemoteTransactionEvent1) {
-               try {
-                  TransactionEvent transEvent =
-                     FrameworkEventUtil.getTransactionEvent((RemoteTransactionEvent1) remoteEvent);
-                  handleTransactionEvent(sender, transEvent);
-               } catch (Exception ex) {
-                  OseeEventManager.eventLog("REM2: RemoteBranchEvent1", ex);
-               }
-            }
-         }
-      };
-      job.run();
+         };
+      job.setSystem(true);
+      job.setRule(mutexRule);
+      job.setUser(false);
+      job.schedule();
    }
 
    private void handleTransactionEvent(Sender sender, TransactionEvent transEvent) {
