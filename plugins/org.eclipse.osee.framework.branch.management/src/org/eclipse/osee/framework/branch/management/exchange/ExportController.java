@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.branch.management.ExportOptions;
 import org.eclipse.osee.framework.branch.management.IExchangeTaskListener;
 import org.eclipse.osee.framework.branch.management.exchange.export.AbstractDbExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.export.AbstractExportItem;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -46,15 +47,15 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
 
    private String exportName;
    private final Options options;
-   private final int[] branchIds;
+   private final List<Integer> branchIds;
    private ExportImportJoinQuery joinQuery;
    private ExecutorService executorService;
    private final List<String> errorList;
    private final OseeServices oseeServices;
 
-   ExportController(OseeServices oseeServices, String exportName, Options options, int... branchIds) throws Exception {
-      if (branchIds == null || branchIds.length <= 0) {
-         throw new Exception("No branch selected for export.");
+   ExportController(OseeServices oseeServices, String exportName, Options options, List<Integer> branchIds) throws OseeCoreException {
+      if (branchIds.isEmpty()) {
+         throw new OseeArgumentException("No branch selected for export.");
       }
       this.oseeServices = oseeServices;
       this.exportName = exportName;
@@ -156,11 +157,10 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
       } finally {
          cleanUp(connection, taskList);
       }
-      int branchTotal = branchIds != null ? branchIds.length : 0;
       OseeLog.log(
          this.getClass(),
          Level.INFO,
-         String.format("Exported [%s] branch%s in [%s]", branchTotal, branchTotal != 1 ? "es" : "",
+         String.format("Exported [%s] branch%s in [%s]", branchIds.size(), branchIds.size() != 1 ? "es" : "",
             Lib.getElapseString(startTime)));
    }
 

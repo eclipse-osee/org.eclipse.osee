@@ -63,25 +63,26 @@ public final class ImportController {
    private final OseeServices oseeServices;
    private final IOseeExchangeDataProvider exportDataProvider;
    private final Options options;
-   private final int[] branchesToImport;
+   private final int[] branchesToImport = null;
    private final Map<String, SavePoint> savePoints;
 
    private ExchangeTransformer exchangeTransformer;
-   private ExchangeDataProcessor exchangeDataProcessor;
+   private final ExchangeDataProcessor exchangeDataProcessor;
    private TranslationManager translator;
    private ManifestSaxHandler manifestHandler;
    private MetaDataSaxHandler metadataHandler;
    private String currentSavePoint;
 
-   ImportController(OseeServices oseeServices, IOseeExchangeDataProvider exportDataProvider, Options options, int... branchesToImport) {
+   ImportController(OseeServices oseeServices, IOseeExchangeDataProvider exportDataProvider, Options options, List<Integer> branchIds) throws OseeArgumentException {
       this.oseeServices = oseeServices;
       this.exportDataProvider = exportDataProvider;
       this.options = options;
-      this.branchesToImport = branchesToImport;
-      if (branchesToImport != null && branchesToImport.length > 0) {
-         throw new UnsupportedOperationException("selective branch import is not supported.");
-      }
       this.savePoints = new LinkedHashMap<String, SavePoint>();
+      this.exchangeDataProcessor = new ExchangeDataProcessor(exportDataProvider);
+
+      if (!branchIds.isEmpty()) {
+         throw new OseeArgumentException("selective branch import is not supported.");
+      }
    }
 
    private void checkPreconditions() throws OseeCoreException {
@@ -93,7 +94,6 @@ public final class ImportController {
    private void setup() throws Exception {
       currentSavePoint = "sourceSetup";
 
-      exchangeDataProcessor = new ExchangeDataProcessor(exportDataProvider);
       IExchangeTransformProvider transformProvider = new ExchangeTransformProvider(oseeServices.getCachingService());
       exchangeTransformer = new ExchangeTransformer(transformProvider, exchangeDataProcessor);
 
@@ -120,11 +120,11 @@ public final class ImportController {
       loadImportTrace(manifestHandler.getSourceDatabaseId(), manifestHandler.getSourceExportDate());
    }
 
-   private void cleanup() throws Exception {
+   private void cleanup() throws OseeCoreException {
       try {
          CommitImportSavePointsTx saveImportState = new CommitImportSavePointsTx();
          saveImportState.execute();
-      } catch (Exception ex) {
+      } catch (OseeCoreException ex) {
          OseeLog.log(this.getClass(), Level.WARNING,
             "Error during save point save - you will not be able to reimport from last source again.");
          throw ex;
@@ -138,7 +138,7 @@ public final class ImportController {
       }
    }
 
-   public void execute() throws Exception {
+   public void execute() throws OseeCoreException {
       checkPreconditions();
       savePoints.clear();
       try {

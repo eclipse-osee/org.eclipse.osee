@@ -35,6 +35,6 @@ public class V0_9_4Transformer implements IOseeExchangeVersionTransformer {
    }
 
    @Override
-   public void finalizeTransform(ExchangeDataProcessor processor) throws Exception {
+   public void finalizeTransform(ExchangeDataProcessor processor) throws OseeCoreException {
    }
 }

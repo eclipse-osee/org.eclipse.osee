@@ -52,7 +52,7 @@ public class ExchangeUtil {
       return writer;
    }
 
-   public static Pair<Boolean, File> getTempExchangeFile(IResourceLocator locator, IResourceManager resourceManager) throws Exception {
+   public static Pair<Boolean, File> getTempExchangeFile(IResourceLocator locator, IResourceManager resourceManager) throws OseeCoreException {
       File importSource = null;
       boolean wasZipExtractionRequired = false;
       IResource resource = resourceManager.acquire(locator, new Options());
@@ -62,7 +62,11 @@ public class ExchangeUtil {
          importSource = ExchangeUtil.createTempFolder();
          OseeLog.log(ExchangeUtil.class, Level.INFO,
             String.format("Extracting Exchange File: [%s] to [%s]", source.getName(), importSource));
-         Lib.decompressStream(new FileInputStream(source), importSource);
+         try {
+            Lib.decompressStream(new FileInputStream(source), importSource);
+         } catch (Exception ex) {
+            OseeExceptions.wrapAndThrow(ex);
+         }
          wasZipExtractionRequired = true;
       } else {
          wasZipExtractionRequired = false;

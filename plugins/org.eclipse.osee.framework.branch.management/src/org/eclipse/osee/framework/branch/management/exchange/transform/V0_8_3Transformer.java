@@ -40,7 +40,7 @@ public class V0_8_3Transformer implements IOseeExchangeVersionTransformer {
    }
 
    @Override
-   public void finalizeTransform(ExchangeDataProcessor ruleProcessor) throws Exception {
+   public void finalizeTransform(ExchangeDataProcessor ruleProcessor) throws OseeCoreException {
    }
 
    @Override

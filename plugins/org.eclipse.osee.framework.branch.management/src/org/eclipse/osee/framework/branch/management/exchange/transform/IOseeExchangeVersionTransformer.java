@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management.exchange.transform;
 
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.osgi.framework.Version;
 
 /**
@@ -17,9 +18,9 @@ import org.osgi.framework.Version;
  */
 public interface IOseeExchangeVersionTransformer {
 
-   public abstract Version applyTransform(ExchangeDataProcessor processor) throws Exception;
+   public abstract Version applyTransform(ExchangeDataProcessor processor) throws OseeCoreException;
 
    public abstract Version getMaxVersion();
 
-   public abstract void finalizeTransform(ExchangeDataProcessor processor) throws Exception;
+   public abstract void finalizeTransform(ExchangeDataProcessor processor) throws OseeCoreException;
 }

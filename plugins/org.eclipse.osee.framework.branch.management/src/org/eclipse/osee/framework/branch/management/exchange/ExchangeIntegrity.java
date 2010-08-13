@@ -23,6 +23,8 @@ import org.eclipse.osee.framework.branch.management.exchange.handler.IExportItem
 import org.eclipse.osee.framework.branch.management.exchange.handler.ManifestSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.transform.ExchangeDataProcessor;
 import org.eclipse.osee.framework.core.enums.ConflictType;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
@@ -47,7 +49,7 @@ public class ExchangeIntegrity {
       return checkExchange;
    }
 
-   public void execute() throws Exception {
+   public void execute() throws OseeCoreException {
       long startTime = System.currentTimeMillis();
       try {
          ManifestSaxHandler manifestSaxHandler = new ManifestSaxHandler();
@@ -64,6 +66,8 @@ public class ExchangeIntegrity {
          }
          checkExchange = exportDataProvider.getExportedDataRoot() + ".verify.xml";
          writeResults(exportDataProvider.getExportedDataRoot().getParentFile(), checkExchange, checkList);
+      } catch (Exception ex) {
+         OseeExceptions.wrapAndThrow(ex);
       } finally {
          processor.cleanUp();
          OseeLog.log(
