@@ -147,7 +147,7 @@ public final class RenderingUtil {
             toReturn = mergeEditFolder;
             break;
          default:
-            throw new OseeArgumentException("Unexpected presentation type");
+            throw new OseeArgumentException(String.format("Unexpected presentation type: %s", presentationType));
       }
       return toReturn;
    }
