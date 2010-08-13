@@ -595,6 +595,10 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
          private ArtifactTypeFilteredTreeEntryDialog getDialog() throws OseeCoreException {
             Collection<ArtifactType> artifactTypes =
                ArtifactTypeManager.getConcreteArtifactTypes(branchSelect.getData());
+
+            //            IAccessPolicyHandlerService policyHandlerService = SkynetGuiPlugin.getInstance().getPolicyHandlerService();
+            //            policyHandlerService.
+
             ArtifactType rootArtifactType = ArtifactTypeManager.getType(RootArtifact);
             artifactTypes.remove(rootArtifactType);
 

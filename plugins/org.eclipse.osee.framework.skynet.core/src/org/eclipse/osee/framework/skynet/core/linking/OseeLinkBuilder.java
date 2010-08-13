@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.linking;
 
+import java.util.Random;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -26,7 +27,7 @@ public class OseeLinkBuilder {
    private static final String WORDML_LINK_FORMAT =
       "<w:hlink w:dest=\"%s\"><w:r><w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t>%s</w:t></w:r></w:hlink>";
    private static final String WORDML_BOOKMARK_FORMAT =
-      "<aml:annotation aml:id=\"\" w:type=\"Word.Bookmark.Start\" w:name=\"OSEE.%s\"/><aml:annotation aml:id=\"\" w:type=\"Word.Bookmark.End\"/>";
+      "<aml:annotation aml:id=\"%s\" w:type=\"Word.Bookmark.Start\" w:name=\"OSEE.%s\"/><aml:annotation aml:id=\"%s\" w:type=\"Word.Bookmark.End\"/>";
    private static final String OSEE_LINK_MARKER = "OSEE_LINK(%s)";
 
    public OseeLinkBuilder() {
@@ -61,7 +62,17 @@ public class OseeLinkBuilder {
    }
 
    public String getWordMlBookmark(Artifact source) {
-      return String.format(WORDML_BOOKMARK_FORMAT, source.getGuid());
+      Random random = new Random();
+      int idNumber = getValidNumber(random.nextInt(19580427), random);
+
+      return String.format(WORDML_BOOKMARK_FORMAT, idNumber, source.getGuid(), idNumber);
+   }
+
+   private int getValidNumber(int number, Random random) {
+      while (number <= 0) {
+         number = random.nextInt(19580427);
+      }
+      return number;
    }
 
    public String getOseeLinkMarker(String guid) {

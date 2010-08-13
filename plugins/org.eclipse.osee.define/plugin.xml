@@ -161,14 +161,6 @@
             className="org.eclipse.osee.define.blam.operation.PublishWithSpecifiedTemplate">
       </Operation>
    </extension>
-      <extension
-         id="PublishRequirements"
-         name="PublishRequirements"
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.define.blam.operation.PublishRequirements">
-      </Operation>
-   </extension>
  <extension
        id="RemoveTraceMarksFromTraceUnits"
        name="RemoveTraceMarksFromTraceUnits"

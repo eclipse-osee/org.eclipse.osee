@@ -170,6 +170,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
 
             LinkType linkType = (LinkType) map.getValue("linkType");
             value = WordMlLinkHandler.link(linkType, artifact, value);
+            value = WordUtil.reassignBookMarkID(value);
          }
 
          if (presentationType == PresentationType.SPECIALIZED_EDIT) {
