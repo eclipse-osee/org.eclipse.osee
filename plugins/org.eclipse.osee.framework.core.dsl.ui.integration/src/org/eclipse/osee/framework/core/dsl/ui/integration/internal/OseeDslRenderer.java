@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.dsl.ui.integration.internal;
 
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.DEFAULT_OPEN;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERALIZED_EDIT;
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.SPECIALIZED_EDIT;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
@@ -102,13 +104,16 @@ public final class OseeDslRenderer extends FileSystemRenderer {
 
    @SuppressWarnings("unused")
    @Override
-   public void open(final List<Artifact> artifacts, final PresentationType presentationType) throws OseeCoreException {
+   public void open(final List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
+      final PresentationType resultantpresentationType =
+         presentationType == DEFAULT_OPEN ? SPECIALIZED_EDIT : presentationType;
+
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
             if (!artifacts.isEmpty()) {
                try {
-                  IFile file = getRenderedFile(artifacts, presentationType);
+                  IFile file = getRenderedFile(artifacts, resultantpresentationType);
                   if (file != null) {
                      IWorkbench workbench = PlatformUI.getWorkbench();
                      IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
