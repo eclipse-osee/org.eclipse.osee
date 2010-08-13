@@ -96,8 +96,8 @@ public class ResEventManager implements OseeMessagingStatusCallback {
    }
 
    public void sendRemoteEvent(ResMessages resMessage, RemoteEvent remoteEvent) throws Exception {
-      System.out.println(String.format(getClass().getSimpleName() + " - sending [%s]",
-         remoteEvent.getClass().getSimpleName()));
+      //      System.out.println(String.format(getClass().getSimpleName() + " - sending [%s]",
+      //         remoteEvent.getClass().getSimpleName()));
       if (connectionNode != null) {
          connectionNode.send(resMessage, remoteEvent, instance);
       }
@@ -171,8 +171,8 @@ public class ResEventManager implements OseeMessagingStatusCallback {
       @Override
       public void process(final Object message, Map<String, Object> headers, ReplyConnection replyConnection) {
          RemotePersistEvent1 remotePersistEvent1 = (RemotePersistEvent1) message;
-         System.err.println(String.format(getClass().getSimpleName() + " - received [%s]",
-            message.getClass().getSimpleName()));
+         //         System.err.println(String.format(getClass().getSimpleName() + " - received [%s]",
+         //            message.getClass().getSimpleName()));
          try {
             frameworkEventListener.onEvent(remotePersistEvent1);
          } catch (RemoteException ex) {

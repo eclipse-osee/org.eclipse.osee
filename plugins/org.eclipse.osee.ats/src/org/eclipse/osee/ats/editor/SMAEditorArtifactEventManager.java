@@ -70,7 +70,7 @@ public class SMAEditorArtifactEventManager implements IArtifactEventListener {
             handlers.remove(handler);
          }
       }
-      System.out.println("SMAEditor: handleArtifactEvent called [" + artifactEvent + "] - sender " + sender + "");
+      //      System.out.println("SMAEditor: handleArtifactEvent called [" + artifactEvent + "] - sender " + sender + "");
       try {
          if (!artifactEvent.isForBranch(AtsUtil.getAtsBranch())) {
             return;
