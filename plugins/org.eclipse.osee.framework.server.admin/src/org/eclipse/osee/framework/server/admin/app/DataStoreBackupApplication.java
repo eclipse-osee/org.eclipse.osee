@@ -38,9 +38,6 @@ import org.eclipse.osee.framework.server.admin.internal.Activator;
 public class DataStoreBackupApplication implements IApplication {
    private static final String ALL_BRANCHES_QUERY = "select branch_id from osee_branch";
 
-   public DataStoreBackupApplication() {
-   }
-
    private List<Integer> getAllBranches() throws OseeDataStoreException {
       List<Integer> toReturn = new ArrayList<Integer>();
       IOseeStatement chStmt = ConnectionHandler.getStatement();
