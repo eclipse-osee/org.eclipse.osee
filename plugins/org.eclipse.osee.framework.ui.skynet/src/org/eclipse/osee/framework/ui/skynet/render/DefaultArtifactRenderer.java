@@ -10,7 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.render;
 
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.DEFAULT_OPEN;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERALIZED_EDIT;
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PREVIEW;
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.SPECIALIZED_EDIT;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -94,7 +97,10 @@ public class DefaultArtifactRenderer implements IRenderer {
       if (presentationType == GENERALIZED_EDIT) {
          return PRESENTATION_TYPE;
       }
-      return DEFAULT_MATCH;
+      if (presentationType.matches(SPECIALIZED_EDIT, PREVIEW, DEFAULT_OPEN)) {
+         return DEFAULT_MATCH;
+      }
+      return NO_MATCH;
    }
 
    @SuppressWarnings("unused")
