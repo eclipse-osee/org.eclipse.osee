@@ -94,8 +94,7 @@ public abstract class AbstractOperation implements IOperation {
       if (error instanceof OperationCanceledException) {
          return Status.CANCEL_STATUS;
       } else {
-         return new Status(IStatus.ERROR, status.getPlugin(), String.format("%s: %s", status.getMessage(),
-            error.toString()), error);
+         return new Status(IStatus.ERROR, status.getPlugin(), error.toString(), error);
       }
    }
 
