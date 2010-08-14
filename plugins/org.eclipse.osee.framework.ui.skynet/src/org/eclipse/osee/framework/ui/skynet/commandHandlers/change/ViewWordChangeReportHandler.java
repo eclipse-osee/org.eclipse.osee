@@ -24,9 +24,12 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.change.Change;
+import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
+import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordChangeReportOperation;
 import org.eclipse.ui.PlatformUI;
 
@@ -59,6 +62,8 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
                   changes.add(change);
                }
             }
+            Collection<ArtifactDelta> compareArtifacts = ChangeManager.getCompareArtifacts(changes);
+            RendererManager.diffInJob(compareArtifacts);
             IOperation operation = new WordChangeReportOperation(changes, false, null);
             Operations.executeAsJob(operation, true);
          }

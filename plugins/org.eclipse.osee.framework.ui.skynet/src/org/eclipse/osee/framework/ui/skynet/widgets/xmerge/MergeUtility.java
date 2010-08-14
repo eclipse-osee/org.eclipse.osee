@@ -135,11 +135,11 @@ public class MergeUtility {
    /*
     * This is not in the AttributeConflict because it relies on the renderer that is in not in the skynet core package.
     */
-   public static String showCompareFile(Artifact art1, Artifact art2, String fileName) throws Exception {
+   public static void showCompareFile(Artifact art1, Artifact art2, String fileName) throws Exception {
       if (art1 == null || art2 == null) {
-         return " ";
+         return; // TODO: this if statement should probably be removed, regardless silently returning is no good.
       }
-      return RendererManager.diff(new ArtifactDelta(null, art1, art2), true, new VariableMap("fileName", fileName));
+      RendererManager.diffInJob(new ArtifactDelta(null, art1, art2), new VariableMap("fileName", fileName));
    }
 
    /*
@@ -190,7 +190,8 @@ public class MergeUtility {
       if (conflict.getConflictType().equals(ConflictType.ARTIFACT)) {
          MessageDialog dialog =
             new MessageDialog(shell, "Unresovable Conflict", null, ARTIFACT_DELETED_PROMPT, 1, new String[] {
-               "Revert Source Artifact", "Handle Later"}, 1);
+               "Revert Source Artifact",
+               "Handle Later"}, 1);
          if (dialog.open() == 0) {
             try {
                List<List<Artifact>> artifacts = new LinkedList<List<Artifact>>();
@@ -218,7 +219,8 @@ public class MergeUtility {
       if (conflict.getConflictType().equals(ConflictType.ATTRIBUTE)) {
          MessageDialog dialog =
             new MessageDialog(shell, "Unresovable Conflict", null, ATTRIBUTE_DELETED_PROMPT, 1, new String[] {
-               "Revert Source Attribute", "Handle Later"}, 1);
+               "Revert Source Attribute",
+               "Handle Later"}, 1);
          if (dialog.open() == 0) {
             try {
                ((AttributeConflict) conflict).revertSourceAttribute();

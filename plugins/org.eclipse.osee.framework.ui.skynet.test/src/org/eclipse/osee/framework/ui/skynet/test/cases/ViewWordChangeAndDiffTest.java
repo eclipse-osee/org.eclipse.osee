@@ -100,13 +100,8 @@ public class ViewWordChangeAndDiffTest {
 
       Collection<ArtifactDelta> itemsToCompare = ChangeManager.getCompareArtifacts(changes);
       ArtifactDelta delta = itemsToCompare.iterator().next();
-      try {
-         RendererManager.diff(delta, false);
-         assertTrue("Single Native Diff test passed", true);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-         fail("Single Native Diff test failed.");
-      }
+      RendererManager.diff(delta, false);
+      assertTrue("Single Native Diff test passed", true);
    }
 
    @org.junit.Test
