@@ -20,7 +20,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
-public class OpenUsingRenderer extends AbstractOperation {
+/**
+ * @author Ryan D. Brooks
+ */
+public final class OpenUsingRenderer extends AbstractOperation {
    private final Collection<Artifact> artifacts;
    private final VariableMap options;
    private final PresentationType presentationType;

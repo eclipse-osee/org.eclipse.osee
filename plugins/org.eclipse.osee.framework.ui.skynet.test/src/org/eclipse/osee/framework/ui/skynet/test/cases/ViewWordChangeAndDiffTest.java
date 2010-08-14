@@ -47,7 +47,7 @@ import org.junit.Before;
 /**
  * @author Megumi Telles
  */
-public class ViewWordChangeAndDiffTest {
+public final class ViewWordChangeAndDiffTest {
 
    @Before
    public void setUp() throws Exception {

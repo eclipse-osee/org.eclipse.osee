@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.jobs.Job;
 /**
  * @author Ryan D. Brooks
  */
-public class OperationJob extends Job {
+public final class OperationJob extends Job {
    private final IOperation operation;
 
    /**
