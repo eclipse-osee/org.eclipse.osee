@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.message.ChangeItem;
 import org.eclipse.osee.framework.core.message.ChangeVersion;
 import org.eclipse.osee.framework.core.message.test.mocks.ChangeTestUtility;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -128,7 +129,8 @@ public class ComputeNetChangeTest {
 
    private void computeNetChange(List<ChangeItem> changes, int status) {
       IOperation operation = new ComputeNetChangeOperation(changes);
-      operation.run(new NullProgressMonitor());
+
+      Operations.executeWork(operation, new NullProgressMonitor(), 0);
       String message = operation.getStatus().toString();
       Assert.assertEquals(message, status, operation.getStatus().getSeverity());
    }
