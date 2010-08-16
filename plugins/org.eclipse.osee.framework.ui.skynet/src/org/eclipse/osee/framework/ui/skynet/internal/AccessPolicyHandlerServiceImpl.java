@@ -65,13 +65,13 @@ public class AccessPolicyHandlerServiceImpl implements IAccessPolicyHandlerServi
    }
 
    @Override
-   public PermissionStatus hasRealtionSidePermission(Collection<RelationTypeSide> relationTypeSides, PermissionEnum permission, Level level) throws OseeCoreException {
+   public PermissionStatus hasRelationSidePermission(Collection<RelationTypeSide> relationTypeSides, PermissionEnum permission, Level level) throws OseeCoreException {
       AccessDataQuery query = accessControlService.getAccessData(user, relationTypeSides);
       PermissionStatus permissionStatus = new PermissionStatus();
 
       if (relationTypeSides != null) {
          for (RelationTypeSide relationTypeSide : relationTypeSides) {
-            query.relationTypeMatches(relationTypeSide, PermissionEnum.WRITE, permissionStatus);
+            query.relationTypeMatches(PermissionEnum.WRITE, relationTypeSide, permissionStatus);
 
             if (printErrorMessage(relationTypeSides, permissionStatus, level)) {
                break;
@@ -88,7 +88,7 @@ public class AccessPolicyHandlerServiceImpl implements IAccessPolicyHandlerServi
          OseeLog.log(
             SkynetGuiPlugin.class,
             level,
-            "No Permission Error: \n" + Collections.toString(objects, ",") + " does not have permissions becuase: " + permissionStatus.getReason());
+            "No Permission Error: \n" + Collections.toString(objects, ",") + " does not have permissions because: " + permissionStatus.getReason());
       }
       return notMatched;
    }

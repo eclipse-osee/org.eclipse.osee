@@ -51,7 +51,7 @@ public final class ArtifactType extends AbstractOseeType implements Comparable<A
       addField(ARTIFACT_TYPE_ATTRIBUTES_FIELD_KEY, new ArtifactTypeAttributesField(attributes));
    }
 
-   public boolean hasSuperArtifactTypes() throws OseeCoreException {
+   public boolean hasSuperArtifactTypes() {
       Collection<ArtifactType> superTypes = getSuperArtifactTypes();
       return superTypes != null && !superTypes.isEmpty();
    }
@@ -151,19 +151,33 @@ public final class ArtifactType extends AbstractOseeType implements Comparable<A
     * Determines if this artifact type equals, or is a sub-type of, the artifact type specified by the
     * <code>otherType</code> parameter.
     * 
-    * @param otherType artifact type to check against
+    * @param otherType artifact types to check against
     * @return whether this artifact type inherits from otherType
     */
-   public boolean inheritsFrom(IArtifactType otherType) {
-      if (this.equals(otherType)) {
-         return true;
-      }
-      for (ArtifactType superType : getSuperArtifactTypes()) {
-         if (superType.inheritsFrom(otherType)) {
-            return true;
+   public boolean inheritsFrom(IArtifactType... otherTypes) {
+      boolean result = false;
+      for (IArtifactType otherArtifactType : otherTypes) {
+         if (inheritsFromSingle(otherArtifactType)) {
+            result = true;
+            break;
          }
       }
-      return false;
+      return result;
+   }
+
+   private boolean inheritsFromSingle(IArtifactType otherType) {
+      boolean result = false;
+      if (this.equals(otherType)) {
+         result = true;
+      } else {
+         for (ArtifactType superType : getSuperArtifactTypes()) {
+            if (superType.inheritsFrom(otherType)) {
+               result = true;
+               break;
+            }
+         }
+      }
+      return result;
    }
 
    @Override

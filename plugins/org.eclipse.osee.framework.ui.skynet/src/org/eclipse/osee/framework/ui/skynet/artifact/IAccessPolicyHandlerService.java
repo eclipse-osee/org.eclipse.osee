@@ -17,5 +17,5 @@ import org.eclipse.osee.framework.core.model.access.PermissionStatus;
 public interface IAccessPolicyHandlerService {
    PermissionStatus hasAttributeTypePermission(Collection<? extends IBasicArtifact<?>> artifacts, IAttributeType attributeType, PermissionEnum permission, Level level) throws OseeCoreException;
 
-   PermissionStatus hasRealtionSidePermission(Collection<RelationTypeSide> relationTypeSides, PermissionEnum permission, Level level) throws OseeCoreException;
+   PermissionStatus hasRelationSidePermission(Collection<RelationTypeSide> relationTypeSides, PermissionEnum permission, Level level) throws OseeCoreException;
 }

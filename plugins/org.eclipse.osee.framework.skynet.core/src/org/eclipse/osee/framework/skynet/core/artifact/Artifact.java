@@ -299,12 +299,7 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
     * Determines if this artifact's type equals, or is a sub-type of, at least one of the given artifact types.
     */
    public boolean isOfType(IArtifactType... artifactTypes) {
-      for (IArtifactType otherArtifactType : artifactTypes) {
-         if (artifactType.inheritsFrom(otherArtifactType)) {
-            return true;
-         }
-      }
-      return false;
+      return artifactType.inheritsFrom(artifactTypes);
    }
 
    @Override

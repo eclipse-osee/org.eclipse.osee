@@ -98,7 +98,7 @@ public class AccessDataQuery {
       }
    }
 
-   public void relationTypeMatches(RelationTypeSide relationTypeSide, PermissionEnum permissionToMatch, PermissionStatus permissionStatus) throws OseeCoreException {
+   public void relationTypeMatches(PermissionEnum permissionToMatch, RelationTypeSide relationTypeSide, PermissionStatus permissionStatus) throws OseeCoreException {
       Collection<AccessDetail<?>> relationAccessDetails = accessData.getAccess(relationTypeSide);
       checkAccess(relationAccessDetails, relationTypeSide, permissionToMatch, permissionStatus);
    }
