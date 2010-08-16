@@ -62,7 +62,7 @@ public class OpenAssociatedArtifactFromBranchProvider extends Action {
                   AWorkbench.popup(String.format("Associated with user [%s]", assocArt.getName()));
                } else {
                   RendererManager.openInJob(BranchManager.getAssociatedArtifact(branchProvider.getBranch(null)),
-                     PresentationType.GENERALIZED_EDIT);
+                     PresentationType.SPECIALIZED_EDIT);
                }
             } catch (OseeCoreException ex) {
                OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, "Cannot access associated artifact.", ex);

@@ -571,7 +571,7 @@ public class MergeXWidget extends XWidget implements IAdaptable {
             if (branchAssociatedArtifact instanceof IATSArtifact) {
                OseeAts.getInstance().openArtifact(branchAssociatedArtifact);
             } else if (!branchAssociatedArtifact.equals(UserManager.getUser(SystemUser.OseeSystem))) {
-               RendererManager.open(branchAssociatedArtifact, PresentationType.GENERALIZED_EDIT);
+               RendererManager.open(branchAssociatedArtifact, PresentationType.SPECIALIZED_EDIT);
             } else {
                AWorkbench.popup("ERROR", "Unknown branch association");
             }
