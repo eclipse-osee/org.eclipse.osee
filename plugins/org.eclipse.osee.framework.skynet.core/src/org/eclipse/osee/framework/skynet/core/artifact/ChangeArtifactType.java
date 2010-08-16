@@ -77,8 +77,7 @@ public class ChangeArtifactType {
          artifactType.getGuid(), new LoadedArtifacts(artifactsUserAccepted), artifactChanges);
 
       // New Events
-      ArtifactEvent artifactEvent = new ArtifactEvent();
-      artifactEvent.setBranchGuid(artifactChanges.iterator().next().getBranchGuid());
+      ArtifactEvent artifactEvent = new ArtifactEvent(artifacts.iterator().next().getBranch());
       for (EventBasicGuidArtifact guidArt : artifactChanges) {
          artifactEvent.getArtifacts().add(guidArt);
       }

@@ -226,7 +226,7 @@ public class OseeEventManager {
       if (OseeEventManager.isOldEvents()) {
          InternalEventManager.kickArtifactReloadEvent(getSender(source), artifacts);
       }
-      ArtifactEvent artifactEvent = new ArtifactEvent();
+      ArtifactEvent artifactEvent = new ArtifactEvent(artifacts.iterator().next().getBranch());
       artifactEvent.getArtifacts().addAll(EventBasicGuidArtifact.get(EventModType.Reloaded, artifacts));
       if (OseeEventManager.isNewEvents()) {
          InternalEventManager2.kickLocalArtifactReloadEvent(getSender(source), artifactEvent);

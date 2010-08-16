@@ -86,7 +86,6 @@ public class RelationTransactionData extends BaseTransactionData {
          new DefaultBasicGuidRelation(relation.getBranch().getGuid(), relation.getRelationType().getGuid(),
             relation.getId(), relation.getGammaId(), relation.getArtifactA().getBasicGuidArtifact(),
             relation.getArtifactB().getBasicGuidArtifact());
-      artifactEvent.setBranchGuid(relation.getBranch().getGuid());
       EventBasicGuidRelation event =
          new EventBasicGuidRelation(relationEventType, relation.getAArtifactId(), relation.getBArtifactId(),
             defaultBasicGuidRelation);

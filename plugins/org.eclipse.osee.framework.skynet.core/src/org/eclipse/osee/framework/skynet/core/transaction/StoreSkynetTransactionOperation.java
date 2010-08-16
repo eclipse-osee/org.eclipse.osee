@@ -162,7 +162,7 @@ public final class StoreSkynetTransactionOperation extends AbstractLifecycleOper
    }
 
    private void updateModifiedCachedObject() throws OseeCoreException {
-      ArtifactEvent artifactEvent = new ArtifactEvent();
+      ArtifactEvent artifactEvent = new ArtifactEvent(transactionRecord.getBranch());
       artifactEvent.setTransactionId(getTransactionNumber());
 
       // Update all transaction items before collecting events
@@ -185,9 +185,6 @@ public final class StoreSkynetTransactionOperation extends AbstractLifecycleOper
                new EventModifiedBasicGuidArtifact(artifact.getBranch().getGuid(), artifact.getArtifactType().getGuid(),
                   artifact.getGuid(), artifact.getDirtyFrameworkAttributeChanges());
             artifactEvent.getArtifacts().add(guidArt);
-            if (artifactEvent.getBranchGuid() == null) {
-               artifactEvent.setBranchGuid(artifact.getBranchGuid());
-            }
 
             // Collection relation reorder records for events
             if (!artifact.getRelationOrderRecords().isEmpty()) {

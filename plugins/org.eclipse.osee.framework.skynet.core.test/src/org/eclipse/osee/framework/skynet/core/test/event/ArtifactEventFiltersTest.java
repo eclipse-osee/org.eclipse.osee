@@ -82,8 +82,7 @@ public class ArtifactEventFiltersTest {
    private void testArtifactEventFilters__branchFilter() throws Exception {
       // Create dummy artifact event
       String branchGuid = GUID.create();
-      ArtifactEvent testArtifactEvent = new ArtifactEvent();
-      testArtifactEvent.setBranchGuid(branchGuid);
+      ArtifactEvent testArtifactEvent = new ArtifactEvent(new OseeBranch("test branch", branchGuid));
       testArtifactEvent.setNetworkSender(getDummyRemoteNetworkSender());
 
       // Register set filters to null to see if event comes through
@@ -136,8 +135,7 @@ public class ArtifactEventFiltersTest {
       // Create dummy artifact event
       String branchGuid = GUID.create();
       ArtifactType generalDocArtType = ArtifactTypeManager.getType(CoreArtifactTypes.GeneralDocument);
-      ArtifactEvent testArtifactEvent = new ArtifactEvent();
-      testArtifactEvent.setBranchGuid(branchGuid);
+      ArtifactEvent testArtifactEvent = new ArtifactEvent(new OseeBranch("test branch 2", branchGuid));
       testArtifactEvent.setNetworkSender(getDummyRemoteNetworkSender());
       testArtifactEvent.getArtifacts().add(
          new EventBasicGuidArtifact(EventModType.Added, branchGuid, generalDocArtType.getGuid(), GUID.create()));

@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -39,7 +40,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 
 public class ArtifactEvent extends FrameworkEvent {
 
-   private String branchGuid;
+   private final String branchGuid;
    private int transactionId;
    private NetworkSender networkSender;
    private final List<EventBasicGuidArtifact> artifacts = new ArrayList<EventBasicGuidArtifact>();
@@ -49,16 +50,20 @@ public class ArtifactEvent extends FrameworkEvent {
    private final Collection<ArtifactTransactionModifiedEvent> skynetTransactionDetails =
       new ArrayList<ArtifactTransactionModifiedEvent>();
 
+   public ArtifactEvent(Branch branch) {
+      branchGuid = branch.getGuid();
+   }
+
+   public ArtifactEvent(IOseeBranch branch) {
+      branchGuid = branch.getGuid();
+   }
+
    public String getBranchGuid() {
       return branchGuid;
    }
 
    public Set<DefaultBasicGuidRelationReorder> getRelationOrderRecords() {
       return relationReorderRecords;
-   }
-
-   public void setBranchGuid(String value) {
-      this.branchGuid = value;
    }
 
    public boolean isForBranch(Branch branch) {

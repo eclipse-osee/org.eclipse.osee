@@ -50,4 +50,8 @@ public class BranchGuidEventFilter implements IEventFilter {
       branchToken.getGuid().equals(relArt.getArtB().getBranchGuid());
    }
 
+   @Override
+   public String toString() {
+      return branchToken.toString();
+   }
 }

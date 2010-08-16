@@ -174,8 +174,7 @@ public class PurgeArtifacts extends DbTransaction {
             artifactChanges);
 
          // New Events
-         ArtifactEvent artifactEvent = new ArtifactEvent();
-         artifactEvent.setBranchGuid(artifactChanges.iterator().next().getBranchGuid());
+         ArtifactEvent artifactEvent = new ArtifactEvent(artifactsToPurge.iterator().next().getBranch());
          for (EventBasicGuidArtifact guidArt : artifactChanges) {
             artifactEvent.getArtifacts().add(guidArt);
          }
