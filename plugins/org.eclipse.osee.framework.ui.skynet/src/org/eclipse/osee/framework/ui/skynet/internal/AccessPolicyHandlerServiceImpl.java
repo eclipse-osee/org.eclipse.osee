@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
+import org.eclipse.osee.framework.core.model.RelationTypeSide;
 import org.eclipse.osee.framework.core.model.access.AccessDataQuery;
 import org.eclipse.osee.framework.core.model.access.PermissionStatus;
 import org.eclipse.osee.framework.core.services.IAccessControlService;
@@ -55,15 +56,40 @@ public class AccessPolicyHandlerServiceImpl implements IAccessPolicyHandlerServi
          for (IBasicArtifact<?> artifact : artifacts) {
             query.attributeTypeMatches(PermissionEnum.WRITE, artifact, attributeType, permissionStatus);
 
-            if (!permissionStatus.matched()) {
-               OseeLog.log(
-                  SkynetGuiPlugin.class,
-                  level,
-                  "No Permission Error: \nArtifacts: " + Collections.toString(artifacts, ",") + " does not have permissions becuase: " + permissionStatus.getReason());
+            if (printErrorMessage(artifacts, permissionStatus, level)) {
                break;
             }
          }
       }
       return permissionStatus;
+   }
+
+   @Override
+   public PermissionStatus hasRealtionSidePermission(Collection<RelationTypeSide> relationTypeSides, PermissionEnum permission, Level level) throws OseeCoreException {
+      AccessDataQuery query = accessControlService.getAccessData(user, relationTypeSides);
+      PermissionStatus permissionStatus = new PermissionStatus();
+
+      if (relationTypeSides != null) {
+         for (RelationTypeSide relationTypeSide : relationTypeSides) {
+            query.relationTypeMatches(relationTypeSide, PermissionEnum.WRITE, permissionStatus);
+
+            if (printErrorMessage(relationTypeSides, permissionStatus, level)) {
+               break;
+            }
+         }
+      }
+      return permissionStatus;
+   }
+
+   private boolean printErrorMessage(Collection<?> objects, PermissionStatus permissionStatus, Level level) {
+      boolean notMatched = !permissionStatus.matched();
+
+      if (notMatched) {
+         OseeLog.log(
+            SkynetGuiPlugin.class,
+            level,
+            "No Permission Error: \n" + Collections.toString(objects, ",") + " does not have permissions becuase: " + permissionStatus.getReason());
+      }
+      return notMatched;
    }
 }
