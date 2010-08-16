@@ -10,15 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers;
 
-import java.util.logging.Level;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
-import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 
 /**
  * @author Jeff C. Phillips
@@ -27,28 +26,13 @@ public class PreviewWithChildWordHandler extends PreviewWordHandler {
 
    @Override
    public Object execute(ExecutionEvent event) {
-      if (!artifacts.isEmpty()) {
-         try {
-            WordTemplateRenderer renderer = new WordTemplateRenderer();
-            renderer.setOptions(getOptions());
-            renderer.open(artifacts, PresentationType.PREVIEW);
-            dispose();
-
-         } catch (OseeCoreException ex) {
-            OseeLog.log(PreviewWithChildWordHandler.class, Level.SEVERE, ex);
-         }
+      try {
+         RendererManager.openInJob(artifacts, new VariableMap(ITemplateRenderer.PREVIEW_WITH_RECURSE_OPTION_PAIR),
+            PresentationType.PREVIEW);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(PreviewWithChildWordHandler.class, OseeLevel.SEVERE_POPUP, ex);
       }
+      dispose();
       return null;
-   }
-
-   /**
-    * A subclass may override this method if they would like options to be set on the renderer
-    * 
-    * @return
-    * @throws OseeArgumentException
-    */
-   @Override
-   protected VariableMap getOptions() throws OseeArgumentException {
-      return new VariableMap(ITemplateRenderer.PREVIEW_WITH_RECURSE_OPTION_PAIR);
    }
 }
