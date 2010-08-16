@@ -51,7 +51,7 @@ public class OpenArtifactAction implements IObjectActionDelegate {
             try {
                Artifact artifact = ArtifactDragDropSupport.getArtifactFromWorkspaceFile(path, shell);
                if (artifact != null) {
-                  RendererManager.open(artifact, PresentationType.GENERALIZED_EDIT);
+                  RendererManager.open(artifact, PresentationType.DEFAULT_OPEN);
                }
             } catch (OseeCoreException ex) {
                OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
