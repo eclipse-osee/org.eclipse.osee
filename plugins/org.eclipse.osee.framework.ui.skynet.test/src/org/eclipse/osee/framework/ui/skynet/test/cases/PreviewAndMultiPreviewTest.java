@@ -247,7 +247,6 @@ public class PreviewAndMultiPreviewTest {
             multiArt3.persist();
             newMultiArts = Arrays.asList(multiArt1, multiArt2, multiArt3);
             WordTemplateRenderer renderer = new WordTemplateRenderer();
-            renderer.setOptions(null);
             renderer.open(newMultiArts, PresentationType.PREVIEW);
             Assert.assertTrue(monitorLog.getLogsAtLevel(Level.WARNING).isEmpty());
             Assert.assertTrue(monitorLog.getLogsAtLevel(Level.SEVERE).isEmpty());
