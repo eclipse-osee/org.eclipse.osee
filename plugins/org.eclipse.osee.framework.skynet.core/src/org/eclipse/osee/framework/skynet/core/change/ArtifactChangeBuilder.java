@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.change;
 
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
@@ -25,7 +26,7 @@ public class ArtifactChangeBuilder extends ChangeBuilder {
    }
 
    @Override
-   public Change build(Branch branch) {
+   public Change build(Branch branch) throws OseeArgumentException {
       return new ArtifactChange(branch, getSourceGamma(), getArtId(), getTxDelta(), getModType(), isHistorical(),
          loadArtifact(), new ArtifactDelta(getTxDelta(), loadArtifact(), null));
    }

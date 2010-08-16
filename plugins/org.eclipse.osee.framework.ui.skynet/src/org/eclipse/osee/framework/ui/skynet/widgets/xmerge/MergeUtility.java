@@ -140,8 +140,7 @@ public class MergeUtility {
       if (art1 == null || art2 == null) {
          return; // TODO: this if statement should probably be removed, regardless silently returning is no good.
       }
-      RendererManager.diffInJob(new ArtifactDelta(null, art1, art2), new VariableMap(IRenderer.FILE_NAME_OPTION,
-         fileName));
+      RendererManager.diffInJob(new ArtifactDelta(art1, art2), new VariableMap(IRenderer.FILE_NAME_OPTION, fileName));
    }
 
    /*

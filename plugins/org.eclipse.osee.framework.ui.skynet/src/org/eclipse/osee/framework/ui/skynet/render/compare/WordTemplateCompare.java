@@ -18,7 +18,6 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -66,11 +65,6 @@ public class WordTemplateCompare implements IComparator {
             WordUiUtil.displayTrackedChangesOnArtifacts(artifacts);
          }
       } else {
-
-         if (baseArtifact == null && newerArtifact == null) {
-            throw new OseeArgumentException("baseVersion and newerVersion can't both be null.");
-         }
-
          Attribute<String> baseContent = getWordContent(baseArtifact, ATTRIBUTE_TYPE);
          Attribute<String> newerContent = getWordContent(newerArtifact, ATTRIBUTE_TYPE);
 

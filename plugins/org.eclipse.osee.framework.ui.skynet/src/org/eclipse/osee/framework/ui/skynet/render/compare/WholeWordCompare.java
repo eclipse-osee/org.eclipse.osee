@@ -16,7 +16,6 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -42,9 +41,6 @@ public class WholeWordCompare implements IComparator {
 
    @Override
    public String compare(IProgressMonitor monitor, PresentationType presentationType, ArtifactDelta delta, boolean show) throws OseeCoreException {
-      if (delta.getStartArtifact() == null && delta.getEndArtifact() == null) {
-         throw new OseeArgumentException("baseVersion and newerVersion can't both be null.");
-      }
       Pair<String, Boolean> originalValue = null;
       Pair<String, Boolean> newAnnotationValue = null;
       Pair<String, Boolean> oldAnnotationValue = null;

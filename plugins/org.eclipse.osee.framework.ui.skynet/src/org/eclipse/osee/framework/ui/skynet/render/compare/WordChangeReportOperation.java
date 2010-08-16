@@ -18,7 +18,6 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -105,10 +104,6 @@ public final class WordChangeReportOperation extends AbstractOperation {
 
                Artifact baseArtifact = delta.getStartArtifact();
                Artifact newerArtifact = delta.getEndArtifact();
-
-               if (baseArtifact == null && newerArtifact == null) {
-                  throw new OseeArgumentException("baseVersion and newerVersion can't both be null.");
-               }
 
                Attribute<String> baseContent = getWordContent(baseArtifact, attributeType);
                Attribute<String> newerContent = getWordContent(newerArtifact, attributeType);

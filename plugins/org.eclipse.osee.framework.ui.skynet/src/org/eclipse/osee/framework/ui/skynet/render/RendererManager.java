@@ -229,7 +229,7 @@ public class RendererManager {
       VariableMap variableMap = new VariableMap(IRenderer.FILE_NAME_OPTION, fileName);
       IRenderer renderer = getBestRenderer(PresentationType.MERGE, baseVersion, variableMap);
       IComparator comparator = renderer.getComparator();
-      ArtifactDelta delta = new ArtifactDelta(null, baseVersion, newerVersion);
+      ArtifactDelta delta = new ArtifactDelta(baseVersion, newerVersion);
       return comparator.compare(new NullProgressMonitor(), PresentationType.MERGE, delta, show);
    }
 

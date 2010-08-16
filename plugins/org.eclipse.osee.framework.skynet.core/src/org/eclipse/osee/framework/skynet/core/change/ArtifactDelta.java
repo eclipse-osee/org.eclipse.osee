@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.change;
 
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -23,11 +24,17 @@ public class ArtifactDelta {
    private final Artifact endArt;
    private final TransactionDelta txDelta;
 
-   public ArtifactDelta(TransactionDelta txDelta, Artifact startArt, Artifact endArt) {
-      super();
+   public ArtifactDelta(TransactionDelta txDelta, Artifact startArt, Artifact endArt) throws OseeArgumentException {
+      if (startArt == null && endArt == null) {
+         throw new OseeArgumentException("the start and end artiafcts can not both be null.");
+      }
       this.startArt = startArt;
       this.endArt = endArt;
       this.txDelta = txDelta;
+   }
+
+   public ArtifactDelta(Artifact startArt, Artifact endArt) throws OseeArgumentException {
+      this(null, startArt, endArt);
    }
 
    public TransactionDelta getTxDelta() {
