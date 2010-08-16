@@ -64,7 +64,7 @@ public class ArtifactPromptChangeTest {
       }
 
       @Override
-      public PermissionStatus hasRealtionSidePermission(Collection<RelationTypeSide> relationTypeSides, PermissionEnum permission, Level level) throws OseeCoreException {
+      public PermissionStatus hasRelationSidePermission(Collection<RelationTypeSide> relationTypeSides, PermissionEnum permission, Level level) throws OseeCoreException {
          return new PermissionStatus();
       }
    }
