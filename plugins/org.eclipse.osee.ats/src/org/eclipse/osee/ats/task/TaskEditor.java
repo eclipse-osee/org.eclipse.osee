@@ -60,7 +60,6 @@ public class TaskEditor extends AbstractArtifactEditor implements IActionable, I
    private int mainPageIndex, metricsPageIndex;
    private TaskEditorXWidgetActionPage taskActionPage;
    private final Collection<TaskArtifact> tasks = new HashSet<TaskArtifact>();
-   private AtsMetricsComposite metricsComposite;
    private boolean loading = false;
    public static int TITLE_MAX_LENGTH = WorldEditor.TITLE_MAX_LENGTH;
 
@@ -125,10 +124,6 @@ public class TaskEditor extends AbstractArtifactEditor implements IActionable, I
       if (taskActionPage != null && taskActionPage.getTaskComposite() != null) {
          taskActionPage.getTaskComposite().disposeComposite();
       }
-      if (metricsComposite != null) {
-         metricsComposite.disposeComposite();
-      }
-
       super.dispose();
    }
 
@@ -188,7 +183,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IActionable, I
    private void createMetricsTab() {
       Composite comp = AtsUtil.createCommonPageComposite(getContainer());
       AtsUtil.createCommonToolBar(comp);
-      metricsComposite = new AtsMetricsComposite(this, comp, SWT.NONE);
+      new AtsMetricsComposite(this, comp, SWT.NONE);
       metricsPageIndex = addPage(comp);
       setPageText(metricsPageIndex, "Metrics");
    }

@@ -50,7 +50,6 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
    public static final String EDITOR_ID = "org.eclipse.osee.ats.world.WorldEditor";
    private int mainPageIndex, metricsPageIndex;
    private WorldXWidgetActionPage worldXWidgetActionPage;
-   private AtsMetricsComposite metricsComposite;
    public static final String HELP_CONTEXT_ID = "atsWorldView";
    public static int TITLE_MAX_LENGTH = 80;
 
@@ -120,9 +119,6 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
    public void dispose() {
       if (worldXWidgetActionPage != null && worldXWidgetActionPage.getWorldComposite() != null) {
          worldXWidgetActionPage.getWorldComposite().disposeComposite();
-      }
-      if (metricsComposite != null) {
-         metricsComposite.disposeComposite();
       }
       super.dispose();
    }
@@ -208,7 +204,7 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
    private void createMetricsTab() {
       Composite comp = AtsUtil.createCommonPageComposite(getContainer());
       AtsUtil.createCommonToolBar(comp);
-      metricsComposite = new AtsMetricsComposite(this, comp, SWT.NONE);
+      new AtsMetricsComposite(this, comp, SWT.NONE);
       metricsPageIndex = addPage(comp);
       setPageText(metricsPageIndex, "Metrics");
    }

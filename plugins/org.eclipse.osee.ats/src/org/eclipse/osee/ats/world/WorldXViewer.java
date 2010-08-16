@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
@@ -108,6 +109,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
    public static final String SUBSCRIBE = "Subscribe for Notifications";
    public static final String UN_SUBSCRIBE = "Un-Subscribe for Notifications";
    public final WorldXViewer thisXViewer = this;
+   public List<IMenuActionProvider> menuActionProviders = new ArrayList<IMenuActionProvider>();
 
    public WorldXViewer(Composite parent, int style, IXViewerFactory xViewerFactory) {
       super(parent, style, xViewerFactory);
@@ -268,13 +270,8 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
       editNotesAction = new Action("Edit Notes", IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
-            try {
-               if (PromptChangeUtil.promptChangeAttribute(getSelectedSMAArtifacts(), AtsAttributeTypes.SmaNote,
-                  true, true)) {
-                  update(getSelectedSMAArtifacts().toArray(), null);
-               }
-            } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            if (PromptChangeUtil.promptChangeAttribute(getSelectedSMAArtifacts(), AtsAttributeTypes.SmaNote, true, true)) {
+               update(getSelectedSMAArtifacts().toArray(), null);
             }
          }
       };
@@ -282,13 +279,9 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
       editResolutionAction = new Action("Edit Resolution", IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
-            try {
-               if (PromptChangeUtil.promptChangeAttribute(getSelectedSMAArtifacts(), AtsAttributeTypes.Resolution,
-                  true, true)) {
-                  update(getSelectedSMAArtifacts().toArray(), null);
-               }
-            } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            if (PromptChangeUtil.promptChangeAttribute(getSelectedSMAArtifacts(), AtsAttributeTypes.Resolution, true,
+               true)) {
+               update(getSelectedSMAArtifacts().toArray(), null);
             }
          }
       };
@@ -717,6 +710,9 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
       mm.insertAfter(XViewer.MENU_GROUP_PRE, new GroupMarker(MENU_GROUP_ATS_WORLD_OTHER));
       mm.insertAfter(MENU_GROUP_PRE, new Separator());
 
+      for (IMenuActionProvider provider : menuActionProviders) {
+         provider.updateMenuActionsForTable();
+      }
    }
 
    @Override
@@ -979,14 +975,11 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
          } else if (xCol.equals(WorldXViewerFactory.Notes_Col)) {
             modified = PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.SmaNote, persist, true);
          } else if (xCol.equals(WorldXViewerFactory.Percent_Rework_Col)) {
-            modified =
-               PromptChangeUtil.promptChangePercentAttribute(sma, AtsAttributeTypes.PercentRework, persist);
+            modified = PromptChangeUtil.promptChangePercentAttribute(sma, AtsAttributeTypes.PercentRework, persist);
          } else if (xCol.equals(WorldXViewerFactory.Estimated_Hours_Col)) {
-            modified =
-               PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.EstimatedHours, persist, false);
+            modified = PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.EstimatedHours, persist, false);
          } else if (xCol.equals(WorldXViewerFactory.Weekly_Benefit_Hrs_Col)) {
-            modified =
-               PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.WeeklyBenefit, persist, false);
+            modified = PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.WeeklyBenefit, persist, false);
          } else if (xCol.equals(WorldXViewerFactory.Estimated_Release_Date_Col)) {
             modified = PromptChangeUtil.promptChangeEstimatedReleaseDate(sma);
          } else if (xCol.equals(WorldXViewerFactory.Groups_Col)) {
@@ -1119,4 +1112,20 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
       super.doUpdateItem(item, element);
    }
 
+   public void addMenuActionProvider(IMenuActionProvider provider) {
+      menuActionProviders.add(provider);
+   }
+
+   @Override
+   public List<Artifact> getSelectedAtsArtifacts() {
+      List<Artifact> artifacts = new ArrayList<Artifact>();
+      Iterator<?> i = ((IStructuredSelection) getSelection()).iterator();
+      while (i.hasNext()) {
+         Object obj = i.next();
+         if (obj instanceof IATSArtifact) {
+            artifacts.add((StateMachineArtifact) obj);
+         }
+      }
+      return artifacts;
+   }
 }

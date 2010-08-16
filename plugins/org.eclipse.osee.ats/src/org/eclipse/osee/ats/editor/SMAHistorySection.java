@@ -104,9 +104,4 @@ public class SMAHistorySection extends SectionPart {
 
    }
 
-   @Override
-   public void dispose() {
-      super.dispose();
-   }
-
 }

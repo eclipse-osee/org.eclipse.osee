@@ -105,7 +105,7 @@ public class SMAWorkFlowSection extends SectionPart {
    private Composite mainComp;
    private final List<XWidget> allXWidgets = new ArrayList<XWidget>();
    private boolean sectionCreated = false;
-   Section section;
+   private Section section;
 
    public SMAWorkFlowSection(Composite parent, XFormToolkit toolkit, int style, AtsWorkPage page, StateMachineArtifact sma) throws OseeCoreException {
       super(parent, toolkit, style | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR);

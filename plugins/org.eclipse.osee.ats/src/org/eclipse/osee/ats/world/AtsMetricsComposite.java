@@ -61,11 +61,6 @@ public class AtsMetricsComposite extends ScrolledComposite {
    private boolean refreshedOnce = true;
    private XDate estimatedReleaseXDate;
 
-   /**
-    * @param iAtsMetricsProvider
-    * @param parent
-    * @param style
-    */
    public AtsMetricsComposite(IAtsMetricsProvider iAtsMetricsProvider, Composite parent, int style) {
       super(parent, style | SWT.V_SCROLL | SWT.H_SCROLL);
       this.iAtsMetricsProvider = iAtsMetricsProvider;
@@ -371,10 +366,6 @@ public class AtsMetricsComposite extends ScrolledComposite {
       table.setFillHorizontally(true);
       table.createWidgets(parent, 1);
       adapt(table);
-   }
-
-   public void disposeComposite() {
-      // provided for subclass implementation
    }
 
    public void adapt(XWidget xWidget) {

@@ -374,7 +374,7 @@ public final class PromptChangeUtil {
       return false;
    }
 
-   public static boolean promptChangeAttribute(final Collection<? extends StateMachineArtifact> smas, IAttributeType attributeType, boolean persist, boolean multiLine) throws OseeCoreException {
+   public static boolean promptChangeAttribute(final Collection<? extends StateMachineArtifact> smas, IAttributeType attributeType, boolean persist, boolean multiLine) {
       return ArtifactPromptChange.promptChangeAttribute(attributeType, smas, persist, multiLine);
    }
 

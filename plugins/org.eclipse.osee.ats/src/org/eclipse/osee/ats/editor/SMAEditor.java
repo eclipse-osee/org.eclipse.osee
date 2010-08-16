@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.ats.editor;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -108,10 +109,10 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
    private int workFlowPageIndex, metricsPageIndex, attributesPageIndex;
    private SMAWorkFlowTab workFlowTab;
    private AttributesComposite attributesComposite;
-   private AtsMetricsComposite metricsComposite;
    private boolean priviledgedEditModeEnabled = false;
    private Action printAction;
    private TaskTabXWidgetActionPage taskTabXWidgetActionPage;
+   private final List<ISMAEditorListener> editorListeners = new ArrayList<ISMAEditorListener>();
 
    public SMAEditor() {
       super();
@@ -145,7 +146,6 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
       }
       try {
          sma.setEditor(this);
-
          if (OseeEventManager.isOldEvents()) {
             OseeEventManager.addListener(this); // <REM2> Don't need this cause handled through SMAEditorEventManager
          } else if (OseeEventManager.isNewEvents()) {
@@ -254,6 +254,9 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
 
    @Override
    public void dispose() {
+      for (ISMAEditorListener listener : editorListeners) {
+         listener.editorDisposing();
+      }
       OseeEventManager.removeListener(this); // <REM2> Don't need this cause handled through SMAEditorEventManager
       SMAEditorArtifactEventManager.remove(this);
       SMAEditorBranchEventManager.remove(this);
@@ -261,13 +264,6 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
          sma.revertSMA();
       }
       workFlowTab.dispose();
-      if (taskTabXWidgetActionPage != null) {
-         taskTabXWidgetActionPage.dispose();
-      }
-      if (metricsComposite != null) {
-         metricsComposite.disposeComposite();
-      }
-
       super.dispose();
    }
 
@@ -324,7 +320,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
       try {
          Composite composite = AtsUtil.createCommonPageComposite(getContainer());
          createToolBar(composite);
-         metricsComposite = new AtsMetricsComposite(this, composite, SWT.NONE);
+         new AtsMetricsComposite(this, composite, SWT.NONE);
          metricsPageIndex = addPage(composite);
          setPageText(metricsPageIndex, "Metrics");
       } catch (Exception ex) {
@@ -783,4 +779,14 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
       return OseeEventManager.getCommonBranchEventFilters();
    }
 
+   public void addEditorListeners(ISMAEditorListener listener) {
+      editorListeners.add(listener);
+   }
+
+   @Override
+   public List<Artifact> getSelectedAtsArtifacts() {
+      List<Artifact> arts = new ArrayList<Artifact>();
+      arts.add(sma);
+      return arts;
+   }
 }

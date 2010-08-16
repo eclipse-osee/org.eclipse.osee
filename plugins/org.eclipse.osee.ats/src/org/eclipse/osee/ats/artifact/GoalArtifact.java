@@ -221,19 +221,31 @@ public class GoalArtifact extends StateMachineArtifact {
     * change goal order for artifact within given goal
     */
    public static GoalArtifact promptChangeGoalOrder(GoalArtifact goalArtifact, Artifact artifact) throws OseeCoreException {
-      if (!isHasGoal(artifact) || goalArtifact == null) {
-         AWorkbench.popup(String.format("No Goal set for artifact [%s]", artifact));
-         return null;
+      return promptChangeGoalOrder(goalArtifact, Arrays.asList(artifact));
+   }
+
+   /**
+    * change goal order for artifacts within given goal
+    */
+   public static GoalArtifact promptChangeGoalOrder(GoalArtifact goalArtifact, List<Artifact> artifacts) throws OseeCoreException {
+      String currentOrder = "Current Order: ";
+      for (Artifact artifact : artifacts) {
+         if (artifacts.size() == 1 && !isHasGoal(artifact) || goalArtifact == null) {
+            AWorkbench.popup(String.format("No Goal set for artifact [%s]", artifact));
+            return null;
+         }
+         String currIndexStr = getGoalOrder(goalArtifact, artifact);
+         currentOrder += currIndexStr + ", ";
       }
+      currentOrder = currentOrder.replaceFirst(", $", "");
 
       List<Artifact> members = goalArtifact.getMembers();
-      String currIndexStr = getGoalOrder(goalArtifact, artifact);
       EntryDialog ed =
          new EntryDialog(
             "Change Goal Order",
             String.format(
-               "Goal: %s\n\nCurrent Order: %s\n\nEnter New Order Number from 1..%d or %d for last\n\nNote: Goal will be placed before number entered.",
-               goalArtifact, currIndexStr, members.size(), members.size() + 1));
+               "Goal: %s\n\n%s\n\nEnter New Order Number from 1..%d or %d for last\n\nNote: Goal will be placed before number entered.",
+               goalArtifact, currentOrder, members.size(), members.size() + 1));
       ed.setNumberFormat(NumberFormat.getIntegerInstance());
 
       int result = ed.open();
@@ -246,8 +258,11 @@ public class GoalArtifact extends StateMachineArtifact {
             AWorkbench.popup(String.format("New Order Number [%s] out of range 1..%d", newIndexStr, members.size()));
             return null;
          }
-         Artifact insertTarget = members.get(membersIndex);
-         goalArtifact.setRelationOrder(AtsRelationTypes.Goal_Member, insertTarget, insertLast ? true : false, artifact);
+         for (Artifact artifact : artifacts) {
+            Artifact insertTarget = members.get(membersIndex);
+            goalArtifact.setRelationOrder(AtsRelationTypes.Goal_Member, insertTarget, insertLast ? true : false,
+               artifact);
+         }
          goalArtifact.persist();
          return goalArtifact;
       }
