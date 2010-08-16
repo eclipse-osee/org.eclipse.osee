@@ -10,14 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers;
 
-import java.util.logging.Level;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
-import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 
 /**
  * @author Jeff C. Phillips
@@ -26,27 +21,7 @@ public class PreviewWordHandler extends AbstractEditorHandler {
 
    @Override
    public Object execute(ExecutionEvent event) {
-      if (!artifacts.isEmpty()) {
-         try {
-            WordTemplateRenderer renderer = new WordTemplateRenderer();
-            renderer.setOptions(getOptions());
-            renderer.open(artifacts, PresentationType.PREVIEW);
-            dispose();
-
-         } catch (OseeCoreException ex) {
-            OseeLog.log(PreviewWordHandler.class, Level.SEVERE, ex);
-         }
-      }
-      return null;
-   }
-
-   /**
-    * A subclass may override this method if they would like options to be set on the renderer
-    * 
-    * @return
-    */
-   @SuppressWarnings("unused")
-   protected VariableMap getOptions() throws OseeArgumentException {
+      RendererManager.openInJob(artifacts, PresentationType.PREVIEW);
       return null;
    }
 }
