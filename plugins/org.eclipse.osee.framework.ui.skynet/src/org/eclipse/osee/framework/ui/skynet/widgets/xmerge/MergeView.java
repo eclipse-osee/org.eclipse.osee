@@ -884,11 +884,6 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
    }
 
    @Override
-   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
-      // do nothing
-   }
-
-   @Override
    public List<? extends IEventFilter> getEventFilters() {
       return null;
    }

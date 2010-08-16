@@ -105,11 +105,6 @@ public class BranchEventFiltersTest {
       }
 
       @Override
-      public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
-         // do nothing
-      }
-
-      @Override
       public void handleBranchEventREM1(Sender sender, BranchEventType branchModType, int branchId) {
          // do nothing, this is legacy branch handler call
       }

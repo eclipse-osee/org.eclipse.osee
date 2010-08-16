@@ -108,8 +108,4 @@ public class SMAEditorBranchEventManager implements IBranchEventListener {
       }
    }
 
-   @Override
-   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
-      // do nothing
-   }
 }

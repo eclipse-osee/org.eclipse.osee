@@ -254,10 +254,5 @@ public class HttpAttributeTagger {
          // Need to fix tags based on this event
       }
 
-      @Override
-      public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
-         // Need to fix tags based on this event
-      }
-
    }
 }

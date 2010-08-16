@@ -439,11 +439,6 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
    }
 
    @Override
-   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
-      // do nothing
-   }
-
-   @Override
    public List<? extends IEventFilter> getEventFilters() {
       return null;
    }

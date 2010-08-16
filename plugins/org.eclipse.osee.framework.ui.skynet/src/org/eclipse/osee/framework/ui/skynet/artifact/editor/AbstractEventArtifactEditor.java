@@ -199,11 +199,6 @@ public abstract class AbstractEventArtifactEditor extends AbstractArtifactEditor
       }
 
       @Override
-      public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
-         // do nothing
-      }
-
-      @Override
       public List<? extends IEventFilter> getEventFilters() {
          Artifact artifact = getArtifactFromEditorInput();
          if (artifact != null) {

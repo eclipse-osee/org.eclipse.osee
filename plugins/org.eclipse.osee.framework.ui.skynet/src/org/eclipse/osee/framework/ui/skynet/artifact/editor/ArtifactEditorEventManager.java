@@ -135,11 +135,6 @@ public class ArtifactEditorEventManager implements IArtifactEventListener, IBran
    }
 
    @Override
-   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
-      // do nothing
-   }
-
-   @Override
    public void handleAccessControlArtifactsEvent(Sender sender, AccessControlEvent accessControlEvent) {
       try {
          if (accessControlEvent.getEventType() == AccessControlEventType.ArtifactsLocked || accessControlEvent.getEventType() == AccessControlEventType.ArtifactsUnlocked) {

@@ -333,11 +333,6 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
    }
 
    @Override
-   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
-      // do nothing
-   }
-
-   @Override
    public List<? extends IEventFilter> getEventFilters() {
       if (artifact != null) {
          return OseeEventManager.getEventFiltersForBranch(artifact.getBranch());

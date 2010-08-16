@@ -24,7 +24,4 @@ public interface IBranchEventListener extends IEventFilteredListener {
    // REM2 event handler
    public void handleBranchEvent(Sender sender, BranchEvent branchEvent);
 
-   // REM2 event handler
-   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender);
-
 }

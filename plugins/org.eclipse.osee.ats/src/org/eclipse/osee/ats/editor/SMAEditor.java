@@ -770,11 +770,6 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
    }
 
    @Override
-   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
-      // do nothing
-   }
-
-   @Override
    public List<? extends IEventFilter> getEventFilters() {
       return OseeEventManager.getCommonBranchEventFilters();
    }

@@ -117,11 +117,6 @@ public final class AccessEventListener implements IBranchEventListener, IArtifac
       }
    }
 
-   @Override
-   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
-      // Do Nothing
-   }
-
    private void updateAccessList(Sender sender, AccessObject accessObject) throws OseeCoreException {
       List<AccessControlData> acl = service.generateAccessControlList(accessObject);
       for (AccessControlData accessControlData : acl) {

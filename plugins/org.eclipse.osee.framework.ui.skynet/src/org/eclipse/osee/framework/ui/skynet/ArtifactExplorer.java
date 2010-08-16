@@ -1525,11 +1525,6 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
       }
    }
 
-   @Override
-   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
-      // do nothing
-   }
-
    public TreeViewer getTreeViewer() {
       return treeViewer;
    }

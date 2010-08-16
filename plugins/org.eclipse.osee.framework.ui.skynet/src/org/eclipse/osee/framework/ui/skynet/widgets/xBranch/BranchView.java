@@ -193,11 +193,6 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
    }
 
    @Override
-   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
-      // do nothing
-   }
-
-   @Override
    public void handleTransactionEvent(Sender sender, TransactionEvent transEvent) {
       if (transEvent.getEventType() == TransactionEventType.Purged) {
          Displays.ensureInDisplayThread(new Runnable() {

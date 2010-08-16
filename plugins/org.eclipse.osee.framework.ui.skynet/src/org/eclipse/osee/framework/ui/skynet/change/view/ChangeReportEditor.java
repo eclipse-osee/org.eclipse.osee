@@ -240,11 +240,6 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
       }
 
       @Override
-      public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
-         // do nothing
-      }
-
-      @Override
       public List<? extends IEventFilter> getEventFilters() {
          return null;
       }

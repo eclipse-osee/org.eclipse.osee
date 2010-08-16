@@ -324,9 +324,4 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IArtifac
       refreshOnBranchEvent();
    }
 
-   @Override
-   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
-      // do nothing
-   }
-
 }
