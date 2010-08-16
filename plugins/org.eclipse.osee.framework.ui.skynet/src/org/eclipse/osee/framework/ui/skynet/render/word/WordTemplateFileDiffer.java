@@ -50,8 +50,6 @@ public class WordTemplateFileDiffer {
       List<Artifact> endArtifacts = variableMap.getArtifacts("artifacts");
       variableMap.setValue(IRenderer.FILE_NAME_OPTION, fileName);
       variableMap.setValue("diffReportFolderName", ".preview" + fileName);
-      variableMap.setValue("inPublishMode", true);
-      variableMap.setValue("suppressWord", true);
       variableMap.setValue("Publish With Attributes", true);
       variableMap.setValue("Publish As Diff", true);
       variableMap.setValue("Diff Branch", variableMap.getValue("Branch"));
