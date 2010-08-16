@@ -34,25 +34,6 @@ public class CoverageEditorInput implements IEditorInput {
    }
 
    @Override
-   public int hashCode() {
-      return coveragePackageBase.hashCode();
-   }
-
-   @Override
-   public boolean equals(Object obj) {
-      if (!(obj instanceof CoverageEditorInput)) {
-         return false;
-      }
-      CoverageEditorInput castObj = (CoverageEditorInput) obj;
-      if (castObj.getCoveragePackageBase() != null) {
-         return castObj.getCoveragePackageBase().equals(this.coveragePackageBase);
-      } else if (castObj.getCoveragePackageArtifact() != null) {
-         return castObj.getCoveragePackageArtifact().equals(this.coveragePackageArtifact);
-      }
-      return false;
-   }
-
-   @Override
    public boolean exists() {
       return false;
    }
@@ -108,6 +89,44 @@ public class CoverageEditorInput implements IEditorInput {
 
    public void setCoveragePackageArtifact(Artifact coveragePackageArtifact) {
       this.coveragePackageArtifact = coveragePackageArtifact;
+   }
+
+   @Override
+   public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((coveragePackageArtifact == null) ? 0 : coveragePackageArtifact.hashCode());
+      result = prime * result + ((coveragePackageBase == null) ? 0 : coveragePackageBase.hashCode());
+      return result;
+   }
+
+   @Override
+   public boolean equals(Object obj) {
+      if (this == obj) {
+         return true;
+      }
+      if (obj == null) {
+         return false;
+      }
+      if (getClass() != obj.getClass()) {
+         return false;
+      }
+      CoverageEditorInput other = (CoverageEditorInput) obj;
+      if (coveragePackageArtifact == null) {
+         if (other.coveragePackageArtifact != null) {
+            return false;
+         }
+      } else if (!coveragePackageArtifact.equals(other.coveragePackageArtifact)) {
+         return false;
+      }
+      if (coveragePackageBase == null) {
+         if (other.coveragePackageBase != null) {
+            return false;
+         }
+      } else if (!coveragePackageBase.equals(other.coveragePackageBase)) {
+         return false;
+      }
+      return true;
    }
 
 }
