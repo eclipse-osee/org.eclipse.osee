@@ -61,15 +61,20 @@ public final class AIFile {
       }
    }
 
-   public static IFile constructIFile(String fullPath) throws OseeArgumentException {
+   public static IFile constructIFile(File file) throws OseeArgumentException {
       IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
-      IFile[] files = workspaceRoot.findFilesForLocationURI(new File(fullPath).toURI());
+      IFile[] files = workspaceRoot.findFilesForLocationURI(file.toURI());
 
       if (files.length == 1) {
          return files[0];
       } else {
-         throw new OseeArgumentException(String.format(
-            "expected findFilesForLocationURI for %s to find 1 file but %d found", fullPath, files.length));
+         throw new OseeArgumentException(
+            String.format("expected findFilesForLocationURI for %s to find 1 file but %d found",
+               file.getAbsolutePath(), files.length));
       }
+   }
+
+   public static IFile constructIFile(String fullPath) throws OseeArgumentException {
+      return constructIFile(new File(fullPath));
    }
 }

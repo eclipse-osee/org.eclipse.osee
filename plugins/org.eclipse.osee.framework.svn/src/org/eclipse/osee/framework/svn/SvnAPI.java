@@ -21,17 +21,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.logging.Level;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.svn.entry.IRepositoryEntry;
 import org.eclipse.osee.framework.svn.entry.NullRepositoryEntry;
 import org.eclipse.osee.framework.svn.entry.RepositoryEntry;
 import org.eclipse.osee.framework.svn.enums.RepositoryEnums.ControlledType;
 import org.eclipse.osee.framework.svn.enums.RepositoryEnums.EntryFields;
+import org.eclipse.osee.framework.svn.internal.Activator;
 import org.eclipse.team.svn.core.connector.ISVNConnector.Depth;
 import org.eclipse.team.svn.core.connector.SVNEntryInfo;
 import org.eclipse.team.svn.core.operation.remote.CheckoutOperation;
@@ -107,10 +112,12 @@ public class SvnAPI {
       entry.addField(EntryFields.dateCommitted, dateFormat.format(new Date(info.lastChangedDate)));
       entry.addField(EntryFields.properTime, dateFormat.format(new Date(info.propTime)));
 
-      IFile[] files = ResourcesPlugin.getWorkspace().getRoot().findFilesForLocationURI(file.toURI());
-      if (files != null && files.length > 0) {
-         ILocalResource local = SVNRemoteStorage.instance().asLocalResource(files[0]);
+      try {
+         IFile iFile = AIFile.constructIFile(file);
+         ILocalResource local = SVNRemoteStorage.instance().asLocalResource(iFile);
          entry.setModifiedFlag(SVNUtility.getStatusText(local.getStatus()));
+      } catch (OseeArgumentException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return entry;
    }
