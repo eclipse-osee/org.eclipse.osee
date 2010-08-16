@@ -14,6 +14,7 @@ package org.eclipse.osee.ats.internal;
 import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.ats.util.AtsPreSaveCacheRemoteEventHandler;
+import org.eclipse.osee.framework.core.services.CmAccessControl;
 import org.eclipse.osee.framework.core.util.ServiceDependencyTracker;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.plugin.core.IActionReportingService;
@@ -28,17 +29,19 @@ import org.osgi.framework.ServiceRegistration;
  * @author Donald G. Dunne
  */
 public class AtsPlugin extends OseeUiActivator {
-   private static AtsPlugin pluginInstance;
    public static final String PLUGIN_ID = "org.eclipse.osee.ats";
+
+   private static AtsPlugin pluginInstance;
 
    private ServiceRegistration service1;
    private ServiceRegistration service2;
 
    private ServiceDependencyTracker tracker;
+   private AtsCmAccessControlRegHandler cmAccessHandler;
 
    public AtsPlugin() {
       super();
-      pluginInstance = this;
+      AtsPlugin.pluginInstance = this;
       AtsPreSaveCacheRemoteEventHandler.start();
       AtsCacheManager.start();
       AtsNotifyUsers.getInstance();
@@ -53,7 +56,8 @@ public class AtsPlugin extends OseeUiActivator {
 
       // TODO Uncomment to re-enable ATS CM Access providing
       //      if (OseeInfo.isEnabled("atsAccessEnabled")) {
-      //         tracker = new ServiceDependencyTracker(context, new AtsCmAccessControlRegHandler());
+      cmAccessHandler = new AtsCmAccessControlRegHandler();
+      //         tracker = new ServiceDependencyTracker(context, cmAccessHandler);
       //         tracker.open();
       //      }
    }
@@ -81,4 +85,7 @@ public class AtsPlugin extends OseeUiActivator {
       return pluginInstance;
    }
 
+   public CmAccessControl getCmService() {
+      return cmAccessHandler.getCmService();
+   }
 }

@@ -22,13 +22,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
-import org.eclipse.osee.ats.access.AtsBranchObjectManager;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItems;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
-import org.eclipse.osee.ats.internal.AtsCmAccessControlRegHandler;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
@@ -1883,8 +1881,15 @@ public abstract class StateMachineArtifact extends ATSArtifact implements HasCmA
          details.put("Parent Team Workflow Id", getParentTeamWorkflow().getHumanReadableId());
       }
       if (this.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-         AccessContextId id = AtsBranchObjectManager.getFromWorkflow((TeamWorkFlowArtifact) this);
-         details.put("Access Context Id", id == null ? "NONE" : id.toString());
+         String message = null;
+         CmAccessControl accessControl = getAccessControl();
+         if (accessControl != null) {
+            Collection<? extends AccessContextId> ids = accessControl.getContextId(UserManager.getUser(), this);
+            message = ids.toString();
+         } else {
+            message = "AtsCmAccessControlService not started";
+         }
+         details.put("Access Context Id", message);
       }
       return details;
    }
@@ -1901,7 +1906,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements HasCmA
 
    @Override
    public CmAccessControl getAccessControl() {
-      return AtsCmAccessControlRegHandler.getCmService();
+      return AtsPlugin.getInstance().getCmService();
    }
 
 }
