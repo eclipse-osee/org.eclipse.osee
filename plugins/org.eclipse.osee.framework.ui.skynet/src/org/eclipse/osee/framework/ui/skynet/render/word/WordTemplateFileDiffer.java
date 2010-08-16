@@ -55,7 +55,7 @@ public class WordTemplateFileDiffer {
       variableMap.setValue("Diff Branch", variableMap.getValue("Branch"));
       variableMap.setValue("Use Artifact Names", true);
       variableMap.setValue("inPublishMode", true);
-      variableMap.setValue("suppressWord", true);
+      variableMap.setValue(IRenderer.NO_DISPLAY, true);
 
       Branch endBranch = variableMap.getBranch("Branch");
       Branch startBranch = variableMap.getBranch("compareBranch");

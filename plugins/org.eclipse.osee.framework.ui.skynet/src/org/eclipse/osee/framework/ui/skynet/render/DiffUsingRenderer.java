@@ -60,7 +60,7 @@ public final class DiffUsingRenderer extends AbstractOperation {
       IRenderer renderer = RendererManager.getBestRenderer(PresentationType.DIFF, sampleArtifact, options);
       IComparator comparator = renderer.getComparator();
       if (itemsToCompare.size() == 1) {
-         comparator.compare(monitor, PresentationType.DIFF, firstDelta, show);
+         comparator.compare(monitor, PresentationType.DIFF, firstDelta);
       } else {
          comparator.compareArtifacts(monitor, PresentationType.DIFF, itemsToCompare);
       }

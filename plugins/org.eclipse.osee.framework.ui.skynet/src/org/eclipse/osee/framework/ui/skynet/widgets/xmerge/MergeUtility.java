@@ -150,18 +150,20 @@ public class MergeUtility {
       if (art1 == null || art2 == null) {
          return " ";
       }
-      return RendererManager.merge(art1, art2, fileName, false);
+      VariableMap options = new VariableMap(IRenderer.FILE_NAME_OPTION, fileName, IRenderer.NO_DISPLAY, true);
+      return RendererManager.merge(art1, art2, fileName, options);
    }
 
    /*
     * This is not in the AttributeConflict because it relies on the renderer that is in not in the skynet core package.
     */
-   public static void mergeEditableDiffFiles(Artifact art1, String art1FileName, String art2FileName, String fileName, boolean show, boolean editable) throws Exception {
+   public static void mergeEditableDiffFiles(Artifact art1, String art1FileName, String art2FileName, String fileName, boolean editable) throws Exception {
       if (art1 == null) {
          return;
       }
+      VariableMap options = new VariableMap(IRenderer.FILE_NAME_OPTION, fileName, IRenderer.NO_DISPLAY, true);
       RendererManager.merge(art1, null, AIFile.constructIFile(art1FileName), AIFile.constructIFile(art2FileName),
-         fileName.substring(fileName.lastIndexOf('\\') + 1), show);
+         fileName, options);
    }
 
    public static Artifact getStartArtifact(Conflict conflict) {
@@ -289,12 +291,14 @@ public class MergeUtility {
                         changeAuthorinWord("Source", sourceChangeFile, 2, "12345678", "55555555");
                         changeAuthorinWord("Destination", destChangeFile, 2, "56781234", "55555555");
                         monitor.worked(15);
+
+                        String fileName = "Source_Dest_Merge_" + attributeConflict.getArtifact().getSafeName() + "(" + attributeConflict.getArtifact().getGuid() + ")" + new Date().toString().replaceAll(
+                           ":", ";") + ".xml";
                         MergeUtility.mergeEditableDiffFiles(
                            attributeConflict.getArtifact(),
                            sourceChangeFile,
                            destChangeFile,
-                           "Source_Dest_Merge_" + attributeConflict.getArtifact().getSafeName() + "(" + attributeConflict.getArtifact().getGuid() + ")" + new Date().toString().replaceAll(
-                              ":", ";") + ".xml", false, true);
+                           fileName, true);
 
                         monitor.worked(40);
                         attributeConflict.markStatusToReflectEdit();

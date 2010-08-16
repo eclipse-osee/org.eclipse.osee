@@ -36,6 +36,7 @@ public interface IRenderer {
    public static final int NO_MATCH = -1;
 
    public static final String FILE_NAME_OPTION = "filename";
+   public static final String NO_DISPLAY = "noDisplay";
 
    public List<String> getCommandId(PresentationType presentationType);
 

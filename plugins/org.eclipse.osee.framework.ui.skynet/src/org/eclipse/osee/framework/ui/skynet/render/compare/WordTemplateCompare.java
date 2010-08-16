@@ -39,14 +39,14 @@ import org.eclipse.osee.framework.ui.skynet.util.WordUiUtil;
 public class WordTemplateCompare implements IComparator {
    private static final IAttributeType ATTRIBUTE_TYPE = CoreAttributeTypes.WordTemplateContent;
 
-   private final ArtifactDeltaToFileConverter converter;
+   private final FileSystemRenderer renderer;
 
    public WordTemplateCompare(FileSystemRenderer renderer) {
-      this.converter = new ArtifactDeltaToFileConverter(renderer);
+      this.renderer = renderer;
    }
 
    @Override
-   public String compare(IProgressMonitor monitor, PresentationType presentationType, ArtifactDelta delta, boolean show) throws OseeCoreException {
+   public String compare(IProgressMonitor monitor, PresentationType presentationType, ArtifactDelta delta) throws OseeCoreException {
       Pair<String, Boolean> originalValue = null;
       Pair<String, Boolean> newAnnotationValue = null;
 
@@ -72,22 +72,23 @@ public class WordTemplateCompare implements IComparator {
             originalValue = WordImageChecker.checkForImageDiffs(baseContent, newerContent);
          }
 
-         Pair<IFile, IFile> compareFiles = converter.convertToFile(presentationType, delta);
+         Pair<IFile, IFile> compareFiles =
+            new ArtifactDeltaToFileConverter(renderer).convertToFile(presentationType, delta);
 
          WordImageChecker.restoreOriginalValue(baseContent, originalValue);
          WordImageChecker.restoreOriginalValue(newerContent, newAnnotationValue);
 
          return compare(baseArtifact, newerArtifact, compareFiles.getFirst(), compareFiles.getSecond(),
-            presentationType, show);
+            presentationType);
       }
       return "";
    }
 
    @Override
-   public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, PresentationType presentationType, boolean show) throws OseeCoreException {
+   public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, PresentationType presentationType) throws OseeCoreException {
       String diffPath;
 
-      String fileName = converter.getRenderer().getStringOption(IRenderer.FILE_NAME_OPTION);
+      String fileName = renderer.getStringOption(IRenderer.FILE_NAME_OPTION);
       if (!Strings.isValid(fileName)) {
          if (baseVersion != null) {
             String baseFileStr = baseFile.getLocation().toOSString();
@@ -107,9 +108,10 @@ public class WordTemplateCompare implements IComparator {
       diffGenerator.initialize(presentationType == PresentationType.DIFF,
          presentationType == PresentationType.MERGE_EDIT);
 
+      boolean show = !renderer.getBooleanOption(IRenderer.NO_DISPLAY);
       if (presentationType == PresentationType.MERGE_EDIT && baseVersion != null) {
          IFolder folder = RenderingUtil.getRenderFolder(baseVersion.getBranch(), PresentationType.MERGE_EDIT);
-         converter.getRenderer().addFileToWatcher(folder, diffPath.substring(diffPath.lastIndexOf('\\') + 1));
+         renderer.addFileToWatcher(folder, diffPath.substring(diffPath.lastIndexOf('\\') + 1));
          diffGenerator.addComparison(baseFile, newerFile, diffPath, true);
          diffGenerator.finish(diffPath.substring(0, diffPath.lastIndexOf('\\')) + "mergeDocs.vbs", show);
       } else {
@@ -135,12 +137,7 @@ public class WordTemplateCompare implements IComparator {
     */
    @Override
    public void compareArtifacts(IProgressMonitor monitor, PresentationType presentationType, Collection<ArtifactDelta> artifactsToCompare) throws OseeCoreException {
-      String fileName = converter.getRenderer().getStringOption(IRenderer.FILE_NAME_OPTION);
-      String reportDirName = converter.getRenderer().getStringOption("diffReportFolderName");
-      boolean isSuppressWord = converter.getRenderer().getBooleanOption("suppressWord");
-
-      IOperation operation =
-         new WordChangeReportOperation(artifactsToCompare, converter, reportDirName, fileName, isSuppressWord);
+      IOperation operation = new WordChangeReportOperation(artifactsToCompare, renderer);
       Operations.executeWorkAndCheckStatus(operation, monitor, 1.0);
    }
 }

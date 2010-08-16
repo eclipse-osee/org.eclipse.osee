@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
@@ -79,7 +80,7 @@ public final class ViewWordChangeAndDiffTest {
       WordTemplateRenderer renderer = new WordTemplateRenderer();
       try {
          VariableMap variableMap = new VariableMap();
-         variableMap.setValue("suppressWord", true);
+         variableMap.setValue(IRenderer.NO_DISPLAY, true);
          renderer.setOptions(variableMap);
          renderer.getComparator().compareArtifacts(new NullProgressMonitor(), PresentationType.DIFF, itemsToCompare);
       } catch (OseeCoreException e) {

@@ -18,6 +18,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -32,6 +33,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.preferences.MsWordPreferencePage;
+import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.framework.ui.skynet.render.VbaWordDiffGenerator;
@@ -48,14 +51,15 @@ public final class WordChangeReportOperation extends AbstractOperation {
    private final ArtifactDeltaToFileConverter converter;
    private IFolder changeReportFolder;
 
-   public WordChangeReportOperation(Collection<ArtifactDelta> artifactsToCompare, ArtifactDeltaToFileConverter converter, String reportDirName, String fileName, boolean isSuppressWord) {
+   public WordChangeReportOperation(Collection<ArtifactDelta> artifactsToCompare, FileSystemRenderer renderer) throws OseeArgumentException {
       super("Word Change Report", SkynetGuiPlugin.PLUGIN_ID);
-      this.converter = converter;
+      this.converter = new ArtifactDeltaToFileConverter(renderer);
       this.artifactsToCompare = artifactsToCompare;
-      this.fileName = fileName;
-      this.isSuppressWord = isSuppressWord;
-      this.reportDirName = Strings.isValid(reportDirName) ? reportDirName : GUID.create();
+      String diffFolderName = renderer.getStringOption("diffReportFolderName");
+      this.reportDirName = Strings.isValid(diffFolderName) ? diffFolderName : GUID.create();
 
+      fileName = renderer.getStringOption(IRenderer.FILE_NAME_OPTION);
+      isSuppressWord = renderer.getBooleanOption(IRenderer.NO_DISPLAY);
       this.attributeType = CoreAttributeTypes.WordTemplateContent;
    }
 

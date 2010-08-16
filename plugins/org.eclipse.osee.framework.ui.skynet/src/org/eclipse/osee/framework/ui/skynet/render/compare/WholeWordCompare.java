@@ -33,14 +33,14 @@ import org.eclipse.osee.framework.ui.skynet.render.WordImageChecker;
 
 public class WholeWordCompare implements IComparator {
    private static final IAttributeType ATTRIBUTE_TYPE = CoreAttributeTypes.WholeWordContent;
-   private final ArtifactDeltaToFileConverter converter;
+   private final FileSystemRenderer renderer;
 
    public WholeWordCompare(FileSystemRenderer renderer) {
-      this.converter = new ArtifactDeltaToFileConverter(renderer);
+      this.renderer = renderer;
    }
 
    @Override
-   public String compare(IProgressMonitor monitor, PresentationType presentationType, ArtifactDelta delta, boolean show) throws OseeCoreException {
+   public String compare(IProgressMonitor monitor, PresentationType presentationType, ArtifactDelta delta) throws OseeCoreException {
       Pair<String, Boolean> originalValue = null;
       Pair<String, Boolean> newAnnotationValue = null;
       Pair<String, Boolean> oldAnnotationValue = null;
@@ -59,19 +59,19 @@ public class WholeWordCompare implements IComparator {
          originalValue = WordImageChecker.checkForImageDiffs(baseContent, newerContent);
       }
 
+      ArtifactDeltaToFileConverter converter = new ArtifactDeltaToFileConverter(renderer);
       Pair<IFile, IFile> compareFiles = converter.convertToFile(presentationType, delta);
 
       WordImageChecker.restoreOriginalValue(baseContent,
          oldAnnotationValue != null ? oldAnnotationValue : originalValue);
       WordImageChecker.restoreOriginalValue(newerContent, newAnnotationValue);
-      return compare(baseArtifact, newerArtifact, compareFiles.getFirst(), compareFiles.getSecond(), presentationType,
-         show);
+      return compare(baseArtifact, newerArtifact, compareFiles.getFirst(), compareFiles.getSecond(), presentationType);
    }
 
    @Override
-   public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, PresentationType presentationType, boolean show) throws OseeCoreException {
+   public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, PresentationType presentationType) throws OseeCoreException {
       String diffPath;
-      String fileName = converter.getRenderer().getStringOption(IRenderer.FILE_NAME_OPTION);
+      String fileName = renderer.getStringOption(IRenderer.FILE_NAME_OPTION);
       if (fileName == null || fileName.equals("")) {
          if (baseVersion != null) {
             String baseFileStr = baseFile.getLocation().toOSString();
@@ -90,9 +90,11 @@ public class WholeWordCompare implements IComparator {
       VbaWordDiffGenerator diffGenerator = new VbaWordDiffGenerator();
       diffGenerator.initialize(presentationType == PresentationType.DIFF,
          presentationType == PresentationType.MERGE_EDIT);
+
+      boolean show = !renderer.getBooleanOption(IRenderer.NO_DISPLAY);
       if (presentationType == PresentationType.MERGE_EDIT && baseVersion != null) {
          IFolder folder = RenderingUtil.getRenderFolder(baseVersion.getBranch(), PresentationType.MERGE_EDIT);
-         converter.getRenderer().addFileToWatcher(folder, diffPath.substring(diffPath.lastIndexOf('\\') + 1));
+         renderer.addFileToWatcher(folder, diffPath.substring(diffPath.lastIndexOf('\\') + 1));
          diffGenerator.addComparison(baseFile, newerFile, diffPath, true);
          diffGenerator.finish(diffPath.substring(0, diffPath.lastIndexOf('\\')) + "mergeDocs.vbs", show);
       } else {
@@ -107,7 +109,7 @@ public class WholeWordCompare implements IComparator {
    @Override
    public void compareArtifacts(IProgressMonitor monitor, PresentationType presentationType, Collection<ArtifactDelta> itemsToCompare) throws OseeCoreException {
       for (ArtifactDelta entry : itemsToCompare) {
-         compare(monitor, presentationType, entry, true);
+         compare(monitor, presentationType, entry);
       }
    }
 
