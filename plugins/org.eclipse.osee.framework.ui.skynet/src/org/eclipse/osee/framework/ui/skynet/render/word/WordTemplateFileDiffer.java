@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 
 /**
@@ -47,7 +48,7 @@ public class WordTemplateFileDiffer {
       this.outlineType = outlineType;
 
       List<Artifact> endArtifacts = variableMap.getArtifacts("artifacts");
-      variableMap.setValue("fileName", fileName);
+      variableMap.setValue(IRenderer.FILE_NAME_OPTION, fileName);
       variableMap.setValue("diffReportFolderName", ".preview" + fileName);
       variableMap.setValue("inPublishMode", true);
       variableMap.setValue("suppressWord", true);

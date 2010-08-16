@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.word.WordAnnotationHandler;
 import org.eclipse.osee.framework.ui.skynet.preferences.MsWordPreferencePage;
 import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.framework.ui.skynet.render.VbaWordDiffGenerator;
@@ -74,7 +75,7 @@ public class WholeWordCompare implements IComparator {
    @Override
    public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, PresentationType presentationType, boolean show) throws OseeCoreException {
       String diffPath;
-      String fileName = converter.getRenderer().getStringOption("fileName");
+      String fileName = converter.getRenderer().getStringOption(IRenderer.FILE_NAME_OPTION);
       if (fileName == null || fileName.equals("")) {
          if (baseVersion != null) {
             String baseFileStr = baseFile.getLocation().toOSString();

@@ -45,6 +45,7 @@ import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.VbaWordDiffGenerator;
@@ -139,7 +140,8 @@ public class MergeUtility {
       if (art1 == null || art2 == null) {
          return; // TODO: this if statement should probably be removed, regardless silently returning is no good.
       }
-      RendererManager.diffInJob(new ArtifactDelta(null, art1, art2), new VariableMap("fileName", fileName));
+      RendererManager.diffInJob(new ArtifactDelta(null, art1, art2), new VariableMap(IRenderer.FILE_NAME_OPTION,
+         fileName));
    }
 
    /*

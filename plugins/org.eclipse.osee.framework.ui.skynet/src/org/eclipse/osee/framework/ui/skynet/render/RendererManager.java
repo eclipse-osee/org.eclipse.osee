@@ -226,7 +226,7 @@ public class RendererManager {
    }
 
    public static String merge(Artifact baseVersion, Artifact newerVersion, String fileName, boolean show) throws OseeStateException, OseeCoreException {
-      VariableMap variableMap = new VariableMap("fileName", fileName);
+      VariableMap variableMap = new VariableMap(IRenderer.FILE_NAME_OPTION, fileName);
       IRenderer renderer = getBestRenderer(PresentationType.MERGE, baseVersion, variableMap);
       IComparator comparator = renderer.getComparator();
       ArtifactDelta delta = new ArtifactDelta(null, baseVersion, newerVersion);
@@ -234,7 +234,7 @@ public class RendererManager {
    }
 
    public static String merge(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, String fileName, boolean show) throws OseeCoreException {
-      VariableMap variableMap = new VariableMap("fileName", fileName);
+      VariableMap variableMap = new VariableMap(IRenderer.FILE_NAME_OPTION, fileName);
       IRenderer renderer = getBestRenderer(PresentationType.MERGE_EDIT, baseVersion, variableMap);
       IComparator comparator = renderer.getComparator();
       return comparator.compare(baseVersion, newerVersion, baseFile, newerFile, PresentationType.MERGE_EDIT, show);
