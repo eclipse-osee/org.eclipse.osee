@@ -19,8 +19,8 @@ import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.TreeEvent;
-import org.eclipse.swt.events.TreeListener;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -86,26 +86,32 @@ public class RelationsFormSection extends ArtifactEditorFormSection {
       section.setClient(sectionBody);
       toolkit.paintBordersFor(section);
 
-      relationComposite.getTreeViewer().getTree().addTreeListener(new TreeListener() {
-
-         @Override
-         public void treeCollapsed(TreeEvent e) {
-            redrawPage();
-         }
-
-         @Override
-         public void treeExpanded(TreeEvent e) {
-            redrawPage();
-         }
+      relationComposite.getTreeViewer().getTree().addMouseListener(new MouseListener() {
 
          private void redrawPage() {
             Displays.ensureInDisplayThread(new Runnable() {
                @Override
                public void run() {
-                  getSection().getParent().layout();
+                  relationComposite.layout();
+                  relationComposite.getParent().layout();
                   getManagedForm().reflow(true);
                }
             });
+         }
+
+         @Override
+         public void mouseDoubleClick(MouseEvent e) {
+            // do nothing
+         }
+
+         @Override
+         public void mouseDown(MouseEvent e) {
+            redrawPage();
+         }
+
+         @Override
+         public void mouseUp(MouseEvent e) {
+            // do nothing
          }
       });
       sectionCreated = true;
