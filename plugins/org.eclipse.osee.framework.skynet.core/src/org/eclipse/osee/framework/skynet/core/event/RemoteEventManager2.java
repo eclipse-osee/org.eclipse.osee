@@ -83,7 +83,7 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
 
       @Override
       public void connected(ConnectionNode node) {
-         isConnected = true;
+         isConnected = System.getProperty("osee.default.broker.uri") != null;
          try {
             OseeEventManager.kickLocalRemEvent(this, RemoteEventServiceEventType.Rem2_Connected);
             OseeLog.log(Activator.class, Level.INFO, "RES2 Connected");
