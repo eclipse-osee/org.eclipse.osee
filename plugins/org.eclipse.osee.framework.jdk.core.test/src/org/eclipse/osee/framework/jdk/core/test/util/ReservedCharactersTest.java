@@ -10,33 +10,53 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.jdk.core.test.util;
 
+import java.util.Collection;
 import org.eclipse.osee.framework.jdk.core.util.ReservedCharacters;
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * @formatter:off
  * $link:{ReservedCharacters} Tests for static class ReservedCharacters.
  * 
  * @author Karol M. Wilk
  */
-//formatter:on
 public class ReservedCharactersTest {
 
-	private static String ampCase = "Apples & Oranges";
-	private static String ampAnswer = "Apples &amp; Oranges";
-	private static String lessThanGreaterThanCase = "Apples > Oranges, sometimes nice Apples < Oranges.";
-	private static String lessThanGreaterThanAnswer = "Apples &gt; Oranges, sometimes nice Apples &lt; Oranges.";
-	private static String apostropheCase = "French orange is 'orange'";
-	private static String apostropheAnswer = "French orange is &apos;orange&apos;";
-	private static String quoteCase = "Some fruit are not really \"fruit\" per say";
-	private static String quoteAnswer = "Some fruit are not really &quot;fruit&quot; per say";
-	
-	@Test
-	public final void testTextCharsToXmlChars() {
-		Assert.assertTrue(ampAnswer.equals(ReservedCharacters.encodeXmlEntities(ampCase)));
-		Assert.assertTrue(lessThanGreaterThanAnswer.equals(ReservedCharacters.encodeXmlEntities(lessThanGreaterThanCase)));
-		Assert.assertTrue(apostropheAnswer.equals(ReservedCharacters.encodeXmlEntities(apostropheCase)));
-		Assert.assertTrue(quoteAnswer.equals(ReservedCharacters.encodeXmlEntities(quoteCase)));
-	}
+   private static final int RESERVED_CHAR_COUNT = 34;
+   private static final int XML_ENTITIES_COUNT = 5;
+
+   private static final String ampCase = "Apples & Oranges";
+   private static final String ampAnswer = "Apples &amp; Oranges";
+
+   private static final String lessThanGreaterThanCase = "Apples > Oranges, sometimes nice Apples < Oranges.";
+   private static final String lessThanGreaterThanAnswer = "Apples &gt; Oranges, sometimes nice Apples &lt; Oranges.";
+
+   private static final String apostropheCase = "French orange is 'orange'";
+   private static final String apostropheAnswer = "French orange is &apos;orange&apos;";
+
+   private static final String quoteCase = "Some fruit are not really \"fruit\" per say";
+   private static final String quoteAnswer = "Some fruit are not really &quot;fruit&quot; per say";
+
+   @Test
+   public final void testTextCharsToXmlChars() {
+      Assert.assertEquals(ampAnswer, ReservedCharacters.encodeXmlEntities(ampCase));
+      Assert.assertEquals(lessThanGreaterThanAnswer, ReservedCharacters.encodeXmlEntities(lessThanGreaterThanCase));
+      Assert.assertEquals(apostropheAnswer, ReservedCharacters.encodeXmlEntities(apostropheCase));
+      Assert.assertEquals(quoteAnswer, ReservedCharacters.encodeXmlEntities(quoteCase));
+   }
+
+   @Test
+   public void testToCharater() {
+      String data = "&acute;";
+      char expected = 180;
+      char actual = ReservedCharacters.toCharacter(data);
+      Assert.assertEquals(expected, actual);
+   }
+
+   @Test
+   public void testGetChars() {
+      int expectedTotal = RESERVED_CHAR_COUNT + XML_ENTITIES_COUNT;
+      Collection<Character> characters = ReservedCharacters.getChars();
+      Assert.assertEquals(expectedTotal, characters.size());
+   }
 }

@@ -10,13 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.jdk.core.util;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
 /**
- * @formatter:off
  * <pre>
  *    Character Entity Name   Description
  *       &quot;   &amp;quot;    quotation mark
@@ -65,48 +69,17 @@ import java.util.Map.Entry;
  * 
  * @author Roberto E. Escobar
  */
-//@formatter:on
 public final class ReservedCharacters {
 
    private static Map<String, Character> reservedCharacters = new HashMap<String, Character>();
    private static Map<Character, String> charsToEncoding = new HashMap<Character, String>();
    private static Map<Character, String> xmlEntitiesMap = new HashMap<Character, String>();
    static {
-      // TODO Fix Encoding
-      //		reservedCharacters.put("&nbsp;", ' ');
-      //		reservedCharacters.put("&iexcl;", '¡');
-      //		reservedCharacters.put("&cent;", '¢');
-      //		reservedCharacters.put("&pound;", '£');
-      //		reservedCharacters.put("&curren;", '¤');
-      //		reservedCharacters.put("&yen;", '¥');
-      //		reservedCharacters.put("&brvbar;", '¦');
-      //		reservedCharacters.put("&sect;", '§');
-      //		reservedCharacters.put("&uml;", '¨');
-      //		reservedCharacters.put("&copy;", '©');
-      //		reservedCharacters.put("&ordf;", 'ª');
-      //		reservedCharacters.put("&laquo;", '«');
-      //		reservedCharacters.put("&not;", '¬');
-      //		reservedCharacters.put("&shy;", '­');
-      //		reservedCharacters.put("&reg;", '®');
-      //		reservedCharacters.put("&macr;", '¯');
-      //		reservedCharacters.put("&deg;", '°');
-      //		reservedCharacters.put("&plusmn;", '±');
-      //		reservedCharacters.put("&sup2;", '²');
-      //		reservedCharacters.put("&sup3;", '³');
-      //		reservedCharacters.put("&acute;", '´');
-      //		reservedCharacters.put("&micro;", 'µ');
-      //		reservedCharacters.put("&para;", '¶');
-      //		reservedCharacters.put("&middot;", '·');
-      //		reservedCharacters.put("&cedil;", '¸');
-      //		reservedCharacters.put("&sup1;", '¹');
-      //		reservedCharacters.put("&ordm;", 'º');
-      //		reservedCharacters.put("&raquo;", '»');
-      //		reservedCharacters.put("&frac14;", '¼');
-      //		reservedCharacters.put("&frac12;", '½');
-      //		reservedCharacters.put("&frac34;", '¾');
-      //		reservedCharacters.put("&iquest;", '¿');
-      //		reservedCharacters.put("&times;", '×');
-      //		reservedCharacters.put("&divide;", '÷');
+      try {
+         loadReservedChars();
+      } catch (Exception ex) {
+         throw new IllegalStateException(ex);
+      }
       xmlEntitiesMap.put('"', "&quot;");
       xmlEntitiesMap.put('\'', "&apos;");
       xmlEntitiesMap.put('&', "&amp;");
@@ -122,8 +95,25 @@ public final class ReservedCharacters {
       }
    }
 
-   private ReservedCharacters() {
+   private static void loadReservedChars() throws UnsupportedEncodingException, IOException {
+      BufferedReader reader = null;
+      try {
+         URL url = ReservedCharacters.class.getResource("ReservedCharacters.txt");
+         reader = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));
+         String line = null;
+         while ((line = reader.readLine()) != null) {
+            String[] items = line.split(",\\s*");
+            String key = items[0];
+            Character value = items[1].charAt(1);
+            reservedCharacters.put(key, value);
+         }
+      } finally {
+         Lib.close(reader);
+      }
+   }
 
+   private ReservedCharacters() {
+      // Utility class
    }
 
    public static String encode(String original) {
