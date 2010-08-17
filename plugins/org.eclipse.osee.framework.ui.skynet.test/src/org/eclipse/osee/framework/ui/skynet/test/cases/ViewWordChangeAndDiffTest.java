@@ -100,7 +100,7 @@ public final class ViewWordChangeAndDiffTest {
 
       Collection<ArtifactDelta> artifactDeltas = ChangeManager.getCompareArtifacts(changes);
       ArtifactDelta artifactDelta = artifactDeltas.iterator().next();
-      RendererManager.diff(artifactDelta, false);
+      RendererManager.diff(artifactDelta, new VariableMap(IRenderer.NO_DISPLAY, true));
       assertTrue("Single Native Diff test passed", true);
    }
 
@@ -115,7 +115,8 @@ public final class ViewWordChangeAndDiffTest {
          Artifact newerArtifact = loadHistorical(artifacts.get(0));
          Artifact baseArtifact = loadHistorical(artifacts.get(1));
 
-         RendererManager.diff(new ArtifactDelta(txDelta, baseArtifact, newerArtifact), false);
+         RendererManager.diff(new ArtifactDelta(txDelta, baseArtifact, newerArtifact), new VariableMap(
+            IRenderer.NO_DISPLAY, true));
 
          assertTrue("Compare Two Artifacts test passed", true);
       } catch (Exception ex) {

@@ -26,17 +26,15 @@ import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 public final class DiffUsingRenderer extends AbstractOperation {
    private final VariableMap options;
    private final Collection<ArtifactDelta> artifactDeltas;
-   private final boolean show;
 
-   public DiffUsingRenderer(Collection<ArtifactDelta> artifactDeltas, VariableMap options, boolean show) {
+   public DiffUsingRenderer(Collection<ArtifactDelta> artifactDeltas, VariableMap options) {
       super(generateOperationName(artifactDeltas), SkynetGuiPlugin.PLUGIN_ID);
       this.artifactDeltas = artifactDeltas;
       this.options = options;
-      this.show = show;
    }
 
-   public DiffUsingRenderer(ArtifactDelta artifactDelta, VariableMap options, boolean show) {
-      this(Collections.singletonList(artifactDelta), options, show);
+   public DiffUsingRenderer(ArtifactDelta artifactDelta, VariableMap options) {
+      this(Collections.singletonList(artifactDelta), options);
    }
 
    private static String generateOperationName(Collection<ArtifactDelta> artifactDeltas) {

@@ -239,32 +239,36 @@ public class RendererManager {
    }
 
    public static Job diffInJob(ArtifactDelta artifactDelta) {
-      return diff(artifactDelta, null, true, true);
+      return diff(artifactDelta, null, true);
    }
 
    public static Job diffInJob(ArtifactDelta artifactDelta, VariableMap options) {
-      return diff(artifactDelta, options, true, true);
+      return diff(artifactDelta, options, true);
    }
 
-   public static Job diff(ArtifactDelta artifactDelta, boolean show) {
-      return diff(artifactDelta, null, show, false);
+   public static Job diff(ArtifactDelta artifactDelta, VariableMap options) {
+      return diff(artifactDelta, options, false);
+   }
+
+   public static Job diff(ArtifactDelta artifactDelta) {
+      return diff(artifactDelta, null, false);
    }
 
    public static Job diffInJob(Collection<ArtifactDelta> artifactDeltas) {
-      return diff(artifactDeltas, null, true);
+      return diff(artifactDeltas, null);
    }
 
    public static Job diffInJob(Collection<ArtifactDelta> artifactDeltas, VariableMap options) {
-      return diff(artifactDeltas, options, true);
+      return diff(artifactDeltas, options);
    }
 
-   private static Job diff(Collection<ArtifactDelta> artifactDeltas, VariableMap options, boolean show) {
-      IOperation operation = new DiffUsingRenderer(artifactDeltas, options, show);
+   private static Job diff(Collection<ArtifactDelta> artifactDeltas, VariableMap options) {
+      IOperation operation = new DiffUsingRenderer(artifactDeltas, options);
       return Operations.executeAsJob(operation, true);
    }
 
-   private static Job diff(ArtifactDelta artifactDelta, VariableMap options, boolean show, boolean asynchronous) {
-      IOperation operation = new DiffUsingRenderer(artifactDelta, options, show);
+   private static Job diff(ArtifactDelta artifactDelta, VariableMap options, boolean asynchronous) {
+      IOperation operation = new DiffUsingRenderer(artifactDelta, options);
 
       if (asynchronous) {
          return Operations.executeAsJob(operation, true);
