@@ -44,16 +44,16 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       SortDataType.String, false, null);
    public static final XViewerColumn State_Col = new XViewerColumn("ats.column.state", "State", 75, SWT.LEFT, true,
       SortDataType.String, false, null);
-   public static final XViewerColumn Priority_Col = new XViewerAtsAttributeColumn(AtsAttributeTypes.PriorityType,
-      20, SWT.CENTER, true, SortDataType.String, false);
-   public static final XViewerColumn Change_Type_Col = new XViewerAtsAttributeColumn(AtsAttributeTypes.ChangeType,
-      22, SWT.CENTER, true, SortDataType.String, false);
+   public static final XViewerColumn Priority_Col = new XViewerAtsAttributeColumn(AtsAttributeTypes.PriorityType, 20,
+      SWT.CENTER, true, SortDataType.String, false);
+   public static final XViewerColumn Change_Type_Col = new XViewerAtsAttributeColumn(AtsAttributeTypes.ChangeType, 22,
+      SWT.CENTER, true, SortDataType.String, false);
    public static final XViewerColumn Assignees_Col = new XViewerAtsAttributeColumn(ATSAttributes.ASSIGNEE_ATTRIBUTE,
       100, SWT.LEFT, true, SortDataType.String, false);
    public static final XViewerColumn Title_Col = new XViewerArtifactNameColumn("Title");
    public static final XViewerColumn Actionable_Items_Col = new XViewerAtsAttributeColumn(
-      COLUMN_NAMESPACE + ".actionableItems", AtsAttributeTypes.ActionableItem, 80, SWT.LEFT, true,
-      SortDataType.String, false);
+      COLUMN_NAMESPACE + ".actionableItems", AtsAttributeTypes.ActionableItem, 80, SWT.LEFT, true, SortDataType.String,
+      false);
    public static final XViewerColumn User_Community_Col = new XViewerAtsAttributeColumn(
       AtsAttributeTypes.UserCommunity, 60, SWT.LEFT, true, SortDataType.String, false);
    public static final XViewerColumn Parent_ID_Col = new XViewerColumn(COLUMN_NAMESPACE + ".parenthrid", "Parent HRID",
@@ -66,8 +66,8 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       "Date this workflow transitioned to the Completed state.");
    public static final XViewerColumn Team_Col = new XViewerColumn(COLUMN_NAMESPACE + ".team", "Team", 50, SWT.LEFT,
       true, SortDataType.String, false, "Team that has been assigned to work this Action.");
-   public static final XViewerColumn Notes_Col = new XViewerAtsAttributeColumn(AtsAttributeTypes.SmaNote, 80,
-      SWT.LEFT, true, SortDataType.String, true);
+   public static final XViewerColumn Notes_Col = new XViewerAtsAttributeColumn(AtsAttributeTypes.SmaNote, 80, SWT.LEFT,
+      true, SortDataType.String, true);
    public static final XViewerColumn Deadline_Col = new XViewerAtsAttributeColumn(COLUMN_NAMESPACE + ".deadline",
       AtsAttributeTypes.NeedBy, 75, SWT.LEFT, true, SortDataType.Date, true);
 
@@ -88,8 +88,8 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       AtsAttributeTypes.LegacyPcrId, 40, SWT.LEFT, false, SortDataType.String, false);
    public static final XViewerColumn Decision_Col = new XViewerAtsAttributeColumn(AtsAttributeTypes.Decision, 150,
       SWT.LEFT, false, SortDataType.String, false);
-   public static final XViewerColumn Resolution_Col = new XViewerAtsAttributeColumn(AtsAttributeTypes.Resolution,
-      150, SWT.LEFT, false, SortDataType.String, true);
+   public static final XViewerColumn Resolution_Col = new XViewerAtsAttributeColumn(AtsAttributeTypes.Resolution, 150,
+      SWT.LEFT, false, SortDataType.String, true);
    public static XViewerColumn Estimated_Hours_Col = new XViewerAtsAttributeColumn(
       COLUMN_NAMESPACE + ".estimatedHours", AtsAttributeTypes.EstimatedHours, 40, SWT.CENTER, false,
       SortDataType.Float, true);
@@ -97,36 +97,34 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       COLUMN_NAMESPACE + ".estimatedReleaseDate", AtsAttributeTypes.EstimatedReleaseDate, 80, SWT.LEFT, false,
       SortDataType.Date, true);
    public static XViewerColumn Estimated_Completion_Date_Col = new XViewerAtsAttributeColumn(
-      COLUMN_NAMESPACE + ".estimatedCompletionDate", AtsAttributeTypes.EstimatedCompletionDate, 80, SWT.LEFT,
-      false, SortDataType.Date, true);
+      COLUMN_NAMESPACE + ".estimatedCompletionDate", AtsAttributeTypes.EstimatedCompletionDate, 80, SWT.LEFT, false,
+      SortDataType.Date, true);
    public static final XViewerColumn Release_Date_Col = new XViewerAtsAttributeColumn(
-      COLUMN_NAMESPACE + ".releaseDate", AtsAttributeTypes.ReleaseDate, 80, SWT.LEFT, false, SortDataType.Date,
-      false);
+      COLUMN_NAMESPACE + ".releaseDate", AtsAttributeTypes.ReleaseDate, 80, SWT.LEFT, false, SortDataType.Date, false);
    public static final XViewerColumn Work_Package_Col = new XViewerAtsAttributeColumn(
-      COLUMN_NAMESPACE + ".workPackage", AtsAttributeTypes.WorkPackage, 80, SWT.LEFT, false, SortDataType.String,
-      true);
-   public static final XViewerColumn Points_Col = new XViewerAtsAttributeColumn(AtsAttributeTypes.Points, 40,
-      SWT.LEFT, false, SortDataType.Integer, true);
+      COLUMN_NAMESPACE + ".workPackage", AtsAttributeTypes.WorkPackage, 80, SWT.LEFT, false, SortDataType.String, true);
+   public static final XViewerColumn Points_Col = new XViewerAtsAttributeColumn(AtsAttributeTypes.Points, 40, SWT.LEFT,
+      false, SortDataType.Integer, true);
    public static final XViewerColumn Numeric1_Col = new XViewerAtsAttributeColumn(AtsAttributeTypes.Numeric1, 40,
       SWT.LEFT, false, SortDataType.Float, true);
    public static final XViewerColumn Numeric2_Col = new XViewerAtsAttributeColumn(AtsAttributeTypes.Numeric2, 40,
       SWT.LEFT, false, SortDataType.Float, true);
-   public static final XViewerColumn Goal_Order = new XViewerColumn(COLUMN_NAMESPACE + ".goalOrder", "Goal Order", 40,
+   public static final XViewerColumn Goal_Order = new XViewerColumn(COLUMN_NAMESPACE + ".goalOrder", "Goal Order", 45,
       SWT.LEFT, false, SortDataType.Integer, true,
       "Order of item within displayed goal.  Editing this field changes order.");
    public static final XViewerColumn Goal_Order_Vote_Col = new XViewerAtsAttributeColumn(
-      COLUMN_NAMESPACE + ".goalOrderVote", AtsAttributeTypes.GoalOrderVote, 80, SWT.LEFT, false,
-      SortDataType.String, true);
+      COLUMN_NAMESPACE + ".goalOrderVote", AtsAttributeTypes.GoalOrderVote, 40, SWT.LEFT, false, SortDataType.String,
+      true);
    public static final XViewerColumn Category_Col = new XViewerAtsAttributeColumn(AtsAttributeTypes.Category1, 80,
       SWT.LEFT, false, SortDataType.String, true);
-   public static final XViewerColumn Category2_Col = new XViewerAtsAttributeColumn(AtsAttributeTypes.Category2,
-      80, SWT.LEFT, false, SortDataType.String, true);
-   public static final XViewerColumn Category3_Col = new XViewerAtsAttributeColumn(AtsAttributeTypes.Category3,
-      80, SWT.LEFT, false, SortDataType.String, true);
+   public static final XViewerColumn Category2_Col = new XViewerAtsAttributeColumn(AtsAttributeTypes.Category2, 80,
+      SWT.LEFT, false, SortDataType.String, true);
+   public static final XViewerColumn Category3_Col = new XViewerAtsAttributeColumn(AtsAttributeTypes.Category3, 80,
+      SWT.LEFT, false, SortDataType.String, true);
 
    public static XViewerAtsAttributeColumn Related_To_State_Col = new XViewerAtsAttributeColumn(
-      COLUMN_NAMESPACE + ".relatedToState", AtsAttributeTypes.RelatedToState, 80, SWT.LEFT, false,
-      SortDataType.String, true);
+      COLUMN_NAMESPACE + ".relatedToState", AtsAttributeTypes.RelatedToState, 80, SWT.LEFT, false, SortDataType.String,
+      true);
    public static final XViewerColumn Weekly_Benefit_Hrs_Col = new XViewerAtsAttributeColumn(
       COLUMN_NAMESPACE + ".weeklyBenefitHrs", AtsAttributeTypes.WeeklyBenefit, 40, SWT.CENTER, false,
       SortDataType.Float, true);
