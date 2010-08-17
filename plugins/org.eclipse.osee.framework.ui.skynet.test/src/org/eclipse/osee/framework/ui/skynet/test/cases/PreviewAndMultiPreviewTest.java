@@ -84,7 +84,6 @@ public class PreviewAndMultiPreviewTest {
             childArt.persist();
             newArt.addChild(childArt);
             WordTemplateRenderer renderer = new WordTemplateRenderer();
-            renderer.setOptions(null);
             renderer.open(artifacts, PresentationType.PREVIEW);
             Assert.assertEquals(0, monitorLog.getLogsAtLevel(Level.WARNING).size());
             Assert.assertEquals(0, monitorLog.getLogsAtLevel(Level.SEVERE).size());
@@ -305,7 +304,6 @@ public class PreviewAndMultiPreviewTest {
             art.persist();
             arts = Arrays.asList(art);
             WholeDocumentRenderer renderer = new WholeDocumentRenderer();
-            renderer.setOptions(null);
             renderer.open(arts, PresentationType.PREVIEW);
             Assert.assertEquals(0, monitorLog.getLogsAtLevel(Level.WARNING).size());
             Assert.assertEquals(0, monitorLog.getLogsAtLevel(Level.SEVERE).size());
