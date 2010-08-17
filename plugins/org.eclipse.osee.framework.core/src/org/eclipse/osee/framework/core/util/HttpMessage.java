@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 public final class HttpMessage {
 
    private HttpMessage() {
+      // Utility class
    }
 
    @SuppressWarnings("unchecked")
