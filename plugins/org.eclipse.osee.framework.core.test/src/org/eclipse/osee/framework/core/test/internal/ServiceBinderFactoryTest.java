@@ -8,14 +8,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.test.util;
+package org.eclipse.osee.framework.core.test.internal;
 
+import org.eclipse.osee.framework.core.internal.ServiceBinderFactoryImpl;
 import org.eclipse.osee.framework.core.test.mocks.MockBundleContext;
 import org.eclipse.osee.framework.core.test.mocks.MockServiceReference;
 import org.eclipse.osee.framework.core.test.mocks.MockTrackingHandler;
 import org.eclipse.osee.framework.core.util.ServiceBindType;
-import org.eclipse.osee.framework.core.util.ServiceBinderFactoryImpl;
-import org.eclipse.osee.framework.core.util.ServiceDependencyTracker.ServiceBinderFactory;
+import org.eclipse.osee.framework.core.util.ServiceBinderFactory;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;

@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import org.eclipse.osee.framework.core.internal.ServiceBinderFactoryImpl;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
 
@@ -23,10 +24,6 @@ import org.osgi.util.tracker.ServiceTracker;
  * @author Roberto E. Escobar
  */
 public final class ServiceDependencyTracker implements Closeable {
-
-   public static interface ServiceBinderFactory {
-      ServiceTracker createTracker(ServiceBindType bindType, Class<?> clazz);
-   }
 
    private final AbstractTrackingHandler handler;
    private final List<ServiceTracker> trackers;
@@ -63,10 +60,10 @@ public final class ServiceDependencyTracker implements Closeable {
 
    @Override
    public void close() {
-      handler.onDeActivate();
       for (ServiceTracker tracker : trackers) {
          tracker.close();
       }
+      handler.onDeActivate();
    }
 
 }

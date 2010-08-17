@@ -8,10 +8,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.util;
+package org.eclipse.osee.framework.core.internal;
 
 import java.util.Collection;
 import java.util.Map;
+import org.eclipse.osee.framework.core.util.AbstractTrackingHandler;
 import org.osgi.framework.BundleContext;
 
 /**

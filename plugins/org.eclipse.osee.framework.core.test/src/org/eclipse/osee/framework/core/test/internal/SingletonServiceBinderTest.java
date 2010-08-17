@@ -8,17 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.test.util;
+package org.eclipse.osee.framework.core.test.internal;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import org.eclipse.osee.framework.core.internal.AbstractServiceBinder;
+import org.eclipse.osee.framework.core.internal.SingletonServiceBinder;
 import org.eclipse.osee.framework.core.test.mocks.MockBundleContext;
 import org.eclipse.osee.framework.core.test.mocks.MockServiceReference;
 import org.eclipse.osee.framework.core.test.mocks.MockTrackingHandler;
-import org.eclipse.osee.framework.core.util.AbstractServiceBinder;
-import org.eclipse.osee.framework.core.util.SingletonServiceBinder;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.junit.Assert;
 import org.junit.Before;
