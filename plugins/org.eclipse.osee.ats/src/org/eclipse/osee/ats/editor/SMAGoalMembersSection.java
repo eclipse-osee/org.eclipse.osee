@@ -150,7 +150,6 @@ public class SMAGoalMembersSection extends SectionPart implements ISelectedAtsAr
          gd = new GridData(SWT.FILL, SWT.FILL, true, true);
       }
       gd.horizontalSpan = 2;
-      gd.widthHint = 300;
       worldComposite.setLayoutData(gd);
       worldComposite.layout();
       getManagedForm().reflow(true);
