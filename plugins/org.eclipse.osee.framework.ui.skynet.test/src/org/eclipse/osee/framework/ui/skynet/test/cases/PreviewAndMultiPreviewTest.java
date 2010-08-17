@@ -43,7 +43,6 @@ import org.junit.Before;
  * @author Megumi Telles
  */
 public class PreviewAndMultiPreviewTest {
-   private static List<Artifact> artifacts = new ArrayList<Artifact>();
    private static Artifact newArt;
    private static SevereLoggingMonitor monitorLog = null;
    private static Branch branch;
@@ -51,12 +50,7 @@ public class PreviewAndMultiPreviewTest {
    @Before
    public void setUp() throws Exception {
       Assert.assertFalse("Not to be run on production datbase.", TestUtil.isProductionDb());
-      init();
-   }
-
-   private void init() throws Exception {
-      FrameworkTestUtil.cleanupSimpleTest(BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1),
-         PreviewAndMultiPreviewTest.class.getSimpleName());
+      cleanup();
       FileSystemRenderer.setWorkbenchSavePopUpDisabled(true);
 
       RenderingUtil.setPopupsAllowed(false);
@@ -66,7 +60,11 @@ public class PreviewAndMultiPreviewTest {
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch,
             PreviewAndMultiPreviewTest.class.getSimpleName());
       newArt.persist();
-      artifacts = Arrays.asList(newArt);
+   }
+
+   private void cleanup() throws Exception {
+      FrameworkTestUtil.cleanupSimpleTest(BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1),
+         PreviewAndMultiPreviewTest.class.getSimpleName());
    }
 
    /*
@@ -75,16 +73,17 @@ public class PreviewAndMultiPreviewTest {
     */
    @org.junit.Test
    public void testPreview() throws Exception {
-      if (!artifacts.isEmpty()) {
+      if (newArt != null) {
          try {
             monitorLog = TestUtil.severeLoggingStart();
             Artifact childArt =
                ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch,
-                  getClass().getSimpleName() + "1");
+                  getClass().getSimpleName() + "1a");
             childArt.persist();
             newArt.addChild(childArt);
+            newArt.persist();
             WordTemplateRenderer renderer = new WordTemplateRenderer();
-            renderer.open(artifacts, PresentationType.PREVIEW);
+            renderer.open(Arrays.asList(newArt), PresentationType.PREVIEW);
             Assert.assertEquals(0, monitorLog.getLogsAtLevel(Level.WARNING).size());
             Assert.assertEquals(0, monitorLog.getLogsAtLevel(Level.SEVERE).size());
          } catch (OseeCoreException ex) {
@@ -98,15 +97,15 @@ public class PreviewAndMultiPreviewTest {
 
    @org.junit.Test
    public void testPreviewUsingRendererManager() throws Exception {
-      if (!artifacts.isEmpty()) {
+      if (newArt != null) {
          try {
             monitorLog = TestUtil.severeLoggingStart();
             Artifact childArt =
                ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, branch,
-                  getClass().getSimpleName() + "1");
-            childArt.persist();
+                  getClass().getSimpleName() + "1b");
             newArt.addChild(childArt);
-            RendererManager.openInJob(artifacts, PresentationType.PREVIEW);
+            childArt.persist();
+            RendererManager.openInJob(Arrays.asList(newArt), PresentationType.PREVIEW);
             Assert.assertEquals(0, monitorLog.getLogsAtLevel(Level.WARNING).size());
             Assert.assertEquals(0, monitorLog.getLogsAtLevel(Level.SEVERE).size());
          } catch (OseeCoreException ex) {
@@ -123,17 +122,17 @@ public class PreviewAndMultiPreviewTest {
     */
    @org.junit.Test
    public void testPreviewWithChildren() throws Exception {
-      if (!artifacts.isEmpty()) {
+      if (newArt != null) {
          try {
             monitorLog = TestUtil.severeLoggingStart();
             Artifact childArt =
                ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch,
-                  getClass().getSimpleName() + "1");
-            childArt.persist();
+                  getClass().getSimpleName() + "1c");
             newArt.addChild(childArt);
+            childArt.persist();
             WordTemplateRenderer renderer = new WordTemplateRenderer();
             renderer.setOptions(new VariableMap(ITemplateRenderer.PREVIEW_WITH_RECURSE_OPTION_PAIR));
-            renderer.open(artifacts, PresentationType.PREVIEW);
+            renderer.open(Arrays.asList(newArt), PresentationType.PREVIEW);
 
             Assert.assertEquals(0, monitorLog.getLogsAtLevel(Level.WARNING).size());
             Assert.assertEquals(0, monitorLog.getLogsAtLevel(Level.SEVERE).size());
@@ -148,15 +147,15 @@ public class PreviewAndMultiPreviewTest {
 
    @org.junit.Test
    public void testPreviewWithChildrenUsingRendererManager() throws Exception {
-      if (!artifacts.isEmpty()) {
+      if (newArt != null) {
          try {
             monitorLog = TestUtil.severeLoggingStart();
             Artifact childArt =
                ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch,
-                  getClass().getSimpleName() + "1");
-            childArt.persist();
+                  getClass().getSimpleName() + "1d");
             newArt.addChild(childArt);
-            RendererManager.openInJob(artifacts, PresentationType.PREVIEW);
+            childArt.persist();
+            RendererManager.openInJob(Arrays.asList(newArt), PresentationType.PREVIEW);
             // should get one warning since the child is a general document
             Assert.assertEquals(0, monitorLog.getLogsAtLevel(Level.WARNING).size());
             Assert.assertEquals(0, monitorLog.getLogsAtLevel(Level.SEVERE).size());
@@ -171,17 +170,17 @@ public class PreviewAndMultiPreviewTest {
 
    @org.junit.Test
    public void testPreviewWithChildrenFault() throws Exception {
-      if (!artifacts.isEmpty()) {
+      if (newArt != null) {
          try {
             monitorLog = TestUtil.severeLoggingStart();
             Artifact childArt =
                ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, branch,
-                  getClass().getSimpleName() + "1");
-            childArt.persist();
+                  getClass().getSimpleName() + "1e");
             newArt.addChild(childArt);
+            childArt.persist();
             WordTemplateRenderer renderer = new WordTemplateRenderer();
             renderer.setOptions(new VariableMap(ITemplateRenderer.PREVIEW_WITH_RECURSE_OPTION_PAIR));
-            renderer.open(artifacts, PresentationType.PREVIEW);
+            renderer.open(Arrays.asList(newArt), PresentationType.PREVIEW);
             // should get one warning since the child is a general document
             System.out.println(Collections.toString(", ", monitorLog.getLogsAtLevel(Level.WARNING)));
             Assert.assertEquals(1, monitorLog.getLogsAtLevel(Level.WARNING).size());
@@ -202,15 +201,15 @@ public class PreviewAndMultiPreviewTest {
     */
    @org.junit.Test
    public void testPreviewWithChildrenUsingRendererManagerFault() throws Exception {
-      if (!artifacts.isEmpty()) {
+      if (newArt != null) {
          try {
             monitorLog = TestUtil.severeLoggingStart();
             Artifact childArt =
                ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, branch,
-                  getClass().getSimpleName() + "1");
-            childArt.persist();
+                  getClass().getSimpleName() + "1f");
             newArt.addChild(childArt);
-            RendererManager.openInJob(artifacts, PresentationType.PREVIEW);
+            childArt.persist();
+            RendererManager.openInJob(Arrays.asList(newArt), PresentationType.PREVIEW);
             // should get one warning since the child is a general document
             Assert.assertEquals(0, monitorLog.getLogsAtLevel(Level.WARNING).size());
             Assert.assertEquals(0, monitorLog.getLogsAtLevel(Level.SEVERE).size());
@@ -228,21 +227,21 @@ public class PreviewAndMultiPreviewTest {
     */
    @org.junit.Test
    public void testMultiPreview() throws Exception {
-      if (!artifacts.isEmpty()) {
+      if (newArt != null) {
          try {
             monitorLog = TestUtil.severeLoggingStart();
             List<Artifact> newMultiArts = new ArrayList<Artifact>();
             Artifact multiArt1 =
                ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch,
-                  getClass().getSimpleName() + "3");
+                  getClass().getSimpleName() + "3z");
             multiArt1.persist();
             Artifact multiArt2 =
                ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch,
-                  getClass().getSimpleName() + "2");
+                  getClass().getSimpleName() + "2y");
             multiArt2.persist();
             Artifact multiArt3 =
                ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch,
-                  getClass().getSimpleName() + "1");
+                  getClass().getSimpleName() + "1x");
             multiArt3.persist();
             newMultiArts = Arrays.asList(multiArt1, multiArt2, multiArt3);
             WordTemplateRenderer renderer = new WordTemplateRenderer();
@@ -260,24 +259,24 @@ public class PreviewAndMultiPreviewTest {
 
    @org.junit.Test
    public void testMultiPreviewUsingRendererManager() throws Exception {
-      if (!artifacts.isEmpty()) {
+      if (newArt != null) {
          try {
             monitorLog = TestUtil.severeLoggingStart();
             new ArrayList<Artifact>();
             Artifact multiArt1 =
                ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch,
-                  getClass().getSimpleName() + "3");
+                  getClass().getSimpleName() + "3o");
             multiArt1.persist();
             Artifact multiArt2 =
                ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch,
-                  getClass().getSimpleName() + "2");
+                  getClass().getSimpleName() + "2n");
             multiArt2.persist();
             Artifact multiArt3 =
                ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch,
-                  getClass().getSimpleName() + "1");
+                  getClass().getSimpleName() + "1m");
             multiArt3.persist();
             Arrays.asList(multiArt1, multiArt2, multiArt3);
-            RendererManager.openInJob(artifacts, PresentationType.PREVIEW);
+            RendererManager.openInJob(Arrays.asList(newArt), PresentationType.PREVIEW);
             Assert.assertTrue(monitorLog.getLogsAtLevel(Level.WARNING).isEmpty());
             Assert.assertTrue(monitorLog.getLogsAtLevel(Level.SEVERE).isEmpty());
          } catch (OseeCoreException ex) {
@@ -294,17 +293,15 @@ public class PreviewAndMultiPreviewTest {
     */
    @org.junit.Test
    public void testWholeWordPreview() throws Exception {
-      if (!artifacts.isEmpty()) {
+      if (newArt != null) {
          try {
             monitorLog = TestUtil.severeLoggingStart();
-            List<Artifact> arts = new ArrayList<Artifact>();
             Artifact art =
                ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestProcedureWML, branch,
-                  getClass().getSimpleName() + "4");
+                  getClass().getSimpleName() + "4g");
             art.persist();
-            arts = Arrays.asList(art);
             WholeDocumentRenderer renderer = new WholeDocumentRenderer();
-            renderer.open(arts, PresentationType.PREVIEW);
+            renderer.open(Arrays.asList(art), PresentationType.PREVIEW);
             Assert.assertEquals(0, monitorLog.getLogsAtLevel(Level.WARNING).size());
             Assert.assertEquals(0, monitorLog.getLogsAtLevel(Level.SEVERE).size());
          } catch (OseeCoreException ex) {
@@ -318,16 +315,14 @@ public class PreviewAndMultiPreviewTest {
 
    @org.junit.Test
    public void testWholeWordPreviewUsingRendererManager() throws Exception {
-      if (!artifacts.isEmpty()) {
+      if (newArt != null) {
          try {
             monitorLog = TestUtil.severeLoggingStart();
-            new ArrayList<Artifact>();
             Artifact art =
                ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestProcedureWML, branch,
-                  getClass().getSimpleName() + "4");
+                  getClass().getSimpleName() + "4h");
             art.persist();
-            Arrays.asList(art);
-            RendererManager.openInJob(artifacts, PresentationType.PREVIEW);
+            RendererManager.openInJob(Arrays.asList(art), PresentationType.PREVIEW);
             Assert.assertEquals(0, monitorLog.getLogsAtLevel(Level.WARNING).size());
             Assert.assertEquals(0, monitorLog.getLogsAtLevel(Level.SEVERE).size());
          } catch (OseeCoreException ex) {
@@ -342,8 +337,7 @@ public class PreviewAndMultiPreviewTest {
    @After
    public void tearDown() throws Exception {
       monitorLog = TestUtil.severeLoggingStart();
-      FrameworkTestUtil.cleanupSimpleTest(BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1),
-         PreviewAndMultiPreviewTest.class.getSimpleName());
+      cleanup();
       TestUtil.severeLoggingEnd(monitorLog);
    }
 
