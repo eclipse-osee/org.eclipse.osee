@@ -18,14 +18,15 @@ import org.eclipse.swt.SWT;
  * @author Donald G. Dunne
  */
 public class XBarGraphLine {
-   public static int DEFAULT_RED_FOREGROUND = SWT.COLOR_RED;
-   public static int DEFAULT_RED_BACKGROUND = SWT.COLOR_YELLOW;
-   public static int DEFAULT_GREEN_FOREGROUND = SWT.COLOR_GREEN;
-   public static int DEFAULT_GREEN_BACKGROUND = SWT.COLOR_YELLOW;
-   public static int DEFAULT_BLUE_FOREGROUND = SWT.COLOR_BLUE;
-   public static int DEFAULT_BLUE_BACKGROUND = SWT.COLOR_YELLOW;
-   public String name;
-   List<XBarGraphLineSegment> segments = new ArrayList<XBarGraphLineSegment>();
+   public final static int DEFAULT_RED_FOREGROUND = SWT.COLOR_RED;
+   public final static int DEFAULT_RED_BACKGROUND = SWT.COLOR_YELLOW;
+   public final static int DEFAULT_GREEN_FOREGROUND = SWT.COLOR_GREEN;
+   public final static int DEFAULT_GREEN_BACKGROUND = SWT.COLOR_YELLOW;
+   public final static int DEFAULT_BLUE_FOREGROUND = SWT.COLOR_BLUE;
+   public final static int DEFAULT_BLUE_BACKGROUND = SWT.COLOR_YELLOW;
+
+   private final String name;
+   private final List<XBarGraphLineSegment> segments;
 
    public XBarGraphLine(String name, int value) {
       this(name, DEFAULT_GREEN_FOREGROUND, DEFAULT_GREEN_BACKGROUND, value);
@@ -46,6 +47,7 @@ public class XBarGraphLine {
 
    public XBarGraphLine(String name, int foreground, int background, long value, String valueStr) {
       this.name = name;
+      segments = new ArrayList<XBarGraphLineSegment>();
       segments.add(new XBarGraphLineSegment(valueStr, foreground, background, value));
    }
 
@@ -57,6 +59,14 @@ public class XBarGraphLine {
    public XBarGraphLine(String name, int foreground, int background, int remainingForeground, int remainingBackground, int value, String valueStr, String remainingValueStr) {
       this(name, foreground, background, value, valueStr);
       segments.add(new XBarGraphLineSegment(remainingValueStr, remainingForeground, remainingBackground, 100 - value));
+   }
+
+   public String getName() {
+      return name;
+   }
+
+   public List<XBarGraphLineSegment> getSegments() {
+      return segments;
    }
 
    /**

@@ -30,9 +30,9 @@ import org.eclipse.swt.SWT;
 /**
  * @author Donald G. Dunne
  */
-public class XViewerExample extends XNavigateItemAction {
+public final class XViewerExample extends XNavigateItemAction {
 
-   public static String TITLE = "XViewer Example";
+   public static final String TITLE = "XViewer Example";
    private static enum Columns {
       Date,
       String1,

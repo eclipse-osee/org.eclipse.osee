@@ -29,25 +29,31 @@ public class DetailsBrowserComposite extends BrowserComposite {
     */
    public DetailsBrowserComposite(Artifact artifact, Composite parent, int style, ToolBar toolBar) {
       super(parent, style, toolBar);
-      StringBuffer sb = new StringBuffer(AHTML.getLabelValueStr("Name", artifact.getName()) + AHTML.newline());
+      StringBuilder sb = new StringBuilder();
+      addData(sb, "Name", artifact.getName());
       try {
-         sb.append(AHTML.getLabelValueStr("GUID", artifact.getGuid()) + AHTML.newline());
-         sb.append(AHTML.getLabelValueStr("HRID", artifact.getHumanReadableId()) + AHTML.newline());
-         sb.append(AHTML.getLabelValueStr("Branch", artifact.getBranch().toString()) + AHTML.newline());
-         sb.append(AHTML.getLabelValueStr("Branch Id", String.valueOf(artifact.getBranch().getId())) + AHTML.newline());
-         sb.append(AHTML.getLabelValueStr("Artifact Id", String.valueOf(artifact.getArtId())) + AHTML.newline());
-         sb.append(AHTML.getLabelValueStr("Artifact Type Name", artifact.getArtifactTypeName()) + AHTML.newline());
-         sb.append(AHTML.getLabelValueStr("Artifact Type Id", String.valueOf(artifact.getArtTypeId())) + AHTML.newline());
-         sb.append(AHTML.getLabelValueStr("Gamma Id", String.valueOf(artifact.getGammaId())) + AHTML.newline());
-         sb.append(AHTML.getLabelValueStr("Historical", String.valueOf(artifact.isHistorical())) + AHTML.newline());
-         sb.append(AHTML.getLabelValueStr("Deleted", String.valueOf(artifact.isDeleted())) + AHTML.newline());
-         sb.append(AHTML.getLabelValueStr("Revision", String.valueOf(artifact.getTransactionNumber())) + AHTML.newline());
-         sb.append(AHTML.getLabelValueStr("Last Modified", String.valueOf(artifact.getLastModified())) + AHTML.newline());
-         sb.append(AHTML.getLabelValueStr("Last Modified By", String.valueOf(artifact.getLastModifiedBy())) + AHTML.newline());
+         addData(sb, "GUID", artifact.getGuid());
+         addData(sb, "HRID", artifact.getHumanReadableId());
+         addData(sb, "Branch", artifact.getBranch().toString());
+         addData(sb, "Branch Id", String.valueOf(artifact.getBranch().getId()));
+         addData(sb, "Artifact Id", String.valueOf(artifact.getArtId()));
+         addData(sb, "Artifact Type Name", artifact.getArtifactTypeName());
+         addData(sb, "Artifact Type Id", String.valueOf(artifact.getArtTypeId()));
+         addData(sb, "Gamma Id", String.valueOf(artifact.getGammaId()));
+         addData(sb, "Historical", String.valueOf(artifact.isHistorical()));
+         addData(sb, "Deleted", String.valueOf(artifact.isDeleted()));
+         addData(sb, "Revision", String.valueOf(artifact.getTransactionNumber()));
+         addData(sb, "Last Modified", String.valueOf(artifact.getLastModified()));
+         addData(sb, "Last Modified By", String.valueOf(artifact.getLastModifiedBy()));
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          sb.append(AHTML.getLabelStr("Exception in rendering details: ", ex.getLocalizedMessage()));
       }
       setHtml(AHTML.simplePage(sb.toString()));
+   }
+
+   private void addData(StringBuilder buffer, String label, String value) {
+      buffer.append(AHTML.getLabelValueStr(label, value));
+      buffer.append(AHTML.newline());
    }
 }

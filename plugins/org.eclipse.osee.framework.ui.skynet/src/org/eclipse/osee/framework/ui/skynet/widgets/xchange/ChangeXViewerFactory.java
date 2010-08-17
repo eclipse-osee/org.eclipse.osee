@@ -28,22 +28,22 @@ import org.eclipse.swt.SWT;
  */
 public class ChangeXViewerFactory extends SkynetXViewerFactory {
 
-   public static XViewerColumn Name = new XViewerColumn("framework.change.artifactNames", "Artifact name(s)", 250,
+   public final static XViewerColumn Name = new XViewerColumn("framework.change.artifactNames", "Artifact name(s)",
+      250, SWT.LEFT, true, SortDataType.String, false, null);
+   public final static XViewerColumn Item_Type = new XViewerColumn("framework.change.itemType", "Item Type", 100,
       SWT.LEFT, true, SortDataType.String, false, null);
-   public static XViewerColumn Item_Type = new XViewerColumn("framework.change.itemType", "Item Type", 100, SWT.LEFT,
-      true, SortDataType.String, false, null);
-   public static XViewerColumn Item_Kind = new XViewerColumn("framework.change.itemKind", "Item Kind", 70, SWT.LEFT,
-      true, SortDataType.String, false, null);
-   public static XViewerColumn Change_Type = new XViewerColumn("framework.change.changeType", "Change Type", 50,
+   public final static XViewerColumn Item_Kind = new XViewerColumn("framework.change.itemKind", "Item Kind", 70,
       SWT.LEFT, true, SortDataType.String, false, null);
-   public static XViewerColumn Is_Value = new XViewerColumn("framework.change.isValue", "Is Value", 150, SWT.LEFT,
-      true, SortDataType.String, false, null);
-   public static XViewerColumn Was_Value = new XViewerColumn("framework.change.wasValue", "Was Value", 150, SWT.LEFT,
-      true, SortDataType.String, false, null);
-   public static XViewerColumn paraNumber = new XViewerColumn("attribute.Imported Paragraph Number",
+   public final static XViewerColumn Change_Type = new XViewerColumn("framework.change.changeType", "Change Type", 50,
+      SWT.LEFT, true, SortDataType.String, false, null);
+   public final static XViewerColumn Is_Value = new XViewerColumn("framework.change.isValue", "Is Value", 150,
+      SWT.LEFT, true, SortDataType.String, false, null);
+   public final static XViewerColumn Was_Value = new XViewerColumn("framework.change.wasValue", "Was Value", 150,
+      SWT.LEFT, true, SortDataType.String, false, null);
+   public final static XViewerColumn paraNumber = new XViewerColumn("attribute.Imported Paragraph Number",
       CoreAttributeTypes.ParagraphNumber.getName(), 50, SWT.LEFT, false, SortDataType.Paragraph_Number, false, null);
 
-   public static String NAMESPACE = "osee.skynet.gui.ChangeXViewer";
+   public final static String NAMESPACE = "osee.skynet.gui.ChangeXViewer";
 
    public ChangeXViewerFactory() {
       super(NAMESPACE);

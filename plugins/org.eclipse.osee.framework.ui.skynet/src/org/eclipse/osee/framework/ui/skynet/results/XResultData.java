@@ -40,17 +40,20 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  * 
  * @author Donald G. Dunne
  */
-public class XResultData {
+public final class XResultData {
 
-   public static Pattern ErrorPattern = Pattern.compile("Error: ");
-   public static Pattern WarningPattern = Pattern.compile("Warning: ");
-   StringBuffer sb = new StringBuffer();
+   public static final Pattern ErrorPattern = Pattern.compile("Error: ");
+   public static final Pattern WarningPattern = Pattern.compile("Warning: ");
+
    private static enum Type {
       Severe,
       Warning,
       Info;
    }
-   CountingMap<Type> count = new CountingMap<Type>();
+
+   private final StringBuffer sb = new StringBuffer();
+   private final CountingMap<Type> count = new CountingMap<Type>();
+
    private boolean enableOseeLog;
 
    public XResultData() {

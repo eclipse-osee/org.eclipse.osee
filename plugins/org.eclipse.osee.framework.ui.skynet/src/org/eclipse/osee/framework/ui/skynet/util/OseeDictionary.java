@@ -87,26 +87,27 @@ public class OseeDictionary extends AbstractOperation implements IDictionary {
    // NEon = ""
    private static Pattern pattern = Pattern.compile("^[a-zA-Z]{1}[a-z]+$");
 
-   public String getCleanWord(String w) {
+   public String getCleanWord(String word) {
+      String cleanWord = word;
       // Single character is a valid word
-      if (w.length() == 1) {
-         return w;
+      if (cleanWord.length() == 1) {
+         return cleanWord;
       }
 
       // First, remove any non-word characters before and after string
       // eg. end. (now) it!
-      w = w.replaceAll("^\\W+", "");
-      w = w.replaceAll("\\W+$", "");
-      w = w.replaceAll("'s$", ""); // Get rid of 's at end of word
+      cleanWord = cleanWord.replaceAll("^\\W+", "");
+      cleanWord = cleanWord.replaceAll("\\W+$", "");
+      cleanWord = cleanWord.replaceAll("'s$", ""); // Get rid of 's at end of word
 
       // If any non-alphabetic characters still in string, not a word
       // If string not either all lowercase or first letter capitalized, not a
       // word
-      Matcher m = pattern.matcher(w);
-      if (!m.find()) {
+      Matcher matcher = pattern.matcher(cleanWord);
+      if (!matcher.find()) {
          return "";
       }
-      return w.toLowerCase();
+      return cleanWord.toLowerCase();
    }
 
    private synchronized void ensureLoaded() {

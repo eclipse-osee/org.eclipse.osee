@@ -28,8 +28,8 @@ import org.eclipse.ui.menus.UIElement;
  * @author Jeff C. Phillips
  * @author Robert A. Fisher
  */
-public class HierarchicalPresentationHandler extends AbstractHandler implements IElementUpdater {
-   public static String COMMAND_ID =
+public final class HierarchicalPresentationHandler extends AbstractHandler implements IElementUpdater {
+   public static final String COMMAND_ID =
       "org.eclipse.osee.framework.ui.skynet.branch.branchView.hierarchicalPresentation.command";
    private final ICommandService service;
 

@@ -38,7 +38,8 @@ public class XHyperlabelMemberSelection extends XHyperlinkLabelCmdValueSelection
    public String getCurrentValue() {
       StringBuffer sb = new StringBuffer();
       for (User user : selectedUsers) {
-         sb.append(user.getName() + ", ");
+         sb.append(user.getName());
+         sb.append(", ");
       }
       return sb.toString().replaceFirst(", $", "");
    }

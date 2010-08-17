@@ -35,7 +35,8 @@ import org.w3c.dom.NodeList;
  */
 public class XWidgetParser {
 
-   public static String EMPTY_WIDGETS = "<xWidgets><XWidget xwidgetType=\"XLabel\" displayName=\" \" /></xWidgets>";
+   public static final String EMPTY_WIDGETS =
+      "<xWidgets><XWidget xwidgetType=\"XLabel\" displayName=\" \" /></xWidgets>";
 
    public static List<DynamicXWidgetLayoutData> extractWorkAttributes(DynamicXWidgetLayout dynamicXWidgetLayout, String xml) throws OseeCoreException {
       List<DynamicXWidgetLayoutData> data = Collections.emptyList();

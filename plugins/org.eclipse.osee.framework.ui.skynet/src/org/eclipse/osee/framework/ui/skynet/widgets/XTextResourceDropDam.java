@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.ui.ws.AJavaProject;
 import org.eclipse.osee.framework.ui.ws.AWorkspace;
@@ -85,8 +86,9 @@ public class XTextResourceDropDam extends XTextDam {
                File file = AWorkspace.iFileToFile(iFile);
                try {
                   String javaPkg = AJavaProject.getJavaPackage(file);
-                  if (javaPkg != null && !javaPkg.equals("")) {
-                     sb.append(javaPkg + " - ");
+                  if (Strings.isValid(javaPkg)) {
+                     sb.append(javaPkg);
+                     sb.append(" - ");
                   }
                } catch (Exception ex) {
                   // do nothing
@@ -96,7 +98,9 @@ public class XTextResourceDropDam extends XTextDam {
                if (ver.equals("unknown")) {
                   ver = "enter version here";
                }
-               sb.append(" (" + ver + ")");
+               sb.append(" (");
+               sb.append(ver);
+               sb.append(")");
             }
             if (!sb.toString().equals("")) {
                strs.add(sb.toString());

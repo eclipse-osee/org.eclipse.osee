@@ -34,9 +34,11 @@ import org.eclipse.ui.menus.UIElement;
  * @author Jeff C. Phillips
  */
 public class ShowArchivedBranchHandler extends AbstractHandler implements IElementUpdater {
-   public static String COMMAND_ID = "org.eclipse.osee.framework.ui.skynet.branch.BranchView.showArchivedBranches";
-   boolean itemChk;
+   public static final String COMMAND_ID =
+      "org.eclipse.osee.framework.ui.skynet.branch.BranchView.showArchivedBranches";
+
    private final ICommandService service;
+   private boolean itemChk;
 
    public ShowArchivedBranchHandler() {
       this.service = (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);

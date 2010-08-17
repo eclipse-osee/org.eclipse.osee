@@ -61,19 +61,19 @@ import org.eclipse.swt.SWT;
  */
 public class ResultsEditorExample extends XNavigateItemAction {
 
-   public static String TITLE = "Results Editor Example";
+   public static final String TITLE = "Results Editor Example";
    private static enum Columns {
       Date,
       Priority_123_Open_Bugs,
       Goal;
    };
-   List<String> chartDateStrs = Arrays.asList("09/07/2008", "09/21/2008", "10/05/2008", "10/19/2008", "11/02/2008",
-      "11/16/2008", "11/30/2008", "12/14/2008", "12/28/2008", "01/11/2009", "01/25/2009", "02/08/2009", "02/22/2009",
-      "03/08/2009", "03/22/2009", "04/05/2009", "04/19/2009");
-   List<Double> chartValueStrs = Arrays.asList(177.0, 174.0, 167.0, 161.0, 167.0, 167.0, 163.0, 165.0, 171.0, 179.0,
-      178.0, 177.0, 164.0, 159.0, 159.0, 157.0, 157.0);
-   List<Double> chartValueStrsGoal = Arrays.asList(177.0, 174.0, 167.0, 161.0, 167.0, 167.0, 163.0, 165.0, 171.0,
-      179.0, 177.0, 175.0, 173.0, 171.0, 169.0, 167.0, 165.0);
+   private final static List<String> chartDateStrs = Arrays.asList("09/07/2008", "09/21/2008", "10/05/2008",
+      "10/19/2008", "11/02/2008", "11/16/2008", "11/30/2008", "12/14/2008", "12/28/2008", "01/11/2009", "01/25/2009",
+      "02/08/2009", "02/22/2009", "03/08/2009", "03/22/2009", "04/05/2009", "04/19/2009");
+   private final static List<Double> chartValueStrs = Arrays.asList(177.0, 174.0, 167.0, 161.0, 167.0, 167.0, 163.0,
+      165.0, 171.0, 179.0, 178.0, 177.0, 164.0, 159.0, 159.0, 157.0, 157.0);
+   private final static List<Double> chartValueStrsGoal = Arrays.asList(177.0, 174.0, 167.0, 161.0, 167.0, 167.0,
+      163.0, 165.0, 171.0, 179.0, 177.0, 175.0, 173.0, 171.0, 169.0, 167.0, 165.0);
 
    /**
     * @param parent

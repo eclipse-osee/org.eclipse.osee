@@ -89,7 +89,7 @@ import org.eclipse.ui.part.ViewPart;
  */
 public class MergeView extends ViewPart implements IActionable, IBranchEventListener, IArtifactEventListener, IFrameworkTransactionEventListener {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView";
-   public static String HELP_CONTEXT_ID = "Merge_Manager_View";
+   public static final String HELP_CONTEXT_ID = "Merge_Manager_View";
    private MergeXWidget mergeXWidget;
    private Conflict[] conflicts;
    private IHandlerService handlerService;

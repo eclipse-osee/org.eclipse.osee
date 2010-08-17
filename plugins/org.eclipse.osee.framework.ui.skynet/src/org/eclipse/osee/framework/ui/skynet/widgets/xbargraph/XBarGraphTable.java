@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
@@ -72,7 +73,7 @@ public class XBarGraphTable extends XWidget {
       column2.setWidth(500);
       for (XBarGraphLine line : lines) {
          TableItem item = new TableItem(table, SWT.NONE);
-         item.setText(line.name);
+         item.setText(line.getName());
       }
 
       /*
@@ -88,20 +89,22 @@ public class XBarGraphTable extends XWidget {
                int index = table.indexOf(item);
                XBarGraphLine line = lines.get(index);
                int cummulativeWidth = 0;
-               for (XBarGraphLineSegment seg : line.segments) {
+               for (XBarGraphLineSegment seg : line.getSegments()) {
                   Color foreground = gc.getForeground();
                   Color background = gc.getBackground();
-                  gc.setForeground(Displays.getSystemColor(seg.foreground));
-                  gc.setBackground(Displays.getSystemColor(seg.background));
-                  int width = column2.getWidth() * (int) seg.value / 100;
+                  gc.setForeground(Displays.getSystemColor(seg.getForeground()));
+                  gc.setBackground(Displays.getSystemColor(seg.getBackground()));
+                  int width = column2.getWidth() * (int) seg.getValue() / 100;
                   gc.fillGradientRectangle(event.x + cummulativeWidth, event.y, width, event.height, true);
                   Rectangle rect2 = new Rectangle(event.x + cummulativeWidth, event.y, width - 1, event.height - 1);
                   gc.drawRectangle(rect2);
-                  if (seg.name != null && !seg.name.equals("")) {
+
+                  String segName = seg.getName();
+                  if (Strings.isValid(segName)) {
                      gc.setForeground(Displays.getSystemColor(SWT.COLOR_LIST_FOREGROUND));
-                     Point size = event.gc.textExtent(seg.name);
+                     Point size = event.gc.textExtent(segName);
                      int offset = Math.max(0, (event.height - size.y) / 2);
-                     gc.drawText(seg.name, event.x + cummulativeWidth + 5, event.y + offset, true);
+                     gc.drawText(segName, event.x + cummulativeWidth + 5, event.y + offset, true);
                      gc.setForeground(background);
                      gc.setBackground(foreground);
                   }

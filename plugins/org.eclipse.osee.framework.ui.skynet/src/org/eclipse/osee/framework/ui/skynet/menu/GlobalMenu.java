@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.menu;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -61,7 +60,7 @@ public class GlobalMenu {
       DeleteArtifacts,
       PurgeArtifacts;
 
-      public static List<GlobalMenuItem> ALL = Arrays.asList(GlobalMenuItem.values());
+      public static final Collection<GlobalMenuItem> ALL = Arrays.asList(GlobalMenuItem.values());
    };
    private final ArrayList<GlobalMenuListener> listeners = new ArrayList<GlobalMenuListener>();
 

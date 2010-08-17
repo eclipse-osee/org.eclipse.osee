@@ -300,7 +300,8 @@ public class XList extends XWidget {
    public String getSelectedStr() {
       StringBuffer sb = new StringBuffer();
       for (XListItem item : getSelected()) {
-         sb.append(item.getName() + ", ");
+         sb.append(item.getName());
+         sb.append(", ");
       }
       return sb.toString().replaceFirst(", $", "");
    }

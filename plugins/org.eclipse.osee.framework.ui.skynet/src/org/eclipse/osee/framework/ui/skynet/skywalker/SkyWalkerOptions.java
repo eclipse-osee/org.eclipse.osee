@@ -47,7 +47,7 @@ import org.eclipse.zest.layouts.algorithms.VerticalLayoutAlgorithm;
 /**
  * @author Donald G. Dunne
  */
-public class SkyWalkerOptions {
+public final class SkyWalkerOptions {
 
    private Artifact artifact;
    private int levels = 1;
@@ -60,9 +60,9 @@ public class SkyWalkerOptions {
    private Map<Object, Boolean> relTypes;
    private boolean filterEnabled = true;
    private final Set<ISkyWalkerOptionsChangeListener> listeners = new HashSet<ISkyWalkerOptionsChangeListener>();
-   public static String RADIAL_DOWN_LAYOUT = "Radial - Down";
-   public static String RADIAL_RIGHT_LAYOUT = "Radial - Right";
-   public static String SPRING_LAYOUT = "Spring";
+   public static final String RADIAL_DOWN_LAYOUT = "Radial - Down";
+   public static final String RADIAL_RIGHT_LAYOUT = "Radial - Right";
+   public static final String SPRING_LAYOUT = "Spring";
    public static enum LinkName {
       None,
       Link_Name,

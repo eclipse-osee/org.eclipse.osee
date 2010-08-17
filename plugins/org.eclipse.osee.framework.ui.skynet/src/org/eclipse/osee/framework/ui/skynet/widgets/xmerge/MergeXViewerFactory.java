@@ -20,22 +20,22 @@ import org.eclipse.swt.SWT;
  */
 public class MergeXViewerFactory extends SkynetXViewerFactory {
 
-   public static XViewerColumn Conflict_Resolved = new XViewerColumn("framework.merge.conflictResolved",
+   public final static XViewerColumn Conflict_Resolved = new XViewerColumn("framework.merge.conflictResolved",
       "Conflict Resolution", 43, SWT.LEFT, true, SortDataType.String, false, null);
-   public static XViewerColumn Artifact_Name = new XViewerColumn("framework.merge.artifactName", "Artifact Name", 200,
+   public final static XViewerColumn Artifact_Name = new XViewerColumn("framework.merge.artifactName", "Artifact Name",
+      200, SWT.LEFT, true, SortDataType.String, false, null);
+   public final static XViewerColumn Type = new XViewerColumn("framework.merge.artifactType", "Artifact Type", 150,
       SWT.LEFT, true, SortDataType.String, false, null);
-   public static XViewerColumn Type = new XViewerColumn("framework.merge.artifactType", "Artifact Type", 150, SWT.LEFT,
+   public final static XViewerColumn Change_Item = new XViewerColumn("framework.merge.conflictingItem",
+      "Conflicting Item", 150, SWT.LEFT, true, SortDataType.String, false, null);
+   public final static XViewerColumn Source = new XViewerColumn("framework.merge.sourceValue", "Source Value", 100,
+      SWT.LEFT, true, SortDataType.String, false, null);
+   public final static XViewerColumn Destination = new XViewerColumn("framework.merge.destinationValue",
+      "Destination Value", 100, SWT.LEFT, true, SortDataType.String, false, null);
+   public final static XViewerColumn Merged = new XViewerColumn("framework.merge.mergedValue", "Merged Value", 100,
+      SWT.LEFT, true, SortDataType.String, false, null);
+   public final static XViewerColumn Art_Id = new XViewerColumn("framework.merge.artId", "Artifact Id", 75, SWT.LEFT,
       true, SortDataType.String, false, null);
-   public static XViewerColumn Change_Item = new XViewerColumn("framework.merge.conflictingItem", "Conflicting Item",
-      150, SWT.LEFT, true, SortDataType.String, false, null);
-   public static XViewerColumn Source = new XViewerColumn("framework.merge.sourceValue", "Source Value", 100, SWT.LEFT,
-      true, SortDataType.String, false, null);
-   public static XViewerColumn Destination = new XViewerColumn("framework.merge.destinationValue", "Destination Value",
-      100, SWT.LEFT, true, SortDataType.String, false, null);
-   public static XViewerColumn Merged = new XViewerColumn("framework.merge.mergedValue", "Merged Value", 100, SWT.LEFT,
-      true, SortDataType.String, false, null);
-   public static XViewerColumn Art_Id = new XViewerColumn("framework.merge.artId", "Artifact Id", 75, SWT.LEFT, true,
-      SortDataType.String, false, null);
 
    public MergeXViewerFactory() {
       super("osee.skynet.gui.MergeXViewer");

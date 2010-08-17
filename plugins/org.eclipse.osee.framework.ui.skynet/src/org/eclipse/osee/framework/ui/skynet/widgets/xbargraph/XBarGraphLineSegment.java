@@ -16,14 +16,15 @@ import org.eclipse.swt.SWT;
  * @author Donald G. Dunne
  */
 public class XBarGraphLineSegment {
-   public static int DEFAULT_RED_FOREGROUND = SWT.COLOR_RED;
-   public static int DEFAULT_RED_BACKGROUND = SWT.COLOR_YELLOW;
-   public static int DEFAULT_GREEN_FOREGROUND = SWT.COLOR_GREEN;
-   public static int DEFAULT_GREEN_BACKGROUND = SWT.COLOR_YELLOW;
-   String name;
-   int foreground;
-   int background;
-   long value;
+   public static final int DEFAULT_RED_FOREGROUND = SWT.COLOR_RED;
+   public static final int DEFAULT_RED_BACKGROUND = SWT.COLOR_YELLOW;
+   public static final int DEFAULT_GREEN_FOREGROUND = SWT.COLOR_GREEN;
+   public static final int DEFAULT_GREEN_BACKGROUND = SWT.COLOR_YELLOW;
+
+   private final String name;
+   private final int foreground;
+   private final int background;
+   private final long value;
 
    public XBarGraphLineSegment(String name, long value) {
       this(name, DEFAULT_GREEN_FOREGROUND, DEFAULT_GREEN_BACKGROUND, value);
@@ -46,6 +47,22 @@ public class XBarGraphLineSegment {
 
    public static XBarGraphLineSegment getPercentSegment(String name, int color, long value) {
       return new XBarGraphLineSegment(value + "%", color, color, value);
+   }
+
+   public String getName() {
+      return name;
+   }
+
+   public int getForeground() {
+      return foreground;
+   }
+
+   public int getBackground() {
+      return background;
+   }
+
+   public long getValue() {
+      return value;
    }
 
 }

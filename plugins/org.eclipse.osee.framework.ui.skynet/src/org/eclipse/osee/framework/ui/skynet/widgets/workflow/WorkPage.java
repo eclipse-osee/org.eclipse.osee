@@ -162,7 +162,8 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
          sb.append(preHtml);
       }
       for (DynamicXWidgetLayoutData layoutData : dynamicXWidgetLayout.getLayoutDatas()) {
-         sb.append(layoutData.getXWidget().toHTML(AHTML.LABEL_FONT) + AHTML.newline());
+         sb.append(layoutData.getXWidget().toHTML(AHTML.LABEL_FONT));
+         sb.append(AHTML.newline());
       }
       if (postHtml != null) {
          sb.append(postHtml);

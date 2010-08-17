@@ -32,10 +32,10 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 /**
  * @author Ryan D. Brooks
  */
-public class UpdateArtifactTypeImage extends AbstractBlam {
+public final class UpdateArtifactTypeImage extends AbstractBlam {
 
-   public static String ARTIFACT_TYPE_NAME = "Select Artifact Type";
-   public static String SELECT_IMAGE = "Select Image GIF";
+   private static final String ARTIFACT_TYPE_NAME = "Select Artifact Type";
+   private static final String SELECT_IMAGE = "Select Image GIF";
 
    @Override
    public String getName() {

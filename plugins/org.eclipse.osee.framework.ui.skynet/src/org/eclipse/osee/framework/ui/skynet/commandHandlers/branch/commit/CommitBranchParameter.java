@@ -17,8 +17,8 @@ import org.eclipse.core.commands.ParameterValuesException;
 /**
  * @author Jeff C. Phillips
  */
-public class CommitBranchParameter implements IParameter {
-   public static String ARCHIVE_PARENT_BRANCH = "archive_parent_branch";
+public final class CommitBranchParameter implements IParameter {
+   public static final String ARCHIVE_PARENT_BRANCH = "archive_parent_branch";
 
    @Override
    public String getId() {

@@ -33,10 +33,11 @@ import org.eclipse.ui.menus.UIElement;
 /**
  * @author Jeff C. Phillips
  */
-public class ShowMergeBranchPresentationHandler extends AbstractHandler implements IElementUpdater {
-   public static String COMMAND_ID = "org.eclipse.osee.framework.ui.skynet.branch.BranchView.showMergeBranches";
-   boolean itemChk;
+public final class ShowMergeBranchPresentationHandler extends AbstractHandler implements IElementUpdater {
+   public final static String COMMAND_ID = "org.eclipse.osee.framework.ui.skynet.branch.BranchView.showMergeBranches";
+
    private final ICommandService service;
+   private boolean itemChk;
 
    public ShowMergeBranchPresentationHandler() {
       this.service = (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);

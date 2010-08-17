@@ -319,7 +319,8 @@ public class XHistoryWidget extends XWidget implements IActionable {
    public String getActionDescription() {
       StringBuffer sb = new StringBuffer();
       if (artifact != null) {
-         sb.append("\nHistory : " + artifact.getName());
+         sb.append("\nHistory : ");
+         sb.append(artifact.getName());
       }
       return sb.toString();
    }

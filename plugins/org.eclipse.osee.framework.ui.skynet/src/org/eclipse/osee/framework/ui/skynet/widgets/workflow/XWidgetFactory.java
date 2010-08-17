@@ -11,15 +11,10 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtension;
-import org.eclipse.core.runtime.IExtensionPoint;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -29,6 +24,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -72,7 +68,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextResourceDropDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.osgi.framework.Bundle;
 
 /**
  * @author Jeff C. Phillips
@@ -335,40 +330,11 @@ public final class XWidgetFactory {
       }
       return xWidget;
    }
-   private static Set<IXWidgetProvider> widgetProviders;
 
-   private static Set<IXWidgetProvider> getXWidgetProviders() {
-      widgetProviders = new HashSet<IXWidgetProvider>();
-      IExtensionPoint point =
-         Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.framework.ui.skynet.XWidgetProvider");
-      if (point == null) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, "Can't access XWidgetProvider extension point");
-         return null;
-      }
-      IExtension[] extensions = point.getExtensions();
-      for (IExtension extension : extensions) {
-         IConfigurationElement[] elements = extension.getConfigurationElements();
-         String classname = null;
-         String bundleName = null;
-         for (IConfigurationElement el : elements) {
-            if (el.getName().equals("XWidgetProvider")) {
-               classname = el.getAttribute("classname");
-               bundleName = el.getContributor().getName();
-               if (classname != null && bundleName != null) {
-                  Bundle bundle = Platform.getBundle(bundleName);
-                  try {
-                     Class<?> taskClass = bundle.loadClass(classname);
-                     Object obj = taskClass.newInstance();
-                     widgetProviders.add((IXWidgetProvider) obj);
-                  } catch (Exception ex) {
-                     OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP,
-                        "Error loading XWidgetProvider extension", ex);
-                  }
-               }
-
-            }
-         }
-      }
-      return widgetProviders;
+   private static Collection<IXWidgetProvider> getXWidgetProviders() {
+      ExtensionDefinedObjects<IXWidgetProvider> contributions =
+         new ExtensionDefinedObjects<IXWidgetProvider>(SkynetGuiPlugin.PLUGIN_ID + ".XWidgetProvider",
+            "XWidgetProvider", "classname");
+      return contributions.getObjects();
    }
 }

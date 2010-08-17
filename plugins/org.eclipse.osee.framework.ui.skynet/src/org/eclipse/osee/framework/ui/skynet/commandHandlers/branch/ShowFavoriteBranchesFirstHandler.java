@@ -28,9 +28,11 @@ import org.eclipse.ui.menus.UIElement;
  * @author Jeff C. Phillips
  */
 public class ShowFavoriteBranchesFirstHandler extends AbstractHandler implements IElementUpdater {
-   public static String COMMAND_ID = "org.eclipse.osee.framework.ui.skynet.branch.BranchView.ShowFavoriteBranchesFirst";
-   boolean itemChk;
+   public static final String COMMAND_ID =
+      "org.eclipse.osee.framework.ui.skynet.branch.BranchView.ShowFavoriteBranchesFirst";
+
    private final ICommandService service;
+   private boolean itemChk;
 
    public ShowFavoriteBranchesFirstHandler() {
       this.service = (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);

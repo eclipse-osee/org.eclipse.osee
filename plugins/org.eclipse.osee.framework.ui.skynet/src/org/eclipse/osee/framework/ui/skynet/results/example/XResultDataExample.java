@@ -19,9 +19,9 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 /**
  * @author Donald G. Dunne
  */
-public class XResultDataExample extends XNavigateItemAction {
+public final class XResultDataExample extends XNavigateItemAction {
 
-   public static String TITLE = "XResultData Example";
+   public static final String TITLE = "XResultData Example";
 
    /**
     * @param parent

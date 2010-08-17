@@ -43,7 +43,8 @@ public class UserCommunity {
    public String getUserCommunityCommaDelim() {
       StringBuffer sb = new StringBuffer();
       for (String name : getUserCommunityNames()) {
-         sb.append(name + ",");
+         sb.append(name);
+         sb.append(", ");
       }
       return sb.toString().replaceFirst(",$", "");
    }

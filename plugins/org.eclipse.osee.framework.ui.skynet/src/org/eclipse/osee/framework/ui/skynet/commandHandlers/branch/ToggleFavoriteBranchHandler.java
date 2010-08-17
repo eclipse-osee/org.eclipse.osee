@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
  * @author Jeff C. Phillips
  */
 public class ToggleFavoriteBranchHandler extends CommandHandler {
-   public static String COMMAND_ID =
+   public static final String COMMAND_ID =
       "org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.ToggleFavoriteBranchHandler";
 
    @Override

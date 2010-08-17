@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEdit
  */
 public class MassEditDirtyArtifactOperation extends AbstractOperation implements IOperationFactory {
 
-   public static String NAME = "Mass Edit Dirty Artifacts";
+   public static final String NAME = "Mass Edit Dirty Artifacts";
 
    public MassEditDirtyArtifactOperation() {
       super(NAME, SkynetGuiPlugin.PLUGIN_ID);

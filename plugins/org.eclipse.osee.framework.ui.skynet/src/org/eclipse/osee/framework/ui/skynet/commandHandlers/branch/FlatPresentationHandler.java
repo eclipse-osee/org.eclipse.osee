@@ -29,7 +29,7 @@ import org.eclipse.ui.menus.UIElement;
  * @author Robert A. Fisher
  */
 public class FlatPresentationHandler extends AbstractHandler implements IElementUpdater {
-   public static String COMMAND_ID = "org.eclipse.osee.framework.ui.skynet.branch.BranchView.flatCommand";
+   public static final String COMMAND_ID = "org.eclipse.osee.framework.ui.skynet.branch.BranchView.flatCommand";
    private final ICommandService service;
 
    public FlatPresentationHandler() {

@@ -36,24 +36,24 @@ import org.eclipse.swt.widgets.Label;
  * @author Donald G. Dunne
  */
 public class XDate extends XWidget {
+   public static final long MILLISECONDS_IN_A_WEEK = 604800000;
+   public static final long MILLISECONDS_IN_A_DAY = 86400000;
+   public final static String MMDDYY = "MM/dd/yyyy";
+   public final static String YYYYMMDD = "yyyy/MM/dd";
+   public final static String YYYY_MM_DD = "yyyy_MM_dd";
+   public final static String MMDDYYHHMM = "MM/dd/yyyy hh:mm a";
+   public final static String HHMMSS = "hh:mm:ss";
+   public final static String HHMMSSSS = "hh:mm:ss:SS";
+   public final static String HHMM = "hh:mm";
 
+   public static final HashMap<String, DateFormat> dateFormats = new HashMap<String, DateFormat>();
+
+   private final ArrayList<ModifyListener> listeners = new ArrayList<ModifyListener>();
+   private String defaultFormat = MMDDYYHHMM;
+   private boolean requireFutureDate = false;
    private CalendarCombo dateCombo;
    private Composite parent;
    protected Date date;
-   public static String MMDDYY = "MM/dd/yyyy";
-   public static String YYYYMMDD = "yyyy/MM/dd";
-   public static String YYYY_MM_DD = "yyyy_MM_dd";
-   public static String MMDDYYHHMM = "MM/dd/yyyy hh:mm a";
-   public static String HHMMSS = "hh:mm:ss";
-   public static String HHMMSSSS = "hh:mm:ss:SS";
-   public static String HHMM = "hh:mm";
-   public static final HashMap<String, DateFormat> dateFormats = new HashMap<String, DateFormat>();
-   private String defaultFormat = MMDDYYHHMM;
-   private final ArrayList<ModifyListener> listeners = new ArrayList<ModifyListener>();
-   private boolean requireFutureDate = false;
-
-   public static final long MILLISECONDS_IN_A_WEEK = 604800000;
-   public static final long MILLISECONDS_IN_A_DAY = 86400000;
 
    public XDate() {
       this("", "");
