@@ -50,6 +50,7 @@ public class InternalEventManager2 {
       Runtime.getRuntime().availableProcessors(), threadFactory);
    private static final List<IEventListener> priorityListeners = new CopyOnWriteArrayList<IEventListener>();
    private static final List<IEventListener> listeners = new CopyOnWriteArrayList<IEventListener>();
+   private static boolean pendRunning = false;
 
    // This will disable all Local TransactionEvents and enable loopback routing of Remote TransactionEvents back
    // through the RemoteEventService as if they came from another client.  This is for testing purposes only and
@@ -57,7 +58,11 @@ public class InternalEventManager2 {
    private static boolean enableRemoteEventLoopback = false;
 
    private static void execute(Runnable runnable) {
-      executorService.submit(runnable);
+      if (pendRunning) {
+         runnable.run();
+      } else {
+         executorService.submit(runnable);
+      }
    }
 
    public static void addListener(IEventListener listener) {
@@ -571,5 +576,16 @@ public class InternalEventManager2 {
 
    public static void setEnableRemoteEventLoopback(boolean enableRemoteEventLoopback) {
       InternalEventManager2.enableRemoteEventLoopback = enableRemoteEventLoopback;
+   }
+
+   /**
+    * If true, all listeners will be called back in main thread. For testing purposes only.
+    */
+   public static void internalSetPendRunning(boolean pendRunning) {
+      InternalEventManager2.pendRunning = pendRunning;
+   }
+
+   public static boolean isPendRunning() {
+      return pendRunning;
    }
 }

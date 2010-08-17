@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.messaging.event.res.test.cases;
 import org.eclipse.osee.framework.messaging.event.res.RemoteEventUtil;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteNetworkSender1;
 import org.junit.Assert;
-import org.junit.Test;
 
 /**
  * @author Donald G. Dunne
@@ -36,7 +35,7 @@ public class RemoteNetworkSenderTest {
     * {@link org.eclipse.osee.framework.messaging.event.res.event.NetworkSender#NetworkSender(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)}
     * .
     */
-   @Test
+   @org.junit.Test
    public void testNetworkSenderStringString() {
       Assert.assertEquals(Object, networkSender.getSourceObject());
       Assert.assertEquals(SessionId, networkSender.getSessionId());
@@ -50,7 +49,7 @@ public class RemoteNetworkSenderTest {
    /**
     * Test method for {@link org.eclipse.osee.framework.messaging.event.res.event.NetworkSender#getSourceObject()}.
     */
-   @Test
+   @org.junit.Test
    public void testGetSourceObject() {
       Assert.assertEquals(Object, networkSender.getSourceObject());
    }
@@ -58,7 +57,7 @@ public class RemoteNetworkSenderTest {
    /**
     * Test method for {@link org.eclipse.osee.framework.messaging.event.res.event.NetworkSender#getSessionId()}.
     */
-   @Test
+   @org.junit.Test
    public void testGetSessionId() {
       Assert.assertEquals(SessionId, networkSender.getSessionId());
    }
@@ -66,7 +65,7 @@ public class RemoteNetworkSenderTest {
    /**
     * Test method for {@link org.eclipse.osee.framework.messaging.event.res.event.NetworkSender#getMachineName()}.
     */
-   @Test
+   @org.junit.Test
    public void testGetMachineName() {
       Assert.assertEquals(MachineName, networkSender.getMachineName());
    }
@@ -74,7 +73,7 @@ public class RemoteNetworkSenderTest {
    /**
     * Test method for {@link org.eclipse.osee.framework.messaging.event.res.event.NetworkSender#getUserId()}.
     */
-   @Test
+   @org.junit.Test
    public void testGetUserId() {
       Assert.assertEquals(UserId, networkSender.getUserId());
    }
@@ -82,7 +81,7 @@ public class RemoteNetworkSenderTest {
    /**
     * Test method for {@link org.eclipse.osee.framework.messaging.event.res.event.NetworkSender#getMachineIp()}.
     */
-   @Test
+   @org.junit.Test
    public void testGetMachineIp() {
       Assert.assertEquals(MachineIp, networkSender.getMachineIp());
    }
@@ -90,7 +89,7 @@ public class RemoteNetworkSenderTest {
    /**
     * Test method for {@link org.eclipse.osee.framework.messaging.event.res.event.NetworkSender#getClientVersion()}.
     */
-   @Test
+   @org.junit.Test
    public void testGetClientVersion() {
       Assert.assertEquals(ClientVersion, networkSender.getClientVersion());
    }
@@ -98,7 +97,7 @@ public class RemoteNetworkSenderTest {
    /**
     * Test method for {@link org.eclipse.osee.framework.messaging.event.res.event.NetworkSender#getPort()}.
     */
-   @Test
+   @org.junit.Test
    public void testGetPort() {
       Assert.assertEquals(Port, networkSender.getPort());
    }

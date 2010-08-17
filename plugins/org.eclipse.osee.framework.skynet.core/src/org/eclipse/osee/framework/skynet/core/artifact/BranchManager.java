@@ -201,8 +201,6 @@ public class BranchManager {
 
    /**
     * Update branch
-    * 
-    * @param Job
     */
    public static Job updateBranch(final Branch branch, final ConflictResolverOperation resolver) {
       IOperation operation = new UpdateBranchOperation(Activator.PLUGIN_ID, branch, resolver);
@@ -212,8 +210,6 @@ public class BranchManager {
    /**
     * Completes the update branch operation by committing latest parent based branch with branch with changes. Then
     * swaps branches so we are left with the most current branch containing latest changes.
-    * 
-    * @param Job
     */
    public static Job completeUpdateBranch(final ConflictManagerExternal conflictManager, final boolean archiveSourceBranch, final boolean overwriteUnresolvedConflicts) {
       IOperation operation =
@@ -245,21 +241,26 @@ public class BranchManager {
    /**
     * Delete a branch from the system. (This operation will set the branch state to deleted. This operation is
     * undo-able)
-    * 
-    * @param branchId
     */
    public static Job deleteBranch(final Branch branch) {
-      return Operations.executeAsJob(new DeleteBranchOperation(branch), true);
+      return deleteBranch(branch, false);
+   }
+
+   /**
+    * Delete a branch from the system. (This operation will set the branch state to deleted. This operation is
+    * undo-able)
+    */
+   public static Job deleteBranch(final Branch branch, boolean pend) {
+      if (pend) {
+         return Operations.executeAndPend(new DeleteBranchOperation(branch), true);
+      } else {
+         return Operations.executeAsJob(new DeleteBranchOperation(branch), true);
+      }
    }
 
    /**
     * Commit the net changes from the source branch into the destination branch. If there are conflicts between the two
     * branches, the source branch changes will override those on the destination branch.
-    * 
-    * @param monitor
-    * @param conflictManager
-    * @param archiveSourceBranch
-    * @throws OseeCoreException
     */
    public static void commitBranch(IProgressMonitor monitor, ConflictManagerExternal conflictManager, boolean archiveSourceBranch, boolean overwriteUnresolvedConflicts) throws OseeCoreException {
       if (monitor == null) {
@@ -287,8 +288,6 @@ public class BranchManager {
 
    /**
     * Permanently removes transactions and any of their backing data that is not referenced by any other transactions.
-    * 
-    * @param transactionIdNumber
     */
    public static void purgeTransactions(final int... transactionIdNumbers) {
       purgeTransactions(null, transactionIdNumbers);
@@ -296,8 +295,6 @@ public class BranchManager {
 
    /**
     * Permanently removes transactions and any of their backing data that is not referenced by any other transactions.
-    * 
-    * @param transactionIdNumber
     */
    public static void purgeTransactions(IJobChangeListener jobChangeListener, final int... transactionIdNumbers) {
       purgeTransactions(jobChangeListener, false, transactionIdNumbers);
@@ -305,8 +302,6 @@ public class BranchManager {
 
    /**
     * Permanently removes transactions and any of their backing data that is not referenced by any other transactions.
-    * 
-    * @param transactionIdNumber
     */
    public static Job purgeTransactions(IJobChangeListener jobChangeListener, boolean force, final int... transactionIdNumbers) {
       IOperation op = new PurgeTransactionOperation(Activator.getInstance(), force, transactionIdNumbers);
@@ -359,10 +354,6 @@ public class BranchManager {
 
    /**
     * Creates a new Branch based on the transaction number selected and the parent branch.
-    * 
-    * @param parentTransactionId
-    * @param childBranchName
-    * @throws OseeCoreException
     */
    public static Branch createWorkingBranch(TransactionRecord parentTransactionId, String childBranchName, String childBranchGuid, Artifact associatedArtifact) throws OseeCoreException {
       int parentBranchId = parentTransactionId.getBranchId();
@@ -378,10 +369,6 @@ public class BranchManager {
 
    /**
     * Creates a new Branch based on the most recent transaction on the parent branch.
-    * 
-    * @param parentTransactionId
-    * @param childBranchName
-    * @throws OseeCoreException
     */
    public static Branch createWorkingBranch(IOseeBranch parentBranch, String childBranchName, Artifact associatedArtifact) throws OseeCoreException {
       TransactionRecord parentTransactionId = TransactionManager.getHeadTransaction(parentBranch);
@@ -395,10 +382,6 @@ public class BranchManager {
 
    /**
     * Creates a new Branch based on the most recent transaction on the parent branch.
-    * 
-    * @param parentTransactionId
-    * @param childBranchName
-    * @throws OseeCoreException
     */
    public static Branch createBaselineBranch(IOseeBranch parentBranch, IOseeBranch childBranch, Artifact associatedArtifact) throws OseeCoreException {
       TransactionRecord parentTransactionId = TransactionManager.getHeadTransaction(parentBranch);
@@ -411,10 +394,7 @@ public class BranchManager {
    /**
     * Creates a new root branch, imports skynet types and initializes.
     * 
-    * @param branchName
     * @param initializeArtifacts adds common artifacts needed by most normal root branches
-    * @throws Exception
-    * @see BranchManager#intializeBranch
     */
    public static Branch createTopLevelBranch(IOseeBranch branch) throws OseeCoreException {
       return createBaselineBranch(CoreBranches.SYSTEM_ROOT, branch, null);

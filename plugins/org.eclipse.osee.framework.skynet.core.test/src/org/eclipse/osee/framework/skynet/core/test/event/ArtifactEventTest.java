@@ -58,6 +58,8 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.IncrementingNum;
 import org.eclipse.osee.support.test.util.TestUtil;
+import org.junit.After;
+import org.junit.Before;
 
 /**
  * @author Donald G. Dunne
@@ -86,6 +88,16 @@ public class ArtifactEventTest {
       public List<? extends IEventFilter> getEventFilters() {
          return null;
       }
+   }
+
+   @Before
+   public void setup() {
+      InternalEventManager2.internalSetPendRunning(true);
+   }
+
+   @After
+   public void cleanup() {
+      InternalEventManager2.internalSetPendRunning(false);
    }
 
    @org.junit.Before
@@ -177,8 +189,6 @@ public class ArtifactEventTest {
       Artifact newArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, BranchManager.getCommonBranch());
       newArt.persist();
 
-      Thread.sleep(4000);
-
       Assert.assertEquals(2, resultEventArtifacts.size());
       Assert.assertEquals("No relations events should be sent", 0, resultEventRelations.size());
       if (isRemoteTest()) {
@@ -210,8 +220,6 @@ public class ArtifactEventTest {
       rootArt.addChild(newArt);
       rootArt.persist();
 
-      Thread.sleep(3000);
-
       Assert.assertEquals("No artifact events should be sent", 0, resultEventArtifacts.size());
       Assert.assertEquals(1, resultEventRelations.size());
       if (isRemoteTest()) {
@@ -235,8 +243,6 @@ public class ArtifactEventTest {
       clearEventCollections();
       StaticIdManager.setSingletonAttributeValue(newArt, "this");
       newArt.persist();
-
-      Thread.sleep(3000);
 
       Assert.assertEquals(1, resultEventArtifacts.size());
       Assert.assertEquals("No relations events should be sent", 0, resultEventRelations.size());
@@ -262,8 +268,6 @@ public class ArtifactEventTest {
       relLink.setRationale(NEW_RATIONALE_STR, true);
       newArt.persist();
 
-      Thread.sleep(3000);
-
       Assert.assertEquals("No artifact events should be sent", 0, resultEventArtifacts.size());
       Assert.assertEquals(1, resultEventRelations.size());
       if (isRemoteTest()) {
@@ -286,8 +290,6 @@ public class ArtifactEventTest {
    private void testArtifactRelationEvents__deleteArtifact(Artifact newArt) throws Exception {
       clearEventCollections();
       newArt.deleteAndPersist();
-
-      Thread.sleep(3000);
 
       Assert.assertEquals(2, resultEventArtifacts.size());
       Assert.assertEquals(1, resultEventRelations.size());
@@ -335,7 +337,6 @@ public class ArtifactEventTest {
       RemoteEventManager2.getInstance().onEvent(remoteEvent);
 
       // Wait for event to propagate
-      Thread.sleep(4000);
 
       Assert.assertEquals("No artifact events should be sent", 0, resultEventArtifacts.size());
       Assert.assertEquals(1, resultEventRelations.size());
@@ -370,7 +371,6 @@ public class ArtifactEventTest {
       RemoteEventManager2.getInstance().onEvent(remoteEvent);
 
       // Wait for event to propagate
-      Thread.sleep(4000);
 
       Assert.assertEquals("No artifact events should be sent", 0, resultEventArtifacts.size());
       Assert.assertEquals(1, resultEventRelations.size());
@@ -418,7 +418,6 @@ public class ArtifactEventTest {
       RemoteEventManager2.getInstance().onEvent(remoteEvent);
 
       // Wait for event to propagate
-      Thread.sleep(4000);
 
       Assert.assertEquals("No artifact events should be sent", 0, resultEventArtifacts.size());
       Assert.assertEquals("No relations events should be sent", 0, resultEventRelations.size());
@@ -451,7 +450,6 @@ public class ArtifactEventTest {
       RemoteEventManager2.getInstance().onEvent(remoteEvent);
 
       // Wait for event to propagate
-      Thread.sleep(4000);
 
       Assert.assertEquals("No artifact events should be sent", 0, resultEventArtifacts.size());
       Assert.assertEquals(1, resultEventRelations.size());
@@ -489,7 +487,6 @@ public class ArtifactEventTest {
       RemoteEventManager2.getInstance().onEvent(remoteEvent);
 
       // Wait for event to propagate
-      Thread.sleep(4000);
 
       Assert.assertEquals("No artifact events should be sent", 0, resultEventArtifacts.size());
       Assert.assertEquals(1, resultEventRelations.size());
@@ -521,8 +518,6 @@ public class ArtifactEventTest {
       injectArt.setName(ORIG_NAME);
       injectArt.persist();
 
-      Thread.sleep(2000);
-
       clearEventCollections();
 
       // Create fake remote event that would come in from another client
@@ -545,7 +540,6 @@ public class ArtifactEventTest {
       RemoteEventManager2.getInstance().onEvent(remoteEvent);
 
       // Wait for event to propagate
-      Thread.sleep(4000);
 
       Assert.assertEquals(1, resultEventArtifacts.size());
       Assert.assertEquals("No relations events should be sent", 0, resultEventRelations.size());
@@ -596,7 +590,6 @@ public class ArtifactEventTest {
       RemoteEventManager2.getInstance().onEvent(remoteEvent);
 
       // Wait for event to propagate
-      Thread.sleep(4000);
 
       Assert.assertEquals(1, resultEventArtifacts.size());
       Assert.assertEquals("No relations events should be sent", 0, resultEventRelations.size());
@@ -646,7 +639,6 @@ public class ArtifactEventTest {
       RemoteEventManager2.getInstance().onEvent(remoteEvent);
 
       // Wait for event to propagate
-      Thread.sleep(4000);
 
       Assert.assertEquals(1, resultEventArtifacts.size());
       Assert.assertEquals("No relations events should be sent", 0, resultEventRelations.size());
@@ -695,8 +687,6 @@ public class ArtifactEventTest {
       }
       transaction.execute();
 
-      Thread.sleep(4000);
-
       OseeEventManager.addListener(artifactEventListener);
       Assert.assertEquals(1, InternalEventManager2.getNumberOfListeners());
 
@@ -716,8 +706,6 @@ public class ArtifactEventTest {
       artifactsInNewOrder.add(orderedChildren.get(4));
       newArt.setRelationOrder(CoreRelationTypes.Default_Hierarchical__Child, artifactsInNewOrder);
       newArt.persist();
-
-      Thread.sleep(4000);
 
       Assert.assertEquals("newArt will change cause attribute modified", 1, resultEventArtifacts.size());
       Assert.assertEquals("No relations events should be sent", 0, resultEventRelations.size());
@@ -799,15 +787,11 @@ public class ArtifactEventTest {
       newArt.setName(getClass().getSimpleName() + " - testPurgeArtifactEvents");
       newArt.persist();
 
-      Thread.sleep(3000);
-
       InternalEventManager2.addListener(artifactEventListener);
       Assert.assertEquals(1, InternalEventManager2.getNumberOfListeners());
 
       // Purge Artifact
       newArt.purgeFromBranch();
-
-      Thread.sleep(3000);
 
       Assert.assertEquals(1, resultEventArtifacts.size());
       EventBasicGuidArtifact guidArt = resultEventArtifacts.iterator().next();
@@ -839,8 +823,6 @@ public class ArtifactEventTest {
       newArt.setName(getClass().getSimpleName() + " - testReloadArtifactEvents");
       newArt.persist();
 
-      Thread.sleep(3000);
-
       OseeEventManager.addListener(artifactEventListener);
       Assert.assertEquals(1, InternalEventManager2.getNumberOfListeners());
 
@@ -849,8 +831,6 @@ public class ArtifactEventTest {
       Assert.assertTrue(newArt.isDirty());
       newArt.reloadAttributesAndRelations();
       Assert.assertFalse(newArt.isDirty());
-
-      Thread.sleep(3000);
 
       // Reload events are local only, confirm that nothing comes through remote
       if (isRemoteTest()) {
@@ -879,8 +859,6 @@ public class ArtifactEventTest {
       newArt.setName(getClass().getSimpleName() + " - testChangeTypeArtifactEvents");
       newArt.persist();
 
-      Thread.sleep(3000);
-
       OseeEventManager.addListener(artifactEventListener);
       Assert.assertEquals(1, InternalEventManager2.getNumberOfListeners());
 
@@ -888,8 +866,6 @@ public class ArtifactEventTest {
       Assert.assertTrue(newArt.isOfType(CoreArtifactTypes.GeneralData));
       ChangeArtifactType.changeArtifactType(Arrays.asList(newArt),
          ArtifactTypeManager.getType(CoreArtifactTypes.Heading));
-
-      Thread.sleep(5000);
 
       Assert.assertEquals(1, resultEventArtifacts.size());
       EventChangeTypeBasicGuidArtifact guidArt =

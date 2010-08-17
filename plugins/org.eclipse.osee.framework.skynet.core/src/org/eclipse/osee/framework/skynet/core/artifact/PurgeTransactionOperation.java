@@ -155,10 +155,12 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
          }
 
       } // This will kick the artifacts reloaded event which should be handled by Applications/UIs
-      try {
-         ArtifactQuery.reloadArtifacts(artifactsInCache);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      if (artifactsInCache.size() > 0) {
+         try {
+            ArtifactQuery.reloadArtifacts(artifactsInCache);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
       }
 
    }

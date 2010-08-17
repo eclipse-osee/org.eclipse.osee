@@ -32,6 +32,8 @@ import org.eclipse.osee.framework.skynet.core.event2.filter.ArtifactTypeEventFil
 import org.eclipse.osee.framework.skynet.core.event2.filter.BranchGuidEventFilter;
 import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
 import org.eclipse.osee.support.test.util.TestUtil;
+import org.junit.After;
+import org.junit.Before;
 
 /**
  * @author Donald G. Dunne
@@ -43,12 +45,21 @@ public class ArtifactEventFiltersTest {
    public static List<String> ignoreLogging = Arrays.asList("");
    private List<IEventFilter> eventFilters = null;
 
+   @Before
+   public void setup() {
+      InternalEventManager2.internalSetPendRunning(true);
+   }
+
+   @After
+   public void cleanup() {
+      InternalEventManager2.internalSetPendRunning(false);
+   }
+
    @org.junit.Test
    public void testArtifactEventFilters() throws Exception {
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
       InternalEventManager2.internalRemoveAllListeners();
       InternalEventManager2.addListener(artifactEventListener);
-      Assert.assertEquals(1, InternalEventManager2.getNumberOfListeners());
 
       testArtifactEventFilters__artifactTypeInheritance();
       testArtifactEventFilters__branchFilter();
@@ -94,8 +105,6 @@ public class ArtifactEventFiltersTest {
       Sender sender = new Sender(new NetworkSender(this, GUID.create(), "PC", "12345", "123.234.345.456", 34, "1.0.0"));
       InternalEventManager2.processEventArtifactsAndRelations(sender, testArtifactEvent);
 
-      Thread.sleep(4000);
-
       // Test that event DID come through
       Assert.assertNotNull(resultArtifactEvent);
       Assert.assertEquals(branchGuid, resultArtifactEvent.getBranchGuid());
@@ -109,8 +118,6 @@ public class ArtifactEventFiltersTest {
       // Re-send dummy event
       InternalEventManager2.processEventArtifactsAndRelations(sender, testArtifactEvent);
 
-      Thread.sleep(4000);
-
       // Test that event DID come through
       Assert.assertNotNull(resultArtifactEvent);
       Assert.assertEquals(branchGuid, resultArtifactEvent.getBranchGuid());
@@ -123,8 +130,6 @@ public class ArtifactEventFiltersTest {
 
       // Re-send dummy event
       InternalEventManager2.processEventArtifactsAndRelations(sender, testArtifactEvent);
-
-      Thread.sleep(4000);
 
       // Test that event did NOT come through
       Assert.assertNull(resultArtifactEvent);
@@ -151,8 +156,6 @@ public class ArtifactEventFiltersTest {
       Sender sender = new Sender(new NetworkSender(this, GUID.create(), "PC", "12345", "123.234.345.456", 34, "1.0.0"));
       InternalEventManager2.processEventArtifactsAndRelations(sender, testArtifactEvent);
 
-      Thread.sleep(4000);
-
       // Test that event DID come through
       Assert.assertNotNull(resultArtifactEvent);
       Assert.assertEquals(branchGuid, resultArtifactEvent.getBranchGuid());
@@ -167,8 +170,6 @@ public class ArtifactEventFiltersTest {
       // Re-send dummy event
       InternalEventManager2.processEventArtifactsAndRelations(sender, testArtifactEvent);
 
-      Thread.sleep(4000);
-
       // Test that event did NOT come through
       Assert.assertNull(resultArtifactEvent);
 
@@ -181,8 +182,6 @@ public class ArtifactEventFiltersTest {
 
       // Re-send dummy event
       InternalEventManager2.processEventArtifactsAndRelations(sender, testArtifactEvent);
-
-      Thread.sleep(4000);
 
       // Test that event did NOT come through
       Assert.assertNull(resultArtifactEvent);

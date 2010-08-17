@@ -24,6 +24,8 @@ import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
 import org.eclipse.osee.support.test.util.TestUtil;
+import org.junit.After;
+import org.junit.Before;
 
 /**
  * @author Donald G. Dunne
@@ -34,6 +36,16 @@ public class BranchEventFiltersTest {
    private Sender resultSender = null;
    public static List<String> ignoreLogging = Arrays.asList("");
    private List<IEventFilter> eventFilters = null;
+
+   @Before
+   public void setup() {
+      InternalEventManager2.internalSetPendRunning(true);
+   }
+
+   @After
+   public void cleanup() {
+      InternalEventManager2.internalSetPendRunning(false);
+   }
 
    @org.junit.Test
    public void testBranchEventFilters() throws Exception {
@@ -55,8 +67,6 @@ public class BranchEventFiltersTest {
       Sender sender = new Sender(new NetworkSender(this, GUID.create(), "PC", "12345", "123.234.345.456", 34, "1.0.0"));
       InternalEventManager2.processBranchEvent(sender, testBranchEvent);
 
-      Thread.sleep(4000);
-
       // Test that event did come through
       Assert.assertNotNull(resultBranchEvent);
       Assert.assertEquals(BranchEventType.Renamed, resultBranchEvent.getEventType());
@@ -70,8 +80,6 @@ public class BranchEventFiltersTest {
 
       // Re-send dummy event
       InternalEventManager2.processBranchEvent(sender, testBranchEvent);
-
-      Thread.sleep(4000);
 
       // Test that event did come through
       Assert.assertNotNull(resultBranchEvent);
@@ -87,8 +95,6 @@ public class BranchEventFiltersTest {
 
       // Re-send dummy event
       InternalEventManager2.processBranchEvent(sender, testBranchEvent);
-
-      Thread.sleep(4000);
 
       // Test that event did NOT come through
       Assert.assertNull(resultBranchEvent);

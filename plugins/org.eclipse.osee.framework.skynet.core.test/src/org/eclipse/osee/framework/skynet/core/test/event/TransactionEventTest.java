@@ -33,6 +33,8 @@ import org.eclipse.osee.framework.skynet.core.event2.TransactionEventType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.support.test.util.TestUtil;
+import org.junit.After;
+import org.junit.Before;
 
 /**
  * @author Donald G. Dunne
@@ -42,6 +44,16 @@ public class TransactionEventTest {
    private TransactionEvent resultTransEvent = null;
    private Sender resultSender = null;
    public static List<String> ignoreLogging = Arrays.asList("");
+
+   @Before
+   public void setup() {
+      InternalEventManager2.internalSetPendRunning(true);
+   }
+
+   @After
+   public void cleanup() {
+      InternalEventManager2.internalSetPendRunning(false);
+   }
 
    @org.junit.Test
    public void testRegistration() throws Exception {
@@ -83,8 +95,6 @@ public class TransactionEventTest {
          Assert.assertFalse(newArt.isDirty());
       }
 
-      Thread.sleep(3000);
-
       // Add listener for delete transaction event
       InternalEventManager2.internalRemoveAllListeners();
       OseeEventManager.addListener(transEventListener);
@@ -93,8 +103,6 @@ public class TransactionEventTest {
       // Delete it
       IOperation operation = new PurgeTransactionOperation(Activator.getInstance(), false, transIdToDelete);
       Operations.executeAndPend(operation, false);
-
-      Thread.sleep(8000);
 
       // Verify that all stuff reverted
       Assert.assertNotNull(resultTransEvent);

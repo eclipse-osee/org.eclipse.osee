@@ -75,17 +75,24 @@ public class BranchEventTest {
       InternalEventManager2.addListener(branchEventListener);
       Assert.assertEquals(1, InternalEventManager2.getNumberOfListeners());
 
-      Branch topLevel = testEvents__topLevelAdded();
-      Branch workingBranch = testEvents__workingAdded(topLevel);
-      testEvents__workingRenamed(workingBranch);
-      testEvents__typeChange(workingBranch);
-      testEvents__stateChange(workingBranch);
-      testEvents__deleted(workingBranch);
-      testEvents__purged(topLevel);
-      Branch committedBranch = testEvents__committed(topLevel);
-      testEvents__changeArchiveState(committedBranch);
+      try {
+         InternalEventManager2.internalSetPendRunning(true);
 
-      TestUtil.severeLoggingEnd(monitorLog, (isRemoteTest() ? ignoreLogging : new ArrayList<String>()));
+         Branch topLevel = testEvents__topLevelAdded();
+         Branch workingBranch = testEvents__workingAdded(topLevel);
+         testEvents__workingRenamed(workingBranch);
+         testEvents__typeChange(workingBranch);
+         testEvents__stateChange(workingBranch);
+         testEvents__deleted(workingBranch);
+         testEvents__purged(topLevel);
+         Branch committedBranch = testEvents__committed(topLevel);
+         testEvents__changeArchiveState(committedBranch);
+
+         TestUtil.severeLoggingEnd(monitorLog, (isRemoteTest() ? ignoreLogging : new ArrayList<String>()));
+      } finally {
+         InternalEventManager2.internalSetPendRunning(false);
+      }
+
    }
 
    private Branch testEvents__changeArchiveState(Branch committedBranch) throws Exception {
@@ -97,7 +104,9 @@ public class BranchEventTest {
       BranchManager.updateBranchArchivedState(null, committedBranch.getId(), committedBranch.getGuid(),
          BranchArchivedState.UNARCHIVED);
 
-      Thread.sleep(4000);
+      //      if (isRemoteTest()) {
+      //         Thread.sleep(2000);
+      //      }
 
       Assert.assertNotNull(resultBranchEvent);
       Assert.assertEquals(BranchEventType.ArchiveStateUpdated, resultBranchEvent.getEventType());
@@ -126,7 +135,9 @@ public class BranchEventTest {
       ConflictManagerExternal conflictManager = new ConflictManagerExternal(topLevel, workingBranch);
       BranchManager.commitBranch(null, conflictManager, true, true);
 
-      Thread.sleep(4000);
+      //      if (isRemoteTest()) {
+      //         Thread.sleep(2000);
+      //      }
 
       Assert.assertNotNull(resultBranchEvent);
       Assert.assertEquals(BranchEventType.Committed, resultBranchEvent.getEventType());
@@ -152,7 +163,9 @@ public class BranchEventTest {
       Assert.assertNotNull(workingBranch);
       BranchManager.purgeBranch(workingBranch);
 
-      Thread.sleep(4000);
+      //      if (isRemoteTest()) {
+      //         Thread.sleep(2000);
+      //      }
 
       Assert.assertNotNull(resultBranchEvent);
       Assert.assertEquals(BranchEventType.Purged, resultBranchEvent.getEventType());
@@ -179,9 +192,11 @@ public class BranchEventTest {
       final String guid = workingBranch.getGuid();
       Assert.assertNotNull(workingBranch);
       Assert.assertNotSame(BranchState.DELETED, workingBranch.getBranchState());
-      BranchManager.deleteBranch(workingBranch);
+      BranchManager.deleteBranch(workingBranch, true);
 
-      Thread.sleep(4000);
+      //      if (isRemoteTest()) {
+      //         Thread.sleep(2000);
+      //      }
 
       Assert.assertNotNull(resultBranchEvent);
       Assert.assertEquals(BranchEventType.Deleted, resultBranchEvent.getEventType());
@@ -202,7 +217,9 @@ public class BranchEventTest {
       Assert.assertEquals(BranchState.CREATED, workingBranch.getBranchState());
       BranchManager.updateBranchState(null, workingBranch.getId(), workingBranch.getGuid(), BranchState.MODIFIED);
 
-      Thread.sleep(4000);
+      //      if (isRemoteTest()) {
+      //         Thread.sleep(2000);
+      //      }
 
       Assert.assertNotNull(resultBranchEvent);
       Assert.assertEquals(BranchEventType.StateUpdated, resultBranchEvent.getEventType());
@@ -223,7 +240,9 @@ public class BranchEventTest {
       Assert.assertEquals(BranchType.WORKING, workingBranch.getBranchType());
       BranchManager.updateBranchType(null, workingBranch.getId(), workingBranch.getGuid(), BranchType.BASELINE);
 
-      Thread.sleep(4000);
+      //      if (isRemoteTest()) {
+      //         Thread.sleep(2000);
+      //      }
 
       Assert.assertNotNull(resultBranchEvent);
       Assert.assertEquals(BranchEventType.TypeUpdated, resultBranchEvent.getEventType());
@@ -245,7 +264,9 @@ public class BranchEventTest {
       workingBranch.setName(newName);
       BranchManager.persist(workingBranch);
 
-      Thread.sleep(4000);
+      //      if (isRemoteTest()) {
+      //         Thread.sleep(2000);
+      //      }
 
       Assert.assertNotNull(resultBranchEvent);
       Assert.assertEquals(BranchEventType.Renamed, resultBranchEvent.getEventType());
@@ -287,7 +308,7 @@ public class BranchEventTest {
 
       Assert.assertNotNull(branch);
 
-      Thread.sleep(4000);
+      Thread.sleep(1000);
 
       Assert.assertNotNull(resultBranchEvent);
       Assert.assertEquals(BranchEventType.Added, resultBranchEvent.getEventType());

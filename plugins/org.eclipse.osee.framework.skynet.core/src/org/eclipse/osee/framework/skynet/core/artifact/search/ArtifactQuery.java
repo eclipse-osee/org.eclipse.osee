@@ -473,6 +473,9 @@ public class ArtifactQuery {
    }
 
    public static Collection<Artifact> reloadArtifacts(Collection<? extends Artifact> artifacts) throws OseeCoreException {
+      if (artifacts.size() == 0) {
+         return Collections.emptyList();
+      }
       Set<Integer> artIds = new HashSet<Integer>();
       IOseeBranch branch = null;
       for (Artifact artifact : artifacts) {

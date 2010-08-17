@@ -23,12 +23,12 @@ import org.junit.BeforeClass;
 public class BranchEventLoopbackTest extends BranchEventTest {
 
    @BeforeClass
-   public static void setUp() {
+   public static void setUp2() {
       InternalEventManager2.setEnableRemoteEventLoopback(true);
    }
 
    @AfterClass
-   public static void tearDown() {
+   public static void tearDown2() {
       InternalEventManager2.setEnableRemoteEventLoopback(false);
    }
 
