@@ -60,7 +60,8 @@ final class ArtifactFileMonitor {
 
    private void monitorFile(File file) {
       watcher.addFile(file);
-      if (firstTime) {
+      boolean isInTest = Boolean.valueOf(System.getProperty("osee.isInTest"));
+      if (!isInTest && firstTime) {
          firstTime = false;
 
          if (!workbenchSavePopUpDisabled) {
