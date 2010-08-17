@@ -57,7 +57,7 @@ public class CompleteMultipleWorkflows extends Action {
                return;
             }
          }
-         EntryDialog ed = new EntryDialog("Complete Workflows", "Enter Completion Reson");
+         EntryDialog ed = new EntryDialog("Complete Workflows", "Enter Completion Reason");
          if (ed.open() == 0) {
             try {
                AtsUtil.setEmailEnabled(enableEmail);
