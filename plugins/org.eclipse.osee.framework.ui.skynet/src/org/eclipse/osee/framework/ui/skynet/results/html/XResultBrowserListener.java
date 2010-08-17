@@ -65,7 +65,7 @@ public class XResultBrowserListener implements LocationListener {
                      String hrid = m.group(1);
                      Integer branchId = Integer.parseInt(m.group(2));
                      Artifact artifact = ArtifactQuery.getArtifactFromId(hrid, BranchManager.getBranch(branchId));
-                     RendererManager.openInJob(artifact, PresentationType.GENERALIZED_EDIT);
+                     RendererManager.openInJob(artifact, PresentationType.SPECIALIZED_EDIT);
                   }
                } catch (Exception ex) {
                   OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
