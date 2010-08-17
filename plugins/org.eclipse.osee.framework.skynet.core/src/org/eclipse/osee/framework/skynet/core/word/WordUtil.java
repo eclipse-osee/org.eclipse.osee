@@ -67,6 +67,10 @@ public class WordUtil {
       super();
    }
 
+   /**
+    * @return - Returns the content with the ending bookmark IDs being reassigned to a unique number. This is done to
+    * ensure all versions of MS Word will function correctly.
+    */
    public static String reassignBookMarkID(String content) {
       ChangeSet changeSet = new ChangeSet(content);
       boolean atLeastOneMatch = false;
