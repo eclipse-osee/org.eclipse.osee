@@ -19,8 +19,12 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({BranchManagerTest.class, WordEditTest.class, WordTrackedChangesTest.class,
-   PreviewAndMultiPreviewTest.class, ViewWordChangeAndDiffTest.class})
+@Suite.SuiteClasses({//
+BranchManagerTest.class, //
+   WordEditTest.class, //
+   WordTrackedChangesTest.class, //
+   PreviewAndMultiPreviewTest.class, //
+   ViewWordChangeAndDiffTest.class})
 /**
  * @author Megumi Telles
  */
