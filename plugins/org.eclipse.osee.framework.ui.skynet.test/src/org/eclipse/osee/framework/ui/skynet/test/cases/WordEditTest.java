@@ -57,6 +57,8 @@ public class WordEditTest {
       assertFalse("Not to be run on production datbase.", TestUtil.isProductionDb());
       FrameworkTestUtil.cleanupSimpleTest(BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1), getClass().getSimpleName());
       RenderingUtil.setPopupsAllowed(false);
+      // this will keep word file edit popup from displaying at end of tests
+      TestUtil.setIsInTest(true);
    }
 
    @org.junit.Test
