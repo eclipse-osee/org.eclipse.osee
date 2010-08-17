@@ -146,24 +146,24 @@ public class MergeUtility {
    /*
     * This is not in the AttributeConflict because it relies on the renderer that is in not in the skynet core package.
     */
-   public static String CreateMergeDiffFile(Artifact art1, Artifact art2, String fileName) throws Exception {
+   private static String createMergeDiffFile(Artifact art1, Artifact art2) throws Exception {
       if (art1 == null || art2 == null) {
          return " ";
       }
-      VariableMap options = new VariableMap(IRenderer.FILE_NAME_OPTION, fileName, IRenderer.NO_DISPLAY, true);
-      return RendererManager.merge(art1, art2, fileName, options);
+      VariableMap options = new VariableMap(IRenderer.NO_DISPLAY, true);
+      return RendererManager.merge(art1, art2, options);
    }
 
    /*
     * This is not in the AttributeConflict because it relies on the renderer that is in not in the skynet core package.
     */
-   public static void mergeEditableDiffFiles(Artifact art1, String art1FileName, String art2FileName, String fileName, boolean editable) throws Exception {
+   private static void mergeEditableDiffFiles(Artifact art1, String art1FileName, String art2FileName, String fileName) throws Exception {
       if (art1 == null) {
          return;
       }
       VariableMap options = new VariableMap(IRenderer.FILE_NAME_OPTION, fileName, IRenderer.NO_DISPLAY, true);
       RendererManager.merge(art1, null, AIFile.constructIFile(art1FileName), AIFile.constructIFile(art2FileName),
-         fileName, options);
+         options);
    }
 
    public static Artifact getStartArtifact(Conflict conflict) {
@@ -175,7 +175,7 @@ public class MergeUtility {
          return ArtifactQuery.getHistoricalArtifactFromId(conflict.getArtifact().getGuid(), baseTransaction,
             INCLUDE_DELETED);
       } catch (OseeCoreException ex) {
-         OseeLog.log(MergeUtility.class, Level.SEVERE, ex);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
       return null;
    }
@@ -208,7 +208,7 @@ public class MergeUtility {
                dialog2.open();
                return true;
             } catch (Exception ex) {
-               OseeLog.log(MergeUtility.class, Level.SEVERE, ex);
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
          }
       }
@@ -229,7 +229,7 @@ public class MergeUtility {
                ((AttributeConflict) conflict).revertSourceAttribute();
                return true;
             } catch (Exception ex) {
-               OseeLog.log(MergeUtility.class, Level.SEVERE, ex);
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
          }
       }
@@ -281,24 +281,21 @@ public class MergeUtility {
                         generator.initialize(false, false);
                         monitor.worked(5);
                         String sourceChangeFile =
-                           MergeUtility.CreateMergeDiffFile(getStartArtifact(attributeConflict),
-                              attributeConflict.getSourceArtifact(), null);
+                           createMergeDiffFile(getStartArtifact(attributeConflict),
+                              attributeConflict.getSourceArtifact());
                         monitor.worked(15);
                         String destChangeFile =
-                           MergeUtility.CreateMergeDiffFile(getStartArtifact(attributeConflict),
-                              attributeConflict.getDestArtifact(), null);
+                           createMergeDiffFile(getStartArtifact(attributeConflict), attributeConflict.getDestArtifact());
                         monitor.worked(15);
                         changeAuthorinWord("Source", sourceChangeFile, 2, "12345678", "55555555");
                         changeAuthorinWord("Destination", destChangeFile, 2, "56781234", "55555555");
                         monitor.worked(15);
 
-                        String fileName = "Source_Dest_Merge_" + attributeConflict.getArtifact().getSafeName() + "(" + attributeConflict.getArtifact().getGuid() + ")" + new Date().toString().replaceAll(
-                           ":", ";") + ".xml";
-                        MergeUtility.mergeEditableDiffFiles(
-                           attributeConflict.getArtifact(),
-                           sourceChangeFile,
-                           destChangeFile,
-                           fileName, true);
+                        String fileName =
+                           "Source_Dest_Merge_" + attributeConflict.getArtifact().getSafeName() + "(" + attributeConflict.getArtifact().getGuid() + ")" + new Date().toString().replaceAll(
+                              ":", ";") + ".xml";
+                        mergeEditableDiffFiles(attributeConflict.getArtifact(), sourceChangeFile, destChangeFile,
+                           fileName);
 
                         monitor.worked(40);
                         attributeConflict.markStatusToReflectEdit();

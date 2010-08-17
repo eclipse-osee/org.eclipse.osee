@@ -225,14 +225,14 @@ public class RendererManager {
       open(artifacts, presentationType);
    }
 
-   public static String merge(Artifact baseVersion, Artifact newerVersion, String fileName, VariableMap options) throws OseeStateException, OseeCoreException {
+   public static String merge(Artifact baseVersion, Artifact newerVersion, VariableMap options) throws OseeStateException, OseeCoreException {
       IRenderer renderer = getBestRenderer(PresentationType.MERGE, baseVersion, options);
       IComparator comparator = renderer.getComparator();
       ArtifactDelta delta = new ArtifactDelta(baseVersion, newerVersion);
       return comparator.compare(new NullProgressMonitor(), PresentationType.MERGE, delta);
    }
 
-   public static String merge(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, String fileName, VariableMap options) throws OseeCoreException {
+   public static String merge(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, VariableMap options) throws OseeCoreException {
       IRenderer renderer = getBestRenderer(PresentationType.MERGE_EDIT, baseVersion, options);
       IComparator comparator = renderer.getComparator();
       return comparator.compare(baseVersion, newerVersion, baseFile, newerFile, PresentationType.MERGE_EDIT);
