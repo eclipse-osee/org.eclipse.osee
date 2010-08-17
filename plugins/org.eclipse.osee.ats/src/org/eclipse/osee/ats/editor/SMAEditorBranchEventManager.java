@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -65,6 +66,8 @@ public class SMAEditorBranchEventManager implements IBranchEventListener {
    public void handleBranchEvent(Sender sender, BranchEvent branchEvent) {
       try {
          handleBranchEvent(branchEvent.getEventType(), BranchManager.getBranchByGuid(branchEvent.getBranchGuid()));
+      } catch (BranchDoesNotExist ex) {
+         // if branch doesn't exist (purged), don't need this event
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
