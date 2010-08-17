@@ -95,8 +95,10 @@ public class FrameworkTestUtil {
       for (String title : titles) {
          artifacts.addAll(ArtifactQuery.getArtifactListFromName(title + "%", branch, EXCLUDE_DELETED));
       }
-      new PurgeArtifacts(artifacts).execute();
-      TestUtil.sleep(4000);
+      if (artifacts.size() > 0) {
+         new PurgeArtifacts(artifacts).execute();
+         TestUtil.sleep(4000);
+      }
    }
 
    /**
