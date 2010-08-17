@@ -40,13 +40,13 @@ public class WholeWordCompare implements IComparator {
    }
 
    @Override
-   public String compare(IProgressMonitor monitor, PresentationType presentationType, ArtifactDelta delta) throws OseeCoreException {
+   public String compare(IProgressMonitor monitor, PresentationType presentationType, ArtifactDelta artifactDelta) throws OseeCoreException {
       Pair<String, Boolean> originalValue = null;
       Pair<String, Boolean> newAnnotationValue = null;
       Pair<String, Boolean> oldAnnotationValue = null;
 
-      Artifact baseArtifact = delta.getStartArtifact();
-      Artifact newerArtifact = delta.getEndArtifact();
+      Artifact baseArtifact = artifactDelta.getStartArtifact();
+      Artifact newerArtifact = artifactDelta.getEndArtifact();
       Attribute<String> baseContent = getWordContent(baseArtifact, ATTRIBUTE_TYPE);
       Attribute<String> newerContent = getWordContent(newerArtifact, ATTRIBUTE_TYPE);
 
@@ -60,7 +60,7 @@ public class WholeWordCompare implements IComparator {
       }
 
       ArtifactDeltaToFileConverter converter = new ArtifactDeltaToFileConverter(renderer);
-      Pair<IFile, IFile> compareFiles = converter.convertToFile(presentationType, delta);
+      Pair<IFile, IFile> compareFiles = converter.convertToFile(presentationType, artifactDelta);
 
       WordImageChecker.restoreOriginalValue(baseContent,
          oldAnnotationValue != null ? oldAnnotationValue : originalValue);
@@ -107,8 +107,8 @@ public class WholeWordCompare implements IComparator {
    }
 
    @Override
-   public void compareArtifacts(IProgressMonitor monitor, PresentationType presentationType, Collection<ArtifactDelta> itemsToCompare) throws OseeCoreException {
-      for (ArtifactDelta entry : itemsToCompare) {
+   public void compareArtifacts(IProgressMonitor monitor, PresentationType presentationType, Collection<ArtifactDelta> artifactDeltas) throws OseeCoreException {
+      for (ArtifactDelta entry : artifactDeltas) {
          compare(monitor, presentationType, entry);
       }
    }

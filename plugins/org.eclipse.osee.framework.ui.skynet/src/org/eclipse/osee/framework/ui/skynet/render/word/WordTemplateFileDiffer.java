@@ -87,11 +87,11 @@ public class WordTemplateFileDiffer {
       }
    }
 
-   private void diff(boolean isDiffFromBaseline, TransactionDelta txDelta, Branch startBranch, Artifact artifact, VariableMap variableMap) throws OseeCoreException {
+   private void diff(boolean isDiffFromBaseline, TransactionDelta txDelta, Branch startBranch, Artifact artifact, VariableMap options) throws OseeCoreException {
       List<Artifact> endArtifacts = Arrays.asList(artifact);
       List<Artifact> startArtifacts = getStartArtifacts(endArtifacts, startBranch);
 
-      Collection<ArtifactDelta> compareItems = new ArrayList<ArtifactDelta>();
+      Collection<ArtifactDelta> artifactDeltas = new ArrayList<ArtifactDelta>();
       for (int index = 0; index < startArtifacts.size() && index < endArtifacts.size(); index++) {
          Artifact start = startArtifacts.get(index);
          Artifact end = endArtifacts.get(index);
@@ -102,13 +102,13 @@ public class WordTemplateFileDiffer {
             end = null;
          }
          if (start != null || end != null) {
-            compareItems.add(new ArtifactDelta(txDelta, start, end));
+            artifactDeltas.add(new ArtifactDelta(txDelta, start, end));
          }
       }
-      variableMap.setValue("paragraphNumber", nextParagraphNumber);
-      variableMap.setValue("outlineType", outlineType);
+      options.setValue("paragraphNumber", nextParagraphNumber);
+      options.setValue("outlineType", outlineType);
 
-      Job job = RendererManager.diffInJob(compareItems, variableMap);
+      Job job = RendererManager.diffInJob(artifactDeltas, options);
       try {
          job.join();
       } catch (InterruptedException ex) {

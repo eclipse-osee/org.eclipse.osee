@@ -25,23 +25,23 @@ import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 
 public final class DiffUsingRenderer extends AbstractOperation {
    private final VariableMap options;
-   private final Collection<ArtifactDelta> itemsToCompare;
+   private final Collection<ArtifactDelta> artifactDeltas;
    private final boolean show;
 
-   public DiffUsingRenderer(Collection<ArtifactDelta> itemsToCompare, VariableMap options, boolean show) {
-      super(generateOperationName(itemsToCompare), SkynetGuiPlugin.PLUGIN_ID);
-      this.itemsToCompare = itemsToCompare;
+   public DiffUsingRenderer(Collection<ArtifactDelta> artifactDeltas, VariableMap options, boolean show) {
+      super(generateOperationName(artifactDeltas), SkynetGuiPlugin.PLUGIN_ID);
+      this.artifactDeltas = artifactDeltas;
       this.options = options;
       this.show = show;
    }
 
-   public DiffUsingRenderer(ArtifactDelta itemToCompare, VariableMap options, boolean show) {
-      this(Collections.singletonList(itemToCompare), options, show);
+   public DiffUsingRenderer(ArtifactDelta artifactDelta, VariableMap options, boolean show) {
+      this(Collections.singletonList(artifactDelta), options, show);
    }
 
-   private static String generateOperationName(Collection<ArtifactDelta> itemsToCompare) {
-      ArtifactDelta firstDelta = itemsToCompare.iterator().next();
-      if (itemsToCompare.size() == 1) {
+   private static String generateOperationName(Collection<ArtifactDelta> artifactDeltas) {
+      ArtifactDelta firstDelta = artifactDeltas.iterator().next();
+      if (artifactDeltas.size() == 1) {
          Artifact startVersion = firstDelta.getStartArtifact();
          Artifact endVersion = firstDelta.getEndArtifact();
          return String.format("Compare %s to %s", startVersion == null ? " new " : startVersion.getName(),
@@ -53,16 +53,16 @@ public final class DiffUsingRenderer extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      ArtifactDelta firstDelta = itemsToCompare.iterator().next();
+      ArtifactDelta firstDelta = artifactDeltas.iterator().next();
       Artifact sampleArtifact =
          firstDelta.getStartArtifact() != null ? firstDelta.getStartArtifact() : firstDelta.getEndArtifact();
 
       IRenderer renderer = RendererManager.getBestRenderer(PresentationType.DIFF, sampleArtifact, options);
       IComparator comparator = renderer.getComparator();
-      if (itemsToCompare.size() == 1) {
+      if (artifactDeltas.size() == 1) {
          comparator.compare(monitor, PresentationType.DIFF, firstDelta);
       } else {
-         comparator.compareArtifacts(monitor, PresentationType.DIFF, itemsToCompare);
+         comparator.compareArtifacts(monitor, PresentationType.DIFF, artifactDeltas);
       }
    }
 }

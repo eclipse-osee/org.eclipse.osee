@@ -46,12 +46,12 @@ public class WordTemplateCompare implements IComparator {
    }
 
    @Override
-   public String compare(IProgressMonitor monitor, PresentationType presentationType, ArtifactDelta delta) throws OseeCoreException {
+   public String compare(IProgressMonitor monitor, PresentationType presentationType, ArtifactDelta artifactDelta) throws OseeCoreException {
       Pair<String, Boolean> originalValue = null;
       Pair<String, Boolean> newAnnotationValue = null;
 
-      Artifact baseArtifact = delta.getStartArtifact();
-      Artifact newerArtifact = delta.getEndArtifact();
+      Artifact baseArtifact = artifactDelta.getStartArtifact();
+      Artifact newerArtifact = artifactDelta.getEndArtifact();
 
       //Check for tracked changes
       Set<Artifact> artifacts = new HashSet<Artifact>();
@@ -73,7 +73,7 @@ public class WordTemplateCompare implements IComparator {
          }
 
          Pair<IFile, IFile> compareFiles =
-            new ArtifactDeltaToFileConverter(renderer).convertToFile(presentationType, delta);
+            new ArtifactDeltaToFileConverter(renderer).convertToFile(presentationType, artifactDelta);
 
          WordImageChecker.restoreOriginalValue(baseContent, originalValue);
          WordImageChecker.restoreOriginalValue(newerContent, newAnnotationValue);
@@ -136,8 +136,8 @@ public class WordTemplateCompare implements IComparator {
     * report by combining each of the difference reports together for a single report.
     */
    @Override
-   public void compareArtifacts(IProgressMonitor monitor, PresentationType presentationType, Collection<ArtifactDelta> artifactsToCompare) throws OseeCoreException {
-      IOperation operation = new WordChangeReportOperation(artifactsToCompare, renderer);
+   public void compareArtifacts(IProgressMonitor monitor, PresentationType presentationType, Collection<ArtifactDelta> artifactDeltas) throws OseeCoreException {
+      IOperation operation = new WordChangeReportOperation(artifactDeltas, renderer);
       Operations.executeWorkAndCheckStatus(operation, monitor, 1.0);
    }
 }

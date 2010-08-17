@@ -228,8 +228,8 @@ public class RendererManager {
    public static String merge(Artifact baseVersion, Artifact newerVersion, VariableMap options) throws OseeStateException, OseeCoreException {
       IRenderer renderer = getBestRenderer(PresentationType.MERGE, baseVersion, options);
       IComparator comparator = renderer.getComparator();
-      ArtifactDelta delta = new ArtifactDelta(baseVersion, newerVersion);
-      return comparator.compare(new NullProgressMonitor(), PresentationType.MERGE, delta);
+      ArtifactDelta artifactDelta = new ArtifactDelta(baseVersion, newerVersion);
+      return comparator.compare(new NullProgressMonitor(), PresentationType.MERGE, artifactDelta);
    }
 
    public static String merge(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, VariableMap options) throws OseeCoreException {
@@ -250,21 +250,21 @@ public class RendererManager {
       return diff(artifactDelta, null, show, false);
    }
 
-   public static Job diffInJob(Collection<ArtifactDelta> itemsToCompare) {
-      return diff(itemsToCompare, null, true);
+   public static Job diffInJob(Collection<ArtifactDelta> artifactDeltas) {
+      return diff(artifactDeltas, null, true);
    }
 
-   public static Job diffInJob(Collection<ArtifactDelta> itemsToCompare, VariableMap options) {
-      return diff(itemsToCompare, options, true);
+   public static Job diffInJob(Collection<ArtifactDelta> artifactDeltas, VariableMap options) {
+      return diff(artifactDeltas, options, true);
    }
 
-   private static Job diff(Collection<ArtifactDelta> itemsToCompare, VariableMap options, boolean show) {
-      IOperation operation = new DiffUsingRenderer(itemsToCompare, options, show);
+   private static Job diff(Collection<ArtifactDelta> artifactDeltas, VariableMap options, boolean show) {
+      IOperation operation = new DiffUsingRenderer(artifactDeltas, options, show);
       return Operations.executeAsJob(operation, true);
    }
 
-   private static Job diff(ArtifactDelta delta, VariableMap options, boolean show, boolean asynchronous) {
-      IOperation operation = new DiffUsingRenderer(delta, options, show);
+   private static Job diff(ArtifactDelta artifactDelta, VariableMap options, boolean show, boolean asynchronous) {
+      IOperation operation = new DiffUsingRenderer(artifactDelta, options, show);
 
       if (asynchronous) {
          return Operations.executeAsJob(operation, true);

@@ -32,15 +32,15 @@ public class ArtifactDeltaToFileConverter {
       return renderer;
    }
 
-   public Pair<IFile, IFile> convertToFile(PresentationType presentationType, ArtifactDelta delta) throws OseeCoreException {
+   public Pair<IFile, IFile> convertToFile(PresentationType presentationType, ArtifactDelta artifactDelta) throws OseeCoreException {
       Pair<IFile, IFile> toReturn;
       if (presentationType == PresentationType.MERGE || presentationType == PresentationType.MERGE_EDIT) {
-         Branch branch = delta.getBranch();
-         IFile baseFile = renderForMerge(renderer, delta.getStartArtifact(), branch, presentationType);
-         IFile newerFile = renderForMerge(renderer, delta.getEndArtifact(), branch, presentationType);
+         Branch branch = artifactDelta.getBranch();
+         IFile baseFile = renderForMerge(renderer, artifactDelta.getStartArtifact(), branch, presentationType);
+         IFile newerFile = renderForMerge(renderer, artifactDelta.getEndArtifact(), branch, presentationType);
          toReturn = new Pair<IFile, IFile>(baseFile, newerFile);
       } else {
-         toReturn = asFiles(renderer, presentationType, delta);
+         toReturn = asFiles(renderer, presentationType, artifactDelta);
       }
       return toReturn;
    }
@@ -58,9 +58,9 @@ public class ArtifactDeltaToFileConverter {
       return renderer.renderToFileSystem(baseFolder, artifact, artifact.getBranch(), presentationType);
    }
 
-   private Pair<IFile, IFile> asFiles(FileSystemRenderer renderer, PresentationType presentationType, ArtifactDelta delta) throws OseeCoreException {
-      Pair<Artifact, Artifact> renderInput = RenderingUtil.asRenderInput(delta);
-      Branch branch = delta.getBranch();
+   private Pair<IFile, IFile> asFiles(FileSystemRenderer renderer, PresentationType presentationType, ArtifactDelta artifactDelta) throws OseeCoreException {
+      Pair<Artifact, Artifact> renderInput = RenderingUtil.asRenderInput(artifactDelta);
+      Branch branch = artifactDelta.getBranch();
       IFolder renderingFolder = RenderingUtil.getRenderFolder(branch, presentationType);
       IFile baseFile = renderer.renderToFileSystem(renderingFolder, renderInput.getFirst(), branch, presentationType);
       IFile newerFile = renderer.renderToFileSystem(renderingFolder, renderInput.getSecond(), branch, presentationType);

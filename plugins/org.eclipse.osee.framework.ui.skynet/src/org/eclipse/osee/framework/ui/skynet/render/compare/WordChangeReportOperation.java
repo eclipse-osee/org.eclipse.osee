@@ -42,7 +42,7 @@ import org.eclipse.osee.framework.ui.skynet.render.WordImageChecker;
 import org.eclipse.osee.framework.ui.skynet.util.WordUiUtil;
 
 public final class WordChangeReportOperation extends AbstractOperation {
-   private final Collection<ArtifactDelta> artifactsToCompare;
+   private final Collection<ArtifactDelta> artifactDeltas;
 
    private final String reportDirName;
    private final String fileName;
@@ -51,10 +51,10 @@ public final class WordChangeReportOperation extends AbstractOperation {
    private final ArtifactDeltaToFileConverter converter;
    private IFolder changeReportFolder;
 
-   public WordChangeReportOperation(Collection<ArtifactDelta> artifactsToCompare, FileSystemRenderer renderer) throws OseeArgumentException {
+   public WordChangeReportOperation(Collection<ArtifactDelta> artifactDeltas, FileSystemRenderer renderer) throws OseeArgumentException {
       super("Word Change Report", SkynetGuiPlugin.PLUGIN_ID);
       this.converter = new ArtifactDeltaToFileConverter(renderer);
-      this.artifactsToCompare = artifactsToCompare;
+      this.artifactDeltas = artifactDeltas;
       String diffFolderName = renderer.getStringOption("diffReportFolderName");
       this.reportDirName = Strings.isValid(diffFolderName) ? diffFolderName : GUID.create();
 
@@ -73,8 +73,8 @@ public final class WordChangeReportOperation extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      if (!artifactsToCompare.isEmpty()) {
-         double workPercentage = 0.70 / artifactsToCompare.size();
+      if (!artifactDeltas.isEmpty()) {
+         double workPercentage = 0.70 / artifactDeltas.size();
 
          VbaWordDiffGenerator generator = new VbaWordDiffGenerator();
          generator.initialize(false, false);
@@ -84,7 +84,7 @@ public final class WordChangeReportOperation extends AbstractOperation {
          Set<Artifact> artifacts = new HashSet<Artifact>();
          int countSuccessful = 0;
 
-         for (ArtifactDelta delta : artifactsToCompare) {
+         for (ArtifactDelta artifactDelta : artifactDeltas) {
             checkForCancelledStatus(monitor);
 
             try {
@@ -94,8 +94,8 @@ public final class WordChangeReportOperation extends AbstractOperation {
 
                //Check for tracked changes
                artifacts.clear();
-               artifacts.addAll(RenderingUtil.checkForTrackedChangesOn(delta.getStartArtifact()));
-               artifacts.addAll(RenderingUtil.checkForTrackedChangesOn(delta.getEndArtifact()));
+               artifacts.addAll(RenderingUtil.checkForTrackedChangesOn(artifactDelta.getStartArtifact()));
+               artifacts.addAll(RenderingUtil.checkForTrackedChangesOn(artifactDelta.getEndArtifact()));
 
                if (!artifacts.isEmpty()) {
                   if (RenderingUtil.arePopupsAllowed()) {
@@ -106,8 +106,8 @@ public final class WordChangeReportOperation extends AbstractOperation {
                   continue;
                }
 
-               Artifact baseArtifact = delta.getStartArtifact();
-               Artifact newerArtifact = delta.getEndArtifact();
+               Artifact baseArtifact = artifactDelta.getStartArtifact();
+               Artifact newerArtifact = artifactDelta.getEndArtifact();
 
                Attribute<String> baseContent = getWordContent(baseArtifact, attributeType);
                Attribute<String> newerContent = getWordContent(newerArtifact, attributeType);
@@ -115,7 +115,7 @@ public final class WordChangeReportOperation extends AbstractOperation {
                if (!UserManager.getUser().getBooleanSetting(MsWordPreferencePage.IDENTFY_IMAGE_CHANGES)) {
                   originalValue = WordImageChecker.checkForImageDiffs(baseContent, newerContent);
                }
-               Pair<IFile, IFile> fileDeltas = converter.convertToFile(PresentationType.DIFF, delta);
+               Pair<IFile, IFile> fileDeltas = converter.convertToFile(PresentationType.DIFF, artifactDelta);
 
                WordImageChecker.restoreOriginalValue(baseContent, originalValue);
                WordImageChecker.restoreOriginalValue(newerContent, newAnnotationValue);

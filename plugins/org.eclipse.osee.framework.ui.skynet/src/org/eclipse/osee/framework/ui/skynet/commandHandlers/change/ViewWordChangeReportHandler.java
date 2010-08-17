@@ -59,8 +59,8 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
                   changes.add(change);
                }
             }
-            Collection<ArtifactDelta> compareArtifacts = ChangeManager.getCompareArtifacts(changes);
-            RendererManager.diffInJob(compareArtifacts);
+            Collection<ArtifactDelta> artifactDeltas = ChangeManager.getCompareArtifacts(changes);
+            RendererManager.diffInJob(artifactDeltas);
          }
       } catch (Exception ex) {
          OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);

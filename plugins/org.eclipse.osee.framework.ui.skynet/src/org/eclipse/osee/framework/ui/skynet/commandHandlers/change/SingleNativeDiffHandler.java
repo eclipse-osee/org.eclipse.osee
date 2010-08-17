@@ -43,8 +43,8 @@ public class SingleNativeDiffHandler extends CommandHandler {
 
    @Override
    public Object execute(ExecutionEvent event) {
-      Collection<ArtifactDelta> compareArtifacts = ChangeManager.getCompareArtifacts(changes);
-      RendererManager.diffInJob(compareArtifacts);
+      Collection<ArtifactDelta> artifactDeltas = ChangeManager.getCompareArtifacts(changes);
+      RendererManager.diffInJob(artifactDeltas);
       return null;
    }
 }

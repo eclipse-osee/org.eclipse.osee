@@ -76,13 +76,12 @@ public final class ViewWordChangeAndDiffTest {
       Collection<Change> changes = getChanges(getTestBranch());
       checkPermissions(asArtifacts(changes));
 
-      Collection<ArtifactDelta> itemsToCompare = ChangeManager.getCompareArtifacts(changes);
+      Collection<ArtifactDelta> artifactDeltas = ChangeManager.getCompareArtifacts(changes);
       WordTemplateRenderer renderer = new WordTemplateRenderer();
       try {
-         VariableMap variableMap = new VariableMap();
-         variableMap.setValue(IRenderer.NO_DISPLAY, true);
-         renderer.setOptions(variableMap);
-         renderer.getComparator().compareArtifacts(new NullProgressMonitor(), PresentationType.DIFF, itemsToCompare);
+         VariableMap options = new VariableMap(IRenderer.NO_DISPLAY, true);
+         renderer.setOptions(options);
+         renderer.getComparator().compareArtifacts(new NullProgressMonitor(), PresentationType.DIFF, artifactDeltas);
       } catch (OseeCoreException e) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, e);
          fail("View Word Change Report test failed");
@@ -99,9 +98,9 @@ public final class ViewWordChangeAndDiffTest {
 
       checkPermissions(Collections.singletonList(artifact));
 
-      Collection<ArtifactDelta> itemsToCompare = ChangeManager.getCompareArtifacts(changes);
-      ArtifactDelta delta = itemsToCompare.iterator().next();
-      RendererManager.diff(delta, false);
+      Collection<ArtifactDelta> artifactDeltas = ChangeManager.getCompareArtifacts(changes);
+      ArtifactDelta artifactDelta = artifactDeltas.iterator().next();
+      RendererManager.diff(artifactDelta, false);
       assertTrue("Single Native Diff test passed", true);
    }
 

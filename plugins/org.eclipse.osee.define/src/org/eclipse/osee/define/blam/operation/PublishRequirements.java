@@ -158,7 +158,7 @@ public class PublishRequirements extends AbstractBlam {
          ArrayList<Artifact> olderArtifacts =
             getOlderArtifacts(nonFolderChildren, txDelta.getStartTx().getId(), branch.getId());
 
-         Collection<ArtifactDelta> compareItems = new ArrayList<ArtifactDelta>();
+         Collection<ArtifactDelta> artifactDeltas = new ArrayList<ArtifactDelta>();
          for (int index = 0; index < olderArtifacts.size() && index < nonFolderChildren.size(); index++) {
             Artifact base = olderArtifacts.get(index);
             Artifact newer = nonFolderChildren.get(index);
@@ -168,9 +168,9 @@ public class PublishRequirements extends AbstractBlam {
             if (isDeleted(newer)) {
                newer = null;
             }
-            compareItems.add(new ArtifactDelta(txDelta, base, newer));
+            artifactDeltas.add(new ArtifactDelta(txDelta, base, newer));
          }
-         RendererManager.diffInJob(compareItems, options);
+         RendererManager.diffInJob(artifactDeltas, options);
       } else {
          RendererManager.open(nonFolderChildren, PresentationType.PREVIEW, options, monitor);
       }

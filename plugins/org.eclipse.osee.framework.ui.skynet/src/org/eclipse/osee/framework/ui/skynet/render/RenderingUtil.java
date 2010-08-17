@@ -49,7 +49,7 @@ public final class RenderingUtil {
       return arePopupsAllowed;
    }
 
-   public static Pair<Artifact, Artifact> asRenderInput(ArtifactDelta delta) {
+   public static Pair<Artifact, Artifact> asRenderInput(ArtifactDelta artifactDelta) {
       Artifact artFile1;
       Artifact artFile2;
 
@@ -71,15 +71,15 @@ public final class RenderingUtil {
       //    } else {
       // Assumptions - when comparing data between transactions on the
       // same branch, the end artifact will never be null;
-      if (delta.getEndArtifact().getModType().isDeleted()) {
-         artFile1 = delta.getStartArtifact();
+      if (artifactDelta.getEndArtifact().getModType().isDeleted()) {
+         artFile1 = artifactDelta.getStartArtifact();
          artFile2 = null;
-      } else if (delta.getStartArtifact() == null) {
+      } else if (artifactDelta.getStartArtifact() == null) {
          artFile1 = null;
-         artFile2 = delta.getEndArtifact();
+         artFile2 = artifactDelta.getEndArtifact();
       } else {
-         artFile1 = delta.getStartArtifact();
-         artFile2 = delta.getEndArtifact();
+         artFile1 = artifactDelta.getStartArtifact();
+         artFile2 = artifactDelta.getEndArtifact();
       }
       //    }
       return new Pair<Artifact, Artifact>(artFile1, artFile2);
