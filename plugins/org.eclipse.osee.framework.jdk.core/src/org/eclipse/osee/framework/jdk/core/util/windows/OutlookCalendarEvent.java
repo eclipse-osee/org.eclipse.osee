@@ -49,9 +49,9 @@ public class OutlookCalendarEvent {
       //
       "BEGIN:VEVENT\n" +
       //
-      "DTSTART:" + myDateFormat.format(date) + "T" + startTime + "00\n" +
+      "DTSTART:" + myDateFormat.format(date) + "T" + startTime + "0Z\n" +
       //
-      "DTEND:" + myDateFormat.format(date) + "T" + endTime + "00\n" +
+      "DTEND:" + myDateFormat.format(date) + "T" + endTime + "0Z\n" +
       //
       "LOCATION;ENCODING=QUOTED-PRINTABLE:" + location + "\n" +
       //
