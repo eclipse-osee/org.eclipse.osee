@@ -37,5 +37,6 @@ public class OseeServerContext {
    }
 
    private OseeServerContext() {
+      // private constructor
    }
 }

@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.internal.Activator;
 public final class OseeCodeVersion {
 
    private OseeCodeVersion() {
+      // private constructor
    }
 
    /**

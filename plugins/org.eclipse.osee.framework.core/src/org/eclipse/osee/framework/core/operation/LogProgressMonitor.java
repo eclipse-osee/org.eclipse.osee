@@ -41,7 +41,7 @@ public class LogProgressMonitor implements IProgressMonitor {
 
    @Override
    public void internalWorked(double work) {
-
+      // provided for subclass implementation
    }
 
    @Override
@@ -71,7 +71,7 @@ public class LogProgressMonitor implements IProgressMonitor {
 
    @Override
    public void worked(int work) {
-
+      // provided for subclass implementation
    }
 
 }

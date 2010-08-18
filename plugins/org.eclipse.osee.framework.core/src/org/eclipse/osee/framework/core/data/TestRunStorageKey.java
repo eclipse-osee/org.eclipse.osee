@@ -19,6 +19,7 @@ public class TestRunStorageKey {
    public static final String BRANCH_IDS = "all.branches.id";
 
    private TestRunStorageKey() {
+      // private constructor
    }
 
 }

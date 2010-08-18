@@ -12,10 +12,10 @@ package org.eclipse.osee.framework.core.enums;
 
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_A;
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
-import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.NamedIdentity;
 
-public class CoreRelationTypes extends NamedIdentity implements IRelationEnumeration, IRelationType {
+public class CoreRelationTypes extends NamedIdentity implements IRelationEnumeration {
+
    public static final CoreRelationTypes Allocation__Requirement = new CoreRelationTypes(SIDE_A,
       "AAMFE+RS8gRV2BXaCtQA", "Allocation");
    public static final CoreRelationTypes Allocation__Component = new CoreRelationTypes(SIDE_B, "AAMFE+RS8gRV2BXaCtQA",

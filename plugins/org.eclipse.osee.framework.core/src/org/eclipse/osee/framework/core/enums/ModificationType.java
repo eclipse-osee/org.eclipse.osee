@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.core.enums;
 
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -20,7 +19,7 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 /**
  * @author Ryan D. Brooks
  */
-public enum ModificationType implements Serializable {
+public enum ModificationType {
    // Artifact, Attribute or Relation that was newly created
    NEW("New", 1),
 

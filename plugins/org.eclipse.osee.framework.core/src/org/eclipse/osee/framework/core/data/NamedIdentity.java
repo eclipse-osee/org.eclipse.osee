@@ -88,6 +88,7 @@ public class NamedIdentity implements Identity, FullyNamed, HasDescription {
       return false;
    }
 
+   @SuppressWarnings("unused")
    public void setName(String name) throws OseeCoreException {
       this.name = name;
    }
