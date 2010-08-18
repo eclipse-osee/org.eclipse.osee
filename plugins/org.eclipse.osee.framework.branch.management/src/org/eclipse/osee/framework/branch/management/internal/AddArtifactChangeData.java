@@ -12,7 +12,6 @@
 package org.eclipse.osee.framework.branch.management.internal;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,9 +43,6 @@ public class AddArtifactChangeData extends AbstractOperation {
 
       List<AttributeChangeItem> attrItems = new ArrayList<AttributeChangeItem>();
       Map<Integer, ArtifactChangeItem> syntheticArtifactChanges = new HashMap<Integer, ArtifactChangeItem>();
-
-      //Sort the change items so we get the in a consistent order for comparing synthetic artifact change items.
-      Arrays.sort(changeItems.toArray());
 
       for (ChangeItem item : changeItems) {
          if (item instanceof AttributeChangeItem) {
