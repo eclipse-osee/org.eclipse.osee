@@ -307,6 +307,13 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
       return getName();
    }
 
+   /*
+    * Provide easy way to display/report [hrid][name]
+    */
+   public String toStringWithId() {
+      return String.format("[%s][%s]", getHumanReadableId(), getName());
+   }
+
    // TODO should not return null but currently application code expects it to
    /**
     * The method should be used when the caller expects this artifact to have exactly one parent. Otherwise use
