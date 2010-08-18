@@ -24,9 +24,7 @@ import org.eclipse.osee.framework.server.admin.internal.Activator;
  * @author Roberto E. Escobar
  */
 public class BranchExportWorker extends BaseServerCommand {
-
-   private static final String ALL_BRANCHES_QUERY =
-      "SELECT x1.branch_id FROM (" + "SELECT br1.branch_id FROM osee_branch br1%s br1.branch_type <> 3 " + "UNION " + "SELECT om1.merge_branch_id FROM osee_merge om1, osee_branch ob1 WHERE om1.dest_branch_id = ob1.branch_id%s " + "UNION " + "SELECT om2.source_branch_id from osee_merge om2, osee_branch ob2 WHERE om2.dest_branch_id = ob2.branch_id%s " + ") x1 ORDER BY x1.branch_id";
+   private static final String SELECT_BRANCHES = "SELECT branch_id FROM osee_branch %s ORDER BY branch_id";
 
    protected BranchExportWorker() {
       super("");
@@ -34,12 +32,6 @@ public class BranchExportWorker extends BaseServerCommand {
 
    private boolean isValidArg(String arg) {
       return arg != null && arg.length() > 0;
-   }
-
-   private String getAllBranchesQuery(boolean includeArchivedBranches) {
-      return String.format(ALL_BRANCHES_QUERY, includeArchivedBranches ? " where" : " where br1.archived <> 1 and",
-         includeArchivedBranches ? "" : " and ob1.archived <> 1",
-         includeArchivedBranches ? "" : " and ob2.archived <> 1");
    }
 
    @Override
@@ -89,7 +81,7 @@ public class BranchExportWorker extends BaseServerCommand {
       if (branchIds.isEmpty()) {
          IOseeStatement chStmt = ConnectionHandler.getStatement();
          try {
-            chStmt.runPreparedQuery(getAllBranchesQuery(includeArchivedBranches));
+            chStmt.runPreparedQuery(String.format(SELECT_BRANCHES, includeArchivedBranches ? "" : "where archived = 0"));
             while (chStmt.next()) {
                branchIds.add(chStmt.getInt("branch_id"));
             }
