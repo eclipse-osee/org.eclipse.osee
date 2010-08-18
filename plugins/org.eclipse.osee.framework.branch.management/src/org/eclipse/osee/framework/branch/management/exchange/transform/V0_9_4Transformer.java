@@ -10,9 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management.exchange.transform;
 
-import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.text.rules.ReplaceAll;
 import org.osgi.framework.Version;
 
 /**
@@ -22,10 +19,7 @@ public class V0_9_4Transformer implements IOseeExchangeVersionTransformer {
    private static final Version MAX_VERSION = new Version("0.9.4");
 
    @Override
-   public Version applyTransform(ExchangeDataProcessor processor) throws OseeCoreException {
-
-      processor.transform(ExportItem.EXPORT_DB_SCHEMA, new ReplaceAll("\\s+<table name=\"osee_\\w+_type\".*?</table>",
-         ""));
+   public Version applyTransform(ExchangeDataProcessor processor) {
       return getMaxVersion();
    }
 
@@ -35,6 +29,6 @@ public class V0_9_4Transformer implements IOseeExchangeVersionTransformer {
    }
 
    @Override
-   public void finalizeTransform(ExchangeDataProcessor processor) throws OseeCoreException {
+   public void finalizeTransform(ExchangeDataProcessor processor) {
    }
 }
