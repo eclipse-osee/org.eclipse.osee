@@ -73,7 +73,7 @@ class OteJmsServiceConnector implements ServiceNotification, OseeMessagingStatus
    }
 
    @Override
-   public void onServiceGone(ServiceHealth serviceHealth) {
+   public synchronized void onServiceGone(ServiceHealth serviceHealth) {
       JmsToJiniBridgeConnector connector = removeExistingConnector(serviceHealth);
       if (connector != null) {
          try {
@@ -89,7 +89,7 @@ class OteJmsServiceConnector implements ServiceNotification, OseeMessagingStatus
    }
 
    @Override
-   public void onServiceUpdate(ServiceHealth serviceHealth) {
+   public synchronized void onServiceUpdate(ServiceHealth serviceHealth) {
       serviceHealthMap.put(serviceHealth.getServiceUniqueId(), serviceHealth);
       if (isNewService(serviceHealth)) {
          requestJmsJiniBridgeConnector(serviceHealth);
@@ -140,20 +140,17 @@ class OteJmsServiceConnector implements ServiceNotification, OseeMessagingStatus
       public void process(Object message, Map<String, Object> headers, ReplyConnection replyConnection) {
 
          try {
-            System.out.println("please be a remote reference");
+            //            System.out.println("please be a remote reference");
             ByteArrayInputStream bais = new ByteArrayInputStream((byte[]) message);
             ObjectInputStream ois = new ObjectInputStream(bais);
             Object msg = ois.readObject();
-            String id = msg.toString();
+            String messageId = msg.toString();
             Object obj = ois.readObject();
             IHostTestEnvironment hostEnv = (IHostTestEnvironment) obj;
-            JmsToJiniBridgeConnector connector = new JmsToJiniBridgeConnector(exportClassLoader, hostEnv, id);
-            connector.setProperty("OTEEmbeddedBroker", getNodeInfo(id));
-            //				connector.setProperty(key, value);
-            //				connectors.put(key, connector)
-            //				connectors.put(ser, value);
-            //				String id = (String)headers.get("OseeServiceUniqueId");
-            if (id != null) {
+            String id = hostEnv.getProperties().getProperty("id").toString();
+            if (id != null && connectors.get(id) == null) {
+               JmsToJiniBridgeConnector connector = new JmsToJiniBridgeConnector(exportClassLoader, hostEnv, id);
+               connector.setProperty("OTEEmbeddedBroker", getNodeInfo(id));
                connectors.put(id, connector);
                connectionService.addConnector(connector);
             }
