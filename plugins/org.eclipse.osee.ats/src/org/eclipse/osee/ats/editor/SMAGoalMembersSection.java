@@ -50,6 +50,7 @@ import org.eclipse.osee.framework.ui.skynet.util.ArtifactDragAndDrop;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -109,11 +110,16 @@ public class SMAGoalMembersSection extends SectionPart implements ISelectedAtsAr
       createWorldComposite(sectionBody);
       createActions();
       setupListenersForCustomizeDataCaching();
-
       fillActionBar(toolBar);
 
       section.setClient(sectionBody);
       toolkit.paintBordersFor(section);
+
+      toggleTableExpand();
+      refreshTableSize();
+
+      toggleTableExpand();
+      refreshTableSize();
    }
 
    private ToolBar createToolBar(Composite parent) {
@@ -151,9 +157,9 @@ public class SMAGoalMembersSection extends SectionPart implements ISelectedAtsAr
       }
       gd.horizontalSpan = 2;
       worldComposite.setLayoutData(gd);
-      worldComposite.layout();
-      getManagedForm().reflow(true);
+      worldComposite.layout(true);
 
+      getManagedForm().reflow(true);
    }
 
    private void fillActionBar(ToolBar toolBar) {
@@ -164,20 +170,25 @@ public class SMAGoalMembersSection extends SectionPart implements ISelectedAtsAr
    private void createWorldComposite(final Composite sectionBody) {
       worldComposite =
          new WorldComposite(this, new GoalXViewerFactory((GoalArtifact) editor.getSma()), sectionBody, SWT.BORDER);
+
+      CustomizeData customizeData = editorToCustDataMap.get(editor);
+      if (customizeData == null) {
+         customizeData = worldComposite.getCustomizeDataCopy();
+      }
+      WorldLabelProvider labelProvider = (WorldLabelProvider) worldComposite.getXViewer().getLabelProvider();
+      labelProvider.setParentGoal((GoalArtifact) editor.getSma());
+
+      worldComposite.getWorldXViewer().addMenuActionProvider(this);
+
       try {
-         CustomizeData customizeData = editorToCustDataMap.get(editor);
-         if (customizeData == null) {
-            customizeData = worldComposite.getCustomizeDataCopy();
-         }
-         ((WorldLabelProvider) worldComposite.getXViewer().getLabelProvider()).setParentGoal((GoalArtifact) editor.getSma());
+         customizeData = null;
          worldComposite.load("Members", editor.getSma().getRelatedArtifacts(AtsRelationTypes.Goal_Member),
             customizeData, TableLoadOption.None);
 
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
-      worldComposite.getWorldXViewer().addMenuActionProvider(this);
-      refreshTableSize();
+
    }
 
    private boolean isTableExpanded() {
@@ -292,7 +303,7 @@ public class SMAGoalMembersSection extends SectionPart implements ISelectedAtsAr
 
          @Override
          public void run() {
-            if (worldComposite != null && !worldComposite.isDisposed()) {
+            if (Widgets.isAccessible(worldComposite)) {
                worldComposite.getXViewer().refresh();
             }
          }
@@ -301,7 +312,7 @@ public class SMAGoalMembersSection extends SectionPart implements ISelectedAtsAr
 
    @Override
    public void dispose() {
-      if (worldComposite != null && !worldComposite.isDisposed()) {
+      if (Widgets.isAccessible(worldComposite)) {
          worldComposite.dispose();
       }
       super.dispose();
