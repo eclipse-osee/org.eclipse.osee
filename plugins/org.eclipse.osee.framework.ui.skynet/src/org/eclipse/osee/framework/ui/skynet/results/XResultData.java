@@ -46,9 +46,7 @@ public final class XResultData {
    public static final Pattern WarningPattern = Pattern.compile("Warning: ");
 
    private static enum Type {
-      Severe,
-      Warning,
-      Info;
+      Severe, Warning, Info;
    }
 
    private final StringBuffer sb = new StringBuffer();
@@ -149,7 +147,7 @@ public final class XResultData {
 
    public XResultPage getReport(final String title, Manipulations... manipulations) {
       return new XResultPage(title + " - " + XDate.getDateNow(XDate.MMDDYYHHMM),
-         (sb.toString().equals("") ? "Nothing Logged" : sb.toString()), manipulations);
+            (sb.toString().equals("") ? "Nothing Logged" : sb.toString()), manipulations);
    }
 
    /*
@@ -157,6 +155,10 @@ public final class XResultData {
     */
    public static String getHyperlink(Artifact art) {
       return getHyperlink(art.getHumanReadableId(), art.getHumanReadableId(), art.getBranch().getId());
+   }
+
+   public static String getHyperlinkWithName(Artifact art) {
+      return getHyperlink(art.toStringWithId(), art.getHumanReadableId(), art.getBranch().getId());
    }
 
    /*
@@ -170,24 +172,23 @@ public final class XResultData {
     * Creates hyperlink using name. Default editor will open hrid for branchId given
     */
    public static String getHyperlink(String name, String hrid, int branchId) {
-      return AHTML.getHyperlink(
-         XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openArtifactBranch, hrid + "(" + branchId + ")"),
-         name);
+      return AHTML.getHyperlink(XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openArtifactBranch,
+            hrid + "(" + branchId + ")"), name);
    }
 
    public static String getHyperlinkUrlExternal(String name, String url) {
       return AHTML.getHyperlink(XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.browserExternal, url),
-         name);
+            name);
    }
 
    public static String getHyperlinkUrlInternal(String name, String url) {
       return AHTML.getHyperlink(XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.browserInternal, url),
-         name);
+            name);
    }
 
    public static String getHyperlinkForArtifactEditor(String name, String hrid) {
       return AHTML.getHyperlink(XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openArtifactEditor, hrid),
-         name);
+            name);
    }
 
    public static String getHyperlinkForAction(String name, String hrid) {
@@ -200,7 +201,7 @@ public final class XResultData {
 
    public static String getHyperlinkForAction(String name, Artifact art) {
       return AHTML.getHyperlink(
-         XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openAction, art.getGuid()), name);
+            XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openAction, art.getGuid()), name);
    }
 
    private int getCount(Type type) {
@@ -253,16 +254,16 @@ public final class XResultData {
          rd.log("\n\nExample of hyperlinked hrid: " + XResultData.getHyperlink(UserManager.getUser()));
 
          rd.log("Example of hyperlinked artifact different hyperlink string: " + XResultData.getHyperlink(
-            "Different string", UserManager.getUser()));
+               "Different string", UserManager.getUser()));
 
          rd.log("Example of hyperlinked hrid on another branch: " + getHyperlink(
-            UserManager.getUser().getHumanReadableId(), UserManager.getUser().getHumanReadableId(),
-            BranchManager.getCommonBranch().getId()));
+               UserManager.getUser().getHumanReadableId(), UserManager.getUser().getHumanReadableId(),
+               BranchManager.getCommonBranch().getId()));
          rd.addRaw(AHTML.newline());
          rd.addRaw("Example of hyperlink that opens external browser " + getHyperlinkUrlExternal("Google",
-            "http://www.google.com") + AHTML.newline());
+               "http://www.google.com") + AHTML.newline());
          rd.addRaw("Example of hyperlink that opens internal browser " + getHyperlinkUrlInternal("Google",
-            "http://www.google.com") + AHTML.newline());
+               "http://www.google.com") + AHTML.newline());
 
          rd.log("\n\nHere is a nice table");
          rd.addRaw(AHTML.beginMultiColumnTable(95, 1));
@@ -271,7 +272,7 @@ public final class XResultData {
             rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {"Type " + x, "Title " + x, x + ""}));
          }
          rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {"Error / Warning in table ", "Error: this is error",
-            "Warning: this is warning"}));
+               "Warning: this is warning"}));
          rd.addRaw(AHTML.endMultiColumnTable());
          rd.report("This is my report title");
       } catch (OseeCoreException ex) {
