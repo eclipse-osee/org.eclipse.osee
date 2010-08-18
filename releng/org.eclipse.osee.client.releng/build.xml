@@ -155,10 +155,13 @@
 				<filename name="*-Update-*.zip" />
 			</fileset>
 		</move>
-		<move includeemptydirs="false" tofile="${snapshotFolder}/${zipPrefix}-update-tests${incubation}-${BUILDTYPE}-Snapshot.zip" filtering="true">
+	<!--	
+	<move includeemptydirs="false" tofile="${snapshotFolder}/${zipPrefix}-update-tests${incubation}-${BUILDTYPE}-Snapshot.zip" filtering="true">
 			<fileset dir="${snapshotFolder}">
 				<filename name="*-Automated-Tests-*.zip" />
 			</fileset>
 		</move>
+		 -->
+		
 	</target>
 </project>
