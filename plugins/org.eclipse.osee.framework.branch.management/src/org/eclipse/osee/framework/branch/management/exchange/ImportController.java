@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.operation.OperationReporter;
 import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
@@ -65,20 +66,22 @@ public final class ImportController {
    private final Options options;
    private final int[] branchesToImport = null;
    private final Map<String, SavePoint> savePoints;
+   private final ExchangeDataProcessor exchangeDataProcessor;
+   private final OperationReporter reporter;
 
    private ExchangeTransformer exchangeTransformer;
-   private final ExchangeDataProcessor exchangeDataProcessor;
    private TranslationManager translator;
    private ManifestSaxHandler manifestHandler;
    private MetaDataSaxHandler metadataHandler;
    private String currentSavePoint;
 
-   ImportController(OseeServices oseeServices, IOseeExchangeDataProvider exportDataProvider, Options options, List<Integer> branchIds) throws OseeArgumentException {
+   ImportController(OseeServices oseeServices, IOseeExchangeDataProvider exportDataProvider, Options options, List<Integer> branchIds, OperationReporter reporter) throws OseeArgumentException {
       this.oseeServices = oseeServices;
       this.exportDataProvider = exportDataProvider;
       this.options = options;
       this.savePoints = new LinkedHashMap<String, SavePoint>();
       this.exchangeDataProcessor = new ExchangeDataProcessor(exportDataProvider);
+      this.reporter = reporter;
 
       if (!branchIds.isEmpty()) {
          throw new OseeArgumentException("selective branch import is not supported.");
@@ -97,7 +100,7 @@ public final class ImportController {
       IExchangeTransformProvider transformProvider = new ExchangeTransformProvider(oseeServices.getCachingService());
       exchangeTransformer = new ExchangeTransformer(transformProvider, exchangeDataProcessor);
 
-      exchangeTransformer.applyTransforms();
+      exchangeTransformer.applyTransforms(reporter);
 
       currentSavePoint = "manifest";
       manifestHandler = new ManifestSaxHandler();
@@ -155,7 +158,7 @@ public final class ImportController {
 
          importBranchesTx.updateBranchParentTransactionId();
 
-         exchangeTransformer.applyFinalTransforms();
+         exchangeTransformer.applyFinalTransforms(reporter);
 
          currentSavePoint = "stop";
          addSavePoint(currentSavePoint);

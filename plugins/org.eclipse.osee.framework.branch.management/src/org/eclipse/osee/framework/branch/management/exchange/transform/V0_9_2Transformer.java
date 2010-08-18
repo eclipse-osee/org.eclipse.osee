@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.TreeSet;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osee.framework.branch.management.TxCurrentsAndModTypesCommand;
 import org.eclipse.osee.framework.branch.management.exchange.ExchangeUtil;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -28,6 +30,7 @@ import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.operation.OperationReporter;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.operation.Address;
 import org.eclipse.osee.framework.jdk.core.text.rules.ReplaceAll;
@@ -56,7 +59,7 @@ public class V0_9_2Transformer implements IOseeExchangeVersionTransformer {
    }
 
    @Override
-   public Version applyTransform(ExchangeDataProcessor processor) throws OseeCoreException {
+   public Version applyTransform(ExchangeDataProcessor processor, OperationReporter reporter) throws OseeCoreException {
       List<Integer> branchIds = convertBranchTable(processor);
 
       Map<Long, Long> artifactGammaToNetGammaId = convertArtifactAndConflicts(processor);
@@ -79,7 +82,11 @@ public class V0_9_2Transformer implements IOseeExchangeVersionTransformer {
    }
 
    @Override
-   public void finalizeTransform(ExchangeDataProcessor processor) throws OseeCoreException {
+   public void finalizeTransform(ExchangeDataProcessor processor, OperationReporter reporter) throws OseeCoreException {
+      Operations.executeWorkAndCheckStatus(new TxCurrentsAndModTypesCommand(reporter, false),
+         new NullProgressMonitor(), 0);
+      Operations.executeWorkAndCheckStatus(new TxCurrentsAndModTypesCommand(reporter, true), new NullProgressMonitor(),
+         0);
    }
 
    private List<Integer> convertBranchTable(ExchangeDataProcessor processor) throws OseeCoreException {

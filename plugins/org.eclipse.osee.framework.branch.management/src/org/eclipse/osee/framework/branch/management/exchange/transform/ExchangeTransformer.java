@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.branch.management.exchange.transform;
 import java.util.Collection;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.operation.OperationReporter;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.osgi.framework.Version;
@@ -29,7 +30,7 @@ public class ExchangeTransformer {
       this.processor = processor;
    }
 
-   public void applyTransforms() throws Exception {
+   public void applyTransforms(OperationReporter reporter) throws Exception {
       Version exchangeVersion = getExchangeManifestVersion();
       transformers = provider.getApplicableTransformers(exchangeVersion);
 
@@ -38,16 +39,16 @@ public class ExchangeTransformer {
       versionRule.setReplaceVersion(true);
 
       for (IOseeExchangeVersionTransformer transformer : transformers) {
-         Version newVersion = transformer.applyTransform(processor);
+         Version newVersion = transformer.applyTransform(processor, reporter);
          versionRule.setVersion(newVersion);
          processor.transform(ExportItem.EXPORT_MANIFEST, versionRule);
       }
    }
 
-   public void applyFinalTransforms() throws Exception {
+   public void applyFinalTransforms(OperationReporter reporter) throws Exception {
       Conditions.checkNotNull(transformers, "transformers", "forgot to call apply transforms first");
       for (IOseeExchangeVersionTransformer transform : transformers) {
-         transform.finalizeTransform(processor);
+         transform.finalizeTransform(processor, reporter);
       }
       transformers = null;
    }

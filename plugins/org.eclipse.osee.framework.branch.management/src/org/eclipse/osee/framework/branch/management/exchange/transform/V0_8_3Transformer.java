@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.branch.management.exchange.transform;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.operation.OperationReporter;
 import org.eclipse.osee.framework.jdk.core.text.rules.ReplaceAll;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.osgi.framework.Version;
@@ -24,7 +25,7 @@ public class V0_8_3Transformer implements IOseeExchangeVersionTransformer {
    private static final Version MAX_VERSION = new Version("0.8.3");
 
    @Override
-   public Version applyTransform(ExchangeDataProcessor processor) throws OseeCoreException {
+   public Version applyTransform(ExchangeDataProcessor processor, OperationReporter reporter) throws OseeCoreException {
 
       HashCollection<String, String> tableToColumns = new HashCollection<String, String>();
       tableToColumns.put("osee_txs", "<column id=\"branch_id\" type=\"INTEGER\" />\n");
@@ -40,7 +41,7 @@ public class V0_8_3Transformer implements IOseeExchangeVersionTransformer {
    }
 
    @Override
-   public void finalizeTransform(ExchangeDataProcessor ruleProcessor) throws OseeCoreException {
+   public void finalizeTransform(ExchangeDataProcessor ruleProcessor, OperationReporter reporter) throws OseeCoreException {
    }
 
    @Override

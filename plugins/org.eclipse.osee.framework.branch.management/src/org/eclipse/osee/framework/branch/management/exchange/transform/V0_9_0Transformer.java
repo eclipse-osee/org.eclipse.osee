@@ -14,6 +14,7 @@ import java.util.HashMap;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
+import org.eclipse.osee.framework.core.operation.OperationReporter;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.jdk.core.text.rules.ReplaceAll;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.SaxTransformer;
@@ -32,7 +33,7 @@ public class V0_9_0Transformer implements IOseeExchangeVersionTransformer {
    }
 
    @Override
-   public Version applyTransform(ExchangeDataProcessor processor) throws OseeCoreException {
+   public Version applyTransform(ExchangeDataProcessor processor, OperationReporter reporter) throws OseeCoreException {
       replaceDataTypeIdsWithGuids(processor, cachingService.getArtifactTypeCache(), ExportItem.OSEE_ARTIFACT_DATA,
          "art_type_id", "name");
       replaceDataTypeIdsWithGuids(processor, cachingService.getAttributeTypeCache(), ExportItem.OSEE_ATTRIBUTE_DATA,
@@ -62,7 +63,7 @@ public class V0_9_0Transformer implements IOseeExchangeVersionTransformer {
    }
 
    @Override
-   public void finalizeTransform(ExchangeDataProcessor processor) throws OseeCoreException {
+   public void finalizeTransform(ExchangeDataProcessor processor, OperationReporter reporter) throws OseeCoreException {
    }
 
    @Override

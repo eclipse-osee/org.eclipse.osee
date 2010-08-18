@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.branch.management;
 
 import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.operation.OperationReporter;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.Options;
 
@@ -22,7 +23,7 @@ public interface IBranchExchange {
 
    public IResourceLocator exportBranch(String exportName, Options options, List<Integer> branchIds) throws Exception;
 
-   public void importBranch(IResourceLocator fileToImport, Options options, List<Integer> branchIds) throws OseeCoreException;
+   public void importBranch(IResourceLocator fileToImport, Options options, List<Integer> branchIds, OperationReporter reporter) throws OseeCoreException;
 
    public IResourceLocator checkIntegrity(IResourceLocator fileToCheck) throws Exception;
 }
