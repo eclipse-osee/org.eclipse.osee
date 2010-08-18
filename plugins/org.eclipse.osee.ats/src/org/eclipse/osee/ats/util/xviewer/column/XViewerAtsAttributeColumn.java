@@ -25,8 +25,6 @@ public class XViewerAtsAttributeColumn extends XViewerColumn {
    /**
     * XViewer uses copies of column definitions so originals that are registered are not corrupted. Classes extending
     * XViewerValueColumn need to extend this constructor to copy extra stored fields
-    * 
-    * @param col
     */
    @Override
    public XViewerAtsAttributeColumn copy() {
