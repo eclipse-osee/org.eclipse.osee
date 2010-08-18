@@ -105,7 +105,7 @@
 		<antcall target="setHttpProxy" />
 		<ant antfile="${relengCommonBuilderDir}/buildAll.xml" target="runEclipse" dir="${relengCommonBuilderDir}" inheritrefs="true" inheritall="true" />
 	</target>
-	
+
 	<target name="setHttpProxy" if="http.proxyHost">
 		<setproxy proxyhost="${http.proxyHost}" proxyport="${http.proxyPort}" />
 	</target>
@@ -151,10 +151,14 @@
 	<target name="doMoveZip" if="containsFile">
 		<echo>Renaming file to ${zipPrefix}-update${incubation}-${BUILDTYPE}-Snapshot.zip</echo>
 		<move includeemptydirs="false" tofile="${snapshotFolder}/${zipPrefix}-update${incubation}-${BUILDTYPE}-Snapshot.zip" filtering="true">
-			<fileset dir="${snapshotFolder}" includes="*-Update-*.zip" />
+			<fileset dir="${snapshotFolder}">
+				<filename name="*-Update-*.zip" />
+			</fileset>
 		</move>
 		<move includeemptydirs="false" tofile="${snapshotFolder}/${zipPrefix}-update-tests${incubation}-${BUILDTYPE}-Snapshot.zip" filtering="true">
-			<fileset dir="${snapshotFolder}" includes="*-Automated-Tests-*.zip" />
+			<fileset dir="${snapshotFolder}">
+				<filename name="*-Automated-Tests-*.zip" />
+			</fileset>
 		</move>
 	</target>
 </project>
