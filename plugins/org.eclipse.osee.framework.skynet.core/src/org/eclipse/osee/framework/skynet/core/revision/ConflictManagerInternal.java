@@ -298,7 +298,10 @@ public class ConflictManagerInternal {
       for (Branch branch : sourceBranch.getAncestors()) {
          if (!branch.getBranchType().isSystemRootBranch() && !branch.getParentBranch().getBranchType().isSystemRootBranch()) {
             isValidConflict &= isAttributeConflictValidOnBranch(destinationGammaId, branch, parentTransactionNumber);
-            parentTransactionNumber = branch.getSourceTransaction().getId();
+
+            if (branch.getSourceTransaction() != null) {
+               parentTransactionNumber = branch.getSourceTransaction().getId();
+            }
          }
 
          if (!isValidConflict) {
