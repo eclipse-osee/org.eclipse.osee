@@ -142,6 +142,7 @@
 
 		<copy flatten="true" toDir="${snapshotFolder}" failonerror="true" includeemptydirs="false">
 			<fileset dir="${buildFolder}" includes="athena/*-Update-*.zip" />
+			<fileset dir="${buildFolder}" includes="athena/*-Automated-Tests-*.zip" />
 		</copy>
 
 		<available file="${snapshotFolder}" property="containsFile" />
@@ -155,13 +156,11 @@
 				<filename name="*-Update-*.zip" />
 			</fileset>
 		</move>
-	<!--	
-	<move includeemptydirs="false" tofile="${snapshotFolder}/${zipPrefix}-update-tests${incubation}-${BUILDTYPE}-Snapshot.zip" filtering="true">
+
+		<move includeemptydirs="false" tofile="${snapshotFolder}/${zipPrefix}-update-tests${incubation}-${BUILDTYPE}-Snapshot.zip" filtering="true">
 			<fileset dir="${snapshotFolder}">
 				<filename name="*-Automated-Tests-*.zip" />
 			</fileset>
 		</move>
-		 -->
-		
 	</target>
 </project>
