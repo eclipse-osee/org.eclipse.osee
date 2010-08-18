@@ -96,19 +96,31 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
          return branch.getArchiveState().toString();
       } else if (cCol.equals(BranchXViewerFactory.timeStamp)) {
          try {
-            return DATE_FORMAT.format(branch.getBaseTransaction().getTimeStamp());
+            String date = "";
+            if (branch.getBaseTransaction() != null) {
+               date = DATE_FORMAT.format(branch.getBaseTransaction().getTimeStamp());
+            }
+            return date;
          } catch (OseeCoreException ex) {
             return XViewerCells.getCellExceptionString(ex);
          }
       } else if (cCol.equals(BranchXViewerFactory.author)) {
+         String userName = "";
          try {
-            return UserManager.getUserNameById(branch.getBaseTransaction().getAuthor());
+            if (branch.getBaseTransaction() != null) {
+               userName = UserManager.getUserNameById(branch.getBaseTransaction().getAuthor());
+            }
+            return userName;
          } catch (OseeCoreException ex) {
             return XViewerCells.getCellExceptionString(ex);
          }
       } else if (cCol.equals(BranchXViewerFactory.comment)) {
          try {
-            return branch.getBaseTransaction().getComment();
+            String branchComment = "";
+            if (branch.getBaseTransaction() != null) {
+               branchComment = branch.getBaseTransaction().getComment();
+            }
+            return branchComment;
          } catch (OseeCoreException ex) {
             return XViewerCells.getCellExceptionString(ex);
          }

@@ -69,7 +69,12 @@ public class XBranchContentProvider implements ITreeContentProvider {
       } else if (parentElement instanceof Collection<?>) {
          return ((Collection<?>) parentElement).toArray();
       } else if (parentElement instanceof Object[]) {
-         return (Object[]) parentElement;
+         Object[] objects = (Object[]) parentElement;
+         if (objects.length == 1) {
+            return getBranchManagerChildren();
+         } else {
+            return (Object[]) parentElement;
+         }
       }
       return EMPTY_ARRAY;
    }
