@@ -153,5 +153,8 @@
 		<move includeemptydirs="false" tofile="${snapshotFolder}/${zipPrefix}-update${incubation}-${BUILDTYPE}-Snapshot.zip" filtering="true">
 			<fileset dir="${snapshotFolder}" includes="*-Update-*.zip" />
 		</move>
+		<move includeemptydirs="false" tofile="${snapshotFolder}/${zipPrefix}-update-tests${incubation}-${BUILDTYPE}-Snapshot.zip" filtering="true">
+			<fileset dir="${snapshotFolder}" includes="*-Automated-Tests-*.zip" />
+		</move>
 	</target>
 </project>
