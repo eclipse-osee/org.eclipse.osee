@@ -17,6 +17,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.MenuManager;
@@ -115,11 +119,25 @@ public class SMAGoalMembersSection extends SectionPart implements ISelectedAtsAr
       section.setClient(sectionBody);
       toolkit.paintBordersFor(section);
 
-      toggleTableExpand();
-      refreshTableSize();
+      RefreshTableSizeJob job = new RefreshTableSizeJob("");
+      job.schedule(300);
+   }
 
-      toggleTableExpand();
-      refreshTableSize();
+   private class RefreshTableSizeJob extends Job {
+      public RefreshTableSizeJob(String name) {
+         super(name);
+      }
+
+      @Override
+      protected IStatus run(IProgressMonitor monitor) {
+         Displays.ensureInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               refreshTableSize();
+            }
+         });
+         return Status.OK_STATUS;
+      }
    }
 
    private ToolBar createToolBar(Composite parent) {
@@ -158,7 +176,6 @@ public class SMAGoalMembersSection extends SectionPart implements ISelectedAtsAr
       gd.horizontalSpan = 2;
       worldComposite.setLayoutData(gd);
       worldComposite.layout(true);
-
       getManagedForm().reflow(true);
    }
 
