@@ -60,7 +60,7 @@ public final class AtsAttributeTypes extends NamedIdentity implements IAttribute
    public static final IAttributeType ReviewBlocks = new AtsAttributeTypes("AAMFEc6G2A8jmRWJgagA", "Review Blocks", "Review Completion will block it's parent workflow in this manner.");
    public static final IAttributeType ReviewDefect = new AtsAttributeTypes("AAMFEd+MSVAb8JQ6f5gA", "Review Defect");
    public static final IAttributeType Role = new AtsAttributeTypes("AAMFEeCqMz0XCSBJ+IQA", "Role");
-   public static final IAttributeType SmaNote = new AtsAttributeTypes("AAMFEdm7ywte8qayfbAA", "Notes", "Notes applicable to ATS object");
+   public static final IAttributeType SmaNote = new AtsAttributeTypes("AAMFEdm7ywte8qayfbAA", "SMA Note", "Notes applicable to ATS object");
    public static final IAttributeType State = new AtsAttributeTypes("AAMFEdMa3wzVvp60xLQA", "State", "States of workflow state machine.");
    public static final IAttributeType StateNotes = new AtsAttributeTypes("AAMFEdiWPm7M_xV1EswA", "State Notes");
    public static final IAttributeType TeamDefinition = new AtsAttributeTypes("AAMFEdd5bFEe18bd0lQA", "Team Definition");

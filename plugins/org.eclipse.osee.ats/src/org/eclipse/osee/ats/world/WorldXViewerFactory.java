@@ -66,8 +66,9 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       "Date this workflow transitioned to the Completed state.");
    public static final XViewerColumn Team_Col = new XViewerColumn(COLUMN_NAMESPACE + ".team", "Team", 50, SWT.LEFT,
       true, SortDataType.String, false, "Team that has been assigned to work this Action.");
-   public static final XViewerColumn Notes_Col = new XViewerAtsAttributeColumn(AtsAttributeTypes.SmaNote, 80, SWT.LEFT,
-      true, SortDataType.String, true);
+   // Can't be an XViewerAtsAttributeColumn cause display name is not same as attribute name
+   public static final XViewerColumn Notes_Col = new XViewerColumn(AtsAttributeTypes.SmaNote.getName(), "Notes", 80,
+      SWT.LEFT, true, SortDataType.String, true, "");
    public static final XViewerColumn Deadline_Col = new XViewerAtsAttributeColumn(COLUMN_NAMESPACE + ".deadline",
       AtsAttributeTypes.NeedBy, 75, SWT.LEFT, true, SortDataType.Date, true);
 
