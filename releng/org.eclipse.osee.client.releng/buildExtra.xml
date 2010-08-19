@@ -85,5 +85,5 @@
 	<target name="preProcess" />
 	<target name="postProcess" />
 	<target name="postBuild" />
-	<target name="extraPackaging"/>
+	<target name="extraPackaging" />
 </project>

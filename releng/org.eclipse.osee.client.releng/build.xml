@@ -147,6 +147,7 @@
 
 		<available file="${snapshotFolder}" property="containsFile" />
 		<antcall target="doMoveZip" inheritall="true" />
+		<antcall target="createUnitTestSnapshot" inheritall="true" />
 	</target>
 
 	<target name="doMoveZip" if="containsFile">
@@ -156,11 +157,33 @@
 				<filename name="*-Update-*.zip" />
 			</fileset>
 		</move>
+	</target>
 
-		<move includeemptydirs="false" tofile="${snapshotFolder}/${zipPrefix}-update-tests${incubation}-${BUILDTYPE}-Snapshot.zip" filtering="true">
+	<target name="createUnitTestSnapshot">
+		<property name="snapshotTestZipArchive" value="${zipPrefix}-update-tests${incubation}-${BUILDTYPE}-Snapshot.zip" />
+
+		<property name="fullTestSuite" value="${snapshotFolder}/full_test_suite-Snapshot.zip" />
+		<property name="tempTestSnapFolder" value="${snapshotFolder}/test_snap_tmp" />
+
+		<move includeemptydirs="false" tofile="${fullTestSuite}" filtering="true">
 			<fileset dir="${snapshotFolder}">
 				<filename name="*-Automated-Tests-*.zip" />
 			</fileset>
 		</move>
+
+		<mkdir dir="${tempTestSnapFolder}" />
+		<unzip src="${fullTestSuite}" dest="${tempTestSnapFolder}" />
+
+		<pathconvert property="oseeClientUnitTestsZip" setonempty="false">
+			<path>
+				<fileset dir="${tempTestSnapFolder}/testing">
+					<include name="osee_client-junit-tests-*.zip" />
+				</fileset>
+			</path>
+		</pathconvert>
+		<move file="${oseeClientUnitTestsZip}" tofile="${snapshotFolder}/${snapshotTestZipArchive}" />
+
+		<delete failonerror="false" file="${fullTestSuite}" />
+		<delete failonerror="false" dir="${tempTestSnapFolder}" />
 	</target>
 </project>
