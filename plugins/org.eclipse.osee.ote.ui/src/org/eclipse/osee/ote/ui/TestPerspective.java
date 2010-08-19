@@ -32,7 +32,7 @@ public class TestPerspective implements IPerspectiveFactory {
    public void defineActions(IPageLayout layout) {
 
       // Add "show views".
-      layout.addShowViewShortcut("org.eclipse.osee.framework.ui.service.control.view.ServiceManagerView");
+      //      layout.addShowViewShortcut("org.eclipse.osee.framework.ui.service.control.view.ServiceManagerView");
       layout.addShowViewShortcut(OteNavigateView.VIEW_ID);
       //      layout.addShowViewShortcut(EgiView.VIEW_ID);
       //      layout.addShowViewShortcut(EufdView.VIEW_ID);
