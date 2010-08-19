@@ -163,7 +163,6 @@ public class CoverageLabelProvider extends XViewerLabelProvider {
       }
       if (coverage instanceof MergeItem && (((MergeItem) coverage).getImportItem() instanceof CoverageItem || ((MergeItem) coverage).getPackageItem() instanceof CoverageItem)) {
          MergeItem mergeItem = (MergeItem) coverage;
-         System.out.println("MergeType " + mergeItem.getMergeType());
          ICoverage importItem = mergeItem.getImportItem();
          ICoverage packageItem = mergeItem.getPackageItem();
          if (xCol.equals(CoverageXViewerFactory.Parent_Coverage_Unit)) {

@@ -98,7 +98,7 @@ public class CoveragePackageImportTest {
       Assert.assertEquals(60, coverageImport.getCoverageItemsCovered().size());
       Assert.assertEquals(122, coverageImport.getCoverageItems().size());
 
-      System.out.println(CoverageUtil.printTree(coverageImport));
+      // System.out.println(CoverageUtil.printTree(coverageImport));
 
       Assert.assertEquals(49, coverageImport.getCoveragePercent().intValue());
       Assert.assertEquals(0, coverageImport.getCoverageItemsCovered(CoverageOptionManager.Deactivated_Code).size());
@@ -207,7 +207,7 @@ public class CoveragePackageImportTest {
       }
 
       CoverageUtil.printCoverageItemDiffs(coveragePackage, coverageImport);
-      System.out.println(CoverageUtil.printTree(coveragePackage));
+      // System.out.println(CoverageUtil.printTree(coveragePackage));
 
       // CoveragePackage should now have imported results
       Assert.assertEquals(60, coveragePackage.getCoverageItemsCovered().size());

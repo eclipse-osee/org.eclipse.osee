@@ -183,7 +183,7 @@ public class VectorCastImportTest {
       }
 
       CoverageUtil.printCoverageItemDiffs(coveragePackage, coverageImport);
-      System.out.println(CoverageUtil.printTree(coveragePackage));
+      // System.out.println(CoverageUtil.printTree(coveragePackage));
 
       // CoveragePackage should now have imported results
       Assert.assertEquals(12, coveragePackage.getCoverageItems().size());

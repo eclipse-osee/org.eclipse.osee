@@ -225,7 +225,7 @@ public class MergeImportManager {
     * Takes import items from coverageImport and applies them to coveragePackage
     */
    private void importCoverageUnitItem(XResultData rd, CoverageUnit importItem) {
-      System.out.println("importItemsRecurse => " + importItem + " path " + CoverageUtil.getFullPath(importItem));
+      //      System.out.println("importItemsRecurse => " + importItem + " path " + CoverageUtil.getFullPath(importItem));
       try {
          rd.log("Processing " + importItem.getName());
          //         if (!(importItem instanceof CoverageUnit)) {
@@ -239,9 +239,9 @@ public class MergeImportManager {
          if (MatchType.isMatch(matchItem.getMatchType())) {
             // save assignees and notes and RATIONALE before child overwrites
             // ((CoverageUnit) importItem).updateAssigneesAndNotes((CoverageUnit) packageItem);
-            System.out.println("FOUND MATCH type " + matchItem.getMatchType());
-            System.out.println("FOUND MATCH pack " + matchItem.getPackageItem() + " path " + CoverageUtil.getFullPath(matchItem.getPackageItem()));
-            System.out.println("FOUND MATCH impt " + matchItem.getImportItem() + " path " + CoverageUtil.getFullPath(matchItem.getImportItem()));
+            //            System.out.println("FOUND MATCH type " + matchItem.getMatchType());
+            //            System.out.println("FOUND MATCH pack " + matchItem.getPackageItem() + " path " + CoverageUtil.getFullPath(matchItem.getPackageItem()));
+            //            System.out.println("FOUND MATCH impt " + matchItem.getImportItem() + " path " + CoverageUtil.getFullPath(matchItem.getImportItem()));
          }
          // This is new item
          else if (MatchType.isNoMatch(matchItem.getMatchType())) {

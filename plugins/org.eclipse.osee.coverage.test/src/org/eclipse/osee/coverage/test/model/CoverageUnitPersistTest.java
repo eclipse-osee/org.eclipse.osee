@@ -89,7 +89,7 @@ public class CoverageUnitPersistTest {
             "com/screenB/ScreenBButton1.java", "com/screenB/ScreenBButton2.java", "com/screenB/ScreenBButton3.java"
          //
          )) {
-            System.err.println(String.format("Importing [%s]", PATH + filename));
+            // System.err.println(String.format("Importing [%s]", PATH + filename));
             URL url = CoverageImport1TestBlam.class.getResource(PATH + filename);
             CoverageUnit coverageUnit =
                SampleJavaFileParser.createCodeUnit(url, coverageImport.getCoverageUnitFileContentsProvider());

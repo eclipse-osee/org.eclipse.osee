@@ -110,7 +110,7 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
       for (VcpSourceFile vcpSourceFile : vCastVcp.sourceFiles) {
          String str =
             String.format("Processing VcpSourceFile %d/%d [%s]...", x++, vcpSourceFiles.size(), vcpSourceFile);
-         System.out.println(str);
+         // System.out.println(str);
          if (progressMonitor != null) {
             progressMonitor.worked(1);
             progressMonitor.subTask(str);
