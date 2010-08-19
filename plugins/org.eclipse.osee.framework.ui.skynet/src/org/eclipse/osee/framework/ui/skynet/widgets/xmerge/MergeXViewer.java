@@ -53,9 +53,9 @@ import org.eclipse.swt.widgets.Widget;
  * @author Theron Virgin
  */
 public class MergeXViewer extends XViewer {
-
+   public static final Conflict[] EMPTY_CONFLICTS = new Conflict[0];
    private final MergeXWidget mergeXWidget;
-   private Conflict[] conflicts;
+   private Conflict[] conflicts = EMPTY_CONFLICTS;
    private ConflictResolutionWizard conWizard;
    private XMergeLabelProvider labelProvider;
    private Action openMergeViewAction;
@@ -116,8 +116,12 @@ public class MergeXViewer extends XViewer {
       mm.insertBefore(MENU_GROUP_PRE, new Separator());
    }
 
+   public Conflict[] getConflicts() {
+      return conflicts;
+   }
+
    public void setConflicts(final Conflict[] conflicts) {
-      this.conflicts = conflicts;
+      this.conflicts = conflicts != null ? conflicts : EMPTY_CONFLICTS;
 
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
@@ -147,9 +151,9 @@ public class MergeXViewer extends XViewer {
       setSorter(new MergeXViewerSorter(this, labelProvider));
    }
 
-   public Conflict[] getTransactionArtifactChanges() {
-      return conflicts;
-   }
+   //   public Conflict[] getTransactionArtifactChanges() {
+   //      return conflicts;
+   //   }
 
    private boolean hasInteractiveIcon(TreeColumn treeColumn) {
       return isXViewerColumn(treeColumn, MergeXViewerFactory.Source) //

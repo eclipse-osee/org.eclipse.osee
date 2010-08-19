@@ -83,7 +83,6 @@ public class MergeXWidget extends XWidget implements IAdaptable {
    private static final String NO_CONFLICTS = "No conflicts were found";
    private static final String CONFLICTS_NOT_LOADED = "Cleared on shutdown.  Refresh to Reload.";
    private Label extraInfoLabel;
-   private Conflict[] conflicts;
    private String displayLabelText;
    private Action openAssociatedArtifactAction;
    private Action completeCommitAction;
@@ -195,6 +194,8 @@ public class MergeXWidget extends XWidget implements IAdaptable {
 
          @Override
          protected IStatus run(final IProgressMonitor monitor) {
+            Conflict[] conflicts = getConflicts();
+
             monitor.beginTask("ApplyingPreviousMerge", conflicts.length);
             for (Conflict conflict : conflicts) {
                try {
@@ -225,7 +226,8 @@ public class MergeXWidget extends XWidget implements IAdaptable {
          @Override
          protected IStatus run(IProgressMonitor monitor) {
             try {
-               if (!(conflicts.length == 0)) {
+               Conflict[] conflicts = getConflicts();
+               if (conflicts.length >= 0) {
                   Conflict[] artifactChanges = new Conflict[0];
                   if (conflicts[0].getToTransactionId() != null) {
                      setConflicts(ConflictManagerInternal.getConflictsPerBranch(conflicts[0].getSourceBranch(),
@@ -262,16 +264,13 @@ public class MergeXWidget extends XWidget implements IAdaptable {
 
    public ArrayList<Conflict> getSelectedConflicts() {
       ArrayList<Conflict> items = new ArrayList<Conflict>();
-      if (mergeXViewer == null) {
-         return items;
-      }
-      if (mergeXViewer.getSelection().isEmpty()) {
-         return items;
-      }
-      Iterator<?> i = ((IStructuredSelection) mergeXViewer.getSelection()).iterator();
-      while (i.hasNext()) {
-         Object obj = i.next();
-         items.add((Conflict) obj);
+      if (mergeXViewer != null && !mergeXViewer.getSelection().isEmpty()) {
+         IStructuredSelection structuredSelection = (IStructuredSelection) mergeXViewer.getSelection();
+         Iterator<?> i = structuredSelection.iterator();
+         while (i.hasNext()) {
+            Object obj = i.next();
+            items.add((Conflict) obj);
+         }
       }
       return items;
    }
@@ -291,6 +290,10 @@ public class MergeXWidget extends XWidget implements IAdaptable {
       mergeXViewer.getTree().setFocus();
    }
 
+   public Conflict[] getConflicts() {
+      return mergeXViewer != null ? mergeXViewer.getConflicts() : MergeXViewer.EMPTY_CONFLICTS;
+   }
+
    @Override
    public void refresh() {
       mergeXViewer.refresh();
@@ -298,7 +301,8 @@ public class MergeXWidget extends XWidget implements IAdaptable {
       mergeView.showConflicts(true);
       int resolved = 0;
       int informational = 0;
-      if (conflicts != null && conflicts.length != 0) {
+      Conflict[] conflicts = getConflicts();
+      if (conflicts.length > 0) {
          for (Conflict conflict : conflicts) {
             if (conflict.statusResolved() || conflict.statusCommitted()) {
                resolved++;
@@ -318,6 +322,7 @@ public class MergeXWidget extends XWidget implements IAdaptable {
 
    private boolean areAllConflictsResolved() {
       int resolved = 0;
+      Conflict[] conflicts = getConflicts();
       for (Conflict conflict : conflicts) {
          if (conflict.statusResolved() || conflict.statusCommitted() || conflict.statusInformational()) {
             resolved++;
@@ -360,7 +365,7 @@ public class MergeXWidget extends XWidget implements IAdaptable {
 
    @Override
    public Object getData() {
-      return mergeXViewer.getInput();
+      return getConflicts();
    }
 
    public IDirtiableEditor getEditor() {
@@ -387,6 +392,7 @@ public class MergeXWidget extends XWidget implements IAdaptable {
          protected IStatus run(IProgressMonitor monitor) {
             try {
                if (showConflicts) {
+                  Conflict[] conflicts;
                   if (commitTrans == null) {
                      conflicts =
                         ConflictManagerInternal.getConflictsPerBranch(sourceBranch, destBranch, tranId, monitor).toArray(
@@ -395,32 +401,38 @@ public class MergeXWidget extends XWidget implements IAdaptable {
                      conflicts =
                         ConflictManagerInternal.getConflictsPerBranch(commitTrans, monitor).toArray(new Conflict[0]);
                   }
+                  mergeXViewer.setConflicts(conflicts);
                }
-
-               Displays.ensureInDisplayThread(new Runnable() {
-                  @Override
-                  public void run() {
-                     if (showConflicts) {
-                        if (conflicts.length == 0) {
-                           extraInfoLabel.setText(NO_CONFLICTS);
-                        } else {
-                           setConflicts(conflicts);
-                           mergeView.setConflicts(conflicts);
-                           refresh();
-                        }
-                     } else {
-                        extraInfoLabel.setText(CONFLICTS_NOT_LOADED);
-                     }
-                     checkForCompleteCommit();
-                  }
-               });
             } catch (Exception ex) {
                OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
             return Status.OK_STATUS;
          }
       };
-      Jobs.startJob(job);
+      Jobs.startJob(job, new JobChangeAdapter() {
+
+         @Override
+         public void done(IJobChangeEvent event) {
+            Displays.ensureInDisplayThread(new Runnable() {
+               @Override
+               public void run() {
+                  if (showConflicts) {
+                     Conflict[] conflicts = getConflicts();
+                     if (conflicts.length == 0) {
+                        extraInfoLabel.setText(NO_CONFLICTS);
+                     } else {
+                        setConflicts(conflicts);
+                        refresh();
+                     }
+                  } else {
+                     extraInfoLabel.setText(CONFLICTS_NOT_LOADED);
+                  }
+                  checkForCompleteCommit();
+               }
+            });
+         }
+
+      });
       if (sourceBranch != null) {
          refreshAssociatedArtifactItem(sourceBranch);
       }
@@ -439,11 +451,11 @@ public class MergeXWidget extends XWidget implements IAdaptable {
    }
 
    public void setConflicts(Conflict[] conflicts) throws IllegalStateException {
-      this.conflicts = conflicts;
+      mergeXViewer.setConflicts(conflicts);
       loadTable();
       int resolved = 0;
       int informational = 0;
-      for (Conflict conflict : conflicts) {
+      for (Conflict conflict : getConflicts()) {
          if (conflict.statusResolved() || conflict.statusCommitted()) {
             resolved++;
          }
@@ -451,18 +463,30 @@ public class MergeXWidget extends XWidget implements IAdaptable {
             informational++;
          }
       }
-      mergeXViewer.setConflicts(conflicts);
-      if (conflicts.length != 0) {
+      Conflict[] storedConflicts = getConflicts();
+      if (storedConflicts.length > 0) {
+         StringBuilder builder = new StringBuilder();
          if (sourceBranch != null) {
-            displayLabelText =
-               "Source Branch :  " + sourceBranch.getName() + "\nDestination Branch :  " + destBranch.getName();
+            builder.append("Source Branch :  ");
+            builder.append(sourceBranch.getName());
+            builder.append("\nDestination Branch :  ");
+            builder.append(destBranch.getName());
          } else {
-            displayLabelText = "Commit Transaction ID :  " + commitTrans + " " + commitTrans.getComment();
+            builder.append("Commit Transaction ID :  ");
+            builder.append(commitTrans);
+            builder.append(" ");
+            builder.append(commitTrans.getComment());
          }
-         if (resolved == conflicts.length - informational) {
+         displayLabelText = builder.toString();
+
+         if (resolved == storedConflicts.length - informational) {
             extraInfoLabel.setText(displayLabelText + CONFLICTS_RESOLVED);
          } else {
-            extraInfoLabel.setText(displayLabelText + "\nConflicts : " + (conflicts.length - informational) + " <=> Resolved : " + resolved + (informational == 0 ? " " : "\nInformational Conflicts : " + informational));
+            String message =
+               String.format("%s\nConflicts : %s <=> Resolved : %s%s", displayLabelText,
+                  (storedConflicts.length - informational), resolved,
+                  (informational == 0 ? " " : "\nInformational Conflicts : " + informational));
+            extraInfoLabel.setText(message);
          }
       }
 
@@ -485,10 +509,8 @@ public class MergeXWidget extends XWidget implements IAdaptable {
    }
 
    private Branch getMergeBranch() {
-      if (conflicts != null && conflicts.length != 0) {
-         return conflicts[0].getMergeBranch();
-      }
-      return null;
+      Conflict[] conflicts = getConflicts();
+      return conflicts.length > 0 ? conflicts[0].getMergeBranch() : null;
    }
 
    private boolean hasMergeBranchBeenCommitted() {
@@ -497,11 +519,8 @@ public class MergeXWidget extends XWidget implements IAdaptable {
    }
 
    private void checkForCompleteCommit() {
-      boolean isVisible = false;
-      if (conflicts != null && conflicts.length != 0) {
-         isVisible = !hasMergeBranchBeenCommitted() && areAllConflictsResolved();
-         isVisible &= sourceBranch != null && sourceBranch.getBranchState().isRebaselineInProgress();
-      }
+      boolean isVisible = !hasMergeBranchBeenCommitted() && areAllConflictsResolved();
+      isVisible &= sourceBranch != null && sourceBranch.getBranchState().isRebaselineInProgress();
       setCompleteCommitItemVisible(isVisible);
    }
 
@@ -523,16 +542,20 @@ public class MergeXWidget extends XWidget implements IAdaptable {
       public String getActionDescription() {
          StringBuilder sb = new StringBuilder();
          if (sourceBranch != null) {
-            sb.append("\nSource Branch: " + sourceBranch);
+            sb.append("\nSource Branch: ");
+            sb.append(sourceBranch);
          }
          if (destBranch != null) {
-            sb.append("\nDestination Branch: " + destBranch);
+            sb.append("\nDestination Branch: ");
+            sb.append(destBranch);
          }
          if (tranId != null) {
-            sb.append("\nTransactionId: " + tranId);
+            sb.append("\nTransactionId: ");
+            sb.append(tranId);
          }
          if (commitTrans != null) {
-            sb.append("\nCommit TransactionId: " + commitTrans);
+            sb.append("\nCommit TransactionId: ");
+            sb.append(commitTrans);
          }
          return sb.toString();
       }
@@ -565,8 +588,9 @@ public class MergeXWidget extends XWidget implements IAdaptable {
 
       @Override
       public void run() {
+         Conflict[] storedConflicts = getConflicts();
          try {
-            Branch sourceBranch = conflicts[0].getSourceBranch();
+            Branch sourceBranch = storedConflicts[0].getSourceBranch();
             Artifact branchAssociatedArtifact = BranchManager.getAssociatedArtifact(sourceBranch);
             if (branchAssociatedArtifact instanceof IATSArtifact) {
                OseeAts.getInstance().openArtifact(branchAssociatedArtifact);
@@ -592,16 +616,19 @@ public class MergeXWidget extends XWidget implements IAdaptable {
 
       @Override
       public void run() {
-         if (conflicts.length != 0) {
-            if (conflicts[0].getSourceBranch() != null) {
+         Conflict[] conflicts = getConflicts();
+         if (conflicts.length > 0) {
+            Conflict firstConflict = conflicts[0];
+            Branch sourceBranch = firstConflict.getSourceBranch();
+            if (sourceBranch != null) {
                try {
-                  ChangeUiUtil.open(conflicts[0].getSourceBranch());
+                  ChangeUiUtil.open(sourceBranch);
                } catch (Exception ex) {
                   OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }
             } else {
                try {
-                  ChangeUiUtil.open(conflicts[0].getCommitTransactionId());
+                  ChangeUiUtil.open(firstConflict.getCommitTransactionId());
                } catch (Exception ex) {
                   OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }
@@ -620,7 +647,8 @@ public class MergeXWidget extends XWidget implements IAdaptable {
 
       @Override
       public void run() {
-         if (conflicts.length != 0) {
+         Conflict[] conflicts = getConflicts();
+         if (conflicts.length > 0) {
             try {
                ChangeUiUtil.open(conflicts[0].getDestBranch());
             } catch (Exception ex) {
@@ -654,6 +682,7 @@ public class MergeXWidget extends XWidget implements IAdaptable {
 
       @Override
       public void run() {
+         Conflict[] conflicts = getConflicts();
          if (conflicts.length != 0) {
             if (conflicts[0].getSourceBranch() != null) {
                ArrayList<String> selections = new ArrayList<String>();
