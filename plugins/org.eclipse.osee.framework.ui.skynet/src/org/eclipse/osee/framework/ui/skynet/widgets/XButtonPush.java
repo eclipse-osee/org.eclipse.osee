@@ -19,6 +19,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
@@ -27,30 +28,30 @@ import org.eclipse.swt.widgets.Listener;
 /**
  * @author Donald G. Dunne
  */
-public class XButton extends XWidget {
+public class XButtonPush extends XWidget {
 
-   protected Label button;
+   protected Button button;
    private Composite parent;
    private Composite bComp;
    protected boolean selected = false;
    private boolean labelAfter = true;
    private Image image;
 
-   public XButton(String displayLabel, String xmlRoot) {
+   public XButtonPush(String displayLabel, String xmlRoot) {
       super(displayLabel, xmlRoot);
    }
 
-   public XButton(String displayLabel) {
+   public XButtonPush(String displayLabel) {
       this(displayLabel, "");
    }
 
-   public XButton(String displayLabel, Image image) {
+   public XButtonPush(String displayLabel, Image image) {
       this(displayLabel, "");
       this.image = image;
    }
 
    @Override
-   public Label getControl() {
+   public Button getControl() {
       return button;
    }
 
@@ -73,15 +74,15 @@ public class XButton extends XWidget {
       }
 
       // Create Text Widgets
-      if (!labelAfter) {
+      if (isDisplayLabel() && !labelAfter) {
          labelWidget = new Label(bComp, SWT.NONE);
          labelWidget.setText(getLabel() + ":");
       }
 
       if (toolkit != null) {
-         button = toolkit.createLabel(bComp, "");
+         button = toolkit.createButton(bComp, "", SWT.PUSH);
       } else {
-         button = new Label(bComp, SWT.PUSH);
+         button = new Button(bComp, SWT.PUSH);
       }
       GridData gd2 = new GridData(GridData.BEGINNING);
       button.setLayoutData(gd2);
@@ -95,7 +96,7 @@ public class XButton extends XWidget {
       GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
       gd.horizontalSpan = horizontalSpan - 1;
 
-      if (labelAfter) {
+      if (isDisplayLabel() && labelAfter) {
          labelWidget = new Label(bComp, SWT.NONE);
          labelWidget.setText(getLabel());
       }
@@ -118,6 +119,7 @@ public class XButton extends XWidget {
       button.setLayoutData(gd);
       updateCheckWidget();
       button.setEnabled(isEditable());
+      button.setText(getLabel());
       if (image != null) {
          button.setImage(image);
       }
@@ -190,7 +192,7 @@ public class XButton extends XWidget {
       this.labelAfter = labelAfter;
    }
 
-   public Label getbutton() {
+   public Button getbutton() {
       return button;
    }
 

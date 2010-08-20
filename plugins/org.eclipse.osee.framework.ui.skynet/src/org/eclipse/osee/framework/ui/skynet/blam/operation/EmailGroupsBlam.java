@@ -21,17 +21,18 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
@@ -39,9 +40,12 @@ import org.eclipse.osee.framework.ui.skynet.util.OseeEmail;
 import org.eclipse.osee.framework.ui.skynet.util.OseeEmail.BodyType;
 import org.eclipse.osee.framework.ui.skynet.util.email.EmailUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactList;
+import org.eclipse.osee.framework.ui.skynet.widgets.XButtonPush;
+import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.HtmlDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
@@ -49,9 +53,10 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  * @author Ryan D. Brooks
  */
 public class EmailGroupsBlam extends AbstractBlam implements XModifiedListener {
-   private XArtifactList templateList;
+   private XArtifactList templateList, groupsList;
    private XText bodyTextBox;
    private XText subjectTextBox;
+   private XCheckBox isBodyHtmlCheckbox;
    private ExecutorService emailTheadPool;
    private final Collection<Future<String>> futures = new ArrayList<Future<String>>(300);
 
@@ -60,64 +65,46 @@ public class EmailGroupsBlam extends AbstractBlam implements XModifiedListener {
       return "Email Groups";
    }
 
+   private EmailGroupsData getEmailGroupsData() {
+      EmailGroupsData data = new EmailGroupsData();
+      data.setSubject(subjectTextBox.get());
+      data.setBody(bodyTextBox.get());
+      data.setBodyIsHtml(isBodyHtmlCheckbox.get());
+      Collection<Artifact> groups = groupsList.getSelectedArtifacts();
+      data.getGroups().addAll(groups);
+      return data;
+   }
+
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      String subject = variableMap.getString("Subject");
-      String body = variableMap.getString("Body");
-      boolean bodyIsHtml = variableMap.getBoolean("Body is html");
-      Collection<Artifact> groups = variableMap.getCollection(Artifact.class, "Groups");
+      EmailGroupsData data = getEmailGroupsData();
+      sendEmailViaThreadPool(data);
+   }
+
+   private void sendEmailViaThreadPool(EmailGroupsData data) throws Exception {
       emailTheadPool = Executors.newFixedThreadPool(30);
       futures.clear();
 
-      HashCollection<Artifact, Artifact> userToGroupMap = new HashCollection<Artifact, Artifact>();
-
-      for (Artifact group : groups) {
-         for (Artifact user : group.getRelatedArtifacts(CoreRelationTypes.Users_User)) {
-            if (user.getSoleAttributeValue(CoreAttributeTypes.Active)) {
-               userToGroupMap.put(user, group);
-            } else {
-               println(String.format("The user %s is not active but is in group %s.", user.getName(), group.getName()));
-            }
-         }
-      }
-
-      TreeSet<Artifact> users = new TreeSet<Artifact>(userToGroupMap.keySet());
+      TreeSet<Artifact> users = new TreeSet<Artifact>(data.getUserToGroupMap().keySet());
       for (Artifact user : users) {
-         sendEmailTo(userToGroupMap.getValues(user), user, subject, body, bodyIsHtml);
+         sendEmailTo(data, (User) user);
       }
       emailTheadPool.shutdown();
       emailTheadPool.awaitTermination(100, TimeUnit.MINUTES);
       for (Future<String> future : futures) {
          println(future.get());
       }
+
    }
 
-   private void sendEmailTo(Collection<Artifact> groups, final Artifact user, String subject, String body, boolean bodyIsHtml) throws OseeCoreException {
+   private void sendEmailTo(EmailGroupsData data, final User user) throws OseeCoreException {
       final String emailAddress = user.getSoleAttributeValue(CoreAttributeTypes.Email, "");
       if (!EmailUtil.isEmailValid(emailAddress)) {
          println(String.format("The email address \"%s\" for user %s is not valid.", emailAddress, user.getName()));
          return;
       }
-      final OseeEmail emailMessage = new OseeEmail(emailAddress, subject, "", BodyType.Html);
-
-      StringBuilder html = new StringBuilder();
-
-      if (bodyIsHtml) {
-         html.append(body);
-      } else {
-         html.append("<pre>");
-         html.append(body);
-         html.append("</pre>");
-      }
-
-      for (Artifact group : groups) {
-         html.append(String.format(
-            "</br>Click <a href=\"%sosee/unsubscribe/group/%d/user/%d\">unsubscribe</a> to stop receiving all emails for the topic \"%s\"",
-            HttpUrlBuilderClient.getInstance().getApplicationServerPrefix(), group.getArtId(), user.getArtId(),
-            group.getName()));
-      }
-      emailMessage.addHTMLBody(html.toString());
-
+      final OseeEmail emailMessage = new OseeEmail(emailAddress, data.getSubject(), "", BodyType.Html);
+      emailMessage.addHTMLBody(data.getHtmlResult(user));
       futures.add(emailTheadPool.submit(new SendEmailCall(user, emailMessage, emailAddress)));
    }
 
@@ -125,6 +112,7 @@ public class EmailGroupsBlam extends AbstractBlam implements XModifiedListener {
    public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
       super.widgetCreating(xWidget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);
       if (xWidget.getLabel().equals("Groups")) {
+         groupsList = (XArtifactList) xWidget;
          XArtifactList listViewer = (XArtifactList) xWidget;
          List<Artifact> groups =
             ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.UserGroup, BranchManager.getCommonBranch());
@@ -136,14 +124,62 @@ public class EmailGroupsBlam extends AbstractBlam implements XModifiedListener {
          templateList.addXModifiedListener(this);
       } else if (xWidget.getLabel().equals("Body")) {
          bodyTextBox = (XText) xWidget;
+      } else if (xWidget.getLabel().equals("Body is html")) {
+         isBodyHtmlCheckbox = (XCheckBox) xWidget;
       } else if (xWidget.getLabel().equals("Subject")) {
          subjectTextBox = (XText) xWidget;
+      } else if (xWidget.getLabel().equals("Preview Message")) {
+         XButtonPush button = (XButtonPush) xWidget;
+         button.setDisplayLabel(false);
+      }
+   }
+
+   @Override
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
+      super.widgetCreated(xWidget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);
+      if (xWidget.getLabel().equals("Preview Message")) {
+         XButtonPush button = (XButtonPush) xWidget;
+         button.addXModifiedListener(new XModifiedListener() {
+
+            @Override
+            public void widgetModified(XWidget widget) {
+               handlePreviewMessage();
+            }
+         });
+      }
+   }
+
+   private void handlePreviewMessage() {
+      try {
+         EmailGroupsData data = getEmailGroupsData();
+         Result result = data.isValid();
+         if (result.isFalse()) {
+            result.popup();
+            return;
+         }
+         HtmlDialog dialog =
+            new HtmlDialog("Email Groups - Preview", String.format(
+               "Subject: %s\n\nSending message to [%d] users from groups [%s]", data.getSubject(),
+               data.getUserToGroupMap().keySet().size(), Artifacts.commaArts(data.getGroups())),
+               data.getHtmlResult(UserManager.getUser()));
+         dialog.open();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
    @Override
    public String getXWidgetsXml() {
-      return "<xWidgets><XWidget xwidgetType=\"XArtifactList\" displayName=\"Groups\" multiSelect=\"true\" /><XWidget xwidgetType=\"XArtifactList\" displayName=\"Template\" /><XWidget xwidgetType=\"XText\" displayName=\"Subject\" /><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Body is html\" defaultValue=\"true\" /><XWidget xwidgetType=\"XText\" displayName=\"Body\" fill=\"Vertically\" /></xWidgets>";
+      // @formatter:off
+      return "<xWidgets>" +
+      		"<XWidget xwidgetType=\"XArtifactList\" displayName=\"Groups\" multiSelect=\"true\" />" +
+      		"<XWidget xwidgetType=\"XArtifactList\" displayName=\"Template\" />" +
+      		"<XWidget xwidgetType=\"XText\" displayName=\"Subject\" />" +
+      		"<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Body is html\" defaultValue=\"true\" />" +
+      		"<XWidget xwidgetType=\"XText\" displayName=\"Body\" fill=\"Vertically\" />" +
+            "<XWidget xwidgetType=\"XButton2\" displayName=\"Preview Message\" />" +
+      		"</xWidgets>";
+      // @formatter:on
    }
 
    @Override
@@ -176,4 +212,5 @@ public class EmailGroupsBlam extends AbstractBlam implements XModifiedListener {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
+
 }

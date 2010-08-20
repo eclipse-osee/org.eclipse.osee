@@ -10,7 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
+import java.util.Collection;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
 
 /**
@@ -32,5 +35,9 @@ public class XArtifactList extends XListViewer {
       super(displayLabel, xmlRoot, xmlSubRoot);
       super.setLabelProvider(new ArtifactLabelProvider());
       super.setContentProvider(new ArrayContentProvider());
+   }
+
+   public Collection<Artifact> getSelectedArtifacts() {
+      return Collections.castMatching(Artifact.class, getSelected());
    }
 }

@@ -149,6 +149,7 @@ public class XWidgetParser {
       return xmlData;
    }
 
+   @SuppressWarnings("unused")
    private static DynamicXWidgetLayoutData extractWorkAttribute(DynamicXWidgetLayout dynamicXWidgetLayout, Element widget) throws OseeCoreException {
       DynamicXWidgetLayoutData dynamicXWidgetLayoutData = new DynamicXWidgetLayoutData(dynamicXWidgetLayout);
 
