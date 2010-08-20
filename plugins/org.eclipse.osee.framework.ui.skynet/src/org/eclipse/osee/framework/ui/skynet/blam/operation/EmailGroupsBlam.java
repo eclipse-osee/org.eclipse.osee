@@ -78,6 +78,17 @@ public class EmailGroupsBlam extends AbstractBlam implements XModifiedListener {
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       EmailGroupsData data = getEmailGroupsData();
+      Result result = data.isValid();
+      if (result.isFalse()) {
+         result.popup();
+         return;
+      }
+      /**
+       * Reload group artifact to get updates to users that have un-subscribe since un-subscribe is done via the server
+       * and changes tables directly, clients won't know. This can be removed when server uses artifact framework to
+       * un-subscribe users and send appropriate events.
+       */
+      ArtifactQuery.reloadArtifacts(data.getGroups());
       sendEmailViaThreadPool(data);
    }
 
