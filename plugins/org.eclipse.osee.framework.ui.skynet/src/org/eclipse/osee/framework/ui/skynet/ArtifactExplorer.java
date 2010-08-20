@@ -1359,6 +1359,18 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
                   treeViewer.remove(art);
                }
                try {
+                  if (!transData.cacheDeletedArtifacts.isEmpty()) {
+                     getTreeViewer().remove(
+                        transData.cacheDeletedArtifacts.toArray(new Object[transData.cacheDeletedArtifacts.size()]));
+                  }
+                  for (Artifact artifact : transData.cacheChangedArtifacts) {
+                     // Don't refresh deleted artifacts
+                     if (artifact.isDeleted()) {
+                        continue;
+                     }
+                     getTreeViewer().update(artifact, null);
+                  }
+
                   treeViewer.update(
                      transData.getArtifactsInRelations(ChangeType.Changed,
                         CoreRelationTypes.Default_Hierarchical__Child).toArray(), null);
