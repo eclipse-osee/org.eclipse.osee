@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,69 +28,47 @@ public class Collections {
    }
 
    /**
-    * An flexible alternative for converting a Collection to a String.
+    * A flexible alternative for converting a Collection to a String.
     * 
-    * @param c The Collection to convert to a String
-    * @param start The String to place at the beginning of the returned String
+    * @param items The Collection to convert to a String
+    * @param prefix The String to place at the beginning of the returned String
     * @param separator The String to place in between elements of the Collection c.
-    * @param end The String to place at the end of the returned String
+    * @param suffix The String to place at the end of the returned String
     * @return A String which starts with 'start', followed by the elements in the Collection c separated by 'separator',
     * ending with 'end'.
     */
-   @SuppressWarnings("unchecked")
-   public static String toString(Collection c, String start, String separator, String end) {
-      Iterator i = c.iterator();
-      StringBuilder myString = new StringBuilder();
+   public static String toString(Collection<?> items, String prefix, String separator, String suffix) {
+      StringBuilder strB = new StringBuilder();
 
-      if (start != null) {
-         myString.append(start);
+      if (prefix != null) {
+         strB.append(prefix);
       }
 
       boolean first = true;
-      while (i.hasNext()) {
-         if (!first) {
-            myString.append(separator);
+      for (Object item : items) {
+         if (first) {
+            first = false;
+         } else {
+            strB.append(separator);
          }
-         myString.append(i.next().toString());
-         first = false;
+         strB.append((String.valueOf(item)));
       }
 
-      if (end != null) {
-         myString.append(end);
+      if (suffix != null) {
+         strB.append(suffix);
       }
 
-      return myString.toString();
+      return strB.toString();
    }
 
-   public static String toString(String separator, Object... objects) {
-      Collection<Object> objectsCol = new ArrayList<Object>(objects.length);
-      for (Object obj : objects) {
-         objectsCol.add(obj);
-      }
-      return toString(objectsCol, null, separator, null);
+   public static String toString(String separator, Object... items) {
+      return toString(separator, Arrays.asList(items));
    }
 
    public static String toString(String separator, Collection<?> c) {
       return toString(c, null, separator, null);
    }
 
-   public static String toString(String separator, String[] array) {
-      List<String> list = new ArrayList<String>();
-      for (int x = 0; x < array.length - 1; x++) {
-         list.add(array[x]);
-      }
-      return toString(list, null, separator, null);
-   }
-
-   public static String toString(String separator, Integer[] array) {
-      List<String> list = new ArrayList<String>();
-      for (int x = 0; x < array.length - 1; x++) {
-         list.add(String.valueOf(array[x]));
-      }
-      return toString(list, null, separator, null);
-   }
-
-   @SuppressWarnings("unchecked")
    public static <A> List<Collection<A>> subDivide(List<A> collection, int size) {
       List<Collection<A>> result = new ArrayList<Collection<A>>();
       for (int i = 0; i < collection.size() / size + 1; i++) {
@@ -101,7 +78,7 @@ public class Collections {
          } else {
             maxLength = i * size + size;
          }
-         List sublist = new ArrayList();
+         List<A> sublist = new ArrayList<A>();
          for (int j = i * size; j < maxLength; j++) {
             sublist.add(collection.get(j));
          }
@@ -180,13 +157,12 @@ public class Collections {
       return listA.size() == setIntersection(listA, listB).size();
    }
 
-   @SuppressWarnings("unchecked")
-   public static Set toSet(Collection collection) {
-      Set set = null;
+   public static <T> Set<T> toSet(Collection<T> collection) {
+      Set<T> set = null;
       if (collection instanceof Set) {
-         set = (Set) collection;
+         set = (Set<T>) collection;
       } else {
-         set = new LinkedHashSet();
+         set = new LinkedHashSet<T>();
          set.addAll(collection);
       }
       return set;
