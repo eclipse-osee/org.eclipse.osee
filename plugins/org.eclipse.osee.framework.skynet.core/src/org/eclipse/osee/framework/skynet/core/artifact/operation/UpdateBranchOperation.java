@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.update.ConflictResolverOperation;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Roberto E. Escobar
@@ -31,11 +32,9 @@ import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 public class UpdateBranchOperation extends AbstractOperation {
    private final Branch originalBranch;
    private final ConflictResolverOperation resolver;
-   private final String pluginId;
 
-   public UpdateBranchOperation(final String pluginId, final Branch branch, final ConflictResolverOperation resolver) {
-      super("Update Branch", pluginId);
-      this.pluginId = pluginId;
+   public UpdateBranchOperation(final Branch branch, final ConflictResolverOperation resolver) {
+      super("Update Branch", Activator.PLUGIN_ID);
       this.originalBranch = branch;
       this.resolver = resolver;
    }
@@ -98,7 +97,7 @@ public class UpdateBranchOperation extends AbstractOperation {
       ConflictManagerExternal conflictManager = new ConflictManagerExternal(newWorkingBranch, originalBranch);
       IOperation operation;
       if (!conflictManager.remainingConflictsExist()) {
-         operation = new FinishUpdateBranchOperation(pluginId, conflictManager, true, false);
+         operation = new FinishUpdateBranchOperation(conflictManager, true, false);
       } else {
          operation = resolver;
          resolver.setConflictManager(conflictManager);

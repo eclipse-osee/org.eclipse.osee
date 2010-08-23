@@ -313,7 +313,7 @@ public class BranchStateTest {
 
          // Run FinishBranchUpdate and check
          FinishUpdateBranchOperation finishUpdateOperation =
-            new FinishUpdateBranchOperation("Update Branch Test 2", resolverOperation.getConflictManager(), true, true);
+            new FinishUpdateBranchOperation(resolverOperation.getConflictManager(), true, true);
          Operations.executeWork(finishUpdateOperation, new NullProgressMonitor(), -1);
 
          IStatus status1 = getCauseStatus(finishUpdateOperation.getStatus());

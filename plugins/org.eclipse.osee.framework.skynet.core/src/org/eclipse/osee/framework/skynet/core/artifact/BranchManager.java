@@ -203,7 +203,7 @@ public class BranchManager {
     * Update branch
     */
    public static Job updateBranch(final Branch branch, final ConflictResolverOperation resolver) {
-      IOperation operation = new UpdateBranchOperation(Activator.PLUGIN_ID, branch, resolver);
+      IOperation operation = new UpdateBranchOperation(branch, resolver);
       return Operations.executeAsJob(operation, true);
    }
 
@@ -213,8 +213,7 @@ public class BranchManager {
     */
    public static Job completeUpdateBranch(final ConflictManagerExternal conflictManager, final boolean archiveSourceBranch, final boolean overwriteUnresolvedConflicts) {
       IOperation operation =
-         new FinishUpdateBranchOperation(Activator.PLUGIN_ID, conflictManager, archiveSourceBranch,
-            overwriteUnresolvedConflicts);
+         new FinishUpdateBranchOperation(conflictManager, archiveSourceBranch, overwriteUnresolvedConflicts);
       return Operations.executeAsJob(operation, true);
    }
 
@@ -328,7 +327,11 @@ public class BranchManager {
       int populateBaseTxFromAddressingQueryId = ArtifactLoader.getNewQueryId();
       List<Object[]> datas = new LinkedList<Object[]>();
       for (int artId : expectedArtIds) {
-         datas.add(new Object[] {populateBaseTxFromAddressingQueryId, insertTime, artId, sourceBranch.getId(),
+         datas.add(new Object[] {
+            populateBaseTxFromAddressingQueryId,
+            insertTime,
+            artId,
+            sourceBranch.getId(),
             SQL3DataType.INTEGER});
       }
       MergeBranch mergeBranch = null;

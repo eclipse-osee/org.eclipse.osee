@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Roberto E. Escobar
@@ -32,8 +33,8 @@ public class FinishUpdateBranchOperation extends AbstractOperation {
     * @param operationName
     * @param pluginId
     */
-   public FinishUpdateBranchOperation(String pluginId, ConflictManagerExternal conflictManager, boolean archiveSourceBranch, boolean overwriteUnresolvedConflicts) {
-      super("Complete Branch Update", pluginId);
+   public FinishUpdateBranchOperation(ConflictManagerExternal conflictManager, boolean archiveSourceBranch, boolean overwriteUnresolvedConflicts) {
+      super("Complete Branch Update", Activator.PLUGIN_ID);
       this.conflictManager = conflictManager;
       this.archiveSourceBranch = archiveSourceBranch;
       this.overwriteUnresolvedConflicts = overwriteUnresolvedConflicts;
