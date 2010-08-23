@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.database.core.OseeSql;
 public class ClientSessionManager {
 
    private ClientSessionManager() {
+      //
    }
 
    public static final String getStatusId() {
