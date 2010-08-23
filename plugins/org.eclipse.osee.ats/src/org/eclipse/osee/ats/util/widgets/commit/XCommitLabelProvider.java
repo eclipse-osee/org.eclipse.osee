@@ -16,13 +16,13 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
@@ -71,7 +71,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
             }
             return null;
          } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          }
       } else if (xCol.equals(CommitXManagerFactory.Merge_Col)) {
          try {
@@ -82,7 +82,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
             }
             return null;
          } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          }
       }
       return null;

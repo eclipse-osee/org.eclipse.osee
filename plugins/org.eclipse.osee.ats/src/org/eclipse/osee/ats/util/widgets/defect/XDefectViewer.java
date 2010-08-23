@@ -48,7 +48,6 @@ import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -316,7 +315,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IArtifact
             xViewer.set(reviewArt.getDefectManager().getDefectItems());
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       handleExpandCollapseDefectTableList();
       refresh();
@@ -365,7 +364,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IArtifact
             deleteDefectHelper(items, persist, transaction);
             transaction.execute();
          } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
    }
@@ -402,7 +401,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IArtifact
             notifyXModifiedListeners();
             loadTable();
          } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
    }
@@ -508,7 +507,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IArtifact
          }
          html.append(AHTML.endBorderTable());
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          return "Defect Item Exception - " + ex.getLocalizedMessage();
       }
       return html.toString();

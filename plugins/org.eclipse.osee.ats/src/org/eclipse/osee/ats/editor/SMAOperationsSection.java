@@ -36,7 +36,6 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.XButtonViaAction;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
@@ -75,7 +74,7 @@ public class SMAOperationsSection extends SectionPart {
          try {
             advOperation = item;
          } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          }
       }
    }

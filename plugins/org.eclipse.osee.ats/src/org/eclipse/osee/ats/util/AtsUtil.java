@@ -63,7 +63,6 @@ import org.eclipse.osee.framework.skynet.core.utility.IncrementingNum;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeEditor;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
@@ -295,7 +294,7 @@ public final class AtsUtil {
          try {
             openATSAction(art, AtsOpenOption.OpenOneOrPopupSelect);
          } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
             AWorkbench.popup("ERROR", ex.getLocalizedMessage());
          }
       } else {

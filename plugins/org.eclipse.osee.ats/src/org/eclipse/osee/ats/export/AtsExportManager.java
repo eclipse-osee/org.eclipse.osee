@@ -38,7 +38,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.search.ui.text.Match;
@@ -103,7 +102,7 @@ public class AtsExportManager extends Action {
             } else if (selectedObject instanceof ActionArtifact) {
                smaArts.addAll(((ActionArtifact) selectedObject).getTeamWorkFlowArtifacts());
             } else {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, "Expected selection to be of type Artifact");
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Expected selection to be of type Artifact");
             }
          }
       }

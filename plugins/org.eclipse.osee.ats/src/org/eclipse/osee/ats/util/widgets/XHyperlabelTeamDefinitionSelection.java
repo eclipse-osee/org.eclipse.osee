@@ -13,13 +13,13 @@ package org.eclipse.osee.ats.util.widgets;
 import java.util.Collection;
 import java.util.HashSet;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionTreeWithChildrenDialog;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelCmdValueSelection;
 
 /**
@@ -76,7 +76,7 @@ public class XHyperlabelTeamDefinitionSelection extends XHyperlinkLabelCmdValueS
          }
          return true;
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return false;
    }

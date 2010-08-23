@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
 
 /**
@@ -39,7 +38,7 @@ public class AtsLoadConfigArtifactsOperation extends AbstractOperation {
    public synchronized void ensureLoaded() throws OseeCoreException {
       if (!loaded) {
          loaded = true;
-         OseeLog.log(SkynetGuiPlugin.class, Level.INFO, "Loading ATS Configuration");
+         OseeLog.log(AtsPlugin.class, Level.INFO, "Loading ATS Configuration");
          Artifact headingArt = AtsFolderUtil.getFolder(AtsFolder.Ats_Heading);
          // Loading artifacts will cache them in ArtifactCache
          RelationManager.getRelatedArtifacts(Collections.singleton(headingArt), 8,

@@ -45,7 +45,6 @@ import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -272,7 +271,7 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IArtifa
             xViewer.set(reviewArt.getUserRoleManager().getUserRoles());
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       refresh();
    }
@@ -298,7 +297,7 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IArtifa
             removeUserRoleHelper(items, persist, transaction);
             transaction.execute();
          } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
    }
@@ -320,7 +319,7 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IArtifa
          notifyXModifiedListeners();
          loadTable();
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -418,7 +417,7 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IArtifa
          }
          html.append(AHTML.endBorderTable());
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          return "User Role Item Exception - " + ex.getLocalizedMessage();
       }
       return html.toString();

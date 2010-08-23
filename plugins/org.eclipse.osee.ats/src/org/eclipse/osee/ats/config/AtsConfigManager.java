@@ -49,7 +49,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
@@ -255,7 +254,7 @@ public class AtsConfigManager extends AbstractOperation {
                try {
                   RendererManager.open(workFlowDefinition.getArtifact(), PresentationType.SPECIALIZED_EDIT, monitor);
                } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }
                return Status.OK_STATUS;
             }

@@ -77,7 +77,6 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerAttributeColumn;
@@ -126,7 +125,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
             return;
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
@@ -137,7 +136,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
                   remove(loadedArtifacts.getLoadedArtifacts().toArray());
                }
             } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
             }
          }
       });
@@ -538,7 +537,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
             ArtifactPromptChange.promptChangeAttribute(attributeType, useArts, persist);
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 

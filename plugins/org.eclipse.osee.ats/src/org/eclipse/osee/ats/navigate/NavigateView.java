@@ -48,7 +48,6 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
@@ -94,7 +93,7 @@ public class NavigateView extends ViewPart implements IActionable {
       List<IOperation> ops = new ArrayList<IOperation>();
       ops.add(AtsBulkLoad.getConfigLoadingOperation());
       ops.add(new AtsNavigateViewItemsOperation());
-      IOperation operation = new CompositeOperation("Load ATS Navigator", SkynetGuiPlugin.PLUGIN_ID, ops);
+      IOperation operation = new CompositeOperation("Load ATS Navigator", AtsPlugin.PLUGIN_ID, ops);
       Operations.executeAsJob(operation, false, Job.LONG, new ReloadJobChangeAdapter(this));
    }
 
@@ -293,7 +292,7 @@ public class NavigateView extends ViewPart implements IActionable {
             }
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, "NavigateView error on init", ex);
+         OseeLog.log(AtsPlugin.class, Level.WARNING, "NavigateView error on init", ex);
       }
    }
 

@@ -46,7 +46,6 @@ import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
@@ -83,7 +82,7 @@ public class TaskXViewer extends WorldXViewer {
          try {
             showRelatedTasksAction = item;
          } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          }
       }
    }

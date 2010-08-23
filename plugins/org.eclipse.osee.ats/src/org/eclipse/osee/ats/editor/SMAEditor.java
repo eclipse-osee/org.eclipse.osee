@@ -656,7 +656,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
             });
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
    }
 

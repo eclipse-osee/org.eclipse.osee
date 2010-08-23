@@ -15,12 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
@@ -78,7 +78,7 @@ public class AtsWorkflowConfigRenderer extends DefaultArtifactRenderer {
                   IEditorInput input = new AtsWorkflowConfigEditorInput(new WorkFlowDefinition(artifact));
                   AWorkbench.getActivePage().openEditor(input, AtsWorkflowConfigEditor.EDITOR_ID);
                } catch (CoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }
          }

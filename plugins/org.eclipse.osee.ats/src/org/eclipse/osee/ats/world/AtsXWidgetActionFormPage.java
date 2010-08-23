@@ -142,7 +142,7 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
          }
          parameterSection.setExpanded(true);
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
