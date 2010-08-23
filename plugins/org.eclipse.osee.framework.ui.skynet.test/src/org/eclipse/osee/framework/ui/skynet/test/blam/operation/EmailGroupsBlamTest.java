@@ -5,11 +5,15 @@
  */
 package org.eclipse.osee.framework.ui.skynet.test.blam.operation;
 
+import java.io.ByteArrayOutputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.HttpProcessor;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -18,7 +22,6 @@ import org.eclipse.osee.framework.skynet.core.test.util.FrameworkTestUtil;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.EmailGroupsBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.EmailGroupsData;
-import org.eclipse.swt.program.Program;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -78,10 +81,14 @@ public class EmailGroupsBlamTest extends EmailGroupsBlam {
    }
 
    @org.junit.Test
-   public void testEmailGroupsUnsubscribe() throws OseeCoreException {
+   public void testEmailGroupsUnsubscribe() throws OseeCoreException, MalformedURLException {
       Assert.assertEquals("Should be subscribed to the user group", Arrays.asList(UserManager.getUser()),
          newGroup.getRelatedArtifacts(CoreRelationTypes.Users_User));
-      Program.launch("http://localhost:8089/osee/unsubscribe/group/" + newGroup.getArtId() + "/user/" + UserManager.getUser().getArtId());
+      //      Program.launch("http://localhost:8089/osee/unsubscribe/group/" + newGroup.getArtId() + "/user/" + UserManager.getUser().getArtId());
+      URL url = new URL("http://localhost:8089/osee/unsubscribe");
+      String xml =
+         "<request><groupId>" + newGroup.getArtId() + "</groupId><userId>" + UserManager.getUser().getArtId() + "</userId></request>";
+      HttpProcessor.delete(url, xml, "text/xml", "UTF-8", new ByteArrayOutputStream(5));
 
       // TODO how test UnsubscribeServlet.doDelete without user interaction
       newGroup.reloadAttributesAndRelations();

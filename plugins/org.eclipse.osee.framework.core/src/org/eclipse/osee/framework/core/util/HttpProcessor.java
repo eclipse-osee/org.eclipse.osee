@@ -23,7 +23,6 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethodBase;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
-import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -139,6 +138,46 @@ public class HttpProcessor {
          }
       }
       return response;
+   }
+
+   public static AcquireResult delete(URL url, String xml, String contentType, String encoding, OutputStream outputStream) throws OseeCoreException {
+      AcquireResult result = new AcquireResult();
+      int statusCode = -1;
+
+      org.eclipse.osee.framework.core.util.DeleteMethod method = new DeleteMethod(url.toString());
+
+      InputStream httpInputStream = null;
+      try {
+         method.setRequestHeader(CONTENT_ENCODING, encoding);
+         method.setRequestEntity(new InputStreamRequestEntity(Lib.stringToInputStream(xml), contentType));
+
+         method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
+
+         statusCode = getHttpClient().executeMethod(method);
+         httpInputStream = method.getResponseBodyAsStream();
+         result.setContentType(getContentType(method));
+         result.setEncoding(method.getResponseCharSet());
+         if (statusCode == HttpStatus.SC_ACCEPTED || statusCode == HttpStatus.SC_OK) {
+            Lib.inputStreamToOutputStream(httpInputStream, outputStream);
+         } else {
+            String exceptionString = Lib.inputStreamToString(httpInputStream);
+            throw new OseeCoreException(exceptionString);
+         }
+      } catch (Exception ex) {
+         OseeExceptions.wrapAndThrow(ex);
+      } finally {
+         try {
+            result.setCode(statusCode);
+            if (httpInputStream != null) {
+               httpInputStream.close();
+            }
+         } catch (Exception ex) {
+            // Do Nothing;
+         } finally {
+            method.releaseConnection();
+         }
+      }
+      return result;
    }
 
    public static AcquireResult post(URL url, InputStream inputStream, String contentType, String encoding, OutputStream outputStream) throws OseeCoreException {
