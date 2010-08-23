@@ -30,8 +30,14 @@ public class OseeProperties {
    public static final String OSEE_DB_CONNECTION_ID = "osee.db.connection.id";
    private static final String OSEE_CONNECTION_INFO_URI = "osee.connection.info.uri";
    private static final String OSEE_DERBY_SERVER = "osee.derby.server";
+   private static final String OSEE_DEFAULT_BROKER_URI = "osee.default.broker.uri";
 
    protected OseeProperties() {
+      // Utility Class
+   }
+
+   public static String getOseeDefaultBrokerUri() {
+      return System.getProperty(OSEE_DEFAULT_BROKER_URI);
    }
 
    public static Pair<String, Integer> getDerbyServerAddress() {

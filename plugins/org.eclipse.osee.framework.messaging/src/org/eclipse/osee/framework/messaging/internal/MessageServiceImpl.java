@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.ConnectionNode;
 import org.eclipse.osee.framework.messaging.ConnectionNodeFactory;
@@ -42,7 +43,7 @@ public class MessageServiceImpl implements MessageService {
 
    private URI getDefaultURI() {
       URI defaultURI = null;
-      String uri = System.getProperty("osee.default.broker.uri");
+      String uri = OseeProperties.getOseeDefaultBrokerUri();
       if (uri == null) {
          uri = VM_URI;
       }
@@ -80,6 +81,7 @@ public class MessageServiceImpl implements MessageService {
       return connectionNodes.isEmpty();
    }
 
+   @SuppressWarnings("unused")
    @Override
    public ConnectionNode get(NodeInfo nodeInfo) throws OseeCoreException {
       ConnectionNode node = connectionNodes.get(nodeInfo);
