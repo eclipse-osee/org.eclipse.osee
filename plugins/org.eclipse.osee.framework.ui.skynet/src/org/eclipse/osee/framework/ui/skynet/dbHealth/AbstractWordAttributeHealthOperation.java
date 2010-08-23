@@ -43,6 +43,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
  * @author Roberto E. Escobar
@@ -61,8 +62,7 @@ public abstract class AbstractWordAttributeHealthOperation extends DatabaseHealt
       List<AttrData> attributesWithErrors = new ArrayList<AttrData>();
 
       IOperation operation =
-         new FindAllWordAttributesNeedingFix(String.format("Find all %s enabled", baseName), getStatus().getPlugin(),
-            attributesWithErrors);
+         new FindAllWordAttributesNeedingFix(String.format("Find all %s enabled", baseName), attributesWithErrors);
       doSubWork(operation, monitor, 0.40);
 
       setItemsToFix(attributesWithErrors.size());
@@ -70,7 +70,9 @@ public abstract class AbstractWordAttributeHealthOperation extends DatabaseHealt
       appendToDetails(AHTML.beginMultiColumnTable(100, 1));
       appendToDetails(AHTML.addHeaderRowMultiColumnTable(new String[] {"HRID", "GAMMA ID", "URI"}));
       for (AttrData attrData : attributesWithErrors) {
-         appendToDetails(AHTML.addRowMultiColumnTable(new String[] {attrData.getHrid(), attrData.getGammaId(),
+         appendToDetails(AHTML.addRowMultiColumnTable(new String[] {
+            attrData.getHrid(),
+            attrData.getGammaId(),
             attrData.getUri()}));
       }
       appendToDetails(AHTML.endMultiColumnTable());
@@ -107,8 +109,8 @@ public abstract class AbstractWordAttributeHealthOperation extends DatabaseHealt
 
       private final List<AttrData> attributesWithErrors;
 
-      public FindAllWordAttributesNeedingFix(String operationName, String pluginId, List<AttrData> attributesWithErrors) {
-         super(operationName, pluginId);
+      public FindAllWordAttributesNeedingFix(String operationName, List<AttrData> attributesWithErrors) {
+         super(operationName, SkynetGuiPlugin.PLUGIN_ID);
          this.attributesWithErrors = attributesWithErrors;
       }
 

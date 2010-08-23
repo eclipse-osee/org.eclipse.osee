@@ -228,7 +228,7 @@ public class OseeTypesImportPage extends WizardDataTransferPage {
       if (status.isOK()) {
          setErrorMessage(null);
       } else {
-         setErrorMessage(status.getChildren()[0].getMessage());
+         setErrorMessage(status.getMessage());
       }
       return true;
    }

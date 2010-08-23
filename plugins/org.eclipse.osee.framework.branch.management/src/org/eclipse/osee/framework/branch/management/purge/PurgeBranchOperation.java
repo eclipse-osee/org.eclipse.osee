@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.branch.management.purge;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.enums.StorageState;
@@ -27,7 +26,6 @@ import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
-import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Megumi Telles
@@ -109,23 +107,11 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
       purgeFromTable("Conflict", DELETE_FROM_CONFLICT, 0.01, branch.getId());
       purgeFromTable("Merge", DELETE_FROM_MERGE, 0.01, branch.getId(), branch.getParentBranch().getId());
       purgeFromTable("Branch", DELETE_FROM_BRANCH_TABLE, 0.01, branch.getId());
-   }
 
-   @Override
-   protected void doFinally(IProgressMonitor monitor) {
-      super.doFinally(monitor);
-
-      if (getStatus().isOK()) {
-         BranchCache branchCache;
-         try {
-            branchCache = cachingService.getOseeCachingService().getBranchCache();
-            branch.setStorageState(StorageState.PURGED);
-            branchCache.storeItems(branch);
-            branchCache.decache(branch);
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
-         }
-      }
+      BranchCache branchCache = cachingService.getOseeCachingService().getBranchCache();
+      branch.setStorageState(StorageState.PURGED);
+      branchCache.storeItems(branch);
+      branchCache.decache(branch);
    }
 
    private void purgeGammas(String tableName, double percentage) throws OseeDataStoreException {
