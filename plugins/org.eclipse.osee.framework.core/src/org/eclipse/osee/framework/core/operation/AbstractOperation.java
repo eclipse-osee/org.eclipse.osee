@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.core.internal.Activator;
 /**
  * This class is the basic unit of work for OSEE. All operations should be designed such that they can be chained and/or
  * composed into composite operations.
- *
+ * 
  * @author Roberto E. Escobar
  * @author Ryan D. Brooks
  */
@@ -196,5 +196,14 @@ public abstract class AbstractOperation implements IOperation {
    @Override
    public int getTotalWorkUnits() {
       return IOperation.TOTAL_WORK;
+   }
+
+   @Override
+   public String toString() {
+      return getName();
+   }
+
+   protected String getPluginId() {
+      return pluginId;
    }
 }
