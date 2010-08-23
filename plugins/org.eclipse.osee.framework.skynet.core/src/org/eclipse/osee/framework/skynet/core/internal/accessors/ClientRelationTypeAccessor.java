@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.core.model.cache.IOseeCache;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.core.model.type.RelationTypeFactory;
-import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 
 /**
  * @author Roberto E. Escobar
@@ -30,14 +29,16 @@ import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider
 public class ClientRelationTypeAccessor extends AbstractClientDataAccessor<RelationType> {
 
    private final AbstractOseeCache<ArtifactType> artCache;
+   private final RelationTypeFactory relationTypeFactory;
 
-   public ClientRelationTypeAccessor(IOseeModelFactoryServiceProvider factoryProvider, AbstractOseeCache<ArtifactType> artCache) {
-      super(factoryProvider);
+   public ClientRelationTypeAccessor(RelationTypeFactory relationTypeFactory, AbstractOseeCache<ArtifactType> artCache) {
+      super();
+      this.relationTypeFactory = relationTypeFactory;
       this.artCache = artCache;
    }
 
-   protected RelationTypeFactory getFactory() throws OseeCoreException {
-      return getOseeFactoryService().getRelationTypeFactory();
+   private RelationTypeFactory getFactory() {
+      return relationTypeFactory;
    }
 
    @Override

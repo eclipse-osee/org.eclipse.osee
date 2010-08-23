@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.ITransactionDataAccessor;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
-import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 import org.eclipse.osee.framework.skynet.core.artifact.HttpClientMessage;
 
 /**
@@ -34,12 +33,12 @@ import org.eclipse.osee.framework.skynet.core.artifact.HttpClientMessage;
  */
 public class ClientTransactionAccessor implements ITransactionDataAccessor {
 
-   private final IOseeModelFactoryServiceProvider factoryProvider;
+   private final TransactionRecordFactory txFactory;
    private final BranchCache branchCache;
 
-   public ClientTransactionAccessor(IOseeModelFactoryServiceProvider factoryProvider, BranchCache branchCache) {
+   public ClientTransactionAccessor(TransactionRecordFactory txFactory, BranchCache branchCache) {
       super();
-      this.factoryProvider = factoryProvider;
+      this.txFactory = txFactory;
       this.branchCache = branchCache;
    }
 
@@ -67,7 +66,6 @@ public class ClientTransactionAccessor implements ITransactionDataAccessor {
    }
 
    protected void requestUpdateMessage(TransactionCache cache, CacheUpdateRequest updateRequest) throws OseeCoreException {
-      TransactionRecordFactory factory = factoryProvider.getOseeFactoryService().getTransactionFactory();
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("function", CacheOperation.UPDATE.name());
 
@@ -76,7 +74,7 @@ public class ClientTransactionAccessor implements ITransactionDataAccessor {
             CoreTranslatorId.OSEE_CACHE_UPDATE_REQUEST, updateRequest, CoreTranslatorId.TX_CACHE_UPDATE_RESPONSE);
       for (TransactionRecord row : response.getTxRows()) {
          TransactionRecord record =
-            factory.createOrUpdate(cache, row.getId(), row.getBranchId(), row.getComment(), row.getTimeStamp(),
+            txFactory.createOrUpdate(cache, row.getId(), row.getBranchId(), row.getComment(), row.getTimeStamp(),
                row.getAuthor(), row.getCommit(), row.getTxType());
          record.setBranchCache(branchCache);
          record.clearDirty();

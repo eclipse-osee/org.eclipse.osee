@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.core.model.cache.IOseeCache;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.model.type.AttributeTypeFactory;
 import org.eclipse.osee.framework.core.model.type.OseeEnumType;
-import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 
 /**
  * @author Roberto E. Escobar
@@ -30,14 +29,16 @@ import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider
 public class ClientAttributeTypeAccessor extends AbstractClientDataAccessor<AttributeType> {
 
    private final AbstractOseeCache<OseeEnumType> enumCache;
+   private final AttributeTypeFactory attributeTypeFactory;
 
-   public ClientAttributeTypeAccessor(IOseeModelFactoryServiceProvider factoryProvider, AbstractOseeCache<OseeEnumType> enumCache) {
-      super(factoryProvider);
+   public ClientAttributeTypeAccessor(AttributeTypeFactory attributeTypeFactory, AbstractOseeCache<OseeEnumType> enumCache) {
+      super();
+      this.attributeTypeFactory = attributeTypeFactory;
       this.enumCache = enumCache;
    }
 
-   protected AttributeTypeFactory getFactory() throws OseeCoreException {
-      return getOseeFactoryService().getAttributeTypeFactory();
+   private AttributeTypeFactory getFactory() {
+      return attributeTypeFactory;
    }
 
    @Override

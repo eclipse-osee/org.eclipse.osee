@@ -20,19 +20,21 @@ import org.eclipse.osee.framework.core.message.OseeEnumTypeCacheUpdateResponse;
 import org.eclipse.osee.framework.core.model.cache.IOseeCache;
 import org.eclipse.osee.framework.core.model.type.OseeEnumType;
 import org.eclipse.osee.framework.core.model.type.OseeEnumTypeFactory;
-import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 
 /**
  * @author Roberto E. Escobar
  */
 public class ClientOseeEnumTypeAccessor extends AbstractClientDataAccessor<OseeEnumType> {
 
-   public ClientOseeEnumTypeAccessor(IOseeModelFactoryServiceProvider factoryProvider) {
-      super(factoryProvider);
+   private final OseeEnumTypeFactory enumTypeFactory;
+
+   public ClientOseeEnumTypeAccessor(OseeEnumTypeFactory enumTypeFactory) {
+      super();
+      this.enumTypeFactory = enumTypeFactory;
    }
 
-   protected OseeEnumTypeFactory getFactory() throws OseeCoreException {
-      return getOseeFactoryService().getOseeEnumTypeFactory();
+   private OseeEnumTypeFactory getFactory() {
+      return enumTypeFactory;
    }
 
    @Override

@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.core.model.BranchFactory;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.IOseeCache;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
-import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.HttpClientMessage;
@@ -43,9 +42,11 @@ public class ClientBranchAccessor extends AbstractClientDataAccessor<Branch> {
 
    private final TransactionCache transactionCache;
    private BranchCache branchCache;
+   private final BranchFactory branchFactory;
 
-   public ClientBranchAccessor(IOseeModelFactoryServiceProvider factoryProvider, TransactionCache transactionCache) {
-      super(factoryProvider);
+   public ClientBranchAccessor(BranchFactory branchFactory, TransactionCache transactionCache) {
+      super();
+      this.branchFactory = branchFactory;
       this.transactionCache = transactionCache;
    }
 
@@ -53,8 +54,8 @@ public class ClientBranchAccessor extends AbstractClientDataAccessor<Branch> {
       this.branchCache = branchCache;
    }
 
-   protected BranchFactory getFactory() throws OseeCoreException {
-      return getOseeFactoryService().getBranchFactory();
+   private BranchFactory getFactory() {
+      return branchFactory;
    }
 
    @Override

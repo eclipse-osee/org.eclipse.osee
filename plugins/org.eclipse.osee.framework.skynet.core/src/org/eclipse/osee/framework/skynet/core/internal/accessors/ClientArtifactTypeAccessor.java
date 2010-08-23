@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.core.model.cache.IOseeCache;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.ArtifactTypeFactory;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
-import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.Triplet;
@@ -39,14 +38,17 @@ public class ClientArtifactTypeAccessor extends AbstractClientDataAccessor<Artif
    private final AbstractOseeCache<AttributeType> attrCache;
    private final AbstractOseeCache<Branch> branchCache;
 
-   public ClientArtifactTypeAccessor(IOseeModelFactoryServiceProvider factoryProvider, AbstractOseeCache<AttributeType> attrCache, AbstractOseeCache<Branch> branchCache) {
-      super(factoryProvider);
+   private final ArtifactTypeFactory artifactTypeFactory;
+
+   public ClientArtifactTypeAccessor(ArtifactTypeFactory artifactTypeFactory, AbstractOseeCache<AttributeType> attrCache, AbstractOseeCache<Branch> branchCache) {
+      super();
+      this.artifactTypeFactory = artifactTypeFactory;
       this.attrCache = attrCache;
       this.branchCache = branchCache;
    }
 
-   protected ArtifactTypeFactory getFactory() throws OseeCoreException {
-      return getOseeFactoryService().getArtifactTypeFactory();
+   private ArtifactTypeFactory getFactory() {
+      return artifactTypeFactory;
    }
 
    @Override

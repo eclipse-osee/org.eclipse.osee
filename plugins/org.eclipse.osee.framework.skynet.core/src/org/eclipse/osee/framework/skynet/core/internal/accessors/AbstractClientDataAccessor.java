@@ -21,8 +21,6 @@ import org.eclipse.osee.framework.core.message.CacheUpdateRequest;
 import org.eclipse.osee.framework.core.model.IOseeStorable;
 import org.eclipse.osee.framework.core.model.cache.IOseeCache;
 import org.eclipse.osee.framework.core.model.cache.IOseeDataAccessor;
-import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
-import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 import org.eclipse.osee.framework.core.translation.ITranslatorId;
 import org.eclipse.osee.framework.skynet.core.artifact.HttpClientMessage;
 
@@ -31,14 +29,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.HttpClientMessage;
  */
 public abstract class AbstractClientDataAccessor<T extends IOseeStorable> implements IOseeDataAccessor<T> {
 
-   private final IOseeModelFactoryServiceProvider factoryProvider;
-
-   protected AbstractClientDataAccessor(IOseeModelFactoryServiceProvider factoryProvider) {
-      this.factoryProvider = factoryProvider;
-   }
-
-   protected IOseeModelFactoryService getOseeFactoryService() throws OseeCoreException {
-      return factoryProvider.getOseeFactoryService();
+   protected AbstractClientDataAccessor() {
+      // Hide default constructor
    }
 
    @Override
