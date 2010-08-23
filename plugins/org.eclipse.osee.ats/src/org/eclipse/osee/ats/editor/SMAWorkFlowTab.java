@@ -48,8 +48,6 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.operation.CompositeOperation;
-import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -169,11 +167,8 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    }
 
    public void refreshData() {
-      List<IOperation> ops = new ArrayList<IOperation>();
-      ops.add(AtsBulkLoad.getConfigLoadingOperation());
-      IOperation operation = new CompositeOperation("Load SMA Workflow Tab", AtsPlugin.PLUGIN_ID, ops);
-      Operations.executeAsJob(operation, true, Job.LONG, new ReloadJobChangeAdapter(sma.getEditor()));
-
+      Operations.executeAsJob(AtsBulkLoad.getConfigLoadingOperation(), true, Job.LONG,
+         new ReloadJobChangeAdapter(sma.getEditor()));
       // Don't put in operation cause doesn't have to be loaded before editor displays
       OseeDictionary.load();
    }

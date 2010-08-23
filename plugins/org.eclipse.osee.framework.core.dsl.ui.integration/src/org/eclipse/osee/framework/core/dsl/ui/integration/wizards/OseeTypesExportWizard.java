@@ -11,14 +11,9 @@
 package org.eclipse.osee.framework.core.dsl.ui.integration.wizards;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.osee.framework.core.dsl.ui.integration.internal.Activator;
 import org.eclipse.osee.framework.core.dsl.ui.integration.operations.OseeTypesExportOperation;
-import org.eclipse.osee.framework.core.operation.CompositeOperation;
-import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
@@ -39,11 +34,8 @@ public class OseeTypesExportWizard extends Wizard implements IImportWizard {
 
    @Override
    public boolean performFinish() {
-      final File folder = mainPage.getFile();
-
-      List<IOperation> ops = new ArrayList<IOperation>();
-      ops.add(new OseeTypesExportOperation(folder));
-      Operations.executeAsJob(new CompositeOperation("Export Osee Type Model", Activator.PLUGIN_ID, ops), true);
+      File folder = mainPage.getFile();
+      Operations.executeAsJob(new OseeTypesExportOperation(folder), true);
       return true;
    }
 
