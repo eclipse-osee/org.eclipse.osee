@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests;
 
-import java.io.File;
 import java.util.logging.Level;
 import junit.framework.Assert;
 import org.eclipse.osee.client.integration.tests.suite.MasterTestSuite_DemoDbInit;
@@ -18,9 +17,6 @@ import org.eclipse.osee.client.integration.tests.suite.MasterTestSuite_DemoDbPop
 import org.eclipse.osee.client.integration.tests.suite.MasterTestSuite_DemoDbTests;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.junit.Rule;
-import org.junit.rules.ExternalResource;
-import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -35,34 +31,35 @@ MasterTestSuite_DemoDbInit.class, //
  */
 public class MasterTestSuite_DemoIntegrationSuite {
 
-   @Rule
-   public TemporaryFolder tempFolder = new TemporaryFolder();
-
-   @Rule
-   public ExternalResource appServerResource = new ExternalResource() {
-      private OseeAppServerUtil appServerTestUtil;
-
-      @Override
-      protected void before() throws Throwable {
-         File file = tempFolder.newFolder("appData");
-         TestOseeAppServerConfig config = new TestOseeAppServerConfig(file.getAbsolutePath());
-         appServerTestUtil = new OseeAppServerUtil(config);
-         appServerTestUtil.start();
-      };
-
-      @Override
-      protected void after() {
-         try {
-            appServerTestUtil.stop();
-         } catch (Exception ex) {
-            OseeLog.log(MasterTestSuite_DemoIntegrationSuite.class, Level.SEVERE, ex);
-         }
-      };
-   };
+   //   @Rule
+   //   public TemporaryFolder tempFolder = new TemporaryFolder();
+   //
+   //   @Rule
+   //   public ExternalResource appServerResource = new ExternalResource() {
+   //      private OseeAppServerUtil appServerTestUtil;
+   //
+   //      @Override
+   //      protected void before() throws Throwable {
+   //         File file = tempFolder.newFolder("appData");
+   //         TestOseeAppServerConfig config = new TestOseeAppServerConfig(file.getAbsolutePath());
+   //         appServerTestUtil = new OseeAppServerUtil(config);
+   //         appServerTestUtil.start();
+   //      };
+   //
+   //      @Override
+   //      protected void after() {
+   //         try {
+   //            appServerTestUtil.stop();
+   //         } catch (Exception ex) {
+   //            OseeLog.log(MasterTestSuite_DemoIntegrationSuite.class, Level.SEVERE, ex);
+   //         }
+   //      };
+   //   };
 
    @org.junit.Test
    public void setup() throws Exception {
-      OseeLog.log(MasterTestSuite_DemoIntegrationSuite.class, Level.INFO, "Starting osee client integration test suite...");
+      OseeLog.log(MasterTestSuite_DemoIntegrationSuite.class, Level.INFO,
+         "Starting osee client integration test suite...");
       Assert.assertTrue("Demo Application Server must be running",
          ClientSessionManager.getAuthenticationProtocols().contains("demo"));
    }
