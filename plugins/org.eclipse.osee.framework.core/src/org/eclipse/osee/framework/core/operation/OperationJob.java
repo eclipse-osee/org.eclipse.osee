@@ -19,18 +19,30 @@ import org.eclipse.core.runtime.jobs.Job;
  */
 public final class OperationJob extends Job {
    private final IOperation operation;
+   private final OperationReporter reporter;
 
    /**
-    * @param operation the operation that will be executed in this Job
+    * @param operation the operation that will be executed by this Job's run method
     */
    public OperationJob(IOperation operation) {
+      this(operation, null);
+   }
+
+   /**
+    * @param operation the operation that will be executed by this Job's run method
+    * @param reporter reporter.report(IStatus status) is passed the IStatus returned by the operation's run method
+    */
+   public OperationJob(IOperation operation, OperationReporter reporter) {
       super(operation.getName());
       this.operation = operation;
+      this.reporter = reporter;
    }
 
    @Override
    protected IStatus run(IProgressMonitor monitor) {
-      return operation.run(monitor).getStatus();
+      IStatus status = operation.run(monitor).getStatus();
+      reporter.report(status);
+      return status;
    }
 
    @Override

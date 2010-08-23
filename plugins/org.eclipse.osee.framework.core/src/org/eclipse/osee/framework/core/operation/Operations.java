@@ -157,6 +157,10 @@ public final class Operations {
       return scheduleJob(new OperationJob(operation), user, Job.LONG, null);
    }
 
+   public static Job executeAsJob(IOperation operation, OperationReporter reporter, boolean user) {
+      return scheduleJob(new OperationJob(operation), user, Job.LONG, null);
+   }
+
    public static Job executeAndPend(IOperation operation, boolean user) {
       return scheduleJob(new OperationJob(operation), user, Job.LONG, null, true);
    }

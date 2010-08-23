@@ -10,44 +10,31 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management;
 
-import org.eclipse.core.runtime.IProgressMonitor;
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.osee.framework.branch.management.internal.Activator;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.operation.AbstractOperation;
-import org.eclipse.osee.framework.core.operation.CommandInterpreterReporter;
+import org.eclipse.osee.framework.core.operation.CompositeOperation;
+import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.OperationReporter;
 import org.eclipse.osee.framework.database.operation.InvalidTxCurrentsAndModTypes;
-import org.eclipse.osgi.framework.console.CommandInterpreter;
 
 /**
  * @author Ryan D. Brooks
  */
-public class TxCurrentsAndModTypesCommand extends AbstractOperation {
-   private final boolean archived;
-   private final OperationReporter reporter;
-
-   public TxCurrentsAndModTypesCommand(CommandInterpreter commandInterpreter) {
-      this(new CommandInterpreterReporter(commandInterpreter), Boolean.parseBoolean(commandInterpreter.nextArgument()));
-   }
-
+public class TxCurrentsAndModTypesCommand extends CompositeOperation {
    public TxCurrentsAndModTypesCommand(OperationReporter reporter, boolean archived) {
-      super("TxCurrents And Mod Types", Activator.PLUGIN_ID);
-      this.archived = archived;
-      this.reporter = reporter;
+      super("TxCurrents And Mod Types", Activator.PLUGIN_ID, buildSubOperations(reporter, archived));
    }
 
-   private void checkAndFix(String tableName, String columnName, IProgressMonitor monitor) throws Exception {
-      doSubWork(new InvalidTxCurrentsAndModTypes(tableName, columnName, reporter, true, archived), monitor, 0.3);
+   private static List<IOperation> buildSubOperations(OperationReporter reporter, boolean archived) {
+      List<IOperation> operations = new ArrayList<IOperation>(3);
+      operations.add(buildFixOperation(reporter, archived, "osee_artifact", "art_id"));
+      operations.add(buildFixOperation(reporter, archived, "osee_attribute", "attr_id"));
+      operations.add(buildFixOperation(reporter, archived, "osee_relation_link", "rel_link_id"));
+      return operations;
    }
 
-   @Override
-   protected void doWork(IProgressMonitor monitor) throws Exception {
-      try {
-         checkAndFix("osee_artifact", "art_id", monitor);
-         checkAndFix("osee_attribute", "attr_id", monitor);
-         checkAndFix("osee_relation_link", "rel_link_id", monitor);
-      } catch (OseeCoreException ex) {
-         reporter.report(ex);
-      }
+   private static IOperation buildFixOperation(OperationReporter reporter, boolean archived, String tableName, String columnName) {
+      return new InvalidTxCurrentsAndModTypes(tableName, columnName, reporter, true, archived);
    }
 }

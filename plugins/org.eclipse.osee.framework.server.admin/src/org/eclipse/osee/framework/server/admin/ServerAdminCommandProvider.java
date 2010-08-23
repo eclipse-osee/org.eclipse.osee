@@ -13,6 +13,8 @@ package org.eclipse.osee.framework.server.admin;
 import java.util.Arrays;
 import org.eclipse.osee.framework.branch.management.TxCurrentsAndModTypesCommand;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
+import org.eclipse.osee.framework.core.operation.CommandInterpreterReporter;
+import org.eclipse.osee.framework.core.operation.OperationReporter;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.server.admin.management.AdminCommands;
 import org.eclipse.osee.framework.server.admin.management.ConsolidateArtifactVersionsCommand;
@@ -78,7 +80,9 @@ public class ServerAdminCommandProvider implements CommandProvider {
    }
 
    public void _tx_currents(CommandInterpreter ci) {
-      Operations.executeAsJob(new TxCurrentsAndModTypesCommand(ci), false);
+      OperationReporter reporter = new CommandInterpreterReporter(ci);
+      boolean archived = Boolean.parseBoolean(ci.nextArgument());
+      Operations.executeAsJob(new TxCurrentsAndModTypesCommand(reporter, archived), false);
    }
 
    public void _osee_shutdown(CommandInterpreter ci) {
