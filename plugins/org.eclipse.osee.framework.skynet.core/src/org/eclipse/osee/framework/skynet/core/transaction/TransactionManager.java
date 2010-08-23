@@ -182,7 +182,7 @@ public final class TransactionManager {
       int authorArtId = userToBlame.getArtId();
       TransactionDetailsType txType = TransactionDetailsType.NonBaselined;
       Date transactionTime = GlobalTime.GreenwichMeanTimestamp();
-      TransactionRecordFactory factory = Activator.getInstance().getOseeFactoryService().getTransactionFactory();
+      TransactionRecordFactory factory = Activator.getInstance().getTransactionFactory();
       TransactionRecord transactionId =
          factory.createOrUpdate(getTransactionCache(), transactionNumber, branch.getId(), comment, transactionTime,
             authorArtId, -1, txType);
@@ -283,7 +283,7 @@ public final class TransactionManager {
             }
             TransactionDetailsType txType = TransactionDetailsType.toEnum(chStmt.getInt("tx_type"));
 
-            TransactionRecordFactory factory = Activator.getInstance().getOseeFactoryService().getTransactionFactory();
+            TransactionRecordFactory factory = Activator.getInstance().getTransactionFactory();
             BranchCache branchCache = Activator.getInstance().getOseeCacheService().getBranchCache();
 
             transactionRecord =
