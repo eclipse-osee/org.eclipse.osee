@@ -44,7 +44,7 @@ public abstract class AbstractLifecycleOperation extends AbstractOperation {
 
    private void doPointWork(IProgressMonitor monitor, OperationPointId pointId) throws Exception {
       IStatus status = service.dispatch(monitor, lifecyclepoint, pointId.name());
-      setStatus(status);
+      mergeStatus(status);
       checkForErrorsOrCanceled(monitor);
    }
 

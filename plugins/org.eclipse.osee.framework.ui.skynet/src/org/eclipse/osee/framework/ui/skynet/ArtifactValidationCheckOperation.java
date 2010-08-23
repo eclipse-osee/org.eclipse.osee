@@ -51,7 +51,7 @@ public class ArtifactValidationCheckOperation extends AbstractOperation {
          String message = String.format("%s: %s", link, status.getMessage());
          status =
             new Status(status.getSeverity(), status.getPlugin(), status.getCode(), message, status.getException());
-         setStatus(status);
+         mergeStatus(status);
       }
    }
 

@@ -19,7 +19,6 @@ import org.eclipse.core.runtime.Status;
  * @author Roberto E. Escobar
  */
 public abstract class AbstractOperation implements IOperation {
-
    private final InternalMultiStatus status;
    private boolean wasExecuted;
    private String name;
@@ -44,7 +43,7 @@ public abstract class AbstractOperation implements IOperation {
       return status;
    }
 
-   protected void setStatus(IStatus status) {
+   protected void mergeStatus(IStatus status) {
       if (status.getSeverity() != IStatus.OK) {
          this.status.merge(status);
       }
@@ -62,7 +61,7 @@ public abstract class AbstractOperation implements IOperation {
          doWork(monitor);
          checkForCancelledStatus(monitor);
       } catch (Throwable error) {
-         setStatus(createErrorStatus(error));
+         mergeStatus(createErrorStatus(error));
       } finally {
          doFinally(monitor);
       }
@@ -130,7 +129,7 @@ public abstract class AbstractOperation implements IOperation {
     */
    public void doSubWorkNoChecks(IOperation operation, IProgressMonitor monitor, double workPercentage) {
       Operations.executeWork(operation, monitor, workPercentage);
-      setStatus(operation.getStatus());
+      mergeStatus(operation.getStatus());
    }
 
    /**
