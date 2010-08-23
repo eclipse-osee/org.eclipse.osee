@@ -328,15 +328,18 @@ public final class SkynetTransaction extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
+      int smallWork = calculateWork(0.10);
       try {
          txMonitor.reportTxStart(SkynetTransaction.this, getBranch());
+         monitor.worked(smallWork);
          if (madeChanges) {
             IOperation subOp = createLifeCycleOp();
-            doSubWork(subOp, monitor);
+            doSubWork(subOp, monitor, 0.80);
          }
       } finally {
          reset();
          txMonitor.reportTxEnd(SkynetTransaction.this, getBranch());
+         monitor.worked(smallWork);
       }
    }
 

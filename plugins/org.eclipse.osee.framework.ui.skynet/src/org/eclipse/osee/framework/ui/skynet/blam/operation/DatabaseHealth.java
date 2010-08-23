@@ -123,12 +123,11 @@ public class DatabaseHealth extends AbstractBlam {
          }
       }
 
-      private void executeOperation(IProgressMonitor monitor, DatabaseHealthOperation operation, Appendable appendable, double workPercentage, boolean isFix) throws Exception {
+      private void executeOperation(IProgressMonitor monitor, DatabaseHealthOperation operation, double workPercentage, boolean isFix) throws Exception {
          checkForCancelledStatus(monitor);
          if (operation != null) {
             operation.setFixOperationEnabled(isFix);
             println(String.format("\nProcessing: [%s]", operation.getName()));
-            operation.setSummary(appendable);
             doSubWork(operation, monitor, workPercentage);
 
             String detailedReport = operation.getDetailedReport().toString();
@@ -150,16 +149,12 @@ public class DatabaseHealth extends AbstractBlam {
          if (!AccessControlManager.isOseeAdmin()) {
             throw new OseeAccessDeniedException("Must be a Developer to run this BLAM");
          } else {
-            StringBuilder builder = new StringBuilder();
             for (DatabaseHealthOperation operation : fixOperations) {
-               executeOperation(monitor, operation, builder, workPercentage, true);
+               executeOperation(monitor, operation, workPercentage, true);
             }
             for (DatabaseHealthOperation operation : verifyOperations) {
-               executeOperation(monitor, operation, builder, workPercentage, false);
-
+               executeOperation(monitor, operation, workPercentage, false);
             }
-
-            setStatusMessage(builder.toString());
          }
       }
    }

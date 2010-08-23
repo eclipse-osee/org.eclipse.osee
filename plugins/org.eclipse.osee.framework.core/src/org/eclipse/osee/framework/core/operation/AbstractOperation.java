@@ -10,28 +10,35 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.operation;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.osee.framework.core.internal.Activator;
 
 /**
+ * This class is the basic unit of work for OSEE. All operations should be designed such that they can be chained and/or
+ * composed into composite operations.
+ *
  * @author Roberto E. Escobar
+ * @author Ryan D. Brooks
  */
 public abstract class AbstractOperation implements IOperation {
-   private final InternalMultiStatus status;
+   private static final IStatus NOT_RUN = new Status(IStatus.ERROR, Activator.class.getPackage().toString(),
+      "It is Invalid to call getStatus() prior to executing the operation");
+   private final List<IStatus> statuses = new ArrayList<IStatus>();
+   private final String pluginId;
+   private final String name;
    private boolean wasExecuted;
-   private String name;
 
    public AbstractOperation(String operationName, String pluginId) {
-      this.status = new InternalMultiStatus(pluginId, IStatus.OK, operationName);
+      this.pluginId = pluginId;
       this.wasExecuted = false;
-      setName(operationName);
-   }
-
-   public void setName(String name) {
-      this.name = name;
+      this.name = operationName;
    }
 
    @Override
@@ -40,18 +47,40 @@ public abstract class AbstractOperation implements IOperation {
    }
 
    @Override
-   public IStatus getStatus() {
-      return status;
+   public final IStatus getStatus() {
+      if (!wasExecuted) {
+         return NOT_RUN;
+      }
+      if (statuses.isEmpty()) {
+         return Status.OK_STATUS;
+      }
+      if (statuses.size() == 1) {
+         return statuses.get(0);
+      }
+
+      StringBuilder strB = new StringBuilder();
+      for (IStatus status : statuses) {
+         strB.append(status.getMessage());
+         strB.append("\n");
+      }
+      IStatus[] statusArray = statuses.toArray(new IStatus[statuses.size()]);
+      return new MultiStatus(pluginId, IStatus.OK, statusArray, strB.toString(), null);
    }
 
+   @Deprecated
+   // this method should be private and non-private usages need to be replaced with composite operations
    protected void mergeStatus(IStatus status) {
+      internalMergeStatus(status);
+   }
+
+   private void internalMergeStatus(IStatus status) {
       if (status.getSeverity() != IStatus.OK) {
-         this.status.merge(status);
+         statuses.add(status);
       }
    }
 
    @Override
-   public boolean wasExecuted() {
+   public final boolean wasExecuted() {
       return wasExecuted;
    }
 
@@ -62,7 +91,7 @@ public abstract class AbstractOperation implements IOperation {
          doWork(monitor);
          checkForCancelledStatus(monitor);
       } catch (Throwable error) {
-         mergeStatus(createErrorStatus(error));
+         internalMergeStatus(createErrorStatus(error));
       } finally {
          doFinally(monitor);
       }
@@ -70,7 +99,7 @@ public abstract class AbstractOperation implements IOperation {
    }
 
    /**
-    * Convenience method to allow clients to hook into the operation's finally block
+    * life-cycle method to allow clients to hook into the operation's finally block
     * 
     * @param monitor
     */
@@ -86,19 +115,15 @@ public abstract class AbstractOperation implements IOperation {
     */
    protected abstract void doWork(IProgressMonitor monitor) throws Exception;
 
-   protected void setStatusMessage(String message) {
-      status.setMessage(message);
-   }
-
-   protected IStatus createErrorStatus(Throwable error) {
+   private IStatus createErrorStatus(Throwable error) {
       if (error instanceof OperationCanceledException) {
          return Status.CANCEL_STATUS;
       } else {
-         return new Status(IStatus.ERROR, status.getPlugin(), error.toString(), error);
+         return new Status(IStatus.ERROR, pluginId, error.toString(), error);
       }
    }
 
-   protected int calculateWork(double workPercentage) {
+   protected final int calculateWork(double workPercentage) {
       return Operations.calculateWork(getTotalWorkUnits(), workPercentage);
    }
 
@@ -112,16 +137,8 @@ public abstract class AbstractOperation implements IOperation {
     * @param workPercentage
     * @throws Exception
     */
-   public void doSubWork(IOperation operation, IProgressMonitor monitor, double workPercentage) throws Exception {
+   public final void doSubWork(IOperation operation, IProgressMonitor monitor, double workPercentage) throws Exception {
       doSubWorkNoChecks(operation, monitor, workPercentage);
-      checkForErrorsOrCanceled(monitor);
-   }
-
-   @Deprecated
-   // it may not make sense to have a sub-operation that is not sub divided using a workPercentage
-   public void doSubWork(IOperation operation, IProgressMonitor monitor) throws Exception {
-      Operations.executeWork(operation, monitor);
-      mergeStatus(operation.getStatus());
       checkForErrorsOrCanceled(monitor);
    }
 
@@ -136,11 +153,11 @@ public abstract class AbstractOperation implements IOperation {
     * @param monitor
     * @param workPercentage
     */
-   public void doSubWorkNoChecks(IOperation operation, IProgressMonitor parentMonitor, double workPercentage) {
+   public final void doSubWorkNoChecks(IOperation operation, IProgressMonitor parentMonitor, double workPercentage) {
       IProgressMonitor monitor =
          new SubProgressMonitor(parentMonitor, Operations.calculateWork(operation.getTotalWorkUnits(), workPercentage));
       Operations.executeWork(operation, monitor);
-      mergeStatus(operation.getStatus());
+      internalMergeStatus(operation.getStatus());
    }
 
    /**
@@ -149,7 +166,7 @@ public abstract class AbstractOperation implements IOperation {
     * @param monitor
     * @throws Exception
     */
-   protected void checkForStatusSeverityMask(int severityMask) throws Exception {
+   protected final void checkForStatusSeverityMask(int severityMask) throws Exception {
       Operations.checkForStatusSeverityMask(getStatus(), severityMask);
    }
 
@@ -160,7 +177,7 @@ public abstract class AbstractOperation implements IOperation {
     * @param monitor
     * @throws Exception
     */
-   protected void checkForErrorsOrCanceled(IProgressMonitor monitor) throws Exception {
+   protected final void checkForErrorsOrCanceled(IProgressMonitor monitor) throws Exception {
       checkForCancelledStatus(monitor);
       Operations.checkForErrorStatus(getStatus());
    }
@@ -172,24 +189,12 @@ public abstract class AbstractOperation implements IOperation {
     * @param monitor
     * @throws OperationCanceledException
     */
-   protected void checkForCancelledStatus(IProgressMonitor monitor) throws OperationCanceledException {
+   protected final void checkForCancelledStatus(IProgressMonitor monitor) throws OperationCanceledException {
       Operations.checkForCancelledStatus(monitor, getStatus());
    }
 
    @Override
    public int getTotalWorkUnits() {
       return IOperation.TOTAL_WORK;
-   }
-
-   private final static class InternalMultiStatus extends org.eclipse.core.runtime.MultiStatus {
-
-      public InternalMultiStatus(String pluginId, int code, String message) {
-         super(pluginId, code, message, null);
-      }
-
-      @Override
-      public void setMessage(String message) {
-         super.setMessage(message);
-      }
    }
 }

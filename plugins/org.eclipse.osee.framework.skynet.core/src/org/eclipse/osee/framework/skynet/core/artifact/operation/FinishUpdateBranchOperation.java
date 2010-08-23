@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.artifact.operation;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -34,7 +33,8 @@ public class FinishUpdateBranchOperation extends AbstractOperation {
     * @param pluginId
     */
    public FinishUpdateBranchOperation(ConflictManagerExternal conflictManager, boolean archiveSourceBranch, boolean overwriteUnresolvedConflicts) {
-      super("Complete Branch Update", Activator.PLUGIN_ID);
+      super(String.format("Complete Branch Update [%s]", conflictManager.getSourceBranch().getShortName()),
+         Activator.PLUGIN_ID);
       this.conflictManager = conflictManager;
       this.archiveSourceBranch = archiveSourceBranch;
       this.overwriteUnresolvedConflicts = overwriteUnresolvedConflicts;
@@ -67,12 +67,4 @@ public class FinishUpdateBranchOperation extends AbstractOperation {
 
       monitor.worked(calculateWork(0.20));
    }
-
-   @Override
-   protected IStatus createErrorStatus(Throwable error) {
-      setStatusMessage(String.format("Error merging updates between [%s] and [%s]",
-         conflictManager.getSourceBranch().getShortName(), conflictManager.getDestinationBranch().getShortName()));
-      return super.createErrorStatus(error);
-   }
-
 }

@@ -10,12 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam;
 
-import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
@@ -38,21 +34,6 @@ public class ExecuteBlamOperation extends AbstractOperation {
       blamOperation.setOseeDatabaseService(SkynetGuiPlugin.getInstance().getOseeDatabaseService());
       blamOperation.setOutput(output);
       doSubWork(new InternalOperationAdapter(blamOperation), monitor, 1);
-   }
-
-   @Override
-   protected IStatus createErrorStatus(Throwable error) {
-      IStatus status = super.createErrorStatus(error);
-      try {
-         if (error != null) {
-            output.append(Lib.exceptionToString(error));
-         } else {
-            output.append(status.getMessage());
-         }
-      } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-      }
-      return status;
    }
 
    private final class InternalOperationAdapter extends AbstractOperation {

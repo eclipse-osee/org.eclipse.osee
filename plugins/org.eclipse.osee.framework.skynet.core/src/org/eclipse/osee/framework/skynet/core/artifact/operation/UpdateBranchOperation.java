@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.artifact.operation;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -34,7 +33,7 @@ public class UpdateBranchOperation extends AbstractOperation {
    private final ConflictResolverOperation resolver;
 
    public UpdateBranchOperation(final Branch branch, final ConflictResolverOperation resolver) {
-      super("Update Branch", Activator.PLUGIN_ID);
+      super(String.format("Update Branch [%s]", branch.getShortName()), Activator.PLUGIN_ID);
       this.originalBranch = branch;
       this.resolver = resolver;
    }
@@ -51,12 +50,6 @@ public class UpdateBranchOperation extends AbstractOperation {
       } else {
          monitor.worked(getTotalWorkUnits());
       }
-   }
-
-   @Override
-   protected IStatus createErrorStatus(Throwable error) {
-      setStatusMessage(String.format("Error updating branch [%s]", originalBranch.getShortName()));
-      return super.createErrorStatus(error);
    }
 
    private Branch createTempBranch(Branch originalBranch) throws OseeCoreException {

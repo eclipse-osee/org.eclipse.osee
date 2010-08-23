@@ -14,14 +14,12 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({//
-AbstractTrackingHandlerTest.class, //
-   ServiceDependencyTrackerTest.class, //
-})
+@Suite.SuiteClasses({
+   AbstractTrackingHandlerTest.class,
+   ServiceDependencyTrackerTest.class,})
 /**
  * @author Roberto E. Escobar
  */
 public class UtilCoreTestSuite {
    // Test Suite
-
 }
