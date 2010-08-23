@@ -14,6 +14,7 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -429,7 +430,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
          final File sourceFile = selectionLatch.currentSelected.sourceFile;
          final IArtifactExtractor extractor = selectionLatch.currentSelected.extractor;
 
-         Collection<IOperation> ops = new ArrayList<IOperation>();
+         List<IOperation> ops = new ArrayList<IOperation>();
          ops.add(new SourceToRoughArtifactOperation(extractor, sourceFile, collector));
          ops.add(new FilterArtifactTypesByAttributeTypes(destinationArtifact.getBranch(), collector,
             selectedArtifactTypes));

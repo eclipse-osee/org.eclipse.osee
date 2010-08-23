@@ -10,7 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.operation;
 
-import java.util.Collection;
+import java.util.Arrays;
+import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 
@@ -19,11 +20,15 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
  */
 public class CompositeOperation extends AbstractOperation {
 
-   private final Collection<IOperation> operations;
+   private final List<IOperation> operations;
 
-   public CompositeOperation(String name, String pluginId, Collection<IOperation> operations) {
+   public CompositeOperation(String name, String pluginId, List<IOperation> operations) {
       super(name, pluginId);
       this.operations = operations;
+   }
+
+   public CompositeOperation(String name, String pluginId, IOperation... operations) {
+      this(name, pluginId, Arrays.asList(operations));
    }
 
    @Override

@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.core.datastore.schema.operations;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.datastore.IOseeSchemaProvider;
 import org.eclipse.osee.framework.core.datastore.SchemaCreationOptions;
@@ -35,7 +35,7 @@ public final class OperationFactory {
       Map<String, SchemaData> userSpecifiedConfig = new HashMap<String, SchemaData>();
       Map<String, SchemaData> currentDatabaseConfig = new HashMap<String, SchemaData>();
 
-      Collection<IOperation> ops = new ArrayList<IOperation>();
+      List<IOperation> ops = new ArrayList<IOperation>();
       ops.add(new LoadUserSchemasOperation(userSpecifiedConfig, schemaProvider, options));
       ops.add(new ExtractDatabaseSchemaOperation(databaseService, userSpecifiedConfig.keySet(), currentDatabaseConfig));
       ops.add(new CreateSchemaOperation(new IOseeDatabaseServiceProvider() {

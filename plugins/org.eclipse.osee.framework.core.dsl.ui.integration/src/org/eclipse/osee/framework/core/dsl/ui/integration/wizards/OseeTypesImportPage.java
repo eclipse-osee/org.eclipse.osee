@@ -15,7 +15,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -196,7 +195,7 @@ public class OseeTypesImportPage extends WizardDataTransferPage {
          final List<IFile> selectedFiles = new ArrayList<IFile>(oseeTypesPanel.getSelected());
          final List<LinkNode> dependencyData = new ArrayList<LinkNode>();
 
-         Collection<IOperation> ops = new ArrayList<IOperation>();
+         List<IOperation> ops = new ArrayList<IOperation>();
          ops.add(new ResolveImportsOperation(new ClassloaderClasspathUriResolver(), selectedFiles, dependencyData));
          ops.add(new CreateCombinedFile(dependencyData));
          if (executeOperation(new CompositeOperation("Resolving imports", Activator.PLUGIN_ID, ops))) {
