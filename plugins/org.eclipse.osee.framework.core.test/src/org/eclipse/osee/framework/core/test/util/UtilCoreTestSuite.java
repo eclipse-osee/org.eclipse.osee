@@ -15,6 +15,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+   AbstractOperationTest.class,
    AbstractTrackingHandlerTest.class,
    ServiceDependencyTrackerTest.class,})
 /**
