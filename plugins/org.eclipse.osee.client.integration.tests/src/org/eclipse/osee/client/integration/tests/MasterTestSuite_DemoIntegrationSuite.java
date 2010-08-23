@@ -33,7 +33,7 @@ MasterTestSuite_DemoDbInit.class, //
 /**
  * @author Donald G. Dunne
  */
-public class MasterSuite_DemoIntegrationSuite {
+public class MasterTestSuite_DemoIntegrationSuite {
 
    @Rule
    public TemporaryFolder tempFolder = new TemporaryFolder();
@@ -55,14 +55,14 @@ public class MasterSuite_DemoIntegrationSuite {
          try {
             appServerTestUtil.stop();
          } catch (Exception ex) {
-            OseeLog.log(MasterSuite_DemoIntegrationSuite.class, Level.SEVERE, ex);
+            OseeLog.log(MasterTestSuite_DemoIntegrationSuite.class, Level.SEVERE, ex);
          }
       };
    };
 
    @org.junit.Test
    public void setup() throws Exception {
-      OseeLog.log(MasterSuite_DemoIntegrationSuite.class, Level.INFO, "Starting osee client integration test suite...");
+      OseeLog.log(MasterTestSuite_DemoIntegrationSuite.class, Level.INFO, "Starting osee client integration test suite...");
       Assert.assertTrue("Demo Application Server must be running",
          ClientSessionManager.getAuthenticationProtocols().contains("demo"));
    }
