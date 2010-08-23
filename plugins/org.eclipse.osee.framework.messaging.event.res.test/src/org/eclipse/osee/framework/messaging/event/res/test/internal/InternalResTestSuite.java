@@ -8,9 +8,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.messaging.event.res.test;
+package org.eclipse.osee.framework.messaging.event.res.test.internal;
 
-import org.eclipse.osee.framework.messaging.event.res.test.cases.RemoteNetworkSenderTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -19,6 +18,6 @@ import org.junit.runners.Suite;
 /**
  * @author Donald G. Dunne
  */
-public class FrameworkRes_TestDb_Suite {
+public class InternalResTestSuite {
    // test provided above
 }

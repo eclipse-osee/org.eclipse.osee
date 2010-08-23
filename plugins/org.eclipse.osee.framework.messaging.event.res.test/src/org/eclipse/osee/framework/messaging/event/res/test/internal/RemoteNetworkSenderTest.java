@@ -8,27 +8,39 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.messaging.event.res.test.cases;
+package org.eclipse.osee.framework.messaging.event.res.test.internal;
 
-import org.eclipse.osee.framework.messaging.event.res.RemoteEventUtil;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteNetworkSender1;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 
 /**
+ * Test Case for {@link RemoteNetworkSender1}
+ * 
  * @author Donald G. Dunne
  */
 public class RemoteNetworkSenderTest {
 
-   public static String Object = "NetworkSendTest.class";
-   public static String MachineIp = "123.421.56.342";
-   public static String MachineName = "A2340422";
-   public static String SessionId = "N23422.32";
-   public static String ClientVersion = "123.2";
-   public static int Port = 485;
-   public static String UserId = "b345344";
+   private static final String Object = "NetworkSendTest.class";
+   private static final String MachineIp = "123.421.56.342";
+   private static final String MachineName = "A2340422";
+   private static final String SessionId = "N23422.32";
+   private static final String ClientVersion = "123.2";
+   private static final int Port = 485;
+   private static final String UserId = "b345344";
+   private static RemoteNetworkSender1 networkSender;
 
-   public static RemoteNetworkSender1 networkSender = RemoteEventUtil.getNetworkSender(Object, SessionId, MachineName,
-      UserId, MachineIp, Port, ClientVersion);
+   @BeforeClass
+   public static void setup() {
+      networkSender = new RemoteNetworkSender1();
+      networkSender.setSourceObject(Object);
+      networkSender.setSessionId(SessionId);
+      networkSender.setMachineName(MachineName);
+      networkSender.setUserId(UserId);
+      networkSender.setMachineIp(MachineIp);
+      networkSender.setPort(Port);
+      networkSender.setClientVersion(ClientVersion);
+   }
 
    /**
     * Test method for

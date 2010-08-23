@@ -10,25 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.messaging.event.res.test;
 
-import static org.junit.Assert.assertTrue;
-import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.messaging.event.res.test.cases.RemoteNetworkSenderTest;
-import org.junit.BeforeClass;
+import org.eclipse.osee.framework.messaging.event.res.test.internal.InternalResTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({RemoteNetworkSenderTest.class,})
+@Suite.SuiteClasses({InternalResTestSuite.class,})
 /**
  * @author Donald G. Dunne
  */
-public class FrameworkRes_Demo_Suite {
-   @BeforeClass
-   public static void setUp() throws Exception {
-      assertTrue("Demo Application Server must be running.",
-         ClientSessionManager.getAuthenticationProtocols().contains("demo"));
-      assertTrue("Client must authenticate using demo protocol",
-         ClientSessionManager.getSession().getAuthenticationProtocol().equals("demo"));
-   }
-
+public class AllEventResTestSuite {
+   // Test Suite
 }

@@ -11,5 +11,4 @@ Require-Bundle: org.junit4,
  org.eclipse.osee.framework.core
 Import-Package: org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.logging
-Export-Package: org.eclipse.osee.framework.messaging.event.res.test,
- org.eclipse.osee.framework.messaging.event.res.test.cases
+Export-Package: org.eclipse.osee.framework.messaging.event.res.test
