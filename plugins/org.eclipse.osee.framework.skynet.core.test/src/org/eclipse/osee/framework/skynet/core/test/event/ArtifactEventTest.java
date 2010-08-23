@@ -30,8 +30,8 @@ import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteAttributeChange
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBasicGuidArtifact1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBasicGuidRelation1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBasicGuidRelationReorder1;
+import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteNetworkSender1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemotePersistEvent1;
-import org.eclipse.osee.framework.messaging.event.res.test.cases.RemoteNetworkSenderTest;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -58,22 +58,25 @@ import org.eclipse.osee.framework.skynet.core.utility.IncrementingNum;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 
 /**
  * @author Donald G. Dunne
  */
 public class ArtifactEventTest {
 
-   final Set<EventBasicGuidArtifact> resultEventArtifacts = new HashSet<EventBasicGuidArtifact>();
-   final Set<EventBasicGuidRelation> resultEventRelations = new HashSet<EventBasicGuidRelation>();
-   final Set<DefaultBasicGuidRelationReorder> resultEventReorders = new HashSet<DefaultBasicGuidRelationReorder>();
-   public static Sender resultSender = null;
-   public static List<String> ignoreLoggingRemote = Arrays.asList("OEM: ArtifactEvent Loopback enabled",
+   private final Set<EventBasicGuidArtifact> resultEventArtifacts = new HashSet<EventBasicGuidArtifact>();
+   private final Set<EventBasicGuidRelation> resultEventRelations = new HashSet<EventBasicGuidRelation>();
+   private final Set<DefaultBasicGuidRelationReorder> resultEventReorders =
+      new HashSet<DefaultBasicGuidRelationReorder>();
+   private static Sender resultSender = null;
+   private static List<String> ignoreLoggingRemote = Arrays.asList("OEM: ArtifactEvent Loopback enabled",
       "OEM: kickArtifactReloadEvent Loopback enabled", "OEM2: ArtifactEvent Loopback enabled",
       "OEM2: kickArtifactReloadEvent Loopback enabled");
-   public static int incrementingGammaId = 2231;
+   private static int incrementingGammaId = 2231;
+   private static RemoteNetworkSender1 networkSender;
 
-   public class ArtifactEventListener implements IArtifactEventListener {
+   private class ArtifactEventListener implements IArtifactEventListener {
       @Override
       public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
          resultEventArtifacts.addAll(artifactEvent.getArtifacts());
@@ -86,6 +89,18 @@ public class ArtifactEventTest {
       public List<? extends IEventFilter> getEventFilters() {
          return null;
       }
+   }
+
+   @BeforeClass
+   public static void setupStatic() {
+      networkSender = new RemoteNetworkSender1();
+      networkSender.setSourceObject(ArtifactEventTest.class.getName());
+      networkSender.setSessionId("N23422.32");
+      networkSender.setMachineName("A2340422");
+      networkSender.setUserId("b345344");
+      networkSender.setMachineIp("123.421.56.342");
+      networkSender.setPort(485);
+      networkSender.setClientVersion("123.2");
    }
 
    @Before
@@ -390,7 +405,7 @@ public class ArtifactEventTest {
       // Create fake remote event that would come in from another client
       RemotePersistEvent1 remoteEvent = new RemotePersistEvent1();
       // Set sender to something other than this client so event system will think came from another client
-      remoteEvent.setNetworkSender(RemoteNetworkSenderTest.networkSender);
+      remoteEvent.setNetworkSender(networkSender);
       remoteEvent.setTransactionId(1000);
       remoteEvent.setBranchGuid(BranchManager.getCommonBranch().getGuid());
 
@@ -732,7 +747,7 @@ public class ArtifactEventTest {
       // Create fake remote event that would come in from another client
       RemotePersistEvent1 remoteEvent = new RemotePersistEvent1();
       // Set sender to something other than this client so event system will think came from another client
-      remoteEvent.setNetworkSender(RemoteNetworkSenderTest.networkSender);
+      remoteEvent.setNetworkSender(networkSender);
       remoteEvent.setTransactionId(1000);
       remoteEvent.setBranchGuid(BranchManager.getCommonBranch().getGuid());
 
@@ -750,7 +765,7 @@ public class ArtifactEventTest {
       // Create fake remote event that would come in from another client
       RemotePersistEvent1 remoteEvent = new RemotePersistEvent1();
       // Set sender to something other than this client so event system will think came from another client
-      remoteEvent.setNetworkSender(RemoteNetworkSenderTest.networkSender);
+      remoteEvent.setNetworkSender(networkSender);
       remoteEvent.setTransactionId(1000);
       remoteEvent.setBranchGuid(BranchManager.getCommonBranch().getGuid());
 
