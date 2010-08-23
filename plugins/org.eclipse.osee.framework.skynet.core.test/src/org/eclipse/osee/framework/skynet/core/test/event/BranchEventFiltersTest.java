@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkSender;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
-import org.eclipse.osee.framework.skynet.core.event.InternalEventManager2;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
@@ -39,20 +38,21 @@ public class BranchEventFiltersTest {
 
    @Before
    public void setup() {
-      InternalEventManager2.internalSetPendRunning(true);
+      OseeEventManager.getPreferences().setNewEvents(true);
+      OseeEventManager.getPreferences().setPendRunning(true);
    }
 
    @After
    public void cleanup() {
-      InternalEventManager2.internalSetPendRunning(false);
+      OseeEventManager.getPreferences().setPendRunning(false);
    }
 
    @org.junit.Test
    public void testBranchEventFilters() throws Exception {
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
-      InternalEventManager2.internalRemoveAllListeners();
-      InternalEventManager2.addListener(branchEventListener);
-      Assert.assertEquals(1, InternalEventManager2.getNumberOfListeners());
+      OseeEventManager.removeAllListeners();
+      OseeEventManager.addListener(branchEventListener);
+      Assert.assertEquals(1, OseeEventManager.getNumberOfListeners());
 
       // Create dummy branch event
       String branchGuid = GUID.create();
@@ -65,7 +65,7 @@ public class BranchEventFiltersTest {
 
       // Send dummy event
       Sender sender = new Sender(new NetworkSender(this, GUID.create(), "PC", "12345", "123.234.345.456", 34, "1.0.0"));
-      InternalEventManager2.processBranchEvent(sender, testBranchEvent);
+      processBranchEvent(sender, testBranchEvent);
 
       // Test that event did come through
       Assert.assertNotNull(resultBranchEvent);
@@ -79,7 +79,7 @@ public class BranchEventFiltersTest {
       resultSender = null;
 
       // Re-send dummy event
-      InternalEventManager2.processBranchEvent(sender, testBranchEvent);
+      processBranchEvent(sender, testBranchEvent);
 
       // Test that event did come through
       Assert.assertNotNull(resultBranchEvent);
@@ -94,12 +94,16 @@ public class BranchEventFiltersTest {
       resultSender = null;
 
       // Re-send dummy event
-      InternalEventManager2.processBranchEvent(sender, testBranchEvent);
+      processBranchEvent(sender, testBranchEvent);
 
       // Test that event did NOT come through
       Assert.assertNull(resultBranchEvent);
 
       TestUtil.severeLoggingEnd(monitorLog);
+   }
+
+   private static void processBranchEvent(Sender sender, BranchEvent branchEvent) {
+      OseeEventManager.internalTestProcessBranchEvent(sender, branchEvent);
    }
 
    private class BranchEventListener implements IBranchEventListener {
@@ -119,11 +123,6 @@ public class BranchEventFiltersTest {
       public List<? extends IEventFilter> getEventFilters() {
          return eventFilters;
       }
-   }
-
-   @org.junit.Before
-   public void setUpTest() {
-      OseeEventManager.setNewEvents(true);
    }
 
    // artifact listener create for use by all tests to just capture result eventArtifacts for query

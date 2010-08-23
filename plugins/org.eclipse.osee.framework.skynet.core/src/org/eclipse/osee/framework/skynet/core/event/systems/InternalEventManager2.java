@@ -8,19 +8,32 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.event;
+package org.eclipse.osee.framework.skynet.core.event.systems;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.rmi.RemoteException;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.messaging.event.res.IFrameworkEventListener;
+import org.eclipse.osee.framework.messaging.event.res.IOseeCoreModelEventService;
+import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
+import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
+import org.eclipse.osee.framework.skynet.core.event.EventSystemPreferences;
+import org.eclipse.osee.framework.skynet.core.event.EventUtil;
+import org.eclipse.osee.framework.skynet.core.event.IAccessControlEventListener;
+import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
+import org.eclipse.osee.framework.skynet.core.event.IBroadcastEventListener;
+import org.eclipse.osee.framework.skynet.core.event.IEventFilteredListener;
+import org.eclipse.osee.framework.skynet.core.event.IEventListener;
+import org.eclipse.osee.framework.skynet.core.event.IRemoteEventManagerEventListener;
+import org.eclipse.osee.framework.skynet.core.event.RemoteEventServiceEventType;
+import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.AccessControlEvent;
 import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
@@ -33,97 +46,67 @@ import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidRela
 import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.ui.plugin.event.UnloadedArtifact;
 
 /**
- * Internal implementation of OSEE Event Manager that should only be accessed from RemoteEventManager and
- * OseeEventManager classes.
+ * Internal implementation of OSEE Event Manager that should only be accessed from OseeEventManager classes.
  * 
  * @author Donald G. Dunne
  */
 public class InternalEventManager2 {
+   public static interface ConnectionStatus {
+      boolean isConnected();
+   }
 
-   public static final Collection<UnloadedArtifact> EMPTY_UNLOADED_ARTIFACTS = Collections.emptyList();
-   private static boolean disableEvents = false;
-   private static final ThreadFactory threadFactory = new OseeEventThreadFactory("Osee Events2");
-   private static final ExecutorService executorService = Executors.newFixedThreadPool(
-      Runtime.getRuntime().availableProcessors(), threadFactory);
-   private static final List<IEventListener> priorityListeners = new CopyOnWriteArrayList<IEventListener>();
-   private static final List<IEventListener> listeners = new CopyOnWriteArrayList<IEventListener>();
-   private static boolean pendRunning = false;
+   private final Collection<IEventListener> priorityListeners;
+   private final Collection<IEventListener> listeners;
+   private final IOseeCoreModelEventService coreModelEventService;
+   private final ExecutorService executorService;
+   private final EventSystemPreferences preferences;
+   private final IFrameworkEventListener frameworkListener;
+   private final ConnectionStatus connectionStatus;
 
-   // This will disable all Local TransactionEvents and enable loopback routing of Remote TransactionEvents back
-   // through the RemoteEventService as if they came from another client.  This is for testing purposes only and
-   // should be reset to false before release.
-   private static boolean enableRemoteEventLoopback = false;
+   public InternalEventManager2(IOseeCoreModelEventService coreModelEventService, Collection<IEventListener> listeners, Collection<IEventListener> priorityListeners, ExecutorService executorService, EventSystemPreferences preferences, ConnectionStatus connectionStatus) {
+      this.coreModelEventService = coreModelEventService;
+      this.listeners = listeners;
+      this.priorityListeners = priorityListeners;
+      this.executorService = executorService;
+      this.preferences = preferences;
+      this.frameworkListener = new FrameworkEventToRemoteEvent2Listener(this);
+      this.connectionStatus = connectionStatus;
+   }
 
-   private static void execute(Runnable runnable) {
-      if (pendRunning) {
+   public void start() {
+      coreModelEventService.addFrameworkListener(frameworkListener);
+   }
+
+   public void stop() {
+      coreModelEventService.removeFrameworkListener(frameworkListener);
+   }
+
+   public boolean isConnected() {
+      return preferences.isNewEvents() && connectionStatus.isConnected();
+   }
+
+   private void execute(Runnable runnable) {
+      if (preferences.isPendRunning()) {
          runnable.run();
       } else {
          executorService.submit(runnable);
       }
    }
 
-   public static void addListener(IEventListener listener) {
-      if (listener == null) {
-         throw new IllegalArgumentException("listener can not be null");
-      }
-      if (!listeners.contains(listener)) {
-         listeners.add(listener);
-         OseeEventManager.eventLog("IEM2: addListener (" + priorityListeners.size() + ") " + listener);
-      }
-   }
-
-   /**
-    * Add a priority listener. This should only be done for caches where they need to be updated before all other
-    * listeners are called.
-    */
-   public static void addPriorityListener(IEventListener listener) {
-      if (listener == null) {
-         throw new IllegalArgumentException("listener can not be null");
-      }
-      if (!priorityListeners.contains(listener)) {
-         priorityListeners.add(listener);
-      }
-      OseeEventManager.eventLog("IEM2: addPriorityListener (" + priorityListeners.size() + ") " + listener);
-   }
-
-   public static void removeListener(IEventListener listener) {
-      listeners.remove(listener);
-      priorityListeners.remove(listener);
-   }
-
-   public static void removeListeners(IEventListener listener) {
-      OseeEventManager.eventLog("IEM2: removeListener: (" + listeners.size() + ") " + listener);
-      listeners.remove(listener);
-      priorityListeners.remove(listener);
-   }
-
-   /**
-    * Clear all registered listeners. Should be used for testing purposes only.
-    */
-   public static void internalRemoveAllListeners() {
-      listeners.clear();
-      priorityListeners.clear();
-   }
-
-   public static int getNumberOfListeners() {
-      return listeners.size();
-   }
-
    /**
     * For all IBranchEventListener, process priorityListeners, then normal listeners
     */
-   public static void processBranchEvent(Sender sender, BranchEvent branchEvent) {
-      OseeEventManager.eventLog(String.format("IEM2: processBranchEvent [%s]", branchEvent));
+   public void processBranchEvent(Sender sender, BranchEvent branchEvent) {
+      EventUtil.eventLog(String.format("IEM2: processBranchEvent [%s]", branchEvent));
       for (IEventListener listener : priorityListeners) {
          try {
             if (listener instanceof IBranchEventListener) {
                processBranchEventListener((IBranchEventListener) listener, sender, branchEvent);
             }
          } catch (Exception ex) {
-            OseeEventManager.eventLog(
+            EventUtil.eventLog(
                String.format("IEM2: processBranchEvent [%s] error processing priorityListeners", branchEvent), ex);
          }
       }
@@ -133,13 +116,13 @@ public class InternalEventManager2 {
                processBranchEventListener((IBranchEventListener) listener, sender, branchEvent);
             }
          } catch (Exception ex) {
-            OseeEventManager.eventLog(
-               String.format("IEM2: processBranchEvent [%s] error processing listeners", branchEvent), ex);
+            EventUtil.eventLog(String.format("IEM2: processBranchEvent [%s] error processing listeners", branchEvent),
+               ex);
          }
       }
    }
 
-   private static void processBranchEventListener(IBranchEventListener listener, Sender sender, BranchEvent branchEvent) {
+   private void processBranchEventListener(IBranchEventListener listener, Sender sender, BranchEvent branchEvent) {
       // If any filter doesn't match, don't call listener
       if (((IEventFilteredListener) listener).getEventFilters() != null) {
          for (IEventFilter eventFilter : ((IEventFilteredListener) listener).getEventFilters()) {
@@ -156,14 +139,14 @@ public class InternalEventManager2 {
    /**
     * For all IBranchEventListener, process priorityListeners, then normal listeners
     */
-   public static void processEventArtifactsAndRelations(Sender sender, ArtifactEvent artifactEvent) {
+   public void processEventArtifactsAndRelations(Sender sender, ArtifactEvent artifactEvent) {
       for (IEventListener listener : priorityListeners) {
          try {
             if (listener instanceof IArtifactEventListener) {
                processEventArtifactsAndRelationsListener((IArtifactEventListener) listener, artifactEvent, sender);
             }
          } catch (Exception ex) {
-            OseeEventManager.eventLog(
+            EventUtil.eventLog(
                String.format("IEM2: processArtsAndRels [%s] error processing priorityListeners", artifactEvent), ex);
          }
       }
@@ -173,14 +156,14 @@ public class InternalEventManager2 {
                processEventArtifactsAndRelationsListener((IArtifactEventListener) listener, artifactEvent, sender);
             }
          } catch (Exception ex) {
-            OseeEventManager.eventLog(
+            EventUtil.eventLog(
                String.format("IEM2: processArtsAndRels [%s] error processing listeners", artifactEvent), ex);
          }
       }
    }
 
-   private static void processEventArtifactsAndRelationsListener(IArtifactEventListener listener, ArtifactEvent artifactEvent, Sender sender) {
-      OseeEventManager.eventLog(String.format("IEM2: processArtsAndRels [%s]", artifactEvent));
+   private void processEventArtifactsAndRelationsListener(IArtifactEventListener listener, ArtifactEvent artifactEvent, Sender sender) {
+      EventUtil.eventLog(String.format("IEM2: processArtsAndRels [%s]", artifactEvent));
       // If any filter doesn't match, don't call listener
       if (((IEventFilteredListener) listener).getEventFilters() != null) {
          for (IEventFilter eventFilter : ((IEventFilteredListener) listener).getEventFilters()) {
@@ -204,16 +187,16 @@ public class InternalEventManager2 {
       listener.handleArtifactEvent(artifactEvent, sender);
    }
 
-   public static void processAccessControlEvent(Sender sender, AccessControlEvent accessControlEvent) {
-      OseeEventManager.eventLog(String.format("IEM2: processAccessControlEvent [%s]", accessControlEvent));
+   public void processAccessControlEvent(Sender sender, AccessControlEvent accessControlEvent) {
+      EventUtil.eventLog(String.format("IEM2: processAccessControlEvent [%s]", accessControlEvent));
       for (IEventListener listener : priorityListeners) {
          try {
             if (listener instanceof IAccessControlEventListener) {
                ((IAccessControlEventListener) listener).handleAccessControlArtifactsEvent(sender, accessControlEvent);
             }
          } catch (Exception ex) {
-            OseeEventManager.eventLog(String.format(
-               "IEM2: processAccessControlEvent [%s] error processing priorityListeners", accessControlEvent), ex);
+            EventUtil.eventLog(String.format("IEM2: processAccessControlEvent [%s] error processing priorityListeners",
+               accessControlEvent), ex);
          }
       }
       for (IEventListener listener : listeners) {
@@ -222,14 +205,14 @@ public class InternalEventManager2 {
                ((IAccessControlEventListener) listener).handleAccessControlArtifactsEvent(sender, accessControlEvent);
             }
          } catch (Exception ex) {
-            OseeEventManager.eventLog(
+            EventUtil.eventLog(
                String.format("IEM2: processAccessControlEvent [%s] error processing listeners", accessControlEvent), ex);
          }
       }
    }
 
-   public static void processEventBroadcastEvent(Sender sender, BroadcastEvent broadcastEvent) {
-      OseeEventManager.eventLog(String.format("IEM2: processEventBroadcastEvent [%s]", broadcastEvent));
+   public void processEventBroadcastEvent(Sender sender, BroadcastEvent broadcastEvent) {
+      EventUtil.eventLog(String.format("IEM2: processEventBroadcastEvent [%s]", broadcastEvent));
       if (broadcastEvent.getUsers().size() == 0) {
          return;
       }
@@ -239,7 +222,7 @@ public class InternalEventManager2 {
                ((IBroadcastEventListener) listener).handleBroadcastEvent(sender, broadcastEvent);
             }
          } catch (Exception ex) {
-            OseeEventManager.eventLog(
+            EventUtil.eventLog(
                String.format("IEM2: processEventBroadcastEvent [%s] error processing priorityListeners", broadcastEvent),
                ex);
          }
@@ -250,14 +233,14 @@ public class InternalEventManager2 {
                ((IBroadcastEventListener) listener).handleBroadcastEvent(sender, broadcastEvent);
             }
          } catch (Exception ex) {
-            OseeEventManager.eventLog(
+            EventUtil.eventLog(
                String.format("IEM2: processEventBroadcastEvent [%s] error processing listeners", broadcastEvent), ex);
          }
       }
    }
 
-   public static void processRemoteEventManagerEvent(Sender sender, RemoteEventServiceEventType remoteEventServiceEvent) {
-      OseeEventManager.eventLog(String.format("IEM2: processRemoteEventManagerEvent [%s]", remoteEventServiceEvent));
+   public void processRemoteEventManagerEvent(Sender sender, RemoteEventServiceEventType remoteEventServiceEvent) {
+      EventUtil.eventLog(String.format("IEM2: processRemoteEventManagerEvent [%s]", remoteEventServiceEvent));
       for (IEventListener listener : priorityListeners) {
          try {
             if (listener instanceof IRemoteEventManagerEventListener) {
@@ -265,7 +248,7 @@ public class InternalEventManager2 {
                   remoteEventServiceEvent);
             }
          } catch (Exception ex) {
-            OseeEventManager.eventLog(
+            EventUtil.eventLog(
                String.format("IEM2: processRemoteEventManagerEvent [%s] error processing priorityListeners",
                   remoteEventServiceEvent), ex);
          }
@@ -277,21 +260,21 @@ public class InternalEventManager2 {
                   remoteEventServiceEvent);
             }
          } catch (Exception ex) {
-            OseeEventManager.eventLog(String.format(
-               "IEM2: processRemoteEventManagerEvent [%s] error processing listeners", remoteEventServiceEvent), ex);
+            EventUtil.eventLog(String.format("IEM2: processRemoteEventManagerEvent [%s] error processing listeners",
+               remoteEventServiceEvent), ex);
          }
       }
    }
 
-   public static void processTransactionEvent(Sender sender, TransactionEvent transactionEvent) {
-      OseeEventManager.eventLog(String.format("IEM2: processTransactionEvent [%s]", transactionEvent));
+   public void processTransactionEvent(Sender sender, TransactionEvent transactionEvent) {
+      EventUtil.eventLog(String.format("IEM2: processTransactionEvent [%s]", transactionEvent));
       for (IEventListener listener : priorityListeners) {
          try {
             if (listener instanceof ITransactionEventListener) {
                ((ITransactionEventListener) listener).handleTransactionEvent(sender, transactionEvent);
             }
          } catch (Exception ex) {
-            OseeEventManager.eventLog(
+            EventUtil.eventLog(
                String.format("IEM2: processTransactionEvent [%s] error processing priorityListeners", transactionEvent),
                ex);
          }
@@ -302,64 +285,47 @@ public class InternalEventManager2 {
                ((ITransactionEventListener) listener).handleTransactionEvent(sender, transactionEvent);
             }
          } catch (Exception ex) {
-            OseeEventManager.eventLog(
+            EventUtil.eventLog(
                String.format("IEM2: processTransactionEvent [%s] error processing listeners", transactionEvent), ex);
          }
       }
    }
 
-   public static String getListenerReport() {
-      List<String> listenerStrs = new ArrayList<String>();
-      for (IEventListener listener : priorityListeners) {
-         listenerStrs.add("Priority: " + getObjectSafeName(listener));
-      }
-      for (IEventListener listener : listeners) {
-         listenerStrs.add(getObjectSafeName(listener));
-      }
-      String[] listArr = listenerStrs.toArray(new String[listenerStrs.size()]);
-      Arrays.sort(listArr);
-      return org.eclipse.osee.framework.jdk.core.util.Collections.toString("\n", (Object[]) listArr);
-   }
-
-   public static String getObjectSafeName(Object object) {
-      try {
-         return object.toString();
-      } catch (Exception ex) {
-         return object.getClass().getSimpleName() + " - exception on toString: " + ex.getLocalizedMessage();
-      }
-   }
+   //   public String getListenerReport() {
+   //      return EventUtil.getListenerReport(listeners, priorityListeners);
+   //   }
 
    /*
     * Kick LOCAL and REMOTE access control events
     */
-   static void kickAccessControlArtifactsEvent(final Sender sender, final AccessControlEvent accessControlEvent) {
+   public void kickAccessControlArtifactsEvent(final Sender sender, final AccessControlEvent accessControlEvent) {
       if (sender == null) {
          throw new IllegalArgumentException("sender can not be null");
       }
       if (accessControlEvent.getEventType() == null) {
          throw new IllegalArgumentException("accessControlEventType can not be null");
       }
-      if (isDisableEvents()) {
+      if (preferences.isDisableEvents()) {
          return;
       }
-      OseeEventManager.eventLog("IEM2: kickAccessControlEvent - type: " + accessControlEvent + sender + " artifacts: " + accessControlEvent.getArtifacts());
+      EventUtil.eventLog("IEM2: kickAccessControlEvent - type: " + accessControlEvent + sender + " artifacts: " + accessControlEvent.getArtifacts());
       Runnable runnable = new Runnable() {
          @Override
          public void run() {
             try {
                // Kick LOCAL
-               boolean normalOperation = !enableRemoteEventLoopback;
-               boolean loopbackTestEnabledAndRemoteEventReturned = enableRemoteEventLoopback && sender.isRemote();
+               boolean normalOperation = !preferences.isEnableRemoteEventLoopback();
+               boolean loopbackTestEnabledAndRemoteEventReturned =
+                  preferences.isEnableRemoteEventLoopback() && sender.isRemote();
                if (normalOperation && sender.isLocal() || loopbackTestEnabledAndRemoteEventReturned) {
                   processAccessControlEvent(sender, accessControlEvent);
                }
                // Kick REMOTE
                if (sender.isLocal() && accessControlEvent.getEventType().isRemoteEventType()) {
-                  RemoteEventManager2.getInstance().kick(
-                     FrameworkEventUtil.getRemoteAccessControlEvent(accessControlEvent));
+                  sendRemoteEvent(FrameworkEventUtil.getRemoteAccessControlEvent(accessControlEvent));
                }
             } catch (Exception ex) {
-               OseeEventManager.eventLog("IEM2 kickAccessControlEvent", ex);
+               EventUtil.eventLog("IEM2 kickAccessControlEvent", ex);
             }
          }
       };
@@ -367,11 +333,11 @@ public class InternalEventManager2 {
    }
 
    // Kick LOCAL "remote event manager" event
-   static void kickLocalRemEvent(final Sender sender, final RemoteEventServiceEventType remoteEventServiceEventType) {
-      if (isDisableEvents()) {
+   public void kickLocalRemEvent(final Sender sender, final RemoteEventServiceEventType remoteEventServiceEventType) {
+      if (preferences.isDisableEvents()) {
          return;
       }
-      OseeEventManager.eventLog("IEM2: kickLocalRemEvent: type: " + remoteEventServiceEventType + " - " + sender);
+      EventUtil.eventLog("IEM2: kickLocalRemEvent: type: " + remoteEventServiceEventType + " - " + sender);
       Runnable runnable = new Runnable() {
          @Override
          public void run() {
@@ -389,25 +355,26 @@ public class InternalEventManager2 {
    }
 
    // Kick LOCAL ArtifactReloadEvent
-   static void kickLocalArtifactReloadEvent(final Sender sender, final ArtifactEvent artifactEvent) {
-      if (isDisableEvents()) {
+   public void kickLocalArtifactReloadEvent(final Sender sender, final ArtifactEvent artifactEvent) {
+      if (preferences.isDisableEvents()) {
          return;
       }
-      OseeEventManager.eventLog("IEM2: kickArtifactReloadEvent [" + artifactEvent + "] - " + sender);
+      EventUtil.eventLog("IEM2: kickArtifactReloadEvent [" + artifactEvent + "] - " + sender);
       Runnable runnable = new Runnable() {
          @Override
          public void run() {
             try {
                // Kick LOCAL
-               boolean normalOperation = !enableRemoteEventLoopback;
-               boolean loopbackTestEnabledAndRemoteEventReturned = enableRemoteEventLoopback && sender.isRemote();
+               boolean normalOperation = !preferences.isEnableRemoteEventLoopback();
+               boolean loopbackTestEnabledAndRemoteEventReturned =
+                  preferences.isEnableRemoteEventLoopback() && sender.isRemote();
                if (normalOperation && sender.isLocal() || loopbackTestEnabledAndRemoteEventReturned) {
                   processEventArtifactsAndRelations(sender, artifactEvent);
                }
 
                // NO REMOTE KICK
             } catch (Exception ex) {
-               OseeEventManager.eventLog("IEM2 kickArtifactReloadEvent", ex);
+               EventUtil.eventLog("IEM2 kickArtifactReloadEvent", ex);
             }
          }
       };
@@ -417,34 +384,35 @@ public class InternalEventManager2 {
    /*
     * Kick LOCAL and REMOTE branch events
     */
-   static void kickBranchEvent(final Sender sender, final BranchEvent branchEvent) {
+   public void kickBranchEvent(final Sender sender, final BranchEvent branchEvent) {
       if (branchEvent.getNetworkSender() == null) {
-         OseeEventManager.eventLog("IEM2: kickBranchEvent - ERROR networkSender can't be null.");
+         EventUtil.eventLog("IEM2: kickBranchEvent - ERROR networkSender can't be null.");
          return;
       }
-      if (isDisableEvents()) {
+      if (preferences.isDisableEvents()) {
          return;
       }
-      OseeEventManager.eventLog("IEM2: kickBranchEvent: type: " + branchEvent.getEventType() + " guid: " + branchEvent.getBranchGuid() + " - " + sender);
+      EventUtil.eventLog("IEM2: kickBranchEvent: type: " + branchEvent.getEventType() + " guid: " + branchEvent.getBranchGuid() + " - " + sender);
       Runnable runnable = new Runnable() {
          @Override
          public void run() {
             // Log if this is a loopback and what is happening
-            if (enableRemoteEventLoopback) {
-               OseeEventManager.eventLog("IEM2: BranchEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
+            if (preferences.isEnableRemoteEventLoopback()) {
+               EventUtil.eventLog("IEM2: BranchEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
             }
             BranchEventType branchEventType = branchEvent.getEventType();
 
             // Kick LOCAL
-            boolean normalOperation = !enableRemoteEventLoopback;
-            boolean loopbackTestEnabledAndRemoteEventReturned = enableRemoteEventLoopback && sender.isRemote();
+            boolean normalOperation = !preferences.isEnableRemoteEventLoopback();
+            boolean loopbackTestEnabledAndRemoteEventReturned =
+               preferences.isEnableRemoteEventLoopback() && sender.isRemote();
             if (normalOperation || loopbackTestEnabledAndRemoteEventReturned) {
                processBranchEvent(sender, branchEvent);
             }
 
             // Kick REMOTE (If source was Local and this was not a default branch changed event
             if (sender.isLocal() && branchEventType.isRemoteEventType()) {
-               RemoteEventManager2.getInstance().kick(FrameworkEventUtil.getRemoteBranchEvent(branchEvent));
+               sendRemoteEvent(FrameworkEventUtil.getRemoteBranchEvent(branchEvent));
             }
          }
       };
@@ -452,38 +420,39 @@ public class InternalEventManager2 {
    }
 
    // Kick LOCAL and REMOTE ArtifactEvent
-   static void kickArtifactEvent(final Sender sender, final ArtifactEvent artifactEvent) {
+   public void kickArtifactEvent(final Sender sender, final ArtifactEvent artifactEvent) {
       if (artifactEvent.getNetworkSender() == null) {
-         OseeEventManager.eventLog("IEM2: kickArtifactEvent - ERROR networkSender can't be null.");
+         EventUtil.eventLog("IEM2: kickArtifactEvent - ERROR networkSender can't be null.");
          return;
       }
-      if (isDisableEvents()) {
+      if (preferences.isDisableEvents()) {
          return;
       }
-      OseeEventManager.eventLog("IEM2: kickArtifactEvent [" + artifactEvent + "] - " + sender);
+      EventUtil.eventLog("IEM2: kickArtifactEvent [" + artifactEvent + "] - " + sender);
       Runnable runnable = new Runnable() {
          @Override
          public void run() {
             // Roll-up change information
             try {
                // Log if this is a loopback and what is happening
-               if (enableRemoteEventLoopback) {
-                  OseeEventManager.eventLog("IEM2: ArtifactEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
+               if (preferences.isEnableRemoteEventLoopback()) {
+                  EventUtil.eventLog("IEM2: ArtifactEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
                }
 
                // Kick LOCAL
-               boolean normalOperation = !enableRemoteEventLoopback;
-               boolean loopbackTestEnabledAndRemoteEventReturned = enableRemoteEventLoopback && sender.isRemote();
+               boolean normalOperation = !preferences.isEnableRemoteEventLoopback();
+               boolean loopbackTestEnabledAndRemoteEventReturned =
+                  preferences.isEnableRemoteEventLoopback() && sender.isRemote();
                if (normalOperation || loopbackTestEnabledAndRemoteEventReturned) {
                   processEventArtifactsAndRelations(sender, artifactEvent);
                }
 
                // Kick REMOTE (If source was Local and this was not a default branch changed event
                if (sender.isLocal()) {
-                  RemoteEventManager2.getInstance().kick(FrameworkEventUtil.getRemotePersistEvent(artifactEvent));
+                  sendRemoteEvent(FrameworkEventUtil.getRemotePersistEvent(artifactEvent));
                }
             } catch (Exception ex) {
-               OseeEventManager.eventLog("IEM2 kickArtifactEvent", ex);
+               EventUtil.eventLog("IEM2 kickArtifactEvent", ex);
             }
          }
       };
@@ -491,28 +460,29 @@ public class InternalEventManager2 {
    }
 
    // Kick LOCAL and REMOTE ArtifactEvent
-   static void kickTransactionEvent(final Sender sender, final TransactionEvent transEvent) {
+   public void kickTransactionEvent(final Sender sender, final TransactionEvent transEvent) {
       if (transEvent.getNetworkSender() == null) {
-         OseeEventManager.eventLog("IEM2: kickTransactionEvent - ERROR networkSender can't be null.");
+         EventUtil.eventLog("IEM2: kickTransactionEvent - ERROR networkSender can't be null.");
          return;
       }
-      if (isDisableEvents()) {
+      if (preferences.isDisableEvents()) {
          return;
       }
-      OseeEventManager.eventLog("IEM2: kickTransactionEvent [" + transEvent + "] - " + sender);
+      EventUtil.eventLog("IEM2: kickTransactionEvent [" + transEvent + "] - " + sender);
       Runnable runnable = new Runnable() {
          @Override
          public void run() {
             // Roll-up change information
             try {
                // Log if this is a loopback and what is happening
-               if (!enableRemoteEventLoopback) {
-                  OseeEventManager.eventLog("IEM2: TransactionEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
+               if (!preferences.isEnableRemoteEventLoopback()) {
+                  EventUtil.eventLog("IEM2: TransactionEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
                }
 
                // Kick LOCAL
-               boolean normalOperation = !enableRemoteEventLoopback;
-               boolean loopbackTestEnabledAndRemoteEventReturned = enableRemoteEventLoopback && sender.isRemote();
+               boolean normalOperation = !preferences.isEnableRemoteEventLoopback();
+               boolean loopbackTestEnabledAndRemoteEventReturned =
+                  preferences.isEnableRemoteEventLoopback() && sender.isRemote();
                if (normalOperation || loopbackTestEnabledAndRemoteEventReturned) {
                   processTransactionEvent(sender, transEvent);
                }
@@ -520,10 +490,10 @@ public class InternalEventManager2 {
                // Kick REMOTE (If source was Local and this was not a default branch changed event
                if (sender.isLocal()) {
                   // Kick REMOTE
-                  RemoteEventManager2.getInstance().kick(FrameworkEventUtil.getRemoteTransactionEvent(transEvent));
+                  sendRemoteEvent(FrameworkEventUtil.getRemoteTransactionEvent(transEvent));
                }
             } catch (Exception ex) {
-               OseeEventManager.eventLog("IEM2: kickTransactionEvent", ex);
+               EventUtil.eventLog("IEM2: kickTransactionEvent", ex);
             }
          }
       };
@@ -533,13 +503,13 @@ public class InternalEventManager2 {
    /*
     * Kick LOCAL and REMOTE broadcast event
     */
-   static void kickBroadcastEvent(final Sender sender, final BroadcastEvent broadcastEvent) {
-      if (isDisableEvents()) {
+   public void kickBroadcastEvent(final Sender sender, final BroadcastEvent broadcastEvent) {
+      if (preferences.isDisableEvents()) {
          return;
       }
 
       if (!broadcastEvent.getBroadcastEventType().isPingOrPong()) {
-         OseeEventManager.eventLog("IEM2: kickBroadcastEvent: type: " + broadcastEvent.getBroadcastEventType().name() + " message: " + broadcastEvent.getMessage() + " - " + sender);
+         EventUtil.eventLog("IEM2: kickBroadcastEvent: type: " + broadcastEvent.getBroadcastEventType().name() + " message: " + broadcastEvent.getMessage() + " - " + sender);
       }
       Runnable runnable = new Runnable() {
          @Override
@@ -552,7 +522,7 @@ public class InternalEventManager2 {
 
                // Kick REMOTE (If source was Local and this was not a default branch changed event
                if (sender.isLocal() && broadcastEvent.getBroadcastEventType().isRemoteEventType()) {
-                  RemoteEventManager2.getInstance().kick(FrameworkEventUtil.getRemoteBroadcastEvent(broadcastEvent));
+                  sendRemoteEvent(FrameworkEventUtil.getRemoteBroadcastEvent(broadcastEvent));
                }
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -562,30 +532,47 @@ public class InternalEventManager2 {
       execute(runnable);
    }
 
-   static boolean isDisableEvents() {
-      return disableEvents;
-   }
-
-   public static void setDisableEvents(boolean disableEvents) {
-      InternalEventManager2.disableEvents = disableEvents;
-   }
-
-   public static boolean isEnableRemoteEventLoopback() {
-      return enableRemoteEventLoopback;
-   }
-
-   public static void setEnableRemoteEventLoopback(boolean enableRemoteEventLoopback) {
-      InternalEventManager2.enableRemoteEventLoopback = enableRemoteEventLoopback;
-   }
-
    /**
-    * If true, all listeners will be called back in main thread. For testing purposes only.
+    * InternalEventManager.enableRemoteEventLoopback will enable a testing loopback that will take the kicked remote
+    * events and loop them back as if they came from an external client. It will allow for the testing of the OEM -> REM
+    * -> OEM processing. In addition, this onEvent is put in a non-display thread which will test that all handling by
+    * applications is properly handled by doing all processing and then kicking off display-thread when need to update
+    * ui. SessionId needs to be modified so this client doesn't think the events came from itself.
     */
-   public static void internalSetPendRunning(boolean pendRunning) {
-      InternalEventManager2.pendRunning = pendRunning;
+   private void sendRemoteEvent(final RemoteEvent remoteEvent) {
+      if (preferences.isNewEvents() && isConnected()) {
+         EventUtil.eventLog(String.format("REM2: kick - [%s]", remoteEvent));
+         Job job =
+            new Job(String.format("[%s] - sending [%s]", getClass().getSimpleName(),
+               remoteEvent.getClass().getSimpleName())) {
+               @Override
+               protected IStatus run(IProgressMonitor monitor) {
+                  try {
+                     coreModelEventService.sendRemoteEvent(remoteEvent);
+                  } catch (Exception ex) {
+                     EventUtil.eventLog("REM2: kick", ex);
+                     return new Status(IStatus.ERROR, Activator.PLUGIN_ID, -1, ex.getLocalizedMessage(), ex);
+                  }
+                  return Status.OK_STATUS;
+               }
+            };
+
+         job.schedule();
+      }
+
+      if (preferences.isEnableRemoteEventLoopback()) {
+         EventUtil.eventLog("REM2: Loopback enabled - Returning events as Remote event.");
+         String newSessionId = GUID.create();
+         remoteEvent.getNetworkSender().setSessionId(newSessionId);
+         try {
+            frameworkListener.onEvent(remoteEvent);
+         } catch (RemoteException ex) {
+            EventUtil.eventLog("REM2: RemoteEvent - onEvent", ex);
+         }
+      }
    }
 
-   public static boolean isPendRunning() {
-      return pendRunning;
+   public void testSendRemoteEventThroughFrameworkListener(final RemoteEvent remoteEvent) throws RemoteException {
+      frameworkListener.onEvent(remoteEvent);
    }
 }

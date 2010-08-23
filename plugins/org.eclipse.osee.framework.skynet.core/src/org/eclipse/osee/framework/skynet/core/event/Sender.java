@@ -25,7 +25,7 @@ public class Sender {
    private final OseeClientSession oseeSession;
 
    public Sender(Object sourceObject, OseeClientSession oseeSession) {
-      this.sourceObject = InternalEventManager.getObjectSafeName(sourceObject);
+      this.sourceObject = EventUtil.getObjectSafeName(sourceObject);
       this.oseeSession = oseeSession;
    }
 
@@ -41,7 +41,7 @@ public class Sender {
    }
 
    public Sender(Object sourceObject) throws OseeAuthenticationRequiredException {
-      this.sourceObject = InternalEventManager.getObjectSafeName(sourceObject);
+      this.sourceObject = EventUtil.getObjectSafeName(sourceObject);
       this.oseeSession = ClientSessionManager.getSession();
    }
 
@@ -81,7 +81,7 @@ public class Sender {
     * @param sender the sender to set
     */
    public void setSourceObject(Object sourceObject) {
-      this.sourceObject = InternalEventManager.getObjectSafeName(sourceObject);
+      this.sourceObject = EventUtil.getObjectSafeName(sourceObject);
    }
 
    public NetworkSender getNetworkSender() {

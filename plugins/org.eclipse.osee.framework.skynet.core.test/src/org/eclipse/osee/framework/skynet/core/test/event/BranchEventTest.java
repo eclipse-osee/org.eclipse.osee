@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
-import org.eclipse.osee.framework.skynet.core.event.InternalEventManager2;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
@@ -56,14 +55,14 @@ public class BranchEventTest {
    public void testRegistration() throws Exception {
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
 
-      InternalEventManager2.internalRemoveAllListeners();
-      Assert.assertEquals(0, InternalEventManager2.getNumberOfListeners());
+      OseeEventManager.removeAllListeners();
+      Assert.assertEquals(0, OseeEventManager.getNumberOfListeners());
 
-      InternalEventManager2.addListener(branchEventListener);
-      Assert.assertEquals(1, InternalEventManager2.getNumberOfListeners());
+      OseeEventManager.addListener(branchEventListener);
+      Assert.assertEquals(1, OseeEventManager.getNumberOfListeners());
 
-      InternalEventManager2.removeListener(branchEventListener);
-      Assert.assertEquals(0, InternalEventManager2.getNumberOfListeners());
+      OseeEventManager.removeListener(branchEventListener);
+      Assert.assertEquals(0, OseeEventManager.getNumberOfListeners());
 
       TestUtil.severeLoggingEnd(monitorLog);
    }
@@ -71,12 +70,12 @@ public class BranchEventTest {
    @org.junit.Test
    public void testEvents() throws Exception {
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
-      InternalEventManager2.internalRemoveAllListeners();
-      InternalEventManager2.addListener(branchEventListener);
-      Assert.assertEquals(1, InternalEventManager2.getNumberOfListeners());
+      OseeEventManager.removeAllListeners();
+      OseeEventManager.addListener(branchEventListener);
+      Assert.assertEquals(1, OseeEventManager.getNumberOfListeners());
 
       try {
-         InternalEventManager2.internalSetPendRunning(true);
+         OseeEventManager.getPreferences().setPendRunning(true);
 
          Branch topLevel = testEvents__topLevelAdded();
          Branch workingBranch = testEvents__workingAdded(topLevel);
@@ -90,7 +89,7 @@ public class BranchEventTest {
 
          TestUtil.severeLoggingEnd(monitorLog, (isRemoteTest() ? ignoreLogging : new ArrayList<String>()));
       } finally {
-         InternalEventManager2.internalSetPendRunning(false);
+         OseeEventManager.getPreferences().setPendRunning(false);
       }
 
    }
@@ -346,7 +345,7 @@ public class BranchEventTest {
 
    @org.junit.Before
    public void setUpTest() {
-      OseeEventManager.setNewEvents(true);
+      OseeEventManager.getPreferences().setNewEvents(true);
    }
 
    @org.junit.BeforeClass

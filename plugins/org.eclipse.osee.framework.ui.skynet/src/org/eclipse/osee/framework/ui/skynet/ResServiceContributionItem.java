@@ -15,7 +15,6 @@ import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.osee.framework.skynet.core.event.IRemoteEventManagerEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event.RemoteEventManager2;
 import org.eclipse.osee.framework.skynet.core.event.RemoteEventServiceEventType;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.ui.skynet.OseeBuildTypeContributionItem.OpenConfigDetailsAction;
@@ -42,8 +41,7 @@ public class ResServiceContributionItem extends OseeContributionItem implements 
       @Override
       public void run() {
          do {
-            RemoteEventManager2.getInstance();
-            boolean status = RemoteEventManager2.isConnected();
+            boolean status = OseeEventManager.isEventManagerConnected();
             for (ResServiceContributionItem icon : icons) {
                icon.updateStatus(status);
             }
@@ -58,7 +56,7 @@ public class ResServiceContributionItem extends OseeContributionItem implements 
 
    public ResServiceContributionItem() {
       super(ID);
-      updateStatus(RemoteEventManager2.isConnected());
+      updateStatus(OseeEventManager.isEventManagerConnected());
       OseeEventManager.addListener(this);
       setActionHandler(new OpenConfigDetailsAction());
       icons.add(this);
@@ -97,7 +95,7 @@ public class ResServiceContributionItem extends OseeContributionItem implements 
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            updateStatus(RemoteEventManager2.isConnected());
+            updateStatus(OseeEventManager.isEventManagerConnected());
          }
       });
    }

@@ -43,7 +43,7 @@ public abstract class AbstractEventArtifactEditor extends AbstractArtifactEditor
 
    public AbstractEventArtifactEditor() {
       super();
-      if (OseeEventManager.isOldEvents()) {
+      if (OseeEventManager.getPreferences().isOldEvents()) {
          internalEventHandler = new InternalEventHandler();
          OseeEventManager.addListener(internalEventHandler);
       } else {
@@ -88,7 +88,7 @@ public abstract class AbstractEventArtifactEditor extends AbstractArtifactEditor
    @Override
    public void dispose() {
       super.dispose();
-      if (OseeEventManager.isOldEvents()) {
+      if (OseeEventManager.getPreferences().isOldEvents()) {
          OseeEventManager.removeListener(internalEventHandler);
       }
    }

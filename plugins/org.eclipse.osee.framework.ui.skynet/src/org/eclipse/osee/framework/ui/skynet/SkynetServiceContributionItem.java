@@ -15,7 +15,6 @@ import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.osee.framework.skynet.core.event.IRemoteEventManagerEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event.RemoteEventManager;
 import org.eclipse.osee.framework.skynet.core.event.RemoteEventServiceEventType;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -42,7 +41,7 @@ public class SkynetServiceContributionItem extends OseeContributionItem implemen
       @Override
       public void run() {
          do {
-            boolean status = RemoteEventManager.isConnected();
+            boolean status = OseeEventManager.isLegacyEventManagerConnected();
             for (SkynetServiceContributionItem icon : icons) {
                icon.updateStatus(status);
             }
@@ -57,7 +56,7 @@ public class SkynetServiceContributionItem extends OseeContributionItem implemen
 
    public SkynetServiceContributionItem() {
       super(ID);
-      updateStatus(RemoteEventManager.isConnected());
+      updateStatus(OseeEventManager.isLegacyEventManagerConnected());
       OseeEventManager.addListener(this);
       icons.add(this);
       createUpdateThread();

@@ -15,7 +15,11 @@ import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteNetworkSender1;
 /**
  * @author Donald G. Dunne
  */
-public class RemoteEventUtil {
+public final class RemoteEventUtil {
+
+   private RemoteEventUtil() {
+      // Utility class
+   }
 
    public static RemoteNetworkSender1 getNetworkSender(String sourceObject, String sessionId, String machineName, String userId, String machineIp, int port, String clientVersion) {
       RemoteNetworkSender1 networkSender = new RemoteNetworkSender1();

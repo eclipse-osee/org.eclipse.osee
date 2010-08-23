@@ -17,8 +17,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.event.RemoteEventManager;
-import org.eclipse.osee.framework.skynet.core.event.RemoteEventManager2;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
@@ -112,16 +111,29 @@ public class ConfigurationDetails extends PreferencePage implements IWorkbenchPr
             status.getMessage().replaceAll("]", "]<br/>"),
             status.isOk() ? "<font color=\"green\"><b>Ok</b></font>" : "<font color=\"red\"><b>Unavailable</b></font>"));
       }
+
       builder.append(AHTML.addRowMultiColumnTable(
          "<b>Remote Event Service</b>",
-         RemoteEventManager2.getInstance().getConnectionProperties().replaceAll("]", "]<br/>"),
-         RemoteEventManager2.isConnected() ? "<font color=\"green\"><b>Ok</b></font>" : "<font color=\"red\"><b>Unavailable - " + RemoteEventManager2.getInstance().getConnectionInfo() + "</b></font>"));
+         OseeEventManager.getConnectionDetails().replaceAll("]", "]<br/>"),
+         OseeEventManager.isEventManagerConnected() ? "<font color=\"green\"><b>Ok</b></font>" : "<font color=\"red\"><b>Unavailable - " + getEventServiceDetails() + "</b></font>"));
       builder.append(AHTML.addRowMultiColumnTable(
          "<b>Old Remote Event Service</b>",
-         RemoteEventManager.getConnectionProperties().replaceAll("]", "]<br/>"),
-         RemoteEventManager.isConnected() ? "<font color=\"green\"><b>Ok</b></font>" : "<font color=\"red\"><b>Unavailable</b></font>"));
+         OseeEventManager.getLegacyConnectionDetails().replaceAll("]", "]<br/>"),
+         OseeEventManager.isLegacyEventManagerConnected() ? "<font color=\"green\"><b>Ok</b></font>" : "<font color=\"red\"><b>Unavailable</b></font>"));
 
       builder.append(AHTML.endMultiColumnTable());
       browser.setText(String.format(PAGE_TEMPLATE, builder.toString()));
+   }
+
+   public String getEventServiceDetails() {
+      String toReturn;
+      if (!OseeEventManager.getPreferences().isNewEvents()) {
+         toReturn = "New Events == OFF";
+      } else if (OseeEventManager.isEventManagerConnected()) {
+         toReturn = "Connected";
+      } else {
+         toReturn = "ActiveMQ JMS Service is down";
+      }
+      return toReturn;
    }
 }

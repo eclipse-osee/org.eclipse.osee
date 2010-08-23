@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event.RemoteEventManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
@@ -94,10 +93,10 @@ public class ClientDashboardRequestHandler implements IHttpServerRequest {
       for (IHealthStatus status : OseeLog.getStatus()) {
          sb.append("\n" + status.getSourceName() + ": [" + status.getMessage() + "]");
       }
-      sb.append("\nRemote Event Service - Old Connected: [" + RemoteEventManager.isConnected() + "]");
-      sb.append("\nRemote Event Service - Old Active: [" + OseeEventManager.isOldEvents() + "]");
-      sb.append("\nRemote Event Service - New Connected: [" + RemoteEventManager.isConnected() + "]");
-      sb.append("\nRemote Event Service - New Active: [" + OseeEventManager.isNewEvents() + "]");
+      sb.append("\nRemote Event Service - Old Connected: [" + OseeEventManager.isLegacyEventManagerConnected() + "]");
+      sb.append("\nRemote Event Service - Old Active: [" + OseeEventManager.getPreferences().isOldEvents() + "]");
+      sb.append("\nRemote Event Service - New Connected: [" + OseeEventManager.isEventManagerConnected() + "]");
+      sb.append("\nRemote Event Service - New Active: [" + OseeEventManager.getPreferences().isNewEvents() + "]");
       return sb.toString();
    }
 

@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkSender;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.event.InternalEventManager2;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
@@ -39,7 +38,8 @@ import org.junit.Before;
  * @author Donald G. Dunne
  */
 public class ArtifactEventFiltersTest {
-
+   // artifact listener create for use by all tests to just capture result eventArtifacts for query
+   private final ArtifactEventListener artifactEventListener = new ArtifactEventListener();
    private ArtifactEvent resultArtifactEvent = null;
    private Sender resultSender = null;
    public static List<String> ignoreLogging = Arrays.asList("");
@@ -47,19 +47,20 @@ public class ArtifactEventFiltersTest {
 
    @Before
    public void setup() {
-      InternalEventManager2.internalSetPendRunning(true);
+      OseeEventManager.getPreferences().setNewEvents(true);
+      OseeEventManager.getPreferences().setPendRunning(true);
    }
 
    @After
    public void cleanup() {
-      InternalEventManager2.internalSetPendRunning(false);
+      OseeEventManager.getPreferences().setPendRunning(false);
    }
 
    @org.junit.Test
    public void testArtifactEventFilters() throws Exception {
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
-      InternalEventManager2.internalRemoveAllListeners();
-      InternalEventManager2.addListener(artifactEventListener);
+      OseeEventManager.removeAllListeners();
+      OseeEventManager.addListener(artifactEventListener);
 
       testArtifactEventFilters__artifactTypeInheritance();
       testArtifactEventFilters__branchFilter();
@@ -103,7 +104,7 @@ public class ArtifactEventFiltersTest {
 
       // Send dummy event
       Sender sender = new Sender(new NetworkSender(this, GUID.create(), "PC", "12345", "123.234.345.456", 34, "1.0.0"));
-      InternalEventManager2.processEventArtifactsAndRelations(sender, testArtifactEvent);
+      processEventArtifactsAndRelations(sender, testArtifactEvent);
 
       // Test that event DID come through
       Assert.assertNotNull(resultArtifactEvent);
@@ -116,7 +117,7 @@ public class ArtifactEventFiltersTest {
       resultSender = null;
 
       // Re-send dummy event
-      InternalEventManager2.processEventArtifactsAndRelations(sender, testArtifactEvent);
+      processEventArtifactsAndRelations(sender, testArtifactEvent);
 
       // Test that event DID come through
       Assert.assertNotNull(resultArtifactEvent);
@@ -129,7 +130,7 @@ public class ArtifactEventFiltersTest {
       resultSender = null;
 
       // Re-send dummy event
-      InternalEventManager2.processEventArtifactsAndRelations(sender, testArtifactEvent);
+      processEventArtifactsAndRelations(sender, testArtifactEvent);
 
       // Test that event did NOT come through
       Assert.assertNull(resultArtifactEvent);
@@ -154,7 +155,7 @@ public class ArtifactEventFiltersTest {
 
       // Send dummy event
       Sender sender = new Sender(new NetworkSender(this, GUID.create(), "PC", "12345", "123.234.345.456", 34, "1.0.0"));
-      InternalEventManager2.processEventArtifactsAndRelations(sender, testArtifactEvent);
+      processEventArtifactsAndRelations(sender, testArtifactEvent);
 
       // Test that event DID come through
       Assert.assertNotNull(resultArtifactEvent);
@@ -168,7 +169,7 @@ public class ArtifactEventFiltersTest {
       resultSender = null;
 
       // Re-send dummy event
-      InternalEventManager2.processEventArtifactsAndRelations(sender, testArtifactEvent);
+      processEventArtifactsAndRelations(sender, testArtifactEvent);
 
       // Test that event did NOT come through
       Assert.assertNull(resultArtifactEvent);
@@ -181,17 +182,27 @@ public class ArtifactEventFiltersTest {
       resultSender = null;
 
       // Re-send dummy event
-      InternalEventManager2.processEventArtifactsAndRelations(sender, testArtifactEvent);
+      processEventArtifactsAndRelations(sender, testArtifactEvent);
 
       // Test that event did NOT come through
       Assert.assertNull(resultArtifactEvent);
 
    }
 
-   private NetworkSender getDummyRemoteNetworkSender() {
-      return new NetworkSender(this.getClass(), GUID.create(), "PC", "12345", "123.234.345.456", 34, "1.0.0");
+   private static void processEventArtifactsAndRelations(Sender sender, ArtifactEvent artifactEvent) {
+      OseeEventManager.internalTestProcessEventArtifactsAndRelations(sender, artifactEvent);
    }
-   private class ArtifactEventListener implements IArtifactEventListener {
+
+   private static NetworkSender getDummyRemoteNetworkSender() {
+      return new NetworkSender(ArtifactEventFiltersTest.class, GUID.create(), "PC", "12345", "123.234.345.456", 34,
+         "1.0.0");
+   }
+
+   public void clearEventCollections() {
+      resultArtifactEvent = null;
+   }
+
+   private final class ArtifactEventListener implements IArtifactEventListener {
 
       @Override
       public List<? extends IEventFilter> getEventFilters() {
@@ -204,18 +215,6 @@ public class ArtifactEventFiltersTest {
          resultSender = sender;
       }
 
-   }
-
-   @org.junit.Before
-   public void setUpTest() {
-      OseeEventManager.setNewEvents(true);
-   }
-
-   // artifact listener create for use by all tests to just capture result eventArtifacts for query
-   private final ArtifactEventListener artifactEventListener = new ArtifactEventListener();
-
-   public void clearEventCollections() {
-      resultArtifactEvent = null;
    }
 
 }

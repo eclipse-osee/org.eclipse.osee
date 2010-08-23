@@ -8,9 +8,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.messaging.event.res;
+package org.eclipse.osee.framework.messaging.event.res.internal;
 
 import org.eclipse.osee.framework.messaging.MessageID;
+import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteAccessControlEvent1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBranchEvent1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBroadcastEvent1;
@@ -25,12 +26,12 @@ public enum ResMessages implements MessageID {
    RemoteAccessControlEvent1(true, "AFRkIhdPkwExx96ioXgA", "topic:org.eclipse.osee.coverage.msgs.RemoteAccessControlEvent1", RemoteAccessControlEvent1.class, false);
 
    private String name;
-   private Class<?> clazz;
+   private Class<? extends RemoteEvent> clazz;
    boolean isReplyRequired;
    private String guid;
    private boolean isTopic;
 
-   ResMessages(boolean isTopic, String guid, String name, Class<?> clazz, boolean isReplyRequired) {
+   ResMessages(boolean isTopic, String guid, String name, Class<? extends RemoteEvent> clazz, boolean isReplyRequired) {
       this.guid = guid;
       this.name = name;
       this.clazz = clazz;
@@ -44,7 +45,7 @@ public enum ResMessages implements MessageID {
    }
 
    @Override
-   public Class<?> getSerializationClass() {
+   public Class<? extends RemoteEvent> getSerializationClass() {
       return clazz;
    }
 

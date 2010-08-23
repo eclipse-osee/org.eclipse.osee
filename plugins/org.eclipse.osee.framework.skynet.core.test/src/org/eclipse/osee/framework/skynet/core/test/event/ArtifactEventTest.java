@@ -39,9 +39,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ChangeArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.event.InternalEventManager2;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event.RemoteEventManager2;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventUtil;
@@ -92,17 +90,13 @@ public class ArtifactEventTest {
 
    @Before
    public void setup() {
-      InternalEventManager2.internalSetPendRunning(true);
+      OseeEventManager.getPreferences().setNewEvents(true);
+      OseeEventManager.getPreferences().setPendRunning(true);
    }
 
    @After
    public void cleanup() {
-      InternalEventManager2.internalSetPendRunning(false);
-   }
-
-   @org.junit.Before
-   public void setUpTest() {
-      OseeEventManager.setNewEvents(true);
+      OseeEventManager.getPreferences().setPendRunning(false);
    }
 
    // artifact listener create for use by all tests to just capture result eventArtifacts for query
@@ -117,14 +111,14 @@ public class ArtifactEventTest {
    public void testRegistration() throws Exception {
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
 
-      InternalEventManager2.internalRemoveAllListeners();
-      Assert.assertEquals(0, InternalEventManager2.getNumberOfListeners());
+      OseeEventManager.removeAllListeners();
+      Assert.assertEquals(0, OseeEventManager.getNumberOfListeners());
 
       OseeEventManager.addListener(artifactEventListener);
-      Assert.assertEquals(1, InternalEventManager2.getNumberOfListeners());
+      Assert.assertEquals(1, OseeEventManager.getNumberOfListeners());
 
       OseeEventManager.removeListener(artifactEventListener);
-      Assert.assertEquals(0, InternalEventManager2.getNumberOfListeners());
+      Assert.assertEquals(0, OseeEventManager.getNumberOfListeners());
 
       TestUtil.severeLoggingEnd(monitorLog);
    }
@@ -142,11 +136,11 @@ public class ArtifactEventTest {
       }
 
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
-      InternalEventManager2.internalRemoveAllListeners();
-      Assert.assertEquals(0, InternalEventManager2.getNumberOfListeners());
+      OseeEventManager.removeAllListeners();
+      Assert.assertEquals(0, OseeEventManager.getNumberOfListeners());
 
       OseeEventManager.addListener(artifactEventListener);
-      Assert.assertEquals(1, InternalEventManager2.getNumberOfListeners());
+      Assert.assertEquals(1, OseeEventManager.getNumberOfListeners());
 
       // Test attribute injection
       Artifact injectArt = remoteInjection_attributes_modifyName();
@@ -170,11 +164,11 @@ public class ArtifactEventTest {
    public void testArtifactRelationEvents() throws Exception {
 
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
-      InternalEventManager2.internalRemoveAllListeners();
-      Assert.assertEquals(0, InternalEventManager2.getNumberOfListeners());
+      OseeEventManager.removeAllListeners();
+      Assert.assertEquals(0, OseeEventManager.getNumberOfListeners());
 
       OseeEventManager.addListener(artifactEventListener);
-      Assert.assertEquals(1, InternalEventManager2.getNumberOfListeners());
+      Assert.assertEquals(1, OseeEventManager.getNumberOfListeners());
 
       Artifact newArt = testArtifactRelationEvents__addArtifact();
       testArtifactRelationEvents__addRelation(newArt);
@@ -334,7 +328,7 @@ public class ArtifactEventTest {
             RelationEventType.Added, CoreRelationTypes.Default_Hierarchical__Child, rootArt, injectArt);
 
       // Send
-      RemoteEventManager2.getInstance().onEvent(remoteEvent);
+      OseeEventManager.internalTestSendRemoteEvent(remoteEvent);
 
       // Wait for event to propagate
 
@@ -368,7 +362,7 @@ public class ArtifactEventTest {
             CoreRelationTypes.Default_Hierarchical__Child, rootArt, injectArt);
 
       // Send
-      RemoteEventManager2.getInstance().onEvent(remoteEvent);
+      OseeEventManager.internalTestSendRemoteEvent(remoteEvent);
 
       // Wait for event to propagate
 
@@ -415,7 +409,7 @@ public class ArtifactEventTest {
       remoteEvent.getRelationReorders().add(remoteReorder);
 
       // Send
-      RemoteEventManager2.getInstance().onEvent(remoteEvent);
+      OseeEventManager.internalTestSendRemoteEvent(remoteEvent);
 
       // Wait for event to propagate
 
@@ -447,7 +441,7 @@ public class ArtifactEventTest {
       relation.setRationale(RATIONALE_STR);
 
       // Send
-      RemoteEventManager2.getInstance().onEvent(remoteEvent);
+      OseeEventManager.internalTestSendRemoteEvent(remoteEvent);
 
       // Wait for event to propagate
 
@@ -484,7 +478,7 @@ public class ArtifactEventTest {
       relation.setRationale(NEW_RATIONALE_STR);
 
       // Send
-      RemoteEventManager2.getInstance().onEvent(remoteEvent);
+      OseeEventManager.internalTestSendRemoteEvent(remoteEvent);
 
       // Wait for event to propagate
 
@@ -537,7 +531,7 @@ public class ArtifactEventTest {
       remGuidArt.getAttributes().add(remAttrChg);
 
       // Send
-      RemoteEventManager2.getInstance().onEvent(remoteEvent);
+      OseeEventManager.internalTestSendRemoteEvent(remoteEvent);
 
       // Wait for event to propagate
 
@@ -587,7 +581,7 @@ public class ArtifactEventTest {
       remGuidArt.getAttributes().add(remAttrChg);
 
       // Send
-      RemoteEventManager2.getInstance().onEvent(remoteEvent);
+      OseeEventManager.internalTestSendRemoteEvent(remoteEvent);
 
       // Wait for event to propagate
 
@@ -636,7 +630,7 @@ public class ArtifactEventTest {
       remGuidArt.getAttributes().add(remAttrChg);
 
       // Send
-      RemoteEventManager2.getInstance().onEvent(remoteEvent);
+      OseeEventManager.internalTestSendRemoteEvent(remoteEvent);
 
       // Wait for event to propagate
 
@@ -668,8 +662,8 @@ public class ArtifactEventTest {
    public void testArtifactRelationReorderEvents() throws Exception {
 
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
-      InternalEventManager2.internalRemoveAllListeners();
-      Assert.assertEquals(0, InternalEventManager2.getNumberOfListeners());
+      OseeEventManager.removeAllListeners();
+      Assert.assertEquals(0, OseeEventManager.getNumberOfListeners());
 
       // Setup artifact and children to reorder
       SkynetTransaction transaction =
@@ -688,7 +682,7 @@ public class ArtifactEventTest {
       transaction.execute();
 
       OseeEventManager.addListener(artifactEventListener);
-      Assert.assertEquals(1, InternalEventManager2.getNumberOfListeners());
+      Assert.assertEquals(1, OseeEventManager.getNumberOfListeners());
 
       List<Artifact> orderedChildren = newArt.getChildren();
       Assert.assertEquals(5, orderedChildren.size());
@@ -779,16 +773,16 @@ public class ArtifactEventTest {
    public void testPurgeArtifactEvents() throws Exception {
 
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
-      InternalEventManager2.internalRemoveAllListeners();
-      Assert.assertEquals(0, InternalEventManager2.getNumberOfListeners());
+      OseeEventManager.removeAllListeners();
+      Assert.assertEquals(0, OseeEventManager.getNumberOfListeners());
 
       // Add new Artifact Test
       Artifact newArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, BranchManager.getCommonBranch());
       newArt.setName(getClass().getSimpleName() + " - testPurgeArtifactEvents");
       newArt.persist();
 
-      InternalEventManager2.addListener(artifactEventListener);
-      Assert.assertEquals(1, InternalEventManager2.getNumberOfListeners());
+      OseeEventManager.addListener(artifactEventListener);
+      Assert.assertEquals(1, OseeEventManager.getNumberOfListeners());
 
       // Purge Artifact
       newArt.purgeFromBranch();
@@ -815,8 +809,8 @@ public class ArtifactEventTest {
    @org.junit.Test
    public void testReloadArtifactEvents() throws Exception {
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
-      InternalEventManager2.internalRemoveAllListeners();
-      Assert.assertEquals(0, InternalEventManager2.getNumberOfListeners());
+      OseeEventManager.removeAllListeners();
+      Assert.assertEquals(0, OseeEventManager.getNumberOfListeners());
 
       // Add new Artifact Test
       Artifact newArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, BranchManager.getCommonBranch());
@@ -824,7 +818,7 @@ public class ArtifactEventTest {
       newArt.persist();
 
       OseeEventManager.addListener(artifactEventListener);
-      Assert.assertEquals(1, InternalEventManager2.getNumberOfListeners());
+      Assert.assertEquals(1, OseeEventManager.getNumberOfListeners());
 
       // reload Artifact
       StaticIdManager.setSingletonAttributeValue(newArt, "this");
@@ -851,8 +845,8 @@ public class ArtifactEventTest {
    public void testChangeTypeArtifactEvents() throws Exception {
 
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
-      InternalEventManager2.internalRemoveAllListeners();
-      Assert.assertEquals(0, InternalEventManager2.getNumberOfListeners());
+      OseeEventManager.removeAllListeners();
+      Assert.assertEquals(0, OseeEventManager.getNumberOfListeners());
 
       // Add new Artifact for Test
       Artifact newArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, BranchManager.getCommonBranch());
@@ -860,7 +854,7 @@ public class ArtifactEventTest {
       newArt.persist();
 
       OseeEventManager.addListener(artifactEventListener);
-      Assert.assertEquals(1, InternalEventManager2.getNumberOfListeners());
+      Assert.assertEquals(1, OseeEventManager.getNumberOfListeners());
 
       // reload Artifact
       Assert.assertTrue(newArt.isOfType(CoreArtifactTypes.GeneralData));

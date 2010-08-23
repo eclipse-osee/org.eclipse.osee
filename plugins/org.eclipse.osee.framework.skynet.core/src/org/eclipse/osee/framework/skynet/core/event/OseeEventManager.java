@@ -10,26 +10,27 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.event;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.OseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
+import org.eclipse.osee.framework.skynet.core.event.systems.EventManagerData;
+import org.eclipse.osee.framework.skynet.core.event.systems.InternalEventManager2;
+import org.eclipse.osee.framework.skynet.core.event.systems.LegacyEventManager;
 import org.eclipse.osee.framework.skynet.core.event2.AccessControlEvent;
 import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
@@ -58,25 +59,141 @@ public class OseeEventManager {
    private static List<IEventFilter> commonBranchEventFilter;
    private static BranchGuidEventFilter commonBranchGuidEvenFilter;
 
-   private static Sender getSender(Object sourceObject) throws OseeAuthenticationRequiredException {
+   private static EventManagerData eventManagerData;
+
+   private OseeEventManager() {
+      // Static methods only;
+   }
+
+   public static void setEventManagerData(EventManagerData eventManagerData) {
+      OseeEventManager.eventManagerData = eventManagerData;
+   }
+
+   /**
+    * Add a priority listener. This should only be done for caches where they need to be updated before all other
+    * listeners are called.
+    */
+   public static void addPriorityListener(IEventListener listener) {
+      if (listener == null) {
+         throw new IllegalArgumentException("listener can not be null");
+      }
+      Collection<IEventListener> priorityListeners = eventManagerData.getPriorityListeners();
+      if (!priorityListeners.contains(listener)) {
+         priorityListeners.add(listener);
+      }
+   }
+
+   public static void addListener(IEventListener listener) {
+      if (listener == null) {
+         throw new IllegalArgumentException("listener can not be null");
+      }
+      Collection<IEventListener> listeners = eventManagerData.getListeners();
+      if (!listeners.contains(listener)) {
+         listeners.add(listener);
+      }
+   }
+
+   public static void removeAllListeners() {
+      eventManagerData.getListeners().clear();
+      eventManagerData.getPriorityListeners().clear();
+   }
+
+   public static void removeListener(IEventListener listener) {
+      eventManagerData.getListeners().remove(listener);
+      eventManagerData.getPriorityListeners().remove(listener);
+   }
+
+   private static LegacyEventManager getLegacyEventManager() {
+      return eventManagerData.getLegacyEventManager();
+   }
+
+   private static InternalEventManager2 getEventManager() {
+      return eventManagerData.getMessageEventManager();
+   }
+
+   public static EventSystemPreferences getPreferences() {
+      return eventManagerData.getPreferences();
+   }
+
+   public static boolean isLegacyEventManagerConnected() {
+      return getLegacyEventManager() != null ? getLegacyEventManager().isConnected() : false;
+   }
+
+   public static boolean isEventManagerConnected() {
+      return getEventManager() != null ? getEventManager().isConnected() : false;
+   }
+
+   public static String getLegacyConnectionDetails() {
+      StringBuilder sb = new StringBuilder();
+      sb.append("osee.jini.lookup.groups [");
+      sb.append(System.getProperty("osee.jini.lookup.groups"));
+      sb.append("]");
+      sb.append("eventSystem [");
+      sb.append(getPreferences().getEventSystemType());
+      sb.append("]");
+      return sb.toString();
+   }
+
+   public static String getConnectionDetails() {
+      EventSystemPreferences preferences = getPreferences();
+      StringBuilder sb = new StringBuilder();
+      sb.append("oseeEventBrokerUri [" + preferences.getOseeEventBrokerUri() + "]");
+      sb.append("eventDebug [" + preferences.getEventDebug() + "]");
+      sb.append("eventSystem [" + preferences.getEventSystemType() + "]");
+      return sb.toString();
+   }
+
+   public static int getNumberOfListeners() {
+      int toReturn = -1;
+      if (isOldEvents() || isNewEvents()) {
+         toReturn = eventManagerData.getListeners().size();
+      }
+      return toReturn;
+   }
+
+   private static Sender createSender(Object sourceObject) throws OseeAuthenticationRequiredException {
+      Sender sender = null;
       // Sender came from Remote Event Manager if source == sender
       if (sourceObject instanceof Sender && ((Sender) sourceObject).isRemote()) {
-         return (Sender) sourceObject;
+         sender = (Sender) sourceObject;
+      } else {
+         // create new sender based on sourceObject
+         sender = new Sender(sourceObject, ClientSessionManager.getSession());
       }
-      // Else, create new sender based on sourceObject
-      return new Sender(sourceObject, ClientSessionManager.getSession());
+      return sender;
+   }
+
+   // Only Used for Testing purposes
+   public static void internalTestSendRemoteEvent(final RemoteEvent remoteEvent) throws RemoteException {
+      if (isNewEvents()) {
+         getEventManager().testSendRemoteEventThroughFrameworkListener(remoteEvent);
+      }
+   }
+
+   // Only Used for Testing purposes
+   public static void internalTestProcessBranchEvent(Sender sender, BranchEvent branchEvent) {
+      if (isNewEvents()) {
+         getEventManager().processBranchEvent(sender, branchEvent);
+      }
+   }
+
+   // Only Used for Testing purposes
+   public static void internalTestProcessEventArtifactsAndRelations(Sender sender, ArtifactEvent artifactEvent) {
+      if (isNewEvents()) {
+         getEventManager().processEventArtifactsAndRelations(sender, artifactEvent);
+      }
    }
 
    // Kick LOCAL remote-event event
    public static void kickLocalRemEvent(Object source, RemoteEventServiceEventType remoteEventServiceEventType) throws OseeCoreException {
-      if (InternalEventManager.isDisableEvents()) {
+      if (isDisableEvents()) {
          return;
       }
-      if (OseeEventManager.isOldEvents()) {
-         InternalEventManager.kickRemoteEventManagerEvent(getSender(source), remoteEventServiceEventType);
+      if (isOldEvents()) {
+         getLegacyEventManager().kickRemoteEventManagerEvent(createSender(source), remoteEventServiceEventType);
       }
-      if (OseeEventManager.isNewEvents()) {
-         InternalEventManager2.kickLocalRemEvent(getSender(source), remoteEventServiceEventType);
+      if (isNewEvents()) {
+         getEventManager().kickLocalRemEvent(createSender(source), remoteEventServiceEventType);
       }
    }
 
@@ -85,31 +202,31 @@ public class OseeEventManager {
       if (isDisableEvents()) {
          return;
       }
-      if (OseeEventManager.isOldEvents()) {
-         InternalEventManager.kickBroadcastEvent(getSender(source), broadcastEvent.getBroadcastEventType(),
+      if (isOldEvents()) {
+         getLegacyEventManager().kickBroadcastEvent(createSender(source), broadcastEvent.getBroadcastEventType(),
             broadcastEvent.getUsers().toArray(new String[broadcastEvent.getUsers().size()]),
             broadcastEvent.getMessage());
       }
-      if (OseeEventManager.isNewEvents()) {
-         InternalEventManager2.kickBroadcastEvent(getSender(source), broadcastEvent);
+      if (isNewEvents()) {
+         getEventManager().kickBroadcastEvent(createSender(source), broadcastEvent);
       }
    }
 
    //Kick LOCAL and REMOTE branch events
    public static void kickBranchEvent(Object source, BranchEvent branchEvent, int branchId) throws OseeCoreException {
-      eventLog("OEM: kickBranchEvent: type: " + branchEvent.getEventType() + " guid: " + branchEvent.getBranchGuid() + " - " + source);
+      EventUtil.eventLog("OEM: kickBranchEvent: type: " + branchEvent.getEventType() + " guid: " + branchEvent.getBranchGuid() + " - " + source);
       if (testBranchEventListener != null) {
-         testBranchEventListener.handleBranchEventREM1(getSender(source), branchEvent.getEventType(), branchId);
+         testBranchEventListener.handleBranchEventREM1(createSender(source), branchEvent.getEventType(), branchId);
       }
       if (isDisableEvents()) {
          return;
       }
-      if (OseeEventManager.isOldEvents()) {
-         InternalEventManager.kickBranchEvent(getSender(source), branchEvent.getEventType(), branchId);
+      if (isOldEvents()) {
+         getLegacyEventManager().kickBranchEvent(createSender(source), branchEvent.getEventType(), branchId);
       }
-      branchEvent.setNetworkSender(getSender(source).getNetworkSender());
-      if (OseeEventManager.isNewEvents()) {
-         InternalEventManager2.kickBranchEvent(getSender(source), branchEvent);
+      branchEvent.setNetworkSender(createSender(source).getNetworkSender());
+      if (isNewEvents()) {
+         getEventManager().kickBranchEvent(createSender(source), branchEvent);
       }
    }
 
@@ -118,8 +235,8 @@ public class OseeEventManager {
       if (isDisableEvents()) {
          return;
       }
-      if (OseeEventManager.isOldEvents()) {
-         InternalEventManager.kickMergeBranchEvent(getSender(source), branchEventType, branchId);
+      if (isOldEvents()) {
+         getLegacyEventManager().kickMergeBranchEvent(createSender(source), branchEventType, branchId);
          // Handled by kickMergeBranchEvent for new Events
       }
    }
@@ -129,12 +246,13 @@ public class OseeEventManager {
       if (isDisableEvents()) {
          return;
       }
-      accessControlEvent.setNetworkSender(getSender(source).getNetworkSender());
-      if (OseeEventManager.isOldEvents()) {
-         InternalEventManager.kickAccessControlArtifactsEvent(getSender(source), accessControlEvent, loadedArtifacts);
+      accessControlEvent.setNetworkSender(createSender(source).getNetworkSender());
+      if (isOldEvents()) {
+         getLegacyEventManager().kickAccessControlArtifactsEvent(createSender(source), accessControlEvent,
+            loadedArtifacts);
       }
-      if (OseeEventManager.isNewEvents()) {
-         InternalEventManager2.kickAccessControlArtifactsEvent(getSender(source), accessControlEvent);
+      if (isNewEvents()) {
+         getEventManager().kickAccessControlArtifactsEvent(createSender(source), accessControlEvent);
       }
    }
 
@@ -143,8 +261,8 @@ public class OseeEventManager {
       if (isDisableEvents()) {
          return;
       }
-      if (OseeEventManager.isOldEvents()) {
-         InternalEventManager.kickArtifactModifiedEvent(getSender(source), artifactModType, artifact);
+      if (isOldEvents()) {
+         getLegacyEventManager().kickArtifactModifiedEvent(createSender(source), artifactModType, artifact);
       }
    }
 
@@ -153,8 +271,8 @@ public class OseeEventManager {
       if (isDisableEvents()) {
          return;
       }
-      if (OseeEventManager.isOldEvents()) {
-         InternalEventManager.kickRelationModifiedEvent(getSender(source), relationEventType, link, branch,
+      if (isOldEvents()) {
+         getLegacyEventManager().kickRelationModifiedEvent(createSender(source), relationEventType, link, branch,
             relationType);
       }
    }
@@ -164,8 +282,8 @@ public class OseeEventManager {
       if (isDisableEvents()) {
          return;
       }
-      if (OseeEventManager.isOldEvents()) {
-         InternalEventManager.kickArtifactsPurgedEvent(getSender(source), loadedArtifacts);
+      if (isOldEvents()) {
+         getLegacyEventManager().kickArtifactsPurgedEvent(createSender(source), loadedArtifacts);
          // Handled by kickTransactionEvent for new Events
       }
    }
@@ -175,8 +293,8 @@ public class OseeEventManager {
       if (isDisableEvents()) {
          return;
       }
-      if (OseeEventManager.isOldEvents()) {
-         InternalEventManager.kickArtifactsChangeTypeEvent(getSender(source), toArtifactTypeId, loadedArtifacts);
+      if (isOldEvents()) {
+         getLegacyEventManager().kickArtifactsChangeTypeEvent(createSender(source), toArtifactTypeId, loadedArtifacts);
          // Handled by kickTransactionEvent for new Events
       }
    }
@@ -196,11 +314,11 @@ public class OseeEventManager {
          transIds[x++] = value.intValue();
       }
       if (transactionEvent.getEventType() == TransactionEventType.Purged && OseeEventManager.isOldEvents()) {
-         InternalEventManager.kickTransactionsPurgedEvent(getSender(source), transIds);
+         getLegacyEventManager().kickTransactionsPurgedEvent(createSender(source), transIds);
       }
-      transactionEvent.setNetworkSender(getSender(source).getNetworkSender());
-      if (OseeEventManager.isNewEvents()) {
-         InternalEventManager2.kickTransactionEvent(getSender(source), transactionEvent);
+      transactionEvent.setNetworkSender(createSender(source).getNetworkSender());
+      if (isNewEvents()) {
+         getEventManager().kickTransactionEvent(createSender(source), transactionEvent);
       }
    }
 
@@ -210,11 +328,11 @@ public class OseeEventManager {
          return;
       }
       if (artifactEvent.getSkynetTransactionDetails() != null && OseeEventManager.isOldEvents()) {
-         InternalEventManager.kickPersistEvent(getSender(source), artifactEvent.getSkynetTransactionDetails());
+         getLegacyEventManager().kickPersistEvent(createSender(source), artifactEvent.getSkynetTransactionDetails());
       }
-      artifactEvent.setNetworkSender(getSender(source).getNetworkSender());
-      if (OseeEventManager.isNewEvents()) {
-         InternalEventManager2.kickArtifactEvent(getSender(source), artifactEvent);
+      artifactEvent.setNetworkSender(createSender(source).getNetworkSender());
+      if (isNewEvents()) {
+         getEventManager().kickArtifactEvent(createSender(source), artifactEvent);
       }
    }
 
@@ -223,66 +341,35 @@ public class OseeEventManager {
       if (isDisableEvents()) {
          return;
       }
-      if (OseeEventManager.isOldEvents()) {
-         InternalEventManager.kickArtifactReloadEvent(getSender(source), artifacts);
+      if (isOldEvents()) {
+         getLegacyEventManager().kickArtifactReloadEvent(createSender(source), artifacts);
       }
       ArtifactEvent artifactEvent = new ArtifactEvent(artifacts.iterator().next().getBranch());
       artifactEvent.getArtifacts().addAll(EventBasicGuidArtifact.get(EventModType.Reloaded, artifacts));
-      if (OseeEventManager.isNewEvents()) {
-         InternalEventManager2.kickLocalArtifactReloadEvent(getSender(source), artifactEvent);
-      }
-   }
-
-   /**
-    * Add a priority listener. This should only be done for caches where they need to be updated before all other
-    * listeners are called.
-    */
-   public static void addPriorityListener(IEventListener listener) {
-      if (OseeEventManager.isOldEvents()) {
-         InternalEventManager.addPriorityListener(listener);
-      }
-      if (OseeEventManager.isNewEvents()) {
-         InternalEventManager2.addPriorityListener(listener);
-      }
-   }
-
-   public static void addListener(IEventListener listener) {
-      if (OseeEventManager.isOldEvents()) {
-         InternalEventManager.addListener(listener);
-      }
-      if (OseeEventManager.isNewEvents()) {
-         InternalEventManager2.addListener(listener);
-      }
-   }
-
-   public static void removeListener(IEventListener listener) {
-      if (OseeEventManager.isOldEvents()) {
-         InternalEventManager.removeListeners(listener);
-      }
-      if (OseeEventManager.isNewEvents()) {
-         InternalEventManager2.removeListeners(listener);
+      if (isNewEvents()) {
+         getEventManager().kickLocalArtifactReloadEvent(createSender(source), artifactEvent);
       }
    }
 
    public static boolean isDisableEvents() {
-      return InternalEventManager.isDisableEvents();
+      return getPreferences().isDisableEvents();
    }
 
    // Turn off all event processing including LOCAL and REMOTE
    public static void setDisableEvents(boolean disableEvents) {
-      InternalEventManager.setDisableEvents(disableEvents);
-      InternalEventManager2.setDisableEvents(disableEvents);
+      getPreferences().setDisableEvents(disableEvents);
    }
 
    // Return report showing all listeners registered
    public static String getListenerReport() {
-      if (OseeEventManager.isOldEvents()) {
-         return InternalEventManager.getListenerReport();
+      String toReturn;
+      if (isOldEvents() || isNewEvents()) {
+         toReturn =
+            EventUtil.getListenerReport(eventManagerData.getListeners(), eventManagerData.getPriorityListeners());
+      } else {
+         toReturn = "Neither event system is active";
       }
-      if (OseeEventManager.isNewEvents()) {
-         return InternalEventManager2.getListenerReport();
-      }
-      return "Neither event system is active";
+      return toReturn;
    }
 
    // Registration for branch events; for test only
@@ -293,67 +380,18 @@ public class OseeEventManager {
       testBranchEventListener = branchEventListener;
    }
 
-   public static boolean isEventDebugConsole() {
-      if (!Strings.isValid(System.getProperty("eventDebug"))) {
-         return false;
-      }
-      return System.getProperty("eventDebug").equals("console");
-   }
-
-   public static boolean isEventDebugErrorLog() {
-      if (!Strings.isValid(System.getProperty("eventDebug"))) {
-         return false;
-      }
-      return System.getProperty("eventDebug").equals("log") || "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core/debug/Events"));
-   }
-
    /**
     * If old event kicks and listens should be used
     */
-   public static boolean isOldEvents() {
+   private static boolean isOldEvents() {
       return !isNewEvents();
    }
 
    /**
     * If new event kicks and listens should be used
     */
-   public static boolean isNewEvents() {
-      try {
-         String dbProperty = OseeInfo.getCachedValue("eventSystem");
-         if (Strings.isValid(dbProperty)) {
-            return dbProperty.equals("new");
-         }
-      } catch (OseeDataStoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-      if (!Strings.isValid(System.getProperty("eventSystem"))) {
-         return false;
-      }
-      return System.getProperty("eventSystem").equals("new");
-   }
-
-   public static void setNewEvents(boolean enabled) {
-      System.setProperty("eventSystem", enabled ? "new" : "old");
-   }
-
-   public static void eventLog(String output) {
-      eventLog(output, null);
-   }
-
-   public static void eventLog(String output, Exception ex) {
-      try {
-         if (isEventDebugConsole()) {
-            System.err.println(output + (ex != null ? " <<ERROR>> " + ex.toString() : ""));
-         } else if (isEventDebugErrorLog()) {
-            if (ex != null) {
-               OseeLog.log(Activator.class, Level.SEVERE, output, ex);
-            } else {
-               OseeLog.log(Activator.class, Level.FINE, output);
-            }
-         }
-      } catch (Exception ex1) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex1);
-      }
+   private static boolean isNewEvents() {
+      return getPreferences().isNewEvents();
    }
 
    public static List<IEventFilter> getEventFiltersForBranch(Branch branch) {
@@ -389,5 +427,4 @@ public class OseeEventManager {
       }
       return commonBranchGuidEvenFilter;
    }
-
 }

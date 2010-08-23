@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.test.event;
 
-import org.eclipse.osee.framework.skynet.core.event.InternalEventManager2;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
@@ -24,12 +24,12 @@ public class BranchEventLoopbackTest extends BranchEventTest {
 
    @BeforeClass
    public static void setUp2() {
-      InternalEventManager2.setEnableRemoteEventLoopback(true);
+      OseeEventManager.getPreferences().setEnableRemoteEventLoopback(true);
    }
 
    @AfterClass
    public static void tearDown2() {
-      InternalEventManager2.setEnableRemoteEventLoopback(false);
+      OseeEventManager.getPreferences().setEnableRemoteEventLoopback(false);
    }
 
    @Override

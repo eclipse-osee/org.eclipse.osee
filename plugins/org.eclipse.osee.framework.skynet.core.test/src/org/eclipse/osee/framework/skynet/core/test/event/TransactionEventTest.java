@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.skynet.core.test.event;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
@@ -23,7 +22,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeTransactionOperation;
-import org.eclipse.osee.framework.skynet.core.event.InternalEventManager2;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.ITransactionEventListener;
@@ -43,30 +41,30 @@ public class TransactionEventTest {
 
    private TransactionEvent resultTransEvent = null;
    private Sender resultSender = null;
-   public static List<String> ignoreLogging = Arrays.asList("");
 
    @Before
    public void setup() {
-      InternalEventManager2.internalSetPendRunning(true);
+      OseeEventManager.getPreferences().setNewEvents(true);
+      OseeEventManager.getPreferences().setPendRunning(true);
    }
 
    @After
    public void cleanup() {
-      InternalEventManager2.internalSetPendRunning(false);
+      OseeEventManager.getPreferences().setPendRunning(false);
    }
 
    @org.junit.Test
    public void testRegistration() throws Exception {
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
 
-      InternalEventManager2.internalRemoveAllListeners();
-      Assert.assertEquals(0, InternalEventManager2.getNumberOfListeners());
+      OseeEventManager.removeAllListeners();
+      Assert.assertEquals(0, OseeEventManager.getNumberOfListeners());
 
       OseeEventManager.addListener(transEventListener);
-      Assert.assertEquals(1, InternalEventManager2.getNumberOfListeners());
+      Assert.assertEquals(1, OseeEventManager.getNumberOfListeners());
 
       OseeEventManager.removeListener(transEventListener);
-      Assert.assertEquals(0, InternalEventManager2.getNumberOfListeners());
+      Assert.assertEquals(0, OseeEventManager.getNumberOfListeners());
 
       TestUtil.severeLoggingEnd(monitorLog);
    }
@@ -96,9 +94,9 @@ public class TransactionEventTest {
       }
 
       // Add listener for delete transaction event
-      InternalEventManager2.internalRemoveAllListeners();
+      OseeEventManager.removeAllListeners();
       OseeEventManager.addListener(transEventListener);
-      Assert.assertEquals(1, InternalEventManager2.getNumberOfListeners());
+      Assert.assertEquals(1, OseeEventManager.getNumberOfListeners());
 
       // Delete it
       IOperation operation = new PurgeTransactionOperation(Activator.getInstance(), false, transIdToDelete);
@@ -122,7 +120,7 @@ public class TransactionEventTest {
       Assert.assertEquals(newArt.getGuid(), guidArt.getGuid());
       Assert.assertEquals(CoreArtifactTypes.GeneralData.getGuid(), guidArt.getArtTypeGuid());
 
-      TestUtil.severeLoggingEnd(monitorLog, (isRemoteTest() ? ignoreLogging : new ArrayList<String>()));
+      TestUtil.severeLoggingEnd(monitorLog, (isRemoteTest() ? Arrays.asList("") : new ArrayList<String>()));
    }
 
    protected boolean isRemoteTest() {
@@ -136,11 +134,6 @@ public class TransactionEventTest {
          resultTransEvent = transEvent;
          resultSender = sender;
       }
-   }
-
-   @org.junit.Before
-   public void setUpTest() {
-      OseeEventManager.setNewEvents(true);
    }
 
    // artifact listener create for use by all tests to just capture result eventArtifacts for query

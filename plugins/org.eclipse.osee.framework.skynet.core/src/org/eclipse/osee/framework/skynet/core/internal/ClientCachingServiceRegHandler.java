@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.internal;
 
+import java.util.Map;
 import org.eclipse.osee.framework.core.model.OseeCachingService;
+import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
 import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
@@ -18,35 +20,68 @@ import org.eclipse.osee.framework.core.model.cache.OseeEnumTypeCache;
 import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
-import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
+import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
+import org.eclipse.osee.framework.core.util.AbstractTrackingHandler;
 import org.eclipse.osee.framework.skynet.core.internal.accessors.ClientArtifactTypeAccessor;
 import org.eclipse.osee.framework.skynet.core.internal.accessors.ClientAttributeTypeAccessor;
 import org.eclipse.osee.framework.skynet.core.internal.accessors.ClientBranchAccessor;
 import org.eclipse.osee.framework.skynet.core.internal.accessors.ClientOseeEnumTypeAccessor;
 import org.eclipse.osee.framework.skynet.core.internal.accessors.ClientRelationTypeAccessor;
 import org.eclipse.osee.framework.skynet.core.internal.accessors.ClientTransactionAccessor;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 
 /**
  * @author Roberto E. Escobar
  */
-public class ClientCachingServiceFactory {
+public class ClientCachingServiceRegHandler extends AbstractTrackingHandler {
 
-   public IOseeCachingService createService(IOseeModelFactoryServiceProvider factoryProvider) {
+   private static final Class<?>[] DEPENDENCIES = new Class<?>[] {IOseeModelFactoryService.class};
+
+   private ServiceRegistration serviceRegistration;
+
+   @Override
+   public Class<?>[] getDependencies() {
+      return DEPENDENCIES;
+   }
+
+   @Override
+   public void onActivate(BundleContext context, Map<Class<?>, Object> services) {
+      IOseeModelFactoryService modelFactory = getService(IOseeModelFactoryService.class, services);
+      IOseeCachingService cachingService = createService(modelFactory);
+
+      serviceRegistration = context.registerService(IOseeCachingService.class.getName(), cachingService, null);
+   }
+
+   @Override
+   public void onDeActivate() {
+      if (serviceRegistration != null) {
+         serviceRegistration.unregister();
+      }
+   }
+
+   private IOseeCachingService createService(IOseeModelFactoryService factory) {
       TransactionCache transactionCache = new TransactionCache();
-      ClientBranchAccessor clientBranchAccessor = new ClientBranchAccessor(factoryProvider, transactionCache);
+      ClientBranchAccessor clientBranchAccessor =
+         new ClientBranchAccessor(factory.getBranchFactory(), transactionCache);
       BranchCache branchCache = new BranchCache(clientBranchAccessor);
       clientBranchAccessor.setBranchCache(branchCache);
-      transactionCache.setAccessor(new ClientTransactionAccessor(factoryProvider, branchCache));
-      OseeEnumTypeCache oseeEnumTypeCache = new OseeEnumTypeCache(new ClientOseeEnumTypeAccessor(factoryProvider));
+
+      TransactionRecordFactory txFactory = factory.getTransactionFactory();
+
+      transactionCache.setAccessor(new ClientTransactionAccessor(txFactory, branchCache));
+      OseeEnumTypeCache oseeEnumTypeCache =
+         new OseeEnumTypeCache(new ClientOseeEnumTypeAccessor(factory.getOseeEnumTypeFactory()));
 
       AttributeTypeCache attributeTypeCache =
-         new AttributeTypeCache(new ClientAttributeTypeAccessor(factoryProvider, oseeEnumTypeCache));
+         new AttributeTypeCache(new ClientAttributeTypeAccessor(factory.getAttributeTypeFactory(), oseeEnumTypeCache));
 
       ArtifactTypeCache artifactTypeCache =
-         new ArtifactTypeCache(new ClientArtifactTypeAccessor(factoryProvider, attributeTypeCache, branchCache));
+         new ArtifactTypeCache(new ClientArtifactTypeAccessor(factory.getArtifactTypeFactory(), attributeTypeCache,
+            branchCache));
 
       RelationTypeCache relationTypeCache =
-         new RelationTypeCache(new ClientRelationTypeAccessor(factoryProvider, artifactTypeCache));
+         new RelationTypeCache(new ClientRelationTypeAccessor(factory.getRelationTypeFactory(), artifactTypeCache));
 
       return new OseeCachingService(branchCache, transactionCache, artifactTypeCache, attributeTypeCache,
          relationTypeCache, oseeEnumTypeCache);

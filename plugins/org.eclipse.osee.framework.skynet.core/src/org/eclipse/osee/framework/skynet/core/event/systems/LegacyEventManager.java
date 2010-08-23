@@ -8,24 +8,26 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.event;
+package org.eclipse.osee.framework.skynet.core.event.systems;
 
 import java.lang.reflect.Method;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.skynet.ISkynetEvent;
+import org.eclipse.osee.framework.messaging.event.skynet.ISkynetEventListener;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkAccessControlArtifactsEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkArtifactAddedEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkArtifactChangeTypeEvent;
@@ -49,43 +51,78 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.event.ArtifactTransactionModifiedEvent;
+import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
+import org.eclipse.osee.framework.skynet.core.event.BroadcastEventType;
+import org.eclipse.osee.framework.skynet.core.event.EventSystemPreferences;
+import org.eclipse.osee.framework.skynet.core.event.EventUtil;
+import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
+import org.eclipse.osee.framework.skynet.core.event.IAccessControlEventListener;
+import org.eclipse.osee.framework.skynet.core.event.IArtifactModifiedEventListener;
+import org.eclipse.osee.framework.skynet.core.event.IArtifactReloadEventListener;
+import org.eclipse.osee.framework.skynet.core.event.IArtifactsChangeTypeEventListener;
+import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener;
+import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
+import org.eclipse.osee.framework.skynet.core.event.IBroadcastEventListener;
+import org.eclipse.osee.framework.skynet.core.event.IEventListener;
+import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
+import org.eclipse.osee.framework.skynet.core.event.IMergeBranchEventListener;
+import org.eclipse.osee.framework.skynet.core.event.IRelationModifiedEventListener;
+import org.eclipse.osee.framework.skynet.core.event.IRemoteEventManagerEventListener;
+import org.eclipse.osee.framework.skynet.core.event.ITransactionsDeletedEventListener;
+import org.eclipse.osee.framework.skynet.core.event.LoadedRelation;
+import org.eclipse.osee.framework.skynet.core.event.MergeBranchEventType;
+import org.eclipse.osee.framework.skynet.core.event.RemoteEventServiceEventType;
+import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.AccessControlEvent;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
-import org.eclipse.osee.framework.ui.plugin.event.UnloadedArtifact;
 import org.eclipse.osee.framework.ui.plugin.event.UnloadedRelation;
 
 /**
- * Internal implementation of OSEE Event Manager that should only be accessed from RemoteEventManager and
- * OseeEventManager classes.
+ * Internal implementation of OSEE Event Manager that should only be accessed from OseeEventManager classes.
  * 
  * @author Donald G. Dunne
  */
-public class InternalEventManager {
+public class LegacyEventManager {
 
-   private static final List<IEventListener> priorityListeners = new CopyOnWriteArrayList<IEventListener>();
-   private static final List<IEventListener> listeners = new CopyOnWriteArrayList<IEventListener>();
-   public static final Collection<UnloadedArtifact> EMPTY_UNLOADED_ARTIFACTS = Collections.emptyList();
-   private static boolean disableEvents = false;
+   private final Collection<IEventListener> priorityListeners;
+   private final Collection<IEventListener> listeners;
+   private final ExecutorService executorService;
+   private final EventSystemPreferences preferences;
+   private final JiniSkynetEventServiceLookup serviceLookup;
+   private final ISkynetEventListener remoteEventReceiver;
 
-   private static final ThreadFactory threadFactory = new OseeEventThreadFactory("Osee Events");
-   private static final ExecutorService executorService = Executors.newFixedThreadPool(
-      Runtime.getRuntime().availableProcessors(), threadFactory);
+   public LegacyEventManager(Collection<IEventListener> listeners, Collection<IEventListener> priorityListeners, ExecutorService executorService, EventSystemPreferences preferences, JiniSkynetEventServiceLookup serviceLookup, ISkynetEventListener remoteEventReceiver) {
+      this.listeners = listeners;
+      this.priorityListeners = priorityListeners;
+      this.executorService = executorService;
+      this.preferences = preferences;
+      this.serviceLookup = serviceLookup;
+      this.remoteEventReceiver = remoteEventReceiver;
+   }
 
-   // This will disable all Local TransactionEvents and enable loopback routing of Remote TransactionEvents back
-   // through the RemoteEventService as if they came from another client.  This is for testing purposes only and
-   // should be reset to false before release.
-   private static boolean enableRemoteEventLoopback = false;
+   public void start() {
+      serviceLookup.start();
+   }
+
+   public void stop() {
+      serviceLookup.stop();
+   }
+
+   public boolean isConnected() {
+      return preferences.isOldEvents() && serviceLookup.isValid();
+   }
 
    // Kick LOCAL "remote event manager" event
-   static void kickRemoteEventManagerEvent(final Sender sender, final RemoteEventServiceEventType remoteEventServiceEventType) {
-      if (isDisableEvents()) {
+   public void kickRemoteEventManagerEvent(final Sender sender, final RemoteEventServiceEventType remoteEventServiceEventType) {
+      if (preferences.isDisableEvents()) {
          return;
       }
-      OseeEventManager.eventLog("IEM1: kickRemoteEventManagerEvent: type: " + remoteEventServiceEventType + " - " + sender);
+      EventUtil.eventLog("IEM1: kickRemoteEventManagerEvent: type: " + remoteEventServiceEventType + " - " + sender);
       Runnable runnable = new Runnable() {
          @Override
          public void run() {
@@ -106,13 +143,13 @@ public class InternalEventManager {
    /*
     * Kick LOCAL and REMOTE broadcast event
     */
-   static void kickBroadcastEvent(final Sender sender, final BroadcastEventType broadcastEventType, final String[] userIds, final String message) {
-      if (isDisableEvents()) {
+   public void kickBroadcastEvent(final Sender sender, final BroadcastEventType broadcastEventType, final String[] userIds, final String message) {
+      if (preferences.isDisableEvents()) {
          return;
       }
 
       if (!broadcastEventType.isPingOrPong()) {
-         OseeEventManager.eventLog("IEM1: kickBroadcastEvent: type: " + broadcastEventType.name() + " message: " + message + " - " + sender);
+         EventUtil.eventLog("IEM1: kickBroadcastEvent: type: " + broadcastEventType.name() + " message: " + message + " - " + sender);
       }
       Runnable runnable = new Runnable() {
          @Override
@@ -126,7 +163,7 @@ public class InternalEventManager {
 
                // Kick REMOTE (If source was Local and this was not a default branch changed event
                if (sender.isLocal() && broadcastEventType.isRemoteEventType()) {
-                  RemoteEventManager.kick(new NetworkBroadcastEvent(broadcastEventType.name(), message,
+                  sendRemoteEvent(new NetworkBroadcastEvent(broadcastEventType.name(), message,
                      sender.getNetworkSender()));
                }
             } catch (Exception ex) {
@@ -140,24 +177,24 @@ public class InternalEventManager {
    /*
     * Kick LOCAL and REMOTE branch events
     */
-   static void kickBranchEvent(final Sender sender, final BranchEventType branchEventType, final int branchId) {
-      if (isDisableEvents()) {
+   public void kickBranchEvent(final Sender sender, final BranchEventType branchEventType, final int branchId) {
+      if (preferences.isDisableEvents()) {
          return;
       }
-      OseeEventManager.eventLog("IEM1: kickBranchEvent: type: " + branchEventType + " id: " + branchId + " - " + sender);
+      EventUtil.eventLog("IEM1: kickBranchEvent: type: " + branchEventType + " id: " + branchId + " - " + sender);
       Runnable runnable = new Runnable() {
          @Override
          public void run() {
             // Log if this is a loopback and what is happening
-            if (enableRemoteEventLoopback) {
+            if (preferences.isEnableRemoteEventLoopback()) {
                OseeLog.log(
-                  InternalEventManager.class,
+                  LegacyEventManager.class,
                   Level.WARNING,
                   "IEM1: BranchEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
             }
 
             // Kick LOCAL
-            if (!enableRemoteEventLoopback || enableRemoteEventLoopback && branchEventType.isRemoteEventType() && sender.isRemote()) {
+            if (!preferences.isEnableRemoteEventLoopback() || preferences.isEnableRemoteEventLoopback() && branchEventType.isRemoteEventType() && sender.isRemote()) {
                if (sender.isRemote() || sender.isLocal() && branchEventType.isLocalEventType()) {
                   safelyInvokeListeners(IBranchEventListener.class, "handleBranchEventREM1", sender, branchEventType,
                      branchId);
@@ -167,18 +204,18 @@ public class InternalEventManager {
 
             if (sender.isLocal() && branchEventType.isRemoteEventType()) {
                if (branchEventType == BranchEventType.Added) {
-                  RemoteEventManager.kick(new NetworkNewBranchEvent(branchId, sender.getNetworkSender()));
+                  sendRemoteEvent(new NetworkNewBranchEvent(branchId, sender.getNetworkSender()));
                } else if (branchEventType == BranchEventType.Deleted) {
-                  RemoteEventManager.kick(new NetworkDeletedBranchEvent(branchId, sender.getNetworkSender()));
+                  sendRemoteEvent(new NetworkDeletedBranchEvent(branchId, sender.getNetworkSender()));
                } else if (branchEventType == BranchEventType.Purged) {
-                  RemoteEventManager.kick(new NetworkPurgeBranchEvent(branchId, sender.getNetworkSender()));
+                  sendRemoteEvent(new NetworkPurgeBranchEvent(branchId, sender.getNetworkSender()));
                } else if (branchEventType == BranchEventType.Committed) {
-                  RemoteEventManager.kick(new NetworkCommitBranchEvent(branchId, sender.getNetworkSender()));
+                  sendRemoteEvent(new NetworkCommitBranchEvent(branchId, sender.getNetworkSender()));
                } else if (branchEventType == BranchEventType.Renamed) {
                   Branch branch = null;
                   try {
                      branch = BranchManager.getBranch(branchId);
-                     RemoteEventManager.kick(new NetworkRenameBranchEvent(branchId, sender.getNetworkSender(),
+                     sendRemoteEvent(new NetworkRenameBranchEvent(branchId, sender.getNetworkSender(),
                         branch.getName(), branch.getShortName()));
                   } catch (OseeCoreException ex) {
                      // do nothing
@@ -191,22 +228,22 @@ public class InternalEventManager {
    }
 
    // Kick LOCAL and REMOTE branch events
-   static void kickMergeBranchEvent(final Sender sender, final MergeBranchEventType branchEventType, final int branchId) {
-      OseeEventManager.eventLog("IEM1: kickMergeBranchEvent: type: " + branchEventType + " id: " + branchId + " - " + sender);
+   public void kickMergeBranchEvent(final Sender sender, final MergeBranchEventType branchEventType, final int branchId) {
+      EventUtil.eventLog("IEM1: kickMergeBranchEvent: type: " + branchEventType + " id: " + branchId + " - " + sender);
       Runnable runnable = new Runnable() {
          @Override
          public void run() {
             try {
                // Log if this is a loopback and what is happening
-               if (enableRemoteEventLoopback) {
+               if (preferences.isEnableRemoteEventLoopback()) {
                   OseeLog.log(
-                     InternalEventManager.class,
+                     LegacyEventManager.class,
                      Level.WARNING,
                      "IEM1: MergeBranchEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
                }
 
                // Kick LOCAL
-               if (!enableRemoteEventLoopback || enableRemoteEventLoopback && branchEventType.isRemoteEventType() && sender.isRemote()) {
+               if (!preferences.isEnableRemoteEventLoopback() || preferences.isEnableRemoteEventLoopback() && branchEventType.isRemoteEventType() && sender.isRemote()) {
                   if (sender.isRemote() || sender.isLocal() && branchEventType.isLocalEventType()) {
                      safelyInvokeListeners(IMergeBranchEventListener.class, "handleMergeBranchEvent", sender,
                         branchEventType, branchId);
@@ -216,8 +253,7 @@ public class InternalEventManager {
 
                if (sender.isLocal() && branchEventType.isRemoteEventType()) {
                   if (branchEventType == MergeBranchEventType.ConflictResolved) {
-                     RemoteEventManager.kick(new NetworkMergeBranchConflictResolvedEvent(branchId,
-                        sender.getNetworkSender()));
+                     sendRemoteEvent(new NetworkMergeBranchConflictResolvedEvent(branchId, sender.getNetworkSender()));
                   }
                }
             } catch (Exception ex) {
@@ -228,14 +264,14 @@ public class InternalEventManager {
       execute(runnable);
    }
 
-   private static void execute(Runnable runnable) {
+   private void execute(Runnable runnable) {
       executorService.submit(runnable);
    }
 
    /*
     * Kick LOCAL and REMOTE access control events
     */
-   static void kickAccessControlArtifactsEvent(final Sender sender, final AccessControlEvent accessControlEvent, final LoadedArtifacts loadedArtifacts) {
+   public void kickAccessControlArtifactsEvent(final Sender sender, final AccessControlEvent accessControlEvent, final LoadedArtifacts loadedArtifacts) {
       if (sender == null) {
          throw new IllegalArgumentException("sender can not be null");
       }
@@ -245,10 +281,10 @@ public class InternalEventManager {
       if (loadedArtifacts == null) {
          throw new IllegalArgumentException("loadedArtifacts can not be null");
       }
-      if (isDisableEvents()) {
+      if (preferences.isDisableEvents()) {
          return;
       }
-      OseeEventManager.eventLog("IEM1: kickAccessControlEvent - type: " + accessControlEvent.getEventType() + sender + " loadedArtifacts: " + loadedArtifacts);
+      EventUtil.eventLog("IEM1: kickAccessControlEvent - type: " + accessControlEvent.getEventType() + sender + " loadedArtifacts: " + loadedArtifacts);
       Runnable runnable = new Runnable() {
          @Override
          public void run() {
@@ -267,9 +303,8 @@ public class InternalEventManager {
                   Collection<Integer> artifactIds = loadedArtifacts.getAllArtifactIds();
                   Collection<Integer> artifactTypeIds = loadedArtifacts.getAllArtifactTypeIds();
 
-                  RemoteEventManager.kick(new NetworkAccessControlArtifactsEvent(
-                     accessControlEvent.getEventType().name(), branchId == null ? -1 : branchId, artifactIds,
-                     artifactTypeIds, sender.getNetworkSender()));
+                  sendRemoteEvent(new NetworkAccessControlArtifactsEvent(accessControlEvent.getEventType().name(),
+                     branchId == null ? -1 : branchId, artifactIds, artifactTypeIds, sender.getNetworkSender()));
                }
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -280,7 +315,7 @@ public class InternalEventManager {
    }
 
    // Kick LOCAL artifact modified event; This event does NOT go external
-   static void kickArtifactModifiedEvent(final Sender sender, final ArtifactModType artifactModType, final Artifact artifact) {
+   public void kickArtifactModifiedEvent(final Sender sender, final ArtifactModType artifactModType, final Artifact artifact) {
       //      OseeEventManager.eventLog("IEM1: kickArtifactModifiedEvent - " + artifactModType + " - " + artifact.getGuid() + " - " + sender + " - " + artifact.getDirtySkynetAttributeChanges());
       Runnable runnable = new Runnable() {
          @Override
@@ -294,7 +329,7 @@ public class InternalEventManager {
    }
 
    // Kick LOCAL relation modified event; This event does NOT go external
-   static void kickRelationModifiedEvent(final Sender sender, final RelationEventType relationEventType, final RelationLink link, final Branch branch, final String relationType) {
+   public void kickRelationModifiedEvent(final Sender sender, final RelationEventType relationEventType, final RelationLink link, final Branch branch, final String relationType) {
       //      OseeEventManager.eventLog("IEM1: kickRelationModifiedEvent - " + relationEventType + " - " + link + " - " + sender);
       Runnable runnable = new Runnable() {
          @Override
@@ -308,11 +343,11 @@ public class InternalEventManager {
    }
 
    // Kick LOCAL and REMOTE purged event depending on sender
-   static void kickArtifactsPurgedEvent(final Sender sender, final LoadedArtifacts loadedArtifacts) {
-      if (isDisableEvents()) {
+   public void kickArtifactsPurgedEvent(final Sender sender, final LoadedArtifacts loadedArtifacts) {
+      if (preferences.isDisableEvents()) {
          return;
       }
-      OseeEventManager.eventLog("IEM1: kickArtifactsPurgedEvent " + sender + " - " + loadedArtifacts);
+      EventUtil.eventLog("IEM1: kickArtifactsPurgedEvent " + sender + " - " + loadedArtifacts);
       Runnable runnable = new Runnable() {
          @Override
          public void run() {
@@ -322,7 +357,7 @@ public class InternalEventManager {
             // Kick REMOTE (If source was Local and this was not a default branch changed event
             try {
                if (sender.isLocal()) {
-                  RemoteEventManager.kick(new NetworkArtifactPurgeEvent(
+                  sendRemoteEvent(new NetworkArtifactPurgeEvent(
                      loadedArtifacts.getLoadedArtifacts().iterator().next().getBranch().getId(),
                      loadedArtifacts.getAllArtifactIds(), loadedArtifacts.getAllArtifactTypeIds(),
                      sender.getNetworkSender()));
@@ -336,11 +371,11 @@ public class InternalEventManager {
    }
 
    // Kick LOCAL and REMOTE artifact change type depending on sender
-   static void kickArtifactsChangeTypeEvent(final Sender sender, final int toArtifactTypeId, final LoadedArtifacts loadedArtifacts) {
-      if (isDisableEvents()) {
+   public void kickArtifactsChangeTypeEvent(final Sender sender, final int toArtifactTypeId, final LoadedArtifacts loadedArtifacts) {
+      if (preferences.isDisableEvents()) {
          return;
       }
-      OseeEventManager.eventLog("IEM1: kickArtifactsChangeTypeEvent " + sender + " - " + loadedArtifacts);
+      EventUtil.eventLog("IEM1: kickArtifactsChangeTypeEvent " + sender + " - " + loadedArtifacts);
       Runnable runnable = new Runnable() {
          @Override
          public void run() {
@@ -350,7 +385,7 @@ public class InternalEventManager {
             // Kick REMOTE (If source was Local and this was not a default branch changed event
             try {
                if (sender.isLocal()) {
-                  RemoteEventManager.kick(new NetworkArtifactChangeTypeEvent(
+                  sendRemoteEvent(new NetworkArtifactChangeTypeEvent(
                      loadedArtifacts.getLoadedArtifacts().iterator().next().getBranch().getId(),
                      loadedArtifacts.getAllArtifactIds(), loadedArtifacts.getAllArtifactTypeIds(), toArtifactTypeId,
                      sender.getNetworkSender()));
@@ -364,12 +399,12 @@ public class InternalEventManager {
    }
 
    // Kick LOCAL and remote transaction deleted event
-   static void kickTransactionsPurgedEvent(final Sender sender, final int[] transactionIds) {
+   public void kickTransactionsPurgedEvent(final Sender sender, final int[] transactionIds) {
       //TODO This needs to be converted into the individual artifacts and relations that were deleted/modified
-      if (isDisableEvents()) {
+      if (preferences.isDisableEvents()) {
          return;
       }
-      OseeEventManager.eventLog("IEM1: kickTransactionsDeletedEvent " + sender + " - " + transactionIds.length);
+      EventUtil.eventLog("IEM1: kickTransactionsDeletedEvent " + sender + " - " + transactionIds.length);
       Runnable runnable = new Runnable() {
          @Override
          public void run() {
@@ -379,7 +414,7 @@ public class InternalEventManager {
             // Kick REMOTE (If source was Local and this was not a default branch changed event
             try {
                if (sender.isLocal()) {
-                  RemoteEventManager.kick(new NetworkTransactionDeletedEvent(sender.getNetworkSender(), transactionIds));
+                  sendRemoteEvent(new NetworkTransactionDeletedEvent(sender.getNetworkSender(), transactionIds));
                }
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -390,11 +425,11 @@ public class InternalEventManager {
    }
 
    // Kick LOCAL and REMOTE ArtifactEvent
-   static void kickPersistEvent(final Sender sender, Collection<ArtifactTransactionModifiedEvent> xModifiedEvents) {
-      if (isDisableEvents()) {
+   public void kickPersistEvent(final Sender sender, Collection<ArtifactTransactionModifiedEvent> xModifiedEvents) {
+      if (preferences.isDisableEvents()) {
          return;
       }
-      OseeEventManager.eventLog("IEM1: kickPersistEvent #ModEvents: " + xModifiedEvents.size() + " - " + sender);
+      EventUtil.eventLog("IEM1: kickPersistEvent #ModEvents: " + xModifiedEvents.size() + " - " + sender);
       final Collection<ArtifactTransactionModifiedEvent> xModifiedEventsCopy =
          new ArrayList<ArtifactTransactionModifiedEvent>();
       xModifiedEventsCopy.addAll(xModifiedEvents);
@@ -405,15 +440,15 @@ public class InternalEventManager {
             FrameworkTransactionData transData = createTransactionDataRollup(xModifiedEventsCopy);
             try {
                // Log if this is a loopback and what is happening
-               if (enableRemoteEventLoopback) {
+               if (preferences.isEnableRemoteEventLoopback()) {
                   OseeLog.log(
-                     InternalEventManager.class,
+                     LegacyEventManager.class,
                      Level.WARNING,
                      "IEM1: ArtifactEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
                }
 
                // Kick LOCAL
-               if (!enableRemoteEventLoopback || enableRemoteEventLoopback && sender.isRemote()) {
+               if (!preferences.isEnableRemoteEventLoopback() || preferences.isEnableRemoteEventLoopback() && sender.isRemote()) {
                   safelyInvokeListeners(IFrameworkTransactionEventListener.class, "handleFrameworkTransactionEvent",
                      sender, transData);
                }
@@ -421,7 +456,7 @@ public class InternalEventManager {
                // Kick REMOTE (If source was Local and this was not a default branch changed event
                if (sender.isLocal()) {
                   List<ISkynetEvent> events = generateNetworkSkynetEvents(sender, xModifiedEventsCopy);
-                  RemoteEventManager.kick(events);
+                  sendRemoteEvent(events);
                }
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -432,25 +467,25 @@ public class InternalEventManager {
    }
 
    // Kick LOCAL ArtifactReloadEvent
-   static void kickArtifactReloadEvent(final Sender sender, final Collection<? extends Artifact> artifacts) {
-      if (isDisableEvents()) {
+   public void kickArtifactReloadEvent(final Sender sender, final Collection<? extends Artifact> artifacts) {
+      if (preferences.isDisableEvents()) {
          return;
       }
-      OseeEventManager.eventLog("IEM1: kickArtifactReloadEvent #Reloads: " + artifacts.size() + " - " + sender);
+      EventUtil.eventLog("IEM1: kickArtifactReloadEvent #Reloads: " + artifacts.size() + " - " + sender);
       Runnable runnable = new Runnable() {
          @Override
          public void run() {
             try {
                // Log if this is a loopback and what is happening
-               if (enableRemoteEventLoopback) {
+               if (preferences.isEnableRemoteEventLoopback()) {
                   OseeLog.log(
-                     InternalEventManager.class,
+                     LegacyEventManager.class,
                      Level.WARNING,
                      "IEM1: kickArtifactReloadEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
                }
 
                // Kick LOCAL
-               if (!enableRemoteEventLoopback) {
+               if (!preferences.isEnableRemoteEventLoopback()) {
                   safelyInvokeListeners(IArtifactReloadEventListener.class, "handleReloadEvent", sender, artifacts);
                }
             } catch (Exception ex) {
@@ -461,72 +496,7 @@ public class InternalEventManager {
       execute(runnable);
    }
 
-   /**
-    * Add a priority listener. This should only be done for caches where they need to be updated before all other
-    * listeners are called.
-    */
-   static void addPriorityListener(IEventListener listener) {
-      if (listener == null) {
-         throw new IllegalArgumentException("listener can not be null");
-      }
-      if (!priorityListeners.contains(listener)) {
-         priorityListeners.add(listener);
-      }
-      OseeEventManager.eventLog("IEM1: addPriorityListener (" + priorityListeners.size() + ") " + listener);
-   }
-
-   static void addListener(IEventListener listener) {
-      if (listener == null) {
-         throw new IllegalArgumentException("listener can not be null");
-      }
-      if (!listeners.contains(listener)) {
-         listeners.add(listener);
-      }
-      OseeEventManager.eventLog("IEM1: addListener (" + listeners.size() + ") " + listener);
-   }
-
-   static void removeListeners(IEventListener listener) {
-      OseeEventManager.eventLog("IEM1: removeListener: (" + listeners.size() + ") " + listener);
-      listeners.remove(listener);
-      priorityListeners.remove(listener);
-   }
-
-   // This method clears all listeners. Should only be used for testing purposes.
-   public static void removeAllListeners() {
-      listeners.clear();
-      priorityListeners.clear();
-   }
-
-   public static String getObjectSafeName(Object object) {
-      try {
-         return object.toString();
-      } catch (Exception ex) {
-         return object.getClass().getSimpleName() + " - exception on toString: " + ex.getLocalizedMessage();
-      }
-   }
-
-   static boolean isDisableEvents() {
-      return disableEvents;
-   }
-
-   static void setDisableEvents(boolean disableEvents) {
-      InternalEventManager.disableEvents = disableEvents;
-   }
-
-   static String getListenerReport() {
-      List<String> listenerStrs = new ArrayList<String>();
-      for (IEventListener listener : priorityListeners) {
-         listenerStrs.add("Priority: " + getObjectSafeName(listener));
-      }
-      for (IEventListener listener : listeners) {
-         listenerStrs.add(getObjectSafeName(listener));
-      }
-      String[] listArr = listenerStrs.toArray(new String[listenerStrs.size()]);
-      Arrays.sort(listArr);
-      return org.eclipse.osee.framework.jdk.core.util.Collections.toString("\n", (Object[]) listArr);
-   }
-
-   private static List<ISkynetEvent> generateNetworkSkynetEvents(Sender sender, Collection<ArtifactTransactionModifiedEvent> xModifiedEvents) {
+   private List<ISkynetEvent> generateNetworkSkynetEvents(Sender sender, Collection<ArtifactTransactionModifiedEvent> xModifiedEvents) {
       List<ISkynetEvent> events = new ArrayList<ISkynetEvent>();
       for (ArtifactTransactionModifiedEvent xModifiedEvent : xModifiedEvents) {
          events.add(generateNetworkSkynetEvent(xModifiedEvent, sender));
@@ -534,7 +504,7 @@ public class InternalEventManager {
       return events;
    }
 
-   private static ISkynetEvent generateNetworkSkynetEvent(ArtifactTransactionModifiedEvent xModifiedEvent, Sender sender) {
+   private ISkynetEvent generateNetworkSkynetEvent(ArtifactTransactionModifiedEvent xModifiedEvent, Sender sender) {
       ISkynetEvent ret = null;
       if (xModifiedEvent instanceof ArtifactModifiedEvent) {
          ret = generateNetworkSkynetArtifactEvent((ArtifactModifiedEvent) xModifiedEvent, sender);
@@ -544,7 +514,7 @@ public class InternalEventManager {
       return ret;
    }
 
-   private static ISkynetEvent generateNetworkSkynetArtifactEvent(ArtifactModifiedEvent artEvent, Sender sender) {
+   private ISkynetEvent generateNetworkSkynetArtifactEvent(ArtifactModifiedEvent artEvent, Sender sender) {
       SkynetArtifactEventBase eventBase = getArtifactEventBase(artEvent, sender);
       ISkynetEvent ret;
       if (artEvent.artifactModType == ArtifactModType.Changed) {
@@ -554,13 +524,13 @@ public class InternalEventManager {
       } else if (artEvent.artifactModType == ArtifactModType.Deleted) {
          ret = new NetworkArtifactDeletedEvent(eventBase);
       } else {
-         OseeLog.log(InternalEventManager.class, Level.SEVERE, "Unhandled xArtifactModifiedEvent event: " + artEvent);
+         OseeLog.log(LegacyEventManager.class, Level.SEVERE, "Unhandled xArtifactModifiedEvent event: " + artEvent);
          ret = null;
       }
       return ret;
    }
 
-   private static SkynetArtifactEventBase getArtifactEventBase(ArtifactModifiedEvent artEvent, Sender sender) {
+   private SkynetArtifactEventBase getArtifactEventBase(ArtifactModifiedEvent artEvent, Sender sender) {
       Artifact artifact = artEvent.artifact;
       SkynetArtifactEventBase eventBase =
          new SkynetArtifactEventBase(artifact.getBranch().getId(), artEvent.transactionNumber, artifact.getArtId(),
@@ -585,7 +555,7 @@ public class InternalEventManager {
       } else if (relEvent.relationEventType == RelationEventType.Added) {
          networkEvent = new NetworkRelationLinkCreatedEvent(eventBase, rationale, descriptorName);
       } else {
-         OseeLog.log(InternalEventManager.class, Level.SEVERE, "Unhandled xRelationModifiedEvent event: " + relEvent);
+         OseeLog.log(LegacyEventManager.class, Level.SEVERE, "Unhandled xRelationModifiedEvent event: " + relEvent);
          networkEvent = null;
       }
       return networkEvent;
@@ -759,7 +729,7 @@ public class InternalEventManager {
       return transData;
    }
 
-   public static void safelyInvokeListeners(Class<? extends IEventListener> c, String methodName, Object... args) {
+   public void safelyInvokeListeners(Class<? extends IEventListener> c, String methodName, Object... args) {
       for (IEventListener listener : priorityListeners) {
          try {
             if (c.isInstance(listener)) {
@@ -788,11 +758,48 @@ public class InternalEventManager {
       }
    }
 
-   public static boolean isEnableRemoteEventLoopback() {
-      return enableRemoteEventLoopback;
+   public void sendRemoteEvent(Collection<ISkynetEvent> events) {
+      sendRemoteEvent(events.toArray(new ISkynetEvent[events.size()]));
    }
 
-   public static void setEnableRemoteEventLoopback(boolean enableRemoteEventLoopback) {
-      InternalEventManager.enableRemoteEventLoopback = enableRemoteEventLoopback;
+   private void sendRemoteEvent(final ISkynetEvent... events) {
+      if (preferences.isOldEvents() && isConnected()) {
+         Job job = new Job("Send Event") {
+            @Override
+            protected IStatus run(IProgressMonitor monitor) {
+               serviceLookup.kick(events, serviceLookup.getClientEventListenerRemoteReference());
+               return Status.OK_STATUS;
+            }
+         };
+
+         job.schedule();
+      }
+      /*
+       * This will enable a testing loopback that will take the kicked remote events and loop them back as if they came
+       * from an external client. It will allow for the testing of the OEM -> REM -> OEM processing. In addition, this
+       * onEvent is put in a non-display thread which will test that all handling by applications is properly handled by
+       * doing all processing and then kicking off display-thread when need to update ui. SessionId needs to be modified
+       * so this client doesn't think the events came from itself.
+       */
+      if (preferences.isEnableRemoteEventLoopback()) {
+         EventUtil.eventLog("REM: Loopback enabled - Returning events as Remote event.");
+         Thread thread = new Thread() {
+            @Override
+            public void run() {
+               try {
+                  String newSessionId = GUID.create();
+                  for (ISkynetEvent event : events) {
+                     event.getNetworkSender().sessionId = newSessionId;
+                  }
+                  remoteEventReceiver.onEvent(events);
+               } catch (RemoteException ex) {
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
+
+               }
+            }
+         };
+         thread.start();
+      }
    }
+
 }
