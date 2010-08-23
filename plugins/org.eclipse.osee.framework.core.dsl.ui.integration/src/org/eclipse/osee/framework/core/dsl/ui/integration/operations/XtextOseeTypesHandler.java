@@ -14,7 +14,6 @@ import java.net.URI;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.dsl.ui.integration.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
@@ -28,18 +27,13 @@ public class XtextOseeTypesHandler implements IOseeTypesHandler {
 
    @Override
    public void execute(IProgressMonitor monitor, URI uri) throws OseeCoreException {
-      try {
-         IOseeCachingService cacheService = Activator.getOseeCacheService();
-         IOperation operation = new OseeTypesImportOperation(cacheService, uri, false, false, true);
-         Operations.executeWorkAndCheckStatus(operation, monitor);
-      } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
-      }
+      IOseeCachingService cacheService = Activator.getOseeCacheService();
+      IOperation operation = new OseeTypesImportOperation(cacheService, uri, false, false, true);
+      Operations.executeWorkAndCheckStatus(operation, monitor);
    }
 
    @Override
    public boolean isApplicable(String resource) {
       return Strings.isValid(resource) && resource.endsWith(".osee");
    }
-
 }
