@@ -19,15 +19,13 @@ import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.branch.management.change.ComputeNetChangeOperation;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.ChangeItem;
 import org.eclipse.osee.framework.core.message.ChangeVersion;
 import org.eclipse.osee.framework.core.message.test.mocks.ChangeTestUtility;
-import org.eclipse.osee.framework.core.operation.IOperation;
-import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.test.mocks.Asserts;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -103,7 +101,7 @@ public class ComputeNetChangeTest {
       for (TestData testData : data) {
          items.add(testData.getItem());
       }
-      computeNetChange(items, IStatus.OK);
+      Asserts.testOperation(new ComputeNetChangeOperation(items), IStatus.OK);
 
       for (int index = 0; index < data.size(); index++) {
          TestData testData = data.get(index);
@@ -124,15 +122,7 @@ public class ComputeNetChangeTest {
       // Source to Non-Parent commit
       items.add(ChangeTestUtility.createItem(3, entry(10L, MODIFIED), null, entry(11L, MODIFIED), null, null));
 
-      computeNetChange(items, IStatus.ERROR);
-   }
-
-   private void computeNetChange(List<ChangeItem> changes, int status) {
-      IOperation operation = new ComputeNetChangeOperation(changes);
-
-      Operations.executeWork(operation, new NullProgressMonitor(), 0);
-      String message = operation.getStatus().toString();
-      Assert.assertEquals(message, status, operation.getStatus().getSeverity());
+      Asserts.testOperation(new ComputeNetChangeOperation(items), IStatus.ERROR);
    }
 
    private static TestData createTest(int itemId, ChangeVersion base, ChangeVersion first, ChangeVersion current, ChangeVersion destination, ChangeVersion expected, boolean isRemoved) {

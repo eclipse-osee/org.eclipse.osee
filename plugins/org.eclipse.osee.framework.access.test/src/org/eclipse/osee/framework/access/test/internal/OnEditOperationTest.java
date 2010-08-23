@@ -13,12 +13,10 @@ package org.eclipse.osee.framework.access.test.internal;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.DefaultBasicArtifact;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.operation.IOperation;
-import org.eclipse.osee.framework.core.operation.LogProgressMonitor;
-import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.test.mocks.Asserts;
 import org.eclipse.osee.framework.lifecycle.AbstractLifecycleOperation;
 import org.eclipse.osee.framework.lifecycle.ILifecycleService;
 import org.eclipse.osee.framework.lifecycle.LifecycleServiceImpl;
@@ -35,7 +33,7 @@ import org.junit.Test;
 public class OnEditOperationTest {
 
    @Test
-   public void testOperation() throws OseeCoreException {
+   public void testOperation() {
       ILifecycleService service = new LifecycleServiceImpl();
 
       //      service.addHandler(ChangeMgmtChkPoint.TYPE, new ChangeMgmtHandler(new MockAccessCheckProvider()));
@@ -46,11 +44,7 @@ public class OnEditOperationTest {
       IBasicArtifact<?> user = new DefaultBasicArtifact(0, "1", "user");
       List<IBasicArtifact<?>> artsToChk = new ArrayList<IBasicArtifact<?>>();
       artsToChk.add(new DefaultBasicArtifact(1, "2", "check me out"));
-      IOperation op = new OnEditOperation(service, user, artsToChk);
-      Operations.executeWork(op, new LogProgressMonitor(), -1.0);
-
-      IStatus status = op.getStatus();
-      Assert.assertTrue(status.isOK());
-
+      IOperation operation = new OnEditOperation(service, user, artsToChk);
+      Asserts.testOperation(operation, IStatus.OK);
    }
 }

@@ -21,6 +21,7 @@ Import-Package: org.apache.commons.lang;version="2.4.0",
  org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.model.test.mocks,
+ org.eclipse.osee.framework.core.test.mocks,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.skynet.core.event
 Bundle-Vendor: Eclipse Open System Engineering Environment

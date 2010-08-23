@@ -8,4 +8,5 @@ Fragment-Host: org.eclipse.osee.framework.access;bundle-version="0.9.5"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.junit4;bundle-version="4.5.0"
 Export-Package: org.eclipse.osee.framework.access.test
-Import-Package: org.eclipse.osee.framework.core.model.access.exp
+Import-Package: org.eclipse.osee.framework.core.model.access.exp,
+ org.eclipse.osee.framework.core.test.mocks

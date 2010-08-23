@@ -18,7 +18,6 @@ import java.util.Collection;
 import junit.framework.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.SystemUser;
@@ -27,7 +26,8 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.test.mocks.Asserts;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.operation.FinishUpdateBranchOperation;
+import org.eclipse.osee.framework.skynet.core.artifact.operation.UpdateBranchOperation;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.update.ConflictResolverOperation;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
@@ -170,8 +171,8 @@ public class BranchStateTest {
                }
             };
 
-         Job job = BranchManager.updateBranch(workingBranch, resolverOperation);
-         job.join();
+         IOperation operation = new UpdateBranchOperation(workingBranch, resolverOperation);
+         Asserts.testOperation(operation, IStatus.OK);
 
          Assert.assertEquals(BranchState.DELETED, workingBranch.getBranchState());
          Assert.assertEquals(user.getArtId(), BranchManager.getAssociatedArtifact(workingBranch).getArtId());
@@ -225,10 +226,9 @@ public class BranchStateTest {
                }
             };
 
-         Job job = BranchManager.updateBranch(workingBranch, resolverOperation);
-         job.join();
-         assertTrue("UpdateBranch was not successful", job.getResult().isOK());
-         assertTrue("Resolver was executed", !resolverOperation.wasExecuted());
+         IOperation operation = new UpdateBranchOperation(workingBranch, resolverOperation);
+         Asserts.testOperation(operation, IStatus.OK);
+         assertFalse("Resolver was executed", resolverOperation.wasExecuted());
 
          checkBranchWasRebaselined(originalBranchName, workingBranch);
          // Check that the associated artifact remained unchanged
@@ -282,13 +282,9 @@ public class BranchStateTest {
                }
             };
 
-         Job job = BranchManager.updateBranch(workingBranch, resolverOperation);
-         job.join();
+         IOperation operation = new UpdateBranchOperation(workingBranch, resolverOperation);
+         Asserts.testOperation(operation, IStatus.OK);
 
-         IStatus status = getCauseStatus(job.getResult());
-         String message =
-            String.format("UpdateBranch was not successful\n %s", status.getMessage(), status.getException());
-         assertTrue(message, job.getResult().isOK());
          assertTrue("Resolver not executed", resolverOperation.wasExecuted());
 
          assertTrue("Branch was archived", !workingBranch.getArchiveState().isArchived());
@@ -314,12 +310,7 @@ public class BranchStateTest {
          // Run FinishBranchUpdate and check
          FinishUpdateBranchOperation finishUpdateOperation =
             new FinishUpdateBranchOperation(resolverOperation.getConflictManager(), true, true);
-         Operations.executeWork(finishUpdateOperation, new NullProgressMonitor(), -1);
-
-         IStatus status1 = getCauseStatus(finishUpdateOperation.getStatus());
-         message =
-            String.format("FinishUpdateBranch was not successful\n %s", status1.getMessage(), status1.getException());
-         assertTrue(message, status1.isOK());
+         Asserts.testOperation(finishUpdateOperation, IStatus.OK);
 
          checkBranchWasRebaselined(originalBranchName, workingBranch);
 
@@ -339,20 +330,6 @@ public class BranchStateTest {
          cleanup(originalBranchName, workingBranch, mergeBranch, sameArtifact, baseArtifact);
 
       }
-   }
-
-   private IStatus getCauseStatus(IStatus status) {
-      IStatus toReturn = status;
-      if (!status.isOK() && status.isMultiStatus()) {
-         for (IStatus child : status.getChildren()) {
-            Throwable error = child.getException();
-            if (error != null) {
-               toReturn = child;
-               break;
-            }
-         }
-      }
-      return toReturn;
    }
 
    private void cleanup(String originalBranchName, Branch workingBranch, Branch mergeBranch, Artifact... toDelete) {

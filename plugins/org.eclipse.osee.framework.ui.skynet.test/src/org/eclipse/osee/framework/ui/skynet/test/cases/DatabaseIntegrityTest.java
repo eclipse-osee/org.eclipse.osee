@@ -11,13 +11,11 @@
 package org.eclipse.osee.framework.ui.skynet.test.cases;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.test.mocks.Asserts;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation;
 import org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOpsExtensionManager;
@@ -42,23 +40,16 @@ public class DatabaseIntegrityTest {
    @Test
    @Ignore
    public void testDatabaseIntegrity() {
-      try {
-         DatabaseHealthOperation operation = DatabaseHealthOpsExtensionManager.getVerifyOperationByName(operationId);
+      DatabaseHealthOperation operation = DatabaseHealthOpsExtensionManager.getVerifyOperationByName(operationId);
 
-         assertNotNull(operation);
+      assertNotNull(operation);
 
-         operation.setFixOperationEnabled(false);
-         Operations.executeWork(operation, new NullProgressMonitor(), -1);
-         assertEquals(String.format("Error [%s]: [%s]", operation.getName(), operation.getStatus().getMessage()),
-            IStatus.OK, operation.getStatus().getSeverity());
+      operation.setFixOperationEnabled(false);
+      Asserts.testOperation(operation, IStatus.OK);
 
-         int totalItemsToFix = operation.getItemsToFixCount();
-         assertEquals(String.format("Error [%s]: found [%s] items", operation.getName(), totalItemsToFix), 0,
-            totalItemsToFix);
-      } catch (Exception ex) {
-         assertFalse(ex.getLocalizedMessage(), false);
-      }
-
+      int totalItemsToFix = operation.getItemsToFixCount();
+      assertEquals(String.format("Error [%s]: found [%s] items", operation.getName(), totalItemsToFix), 0,
+         totalItemsToFix);
    }
 
    @Parameters
