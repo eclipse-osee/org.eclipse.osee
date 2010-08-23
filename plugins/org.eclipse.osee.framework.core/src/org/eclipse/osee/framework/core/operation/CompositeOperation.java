@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.core.operation;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.util.Conditions;
 
 /**
  * @author Roberto E. Escobar
@@ -33,9 +33,8 @@ public class CompositeOperation extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      if (operations == null || operations.isEmpty()) {
-         throw new OseeArgumentException("Sub-operations not available.");
-      }
+      Conditions.checkNotNull(operations, "sub-operations");
+      Conditions.checkExpressionFailOnTrue(operations.isEmpty(), "Sub-operations not available.");
       double workPercentage = 1.00 / operations.size();
       for (IOperation operation : operations) {
          doSubWork(operation, monitor, workPercentage);

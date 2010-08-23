@@ -59,8 +59,7 @@ public class AbstractOperationTest {
       IStatus status = compositeOperation.getStatus();
       Assert.assertEquals(status.getClass(), MultiStatus.class);
 
-      String expectedMessage = operation2.getName() + " " + status.getMessage();
-      System.out.println(expectedMessage);
-      Assert.assertEquals("status message did not match message", expectedMessage, status.toString());
+      String expectedMessage = status.getMessage();
+      Assert.assertEquals("status message did not match message", expectedMessage, status.getMessage());
    }
 }
