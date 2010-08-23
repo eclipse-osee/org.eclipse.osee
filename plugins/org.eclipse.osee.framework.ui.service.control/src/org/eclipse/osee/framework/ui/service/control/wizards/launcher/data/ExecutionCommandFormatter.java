@@ -37,8 +37,8 @@ abstract class ExecutionCommandFormatter {
       String applicationArgsString = "";
       if (applicationArgs.size() > 0) {
          applicationArgsString =
-            ServiceItem.EXEC_SEPARATOR + org.eclipse.osee.framework.jdk.core.util.Collections.toString(applicationArgs,
-               ServiceItem.EXEC_SEPARATOR);
+            ServiceItem.EXEC_SEPARATOR + org.eclipse.osee.framework.jdk.core.util.Collections.toString(ServiceItem.EXEC_SEPARATOR,
+               applicationArgs);
       }
       return applicationArgsString;
    }
@@ -47,8 +47,8 @@ abstract class ExecutionCommandFormatter {
       String jvmArgsString = "";
       if (jvmArgs.size() > 0) {
          jvmArgsString =
-            ServiceItem.EXEC_SEPARATOR + org.eclipse.osee.framework.jdk.core.util.Collections.toString(jvmArgs,
-               ServiceItem.EXEC_SEPARATOR);
+            ServiceItem.EXEC_SEPARATOR + org.eclipse.osee.framework.jdk.core.util.Collections.toString(ServiceItem.EXEC_SEPARATOR,
+               jvmArgs);
       }
       return jvmArgsString;
    }

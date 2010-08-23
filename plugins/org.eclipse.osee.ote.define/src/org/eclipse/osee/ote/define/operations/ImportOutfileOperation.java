@@ -103,7 +103,7 @@ public class ImportOutfileOperation {
       for (Artifact artifact : artifacts) {
          toReturn.add(artifact.getName());
       }
-      return org.eclipse.osee.framework.jdk.core.util.Collections.toString(toReturn, ",\n");
+      return org.eclipse.osee.framework.jdk.core.util.Collections.toString(",\n", toReturn);
    }
 
    private void commitSelectedArtifacts(IProgressMonitor monitor, String commitComment, Object[] items) throws Exception {

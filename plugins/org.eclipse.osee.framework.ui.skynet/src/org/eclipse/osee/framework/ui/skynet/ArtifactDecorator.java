@@ -92,7 +92,7 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
             saveAction(store, showArtVersion, "artifact.decorator.show.artVersion");
             if (attributesAction != null) {
                Collection<String> items = attributesAction.getSelected();
-               store.setSetting(asKey(storageKey, "artifact.decorator.attrTypes"), Collections.toString(items, ","));
+               store.setSetting(asKey(storageKey, "artifact.decorator.attrTypes"), Collections.toString(",", items));
                saveAction(store, attributesAction, "artifact.decorator.show.attrTypes");
             }
          }
@@ -218,7 +218,7 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
             }
          }
          if (!info.isEmpty()) {
-            toReturn = "[" + Collections.toString(info, " | ") + "]";
+            toReturn = "[" + Collections.toString(" | ", info) + "]";
          }
       }
       return toReturn != null ? toReturn : "";

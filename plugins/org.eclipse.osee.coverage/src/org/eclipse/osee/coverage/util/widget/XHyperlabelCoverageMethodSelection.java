@@ -46,7 +46,7 @@ public class XHyperlabelCoverageMethodSelection extends XHyperlinkLabelCmdValueS
 
    @Override
    public String getCurrentValue() {
-      return Collections.toString(selectedCoverageMethods, ", ");
+      return Collections.toString(", ", selectedCoverageMethods);
    }
 
    public void setSelectedCoverageMethods(Collection<CoverageOption> selectedCoverageMethods) {

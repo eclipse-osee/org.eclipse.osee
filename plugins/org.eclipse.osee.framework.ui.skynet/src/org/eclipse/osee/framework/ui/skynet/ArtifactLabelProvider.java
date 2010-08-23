@@ -95,7 +95,7 @@ public class ArtifactLabelProvider extends LabelProvider { //StyledCellLabelProv
                extraInfo.add(ex.toString());
             }
          }
-         return Collections.toString(extraInfo, " ");
+         return Collections.toString(" ", extraInfo);
       } else {
          return element.toString();
       }

@@ -91,10 +91,6 @@ public class Collections {
       return toString(list, null, separator, null);
    }
 
-   public static String toString(Collection<?> c, String separator) {
-      return toString(separator, c);
-   }
-
    @SuppressWarnings("unchecked")
    public static <A> List<Collection<A>> subDivide(List<A> collection, int size) {
       List<Collection<A>> result = new ArrayList<Collection<A>>();

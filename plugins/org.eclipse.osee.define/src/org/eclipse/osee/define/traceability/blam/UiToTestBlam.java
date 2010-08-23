@@ -204,9 +204,9 @@ public class UiToTestBlam extends AbstractBlam {
             List<String> verified = getTrace(testUnit, CoreRelationTypes.Verification__Requirement);
             List<String> used = getTrace(testUnit, CoreRelationTypes.Uses__Requirement);
             List<String> validates = getTrace(testUnit, CoreRelationTypes.Validation__Requirement);
-            String verifyStr = org.eclipse.osee.framework.jdk.core.util.Collections.toString(verified, ",");
-            String usesStr = org.eclipse.osee.framework.jdk.core.util.Collections.toString(used, ",");
-            String validatesStr = org.eclipse.osee.framework.jdk.core.util.Collections.toString(validates, ",");
+            String verifyStr = org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", verified);
+            String usesStr = org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", used);
+            String validatesStr = org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", validates);
 
             addRow(appendable,
                asArray(uiTitle, uiType, testType, testUnitName, testUnitType, verifyStr, validatesStr, usesStr));

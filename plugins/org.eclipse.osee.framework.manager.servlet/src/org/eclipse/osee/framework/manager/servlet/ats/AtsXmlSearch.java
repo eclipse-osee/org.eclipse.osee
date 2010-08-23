@@ -63,7 +63,7 @@ public class AtsXmlSearch {
             predicates.add(idToXPath(id));
          }
       }
-      return Collections.toString(predicates, " or ");
+      return Collections.toString(" or ", predicates);
    }
 
    public String idToXPath(String id) throws OseeCoreException {

@@ -88,7 +88,7 @@ public class AccessPolicyHandlerServiceImpl implements IAccessPolicyHandlerServi
          OseeLog.log(
             SkynetGuiPlugin.class,
             level,
-            "No Permission Error: \n" + Collections.toString(objects, ",") + " does not have permissions because: " + permissionStatus.getReason());
+            "No Permission Error: \n" + Collections.toString(",", objects) + " does not have permissions because: " + permissionStatus.getReason());
       }
       return notMatched;
    }

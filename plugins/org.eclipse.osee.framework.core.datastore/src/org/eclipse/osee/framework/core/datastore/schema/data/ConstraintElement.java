@@ -99,7 +99,7 @@ public class ConstraintElement implements Xmlizable {
    }
 
    public String getCommaSeparatedColumnsList() {
-      return org.eclipse.osee.framework.jdk.core.util.Collections.toString(columns, ",");
+      return org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", columns);
    }
 
    @Override

@@ -88,7 +88,7 @@ final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
 
       String options =
          String.format(" - Options:[%s]",
-            org.eclipse.osee.framework.jdk.core.util.Collections.toString(optionsList, ", "));
+            org.eclipse.osee.framework.jdk.core.util.Collections.toString(", ", optionsList));
       return String.format("%s%s", queryString, optionsList.size() > 0 ? options : "");
    }
 

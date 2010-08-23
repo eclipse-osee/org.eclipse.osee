@@ -126,7 +126,7 @@ public class DbTestUnitProvider implements ITestUnitProvider {
       if (testUnitNameIds == null) {
          return "";
       }
-      return org.eclipse.osee.framework.jdk.core.util.Collections.toString(testUnitNameIds, ";");
+      return org.eclipse.osee.framework.jdk.core.util.Collections.toString(";", testUnitNameIds);
    }
 
    @Override

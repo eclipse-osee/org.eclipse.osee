@@ -130,7 +130,7 @@ public class CreateOseeTypeChangesReportOperation extends AbstractOperation {
                      dirtyItems.add(entry.toString());
                   }
                }
-               data.add(Collections.toString(dirtyItems, ","));
+               data.add(Collections.toString(",", dirtyItems));
             } else {
                data.add(String.valueOf(isDirty));
             }

@@ -80,7 +80,7 @@ public class MultipleHridSearchOperation extends AbstractOperation implements IW
       }
       searchAndSplitResults();
       if (resultAtsArts.isEmpty() && resultNonAtsArts.isEmpty()) {
-         AWorkbench.popup("Invalid HRID/Guid/Legacy PCR Id(s): " + Collections.toString(data.getIds(), ", "));
+         AWorkbench.popup("Invalid HRID/Guid/Legacy PCR Id(s): " + Collections.toString(", ", data.getIds()));
          return;
       }
       if (resultNonAtsArts.size() > 0) {

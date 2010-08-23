@@ -128,7 +128,7 @@ public class DoesNotWorkItemCoverage extends XNavigateItemAction {
          }
       }
       transaction.execute();
-      rd.log(Collections.toString(allTestUnitNames, "\n"));
+      rd.log(Collections.toString("\n", allTestUnitNames));
       rd.log("Num Coverage Units " + totalCoverageUnits + " Num Coverage Items " + totalCoverageItems);
       rd.log("Fixed " + fixCount + " Binary Moved " + binaryMoveCount);
       rd.report("Test Unit Import");

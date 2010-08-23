@@ -39,7 +39,7 @@ public class SqlManagerImpl extends SqlManager {
          Map<ColumnFields, String> column = columns.get(key).getColumnFields();
          lines.add(columnDataToSQL(column));
       }
-      String toExecute = org.eclipse.osee.framework.jdk.core.util.Collections.toString(lines, ",\n");
+      String toExecute = org.eclipse.osee.framework.jdk.core.util.Collections.toString(",\n", lines);
       return toExecute;
    }
 

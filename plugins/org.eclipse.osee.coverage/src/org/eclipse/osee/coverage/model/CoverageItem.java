@@ -153,7 +153,7 @@ public class CoverageItem extends NamedIdentity implements ICoverage {
       for (CoverageTestUnit testUnit : testUnits) {
          guids.add(testUnit.getGuid());
       }
-      return Collections.toString(guids, ",");
+      return Collections.toString(",", guids);
    }
 
    public String getRationale() {
