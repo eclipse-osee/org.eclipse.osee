@@ -17,6 +17,8 @@ Import-Package: org.eclipse.core.runtime,
  org.eclipse.osee.framework.core.translation,
  org.eclipse.osee.framework.core.util,
  org.eclipse.osee.framework.jdk.core.type,
+ org.eclipse.osee.framework.jdk.core.util,
+ org.eclipse.osee.framework.logging,
  org.osgi.framework,
  org.osgi.util.tracker
 Export-Package: org.eclipse.osee.framework.core.message

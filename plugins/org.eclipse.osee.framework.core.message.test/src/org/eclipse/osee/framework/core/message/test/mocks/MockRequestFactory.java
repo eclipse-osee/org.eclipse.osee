@@ -33,14 +33,16 @@ import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 
 public final class MockRequestFactory {
+
    private MockRequestFactory() {
+      // Utility class
    }
 
    public static IOseeModelFactoryServiceProvider createFactoryProvider() {
       return new MockOseeModelFactoryServiceProvider(createFactoryService());
    }
 
-   private static IOseeModelFactoryService createFactoryService() {
+   public static IOseeModelFactoryService createFactoryService() {
       return new OseeModelFactoryService(new BranchFactory(), new TransactionRecordFactory(),
          new ArtifactTypeFactory(), new AttributeTypeFactory(), new RelationTypeFactory(), new OseeEnumTypeFactory());
    }

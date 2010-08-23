@@ -16,7 +16,6 @@ import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
-import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 import org.eclipse.osee.framework.core.translation.ITranslator;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 
@@ -35,10 +34,10 @@ public final class TransactionRecordTranslator implements ITranslator<Transactio
       TRANSACTION_COMMIT_ART_ID;
    }
 
-   private final IOseeModelFactoryServiceProvider factoryProvider;
+   private final TransactionRecordFactory txRecordFactory;
 
-   public TransactionRecordTranslator(IOseeModelFactoryServiceProvider factoryProvider) {
-      this.factoryProvider = factoryProvider;
+   public TransactionRecordTranslator(TransactionRecordFactory txRecordFactory) {
+      this.txRecordFactory = txRecordFactory;
    }
 
    @Override
@@ -50,12 +49,11 @@ public final class TransactionRecordTranslator implements ITranslator<Transactio
       int authorArtId = store.getInt(Entry.TRANSACTION_AUTHOR_ART_ID.name());
       int commitArtId = store.getInt(Entry.TRANSACTION_COMMIT_ART_ID.name());
       int branchId = store.getInt(Entry.TRANSACTION_BRANCH.name());
-      TransactionRecordFactory factory = factoryProvider.getOseeFactoryService().getTransactionFactory();
-      return factory.create(transactionNumber, branchId, comment, time, authorArtId, commitArtId, txType);
+      return txRecordFactory.create(transactionNumber, branchId, comment, time, authorArtId, commitArtId, txType);
    }
 
    @Override
-   public PropertyStore convert(TransactionRecord data) throws OseeCoreException {
+   public PropertyStore convert(TransactionRecord data) {
       PropertyStore store = new PropertyStore();
       store.put(Entry.TRANSACTION_ID.name(), data.getId());
       store.put(Entry.TRANSACTION_TX_TYPE.name(), data.getTxType().name());

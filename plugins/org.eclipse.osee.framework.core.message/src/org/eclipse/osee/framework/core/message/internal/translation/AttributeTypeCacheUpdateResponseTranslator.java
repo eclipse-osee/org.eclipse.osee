@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.message.AttributeTypeCacheUpdateResponse;
 import org.eclipse.osee.framework.core.message.TranslationUtil;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.model.type.AttributeTypeFactory;
-import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 import org.eclipse.osee.framework.core.translation.ITranslator;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 
@@ -35,14 +34,14 @@ public class AttributeTypeCacheUpdateResponseTranslator implements ITranslator<A
       ATTR_TO_ENUM;
    }
 
-   private final IOseeModelFactoryServiceProvider provider;
+   private final AttributeTypeFactory attributeTypeFactory;
 
-   public AttributeTypeCacheUpdateResponseTranslator(IOseeModelFactoryServiceProvider provider) {
-      this.provider = provider;
+   public AttributeTypeCacheUpdateResponseTranslator(AttributeTypeFactory attributeTypeFactory) {
+      this.attributeTypeFactory = attributeTypeFactory;
    }
 
-   private AttributeTypeFactory getFactory() throws OseeCoreException {
-      return provider.getOseeFactoryService().getAttributeTypeFactory();
+   private AttributeTypeFactory getFactory() {
+      return attributeTypeFactory;
    }
 
    @Override
@@ -60,7 +59,7 @@ public class AttributeTypeCacheUpdateResponseTranslator implements ITranslator<A
    }
 
    @Override
-   public PropertyStore convert(AttributeTypeCacheUpdateResponse object) throws OseeCoreException {
+   public PropertyStore convert(AttributeTypeCacheUpdateResponse object) {
       PropertyStore store = new PropertyStore();
       List<AttributeType> rows = object.getAttrTypeRows();
       for (int index = 0; index < rows.size(); index++) {

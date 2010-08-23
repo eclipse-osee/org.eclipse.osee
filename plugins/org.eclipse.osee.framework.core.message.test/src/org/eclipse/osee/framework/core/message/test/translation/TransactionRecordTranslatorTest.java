@@ -16,10 +16,9 @@ import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.internal.translation.TransactionRecordTranslator;
 import org.eclipse.osee.framework.core.message.test.mocks.DataAsserts;
-import org.eclipse.osee.framework.core.message.test.mocks.MockRequestFactory;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
 import org.eclipse.osee.framework.core.model.test.mocks.MockDataFactory;
-import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 import org.eclipse.osee.framework.core.translation.ITranslator;
 import org.junit.Assert;
 import org.junit.runner.RunWith;
@@ -45,9 +44,8 @@ public class TransactionRecordTranslatorTest extends BaseTranslatorTest<Transact
    }
 
    @Parameters
-   public static Collection<Object[]> data() throws OseeCoreException {
-      IOseeModelFactoryServiceProvider factoryProvider = MockRequestFactory.createFactoryProvider();
-      ITranslator<TransactionRecord> translator = new TransactionRecordTranslator(factoryProvider);
+   public static Collection<Object[]> data() {
+      ITranslator<TransactionRecord> translator = new TransactionRecordTranslator(new TransactionRecordFactory());
       List<Object[]> data = new ArrayList<Object[]>();
       for (int index = 1; index <= 2; index++) {
          data.add(new Object[] {MockDataFactory.createTransaction(index * 10, index * 3), translator});

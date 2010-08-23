@@ -18,10 +18,9 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.TransactionCacheUpdateResponse;
 import org.eclipse.osee.framework.core.message.internal.translation.TransactionCacheUpdateResponseTranslator;
 import org.eclipse.osee.framework.core.message.test.mocks.DataAsserts;
-import org.eclipse.osee.framework.core.message.test.mocks.MockRequestFactory;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
 import org.eclipse.osee.framework.core.model.test.mocks.MockDataFactory;
-import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 import org.eclipse.osee.framework.core.translation.ITranslator;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -51,10 +50,9 @@ public class TransactionCacheUpdateResponseTranslatorTest extends BaseTranslator
    }
 
    @Parameters
-   public static Collection<Object[]> data() throws OseeCoreException {
-      IOseeModelFactoryServiceProvider factoryProvider = MockRequestFactory.createFactoryProvider();
+   public static Collection<Object[]> data() {
       ITranslator<TransactionCacheUpdateResponse> translator =
-         new TransactionCacheUpdateResponseTranslator(factoryProvider);
+         new TransactionCacheUpdateResponseTranslator(new TransactionRecordFactory());
 
       List<Object[]> data = new ArrayList<Object[]>();
       for (int index = 1; index <= 2; index++) {

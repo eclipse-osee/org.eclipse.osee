@@ -35,8 +35,8 @@ import org.eclipse.osee.framework.core.message.internal.translation.RelationType
 import org.eclipse.osee.framework.core.message.internal.translation.TableDataTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.TransactionCacheUpdateResponseTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.TransactionRecordTranslator;
-import org.eclipse.osee.framework.core.message.test.mocks.MockOseeModelFactoryServiceProvider;
-import org.eclipse.osee.framework.core.model.test.mocks.MockOseeCachingServiceProvider;
+import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
+import org.eclipse.osee.framework.core.model.type.AttributeTypeFactory;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.core.translation.ITranslator;
 import org.eclipse.osee.framework.core.translation.ITranslatorId;
@@ -51,9 +51,9 @@ public class DataTranslationServiceFactoryTest {
 
    @Test
    public void testServiceCreation() throws OseeCoreException {
+      DataTranslationServiceFactory transalationFactoryService = new DataTranslationServiceFactory();
       IDataTranslationService srvc =
-         new DataTranslationServiceFactory().createService(new MockOseeCachingServiceProvider(null),
-            new MockOseeModelFactoryServiceProvider(null));
+         transalationFactoryService.createService(null, new TransactionRecordFactory(), new AttributeTypeFactory());
 
       checkExists(srvc, TransactionRecordTranslator.class, CoreTranslatorId.TRANSACTION_RECORD);
 
@@ -85,17 +85,9 @@ public class DataTranslationServiceFactoryTest {
       checkExists(srvc, TableDataTranslator.class, CoreTranslatorId.TABLE_DATA);
 
       checkExists(srvc, DatastoreInitRequestTranslator.class, CoreTranslatorId.OSEE_DATASTORE_INIT_REQUEST);
-      //      checkExists(srvc, BasicArtifactTranslator.class, CoreTranslatorId.ARTIFACT_METADATA);
-      //      checkExists(srvc, BranchTranslator.class, CoreTranslatorId.BRANCH);
-      //      checkExists(srvc, ArtifactTypeTranslator.class, CoreTranslatorId.ARTIFACT_TYPE);
-      //      checkExists(srvc, AttributeTypeTranslator.class, CoreTranslatorId.ATTRIBUTE_TYPE);
-      //      checkExists(srvc, RelationTypeTranslator.class, CoreTranslatorId.RELATION_TYPE);
-      //      checkExists(srvc, OseeEnumTypeTranslator.class, CoreTranslatorId.OSEE_ENUM_TYPE);
-      //      checkExists(srvc, OseeEnumEntryTranslator.class, CoreTranslatorId.OSEE_ENUM_ENTRY);
    }
 
-   @SuppressWarnings("unchecked")
-   private void checkExists(IDataTranslationService service, Class<? extends ITranslator> expected, ITranslatorId key) throws OseeCoreException {
+   private void checkExists(IDataTranslationService service, Class<? extends ITranslator<?>> expected, ITranslatorId key) throws OseeCoreException {
       ITranslator<?> actual = service.getTranslator(key);
       Assert.assertNotNull(actual);
       Assert.assertEquals(expected, actual.getClass());

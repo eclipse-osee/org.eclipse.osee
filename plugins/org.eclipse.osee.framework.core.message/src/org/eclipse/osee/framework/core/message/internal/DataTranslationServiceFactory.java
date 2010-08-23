@@ -37,8 +37,9 @@ import org.eclipse.osee.framework.core.message.internal.translation.RelationType
 import org.eclipse.osee.framework.core.message.internal.translation.TableDataTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.TransactionCacheUpdateResponseTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.TransactionRecordTranslator;
-import org.eclipse.osee.framework.core.services.IOseeCachingServiceProvider;
-import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
+import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
+import org.eclipse.osee.framework.core.model.type.AttributeTypeFactory;
+import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 
 /**
@@ -48,28 +49,13 @@ import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 public class DataTranslationServiceFactory {
 
    public DataTranslationServiceFactory() {
+      //
    }
 
-   public IDataTranslationService createService(IOseeCachingServiceProvider cachingService, IOseeModelFactoryServiceProvider factoryProvider) throws OseeCoreException {
+   public IDataTranslationService createService(IOseeCachingService cachingService, TransactionRecordFactory txRecordFactory, AttributeTypeFactory attributeTypeFactory) throws OseeCoreException {
       IDataTranslationService service = new DataTranslationService();
 
-      // service.addTranslator(new BasicArtifactTranslator(),
-      // CoreTranslatorId.ARTIFACT_METADATA);
-      // service.addTranslator(new BranchTranslator(service, factoryProvider),
-      // CoreTranslatorId.BRANCH);
-
-      // service.addTranslator(new ArtifactTypeTranslator(service,
-      // factoryProvider), CoreTranslatorId.ARTIFACT_TYPE);
-      // service.addTranslator(new AttributeTypeTranslator(service,
-      // factoryProvider), CoreTranslatorId.ATTRIBUTE_TYPE);
-      // service.addTranslator(new RelationTypeTranslator(service,
-      // factoryProvider), CoreTranslatorId.RELATION_TYPE);
-      // service.addTranslator(new OseeEnumEntryTranslator(factoryProvider),
-      // CoreTranslatorId.OSEE_ENUM_ENTRY);
-      // service.addTranslator(new OseeEnumTypeTranslator(service,
-      // factoryProvider), CoreTranslatorId.OSEE_ENUM_TYPE);
-
-      service.addTranslator(new TransactionRecordTranslator(factoryProvider), CoreTranslatorId.TRANSACTION_RECORD);
+      service.addTranslator(new TransactionRecordTranslator(txRecordFactory), CoreTranslatorId.TRANSACTION_RECORD);
 
       service.addTranslator(new BranchCreationRequestTranslator(), CoreTranslatorId.BRANCH_CREATION_REQUEST);
       service.addTranslator(new BranchCreationResponseTranslator(), CoreTranslatorId.BRANCH_CREATION_RESPONSE);
@@ -92,13 +78,13 @@ public class DataTranslationServiceFactory {
 
       service.addTranslator(new BranchCacheUpdateResponseTranslator(), CoreTranslatorId.BRANCH_CACHE_UPDATE_RESPONSE);
       service.addTranslator(new BranchCacheStoreRequestTranslator(), CoreTranslatorId.BRANCH_CACHE_STORE_REQUEST);
-      service.addTranslator(new TransactionCacheUpdateResponseTranslator(factoryProvider),
+      service.addTranslator(new TransactionCacheUpdateResponseTranslator(txRecordFactory),
          CoreTranslatorId.TX_CACHE_UPDATE_RESPONSE);
 
       service.addTranslator(new ArtifactTypeCacheUpdateResponseTranslator(),
          CoreTranslatorId.ARTIFACT_TYPE_CACHE_UPDATE_RESPONSE);
 
-      service.addTranslator(new AttributeTypeCacheUpdateResponseTranslator(factoryProvider),
+      service.addTranslator(new AttributeTypeCacheUpdateResponseTranslator(attributeTypeFactory),
          CoreTranslatorId.ATTRIBUTE_TYPE_CACHE_UPDATE_RESPONSE);
 
       service.addTranslator(new RelationTypeCacheUpdateResponseTranslator(),

@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.TransactionCacheUpdateResponse;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
-import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 import org.eclipse.osee.framework.core.translation.ITranslator;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 
@@ -34,14 +33,14 @@ public class TransactionCacheUpdateResponseTranslator implements ITranslator<Tra
       TX_TO_BRANCH;
    }
 
-   private final IOseeModelFactoryServiceProvider provider;
+   private final TransactionRecordFactory txRecordFactory;
 
-   public TransactionCacheUpdateResponseTranslator(IOseeModelFactoryServiceProvider provider) {
-      this.provider = provider;
+   public TransactionCacheUpdateResponseTranslator(TransactionRecordFactory txRecordFactory) {
+      this.txRecordFactory = txRecordFactory;
    }
 
-   private TransactionRecordFactory getFactory() throws OseeCoreException {
-      return provider.getOseeFactoryService().getTransactionFactory();
+   private TransactionRecordFactory getFactory() {
+      return txRecordFactory;
    }
 
    @Override
@@ -57,7 +56,7 @@ public class TransactionCacheUpdateResponseTranslator implements ITranslator<Tra
    }
 
    @Override
-   public PropertyStore convert(TransactionCacheUpdateResponse object) throws OseeCoreException {
+   public PropertyStore convert(TransactionCacheUpdateResponse object) {
       PropertyStore store = new PropertyStore();
       List<TransactionRecord> rows = object.getTxRows();
       for (int index = 0; index < rows.size(); index++) {
