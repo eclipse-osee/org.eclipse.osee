@@ -95,7 +95,7 @@ public class ConfigurationServlet extends UnsecuredOseeHttpServlet {
             IOperation operation =
                new DatastoreInitOperation(appServerService, databaseService, cachingService, branchService,
                   schemaProvider, options);
-            Operations.executeWorkAndCheckStatus(operation, new LogProgressMonitor(), -1.0);
+            Operations.executeWorkAndCheckStatus(operation, new LogProgressMonitor());
          } catch (Exception ex) {
             String message = String.format("Datastore Initialization: [%s]\n%s", response.toString(), ex.toString());
             sendMessage(response, HttpURLConnection.HTTP_INTERNAL_ERROR, message, ex);

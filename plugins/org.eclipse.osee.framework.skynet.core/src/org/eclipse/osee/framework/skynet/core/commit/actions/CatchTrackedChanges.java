@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
@@ -45,7 +44,7 @@ public class CatchTrackedChanges implements CommitAction {
       Set<Artifact> changedArtifacts = new HashSet<Artifact>();
       Collection<Change> changes = new ArrayList<Change>();
       IOperation operation = ChangeManager.compareTwoBranchesHead(sourceBranch, destinationBranch, changes);
-      Operations.executeWorkAndCheckStatus(operation, new NullProgressMonitor(), -1.0);
+      Operations.executeWorkAndCheckStatus(operation);
 
       for (Change change : changes) {
          if (!change.getModificationType().isDeleted()) {

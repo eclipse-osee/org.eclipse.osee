@@ -138,6 +138,6 @@ public class WordTemplateCompare implements IComparator {
    @Override
    public void compareArtifacts(IProgressMonitor monitor, PresentationType presentationType, Collection<ArtifactDelta> artifactDeltas) throws OseeCoreException {
       IOperation operation = new WordChangeReportOperation(artifactDeltas, renderer);
-      Operations.executeWorkAndCheckStatus(operation, monitor, 1.0);
+      Operations.executeWorkAndCheckStatus(operation, monitor);
    }
 }

@@ -21,7 +21,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -779,7 +778,7 @@ public class AtsBranchManager {
       IOperation operation = null;
       if (teamArt.getBranchMgr().isWorkingBranchInWork()) {
          operation = ChangeManager.comparedToParent(getWorkingBranch(), changes);
-         Operations.executeWorkAndCheckStatus(operation, new NullProgressMonitor(), -1.0);
+         Operations.executeWorkAndCheckStatus(operation);
       } else if (teamArt.getBranchMgr().isCommittedBranchExists()) {
          TransactionRecord transactionId = null;
          if (commitConfigArt == null) {
@@ -792,7 +791,7 @@ public class AtsBranchManager {
             }
          }
          operation = ChangeManager.comparedToPreviousTx(transactionId, changes);
-         Operations.executeWorkAndCheckStatus(operation, new NullProgressMonitor(), -1.0);
+         Operations.executeWorkAndCheckStatus(operation);
       }
       return new ChangeData(changes);
    }

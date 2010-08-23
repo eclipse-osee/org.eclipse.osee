@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -103,7 +102,7 @@ public class PurgeTransactionTest {
    private void purge(int transactionId, Map<String, Integer> dbCount) throws Exception {
       IOseeDatabaseServiceProvider databaseProvider = Activator.getInstance();
       PurgeTransactionOperation purgeOp = new PurgeTransactionOperation(databaseProvider, transactionId);
-      Operations.executeWorkAndCheckStatus(purgeOp, new NullProgressMonitor(), -1);
+      Operations.executeWorkAndCheckStatus(purgeOp);
       DbUtil.getTableRowCounts(dbCount, tables);
    }
 

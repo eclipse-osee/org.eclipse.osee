@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -179,7 +178,7 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
 
                Collection<Change> changes = new ArrayList<Change>();
                IOperation operation = ChangeManager.comparedToPreviousTx(transRecord, changes);
-               Operations.executeWorkAndCheckStatus(operation, new NullProgressMonitor(), -1.0);
+               Operations.executeWorkAndCheckStatus(operation);
                Set<Artifact> processedArts = new HashSet<Artifact>();
                for (Change change : changes) {
                   Artifact art = change.getChangeArtifact();
@@ -293,7 +292,9 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
          if (previousTransaction != null) {
             int toDeleteTransaction = entry.getTxToDelete().getId();
 
-            data.add(new Object[] {String.valueOf(toDeleteTransaction), String.valueOf(previousTransaction.getId()),
+            data.add(new Object[] {
+               String.valueOf(toDeleteTransaction),
+               String.valueOf(previousTransaction.getId()),
                "%" + toDeleteTransaction});
          }
       }

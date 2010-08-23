@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.datastore.internal.Activator;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -174,8 +173,7 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
 
    @Override
    public void store(Collection<Branch> branches) throws OseeCoreException {
-      Operations.executeWorkAndCheckStatus(
-         new BranchStoreOperation(getDatabaseServiceProvider(), eventSender, branches), new NullProgressMonitor(), -1);
+      Operations.executeWorkAndCheckStatus(new BranchStoreOperation(getDatabaseServiceProvider(), eventSender, branches));
    }
 
 }

@@ -97,7 +97,7 @@ public class OseeBranchService implements IOseeBranchService {
       String opName =
          String.format("Commit: [%s]->[%s]", sourceBranch.getShortName(), destinationBranch.getShortName());
       IOperation op = new CompositeOperation(opName, Activator.PLUGIN_ID, ops);
-      Operations.executeWorkAndCheckStatus(op, monitor, -1);
+      Operations.executeWorkAndCheckStatus(op, monitor);
 
       TransactionRecord newTransaction = response.getTransaction();
       newTransaction.setBranchCache(branchCache);

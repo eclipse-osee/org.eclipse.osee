@@ -16,7 +16,6 @@ import java.io.FileWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
@@ -78,7 +77,7 @@ public class DatabaseIntegrityCheckApplication implements IApplication {
 
    private void executeCheck(SummaryTab data, DatabaseHealthOperation operation, File reportsDirectory) throws Exception {
       operation.setFixOperationEnabled(false);
-      Operations.executeWorkAndCheckStatus(operation, new NullProgressMonitor(), -1);
+      Operations.executeWorkAndCheckStatus(operation);
 
       List<String> summaryLinks = new ArrayList<String>();
       int count = operation.getItemsToFixCount();
@@ -156,15 +155,21 @@ public class DatabaseIntegrityCheckApplication implements IApplication {
       public void add(DatabaseHealthOperation operation, List<String> links) {
          int count = operation.getItemsToFixCount();
          if (links.isEmpty()) {
-            mainTab.addRow(new ResultsXViewerRow(new String[] {operation.getName(), count > 0 ? "Failed" : "Passed",
-               String.valueOf(count), ""}));
+            mainTab.addRow(new ResultsXViewerRow(new String[] {
+               operation.getName(),
+               count > 0 ? "Failed" : "Passed",
+               String.valueOf(count),
+               ""}));
          } else {
             int index = 0;
             for (String link : links) {
                String value = String.format("<a href=\"%s\">%s</a>", link, link);
                if (index == 0) {
-                  mainTab.addRow(new ResultsXViewerRow(new String[] {operation.getName(),
-                     count > 0 ? "Failed" : "Passed", String.valueOf(count), value}));
+                  mainTab.addRow(new ResultsXViewerRow(new String[] {
+                     operation.getName(),
+                     count > 0 ? "Failed" : "Passed",
+                     String.valueOf(count),
+                     value}));
                } else {
                   mainTab.addRow(new ResultsXViewerRow(new String[] {"", "", "", value}));
                }
@@ -174,8 +179,12 @@ public class DatabaseIntegrityCheckApplication implements IApplication {
       }
 
       public void addError(DatabaseHealthOperation operation, Throwable th) {
-         mainTab.addRow(new ResultsXViewerRow(new String[] {operation.getName(), "Expection", "0",
-            Lib.exceptionToString(th), ""}));
+         mainTab.addRow(new ResultsXViewerRow(new String[] {
+            operation.getName(),
+            "Expection",
+            "0",
+            Lib.exceptionToString(th),
+            ""}));
       }
 
       @Override

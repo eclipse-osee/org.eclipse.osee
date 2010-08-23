@@ -15,7 +15,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Level;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -107,7 +106,7 @@ public class ChangeManagerTest {
       boolean pass = false;
       Collection<Change> changes = new ArrayList<Change>();
       IOperation operation = ChangeManager.comparedToParent(artifact.getBranch(), changes);
-      Operations.executeWorkAndCheckStatus(operation, new NullProgressMonitor(), -1.0);
+      Operations.executeWorkAndCheckStatus(operation);
 
       for (Change change : changes) {
          if (change.getArtId() == artifact.getArtId()) {

@@ -455,7 +455,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
             @Override
             public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                try {
-                  Operations.executeWorkAndCheckStatus(operation, monitor, -1);
+                  Operations.executeWorkAndCheckStatus(operation, monitor);
                } catch (OseeCoreException ex) {
                   if (monitor.isCanceled()) {
                      throw new InterruptedException();

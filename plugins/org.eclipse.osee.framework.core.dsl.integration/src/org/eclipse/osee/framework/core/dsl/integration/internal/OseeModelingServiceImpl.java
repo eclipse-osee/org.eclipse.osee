@@ -67,7 +67,7 @@ public class OseeModelingServiceImpl implements IOseeModelingService {
       OseeDsl model = modelFactory.createOseeDsl();
 
       IOperation operation = new OseeToXtextOperation(cache, modelFactory, model);
-      Operations.executeWorkAndCheckStatus(operation, monitor, -1);
+      Operations.executeWorkAndCheckStatus(operation, monitor);
       try {
          ModelUtil.saveModel(model, "osee:/oseeTypes_" + Lib.getDateTimeString() + ".osee", outputStream, false);
       } catch (IOException ex) {
@@ -109,7 +109,7 @@ public class OseeModelingServiceImpl implements IOseeModelingService {
          ops.add(new EMFCompareOperation(baseModel, modifiedModel, comparisonSnapshot));
       }
       IOperation operation = new CompositeOperation("Import Osee Types", Activator.PLUGIN_ID, ops);
-      Operations.executeWorkAndCheckStatus(operation, monitor, -1);
+      Operations.executeWorkAndCheckStatus(operation, monitor);
 
       if (request.isPersistAllowed()) {
          // TODO Make this call transaction based

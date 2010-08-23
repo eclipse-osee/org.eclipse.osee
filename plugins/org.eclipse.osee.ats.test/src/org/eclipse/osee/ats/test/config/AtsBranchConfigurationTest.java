@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.logging.Level;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
@@ -433,7 +432,7 @@ public class AtsBranchConfigurationTest {
       AtsConfigManager.Display noDisplay = new MockAtsConfigDisplay();
       IOperation operation =
          new AtsConfigManager(noDisplay, namespace, teamDefName, versionNames, actionableItems, workflowId);
-      Operations.executeWorkAndCheckStatus(operation, new NullProgressMonitor(), -1.0);
+      Operations.executeWorkAndCheckStatus(operation);
       TestUtil.sleep(2000);
    }
 

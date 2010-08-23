@@ -67,7 +67,7 @@ public final class ViewWordChangeAndDiffTest {
    private static Collection<Change> getChanges(Branch testBranch) throws OseeCoreException {
       Collection<Change> changes = new ArrayList<Change>();
       IOperation operation = ChangeManager.comparedToParent(testBranch, changes);
-      Operations.executeWorkAndCheckStatus(operation, new NullProgressMonitor(), -1.0);
+      Operations.executeWorkAndCheckStatus(operation);
       return changes;
    }
 

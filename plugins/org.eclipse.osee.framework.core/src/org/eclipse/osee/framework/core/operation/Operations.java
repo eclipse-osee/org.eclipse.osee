@@ -16,8 +16,8 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -110,18 +110,39 @@ public final class Operations {
       checkForStatusSeverityMask(status, IStatus.CANCEL | IStatus.ERROR | IStatus.WARNING);
    }
 
+   public static void executeWork(IOperation operation) {
+      executeWork(operation, new NullProgressMonitor());
+   }
+
+   public static void executeWorkAndCheckStatus(IOperation operation) throws OseeCoreException {
+      executeWorkAndCheckStatus(operation, new NullProgressMonitor());
+   }
+
+   /**
+    * Executes an operation by calling {@link #executeWork(IOperation, IProgressMonitor)} and checks for error status
+    * {@link #checkForErrorStatus(IStatus)}. An OseeCoreException is thrown is an error is detected
+    * 
+    * @param operation
+    * @param monitor
+    * @param workPercentage
+    */
+   public static void executeWorkAndCheckStatus(IOperation operation, IProgressMonitor monitor) throws OseeCoreException {
+      executeWork(operation, monitor);
+      try {
+         Operations.checkForErrorStatus(operation.getStatus());
+      } catch (Exception ex) {
+         OseeExceptions.wrapAndThrow(ex);
+      }
+   }
+
    /**
     * Executes an operation calling the monitor begin and done methods. If workPercentage is set greater than 0, monitor
     * will be wrapped into a SubProgressMonitor set to the appropriate number of ticks to consume from the main monitor.
     * 
     * @param operation
     * @param monitor
-    * @param workPercentage
     */
-   public static void executeWork(IOperation operation, IProgressMonitor monitor, double workPercentage) {
-      if (workPercentage > 0) {
-         monitor = new SubProgressMonitor(monitor, calculateWork(operation.getTotalWorkUnits(), workPercentage));
-      }
+   public static void executeWork(IOperation operation, IProgressMonitor monitor) {
       monitor.beginTask(operation.getName(), operation.getTotalWorkUnits());
       try {
          operation.run(monitor);
@@ -129,23 +150,6 @@ public final class Operations {
          monitor.subTask("");
          monitor.setTaskName("");
          monitor.done();
-      }
-   }
-
-   /**
-    * Executes an operation by calling {@link #executeWork(IOperation, IProgressMonitor, double)} and checks for error
-    * status {@link #checkForErrorStatus(IStatus)}. An OseeCoreException is thrown is an error is detected
-    * 
-    * @param operation
-    * @param monitor
-    * @param workPercentage
-    */
-   public static void executeWorkAndCheckStatus(IOperation operation, IProgressMonitor monitor, double workPercentage) throws OseeCoreException {
-      executeWork(operation, monitor, workPercentage);
-      try {
-         Operations.checkForErrorStatus(operation.getStatus());
-      } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
       }
    }
 

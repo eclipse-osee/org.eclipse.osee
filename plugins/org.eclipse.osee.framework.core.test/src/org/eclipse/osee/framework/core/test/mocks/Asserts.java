@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.test.mocks;
 
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.junit.Assert;
@@ -20,7 +19,7 @@ import org.junit.Assert;
  */
 public final class Asserts {
    public static void testOperation(IOperation operation, int expectedSeverity) {
-      Operations.executeWork(operation, new NullProgressMonitor(), -1);
+      Operations.executeWork(operation);
       String message = operation.getStatus().toString();
       Assert.assertEquals(message, expectedSeverity, operation.getStatus().getSeverity());
    }

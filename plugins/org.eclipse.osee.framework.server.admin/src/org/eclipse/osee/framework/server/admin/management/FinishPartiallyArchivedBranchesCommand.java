@@ -51,7 +51,7 @@ public class FinishPartiallyArchivedBranchesCommand extends BaseServerCommand {
          }
          for (Branch branch : branches) {
             Operations.executeWorkAndCheckStatus(new BranchMoveOperation(Activator.getInstance(), true, branch),
-               monitor, 0);
+               monitor);
          }
       } catch (OseeCoreException ex) {
          printStackTrace(ex);

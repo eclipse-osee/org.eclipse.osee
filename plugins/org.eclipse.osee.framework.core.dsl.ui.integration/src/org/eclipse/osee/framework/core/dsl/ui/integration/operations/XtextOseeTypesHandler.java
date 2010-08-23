@@ -31,7 +31,7 @@ public class XtextOseeTypesHandler implements IOseeTypesHandler {
       try {
          IOseeCachingService cacheService = Activator.getOseeCacheService();
          IOperation operation = new OseeTypesImportOperation(cacheService, uri, false, false, true);
-         Operations.executeWorkAndCheckStatus(operation, monitor, -1);
+         Operations.executeWorkAndCheckStatus(operation, monitor);
       } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);
       }

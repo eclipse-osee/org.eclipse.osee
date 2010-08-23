@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -333,7 +332,7 @@ public final class SkynetTransaction extends AbstractOperation {
          txMonitor.reportTxStart(SkynetTransaction.this, getBranch());
          if (madeChanges) {
             IOperation subOp = createLifeCycleOp();
-            doSubWork(subOp, monitor, -1.0);
+            doSubWork(subOp, monitor);
          }
       } finally {
          reset();
@@ -348,12 +347,12 @@ public final class SkynetTransaction extends AbstractOperation {
       objectsToCheck.addAll(getArtifactReferences());
       objectsToCheck.addAll(alreadyProcessedArtifacts);
       AbstractLifecyclePoint<?> lifecyclePoint = new SkynetTransactionCheckPoint(getAuthor(), objectsToCheck);
-      return new StoreSkynetTransactionOperation(getName(), service, lifecyclePoint, getBranch(), getTransactionRecord(),
-         getTransactionData(), getArtifactReferences());
+      return new StoreSkynetTransactionOperation(getName(), service, lifecyclePoint, getBranch(),
+         getTransactionRecord(), getTransactionData(), getArtifactReferences());
    }
 
    //TODO this method needs to be removed
    public void execute() throws OseeCoreException {
-      Operations.executeWorkAndCheckStatus(this, new NullProgressMonitor(), -1.0);
+      Operations.executeWorkAndCheckStatus(this);
    }
 }

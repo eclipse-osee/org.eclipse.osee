@@ -206,7 +206,7 @@ public class RendererManager {
    }
 
    public static void open(Collection<Artifact> artifacts, PresentationType presentationType, VariableMap options, IProgressMonitor monitor) throws OseeCoreException {
-      Operations.executeWorkAndCheckStatus(new OpenUsingRenderer(artifacts, options, presentationType), monitor, -1);
+      Operations.executeWorkAndCheckStatus(new OpenUsingRenderer(artifacts, options, presentationType), monitor);
    }
 
    public static void open(Collection<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {

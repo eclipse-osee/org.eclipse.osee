@@ -118,7 +118,7 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
             subOps.add(new ArtifactValidationCheckOperation(children, false));
             subOps.add(new CompleteArtifactImportOperation(transaction, destinationArtifact));
             IOperation ret = new CompositeOperation(opName, SkynetGuiPlugin.PLUGIN_ID, subOps);
-            Operations.executeWorkAndCheckStatus(ret, monitor, -1);
+            Operations.executeWorkAndCheckStatus(ret, monitor);
          }
 
          private void reportError(String message, String arg1, String arg2, Exception ex) throws Exception {

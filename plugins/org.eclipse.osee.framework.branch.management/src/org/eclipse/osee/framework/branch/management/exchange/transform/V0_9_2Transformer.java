@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.TreeSet;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.branch.management.TxCurrentsAndModTypesCommand;
 import org.eclipse.osee.framework.branch.management.exchange.ExchangeUtil;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
@@ -83,10 +82,8 @@ public class V0_9_2Transformer implements IOseeExchangeVersionTransformer {
 
    @Override
    public void finalizeTransform(ExchangeDataProcessor processor, OperationReporter reporter) throws OseeCoreException {
-      Operations.executeWorkAndCheckStatus(new TxCurrentsAndModTypesCommand(reporter, false),
-         new NullProgressMonitor(), 0);
-      Operations.executeWorkAndCheckStatus(new TxCurrentsAndModTypesCommand(reporter, true), new NullProgressMonitor(),
-         0);
+      Operations.executeWorkAndCheckStatus(new TxCurrentsAndModTypesCommand(reporter, false));
+      Operations.executeWorkAndCheckStatus(new TxCurrentsAndModTypesCommand(reporter, true));
    }
 
    private List<Integer> convertBranchTable(ExchangeDataProcessor processor) throws OseeCoreException {

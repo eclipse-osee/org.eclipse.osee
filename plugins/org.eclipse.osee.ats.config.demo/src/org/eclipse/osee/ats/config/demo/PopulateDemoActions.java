@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
@@ -91,10 +90,21 @@ import org.eclipse.osee.support.test.util.TestUtil;
  */
 public class PopulateDemoActions extends XNavigateItemAction {
 
-   private final String[] TITLE_PREFIX = new String[] {"Problem with the", "Can't see the", "Button A doesn't work on",
-      "Add to the", "Make new Button for ", "User can't load "};
-   private final ChangeType[] CHANGE_TYPE = new ChangeType[] {ChangeType.Problem, ChangeType.Problem,
-      ChangeType.Problem, ChangeType.Improvement, ChangeType.Improvement, ChangeType.Support, ChangeType.Improvement,
+   private final String[] TITLE_PREFIX = new String[] {
+      "Problem with the",
+      "Can't see the",
+      "Button A doesn't work on",
+      "Add to the",
+      "Make new Button for ",
+      "User can't load "};
+   private final ChangeType[] CHANGE_TYPE = new ChangeType[] {
+      ChangeType.Problem,
+      ChangeType.Problem,
+      ChangeType.Problem,
+      ChangeType.Improvement,
+      ChangeType.Improvement,
+      ChangeType.Support,
+      ChangeType.Improvement,
       ChangeType.Support};
 
    private static final String UPDATE_BRANCH_TYPE = "update osee_branch set branch_type = ? where branch_id = ?";
@@ -201,7 +211,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
          DemoDbUtil.sleep(5000);
          // need to update the branch type;
-         ConnectionHandler.runPreparedUpdate(UPDATE_BRANCH_TYPE, new Object[] {BranchType.BASELINE.getValue(),
+         ConnectionHandler.runPreparedUpdate(UPDATE_BRANCH_TYPE, new Object[] {
+            BranchType.BASELINE.getValue(),
             childBranch.getId()});
          BranchManager.refreshBranches();
          // Map team definitions versions to their related branches
@@ -483,7 +494,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
       IOperation operation =
          ArtifactImportOperationFactory.createOperation(file, systemReq, extractor, artifactResolver, false);
-      Operations.executeWorkAndCheckStatus(operation, new NullProgressMonitor(), -1);
+      Operations.executeWorkAndCheckStatus(operation);
 
       // Validate that something was imported
       if (systemReq.getChildren().isEmpty()) {

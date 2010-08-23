@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubProgressMonitor;
 
 /**
  * @author Roberto E. Escobar
@@ -102,9 +103,9 @@ public abstract class AbstractOperation implements IOperation {
    }
 
    /**
-    * Executes a nested operation setting monitor begin and done. If workPercentage is set greater than 0, monitor will
-    * be wrapped into a SubProgressMonitor set to the appropriate number of ticks to consume from the main monitor.
-    * Checks for status after work is complete to detect for execution errors or canceled.
+    * Executes a nested operation calling monitor begin and done. The parentMonitor will be wrapped into a
+    * SubProgressMonitor and set to the appropriate number of ticks to consume from the main monitor. Checks for status
+    * after work is complete to detect for execution errors or canceled.
     * 
     * @param operation
     * @param monitor
@@ -116,19 +117,29 @@ public abstract class AbstractOperation implements IOperation {
       checkForErrorsOrCanceled(monitor);
    }
 
+   @Deprecated
+   // it may not make sense to have a sub-operation that is not sub divided using a workPercentage
+   public void doSubWork(IOperation operation, IProgressMonitor monitor) throws Exception {
+      Operations.executeWork(operation, monitor);
+      mergeStatus(operation.getStatus());
+      checkForErrorsOrCanceled(monitor);
+   }
+
    /**
-    * Executes a nested operation setting monitor begin and done. If workPercentage is set greater than 0, monitor will
-    * be wrapped into a SubProgressMonitor set to the appropriate number of ticks to consume from the main monitor.
-    * Clients should use {@link #doSubWork(IOperation, IProgressMonitor, double)} when required to throw exceptions for
-    * status errors or canceled. Alternatively, clients can perform the appropriate checks after calling this method.
-    * The operation's status contains the result of having executed the sub-operation.
+    * Executes a nested operation calling monitor begin and done. The parentMonitor will be wrapped into a
+    * SubProgressMonitor and set to the appropriate number of ticks to consume from the main monitor. Clients should use
+    * {@link #doSubWork(IOperation, IProgressMonitor, double)} when required to throw exceptions for status errors or
+    * canceled. Alternatively, clients can perform the appropriate checks after calling this method. The operation's
+    * status contains the result of having executed the sub-operation.
     * 
     * @param operation
     * @param monitor
     * @param workPercentage
     */
-   public void doSubWorkNoChecks(IOperation operation, IProgressMonitor monitor, double workPercentage) {
-      Operations.executeWork(operation, monitor, workPercentage);
+   public void doSubWorkNoChecks(IOperation operation, IProgressMonitor parentMonitor, double workPercentage) {
+      IProgressMonitor monitor =
+         new SubProgressMonitor(parentMonitor, Operations.calculateWork(operation.getTotalWorkUnits(), workPercentage));
+      Operations.executeWork(operation, monitor);
       mergeStatus(operation.getStatus());
    }
 

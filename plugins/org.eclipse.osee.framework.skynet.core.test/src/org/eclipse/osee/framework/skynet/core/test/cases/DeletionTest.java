@@ -15,7 +15,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import java.util.Collection;
 import java.util.LinkedList;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -172,7 +171,7 @@ public class DeletionTest {
       if (DELETE_TRANSACTION_TEST) {
          IOseeDatabaseServiceProvider databaseProvider = Activator.getInstance();
          PurgeTransactionOperation purgeOp = new PurgeTransactionOperation(databaseProvider, true, deletionTransaction);
-         Operations.executeWorkAndCheckStatus(purgeOp, new NullProgressMonitor(), -1);
+         Operations.executeWorkAndCheckStatus(purgeOp);
 
          if (DEBUG) {
             System.err.println("Deleting the Transaction");

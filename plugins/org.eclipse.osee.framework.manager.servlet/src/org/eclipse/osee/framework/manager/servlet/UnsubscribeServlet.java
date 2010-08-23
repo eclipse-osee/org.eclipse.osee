@@ -91,7 +91,7 @@ public class UnsubscribeServlet extends UnsecuredOseeHttpServlet {
                return databaseService;
             }
          }, cacheService, data);
-         Operations.executeWorkAndCheckStatus(del, new LogProgressMonitor(), -1);
+         Operations.executeWorkAndCheckStatus(del, new LogProgressMonitor());
          response.setStatus(HttpServletResponse.SC_OK);
          response.setContentType("text/plain");
          String message = del.getCompletionMessage();

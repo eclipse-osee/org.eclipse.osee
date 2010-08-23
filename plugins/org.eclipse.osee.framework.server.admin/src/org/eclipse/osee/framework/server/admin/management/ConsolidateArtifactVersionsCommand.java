@@ -32,7 +32,7 @@ public class ConsolidateArtifactVersionsCommand extends BaseServerCommand {
    protected void doCommandWork(IProgressMonitor monitor) throws Exception {
       try {
          Operations.executeWorkAndCheckStatus(new ConsolidateArtifactVersionTxOperation(Activator.getInstance(),
-            new CommandInterpreterReporter(getCommandInterpreter())), monitor, 0);
+            new CommandInterpreterReporter(getCommandInterpreter())), monitor);
       } catch (OseeCoreException ex) {
          printStackTrace(ex);
       }

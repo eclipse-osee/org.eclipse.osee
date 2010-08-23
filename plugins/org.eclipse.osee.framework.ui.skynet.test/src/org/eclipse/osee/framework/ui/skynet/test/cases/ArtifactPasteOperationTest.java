@@ -14,7 +14,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
@@ -204,7 +203,7 @@ public class ArtifactPasteOperationTest {
       handler.setConflictedArtifact(itemsToCopy.get(0));
 
       ArtifactPasteOperation op = new ArtifactPasteOperation(config, destination, itemsToCopy, handler);
-      Operations.executeWorkAndCheckStatus(op, new NullProgressMonitor(), -1);
+      Operations.executeWorkAndCheckStatus(op);
    }
 
    private final static class MockArtifactNameConflictHandler extends ArtifactNameConflictHandler {

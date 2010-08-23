@@ -83,7 +83,7 @@ public class BranchManagerServlet extends SecureOseeHttpServlet {
             default:
                throw new UnsupportedOperationException();
          }
-         Operations.executeWorkAndCheckStatus(op, new LogProgressMonitor(), -1.0);
+         Operations.executeWorkAndCheckStatus(op, new LogProgressMonitor());
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE,
             String.format("Branch servlet request error: [%s]", req.toString()), ex);

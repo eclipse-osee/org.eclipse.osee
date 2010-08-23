@@ -214,7 +214,7 @@ public class OseeTypesImportPage extends WizardDataTransferPage {
 
             @Override
             public void run(IProgressMonitor monitor) {
-               Operations.executeWork(operation, monitor, -1);
+               Operations.executeWork(operation, monitor);
             }
          });
       } catch (InterruptedException e) {
