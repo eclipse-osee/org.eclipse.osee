@@ -15,7 +15,7 @@ import org.eclipse.osgi.framework.console.CommandInterpreter;
 /**
  * @author Ryan D. Brooks
  */
-public class CommandInterpreterReporter implements OperationReporter {
+public class CommandInterpreterReporter extends OperationReporter {
    private final CommandInterpreter ci;
 
    public CommandInterpreterReporter(CommandInterpreter ci) {

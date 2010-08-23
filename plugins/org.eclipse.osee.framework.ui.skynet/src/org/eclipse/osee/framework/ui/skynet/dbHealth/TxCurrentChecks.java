@@ -13,11 +13,9 @@ package org.eclipse.osee.framework.ui.skynet.dbHealth;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
-import org.eclipse.osee.framework.core.operation.OperationReporter;
 import org.eclipse.osee.framework.database.operation.InvalidTxCurrentsAndModTypes;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.ui.skynet.results.ResultsReporter;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsEditorTableTab;
-import org.eclipse.osee.framework.ui.skynet.results.table.ResultsXViewerRow;
 import org.eclipse.swt.SWT;
 
 /**
@@ -51,24 +49,6 @@ public class TxCurrentChecks extends DatabaseHealthOperation {
 
       doSubWork(new InvalidTxCurrentsAndModTypes(tableName, columnName, new ResultsReporter(resultsTab),
          isFixOperationEnabled(), true), monitor, 0.3);
-   }
-
-   private static class ResultsReporter implements OperationReporter {
-      private final ResultsEditorTableTab resultsTab;
-
-      private ResultsReporter(ResultsEditorTableTab resultsTab) {
-         this.resultsTab = resultsTab;
-      }
-
-      @Override
-      public void report(String... row) {
-         resultsTab.addRow(new ResultsXViewerRow(row));
-      }
-
-      @Override
-      public void report(Throwable th) {
-         report(Lib.exceptionToString(th));
-      }
    }
 
    @Override

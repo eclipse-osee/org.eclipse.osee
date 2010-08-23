@@ -10,12 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.operation;
 
+import org.eclipse.core.runtime.IStatus;
+
 /**
  * @author Ryan D. Brooks
  */
-public interface OperationReporter {
+public abstract class OperationReporter {
 
    public abstract void report(String... row);
 
    public abstract void report(Throwable th);
+
+   public void report(IStatus status) {
+      if (status.getSeverity() == IStatus.ERROR) {
+         report(status.getException());
+      }
+   }
 }

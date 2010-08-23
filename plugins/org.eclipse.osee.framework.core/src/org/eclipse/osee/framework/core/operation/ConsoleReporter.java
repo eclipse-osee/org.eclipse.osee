@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.core.operation;
 /**
  * @author Ryan D. Brooks
  */
-public class ConsoleReporter implements OperationReporter {
+public class ConsoleReporter extends OperationReporter {
 
    @Override
    public void report(String... row) {
@@ -28,5 +28,4 @@ public class ConsoleReporter implements OperationReporter {
    public void report(Throwable th) {
       th.printStackTrace();
    }
-
 }
