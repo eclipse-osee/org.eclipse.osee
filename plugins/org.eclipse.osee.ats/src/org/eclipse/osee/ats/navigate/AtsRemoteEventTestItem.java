@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.event.RemoteEventManager2;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
@@ -198,7 +198,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
    private void validateActionAtStart(ActionArtifact actionArt) throws OseeCoreException {
       resultData.log("\nValidating Start...");
       // Ensure event service is connected
-      if (!RemoteEventManager2.isConnected()) {
+      if (!OseeEventManager.isEventManagerConnected()) {
          resultData.logError("Remote Event Service is not connected");
          return;
       }
@@ -216,7 +216,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
    private void validateActionAtEnd(ActionArtifact actionArt) throws OseeCoreException {
       resultData.log("\nValidating End...");
       // Ensure event service is connected
-      if (!RemoteEventManager2.isConnected()) {
+      if (!OseeEventManager.isEventManagerConnected()) {
          resultData.logError("Remote Event Service is not connected");
          return;
       }

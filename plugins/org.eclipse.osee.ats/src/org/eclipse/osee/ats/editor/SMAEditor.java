@@ -146,9 +146,9 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
       }
       try {
          sma.setEditor(this);
-         if (OseeEventManager.isOldEvents()) {
+         if (OseeEventManager.getPreferences().isOldEvents()) {
             OseeEventManager.addListener(this); // <REM2> Don't need this cause handled through SMAEditorEventManager
-         } else if (OseeEventManager.isNewEvents()) {
+         } else if (OseeEventManager.getPreferences().isNewEvents()) {
             SMAEditorArtifactEventManager.add(this);
             SMAEditorBranchEventManager.add(this);
          }
