@@ -41,6 +41,11 @@ public abstract class AbstractOperation implements IOperation {
       return name;
    }
 
+   /**
+    * Subclasses should only call this if they need special control over the status returned from the run method. If the
+    * doWork method terminates normally then this status will be returned; however, if doWork throws an uncaught
+    * exception, then a status will be constructed based on that exception and returned.
+    */
    protected void setStatus(IStatus status) {
       this.status = status;
    }
@@ -65,15 +70,14 @@ public abstract class AbstractOperation implements IOperation {
 
    /**
     * life-cycle method to allow clients to hook into the operation's finally block
-    * 
-    * @param monitor
     */
    protected void doFinally(IProgressMonitor monitor) {
       //
    }
 
    /**
-    * All work should be performed here
+    * All the operations work should be executed directly or indirectly by this method. The operation runs until its
+    * doWork() method terminates normally or by throwing an exception (including OperationCanceledException)
     * 
     * @param subMonitor the progress monitor to use for reporting progress to the user. It is the caller's
     * responsibility to call done() on the given monitor. Accepts null, indicating that no progress should be reported
@@ -112,7 +116,8 @@ public abstract class AbstractOperation implements IOperation {
    }
 
    /**
-    * throws OperationCanceledException if the user cancelled the operation, otherwise it simply returns
+    * throws OperationCanceledException if the user cancelled the operation via the monitor , otherwise it simply
+    * returns
     */
    protected static final void checkForCancelledStatus(IProgressMonitor monitor) throws OperationCanceledException {
       if (monitor.isCanceled()) {
@@ -125,7 +130,10 @@ public abstract class AbstractOperation implements IOperation {
       return getName();
    }
 
-   protected String getPluginId() {
+   /**
+    * simply returns the pluginId that was provided to the constructor
+    */
+   protected final String getPluginId() {
       return pluginId;
    }
 }
