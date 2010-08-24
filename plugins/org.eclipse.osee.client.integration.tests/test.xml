@@ -91,7 +91,7 @@
 		</forget>
 
 		<waitfor maxwait="1" maxwaitunit="minute" checkevery="100" checkeveryunit="millisecond">
-			<http url="http://localhost:${osee.app.server.derby.port}" />
+			<http url="http://localhost:${osee.app.server.port}" />
 		</waitfor>
 
 		<!-- <ant target="swtbot-test" antfile="${library-file}" dir="${eclipse-home}"> -->
