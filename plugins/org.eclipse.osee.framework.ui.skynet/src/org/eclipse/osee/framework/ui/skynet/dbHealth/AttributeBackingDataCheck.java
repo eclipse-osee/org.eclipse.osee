@@ -52,33 +52,36 @@ public class AttributeBackingDataCheck extends DatabaseHealthOperation {
 
    @Override
    protected void doHealthCheck(IProgressMonitor monitor) throws Exception {
-      List<AttrData> errors = getInvalidAttributeData(monitor);
+      SubMonitor subMonitor = SubMonitor.convert(monitor, 100);
+      List<AttrData> errors = getInvalidAttributeData(subMonitor.newChild(80));
       setItemsToFix(errors.size());
 
       // Write Report;
       appendToDetails(AHTML.beginMultiColumnTable(100, 1));
       appendToDetails(AHTML.addHeaderRowMultiColumnTable(new String[] {"URI", "GAMMA ID", "ATTR ID", "ART ID", "REASON"}));
       for (AttrData attrData : errors) {
-         appendToDetails(AHTML.addRowMultiColumnTable(new String[] {attrData.getUri(),
-            String.valueOf(attrData.getGammaId()), String.valueOf(attrData.getAttrId()),
-            String.valueOf(attrData.getArtId()), attrData.getReason()}));
+         appendToDetails(AHTML.addRowMultiColumnTable(new String[] {
+            attrData.getUri(),
+            String.valueOf(attrData.getGammaId()),
+            String.valueOf(attrData.getAttrId()),
+            String.valueOf(attrData.getArtId()),
+            attrData.getReason()}));
       }
       appendToDetails(AHTML.endMultiColumnTable());
-      monitor.worked(calculateWork(0.10));
+      subMonitor.worked(10);
       checkForCancelledStatus(monitor);
 
       getSummary().append(String.format("Found [%s] attributes missing binary data", getItemsToFixCount()));
-      monitor.worked(calculateWork(0.10));
+      subMonitor.worked(10);
    }
 
-   private List<AttrData> getInvalidAttributeData(IProgressMonitor monitor) throws OseeDataStoreException {
+   private List<AttrData> getInvalidAttributeData(SubMonitor subMonitor) throws OseeDataStoreException {
       List<AttrData> data = new ArrayList<AttrData>();
-      SubMonitor subMonitor = SubMonitor.convert(monitor, (int) (getTotalWorkUnits() * 0.80));
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(READ_VALID_ATTRIBUTES);
          while (chStmt.next()) {
-            checkForCancelledStatus(monitor);
+            checkForCancelledStatus(subMonitor);
             String uri = chStmt.getString("uri");
             if (Strings.isValid(uri)) {
                AttrData attrData =

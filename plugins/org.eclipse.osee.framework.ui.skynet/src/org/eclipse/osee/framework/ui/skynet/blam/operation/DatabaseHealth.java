@@ -145,7 +145,7 @@ public class DatabaseHealth extends AbstractBlam {
       @Override
       protected void doWork(IProgressMonitor monitor) throws Exception {
          int totalTasks = fixOperations.size() + verifyOperations.size();
-         double workPercentage = (double) totalTasks / (double) getTotalWorkUnits();
+         double workPercentage = 1.0 / totalTasks;
          if (!AccessControlManager.isOseeAdmin()) {
             throw new OseeAccessDeniedException("Must be a Developer to run this BLAM");
          } else {

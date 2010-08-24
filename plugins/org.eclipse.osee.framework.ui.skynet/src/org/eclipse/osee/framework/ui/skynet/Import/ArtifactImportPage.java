@@ -450,13 +450,14 @@ public class ArtifactImportPage extends WizardDataTransferPage {
    }
 
    protected boolean executeOperation(final IOperation operation) {
+      final IStatus[] status = new IStatus[1];
       try {
          getContainer().run(true, true, new IRunnableWithProgress() {
 
             @Override
             public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                try {
-                  Operations.executeWorkAndCheckStatus(operation, monitor);
+                  status[0] = Operations.executeWorkAndCheckStatus(operation, monitor);
                } catch (OseeCoreException ex) {
                   if (monitor.isCanceled()) {
                      throw new InterruptedException();
@@ -473,11 +474,10 @@ public class ArtifactImportPage extends WizardDataTransferPage {
          return false;
       }
 
-      IStatus status = operation.getStatus();
-      if (status.isOK()) {
+      if (status[0].isOK()) {
          setErrorMessage(null);
       } else {
-         setErrorMessage(status.getMessage());
+         setErrorMessage(status[0].getMessage());
       }
       return true;
    }

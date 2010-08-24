@@ -47,8 +47,6 @@ public class UpdateBranchOperation extends AbstractOperation {
    protected void doWork(IProgressMonitor monitor) throws Exception {
       if (originalBranch != null && originalBranch.hasParentBranch()) {
          performUpdate(monitor, originalBranch);
-      } else {
-         monitor.worked(getTotalWorkUnits());
       }
    }
 

@@ -208,12 +208,13 @@ public class OseeTypesImportPage extends WizardDataTransferPage {
    }
 
    protected boolean executeOperation(final IOperation operation) {
+      final IStatus[] status = new IStatus[1];
       try {
          getContainer().run(true, true, new IRunnableWithProgress() {
 
             @Override
             public void run(IProgressMonitor monitor) {
-               Operations.executeWork(operation, monitor);
+               status[0] = Operations.executeWork(operation, monitor);
             }
          });
       } catch (InterruptedException e) {
@@ -223,11 +224,10 @@ public class OseeTypesImportPage extends WizardDataTransferPage {
          return false;
       }
 
-      IStatus status = operation.getStatus();
-      if (status.isOK()) {
+      if (status[0].isOK()) {
          setErrorMessage(null);
       } else {
-         setErrorMessage(status.getMessage());
+         setErrorMessage(status[0].getMessage());
       }
       return true;
    }

@@ -10,25 +10,23 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.operation;
 
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.osee.framework.core.data.Named;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface IOperation extends Named {
-
-   public final static int TOTAL_WORK = Integer.MAX_VALUE;
-
-   public IStatus getStatus();
-
-   public boolean wasExecuted();
-
-   public IOperation run(IProgressMonitor monitor);
-
    /**
-    * @return the total work units as used by a progress monitor
+    * @param subMonitor the progress monitor to use for reporting progress to the user. It is the caller's
+    * responsibility to call done() on the given monitor. Accepts null, indicating that no progress should be reported
+    * and that the operation cannot be cancelled.
+    * @return a status with a severity of IStatus.OK when the operation completes normally. Returns a status with a
+    * severity of IStatus.ERROR when the operation terminates due to an exception. Returns a status with a severity of
+    * IStatus.CANCEL when monitor.isCanceled() is true
     */
-   public int getTotalWorkUnits();
+   IStatus run(SubMonitor subMonitor);
+
+   boolean wasExecuted();
 }

@@ -40,9 +40,4 @@ public class MockOperation implements IOperation {
       wasExecuted = true;
       return status;
    }
-
-   @Override
-   public int getTotalWorkUnits() {
-      return 100;
-   }
 }

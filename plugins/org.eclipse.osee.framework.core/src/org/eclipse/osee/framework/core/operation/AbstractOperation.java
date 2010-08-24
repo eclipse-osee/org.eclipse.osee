@@ -10,15 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.operation;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.SubProgressMonitor;
-import org.eclipse.osee.framework.core.internal.Activator;
+import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * This class is the basic unit of work for OSEE. All operations should be designed such that they can be chained and/or
@@ -28,16 +25,14 @@ import org.eclipse.osee.framework.core.internal.Activator;
  * @author Ryan D. Brooks
  */
 public abstract class AbstractOperation implements IOperation {
-   private static final IStatus NOT_RUN = new Status(IStatus.ERROR, Activator.class.getPackage().toString(),
-      "It is Invalid to call getStatus() prior to executing the operation");
-   private final List<IStatus> statuses = new ArrayList<IStatus>();
+
+   private IStatus status;
    private final String pluginId;
    private final String name;
-   private boolean wasExecuted;
+   private boolean wasExecuted = false;
 
    public AbstractOperation(String operationName, String pluginId) {
       this.pluginId = pluginId;
-      this.wasExecuted = false;
       this.name = operationName;
    }
 
@@ -46,37 +41,8 @@ public abstract class AbstractOperation implements IOperation {
       return name;
    }
 
-   @Override
-   public final IStatus getStatus() {
-      if (!wasExecuted) {
-         return NOT_RUN;
-      }
-      if (statuses.isEmpty()) {
-         return Status.OK_STATUS;
-      }
-      if (statuses.size() == 1) {
-         return statuses.get(0);
-      }
-
-      StringBuilder strB = new StringBuilder();
-      for (IStatus status : statuses) {
-         strB.append(status.getMessage());
-         strB.append("\n");
-      }
-      IStatus[] statusArray = statuses.toArray(new IStatus[statuses.size()]);
-      return new MultiStatus(pluginId, IStatus.OK, statusArray, strB.toString(), null);
-   }
-
-   @Deprecated
-   // this method should be private and non-private usages need to be replaced with composite operations
-   protected void mergeStatus(IStatus status) {
-      internalMergeStatus(status);
-   }
-
-   private void internalMergeStatus(IStatus status) {
-      if (status.getSeverity() != IStatus.OK) {
-         statuses.add(status);
-      }
+   protected void setStatus(IStatus status) {
+      this.status = status;
    }
 
    @Override
@@ -85,17 +51,16 @@ public abstract class AbstractOperation implements IOperation {
    }
 
    @Override
-   public final IOperation run(IProgressMonitor monitor) {
+   public final IStatus run(SubMonitor subMonitor) {
       wasExecuted = true;
       try {
-         doWork(monitor);
-         checkForCancelledStatus(monitor);
-      } catch (Throwable error) {
-         internalMergeStatus(createErrorStatus(error));
+         doWork(subMonitor);
+      } catch (Throwable throwable) {
+         setStatusFromThrowable(throwable);
       } finally {
-         doFinally(monitor);
+         doFinally(subMonitor);
       }
-      return this;
+      return status == null ? Status.OK_STATUS : status;
    }
 
    /**
@@ -110,92 +75,49 @@ public abstract class AbstractOperation implements IOperation {
    /**
     * All work should be performed here
     * 
-    * @param monitor
-    * @throws Exception
+    * @param subMonitor the progress monitor to use for reporting progress to the user. It is the caller's
+    * responsibility to call done() on the given monitor. Accepts null, indicating that no progress should be reported
+    * and that the operation cannot be cancelled.
+    * @throws Exception the exception will be caught by the calling method and turned into a status
     */
    protected abstract void doWork(IProgressMonitor monitor) throws Exception;
 
-   private IStatus createErrorStatus(Throwable error) {
-      if (error instanceof OperationCanceledException) {
-         return Status.CANCEL_STATUS;
+   private void setStatusFromThrowable(Throwable throwable) {
+      if (throwable instanceof OperationCanceledException) {
+         setStatus(Status.CANCEL_STATUS);
       } else {
-         return new Status(IStatus.ERROR, pluginId, error.toString(), error);
+         setStatus(new Status(IStatus.ERROR, pluginId, throwable.toString(), throwable));
       }
    }
 
    protected final int calculateWork(double workPercentage) {
-      return Operations.calculateWork(getTotalWorkUnits(), workPercentage);
+      return Operations.calculateWork(Operations.TASK_WORK_RESOLUTION, workPercentage);
    }
 
    /**
-    * Executes a nested operation calling monitor begin and done. The parentMonitor will be wrapped into a
-    * SubProgressMonitor and set to the appropriate number of ticks to consume from the main monitor. Checks for status
-    * after work is complete to detect for execution errors or canceled.
+    * Executes a nested operation and calls monitor begin and done. The parentMonitor will be wrapped into a
+    * SubProgressMonitor and set to the appropriate number of ticks to consume from the main monitor.
     * 
     * @param operation
     * @param monitor
     * @param workPercentage
+    * @throws OseeCoreException
     * @throws Exception
     */
-   public final void doSubWork(IOperation operation, IProgressMonitor monitor, double workPercentage) throws Exception {
-      doSubWorkNoChecks(operation, monitor, workPercentage);
-      checkForErrorsOrCanceled(monitor);
+   public final IStatus doSubWork(IOperation operation, IProgressMonitor parentMonitor, double workPercentage) throws OseeCoreException {
+      IStatus status = Operations.executeWork(operation, parentMonitor);
+      checkForCancelledStatus(parentMonitor);
+      Operations.checkForErrorStatus(status);
+      return status;
    }
 
    /**
-    * Executes a nested operation calling monitor begin and done. The parentMonitor will be wrapped into a
-    * SubProgressMonitor and set to the appropriate number of ticks to consume from the main monitor. Clients should use
-    * {@link #doSubWork(IOperation, IProgressMonitor, double)} when required to throw exceptions for status errors or
-    * canceled. Alternatively, clients can perform the appropriate checks after calling this method. The operation's
-    * status contains the result of having executed the sub-operation.
-    * 
-    * @param operation
-    * @param monitor
-    * @param workPercentage
+    * throws OperationCanceledException if the user cancelled the operation, otherwise it simply returns
     */
-   public final void doSubWorkNoChecks(IOperation operation, IProgressMonitor parentMonitor, double workPercentage) {
-      IProgressMonitor monitor =
-         new SubProgressMonitor(parentMonitor, Operations.calculateWork(operation.getTotalWorkUnits(), workPercentage));
-      Operations.executeWork(operation, monitor);
-      internalMergeStatus(operation.getStatus());
-   }
-
-   /**
-    * Throws an exception if the severity mask is detected.
-    * 
-    * @param monitor
-    * @throws Exception
-    */
-   protected final void checkForStatusSeverityMask(int severityMask) throws Exception {
-      Operations.checkForStatusSeverityMask(getStatus(), severityMask);
-   }
-
-   /**
-    * Checks that the user has not canceled the operation and that the operation's status is still OK. If the status has
-    * changed to ERROR, WARNING or CANCEL - an Exception will be thrown.
-    * 
-    * @param monitor
-    * @throws Exception
-    */
-   protected final void checkForErrorsOrCanceled(IProgressMonitor monitor) throws Exception {
-      checkForCancelledStatus(monitor);
-      Operations.checkForErrorStatus(getStatus());
-   }
-
-   /**
-    * Checks to see if the user cancelled the operation. If the operation was cancelled, the method will throw an
-    * OperationCanceledException
-    * 
-    * @param monitor
-    * @throws OperationCanceledException
-    */
-   protected final void checkForCancelledStatus(IProgressMonitor monitor) throws OperationCanceledException {
-      Operations.checkForCancelledStatus(monitor, getStatus());
-   }
-
-   @Override
-   public int getTotalWorkUnits() {
-      return IOperation.TOTAL_WORK;
+   protected static final void checkForCancelledStatus(IProgressMonitor monitor) throws OperationCanceledException {
+      if (monitor.isCanceled()) {
+         throw new OperationCanceledException();
+      }
    }
 
    @Override

@@ -36,7 +36,6 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
@@ -264,7 +263,7 @@ public class AccessControlService implements IAccessControlService {
    public boolean hasPermission(Object object, PermissionEnum permission) throws OseeCoreException {
       boolean result = true;
       if (!DbUtil.isDbInit()) {
-        // System.out.println(String.format("hasPermission: obj [%s] request [%s]", object, permission));
+         // System.out.println(String.format("hasPermission: obj [%s] request [%s]", object, permission));
          Collection<?> objectsToCheck = null;
          if (object instanceof Collection<?>) {
             objectsToCheck = (Collection<?>) object;
@@ -275,9 +274,9 @@ public class AccessControlService implements IAccessControlService {
          }
          IBasicArtifact<?> subject = UserManager.getUser();
          AccessDataQuery accessQuery = getAccessData(subject, objectsToCheck);
-        // System.out.println(String.format("hasPermission: accessQuery [%s]", accessQuery));
+         // System.out.println(String.format("hasPermission: accessQuery [%s]", accessQuery));
          result = accessQuery.matchesAll(permission);
-        // System.out.println(String.format("hasPermission: result [%s]", result));
+         // System.out.println(String.format("hasPermission: result [%s]", result));
       }
       return result;
    }
@@ -288,11 +287,7 @@ public class AccessControlService implements IAccessControlService {
       AccessData accessData = new AccessData();
       AbstractLifecycleVisitor<?> visitor = new AccessProviderVisitor(userArtifact, objectsToCheck, accessData);
       IStatus status = service.dispatch(new NullProgressMonitor(), visitor, ACCESS_POINT_ID);
-      try {
-         Operations.checkForErrorStatus(status);
-      } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
-      }
+      Operations.checkForErrorStatus(status);
       return new AccessDataQuery(accessData);
    }
 

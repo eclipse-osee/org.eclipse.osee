@@ -62,7 +62,7 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
       monitor.setTaskName("Creating Artifacts");
       this.unmatchedArtifacts = destinationArtifact.getDescendants();
       int totalItems = rawData.getRoughArtifacts().size() + rawData.getRoughRelations().size();
-      int unitOfWork = calculateWork((double) totalItems / getTotalWorkUnits());
+      int unitOfWork = calculateWork(1.0 / totalItems);
 
       for (RoughArtifact roughArtifact : rawData.getParentRoughArtifact().getChildren()) {
          Artifact child = createArtifact(monitor, roughArtifact, destinationArtifact);

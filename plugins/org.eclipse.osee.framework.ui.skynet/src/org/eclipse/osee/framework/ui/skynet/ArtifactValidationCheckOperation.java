@@ -51,7 +51,7 @@ public class ArtifactValidationCheckOperation extends AbstractOperation {
          String message = String.format("%s: %s", link, status.getMessage());
          status =
             new Status(status.getSeverity(), status.getPlugin(), status.getCode(), message, status.getException());
-         mergeStatus(status);
+         setStatus(status);
       }
    }
 
@@ -69,10 +69,9 @@ public class ArtifactValidationCheckOperation extends AbstractOperation {
             handleStatus(itemChecked, status);
             monitor.worked(workAmount);
             if (isStopOnFirstError()) {
-               checkForErrorsOrCanceled(monitor);
-            } else {
-               checkForCancelledStatus(monitor);
+               break;
             }
+            checkForCancelledStatus(monitor);
          }
       }
    }

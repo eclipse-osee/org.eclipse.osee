@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.core.operation;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 
 /**
@@ -40,7 +41,9 @@ public final class OperationJob extends Job {
 
    @Override
    protected IStatus run(IProgressMonitor monitor) {
-      IStatus status = operation.run(monitor).getStatus();
+      SubMonitor subMonitor = SubMonitor.convert(monitor);
+
+      IStatus status = operation.run(subMonitor);
       if (reporter != null) {
          reporter.report(status);
       }

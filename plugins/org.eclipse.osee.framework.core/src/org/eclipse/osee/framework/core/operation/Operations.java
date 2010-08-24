@@ -10,26 +10,22 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.operation;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.internal.Activator;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Roberto E. Escobar
  */
 public final class Operations {
+   public static final int TASK_WORK_RESOLUTION = Integer.MAX_VALUE;
 
    private Operations() {
       // this private empty constructor exists to prevent the default constructor from allowing public construction
@@ -44,78 +40,20 @@ public final class Operations {
    }
 
    /**
-    * Checks to see if the user canceled the operation. If the operation was canceled, the method will throw an
-    * OperationCanceledException
-    * 
-    * @param monitor
-    * @throws OperationCanceledException
+    * Checks to see if the status has errors. If the status contains errors, an OseeCoreException will be thrown.
     */
-   public static void checkForCancelledStatus(IProgressMonitor monitor, IStatus status) throws OperationCanceledException {
-      if (monitor.isCanceled()) {
-         boolean wasCancelled = false;
-         IStatus[] children = status.getChildren();
-         for (int i = 0; i < children.length; i++) {
-            Throwable exception = children[i].getException();
-            if (exception instanceof OperationCanceledException) {
-               wasCancelled = true;
-               break;
-            }
-         }
-         if (!wasCancelled) {
-            throw new OperationCanceledException();
-         }
+   public static void checkForErrorStatus(IStatus status) throws OseeCoreException {
+      if (status.getSeverity() == IStatus.ERROR) {
+         OseeExceptions.wrapAndThrow(status.getException());
       }
    }
 
-   /**
-    * Checks to see if the status has errors. If the status contains errors, an exception will be thrown.
-    * 
-    * @param monitor
-    * @throws Exception
-    * @see {@link IStatus#matches(int)}
-    */
-   public static void checkForStatusSeverityMask(IStatus status, int severityMask) throws Exception {
-      if ((severityMask & IStatus.CANCEL) != 0 && status.getSeverity() == IStatus.CANCEL) {
-         throw new OperationCanceledException();
-      } else if (status.matches(severityMask)) {
-         List<StackTraceElement> traceElements = new ArrayList<StackTraceElement>();
-         String message = status.getMessage();
-         for (IStatus childStatus : status.getChildren()) {
-            Throwable exception = childStatus.getException();
-            String childMessage = childStatus.getMessage();
-            if (Strings.isValid(childMessage)) {
-               message = childMessage;
-            }
-            if (exception != null) {
-               traceElements.addAll(Arrays.asList(exception.getStackTrace()));
-            }
-         }
-
-         Exception ex = new Exception(message);
-         if (!traceElements.isEmpty()) {
-            ex.setStackTrace(traceElements.toArray(new StackTraceElement[traceElements.size()]));
-         }
-         throw ex;
-      }
-   }
-
-   /**
-    * Checks to see if the status has errors. If the status contains errors, an exception will be thrown.
-    * 
-    * @param monitor
-    * @throws Exception
-    * @see {@link IStatus#matches(int)}
-    */
-   public static void checkForErrorStatus(IStatus status) throws Exception {
-      checkForStatusSeverityMask(status, IStatus.CANCEL | IStatus.ERROR | IStatus.WARNING);
-   }
-
-   public static void executeWork(IOperation operation) {
-      executeWork(operation, new NullProgressMonitor());
+   public static IStatus executeWork(IOperation operation) {
+      return executeWork(operation, null);
    }
 
    public static void executeWorkAndCheckStatus(IOperation operation) throws OseeCoreException {
-      executeWorkAndCheckStatus(operation, new NullProgressMonitor());
+      executeWorkAndCheckStatus(operation, null);
    }
 
    /**
@@ -126,13 +64,10 @@ public final class Operations {
     * @param monitor
     * @param workPercentage
     */
-   public static void executeWorkAndCheckStatus(IOperation operation, IProgressMonitor monitor) throws OseeCoreException {
-      executeWork(operation, monitor);
-      try {
-         Operations.checkForErrorStatus(operation.getStatus());
-      } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
-      }
+   public static IStatus executeWorkAndCheckStatus(IOperation operation, IProgressMonitor monitor) throws OseeCoreException {
+      IStatus status = executeWork(operation, monitor);
+      checkForErrorStatus(status);
+      return status;
    }
 
    /**
@@ -142,15 +77,9 @@ public final class Operations {
     * @param operation
     * @param monitor
     */
-   public static void executeWork(IOperation operation, IProgressMonitor monitor) {
-      monitor.beginTask(operation.getName(), operation.getTotalWorkUnits());
-      try {
-         operation.run(monitor);
-      } finally {
-         monitor.subTask("");
-         monitor.setTaskName("");
-         monitor.done();
-      }
+   public static IStatus executeWork(IOperation operation, IProgressMonitor monitor) {
+      SubMonitor subMonitor = SubMonitor.convert(monitor, operation.getName(), TASK_WORK_RESOLUTION);
+      return operation.run(subMonitor);
    }
 
    public static Job executeAsJob(IOperation operation, boolean user) {

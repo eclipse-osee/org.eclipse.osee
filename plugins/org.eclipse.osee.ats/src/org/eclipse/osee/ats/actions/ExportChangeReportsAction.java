@@ -137,7 +137,7 @@ public class ExportChangeReportsAction extends Action {
       }
 
       @Override
-      protected void doWork(IProgressMonitor monitor) throws Exception {
+      protected void doWork(IProgressMonitor monitor) throws OseeCoreException {
          RenderingUtil.setPopupsAllowed(false);
 
          for (Artifact workflow : workflows) {
