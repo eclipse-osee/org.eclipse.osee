@@ -33,10 +33,19 @@
 			<fileset dir="${eclipse-home}" includes="org.eclipse.osee.client.integration.tests*.xml, org.eclipse.osee.client.integration.tests.MasterTestSuite_DemoIntegrationSuite*.xml" />
 		</delete>
 
-		<property name="osee.app.server.data" value="${osee.application.server.home}/${eclipse-home}/testWorkspace/serverBinData" />
-		<property name="osee.app.server.connectionId" value="DerbyTestId" />
-		<property name="osee.app.server.connectionFile" value="${osee.application.server.home}/derbyTestConnection.xml" />
+		<echo message="extraVMargs: [${extraVMargs}]" />
+		<for param="argline" delimiter=" -D" list="${extraVMargs}" trim="true">
+			<sequential>
+				<propertyregex property="argName" override="true" input="@{argline}" regexp="(.*?)=" select="\1" casesensitive="false" />
+				<propertyregex property="argValue" override="true" input="@{argline}" regexp="=(.*)" select="\1" casesensitive="false" />
+				<echo message="Found the name=value: [${argName}]=[${argValue}]" />
+				<property name="${argName}" value="${argValue}" />
+			</sequential>
+		</for>
 
+		<property name="osee.app.server.data" value="${osee.application.server.home}/${eclipse-home}/testWorkspace/serverBinData" />
+		<property name="osee.app.server.connectionFile" value="${osee.application.server.home}/derbyTestConnection.xml" />
+		<property name="osee.app.server.connectionId" value="DerbyTestId" />
 
 		<echo message="Osee Application Server Home: [${osee.application.server.home}]" />
 		<echo message="Osee Application Server Port: [${osee.app.server.port}]" />
