@@ -129,7 +129,7 @@
 		<attribute name="dbServerPort" />
 		<attribute name="connectionFilePath" />
 		<sequential>
-			<echo append="false" file="${connectionFilePath}">
+			<echo file="@{connectionFilePath}">
 &lt;DbConnection&gt;${line.separator}
 &lt;DatabaseInfo id=&quot;DerbyServer&quot;&gt;${line.separator}
 &lt;DatabaseHome key=&quot;#DBHOME#&quot; /&gt;${line.separator}
