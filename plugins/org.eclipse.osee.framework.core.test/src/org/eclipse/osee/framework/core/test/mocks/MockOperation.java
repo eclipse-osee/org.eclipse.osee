@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.core.operation.IOperation;
  * @author Ryan D. Brooks
  */
 public class MockOperation implements IOperation {
-   private boolean wasExecuted = false;
    private final IStatus status;
 
    public MockOperation(IStatus status) {
@@ -31,13 +30,7 @@ public class MockOperation implements IOperation {
    }
 
    @Override
-   public boolean wasExecuted() {
-      return wasExecuted;
-   }
-
-   @Override
    public IStatus run(SubMonitor subMonitor) {
-      wasExecuted = true;
       return status;
    }
 }

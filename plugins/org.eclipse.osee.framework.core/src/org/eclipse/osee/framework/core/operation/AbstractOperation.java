@@ -50,7 +50,6 @@ public abstract class AbstractOperation implements IOperation {
       this.status = status;
    }
 
-   @Override
    public final boolean wasExecuted() {
       return wasExecuted;
    }

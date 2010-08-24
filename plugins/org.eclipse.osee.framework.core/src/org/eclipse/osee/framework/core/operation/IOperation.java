@@ -27,6 +27,4 @@ public interface IOperation extends Named {
     * IStatus.CANCEL when monitor.isCanceled() is true
     */
    IStatus run(SubMonitor subMonitor);
-
-   boolean wasExecuted();
 }
