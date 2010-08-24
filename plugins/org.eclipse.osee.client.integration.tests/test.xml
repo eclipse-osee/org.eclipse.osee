@@ -38,16 +38,16 @@
 			<sequential>
 				<propertyregex property="argName" override="true" input="@{argline}" regexp="(.*?)=" select="\1" casesensitive="false" />
 				<propertyregex property="argValue" override="true" input="@{argline}" regexp="=(.*)" select="\1" casesensitive="false" />
-				<echo message="Found the name=value: [${argName}]=[${argValue}]" />
+				<echo message="Found arg - [${argName}]=[${argValue}]" />
 				<property name="${argName}" value="${argValue}" />
 			</sequential>
 		</for>
 
-		<property name="osee.app.server.data" value="${osee.application.server.home}/${eclipse-home}/testWorkspace/serverBinData" />
-		<property name="osee.app.server.connectionFile" value="${osee.application.server.home}/derbyTestConnection.xml" />
+		<property name="osee.app.server.data" value="${osee.app.server.home}/${eclipse-home}/testWorkspace/serverBinData" />
+		<property name="osee.app.server.connectionFile" value="${osee.app.server.home}/derbyTestConnection.xml" />
 		<property name="osee.app.server.connectionId" value="DerbyTestId" />
 
-		<echo message="Osee Application Server Home: [${osee.application.server.home}]" />
+		<echo message="Osee Application Server Home: [${osee.app.server.home}]" />
 		<echo message="Osee Application Server Port: [${osee.app.server.port}]" />
 		<echo message="Osee Application Server Derby Port: [${osee.app.server.derby.port}]" />
 	</target>
