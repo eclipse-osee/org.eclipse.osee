@@ -11,21 +11,22 @@
 package org.eclipse.osee.ats.internal;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.access.AtsBranchObjectManager;
 import org.eclipse.osee.ats.access.AtsObjectAccessManager;
 import org.eclipse.osee.ats.access.IAtsAccessControlService;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.AccessContextId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.access.AccessModel;
 import org.eclipse.osee.framework.core.model.access.HasAccessModel;
+import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.services.CmAccessControl;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * @author Roberto E. Escobar
@@ -33,22 +34,26 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
  */
 public class AtsCmAccessControl implements CmAccessControl, HasAccessModel {
 
+   private final Branch atsBranch;
    private final AccessModel accessModel;
    private final AtsObjectAccessManager atsObjectAccessManager;
    private final AtsBranchObjectManager atsBranchObjectManager;
 
-   public AtsCmAccessControl(AccessModel accessModel, Collection<IAtsAccessControlService> atsAccessServices) {
+   public AtsCmAccessControl(Branch atsBranch, AccessModel accessModel, Collection<IAtsAccessControlService> atsAccessServices) {
+      this.atsBranch = atsBranch;
       this.accessModel = accessModel;
-      atsBranchObjectManager = new AtsBranchObjectManager(atsAccessServices);
-      atsObjectAccessManager = new AtsObjectAccessManager();
+      atsBranchObjectManager = new AtsBranchObjectManager(atsBranch, atsAccessServices);
+      atsObjectAccessManager = new AtsObjectAccessManager(atsBranch);
    }
 
    @Override
    public boolean isApplicable(IBasicArtifact<?> user, Object object) {
       boolean result = false;
-      if (object instanceof Artifact) {
+      Artifact artifact = asCastedObject(object);
+      if (artifact != null) {
          try {
-            result = isAtsObject((Artifact) object) || isAtsCmManagedObject((Artifact) object);
+            result =
+               atsObjectAccessManager.isApplicable(artifact.getBranch(), artifact.getArtifactType()) || atsBranchObjectManager.isApplicable(artifact.getBranch());
          } catch (OseeCoreException ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, "Error determining access applicibility", ex);
          }
@@ -56,33 +61,31 @@ public class AtsCmAccessControl implements CmAccessControl, HasAccessModel {
       return result;
    }
 
-   public boolean isAtsCmManagedObject(Artifact artifact) throws OseeCoreException {
-      return (!artifact.getBranch().equals(AtsUtil.getAtsBranch()) &&
-      //
-      ArtifactQuery.getArtifactFromId(artifact.getBranch().getAssociatedArtifactId(), AtsUtil.getAtsBranch()).isOfType(
-         AtsArtifactTypes.TeamWorkflow));
-   }
-
-   public boolean isAtsObject(Artifact artifact) throws OseeCoreException {
-      return artifact.getBranch().equals(AtsUtil.getAtsBranch()) && artifact.isOfType(
-         AtsArtifactTypes.StateMachineArtifact, AtsArtifactTypes.Action, AtsArtifactTypes.Version,
-         AtsArtifactTypes.TeamDefinition);
-   }
-
    @Override
    public AccessModel getAccessModel() {
       return accessModel;
    }
 
-   @Override
-   public Collection<? extends AccessContextId> getContextId(IBasicArtifact<?> user, Object object) throws OseeCoreException {
+   private Artifact asCastedObject(Object object) {
+      Artifact artifact = null;
       if (object instanceof Artifact) {
-         if (((Artifact) object).getBranch().equals(AtsUtil.getAtsBranch())) {
-            return atsObjectAccessManager.getContextId(user, object, AtsUtil.isAtsAdmin());
+         artifact = (Artifact) object;
+      }
+      return artifact;
+   }
+
+   @Override
+   public Collection<? extends AccessContextId> getContextId(IBasicArtifact<?> user, Object object) {
+      AccessContextId contextId = null;
+      Artifact artifact = asCastedObject(object);
+      if (artifact != null) {
+         if (atsBranch.equals(artifact.getBranch())) {
+            ArtifactType artifactType = artifact.getArtifactType();
+            contextId = atsObjectAccessManager.getContextId(artifactType, AtsUtil.isAtsAdmin());
          } else {
-            return atsBranchObjectManager.getContextId(user, object);
+            contextId = atsBranchObjectManager.getContextId(artifact);
          }
       }
-      return null;
+      return contextId != null ? Collections.singletonList(contextId) : Collections.<AccessContextId> emptyList();
    }
 }

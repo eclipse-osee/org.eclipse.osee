@@ -6,6 +6,7 @@
 package org.eclipse.osee.ats.access;
 
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.framework.core.data.AccessContextId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 public interface IAtsAccessControlService {
@@ -13,6 +14,6 @@ public interface IAtsAccessControlService {
    /**
     * Return the AccessContextId associated with the object given. null otherwise
     */
-   public AtsBranchObjectContextId getBranchAccessContextIdFromWorkflow(TeamWorkFlowArtifact teamWorkflow) throws OseeCoreException;
+   public AccessContextId getBranchAccessContextIdFromWorkflow(TeamWorkFlowArtifact teamWorkflow) throws OseeCoreException;
 
 }

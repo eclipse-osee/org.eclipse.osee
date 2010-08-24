@@ -10,25 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.access;
 
+import org.eclipse.osee.framework.core.data.AccessContextId;
+
 /**
  * @author Donald G. Dunne
  */
-public class AtsBranchObjectContextId extends AtsAccessContextId {
+public class AtsBranchObjectContextId {
 
-   public static final AtsBranchObjectContextId DEFAULT_BRANCH_CONTEXT = new AtsBranchObjectContextId(
+   public static final AccessContextId DEFAULT_BRANCH_CONTEXT = AtsAccessContextIdFactory.createContextId(
       "AFRkIhi2m2cdanu3i2AA", "ats.branchobject.default.context");
-   public static final AtsBranchObjectContextId DENY_CONTEXT = new AtsBranchObjectContextId("ABcgU0QxFG_cQU4Ph1wA",
+   public static final AccessContextId DENY_CONTEXT = AtsAccessContextIdFactory.createContextId("ABcgU0QxFG_cQU4Ph1wA",
       "ats.branchobject.deny");
 
-   protected AtsBranchObjectContextId(String guid, String name) {
-      super(guid, name);
+   private AtsBranchObjectContextId() {
+      // Branch Object Contexts;
    }
-
-   public static AtsBranchObjectContextId get(String guid) {
-      if (!guidToIds.containsKey(guid)) {
-         guidToIds.put(guid, new AtsBranchObjectContextId(guid, "name unknown"));
-      }
-      return (AtsBranchObjectContextId) guidToIds.get(guid);
-   }
-
 }

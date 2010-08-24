@@ -10,35 +10,24 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.access;
 
+import org.eclipse.osee.framework.core.data.AccessContextId;
+
 /**
  * @author Donald G. Dunne
  */
-public class AtsObjectContextId extends AtsAccessContextId {
+public final class AtsObjectContextId {
 
-   public static final AtsObjectContextId DEFAULT_ATSOBJECT_CONTEXT = new AtsObjectContextId("ABcgW411ZTrr4oapsZQA",
-      "atsobject.default.context");
+   // @formatter:off
+   public static final AccessContextId DEFAULT_ATSOBJECT_CONTEXT = AtsAccessContextIdFactory.createContextId("ABcgW411ZTrr4oapsZQA", "atsobject.default.context");
+   public static final AccessContextId WORK_ITEM_CONFIG_CONTEXT = AtsAccessContextIdFactory.createContextId("AFRkIhhTTDQX5chTSoQA", "atsobject.admin.config.workitem");
+   public static final AccessContextId TEAM_CONFIG_CONTEXT = AtsAccessContextIdFactory.createContextId("ABcgW5ESyyaUQT8dx5gA", "atsobject.admin.config.team");
+   public static final AccessContextId TEAM_AND_ACCESS_CONFIG_CONTEXT = AtsAccessContextIdFactory.createContextId("ABcgW5GgqFU8Kk96sZwA", "atsobject.admin.config.teamAccess");
+   public static final AccessContextId WORKFLOW_ADMIN_CONTEXT = AtsAccessContextIdFactory.createContextId("AFRkIhiFf3rvbeTD87AA", "atsobject.admin.workflow");
+   public static final AccessContextId DENY_CONTEXT = AtsAccessContextIdFactory.createContextId("ABcgW4v_FzudjHwY95gA", "atsobject.deny");
+   // @formatter:on
 
-   public static final AtsObjectContextId WORK_ITEM_CONFIG_CONTEXT = new AtsObjectContextId("AFRkIhhTTDQX5chTSoQA",
-      "atsobject.admin.config.workitem");
-   public static final AtsObjectContextId TEAM_CONFIG_CONTEXT = new AtsObjectContextId("ABcgW5ESyyaUQT8dx5gA",
-      "atsobject.admin.config.team");
-   public static final AtsObjectContextId TEAM_AND_ACCESS_CONFIG_CONTEXT = new AtsObjectContextId(
-      "ABcgW5GgqFU8Kk96sZwA", "atsobject.admin.config.teamAccess");
-   public static final AtsObjectContextId WORKFLOW_ADMIN_CONTEXT = new AtsObjectContextId("AFRkIhiFf3rvbeTD87AA",
-      "atsobject.admin.workflow");
-
-   public static final AtsObjectContextId DENY_CONTEXT = new AtsObjectContextId("ABcgW4v_FzudjHwY95gA",
-      "atsobject.deny");
-
-   protected AtsObjectContextId(String guid, String name) {
-      super(guid, name);
-   }
-
-   public static AtsObjectContextId get(String guid) {
-      if (!guidToIds.containsKey(guid)) {
-         guidToIds.put(guid, new AtsObjectContextId(guid, "name unknown"));
-      }
-      return (AtsObjectContextId) guidToIds.get(guid);
+   private AtsObjectContextId() {
+      // 
    }
 
 }
