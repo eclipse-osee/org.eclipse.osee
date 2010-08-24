@@ -167,6 +167,15 @@ public class OseeClientProperties extends OseeProperties {
    }
 
    /**
+    * Authentication Protocol to use
+    * 
+    * @param client/server authentication protocol.
+    */
+   public static void setAuthenticationProtocol(String protocol) {
+      System.setProperty(OSEE_AUTHENTICATION_PROTOCOL, protocol);
+   }
+
+   /**
     * <pre>
     * Sets the application server address and port to use. This system property sets the URL used to reference
     * the application server. Arbitration is bypassed.
