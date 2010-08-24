@@ -27,5 +27,5 @@ JdkCoreTestSuite.class, //
    AllLifecycleTestSuite.class,//
 })
 public class CoreRuntimeFeatureTestsSuite {
-
+   // Test Suite class
 }
