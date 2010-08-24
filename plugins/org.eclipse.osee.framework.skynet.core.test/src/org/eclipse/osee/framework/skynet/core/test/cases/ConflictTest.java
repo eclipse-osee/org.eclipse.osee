@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 
 /**
  * @author Jeff C. Phillips
@@ -85,6 +86,7 @@ public class ConflictTest {
     * {@link org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal#getConflictsPerBranch(org.eclipse.osee.framework.core.model.Branch, org.eclipse.osee.framework.core.model.Branch, org.eclipse.osee.framework.skynet.core.transaction.TransactionId)}
     * .
     */
+   @Ignore
    @org.junit.Test
    public void testGetConflictsPerBranch() {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
@@ -111,6 +113,7 @@ public class ConflictTest {
     * 
     * @throws Exception
     */
+   @Ignore
    @org.junit.Test
    public void testGetMergeBranchCreated() throws Exception {
       runMergeBranchCreated();
