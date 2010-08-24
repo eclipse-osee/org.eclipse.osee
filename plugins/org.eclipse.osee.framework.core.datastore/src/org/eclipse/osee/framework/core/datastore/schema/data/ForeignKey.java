@@ -14,14 +14,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
  * @author Roberto E. Escobar
  */
-public class ForeignKey extends ConstraintElement implements Xmlizable {
+public class ForeignKey extends ConstraintElement {
 
    List<ReferenceClause> references;
 

@@ -39,7 +39,6 @@ import org.eclipse.osee.framework.core.message.internal.translation.TransactionC
 import org.eclipse.osee.framework.core.message.internal.translation.TransactionRecordTranslator;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
 import org.eclipse.osee.framework.core.model.type.AttributeTypeFactory;
-import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 
 /**
@@ -52,7 +51,7 @@ public class DataTranslationServiceFactory {
       //
    }
 
-   public IDataTranslationService createService(IOseeCachingService cachingService, TransactionRecordFactory txRecordFactory, AttributeTypeFactory attributeTypeFactory) throws OseeCoreException {
+   public IDataTranslationService createService(TransactionRecordFactory txRecordFactory, AttributeTypeFactory attributeTypeFactory) throws OseeCoreException {
       IDataTranslationService service = new DataTranslationService();
 
       service.addTranslator(new TransactionRecordTranslator(txRecordFactory), CoreTranslatorId.TRANSACTION_RECORD);

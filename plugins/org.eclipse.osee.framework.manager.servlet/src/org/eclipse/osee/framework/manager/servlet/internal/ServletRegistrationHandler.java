@@ -59,22 +59,22 @@ public class ServletRegistrationHandler extends AbstractTrackingHandler {
 
    private static final Class<?>[] SERVICE_DEPENDENCIES = new Class<?>[] {
       //
-      ISessionManager.class, //
-      IApplicationServerLookup.class, // 
-      IApplicationServerManager.class, // 
-      IAuthenticationManager.class,// 
+      ISessionManager.class, //k
+      IApplicationServerLookup.class, // k
+      IApplicationServerManager.class, //k 
+      IAuthenticationManager.class,// k
       IDataTranslationService.class, // 
       IOseeModelingService.class, // 
       IOseeCachingService.class,// 
-      IOseeDatabaseService.class, // 
+      IOseeDatabaseService.class, //k 
       IOseeBranchService.class, // 
       IBranchExchange.class, // 
-      ISearchEngine.class,// 
-      ISearchEngineTagger.class, // 
-      IOseeModelFactoryService.class, // 
-      IResourceLocatorManager.class,// 
-      IResourceManager.class, // 
-      HttpService.class, // 
+      ISearchEngine.class,// k
+      ISearchEngineTagger.class, // k
+      IOseeModelFactoryService.class, // k
+      IResourceLocatorManager.class,// k
+      IResourceManager.class, // k
+      HttpService.class, // k
    };
 
    private final Set<String> contexts = new HashSet<String>();

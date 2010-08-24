@@ -15,7 +15,6 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
 import org.eclipse.osee.framework.core.model.type.AttributeTypeFactory;
-import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.core.util.AbstractTrackingHandler;
@@ -29,8 +28,7 @@ import org.osgi.framework.ServiceRegistration;
 public class DataTranslationServiceRegHandler extends AbstractTrackingHandler {
 
    private static final Class<?>[] DEPENDENCIES = new Class<?>[] {//
-      IOseeCachingService.class, //
-         IOseeModelFactoryService.class //
+      IOseeModelFactoryService.class //
       };
 
    private ServiceRegistration registration;
@@ -42,15 +40,13 @@ public class DataTranslationServiceRegHandler extends AbstractTrackingHandler {
 
    @Override
    public void onActivate(BundleContext context, Map<Class<?>, Object> services) {
-      IOseeCachingService cachingService = getService(IOseeCachingService.class, services);
       IOseeModelFactoryService factoryService = getService(IOseeModelFactoryService.class, services);
 
       TransactionRecordFactory txFactory = factoryService.getTransactionFactory();
       AttributeTypeFactory attributeTypeFactory = factoryService.getAttributeTypeFactory();
-
       DataTranslationServiceFactory factory = new DataTranslationServiceFactory();
       try {
-         IDataTranslationService service = factory.createService(cachingService, txFactory, attributeTypeFactory);
+         IDataTranslationService service = factory.createService(txFactory, attributeTypeFactory);
          registration = context.registerService(IDataTranslationService.class.getName(), service, null);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

@@ -18,7 +18,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.datastore.BranchMoveOperation;
 import org.eclipse.osee.framework.core.datastore.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.BranchField;
@@ -73,7 +72,7 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
          branch.getBranchState().getValue(), baselineTransaction, branch.getId()};
    }
 
-   private Object[] toDeleteValues(Branch branch) throws OseeDataStoreException {
+   private Object[] toDeleteValues(Branch branch) {
       return new Object[] {branch.getId()};
    }
 

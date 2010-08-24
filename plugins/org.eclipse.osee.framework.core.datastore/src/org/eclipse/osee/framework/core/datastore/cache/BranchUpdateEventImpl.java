@@ -30,9 +30,9 @@ import org.eclipse.osee.framework.core.message.BranchRow;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.core.server.IApplicationServerLookupProvider;
+import org.eclipse.osee.framework.core.server.IApplicationServerLookup;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
-import org.eclipse.osee.framework.core.translation.IDataTranslationServiceProvider;
+import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.core.util.HttpMessage;
 import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.jdk.core.util.HttpUrlBuilder;
@@ -44,19 +44,19 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public class BranchUpdateEventImpl implements IBranchUpdateEvent {
 
-   private final IDataTranslationServiceProvider txProvider;
-   private final IApplicationServerLookupProvider lookUpProvider;
+   private final IDataTranslationService translationService;
+   private final IApplicationServerLookup lookupService;
    private final IApplicationServerManager manager;
 
-   public BranchUpdateEventImpl(IDataTranslationServiceProvider translationService, IApplicationServerManager manager, IApplicationServerLookupProvider lookUpProvider) {
+   public BranchUpdateEventImpl(IDataTranslationService translationService, IApplicationServerManager manager, IApplicationServerLookup lookUpProvider) {
       super();
-      this.txProvider = translationService;
-      this.lookUpProvider = lookUpProvider;
+      this.translationService = translationService;
+      this.lookupService = lookUpProvider;
       this.manager = manager;
    }
 
    @Override
-   public void send(final Collection<Branch> branches) throws OseeCoreException {
+   public void send(final Collection<Branch> branches) {
       List<Branch> branchToUpdate = new ArrayList<Branch>();
       for (Branch branch : branches) {
          if (!branch.isDirty()) {
@@ -111,7 +111,7 @@ public class BranchUpdateEventImpl implements IBranchUpdateEvent {
          Map<String, String> parameters = new HashMap<String, String>();
          parameters.put("function", CacheOperation.STORE.name());
 
-         for (OseeServerInfo serverInfo : lookUpProvider.getApplicationServerLookupService().getAvailableServers()) {
+         for (OseeServerInfo serverInfo : lookupService.getAvailableServers()) {
             if (!manager.getId().equals(serverInfo.getServerId()) && serverInfo.isAcceptingRequests()) {
                try {
 
@@ -123,8 +123,7 @@ public class BranchUpdateEventImpl implements IBranchUpdateEvent {
                      is_0_9_2_Compatible(serverInfo.getVersion()) ? request : request0_9_1;
 
                   AcquireResult updateResponse =
-                     HttpMessage.send(urlString, txProvider.getTranslationService(),
-                        CoreTranslatorId.BRANCH_CACHE_STORE_REQUEST, message, null);
+                     HttpMessage.send(urlString, translationService, CoreTranslatorId.BRANCH_CACHE_STORE_REQUEST, message, null);
                   if (!updateResponse.wasSuccessful()) {
                      OseeLog.log(Activator.class, Level.SEVERE, "Error relaying branch updates to servers");
                   }

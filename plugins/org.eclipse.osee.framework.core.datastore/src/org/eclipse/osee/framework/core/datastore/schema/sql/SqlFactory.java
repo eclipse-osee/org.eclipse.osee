@@ -46,7 +46,6 @@ public class SqlFactory {
             instance = new PostgreSqlManager(new PostgresqlDataType());
             break;
          default:
-            instance = null;
             break;
       }
       return instance;

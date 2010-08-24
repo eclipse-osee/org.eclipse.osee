@@ -10,10 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.datastore.internal;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.eclipse.osee.framework.core.util.AbstractTrackingHandler;
 import org.eclipse.osee.framework.core.util.ServiceDependencyTracker;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -21,28 +19,16 @@ public class Activator implements BundleActivator {
 
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.core.datastore";
 
-   private final List<ServiceDependencyTracker> services;
-
-   public Activator() {
-      this.services = new ArrayList<ServiceDependencyTracker>();
-   }
+   private ServiceDependencyTracker tracker;
 
    @Override
    public void start(BundleContext context) throws Exception {
-      createService(context, new OseeCachingServiceRegistrationHandler());
+      tracker = new ServiceDependencyTracker(context, new OseeCachingServiceRegistrationHandler());
+      tracker.open();
    }
 
    @Override
    public void stop(BundleContext context) throws Exception {
-      for (ServiceDependencyTracker service : services) {
-         service.close();
-      }
-      services.clear();
-   }
-
-   private void createService(BundleContext context, AbstractTrackingHandler handler) {
-      ServiceDependencyTracker service = new ServiceDependencyTracker(context, handler);
-      services.add(service);
-      service.open();
+      Lib.close(tracker);
    }
 }

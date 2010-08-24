@@ -157,11 +157,9 @@ public abstract class SqlManager {
       return toReturn.toString();
    }
 
-   @SuppressWarnings("unchecked")
-   protected String handleConstraintCreationSection(List constraints, String tableId) {
+   protected String handleConstraintCreationSection(List<? extends ConstraintElement> constraints, String tableId) {
       List<String> constraintStatements = new ArrayList<String>();
-      for (Object object : constraints) {
-         ConstraintElement constraint = (ConstraintElement) object;
+      for (ConstraintElement constraint : constraints) {
          constraintStatements.add(constraintDataToSQL(constraint, tableId));
       }
       StringBuilder toExecute = new StringBuilder();

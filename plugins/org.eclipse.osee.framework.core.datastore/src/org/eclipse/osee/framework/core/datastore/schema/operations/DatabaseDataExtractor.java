@@ -65,7 +65,7 @@ public class DatabaseDataExtractor extends AbstractOperation {
 
    private final IOseeDatabaseService databaseService;
 
-   public DatabaseDataExtractor(IOseeDatabaseService databaseService, Set<String> schemas, File directory) throws OseeDataStoreException {
+   public DatabaseDataExtractor(IOseeDatabaseService databaseService, Set<String> schemas, File directory) {
       super("Extract Database Data", Activator.PLUGIN_ID);
       this.databaseService = databaseService;
       this.schemas = schemas;

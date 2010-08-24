@@ -25,7 +25,7 @@ public final class FileUtility {
    public static String DB_DATA_EXTENSION = ".DATA.xml";
 
    private FileUtility() {
-
+      // Utility class
    }
 
    public static boolean isValidDirectory(File directory) {

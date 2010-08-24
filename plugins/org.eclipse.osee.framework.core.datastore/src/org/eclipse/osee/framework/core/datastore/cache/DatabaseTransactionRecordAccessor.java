@@ -22,8 +22,7 @@ import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.ITransactionDataAccessor;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
-import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
-import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.JoinUtility.IdJoinQuery;
@@ -44,14 +43,14 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
    private static final String SELECT_TRANSACTIONS_BY_QUERY_ID =
       "select * from osee_tx_details txd, osee_join_id oji where txd.transaction_id = oji.id and oji.query_id = ?";
 
-   private final IOseeDatabaseServiceProvider oseeDatabaseProvider;
+   private final IOseeDatabaseService oseeDatabaseService;
    private final BranchCache branchCache;
-   private final IOseeModelFactoryServiceProvider factoryProvider;
+   private final TransactionRecordFactory factory;
 
-   public DatabaseTransactionRecordAccessor(IOseeDatabaseServiceProvider oseeDatabaseProvider, IOseeModelFactoryServiceProvider factoryProvider, BranchCache branchCache) {
-      this.oseeDatabaseProvider = oseeDatabaseProvider;
-      this.factoryProvider = factoryProvider;
+   public DatabaseTransactionRecordAccessor(IOseeDatabaseService oseeDatabaseService, BranchCache branchCache, TransactionRecordFactory factory) {
+      this.oseeDatabaseService = oseeDatabaseService;
       this.branchCache = branchCache;
+      this.factory = factory;
    }
 
    private synchronized void ensureDependantCachePopulated() throws OseeCoreException {
@@ -116,7 +115,7 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
    }
 
    private TransactionRecord loadFromTransaction(TransactionCache cache, Branch branch, int fetchSize, boolean isOnlyReadFirstResult, String query, Object... parameters) throws OseeCoreException {
-      IOseeStatement chStmt = oseeDatabaseProvider.getOseeDatabaseService().getStatement();
+      IOseeStatement chStmt = oseeDatabaseService.getStatement();
       TransactionRecord record = null;
       try {
          chStmt.runPreparedQuery(fetchSize, query, parameters);
@@ -143,7 +142,6 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
    }
 
    private TransactionRecord prepareTransactionRecord(TransactionCache cache, int transactionNumber, int branchId, String comment, Date timestamp, int authorArtId, int commitArtId, TransactionDetailsType txType) throws OseeCoreException {
-      TransactionRecordFactory factory = factoryProvider.getOseeFactoryService().getTransactionFactory();
       TransactionRecord record =
          factory.createOrUpdate(cache, transactionNumber, branchId, comment, timestamp, authorArtId, commitArtId,
             txType);
@@ -152,7 +150,9 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
       return record;
    }
 
+   @SuppressWarnings("unused")
    @Override
    public void load(TransactionCache transactionCache) throws OseeCoreException {
+      // Not implemented
    }
 }

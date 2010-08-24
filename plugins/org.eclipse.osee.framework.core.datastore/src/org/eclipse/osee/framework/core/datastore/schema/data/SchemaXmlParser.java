@@ -39,9 +39,6 @@ import org.w3c.dom.NamedNodeMap;
  */
 public class SchemaXmlParser {
 
-   public SchemaXmlParser() {
-   }
-
    private void parseTableDescription(Element element, TableElement tableEntry) {
       NamedNodeMap attributes = element.getAttributes();
       for (int i = 0; i < attributes.getLength(); i++) {

@@ -10,14 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.datastore.cache;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.IOseeStorable;
 import org.eclipse.osee.framework.core.model.cache.IOseeDataAccessor;
-import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
-import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 import org.eclipse.osee.framework.database.core.IOseeSequence;
 
 /**
@@ -25,27 +21,17 @@ import org.eclipse.osee.framework.database.core.IOseeSequence;
  */
 public abstract class AbstractDatabaseAccessor<T extends IOseeStorable> implements IOseeDataAccessor<T> {
 
-   private final IOseeDatabaseServiceProvider databaseProvider;
-   private final IOseeModelFactoryServiceProvider factoryProvider;
+   private final IOseeDatabaseService databaseService;
 
-   protected AbstractDatabaseAccessor(IOseeDatabaseServiceProvider databaseProvider, IOseeModelFactoryServiceProvider factoryProvider) {
-      this.databaseProvider = databaseProvider;
-      this.factoryProvider = factoryProvider;
+   protected AbstractDatabaseAccessor(IOseeDatabaseService databaseService) {
+      this.databaseService = databaseService;
    }
 
-   protected IOseeDatabaseServiceProvider getDatabaseServiceProvider() {
-      return databaseProvider;
-   }
-
-   protected IOseeDatabaseService getDatabaseService() throws OseeDataStoreException {
-      return getDatabaseServiceProvider().getOseeDatabaseService();
+   protected IOseeDatabaseService getDatabaseService() {
+      return databaseService;
    }
 
    protected IOseeSequence getSequence() throws OseeDataStoreException {
       return getDatabaseService().getSequence();
-   }
-
-   protected IOseeModelFactoryService getFactoryService() throws OseeCoreException {
-      return factoryProvider.getOseeFactoryService();
    }
 }

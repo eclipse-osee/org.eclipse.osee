@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.core.datastore.schema.operations;
 
 import java.io.File;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -152,7 +151,7 @@ public class DatabaseDataImporter {
       return toReturn;
    }
 
-   private void processData(List<TableData> tables) throws OseeDataStoreException, ParseException {
+   private void processData(List<TableData> tables) throws OseeDataStoreException {
       if (tables.size() != 0) {
          for (TableData tableData : tables) {
             OseeLog.log(Activator.class, Level.INFO, "Populating: [ " + tableData.getFullyQualifiedTableName() + "]\n");

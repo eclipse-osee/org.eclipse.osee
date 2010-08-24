@@ -264,9 +264,7 @@ public class ExtractDatabaseSchemaOperation extends AbstractOperation {
                case java.sql.Types.CHAR:
                case java.sql.Types.VARCHAR:
                   String limits = "255";
-                  if (limits != null && !limits.equals("")) {
-                     column.addColumnField(ColumnFields.limits, limits);
-                  }
+                  column.addColumnField(ColumnFields.limits, limits);
                   break;
                default:
                   break;

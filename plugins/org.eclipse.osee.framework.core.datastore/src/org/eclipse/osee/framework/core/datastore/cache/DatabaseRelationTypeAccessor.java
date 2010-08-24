@@ -18,14 +18,12 @@ import org.eclipse.osee.framework.core.datastore.internal.Activator;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.model.cache.IOseeCache;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.core.model.type.RelationTypeFactory;
-import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
-import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -41,16 +39,17 @@ public class DatabaseRelationTypeAccessor extends AbstractDatabaseAccessor<Relat
       "update osee_relation_link_type SET type_name=?, a_name=?, b_name=?, a_art_type_id=?, b_art_type_id=?, multiplicity=?, default_order_type_guid=? where rel_link_type_id = ?";
 
    private final ArtifactTypeCache artifactCache;
+   private final RelationTypeFactory factory;
 
-   public DatabaseRelationTypeAccessor(IOseeDatabaseServiceProvider databaseProvider, IOseeModelFactoryServiceProvider factoryProvider, ArtifactTypeCache artifactCache) {
-      super(databaseProvider, factoryProvider);
+   public DatabaseRelationTypeAccessor(IOseeDatabaseService databaseService, ArtifactTypeCache artifactCache, RelationTypeFactory factory) {
+      super(databaseService);
       this.artifactCache = artifactCache;
+      this.factory = factory;
    }
 
    @Override
    public void load(IOseeCache<RelationType> cache) throws OseeCoreException {
       artifactCache.ensurePopulated();
-      RelationTypeFactory factory = getFactoryService().getRelationTypeFactory();
       IOseeStatement chStmt = getDatabaseService().getStatement();
 
       try {
@@ -120,13 +119,13 @@ public class DatabaseRelationTypeAccessor extends AbstractDatabaseAccessor<Relat
       }
    }
 
-   private Object[] toInsertValues(RelationType type) throws OseeDataStoreException {
+   private Object[] toInsertValues(RelationType type) {
       return new Object[] {type.getId(), type.getGuid(), type.getName(), type.getSideAName(), type.getSideBName(),
          type.getArtifactTypeSideA().getId(), type.getArtifactTypeSideB().getId(), type.getMultiplicity().getValue(),
          type.getDefaultOrderTypeGuid()};
    }
 
-   private Object[] toUpdateValues(RelationType type) throws OseeDataStoreException {
+   private Object[] toUpdateValues(RelationType type) {
       return new Object[] {type.getName(), type.getSideAName(), type.getSideBName(),
          type.getArtifactTypeSideA().getId(), type.getArtifactTypeSideB().getId(), type.getMultiplicity().getValue(),
          type.getDefaultOrderTypeGuid(), type.getId()};

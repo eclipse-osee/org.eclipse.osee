@@ -19,14 +19,12 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.datastore.internal.Activator;
 import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
 import org.eclipse.osee.framework.core.model.OseeEnumEntry;
 import org.eclipse.osee.framework.core.model.cache.IOseeCache;
 import org.eclipse.osee.framework.core.model.type.OseeEnumType;
 import org.eclipse.osee.framework.core.model.type.OseeEnumTypeFactory;
-import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
-import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -49,8 +47,11 @@ public class DatabaseOseeEnumTypeAccessor extends AbstractDatabaseAccessor<OseeE
       "insert into osee_enum_type_def (enum_type_id, enum_entry_guid, name, ordinal) values (?,?,?,?)";
    private static final String DELETE_ENUM_TYPE_DEF = "delete from osee_enum_type_def where enum_type_id = ?";
 
-   public DatabaseOseeEnumTypeAccessor(IOseeDatabaseServiceProvider databaseProvider, IOseeModelFactoryServiceProvider factoryProvider) {
-      super(databaseProvider, factoryProvider);
+   private final OseeEnumTypeFactory factory;
+
+   public DatabaseOseeEnumTypeAccessor(IOseeDatabaseService databaseService, OseeEnumTypeFactory factory) {
+      super(databaseService);
+      this.factory = factory;
    }
 
    private void loadEnumEntries(OseeEnumTypeFactory factory, HashCollection<Integer, OseeEnumEntry> entryTypes) throws OseeCoreException {
@@ -79,8 +80,6 @@ public class DatabaseOseeEnumTypeAccessor extends AbstractDatabaseAccessor<OseeE
 
    @Override
    public void load(IOseeCache<OseeEnumType> cache) throws OseeCoreException {
-      OseeEnumTypeFactory factory = getFactoryService().getOseeEnumTypeFactory();
-
       HashCollection<Integer, OseeEnumEntry> entryTypes = new HashCollection<Integer, OseeEnumEntry>();
 
       loadEnumEntries(factory, entryTypes);
@@ -180,19 +179,19 @@ public class DatabaseOseeEnumTypeAccessor extends AbstractDatabaseAccessor<OseeE
       getDatabaseService().runBatchUpdate(INSERT_ENUM_TYPE_DEF, insertData);
    }
 
-   private Object[] toInsertValues(OseeEnumType type) throws OseeDataStoreException {
+   private Object[] toInsertValues(OseeEnumType type) {
       return new Object[] {type.getId(), type.getGuid(), type.getName()};
    }
 
-   private Object[] toUpdateValues(OseeEnumType type) throws OseeDataStoreException {
+   private Object[] toUpdateValues(OseeEnumType type) {
       return new Object[] {type.getName(), type.getId()};
    }
 
-   private Object[] toDeleteValues(OseeEnumType type) throws OseeDataStoreException {
+   private Object[] toDeleteValues(OseeEnumType type) {
       return new Object[] {type.getId()};
    }
 
-   private Object[] toInsertValues(OseeEnumEntry type) throws OseeDataStoreException {
+   private Object[] toInsertValues(OseeEnumEntry type) {
       return new Object[] {type.getId(), type.getGuid(), type.getName(), type.ordinal()};
    }
 }

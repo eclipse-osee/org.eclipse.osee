@@ -53,7 +53,7 @@ public class DataTranslationServiceFactoryTest {
    public void testServiceCreation() throws OseeCoreException {
       DataTranslationServiceFactory transalationFactoryService = new DataTranslationServiceFactory();
       IDataTranslationService srvc =
-         transalationFactoryService.createService(null, new TransactionRecordFactory(), new AttributeTypeFactory());
+         transalationFactoryService.createService(new TransactionRecordFactory(), new AttributeTypeFactory());
 
       checkExists(srvc, TransactionRecordTranslator.class, CoreTranslatorId.TRANSACTION_RECORD);
 

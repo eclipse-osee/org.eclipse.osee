@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.IOseeCache;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -48,11 +48,13 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
 
    private final TransactionCache txCache;
    private final IBranchUpdateEvent eventSender;
+   private final BranchFactory branchFactory;
 
-   public DatabaseBranchAccessor(IOseeDatabaseServiceProvider databaseProvider, IOseeModelFactoryServiceProvider factoryProvider, IBranchUpdateEvent eventSender, TransactionCache txCache) {
-      super(databaseProvider, factoryProvider);
+   public DatabaseBranchAccessor(IOseeDatabaseService databaseService, IBranchUpdateEvent eventSender, TransactionCache txCache, BranchFactory branchFactory) {
+      super(databaseService);
       this.txCache = txCache;
       this.eventSender = eventSender;
+      this.branchFactory = branchFactory;
    }
 
    @Override
@@ -78,7 +80,6 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
    }
 
    private void loadBranches(BranchCache cache, Map<Branch, Integer> childToParent, Map<Branch, Integer> branchToBaseTx, Map<Branch, Integer> branchToSourceTx, Map<Branch, Integer> associatedArtifact) throws OseeCoreException {
-      BranchFactory factory = getFactoryService().getBranchFactory();
       IOseeStatement chStmt = getDatabaseService().getStatement();
       try {
          chStmt.runPreparedQuery(2000, SELECT_BRANCHES);
@@ -92,8 +93,8 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
                boolean isArchived = BranchArchivedState.valueOf(chStmt.getInt("archived")).isArchived();
                String branchGuid = chStmt.getString("branch_guid");
                Branch branch =
-                  factory.createOrUpdate(cache, branchId, StorageState.LOADED, branchGuid, branchName, branchType,
-                     branchState, isArchived);
+                  branchFactory.createOrUpdate(cache, branchId, StorageState.LOADED, branchGuid, branchName,
+                     branchType, branchState, isArchived);
 
                Integer parentBranchId = chStmt.getInt("parent_branch_id");
                if (parentBranchId != BranchStoreOperation.NULL_PARENT_BRANCH_ID) {
@@ -173,7 +174,14 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
 
    @Override
    public void store(Collection<Branch> branches) throws OseeCoreException {
-      Operations.executeWorkAndCheckStatus(new BranchStoreOperation(getDatabaseServiceProvider(), eventSender, branches));
+      IOseeDatabaseServiceProvider dbServiceProvider = new IOseeDatabaseServiceProvider() {
+
+         @Override
+         public IOseeDatabaseService getOseeDatabaseService() {
+            return getDatabaseService();
+         }
+      };
+      Operations.executeWorkAndCheckStatus(new BranchStoreOperation(dbServiceProvider, eventSender, branches));
    }
 
 }

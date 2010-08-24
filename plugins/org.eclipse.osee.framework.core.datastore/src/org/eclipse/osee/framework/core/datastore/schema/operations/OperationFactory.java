@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 public final class OperationFactory {
 
    private OperationFactory() {
+      // Utility class
    }
 
    public static IOperation createDbSchema(final IOseeDatabaseService databaseService, IOseeSchemaProvider schemaProvider, SchemaCreationOptions options) {

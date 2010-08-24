@@ -23,8 +23,7 @@ import org.eclipse.osee.framework.core.model.cache.OseeEnumTypeCache;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.model.type.AttributeTypeFactory;
 import org.eclipse.osee.framework.core.model.type.OseeEnumType;
-import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
-import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -52,17 +51,18 @@ public class DatabaseAttributeTypeAccessor extends AbstractDatabaseAccessor<Attr
       "SELECT attr_provider_type_id FROM osee_attribute_provider_type WHERE attribute_provider_class = ?";
 
    private final OseeEnumTypeCache enumCache;
+   private final AttributeTypeFactory attributeTypeFactory;
 
-   public DatabaseAttributeTypeAccessor(IOseeDatabaseServiceProvider databaseProvider, IOseeModelFactoryServiceProvider factoryProvider, OseeEnumTypeCache enumCache) {
-      super(databaseProvider, factoryProvider);
+   public DatabaseAttributeTypeAccessor(IOseeDatabaseService databaseService, OseeEnumTypeCache enumCache, AttributeTypeFactory attributeTypeFactory) {
+      super(databaseService);
       this.enumCache = enumCache;
+      this.attributeTypeFactory = attributeTypeFactory;
    }
 
    @Override
    public void load(IOseeCache<AttributeType> cache) throws OseeCoreException {
       enumCache.ensurePopulated();
 
-      AttributeTypeFactory factory = getFactoryService().getAttributeTypeFactory();
       IOseeStatement chStmt = getDatabaseService().getStatement();
 
       try {
@@ -86,7 +86,7 @@ public class DatabaseAttributeTypeAccessor extends AbstractDatabaseAccessor<Attr
                OseeEnumType oseeEnumType = enumCache.getById(enumTypeId);
 
                AttributeType attributeType =
-                  factory.createOrUpdate(cache, attributeTypeId, StorageState.LOADED, guid, typeName,
+                  attributeTypeFactory.createOrUpdate(cache, attributeTypeId, StorageState.LOADED, guid, typeName,
                      baseAttributeTypeId, attributeProviderNameId, fileTypeExtension, defaultValue, oseeEnumType,
                      minOccurrences, maxOccurrences, description, taggerId);
 

@@ -13,8 +13,6 @@ package org.eclipse.osee.framework.branch.management.internal.trackers;
 import java.util.Map;
 import org.eclipse.osee.framework.branch.management.IOseeBranchService;
 import org.eclipse.osee.framework.branch.management.internal.OseeBranchService;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeCachingServiceProvider;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
@@ -30,8 +28,13 @@ import org.osgi.framework.ServiceRegistration;
  */
 public class OseeBranchServiceRegistrationHandler extends AbstractTrackingHandler {
 
-   private final static Class<?>[] SERVICE_DEPENDENCIES = new Class<?>[] {IOseeDatabaseService.class,
-      IOseeModelFactoryService.class, IOseeCachingService.class};
+   //@formatter:off
+   private final static Class<?>[] SERVICE_DEPENDENCIES = new Class<?>[] {
+      IOseeDatabaseService.class,
+      IOseeModelFactoryService.class, 
+      IOseeCachingService.class
+   };
+   //@formatter:on
 
    private ServiceRegistration serviceRegistration;
 
@@ -60,7 +63,7 @@ public class OseeBranchServiceRegistrationHandler extends AbstractTrackingHandle
 
       IOseeDatabaseServiceProvider dbProvider = new IOseeDatabaseServiceProvider() {
          @Override
-         public IOseeDatabaseService getOseeDatabaseService() throws OseeDataStoreException {
+         public IOseeDatabaseService getOseeDatabaseService() {
             return dbService;
          }
       };
@@ -68,7 +71,7 @@ public class OseeBranchServiceRegistrationHandler extends AbstractTrackingHandle
       IOseeModelFactoryServiceProvider modelProvider = new IOseeModelFactoryServiceProvider() {
 
          @Override
-         public IOseeModelFactoryService getOseeFactoryService() throws OseeCoreException {
+         public IOseeModelFactoryService getOseeFactoryService() {
             return modelService;
          }
       };
@@ -76,7 +79,7 @@ public class OseeBranchServiceRegistrationHandler extends AbstractTrackingHandle
       IOseeCachingServiceProvider cachingProvider = new IOseeCachingServiceProvider() {
 
          @Override
-         public IOseeCachingService getOseeCachingService() throws OseeCoreException {
+         public IOseeCachingService getOseeCachingService() {
             return cachingService;
          }
       };

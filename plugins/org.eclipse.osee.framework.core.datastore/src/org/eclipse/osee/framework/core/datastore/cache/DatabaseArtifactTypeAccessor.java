@@ -32,8 +32,7 @@ import org.eclipse.osee.framework.core.model.cache.IOseeCache;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.ArtifactTypeFactory;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
-import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
-import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -70,11 +69,17 @@ public class DatabaseArtifactTypeAccessor extends AbstractDatabaseAccessor<Artif
 
    private final AttributeTypeCache attributeCache;
    private final BranchCache branchCache;
+   private final ArtifactTypeFactory artifactTypeFactory;
 
-   public DatabaseArtifactTypeAccessor(IOseeDatabaseServiceProvider databaseProvider, IOseeModelFactoryServiceProvider factoryProvider, BranchCache branchCache, AttributeTypeCache attributeCache) {
-      super(databaseProvider, factoryProvider);
+   public DatabaseArtifactTypeAccessor(IOseeDatabaseService databaseService, BranchCache branchCache, AttributeTypeCache attributeCache, ArtifactTypeFactory artifactTypeFactory) {
+      super(databaseService);
       this.attributeCache = attributeCache;
       this.branchCache = branchCache;
+      this.artifactTypeFactory = artifactTypeFactory;
+   }
+
+   private ArtifactTypeFactory getArtifactTypeFactory() {
+      return artifactTypeFactory;
    }
 
    @Override
@@ -91,7 +96,7 @@ public class DatabaseArtifactTypeAccessor extends AbstractDatabaseAccessor<Artif
    }
 
    private void loadArtifactTypes(ArtifactTypeCache cache, Set<ArtifactType> loadedTypes) throws OseeCoreException {
-      ArtifactTypeFactory factory = getFactoryService().getArtifactTypeFactory();
+      ArtifactTypeFactory factory = getArtifactTypeFactory();
 
       IOseeStatement chStmt = getDatabaseService().getStatement();
       try {
