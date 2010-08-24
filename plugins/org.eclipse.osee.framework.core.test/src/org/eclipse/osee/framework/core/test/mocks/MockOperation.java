@@ -1,37 +1,48 @@
-/*
- * Created on Aug 20, 2010
+/*******************************************************************************
+ * Copyright (c) 2010 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.framework.core.test.mocks;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.operation.AbstractOperation;
-import org.junit.Assert;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.osee.framework.core.operation.IOperation;
 
-public class MockOperation extends AbstractOperation {
+/**
+ * @author Ryan D. Brooks
+ */
+public class MockOperation implements IOperation {
+   private boolean wasExecuted = false;
+   private final IStatus status;
 
-   private final Exception exceptionToThrow;
-
-   public MockOperation() {
-      this(null);
-   }
-
-   public MockOperation(Exception exceptionToThrow) {
-      this("Mock Operation", exceptionToThrow);
-   }
-
-   public MockOperation(String operationName, Exception exceptionToThrow) {
-      super(operationName, "Test Plugin-id");
-      this.exceptionToThrow = exceptionToThrow;
+   public MockOperation(IStatus status) {
+      this.status = status;
    }
 
    @Override
-   protected void doWork(IProgressMonitor monitor) throws Exception {
-      Assert.assertNotNull(monitor);
-      if (exceptionToThrow != null) {
-         throw exceptionToThrow;
-      }
+   public String getName() {
+      return "MockOperation";
    }
 
+   @Override
+   public boolean wasExecuted() {
+      return wasExecuted;
+   }
+
+   @Override
+   public IStatus run(SubMonitor subMonitor) {
+      wasExecuted = true;
+      return status;
+   }
+
+   @Override
+   public int getTotalWorkUnits() {
+      return 100;
+   }
 }
