@@ -68,15 +68,12 @@ public class CatchTrackedChanges implements CommitAction {
          }
       }
 
-      int severityMask = IStatus.ERROR;
       OseeValidator validator = OseeValidator.getInstance();
       for (Artifact artifactChanged : changedArtifacts) {
          if (!artifactChanged.isDeleted()) {
             IStatus status = validator.validate(IOseeValidator.LONG, artifactChanged);
-            try {
-               Operations.checkForStatusSeverityMask(status, severityMask);
-            } catch (Exception ex) {
-               throw new OseeWrappedException(getArtifactErrorMessage(artifactChanged), ex);
+            if (status.getSeverity() == IStatus.ERROR) {
+               throw new OseeWrappedException(getArtifactErrorMessage(artifactChanged), status.getException());
             }
          }
       }
