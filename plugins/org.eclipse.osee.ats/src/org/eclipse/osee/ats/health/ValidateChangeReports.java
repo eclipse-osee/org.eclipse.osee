@@ -81,9 +81,6 @@ public class ValidateChangeReports extends XNavigateItemAction {
    static final String VCR_ROOT_ELEMENT_TAG = "ValidateChangeReport";
    static final String VCR_DB_GUID = "dbGuid";
 
-   /**
-    * @param parent
-    */
    public ValidateChangeReports(XNavigateItem parent) {
       super(parent, "Validate Change Reports", PluginUiImage.ADMIN);
    }
@@ -126,6 +123,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
       sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
       for (IArtifactType artifactType : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactTypes()) {
          sbFull.append(AHTML.addRowSpanMultiColumnTable(artifactType.getName(), columnHeaders.length));
+
          try {
             int x = 1;
             Collection<Artifact> artifacts =
@@ -133,6 +131,17 @@ public class ValidateChangeReports extends XNavigateItemAction {
             for (Artifact artifact : artifacts) {
                String resultStr = "PASS";
                TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
+
+               // Uncomment to only do a single program
+               //               if (!teamArt.getTeamName().contains("V13.1")) {
+               //                  System.err.println("Skipping non V13.1 workflow...Remove this.");
+               //                  continue;
+               //               }
+               //               if (x >= 20) {
+               //                  System.err.println("Only do first 20...Remove this.");
+               //                  return;
+               //               }
+
                try {
                   String str = String.format("Processing %s/%s  - %s", x++, artifacts.size(), artifact);
                   OseeLog.log(AtsPlugin.class, Level.INFO, str);
@@ -146,7 +155,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
                   }
                   Result valid = changeReportValidated(currentDbGuid, teamArt, xResultData, false);
                   if (valid.isFalse()) {
-                     resultStr = "Error: Not Valid: " + valid.getText();
+                     resultStr = "Error: " + valid.getText();
                   }
                } catch (Exception ex) {
                   resultStr = "Error: Exception Validating: " + ex.getLocalizedMessage();
@@ -192,6 +201,9 @@ public class ValidateChangeReports extends XNavigateItemAction {
       }
       // Retrieve current
       ChangeData currentChangeData = teamArt.getBranchMgr().getChangeDataFromEarliestTransactionId();
+      if (currentChangeData.isEmpty()) {
+         return new Result(String.format("FAIL: Unexpected empty change report for %s", teamArt.toStringWithId()));
+      }
       // Store
       if (storedChangeReport == null) {
          // Reuse same artifact if already exists
@@ -209,9 +221,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
       else {
          final String currentChangeReport = getReport(currentDbGuid, currentChangeData);
          final String fStoredChangeReport = storedChangeReport.replaceAll("\n", "");
-         if (isXmlChangeDataEqual(currentChangeReport, fStoredChangeReport)) {
-            resultData.log("Change Report Valid for " + teamArt.getHumanReadableId());
-         } else {
+         if (!isXmlChangeDataEqual(currentChangeReport, fStoredChangeReport)) {
             resultData.logError("Was/Is Change Report different for " + teamArt.getHumanReadableId());
             if (displayWasIs) {
                resultData.log("Was / Is reports displayed in Results View");
@@ -239,7 +249,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
                   System.err.println(ex.getLocalizedMessage());
                }
             }
-            return new Result("FAIL");
+            return new Result("FAIL: Was/Is Change Report different");
          }
       }
       // As another test, ensure that all artifacts can be retrieved and display their name
@@ -250,8 +260,16 @@ public class ValidateChangeReports extends XNavigateItemAction {
          }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-         return new Result("Exception accessing name of change report artifacts: " + ex.getLocalizedMessage());
+         return new Result("FAIL: Exception accessing name of change report artifacts: " + ex.getLocalizedMessage());
       }
+      // As another test, allow ATS extensions add their own tests
+      for (IAtsHealthCheck atsHealthCheck : AtsHealthCheck.getAtsHealthCheckItems()) {
+         Result result = atsHealthCheck.validateChangeReports(currentChangeData, teamArt, resultData);
+         if (result.isFalse()) {
+            return result;
+         }
+      }
+
       return new Result(true, "PASS");
    }
 

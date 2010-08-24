@@ -207,7 +207,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          testActionableItemToTeamDefinition(artifacts);
          testTeamDefinitionHasWorkflow(artifacts);
          for (IAtsHealthCheck atsHealthCheck : AtsHealthCheck.getAtsHealthCheckItems()) {
-            atsHealthCheck.check(artifacts, testNameToResultsMap);
+            atsHealthCheck.validateAtsDatabase(artifacts, testNameToResultsMap);
          }
          if (monitor != null) {
             monitor.worked(1);
