@@ -31,31 +31,6 @@ MasterTestSuite_DemoDbInit.class, //
  */
 public class MasterTestSuite_DemoIntegrationSuite {
 
-   //   @Rule
-   //   public TemporaryFolder tempFolder = new TemporaryFolder();
-   //
-   //   @Rule
-   //   public ExternalResource appServerResource = new ExternalResource() {
-   //      private OseeAppServerUtil appServerTestUtil;
-   //
-   //      @Override
-   //      protected void before() throws Throwable {
-   //         File file = tempFolder.newFolder("appData");
-   //         TestOseeAppServerConfig config = new TestOseeAppServerConfig(file.getAbsolutePath());
-   //         appServerTestUtil = new OseeAppServerUtil(config);
-   //         appServerTestUtil.start();
-   //      };
-   //
-   //      @Override
-   //      protected void after() {
-   //         try {
-   //            appServerTestUtil.stop();
-   //         } catch (Exception ex) {
-   //            OseeLog.log(MasterTestSuite_DemoIntegrationSuite.class, Level.SEVERE, ex);
-   //         }
-   //      };
-   //   };
-
    @org.junit.Test
    public void setup() throws Exception {
       OseeLog.log(MasterTestSuite_DemoIntegrationSuite.class, Level.INFO,
