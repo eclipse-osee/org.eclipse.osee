@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
-import org.eclipse.osee.framework.ui.skynet.render.WholeDocumentRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.WholeWordRenderer;
 
 /**
  * @author Jeff C. Phillips
@@ -26,7 +26,7 @@ public class PreviewWholeWordHandler extends AbstractEditorHandler {
    public Object execute(ExecutionEvent event) {
       if (!artifacts.isEmpty()) {
          try {
-            WholeDocumentRenderer renderer = new WholeDocumentRenderer();
+            WholeWordRenderer renderer = new WholeWordRenderer();
             renderer.open(artifacts, PresentationType.PREVIEW);
             dispose();
 

@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
-import org.eclipse.osee.framework.ui.skynet.render.WholeDocumentRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.WholeWordRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.TestUtil;
@@ -300,7 +300,7 @@ public class PreviewAndMultiPreviewTest {
                ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestProcedureWML, branch,
                   getClass().getSimpleName() + "4g");
             art.persist();
-            WholeDocumentRenderer renderer = new WholeDocumentRenderer();
+            WholeWordRenderer renderer = new WholeWordRenderer();
             renderer.open(Arrays.asList(art), PresentationType.PREVIEW);
             Assert.assertEquals(0, monitorLog.getLogsAtLevel(Level.WARNING).size());
             Assert.assertEquals(0, monitorLog.getLogsAtLevel(Level.SEVERE).size());

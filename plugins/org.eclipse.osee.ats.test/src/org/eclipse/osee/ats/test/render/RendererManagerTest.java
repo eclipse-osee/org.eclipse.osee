@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.NativeRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
-import org.eclipse.osee.framework.ui.skynet.render.WholeDocumentRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.WholeWordRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 import org.junit.Assert;
 import org.junit.Test;
@@ -99,11 +99,11 @@ public class RendererManagerTest {
       data.add(new Object[] {Action, DEFAULT_OPEN, AtsWorkflowRenderer.class});
 
       data.add(new Object[] {TestProcedureWML, GENERALIZED_EDIT, DefaultArtifactRenderer.class});
-      data.add(new Object[] {TestProcedureWML, SPECIALIZED_EDIT, WholeDocumentRenderer.class});
-      data.add(new Object[] {TestProcedureWML, DIFF, WholeDocumentRenderer.class});
-      data.add(new Object[] {TestProcedureWML, PREVIEW, WholeDocumentRenderer.class});
-      data.add(new Object[] {TestProcedureWML, MERGE, WholeDocumentRenderer.class});
-      data.add(new Object[] {TestProcedureWML, MERGE_EDIT, WholeDocumentRenderer.class});
+      data.add(new Object[] {TestProcedureWML, SPECIALIZED_EDIT, WholeWordRenderer.class});
+      data.add(new Object[] {TestProcedureWML, DIFF, WholeWordRenderer.class});
+      data.add(new Object[] {TestProcedureWML, PREVIEW, WholeWordRenderer.class});
+      data.add(new Object[] {TestProcedureWML, MERGE, WholeWordRenderer.class});
+      data.add(new Object[] {TestProcedureWML, MERGE_EDIT, WholeWordRenderer.class});
       data.add(new Object[] {TestProcedureWML, DEFAULT_OPEN, DefaultArtifactRenderer.class});
 
       data.add(new Object[] {GeneralDocument, GENERALIZED_EDIT, DefaultArtifactRenderer.class});

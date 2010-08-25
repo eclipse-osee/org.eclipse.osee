@@ -31,17 +31,17 @@ import org.eclipse.osee.framework.ui.skynet.render.compare.WholeWordCompare;
 /**
  * @author Jeff C. Phillips
  */
-public class WholeDocumentRenderer extends WordRenderer {
+public class WholeWordRenderer extends WordRenderer {
 
    private final IComparator comparator;
 
-   public WholeDocumentRenderer() {
+   public WholeWordRenderer() {
       this.comparator = new WholeWordCompare(this);
    }
 
    @Override
-   public WholeDocumentRenderer newInstance() {
-      return new WholeDocumentRenderer();
+   public WholeWordRenderer newInstance() {
+      return new WholeWordRenderer();
    }
 
    @Override
