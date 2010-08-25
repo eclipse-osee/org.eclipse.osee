@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.render;
 
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.DEFAULT_OPEN;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PREVIEW;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.SPECIALIZED_EDIT;
 import java.io.InputStream;
@@ -33,12 +34,12 @@ public class NativeRenderer extends FileSystemRenderer {
    public List<String> getCommandId(PresentationType presentationType) {
       ArrayList<String> commandIds = new ArrayList<String>(1);
 
-      if (presentationType == PresentationType.SPECIALIZED_EDIT) {
+      if (presentationType == SPECIALIZED_EDIT) {
          commandIds.add("org.eclipse.osee.framework.ui.skynet.nativeeditor.command");
          commandIds.add("org.eclipse.osee.framework.ui.skynet.othereditor.command");
       }
 
-      if (presentationType == PresentationType.PREVIEW) {
+      if (presentationType == PREVIEW) {
          commandIds.add("org.eclipse.osee.framework.ui.skynet.nativeprevieweditor.command");
       }
 
@@ -58,7 +59,7 @@ public class NativeRenderer extends FileSystemRenderer {
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
       if (artifact.isAttributeTypeValid(CoreAttributeTypes.NativeContent)) {
-         if (presentationType.matches(SPECIALIZED_EDIT, PREVIEW, PresentationType.DEFAULT_OPEN)) {
+         if (presentationType.matches(SPECIALIZED_EDIT, PREVIEW, DEFAULT_OPEN)) {
             return PRESENTATION_SUBTYPE_MATCH;
          }
       }
