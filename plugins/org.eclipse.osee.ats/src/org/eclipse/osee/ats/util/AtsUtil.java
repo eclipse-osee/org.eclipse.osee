@@ -53,7 +53,6 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event2.filter.ArtifactTypeEventFilter;
@@ -290,7 +289,7 @@ public final class AtsUtil {
    }
 
    public static void openATSArtifact(Artifact art) {
-      if (art instanceof IATSArtifact) {
+      if (art.isOfType(AtsArtifactTypes.AtsArtifact)) {
          try {
             openATSAction(art, AtsOpenOption.OpenOneOrPopupSelect);
          } catch (Exception ex) {

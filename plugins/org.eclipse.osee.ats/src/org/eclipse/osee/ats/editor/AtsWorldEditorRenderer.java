@@ -14,12 +14,12 @@ import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENER
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -36,7 +36,7 @@ public class AtsWorldEditorRenderer extends DefaultArtifactRenderer {
       if (artifact.isHistorical() || presentationType == GENERALIZED_EDIT) {
          return NO_MATCH;
       }
-      if (artifact instanceof IATSArtifact) {
+      if (artifact.isOfType(AtsArtifactTypes.AtsArtifact)) {
          return PRESENTATION_SUBTYPE_MATCH;
       }
       if (artifact.isOfType(CoreArtifactTypes.UniversalGroup)) {
@@ -44,7 +44,7 @@ public class AtsWorldEditorRenderer extends DefaultArtifactRenderer {
             return NO_MATCH;
          }
          for (Artifact childArt : artifact.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Members)) {
-            if (childArt instanceof IATSArtifact) {
+            if (childArt.isOfType(AtsArtifactTypes.AtsArtifact)) {
                return PRESENTATION_SUBTYPE_MATCH;
             }
          }

@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsOpenOption;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -59,7 +60,7 @@ public class AtsWorkflowRenderer extends DefaultArtifactRenderer {
 
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
-      if (artifact instanceof IATSArtifact && !artifact.isHistorical() && presentationType != GENERALIZED_EDIT) {
+      if (artifact.isOfType(AtsArtifactTypes.AtsArtifact) && !artifact.isHistorical() && presentationType != GENERALIZED_EDIT) {
          return PRESENTATION_SUBTYPE_MATCH;
       }
       return NO_MATCH;

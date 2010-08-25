@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.goal.GoalXViewerFactory;
 import org.eclipse.osee.ats.goal.RemoveFromGoalAction;
 import org.eclipse.osee.ats.goal.SetGoalOrderAction;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.world.IMenuActionProvider;
 import org.eclipse.osee.ats.world.IWorldEditor;
@@ -46,7 +47,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
@@ -401,7 +401,7 @@ public class SMAGoalMembersSection extends SectionPart implements ISelectedAtsAr
    public List<Artifact> getSelectedAtsArtifacts() {
       List<Artifact> artifacts = new ArrayList<Artifact>();
       for (Artifact art : worldComposite.getSelectedArtifacts()) {
-         if (art instanceof IATSArtifact) {
+         if (art.isOfType(AtsArtifactTypes.AtsArtifact)) {
             artifacts.add(art);
          }
       }

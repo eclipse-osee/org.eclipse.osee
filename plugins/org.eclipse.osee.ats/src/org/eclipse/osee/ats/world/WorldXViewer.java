@@ -56,6 +56,7 @@ import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
 import org.eclipse.osee.ats.task.TaskXViewer;
 import org.eclipse.osee.ats.util.ArtifactEmailWizard;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.PromptChangeUtil;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeColumn;
@@ -942,7 +943,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
          }
          Artifact useArt = (Artifact) treeItem.getData();
          XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
-         if (useArt instanceof IATSArtifact) {
+         if (useArt.isOfType(AtsArtifactTypes.AtsArtifact)) {
             boolean modified = false;
             if (xCol.equals(WorldXViewerFactory.Goal_Order)) {
                handleAltLeftClickGoalOrder(treeItem, (IATSArtifact) useArt);
@@ -1121,7 +1122,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
       Iterator<?> i = ((IStructuredSelection) getSelection()).iterator();
       while (i.hasNext()) {
          Object obj = i.next();
-         if (obj instanceof IATSArtifact) {
+         if (obj instanceof StateMachineArtifact) {
             artifacts.add((StateMachineArtifact) obj);
          }
       }

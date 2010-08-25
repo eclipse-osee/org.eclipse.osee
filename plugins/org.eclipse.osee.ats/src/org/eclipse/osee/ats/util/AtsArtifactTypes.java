@@ -26,6 +26,7 @@ public class AtsArtifactTypes extends NamedIdentity implements IArtifactType {
    public static final IArtifactType TeamWorkflow = new AtsArtifactTypes("AAMFDhSiF2OD+wiUqugA", "Team Workflow");
    public static final IArtifactType Version = new AtsArtifactTypes("AAMFDhder0oETnv14xQA", "Version");
    public static final IArtifactType Goal = new AtsArtifactTypes("ABMgU119UjI_Q23Yu+gA", "Goal");
+   public static final IArtifactType AtsArtifact = new AtsArtifactTypes("ABMaLS0jvw92SE+4ZJQA", "ats.Ats Artifact");
    // @formatter:on
 
    private AtsArtifactTypes(String guid, String name) {

@@ -14,9 +14,9 @@ import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENER
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.export.AtsExportManager.ExportOption;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
@@ -57,7 +57,7 @@ public class AtsExportRenderer extends DefaultArtifactRenderer {
 
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
-      if (artifact instanceof IATSArtifact && !artifact.isHistorical() && presentationType != GENERALIZED_EDIT) {
+      if (artifact.isOfType(AtsArtifactTypes.AtsArtifact) && !artifact.isHistorical() && presentationType != GENERALIZED_EDIT) {
          return PRESENTATION_SUBTYPE_MATCH;
       }
       return NO_MATCH;

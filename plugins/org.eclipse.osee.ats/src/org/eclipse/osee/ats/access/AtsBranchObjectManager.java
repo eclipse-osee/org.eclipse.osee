@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
@@ -70,7 +69,7 @@ public class AtsBranchObjectManager implements AtsAccessContextIdResolver {
             ArtifactType assocArtType = assocArtifact.getArtifactType();
             if (assocArtType.inheritsFrom(AtsArtifactTypes.TeamWorkflow)) {
                id = getFromWorkflow((TeamWorkFlowArtifact) assocArtifact);
-            } else if (assocArtifact instanceof IATSArtifact) {
+            } else if (assocArtifact.isOfType(AtsArtifactTypes.AtsArtifact)) {
                id = AtsBranchObjectContextId.DENY_CONTEXT;
             } else {
                id = AtsBranchObjectContextId.DEFAULT_BRANCH_CONTEXT;

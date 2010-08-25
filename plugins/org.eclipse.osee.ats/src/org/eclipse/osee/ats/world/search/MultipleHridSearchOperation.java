@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsEditor;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.LegacyPCRActions;
@@ -38,7 +39,6 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
@@ -215,7 +215,7 @@ public class MultipleHridSearchOperation extends AbstractOperation implements IW
       }
 
       for (Artifact art : artifacts) {
-         if (art instanceof IATSArtifact) {
+         if (art.isOfType(AtsArtifactTypes.AtsArtifact)) {
             resultAtsArts.add(art);
          } else {
             resultNonAtsArts.add(art);
