@@ -25,7 +25,7 @@ public class WordUtilTest {
       bookmark = WordUtil.reassignBookMarkID(bookmark);
       assertEquals(
          "The bookmark IDs have been reset",
-         "more content><aml:annotation aml:id=\"10546168\" w:type=\"Word.Bookmark.Start\"/><aml:annotation aml:id=\"1000\" w:type=\"Word.Bookmark.End\"/><Some more content> <aml:annotation aml:id=\"133334\" w:type=\"Word.Bookmark.Start\"/>aml:id=\"1001\" w:type=\"Word.Bookmark.End",
+         "more content><aml:annotation aml:id=\"1000\" w:type=\"Word.Bookmark.Start\"/><aml:annotation aml:id=\"1000\" w:type=\"Word.Bookmark.End\"/><Some more content> <aml:annotation aml:id=\"1001\" w:type=\"Word.Bookmark.Start\"/>aml:id=\"1001\" w:type=\"Word.Bookmark.End",
          bookmark);
    }
 }

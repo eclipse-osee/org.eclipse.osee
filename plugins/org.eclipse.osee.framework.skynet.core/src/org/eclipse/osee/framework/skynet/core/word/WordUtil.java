@@ -57,8 +57,10 @@ public class WordUtil {
    private static final String SELECT_WORD_VALUES =
       "SELECT attr.content, attr.gamma_id FROM osee_attribute attr, osee_txs txs WHERE attr.art_id=? AND attr.attr_type_id=? AND attr.gamma_id = txs.gamma_id AND txs.branch_id=? ORDER BY attr.gamma_id DESC";
    private static final Matcher binIdMatcher = Pattern.compile("wordml://(.+?)[.]").matcher("");
-   private static final Matcher bookMarkIdMatcher =
+   private static final Matcher bookMarkIdEndMatcher =
       Pattern.compile("aml:id=\"(\\d+)\" w:type=\"Word.Bookmark.End").matcher("");//
+   private static final Matcher bookMarkIdStartMatcher = Pattern.compile(
+      "aml:id=\"(\\d+)\" w:type=\"Word.Bookmark.Start").matcher("");//
    private static final Pattern tagKiller = Pattern.compile("<.*?>", Pattern.DOTALL | Pattern.MULTILINE);
    private static final Pattern paragraphPattern = Pattern.compile("<w:p( .*?)?>");
    private static int bookMarkId = 1000;
@@ -75,11 +77,19 @@ public class WordUtil {
       ChangeSet changeSet = new ChangeSet(content);
       boolean atLeastOneMatch = false;
       String toReturn = content;
-      bookMarkIdMatcher.reset(content);
+      bookMarkIdEndMatcher.reset(content);
+      bookMarkIdStartMatcher.reset(content);
 
-      while (bookMarkIdMatcher.find()) {
+      while (bookMarkIdStartMatcher.find()) {
          atLeastOneMatch = true;
-         changeSet.replace(bookMarkIdMatcher.start(1), bookMarkIdMatcher.end(1), String.valueOf(bookMarkId++));
+         int newId = bookMarkId++;
+         changeSet.replace(bookMarkIdStartMatcher.start(1), bookMarkIdStartMatcher.end(1), String.valueOf(newId));
+
+         if (bookMarkIdEndMatcher.find(bookMarkIdStartMatcher.end(1))) {
+            changeSet.replace(bookMarkIdEndMatcher.start(1), bookMarkIdEndMatcher.end(1), String.valueOf(newId));
+         } else {
+            System.err.println("Error");
+         }
       }
       if (atLeastOneMatch) {
          toReturn = changeSet.toString();

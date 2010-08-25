@@ -65,7 +65,7 @@ public class OseeLinkBuilder {
       Random random = new Random();
       int idNumber = getValidNumber(random.nextInt(19580427), random);
 
-      return String.format(WORDML_BOOKMARK_FORMAT, idNumber, source.getGuid(), idNumber);
+      return String.format(WORDML_BOOKMARK_FORMAT, 0, source.getGuid(), 0);
    }
 
    private int getValidNumber(int number, Random random) {
