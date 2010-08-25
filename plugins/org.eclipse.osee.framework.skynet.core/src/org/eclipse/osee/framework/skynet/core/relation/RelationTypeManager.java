@@ -13,11 +13,11 @@ package org.eclipse.osee.framework.skynet.core.relation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
@@ -33,7 +33,7 @@ public class RelationTypeManager {
       return Activator.getInstance().getOseeCacheService().getRelationTypeCache();
    }
 
-   public static List<RelationType> getValidTypes(ArtifactType artifactType, Branch branch) throws OseeCoreException {
+   public static List<RelationType> getValidTypes(ArtifactType artifactType, IOseeBranch branch) throws OseeCoreException {
       Collection<RelationType> relationTypes = getAllTypes();
       List<RelationType> validRelationTypes = new ArrayList<RelationType>();
       for (RelationType relationType : relationTypes) {
@@ -61,7 +61,7 @@ public class RelationTypeManager {
     * @return all the relation types that are valid for the given branch
     * @throws OseeCoreException
     */
-   public static Collection<RelationType> getValidTypes(Branch branch) throws OseeCoreException {
+   public static Collection<RelationType> getValidTypes(IOseeBranch branch) throws OseeCoreException {
       return getAllTypes();
    }
 
