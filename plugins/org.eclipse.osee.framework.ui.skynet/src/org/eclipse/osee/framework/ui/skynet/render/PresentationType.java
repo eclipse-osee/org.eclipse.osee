@@ -15,7 +15,6 @@ public enum PresentationType {
    SPECIALIZED_EDIT, // open using application specific editor
    DIFF,
    PREVIEW, // open read-only using application specific editor
-   PREVIEW_IN_COMPOSITE,
    MERGE,
    MERGE_EDIT,
    DEFAULT_OPEN, // up to the renderer to determine what is used for default
