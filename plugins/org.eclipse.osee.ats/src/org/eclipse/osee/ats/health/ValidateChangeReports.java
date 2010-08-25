@@ -133,8 +133,8 @@ public class ValidateChangeReports extends XNavigateItemAction {
                TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
 
                // Uncomment to only do a single program
-               //               if (!teamArt.getTeamName().contains("V13.1")) {
-               //                  System.err.println("Skipping non V13.1 workflow...Remove this.");
+               //               if (!teamArt.getTeamName().contains("ATS")) {
+               //                  System.err.println("Skipping non ATS workflow...Remove this.");
                //                  continue;
                //               }
                //               if (x >= 20) {
