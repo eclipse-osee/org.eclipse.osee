@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.test.health.AtsValidateAtsDatabaseTest;
 import org.eclipse.osee.ats.test.navigate.AtsNavigateItemsToMassEditorTest;
 import org.eclipse.osee.ats.test.navigate.AtsNavigateItemsToTaskEditorTest;
 import org.eclipse.osee.ats.test.navigate.AtsNavigateItemsToWorldViewTest;
+import org.eclipse.osee.ats.test.render.RendererManagerTest;
 import org.eclipse.osee.ats.test.util.AtsDeleteManagerTest;
 import org.eclipse.osee.ats.test.util.AtsImageTest;
 import org.eclipse.osee.ats.test.util.AtsNotifyUsersTest;
@@ -28,10 +29,19 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({SMAPrintTest.class, AtsImageTest.class, SMAPromptChangeStatusTest.class,
-   AtsDeleteManagerTest.class, AtsPurgeTest.class, AtsNotifyUsersTest.class, AtsBranchConfigurationTest.class,
-   AtsValidateAtsDatabaseTest.class, AtsNavigateItemsToMassEditorTest.class, AtsNavigateItemsToTaskEditorTest.class,
-   AtsNavigateItemsToWorldViewTest.class})
+@Suite.SuiteClasses({
+   SMAPrintTest.class,
+   AtsImageTest.class,
+   SMAPromptChangeStatusTest.class,
+   AtsDeleteManagerTest.class,
+   AtsPurgeTest.class,
+   AtsNotifyUsersTest.class,
+   AtsBranchConfigurationTest.class,
+   AtsValidateAtsDatabaseTest.class,
+   AtsNavigateItemsToMassEditorTest.class,
+   AtsNavigateItemsToTaskEditorTest.class,
+   AtsNavigateItemsToWorldViewTest.class,
+   RendererManagerTest.class})
 /**
  * @author Donald G. Dunne
  */
