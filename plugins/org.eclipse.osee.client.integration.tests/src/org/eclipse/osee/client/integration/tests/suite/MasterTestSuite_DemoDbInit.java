@@ -18,30 +18,49 @@ import org.eclipse.osee.framework.database.init.DatabaseInitializationOperation;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.support.test.util.TestUtil;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 
 /**
  * @author Donald G. Dunne
  */
 public class MasterTestSuite_DemoDbInit {
 
+   @BeforeClass
+   public static void setup() throws Exception {
+      assertTrue("Demo Application Server must be running",
+         ClientSessionManager.getAuthenticationProtocols().contains("demo"));
+      TestUtil.setIsInTest(true);
+   }
+
    @org.junit.Test
    public void testDemoDbInit() throws Exception {
       OseeLog.log(DatabaseInitializationOperation.class, Level.INFO, "Begin database initialization...");
 
-      assertTrue("Demo Application Server must be running",
-         ClientSessionManager.getAuthenticationProtocols().contains("demo"));
-      TestUtil.setIsInTest(true);
+      boolean wasSuccessful = false;
       String lastAuthenticationProtocol = OseeClientProperties.getAuthenticationProtocol();
       try {
          SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
          OseeLog.registerLoggerListener(monitorLog);
          OseeClientProperties.setAuthenticationProtocol("trustAll");
          DatabaseInitializationOperation.executeWithoutPrompting("OSEE Demo Database");
+
          TestUtil.severeLoggingEnd(monitorLog);
          OseeLog.log(DatabaseInitializationOperation.class, Level.INFO, "Completed database initialization");
+         wasSuccessful = true;
       } finally {
          OseeClientProperties.setAuthenticationProtocol(lastAuthenticationProtocol);
-         TestUtil.setIsInTest(false);
       }
+
+      if (wasSuccessful) {
+         ClientSessionManager.releaseSession();
+         // Re-authenticate so we can continue
+         ClientSessionManager.getSession();
+      }
+   }
+
+   @AfterClass
+   public static void tearDown() throws Exception {
+      TestUtil.setIsInTest(false);
    }
 }

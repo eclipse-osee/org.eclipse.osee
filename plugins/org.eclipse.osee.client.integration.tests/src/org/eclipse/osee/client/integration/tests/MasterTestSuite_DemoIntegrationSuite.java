@@ -11,12 +11,11 @@
 package org.eclipse.osee.client.integration.tests;
 
 import java.util.logging.Level;
-import junit.framework.Assert;
 import org.eclipse.osee.client.integration.tests.suite.MasterTestSuite_DemoDbInit;
 import org.eclipse.osee.client.integration.tests.suite.MasterTestSuite_DemoDbPopulate;
 import org.eclipse.osee.client.integration.tests.suite.MasterTestSuite_DemoDbTests;
-import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -31,11 +30,9 @@ MasterTestSuite_DemoDbInit.class, //
  */
 public class MasterTestSuite_DemoIntegrationSuite {
 
-   @org.junit.Test
+   @BeforeClass
    public void setup() throws Exception {
       OseeLog.log(MasterTestSuite_DemoIntegrationSuite.class, Level.INFO,
          "Starting osee client integration test suite...");
-      Assert.assertTrue("Demo Application Server must be running",
-         ClientSessionManager.getAuthenticationProtocols().contains("demo"));
    }
 }
