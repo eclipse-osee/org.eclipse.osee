@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.ui.skynet.test.cases.ViewWordChangeAndDiffTest
 import org.eclipse.osee.framework.ui.skynet.test.cases.WordArtifactElementExtractorTest;
 import org.eclipse.osee.framework.ui.skynet.test.cases.WordEditTest;
 import org.eclipse.osee.framework.ui.skynet.test.cases.WordTrackedChangesTest;
+import org.eclipse.osee.framework.ui.skynet.test.renderer.RendererTestSuite;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -43,7 +44,8 @@ EmailGroupsBlamTest.class, //
    ViewWordChangeAndDiffTest.class, //
    WordArtifactElementExtractorTest.class, //
    AttributeTypeEditPresenterTest.class, //
-   ArtifactPromptChangeTest.class})
+   ArtifactPromptChangeTest.class, //
+   RendererTestSuite.class})
 /**
  * @author Donald G. Dunne
  */

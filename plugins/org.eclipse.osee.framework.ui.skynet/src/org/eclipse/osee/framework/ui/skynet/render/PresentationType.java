@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.render;
 
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.Conditions;
+
 public enum PresentationType {
    GENERALIZED_EDIT, // open using general editor (i.e. artifact editor)
    SPECIALIZED_EDIT, // open using application specific editor
@@ -20,12 +23,15 @@ public enum PresentationType {
    DEFAULT_OPEN, // up to the renderer to determine what is used for default
    PRINT;
 
-   public boolean matches(PresentationType... presentationTypes) {
+   public boolean matches(PresentationType... presentationTypes) throws OseeCoreException {
+      Conditions.checkExpressionFailOnTrue(presentationTypes.length == 0, "presentationTypes to match cannot be empty");
+      boolean result = false;
       for (PresentationType presentationType : presentationTypes) {
          if (this == presentationType) {
-            return true;
+            result = true;
+            break;
          }
       }
-      return false;
+      return result;
    }
 }
