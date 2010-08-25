@@ -280,4 +280,15 @@ public final class UserManager {
       return false;
    }
 
+   public static String getSetting(String key) throws OseeCoreException {
+      return getUser().getSetting(key);
+   }
+
+   public static boolean getBooleanSetting(String key) throws OseeCoreException {
+      return getUser().getBooleanSetting(key);
+   }
+
+   public static void setSetting(String key, String value) throws OseeCoreException {
+      getUser().setSetting(key, value);
+   }
 }

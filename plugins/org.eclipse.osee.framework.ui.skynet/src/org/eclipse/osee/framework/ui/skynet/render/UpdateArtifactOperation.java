@@ -200,7 +200,7 @@ public class UpdateArtifactOperation extends AbstractOperation {
                // multi-edit mode only update if the artifact has at least one textual change (if
                // the MUTI_EDIT_SAVE_ALL_CHANGES preference is not set).
                boolean multiSave =
-                  UserManager.getUser().getBooleanSetting(MsWordPreferencePage.MUTI_EDIT_SAVE_ALL_CHANGES) || !WordUtil.textOnly(
+                  UserManager.getBooleanSetting(MsWordPreferencePage.MUTI_EDIT_SAVE_ALL_CHANGES) || !WordUtil.textOnly(
                      artifact.getSoleAttributeValue(CoreAttributeTypes.WordTemplateContent).toString()).equals(
                      WordUtil.textOnly(content));
 

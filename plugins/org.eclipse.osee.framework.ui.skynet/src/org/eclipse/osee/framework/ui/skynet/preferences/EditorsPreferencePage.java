@@ -37,7 +37,7 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
    private Button closeChangeReportEditorsOnShutdown;
 
    public static boolean isCloseChangeReportEditorsOnShutdown() throws OseeCoreException {
-      return UserManager.getUser().getBooleanSetting(CHANGE_REPORT_CLOSE_CHANGE_REPORT_EDITORS_ON_SHUTDOWN);
+      return UserManager.getBooleanSetting(CHANGE_REPORT_CLOSE_CHANGE_REPORT_EDITORS_ON_SHUTDOWN);
    }
 
    public static boolean isPreviewOnDoubleClickForWordArtifacts() throws OseeCoreException {
@@ -64,7 +64,7 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
       closeChangeReportEditorsOnShutdown.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false));
       closeChangeReportEditorsOnShutdown.setText("Close Change Report Editors on Shutdown");
       try {
-         boolean value = UserManager.getUser().getBooleanSetting(CHANGE_REPORT_CLOSE_CHANGE_REPORT_EDITORS_ON_SHUTDOWN);
+         boolean value = UserManager.getBooleanSetting(CHANGE_REPORT_CLOSE_CHANGE_REPORT_EDITORS_ON_SHUTDOWN);
          closeChangeReportEditorsOnShutdown.setSelection(value);
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);

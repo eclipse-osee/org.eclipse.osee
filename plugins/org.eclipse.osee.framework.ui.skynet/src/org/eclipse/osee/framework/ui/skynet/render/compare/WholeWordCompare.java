@@ -50,12 +50,12 @@ public class WholeWordCompare implements IComparator {
       Attribute<String> baseContent = getWordContent(baseArtifact, ATTRIBUTE_TYPE);
       Attribute<String> newerContent = getWordContent(newerArtifact, ATTRIBUTE_TYPE);
 
-      if (!UserManager.getUser().getBooleanSetting(MsWordPreferencePage.REMOVE_TRACKED_CHANGES)) {
+      if (!UserManager.getBooleanSetting(MsWordPreferencePage.REMOVE_TRACKED_CHANGES)) {
          oldAnnotationValue = removeAnnotations(baseContent);
          newAnnotationValue = removeAnnotations(newerContent);
       }
 
-      if (!UserManager.getUser().getBooleanSetting(MsWordPreferencePage.IDENTFY_IMAGE_CHANGES)) {
+      if (!UserManager.getBooleanSetting(MsWordPreferencePage.IDENTFY_IMAGE_CHANGES)) {
          originalValue = WordImageChecker.checkForImageDiffs(baseContent, newerContent);
       }
 

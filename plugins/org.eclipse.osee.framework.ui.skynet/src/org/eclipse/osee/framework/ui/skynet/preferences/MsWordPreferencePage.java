@@ -56,7 +56,7 @@ public class MsWordPreferencePage extends PreferencePage implements IWorkbenchPr
 
    private boolean getUserBooleanSetting(String settingKey) {
       try {
-         return UserManager.getUser().getBooleanSetting(settingKey);
+         return UserManager.getBooleanSetting(settingKey);
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          return false;
@@ -65,7 +65,7 @@ public class MsWordPreferencePage extends PreferencePage implements IWorkbenchPr
 
    private void setUserBooleanSetting(String settingKey, Button button) {
       try {
-         UserManager.getUser().setSetting(settingKey, String.valueOf(button.getSelection()));
+         UserManager.setSetting(settingKey, String.valueOf(button.getSelection()));
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }

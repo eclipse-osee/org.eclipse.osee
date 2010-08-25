@@ -40,7 +40,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.IBranchProvider;
@@ -84,17 +83,14 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
 
    private void storeState() {
       try {
-         User store = UserManager.getUser();
-         if (store != null) {
-            saveAction(store, showArtIds, "artifact.decorator.show.artId");
-            saveAction(store, showArtType, "artifact.decorator.show.artType");
-            saveAction(store, showArtBranch, "artifact.decorator.show.artBranch");
-            saveAction(store, showArtVersion, "artifact.decorator.show.artVersion");
-            if (attributesAction != null) {
-               Collection<String> items = attributesAction.getSelected();
-               store.setSetting(asKey(storageKey, "artifact.decorator.attrTypes"), Collections.toString(",", items));
-               saveAction(store, attributesAction, "artifact.decorator.show.attrTypes");
-            }
+         saveAction(showArtIds, "artifact.decorator.show.artId");
+         saveAction(showArtType, "artifact.decorator.show.artType");
+         saveAction(showArtBranch, "artifact.decorator.show.artBranch");
+         saveAction(showArtVersion, "artifact.decorator.show.artVersion");
+         if (attributesAction != null) {
+            Collection<String> items = attributesAction.getSelected();
+            UserManager.setSetting(asKey(storageKey, "artifact.decorator.attrTypes"), Collections.toString(",", items));
+            saveAction(attributesAction, "artifact.decorator.show.attrTypes");
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
@@ -103,36 +99,33 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
 
    private void loadState() {
       try {
-         User store = UserManager.getUser();
-         if (store != null) {
-            loadAction(store, showArtIds, "artifact.decorator.show.artId");
-            loadAction(store, showArtType, "artifact.decorator.show.artType");
-            loadAction(store, showArtBranch, "artifact.decorator.show.artBranch");
-            loadAction(store, showArtVersion, "artifact.decorator.show.artVersion");
-            if (attributesAction != null) {
-               String value = store.getSetting("artifact.decorator.attrTypes");
-               if (Strings.isValid(value)) {
-                  String[] entries = value.split(",");
-                  attributesAction.setSelected(Arrays.asList(entries));
-               }
-               loadAction(store, attributesAction, "artifact.decorator.show.attrTypes");
+         loadAction(showArtIds, "artifact.decorator.show.artId");
+         loadAction(showArtType, "artifact.decorator.show.artType");
+         loadAction(showArtBranch, "artifact.decorator.show.artBranch");
+         loadAction(showArtVersion, "artifact.decorator.show.artVersion");
+         if (attributesAction != null) {
+            String value = UserManager.getSetting("artifact.decorator.attrTypes");
+            if (Strings.isValid(value)) {
+               String[] entries = value.split(",");
+               attributesAction.setSelected(Arrays.asList(entries));
             }
+            loadAction(attributesAction, "artifact.decorator.show.attrTypes");
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
    }
 
-   private void loadAction(User store, Action action, String key) throws OseeCoreException {
+   private void loadAction(Action action, String key) throws OseeCoreException {
       if (action != null) {
-         boolean isChecked = store.getBooleanSetting(asKey(storageKey, key));
+         boolean isChecked = UserManager.getBooleanSetting(asKey(storageKey, key));
          action.setChecked(isChecked);
       }
    }
 
-   private void saveAction(User store, Action action, String key) throws OseeCoreException {
+   private void saveAction(Action action, String key) throws OseeCoreException {
       boolean isChecked = action != null && action.isChecked();
-      store.setSetting(asKey(storageKey, key), String.valueOf(isChecked));
+      UserManager.setSetting(asKey(storageKey, key), String.valueOf(isChecked));
    }
 
    private void checkActionsCreated(IBranchProvider branchProvider) {

@@ -68,7 +68,7 @@ public class WordTemplateCompare implements IComparator {
          Attribute<String> baseContent = getWordContent(baseArtifact, ATTRIBUTE_TYPE);
          Attribute<String> newerContent = getWordContent(newerArtifact, ATTRIBUTE_TYPE);
 
-         if (!UserManager.getUser().getBooleanSetting(MsWordPreferencePage.IDENTFY_IMAGE_CHANGES)) {
+         if (!UserManager.getBooleanSetting(MsWordPreferencePage.IDENTFY_IMAGE_CHANGES)) {
             originalValue = WordImageChecker.checkForImageDiffs(baseContent, newerContent);
          }
 

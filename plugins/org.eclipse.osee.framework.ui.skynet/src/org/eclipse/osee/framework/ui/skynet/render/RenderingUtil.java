@@ -163,7 +163,7 @@ public final class RenderingUtil {
    public static Set<Artifact> checkForTrackedChangesOn(Artifact artifact) throws OseeCoreException {
       Set<Artifact> artifacts = new HashSet<Artifact>();
 
-      if (!UserManager.getUser().getBooleanSetting(MsWordPreferencePage.REMOVE_TRACKED_CHANGES)) {
+      if (!UserManager.getBooleanSetting(MsWordPreferencePage.REMOVE_TRACKED_CHANGES)) {
          if (artifact != null) {
             Attribute<?> attribute = artifact.getSoleAttribute(CoreAttributeTypes.WordTemplateContent);
             if (attribute != null) {

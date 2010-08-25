@@ -112,7 +112,7 @@ public final class WordChangeReportOperation extends AbstractOperation {
                Attribute<String> baseContent = getWordContent(baseArtifact, attributeType);
                Attribute<String> newerContent = getWordContent(newerArtifact, attributeType);
 
-               if (!UserManager.getUser().getBooleanSetting(MsWordPreferencePage.IDENTFY_IMAGE_CHANGES)) {
+               if (!UserManager.getBooleanSetting(MsWordPreferencePage.IDENTFY_IMAGE_CHANGES)) {
                   originalValue = WordImageChecker.checkForImageDiffs(baseContent, newerContent);
                }
                Pair<IFile, IFile> fileDeltas = converter.convertToFile(PresentationType.DIFF, artifactDelta);

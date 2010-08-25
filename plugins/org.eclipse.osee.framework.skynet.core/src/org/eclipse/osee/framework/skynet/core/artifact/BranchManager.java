@@ -413,12 +413,12 @@ public class BranchManager {
 
    private void initializeLastBranchValue() {
       try {
-         String branchGuid = UserManager.getUser().getSetting(LAST_DEFAULT_BRANCH);
+         String branchGuid = UserManager.getSetting(LAST_DEFAULT_BRANCH);
          lastBranch = getBranchByGuid(branchGuid);
       } catch (Exception ex) {
          try {
             lastBranch = getDefaultInitialBranch();
-            UserManager.getUser().setSetting(LAST_DEFAULT_BRANCH, lastBranch.getGuid());
+            UserManager.setSetting(LAST_DEFAULT_BRANCH, lastBranch.getGuid());
          } catch (OseeCoreException ex1) {
             OseeLog.log(Activator.class, Level.SEVERE, ex1);
          }
