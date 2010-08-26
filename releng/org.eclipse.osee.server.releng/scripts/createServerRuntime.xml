@@ -135,6 +135,7 @@ osee.log.default=INFO
 		<attribute name="extraVMArgs" default=" " />
 		<sequential>
 			<echo file="@{filepath}" append="false">java \
+-Xmx@{serverMaxMem}
 -Dorg.osgi.service.http.port=@{serverport} \
 -Dosee.db.connection.id=@{connection.id} \
 @{extraVMArgs} -jar plugins/@{launcher} -console
