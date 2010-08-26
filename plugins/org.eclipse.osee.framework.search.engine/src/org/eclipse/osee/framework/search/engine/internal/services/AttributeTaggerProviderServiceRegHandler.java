@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.search.engine.internal.services;
 
 import java.util.Map;
-import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.util.AbstractTrackingHandler;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
@@ -31,8 +30,7 @@ public class AttributeTaggerProviderServiceRegHandler extends AbstractTrackingHa
    //@formatter:off
    private static final Class<?>[] SERVICE_DEPENDENCIES = new Class<?>[] {
       IResourceLocatorManager.class, 
-      IResourceManager.class,
-      IOseeCachingService.class
+      IResourceManager.class
    };
    //@formatter:on
 
