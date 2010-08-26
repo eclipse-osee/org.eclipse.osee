@@ -172,6 +172,11 @@ public class XBranchWidget extends XWidget implements IActionable {
       item.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
+            try {
+               BranchManager.refreshBranches();
+            } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
             loadData();
          }
       });
@@ -240,6 +245,7 @@ public class XBranchWidget extends XWidget implements IActionable {
 
    @Override
    public void refresh() {
+      loadData();
       branchXViewer.refresh();
       validate();
    }
@@ -290,11 +296,6 @@ public class XBranchWidget extends XWidget implements IActionable {
                      extraInfoLabel.setText("");
                   }
                   if (branchXViewer != null) {
-                     try {
-                        BranchManager.refreshBranches();
-                     } catch (OseeCoreException ex) {
-                        OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-                     }
                      branchXViewer.setInput(input);
                      getXViewer().setExpandedElements(expandedBranches);
                   }

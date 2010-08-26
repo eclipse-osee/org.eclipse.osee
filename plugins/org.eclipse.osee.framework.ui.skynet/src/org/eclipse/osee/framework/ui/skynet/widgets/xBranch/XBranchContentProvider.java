@@ -178,18 +178,15 @@ public class XBranchContentProvider implements ITreeContentProvider {
       }
       if (element instanceof Branch) {
          boolean hasChildren = true;
-
-         if (!showTransactions) {
-            try {
-               if (!showChildBranchesAtMainLevel) {
-                  hasChildren =
-                     showArchivedBranches ? !((Branch) element).getChildBranches(true).isEmpty() : !((Branch) element).getChildBranches().isEmpty();
-               } else {
-                  hasChildren = false;
-               }
-            } catch (OseeCoreException ex) {
-               OseeLog.log(this.getClass(), Level.WARNING, ex);
+         try {
+            if (!showChildBranchesAtMainLevel) {
+               hasChildren =
+                  showArchivedBranches ? !((Branch) element).getChildBranches(true).isEmpty() : !((Branch) element).getChildBranches().isEmpty();
+            } else {
+               hasChildren = false;
             }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(this.getClass(), Level.WARNING, ex);
          }
          return hasChildren;
       }
