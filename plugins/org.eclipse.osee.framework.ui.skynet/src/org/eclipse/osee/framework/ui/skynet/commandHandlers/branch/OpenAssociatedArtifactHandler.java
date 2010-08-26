@@ -51,7 +51,7 @@ public class OpenAssociatedArtifactHandler extends CommandHandler {
             if (associatedArtifact instanceof IATSArtifact) {
                OseeAts.getInstance().openArtifact(associatedArtifact);
             } else {
-               RendererManager.open(associatedArtifact, PresentationType.GENERALIZED_EDIT);
+               RendererManager.open(associatedArtifact, PresentationType.DEFAULT_OPEN);
             }
          } else {
             OseeLog.log(

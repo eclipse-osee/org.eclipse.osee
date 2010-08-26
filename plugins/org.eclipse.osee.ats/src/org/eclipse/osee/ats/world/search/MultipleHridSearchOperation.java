@@ -84,7 +84,7 @@ public class MultipleHridSearchOperation extends AbstractOperation implements IW
          return;
       }
       if (resultNonAtsArts.size() > 0) {
-         RendererManager.openInJob(new ArrayList<Artifact>(resultNonAtsArts), PresentationType.GENERALIZED_EDIT);
+         RendererManager.openInJob(new ArrayList<Artifact>(resultNonAtsArts), PresentationType.DEFAULT_OPEN);
       }
       if (resultAtsArts.size() > 0) {
          // If requested world editor and it's already been opened there, don't process other arts in editors

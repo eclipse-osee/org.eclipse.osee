@@ -246,7 +246,7 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
          @Override
          public void widgetSelected(SelectionEvent ev) {
             for (Artifact art : getSelectedArtifacts()) {
-               RendererManager.openInJob(art, PresentationType.GENERALIZED_EDIT);
+               RendererManager.openInJob(art, PresentationType.DEFAULT_OPEN);
             }
          }
       });
@@ -287,7 +287,7 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
    private void handleDoubleClick() {
       GroupExplorerItem item = getSelectedItem();
       if (item != null) {
-         RendererManager.openInJob(item.getArtifact(), PresentationType.GENERALIZED_EDIT);
+         RendererManager.openInJob(item.getArtifact(), PresentationType.DEFAULT_OPEN);
       }
    }
 

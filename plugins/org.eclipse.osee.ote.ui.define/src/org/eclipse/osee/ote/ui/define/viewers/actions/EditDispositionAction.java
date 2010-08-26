@@ -46,7 +46,7 @@ public class EditDispositionAction extends AbstractActionHandler {
          if (isValidSelection(operator)) {
             Artifact artifact = operator.getTestRunArtifact();
             checkPermissions(artifact);
-            RendererManager.open(artifact, PresentationType.GENERALIZED_EDIT);
+            RendererManager.open(artifact, PresentationType.DEFAULT_OPEN);
          }
       } catch (Exception ex) {
          OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, "Unable to open artifact.", ex);

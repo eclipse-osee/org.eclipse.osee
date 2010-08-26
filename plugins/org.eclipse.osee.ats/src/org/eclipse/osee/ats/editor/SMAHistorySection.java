@@ -91,7 +91,7 @@ public class SMAHistorySection extends SectionPart {
          @Override
          public void handleEvent(Event event) {
             try {
-               RendererManager.open(fSma, PresentationType.GENERALIZED_EDIT);
+               RendererManager.open(fSma, PresentationType.DEFAULT_OPEN);
             } catch (OseeCoreException ex) {
                OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
             }

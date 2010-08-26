@@ -38,7 +38,7 @@ public class OseeEmailTest {
    @Before
    public void setUp() throws Exception {
       if (emailAddress == null) {
-         RendererManager.open(UserManager.getUser(), PresentationType.GENERALIZED_EDIT);
+         RendererManager.open(UserManager.getUser(), PresentationType.DEFAULT_OPEN);
          emailAddress = UserManager.getUser().getEmail();
          assertFalse("Invalid email address " + emailAddress + " for user " + UserManager.getUser(),
             emailAddress.contains("\\@"));

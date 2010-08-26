@@ -116,7 +116,7 @@ public class CreateNewUser extends AbstractBlam {
       }
 
       user.persist();
-      RendererManager.open(user, PresentationType.GENERALIZED_EDIT);
+      RendererManager.open(user, PresentationType.DEFAULT_OPEN);
       monitor.done();
    }
 

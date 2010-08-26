@@ -41,7 +41,7 @@ public class ResultsXViewer extends XViewer {
       if (getSelectedRows().size() > 0) {
          Artifact art = getSelectedRows().iterator().next().getDoubleClickOpenArtifact();
          if (art != null) {
-            RendererManager.openInJob(art, PresentationType.GENERALIZED_EDIT);
+            RendererManager.openInJob(art, PresentationType.DEFAULT_OPEN);
          }
       }
    }

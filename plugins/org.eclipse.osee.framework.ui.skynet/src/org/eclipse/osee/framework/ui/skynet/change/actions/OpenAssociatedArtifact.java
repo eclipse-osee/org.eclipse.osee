@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.change.actions;
 
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.DEFAULT_OPEN;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
@@ -25,7 +26,6 @@ import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiData;
 import org.eclipse.osee.framework.ui.skynet.change.operations.LoadAssociatedArtifactOperation;
-import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
@@ -50,7 +50,7 @@ public class OpenAssociatedArtifact extends Action {
             if (changeData.getAssociatedArtifact() == null) {
                AWorkbench.popup("ERROR", "Cannot access associated artifact.");
             } else {
-               RendererManager.openInJob(changeData.getAssociatedArtifact(), PresentationType.GENERALIZED_EDIT);
+               RendererManager.openInJob(changeData.getAssociatedArtifact(), DEFAULT_OPEN);
             }
          }
       });

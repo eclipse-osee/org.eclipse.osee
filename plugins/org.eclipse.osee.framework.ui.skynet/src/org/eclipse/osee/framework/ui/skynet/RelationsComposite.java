@@ -410,7 +410,7 @@ public class RelationsComposite extends Composite implements IFrameworkTransacti
          if (object instanceof WrapperForRelationLink) {
             WrapperForRelationLink link = (WrapperForRelationLink) object;
             try {
-               RendererManager.open(link.getOther(), PresentationType.GENERALIZED_EDIT);
+               RendererManager.open(link.getOther(), PresentationType.DEFAULT_OPEN);
             } catch (OseeCoreException ex) {
                OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
