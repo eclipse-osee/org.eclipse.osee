@@ -33,6 +33,8 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 
 /**
+ * Test: @link: WordOutlineTest
+ * 
  * @author Karol M. Wilk
  */
 public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate {
@@ -91,7 +93,7 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
 
    public WordOutlineExtractorDelegate(IConflictResolvingGui gui) {
       super();
-      this.conflictResolvingGui = gui;
+      conflictResolvingGui = gui;
    }
 
    public IConflictResolvingGui getOutlineResolvingUi() {
