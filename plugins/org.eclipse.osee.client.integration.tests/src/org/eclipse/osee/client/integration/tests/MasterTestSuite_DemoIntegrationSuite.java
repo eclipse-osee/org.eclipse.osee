@@ -31,7 +31,7 @@ MasterTestSuite_DemoDbInit.class, //
 public class MasterTestSuite_DemoIntegrationSuite {
 
    @BeforeClass
-   public void setup() throws Exception {
+   public static void setup() throws Exception {
       OseeLog.log(MasterTestSuite_DemoIntegrationSuite.class, Level.INFO,
          "Starting osee client integration test suite...");
    }
