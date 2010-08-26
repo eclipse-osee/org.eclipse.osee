@@ -22,7 +22,7 @@ import org.junit.Test;
  */
 public class ReservedCharactersTest {
 
-   private static final int RESERVED_CHAR_COUNT = 34;
+   private static final int RESERVED_CHAR_COUNT = 42;
    private static final int XML_ENTITIES_COUNT = 5;
 
    private static final String ampCase = "Apples & Oranges";
