@@ -12,8 +12,10 @@ package org.eclipse.osee.framework.core.internal;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import org.eclipse.osee.framework.core.util.AbstractTrackingHandler;
 import org.osgi.framework.BundleContext;
@@ -59,8 +61,24 @@ public abstract class AbstractServiceBinder {
       if (!isReady) {
          if (areServicesReady()) {
             isReady = true;
-            Map<Class<?>, Object> services = getSingleServiceMap();
+
+            Set<Object> servicesReported = new HashSet<Object>();
+            Map<Class<?>, Object> services = new HashMap<Class<?>, Object>();
+            for (Entry<Class<?>, Collection<Object>> entry : serviceMap.entrySet()) {
+               Object serviceObject = entry.getValue().iterator().next();
+               servicesReported.add(serviceObject);
+               services.put(entry.getKey(), serviceObject);
+            }
+
             getHandler().onActivate(getBundleContext(), services);
+
+            for (Entry<Class<?>, Collection<Object>> entry : serviceMap.entrySet()) {
+               for (Object serviceObject : entry.getValue()) {
+                  if (!servicesReported.contains(serviceObject)) {
+                     getHandler().onServiceAdded(getBundleContext(), entry.getKey(), serviceObject);
+                  }
+               }
+            }
          }
       } else {
          getHandler().onServiceAdded(getBundleContext(), classKey, service);
@@ -88,14 +106,6 @@ public abstract class AbstractServiceBinder {
          }
       }
       return true;
-   }
-
-   private Map<Class<?>, Object> getSingleServiceMap() {
-      Map<Class<?>, Object> items = new HashMap<Class<?>, Object>();
-      for (Entry<Class<?>, Collection<Object>> entry : serviceMap.entrySet()) {
-         items.put(entry.getKey(), entry.getValue().iterator().next());
-      }
-      return items;
    }
 
    private final static class InternalServiceTracker extends ServiceTracker {
