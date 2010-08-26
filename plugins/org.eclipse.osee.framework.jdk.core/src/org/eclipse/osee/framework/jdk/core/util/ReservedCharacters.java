@@ -104,8 +104,9 @@ public final class ReservedCharacters {
          while ((line = reader.readLine()) != null) {
             String[] items = line.split(",\\s*");
             String key = items[0];
-            Character value = items[1].charAt(1);
-            reservedCharacters.put(key, value);
+            String value = items[1];
+            Character charValue = value.charAt(1);
+            reservedCharacters.put(key, charValue);
          }
       } finally {
          Lib.close(reader);
