@@ -11,8 +11,11 @@
 package org.eclipse.osee.framework.ui.skynet;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.core.commands.Command;
 import org.eclipse.jface.action.IContributionItem;
@@ -60,6 +63,14 @@ import org.eclipse.ui.menus.CommandContributionItemParameter;
  * @author Jeff C. Phillips
  */
 public class OpenWithContributionItem extends CompoundContributionItem {
+
+   //@formatter:off
+   private static final PresentationType[] OPEN_WITH_PRESENTATION_TYPES = new PresentationType[] {
+      PresentationType.PREVIEW,
+      PresentationType.SPECIALIZED_EDIT
+   };
+   //@formatter:on
+
    private ICommandService commandService;
 
    public OpenWithContributionItem() {
@@ -75,58 +86,61 @@ public class OpenWithContributionItem extends CompoundContributionItem {
       ArrayList<IContributionItem> contributionItems = new ArrayList<IContributionItem>(40);
       List<Artifact> artifacts = getSelectedArtifacts();
       if (artifacts != null && !artifacts.isEmpty()) {
+
+         Artifact testArtifact = artifacts.iterator().next();
+
          try {
-            contributionItems.addAll(getCommonContributionItems(artifacts, PresentationType.PREVIEW));
-            //add separator between preview and edit commands
-            if (!contributionItems.isEmpty()) {
-               contributionItems.add(new Separator());
+            for (int index = 0; index < OPEN_WITH_PRESENTATION_TYPES.length; index++) {
+               PresentationType openWithType = OPEN_WITH_PRESENTATION_TYPES[index];
+               List<IRenderer> commonRenders = RendererManager.getCommonRenderers(artifacts, openWithType);
+               contributionItems.addAll(getCommonContributionItems(openWithType, testArtifact, commonRenders));
+
+               if (index + 1 < OPEN_WITH_PRESENTATION_TYPES.length && !contributionItems.isEmpty()) {
+                  //add separator between presentation type commands
+                  contributionItems.add(new Separator());
+               }
             }
-            contributionItems.addAll(getCommonContributionItems(artifacts, PresentationType.SPECIALIZED_EDIT));
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
       }
-
       return contributionItems.toArray(new IContributionItem[0]);
    }
 
-   private ArrayList<IContributionItem> getCommonContributionItems(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
-      ArrayList<IContributionItem> contributionItems = new ArrayList<IContributionItem>(25);
-      List<IRenderer> commonRenders = RendererManager.getCommonRenderers(artifacts, presentationType);
-      Artifact firstArtifact = artifacts.iterator().next();
-      for (IRenderer render : commonRenders) {
-         ImageDescriptor imageDescriptor = null;
-         if (render instanceof WordRenderer) {
-            imageDescriptor = WordRenderer.getImageDescriptor();
-         } else if (render instanceof NativeRenderer) {
-            String fileExtension = firstArtifact.getSoleAttributeValue(CoreAttributeTypes.Extension);
-            if (Strings.isValid(fileExtension)) {
-               imageDescriptor = ImageManager.getProgramImageDescriptor(fileExtension);
+   private Collection<IContributionItem> getCommonContributionItems(PresentationType presentationType, Artifact testArtifact, Collection<IRenderer> commonRenders) throws OseeCoreException {
+      Map<String, IContributionItem> contributedItems = new LinkedHashMap<String, IContributionItem>(25);
+      for (IRenderer renderer : commonRenders) {
+         for (String commandId : renderer.getCommandId(presentationType)) {
+            Command command = commandService.getCommand(commandId);
+            if (command != null && command.isEnabled()) {
+               ImageDescriptor imageDescriptor = getRenderImageDescriptor(renderer, testArtifact);
+               IContributionItem item = createContributionItem(commandId, imageDescriptor);
+               contributedItems.put(commandId, item);
             }
          }
-         List<IContributionItem> commandList = loadCommands(render, presentationType, imageDescriptor);
-         contributionItems.addAll(commandList);
       }
-      return contributionItems;
+      return contributedItems.values();
    }
 
-   private ArrayList<IContributionItem> loadCommands(IRenderer renderer, PresentationType presentationType, ImageDescriptor imageDescriptor) {
-      ArrayList<IContributionItem> contributionItems = new ArrayList<IContributionItem>(25);
-      CommandContributionItem contributionItem = null;
-
-      for (String commandId : renderer.getCommandId(presentationType)) {
-         contributionItem =
-            new CommandContributionItem(new CommandContributionItemParameter(
-               PlatformUI.getWorkbench().getActiveWorkbenchWindow(), commandId, commandId, Collections.emptyMap(),
-               imageDescriptor, null, null, null, null, null, SWT.NONE, null, false));
-
-         Command command = commandService.getCommand(contributionItem.getId());
-         if (command != null && command.isEnabled()) {
-            contributionItems.add(contributionItem);
+   private ImageDescriptor getRenderImageDescriptor(IRenderer renderer, Artifact testArtifact) throws OseeCoreException {
+      ImageDescriptor imageDescriptor = null;
+      if (renderer instanceof WordRenderer) {
+         imageDescriptor = WordRenderer.getImageDescriptor();
+      } else if (renderer instanceof NativeRenderer) {
+         String fileExtension = testArtifact.getSoleAttributeValue(CoreAttributeTypes.Extension);
+         if (Strings.isValid(fileExtension)) {
+            imageDescriptor = ImageManager.getProgramImageDescriptor(fileExtension);
          }
       }
+      return imageDescriptor;
+   }
 
-      return contributionItems;
+   private IContributionItem createContributionItem(String commandId, ImageDescriptor imageDescriptor) {
+      IContributionItem contributionItem =
+         new CommandContributionItem(new CommandContributionItemParameter(
+            PlatformUI.getWorkbench().getActiveWorkbenchWindow(), commandId, commandId, Collections.emptyMap(),
+            imageDescriptor, null, null, null, null, null, SWT.NONE, null, false));
+      return contributionItem;
    }
 
    @Override

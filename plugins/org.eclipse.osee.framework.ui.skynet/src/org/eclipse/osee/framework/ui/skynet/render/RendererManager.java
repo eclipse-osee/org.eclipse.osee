@@ -12,19 +12,16 @@
 package org.eclipse.osee.framework.ui.skynet.render;
 
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.DEFAULT_OPEN;
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -34,8 +31,7 @@ import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
+import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
@@ -48,12 +44,13 @@ import org.eclipse.osee.framework.ui.skynet.render.word.Producer;
 /**
  * @author Ryan D. Brooks
  */
-public class RendererManager {
-   private static final RendererManager instance = new RendererManager();
-   private final HashMap<String, IRenderer> renderers = new HashMap<String, IRenderer>(40);
+public final class RendererManager {
+
+   private static final Map<String, IRenderer> RENDERER_MAP = new ConcurrentHashMap<String, IRenderer>(40);
+   private static boolean firstTimeThrough = true;
 
    private RendererManager() {
-      registerRendersFromExtensionPoints();
+      // Utility Class
    }
 
    /**
@@ -91,25 +88,19 @@ public class RendererManager {
    /**
     * Maps all renderers in the system to their applicable artifact types
     */
-   @SuppressWarnings("unchecked")
-   private void registerRendersFromExtensionPoints() {
-      List<IConfigurationElement> elements =
-         ExtensionPoints.getExtensionElements(SkynetGuiPlugin.getInstance(), "ArtifactRenderer", "Renderer");
+   private static synchronized void ensurePopulated() {
+      if (firstTimeThrough) {
+         firstTimeThrough = false;
+         registerRendersFromExtensionPoints();
+      }
+   }
 
-      for (IConfigurationElement element : elements) {
-         String classname = element.getAttribute("classname");
-         String bundleName = element.getContributor().getName();
-         try {
-            Class<IRenderer> clazz = Platform.getBundle(bundleName).loadClass(classname);
-            Constructor<IRenderer> constructor = clazz.getConstructor();
-            IRenderer renderer = constructor.newInstance();
-            renderers.put(renderer.getClass().getCanonicalName(), renderer);
-         } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-         } catch (NoClassDefFoundError er) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.WARNING,
-               "Failed to find a class definition for " + classname + ", registered from bundle " + bundleName, er);
-         }
+   private static void registerRendersFromExtensionPoints() {
+      ExtensionDefinedObjects<IRenderer> contributions =
+         new ExtensionDefinedObjects<IRenderer>(SkynetGuiPlugin.PLUGIN_ID + ".ArtifactRenderer", "Renderer",
+            "classname");
+      for (IRenderer renderer : contributions.getObjects()) {
+         RENDERER_MAP.put(renderer.getClass().getCanonicalName(), renderer);
       }
    }
 
@@ -138,7 +129,8 @@ public class RendererManager {
       }
       IRenderer bestRendererPrototype = null;
       int bestRating = IRenderer.NO_MATCH;
-      for (IRenderer renderer : instance.renderers.values()) {
+      ensurePopulated();
+      for (IRenderer renderer : RENDERER_MAP.values()) {
          int rating = renderer.getApplicabilityRating(presentationType, artifact);
          if (rating > bestRating) {
             bestRendererPrototype = renderer;
@@ -164,8 +156,8 @@ public class RendererManager {
    public static List<IRenderer> getApplicableRenderers(PresentationType presentationType, Artifact artifact, VariableMap options) throws OseeCoreException {
       ArrayList<IRenderer> renderers = new ArrayList<IRenderer>();
       int minimumRanking = getBestRenderer(presentationType, artifact, options).minimumRanking();
-
-      for (IRenderer prototypeRenderer : instance.renderers.values()) {
+      ensurePopulated();
+      for (IRenderer prototypeRenderer : RENDERER_MAP.values()) {
          // Add Catch Exception Code --
 
          int rating = prototypeRenderer.getApplicabilityRating(presentationType, artifact);

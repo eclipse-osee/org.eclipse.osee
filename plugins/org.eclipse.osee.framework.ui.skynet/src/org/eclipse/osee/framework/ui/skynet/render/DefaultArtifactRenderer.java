@@ -91,7 +91,6 @@ public class DefaultArtifactRenderer implements IRenderer {
       return new DefaultArtifactRenderer();
    }
 
-   @SuppressWarnings("unused")
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
       if (presentationType == GENERALIZED_EDIT) {
@@ -159,7 +158,7 @@ public class DefaultArtifactRenderer implements IRenderer {
 
    @Override
    public List<String> getCommandId(PresentationType presentationType) {
-      ArrayList<String> commandIds = new ArrayList<String>(2);
+      ArrayList<String> commandIds = new ArrayList<String>(1);
 
       if (presentationType == PresentationType.SPECIALIZED_EDIT) {
          commandIds.add("org.eclipse.osee.framework.ui.skynet.artifacteditor.command");
