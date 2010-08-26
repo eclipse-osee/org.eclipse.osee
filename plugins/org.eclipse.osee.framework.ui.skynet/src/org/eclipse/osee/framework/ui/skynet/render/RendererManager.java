@@ -158,12 +158,13 @@ public class RendererManager {
 
    public static List<IRenderer> getApplicableRenderers(PresentationType presentationType, Artifact artifact, VariableMap options) throws OseeCoreException {
       ArrayList<IRenderer> renderers = new ArrayList<IRenderer>();
+      int minimumRanking = getBestRenderer(presentationType, artifact, options).minimumRanking();
 
       for (IRenderer prototypeRenderer : instance.renderers.values()) {
          // Add Catch Exception Code --
 
          int rating = prototypeRenderer.getApplicabilityRating(presentationType, artifact);
-         if (rating > getBestRenderer(presentationType, artifact, options).minimumRanking()) {
+         if (rating >= minimumRanking) {
             IRenderer renderer = prototypeRenderer.newInstance();
             renderer.setOptions(options);
             renderers.add(renderer);
