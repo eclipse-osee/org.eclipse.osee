@@ -33,8 +33,8 @@ public class Activator implements BundleActivator {
       ILanguage language = new EnglishLanguage();
       TagProcessor processor = new TagProcessor(language);
 
-      trackers.add(new ServiceDependencyTracker(context, new AttributeTaggingManagerServiceRegHandler()));
       trackers.add(new ServiceDependencyTracker(context, new AttributeTaggerProviderServiceRegHandler(processor)));
+      trackers.add(new ServiceDependencyTracker(context, new AttributeTaggingManagerServiceRegHandler()));
       trackers.add(new ServiceDependencyTracker(context, new SearchEngineRegHandler(processor)));
       trackers.add(new ServiceDependencyTracker(context, new SearchEngineTaggerRegHandler()));
 
