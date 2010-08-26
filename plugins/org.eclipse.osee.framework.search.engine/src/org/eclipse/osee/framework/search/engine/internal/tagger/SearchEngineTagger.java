@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.search.engine.internal;
+package org.eclipse.osee.framework.search.engine.internal.tagger;
 
 import java.io.InputStream;
 import java.util.Collections;
@@ -17,12 +17,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Timer;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.server.ServerThreads;
 import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.OseeConnection;
+import org.eclipse.osee.framework.search.engine.IAttributeTaggerProviderManager;
 import org.eclipse.osee.framework.search.engine.ISearchEngineTagger;
 import org.eclipse.osee.framework.search.engine.ITagListener;
 import org.eclipse.osee.framework.search.engine.ITaggerStatistics;
@@ -36,11 +35,15 @@ public final class SearchEngineTagger implements ISearchEngineTagger {
    private final ExecutorService executor;
    private final Map<Integer, FutureTask<?>> futureTasks;
    private final TaggerStatistics statistics;
+   private final SearchTagDataStore searchTagDataStore;
+   private final IAttributeTaggerProviderManager taggingManager;
 
-   public SearchEngineTagger() {
-      this.statistics = new TaggerStatistics();
+   public SearchEngineTagger(ExecutorService executor, SearchTagDataStore searchTagDataStore, IAttributeTaggerProviderManager taggingManager) {
+      this.statistics = new TaggerStatistics(searchTagDataStore);
       this.futureTasks = Collections.synchronizedMap(new HashMap<Integer, FutureTask<?>>());
-      this.executor = Executors.newFixedThreadPool(3, ServerThreads.createNewThreadFactory("tagger.worker"));
+      this.executor = executor;
+      this.searchTagDataStore = searchTagDataStore;
+      this.taggingManager = taggingManager;
 
       Timer timer = new Timer("Start-Up Tagger");
       timer.schedule(new StartUpRunnable(this), 3000);
@@ -60,7 +63,7 @@ public final class SearchEngineTagger implements ISearchEngineTagger {
 
    @Override
    public void tagByQueueQueryId(ITagListener listener, int queryId) {
-      TaggerRunnable runnable = new TaggerRunnable(queryId, false, CACHE_LIMIT);
+      TaggerRunnable runnable = new TaggerRunnable(taggingManager, searchTagDataStore, queryId, false, CACHE_LIMIT);
       runnable.addListener(statistics);
       if (listener != null) {
          runnable.addListener(listener);
@@ -72,12 +75,12 @@ public final class SearchEngineTagger implements ISearchEngineTagger {
    }
 
    @Override
-   public void tagByBranchId(ITagListener listener, int branchId) throws OseeCoreException {
+   public void tagByBranchId(ITagListener listener, int branchId) {
       this.executor.submit(new BranchTaggerRunnable(this, listener, branchId, false, CACHE_LIMIT));
    }
 
    @Override
-   public void tagByBranchId(int branchId) throws OseeCoreException {
+   public void tagByBranchId(int branchId) {
       tagByBranchId(null, branchId);
    }
 
@@ -161,7 +164,7 @@ public final class SearchEngineTagger implements ISearchEngineTagger {
       private final int queryId;
       private int updated;
 
-      public DeleteTagsTx(int queryId) throws OseeCoreException {
+      public DeleteTagsTx(int queryId) {
          super();
          this.queryId = queryId;
          this.updated = -1;
@@ -173,7 +176,7 @@ public final class SearchEngineTagger implements ISearchEngineTagger {
 
       @Override
       protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
-         this.updated = SearchTagDataStore.deleteTags(connection, queryId);
+         this.updated = searchTagDataStore.deleteTags(connection, queryId);
       }
    }
 }

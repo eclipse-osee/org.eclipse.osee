@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
@@ -40,17 +41,23 @@ public class SearchTagDataStore {
    private static final String SELECT_SEARCH_TAGS =
       "select ost1.gamma_id from osee_search_tags ost1 where ost1.coded_tag_id = ?";
 
-   public static long getTotalQueryIdsInQueue() throws OseeDataStoreException {
-      return ConnectionHandler.runPreparedQueryFetchLong(-1L, SELECT_TOTAL_QUERY_IDS_IN_QUEUE);
+   private final IOseeDatabaseService databaseService;
+
+   public SearchTagDataStore(IOseeDatabaseService databaseService) {
+      this.databaseService = databaseService;
    }
 
-   public static long getTotalTags() throws OseeDataStoreException {
-      return ConnectionHandler.runPreparedQueryFetchLong(-1L, SELECT_TOTAL_TAGS);
+   public long getTotalQueryIdsInQueue() throws OseeDataStoreException {
+      return databaseService.runPreparedQueryFetchObject(-1L, SELECT_TOTAL_QUERY_IDS_IN_QUEUE);
    }
 
-   public static int deleteTags(OseeConnection connection, int queryId) throws OseeDataStoreException {
+   public long getTotalTags() throws OseeDataStoreException {
+      return databaseService.runPreparedQueryFetchObject(-1L, SELECT_TOTAL_TAGS);
+   }
+
+   public int deleteTags(OseeConnection connection, int queryId) throws OseeDataStoreException {
       int numberDeleted = 0;
-      IOseeStatement chStmt = ConnectionHandler.getStatement(connection);
+      IOseeStatement chStmt = databaseService.getStatement(connection);
       try {
          chStmt.runPreparedQuery("select gamma_id from osee_join_transaction where query_id = ?", queryId);
          List<Object[]> datas = new ArrayList<Object[]>();
@@ -58,7 +65,7 @@ public class SearchTagDataStore {
             datas.add(new Object[] {chStmt.getLong("gamma_id")});
          }
          if (!datas.isEmpty()) {
-            numberDeleted = ConnectionHandler.runBatchUpdate(connection, DELETE_SEARCH_TAGS, datas);
+            numberDeleted = databaseService.runBatchUpdate(connection, DELETE_SEARCH_TAGS, datas);
          }
       } finally {
          chStmt.close();
@@ -66,23 +73,23 @@ public class SearchTagDataStore {
       return numberDeleted;
    }
 
-   public static int deleteTags(OseeConnection connection, Collection<IAttributeLocator> locators) throws OseeDataStoreException {
+   public int deleteTags(OseeConnection connection, Collection<IAttributeLocator> locators) throws OseeDataStoreException {
       return deleteTags(connection, locators.toArray(new IAttributeLocator[locators.size()]));
    }
 
-   public static int deleteTags(OseeConnection connection, IAttributeLocator... locators) throws OseeDataStoreException {
+   public int deleteTags(OseeConnection connection, IAttributeLocator... locators) throws OseeDataStoreException {
       int numberDeleted = 0;
       if (locators.length > 0) {
          List<Object[]> datas = new ArrayList<Object[]>();
          for (IAttributeLocator locator : locators) {
             datas.add(new Object[] {locator.getGammaId()});
          }
-         numberDeleted = ConnectionHandler.runBatchUpdate(connection, DELETE_SEARCH_TAGS, datas);
+         numberDeleted = databaseService.runBatchUpdate(connection, DELETE_SEARCH_TAGS, datas);
       }
       return numberDeleted;
    }
 
-   public static int storeTags(OseeConnection connection, Collection<SearchTag> searchTags) throws OseeDataStoreException {
+   public int storeTags(OseeConnection connection, Collection<SearchTag> searchTags) throws OseeDataStoreException {
       return storeTags(connection, searchTags.toArray(new SearchTag[searchTags.size()]));
    }
 

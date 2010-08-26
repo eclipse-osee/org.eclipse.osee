@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<component name="xml.attribute.tagger.provider">
-	<implementation class="org.eclipse.osee.framework.search.engine.tagger.XmlAttributeTaggerProvider"/>
-	<service>
-		<provide interface="org.eclipse.osee.framework.search.engine.IAttributeTaggerProvider"/>
-	</service>	
-</component>

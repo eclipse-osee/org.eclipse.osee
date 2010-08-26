@@ -10,10 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine.internal;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.core.exception.InvalidTaggerException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
@@ -28,30 +27,28 @@ import org.eclipse.osee.framework.search.engine.utility.ITagCollector;
 /**
  * @author Roberto E. Escobar
  */
-public class AttributeTaggerProviderManager implements IAttributeTaggerProviderManager {
+public class AttributeTaggerProviderManagerImpl implements IAttributeTaggerProviderManager {
 
-   private final Map<String, IAttributeTaggerProvider> attributeTaggerProviders;
+   private final Map<String, IAttributeTaggerProvider> attributeTaggerProviders =
+      new ConcurrentHashMap<String, IAttributeTaggerProvider>();
 
-   public AttributeTaggerProviderManager() {
-      this.attributeTaggerProviders = Collections.synchronizedMap(new HashMap<String, IAttributeTaggerProvider>());
+   private final AttributeTypeCache typeCache;
+
+   public AttributeTaggerProviderManagerImpl(AttributeTypeCache typeCache) {
+      this.typeCache = typeCache;
    }
 
    @Override
    public void addAttributeTaggerProvider(IAttributeTaggerProvider attributeTaggerProvider) {
-      synchronized (this.attributeTaggerProviders) {
-         this.attributeTaggerProviders.put(attributeTaggerProvider.getClass().getSimpleName(), attributeTaggerProvider);
-      }
+      this.attributeTaggerProviders.put(attributeTaggerProvider.getClass().getSimpleName(), attributeTaggerProvider);
    }
 
    @Override
    public void removeAttributeTaggerProvider(IAttributeTaggerProvider attributeTaggerProvider) {
-      synchronized (this.attributeTaggerProviders) {
-         this.attributeTaggerProviders.remove(attributeTaggerProvider);
-      }
+      this.attributeTaggerProviders.remove(attributeTaggerProvider);
    }
 
    private IAttributeTaggerProvider getProvider(int attrTypeId) throws OseeCoreException {
-      AttributeTypeCache typeCache = Activator.getInstance().getOseeCachingService().getAttributeTypeCache();
       AttributeType attributeType = typeCache.getById(attrTypeId);
       IAttributeTaggerProvider toReturn = this.attributeTaggerProviders.get(attributeType.getTaggerId());
       if (toReturn == null) {

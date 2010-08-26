@@ -18,10 +18,12 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ //
-SearchTagDataStoreTest.class,//
+//   SearchTagQueryBuilderTest.class, //
+TagEncoderTest.class, //
    TagProcessorTest.class, //
-   WordsUtilTest.class, //
+   WordOrderMatcherTest.class, //
+   WordsUtilTest.class //
 })
 public class UtilityTestSuite {
-
+   // Test Suite
 }

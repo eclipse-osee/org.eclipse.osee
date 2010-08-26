@@ -10,31 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine.utility;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Properties;
 import java.util.Set;
-import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.util.ReservedCharacters;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.search.engine.internal.Activator;
 
 /**
  * @author Roberto E. Escobar
  */
 public class WordsUtil {
-
-   private static final String VOWELS = "aeiou";
-   private static final String IES_ENDING = "ies";
-   private static final String OES_ENDING = "oes";
-   private static final String ES_ENDING = "es";
-   private static final String S_ENDING = "s";
-   private static final String VES_ENDING = "ves";
-   public static final String EMPTY_STRING = "";
-   private static final String[] SPECIAL_ES_ENDING_CASES = new String[] {"ss", "sh", "ch", "x"};
 
    private static Character[] DEFAULT_PUNCTUACTION = new Character[] {'\n', '\r', ' ', '!', '"', '#', '$', '%', '(',
       ')', '*', '+', ',', '-', '.', '/', ':', ';', '<', '>', '?', '@', '[', '\\', ']', '^', '{', '|', '}', '~', '_',
@@ -42,7 +28,6 @@ public class WordsUtil {
 
    private static char[] PUNCTUATION = null;
 
-   private static final Properties dictionary;
    static {
       Set<Character> combined = new HashSet<Character>();
       combined.addAll(Arrays.asList(DEFAULT_PUNCTUACTION));
@@ -55,47 +40,6 @@ public class WordsUtil {
          index++;
       }
       Arrays.sort(PUNCTUATION);
-      dictionary = new Properties();
-      try {
-         URL url = Activator.getResource("/support/pluralToSingularExceptions.xml");
-         dictionary.loadFromXML(url.openStream());
-      } catch (Exception ex) {
-         OseeLog.log(TagProcessor.class, Level.SEVERE, "Unable to process plural to singular exceptions file.", ex);
-      }
-   }
-
-   private static boolean hasConstantBeforeEnding(String word, String ending) {
-      if (!word.equals(ending)) {
-         String remainder = word.substring(word.length() - (ending.length() + 1));
-         return VOWELS.indexOf(remainder, 1) < 0;
-      } else {
-         return false;
-      }
-   }
-
-   private static boolean hasEitherSequenceBeforeEnding(String word, String ending, String... sequences) {
-      boolean toReturn = false;
-      String remainder = word.substring(0, word.length() - ending.length());
-      for (String sequence : sequences) {
-         toReturn |= remainder.endsWith(sequence);
-      }
-      return toReturn;
-   }
-
-   private static String replaceEndingWith(String word, String ending, String replaceWith) {
-      return word.substring(0, word.length() - ending.length()) + replaceWith;
-   }
-
-   public static String stripPossesive(String original) {
-      String toReturn = original;
-      if (original != null && original.length() > 0) {
-         if (original.lastIndexOf('\'') == original.length() - 1) {
-            toReturn = replaceEndingWith(original, "'", "");
-         } else if (original.endsWith("'s")) {
-            toReturn = replaceEndingWith(original, "'s", "");
-         }
-      }
-      return toReturn;
    }
 
    public static String[] splitOnPunctuation(String original) {
@@ -119,7 +63,7 @@ public class WordsUtil {
    private static void addToList(String toAdd, List<String> list) {
       toAdd = toAdd.trim();
       if (toAdd.length() > 0) {
-         toAdd = WordsUtil.toRemoveSingleQuotes(toAdd);
+         toAdd = WordsUtil.removeSingleQuotesFromBeginningAndEnd(toAdd);
          if (toAdd.length() > 0) {
             list.add(toAdd);
          }
@@ -154,34 +98,7 @@ public class WordsUtil {
       return toReturn;
    }
 
-   public static String toSingular(String word) {
-      word = word.toLowerCase();
-      String toReturn = dictionary.getProperty(word);
-      if (toReturn == null) {
-         if (word.endsWith(IES_ENDING) && hasConstantBeforeEnding(word, IES_ENDING)) {
-            toReturn = replaceEndingWith(word, IES_ENDING, "y");
-         } else if (word.endsWith(OES_ENDING) && hasConstantBeforeEnding(word, OES_ENDING)) {
-            toReturn = replaceEndingWith(word, OES_ENDING, "o");
-         } else if (word.endsWith(ES_ENDING) && hasConstantBeforeEnding(word, ES_ENDING)) {
-            String replaceWith = "e";
-            String ending = ES_ENDING;
-            if (hasEitherSequenceBeforeEnding(word, ES_ENDING, SPECIAL_ES_ENDING_CASES)) {
-               replaceWith = EMPTY_STRING;
-            } else if (hasEitherSequenceBeforeEnding(word, ES_ENDING, "v")) {
-               ending = VES_ENDING;
-               replaceWith = "f";
-            }
-            toReturn = replaceEndingWith(word, ending, replaceWith);
-         } else if (word.endsWith(S_ENDING)) {
-            toReturn = word.substring(0, word.length() - 1);
-         } else {
-            toReturn = word;
-         }
-      }
-      return toReturn;
-   }
-
-   public static String toRemoveSingleQuotes(String original) {
+   public static String removeSingleQuotesFromBeginningAndEnd(String original) {
       int startAt = 0;
       int stopAt = original.length();
       boolean process = false;
@@ -201,5 +118,31 @@ public class WordsUtil {
          }
       }
       return original;
+   }
+
+   public static char[] removeExtraSpacesAndSpecialCharacters(String toSearch, boolean setAllToLowerCase) {
+      boolean lastCharacterAddedWasWhiteSpace = false;
+      StringBuilder searchString = new StringBuilder();
+      for (int index = 0; index < toSearch.length(); index++) {
+         char currChar = toSearch.charAt(index);
+         if (setAllToLowerCase) {
+            currChar = Character.toLowerCase(currChar);
+         }
+         if (currChar != '\r' && currChar != '\n') {
+            if (isPunctuationOrApostrophe(currChar)) {
+               currChar = ' ';
+            }
+            if (Character.isWhitespace(currChar)) {
+               if (!lastCharacterAddedWasWhiteSpace) {
+                  searchString.append(currChar);
+                  lastCharacterAddedWasWhiteSpace = true;
+               }
+            } else {
+               searchString.append(currChar);
+               lastCharacterAddedWasWhiteSpace = false;
+            }
+         }
+      }
+      return searchString.toString().trim().toCharArray();
    }
 }

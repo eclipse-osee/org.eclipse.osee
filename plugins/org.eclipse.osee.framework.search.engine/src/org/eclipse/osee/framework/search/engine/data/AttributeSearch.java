@@ -31,8 +31,10 @@ public final class AttributeSearch implements ITagCollector {
    private final SearchOptions options;
    private final Set<Long> tagStore;
    private final AttributeType[] attributeTypes;
+   private final TagProcessor tagProcessor;
 
-   public AttributeSearch(String searchString, int branchId, SearchOptions options, AttributeType... attributeTypes) {
+   public AttributeSearch(TagProcessor tagProcessor, String searchString, int branchId, SearchOptions options, AttributeType... attributeTypes) {
+      this.tagProcessor = tagProcessor;
       this.tagStore = new HashSet<Long>();
       this.branchId = branchId;
       this.searchString = searchString;
@@ -43,7 +45,7 @@ public final class AttributeSearch implements ITagCollector {
    public Set<AttributeData> getMatchingAttributes() throws Exception {
       Set<AttributeData> toReturn = null;
       long start = System.currentTimeMillis();
-      TagProcessor.collectFromString(searchString, this);
+      tagProcessor.collectFromString(searchString, this);
       toReturn = AttributeDataStore.getAttributesByTags(branchId, options, tagStore, attributeTypes);
       if (toReturn == null) {
          toReturn = Collections.emptySet();

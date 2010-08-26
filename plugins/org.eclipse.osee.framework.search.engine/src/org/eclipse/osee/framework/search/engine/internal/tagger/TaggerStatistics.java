@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.search.engine.internal;
+package org.eclipse.osee.framework.search.engine.internal.tagger;
 
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.search.engine.ITagItemStatistics;
@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.search.engine.utility.SearchTagDataStore;
  * @author Roberto E. Escobar
  */
 public class TaggerStatistics extends TagListenerAdapter implements Cloneable, ITaggerStatistics {
-   public static final TaggerStatistics EMPTY_STATS = new TaggerStatistics();
+   public static final TaggerStatistics EMPTY_STATS = new TaggerStatistics(null);
    private static final TaskStatistics DEFAULT_TASK_STATS = new TaskStatistics(-1, -1, -1);
 
    private long averageQueryIdWaitTime;
@@ -36,8 +36,10 @@ public class TaggerStatistics extends TagListenerAdapter implements Cloneable, I
    private long longestQueryIdProcessingTime;
    private TaskStatistics longestTask;
    private TaskStatistics mostTags;
+   private final SearchTagDataStore tagDataStore;
 
-   public TaggerStatistics() {
+   public TaggerStatistics(SearchTagDataStore tagDataStore) {
+      this.tagDataStore = tagDataStore;
       clear();
    }
 
@@ -114,12 +116,12 @@ public class TaggerStatistics extends TagListenerAdapter implements Cloneable, I
 
    @Override
    public long getTagsInSystem() throws OseeDataStoreException {
-      return SearchTagDataStore.getTotalTags();
+      return tagDataStore != null ? tagDataStore.getTotalTags() : 0;
    }
 
    @Override
    public long getTotalQueryIdsInQueue() throws OseeDataStoreException {
-      return SearchTagDataStore.getTotalQueryIdsInQueue();
+      return tagDataStore != null ? tagDataStore.getTotalQueryIdsInQueue() : 0;
    }
 
    @Override

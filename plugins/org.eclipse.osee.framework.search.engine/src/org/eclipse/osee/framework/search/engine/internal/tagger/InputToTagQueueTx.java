@@ -9,7 +9,7 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.framework.search.engine.internal;
+package org.eclipse.osee.framework.search.engine.internal.tagger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +36,7 @@ public abstract class InputToTagQueueTx extends DbTransaction {
    private TagQueueJoinQuery currentJoinQuery;
    private boolean isOkToDispatch;
 
-   InputToTagQueueTx(ISearchEngineTagger tagger, ITagListener listener, boolean isCacheAll, int cacheLimit) throws OseeCoreException {
+   InputToTagQueueTx(ISearchEngineTagger tagger, ITagListener listener, boolean isCacheAll, int cacheLimit) {
       this.tagger = tagger;
       this.listener = listener;
       this.cacheLimit = cacheLimit;

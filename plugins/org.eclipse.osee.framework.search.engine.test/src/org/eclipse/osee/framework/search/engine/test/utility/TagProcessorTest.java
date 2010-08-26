@@ -13,151 +13,116 @@ package org.eclipse.osee.framework.search.engine.test.utility;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Scanner;
-import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.XmlTextInputStream;
+import org.eclipse.osee.framework.search.engine.language.EnglishLanguage;
+import org.eclipse.osee.framework.search.engine.test.mocks.EngineAsserts;
+import org.eclipse.osee.framework.search.engine.test.mocks.TagCollector;
 import org.eclipse.osee.framework.search.engine.utility.ITagCollector;
 import org.eclipse.osee.framework.search.engine.utility.TagProcessor;
-import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Test Case for {@link TagProcessor}
  * 
  * @author Roberto E. Escobar
  */
+@RunWith(Parameterized.class)
 public class TagProcessorTest {
 
-   private Map<String, TestData<URL, URL>> getTestTagData() {
-      Map<String, TestData<URL, URL>> toReturn = new LinkedHashMap<String, TestData<URL, URL>>();
-      //      Bundle bundle = Activator.getInstance().getBundleContext().getBundle();
-      //      Enumeration<?> urls = bundle.findEntries("data", "*.*", true);
-      //      while (urls.hasMoreElements()) {
-      //         URL url = (URL) urls.nextElement();
-      //         String name = getFileName(url.getPath());
-      //         if (Strings.isValid(name) && (url.getPath().endsWith(".data.xml") || url.getPath().endsWith(".tags.txt"))) {
-      //            TestData<URL, URL> pair = toReturn.get(name);
-      //            if (pair == null) {
-      //               pair = new TestData<URL, URL>();
-      //               toReturn.put(name, pair);
-      //            }
-      //            if (isDataFile(url.getPath())) {
-      //               pair.data = url;
-      //            } else if (isExpectedFile(url.getPath())) {
-      //               pair.expected = url;
-      //            } else if (pair.data == null || pair.expected == null) {
-      //               toReturn.remove(pair);
-      //            }
-      //         }
-      //      }
-      return toReturn;
+   private final TagProcessor tagProcessor;
+   private final String rawData;
+   private final String expectedParsed;
+   private final List<Pair<String, Long>> expected;
+
+   public TagProcessorTest(TagProcessor tagProcessor, String rawData, String expectedParsed, List<Pair<String, Long>> expected) {
+      super();
+      this.tagProcessor = tagProcessor;
+      this.rawData = rawData;
+      this.expectedParsed = expectedParsed;
+      this.expected = expected;
    }
 
-   private void checkValue(int currentCount, Scanner expectedTags, String test, String word, Long codedTag) {
+   @Test
+   public void testCollectFromString() {
+      List<Pair<String, Long>> actual = new ArrayList<Pair<String, Long>>();
+      ITagCollector tagCollector = new TagCollector(actual);
+      tagProcessor.collectFromString(expectedParsed, tagCollector);
+      EngineAsserts.assertTagsEqual(expected, actual);
+   }
+
+   @Test
+   public void testCollectFromInputStream() throws UnsupportedEncodingException {
+      InputStream inputStream = null;
       try {
-         if (expectedTags.hasNext()) {
-            Assert.assertEquals(String.format("Line: [%d] Test: [%s] word: [%s]", currentCount, test, word),
-               expectedTags.next(), word);
-            Assert.assertEquals(String.format("Line: [%d] Test: [%s] word: [%s]", currentCount, test, word),
-               expectedTags.nextLong(), codedTag.longValue());
-         } else {
-            Assert.assertTrue(String.format("Line: [%d] Test: [%s] word: [%s] tag: [%d] -- Extra Tag Found",
-               currentCount, test, word, codedTag), false);
-         }
-      } catch (Exception ex) {
-         Assert.fail(String.format("%s %s", word, codedTag));
+         inputStream = new XmlTextInputStream(rawData);
+         List<Pair<String, Long>> actual = new ArrayList<Pair<String, Long>>();
+         ITagCollector tagCollector = new TagCollector(actual);
+         tagProcessor.collectFromInputStream(inputStream, tagCollector);
+         EngineAsserts.assertTagsEqual(expected, actual);
+      } finally {
+         Lib.close(inputStream);
       }
    }
 
-   @Ignore
-   // Decouple from file system
    @Test
-   public void testTagFromInputStream() throws IOException {
-      Map<String, TestData<URL, URL>> testMap = getTestTagData();
-      for (final String key : testMap.keySet()) {
-         TestData<URL, URL> testData = testMap.get(key);
-
-         InputStream dataStream = null;
-         InputStream expectedStream = null;
-         try {
-            dataStream = new BufferedInputStream(testData.data.openStream());
-            expectedStream = new BufferedInputStream(testData.expected.openStream());
-            final Scanner expectedTags = new Scanner(expectedStream, "UTF-8");
-
-            Scanner sourceScanner = new Scanner(new XmlTextInputStream(dataStream));
-            final MutableInteger count = new MutableInteger(0);
-            TagProcessor.collectFromScanner(sourceScanner, new ITagCollector() {
-               @Override
-               public void addTag(String word, Long codedTag) {
-                  checkValue(count.getValueAndInc(), expectedTags, key, word, codedTag);
-               }
-            });
-         } finally {
-            if (dataStream != null) {
-               try {
-                  dataStream.close();
-               } catch (IOException ex) {
-               }
-            }
-            if (expectedStream != null) {
-               try {
-                  expectedStream.close();
-               } catch (IOException ex) {
-               }
-            }
+   public void testCollectFromScanner() throws UnsupportedEncodingException {
+      Scanner sourceScanner = null;
+      try {
+         sourceScanner = new Scanner(new XmlTextInputStream(rawData));
+         List<Pair<String, Long>> actual = new ArrayList<Pair<String, Long>>();
+         ITagCollector tagCollector = new TagCollector(actual);
+         tagProcessor.collectFromScanner(sourceScanner, tagCollector);
+         EngineAsserts.assertTagsEqual(expected, actual);
+      } finally {
+         if (sourceScanner != null) {
+            sourceScanner.close();
          }
       }
    }
 
-   //   private String getFileName(String name) {
-   //      int index = name.lastIndexOf("/");
-   //      if (index > -1) {
-   //         name = name.substring(index + 1, name.length());
-   //      }
-   //      if (name.endsWith(".data.xml")) {
-   //         name = name.substring(0, name.length() - 9);
-   //      }
-   //      if (name.endsWith(".tags.txt")) {
-   //         name = name.substring(0, name.length() - 9);
-   //      }
-   //      return name;
-   //   }
+   @Parameters
+   public static Collection<Object[]> data() throws Exception {
+      List<Object[]> data = new ArrayList<Object[]>();
 
-   //   private boolean isDataFile(String name) {
-   //      return name != null && name.endsWith(".data.xml");
-   //   }
-   //
-   //   private boolean isExpectedFile(String name) {
-   //      return name != null && name.endsWith(".tags.txt");
-   //   }
-
-   private class TestData<K, V> {
-      private K data;
-      private V expected;
+      TagProcessor tagProcess = new TagProcessor(new EnglishLanguage());
+      for (int index = 1; index < 8; index++) {
+         String name = "test" + index;
+         String rawData = getResource(name + ".data.xml");
+         String expectedParsed = getResource(name + ".expected.txt");
+         List<Pair<String, Long>> expected = loadExpected(name + ".tags.txt");
+         data.add(new Object[] {tagProcess, rawData, expectedParsed, expected});
+      }
+      return data;
    }
 
-   @Ignore
-   // Decouple from file system
-   @Test
-   public void testTagWordFile() throws IOException {
-      // This is here to be able to look at tags generated from xml file source
-      //      Bundle bundle = Activator.getInstance().getBundleContext().getBundle();
-      //      URL url = bundle.getEntry("data/test5.data.xml");
-      //      InputStream dataStream = null;
-      //      try {
-      //         dataStream = new XmlTextInputStream(new BufferedInputStream(url.openStream()));
-      //         TagProcessor.collectFromInputStream(dataStream, new ITagCollector() {
-      //            @Override
-      //            public void addTag(String word, Long codedTag) {
-      //               System.out.println("Word: [" + word + "] Tag: [" + codedTag + "]");
-      //            }
-      //         });
-      //      } finally {
-      //         dataStream.close();
-      //      }
+   private static List<Pair<String, Long>> loadExpected(String resourceName) throws IOException {
+      List<Pair<String, Long>> data = new ArrayList<Pair<String, Long>>();
+      String rawData = getResource(resourceName);
+      String[] entries = rawData.split("\r?\n");
+      for (String entry : entries) {
+         String[] args = entry.split("\\s");
+         data.add(new Pair<String, Long>(args[0], Long.valueOf(args[1])));
+      }
+      return data;
+   }
+
+   private static String getResource(String resourceName) throws IOException {
+      InputStream inputStream = null;
+      try {
+         inputStream = new BufferedInputStream(TagProcessorTest.class.getResourceAsStream("data/" + resourceName));
+         return Lib.inputStreamToString(inputStream);
+      } finally {
+         Lib.close(inputStream);
+      }
    }
 }

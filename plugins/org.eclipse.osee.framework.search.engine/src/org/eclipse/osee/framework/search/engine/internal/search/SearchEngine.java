@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.search.engine.internal;
+package org.eclipse.osee.framework.search.engine.internal.search;
 
 import java.util.Collection;
 import java.util.List;
@@ -23,6 +23,8 @@ import org.eclipse.osee.framework.search.engine.SearchOptions.SearchOptionsEnum;
 import org.eclipse.osee.framework.search.engine.SearchResult;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeData;
 import org.eclipse.osee.framework.search.engine.data.AttributeSearch;
+import org.eclipse.osee.framework.search.engine.internal.Activator;
+import org.eclipse.osee.framework.search.engine.utility.TagProcessor;
 
 /**
  * @author Roberto E. Escobar
@@ -30,9 +32,13 @@ import org.eclipse.osee.framework.search.engine.data.AttributeSearch;
 public class SearchEngine implements ISearchEngine {
 
    private final SearchStatistics statistics;
+   private final TagProcessor tagProcessor;
+   private final IAttributeTaggerProviderManager taggingManager;
 
-   public SearchEngine() {
-      this.statistics = new SearchStatistics();
+   public SearchEngine(SearchStatistics statistics, TagProcessor tagProcessor, IAttributeTaggerProviderManager taggingManager) {
+      this.statistics = statistics;
+      this.tagProcessor = tagProcessor;
+      this.taggingManager = taggingManager;
    }
 
    @Override
@@ -41,8 +47,9 @@ public class SearchEngine implements ISearchEngine {
 
       long startTime = System.currentTimeMillis();
 
-      IAttributeTaggerProviderManager manager = Activator.getTaggerManager();
-      AttributeSearch attributeSearch = new AttributeSearch(searchString, branchId, options, attributeTypes);
+      AttributeSearch attributeSearch =
+         new AttributeSearch(tagProcessor, searchString, branchId, options, attributeTypes);
+
       Collection<AttributeData> tagMatches = attributeSearch.getMatchingAttributes();
       long timeAfterPass1 = System.currentTimeMillis() - startTime;
       long secondPass = System.currentTimeMillis();
@@ -50,14 +57,15 @@ public class SearchEngine implements ISearchEngine {
       boolean bypassSecondPass = !options.getBoolean(SearchOptionsEnum.match_word_order.asStringOption());
       if (bypassSecondPass) {
          for (AttributeData attributeData : tagMatches) {
-            results.add(attributeData.getId(), attributeData.getArtId(), attributeData.getGammaId());
+            results.add(attributeData.getBranchId(), attributeData.getArtId(), attributeData.getGammaId());
          }
       } else {
          for (AttributeData attributeData : tagMatches) {
             try {
-               List<MatchLocation> locations = manager.find(attributeData, searchString, options);
+               List<MatchLocation> locations = taggingManager.find(attributeData, searchString, options);
                if (!locations.isEmpty()) {
-                  results.add(attributeData.getId(), attributeData.getArtId(), attributeData.getGammaId(), locations);
+                  results.add(attributeData.getBranchId(), attributeData.getArtId(), attributeData.getGammaId(),
+                     locations);
                }
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, String.format("Error processing: [%s]", attributeData));

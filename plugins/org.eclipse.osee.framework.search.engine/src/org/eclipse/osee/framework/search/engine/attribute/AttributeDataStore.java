@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.search.engine.SearchOptions.SearchOptionsEnum;
 /**
  * @author Roberto E. Escobar
  */
-public class AttributeDataStore {
+public final class AttributeDataStore {
 
    private static final String LOAD_ATTRIBUTE =
       "SELECT attr1.gamma_id, attr1.VALUE, attr1.uri, attr1.attr_type_id FROM osee_attribute attr1, osee_tag_gamma_queue tgq1 WHERE attr1.gamma_id = tgq1.gamma_id AND tgq1.query_id = ?";
@@ -50,6 +50,7 @@ public class AttributeDataStore {
       new CompositeKeyHashMap<Integer, Boolean, String>();
 
    private AttributeDataStore() {
+      // Utility Class
    }
 
    public static Collection<AttributeData> getAttribute(final OseeConnection connection, final int tagQueueQueryId) throws OseeDataStoreException {
@@ -175,7 +176,7 @@ public class AttributeDataStore {
       return toReturn;
    }
 
-   public static String getAllTaggableGammasByBranchQuery(final int branchId) throws OseeDataStoreException {
+   public static String getAllTaggableGammasByBranchQuery(final int branchId) {
       return getBranchTaggingQueries(branchId, false);
    }
 
@@ -183,7 +184,7 @@ public class AttributeDataStore {
       return branchId > -1 ? new Object[] {branchId} : new Object[0];
    }
 
-   private static String getBranchTaggingQueries(final int branchId, final boolean isCountQuery) throws OseeDataStoreException {
+   private static String getBranchTaggingQueries(final int branchId, final boolean isCountQuery) {
       StringBuilder builder = new StringBuilder();
       builder.append(isCountQuery ? COUNT_TAGGABLE_ATTRIBUTES : FIND_ALL_TAGGABLE_ATTRIBUTES);
       if (branchId > -1) {

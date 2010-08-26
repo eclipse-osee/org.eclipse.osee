@@ -22,24 +22,40 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
+import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
+import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.resource.management.Options;
 import org.eclipse.osee.framework.resource.management.StandardOptions;
 import org.eclipse.osee.framework.search.engine.IAttributeTaggerProvider;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeData;
-import org.eclipse.osee.framework.search.engine.internal.Activator;
-import org.eclipse.osee.framework.search.engine.utility.WordsUtil;
+import org.eclipse.osee.framework.search.engine.utility.TagProcessor;
 
 /**
  * @author Roberto E. Escobar
  */
 public abstract class BaseAttributeTaggerProvider implements IAttributeTaggerProvider {
 
+   private final IResourceLocatorManager locatorManager;
+   private final IResourceManager resourceManager;
+   private final TagProcessor tagProcess;
+
+   protected BaseAttributeTaggerProvider(TagProcessor tagProcess, IResourceLocatorManager locatorManager, IResourceManager resourceManager) {
+      super();
+      this.locatorManager = locatorManager;
+      this.resourceManager = resourceManager;
+      this.tagProcess = tagProcess;
+   }
+
+   protected TagProcessor getTagProcessor() {
+      return tagProcess;
+   }
+
    protected String getValue(AttributeData attributeData) {
       String value = getExtendedData(attributeData);
       if (value == null) {
          value = attributeData.getStringValue();
       }
-      return Strings.isValid(value) ? value : WordsUtil.EMPTY_STRING;
+      return Strings.isValid(value) ? value : Strings.emptyString();
    }
 
    protected InputStream getValueAsStream(AttributeData attributeData) throws OseeCoreException {
@@ -59,8 +75,8 @@ public abstract class BaseAttributeTaggerProvider implements IAttributeTaggerPro
       if (attributeData.isUriValid()) {
          Options options = new Options();
          options.put(StandardOptions.DecompressOnAquire.name(), true);
-         IResourceLocator locator = Activator.getResourceLocatorManager().getResourceLocator(attributeData.getUri());
-         IResource resource = Activator.getResourceManager().acquire(locator, options);
+         IResourceLocator locator = locatorManager.getResourceLocator(attributeData.getUri());
+         IResource resource = resourceManager.acquire(locator, options);
          toReturn = resource.getContent();
       }
       return toReturn;

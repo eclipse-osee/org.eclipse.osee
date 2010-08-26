@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine.test;
 
+import org.eclipse.osee.framework.search.engine.test.attribute.AttributeTestSuite;
+import org.eclipse.osee.framework.search.engine.test.language.LanguageTestSuite;
 import org.eclipse.osee.framework.search.engine.test.utility.UtilityTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -19,8 +21,10 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ //
-UtilityTestSuite.class, //
+AttributeTestSuite.class, //
+   LanguageTestSuite.class, //
+   UtilityTestSuite.class, //
 })
 public class AllSearchEngineTestSuite {
-
+   // Test Suite Class
 }

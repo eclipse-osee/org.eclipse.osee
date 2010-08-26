@@ -8,10 +8,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.search.engine.internal;
+package org.eclipse.osee.framework.search.engine.internal.tagger;
 
 import java.io.InputStream;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -20,7 +19,6 @@ import org.eclipse.osee.framework.search.engine.ISearchEngineTagger;
 import org.eclipse.osee.framework.search.engine.ITagListener;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
@@ -30,7 +28,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 final class InputStreamTagProcessor extends InputToTagQueueTx {
    private final InputStream inputStream;
 
-   InputStreamTagProcessor(ISearchEngineTagger tagger, ITagListener listener, InputStream inputStream, boolean isCacheAll, int cacheLimit) throws OseeCoreException {
+   InputStreamTagProcessor(ISearchEngineTagger tagger, ITagListener listener, InputStream inputStream, boolean isCacheAll, int cacheLimit) {
       super(tagger, listener, isCacheAll, cacheLimit);
       this.inputStream = inputStream;
    }
@@ -50,11 +48,12 @@ final class InputStreamTagProcessor extends InputToTagQueueTx {
       }
 
       @Override
-      public void endElementFound(String uri, String localName, String name) throws SAXException {
+      public void endElementFound(String uri, String localName, String name) {
+         // Do nothing         
       }
 
       @Override
-      public void startElementFound(String uri, String localName, String name, Attributes attributes) throws SAXException, NumberFormatException, OseeDataStoreException {
+      public void startElementFound(String uri, String localName, String name, Attributes attributes) throws NumberFormatException, OseeDataStoreException {
          if (name.equalsIgnoreCase("entry")) {
             String gammaId = attributes.getValue("gammaId");
             if (Strings.isValid(gammaId)) {

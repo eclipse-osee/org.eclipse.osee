@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.search.engine;
 
 import org.eclipse.osee.framework.core.model.type.AttributeType;
-import org.eclipse.osee.framework.search.engine.internal.SearchStatistics;
+import org.eclipse.osee.framework.search.engine.internal.search.SearchStatistics;
 
 /**
  * @author Roberto E. Escobar

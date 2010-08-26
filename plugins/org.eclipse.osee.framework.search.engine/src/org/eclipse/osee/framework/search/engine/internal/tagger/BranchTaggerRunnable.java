@@ -8,10 +8,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.search.engine.internal;
+package org.eclipse.osee.framework.search.engine.internal.tagger;
 
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -30,7 +29,7 @@ public class BranchTaggerRunnable implements Runnable {
    private final int branchId;
    private final BranchToQueryTx branchToQueryTx;
 
-   BranchTaggerRunnable(ISearchEngineTagger tagger, ITagListener listener, int branchId, boolean isCacheAll, int cacheLimit) throws OseeCoreException {
+   BranchTaggerRunnable(ISearchEngineTagger tagger, ITagListener listener, int branchId, boolean isCacheAll, int cacheLimit) {
       this.branchToQueryTx = new BranchToQueryTx(tagger, listener, isCacheAll, cacheLimit);
       this.branchId = branchId;
    }
@@ -45,7 +44,7 @@ public class BranchTaggerRunnable implements Runnable {
    }
 
    private final class BranchToQueryTx extends InputToTagQueueTx {
-      public BranchToQueryTx(ISearchEngineTagger tagger, ITagListener listener, boolean isCacheAll, int cacheLimit) throws OseeCoreException {
+      public BranchToQueryTx(ISearchEngineTagger tagger, ITagListener listener, boolean isCacheAll, int cacheLimit) {
          super(tagger, listener, isCacheAll, cacheLimit);
       }
 

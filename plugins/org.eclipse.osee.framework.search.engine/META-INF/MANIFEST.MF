@@ -8,14 +8,16 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-ActivationPolicy: lazy
 Eclipse-ExtensibleAPI: true
 Import-Package: org.eclipse.core.runtime,
- org.eclipse.osee.framework.core.model.cache,
- org.eclipse.osee.framework.core.model.type,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.model,
+ org.eclipse.osee.framework.core.model.cache,
+ org.eclipse.osee.framework.core.model.type,
  org.eclipse.osee.framework.core.server,
  org.eclipse.osee.framework.core.services,
+ org.eclipse.osee.framework.core.util,
+ org.eclipse.osee.framework.database,
  org.eclipse.osee.framework.database.core,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
@@ -34,9 +36,4 @@ Export-Package: org.eclipse.osee.framework.search.engine,
  org.eclipse.osee.framework.search.engine.attribute,
  org.eclipse.osee.framework.search.engine.data,
  org.eclipse.osee.framework.search.engine.utility
-Service-Component: OSGI-INF/attribute.tagger.provider.consumer.xml,
- OSGI-INF/default.attribute.tagger.provider.xml,
- OSGI-INF/xml.attribute.tagger.provider.xml,
- OSGI-INF/search.engine.service.xml,
- OSGI-INF/search.engine.tagger.service.xml
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.search.engine.internal;
+package org.eclipse.osee.framework.search.engine.internal.tagger;
 
 import java.util.Collection;
 import java.util.Deque;
@@ -23,11 +23,13 @@ import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.JoinUtility.JoinItem;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.search.engine.IAttributeTaggerProviderManager;
 import org.eclipse.osee.framework.search.engine.ITagListener;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeData;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeDataStore;
 import org.eclipse.osee.framework.search.engine.data.IAttributeLocator;
 import org.eclipse.osee.framework.search.engine.data.SearchTag;
+import org.eclipse.osee.framework.search.engine.internal.Activator;
 import org.eclipse.osee.framework.search.engine.utility.ITagCollector;
 import org.eclipse.osee.framework.search.engine.utility.SearchTagDataStore;
 
@@ -42,8 +44,12 @@ class TaggerRunnable implements Runnable {
    private long processingTime;
    private final long waitStart;
    private long waitTime;
+   private final SearchTagDataStore tagDataStore;
+   private final IAttributeTaggerProviderManager taggingManager;
 
-   TaggerRunnable(int tagQueueQueryId, boolean isCacheAll, int cacheLimit) {
+   TaggerRunnable(IAttributeTaggerProviderManager taggingManager, SearchTagDataStore tagDataStore, int tagQueueQueryId, boolean isCacheAll, int cacheLimit) {
+      this.taggingManager = taggingManager;
+      this.tagDataStore = tagDataStore;
       this.listeners = new HashSet<ITagListener>();
       this.tagQueueQueryId = tagQueueQueryId;
       this.waitStart = System.currentTimeMillis();
@@ -118,7 +124,7 @@ class TaggerRunnable implements Runnable {
       private final Deque<SearchTag> searchTags;
       private SearchTag currentTag;
 
-      public AttributeToTagTx() throws OseeCoreException {
+      public AttributeToTagTx() {
          super();
          this.searchTags = new LinkedList<SearchTag>();
          this.currentTag = null;
@@ -145,14 +151,13 @@ class TaggerRunnable implements Runnable {
          Collection<AttributeData> attributeDatas = getDataFromQueryId(connection, getTagQueueQueryId(), TOTAL_RETRIES);
          if (!attributeDatas.isEmpty()) {
             try {
-               SearchTagDataStore.deleteTags(connection,
-                  attributeDatas.toArray(new IAttributeLocator[attributeDatas.size()]));
+               tagDataStore.deleteTags(connection, attributeDatas.toArray(new IAttributeLocator[attributeDatas.size()]));
                for (AttributeData attributeData : attributeDatas) {
                   long startItemTime = System.currentTimeMillis();
                   this.currentTag = new SearchTag(attributeData.getGammaId());
                   this.searchTags.add(this.currentTag);
                   try {
-                     Activator.getTaggerManager().tagIt(attributeData, this);
+                     taggingManager.tagIt(attributeData, this);
                      checkSizeStoreIfNeeded(connection);
                   } catch (Throwable ex) {
                      OseeLog.log(Activator.class, Level.SEVERE, String.format("Unable to tag - [%s]", this.currentTag));
@@ -205,7 +210,7 @@ class TaggerRunnable implements Runnable {
       }
 
       private void store(OseeConnection connection, Collection<SearchTag> toStore) throws OseeDataStoreException {
-         SearchTagDataStore.storeTags(connection, toStore);
+         tagDataStore.storeTags(connection, toStore);
          for (SearchTag item : toStore) {
             item.clearCache();
          }

@@ -17,6 +17,8 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.XmlTextInputStream;
+import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
+import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.search.engine.MatchLocation;
 import org.eclipse.osee.framework.search.engine.SearchOptions;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeData;
@@ -29,18 +31,25 @@ import org.eclipse.osee.framework.search.engine.utility.WordOrderMatcher;
  */
 public class XmlAttributeTaggerProvider extends BaseAttributeTaggerProvider {
 
+   public XmlAttributeTaggerProvider(TagProcessor tagProcess, IResourceLocatorManager locatorManager, IResourceManager resourceManager) {
+      super(tagProcess, locatorManager, resourceManager);
+   }
+
    @Override
    public List<MatchLocation> find(AttributeData attributeData, String toSearch, SearchOptions options) throws OseeCoreException {
+      List<MatchLocation> toReturn;
       if (Strings.isValid(toSearch)) {
          InputStream inputStream = null;
          try {
             inputStream = new XmlTextInputStream(getValueAsStream(attributeData));
-            return WordOrderMatcher.findInStream(inputStream, toSearch, options);
+            toReturn = WordOrderMatcher.findInStream(inputStream, toSearch, options);
          } finally {
             Lib.close(inputStream);
          }
+      } else {
+         toReturn = Collections.emptyList();
       }
-      return Collections.emptyList();
+      return toReturn;
    }
 
    @Override
@@ -48,7 +57,7 @@ public class XmlAttributeTaggerProvider extends BaseAttributeTaggerProvider {
       InputStream inputStream = null;
       try {
          inputStream = getValueAsStream(attributeData);
-         TagProcessor.collectFromInputStream(new XmlTextInputStream(inputStream), collector);
+         getTagProcessor().collectFromInputStream(new XmlTextInputStream(inputStream), collector);
       } finally {
          Lib.close(inputStream);
       }

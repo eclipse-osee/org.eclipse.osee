@@ -9,6 +9,7 @@
 <entry key="mice">mouse</entry>
 <entry key="teeth">tooth</entry>
 <entry key="indeces">index</entry>
+<entry key="indices">index</entry>
 <entry key="lives">life</entry>
 <entry key="oxen">ox</entry>
 <entry key="kine">cow</entry>
@@ -56,4 +57,5 @@
 <entry key="douglas">douglas</entry>
 <entry key="brooks">brooks</entry>
 <entry key="previous">previous</entry>
+<entry key="charles">charles</entry>
 </properties>

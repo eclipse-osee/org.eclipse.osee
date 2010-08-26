@@ -27,9 +27,10 @@ import org.eclipse.osee.framework.search.engine.SearchOptions.SearchOptionsEnum;
 /**
  * @author Roberto E. Escobar
  */
-public class WordOrderMatcher {
+public final class WordOrderMatcher {
 
    private WordOrderMatcher() {
+      // Utility Class
    }
 
    public static List<MatchLocation> findInStream(InputStream inputStream, String toSearch, SearchOptions options) throws OseeCoreException {
@@ -38,7 +39,7 @@ public class WordOrderMatcher {
       try {
          reader = new InputStreamReader(inputStream, "UTF-8");
          boolean isCaseInsensitive = !options.getBoolean(SearchOptionsEnum.case_sensitive.asStringOption());
-         char[] charsToSearch = removeExtraSpacesAndSpecialCharacters(toSearch, isCaseInsensitive);
+         char[] charsToSearch = WordsUtil.removeExtraSpacesAndSpecialCharacters(toSearch, isCaseInsensitive);
          int charCount = 0;
          int index = 0;
          int value = 0;
@@ -103,31 +104,5 @@ public class WordOrderMatcher {
          Lib.close(reader);
       }
       return matchLocations;
-   }
-
-   private static char[] removeExtraSpacesAndSpecialCharacters(String toSearch, boolean setAllToLowerCase) {
-      boolean lastCharacterAddedWasWhiteSpace = false;
-      StringBuilder searchString = new StringBuilder();
-      for (int index = 0; index < toSearch.length(); index++) {
-         char currChar = toSearch.charAt(index);
-         if (setAllToLowerCase) {
-            currChar = Character.toLowerCase(currChar);
-         }
-         if (currChar != '\r' && currChar != '\n') {
-            if (WordsUtil.isPunctuationOrApostrophe(currChar)) {
-               currChar = ' ';
-            }
-            if (Character.isWhitespace(currChar)) {
-               if (!lastCharacterAddedWasWhiteSpace) {
-                  searchString.append(currChar);
-                  lastCharacterAddedWasWhiteSpace = true;
-               }
-            } else {
-               searchString.append(currChar);
-               lastCharacterAddedWasWhiteSpace = false;
-            }
-         }
-      }
-      return searchString.toString().trim().toCharArray();
    }
 }

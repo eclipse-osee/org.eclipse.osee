@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.search.engine.internal;
+package org.eclipse.osee.framework.search.engine.internal.search;
 
 import org.eclipse.osee.framework.search.engine.ISearchStatistics;
 import org.eclipse.osee.framework.search.engine.SearchOptions;

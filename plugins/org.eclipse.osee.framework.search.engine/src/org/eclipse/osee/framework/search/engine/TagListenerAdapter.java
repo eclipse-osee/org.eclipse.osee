@@ -17,25 +17,31 @@ public class TagListenerAdapter implements ITagListener {
 
    @Override
    public void onAttributeAddTagEvent(int queryId, long gammaId, String word, long codedTag) {
+      // Default implementation
    }
 
    @Override
    public void onAttributeTagComplete(int queryId, long gammaId, int totalTags, long processingTime) {
+      // Default implementation
    }
 
    @Override
    public void onTagQueryIdSubmit(int queryId) {
+      // Default implementation
    }
 
    @Override
    public void onTagQueryIdTagComplete(int queryId, long waitTime, long processingTime) {
+      // Default implementation
    }
 
    @Override
    public void onTagExpectedQueryIdSubmits(int totalQueries) {
+      // Default implementation
    }
 
    @Override
    public void onTagError(int queryId, Throwable throwable) {
+      // Default implementation
    }
 }

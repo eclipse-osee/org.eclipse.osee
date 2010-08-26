@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.search.engine.data.IAttributeLocator;
  * @author Roberto E. Escobar
  */
 public class AttributeData implements IAttributeLocator {
-   private final static String EMPTY_STRING = "";
    private final int artId;
    private final long gammaId;
    private final int branchId;
@@ -26,13 +25,13 @@ public class AttributeData implements IAttributeLocator {
    private final String uri;
    private final int attrTypeId;
 
-   protected AttributeData(int artId, long gammaId, int branchId, String value, String uri, int attrTypeId) {
+   public AttributeData(int artId, long gammaId, int branchId, String value, String uri, int attrTypeId) {
       super();
       this.artId = artId;
       this.gammaId = gammaId;
       this.branchId = branchId;
-      this.value = Strings.isValid(value) ? value : EMPTY_STRING;
-      this.uri = Strings.isValid(uri) ? uri : EMPTY_STRING;
+      this.value = Strings.isValid(value) ? value : Strings.emptyString();
+      this.uri = Strings.isValid(uri) ? uri : Strings.emptyString();
       this.attrTypeId = attrTypeId;
    }
 
@@ -44,7 +43,7 @@ public class AttributeData implements IAttributeLocator {
       return artId;
    }
 
-   public int getId() {
+   public int getBranchId() {
       return branchId;
    }
 
@@ -71,7 +70,7 @@ public class AttributeData implements IAttributeLocator {
          String value = getUri();
          if (Strings.isValid(value)) {
             URI uri = new URI(value);
-            if (uri != null) {
+            if (uri.toURL() != null) {
                toReturn = true;
             }
          }
@@ -83,8 +82,8 @@ public class AttributeData implements IAttributeLocator {
 
    @Override
    public String toString() {
-      return String.format("artId:[%s] branchId:[%d] gammaId:[%s] uri:[%s] attrTypeId:[%s]", getArtId(), getId(),
-         getGammaId(), getUri(), getAttrTypeId());
+      return String.format("artId:[%s] branchId:[%d] gammaId:[%s] uri:[%s] attrTypeId:[%s] isValidUri:[%s]",
+         getArtId(), getBranchId(), getGammaId(), getUri(), getAttrTypeId(), isUriValid());
    }
 
    @Override

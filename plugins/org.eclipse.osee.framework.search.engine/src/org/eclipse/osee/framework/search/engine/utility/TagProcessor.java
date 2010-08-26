@@ -11,44 +11,23 @@
 package org.eclipse.osee.framework.search.engine.utility;
 
 import java.io.InputStream;
-import java.net.URL;
-import java.util.HashSet;
 import java.util.Scanner;
-import java.util.Set;
-import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.search.engine.internal.Activator;
+import org.eclipse.osee.framework.search.engine.ILanguage;
 
 /**
  * @author Roberto E. Escobar
  */
 public class TagProcessor {
 
-   private static final Set<String> wordsToSkip;
-   static {
-      wordsToSkip = new HashSet<String>();
-      Scanner scanner = null;
-      try {
-         URL url = Activator.getResource("/support/wordsToSkip.txt");
-         scanner = new Scanner(url.openStream(), "UTF-8");
-         while (scanner.hasNext()) {
-            wordsToSkip.add(scanner.next());
-         }
-      } catch (Exception ex) {
-         OseeLog.log(TagProcessor.class, Level.SEVERE, "Unable to process word skip file.", ex);
-      } finally {
-         if (scanner != null) {
-            scanner.close();
-         }
-      }
+   private final ILanguage language;
+
+   public TagProcessor(ILanguage language) {
+      this.language = language;
    }
 
-   private TagProcessor() {
-   }
-
-   public static void collectFromString(String value, ITagCollector tagCollector) {
-      if (value != null && value.length() > 0) {
+   public void collectFromString(String value, ITagCollector tagCollector) {
+      if (Strings.isValid(value)) {
          Scanner scanner = new Scanner(value);
          while (scanner.hasNext()) {
             processWord(scanner.next(), tagCollector);
@@ -56,7 +35,7 @@ public class TagProcessor {
       }
    }
 
-   public static void collectFromInputStream(InputStream inputStream, ITagCollector tagCollector) {
+   public void collectFromInputStream(InputStream inputStream, ITagCollector tagCollector) {
       if (inputStream != null) {
          Scanner scanner = new Scanner(inputStream, "UTF-8");
          while (scanner.hasNext()) {
@@ -65,7 +44,7 @@ public class TagProcessor {
       }
    }
 
-   public static void collectFromScanner(Scanner sourceScanner, ITagCollector tagCollector) {
+   public void collectFromScanner(Scanner sourceScanner, ITagCollector tagCollector) {
       try {
          while (sourceScanner.hasNext()) {
             String entry = sourceScanner.next();
@@ -82,12 +61,12 @@ public class TagProcessor {
       }
    }
 
-   private static void processWord(String original, ITagCollector tagCollector) {
+   private void processWord(String original, ITagCollector tagCollector) {
       if (Strings.isValid(original) && (original.length() >= 2 || 0 == WordsUtil.countPuntuation(original))) {
          original = original.toLowerCase();
          for (String toEncode : WordsUtil.splitOnPunctuation(original)) {
-            if (wordsToSkip.contains(toEncode) != true) {
-               String target = WordsUtil.toSingular(WordsUtil.stripPossesive(toEncode));
+            if (language.isWord(toEncode)) {
+               String target = language.toSingular(toEncode);
                TagEncoder.encode(target, tagCollector);
             }
          }
