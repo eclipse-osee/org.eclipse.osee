@@ -46,7 +46,7 @@ public class AttributeTaggingManagerServiceRegHandler extends AbstractTrackingHa
 
    @Override
    public Map<Class<?>, ServiceBindType> getConfiguredDependencies() {
-      return super.getConfiguredDependencies();
+      return serviceDependencies;
    }
 
    @Override
