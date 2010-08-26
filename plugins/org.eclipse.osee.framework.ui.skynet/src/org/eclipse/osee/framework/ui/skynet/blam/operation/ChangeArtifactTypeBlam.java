@@ -44,7 +44,11 @@ public class ChangeArtifactTypeBlam extends AbstractBlam {
 
    @Override
    public Collection<String> getCategories() {
-      return Arrays.asList("Define");
+      return Arrays.asList("Admin");
    }
 
+   @Override
+   public String getDescriptionUsage() {
+      return "Log what the previous type of each artifact was because that information is loss after running this blam";
+   }
 }
