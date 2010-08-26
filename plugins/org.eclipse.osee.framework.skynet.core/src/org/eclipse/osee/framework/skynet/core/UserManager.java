@@ -291,4 +291,6 @@ public final class UserManager {
    public static void setSetting(String key, String value) throws OseeCoreException {
       getUser().setSetting(key, value);
    }
+
+   public static String DOUBLE_CLICK_SETTING_KEY = "onDoubleClickOpenUsingArtifactEditor";
 }

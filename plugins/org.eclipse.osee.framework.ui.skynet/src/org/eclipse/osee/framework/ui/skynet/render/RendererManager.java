@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.render;
 
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.DEFAULT_OPEN;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,6 +36,7 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -131,6 +133,9 @@ public class RendererManager {
    }
 
    private static IRenderer getBestRendererPrototype(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
+      if (presentationType == DEFAULT_OPEN && UserManager.getBooleanSetting(UserManager.DOUBLE_CLICK_SETTING_KEY)) {
+         presentationType = PresentationType.GENERALIZED_EDIT;
+      }
       IRenderer bestRendererPrototype = null;
       int bestRating = IRenderer.NO_MATCH;
       for (IRenderer renderer : instance.renderers.values()) {

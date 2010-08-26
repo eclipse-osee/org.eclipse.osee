@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.render;
 
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERALIZED_EDIT;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -59,7 +60,7 @@ public class WholeWordRenderer extends WordRenderer {
 
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
-      if (notGeneralizedEdit(presentationType) && artifact.isAttributeTypeValid(CoreAttributeTypes.WholeWordContent)) {
+      if (presentationType != GENERALIZED_EDIT && artifact.isAttributeTypeValid(CoreAttributeTypes.WholeWordContent)) {
          return PRESENTATION_SUBTYPE_MATCH;
       }
       return NO_MATCH;
