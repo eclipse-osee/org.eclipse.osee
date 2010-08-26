@@ -35,7 +35,7 @@ public class XmlTextInputStream extends BufferedInputStream {
    }
 
    public XmlTextInputStream(String input) throws UnsupportedEncodingException {
-      this(new ByteArrayInputStream(input.getBytes("UTF-8")));
+      this(new ByteArrayInputStream(input.getBytes("UTF8")));
    }
 
    @Override
