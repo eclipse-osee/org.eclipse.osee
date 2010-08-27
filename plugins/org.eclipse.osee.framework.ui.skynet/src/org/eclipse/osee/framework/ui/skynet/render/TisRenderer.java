@@ -44,7 +44,7 @@ public class TisRenderer extends WordTemplateRenderer {
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
       if (artifact.isOfType(CoreArtifactTypes.TestInformationSheet) && presentationType.matches(DEFAULT_OPEN, PREVIEW)) {
-         return SUBTYPE_TYPE_MATCH;
+         return SPECIALIZED_MATCH;
       }
       return NO_MATCH;
    }
@@ -67,9 +67,6 @@ public class TisRenderer extends WordTemplateRenderer {
 
    @Override
    public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) throws OseeCoreException {
-      if (PresentationType.GENERALIZED_EDIT == presentationType) {
-         return super.getRenderInputStream(presentationType, artifacts);
-      }
       final VariableMap variableMap = new VariableMap();
       String template;
 

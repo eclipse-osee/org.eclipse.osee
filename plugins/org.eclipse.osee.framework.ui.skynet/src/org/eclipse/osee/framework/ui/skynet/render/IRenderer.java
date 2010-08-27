@@ -28,6 +28,7 @@ import org.eclipse.swt.graphics.Image;
  */
 public interface IRenderer {
 
+   public static final int SPECIALIZED_MATCH = 60;
    public static final int PRESENTATION_SUBTYPE_MATCH = 50;
    public static final int PRESENTATION_TYPE = 40;
    public static final int SUBTYPE_TYPE_MATCH = 30;

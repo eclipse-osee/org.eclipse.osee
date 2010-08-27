@@ -16,6 +16,7 @@ import static org.eclipse.osee.ats.test.render.RendererManagerTest.DefaultOption
 import static org.eclipse.osee.ats.util.AtsArtifactTypes.Action;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GeneralDocument;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SoftwareRequirement;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.TestInformationSheet;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.TestProcedureWML;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.DEFAULT_OPEN;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.DIFF;
@@ -141,14 +142,14 @@ public class RendererManagerTest {
       data.add(new Object[] {GeneralDocument, DEFAULT_OPEN, NativeRenderer.class, Off});
       data.add(new Object[] {GeneralDocument, DEFAULT_OPEN, DefaultArtifactRenderer.class, On});
 
-      data.add(new Object[] {TestProcedureWML, GENERALIZED_EDIT, DefaultArtifactRenderer.class, Both});
-      data.add(new Object[] {TestProcedureWML, SPECIALIZED_EDIT, WordTemplateRenderer.class, Both});
-      data.add(new Object[] {TestProcedureWML, DIFF, WordTemplateRenderer.class, Both});
-      data.add(new Object[] {TestProcedureWML, PREVIEW, TisRenderer.class, Both});
-      data.add(new Object[] {TestProcedureWML, MERGE, WordTemplateRenderer.class, Both});
-      data.add(new Object[] {TestProcedureWML, MERGE_EDIT, WordTemplateRenderer.class, Both});
-      data.add(new Object[] {TestProcedureWML, DEFAULT_OPEN, TisRenderer.class, Off});
-      data.add(new Object[] {TestProcedureWML, DEFAULT_OPEN, DefaultArtifactRenderer.class, On});
+      data.add(new Object[] {TestInformationSheet, GENERALIZED_EDIT, DefaultArtifactRenderer.class, Both});
+      data.add(new Object[] {TestInformationSheet, SPECIALIZED_EDIT, WordTemplateRenderer.class, Both});
+      data.add(new Object[] {TestInformationSheet, DIFF, WordTemplateRenderer.class, Both});
+      data.add(new Object[] {TestInformationSheet, PREVIEW, TisRenderer.class, Both});
+      data.add(new Object[] {TestInformationSheet, MERGE, WordTemplateRenderer.class, Both});
+      data.add(new Object[] {TestInformationSheet, MERGE_EDIT, WordTemplateRenderer.class, Both});
+      data.add(new Object[] {TestInformationSheet, DEFAULT_OPEN, TisRenderer.class, Off});
+      data.add(new Object[] {TestInformationSheet, DEFAULT_OPEN, DefaultArtifactRenderer.class, On});
 
       return data;
    }
