@@ -11,14 +11,13 @@
 
 package org.eclipse.osee.framework.ui.skynet.render;
 
+import static org.eclipse.osee.framework.ui.skynet.render.IRenderer.DEFAULT_MATCH;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.DEFAULT_OPEN;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -45,8 +44,7 @@ import org.eclipse.osee.framework.ui.skynet.render.word.Producer;
  * @author Ryan D. Brooks
  */
 public final class RendererManager {
-
-   private static final Map<String, IRenderer> RENDERER_MAP = new ConcurrentHashMap<String, IRenderer>(40);
+   private static final List<IRenderer> renderers = new ArrayList<IRenderer>(20);
    private static boolean firstTimeThrough = true;
 
    private RendererManager() {
@@ -100,7 +98,7 @@ public final class RendererManager {
          new ExtensionDefinedObjects<IRenderer>(SkynetGuiPlugin.PLUGIN_ID + ".ArtifactRenderer", "Renderer",
             "classname");
       for (IRenderer renderer : contributions.getObjects()) {
-         RENDERER_MAP.put(renderer.getClass().getCanonicalName(), renderer);
+         renderers.add(renderer);
       }
    }
 
@@ -130,7 +128,7 @@ public final class RendererManager {
       IRenderer bestRendererPrototype = null;
       int bestRating = IRenderer.NO_MATCH;
       ensurePopulated();
-      for (IRenderer renderer : RENDERER_MAP.values()) {
+      for (IRenderer renderer : renderers) {
          int rating = renderer.getApplicabilityRating(presentationType, artifact);
          if (rating > bestRating) {
             bestRendererPrototype = renderer;
@@ -154,20 +152,20 @@ public final class RendererManager {
    }
 
    public static List<IRenderer> getApplicableRenderers(PresentationType presentationType, Artifact artifact, VariableMap options) throws OseeCoreException {
-      ArrayList<IRenderer> renderers = new ArrayList<IRenderer>();
-      int minimumRanking = getBestRenderer(presentationType, artifact, options).minimumRanking();
-      ensurePopulated();
-      for (IRenderer prototypeRenderer : RENDERER_MAP.values()) {
+      ArrayList<IRenderer> applicableRenderers = new ArrayList<IRenderer>();
+      int minimumRank = Math.max(getBestRenderer(presentationType, artifact, options).minimumRanking(), DEFAULT_MATCH);
+
+      for (IRenderer prototypeRenderer : renderers) {
          // Add Catch Exception Code --
 
          int rating = prototypeRenderer.getApplicabilityRating(presentationType, artifact);
-         if (rating >= minimumRanking) {
+         if (rating >= minimumRank) {
             IRenderer renderer = prototypeRenderer.newInstance();
             renderer.setOptions(options);
-            renderers.add(renderer);
+            applicableRenderers.add(renderer);
          }
       }
-      return renderers;
+      return applicableRenderers;
    }
 
    public static HashCollection<IRenderer, Artifact> createRenderMap(PresentationType presentationType, Collection<Artifact> artifacts, VariableMap options) throws OseeCoreException {
