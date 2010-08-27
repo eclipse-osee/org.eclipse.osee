@@ -19,6 +19,7 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -183,11 +184,7 @@ public class MessageView extends ViewPart implements IActionable, IMessageDictio
       searchText.addVerifyListener(new VerifyListener() {
          @Override
          public void verifyText(VerifyEvent e) {
-            char chr = e.character;
-            if (chr >= 'a' && chr <= 'z') {
-               final char[] chars = new char[] {chr};
-               e.text = new String(chars).toUpperCase();
-            }
+            e.text = e.text.toUpperCase();
          }
       });
 
