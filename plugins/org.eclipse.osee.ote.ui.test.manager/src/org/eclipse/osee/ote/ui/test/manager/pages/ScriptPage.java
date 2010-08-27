@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -317,7 +318,7 @@ public abstract class ScriptPage extends TestManagerPage {
          SWT.COLOR_DARK_RED);
 
       String selectedFile = testManagerEditor.loadValue(testManagerEditor.configFileName);
-      if (selectedFile == null || selectedFile.equals("")) {
+      if (!Strings.isValid(selectedFile)) {
          selectedFile = testManagerEditor.getDefaultConfigPath();
          testManagerEditor.storeValue(testManagerEditor.configFileName, selectedFile);
       }

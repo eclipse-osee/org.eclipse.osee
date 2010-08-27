@@ -107,7 +107,7 @@ public class OseeNotifyUsersJob extends Job {
          return;
       }
       String html = notificationEventsToHtml(notificationEvents);
-      if (user.getEmail() == null || user.getEmail().equals("")) {
+      if (!Strings.isValid(user.getEmail())) {
          // do nothing
          return;
       } else {

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.jdk.core.validate;
 
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+
 public class RequiredStringValidator extends FieldValidator {
 
    public RequiredStringValidator(String fieldName) {
@@ -21,7 +23,7 @@ public class RequiredStringValidator extends FieldValidator {
       Object object = paramMap.get(fieldName);
       if (object != null && object instanceof String) {
          String value = (String) object;
-         return value != null && !value.equals("");
+         return Strings.isValid(value);
       }
       return false;
    }

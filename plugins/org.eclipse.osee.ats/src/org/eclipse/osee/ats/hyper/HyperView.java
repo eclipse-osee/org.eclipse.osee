@@ -43,6 +43,7 @@ import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -629,7 +630,7 @@ public class HyperView extends ViewPart implements IPartListener {
       c.setTargetAnchor(target);
       setConnectionMouseListener(c, hvi);
       // Add tooltip
-      if (hvi.getRelationToolTip() != null && !hvi.getRelationToolTip().equals("")) {
+      if (Strings.isValid(hvi.getRelationToolTip())) {
          c.setToolTip(new Label(hvi.getRelationToolTip()));
          // Add label
       }

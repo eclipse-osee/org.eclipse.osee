@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -42,7 +43,7 @@ public class UsersByIds {
       Matcher m = userPattern.matcher(sorageString);
       while (m.find()) {
          String userId = m.group(1);
-         if (userId == null || userId.equals("")) {
+         if (!Strings.isValid(userId)) {
             throw new IllegalArgumentException("Blank userId specified.");
          }
          try {

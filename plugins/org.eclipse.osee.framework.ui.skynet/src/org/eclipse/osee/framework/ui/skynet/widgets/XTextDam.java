@@ -16,6 +16,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
 import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
@@ -79,7 +80,7 @@ public class XTextDam extends XText implements IAttributeWidget {
    @Override
    public void saveToArtifact() throws OseeCoreException {
       String value = get();
-      if (value == null || value.equals("")) {
+      if (!Strings.isValid(value)) {
          getArtifact().deleteSoleAttribute(getAttributeType());
       } else if (!value.equals(getArtifact().getSoleAttributeValue(getAttributeType(), ""))) {
          getArtifact().setSoleAttributeValue(getAttributeType(), value);

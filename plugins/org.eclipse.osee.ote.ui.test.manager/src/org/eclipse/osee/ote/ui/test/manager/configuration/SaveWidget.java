@@ -11,6 +11,7 @@
 package org.eclipse.osee.ote.ui.test.manager.configuration;
 
 import java.io.File;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.ote.ui.test.manager.OteTestManagerImage;
@@ -77,7 +78,7 @@ public class SaveWidget {
 
             String result = fileDialog.open();
 
-            if (result != null && !result.equals("")) {
+            if (Strings.isValid(result)) {
                selectedFile = result;
                if (statusWindow != null) {
                   statusWindow.setValue(ScriptPage.UpdateableLabel.CONFIGPATHLABEL.name(), selectedFile);

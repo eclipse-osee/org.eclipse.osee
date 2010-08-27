@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -190,7 +191,7 @@ public class ExtendedStatusReportJob extends Job {
          } else if (col == Columns.Date_Created) {
             values.add(sma.getWorldViewCreatedDateStr());
          } else if (col == Columns.Version) {
-            values.add((sma.getWorldViewTargetedVersionStr() == null || sma.getWorldViewTargetedVersionStr().equals("") ? "." : sma.getWorldViewTargetedVersionStr()));
+            values.add((!Strings.isValid(sma.getWorldViewTargetedVersionStr()) ? "." : sma.getWorldViewTargetedVersionStr()));
          }
       }
       sb.append(AHTML.addRowMultiColumnTable(values.toArray(new String[values.size()])));

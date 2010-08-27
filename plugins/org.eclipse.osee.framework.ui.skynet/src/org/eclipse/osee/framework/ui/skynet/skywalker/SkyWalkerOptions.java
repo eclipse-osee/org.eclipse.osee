@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -161,7 +162,7 @@ public final class SkyWalkerOptions {
    public void fromXml(String xml) {
       try {
          String guid = AXml.getTagData(xml, "guid");
-         if (guid != null && !guid.equals("")) {
+         if (Strings.isValid(guid)) {
             String branchId = AXml.getTagData(xml, "branchId");
             Branch branch = BranchManager.getBranch(Integer.parseInt(branchId));
             Artifact art = ArtifactQuery.getArtifactFromId(guid, branch);
@@ -173,7 +174,7 @@ public final class SkyWalkerOptions {
          OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, "SkyWalker couldn't find stored artifact via guid", ex);
       }
       String artTypeStr = AXml.getTagData(xml, "artTypes");
-      if (artTypeStr != null && !artTypeStr.equals("")) {
+      if (Strings.isValid(artTypeStr)) {
          for (Entry<ArtifactType, Boolean> desc : artTypes.entrySet()) {
             desc.setValue(false);
          }
@@ -187,7 +188,7 @@ public final class SkyWalkerOptions {
          }
       }
       String relTypeStr = AXml.getTagData(xml, "relTypes");
-      if (relTypeStr != null && !relTypeStr.equals("")) {
+      if (Strings.isValid(relTypeStr)) {
          for (Entry<Object, Boolean> desc : relTypes.entrySet()) {
             desc.setValue(false);
          }
@@ -201,7 +202,7 @@ public final class SkyWalkerOptions {
          }
       }
       String showAttrString = AXml.getTagData(xml, "showAttributes");
-      if (showAttrString != null && !showAttrString.equals("")) {
+      if (Strings.isValid(showAttrString)) {
          for (Entry<AttributeType, Boolean> desc : showAttributes.entrySet()) {
             desc.setValue(false);
          }
@@ -215,7 +216,7 @@ public final class SkyWalkerOptions {
          }
       }
       String layoutStr = AXml.getTagData(xml, "layout");
-      if (layoutStr != null && !layoutStr.equals("")) {
+      if (Strings.isValid(layoutStr)) {
          for (AbstractLayoutAlgorithm layout : getLayouts()) {
             if (getLayoutName(layout).equals(layoutStr)) {
                setLayout(layout);
@@ -224,12 +225,12 @@ public final class SkyWalkerOptions {
          }
       }
       String levelStr = AXml.getTagData(xml, "levels");
-      if (levelStr != null && !levelStr.equals("")) {
+      if (Strings.isValid(levelStr)) {
          setLevels(Integer.parseInt(levelStr));
       }
 
       String linkNameStr = AXml.getTagData(xml, "linkName");
-      if (linkNameStr != null && !linkNameStr.equals("")) {
+      if (Strings.isValid(linkNameStr)) {
          setLinkName(LinkName.valueOf(linkNameStr));
       }
 

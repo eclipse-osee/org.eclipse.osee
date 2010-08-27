@@ -122,7 +122,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                         teamArt.getWorkFlowDefinition().getPageNames());
                   dialog.setInitialSelections(new Object[] {forStateName});
                   if (dialog.open() == 0) {
-                     if (dialog.getReviewTitle() == null || dialog.getReviewTitle().equals("")) {
+                     if (!Strings.isValid(dialog.getReviewTitle())) {
                         AWorkbench.popup("ERROR", "Must enter review title");
                         return;
                      }
@@ -162,7 +162,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                   dialog.setInitialSelections(new Object[] {forStateName});
                   dialog.setReviewTitle(PeerToPeerReviewArtifact.getDefaultReviewTitle(teamArt));
                   if (dialog.open() == 0) {
-                     if (dialog.getReviewTitle() == null || dialog.getReviewTitle().equals("")) {
+                     if (!Strings.isValid(dialog.getReviewTitle())) {
                         AWorkbench.popup("ERROR", "Must enter review title");
                         return;
                      }

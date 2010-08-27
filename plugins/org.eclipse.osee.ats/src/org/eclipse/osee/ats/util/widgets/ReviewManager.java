@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -295,14 +296,14 @@ public class ReviewManager {
       if (teamArt != null) {
          teamArt.addRelation(AtsRelationTypes.TeamWorkflowToReview_Review, decRev);
       }
-      if (relatedToState != null && !relatedToState.equals("")) {
+      if (Strings.isValid(relatedToState)) {
          decRev.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, relatedToState);
       }
       decRev.getLog().addLog(LogType.Originated, "", "");
-      if (description != null && !description.equals("")) {
+      if (Strings.isValid(description)) {
          decRev.setSoleAttributeValue(AtsAttributeTypes.Description, description);
       }
-      if (options != null && !options.equals("")) {
+      if (Strings.isValid(options)) {
          decRev.setSoleAttributeValue(AtsAttributeTypes.DecisionReviewOptions, options);
       }
       if (reviewBlockType != null) {

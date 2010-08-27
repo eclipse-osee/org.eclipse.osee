@@ -163,7 +163,7 @@ public class AHTML {
    }
 
    public static String heading(int heading, String str, String id) {
-      return "<h" + heading + (id != null && !id.equals("") ? " id=\"" + id + "\"" : "") + ">" + textToHtml(str) + "</h" + heading + ">";
+      return "<h" + heading + (Strings.isValid(id) ? " id=\"" + id + "\"" : "") + ">" + textToHtml(str) + "</h" + heading + ">";
    }
 
    public static String heading(int heading, String str) {
@@ -366,14 +366,14 @@ public class AHTML {
       String show = "";
       for (int i = 0; i < str.length; i++) {
          show = str[i];
-         if (show == null || show.equals("")) {
+         if (!Strings.isValid(show)) {
             show = AHTML.addSpace(1);
          }
          String colOptionStr = "";
          if (colOptions != null) {
             colOptionStr = colOptions[i];
          }
-         s.append("<td" + (colOptionStr != null && !colOptionStr.equals("") ? colOptionStr : "") + ">" + show + "</td>");
+         s.append("<td" + (Strings.isValid(colOptionStr) ? colOptionStr : "") + ">" + show + "</td>");
       }
       s.append("</tr>");
       return s.toString();
@@ -402,7 +402,7 @@ public class AHTML {
    public static String addRowMultiColumnTable(Collection<CellItem> items) {
       StringBuilder s = new StringBuilder("<tr>");
       for (CellItem item : items) {
-         if (item.text == null || item.text.equals("")) {
+         if (!Strings.isValid(item.text)) {
             item.text = ".";
          }
          if (item.bgColor != null) {

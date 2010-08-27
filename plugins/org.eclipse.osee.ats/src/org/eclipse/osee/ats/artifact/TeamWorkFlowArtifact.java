@@ -504,7 +504,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
          return 0;
       }
       String value = getSoleAttributeValue(AtsAttributeTypes.WeeklyBenefit, "");
-      if (value == null || value.equals("")) {
+      if (!Strings.isValid(value)) {
          return 0;
       }
       return new Float(value).doubleValue();

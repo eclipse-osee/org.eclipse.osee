@@ -58,6 +58,7 @@ import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.services.CmAccessControl;
 import org.eclipse.osee.framework.core.services.HasCmAccessControl;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -779,7 +780,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements HasCmA
       String value = null;
       try {
          value = getSoleAttributeValue(AtsAttributeTypes.WeeklyBenefit, "");
-         if (value == null || value.equals("")) {
+         if (!Strings.isValid(value)) {
             return new Result("Weekly Benefit Hours not set.");
          }
          double val = new Float(value).doubleValue();
@@ -1545,7 +1546,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements HasCmA
 
    public Collection<WorkRuleDefinition> getWorkRulesStartsWith(String ruleId) throws OseeCoreException {
       Set<WorkRuleDefinition> workRules = new HashSet<WorkRuleDefinition>();
-      if (ruleId == null || ruleId.equals("")) {
+      if (!Strings.isValid(ruleId)) {
          return workRules;
       }
       if (isTeamWorkflow()) {

@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.artifact.annotation;
 
 import org.eclipse.osee.framework.jdk.core.util.AXml;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Donald G. Dunne
@@ -70,7 +71,7 @@ public class ArtifactAnnotation {
 
    public void fromXml(String xml) {
       String typeStr = AXml.getTagData(xml, TYPE_TAG);
-      if (typeStr == null || typeStr.equals("")) {
+      if (!Strings.isValid(typeStr)) {
          type = Type.None;
       } else {
          type = Type.valueOf(typeStr);

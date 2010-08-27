@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.core.datastore.schema.data.TableElement.Column
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.OseeConnection;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -107,7 +108,7 @@ public class PostgreSqlManager extends SqlManagerImpl {
       String type = constraint.getConstraintType().toString();
       String appliesTo = formatQuotedString(constraint.getCommaSeparatedColumnsList(), ",");
 
-      if (id != null && !id.equals("") && appliesTo != null && !appliesTo.equals("")) {
+      if (Strings.isValid(id) && Strings.isValid(appliesTo)) {
          toReturn.append("CONSTRAINT " + id + " " + type + " (" + appliesTo + ")");
 
          if (constraint instanceof ForeignKey) {

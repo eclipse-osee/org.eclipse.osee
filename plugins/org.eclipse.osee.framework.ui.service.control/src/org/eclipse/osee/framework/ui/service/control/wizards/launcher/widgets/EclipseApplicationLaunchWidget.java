@@ -16,6 +16,7 @@ import java.net.URL;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.service.control.ServiceControlImage;
 import org.eclipse.osee.framework.ui.service.control.jobs.EclipseApplicationLaunchJob;
@@ -198,7 +199,7 @@ public class EclipseApplicationLaunchWidget implements ILaunchWidget {
             dialog.setFilterNames(new String[] {"java"});
 
             String result = dialog.open();
-            if (result != null && !result.equals("")) {
+            if (Strings.isValid(result)) {
                javaCompilerText.setText(result);
                javaCompiler = result;
             }

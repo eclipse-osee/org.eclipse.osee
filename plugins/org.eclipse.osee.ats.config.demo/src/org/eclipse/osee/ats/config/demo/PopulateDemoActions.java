@@ -56,6 +56,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -453,7 +454,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
                // Transition to desired state
                dtwm.transitionTo((toStateOverride != null ? toStateOverride : aData.toState), null, false, transaction);
                teamWf.persist(transaction);
-               if (versionStr != null && !versionStr.equals("")) {
+               if (Strings.isValid(versionStr)) {
                   VersionArtifact verArt =
                      (VersionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Version, versionStr,
                         AtsUtil.getAtsBranch());

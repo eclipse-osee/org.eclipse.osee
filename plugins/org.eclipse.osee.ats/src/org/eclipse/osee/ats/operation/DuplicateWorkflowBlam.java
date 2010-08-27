@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -128,7 +129,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
             teamArt.getParentActionArtifact().createTeamWorkflow(teamArt.getTeamDefinition(),
                teamArt.getActionableItemsDam().getActionableItems(), assignees, transaction,
                CreateTeamOption.Duplicate_If_Exists);
-         if (title != null && !title.equals("")) {
+         if (Strings.isValid(title)) {
             newTeamArt.setName(title);
          }
          newTeamArt.persist(transaction);
@@ -145,7 +146,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Duplicate Workflow");
       for (TeamWorkFlowArtifact teamArt : teamArts) {
          TeamWorkFlowArtifact dupArt = (TeamWorkFlowArtifact) teamArt.duplicate(AtsUtil.getAtsBranch());
-         if (title != null && !title.equals("")) {
+         if (Strings.isValid(title)) {
             dupArt.setName(getDefaultTitle());
          }
          dupArt.addRelation(AtsRelationTypes.ActionToWorkflow_Action, teamArt.getParentActionArtifact());

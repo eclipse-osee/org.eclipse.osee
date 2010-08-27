@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -320,7 +321,7 @@ public class XMembersCombo extends XWidget {
    protected String toXml(String xmlRoot) throws Exception {
       String s;
       String dataStr = selectedUser.getUserId();
-      if (getXmlSubRoot() == null || getXmlSubRoot().equals("")) {
+      if (!Strings.isValid(getXmlSubRoot())) {
          s = "<" + xmlRoot + ">" + dataStr + "</" + xmlRoot + ">\n";
       } else {
          s = "<" + xmlRoot + "><" + getXmlSubRoot() + ">" + dataStr + "</" + getXmlSubRoot() + "></" + xmlRoot + ">\n";

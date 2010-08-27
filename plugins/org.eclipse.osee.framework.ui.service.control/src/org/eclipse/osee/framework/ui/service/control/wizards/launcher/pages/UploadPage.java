@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.service.control.ServiceControlImage;
 import org.eclipse.osee.framework.ui.service.control.jobs.TextDisplayHelper;
 import org.eclipse.osee.framework.ui.service.control.jobs.UploadRemoteFileJob;
@@ -192,7 +193,7 @@ public class UploadPage extends DynamicWizardPage {
       this.dataMap.get(LabelEnum.Host).setText(serviceInfo.getSelectedHost());
 
       String unzipLocation = serviceInfo.getUnzipLocation();
-      if (unzipLocation == null || unzipLocation.equals("")) {
+      if (!Strings.isValid(unzipLocation)) {
          serviceInfo.setUnzipLocation(serviceInfo.getServiceItem().getUnzipLocation() + "/" + serviceInfo.getServiceItem().getPlugin());
       }
       this.dataMap.get(LabelEnum.Host_Upload_Location).setText(serviceInfo.getUnzipLocation());

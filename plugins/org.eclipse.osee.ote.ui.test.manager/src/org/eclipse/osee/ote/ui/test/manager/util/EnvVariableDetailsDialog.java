@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.ui.test.manager.internal.TestManagerPlugin;
 import org.eclipse.swt.SWT;
@@ -129,7 +130,7 @@ public class EnvVariableDetailsDialog extends MessageDialog {
             FileDialog dialog = new FileDialog(EnvVariableDetailsDialog.this.getShell(), SWT.OPEN);
 
             String result = dialog.open();
-            if (result != null && !result.equals("")) {
+            if (Strings.isValid(result)) {
                String importedData;
                try {
                   importedData = Lib.fileToString(new File(result));

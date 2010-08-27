@@ -318,7 +318,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
          return null;
       }
       String versionStr = versionCombo.get();
-      if (versionStr == null || versionStr.equals("")) {
+      if (!Strings.isValid(versionStr)) {
          return null;
       }
       Collection<TeamDefinitionArtifact> teamDefs = getSelectedTeamDefinitions();

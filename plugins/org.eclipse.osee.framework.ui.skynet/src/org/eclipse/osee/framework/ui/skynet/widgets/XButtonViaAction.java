@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Donald G. Dunne
@@ -19,7 +20,7 @@ public class XButtonViaAction extends XButton {
 
    public XButtonViaAction(final Action action) {
       super(action.getText(), action.getImageDescriptor().createImage());
-      if (action.getToolTipText() != null && !action.getToolTipText().equals("")) {
+      if (Strings.isValid(action.getToolTipText())) {
          setToolTip(action.getToolTipText());
       }
       addXModifiedListener(new XModifiedListener() {

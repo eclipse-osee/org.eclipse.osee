@@ -11,6 +11,7 @@
 package org.eclipse.osee.ote.core.environment.console;
 
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 public abstract class ConsoleCommand {
    private static final Pattern SPLITTER = Pattern.compile("\\s");
@@ -36,13 +37,13 @@ public abstract class ConsoleCommand {
    public final synchronized void execute(ConsoleShell shell, String switches, String args) {
       this.shell = shell;
       final String[] argArray;
-      if (args != null && !args.equals("")) {
+      if (Strings.isValid(args)) {
          argArray = SPLITTER.split(args);
       } else {
          argArray = new String[0];
       }
       final String[] switchesArray;
-      if (switches != null && !switches.equals("")) {
+      if (Strings.isValid(switches)) {
          switchesArray = SPLITTER.split(switches);
       } else {
          switchesArray = new String[0];

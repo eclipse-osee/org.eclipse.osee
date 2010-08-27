@@ -25,6 +25,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.jdk.core.type.TreeObject;
 import org.eclipse.osee.framework.jdk.core.type.TreeParent;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.ote.ui.test.manager.OteTestManagerImage;
 import org.eclipse.osee.ote.ui.test.manager.internal.TestManagerPlugin;
@@ -62,7 +63,7 @@ public class EnvironmentPreferencePage {
          if (node.isChecked()) {
             String name = node.getEnvName();
             String value = node.getValue();
-            if (name != null && !name.equals("")) {
+            if (Strings.isValid(name)) {
                environmentVariables.put(name, value != null ? value : "");
             }
          }

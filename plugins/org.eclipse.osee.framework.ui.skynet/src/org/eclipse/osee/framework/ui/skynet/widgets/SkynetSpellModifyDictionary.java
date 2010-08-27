@@ -16,6 +16,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
@@ -101,7 +102,7 @@ public class SkynetSpellModifyDictionary implements XTextSpellModifyDictionary, 
                   if (debug) {
                      System.out.println("Adding Local => \"" + str + "\"");
                   }
-                  if (str != null && !str.equals("")) {
+                  if (Strings.isValid(str)) {
                      dictionary.add(str);
                   }
                }
@@ -110,7 +111,7 @@ public class SkynetSpellModifyDictionary implements XTextSpellModifyDictionary, 
                   if (debug) {
                      System.out.println("Adding Global => \"" + str + "\"");
                   }
-                  if (str != null && !str.equals("")) {
+                  if (Strings.isValid(str)) {
                      dictionary.add(str);
                   }
                }

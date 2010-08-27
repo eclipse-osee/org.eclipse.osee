@@ -25,6 +25,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.service.control.ControlPlugin;
 import org.eclipse.osgi.service.datalocation.Location;
@@ -78,7 +79,7 @@ public class ServiceLaunchDataPersist {
          for (int i = 0; i < viewList.getLength(); i++) {
             Node node = viewList.item(i);
             String value = node.getTextContent();
-            if (value != null && !value.equals("")) {
+            if (Strings.isValid(value)) {
                hosts.add(value);
             }
          }
@@ -86,7 +87,7 @@ public class ServiceLaunchDataPersist {
          if (lastService.getLength() == 1) {
             Node node = lastService.item(0);
             String value = node.getTextContent();
-            if (value != null && !value.equals("")) {
+            if (Strings.isValid(value)) {
                lastServiceLaunched = value;
             }
          }
@@ -109,7 +110,7 @@ public class ServiceLaunchDataPersist {
    }
 
    public void saveHostName(String addhost) {
-      if (addhost != null && !addhost.equals("") && !hosts.contains(addhost)) {
+      if (Strings.isValid(addhost) && !hosts.contains(addhost)) {
          hosts.add(addhost);
       }
       saveFile();
@@ -125,7 +126,7 @@ public class ServiceLaunchDataPersist {
    }
 
    private void saveFile() {
-      if (hosts.size() > 0 || lastServiceLaunched != null && !lastServiceLaunched.equals("")) {
+      if (hosts.size() > 0 || Strings.isValid(lastServiceLaunched)) {
          File fileString = getFile();
          OutputStream outputStream = null;
          try {
@@ -143,7 +144,7 @@ public class ServiceLaunchDataPersist {
                writer.writeEndElement();
             }
 
-            if (lastServiceLaunched != null && !lastServiceLaunched.equals("")) {
+            if (Strings.isValid(lastServiceLaunched)) {
                writer.writeStartElement(LAST_SERVICE_ELEMENT);
                writer.writeCharacters(this.lastServiceLaunched.trim());
                writer.writeEndElement();

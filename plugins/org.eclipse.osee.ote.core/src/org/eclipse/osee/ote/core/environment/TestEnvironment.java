@@ -418,7 +418,7 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
    }
 
    protected void setupOutfileDir(String outfileDir) throws IOException {
-      if (outfileDir != null && !outfileDir.equals("")) {
+      if (Strings.isValid(outfileDir)) {
          outDir = new File(outfileDir);
          if (!outDir.isDirectory()) {
             if (!outDir.mkdirs()) {

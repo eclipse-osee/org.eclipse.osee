@@ -15,6 +15,7 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -76,7 +77,7 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
       body.setLayoutData(new GridData(SWT.LEFT, SWT.LEFT, false, false));
 
       try {
-         if (getXWidgetsXml() != null && !getXWidgetsXml().equals("")) {
+         if (Strings.isValid(getXWidgetsXml())) {
             managedForm.addPart(new SectionPart(createParametersSection(managedForm, body)));
          }
          managedForm.addPart(new SectionPart(createResultsSection(body)));

@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -72,7 +73,7 @@ public class WholeWordCompare implements IComparator {
    public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, PresentationType presentationType) throws OseeCoreException {
       String diffPath;
       String fileName = renderer.getStringOption(IRenderer.FILE_NAME_OPTION);
-      if (fileName == null || fileName.equals("")) {
+      if (!Strings.isValid(fileName)) {
          if (baseVersion != null) {
             String baseFileStr = baseFile.getLocation().toOSString();
             diffPath =

@@ -84,7 +84,7 @@ public class HostInfoPage extends DynamicWizardPage {
       serviceInfo.setAvailableHosts(serviceInfo.getServiceItem().getHosts());
       hosts = serviceInfo.getAvailableHosts();
       for (String name : hosts) {
-         if (name != null && !name.equals("")) {
+         if (Strings.isValid(name)) {
             hostName.add(name);
          }
       }
@@ -152,7 +152,7 @@ public class HostInfoPage extends DynamicWizardPage {
       if (hostName != null && !hostName.isDisposed()) {
          hostName.removeAll();
          for (String name : hosts) {
-            if (name != null && !name.equals("")) {
+            if (Strings.isValid(name)) {
                hostName.add(name);
             }
          }

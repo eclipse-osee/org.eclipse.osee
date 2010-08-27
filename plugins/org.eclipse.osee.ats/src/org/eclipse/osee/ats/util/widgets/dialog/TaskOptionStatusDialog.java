@@ -22,6 +22,7 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
@@ -88,7 +89,7 @@ public class TaskOptionStatusDialog extends SMAStatusDialog {
          try {
             if (smas.size() == 1) {
                String selOption = smas.iterator().next().getWorldViewResolution();
-               if (selOption != null && !selOption.equals("")) {
+               if (Strings.isValid(selOption)) {
                   selectedOption = nameToResDef.get(selOption);
                   if (selectedOption != null) {
                      ArrayList<Object> sel = new ArrayList<Object>();

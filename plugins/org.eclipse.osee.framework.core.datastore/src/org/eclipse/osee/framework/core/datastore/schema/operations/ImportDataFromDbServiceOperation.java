@@ -54,7 +54,7 @@ public class ImportDataFromDbServiceOperation extends AbstractOperation {
          System.out.println("Gathering information from ..." + importFromDbService);
 
          String userName = dbInfo.getDatabaseLoginName();
-         if (userName != null && !userName.equals("")) {
+         if (Strings.isValid(userName)) {
 
             Set<String> schemasToGet = new TreeSet<String>();
             schemasToGet.add(userName.toUpperCase());

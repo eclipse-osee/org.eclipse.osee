@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
@@ -61,7 +62,7 @@ public class WorkflowDebugAction extends Action {
 
       // Display workflows
       rd.log("WorkflowId: " + sma.getWorkFlowDefinition().getId());
-      if (sma.getWorkFlowDefinition().getParentId() != null && !sma.getWorkFlowDefinition().getParentId().equals("")) {
+      if (Strings.isValid(sma.getWorkFlowDefinition().getParentId())) {
          rd.log("Inherit Workflow from Parent Id: " + sma.getWorkFlowDefinition().getParentId());
       }
       for (WorkRuleDefinition workItemDefinition : sma.getWorkFlowDefinition().getWorkRules()) {

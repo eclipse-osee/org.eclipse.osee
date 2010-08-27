@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -39,14 +40,14 @@ public class Dialogs {
     * @return Result
     */
    public static Result saveHtmlDialog(String htmlText, boolean openInSystem) {
-      if (htmlText == null || htmlText.equals("")) {
+      if (!Strings.isValid(htmlText)) {
          AWorkbench.popup("ERROR", "Save data is empty.  Nothing to save.");
          return Result.FalseResult;
       }
       final FileDialog dialog = new FileDialog(Displays.getActiveShell().getShell(), SWT.SAVE);
       dialog.setFilterExtensions(new String[] {"*.html"});
       String filename = dialog.open();
-      if (filename == null || filename.equals("")) {
+      if (!Strings.isValid(filename)) {
          return Result.FalseResult;
       }
       try {
@@ -62,7 +63,7 @@ public class Dialogs {
    }
 
    public static Result emailDialog(String title, String text) {
-      if (text == null || text.equals("")) {
+      if (!Strings.isValid(text)) {
          AWorkbench.popup("ERROR", "Save data is empty.  Nothing to email.");
          return Result.FalseResult;
       }
@@ -76,7 +77,7 @@ public class Dialogs {
    }
 
    public static Result exportHtmlTableDialog(String title, String htmlText, boolean openInSystem) {
-      if (htmlText == null || htmlText.equals("")) {
+      if (!Strings.isValid(htmlText)) {
          AWorkbench.popup("ERROR", "Save data is empty.  Nothing to export.");
          return Result.FalseResult;
       }

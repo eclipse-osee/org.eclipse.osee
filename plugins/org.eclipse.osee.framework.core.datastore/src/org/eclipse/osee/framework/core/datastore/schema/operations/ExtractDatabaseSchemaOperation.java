@@ -44,6 +44,7 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.database.core.SupportedDatabase;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Roberto E. Escobar
@@ -98,7 +99,7 @@ public class ExtractDatabaseSchemaOperation extends AbstractOperation {
    //
    //      while (schemaResults.next()) {
    //         String schema = schemaResults.getString("TABLE_SCHEM");
-   //         if (schema != null && !schema.equals("")) {
+   //         if (Strings.isValid(schema)) {
    //            schemaSet.add(schema);
    //         }
    //      }
@@ -240,7 +241,7 @@ public class ExtractDatabaseSchemaOperation extends AbstractOperation {
                case java.sql.Types.CHAR:
                case java.sql.Types.VARCHAR:
                   String limits = columns.getString("COLUMN_SIZE");
-                  if (limits != null && !limits.equals("")) {
+                  if (Strings.isValid(limits)) {
                      column.addColumnField(ColumnFields.limits, limits);
                   }
                   break;
@@ -248,12 +249,12 @@ public class ExtractDatabaseSchemaOperation extends AbstractOperation {
                case java.sql.Types.NUMERIC:
                   limits = columns.getString("COLUMN_SIZE");
                   String decimal = columns.getString("DECIMAL_DIGITS");
-                  if (decimal != null && !decimal.equals("")) {
-                     if (limits != null && !limits.equals("")) {
+                  if (Strings.isValid(decimal)) {
+                     if (Strings.isValid(limits)) {
                         limits += "," + decimal;
                      }
                   }
-                  if (limits != null && !limits.equals("")) {
+                  if (Strings.isValid(limits)) {
                      column.addColumnField(ColumnFields.limits, limits);
                   }
                default:
@@ -288,7 +289,7 @@ public class ExtractDatabaseSchemaOperation extends AbstractOperation {
          String column = primaryKeys.getString("COLUMN_NAME");
          String keyId = primaryKeys.getString("PK_NAME");
 
-         if (keyId == null || keyId.equals("")) {
+         if (!Strings.isValid(keyId)) {
             keyId = column + "_PK";
          }
 
@@ -332,7 +333,7 @@ public class ExtractDatabaseSchemaOperation extends AbstractOperation {
 
          OnDeleteEnum onDeleteAction = OnDeleteEnum.UNSPECIFIED;
          String onDeleteRule = importedKeys.getString("DELETE_RULE");
-         if (onDeleteRule != null && !onDeleteRule.equals("")) {
+         if (Strings.isValid(onDeleteRule)) {
             // System.out.println("onDelete: " + onDeleteRule);
             int type = Integer.parseInt(onDeleteRule);
             switch (type) {
@@ -357,7 +358,7 @@ public class ExtractDatabaseSchemaOperation extends AbstractOperation {
 
          OnUpdateEnum onUpdateAction = OnUpdateEnum.UNSPECIFIED;
          String onUpdateRule = importedKeys.getString("UPDATE_RULE");
-         if (onUpdateRule != null && !onUpdateRule.equals("")) {
+         if (Strings.isValid(onUpdateRule)) {
             // System.out.println("onUpdate: " + onUpdateRule);
             int type = Integer.parseInt(onUpdateRule);
             switch (type) {
@@ -378,7 +379,7 @@ public class ExtractDatabaseSchemaOperation extends AbstractOperation {
 
          boolean deferrable = false;
          String deferrabilityId = importedKeys.getString("DEFERRABILITY");
-         if (deferrabilityId != null && !deferrabilityId.equals("")) {
+         if (Strings.isValid(deferrabilityId)) {
             int type = Integer.parseInt(deferrabilityId);
             switch (type) {
                case java.sql.DatabaseMetaData.importedKeyInitiallyDeferred:
@@ -394,15 +395,15 @@ public class ExtractDatabaseSchemaOperation extends AbstractOperation {
             }
          }
 
-         if (fKeyAddress == null || fKeyAddress.equals("")) {
+         if (!Strings.isValid(fKeyAddress)) {
             fKeyAddress = aTable.getSchema();
          }
 
-         if (fkeyId == null || fkeyId.equals("")) {
+         if (!Strings.isValid(fkeyId)) {
             fkeyId = appliesToColumnId + "_FK";
          }
 
-         if (refersToTableAddress == null || refersToTableAddress.equals("")) {
+         if (!Strings.isValid(refersToTableAddress)) {
             refersToTableAddress = aTable.getSchema();
          }
 

@@ -179,7 +179,7 @@ public class SystemManagerServlet extends UnsecuredOseeHttpServlet {
                String clientPort = String.valueOf(session.getClientPort());
                String url = String.format("http://%s:%s/osee/request?cmd=pingId", clientAddress, clientPort);
                String responseStr = HttpProcessor.acquireString(new URL(url));
-               if (responseStr == null || responseStr.equals("")) {
+               if (!Strings.isValid(responseStr)) {
                   sb.append("[" + info.getSessionId() + "] not responding to info request");
                } else if (!responseStr.contains(info.getSessionId())) {
                   sb.append("NOT ALIVE - [" + info.getSessionId() + "] (response, but mismatched sessionId)");

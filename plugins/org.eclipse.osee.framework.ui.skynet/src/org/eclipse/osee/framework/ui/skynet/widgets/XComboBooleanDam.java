@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -56,7 +57,7 @@ public class XComboBooleanDam extends XCombo implements IAttributeWidget {
    @Override
    public void saveToArtifact() {
       try {
-         if (data == null || data.equals("")) {
+         if (!Strings.isValid(data)) {
             artifact.deleteSoleAttribute(attributeType);
          } else {
             String enteredValue = get();

@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -188,7 +189,7 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
 
    public Collection<WorkRuleDefinition> getWorkRulesStartsWith(String ruleId) throws OseeCoreException {
       Set<WorkRuleDefinition> workRules = new HashSet<WorkRuleDefinition>();
-      if (ruleId == null || ruleId.equals("")) {
+      if (!Strings.isValid(ruleId)) {
          return workRules;
       }
       // Get work rules from team definition
@@ -207,7 +208,7 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
       for (Artifact art : WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(getId()).getRelatedArtifacts(
          CoreRelationTypes.WorkItem__Child)) {
          String id = art.getSoleAttributeValue(CoreAttributeTypes.WorkId, "");
-         if (id != null && !id.equals("")) {
+         if (Strings.isValid(id)) {
             workRules.add((WorkRuleDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(id));
          }
       }

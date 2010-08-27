@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -83,7 +84,7 @@ public class GenerateFullVersionReportItem extends XNavigateItemAction {
       if (teamDef != null) {
          return teamDef;
       }
-      if (teamDefName != null && !teamDefName.equals("")) {
+      if (Strings.isValid(teamDefName)) {
          try {
             TeamDefinitionArtifact teamDef =
                (TeamDefinitionArtifact) AtsCacheManager.getSoleArtifactByName(

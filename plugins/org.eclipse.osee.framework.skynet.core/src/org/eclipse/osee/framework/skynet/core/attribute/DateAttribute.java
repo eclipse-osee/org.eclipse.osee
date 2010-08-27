@@ -97,7 +97,7 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
 
    @Override
    protected Date convertStringToValue(String value) {
-      if (value == null || value.equals("")) {
+      if (!Strings.isValid(value)) {
          return null;
       }
       return new Date(Long.parseLong(value));

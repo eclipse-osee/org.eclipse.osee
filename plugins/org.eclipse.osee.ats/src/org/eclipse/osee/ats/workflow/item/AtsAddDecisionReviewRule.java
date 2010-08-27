@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -120,7 +121,7 @@ public class AtsAddDecisionReviewRule extends WorkRuleDefinition {
 
    public static ReviewBlockType getReviewBlockTypeOrDefault(TeamWorkFlowArtifact teamArt, WorkRuleDefinition workRuleDefinition) {
       String value = getDecisionParameterValue(workRuleDefinition, DecisionParameter.reviewBlockingType);
-      if (value == null || value.equals("")) {
+      if (!Strings.isValid(value)) {
          return null;
       }
       return ReviewBlockType.valueOf(value);
@@ -128,7 +129,7 @@ public class AtsAddDecisionReviewRule extends WorkRuleDefinition {
 
    public static StateEventType getStateEventType(TeamWorkFlowArtifact teamArt, WorkRuleDefinition workRuleDefinition) {
       String value = getDecisionParameterValue(workRuleDefinition, DecisionParameter.forEvent);
-      if (value == null || value.equals("")) {
+      if (!Strings.isValid(value)) {
          return null;
       }
       return StateEventType.valueOf(value);
@@ -136,7 +137,7 @@ public class AtsAddDecisionReviewRule extends WorkRuleDefinition {
 
    private static String getValueOrDefault(TeamWorkFlowArtifact teamArt, WorkRuleDefinition workRuleDefinition, DecisionParameter decisionParameter) throws OseeCoreException {
       String value = getDecisionParameterValue(workRuleDefinition, decisionParameter);
-      if (value == null || value.equals("")) {
+      if (!Strings.isValid(value)) {
          if (decisionParameter == DecisionParameter.title) {
             return "Decide on \"" + teamArt.getName() + "\"";
          } else if (decisionParameter == DecisionParameter.options) {
@@ -152,7 +153,7 @@ public class AtsAddDecisionReviewRule extends WorkRuleDefinition {
 
    public static Collection<User> getAssigneesOrDefault(TeamWorkFlowArtifact teamArt, WorkRuleDefinition workRuleDefinition) throws OseeCoreException {
       String value = getDecisionParameterValue(workRuleDefinition, DecisionParameter.assignees);
-      if (value == null || value.equals("")) {
+      if (!Strings.isValid(value)) {
          return Arrays.asList(new User[] {UserManager.getUser()});
       }
       Collection<User> users = UsersByIds.getUsers(value);

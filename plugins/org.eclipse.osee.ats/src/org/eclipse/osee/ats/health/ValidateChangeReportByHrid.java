@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.database.core.OseeInfo;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -43,7 +44,7 @@ public class ValidateChangeReportByHrid extends XNavigateItemAction {
       EntryCheckDialog ed = new EntryCheckDialog(getName(), "Enter HRID", "Display Was/Is data in Results View.");
       if (ed.open() == 0) {
          String hrid = ed.getEntry();
-         if (hrid != null && !hrid.equals("")) {
+         if (Strings.isValid(hrid)) {
             Jobs.startJob(new Report(getName(), hrid, ed.isChecked()), true);
          }
       }

@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -75,7 +76,7 @@ public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implemen
    public void saveToArtifact() {
       try {
          String selectedStrValue = getSelectedStringValue();
-         if (selectedStrValue == null || selectedStrValue.equals("")) {
+         if (!Strings.isValid(selectedStrValue)) {
             getArtifact().deleteSoleAttribute(getAttributeType());
          } else {
             getArtifact().setSoleAttributeValue(getAttributeType(), selectedStrValue);

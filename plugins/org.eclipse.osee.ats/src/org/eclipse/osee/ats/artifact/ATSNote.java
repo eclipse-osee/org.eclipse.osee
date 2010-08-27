@@ -176,7 +176,7 @@ public class ATSNote {
          String name = "";
          if (user != null) {
             name = user.getName();
-            if (name == null || name.equals("")) {
+            if (!Strings.isValid(name)) {
                name = user.getName();
             }
          }

@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.workflow.vue;
 
 import java.util.ArrayList;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IXWidgetOptionResolver;
 
 /**
@@ -47,7 +48,7 @@ public class DiagramNode {
    public DiagramNode(String name, String id, String xWidgetsXml, IXWidgetOptionResolver optionResolver) {
       super();
       this.name = name;
-      if (id != null && !id.equals("")) {
+      if (Strings.isValid(id)) {
          this.id = id;
       }
    }

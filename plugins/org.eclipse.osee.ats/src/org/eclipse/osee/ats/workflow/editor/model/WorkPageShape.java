@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.workflow.page.AtsCancelledWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsCompletedWorkPageDefinition;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -131,15 +132,15 @@ public class WorkPageShape extends RectangleShape {
    public Result validForSave() {
       try {
          String pageName = (String) getPropertyValue(CoreAttributeTypes.WorkPageName.getName());
-         if (pageName == null || pageName.equals("")) {
+         if (!Strings.isValid(pageName)) {
             return new Result(CoreAttributeTypes.WorkPageName.getName() + " can not be null");
          }
          String pageId = (String) getPropertyValue(CoreAttributeTypes.WorkId.getName());
-         if (pageId == null || pageId.equals("")) {
+         if (!Strings.isValid(pageId)) {
             return new Result(CoreAttributeTypes.WorkId.getName() + " can not be null");
          }
          String parentPageId = (String) getPropertyValue(CoreAttributeTypes.WorkParentId.getName());
-         if (parentPageId != null && !parentPageId.equals("")) {
+         if (Strings.isValid(parentPageId)) {
             if (WorkItemDefinitionFactory.getWorkItemDefinition(parentPageId) == null) {
                return new Result("Parent Id " + parentPageId + " Work Page Definition must exist and does not.");
             }
@@ -245,7 +246,7 @@ public class WorkPageShape extends RectangleShape {
       } else {
          artifact.setSoleAttributeValue(CoreAttributeTypes.WorkPageName, name);
          artifact.setSoleAttributeValue(CoreAttributeTypes.WorkId, workId);
-         if (parentWorkId == null || parentWorkId.equals("")) {
+         if (!Strings.isValid(parentWorkId)) {
             artifact.deleteSoleAttribute(CoreAttributeTypes.WorkParentId);
          } else {
             artifact.setSoleAttributeValue(CoreAttributeTypes.WorkParentId, parentWorkId);

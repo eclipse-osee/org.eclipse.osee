@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 import java.text.NumberFormat;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -56,7 +57,7 @@ public class XFloatDam extends XFloat implements IAttributeWidget {
    @Override
    public void saveToArtifact() {
       try {
-         if (text == null || text.equals("")) {
+         if (!Strings.isValid(text)) {
             getArtifact().deleteSoleAttribute(getAttributeType());
          } else {
             Double enteredValue = getFloat();

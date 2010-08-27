@@ -16,6 +16,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionReportingService;
 import org.eclipse.osee.framework.plugin.core.IActionable;
@@ -72,7 +73,7 @@ public final class OseeUiActions {
             String desc = String.format("Found in \"%s\" version %s.", editorId, version);
             if (editorPart instanceof IActionable) {
                String moreDesc = ((IActionable) editorPart).getActionDescription();
-               if (moreDesc != null && !moreDesc.equals("")) {
+               if (Strings.isValid(moreDesc)) {
                   desc += "\n" + moreDesc;
                }
             }
@@ -100,7 +101,7 @@ public final class OseeUiActions {
       if (actionableObject == null) {
          throw new IllegalArgumentException(String.format("actionableObject can not be null"));
       }
-      if (editorId == null || editorId.equals("")) {
+      if (!Strings.isValid(editorId)) {
          throw new IllegalArgumentException(String.format("editorId can not be null or empty"));
       }
       if (actionableItem == null) {
@@ -117,7 +118,7 @@ public final class OseeUiActions {
                String version = (String) oseePlugin.getBundle().getHeaders().get("Bundle-Version");
                String desc = String.format("\n\nItem: %s\nVersion: %s", editorId, version);
                String moreDesc = actionableObject.getActionDescription();
-               if (moreDesc != null && !moreDesc.equals("")) {
+               if (Strings.isValid(moreDesc)) {
                   desc += "\n" + moreDesc;
                }
                reportLogException(actionableItem, desc);
@@ -134,7 +135,7 @@ public final class OseeUiActions {
                String version = (String) oseePlugin.getBundle().getHeaders().get("Bundle-Version");
                String desc = String.format("\n\nItem: %s\nVersion: %s", editorId, version);
                String moreDesc = actionableObject.getActionDescription();
-               if (moreDesc != null && !moreDesc.equals("")) {
+               if (Strings.isValid(moreDesc)) {
                   desc += "\n" + moreDesc;
                }
                reportLogException(actionableItem, desc);
@@ -150,7 +151,7 @@ public final class OseeUiActions {
       if (!isActionReportingServiceAvailable()) {
          return;
       }
-      if (viewId == null || viewId.equals("")) {
+      if (!Strings.isValid(viewId)) {
          throw new IllegalArgumentException(String.format("viewId can not be null or empty"));
       }
       if (actionableItem == null) {
@@ -204,7 +205,7 @@ public final class OseeUiActions {
          IActionable actionable = (IActionable) target.getAdapter(IActionable.class);
          if (actionable != null) {
             String moreDesc = actionable.getActionDescription();
-            if (moreDesc != null && !moreDesc.equals("")) {
+            if (Strings.isValid(moreDesc)) {
                desc += "\n" + moreDesc;
             }
          }

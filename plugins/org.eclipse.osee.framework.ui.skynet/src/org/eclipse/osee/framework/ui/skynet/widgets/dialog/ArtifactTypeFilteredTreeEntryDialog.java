@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
@@ -68,7 +69,7 @@ public class ArtifactTypeFilteredTreeEntryDialog extends ArtifactTypeFilteredTre
 
    @Override
    protected Result isComplete() {
-      if (entryValue == null || entryValue.equals("")) {
+      if (!Strings.isValid(entryValue)) {
          return new Result("Must enter Artifact name.");
       }
       return super.isComplete();

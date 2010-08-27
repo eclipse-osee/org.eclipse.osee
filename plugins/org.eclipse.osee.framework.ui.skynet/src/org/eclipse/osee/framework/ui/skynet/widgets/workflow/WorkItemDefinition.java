@@ -184,7 +184,7 @@ public abstract class WorkItemDefinition {
       //         return artifact;
       //      }
       artifact.setName(getName());
-      if (getParentId() != null && !getParentId().equals("")) {
+      if (Strings.isValid(getParentId())) {
          artifact.setSoleAttributeValue(CoreAttributeTypes.WorkParentId, getParentId());
       }
       if (getDescription() != null) {

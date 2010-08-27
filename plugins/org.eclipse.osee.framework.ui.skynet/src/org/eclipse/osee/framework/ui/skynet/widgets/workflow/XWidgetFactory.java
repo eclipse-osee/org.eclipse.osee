@@ -101,7 +101,7 @@ public final class XWidgetFactory {
       // Otherwise, use default widget creation
       if (xWidgetName.equals("XText")) {
          xWidget = new XText(name);
-         if (xWidgetLayoutData.getDefaultValue() != null && !xWidgetLayoutData.getDefaultValue().equals("")) {
+         if (Strings.isValid(xWidgetLayoutData.getDefaultValue())) {
             ((XText) xWidget).set(xWidgetLayoutData.getDefaultValue());
          }
       } else if (xWidgetName.equals("XSelectFromMultiChoiceBranch")) {
@@ -175,7 +175,7 @@ public final class XWidgetFactory {
       } else if (xWidgetName.equals("XCheckBox")) {
          XCheckBox checkBox = new XCheckBox(name);
          checkBox.setLabelAfter(xWidgetLayoutData.getXOptionHandler().contains(XOption.LABEL_AFTER));
-         if (xWidgetLayoutData.getDefaultValue() != null && !xWidgetLayoutData.getDefaultValue().equals("")) {
+         if (Strings.isValid(xWidgetLayoutData.getDefaultValue())) {
             checkBox.set(xWidgetLayoutData.getDefaultValue().equals("true"));
          }
          xWidget = checkBox;
@@ -225,7 +225,7 @@ public final class XWidgetFactory {
          XComboBooleanDam combo = new XComboBooleanDam(name);
          combo.setDataStrings(BooleanAttribute.booleanChoices);
          xWidget = combo;
-         if (xWidgetLayoutData.getDefaultValue() != null && !xWidgetLayoutData.getDefaultValue().equals("")) {
+         if (Strings.isValid(xWidgetLayoutData.getDefaultValue())) {
             String value = xWidgetLayoutData.getDefaultValue();
             if (value == null) {
                combo.set("");

@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.util.AtsPriority;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -255,7 +256,7 @@ public class ExcelAtsActionArtifactExtractor {
 
          boolean fullRow = false;
          for (int i = 0; i < cols.length; i++) {
-            if (cols[i] != null && !cols[i].equals("")) {
+            if (Strings.isValid(cols[i])) {
                fullRow = true;
                break;
             }

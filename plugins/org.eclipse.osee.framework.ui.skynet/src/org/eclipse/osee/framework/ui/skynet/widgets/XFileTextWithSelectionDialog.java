@@ -84,7 +84,7 @@ public class XFileTextWithSelectionDialog extends XText {
                }
 
                String result = dialog.open();
-               if (result != null && !result.equals("")) {
+               if (Strings.isValid(result)) {
                   setText(dialog.getFilterPath() + File.separatorChar + dialog.getFileName());
                }
             } else if (type == Type.Directory) {
@@ -97,7 +97,7 @@ public class XFileTextWithSelectionDialog extends XText {
                }
 
                String result = dialog.open();
-               if (result != null && !result.equals("")) {
+               if (Strings.isValid(result)) {
                   setText(result);
                }
             }

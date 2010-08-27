@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -166,7 +167,7 @@ public class TaskArtifact extends StateMachineArtifact implements IATSStateMachi
    @Override
    public String getWorldViewWorkPackage() throws OseeCoreException {
       String value = super.getWorldViewWorkPackage();
-      if (value != null && !value.equals("")) {
+      if (Strings.isValid(value)) {
          return value;
       }
       return getParentSMA().getWorldViewWorkPackage();

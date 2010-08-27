@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.Import.ExcelAtsTaskArtifactExtractor;
 import org.eclipse.osee.ats.util.Import.TaskImportJob;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
@@ -115,7 +116,7 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
                   AWorkbench.popup("ERROR", "Artifact MUST be Team Workflow");
                   return;
                }
-               if (filename == null || filename.equals("")) {
+               if (!Strings.isValid(filename)) {
                   AWorkbench.popup("ERROR", "Must enter valid filename.");
                   return;
                }

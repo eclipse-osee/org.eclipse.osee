@@ -16,6 +16,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.svn.VersionControl;
 import org.eclipse.osee.framework.svn.entry.IRepositoryEntry;
 import org.eclipse.osee.framework.ui.ws.AJavaProject;
@@ -106,7 +107,7 @@ public class ScriptModel extends FileModel {
       javaFileData.name = temp == null ? new File(getRawFilename()).getName() : temp;
       javaFileData.classPath = "";
       alternateOutputDir = alternateOutputDir.trim();
-      if (alternateOutputDir == null || alternateOutputDir.equals("")) {
+      if (!Strings.isValid(alternateOutputDir)) {
          javaFileData.outFile = javaFileData.absoluteFilePath.replaceFirst(".java$", ".tmo");
          if (!javaFileData.outFile.endsWith(".tmo")) {
             javaFileData.outFile += ".tmo";

@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.AHTML.CellItem;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
@@ -292,7 +293,7 @@ public class Overview {
    }
 
    public void startStateBorderTable(boolean active, String name, String assignee) {
-      if (assignee != null && !assignee.equals("")) {
+      if (Strings.isValid(assignee)) {
          startBorderTable(active, String.format("%s (%s)", name, assignee));
       } else {
          startBorderTable(active, String.format("%s", name));

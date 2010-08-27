@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.core.datastore.schema.data.TableElement.Column
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -93,31 +94,31 @@ public abstract class SqlManager {
       switch (columnType) {
          case BINARY:
          case BIT:
-            return value != null && !value.equals("") ? Byte.parseByte(value) : 0;
+            return Strings.isValid(value) ? Byte.parseByte(value) : 0;
          case TINYINT:
          case SMALLINT:
-            return value != null && !value.equals("") ? Short.valueOf(value) : 0;
+            return Strings.isValid(value) ? Short.valueOf(value) : 0;
          case INTEGER:
-            return value != null && !value.equals("") ? Integer.valueOf(value) : 0;
+            return Strings.isValid(value) ? Integer.valueOf(value) : 0;
          case BIGINT:
-            return value != null && !value.equals("") ? BigDecimal.valueOf(Double.valueOf(value)) : new BigDecimal(0);
+            return Strings.isValid(value) ? BigDecimal.valueOf(Double.valueOf(value)) : new BigDecimal(0);
          case FLOAT:
-            return value != null && !value.equals("") ? Float.valueOf(value) : 0.0f;
+            return Strings.isValid(value) ? Float.valueOf(value) : 0.0f;
          case NUMERIC:
          case DECIMAL:
          case REAL:
          case DOUBLE:
-            return value != null && !value.equals("") ? Double.valueOf(value) : 0.0;
+            return Strings.isValid(value) ? Double.valueOf(value) : 0.0;
          case CHAR:
          case VARCHAR:
          case LONGVARCHAR:
             return value;
          case DATE:
-            return value == null || value.equals("") ? SQL3DataType.DATE : Date.valueOf(value);
+            return !Strings.isValid(value) ? SQL3DataType.DATE : Date.valueOf(value);
          case TIMESTAMP:
-            return value != null && !value.equals("") ? Timestamp.valueOf(value) : GlobalTime.GreenwichMeanTimestamp();
+            return Strings.isValid(value) ? Timestamp.valueOf(value) : GlobalTime.GreenwichMeanTimestamp();
          case TIME:
-            return value == null || value.equals("") ? SQL3DataType.TIME : Time.valueOf(value);
+            return !Strings.isValid(value) ? SQL3DataType.TIME : Time.valueOf(value);
          case VARBINARY:
          case LONGVARBINARY:
             return value.getBytes();
@@ -126,7 +127,7 @@ public abstract class SqlManager {
          case CLOB:
             return new BufferedInputStream(new ByteArrayInputStream(value.getBytes()));
          case BOOLEAN:
-            return value == null || value.equals("") ? false : Boolean.parseBoolean(value);
+            return !Strings.isValid(value) ? false : Boolean.parseBoolean(value);
          default:
             throw new OseeDataStoreException("unexpected column type: " + columnType);
       }
@@ -148,10 +149,10 @@ public abstract class SqlManager {
       toReturn.append(" ");
       toReturn.append(sqlDataType.getType(dataType));
 
-      if (columnLimits != null && !columnLimits.equals("")) {
+      if (Strings.isValid(columnLimits)) {
          toReturn.append(" (" + columnLimits + ")");
       }
-      if (defaultValue != null && !defaultValue.equals("")) {
+      if (Strings.isValid(defaultValue)) {
          toReturn.append(" " + defaultValue);
       }
       return toReturn.toString();
@@ -182,7 +183,7 @@ public abstract class SqlManager {
       String type = constraint.getConstraintType().toString();
       String appliesTo = formatQuotedString(constraint.getCommaSeparatedColumnsList(), ",");
 
-      if (id != null && !id.equals("") && appliesTo != null && !appliesTo.equals("")) {
+      if (Strings.isValid(id) && Strings.isValid(appliesTo)) {
          toReturn.append("CONSTRAINT " + id + " " + type + " (" + appliesTo + ")");
 
          if (constraint instanceof ForeignKey) {

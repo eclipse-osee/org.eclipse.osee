@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.core.datastore.schema.sql;
 
 import org.eclipse.osee.framework.database.core.SQL3DataType;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Roberto E. Escobar
@@ -23,7 +24,7 @@ public class OracleSqlDataType extends SqlDataType {
 
    @Override
    public String getLimit(SQL3DataType dataType, String limit) {
-      if (dataType == SQL3DataType.VARCHAR && limit != null && !limit.equals("")) {
+      if (dataType == SQL3DataType.VARCHAR && Strings.isValid(limit)) {
          return limit + " CHAR";
       } else {
          return super.getLimit(dataType, limit);

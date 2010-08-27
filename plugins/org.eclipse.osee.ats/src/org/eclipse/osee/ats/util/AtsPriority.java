@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.util;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Donald G. Dunne
@@ -65,7 +66,7 @@ public class AtsPriority {
       }
 
       public static PriorityType getPriority(String type) throws OseeCoreException {
-         if (type == null || type.equals("")) {
+         if (!Strings.isValid(type)) {
             return PriorityType.None;
          }
          for (PriorityType pri : PriorityType.values()) {

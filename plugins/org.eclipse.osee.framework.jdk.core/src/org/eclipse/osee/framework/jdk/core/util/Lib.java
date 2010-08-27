@@ -1106,7 +1106,7 @@ public final class Lib {
    public static URL resolveToUrl(String path) {
       URL url = null;
       System.out.println("resolveToUrl: " + path);
-      if (path != null && !path.equals("")) {
+      if (Strings.isValid(path)) {
          if (path.indexOf("://") == -1) { // if not a full URL yet
             if (!path.startsWith("/")) { // if not absolute then prepend
                // base path

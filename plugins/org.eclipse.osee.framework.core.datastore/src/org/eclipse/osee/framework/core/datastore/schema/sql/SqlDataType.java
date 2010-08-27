@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.core.datastore.schema.sql;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Roberto E. Escobar
@@ -142,7 +143,7 @@ public abstract class SqlDataType {
          case NUMERIC:
          case SMALLINT:
          case TINYINT:
-            toReturn = columnValue != null && !columnValue.equals("") ? columnValue : "0";
+            toReturn = Strings.isValid(columnValue) ? columnValue : "0";
             break;
          case DATE:
             toReturn = "{d '" + formatDate(columnValue) + "'}";

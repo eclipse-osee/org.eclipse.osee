@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -117,10 +118,10 @@ public class XRadioButton extends XWidget {
       }
 
       button = new Button(parent, buttonType == ButtonType.Check ? SWT.CHECK : SWT.RADIO);
-      if (getToolTip() != null && !getToolTip().equals("")) {
+      if (Strings.isValid(getToolTip())) {
          button.setToolTipText(getToolTip());
       }
-      if (getToolTip() != null && !getToolTip().equals("")) {
+      if (Strings.isValid(getToolTip())) {
          button.setToolTipText(getToolTip());
       }
       GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
@@ -147,7 +148,7 @@ public class XRadioButton extends XWidget {
          str += ":";
       }
       labelWidget.setText(str);
-      if (getToolTip() != null && !getToolTip().equals("")) {
+      if (Strings.isValid(getToolTip())) {
          labelWidget.setToolTipText(getToolTip());
       }
    }

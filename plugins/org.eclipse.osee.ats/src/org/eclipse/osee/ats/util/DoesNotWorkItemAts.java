@@ -558,7 +558,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
    //   Set<String> currentDefaultGuids = new HashSet<String>();
    //   if (xViewerDefaults != null) {
    //      for (String guid : AXml.getTagDataArray(xViewerDefaults, XVIEWER_DEFAULTS_TAG)) {
-   //         if (guid != null && !guid.equals("")) {
+   //         if (Strings.isValid(guid)) {
    //            currentDefaultGuids.add(guid);
    //         }
    //      }

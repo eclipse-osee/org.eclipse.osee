@@ -119,7 +119,7 @@ public class LoadUserSchemasOperation extends AbstractOperation {
          if (field.equals(TableDescriptionFields.schema)) {
             value = userName;
          }
-         if (value != null && !value.equals("")) {
+         if (Strings.isValid(value)) {
             newTable.addTableDescription(field, value);
          }
       }

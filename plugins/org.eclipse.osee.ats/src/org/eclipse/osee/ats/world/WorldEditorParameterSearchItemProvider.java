@@ -152,7 +152,7 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
             worldEditor.getWorldComposite().load(selectedName, artifacts, customizeData, tableLoadOptions);
          } catch (final Exception ex) {
             String str = "Exception occurred. Network may be down.";
-            if (ex.getLocalizedMessage() != null && !ex.getLocalizedMessage().equals("")) {
+            if (Strings.isValid(ex.getLocalizedMessage())) {
                str += " => " + ex.getLocalizedMessage();
             }
             worldEditor.getWorldComposite().setTableTitle("Searching Error - " + selectedName, false);

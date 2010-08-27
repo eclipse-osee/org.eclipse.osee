@@ -244,7 +244,7 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
          return null;
       }
       String versionStr = versionCombo.get();
-      if (versionStr == null || versionStr.equals("")) {
+      if (!Strings.isValid(versionStr)) {
          return null;
       }
       Collection<TeamDefinitionArtifact> teamDefs = getSelectedTeamDefinitions();
@@ -286,7 +286,7 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
    }
 
    protected ReleasedOption getSelectedReleased() {
-      if (releasedCombo == null || releasedCombo.get() == null || releasedCombo.get().equals("")) {
+      if (releasedCombo == null || !Strings.isValid(releasedCombo.get())) {
          return ReleasedOption.Both;
       }
       return ReleasedOption.valueOf(releasedCombo.get());

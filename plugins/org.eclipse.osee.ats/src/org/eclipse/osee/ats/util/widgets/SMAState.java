@@ -184,7 +184,7 @@ public class SMAState {
    public static Pattern storagePattern = Pattern.compile("^(.*?);(.*?);(.*?);(.*?)$");
 
    public void setFromXml(String xml) throws OseeCoreException {
-      if (xml == null || xml.equals("")) {
+      if (!Strings.isValid(xml)) {
          name = "Unknown";
          return;
       }

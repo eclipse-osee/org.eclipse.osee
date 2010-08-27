@@ -45,6 +45,7 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
@@ -513,7 +514,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
    @Override
    public Collection<TaskArtifact> getTaskArtifacts(String stateName) throws OseeCoreException {
       if (sma instanceof TaskableStateMachineArtifact) {
-         if (stateName == null || stateName.equals("")) {
+         if (!Strings.isValid(stateName)) {
             return ((TaskableStateMachineArtifact) sma).getTaskArtifacts();
          } else {
             return ((TaskableStateMachineArtifact) sma).getTaskArtifacts(stateName);

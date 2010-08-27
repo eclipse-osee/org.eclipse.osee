@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -93,7 +94,7 @@ public class AtsAddPeerToPeerReviewRule extends WorkRuleDefinition {
             getValueOrDefault(teamArt, atsAddPeerToPeerReviewRule, PeerToPeerParameter.forState),
             UserManager.getUser(), new Date(), transaction);
       String desc = getValueOrDefault(teamArt, atsAddPeerToPeerReviewRule, PeerToPeerParameter.description);
-      if (desc != null && !desc.equals("")) {
+      if (Strings.isValid(desc)) {
          peerArt.setSoleAttributeFromString(AtsAttributeTypes.Description, desc);
       }
       ReviewBlockType reviewBlockType =
@@ -116,7 +117,7 @@ public class AtsAddPeerToPeerReviewRule extends WorkRuleDefinition {
 
    private static String getValueOrDefault(TeamWorkFlowArtifact teamArt, WorkRuleDefinition workRuleDefinition, PeerToPeerParameter peerToPeerParameter) throws OseeCoreException {
       String value = getPeerToPeerParameterValue(workRuleDefinition, peerToPeerParameter);
-      if (value == null || value.equals("")) {
+      if (!Strings.isValid(value)) {
          if (peerToPeerParameter == PeerToPeerParameter.title) {
             return PeerToPeerReviewArtifact.getDefaultReviewTitle(teamArt);
          } else if (peerToPeerParameter == PeerToPeerParameter.forState) {

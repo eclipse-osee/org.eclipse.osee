@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -214,7 +215,7 @@ public class UserRoleManager {
          String name = "";
          if (user != null) {
             name = user.getName();
-            if (name == null || name.equals("")) {
+            if (!Strings.isValid(name)) {
                name = user.getName();
             }
          }

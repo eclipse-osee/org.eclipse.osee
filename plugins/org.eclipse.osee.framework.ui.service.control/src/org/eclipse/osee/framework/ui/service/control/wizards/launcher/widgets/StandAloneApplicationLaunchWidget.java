@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.service.control.wizards.launcher.widgets;
 
 import java.io.File;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.service.control.ServiceControlImage;
 import org.eclipse.osee.framework.ui.service.control.jobs.StandAloneApplicationLaunchJob;
 import org.eclipse.osee.framework.ui.service.control.jobs.TextDisplayHelper;
@@ -206,7 +207,7 @@ public class StandAloneApplicationLaunchWidget implements ILaunchWidget {
             }
 
             String result = dialog.open();
-            if (result != null && !result.equals("")) {
+            if (Strings.isValid(result)) {
                scriptOutputText.setText(result);
                localUnzipLocation = result;
             }
@@ -256,7 +257,7 @@ public class StandAloneApplicationLaunchWidget implements ILaunchWidget {
             dialog.setFilterNames(new String[] {"java"});
 
             String result = dialog.open();
-            if (result != null && !result.equals("")) {
+            if (Strings.isValid(result)) {
                javaCompilerText.setText(result);
                javaCompiler = result;
             }

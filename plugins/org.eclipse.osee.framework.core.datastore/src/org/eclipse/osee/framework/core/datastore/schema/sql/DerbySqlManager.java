@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.datastore.schema.data.ReferenceClause.OnD
 import org.eclipse.osee.framework.core.datastore.schema.data.ReferenceClause.OnUpdateEnum;
 import org.eclipse.osee.framework.core.datastore.schema.data.TableElement.ColumnFields;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -44,7 +45,7 @@ public class DerbySqlManager extends SqlManagerImpl {
       String type = constraint.getConstraintType().toString();
       String appliesTo = formatQuotedString(constraint.getCommaSeparatedColumnsList(), ",");
 
-      if (id != null && !id.equals("") && appliesTo != null && !appliesTo.equals("")) {
+      if (Strings.isValid(id) && Strings.isValid(appliesTo)) {
          toReturn.append("CONSTRAINT " + id + " " + type + " (" + appliesTo + ")");
 
          if (constraint instanceof ForeignKey) {
@@ -110,10 +111,10 @@ public class DerbySqlManager extends SqlManagerImpl {
       toReturn.append(" ");
       toReturn.append(sqlDataType.getType(dataType));
 
-      if (columnLimits != null && !columnLimits.equals("")) {
+      if (Strings.isValid(columnLimits)) {
          toReturn.append(" (" + columnLimits + ")");
       }
-      if (defaultValue != null && !defaultValue.equals("")) {
+      if (Strings.isValid(defaultValue)) {
          toReturn.append(" " + defaultValue);
       }
       return toReturn.toString();

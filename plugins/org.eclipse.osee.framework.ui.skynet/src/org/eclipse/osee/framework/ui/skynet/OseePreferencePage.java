@@ -19,6 +19,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.osee.framework.core.client.CoreClientActivator;
 import org.eclipse.osee.framework.jdk.core.util.Network;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.CorePreferences;
 import org.eclipse.osee.framework.skynet.core.preferences.PreferenceConstants;
@@ -97,7 +98,7 @@ public class OseePreferencePage extends PreferencePage implements IWorkbenchPref
       String inetaddress = prefStore.getString(CorePreferences.INETADDRESS_KEY);
 
       boolean addressSelected = false;
-      if (inetaddress != null && !inetaddress.equals("")) {
+      if (Strings.isValid(inetaddress)) {
          for (InetAddress address : networkButtons.keySet()) {
             if (address.getHostAddress().equals(inetaddress)) {
                networkButtons.get(address).setSelection(true);

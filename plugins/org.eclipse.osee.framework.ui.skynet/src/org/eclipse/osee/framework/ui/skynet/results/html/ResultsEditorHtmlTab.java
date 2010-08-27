@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
@@ -148,7 +149,7 @@ public class ResultsEditorHtmlTab implements IResultsEditorHtmlTab, IBrowserActi
                final FileDialog dialog = new FileDialog(Displays.getActiveShell().getShell(), SWT.OPEN);
                dialog.setFilterExtensions(new String[] {"*.html"});
                String filename = dialog.open();
-               if (filename == null || filename.equals("")) {
+               if (!Strings.isValid(filename)) {
                   return;
                }
                String html = AFile.readFile(filename);

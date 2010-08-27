@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -366,7 +367,7 @@ public class XCombo extends XWidget {
    protected String toXml(String xmlRoot) {
       String s;
       String dataStr = getXml();
-      if (getXmlSubRoot() == null || getXmlSubRoot().equals("")) {
+      if (!Strings.isValid(getXmlSubRoot())) {
          s = "<" + xmlRoot + ">" + dataStr + "</" + xmlRoot + ">\n";
       } else {
          s = "<" + xmlRoot + "><" + getXmlSubRoot() + ">" + dataStr + "</" + getXmlSubRoot() + "></" + xmlRoot + ">\n";

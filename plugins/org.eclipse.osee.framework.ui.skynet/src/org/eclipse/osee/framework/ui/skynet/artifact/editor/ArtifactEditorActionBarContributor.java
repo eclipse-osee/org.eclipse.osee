@@ -22,6 +22,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -222,7 +223,7 @@ public class ArtifactEditorActionBarContributor implements IActionContributor {
          if (rString == null) {
             rString = RelationManager.reportHasDirtyLinks(artifact);
          }
-         AWorkbench.popup("Dirty Report", rString == null || rString.equals("") ? "Not Dirty" : "Dirty -> " + rString);
+         AWorkbench.popup("Dirty Report", !Strings.isValid(rString) ? "Not Dirty" : "Dirty -> " + rString);
       }
    }
 

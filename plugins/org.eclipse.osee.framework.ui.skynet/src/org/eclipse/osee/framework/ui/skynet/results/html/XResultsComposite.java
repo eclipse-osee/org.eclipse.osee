@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -76,7 +77,7 @@ public class XResultsComposite extends Composite {
 
          @Override
          public void widgetSelected(SelectionEvent e) {
-            if (htmlText == null || htmlText.equals("")) {
+            if (!Strings.isValid(htmlText)) {
                AWorkbench.popup("ERROR", "Nothing to view");
                return;
             }
@@ -96,7 +97,7 @@ public class XResultsComposite extends Composite {
 
          @Override
          public void widgetSelected(SelectionEvent e) {
-            if (htmlText == null || htmlText.equals("")) {
+            if (!Strings.isValid(htmlText)) {
                AWorkbench.popup("ERROR", "Nothing to print");
                return;
             }
@@ -110,7 +111,7 @@ public class XResultsComposite extends Composite {
 
          @Override
          public void widgetSelected(SelectionEvent e) {
-            if (htmlText == null || htmlText.equals("")) {
+            if (!Strings.isValid(htmlText)) {
                AWorkbench.popup("ERROR", "Nothing to email");
                return;
             }

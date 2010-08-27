@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -147,7 +148,7 @@ public class ExcelAtsTaskArtifactExtractor {
             monitor.subTask("Validating...");
             boolean fullRow = false;
             for (int i = 0; i < row.length; i++) {
-               if (row[i] != null && !row[i].equals("")) {
+               if (Strings.isValid(row[i])) {
                   fullRow = true;
                   break;
                }
@@ -163,7 +164,7 @@ public class ExcelAtsTaskArtifactExtractor {
                } else if (headerRow[i].equalsIgnoreCase("Originator")) {
                   String userName = row[i];
                   User u = null;
-                  if (userName == null || userName.equals("")) {
+                  if (!Strings.isValid(userName)) {
                      u = UserManager.getUser();
                   } else {
                      u = UserManager.getUserByName(userName);
@@ -179,7 +180,7 @@ public class ExcelAtsTaskArtifactExtractor {
                      userName = userName.replaceAll("^\\s+", "");
                      userName = userName.replaceAll("\\+$", "");
                      User user = null;
-                     if (userName == null || userName.equals("")) {
+                     if (!Strings.isValid(userName)) {
                         user = UserManager.getUser();
                      } else {
                         try {
@@ -198,34 +199,34 @@ public class ExcelAtsTaskArtifactExtractor {
                   taskArt.getStateMgr().setAssignees(assignees);
                } else if (headerRow[i].equalsIgnoreCase("Resolution")) {
                   String str = row[i];
-                  if (str != null && !str.equals("")) {
+                  if (Strings.isValid(str)) {
                      taskArt.setSoleAttributeValue(AtsAttributeTypes.Resolution, str);
                   }
                } else if (headerRow[i].equalsIgnoreCase("Description")) {
                   String str = row[i];
-                  if (str != null && !str.equals("")) {
+                  if (Strings.isValid(str)) {
                      taskArt.setSoleAttributeValue(AtsAttributeTypes.Description, str);
                   }
                } else if (headerRow[i].equalsIgnoreCase("Related to State")) {
                   String str = row[i];
-                  if (str != null && !str.equals("")) {
+                  if (Strings.isValid(str)) {
                      taskArt.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, str);
                   }
                } else if (headerRow[i].equalsIgnoreCase("Notes")) {
                   String str = row[i];
-                  if (str != null && !str.equals("")) {
+                  if (Strings.isValid(str)) {
                      taskArt.setSoleAttributeValue(AtsAttributeTypes.SmaNote, str);
                   }
                } else if (headerRow[i].equalsIgnoreCase("Title")) {
                   String str = row[i];
-                  if (str != null && !str.equals("")) {
+                  if (Strings.isValid(str)) {
                      monitor.subTask(String.format("Title \"%s\"", str));
                      taskArt.setName(str);
                   }
                } else if (headerRow[i].equalsIgnoreCase("Percent Complete")) {
                   String str = row[i];
                   Double percent;
-                  if (str != null && !str.equals("")) {
+                  if (Strings.isValid(str)) {
                      try {
                         percent = new Double(str);
                         if (percent < 1) {
@@ -241,7 +242,7 @@ public class ExcelAtsTaskArtifactExtractor {
                } else if (headerRow[i].equalsIgnoreCase("Hours Spent")) {
                   String str = row[i];
                   double hours = 0;
-                  if (str != null && !str.equals("")) {
+                  if (Strings.isValid(str)) {
                      try {
                         hours = new Double(str);
                      } catch (Exception ex) {
@@ -253,7 +254,7 @@ public class ExcelAtsTaskArtifactExtractor {
                } else if (headerRow[i].equalsIgnoreCase("Estimated Hours")) {
                   String str = row[i];
                   double hours = 0;
-                  if (str != null && !str.equals("")) {
+                  if (Strings.isValid(str)) {
                      try {
                         hours = new Double(str);
                      } catch (Exception ex) {

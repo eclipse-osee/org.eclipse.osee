@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.core.datastore.schema.data.TableElement.TableD
 import org.eclipse.osee.framework.core.datastore.schema.data.TableElement.TableTags;
 import org.eclipse.osee.framework.core.datastore.schema.sql.SqlManager;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -179,7 +180,7 @@ public class DatabaseDataImporter {
                      Node node = attributeMap.item(attributeIndex);
                      String nodeName = node.getNodeName();
                      String nodeValue = node.getTextContent();
-                     if (nodeName != null && !nodeName.equals("")) {
+                     if (Strings.isValid(nodeName)) {
                         columnMetaData.addColumnField(ColumnFields.valueOf(nodeName),
                            (nodeValue != null ? nodeValue : ""));
                      }
@@ -205,7 +206,7 @@ public class DatabaseDataImporter {
                      Node node = attributeMap.item(attributeIndex);
                      String nodeName = node.getNodeName();
                      String nodeValue = node.getTextContent();
-                     if (nodeName != null && !nodeName.equals("")) {
+                     if (Strings.isValid(nodeName)) {
                         rowData.add(new ColumnDbData(nodeName, (nodeValue != null ? nodeValue : "")));
                      }
                   }
@@ -234,10 +235,10 @@ public class DatabaseDataImporter {
                   tableAddressString = tableAddress.getTextContent();
                }
 
-               if (tableNameString != null && !tableNameString.equals("") && tableAddressString != null && !tableAddressString.equals("")) {
+               if (Strings.isValid(tableNameString) && Strings.isValid(tableAddressString)) {
                   TableData tableData = new TableData();
                   tableData.addTableDescription(TableDescriptionFields.name, tableNameString);
-                  if (this.schemaToImportTo != null && !this.schemaToImportTo.equals("")) {
+                  if (Strings.isValid(this.schemaToImportTo)) {
                      tableData.addTableDescription(TableDescriptionFields.schema, schemaToImportTo);
                   } else {
                      tableData.addTableDescription(TableDescriptionFields.schema, tableAddressString);

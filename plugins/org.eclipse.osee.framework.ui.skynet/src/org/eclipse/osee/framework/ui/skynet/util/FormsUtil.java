@@ -68,7 +68,7 @@ public class FormsUtil {
       toolkit.adapt(topLineComp);
 
       Label label = toolkit.createLabel(topLineComp, labelStr);
-      if (tooltip != null && !tooltip.equals("")) {
+      if (Strings.isValid(tooltip)) {
          label.setToolTipText(tooltip);
       }
       setLabelFonts(label, FontManager.getDefaultLabelFont());
@@ -76,7 +76,7 @@ public class FormsUtil {
       text.setLayoutData(new GridData());
       toolkit.adapt(text, true, true);
       text.setText(valueStr);
-      if (tooltip != null && !tooltip.equals("")) {
+      if (Strings.isValid(tooltip)) {
          text.setToolTipText(tooltip);
       }
       return text;

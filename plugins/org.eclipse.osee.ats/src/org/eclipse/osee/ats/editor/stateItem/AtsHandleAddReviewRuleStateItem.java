@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule.DecisionRuleO
 import org.eclipse.osee.ats.workflow.item.AtsAddPeerToPeerReviewRule;
 import org.eclipse.osee.ats.workflow.item.StateEventType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
@@ -53,7 +54,7 @@ public class AtsHandleAddReviewRuleStateItem extends AtsStateItem {
          }
          StateEventType eventType = AtsAddDecisionReviewRule.getStateEventType((TeamWorkFlowArtifact) sma, workRuleDef);
          String forState = workRuleDef.getWorkDataValue(DecisionParameter.forState.name());
-         if (forState == null || forState.equals("")) {
+         if (!Strings.isValid(forState)) {
             continue;
          }
          if (eventType != null && toState.equals(forState) && eventType == StateEventType.TransitionTo) {

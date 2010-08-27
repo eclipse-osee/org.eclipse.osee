@@ -16,6 +16,7 @@ import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.ws.AWorkspace;
 import org.eclipse.osee.ote.ui.test.manager.operations.AddIFileToTestManager;
@@ -62,7 +63,7 @@ public class AddToTestManagerPopupAction implements IWorkbenchWindowActionDelega
    @Override
    public void run(IAction proxyAction) {
       String file = getSelection();
-      if (file == null || file.equals("")) {
+      if (!Strings.isValid(file)) {
          AWorkbench.popup("ERROR", "Can't retrieve file");
          return;
       }

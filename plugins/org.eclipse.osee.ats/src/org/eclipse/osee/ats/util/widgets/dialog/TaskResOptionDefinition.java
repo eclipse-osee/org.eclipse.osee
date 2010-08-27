@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.util.widgets.dialog;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.swt.SWT;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -82,7 +83,7 @@ public class TaskResOptionDefinition {
    }
 
    public int getColorInt() {
-      if (color == null || color.equals("")) {
+      if (!Strings.isValid(color)) {
          return SWT.COLOR_BLACK;
       }
       if (color.equals("WHITE")) {

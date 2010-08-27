@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -81,7 +82,7 @@ public class Validator {
          Node node = messageList.item(0);
          if (node != null) {
             String message = node.getTextContent();
-            if (message != null && !message.equals("")) {
+            if (Strings.isValid(message)) {
                validator.setMessage(message.trim());
             }
          }
@@ -93,9 +94,9 @@ public class Validator {
       for (int i = 0; i < paramList.getLength(); i++) {
          Element paramElement = (Element) paramList.item(i);
          String paramName = paramElement.getAttribute(ParamAttributes.name.name());
-         if (paramName != null && !paramName.equals("")) {
+         if (Strings.isValid(paramName)) {
             String content = paramElement.getTextContent();
-            if (content != null && !content.equals("")) {
+            if (Strings.isValid(content)) {
                validator.addParam(paramName.trim(), content.trim());
             }
          }
@@ -122,14 +123,14 @@ public class Validator {
 
          Element fieldElement = (Element) fields.item(i);
          String fieldName = fieldElement.getAttribute(FieldAttributes.name.name());
-         if (fieldName != null && !fieldName.equals("")) {
+         if (Strings.isValid(fieldName)) {
 
             NodeList validators = fieldElement.getElementsByTagName(FieldEntries.validator.name());
             for (int j = 0; j < validators.getLength(); j++) {
                Element validatorElement = (Element) validators.item(j);
 
                String validatorType = validatorElement.getAttribute(FieldValidatorAttributes.type.name());
-               if (validatorType != null && !validatorType.equals("")) {
+               if (Strings.isValid(validatorType)) {
                   parseValidator(validatorElement, fieldName.trim(), validatorType.trim());
                }
             }

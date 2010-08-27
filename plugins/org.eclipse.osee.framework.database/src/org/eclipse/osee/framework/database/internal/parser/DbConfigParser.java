@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.database.internal.parser.DbInformation.DbObjectType;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -77,7 +78,7 @@ public class DbConfigParser {
                for (DbDetailData.DescriptionField descriptionField : descriptionFields) {
                   Node node = map.getNamedItem(descriptionField.name());
                   String value = node.getTextContent();
-                  if (value != null && !value.equals("")) {
+                  if (Strings.isValid(value)) {
                      dbInfo.addDescription(descriptionField, value);
                   }
                }
@@ -97,7 +98,7 @@ public class DbConfigParser {
                   if (valueNode != null) {
                      value = valueNode.getTextContent();
                   }
-                  if (key != null && !key.equals("")) {
+                  if (Strings.isValid(key)) {
                      dbInfo.addConfigField(field, new Pair<String, String>(key, (value != null ? value : "")));
                   }
 
@@ -128,7 +129,7 @@ public class DbConfigParser {
                      if (node != null) {
                         value = node.getTextContent();
                      }
-                     if (value != null && !value.equals("")) {
+                     if (Strings.isValid(value)) {
                         dbServicesData.addServerInfo(infoField, value);
                      }
                   }
@@ -151,7 +152,7 @@ public class DbConfigParser {
                Node node = map.getNamedItem(DbConnectionData.DescriptionFields.id.name());
                if (node != null) {
                   String value = node.getTextContent();
-                  if (value != null && !value.equals("")) {
+                  if (Strings.isValid(value)) {
                      dbConnectionData.setId(value);
                   }
                }
@@ -162,13 +163,13 @@ public class DbConfigParser {
                switch (connectionField) {
                   case Driver:
                      String driver = Jaxp.getChildText(element, connectionField.name());
-                     if (driver != null && !driver.equals("")) {
+                     if (Strings.isValid(driver)) {
                         dbConnectionData.setDBDriver(driver);
                      }
                      break;
                   case Url:
                      String url = Jaxp.getChildText(element, connectionField.name());
-                     if (url != null && !url.equals("")) {
+                     if (Strings.isValid(url)) {
                         dbConnectionData.setRawUrl(url);
                      }
                      break;
@@ -182,7 +183,7 @@ public class DbConfigParser {
                            for (int index = 0; index < attributes.getLength(); index++) {
                               Node node = attributes.item(index);
                               String attributeValue = node.getTextContent();
-                              if (attributeValue != null && !attributeValue.equals("")) {
+                              if (Strings.isValid(attributeValue)) {
                                  dbConnectionData.addAttribute(attributeValue);
                               }
                            }

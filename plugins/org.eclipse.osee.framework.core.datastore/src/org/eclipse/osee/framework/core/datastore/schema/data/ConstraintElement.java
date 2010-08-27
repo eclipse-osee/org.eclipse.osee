@@ -17,6 +17,7 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.eclipse.osee.framework.core.datastore.schema.data.TableElement.TableSections;
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -80,7 +81,7 @@ public class ConstraintElement implements Xmlizable {
    }
 
    public String getFullyQualifiedId() {
-      if (schema != null && !schema.equals("")) {
+      if (Strings.isValid(schema)) {
          return schema + "." + id;
       } else {
          return id;
