@@ -174,7 +174,7 @@ public class VersionArtifact extends Artifact implements ICommitConfigArtifact {
    }
 
    public Date getReleaseDate() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.EstimatedReleaseDate, null);
+      return getSoleAttributeValue(AtsAttributeTypes.ReleaseDate, null);
    }
 
    public static Set<VersionArtifact> getVersions(Collection<String> teamDefNames) throws OseeCoreException {
