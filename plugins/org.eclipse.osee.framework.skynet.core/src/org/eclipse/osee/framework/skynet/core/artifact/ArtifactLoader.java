@@ -22,7 +22,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -67,6 +66,8 @@ public final class ArtifactLoader {
       if (!insertParameters.isEmpty()) {
          artifacts.addAll(loadArtifacts(queryId, loadLevel, confirmer,
             new ArrayList<Object[]>(insertParameters.values()), reload, historical, allowDeleted));
+      } else {
+         confirmer.canProceed(artifacts.size());
       }
       return artifacts;
    }
