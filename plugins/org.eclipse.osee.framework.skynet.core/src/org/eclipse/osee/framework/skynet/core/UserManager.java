@@ -43,9 +43,15 @@ import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
  */
 public final class UserManager {
 
+   public static String DOUBLE_CLICK_SETTING_KEY = "onDoubleClickOpenUsingArtifactEditor";
+
    private static final String CACHE_PREFIX = "userManager.";
    private static boolean userCacheIsLoaded = false;
    private static boolean duringMainUserCreation = false;
+
+   private UserManager() {
+      // Utility class
+   }
 
    /**
     * Returns the currently authenticated user
@@ -292,5 +298,4 @@ public final class UserManager {
       getUser().setSetting(key, value);
    }
 
-   public static String DOUBLE_CLICK_SETTING_KEY = "onDoubleClickOpenUsingArtifactEditor";
 }
