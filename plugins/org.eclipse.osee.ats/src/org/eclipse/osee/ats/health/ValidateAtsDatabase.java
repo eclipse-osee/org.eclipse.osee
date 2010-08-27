@@ -43,6 +43,7 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
+import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.StateManager;
@@ -51,6 +52,8 @@ import org.eclipse.osee.ats.util.widgets.XCurrentStateDam;
 import org.eclipse.osee.ats.util.widgets.XStateDam;
 import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
 import org.eclipse.osee.framework.core.data.SystemUser;
+import org.eclipse.osee.framework.core.enums.BranchArchivedState;
+import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -191,24 +194,25 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             artifacts.addAll(artifactsTemp);
          }
          count += artifacts.size();
-         testArtifactIds(artifacts);
-         testAtsAttributeValues(artifacts);
-         testAtsActionsHaveTeamWorkflow(artifacts);
-         testAtsWorkflowsHaveAction(artifacts);
-         testAtsWorkflowsHaveZeroOrOneVersion(artifacts);
-         testTasksHaveParentWorkflow(artifacts);
-         testReviewsHaveParentWorkflowOrActionableItems(artifacts);
-         testReviewsHaveValidDefectAndRoleXml(artifacts);
-         testTeamWorkflows(artifacts);
-         testTeamDefinitions(artifacts);
-         testVersionArtifacts(artifacts);
-         testStateMachineAssignees(artifacts);
-         testAtsLogs(artifacts);
-         testActionableItemToTeamDefinition(artifacts);
-         testTeamDefinitionHasWorkflow(artifacts);
-         for (IAtsHealthCheck atsHealthCheck : AtsHealthCheck.getAtsHealthCheckItems()) {
-            atsHealthCheck.validateAtsDatabase(artifacts, testNameToResultsMap);
-         }
+         //         testArtifactIds(artifacts);
+         //         testAtsAttributeValues(artifacts);
+         //         testAtsActionsHaveTeamWorkflow(artifacts);
+         //         testAtsWorkflowsHaveAction(artifacts);
+         //         testAtsWorkflowsHaveZeroOrOneVersion(artifacts);
+         //         testTasksHaveParentWorkflow(artifacts);
+         //         testReviewsHaveParentWorkflowOrActionableItems(artifacts);
+         //         testReviewsHaveValidDefectAndRoleXml(artifacts);
+         //         testTeamWorkflows(artifacts);
+         testAtsBranchManager(artifacts);
+         //         testTeamDefinitions(artifacts);
+         //         testVersionArtifacts(artifacts);
+         //         testStateMachineAssignees(artifacts);
+         //         testAtsLogs(artifacts);
+         //         testActionableItemToTeamDefinition(artifacts);
+         //         testTeamDefinitionHasWorkflow(artifacts);
+         //         for (IAtsHealthCheck atsHealthCheck : AtsHealthCheck.getAtsHealthCheckItems()) {
+         //            atsHealthCheck.validateAtsDatabase(artifacts, testNameToResultsMap);
+         //         }
          if (monitor != null) {
             monitor.worked(1);
          }
@@ -316,6 +320,39 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             } catch (Exception ex) {
                testNameToResultsMap.put(
                   "testTeamWorkflows",
+                  teamArt.getArtifactTypeName() + " " + XResultData.getHyperlink(teamArt) + " exception: " + ex.getLocalizedMessage());
+            }
+         }
+      }
+   }
+
+   private void testAtsBranchManager(Collection<Artifact> artifacts) {
+      for (Artifact art : artifacts) {
+         if (art instanceof TeamWorkFlowArtifact) {
+            TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) art;
+            AtsBranchManager mgr = teamArt.getBranchMgr();
+            try {
+               Collection<Branch> branchesCommittedTo = mgr.getBranchesCommittedTo();
+               Branch workingBranch = mgr.getWorkingBranch();
+               if (workingBranch != null && branchesCommittedTo.size() > 0 && workingBranch.getBranchState() != BranchState.COMMITTED) {
+                  testNameToResultsMap.put(
+                     "testAtsBranchManagerA",
+                     "Error: TeamWorkflow " + XResultData.getHyperlink(teamArt) + " has committed branches but working branch [" + workingBranch.getGuid() + "] != COMMITTED");
+               }
+               if (workingBranch != null && workingBranch.getBranchState() == BranchState.COMMITTED && workingBranch.getArchiveState() == BranchArchivedState.UNARCHIVED) {
+                  String fixStr = "";
+                  if (teamArt.isCompleted()) {
+                     fixStr = " - Fix: Workflow Completed, Branch can be Archived";
+                  } else {
+                     fixStr = " - Workflow not completed, verify manually";
+                  }
+                  testNameToResultsMap.put(
+                     "testAtsBranchManagerB",
+                     "Error: TeamWorkflow " + XResultData.getHyperlink(teamArt) + " has committed working branch [" + workingBranch.getGuid() + "] but not archived" + fixStr);
+               }
+            } catch (Exception ex) {
+               testNameToResultsMap.put(
+                  "testAtsBranchManager",
                   teamArt.getArtifactTypeName() + " " + XResultData.getHyperlink(teamArt) + " exception: " + ex.getLocalizedMessage());
             }
          }
