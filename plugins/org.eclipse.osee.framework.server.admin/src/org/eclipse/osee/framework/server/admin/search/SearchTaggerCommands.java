@@ -38,6 +38,7 @@ public class SearchTaggerCommands {
       if (!this.dropAllWorker.isRunning() && !this.tagAllWorker.isRunning()) {
          this.tagItemWorker.setCommandInterpreter(ci);
          this.tagItemWorker.setExecutionAllowed(true);
+         Operations.executeAsJob(tagItemWorker, false);
       } else {
          if (this.dropAllWorker.isRunning()) {
             ci.println("Drop All Tags is running.");
