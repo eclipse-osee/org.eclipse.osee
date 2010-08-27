@@ -14,6 +14,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.HttpProcessor;
+import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -22,6 +23,9 @@ import org.eclipse.osee.framework.skynet.core.test.util.FrameworkTestUtil;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.EmailGroupsBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.EmailGroupsData;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
+import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -51,6 +55,21 @@ public class EmailGroupsBlamTest extends EmailGroupsBlam {
 
    private static void cleanup() throws OseeCoreException, Exception {
       FrameworkTestUtil.cleanupSimpleTest(BranchManager.getCommonBranch(), EmailGroupsBlamTest.class.getSimpleName());
+   }
+
+   @org.junit.Test
+   public void testXWidgetsResolved() throws Exception {
+      SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
+      for (DynamicXWidgetLayoutData xWidgetLayoutData : getLayoutDatas()) {
+         XWidget xWidget = xWidgetLayoutData.getXWidget();
+         Assert.assertNotNull(xWidget);
+         /**
+          * Test that widget gets resolved. If widget is unresolved, the resolver will resolve it as an XLabel with an
+          * error string so the widget creation doesn't exception and fail. Check for this condition.
+          */
+         Assert.assertFalse(xWidget.getLabel(), xWidget.getLabel().contains("Unhandled XWidget"));
+      }
+      TestUtil.severeLoggingEnd(monitorLog, Arrays.asList(""));
    }
 
    @org.junit.Test

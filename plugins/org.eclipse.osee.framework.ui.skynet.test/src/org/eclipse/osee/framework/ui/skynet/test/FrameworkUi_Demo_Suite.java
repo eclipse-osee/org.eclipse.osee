@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.test;
 import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.ui.skynet.test.artifact.ArtifactPromptChangeTest;
+import org.eclipse.osee.framework.ui.skynet.test.blam.BlamXWidgetTest;
 import org.eclipse.osee.framework.ui.skynet.test.blam.operation.EmailGroupsBlamTest;
 import org.eclipse.osee.framework.ui.skynet.test.cases.ArtifactPasteConfigurationTest;
 import org.eclipse.osee.framework.ui.skynet.test.cases.ArtifactPasteOperationTest;
@@ -32,7 +33,8 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({//
-EmailGroupsBlamTest.class, //
+BlamXWidgetTest.class, //
+   EmailGroupsBlamTest.class, //
    ResultsEditorConverterTest.class, //
    ArtifactPasteConfigurationTest.class, //
    ArtifactPasteOperationTest.class, //
