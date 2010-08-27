@@ -109,7 +109,7 @@ public final class UserManager {
       String name;
       try {
          User user = null;
-         if (userArtifactId == 0) {
+         if (userArtifactId <= 0) {
             user = UserManager.getUser(SystemUser.OseeSystem);
             userArtifactId = user.getArtId();
          } else {
