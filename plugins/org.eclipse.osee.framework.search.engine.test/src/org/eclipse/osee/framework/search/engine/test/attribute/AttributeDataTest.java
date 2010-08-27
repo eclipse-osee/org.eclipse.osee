@@ -16,7 +16,7 @@ import org.junit.Test;
 
 /**
  * Test Case for {@link AttributeData}
- *
+ * 
  * @author Roberto E. Escobar
  */
 public class AttributeDataTest {
@@ -33,21 +33,21 @@ public class AttributeDataTest {
       Assert.assertEquals("myUri", actual.getUri());
       Assert.assertEquals(false, actual.isUriValid());
       Assert.assertEquals("artId:[1] branchId:[2] gammaId:[4111] uri:[myUri] attrTypeId:[45] isValidUri:[false]",
-            actual.toString());
+         actual.toString());
    }
 
    @Test
    public void testValidUriData() {
-      AttributeData actual = new AttributeData(1, 4111, 2, "Hello", "http://myUri", 45);
+      AttributeData actual = new AttributeData(1, 4111, 2, "Hello", "attr://myUri", 45);
 
       Assert.assertEquals(1, actual.getArtId());
       Assert.assertEquals(45, actual.getAttrTypeId());
       Assert.assertEquals(4111L, actual.getGammaId());
       Assert.assertEquals(2, actual.getBranchId());
       Assert.assertEquals("Hello", actual.getStringValue());
-      Assert.assertEquals("http://myUri", actual.getUri());
+      Assert.assertEquals("attr://myUri", actual.getUri());
       Assert.assertEquals(true, actual.isUriValid());
-      Assert.assertEquals("artId:[1] branchId:[2] gammaId:[4111] uri:[http://myUri] attrTypeId:[45] isValidUri:[true]",
-            actual.toString());
+      Assert.assertEquals("artId:[1] branchId:[2] gammaId:[4111] uri:[attr://myUri] attrTypeId:[45] isValidUri:[true]",
+         actual.toString());
    }
 }

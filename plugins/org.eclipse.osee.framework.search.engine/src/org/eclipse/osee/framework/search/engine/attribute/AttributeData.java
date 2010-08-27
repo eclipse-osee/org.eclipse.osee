@@ -70,7 +70,7 @@ public class AttributeData implements IAttributeLocator {
          String value = getUri();
          if (Strings.isValid(value)) {
             URI uri = new URI(value);
-            if (uri.toURL() != null) {
+            if (uri.toASCIIString().startsWith("attr://")) {
                toReturn = true;
             }
          }
