@@ -188,7 +188,7 @@ public class EmailGroupsBlam extends AbstractBlam implements XModifiedListener {
       		"<XWidget xwidgetType=\"XText\" displayName=\"Subject\" />" +
       		"<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Body is html\" defaultValue=\"true\" />" +
       		"<XWidget xwidgetType=\"XText\" displayName=\"Body\" fill=\"Vertically\" />" +
-            "<XWidget xwidgetType=\"XButton2\" displayName=\"Preview Message\" />" +
+            "<XWidget xwidgetType=\"XButtonPush\" displayName=\"Preview Message\" />" +
       		"</xWidgets>";
       // @formatter:on
    }
