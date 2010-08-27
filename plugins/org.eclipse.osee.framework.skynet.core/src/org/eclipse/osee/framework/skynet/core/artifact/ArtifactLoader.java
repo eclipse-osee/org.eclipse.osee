@@ -66,7 +66,7 @@ public final class ArtifactLoader {
       if (!insertParameters.isEmpty()) {
          artifacts.addAll(loadArtifacts(queryId, loadLevel, confirmer,
             new ArrayList<Object[]>(insertParameters.values()), reload, historical, allowDeleted));
-      } else {
+      } else if (confirmer != null) {
          confirmer.canProceed(artifacts.size());
       }
       return artifacts;
