@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.manager.servlet;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.server.ISessionManager;
@@ -38,7 +37,7 @@ public class SearchEngineTaggerServlet extends SecureOseeHttpServlet {
    }
 
    @Override
-   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
       long start = System.currentTimeMillis();
       try {
          StringBuffer message = new StringBuffer();
@@ -73,7 +72,7 @@ public class SearchEngineTaggerServlet extends SecureOseeHttpServlet {
    }
 
    @Override
-   protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+   protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
       InputStream inputStream = null;
       try {
          boolean waitForTags = Boolean.parseBoolean(request.getParameter("wait"));
@@ -108,7 +107,7 @@ public class SearchEngineTaggerServlet extends SecureOseeHttpServlet {
    }
 
    @Override
-   protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+   protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
       try {
          String queryId = request.getParameter("queryId");
          int value = searchTaggerService.deleteTags(Integer.parseInt(queryId));
