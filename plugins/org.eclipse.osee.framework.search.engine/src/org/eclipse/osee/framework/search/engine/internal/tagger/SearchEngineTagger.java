@@ -11,11 +11,10 @@
 package org.eclipse.osee.framework.search.engine.internal.tagger;
 
 import java.io.InputStream;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.Timer;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.FutureTask;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -33,14 +32,13 @@ import org.eclipse.osee.framework.search.engine.utility.SearchTagDataStore;
 public final class SearchEngineTagger implements ISearchEngineTagger {
    private static final int CACHE_LIMIT = 1000;
    private final ExecutorService executor;
-   private final Map<Integer, FutureTask<?>> futureTasks;
+   private final Map<Integer, FutureTask<?>> futureTasks = new ConcurrentHashMap<Integer, FutureTask<?>>();
    private final TaggerStatistics statistics;
    private final SearchTagDataStore searchTagDataStore;
    private final IAttributeTaggerProviderManager taggingManager;
 
    public SearchEngineTagger(ExecutorService executor, SearchTagDataStore searchTagDataStore, IAttributeTaggerProviderManager taggingManager) {
       this.statistics = new TaggerStatistics(searchTagDataStore);
-      this.futureTasks = Collections.synchronizedMap(new HashMap<Integer, FutureTask<?>>());
       this.executor = executor;
       this.searchTagDataStore = searchTagDataStore;
       this.taggingManager = taggingManager;
