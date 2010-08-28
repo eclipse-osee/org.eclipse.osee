@@ -47,6 +47,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.HtmlDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
@@ -66,12 +67,17 @@ public class EmailGroupsBlam extends AbstractBlam implements XModifiedListener {
    }
 
    private EmailGroupsData getEmailGroupsData() {
-      EmailGroupsData data = new EmailGroupsData();
-      data.setSubject(subjectTextBox.get());
-      data.setBody(bodyTextBox.get());
-      data.setBodyIsHtml(isBodyHtmlCheckbox.get());
-      Collection<Artifact> groups = groupsList.getSelectedArtifacts();
-      data.getGroups().addAll(groups);
+      final EmailGroupsData data = new EmailGroupsData();
+      Displays.pendInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            data.setSubject(subjectTextBox.get());
+            data.setBody(bodyTextBox.get());
+            data.setBodyIsHtml(isBodyHtmlCheckbox.get());
+            Collection<Artifact> groups = groupsList.getSelectedArtifacts();
+            data.getGroups().addAll(groups);
+         }
+      });
       return data;
    }
 
