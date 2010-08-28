@@ -45,7 +45,7 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
       // TODO Temporary until editor opening can be configured by users
       artifactEditButton = new Button(composite, SWT.CHECK);
       artifactEditButton.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false));
-      artifactEditButton.setText("On Double-click open using Artifact Editor");
+      artifactEditButton.setText("Default Presentation opens in Artifact Editor if applicable");
       try {
          artifactEditButton.setSelection(UserManager.getBooleanSetting(UserManager.DOUBLE_CLICK_SETTING_KEY));
       } catch (OseeCoreException ex) {

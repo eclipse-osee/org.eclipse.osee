@@ -52,7 +52,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Test Case for {@link RendererManager}
- *
+ * 
  * @author Ryan D. Brooks
  */
 @RunWith(Parameterized.class)
@@ -122,7 +122,7 @@ public class RendererManagerTest {
       data.add(new Object[] {Action, MERGE, AtsWorkflowRenderer.class, Both});
       data.add(new Object[] {Action, MERGE_EDIT, AtsWorkflowRenderer.class, Both});
       data.add(new Object[] {Action, DEFAULT_OPEN, AtsWorkflowRenderer.class, Off});
-      data.add(new Object[] {Action, DEFAULT_OPEN, DefaultArtifactRenderer.class, On});
+      data.add(new Object[] {Action, DEFAULT_OPEN, AtsWorkflowRenderer.class, On});
 
       data.add(new Object[] {TestProcedureWML, GENERALIZED_EDIT, DefaultArtifactRenderer.class, Both});
       data.add(new Object[] {TestProcedureWML, SPECIALIZED_EDIT, WholeWordRenderer.class, Both});

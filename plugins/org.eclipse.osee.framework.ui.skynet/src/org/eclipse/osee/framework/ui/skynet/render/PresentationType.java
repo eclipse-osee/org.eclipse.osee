@@ -21,6 +21,7 @@ public enum PresentationType {
    MERGE,
    MERGE_EDIT,
    DEFAULT_OPEN, // up to the renderer to determine what is used for default
+   GENERAL_REQUESTED, // this is the case where default open is selected and the preference "Default Presentation opens in Artifact Editor if applicable" is true
    PRINT;
 
    public boolean matches(PresentationType... presentationTypes) throws OseeCoreException {

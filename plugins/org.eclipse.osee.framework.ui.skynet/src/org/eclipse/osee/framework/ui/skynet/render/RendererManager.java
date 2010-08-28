@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.render;
 
 import static org.eclipse.osee.framework.ui.skynet.render.IRenderer.DEFAULT_MATCH;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.DEFAULT_OPEN;
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERAL_REQUESTED;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -123,7 +124,7 @@ public final class RendererManager {
 
    private static IRenderer getBestRendererPrototype(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
       if (presentationType == DEFAULT_OPEN && UserManager.getBooleanSetting(UserManager.DOUBLE_CLICK_SETTING_KEY)) {
-         presentationType = PresentationType.GENERALIZED_EDIT;
+         presentationType = GENERAL_REQUESTED;
       }
       IRenderer bestRendererPrototype = null;
       int bestRating = IRenderer.NO_MATCH;

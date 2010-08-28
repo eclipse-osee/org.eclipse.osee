@@ -17,5 +17,6 @@ Export-Package: org.eclipse.osee.ats.test,
  org.eclipse.osee.ats.test.editor,
  org.eclipse.osee.ats.test.health,
  org.eclipse.osee.ats.test.navigate,
+ org.eclipse.osee.ats.test.render,
  org.eclipse.osee.ats.test.util,
  org.eclipse.osee.ats.test.workflow

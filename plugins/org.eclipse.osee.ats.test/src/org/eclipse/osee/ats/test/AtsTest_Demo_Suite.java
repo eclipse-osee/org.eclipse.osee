@@ -30,6 +30,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+   RendererManagerTest.class,
    SMAPrintTest.class,
    AtsImageTest.class,
    SMAPromptChangeStatusTest.class,
@@ -40,8 +41,7 @@ import org.junit.runners.Suite;
    AtsValidateAtsDatabaseTest.class,
    AtsNavigateItemsToMassEditorTest.class,
    AtsNavigateItemsToTaskEditorTest.class,
-   AtsNavigateItemsToWorldViewTest.class,
-   RendererManagerTest.class})
+   AtsNavigateItemsToWorldViewTest.class})
 /**
  * @author Donald G. Dunne
  */
