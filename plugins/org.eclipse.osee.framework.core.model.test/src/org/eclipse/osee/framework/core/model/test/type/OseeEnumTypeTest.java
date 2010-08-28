@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.test.type;
 
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.type.OseeEnumType;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -17,6 +20,25 @@ import org.junit.Test;
  * @author Roberto E. Escobar
  */
 public class OseeEnumTypeTest {
+
+   @Test(expected = OseeArgumentException.class)
+   public void enumNamesWithSpaces() throws OseeCoreException {
+      OseeEnumType oseeEnum = new OseeEnumType("ABC", "Test");
+      oseeEnum.valueOf(new String(" apple "));
+   }
+
+   @Test(expected = OseeArgumentException.class)
+   public void enumNamesWithGarbageData() throws OseeCoreException {
+      OseeEnumType oseeEnum = new OseeEnumType("ABC", "Test");
+      oseeEnum.valueOf(new String("#@Gbotkob!11233%20"));
+   }
+
+   @Test(expected = OseeArgumentException.class)
+   public void enumNamesWithNull() throws OseeCoreException {
+      OseeEnumType oseeEnum = new OseeEnumType("ABC", "Test");
+      oseeEnum.valueOf(null);
+   }
+
    @Ignore
    @Test
    public void test() {

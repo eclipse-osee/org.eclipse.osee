@@ -25,6 +25,8 @@ import org.eclipse.osee.framework.core.model.OseeEnumEntry;
 import org.eclipse.osee.framework.core.model.internal.fields.EnumEntryField;
 
 /**
+ * Test: @link OseeEnumTypeTest
+ *
  * @author Roberto E. Escobar
  */
 public class OseeEnumType extends AbstractOseeType implements Comparable<OseeEnumType> {
@@ -95,7 +97,7 @@ public class OseeEnumType extends AbstractOseeType implements Comparable<OseeEnu
    public OseeEnumEntry valueOf(String entryName) throws OseeCoreException {
       OseeEnumEntry toReturn = null;
       for (OseeEnumEntry oseeEnumEntry : values()) {
-         if (oseeEnumEntry.getName().equals(entryName.trim())) {
+         if (oseeEnumEntry.getName().equals(entryName)) {
             toReturn = oseeEnumEntry;
          }
       }

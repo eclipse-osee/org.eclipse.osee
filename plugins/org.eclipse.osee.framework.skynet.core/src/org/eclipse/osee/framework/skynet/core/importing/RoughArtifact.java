@@ -15,12 +15,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -28,6 +28,8 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
+ * Test: @link RoughArtifactTest
+ *
  * @author Robert A. Fisher
  * @author Ryan D. Brooks
  */
@@ -92,24 +94,52 @@ public class RoughArtifact {
       addURIAttribute(attributeType.getName(), file);
    }
 
-   public void addAttribute(String name, String value) {
-      if (isMultipleEnum(name, value)) {
-         attributes.addMultiple(name, StringUtils.split(value, ','));
+   public void addAttribute(String typeName, String value) {
+      if (Strings.isValid(typeName) && Strings.isValid(value)) {
+         if (isEnumeration(typeName)) {
+            if (isMultipleEnum(typeName, value)) {
+               attributes.addMultiple(typeName, getEnumValues(value));
+            } else {
+               attributes.add(typeName, value.trim());
+            }
+         } else {
+            attributes.add(typeName, value);
+         }
       } else {
-         attributes.add(name, value);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "typeName or value is invalid. addAttribute(...) failed");
       }
    }
 
+   private String[] getEnumValues(String value) {
+      String[] data = value.split(",");
+      for (int index = 0; index < data.length; index++) {
+         data[index] = data[index].trim();
+      }
+      return data;
+   }
+
+   private boolean isEnumeration(String typeName) {
+      boolean result = false;
+      try {
+         AttributeType type = AttributeTypeManager.getType(typeName);
+         result = type.isEnumerated();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+      return result;
+   }
+
    private boolean isMultipleEnum(String typeName, String value) {
+      boolean result = false;
       try {
          AttributeType type = AttributeTypeManager.getType(typeName);
          if (type.isEnumerated() && type.getMaxOccurrences() > 1 && value.contains(",")) {
-            return true;
+            result = true;
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
-      return false;
+      return result;
    }
 
    public void addAttribute(IAttributeType attrType, String value) {

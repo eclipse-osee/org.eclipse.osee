@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.importing;
 
 import java.io.BufferedInputStream;
+import java.io.InputStream;
 import java.net.URI;
 import java.util.Collection;
 import java.util.HashMap;
@@ -23,6 +24,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.CaseInsensitiveString;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 
@@ -95,12 +97,15 @@ public final class RoughAttributeSet {
 
    private void transferBinaryAttributes(Artifact artifact) throws OseeCoreException {
       for (Entry<CaseInsensitiveString, URI> entry : uriAttributes.entrySet()) {
+         InputStream inputStream = null;
          try {
+            inputStream = new BufferedInputStream(entry.getValue().toURL().openStream());
             IAttributeType attributeType = AttributeTypeManager.getType(entry.getKey().toString());
-            artifact.setSoleAttributeFromStream(attributeType, new BufferedInputStream(
-               entry.getValue().toURL().openStream()));
+            artifact.setSoleAttributeFromStream(attributeType, inputStream);
          } catch (Exception ex) {
             OseeExceptions.wrapAndThrow(ex);
+         } finally {
+            Lib.close(inputStream);
          }
       }
    }

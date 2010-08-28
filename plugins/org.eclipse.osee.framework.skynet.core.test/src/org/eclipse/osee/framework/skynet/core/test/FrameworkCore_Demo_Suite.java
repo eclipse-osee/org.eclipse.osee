@@ -41,7 +41,7 @@ import org.eclipse.osee.framework.skynet.core.test.event.BranchEventLoopbackTest
 import org.eclipse.osee.framework.skynet.core.test.event.BranchEventTest;
 import org.eclipse.osee.framework.skynet.core.test.event.TransactionEventLoopbackTest;
 import org.eclipse.osee.framework.skynet.core.test.event.TransactionEventTest;
-import org.eclipse.osee.framework.skynet.core.test.importing.ReqNumberingTest;
+import org.eclipse.osee.framework.skynet.core.test.importing.ImportingSuite;
 import org.eclipse.osee.framework.skynet.core.test.importing.parsers.ParsersSuite;
 import org.eclipse.osee.framework.skynet.core.test.relation.RelationTestSuite;
 import org.eclipse.osee.framework.skynet.core.test.word.WordUtilTest;
@@ -50,15 +50,40 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ArtifactEventFiltersTest.class, BranchEventFiltersTest.class, BranchEventTest.class,
-   BranchEventLoopbackTest.class, ArtifactLoaderTest.class, ArtifactEventTest.class, ArtifactEventLoopbackTest.class,
-   TransactionEventTest.class, TransactionEventLoopbackTest.class, ArtifactQueryTestDemo.class,
-   TransactionManagerTest.class, BranchTestSuite.class, BranchManagerTest.class, RelationTestSuite.class,
-   ArtifactTypeInheritanceTest.class, ArtifactPurgeTest.class, BranchPurgeTest.class, PurgeTransactionTest.class,
-   Artifact_setAttributeValues.class, Artifact_getLastModified.class, CsvArtifactTest.class, NativeArtifactTest.class,
-   ConflictTest.class, ChangeManagerTest.class, SevereLogMonitorTest.class, RelationDeletionTest.class,
-   StaticIdManagerTest.class, BranchStateTest.class, DuplicateHridTest.class, RelationOrderingTest.class,
-   ReqNumberingTest.class, ParsersSuite.class, WordUtilTest.class})
+@Suite.SuiteClasses({
+   ArtifactEventFiltersTest.class,
+   BranchEventFiltersTest.class,
+   BranchEventTest.class,
+   BranchEventLoopbackTest.class,
+   ArtifactLoaderTest.class,
+   ArtifactEventTest.class,
+   ArtifactEventLoopbackTest.class,
+   TransactionEventTest.class,
+   TransactionEventLoopbackTest.class,
+   ArtifactQueryTestDemo.class,
+   TransactionManagerTest.class,
+   BranchTestSuite.class,
+   BranchManagerTest.class,
+   RelationTestSuite.class,
+   ArtifactTypeInheritanceTest.class,
+   ArtifactPurgeTest.class,
+   BranchPurgeTest.class,
+   PurgeTransactionTest.class,
+   Artifact_setAttributeValues.class,
+   Artifact_getLastModified.class,
+   CsvArtifactTest.class,
+   NativeArtifactTest.class,
+   ConflictTest.class,
+   ChangeManagerTest.class,
+   SevereLogMonitorTest.class,
+   RelationDeletionTest.class,
+   StaticIdManagerTest.class,
+   BranchStateTest.class,
+   DuplicateHridTest.class,
+   RelationOrderingTest.class,
+   ImportingSuite.class,
+   ParsersSuite.class,
+   WordUtilTest.class})
 /**
  * @author Donald G. Dunne
  */
