@@ -74,7 +74,11 @@ public class ResultsEditorConverterTest {
       MockResultsProvider provider = new MockResultsProvider("Test Provider");
       executeConversion("excel", writer, provider);
 
-      Assert.assertEquals(getExpectedExcelReport(provider), writer.toString().replaceAll("\n", ""));
+      // remove from the comparison the style information in the row element
+      String actualXml = writer.toString().replaceAll("<Row[^>]+>", "<Row>").replaceAll("\\s*<Column[^>]+>", "");
+      actualXml = actualXml.substring(actualXml.indexOf(" <Worksheet"));
+
+      Assert.assertEquals(getExpectedExcelReport(provider), actualXml);
    }
 
    @Test
@@ -165,47 +169,38 @@ public class ResultsEditorConverterTest {
       return builder.toString();
    }
 
-   private String getExcelTab(String name, int index) {
-      StringBuilder builder = new StringBuilder();
+   private void addExcelTabXml(StringBuilder builder, String name, int index) {
       builder.append(" <Worksheet ss:Name=\"");
       builder.append(name);
-      builder.append("\">  ");
-      builder.append("<Table x:FullColumns=\"1\" x:FullRows=\"1\" ss:ExpandedColumnCount=\"3\">   ");
-      builder.append("<Row>    ");
-      builder.append("<Cell><Data ss:Type=\"String\">1</Data></Cell>    ");
-      builder.append("<Cell><Data ss:Type=\"String\">2</Data></Cell>    ");
-      builder.append("<Cell><Data ss:Type=\"String\">3</Data></Cell>   ");
-      builder.append("</Row>   ");
-      builder.append("<Row>    ");
-      builder.append("<Cell><Data ss:Type=\"String\">a</Data></Cell>    ");
-      builder.append("<Cell><Data ss:Type=\"String\">b</Data></Cell>    ");
-      builder.append("<Cell><Data ss:Type=\"String\">c</Data></Cell>   ");
-      builder.append("</Row>   ");
-      builder.append("<Row>    ");
-      builder.append("<Cell><Data ss:Type=\"String\">e</Data></Cell>    ");
-      builder.append("<Cell><Data ss:Type=\"String\">d</Data></Cell>    ");
-      builder.append("<Cell><Data ss:Type=\"String\">f</Data></Cell>   ");
-      builder.append("</Row>  ");
-      builder.append("</Table> ");
-      builder.append("</Worksheet>");
-      return builder.toString();
+      builder.append("\">\n");
+      builder.append("  <Table x:FullColumns=\"1\" x:FullRows=\"1\" ss:ExpandedColumnCount=\"3\">\n");
+      builder.append("   <Row>\n");
+      builder.append("    <Cell><Data ss:Type=\"String\">1</Data></Cell>\n");
+      builder.append("    <Cell><Data ss:Type=\"String\">2</Data></Cell>\n");
+      builder.append("    <Cell><Data ss:Type=\"String\">3</Data></Cell>\n");
+      builder.append("   </Row>\n");
+      builder.append("   <Row>\n");
+      builder.append("    <Cell><Data ss:Type=\"String\">a</Data></Cell>\n");
+      builder.append("    <Cell><Data ss:Type=\"String\">b</Data></Cell>\n");
+      builder.append("    <Cell><Data ss:Type=\"String\">c</Data></Cell>\n");
+      builder.append("   </Row>\n");
+      builder.append("   <Row>\n");
+      builder.append("    <Cell><Data ss:Type=\"String\">e</Data></Cell>\n");
+      builder.append("    <Cell><Data ss:Type=\"String\">d</Data></Cell>\n");
+      builder.append("    <Cell><Data ss:Type=\"String\">f</Data></Cell>\n");
+      builder.append("   </Row>\n");
+      builder.append("  </Table>\n");
+      builder.append(" </Worksheet>\n");
    }
 
    private String getExpectedExcelReport(MockResultsProvider provider) {
       StringBuilder builder = new StringBuilder();
-      builder.append("<?xml version=\"1.0\"?><?mso-application progid=\"Excel.Sheet\"?>");
-      builder.append("<Workbook");
-      builder.append(" xmlns=\"urn:schemas-microsoft-com:office:spreadsheet\"");
-      builder.append(" xmlns:o=\"urn:schemas-microsoft-com:office:office\"");
-      builder.append(" xmlns:x=\"urn:schemas-microsoft-com:office:excel\"");
-      builder.append(" xmlns:ss=\"urn:schemas-microsoft-com:office:spreadsheet\"");
-      builder.append(" xmlns:html=\"http://www.w3.org/TR/REC-html40\">");
       int index = 0;
       for (IResultsEditorTab tab : provider.getResultsEditorTabs()) {
-         builder.append(getExcelTab(tab.getTabName(), ++index));
+         addExcelTabXml(builder, tab.getTabName(), ++index);
       }
-      builder.append("</Workbook>");
-      return builder.toString().replaceAll("\n", "");
+      builder.append("</Workbook>\n");
+      return builder.toString();
    }
 
    private byte[] getExpectedOtherReport(String type, MockResultsProvider provider) throws Exception {

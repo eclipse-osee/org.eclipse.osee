@@ -152,6 +152,8 @@ oseeEnumType "enum.test.proc.status" {
    entryGuid "APt7j0aZWF2BJc_BqnQA"
    entry "Completed -- With Issues Resolved"
    entryGuid "APt7j0cv9B1ImjckeTAA"
+   entry "Partially Complete"
+   entryGuid "AAvULbOIbxhPUO_oDFQA"
 }
 
 attributeType "Test Procedure Status" extends EnumeratedAttribute {

@@ -15,12 +15,55 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 
 /**
+ * Test: @link ExcelXmlWriterTest
+ *
  * @author Ryan D. Brooks
+ * @author Karol M. Wilk
  */
-public class ExcelXmlWriter extends AbstractSheetWriter {
+public final class ExcelXmlWriter extends AbstractSheetWriter {
+   public static enum STYLE {
+      BOLD,
+      ITALICS,
+      ERROR
+   };
+
+   public static final Pattern stylePattern = Pattern.compile("<Styles>.*</Styles>\\s*", Pattern.DOTALL);
+
+   public static final String defaultEmptyStringXmlRep = "&#248;";
+   public static final String defaultEmptyString = "\u00F8";
+   public static final String blobMessage = "data stored in EmbeddedClob since longer than 32767 chars";
+
+   public static final String XML_HEADER = //
+      "<?xml version=\"1.0\"?>\n" + //
+      "<?mso-application progid=\"Excel.Sheet\"?>\n" + //
+      "<Workbook xmlns=\"urn:schemas-microsoft-com:office:spreadsheet\"\n" + //
+      " xmlns:o=\"urn:schemas-microsoft-com:office:office\"\n" + //
+      " xmlns:x=\"urn:schemas-microsoft-com:office:excel\"\n" + //
+      " xmlns:ss=\"urn:schemas-microsoft-com:office:spreadsheet\"\n" + //
+      " xmlns:html=\"http://www.w3.org/TR/REC-html40\">\n";
+
+   private static final String defaultStyle = //
+      "<Styles>\n" + //
+      "<Style ss:ID=\"Default\" ss:Name=\"Normal\">\n" + //
+      "<Alignment ss:Vertical=\"Top\" ss:WrapText=\"1\"/>\n" + //
+      "</Style>\n" + //
+      "<Style ss:ID=\"OseeBoldStyle\">" + //
+      "<Font x:Family=\"Swiss\" ss:Bold=\"1\"/>" + //
+      "</Style>\n" + //
+      "<Style ss:ID=\"OseeItalicStyle\">" + //
+      "<Font x:Family=\"Swiss\" ss:Italic=\"1\"/>" + //
+      "</Style>\n" + //
+      "<Style ss:ID=\"OseeErrorStyle\">" + //
+      "<Font x:Family=\"Swiss\" ss:Color=\"#FF0000\" ss:Bold=\"1\"/>" + //
+      "</Style>\n" + //
+      "</Styles>\n";
+
    private final BufferedWriter out;
    private boolean inSheet;
    private boolean startTable;
@@ -28,26 +71,41 @@ public class ExcelXmlWriter extends AbstractSheetWriter {
    private final String emptyStringRepresentation;
    private int previousCellIndex;
 
-   public static final String defaultEmptyStringXmlRep = "&#248;";
-   public static final String defaultEmptyString = "\u00F8";
-   public static final String blobMessage = "data stored in EmbeddedClob since longer than 32767 chars";
+   private boolean applyStyle = false;
+   private final Map<Integer, STYLE> mStyleMap;
 
    public ExcelXmlWriter(Writer writer) throws IOException {
-      super();
-      out = new BufferedWriter(writer);
-      emptyStringRepresentation = defaultEmptyStringXmlRep;
-
-      out.write("<?xml version=\"1.0\"?>\n");
-      out.write("<?mso-application progid=\"Excel.Sheet\"?>\n");
-      out.write("<Workbook xmlns=\"urn:schemas-microsoft-com:office:spreadsheet\"\n");
-      out.write(" xmlns:o=\"urn:schemas-microsoft-com:office:office\"\n");
-      out.write(" xmlns:x=\"urn:schemas-microsoft-com:office:excel\"\n");
-      out.write(" xmlns:ss=\"urn:schemas-microsoft-com:office:spreadsheet\"\n");
-      out.write(" xmlns:html=\"http://www.w3.org/TR/REC-html40\">\n");
+      this(writer, null);
    }
 
    public ExcelXmlWriter(File file) throws IOException {
       this(new FileWriter(file));
+   }
+
+   /**
+    * Calls original constructor with provided style.
+    *
+    * @param writer output
+    * @param style Excel Style XML of form <Styles><Style/><Style/></Styles>
+    * @throws IOException
+    */
+   public ExcelXmlWriter(Writer writer, String style) throws IOException {
+      super();
+
+      out = new BufferedWriter(writer);
+      mStyleMap = new HashMap<Integer, ExcelXmlWriter.STYLE>();
+      emptyStringRepresentation = defaultEmptyStringXmlRep;
+      out.write(XML_HEADER);
+
+      if (style == null) {
+         out.write(defaultStyle);
+      } else {
+         if (stylePattern.matcher(style).matches()) {
+            out.write(style);
+         } else {
+            throw new IllegalArgumentException("incomingStyle must match the pattern " + stylePattern);
+         }
+      }
    }
 
    @Override
@@ -85,7 +143,7 @@ public class ExcelXmlWriter extends AbstractSheetWriter {
    protected void startRow() throws IOException {
       startTableIfNecessary();
 
-      out.write("   <Row>\n");
+      out.write("   <Row ss:AutoFitHeight=\"0\" ss:Height=\"80.0\">\n");
       previousCellIndex = -1;
    }
 
@@ -97,6 +155,10 @@ public class ExcelXmlWriter extends AbstractSheetWriter {
    private void startTableIfNecessary() throws IOException {
       if (startTable) {
          out.write("  <Table x:FullColumns=\"1\" x:FullRows=\"1\" ss:ExpandedColumnCount=\"" + columnCount + "\">\n");
+         for (int i = 0; i < columnCount; i++) {
+            out.write("   <Column ss:Width=\"150\"/>\n");
+         }
+
          startTable = false;
       }
    }
@@ -106,7 +168,13 @@ public class ExcelXmlWriter extends AbstractSheetWriter {
       if (cellData == null) {
          previousCellIndex = -1; // the next cell will need to use an explicit index
       } else {
+
          out.write("    <Cell");
+
+         if (applyStyle) {
+            applyStyleToCell(cellIndex);
+         }
+
          if (previousCellIndex + 1 != cellIndex) { // use explicit index if at least one cell was skipped 
             out.write(" ss:Index=\"" + (cellIndex + 1) + "\"");
          }
@@ -133,5 +201,35 @@ public class ExcelXmlWriter extends AbstractSheetWriter {
          }
          out.write("</Cell>\n");
       }
+   }
+
+   /**
+    * Needs to be called before write* operations are called.
+    */
+   public void setCellStyle(ExcelXmlWriter.STYLE style, int cellIndex) {
+      applyStyle = true;
+      mStyleMap.put(cellIndex, style);
+   }
+
+   private void applyStyleToCell(int cellIndex) throws IOException {
+      ExcelXmlWriter.STYLE applyThisStyle = mStyleMap.remove(cellIndex);
+      if (applyThisStyle != null) {
+         switch (applyThisStyle) {
+            case BOLD:
+               out.write(" ss:StyleID=\"OseeBoldStyle\"");
+               break;
+            case ITALICS:
+               out.write(" ss:StyleID=\"OseeItalicStyle\"");
+               break;
+            case ERROR:
+               out.write(" ss:StyleID=\"OseeErrorStyle\"");
+               break;
+         }
+      }
+      applyStyle = mStyleMap.size() > 0;
+   }
+
+   public BufferedWriter getOut() {
+      return out;
    }
 }

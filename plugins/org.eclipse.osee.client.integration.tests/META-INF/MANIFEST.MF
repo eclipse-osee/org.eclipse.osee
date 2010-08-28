@@ -9,6 +9,8 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.core.runtime,
  org.eclipse.osee.ats.config.demo,
  org.eclipse.osee.ats.test,
+ org.eclipse.osee.define.test,
+ org.eclipse.osee.define.test.blam,
  org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.message.test,

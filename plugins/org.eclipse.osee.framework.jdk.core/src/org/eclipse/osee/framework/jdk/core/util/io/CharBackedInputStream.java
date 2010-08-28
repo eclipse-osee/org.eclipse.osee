@@ -53,10 +53,12 @@ public class CharBackedInputStream extends InputStream implements Appendable {
 
       @Override
       public void flush() throws IOException {
+         //
       }
 
       @Override
       public void close() throws IOException {
+         //
       }
 
       public void write(CharSequence str) throws CharacterCodingException {
