@@ -20,12 +20,6 @@ public class VersionData {
    private final String version;
    private final String versionUnit;
 
-   /**
-    * @param versionUnit
-    * @param version
-    * @param underTest
-    * @param name
-    */
    VersionData(String name, String underTest, String version, String versionUnit) {
       this.name = name;
       this.underTest = underTest;

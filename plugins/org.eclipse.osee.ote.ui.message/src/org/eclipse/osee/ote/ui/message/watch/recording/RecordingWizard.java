@@ -25,9 +25,6 @@ public class RecordingWizard extends Wizard {
    private final RecordingFilePage fileCreation;
    private List<MessageRecordDetails> filteredList;
 
-   /**
-    * @param list
-    */
    public RecordingWizard(WatchList watchList) {
       setWindowTitle("Recording Options");
       fileCreation = new RecordingFilePage();

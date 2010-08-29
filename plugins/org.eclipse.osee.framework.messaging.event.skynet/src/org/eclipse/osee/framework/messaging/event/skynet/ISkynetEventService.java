@@ -20,21 +20,18 @@ public interface ISkynetEventService extends Remote {
    /**
     * Register to receive events based on filters.
     * 
-    * @param filters
     */
    public void register(ISkynetEventListener listener, IEventFilter... filters) throws RemoteException;
 
    /**
     * Deregister to receive events based on filters.
     * 
-    * @param filters
     */
    public void deregister(ISkynetEventListener listener, IEventFilter... filters) throws RemoteException;
 
    /**
     * Pass events to the service to be disemminated.
     * 
-    * @param events
     */
    public void kick(ISkynetEvent[] events, ISkynetEventListener... except) throws RemoteException;
 

@@ -74,9 +74,6 @@ public class AtsAddPeerToPeerReviewRule extends WorkRuleDefinition {
    /**
     * Creates PeerToPeer review if one of same name doesn't already exist
     * 
-    * @param atsAddPeerToPeerReviewRule
-    * @param sma
-    * @param transaction
     * @return review
     * @throws OseeCoreException
     */

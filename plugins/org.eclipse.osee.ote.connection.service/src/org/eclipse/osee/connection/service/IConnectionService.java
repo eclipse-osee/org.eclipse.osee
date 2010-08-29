@@ -25,8 +25,6 @@ public interface IConnectionService {
    /**
     * finds all available connectors that are accepted by all filters in the filter chain
     * 
-    * @param pattern
-    * @param filterChain
     */
    Collection<IServiceConnector> findConnectors(IConnectorFilter[] filterChain);
 
@@ -34,7 +32,6 @@ public interface IConnectionService {
     * registers an listener object for notification of connector events. Note that the listener object's
     * {@link IConnectorListener#onConnectorsAdded(Collection)} will be called immediately for each active connector.
     * 
-    * @param listener
     */
    void addListener(IConnectorListener listener);
 

@@ -24,9 +24,6 @@ public class RetryGroupData {
       return mode;
    }
 
-   /**
-    * @param name
-    */
    RetryGroupData(String mode) {
       this.mode = mode;
    }

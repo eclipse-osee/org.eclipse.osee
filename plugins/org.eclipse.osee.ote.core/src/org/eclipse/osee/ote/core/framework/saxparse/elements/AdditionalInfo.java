@@ -18,9 +18,6 @@ import org.xml.sax.Attributes;
  */
 public class AdditionalInfo extends ElementHandlers {
 
-   /**
-    * @param name
-    */
    public AdditionalInfo() {
       super("AdditionalInfo");
    }

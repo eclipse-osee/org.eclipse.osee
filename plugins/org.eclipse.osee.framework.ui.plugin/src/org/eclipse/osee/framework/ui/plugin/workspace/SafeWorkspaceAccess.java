@@ -18,8 +18,5 @@ import org.eclipse.core.resources.IWorkspace;
 public interface SafeWorkspaceAccess {
    IWorkspace getWorkspace();
 
-   /**
-    * @param workspaceListener
-    */
    void addResourceChangeListener(WrapResourceChangeListener workspaceListener);
 }

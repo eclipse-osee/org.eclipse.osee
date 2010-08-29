@@ -21,10 +21,6 @@ public class StringDataSource implements DataSource {
    private final String data;
    private final String name;
 
-   /**
-    * @param data
-    * @param name
-    */
    public StringDataSource(String data, String name) {
       super();
       this.data = data;

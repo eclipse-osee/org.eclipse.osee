@@ -18,9 +18,6 @@ import org.xml.sax.Attributes;
  */
 public class ScriptResult extends ElementHandlers {
 
-   /**
-    * @param name
-    */
    public ScriptResult() {
       super("ScriptResult");
    }

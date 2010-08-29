@@ -140,8 +140,6 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
     * Ratio of # of priority 1 and 2 OSEE problem actions (non-cancelled) that were orginated between a release and the
     * next release / # of non-support actions released in that release
     * 
-    * @param teamDef
-    * @param monitor
     * @return report
     */
    public static String getTeamWorkflowReport(String title, TeamDefinitionArtifact teamDef, IProgressMonitor monitor) throws OseeCoreException {

@@ -22,9 +22,6 @@ public interface IResourceLocatorManager {
    /**
     * Generate a resource locator based on protocol, seed and name
     * 
-    * @param protocol
-    * @param seed
-    * @param name
     * @return a resource locator
     * @throws MalformedLocatorException
     */
@@ -33,7 +30,6 @@ public interface IResourceLocatorManager {
    /**
     * Get resource locator based on protocol and path
     * 
-    * @param path
     * @return a resource locator
     * @throws MalformedLocatorException
     */
@@ -42,7 +38,6 @@ public interface IResourceLocatorManager {
    /**
     * Add resource locator provider
     * 
-    * @param resourceLocatorProvider
     * @return <b>true<b> if the locator was added
     */
    boolean addResourceLocatorProvider(IResourceLocatorProvider resourceLocatorProvider);
@@ -50,7 +45,6 @@ public interface IResourceLocatorManager {
    /**
     * Remove resource locator provider
     * 
-    * @param resourceLocatorProvider
     * @return <b>true<b> if the locator was removed
     */
    boolean removeResourceLocatorProvider(IResourceLocatorProvider resourceLocatorProvider);

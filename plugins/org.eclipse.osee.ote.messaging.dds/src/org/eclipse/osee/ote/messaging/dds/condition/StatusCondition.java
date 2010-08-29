@@ -27,9 +27,6 @@ public class StatusCondition extends Condition {
    private final Collection<?> enabledStatuses;
    private final Entity parentEntity;
 
-   /**
-    * 
-    */
    public StatusCondition(Entity parentEntity) {
 
       this.parentEntity = parentEntity;

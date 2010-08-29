@@ -63,8 +63,6 @@ public class EmailWizardPage extends WizardPage {
    private final ArrayList<EmailGroup> groups;
 
    /**
-    * @param pageName
-    * @param groups
     * @param initialAddress User, EmailGroup or String
     */
    protected EmailWizardPage(String pageName, ArrayList<EmailGroup> groups, ArrayList<Object> initialAddress) {

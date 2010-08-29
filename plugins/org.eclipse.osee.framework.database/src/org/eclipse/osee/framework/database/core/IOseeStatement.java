@@ -29,8 +29,6 @@ public interface IOseeStatement extends Closeable {
    /**
     * @param fetchSize hint as to the number of rows that should be fetched from the database at a time. will be limited
     * to 10,000
-    * @param query
-    * @param data
     * @throws OseeDataStoreException
     */
    void runPreparedQuery(int fetchSize, String query, Object... data) throws OseeDataStoreException;
@@ -39,8 +37,6 @@ public interface IOseeStatement extends Closeable {
     * Invokes a stored procedure parameters of type SQL3DataType are registered as Out parameters and all others are set
     * as in parameters
     * 
-    * @param query
-    * @param data
     * @throws OseeDataStoreException
     */
    void runCallableStatement(String query, Object... data) throws OseeDataStoreException;
@@ -104,7 +100,6 @@ public interface IOseeStatement extends Closeable {
    /**
     * should not be used by application code because it is less readable than using the column name
     * 
-    * @param columnIndex
     * @return value
     * @throws OseeDataStoreException
     */
@@ -115,7 +110,6 @@ public interface IOseeStatement extends Closeable {
    /**
     * should not be used by application code because it is less readable than using the column name
     * 
-    * @param columnIndex
     * @return value
     * @throws OseeDataStoreException
     */
@@ -124,7 +118,6 @@ public interface IOseeStatement extends Closeable {
    /**
     * should not be used by application code because it is less readable than using the column name
     * 
-    * @param columnIndex
     * @return value
     * @throws OseeDataStoreException
     */

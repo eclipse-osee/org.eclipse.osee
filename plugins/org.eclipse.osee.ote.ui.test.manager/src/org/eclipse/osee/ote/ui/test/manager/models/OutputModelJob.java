@@ -37,9 +37,6 @@ public class OutputModelJob extends Job {
       return singleton;
    }
 
-   /**
-    * @param name
-    */
    private OutputModelJob(ScriptManager scriptManager) {
       super("Parsing OTE Output File");
       setUser(false);

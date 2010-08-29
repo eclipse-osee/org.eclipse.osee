@@ -21,9 +21,6 @@ import org.eclipse.osee.framework.jdk.core.util.EnumBase;
  */
 public class EmptyEnum extends EnumBase implements Comparable<EmptyEnum> {
 
-   /**
-    * 
-    */
    private static final long serialVersionUID = 1305742348409814145L;
    private static final HashMap<Integer, EmptyEnum> valuesMap = new HashMap<Integer, EmptyEnum>(16);
 

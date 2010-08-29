@@ -459,8 +459,6 @@ public class RelationManager {
    }
 
    /**
-    * @param transaction
-    * @param artifact
     * @param relationType if not null persists the relations of this type, otherwise persists relations of all types
     */
    public static void persistRelationsFor(SkynetTransaction transaction, Artifact artifact, RelationType relationType) throws OseeCoreException {
@@ -561,10 +559,6 @@ public class RelationManager {
     * Check whether artifactCount number of additional artifacts of type artifactType can be related to the artifact on
     * side relationSide for relations of type relationType
     * 
-    * @param relationType
-    * @param relationSide
-    * @param artifact
-    * @param artifactCount
     * @throws OseeArgumentException
     */
    private static void ensureSideWillSupport(Artifact artifact, RelationType relationType, RelationSide relationSide, int artifactCount) throws OseeCoreException {
@@ -635,9 +629,6 @@ public class RelationManager {
     * This method should only be called for unordered Relation Types. It does not handle reordering relation types that
     * maintain order.
     * 
-    * @param artifact
-    * @param relationType
-    * @param relationSide
     * @throws OseeCoreException
     */
    public static void revertRelations(Artifact artifact, RelationType relationType, RelationSide relationSide) throws OseeCoreException {

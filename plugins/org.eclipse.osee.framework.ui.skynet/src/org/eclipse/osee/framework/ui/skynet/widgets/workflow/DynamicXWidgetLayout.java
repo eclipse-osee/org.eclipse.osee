@@ -378,7 +378,6 @@ public class DynamicXWidgetLayout {
    }
 
    /**
-    * @param name
     * @return true if ANY item in group is entered
     * @throws OseeArgumentException
     */
@@ -393,7 +392,6 @@ public class DynamicXWidgetLayout {
    }
 
    /**
-    * @param attrName
     * @return true if only ONE item in group is entered
     * @throws OseeArgumentException
     */

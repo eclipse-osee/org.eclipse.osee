@@ -18,9 +18,6 @@ import org.xml.sax.Attributes;
  */
 public class TimeSummary extends ElementHandlers {
 
-   /**
-    * @param name
-    */
    public TimeSummary() {
       super("TimeSummary");
    }

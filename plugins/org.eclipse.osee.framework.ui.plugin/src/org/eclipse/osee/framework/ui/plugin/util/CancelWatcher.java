@@ -21,10 +21,6 @@ public class CancelWatcher extends Thread {
    private boolean done;
    private boolean cancelled;
 
-   /**
-    * @param thread
-    * @param monitor
-    */
    public CancelWatcher(Thread thread, IProgressMonitor monitor) {
       super();
       this.thread = thread;

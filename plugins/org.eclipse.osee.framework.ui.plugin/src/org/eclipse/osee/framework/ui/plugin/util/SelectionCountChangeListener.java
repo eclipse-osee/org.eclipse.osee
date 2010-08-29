@@ -22,16 +22,10 @@ import org.eclipse.ui.IViewSite;
 public class SelectionCountChangeListener implements ISelectionChangedListener {
    private final IStatusLineManager statusLineManager;
 
-   /**
-    * @param viewSite
-    */
    public SelectionCountChangeListener(IViewSite viewSite) {
       this.statusLineManager = viewSite.getActionBars().getStatusLineManager();
    }
 
-   /**
-    * @param statusLineManager
-    */
    public SelectionCountChangeListener(IStatusLineManager statusLineManager) {
       this.statusLineManager = statusLineManager;
    }

@@ -41,7 +41,6 @@ public final class RootNode extends AbstractTreeNode {
    }
 
    /**
-    * @param message
     * @return MessageNode
     */
    public MessageNode getMessageByName(String message) {

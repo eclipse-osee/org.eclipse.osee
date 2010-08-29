@@ -19,9 +19,6 @@ import org.eclipse.osee.ote.core.environment.command.CommandDescription;
  */
 public class CommandStatusEvent implements Serializable {
 
-   /**
-    * 
-    */
    private static final long serialVersionUID = -567005567921815848L;
    private final CommandDescription description;
 

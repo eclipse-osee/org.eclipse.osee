@@ -150,8 +150,6 @@ public class SMAUtil {
    /**
     * Returns sma if change type, or parent team workflow's change type is in specified set
     * 
-    * @param changeTypes
-    * @param artifacts
     * @throws OseeCoreException
     */
    public static Collection<StateMachineArtifact> getChangeType(Collection<ChangeType> changeTypes, Collection<StateMachineArtifact> artifacts) throws OseeCoreException {
@@ -169,8 +167,6 @@ public class SMAUtil {
    /**
     * Returns sma if priority type, or parent team workflow's priority type is in specified set
     * 
-    * @param priorityTypes
-    * @param artifacts
     * @throws OseeCoreException
     */
    public static Collection<StateMachineArtifact> getPriorityType(Collection<PriorityType> priorityTypes, Collection<StateMachineArtifact> artifacts) throws OseeCoreException {

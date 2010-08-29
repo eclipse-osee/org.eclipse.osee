@@ -21,7 +21,6 @@ public interface IServiceOperation {
     * the operation to perform against the service. The service instance will be valid during the execution of the
     * operation. Subclasses should handle the case when the operation is asynchronously interrupted.
     * 
-    * @param service
     * @throws InterruptedException
     */
    void doOperation(Object service) throws InterruptedException;

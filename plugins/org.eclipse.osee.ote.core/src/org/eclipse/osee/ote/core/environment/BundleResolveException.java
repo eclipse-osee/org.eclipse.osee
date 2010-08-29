@@ -21,10 +21,6 @@ public class BundleResolveException extends Exception {
    private static final long serialVersionUID = 5506351677181297953L;
    private final Collection<BundleException> bundleExceptions;
 
-   /**
-    * @param message
-    * @param bundleExceptions
-    */
    public BundleResolveException(String message, Collection<BundleException> bundleExceptions) {
       super(message);
       this.bundleExceptions = bundleExceptions;

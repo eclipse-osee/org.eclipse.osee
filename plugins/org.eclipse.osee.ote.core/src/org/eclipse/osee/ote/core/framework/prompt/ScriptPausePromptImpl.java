@@ -20,10 +20,6 @@ import org.eclipse.osee.ote.core.TestScript;
  */
 public class ScriptPausePromptImpl extends AbstractInteractivePrompt<String> implements IResumeResponse {
 
-   /**
-    * @param id
-    * @param message
-    */
    public ScriptPausePromptImpl(IServiceConnector connector, TestScript script, String id, String message) throws UnknownHostException {
       super(connector, script, id, message);
    }

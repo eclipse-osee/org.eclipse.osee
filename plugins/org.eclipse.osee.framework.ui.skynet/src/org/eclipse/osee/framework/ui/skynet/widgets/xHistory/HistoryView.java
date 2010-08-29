@@ -194,9 +194,6 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
       xHistoryWidget.getXViewer().getTree().setMenu(popupMenu);
    }
 
-   /**
-    * @param popupMenu
-    */
    private void createChangeReportMenuItem(Menu popupMenu) {
       final MenuItem changeReportMenuItem = new MenuItem(popupMenu, SWT.CASCADE);
       changeReportMenuItem.setText("&Change Report");

@@ -20,9 +20,6 @@ import org.eclipse.osee.ote.messaging.dds.Data;
 public class IntegerData implements Data {
    private int theInt;
 
-   /**
-	 * 
-	 */
    public IntegerData(int theInt) {
       super();
       this.theInt = theInt;

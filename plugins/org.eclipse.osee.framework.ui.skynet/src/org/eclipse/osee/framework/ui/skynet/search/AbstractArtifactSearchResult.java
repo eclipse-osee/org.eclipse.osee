@@ -47,8 +47,7 @@ public abstract class AbstractArtifactSearchResult extends AbstractTextSearchRes
    //   /**
    //    * Removes the children artifacts from the search
    //    * 
-   //    * @param children
-   //    */
+   //   //    */
    //   public void removeArtifacts(Collection<Artifact> children) {
    //      for (Artifact artifact : children) {
    //         Match match = artifacts.get(artifact);

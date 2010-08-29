@@ -18,10 +18,6 @@ import org.eclipse.osee.framework.ui.skynet.test.cases.ImageManagerTest;
  */
 public class AtsImageTest extends ImageManagerTest {
 
-   /**
-    * @param imageClassName
-    * @param oseeImages
-    */
    public AtsImageTest() {
       super("AtsImage", AtsImage.values());
    }

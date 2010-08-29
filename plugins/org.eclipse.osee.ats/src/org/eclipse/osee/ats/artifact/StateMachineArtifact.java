@@ -254,7 +254,6 @@ public abstract class StateMachineArtifact extends ATSArtifact implements HasCmA
    /**
     * Override to apply different algorithm to current section expansion.
     * 
-    * @param page
     * @return true if section should be expanded
     * @throws OseeCoreException
     */

@@ -32,9 +32,6 @@ public class FromArtifactsSearch implements ISearchPrimitive {
       return "art_id";
    }
 
-   /**
-    *
-    */
    public FromArtifactsSearch(List<ISearchPrimitive> criteria, boolean all) {
       this.criteria = criteria;
       this.all = all;

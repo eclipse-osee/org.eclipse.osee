@@ -18,24 +18,14 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class CustomTextCellEditor extends TextCellEditor {
 
-   /**
-	 * 
-	 */
    public CustomTextCellEditor() {
       super();
    }
 
-   /**
-    * @param parent
-    * @param style
-    */
    public CustomTextCellEditor(Composite parent, int style) {
       super(parent, style);
    }
 
-   /**
-    * @param parent
-    */
    public CustomTextCellEditor(Composite parent) {
       super(parent);
    }

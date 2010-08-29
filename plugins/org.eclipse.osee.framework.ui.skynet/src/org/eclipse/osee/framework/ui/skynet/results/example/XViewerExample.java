@@ -39,9 +39,6 @@ public final class XViewerExample extends XNavigateItemAction {
       String2;
    };
 
-   /**
-    * @param parent
-    */
    public XViewerExample(XNavigateItem parent) {
       super(parent, TITLE, PluginUiImage.ADMIN);
    }

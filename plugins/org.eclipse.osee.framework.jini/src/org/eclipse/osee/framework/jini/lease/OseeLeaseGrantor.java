@@ -89,8 +89,6 @@ public class OseeLeaseGrantor implements ILeaseGrantor {
    /**
     * Returns a new lease
     * 
-    * @param consumer
-    * @param duration
     * @return Return lease reference.
     * @throws LeaseDeniedException
     * @throws ExportException

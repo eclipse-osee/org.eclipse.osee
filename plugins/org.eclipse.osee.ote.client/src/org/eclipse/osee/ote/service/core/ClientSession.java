@@ -43,9 +43,6 @@ public class ClientSession extends AbstractRemoteSession {
    private final ReentrantLock lock = new ReentrantLock();
    private final OteClientEndpointReceive receive;
 
-   /**
-    * @param user
-    */
    public ClientSession(OSEEPerson1_4 user, InetAddress address, OteClientEndpointReceive receive) {
       super(user);
       this.address = address;
@@ -154,7 +151,6 @@ public class ClientSession extends AbstractRemoteSession {
    /**
     * this must be called prior to establishing a test host connection
     * 
-    * @param sessionDelegate
     */
    synchronized void setSessionDelegate(SessionDelegate sessionDelegate) {
       // intentionally package-private

@@ -33,9 +33,6 @@ public class DbResource implements IResource {
    private final String artName;
    private final String fileTypeExtension;
 
-   /**
-    * @param binaryStream
-    */
    public DbResource(InputStream inputStream, String artName, String hrid, String fileTypeExtension) {
       this.hrid = hrid;
       this.artName = artName;

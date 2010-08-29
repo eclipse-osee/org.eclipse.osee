@@ -18,9 +18,6 @@ import org.xml.sax.Attributes;
  */
 public class MethodArguments extends ElementHandlers {
 
-   /**
-    * @param name
-    */
    public MethodArguments() {
       super("MethodArguments");
    }

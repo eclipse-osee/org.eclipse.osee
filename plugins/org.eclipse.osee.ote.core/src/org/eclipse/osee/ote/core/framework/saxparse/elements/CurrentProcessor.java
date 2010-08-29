@@ -18,9 +18,6 @@ import org.xml.sax.Attributes;
  */
 public class CurrentProcessor extends ElementHandlers {
 
-   /**
-    * @param name
-    */
    public CurrentProcessor() {
       super("CurrentProcessor");
    }

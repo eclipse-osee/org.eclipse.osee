@@ -18,9 +18,6 @@ import org.xml.sax.Attributes;
  */
 public class ScriptInit extends ElementHandlers {
 
-   /**
-    * @param name
-    */
    public ScriptInit() {
       super("ScriptInit");
    }

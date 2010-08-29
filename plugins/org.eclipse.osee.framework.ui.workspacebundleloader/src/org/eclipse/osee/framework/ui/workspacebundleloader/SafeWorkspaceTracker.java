@@ -46,11 +46,6 @@ public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeLi
 
    private final FileChangeDetector detector = new FileChangeDetector();
 
-   /**
-    * @param context
-    * @param filter
-    * @param customizer
-    */
    public SafeWorkspaceTracker(BundleContext context) {
       super(context, SafeWorkspaceAccess.class.getName(), null);
 
@@ -76,10 +71,6 @@ public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeLi
    }
 
    private class PrecompileStartup extends AbstractOperation {
-      /**
-       * @param operationName
-       * @param pluginId
-       */
       public PrecompileStartup(String operationName, String pluginId) {
          super(operationName, pluginId);
       }
@@ -107,9 +98,6 @@ public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeLi
       super.close();
    }
 
-   /**
-    * 
-    */
    private void cleanupHandledBundles() {
       for (Bundle bundle : installedBundles.values()) {
          try {
@@ -143,7 +131,6 @@ public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeLi
    }
 
    /**
-    * @param monitor
     * @throws CoreException
     * @throws CoreException
     * @throws BundleException
@@ -154,7 +141,6 @@ public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeLi
    }
 
    /**
-    * @param url
     * @throws BundleException
     */
    @Override
@@ -171,8 +157,6 @@ public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeLi
    }
 
    /**
-    * @param stoppedBundles
-    * @param url
     * @throws BundleException
     */
    @Override
@@ -196,8 +180,6 @@ public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeLi
    }
 
    /**
-    * @param stoppedBundles
-    * @param url
     * @throws BundleException
     */
    @Override
@@ -236,9 +218,6 @@ public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeLi
       refreshPackages();
    }
 
-   /**
-	 * 
-	 */
    private void refreshPackages() {
       PackageAdmin packageAdmin = (PackageAdmin) packageAdminTracker.getService();
       packageAdmin.refreshPackages(null);
@@ -278,7 +257,6 @@ public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeLi
    }
 
    /**
-    * @param project
     * @throws CoreException
     * @throws BundleException
     */

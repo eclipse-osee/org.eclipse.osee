@@ -31,9 +31,6 @@ import org.eclipse.osee.ote.message.enums.DataType;
  * @author Ken J. Aguilar
  */
 public final class UpdateDispatcher {
-   /**
-	 * 
-	 */
    private static final int RECEIVE_BUFFER_SIZE = 1024 * 256;
 
    /** * Class Instance Fields ** */

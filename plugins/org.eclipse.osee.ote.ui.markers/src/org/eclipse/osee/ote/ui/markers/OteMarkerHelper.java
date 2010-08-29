@@ -35,9 +35,6 @@ public class OteMarkerHelper {
    private final StringBuilder builder = new StringBuilder();
    private final List<TestPointData> testPonitDatas;
 
-   /**
-    * @param testPointDatas
-    */
    public OteMarkerHelper(List<TestPointData> testPointDatas) {
       this.testPonitDatas = testPointDatas;
       markerInfo = new ArrayList<MarkerInfo>();

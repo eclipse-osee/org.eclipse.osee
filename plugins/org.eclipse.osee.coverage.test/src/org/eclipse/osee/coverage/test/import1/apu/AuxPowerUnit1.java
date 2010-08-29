@@ -26,10 +26,6 @@ public class AuxPowerUnit1 extends Table {
 
    public Image image;
 
-   /**
-    * @param parent
-    * @param style
-    */
    public AuxPowerUnit1(Composite parent, int style, Image image) {
       super(parent, style);
    }

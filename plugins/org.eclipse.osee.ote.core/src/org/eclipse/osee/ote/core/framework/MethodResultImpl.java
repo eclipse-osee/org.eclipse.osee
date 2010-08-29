@@ -64,9 +64,6 @@ public class MethodResultImpl implements IMethodResult {
       statuses.add(status);
    }
 
-   /**
-    * @param status
-    */
    public void addStatus(List<IHealthStatus> status) {
       statuses.addAll(status);
    }

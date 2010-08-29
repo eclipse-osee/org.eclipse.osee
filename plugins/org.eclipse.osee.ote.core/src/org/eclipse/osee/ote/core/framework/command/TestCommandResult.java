@@ -25,10 +25,6 @@ public class TestCommandResult implements ITestCommandResult {
       this.status = status;
    }
 
-   /**
-    * @param fail2
-    * @param exception
-    */
    public TestCommandResult(TestCommandStatus status, Throwable th) {
       this.status = status;
       this.th = th;

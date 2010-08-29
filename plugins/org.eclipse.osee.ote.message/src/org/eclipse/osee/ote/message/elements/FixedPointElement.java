@@ -61,7 +61,6 @@ public class FixedPointElement extends RealElement {
    /**
     * Sets the element to the "value" passed.
     * 
-    * @param accessor
     * @param value The value to set.
     */
    @Override
@@ -80,7 +79,6 @@ public class FixedPointElement extends RealElement {
    /**
     * Sets the element to the "value" passeda nd immediately sends the message that contains it...
     * 
-    * @param accessor
     * @param value The value to set.
     */
    @Override
@@ -96,7 +94,6 @@ public class FixedPointElement extends RealElement {
    /**
     * Checks that this element correctly forwards a message sent from cause with the value passed.
     * 
-    * @param accessor
     * @param cause The originator of the signal
     * @param value The value sent by cause and being forwarded by this element
     * @throws InterruptedException

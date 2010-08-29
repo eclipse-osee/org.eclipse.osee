@@ -17,9 +17,6 @@ import org.eclipse.osee.framework.jdk.core.type.TreeObject;
  */
 public class UserNode extends TreeObject {
 
-   /**
-    * @param name
-    */
    public UserNode(String name) {
       super(name);
    }

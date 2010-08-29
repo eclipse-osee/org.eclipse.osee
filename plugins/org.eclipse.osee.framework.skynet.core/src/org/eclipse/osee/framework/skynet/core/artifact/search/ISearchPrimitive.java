@@ -18,7 +18,6 @@ public interface ISearchPrimitive {
    /**
     * The sql operators that will provide a set of art_id's for the given search.
     * 
-    * @param branch
     * @return Return SQL string
     */
    public String getCriteriaSql(List<Object> dataList, Branch branch);
@@ -33,7 +32,6 @@ public interface ISearchPrimitive {
    /**
     * Returns a list of the tables, comma separated, that are necessary for the sql statement returned from getSql().
     * 
-    * @param branch
     * @return tables string
     * @see ISearchPrimitive#getCriteriaSql(List, Branch)
     */

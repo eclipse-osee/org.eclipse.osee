@@ -34,10 +34,6 @@ public class JarChangeResourceListener<T extends JarCollectionNature> implements
    private final String natureId;
    private final LibraryChangeProvider listener;
 
-   /**
-    * @param natureId
-    * @param listener
-    */
    public JarChangeResourceListener(String natureId, LibraryChangeProvider listener) {
       if (natureId == null) {
          throw new IllegalArgumentException("natureId must not be null");
@@ -72,7 +68,6 @@ public class JarChangeResourceListener<T extends JarCollectionNature> implements
    }
 
    /**
-    * @param event
     * @throws CoreException
     * @throws MalformedURLException
     */
@@ -108,8 +103,6 @@ public class JarChangeResourceListener<T extends JarCollectionNature> implements
    }
 
    /**
-    * @param projectPath
-    * @param affectedChildren
     * @throws BundleException
     * @throws MalformedURLException
     */
@@ -154,7 +147,6 @@ public class JarChangeResourceListener<T extends JarCollectionNature> implements
    }
 
    /**
-    * @param type
     * @return
     */
    protected String generateEventString(int type) {

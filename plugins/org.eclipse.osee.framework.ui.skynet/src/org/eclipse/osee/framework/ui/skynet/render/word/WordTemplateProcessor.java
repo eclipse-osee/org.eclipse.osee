@@ -115,10 +115,6 @@ public class WordTemplateProcessor {
     * Parse through template to find xml defining artifact sets and replace it with the result of publishing those
     * artifacts Only used by Publish SRS
     * 
-    * @param variableMap
-    * @param masterTemplateArtifact
-    * @param slaveTemplateArtifact
-    * @param artifacts
     * @throws OseeCoreException
     * @throws IOException
     */
@@ -144,10 +140,8 @@ public class WordTemplateProcessor {
     * 
     * @param variableMap = will be filled with artifacts when specified in the template
     * @param artifacts = null if the template defines the artifacts to be used in the publishing
-    * @param template
     * @param folder = null when not using an extension template
     * @param outlineNumber if null will find based on first artifact
-    * @param outlineType
     * @return InputStream
     * @throws OseeCoreException
     */

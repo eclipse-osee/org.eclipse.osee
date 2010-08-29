@@ -23,10 +23,6 @@ public class AbstractRemotePrompt implements IPromptHandle {
    private final String message;
    private final IServiceConnector connector;
 
-   /**
-    * @param id
-    * @param message
-    */
    public AbstractRemotePrompt(IServiceConnector connector, String id, String message) throws UnknownHostException {
       this.connector = connector;
       this.id = id;
@@ -47,7 +43,6 @@ public class AbstractRemotePrompt implements IPromptHandle {
     * returns a reference to the specified remote interface whose remote methods will be bound to this prompt object
     * 
     * @param <T>
-    * @param remoteInterface
     * @return
     * @throws ExportException
     */

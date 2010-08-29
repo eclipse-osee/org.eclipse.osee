@@ -81,7 +81,6 @@ public class ProcessOutfileSax implements IExceptionableRunnable {
    }
 
    /**
-    * @param contents
     * @throws SAXException
     * @throws Exception
     * @throws SAXNotRecognizedException

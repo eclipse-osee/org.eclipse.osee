@@ -29,18 +29,10 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  */
 public class AnnotationComposite extends Composite {
 
-   /**
-    * @param parent
-    * @param style
-    */
    public AnnotationComposite(Composite parent, int style, Artifact artifact) {
       this(null, parent, style, artifact);
    }
 
-   /**
-    * @param parent
-    * @param style
-    */
    public AnnotationComposite(FormToolkit toolkit, Composite parent, int style, Artifact artifact) {
       super(parent, style);
 

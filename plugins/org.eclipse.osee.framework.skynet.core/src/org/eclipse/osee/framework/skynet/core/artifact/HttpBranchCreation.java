@@ -38,11 +38,6 @@ public class HttpBranchCreation {
    /**
     * Creates a new root branch. Should NOT be used outside BranchManager.
     * 
-    * @param branchType
-    * @param parentTransactionNumber
-    * @param parentBranchId
-    * @param branchName
-    * @param associatedArtifact
     * @return the newly created branch
     * @throws OseeCoreException
     */

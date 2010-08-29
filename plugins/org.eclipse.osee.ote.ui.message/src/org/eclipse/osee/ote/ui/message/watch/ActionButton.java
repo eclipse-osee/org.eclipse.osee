@@ -33,10 +33,6 @@ public class ActionButton extends SelectionAdapter implements IExceptionableRunn
    private final String pluginId;
    private final Button button;
 
-   /**
-    * @param parent
-    * @param style
-    */
    public ActionButton(Composite parent, int style, Action action, String label, String pluginId) {
       this.action = action;
       this.label = label;
@@ -57,16 +53,10 @@ public class ActionButton extends SelectionAdapter implements IExceptionableRunn
       return Status.OK_STATUS;
    }
 
-   /**
-    * @param tooltip
-    */
    public void setToolTipText(String tooltip) {
       button.setToolTipText(tooltip);
    }
 
-   /**
-    * @param img
-    */
    public void setImage(Image img) {
       button.setImage(img);
    }

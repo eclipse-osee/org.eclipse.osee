@@ -163,7 +163,6 @@ public abstract class Attribute<T> {
     * Subclasses must provide an implementation of this method and in general should not override the other set value
     * methods
     * 
-    * @param value
     * @throws OseeCoreException
     */
    protected abstract boolean subClassSetValue(T value) throws OseeCoreException;
@@ -246,7 +245,6 @@ public abstract class Attribute<T> {
    /**
     * Currently this method provides support for quasi attribute type inheritance
     * 
-    * @param artifactType
     * @return whether this attribute's type or any of its super-types are the specified type
     */
    public boolean isOfType(String otherAttributeTypeName) {
@@ -256,7 +254,6 @@ public abstract class Attribute<T> {
    /**
     * Currently this method provides support for quasi attribute type inheritance
     * 
-    * @param artifactType
     * @return whether this attribute's type or any of its super-types are the specified type
     */
    public boolean isOfType(IAttributeType otherAttributeType) {

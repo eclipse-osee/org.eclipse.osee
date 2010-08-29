@@ -28,11 +28,6 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class BasicHexTable extends HexTable {
 
-   /**
-    * @param shell
-    * @param array
-    * @param bytesPerRow
-    */
    public BasicHexTable(Composite parent, byte[] array, int bytesPerRow) {
       super(parent, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL, array, bytesPerRow);
    }
@@ -71,9 +66,6 @@ public class BasicHexTable extends HexTable {
       }
    }
 
-   /**
-    * @param args
-    */
    public static void main(String[] args) {
       Display display = new Display();
       Shell shell = new Shell(display);

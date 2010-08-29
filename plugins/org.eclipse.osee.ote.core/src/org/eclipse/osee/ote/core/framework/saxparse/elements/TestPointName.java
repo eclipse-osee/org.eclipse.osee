@@ -18,9 +18,6 @@ import org.xml.sax.Attributes;
  */
 public class TestPointName extends ElementHandlers {
 
-   /**
-    * @param name
-    */
    public TestPointName() {
       super("TestPointName");
    }

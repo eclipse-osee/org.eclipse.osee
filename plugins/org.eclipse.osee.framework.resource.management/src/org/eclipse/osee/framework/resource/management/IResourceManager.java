@@ -24,14 +24,12 @@ public interface IResourceManager {
    /**
     * Add listener to list
     * 
-    * @param listener
     */
    public boolean addResourceListener(IResourceListener listener);
 
    /**
     * Remove listener from list
     * 
-    * @param listener
     */
    public boolean removeResourceListener(IResourceListener listener);
 

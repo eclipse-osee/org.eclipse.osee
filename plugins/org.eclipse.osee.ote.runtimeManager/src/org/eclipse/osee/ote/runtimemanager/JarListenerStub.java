@@ -124,7 +124,6 @@ public class JarListenerStub<T extends JarCollectionNature> implements IJarChang
    }
 
    /**
-    * @param url
     * @return
     * @throws IOException
     */

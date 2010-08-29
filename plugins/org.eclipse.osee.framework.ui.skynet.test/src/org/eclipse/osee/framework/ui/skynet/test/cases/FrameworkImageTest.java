@@ -17,10 +17,6 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
  */
 public class FrameworkImageTest extends ImageManagerTest {
 
-   /**
-    * @param imageClassName
-    * @param oseeImages
-    */
    public FrameworkImageTest() {
       super("FrameworkImage", FrameworkImage.values());
    }

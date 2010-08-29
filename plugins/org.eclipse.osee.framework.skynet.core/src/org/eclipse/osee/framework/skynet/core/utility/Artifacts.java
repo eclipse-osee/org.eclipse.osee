@@ -116,10 +116,6 @@ public final class Artifacts {
     * Recurses default hierarchy and collections children of parentArtifact that are of type class
     * 
     * @param <A>
-    * @param parentArtifact
-    * @param children
-    * @param clazz
-    * @param recurse
     * @throws OseeDataStoreException
     */
    @SuppressWarnings("unchecked")

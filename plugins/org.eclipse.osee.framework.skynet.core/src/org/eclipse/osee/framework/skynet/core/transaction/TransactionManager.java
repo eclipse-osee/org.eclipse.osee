@@ -153,7 +153,6 @@ public final class TransactionManager {
    }
 
    /**
-    * @param branch
     * @return the largest (most recent) transaction on the given branch
     * @throws OseeCoreException
     */
@@ -198,7 +197,6 @@ public final class TransactionManager {
    }
 
    /**
-    * @param transactionId
     * @return The prior transactionId, or null if there is no prior.
     * @throws BranchDoesNotExist
     * @throws TransactionDoesNotExist

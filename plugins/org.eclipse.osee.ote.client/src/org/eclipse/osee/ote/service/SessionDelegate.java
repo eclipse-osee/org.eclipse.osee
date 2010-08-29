@@ -34,7 +34,6 @@ public interface SessionDelegate {
     * client. This method will be called by the {@link IHostTestEnvironment} with a path that should make sense to the
     * client.
     * 
-    * @param path
     * @return an array bytes that represent the content of the requested file
     * @throws Exception
     */

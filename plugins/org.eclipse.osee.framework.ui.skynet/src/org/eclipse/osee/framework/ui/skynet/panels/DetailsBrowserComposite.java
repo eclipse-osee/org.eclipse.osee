@@ -23,10 +23,6 @@ import org.eclipse.swt.widgets.ToolBar;
  */
 public class DetailsBrowserComposite extends BrowserComposite {
 
-   /**
-    * @param parent
-    * @param style
-    */
    public DetailsBrowserComposite(Artifact artifact, Composite parent, int style, ToolBar toolBar) {
       super(parent, style, toolBar);
       StringBuilder sb = new StringBuilder();

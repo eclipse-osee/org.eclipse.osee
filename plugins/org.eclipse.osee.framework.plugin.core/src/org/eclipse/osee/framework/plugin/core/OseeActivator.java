@@ -31,7 +31,6 @@ public class OseeActivator extends Plugin {
    /**
     * finds a resource in the plugin bundle and writes it out to the default persistent storage area as a regular file
     * 
-    * @param path
     * @return Return plugin file reference
     * @throws IOException
     */

@@ -23,10 +23,6 @@ import org.eclipse.osee.framework.ui.skynet.blam.BlamEditor;
 public class XNavigateItemBlam extends XNavigateItem {
    private final AbstractBlam blamOperation;
 
-   /**
-    * @param parent
-    * @param name
-    */
    public XNavigateItemBlam(XNavigateItem parent, AbstractBlam blamOperation) {
       super(parent, blamOperation.getName(), FrameworkImage.BLAM);
       this.blamOperation = blamOperation;

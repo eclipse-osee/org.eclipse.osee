@@ -19,9 +19,6 @@ class LocalFileKey implements IFileKey {
 
    private final File file;
 
-   /**
-    * @param file
-    */
    LocalFileKey(File file) {
       this.file = file;
    }

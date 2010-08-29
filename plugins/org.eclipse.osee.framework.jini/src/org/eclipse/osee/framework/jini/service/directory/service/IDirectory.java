@@ -18,14 +18,12 @@ import org.eclipse.osee.framework.jdk.core.directory.DirectoryPerson;
 public interface IDirectory extends Remote {
 
    /**
-    * @param bemsid
     * @return person object
     * @throws RemoteException
     */
    public DirectoryPerson getPerson(int bemsid) throws RemoteException;
 
    /**
-    * @param dept
     * @return arraylist of people
     * @throws RemoteException
     */

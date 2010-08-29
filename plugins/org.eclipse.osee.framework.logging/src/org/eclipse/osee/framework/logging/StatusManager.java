@@ -89,7 +89,6 @@ class StatusManager {
    }
 
    /**
-    * @param sourceName
     * @return health status
     */
    public IHealthStatus getHealthStatusByName(String sourceName) {

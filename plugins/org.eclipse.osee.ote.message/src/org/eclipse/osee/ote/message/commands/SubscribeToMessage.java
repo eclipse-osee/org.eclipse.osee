@@ -21,18 +21,12 @@ import org.eclipse.osee.ote.message.tool.MessageMode;
  */
 public class SubscribeToMessage implements Serializable {
 
-   /**
-    * 
-    */
    private static final long serialVersionUID = -8639822314152666969L;
    private final String message;
    private final DataType type;
    private final MessageMode mode;
    private final IMsgToolServiceClient callback;
 
-   /**
-    * 
-    */
    public SubscribeToMessage(String message, DataType type, MessageMode mode, IMsgToolServiceClient callback) {
       super();
       this.message = message;

@@ -49,9 +49,6 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
 
    private static String TITLE = "Search Artifact Impact to Action";
 
-   /**
-    * @param parent
-    */
    public ArtifactImpactToActionSearchItem(XNavigateItem parent) {
       super(parent, TITLE, FrameworkImage.FLASHLIGHT);
    }

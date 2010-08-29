@@ -19,12 +19,6 @@ public class UserData {
    private final String id;
    private final String name;
 
-   /**
-    * @param name
-    * @param id
-    * @param email
-    * @param name
-    */
    UserData(String email, String id, String name) {
       this.email = email;
       this.id = id;

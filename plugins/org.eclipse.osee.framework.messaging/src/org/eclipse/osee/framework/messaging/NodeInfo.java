@@ -18,9 +18,6 @@ import java.net.URI;
  */
 public class NodeInfo implements Serializable {
 
-   /**
-    * 
-    */
    private static final long serialVersionUID = -5245181117185581620L;
    private final URI uri;
    private final String name;

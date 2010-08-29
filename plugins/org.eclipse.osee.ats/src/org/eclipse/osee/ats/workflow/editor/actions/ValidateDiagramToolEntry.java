@@ -19,12 +19,6 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
  */
 public class ValidateDiagramToolEntry extends ToolEntry {
 
-   /**
-    * @param label
-    * @param shortDesc
-    * @param iconSmall
-    * @param iconLarge
-    */
    public ValidateDiagramToolEntry() {
       super("Validate Diagram", "Validate", ImageManager.getImageDescriptor(AtsImage.CHECK_BLUE),
          ImageManager.getImageDescriptor(AtsImage.CHECK_BLUE), ValidateDiagramTool.class);

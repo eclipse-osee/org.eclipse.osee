@@ -31,9 +31,6 @@ public class ElementVsTimeCSV extends AbstractSaxHandler {
    private final List<String> columnsToPrint = new ArrayList<String>();
    private final StringBuilder builder = new StringBuilder();
 
-   /**
-    * @param elementColumns
-    */
    public ElementVsTimeCSV(String[] elementColumns) {
       for (String str : elementColumns) {
          columnsToPrint.add(str);

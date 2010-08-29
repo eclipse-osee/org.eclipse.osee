@@ -21,9 +21,6 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
  */
 public class XBranchTextFilter extends XViewerTextFilter {
 
-   /**
-    * @param viewer
-    */
    public XBranchTextFilter(XViewer viewer) {
       super(viewer);
    }

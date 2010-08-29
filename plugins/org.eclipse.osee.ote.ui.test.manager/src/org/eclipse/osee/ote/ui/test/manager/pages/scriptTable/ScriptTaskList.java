@@ -29,9 +29,6 @@ public class ScriptTaskList {
       super();
    }
 
-   /**
-    * @param viewer
-    */
    public void addChangeListener(ITaskListViewer viewer) {
       changeListeners.add(viewer);
    }
@@ -83,16 +80,10 @@ public class ScriptTaskList {
       this.tasks.removeAllElements();
    }
 
-   /**
-    * @param viewer
-    */
    public void removeChangeListener(ITaskListViewer viewer) {
       changeListeners.remove(viewer);
    }
 
-   /**
-    * @param task
-    */
    public void removeTask(ScriptTask task) {
       tasks.remove(task);
       Iterator<ITaskListViewer> iterator = changeListeners.iterator();
@@ -101,9 +92,6 @@ public class ScriptTaskList {
       }
    }
 
-   /**
-    * @param task
-    */
    public void taskChanged(ScriptTask task) {
       Iterator<ITaskListViewer> iterator = changeListeners.iterator();
       while (iterator.hasNext()) {
@@ -121,9 +109,6 @@ public class ScriptTaskList {
       return str + "\n\n";
    }
 
-   /**
-    * @param newTask
-    */
    public boolean contains(ScriptTask newTask) {
       for (ScriptTask task : tasks) {
          if (task.getPath().equals(newTask.getPath())) {

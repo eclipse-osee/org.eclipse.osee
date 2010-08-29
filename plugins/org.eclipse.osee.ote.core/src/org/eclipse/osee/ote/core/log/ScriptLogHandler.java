@@ -61,7 +61,6 @@ public class ScriptLogHandler extends Handler {
     * establishes the xml format to be used.
     * 
     * @param outFile Reference to the outfile that will be used to output the log.
-    * @param string
     */
    public ScriptLogHandler(File outFile, TestEnvironment testEnvironment) {
       super();

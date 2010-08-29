@@ -17,9 +17,6 @@ import java.io.Serializable;
  */
 public class ReturnStatus implements Serializable {
 
-   /**
-    * 
-    */
    private static final long serialVersionUID = -7774073812320127561L;
 
    private final boolean status;

@@ -22,9 +22,6 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 public class XmlStraightener extends Rule {
    private static final Pattern tagPattern = Pattern.compile("<[^!][^>]*>");
 
-   /**
-    * @param outExtension
-    */
    public XmlStraightener(String outExtension) {
       super(outExtension);
    }

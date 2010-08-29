@@ -23,9 +23,6 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 public class AlphabeticalRelationComparator implements Comparator<RelationLink> {
    private final RelationSide relationSide;
 
-   /**
-    * @param relationSide
-    */
    public AlphabeticalRelationComparator(RelationSide relationSide) {
       super();
       this.relationSide = relationSide;

@@ -39,9 +39,6 @@ import org.eclipse.swt.widgets.Composite;
 public class AtsConfigWizardPage1 extends WizardPage {
    private WorkPage page;
 
-   /**
-    * @param actionWizard
-    */
    public AtsConfigWizardPage1(AtsConfigWizard actionWizard) {
       super("Create New ATS Configuration", "Create ATS Configuration", null);
       setMessage("Enter configuration information.");

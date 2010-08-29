@@ -24,11 +24,6 @@ public class ClientMessageServiceTracker extends ServiceTracker {
 
    private final IOteMessageClientView viewer;
 
-   /**
-    * @param context
-    * @param filter
-    * @param customizer
-    */
    public ClientMessageServiceTracker(BundleContext context, IOteMessageClientView viewer) {
       super(context, IOteMessageService.class.getName(), null);
       this.viewer = viewer;

@@ -18,9 +18,6 @@ import org.xml.sax.Attributes;
  */
 public class CheckPoint extends ElementHandlers {
 
-   /**
-    * @param name
-    */
    public CheckPoint() {
       super("CheckPoint");
    }

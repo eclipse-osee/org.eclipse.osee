@@ -52,8 +52,6 @@ public class HashCollectionPlus<K, V, O> {
     * Collections.synchronizedMap & Collections.synchronizedCollection. otherwise, this class will not be synchronzied
     * and therefore not threadsafe.
     * @param collectionType The type of collection to use to as the values within the HashMap.
-    * @param initialCapacity
-    * @param plusProvider
     * @see HashMap#HashMap(int, float)
     */
    @SuppressWarnings("unchecked")
@@ -75,8 +73,6 @@ public class HashCollectionPlus<K, V, O> {
     * Collections.synchronizedMap & Collections.synchronizedCollection. otherwise, this class will not be synchronzied
     * and therefore not threadsafe.
     * @param collectionType - The type of collection to use to as the values within the HashMap.
-    * @param initialCapacity
-    * @param plusProvider
     * @see HashMap#HashMap(int)
     */
    @SuppressWarnings("unchecked")
@@ -97,7 +93,6 @@ public class HashCollectionPlus<K, V, O> {
     * Collections.synchronizedMap & Collections.synchronizedCollection. otherwise, this class will not be synchronzied
     * and therefore not threadsafe.
     * @param collectionType - The type of collection to use to as the values within the HashMap.
-    * @param plusProvider
     * @see HashMap#HashMap()
     */
    @SuppressWarnings("unchecked")
@@ -234,7 +229,6 @@ public class HashCollectionPlus<K, V, O> {
    /**
     * Returns the Collection of items for this key, or null if the key does not exist.
     * 
-    * @param key
     * @return Return value collection reference
     */
    public Collection<V> getValues(K key) {
@@ -248,7 +242,6 @@ public class HashCollectionPlus<K, V, O> {
    /**
     * Returns the Collection all items
     * 
-    * @param key
     * @return Return value collection reference
     */
    public List<V> getValues() {
@@ -264,7 +257,6 @@ public class HashCollectionPlus<K, V, O> {
    /**
     * Returns the "plus" object associated with the key, or null if the key does not exist.
     * 
-    * @param key
     * @return Return object reference
     */
    public O getPlusObject(K key) {
@@ -307,7 +299,6 @@ public class HashCollectionPlus<K, V, O> {
    }
 
    /**
-    * @param value
     * @return whether the map contains this value
     */
    public boolean containsValue(Object value) {

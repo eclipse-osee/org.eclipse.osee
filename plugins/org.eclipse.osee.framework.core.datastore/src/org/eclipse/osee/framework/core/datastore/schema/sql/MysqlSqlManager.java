@@ -37,9 +37,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public class MysqlSqlManager extends SqlManagerImpl {
 
-   /**
-    * @param sqlDataType
-    */
    public MysqlSqlManager(SqlDataType sqlDataType) {
       super(sqlDataType);
    }

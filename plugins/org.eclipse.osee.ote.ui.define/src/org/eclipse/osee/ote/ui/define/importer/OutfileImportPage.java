@@ -67,9 +67,6 @@ public class OutfileImportPage extends WizardDataTransferPage {
    private final Object treeInput;
    private XBranchSelectWidget branchSelect;
 
-   /**
-    * @param pageName
-    */
    protected OutfileImportPage(IStructuredSelection selection) {
       super(PAGE_NAME);
       this.treeInput = ResourcesPlugin.getWorkspace().getRoot();

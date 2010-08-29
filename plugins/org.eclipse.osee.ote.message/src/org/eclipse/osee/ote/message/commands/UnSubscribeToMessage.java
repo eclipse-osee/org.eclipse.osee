@@ -21,9 +21,6 @@ import org.eclipse.osee.ote.message.tool.MessageMode;
  */
 public class UnSubscribeToMessage implements Serializable {
 
-   /**
-    * 
-    */
    private static final long serialVersionUID = -1140091630056507142L;
    private final String messageName;
    private final MessageMode mode;

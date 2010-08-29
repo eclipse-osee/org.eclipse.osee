@@ -20,9 +20,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManage
 public class NotSearch implements ISearchPrimitive {
    private final ISearchPrimitive search;
 
-   /**
-    * @param search
-    */
    public NotSearch(ISearchPrimitive search) {
       super();
       this.search = search;

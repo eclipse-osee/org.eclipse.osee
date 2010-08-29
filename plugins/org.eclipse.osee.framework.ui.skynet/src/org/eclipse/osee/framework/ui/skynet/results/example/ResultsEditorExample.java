@@ -75,9 +75,6 @@ public class ResultsEditorExample extends XNavigateItemAction {
    private final static List<Double> chartValueStrsGoal = Arrays.asList(177.0, 174.0, 167.0, 161.0, 167.0, 167.0,
       163.0, 165.0, 171.0, 179.0, 177.0, 175.0, 173.0, 171.0, 169.0, 167.0, 165.0);
 
-   /**
-    * @param parent
-    */
    public ResultsEditorExample(XNavigateItem parent) {
       super(parent, TITLE, PluginUiImage.ADMIN);
    }

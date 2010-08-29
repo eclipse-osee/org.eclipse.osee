@@ -663,7 +663,6 @@ public class ServiceDataStore implements ServiceDiscoveryListener, DiscoveryList
    }
 
    /**
-    * @param lookupList
     * @param addToLocators - If true, adds the lookupList to the 'global' lookup list such that a refresh will try to
     * locate the service again. This is provided primarily as an optimization for when this routine is called from
     * refresh().

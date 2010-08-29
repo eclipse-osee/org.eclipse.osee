@@ -34,7 +34,6 @@ public abstract class EndpointReceive {
     * The MessagingGateway implementation must call this method to set the ApplicationDistributer callback so that
     * received messages get propagated to the application.
     * 
-    * @param distributer
     */
    public void onBind(ApplicationDistributer distributer) {
       this.distributer = distributer;

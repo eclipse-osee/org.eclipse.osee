@@ -24,13 +24,6 @@ import org.eclipse.osee.ote.messaging.dds.listener.DataWriterListener;
 public class IntMessageWriter extends DataWriter {
    private final IntegerData buffer;
 
-   /**
-    * @param topic
-    * @param publisher
-    * @param enabled
-    * @param listener
-    * @param parentFactory
-    */
    public IntMessageWriter(Topic topic, Publisher publisher, Boolean enabled, DataWriterListener listener, EntityFactory parentFactory) {
       super(topic, publisher, enabled, listener, parentFactory);
       buffer = new IntegerData(0);

@@ -71,9 +71,6 @@ public class XBranchWidget extends XWidget implements IActionable {
       this.searchRealTime = searchRealTime;
    }
 
-   /**
-    * @param label
-    */
    public XBranchWidget() {
       super(VIEW_ID);
 
@@ -327,9 +324,6 @@ public class XBranchWidget extends XWidget implements IActionable {
       return null;
    }
 
-   /**
-    * @param favoritesFirst
-    */
    public void setFavoritesFirst(boolean favoritesFirst) {
       if (branchContentProvider != null) {
          sorter.setFavoritesFirst(favoritesFirst);
@@ -337,9 +331,6 @@ public class XBranchWidget extends XWidget implements IActionable {
       }
    }
 
-   /**
-    * @param flat
-    */
    public void setPresentation(boolean flat) {
       if (branchContentProvider != null) {
          branchContentProvider.setPresentation(flat);
@@ -347,9 +338,6 @@ public class XBranchWidget extends XWidget implements IActionable {
       }
    }
 
-   /**
-    * @param showMergeBranches
-    */
    public void setShowMergeBranches(boolean showMergeBranches) {
       if (branchContentProvider != null) {
          branchContentProvider.setShowMergeBranches(showMergeBranches);
@@ -357,9 +345,6 @@ public class XBranchWidget extends XWidget implements IActionable {
       }
    }
 
-   /**
-    * @param showArchivedBranches
-    */
    public void setShowArchivedBranches(boolean showArchivedBranches) {
       if (branchContentProvider != null) {
          branchContentProvider.setShowArchivedBranches(showArchivedBranches);
@@ -367,9 +352,6 @@ public class XBranchWidget extends XWidget implements IActionable {
       }
    }
 
-   /**
-    * @param showTransactions
-    */
    public void setShowTransactions(boolean showTransactions) {
       if (branchContentProvider != null) {
          branchContentProvider.setShowTransactions(showTransactions);
@@ -377,9 +359,6 @@ public class XBranchWidget extends XWidget implements IActionable {
       }
    }
 
-   /**
-    * @param showTransactions
-    */
    public void setShowWorkingBranchesOnly(boolean allowOnlyWorkingBranches) {
       if (branchContentProvider != null) {
          branchContentProvider.setShowOnlyWorkingBranches(allowOnlyWorkingBranches);

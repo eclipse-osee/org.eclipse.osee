@@ -65,12 +65,6 @@ public class UpdateMergeBranch extends DbTransaction {
    private final Branch destBranch;
    private final Branch sourceBranch;
 
-   /**
-    * @param destBranch
-    * @param expectedArtIds
-    * @param mergeBranch
-    * @param sourceBranch
-    */
    public UpdateMergeBranch(Branch mergeBranch, ArrayList<Integer> expectedArtIds, Branch destBranch, Branch sourceBranch) {
       this.destBranch = destBranch;
       this.expectedArtIds = expectedArtIds;
@@ -246,7 +240,6 @@ public class UpdateMergeBranch extends DbTransaction {
     * from the database. It also removes all history associated with this artifact (i.e. all transactions and gamma ids
     * will also be removed from the database only for the branch it is on).
     * 
-    * @param artifact
     */
    private static void purgeArtifactFromBranch(OseeConnection connection, Branch branch, int artId) throws OseeCoreException {
       int baseTxId = branch.getBaseTransaction().getId();

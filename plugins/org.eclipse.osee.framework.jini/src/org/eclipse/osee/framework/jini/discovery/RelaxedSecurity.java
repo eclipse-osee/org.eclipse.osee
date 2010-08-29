@@ -18,9 +18,6 @@ import java.security.Permission;
  */
 public class RelaxedSecurity extends SecurityManager {
 
-   /**
-    * 
-    */
    public RelaxedSecurity() {
       super();
    }

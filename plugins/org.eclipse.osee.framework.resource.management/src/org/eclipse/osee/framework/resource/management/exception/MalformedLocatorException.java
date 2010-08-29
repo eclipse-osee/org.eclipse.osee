@@ -19,24 +19,14 @@ public class MalformedLocatorException extends OseeCoreException {
 
    private static final long serialVersionUID = -7595802736847790150L;
 
-   /**
-    * @param message
-    * @param cause
-    */
    public MalformedLocatorException(String message, Throwable cause) {
       super(message, cause);
    }
 
-   /**
-    * @param message
-    */
    public MalformedLocatorException(String message) {
       super(message);
    }
 
-   /**
-    * @param cause
-    */
    public MalformedLocatorException(Throwable cause) {
       super(cause);
    }

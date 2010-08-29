@@ -36,10 +36,6 @@ public class SaxChunkCollector {
       builder = new StringBuilder(5000);
    }
 
-   /**
-    * @param localName
-    * @param collectionParser
-    */
    public void endElementFound(String localName, ICollectionSource collectionSource) {
       if (isCollecting) {
          currentDepth--;
@@ -61,11 +57,6 @@ public class SaxChunkCollector {
       return handler;
    }
 
-   /**
-    * @param localName
-    * @param attributes
-    * @param collectionParser
-    */
    public void startElementFound(String localName, Attributes attributes, CollectionParser collectionParser) {
       if (collectionElement.contains(localName)) {
          isCollecting = true;

@@ -23,9 +23,6 @@ public class WorldXViewerSorter extends XViewerSorter {
 
    protected final XViewer xViewer;
 
-   /**
-    * @param xViewer
-    */
    public WorldXViewerSorter(XViewer xViewer) {
       super(xViewer);
       this.xViewer = xViewer;

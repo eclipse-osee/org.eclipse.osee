@@ -30,8 +30,5 @@ public interface IExecutionUnitManagement {
 
    public void init() throws Exception;
 
-   /**
-    * 
-    */
    public void dispose();
 }

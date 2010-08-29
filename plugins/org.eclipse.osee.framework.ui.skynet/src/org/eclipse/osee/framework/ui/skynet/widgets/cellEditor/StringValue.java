@@ -19,9 +19,6 @@ import org.eclipse.swt.widgets.Text;
 public class StringValue extends UniversalCellEditorValue {
    private String value;
 
-   /**
-    * 
-    */
    public StringValue() {
       super();
    }

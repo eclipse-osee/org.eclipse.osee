@@ -45,10 +45,6 @@ public class UserRoleXViewer extends XViewer {
 
    private final XUserRoleViewer xUserRoleViewer;
 
-   /**
-    * @param parent
-    * @param style
-    */
    public UserRoleXViewer(Composite parent, int style, XUserRoleViewer xUserRoleViewer) {
       super(parent, style, new UserRoleXViewerFactory());
       this.xUserRoleViewer = xUserRoleViewer;

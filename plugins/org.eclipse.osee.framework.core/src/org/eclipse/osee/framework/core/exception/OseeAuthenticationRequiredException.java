@@ -17,24 +17,14 @@ public class OseeAuthenticationRequiredException extends OseeDataStoreException 
 
    private static final long serialVersionUID = 1890728724625261131L;
 
-   /**
-    * @param message
-    * @param cause
-    */
    public OseeAuthenticationRequiredException(String message, Throwable cause) {
       super(message, cause);
    }
 
-   /**
-    * @param message
-    */
    public OseeAuthenticationRequiredException(String message) {
       super(message);
    }
 
-   /**
-    * @param cause
-    */
    public OseeAuthenticationRequiredException(Throwable cause) {
       super(cause);
    }

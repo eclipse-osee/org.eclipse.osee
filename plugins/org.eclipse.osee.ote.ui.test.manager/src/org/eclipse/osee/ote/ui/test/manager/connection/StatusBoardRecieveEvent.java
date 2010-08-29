@@ -19,9 +19,6 @@ public abstract class StatusBoardRecieveEvent<V> implements Callable<V> {
 
    private final V data;
 
-   /**
-    * 
-    */
    public StatusBoardRecieveEvent(V data) {
       this.data = data;
    }

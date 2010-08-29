@@ -29,10 +29,6 @@ public class Time {
       nanoSeconds = 0;
    }
 
-   /**
-    * @param seconds
-    * @param nanoSeconds
-    */
    public Time(long seconds, long nanoSeconds) {
       super();
       this.seconds = seconds;

@@ -17,9 +17,6 @@ import java.io.Serializable;
  */
 public class DoublePoint implements Serializable {
 
-   /**
-	 * 
-	 */
    private static final long serialVersionUID = 2417895993917844086L;
    protected double x;
    protected double y;

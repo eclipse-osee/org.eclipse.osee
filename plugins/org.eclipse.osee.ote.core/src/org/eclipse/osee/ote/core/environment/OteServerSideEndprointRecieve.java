@@ -23,9 +23,6 @@ public class OteServerSideEndprointRecieve extends EndpointReceive {
    public void start(Properties properties) {
    }
 
-   /**
-    * @param message
-    */
    public void recievedMessage(Message message) {
       onReceive(message);
    }

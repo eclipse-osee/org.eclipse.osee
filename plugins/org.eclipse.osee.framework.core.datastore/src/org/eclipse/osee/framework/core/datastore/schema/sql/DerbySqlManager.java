@@ -30,10 +30,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public class DerbySqlManager extends SqlManagerImpl {
 
-   /**
-    * @param logger
-    * @param sqlDataType
-    */
    public DerbySqlManager(SqlDataType sqlDataType) {
       super(sqlDataType);
    }

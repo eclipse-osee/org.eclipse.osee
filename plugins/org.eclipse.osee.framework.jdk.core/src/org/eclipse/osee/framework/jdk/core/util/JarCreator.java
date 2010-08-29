@@ -60,8 +60,6 @@ public class JarCreator {
    }
 
    /**
-    * @param path
-    * @param rootPathPos
     * @throws IOException
     */
    private void addRelativeToPosition(File path, int rootPathPos, FileFilter filenameFilter) throws IOException {

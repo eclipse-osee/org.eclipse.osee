@@ -20,9 +20,6 @@ public class GroupTreeViewer extends TreeViewer {
 
    private final GroupExplorer groupExplorer;
 
-   /**
-    * @param parent
-    */
    public GroupTreeViewer(GroupExplorer groupExplorer, Composite parent) {
       super(parent);
       this.groupExplorer = groupExplorer;

@@ -27,9 +27,6 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  */
 public class UpdateAtsWorkItemDefinitions extends XNavigateItemAction {
 
-   /**
-    * @param parent
-    */
    public UpdateAtsWorkItemDefinitions(XNavigateItem parent) {
       super(parent, "Update Ats WorkItemDefinitions", PluginUiImage.ADMIN);
    }

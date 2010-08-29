@@ -23,7 +23,6 @@ public class NonMappingFloat32Element extends Float32Element {
    /**
     * Copy constructor.
     * 
-    * @param element
     */
    public NonMappingFloat32Element(Float32Element element) {
       super(element.getMessage(), element.getElementName(), element.getMsgData(), element.getByteOffset(),
@@ -33,39 +32,14 @@ public class NonMappingFloat32Element extends Float32Element {
       }
    }
 
-   /**
-    * @param message
-    * @param elementName
-    * @param messageData
-    * @param byteOffset
-    * @param msb
-    * @param lsb
-    */
    public NonMappingFloat32Element(Message<?, ?, ?> message, String elementName, MessageData messageData, int byteOffset, int msb, int lsb) {
       super(message, elementName, messageData, byteOffset, msb, lsb);
    }
 
-   /**
-    * @param message
-    * @param elementName
-    * @param messageData
-    * @param byteOffset
-    * @param msb
-    * @param lsb
-    * @param originalLsb
-    * @param originalMsb
-    */
    public NonMappingFloat32Element(Message<?, ?, ?> message, String elementName, MessageData messageData, int byteOffset, int msb, int lsb, int originalLsb, int originalMsb) {
       super(message, elementName, messageData, byteOffset, msb, lsb, originalLsb, originalMsb);
    }
 
-   /**
-    * @param message
-    * @param elementName
-    * @param messageData
-    * @param bitOffset
-    * @param bitLength
-    */
    public NonMappingFloat32Element(Message<?, ?, ?> message, String elementName, MessageData messageData, int bitOffset, int bitLength) {
       super(message, elementName, messageData, bitOffset, bitLength);
    }

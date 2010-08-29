@@ -26,16 +26,12 @@ public interface IMessageHeader {
    /**
     * Sets the data that backs this header.
     * 
-    * @param data
     */
    //   public void copyData(byte[] data);
    public byte[] getData();
 
    public Element[] getElements();
 
-   /**
-    * @param data
-    */
    public void setNewBackingBuffer(byte[] data);
 
    public String toXml();

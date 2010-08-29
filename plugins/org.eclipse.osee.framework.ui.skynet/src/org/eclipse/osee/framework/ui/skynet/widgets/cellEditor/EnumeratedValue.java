@@ -20,9 +20,6 @@ public class EnumeratedValue extends UniversalCellEditorValue {
    private String value;
    private String[] choices;
 
-   /**
-    * 
-    */
    public EnumeratedValue() {
       super();
    }

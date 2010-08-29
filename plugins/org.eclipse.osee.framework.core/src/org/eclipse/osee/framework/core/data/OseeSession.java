@@ -78,7 +78,6 @@ public class OseeSession extends OseeClientInfo {
    /**
     * Set the last interaction name
     * 
-    * @param lastInteractionName
     */
    public void setLastInteraction(String lastInteractionName) {
       this.backingData.put(LAST_INTERACTION, lastInteractionName);
@@ -87,7 +86,6 @@ public class OseeSession extends OseeClientInfo {
    /**
     * Set the last interaction date
     * 
-    * @param timestamp
     */
    public void setLastInteractionDate(Timestamp timestamp) {
       this.backingData.put(LAST_INTERACTION_DATE, timestamp.getTime());

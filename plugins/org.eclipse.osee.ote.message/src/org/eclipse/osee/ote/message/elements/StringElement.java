@@ -95,7 +95,6 @@ public class StringElement extends DiscreteElement<String> {
    /**
     * Verifies that the element is set to "value" within the number of "milliseconds" passed.
     * 
-    * @param accessor
     * @param value Expected value.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
@@ -124,7 +123,6 @@ public class StringElement extends DiscreteElement<String> {
    /**
     * Sets the element to the "value" passed and immediately sends the message that contains it..
     * 
-    * @param accessor
     * @param value The value to set.
     */
    public void setAndSend(ITestEnvironmentAccessor accessor, String value) {

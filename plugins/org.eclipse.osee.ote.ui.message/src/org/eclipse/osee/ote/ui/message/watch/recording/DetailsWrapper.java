@@ -33,9 +33,6 @@ public class DetailsWrapper implements IElementPath {
 
    }
 
-   /**
-    * @param messageNode
-    */
    public DetailsWrapper(MessageNode messageNode) {
       this.messageNode = messageNode;
       elementPath = new ElementPath(messageNode.getMessageClassName());
@@ -50,9 +47,6 @@ public class DetailsWrapper implements IElementPath {
       return elementPath;
    }
 
-   /**
-	 * 
-	 */
    public MessageNode getMessageNode() {
       return messageNode;
    }

@@ -29,7 +29,6 @@ public class NonMappingEmptyEnumElement extends EmptyEnum_Element {
    /**
     * Copy constructor.
     * 
-    * @param element
     */
    public NonMappingEmptyEnumElement(EmptyEnum_Element element) {
       super(element.getMessage(), element.getElementName(), element.getMsgData(), element.getByteOffset(),

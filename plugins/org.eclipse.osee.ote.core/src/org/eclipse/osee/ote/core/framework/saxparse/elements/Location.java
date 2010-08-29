@@ -18,9 +18,6 @@ import org.xml.sax.Attributes;
  */
 public class Location extends ElementHandlers {
 
-   /**
-    * @param name
-    */
    public Location() {
       super("Location");
    }

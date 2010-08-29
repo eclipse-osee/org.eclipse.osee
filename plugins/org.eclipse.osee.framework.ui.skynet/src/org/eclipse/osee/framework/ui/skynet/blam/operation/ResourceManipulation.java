@@ -254,10 +254,6 @@ public class ResourceManipulation extends AbstractBlam {
    }
 
    /**
-    * @param startByte
-    * @param initialByte
-    * @param goodBytes
-    * @param finalVersion
     * @return
     */
    private byte[] fixBytes(int startByte, int initialByte, byte[] goodBytes, byte[] finalVersion, byte[] originalData) {
@@ -279,10 +275,6 @@ public class ResourceManipulation extends AbstractBlam {
    }
 
    /**
-    * @param startByte
-    * @param initialByte
-    * @param goodBytes
-    * @param finalVersion
     * @return
     */
    private byte[] addTail(int startByte, byte[] finalVersion, byte[] originalData) {

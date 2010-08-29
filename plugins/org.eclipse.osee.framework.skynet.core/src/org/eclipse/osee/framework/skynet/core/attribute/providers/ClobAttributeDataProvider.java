@@ -16,9 +16,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
  * @author Roberto E. Escobar
  */
 public class ClobAttributeDataProvider extends DefaultAttributeDataProvider {
-   /**
-    * @param attributeStateManager
-    */
    public ClobAttributeDataProvider(Attribute<?> attribute) {
       super(attribute);
    }

@@ -24,12 +24,6 @@ import org.eclipse.swt.widgets.TreeItem;
  */
 public class XScriptTable extends XViewer {
 
-   /**
-    * @param parent
-    * @param style
-    * @param namespace
-    * @param viewerFactory
-    */
    public XScriptTable(Composite parent, int style) {
       super(parent, style, new XScriptTableFactory(), false, false);
    }

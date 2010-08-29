@@ -107,9 +107,6 @@ public class MessageNode extends AbstractTreeNode {
       return "";
    }
 
-   /**
-    * @param element
-    */
    public ElementNode findChildElement(ElementPath element) {
       return pathToElementNode.get(element.asString());
    }

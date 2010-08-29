@@ -48,12 +48,6 @@ public class OfpErrorEntryData {
       return version;
    }
 
-   /**
-    * @param nodeId
-    * @param value2
-    * @param value3
-    * @param value4
-    */
    OfpErrorEntryData(String nodeId, String count, String severity, String version) {
       this.nodeId = nodeId;
       this.count = count;

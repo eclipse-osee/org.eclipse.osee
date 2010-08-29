@@ -140,9 +140,6 @@ public final class Lib {
    /**
     * this version of changeExtension will work even if the extension we want to replace contains a .
     * 
-    * @param str
-    * @param oldExt
-    * @param newExt
     * @return String
     */
    public static String changeExtension(String str, String oldExt, String newExt) {
@@ -156,8 +153,6 @@ public final class Lib {
    /**
     * Move an object one before the previous object
     * 
-    * @param list
-    * @param obj
     * @return true if successful
     */
    public static boolean moveBack(ArrayList<Object> list, Object obj) {
@@ -175,7 +170,6 @@ public final class Lib {
    /**
     * Move an object one after the next object
     * 
-    * @param obj
     * @return true if successful
     */
    public static boolean moveForward(ArrayList<Object> list, Object obj) {
@@ -337,7 +331,6 @@ public final class Lib {
    /**
     * Deletes all files from directory
     * 
-    * @param directory
     */
    public static void emptyDirectory(File directory) {
       File[] children = directory.listFiles();
@@ -513,8 +506,6 @@ public final class Lib {
     * usage: char[] buf = new char[5500000]; for (Iterator iter = files.iterator(); iter.hasNext(); ) { // for each file
     * File file = (File)iter.next(); buf = Lib.fileToChars(file, buf);
     * 
-    * @param file
-    * @param buf
     * @return char[]
     * @throws IOException
     */
@@ -559,7 +550,6 @@ public final class Lib {
    /**
     * Get file extension from the file path
     * 
-    * @param filepath
     * @return file extension
     */
    public static String getExtension(String filepath) {
@@ -901,9 +891,6 @@ public final class Lib {
    /**
     * Returns an array list of File objects
     * 
-    * @param fileList
-    * @param rootPath
-    * @param fileNameP
     * @return List
     */
    public static List<File> recursivelyListFiles(ArrayList<File> fileList, File rootPath, Pattern filePathP) {
@@ -918,7 +905,6 @@ public final class Lib {
     * Assumptions: block comments are not nested and comment blocks have an ending Note: may be fooled by string
     * literals that contains the block comment indicators
     * 
-    * @param charBuf
     * @return CharBuffer
     */
    public static CharBuffer stripBlockComments(CharBuffer charBuf) {
@@ -949,7 +935,6 @@ public final class Lib {
    /**
     * Remove the file extension from the file path
     * 
-    * @param filepath
     * @return modified file path
     */
    public static String removeExtension(String filepath) {
@@ -967,7 +952,6 @@ public final class Lib {
    /**
     * Remove the file extension from the file path
     * 
-    * @param string
     * @return string with no leading or trailing
     */
    public static String removeLeadingAndTrailingSpaces(String str) {
@@ -1072,7 +1056,6 @@ public final class Lib {
    }
 
    /**
-    * @param base
     * @return The path which was used to load the class file. If the file was loaded from a .jar, then the full path to
     * the jar. If the file was loaded from a .class, then the path up to the root of the package.
     */
@@ -1174,7 +1157,6 @@ public final class Lib {
     * Returns a list of the arguments in the source String passed. It assumes that the first character is a '(' and
     * matches till it finds the matching ')'.
     * 
-    * @param source
     * @return String[]
     */
    public static String[] getArguments(String source) {
@@ -1262,7 +1244,6 @@ public final class Lib {
     * Returns a list of Strings representing each comma separated string in the string passed. It ignores commas inside
     * () or {}.
     * 
-    * @param source
     * @return String[]
     */
    public static String[] getCommaSeparatedItems(String source) {
@@ -1360,7 +1341,6 @@ public final class Lib {
    /**
     * This method takes in any name separated by underscores and converts it into a java standard variable name.
     * 
-    * @param name
     * @return java variable name
     */
    public static final String convertToJavaVariableName(String name) {
@@ -1677,7 +1657,6 @@ public final class Lib {
    /**
     * Determine whether the input stream is word xml content.
     * 
-    * @param inputStream
     * @return <b>true</b> is the input stream is word xml content.
     */
    public static boolean isWordML(InputStream inputStream) {

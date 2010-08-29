@@ -15,14 +15,8 @@ package org.eclipse.osee.ote.core.framework.saxparse;
  */
 public interface IBaseSaxElementListener {
 
-   /**
-    * @param obj
-    */
    void onStartElement(Object obj);
 
-   /**
-    * @param obj
-    */
    void onEndElement(Object obj);
 
 }

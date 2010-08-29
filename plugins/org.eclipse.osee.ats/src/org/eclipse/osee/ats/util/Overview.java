@@ -86,8 +86,6 @@ public class Overview {
    /**
     * Return label with value converted to show html reserved characters
     * 
-    * @param label
-    * @param value
     * @return string to embed into html
     */
    public String getLabelValue(String label, String value) {
@@ -98,8 +96,6 @@ public class Overview {
    /**
     * Return label and value WITHOUT conversion to handle html reserved characters. Value will be as-is
     * 
-    * @param label
-    * @param value
     * @return string to embed into html
     */
    public String getLabelValueNoConvert(String label, String value) {

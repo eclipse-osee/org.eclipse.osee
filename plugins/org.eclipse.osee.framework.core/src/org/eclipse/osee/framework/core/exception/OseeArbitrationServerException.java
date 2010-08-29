@@ -17,24 +17,14 @@ public class OseeArbitrationServerException extends OseeDataStoreException {
 
    private static final long serialVersionUID = -1622659773564525533L;
 
-   /**
-    * @param message
-    */
    public OseeArbitrationServerException(String message) {
       super(message);
    }
 
-   /**
-    * @param message
-    * @param cause
-    */
    public OseeArbitrationServerException(String message, Throwable cause) {
       super(message, cause);
    }
 
-   /**
-    * @param cause
-    */
    public OseeArbitrationServerException(Throwable cause) {
       super(cause);
    }

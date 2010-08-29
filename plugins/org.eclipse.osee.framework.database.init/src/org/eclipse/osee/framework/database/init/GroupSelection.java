@@ -28,9 +28,6 @@ public class GroupSelection {
 
    private boolean wasInitialized;
 
-   /**
-    * @param initGroups
-    */
    private GroupSelection() {
       super();
       wasInitialized = false;

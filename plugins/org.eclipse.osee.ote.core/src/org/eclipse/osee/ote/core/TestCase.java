@@ -99,7 +99,6 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable {
    /**
     * TestCase Constructor.
     * 
-    * @param testScript
     */
    public TestCase(TestScript testScript) {
       this(testScript, false);
@@ -108,8 +107,6 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable {
    /**
     * TestCase Constructor.
     * 
-    * @param testScript
-    * @param standAlone
     */
    public TestCase(TestScript testScript, boolean standAlone) {
       this(testScript, standAlone, true);
@@ -155,7 +152,6 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable {
     * Called by baseDoTestCase(). This is implemented by the tester's in each test case in the test script.
     * 
     * @param environment The Test environment.
-    * @param logger
     * @throws InterruptedException
     */
    public abstract void doTestCase(ITestEnvironmentAccessor environment, ITestLogger logger) throws InterruptedException;

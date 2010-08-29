@@ -39,9 +39,6 @@ public class CharBackedInputStream extends InputStream implements Appendable {
          super();
       }
 
-      /**
-       * @param lock
-       */
       public InputStreamWriter(Object lock) {
          super(lock);
       }

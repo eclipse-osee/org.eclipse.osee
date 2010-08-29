@@ -32,7 +32,6 @@ public interface IOteClientService {
     * {@link ITestEnvironmentAvailibilityListener#environmentAvailable(IHostTestEnvironment, org.eclipse.osee.connection.service.IServiceConnector, ServiceProperty)}
     * method will be called immediately for each test host currently available
     * 
-    * @param listener
     */
    void addEnvironmentAvailibiltyListener(ITestEnvironmentAvailibilityListener listener);
 
@@ -43,7 +42,6 @@ public interface IOteClientService {
     * connection has already been made prior to calling this method then the listener's
     * {@link ITestConnectionListener#onPostConnect(ITestEnvironment)} method will be immediately called.
     * 
-    * @param listener
     */
    void addConnectionListener(ITestConnectionListener listener);
 
@@ -54,7 +52,6 @@ public interface IOteClientService {
     * calling this method then the listener's {@link IMessageDictionaryListener#onDictionaryLoaded(IMessageDictionary)}
     * will be called immediately
     * 
-    * @param listener
     */
    void addDictionaryListener(IMessageDictionaryListener listener);
 
@@ -68,8 +65,6 @@ public interface IOteClientService {
     * sets the user that will logged into the OTE client service. A user must be set prior to connecting to an OTE test
     * environment. If a connection is already established it will be broken prior to setting the new user.
     * 
-    * @param user
-    * @param address
     */
    void setUser(OSEEPerson1_4 user, InetAddress address) throws TestSessionException;
 
@@ -84,9 +79,6 @@ public interface IOteClientService {
     * creates a connection to a test server. <B>NOTE: </B><I>A user must be logged in prior to calling this method.>/I>
     * 
     * @see #setUser(OSEEPerson1_4, InetAddress)
-    * @param env
-    * @param config
-    * @param leaseTime
     * @throws Exception
     */
    ConnectionEvent connect(IHostTestEnvironment env, IEnvironmentConfigurer configurer, TestEnvironmentConfig config) throws TestSessionException;
@@ -123,7 +115,6 @@ public interface IOteClientService {
     * sets a {@link SessionDelegate} who will handle certain aspects of the client session A successful call to
     * {@link #setUser(OSEEPerson1_4, InetAddress)} must have occurred prior to calling this method.
     * 
-    * @param sessionDelegate
     */
    void setSessionDelegate(SessionDelegate sessionDelegate);
 

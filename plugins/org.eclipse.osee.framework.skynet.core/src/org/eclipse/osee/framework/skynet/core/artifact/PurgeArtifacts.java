@@ -58,9 +58,6 @@ public class PurgeArtifacts extends DbTransaction {
 
    private final Collection<? extends Artifact> artifactsToPurge;
 
-   /**
-    * @param artifactsToPurge
-    */
    public PurgeArtifacts(Collection<? extends Artifact> artifactsToPurge) {
       this.artifactsToPurge = artifactsToPurge;
    }

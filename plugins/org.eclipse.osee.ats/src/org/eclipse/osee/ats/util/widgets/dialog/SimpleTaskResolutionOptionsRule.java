@@ -49,11 +49,6 @@ public class SimpleTaskResolutionOptionsRule extends TaskResolutionOptionRule {
       //
       "</AtsTaskOptions>";
 
-   /**
-    * @param name
-    * @param id
-    * @param value
-    */
    public SimpleTaskResolutionOptionsRule() {
       super(ID, ID, resolutionOptionsXml);
    }

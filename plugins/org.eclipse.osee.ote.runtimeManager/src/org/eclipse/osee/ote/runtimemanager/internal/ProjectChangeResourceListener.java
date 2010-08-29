@@ -23,9 +23,6 @@ public class ProjectChangeResourceListener implements IResourceChangeListener {
    public void resourceChanged(IResourceChangeEvent event) {
    }
 
-   /**
-    * @param project
-    */
    public void addProject(IProject project) {
    }
 

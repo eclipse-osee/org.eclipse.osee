@@ -36,9 +36,6 @@ public class NativeTaskMaster {
       }
    }
 
-   /**
-    * @param port
-    */
    public NativeTaskMaster(int port) {
       super();
       this.listening = true;

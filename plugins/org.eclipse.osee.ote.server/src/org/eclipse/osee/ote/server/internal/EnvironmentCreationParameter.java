@@ -36,14 +36,6 @@ class EnvironmentCreationParameter {
    private final PackageAdmin packageAdmin;
    private final String environmentFactoryClass;
 
-   /**
-    * @param runtimeLibraryManager2
-    * @param nodeInfo
-    * @param serviceSideConnector
-    * @param config2
-    * @param factory
-    * @param environmentFactoryClass
-    */
    public EnvironmentCreationParameter(IRuntimeLibraryManager runtimeLibraryManager, NodeInfo oteEmbeddedBroker, IServiceConnector serviceConnector, ITestEnvironmentServiceConfig config, TestEnvironmentFactory factory, String environmentFactoryClass, PackageAdmin packageAdmin) {
       this.oteEmbeddedBroker = oteEmbeddedBroker;
       this.serviceConnector = serviceConnector;

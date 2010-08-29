@@ -24,14 +24,6 @@ import org.eclipse.osee.ote.messaging.dds.service.TypeSignature;
  */
 public class PublicationBuiltinTopicData extends Topic {
 
-   /**
-    * @param participant
-    * @param typeName
-    * @param name
-    * @param enabled
-    * @param listener
-    * @param parentFactory
-    */
    PublicationBuiltinTopicData(DomainParticipant participant, TypeSignature typeName, String name, String namespace, boolean enabled, TopicListener listener, EntityFactory parentFactory) {
       super(participant, typeName, name, namespace, enabled, listener, parentFactory);
    }

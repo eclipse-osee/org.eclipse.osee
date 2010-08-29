@@ -20,9 +20,6 @@ import org.eclipse.swt.widgets.Control;
 public class DateValue extends UniversalCellEditorValue {
    private Date date;
 
-   /**
-    * 
-    */
    public DateValue() {
       super();
    }

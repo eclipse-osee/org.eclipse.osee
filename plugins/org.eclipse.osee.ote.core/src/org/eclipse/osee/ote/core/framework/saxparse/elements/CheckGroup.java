@@ -18,9 +18,6 @@ import org.xml.sax.Attributes;
  */
 public class CheckGroup extends ElementHandlers {
 
-   /**
-    * @param name
-    */
    public CheckGroup() {
       super("CheckGroup");
    }

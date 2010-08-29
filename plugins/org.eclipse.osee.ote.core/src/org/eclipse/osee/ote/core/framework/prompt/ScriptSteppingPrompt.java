@@ -20,10 +20,6 @@ import org.eclipse.osee.ote.core.TestScript;
  */
 public class ScriptSteppingPrompt extends AbstractInteractivePrompt<String> implements ISteppingPrompt {
 
-   /**
-    * @param id
-    * @param message
-    */
    public ScriptSteppingPrompt(IServiceConnector connector, TestScript script, String id, String message) throws UnknownHostException {
       super(connector, script, id, message);
    }

@@ -26,7 +26,6 @@ public interface IMessageDictionary {
     * Generates a listing of all messages and associated elements defined in the message jar. The intent is to provide a
     * method for searching the message jar for certain messages
     * 
-    * @param sink
     * @throws IOException
     */
    void generateMessageIndex(final MessageSink sink) throws Exception;
@@ -34,7 +33,6 @@ public interface IMessageDictionary {
    /**
     * Finds the class definition of a message of the given name
     * 
-    * @param messageName
     * @return Returns values reference.
     * @throws ClassNotFoundException if no class definition was found with the given name
     */

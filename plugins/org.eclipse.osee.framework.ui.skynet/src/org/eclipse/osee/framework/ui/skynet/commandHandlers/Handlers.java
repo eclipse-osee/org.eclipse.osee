@@ -32,7 +32,6 @@ public class Handlers {
     * Populates a list of ArtifactChange from a IStructuredSelection. Returns an empty list if no ArtifactChange were
     * found.
     * 
-    * @param selection
     */
    public static List<Change> getArtifactChangesFromStructuredSelection(IStructuredSelection structuredSelection) {
       return processSelectionObjects(Change.class, structuredSelection);
@@ -42,7 +41,6 @@ public class Handlers {
     * Populates a list of TransactionIds from a IStructuredSelection. Returns an empty list if no TransactionIds were
     * found.
     * 
-    * @param selection
     */
    public static List<TransactionRecord> getTransactionsFromStructuredSelection(IStructuredSelection structuredSelection) {
       return processSelectionObjects(TransactionRecord.class, structuredSelection);
@@ -51,7 +49,6 @@ public class Handlers {
    /**
     * Populates a list of branches from a IStructuredSelection. Returns an empty list if no branches were found.
     * 
-    * @param selection
     */
    public static List<Branch> getBranchesFromStructuredSelection(IStructuredSelection structuredSelection) {
       return processSelectionObjects(Branch.class, structuredSelection);
@@ -60,15 +57,12 @@ public class Handlers {
    /**
     * Populates a list of artifacts from a IStructuredSelection. Returns an empty list if no artifacts were found.
     * 
-    * @param selection
     */
    public static List<Artifact> getArtifactsFromStructuredSelection(IStructuredSelection structuredSelection) {
       return processSelectionObjects(Artifact.class, structuredSelection);
    }
 
    /**
-    * @param clazz
-    * @param structuredSelection
     * @return Returns a list of objects from the sturctruedSelection that are an instance of the Class
     */
    public static <E> List<E> processSelectionObjects(Class<E> clazz, IStructuredSelection structuredSelection) {

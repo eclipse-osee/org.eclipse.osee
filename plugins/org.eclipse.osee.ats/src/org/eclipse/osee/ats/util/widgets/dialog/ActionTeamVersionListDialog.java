@@ -42,9 +42,6 @@ public class ActionTeamVersionListDialog extends ActionTeamListDialog {
    XListViewer versionList = new XListViewer("Version");
    VersionArtifact selectedVersion = null;
 
-   /**
-    * @param active
-    */
    public ActionTeamVersionListDialog(Active active) {
       super(active);
    }

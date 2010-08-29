@@ -18,10 +18,6 @@ import org.eclipse.swt.widgets.Composite;
  */
 public abstract class DetailsProvider extends Composite {
 
-   /**
-    * @param parent
-    * @param style
-    */
    public DetailsProvider(Composite parent, int style) {
       super(parent, style);
    }

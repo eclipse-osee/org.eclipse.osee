@@ -26,8 +26,6 @@ public class DataSample {
    /**
     * Create a data sample that is used for propogating data through the system.
     * 
-    * @param data
-    * @param sampleInfo
     */
    public DataSample(Data data, SampleInfo sampleInfo) {
       this.data = new WeakReference<Data>(data);
@@ -37,7 +35,6 @@ public class DataSample {
    /**
     * Create a data sample that can be used for receiving propogated data.
     * 
-    * @param data
     */
    public DataSample(Data data) {
       super();

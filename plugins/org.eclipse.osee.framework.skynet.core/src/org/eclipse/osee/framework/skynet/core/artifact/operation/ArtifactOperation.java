@@ -33,7 +33,6 @@ public abstract class ArtifactOperation extends Artifact implements WorkflowStep
     * The list of artifacts will never be null, but may be empty. Must never throw NullPointerException, but rather a
     * more informative excpetion explaining the problem that would have caused a NullPointerException.
     * 
-    * @param artifacts
     * @param monitor progress monitor for upating the GUI
     * @return may return null because the engine will use an empty list in this case
     * @throws IllegalArgumentException
@@ -42,7 +41,6 @@ public abstract class ArtifactOperation extends Artifact implements WorkflowStep
    public abstract List<Artifact> applyToArtifacts(List<Artifact> artifacts, IProgressMonitor monitor) throws IllegalArgumentException, Exception;
 
    /**
-    * @param operation
     * @return returns PROVIDES_ACCEPTABLE_INPUT if this operation can run after, i.e. accept input from, the given
     * operation, otherwise returns a human readable reason why the input can not be accepted
     */

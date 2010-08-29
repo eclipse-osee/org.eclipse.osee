@@ -60,7 +60,6 @@ public class ArtifactQuery {
     * search for exactly one artifact by one its id - otherwise throw an exception
     * 
     * @param artId the id of the desired artifact
-    * @param branch
     * @return exactly one artifact by one its id - otherwise throw an exception
     * @throws ArtifactDoesNotExist if no artifacts are found
     */
@@ -72,7 +71,6 @@ public class ArtifactQuery {
     * search for exactly one artifact by one its id - otherwise throw an exception
     * 
     * @param artId the id of the desired artifact
-    * @param branch
     * @param allowDeleted whether to return the artifact even if it has been deleted
     * @return exactly one artifact by one its id - otherwise throw an exception
     * @throws ArtifactDoesNotExist if no artifacts are found
@@ -93,7 +91,6 @@ public class ArtifactQuery {
     * Checks for existence of an artifact by id
     * 
     * @param artifactId the id of the desired artifact
-    * @param branch
     * @param allowDeleted whether to return the artifact even if it has been deleted
     * @return one artifact by one its id if it exists, otherwise null
     */
@@ -105,7 +102,6 @@ public class ArtifactQuery {
     * Checks for existence of an artifact by one its guid or human readable id - otherwise throw an exception
     * 
     * @param guidOrHrid either the guid or human readable id of the desired artifact
-    * @param branch
     * @param allowDeleted whether to return the artifact even if it has been deleted
     * @return one artifact by one its id if it exists, otherwise null
     */
@@ -117,7 +113,6 @@ public class ArtifactQuery {
     * Checks for existence of an artifact by one its guid or human readable id - otherwise throw an exception
     * 
     * @param guidOrHrid either the guid or human readable id of the desired artifact
-    * @param branch
     * @return one artifact by one its guid or human readable id if it exists, otherwise null
     */
    public static Artifact checkArtifactFromId(String guidOrHrid, IOseeBranch branch) throws OseeCoreException {
@@ -128,7 +123,6 @@ public class ArtifactQuery {
     * search for exactly one artifact by one its guid or human readable id - otherwise throw an exception
     * 
     * @param guidOrHrid either the guid or human readable id of the desired artifact
-    * @param branch
     * @return exactly one artifact by one its guid or human readable id - otherwise throw an exception
     * @throws ArtifactDoesNotExist if no artifacts are found
     * @throws MultipleArtifactsExist if more than one artifact is found
@@ -141,7 +135,6 @@ public class ArtifactQuery {
     * search for exactly one artifact by one its guid or human readable id - otherwise throw an exception
     * 
     * @param guidOrHrid either the guid or human readable id of the desired artifact
-    * @param branch
     * @param allowDeleted whether to return the artifact even if it has been deleted
     * @return exactly one artifact by one its guid or human readable id - otherwise throw an exception
     * @throws ArtifactDoesNotExist if no artifacts are found

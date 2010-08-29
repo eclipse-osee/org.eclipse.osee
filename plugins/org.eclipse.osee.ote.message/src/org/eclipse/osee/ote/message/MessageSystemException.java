@@ -15,9 +15,6 @@ import org.eclipse.osee.ote.core.TestException;
 
 public class MessageSystemException extends TestException {
 
-   /**
-    * 
-    */
    private static final long serialVersionUID = -8476610648021756216L;
 
    public MessageSystemException(String message, Level level) {

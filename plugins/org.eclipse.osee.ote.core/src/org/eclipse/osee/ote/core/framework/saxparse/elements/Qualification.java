@@ -18,9 +18,6 @@ import org.xml.sax.Attributes;
  */
 public class Qualification extends ElementHandlers {
 
-   /**
-    * @param name
-    */
    public Qualification() {
       super("Qualification");
    }

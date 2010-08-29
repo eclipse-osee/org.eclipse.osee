@@ -17,9 +17,6 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
  * @author Robert A. Fisher
  */
 public class CommandDescription implements Serializable {
-   /**
-    * 
-    */
    private static final long serialVersionUID = 538355585678229304L;
    protected final String guid;
    protected final String description;
@@ -27,7 +24,6 @@ public class CommandDescription implements Serializable {
    /**
     * CommandDescription Constructor. Sets the command's description.
     * 
-    * @param description
     */
    public CommandDescription(String description) {
       super();

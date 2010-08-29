@@ -41,7 +41,6 @@ public class ReplaceRcsLog {
    /**
     * @param directoryA directory of test files will have their rcs log extracted
     * @param directoryB directory of test files that will have their content preserved and log replaced
-    * @param resultDir
     */
    public void replaceRcsLogs(File directoryA, File directoryB, File resultDir) {
       File[] files = directoryA.listFiles(new MatchFilter(".*\\.(c|mac|h)"));

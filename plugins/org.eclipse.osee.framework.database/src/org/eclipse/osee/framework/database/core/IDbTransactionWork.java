@@ -23,7 +23,6 @@ public interface IDbTransactionWork extends Named {
    /**
     * Provides the transaction's work implementation.
     * 
-    * @param connection
     * @throws OseeCoreException
     */
    void handleTxWork(OseeConnection connection) throws OseeCoreException;
@@ -33,7 +32,6 @@ public interface IDbTransactionWork extends Named {
     * This convenience method is provided so child classes have access to the exception. <br/>
     * <b>Override to handle transaction exception</b>
     * 
-    * @param ex
     * @throws Exception
     */
    void handleTxException(Exception ex);

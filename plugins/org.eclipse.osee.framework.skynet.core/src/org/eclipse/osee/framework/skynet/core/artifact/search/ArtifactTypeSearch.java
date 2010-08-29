@@ -22,9 +22,6 @@ public class ArtifactTypeSearch implements ISearchPrimitive {
    private static final String tables = "osee_artifact, osee_artifact_type";
    private final static String TOKEN = ";";
 
-   /**
-    * @param typeName
-    */
    public ArtifactTypeSearch(String typeName, DeprecatedOperator operation) {
       super();
       this.typeName = typeName;

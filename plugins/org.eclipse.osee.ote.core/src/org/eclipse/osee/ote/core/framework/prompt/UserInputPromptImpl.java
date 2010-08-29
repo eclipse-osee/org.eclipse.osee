@@ -20,10 +20,6 @@ import org.eclipse.osee.ote.core.TestScript;
  */
 public class UserInputPromptImpl extends AbstractInteractivePrompt<String> implements IUserInputPromptResponse {
 
-   /**
-    * @param id
-    * @param message
-    */
    public UserInputPromptImpl(IServiceConnector connector, TestScript script, String id, String message) throws UnknownHostException {
       super(connector, script, id, message);
    }

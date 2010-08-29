@@ -34,9 +34,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
  */
 public class NewPeerToPeerReviewItem extends XNavigateItemAction {
 
-   /**
-    * @param parent
-    */
    public NewPeerToPeerReviewItem(XNavigateItem parent) {
       super(parent, "New Stand-alone Peer To Peer Review", AtsImage.REVIEW);
    }

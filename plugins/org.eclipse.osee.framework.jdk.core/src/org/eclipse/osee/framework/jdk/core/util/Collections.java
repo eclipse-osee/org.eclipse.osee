@@ -96,8 +96,6 @@ public class Collections {
    /**
     * The resultant set is those elements in superSet which are not in the subSet
     * 
-    * @param superSet
-    * @param subList
     * @return Return complement list reference
     */
    public static <T> List<T> setComplement(Collection<T> superSet, Collection<T> subList) {
@@ -111,8 +109,6 @@ public class Collections {
    }
 
    /**
-    * @param listA
-    * @param listB
     * @return The intersection of two sets A and B is the set of elements common to A and B
     */
    public static <T> ArrayList<T> setIntersection(Collection<T> listA, Collection<T> listB) {
@@ -130,7 +126,6 @@ public class Collections {
     * Returns the unique union of the given lists
     * 
     * @param <T>
-    * @param lists
     * @return Set
     */
    public static <T> Set<T> setUnion(Collection<T>... lists) {
@@ -146,8 +141,6 @@ public class Collections {
     * Return true if same objects exist in listA and listB
     * 
     * @param <T>
-    * @param listA
-    * @param listB
     * @return boolean
     */
    public static <T> boolean isEqual(Collection<T> listA, Collection<T> listB) {
@@ -172,7 +165,6 @@ public class Collections {
     * Convert an aggregate list of objects into a List
     * 
     * @param <T>
-    * @param objects
     * @return list
     */
    public static <T> List<T> getAggregate(T... objects) {
@@ -235,8 +227,6 @@ public class Collections {
     * Cast objects to clazz
     * 
     * @param <A>
-    * @param objects
-    * @param clazz
     * @param castOption if ALL, cast all and throw exception if cast fails; if MATCHING, only cast those of type clazz
     * @return
     */
@@ -254,7 +244,6 @@ public class Collections {
     * Cast objects to clazz
     * 
     * @param <A>
-    * @param objects
     * @return List
     */
    public static <A> List<A> castAll(Collection<?> objects) {
@@ -271,8 +260,6 @@ public class Collections {
     * Use when all objects are expected to be of type class and exception is desired if not
     * 
     * @param <A>
-    * @param objects
-    * @param clazz
     * @return List
     */
    public static <A extends Object> List<A> castAll(Class<A> clazz, Collection<? extends Object> objects) {
@@ -285,8 +272,6 @@ public class Collections {
     * Use when objects may contain classes that are not desired
     * 
     * @param <A>
-    * @param objects
-    * @param clazz
     * @return List
     */
    public static <A extends Object> List<A> castMatching(Class<A> clazz, Collection<? extends Object> objects) {

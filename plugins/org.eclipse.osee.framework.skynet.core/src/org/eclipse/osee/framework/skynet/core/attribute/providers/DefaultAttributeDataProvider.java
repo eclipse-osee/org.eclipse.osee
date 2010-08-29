@@ -32,9 +32,6 @@ public class DefaultAttributeDataProvider extends AbstractAttributeDataProvider 
 
    private final DataStore dataStore;
 
-   /**
-    * @param attributeStateManager
-    */
    public DefaultAttributeDataProvider(Attribute<?> attribute) {
       super(attribute);
       this.dataStore = new DataStore(new AttributeResourceProcessor(attribute));

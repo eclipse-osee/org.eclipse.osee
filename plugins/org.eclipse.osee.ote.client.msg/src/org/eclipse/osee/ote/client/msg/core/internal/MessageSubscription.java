@@ -37,8 +37,6 @@ public class MessageSubscription implements IMessageSubscription {
    /**
     * creates a subscription with no reference to a message
     * 
-    * @param name
-    * @param subscriber
     */
    public MessageSubscription(MessageSubscriptionService msgService) {
       this.msgService = msgService;

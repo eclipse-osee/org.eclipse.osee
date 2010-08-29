@@ -18,17 +18,10 @@ public class SimpleFormattedEntry extends FormmatedEntry {
    public String name;
    public String value;
 
-   /**
-    * 
-    */
    public SimpleFormattedEntry() {
       super();
    }
 
-   /**
-    * @param name
-    * @param value
-    */
    public SimpleFormattedEntry(String name, String value) {
       this.name = name;
       this.value = value;

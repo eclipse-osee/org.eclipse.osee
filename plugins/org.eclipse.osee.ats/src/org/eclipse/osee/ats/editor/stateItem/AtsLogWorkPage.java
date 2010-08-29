@@ -23,20 +23,12 @@ public class AtsLogWorkPage extends AtsWorkPage {
 
    public static class EmptyWorkFlowDefinition extends WorkFlowDefinition {
 
-      /**
-       * @param name
-       * @param id
-       * @param parentId
-       */
       public EmptyWorkFlowDefinition(String name, String id) {
          super(name, id, null);
       }
 
    }
 
-   /**
-    * @param title
-    */
    public AtsLogWorkPage(String title) {
       super(new EmptyWorkFlowDefinition(title, PAGE_ID), new WorkPageDefinition(title, PAGE_ID, null), null, null);
    }

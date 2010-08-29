@@ -38,9 +38,6 @@ public class CompletedWorkPageShape extends WorkPageShape {
       return super.equals(obj);
    }
 
-   /**
-    * @param workPageDefinition
-    */
    public CompletedWorkPageShape(WorkPageDefinition workPageDefinition) {
       super(workPageDefinition);
    }

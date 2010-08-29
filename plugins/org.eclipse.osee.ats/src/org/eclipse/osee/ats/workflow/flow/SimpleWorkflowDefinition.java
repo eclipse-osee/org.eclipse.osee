@@ -54,11 +54,6 @@ public class SimpleWorkflowDefinition extends WorkFlowDefinition {
       addWorkItem(AtsStatePercentCompleteWeightSimpleWorkflowRule.ID);
    }
 
-   /**
-    * @param name
-    * @param id
-    * @param parentId
-    */
    public SimpleWorkflowDefinition(String name, String workflowId) {
       super(name, workflowId, null);
       addDefaultTransitions(this, workflowId);

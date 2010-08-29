@@ -22,9 +22,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
  */
 public class CancelledWorkPageShape extends WorkPageShape {
 
-   /**
-    * @param workPageDefinition
-    */
    public CancelledWorkPageShape(WorkPageDefinition workPageDefinition) {
       super(workPageDefinition);
    }

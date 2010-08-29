@@ -48,12 +48,6 @@ public class TimeSummaryData {
    private final String milliseconds;
    private final String startDate;
 
-   /**
-    * @param elapsed
-    * @param endDate
-    * @param milliseconds
-    * @param startDate
-    */
    TimeSummaryData(String elapsed, String endDate, String milliseconds, String startDate) {
       this.elapsed = elapsed;
       this.endDate = endDate;

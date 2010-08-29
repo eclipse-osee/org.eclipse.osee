@@ -41,7 +41,6 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
     * Constructor for search criteria that finds an attribute of the given type with its current value equal to the
     * given value.
     * 
-    * @param attributeType
     * @param value to search; supports % wildcard
     * @throws OseeCoreException
     */
@@ -53,8 +52,6 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
     * Constructor for search criteria that finds an attribute of the given type and any value (i.e. checks for
     * existence)
     * 
-    * @param attributeTypeName
-    * @param value
     * @throws OseeCoreException
     */
    public AttributeCriteria(IAttributeType attributeType) throws OseeCoreException {
@@ -67,8 +64,6 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
     * if the single value constructor was called. This search does not support the wildcard for multiple values. Throws
     * OseeArgumentException values is empty or null
     * 
-    * @param attributeTypeName
-    * @param values
     * @throws OseeCoreException
     */
    public AttributeCriteria(IAttributeType attributeType, Collection<String> values) throws OseeCoreException {
@@ -85,8 +80,6 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
     * conducted exactly as if the single value constructor was called. This search does not support the wildcard for
     * multiple values.
     * 
-    * @param attributeTypeName
-    * @param values
     * @throws OseeCoreException
     */
    public AttributeCriteria(String attributeTypeName, Collection<String> values, Operator operator) throws OseeCoreException {
@@ -101,7 +94,6 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
     * Constructor for search criteria that finds an attribute of the given type with its current value equal to the
     * given value.
     * 
-    * @param attributeTypeName
     * @param value to search; supports % wildcard
     * @param historical if true will search on any branch and any attribute revision
     * @throws OseeCoreException

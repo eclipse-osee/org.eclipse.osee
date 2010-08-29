@@ -191,9 +191,6 @@ public abstract class TestScript implements ITimeout {
    private final Executor promptInitWorker;
    private ITestRunListenerProvider listenerProvider;
 
-   /*
-    * @param testManager
-    */
    public TestScript(TestEnvironment environment, IUserSession callback, ScriptTypeEnum scriptType, boolean isBatchable) {
       constructed.incrementAndGet();
       this.scriptType = scriptType;
@@ -403,7 +400,6 @@ public abstract class TestScript implements ITimeout {
    /**
     * This method will display the message input to the console.
     * 
-    * @param message
     * @throws InterruptedException
     */
    public void prompt(String message) throws InterruptedException {
@@ -414,7 +410,6 @@ public abstract class TestScript implements ITimeout {
     * This method will display the message input to the console. It will also prompt the user with a dialog box to input
     * whether the condition passed or failed.
     * 
-    * @param message
     * @throws InterruptedException
     */
    public void promptPassFail(String message) throws InterruptedException {
@@ -425,7 +420,6 @@ public abstract class TestScript implements ITimeout {
     * This method will display the message input to the console. It also pauses the script running, and will prompt the
     * user with a dialog box to continue on with the running of the script.
     * 
-    * @param message
     * @throws InterruptedException
     */
    public void promptPause(String message) throws InterruptedException {
@@ -435,7 +429,6 @@ public abstract class TestScript implements ITimeout {
    /**
     * Takes result of test point and updates the total test point tally.
     * 
-    * @param passed
     * @return total number of test points completed as an int.
     */
    public int recordTestPoint(boolean passed) {
@@ -453,7 +446,6 @@ public abstract class TestScript implements ITimeout {
    /**
     * Add a single test case to selective run list.
     * 
-    * @param testCaseNumber
     * @throws IllegalArgumentException
     */
    public void selectTestCase(int testCaseNumber) {
@@ -467,8 +459,6 @@ public abstract class TestScript implements ITimeout {
    /**
     * Add multiple test cases to the selective run list.
     * 
-    * @param testCaseNumberStart
-    * @param testCaseNumberEnd
     */
    public void selectTestCases(int testCaseNumberStart, int testCaseNumberEnd) {
       for (int i = testCaseNumberStart; i <= testCaseNumberEnd; i++) {
@@ -479,7 +469,6 @@ public abstract class TestScript implements ITimeout {
    /**
     * Sets the script initializer.
     * 
-    * @param scriptInitializer
     */
    public void setScriptInitializer(IScriptInitializer scriptInitializer) {
 
@@ -495,7 +484,6 @@ public abstract class TestScript implements ITimeout {
     * Causes current thread to wait until another thread invokes the {@link java.lang.Object#notify()}method or the
     * {@link java.lang.Object#notifyAll()}method for this object.
     * 
-    * @param milliseconds
     * @throws InterruptedException
     */
    public synchronized void testWait(int milliseconds) throws InterruptedException {
@@ -552,7 +540,6 @@ public abstract class TestScript implements ITimeout {
    /**
     * Add test case to the test scripts list of test cases.
     * 
-    * @param testCase
     * @return the number of test cases in the arrayList testCases as an int.
     */
    protected int addTestCase(TestCase testCase) {
@@ -659,9 +646,6 @@ public abstract class TestScript implements ITimeout {
    }
 
    @Deprecated
-   /**
-    * 
-    */
    public void processScriptcompleteListeners() {
       for (IScriptCompleteListener listener : scriptCompleteListeners) {
          try {
@@ -673,9 +657,6 @@ public abstract class TestScript implements ITimeout {
       }
    }
 
-   /**
-    * @param listenerProvider
-    */
    public void setListenerProvider(ITestRunListenerProvider listenerProvider) {
       this.listenerProvider = listenerProvider;
    }

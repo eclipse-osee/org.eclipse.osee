@@ -37,9 +37,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
  * @author Andrew M. Finkbeiner
  */
 public class PostgreSqlManager extends SqlManagerImpl {
-   /**
-    * @param sqlDataType
-    */
    public PostgreSqlManager(SqlDataType sqlDataType) {
       super(sqlDataType);
    }

@@ -61,11 +61,6 @@ public class TaskWorkflowDefinition extends WorkFlowDefinition {
       return workItems;
    }
 
-   /**
-    * @param name
-    * @param id
-    * @param parentId
-    */
    public TaskWorkflowDefinition(String name, String id) {
       super(name, id, null);
       addPageTransition(TaskStates.InWork.name(), TaskStates.Completed.name(), TransitionType.ToPageAsDefault);

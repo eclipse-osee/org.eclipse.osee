@@ -35,7 +35,6 @@ public class Dialogs {
    /**
     * Allows user to save html from a file selection dialog
     * 
-    * @param htmlText
     * @param openInSystem true if desire to open resulting file in system browser after saving
     * @return Result
     */

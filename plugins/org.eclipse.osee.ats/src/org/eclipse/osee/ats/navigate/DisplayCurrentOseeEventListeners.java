@@ -24,9 +24,6 @@ import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage;
  */
 public class DisplayCurrentOseeEventListeners extends XNavigateItemAction {
 
-   /**
-    * @param parent
-    */
    public DisplayCurrentOseeEventListeners(XNavigateItem parent) {
       super(parent, "Display Current OSEE Event Listeners", PluginUiImage.ADMIN);
    }

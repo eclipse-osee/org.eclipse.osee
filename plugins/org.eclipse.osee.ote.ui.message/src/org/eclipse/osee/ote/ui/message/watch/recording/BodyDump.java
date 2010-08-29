@@ -18,16 +18,10 @@ import org.eclipse.osee.ote.ui.message.tree.MessageNode;
  */
 public class BodyDump extends DetailsWrapper {
 
-   /**
-    * @param details
-    */
    public BodyDump(MessageRecordDetails details) {
       super(details);
    }
 
-   /**
-    * @param messageNode
-    */
    public BodyDump(MessageNode messageNode) {
       super(messageNode);
    }

@@ -34,7 +34,6 @@ public interface IAttributeTaggerProvider {
     * 
     * @param attributeData attribute to search in
     * @param value to search in attribute content
-    * @param options
     * @return match location
     */
    public List<MatchLocation> find(AttributeData attributeData, String toSearch, SearchOptions options) throws OseeCoreException;

@@ -27,10 +27,6 @@ public class QueryCondition {
    private final String queryExpression;
    private Collection<String> queryArguments;
 
-   /**
-    * @param queryExpression
-    * @param queryArguments
-    */
    public QueryCondition(String queryExpression, Collection<String> queryArguments) {
       super();
       this.queryExpression = queryExpression;

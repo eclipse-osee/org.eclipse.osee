@@ -34,7 +34,6 @@ public interface IAuthenticationManager {
    public void removeAuthenticationProvider(IAuthenticationProvider authenticationProvider);
 
    /**
-    * @param credential
     * @return <b>true</b> if authentication success
     * @throws OseeAuthenticationException
     */
@@ -43,7 +42,6 @@ public interface IAuthenticationManager {
    /**
     * Resolves user credentials into an OSEE User Info
     * 
-    * @param credential
     * @return OSEE user info
     * @throws OseeAuthenticationException
     */

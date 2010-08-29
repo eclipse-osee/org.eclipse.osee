@@ -21,10 +21,6 @@ public abstract class Kind {
    private final String kindName;
    private final long kindId;
 
-   /**
-    * @param kindName
-    * @param kindId
-    */
    protected Kind(String kindName, long kindId) {
       super();
       this.kindName = kindName;

@@ -120,7 +120,6 @@ public class ModelManager implements IModelManager, DestroyableService {
 
    /**
     * @param <CLASSTYPE>
-    * @param key
     * @return IModel
     * @throws ClassNotFoundException
     * @throws IllegalAccessException
@@ -160,8 +159,6 @@ public class ModelManager implements IModelManager, DestroyableService {
    }
 
    /**
-    * @param modelListeners2
-    * @param listener
     * @return
     */
    private boolean collectionContainsListener(List<IModelListener> collection, IModelListener listener) {

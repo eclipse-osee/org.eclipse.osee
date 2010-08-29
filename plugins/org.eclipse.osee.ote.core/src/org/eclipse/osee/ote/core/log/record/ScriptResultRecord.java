@@ -24,9 +24,6 @@ import org.w3c.dom.Element;
  */
 public class ScriptResultRecord extends TestRecord {
 
-   /**
-    * 
-    */
    private static final long serialVersionUID = -6132341487630154239L;
    private final List<Xmlizable> childElements;
 

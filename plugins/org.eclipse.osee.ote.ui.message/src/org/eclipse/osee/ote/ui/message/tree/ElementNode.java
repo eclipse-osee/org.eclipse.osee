@@ -47,9 +47,6 @@ public class ElementNode extends AbstractTreeNode implements IElementPath {
    /**
     * Convience Constructor
     * 
-    * @param msgName
-    * @param elementName
-    * @param parent
     */
    public ElementNode(final ElementPath elementName) {
       super(elementName.get(elementName.size() - 1).toString(), normalImg);

@@ -24,11 +24,6 @@ public class BaseBlamSection extends SectionPart {
    private final FormEditor editor;
    private final AbstractBlam abstractBlam;
 
-   /**
-    * @param parent
-    * @param toolkit
-    * @param style
-    */
    public BaseBlamSection(FormEditor editor, AbstractBlam abstractBlam, Composite parent, FormToolkit toolkit, int style) {
       super(parent, toolkit, style);
       this.editor = editor;

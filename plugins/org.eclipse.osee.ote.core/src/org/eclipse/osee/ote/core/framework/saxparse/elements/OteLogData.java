@@ -18,11 +18,6 @@ public class OteLogData {
    private final String level;
    private final String logger;
 
-   /**
-    * @param string2
-    * @param string
-    * @param name
-    */
    OteLogData(String level, String logger) {
       this.level = level;
       this.logger = logger;

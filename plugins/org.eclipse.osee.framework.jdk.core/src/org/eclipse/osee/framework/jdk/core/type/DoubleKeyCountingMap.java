@@ -156,7 +156,6 @@ public class DoubleKeyCountingMap<KeyOne, KeyTwo> {
    /**
     * Test for DoubleKeyCountingMap
     * 
-    * @param args
     */
    public static void main(String[] args) {
       DoubleKeyCountingMap<String, String> map = new DoubleKeyCountingMap<String, String>(23);

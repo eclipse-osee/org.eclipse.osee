@@ -41,9 +41,6 @@ import org.eclipse.swt.SWT;
  */
 public class SkynetXViewerFactory extends XViewerFactory {
 
-   /**
-    * @param namespace
-    */
    public SkynetXViewerFactory(String namespace) {
       super(namespace);
    }
@@ -104,7 +101,6 @@ public class SkynetXViewerFactory extends XViewerFactory {
    }
 
    /**
-    * @param artifacts
     * @return columns for attributes valid for at least on of the given artifacts
     * @throws OseeCoreException
     */

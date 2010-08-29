@@ -125,7 +125,6 @@ public class XResultPage {
    }
 
    /**
-    * @param type
     * @param name that will show hyperlinked
     * @param hrid value that will be returned upon selection of hyperlink
     * @return cmd value to put in HTML for processing by result page

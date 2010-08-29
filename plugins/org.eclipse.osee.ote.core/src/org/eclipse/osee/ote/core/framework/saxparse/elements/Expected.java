@@ -18,9 +18,6 @@ import org.xml.sax.Attributes;
  */
 public class Expected extends ElementHandlers {
 
-   /**
-    * @param name
-    */
    public Expected() {
       super("Expected");
    }

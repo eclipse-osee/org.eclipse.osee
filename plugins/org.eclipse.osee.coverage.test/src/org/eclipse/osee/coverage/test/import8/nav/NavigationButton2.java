@@ -24,10 +24,6 @@ public class NavigationButton2 extends Button {
 
    public Image image;
 
-   /**
-    * @param parent
-    * @param style
-    */
    public NavigationButton2(Composite parent, int style, Image image) {
       super(parent, style);
    }

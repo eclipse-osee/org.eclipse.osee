@@ -18,9 +18,6 @@ import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor
  */
 public class WarningRecord extends TestRecord {
 
-   /**
-	 * 
-	 */
    private static final long serialVersionUID = -3124953320400273382L;
 
    /**

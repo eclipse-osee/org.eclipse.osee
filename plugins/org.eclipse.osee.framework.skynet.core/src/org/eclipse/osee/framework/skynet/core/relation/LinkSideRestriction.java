@@ -18,9 +18,6 @@ public class LinkSideRestriction {
    private final int sideALinkMax;
    private final int sideBLinkMax;
 
-   /**
-    * 
-    */
    public LinkSideRestriction(int sideALinkMax, int sideBLinkMax) {
       super();
 

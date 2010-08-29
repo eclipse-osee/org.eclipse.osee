@@ -28,12 +28,6 @@ public final class ConnectionEvent {
    private final OteServiceProperties props;
    private final IHostTestEnvironment hostTestEnvironment;
 
-   /**
-    * @param environment
-    * @param connector
-    * @param sessionKey
-    * @param properties
-    */
    public ConnectionEvent(IHostTestEnvironment hostTestEnvironment, IServiceConnector connector, ITestEnvironment environment, UserTestSessionKey sessionKey) {
       if (connector == null) {
          throw new NullPointerException("connector cannot be null");

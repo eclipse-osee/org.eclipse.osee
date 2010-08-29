@@ -18,9 +18,6 @@ import java.util.ArrayList;
  */
 public class DirectoryPerson implements Comparable<Object>, Serializable {
 
-   /**
-    * 
-    */
    private static final long serialVersionUID = -2333305323300083640L;
    private ArrayList<Integer> policies = null;
    private int bemsid;

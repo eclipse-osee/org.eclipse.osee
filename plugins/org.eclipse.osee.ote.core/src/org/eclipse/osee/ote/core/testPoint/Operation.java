@@ -15,9 +15,6 @@ import org.eclipse.osee.framework.jdk.core.util.EnumBase;
 
 public class Operation extends EnumBase {
 
-   /**
-    * 
-    */
    private static final long serialVersionUID = -3132727420541603024L;
    public static final Operation OR = new Operation(0);
    public static final Operation AND = new Operation(1);

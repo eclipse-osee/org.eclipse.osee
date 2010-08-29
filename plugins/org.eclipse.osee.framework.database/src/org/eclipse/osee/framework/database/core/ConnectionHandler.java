@@ -64,8 +64,6 @@ public final class ConnectionHandler {
    /**
     * This method should only be used when not contained in a DB transaction
     * 
-    * @param query
-    * @param data
     * @return number of records updated
     * @throws OseeDataStoreException
     */
@@ -76,8 +74,6 @@ public final class ConnectionHandler {
    /**
     * This method should only be used when not contained in a DB transaction
     * 
-    * @param query
-    * @param dataList
     * @return number of records updated
     * @throws OseeDataStoreException
     */
@@ -88,9 +84,6 @@ public final class ConnectionHandler {
    /**
     * This method should only be used when contained in a DB transaction
     * 
-    * @param connection
-    * @param query
-    * @param data
     * @return number of records updated
     * @throws OseeDataStoreException
     */
@@ -163,7 +156,6 @@ public final class ConnectionHandler {
    /**
     * Cause constraint checking to be deferred until the end of the current transaction.
     * 
-    * @param connection
     * @throws OseeDataStoreException
     */
    public static void deferConstraintChecking(OseeConnection connection) throws OseeDataStoreException {

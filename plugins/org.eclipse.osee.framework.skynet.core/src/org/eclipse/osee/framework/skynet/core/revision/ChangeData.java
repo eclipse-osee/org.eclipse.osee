@@ -69,8 +69,6 @@ public class ChangeData {
    /**
     * Return artifacts of kind and modType.
     * 
-    * @param kindType
-    * @param modificationType
     * @return artifacts
     * @throws OseeCoreException
     */

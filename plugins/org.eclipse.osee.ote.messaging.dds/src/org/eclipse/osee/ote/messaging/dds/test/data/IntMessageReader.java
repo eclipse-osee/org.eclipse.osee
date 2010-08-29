@@ -33,13 +33,6 @@ public class IntMessageReader extends DataReader {
    DataSample dataSample;
    private final IntMessage intMessage;
 
-   /**
-    * @param topicDescription
-    * @param subscriber
-    * @param enabled
-    * @param listener
-    * @param parentFactory
-    */
    public IntMessageReader(TopicDescription topicDescription, Subscriber subscriber, Boolean enabled, DataReaderListener listener, EntityFactory parentFactory) {
       super(topicDescription, subscriber, enabled, listener, parentFactory);
 

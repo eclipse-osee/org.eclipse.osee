@@ -43,7 +43,6 @@ public class OteArtifactFetcher<T extends Artifact> {
    /**
     * Creates a new Artifact in the specified branch
     * 
-    * @param branch
     * @throws OseeCoreException
     */
    @SuppressWarnings("unchecked")

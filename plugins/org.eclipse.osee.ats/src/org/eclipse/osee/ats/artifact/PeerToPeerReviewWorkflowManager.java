@@ -33,10 +33,7 @@ public class PeerToPeerReviewWorkflowManager {
     * Quickly transition to a state with minimal metrics and data entered. Should only be used for automated transition
     * for things such as developmental testing and demos.
     * 
-    * @param toState
     * @param user User to transition to OR null if should use user of current state
-    * @param popup
-    * @param transaction
     * @return Result
     * @throws Exception
     */

@@ -44,7 +44,6 @@ public class HtmlDialog extends MessageDialog {
    /**
     * Add listener to browser widget.
     * 
-    * @param listener
     */
    public void addLocationListener(LocationListener listener) {
       this.listener = listener;

@@ -43,7 +43,6 @@ public class ReleaseVersionItem extends XNavigateItemAction {
    private final TeamDefinitionArtifact teamDefHoldingVersions;
 
    /**
-    * @param parent
     * @param teamDefHoldingVersions Team Definition Artifact that is related to versions or null for popup selection
     */
    public ReleaseVersionItem(XNavigateItem parent, TeamDefinitionArtifact teamDefHoldingVersions) {

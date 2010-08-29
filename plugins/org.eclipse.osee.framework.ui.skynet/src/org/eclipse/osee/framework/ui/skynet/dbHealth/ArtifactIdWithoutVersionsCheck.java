@@ -38,9 +38,6 @@ public class ArtifactIdWithoutVersionsCheck extends DatabaseHealthOperation {
    private static final String GET_INVALID_ACL_ART_IDS =
       "select item.art_id as artId from osee_artifact_acl item where NOT EXISTS (select oav.art_id from osee_artifact oav where oav.art_id = item.art_id)";
 
-   /**
-    * @param operationName
-    */
    public ArtifactIdWithoutVersionsCheck() {
       super("Artifact Id Without osee_artifact Table Entry");
    }

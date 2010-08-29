@@ -178,11 +178,6 @@ public class ConflictManagerInternal {
    }
 
    /**
-    * @param sourceBranch
-    * @param destinationBranch
-    * @param baselineTransaction
-    * @param conflictBuilders
-    * @param artIdSet
     * @throws OseeCoreException
     */
 
@@ -237,10 +232,6 @@ public class ConflictManagerInternal {
    }
 
    /**
-    * @param sourceBranch
-    * @param destinationBranch
-    * @param baselineTransaction
-    * @param conflicts
     * @throws OseeCoreException
     */
    private static void loadAttributeConflictsNew(Branch sourceBranch, Branch destinationBranch, TransactionRecord baselineTransaction, Collection<ConflictBuilder> conflictBuilders, Set<Integer> artIdSet, IProgressMonitor monitor, TransactionRecord transactionId) throws OseeCoreException {

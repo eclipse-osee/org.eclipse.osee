@@ -29,12 +29,6 @@ public class GetChildrenJob extends Job {
    private final JobbedNode parent;
    private final IContentProviderRunnable runnable;
 
-   /**
-    * @param name
-    * @param viewer
-    * @param parent
-    * @param runnable
-    */
    public GetChildrenJob(String name, Viewer viewer, JobbedNode parent, IContentProviderRunnable runnable) {
       super("Fetching children" + (name == null ? "" : " for " + name));
       if (viewer == null) {

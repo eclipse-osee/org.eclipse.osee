@@ -18,9 +18,6 @@ import org.xml.sax.Attributes;
  */
 public class OfpLoggingInfo extends ElementHandlers {
 
-   /**
-    * @param name
-    */
    public OfpLoggingInfo() {
       super("OfpLoggingInfo");
    }

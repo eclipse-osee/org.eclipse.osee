@@ -23,9 +23,6 @@ public class IOInputThread extends Thread {
    private final Reader input;
    private final BufferedWriter output;
 
-   /**
-    * 
-    */
    public IOInputThread(Reader input, BufferedWriter output) {
       super();
       this.output = output;

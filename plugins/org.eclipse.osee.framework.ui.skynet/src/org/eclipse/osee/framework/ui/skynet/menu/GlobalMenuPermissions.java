@@ -35,7 +35,6 @@ public class GlobalMenuPermissions {
     * Return permission set. This is a one-shot deal at the time of instantiation. Permissions are not kept up to date
     * with changes to getSelectedArtifacts in given globalMenuHelper. Must be called again to get refreshed permissions.
     * 
-    * @param globalMenuHelper
     */
    public GlobalMenuPermissions(IGlobalMenuHelper globalMenuHelper) throws OseeCoreException {
       this(globalMenuHelper.getArtifacts());
@@ -44,7 +43,6 @@ public class GlobalMenuPermissions {
    /**
     * Return permission set for given artifact.
     * 
-    * @param artifact
     */
    public GlobalMenuPermissions(Artifact artifact) throws OseeCoreException {
       this(Arrays.asList(artifact));
@@ -53,7 +51,6 @@ public class GlobalMenuPermissions {
    /**
     * Return permission set for given artifacts.
     * 
-    * @param artifacts
     */
    public GlobalMenuPermissions(Collection<Artifact> artifacts) throws OseeCoreException {
       hasArtifacts = artifacts.size() > 0;

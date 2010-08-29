@@ -193,9 +193,6 @@ public abstract class ScriptManager implements Runnable {
 
    public abstract void addTestsToQueue(List<ScriptTask> scripts);
 
-   /**
-    * @param task
-    */
    public void notifyScriptStart(final ScriptTask task) {
       task.setStatus(ScriptStatusEnum.RUNNING);
       Displays.ensureInDisplayThread(new Runnable() {

@@ -18,9 +18,6 @@ import org.xml.sax.Attributes;
  */
 public class Attention extends ElementHandlers {
 
-   /**
-    * @param name
-    */
    public Attention() {
       super("Attention");
    }

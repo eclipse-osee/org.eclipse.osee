@@ -53,10 +53,6 @@ public class SMARelationsHyperlinkComposite extends Composite {
    private StateMachineArtifact sma;
    private Label actionableItemsLabel;
 
-   /**
-    * @param parent
-    * @param style
-    */
    public SMARelationsHyperlinkComposite(Composite parent, XFormToolkit toolkit, int style) {
       super(parent, style);
       this.toolkit = toolkit;

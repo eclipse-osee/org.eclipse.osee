@@ -16,9 +16,6 @@ import org.eclipse.swt.widgets.Control;
  * @author Ryan D. Brooks
  */
 public abstract class UniversalCellEditorValue {
-   /**
-    * 
-    */
    protected UniversalCellEditorValue() {
       super();
    }

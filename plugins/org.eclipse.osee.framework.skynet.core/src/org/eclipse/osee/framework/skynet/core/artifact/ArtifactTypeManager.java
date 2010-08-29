@@ -260,8 +260,6 @@ public class ArtifactTypeManager {
     * Run code that will be run during purge with convert and report on what relations, attributes will be deleted as
     * part of the conversion.
     * 
-    * @param purgeArtifactTypes
-    * @param newArtifactType
     * @throws OseeCoreException
     */
    public static void purgeArtifactTypesWithConversionReportOnly(StringBuffer results, Collection<ArtifactType> purgeArtifactTypes, ArtifactType newArtifactType) throws OseeCoreException {

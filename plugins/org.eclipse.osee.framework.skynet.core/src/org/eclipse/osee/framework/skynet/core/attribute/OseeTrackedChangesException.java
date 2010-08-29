@@ -14,9 +14,6 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 
 public class OseeTrackedChangesException extends OseeArgumentException {
 
-   /**
-    * 
-    */
    private static final long serialVersionUID = -4953741614901835086L;
 
    public OseeTrackedChangesException(String message) {

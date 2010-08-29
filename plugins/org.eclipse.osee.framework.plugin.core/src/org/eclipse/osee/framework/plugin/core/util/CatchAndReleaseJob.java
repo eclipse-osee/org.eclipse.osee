@@ -25,12 +25,6 @@ public class CatchAndReleaseJob extends Job {
    private final Class<?> clazz;
    private final String pluginId;
 
-   /**
-    * @param name
-    * @param runnable
-    * @param logger
-    * @param pluginId
-    */
    public CatchAndReleaseJob(String name, IExceptionableRunnable runnable, Class<?> clazz, String pluginId) {
       super(name);
       this.runnable = runnable;

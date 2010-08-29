@@ -64,7 +64,6 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyO
    /**
     * Use this method to determine if any puts(keyOne, anything) have occurred
     * 
-    * @param keyOne
     * @return whether the map contains the key keyOne
     */
    @Override
@@ -74,8 +73,6 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyO
    }
 
    /**
-    * @param key1
-    * @param key2
     * @return whether the map contains the compound key <keyOne, keyTwo>
     */
    public boolean containsKey(KeyOne key1, KeyTwo key2) {
@@ -85,7 +82,6 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyO
    /**
     * determines if at least one of the compound keys are mapped to this value
     * 
-    * @param value
     * @return whether the map contains this value
     */
    @Override
@@ -177,7 +173,6 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyO
    }
 
    /**
-    * @param key1
     * @return the previous value associated with key, or null if there was no mapping for key.
     */
    public Collection<Value> removeValues(KeyOne key1) {

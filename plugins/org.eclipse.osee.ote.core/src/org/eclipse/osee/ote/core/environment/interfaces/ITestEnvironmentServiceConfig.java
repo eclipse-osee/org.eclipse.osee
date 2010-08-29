@@ -21,9 +21,6 @@ public interface ITestEnvironmentServiceConfig {
 
    public int getMaxUsersPerEnvironment();
 
-   /**
-	 * 
-	 */
    public String getName();
 
    public String getServerTitle();

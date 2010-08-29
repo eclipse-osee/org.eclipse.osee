@@ -82,8 +82,6 @@ public final class ImageManager {
 
    /**
     * @param baseImageName must refer to an image that is already mapped to this key in the image registry
-    * @param overlay
-    * @param location
     * @return the overlay keyed image
     * @throws OseeArgumentException
     */

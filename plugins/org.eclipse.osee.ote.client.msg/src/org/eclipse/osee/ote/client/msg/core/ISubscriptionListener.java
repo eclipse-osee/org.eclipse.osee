@@ -21,7 +21,6 @@ public interface ISubscriptionListener {
     * are changed and the message does not exist. Can be called when a message exist in the libraries but is not
     * supported by the test environment. all references and event listeners must be removed
     * 
-    * @param subscription
     */
    void subscriptionInvalidated(IMessageSubscription subscription);
 
@@ -30,7 +29,6 @@ public interface ISubscriptionListener {
     * transmitted but operations on the message are allowed. Subclasses should register any event listeners on
     * {@link Message} upon this method being invoked.
     * 
-    * @param subscription
     */
    void subscriptionResolved(IMessageSubscription subscription);
 
@@ -41,14 +39,12 @@ public interface ISubscriptionListener {
     * de-register any event listeners since all listeners will be cleared. The message is still in a valid state during
     * this method invocation but not after.
     * 
-    * @param subscription
     */
    void subscriptionUnresolved(IMessageSubscription subscription);
 
    /**
     * called upon successful registration with the test server. Message traffic is now possible
     * 
-    * @param subscription
     */
    void subscriptionActivated(IMessageSubscription subscription);
 
@@ -56,7 +52,6 @@ public interface ISubscriptionListener {
     * called when the {@link IMessageSubscription#cancel()} method is called. Any references and event listeners must be
     * removed.
     * 
-    * @param subscription
     */
    void subscriptionCanceled(IMessageSubscription subscription);
 
@@ -64,7 +59,6 @@ public interface ISubscriptionListener {
     * called when the subscription is resolved but a connected environment does not support this type of message. The
     * message can still be referenced but no updates will be delivered.
     * 
-    * @param subscription
     */
    void subscriptionNotSupported(IMessageSubscription subscription);
 }

@@ -18,16 +18,9 @@ public class StacktraceData {
    private String line;
    private String source;
 
-   /**
-    * @param name
-    */
    StacktraceData() {
    }
 
-   /**
-    * @param value
-    * @param value2
-    */
    public StacktraceData(String line, String source) {
       this.line = line;
       this.source = source;

@@ -197,9 +197,6 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
     * Gets content and attempts to extract outline number and title, if it fails with regular regex, it tries
     * specializedOutlineNumberTitleExtract()
     * 
-    * @param content
-    * @param outlineNumber
-    * @param outlineName
     * @return
     * @throws OseeCoreException
     */
@@ -232,8 +229,6 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
    /**
     * Grabs outline text or content. Stores results in outLineStorage.
     * 
-    * @param paragraph
-    * @param outLineStorage
     */
    private void grabNameAndTemplateContent(String paragraph, StringBuilder outLineStorage) {
       if (outLineStorage.length() == 0) {
@@ -251,9 +246,6 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
     * Specializes in extraction of "1. scope" type of outline number and names. Outline name can also be spread out over
     * multiple <w:t>s
     * 
-    * @param paragraph
-    * @param outlineNumberStorage
-    * @param outlineTitleStorage
     * @throws OseeCoreException
     */
    private void specializedOutlineNumberTitleExtract(String paragraph, StringBuilder outlineNumberStorage, StringBuilder outlineTitleStorage) throws OseeCoreException {

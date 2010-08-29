@@ -14,9 +14,6 @@ import net.jini.entry.AbstractEntry;
 
 public abstract class FormmatedEntry extends AbstractEntry {
 
-   /**
-    * 
-    */
    private static final long serialVersionUID = -8845417112982132038L;
 
    public abstract String getFormmatedString();

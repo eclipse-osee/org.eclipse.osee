@@ -82,8 +82,6 @@ public class AtsAddDecisionReviewRule extends WorkRuleDefinition {
    /**
     * Creates decision review if one of same name doesn't already exist
     * 
-    * @param atsAddDecisionReviewRule
-    * @param sma
     * @return DecisionReviewArtifact
     * @throws OseeCoreException
     */

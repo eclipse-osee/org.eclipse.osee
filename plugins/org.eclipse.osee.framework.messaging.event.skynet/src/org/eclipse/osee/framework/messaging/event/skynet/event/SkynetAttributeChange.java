@@ -23,10 +23,6 @@ public class SkynetAttributeChange implements SkynetChange {
    private final int gammaId;
    private final Object[] value;
 
-   /**
-    * @param typeId
-    * @param value
-    */
    public SkynetAttributeChange(int typeId, Object[] value, ModificationType modificationType, int attributeId, int gammaId) {
       super();
       this.typeId = typeId;

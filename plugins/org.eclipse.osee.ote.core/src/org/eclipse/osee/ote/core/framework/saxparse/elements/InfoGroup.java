@@ -18,9 +18,6 @@ import org.xml.sax.Attributes;
  */
 public class InfoGroup extends ElementHandlers {
 
-   /**
-    * @param name
-    */
    public InfoGroup() {
       super("InfoGroup");
    }

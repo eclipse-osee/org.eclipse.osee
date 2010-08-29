@@ -26,11 +26,6 @@ public class ArtifactTypeFilteredTreeEntryDialog extends ArtifactTypeFilteredTre
    private final String entryName;
    private XText xText = null;
 
-   /**
-    * @param title
-    * @param message
-    * @param artifactTypes
-    */
    public ArtifactTypeFilteredTreeEntryDialog(String title, String message, String entryName) {
       super(title, message);
       this.entryName = entryName;

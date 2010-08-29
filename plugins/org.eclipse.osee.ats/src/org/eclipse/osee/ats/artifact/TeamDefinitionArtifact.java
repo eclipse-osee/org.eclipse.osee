@@ -378,7 +378,6 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
     * Returns leads configured first by ActionableItems and only if this is an empty set, THEN defaults to those
     * configured by TeamDefinitions. Use getLeads() to only get the leads configured for this TeamDefinitionArtifact.
     * 
-    * @param actionableItems
     * @return users configured as leads by ActionableItems, then by TeamDefinition
     */
    public Collection<User> getLeads(Collection<ActionableItemArtifact> actionableItems) throws OseeCoreException {

@@ -54,8 +54,6 @@ public class StateManager {
    /**
     * Get state and create if not there.
     * 
-    * @param name
-    * @param create
     * @return state matching name
     */
    private SMAState getSMAState(String name, boolean create) throws OseeCoreException {
@@ -70,7 +68,6 @@ public class StateManager {
     * Discouraged Access. This method should not normally be called except in cases were state data is being manually
     * created.
     * 
-    * @param name
     * @throws OseeCoreException
     */
    public void internalCreateIfNotExists(String name) throws OseeCoreException {
@@ -110,7 +107,6 @@ public class StateManager {
    /**
     * Return Hours Spent for State
     * 
-    * @param stateName
     * @return hours spent or 0 if none
     */
    public double getHoursSpent(String stateName) throws OseeCoreException {
@@ -128,7 +124,6 @@ public class StateManager {
    /**
     * Return Percent Complete for State
     * 
-    * @param stateName
     * @return percent complete or 0 if none
     */
    public int getPercentComplete(String stateName) throws OseeCoreException {
@@ -195,7 +190,6 @@ public class StateManager {
    /**
     * Sets the assignees as attributes and relations AND writes to SMA. Does not persist.
     * 
-    * @param assignees
     * @throws Exception
     */
    public void setAssignees(Collection<User> assignees) throws OseeCoreException {
@@ -207,7 +201,6 @@ public class StateManager {
    /**
     * Sets the assignee AND writes to SMA. Does not persist.
     * 
-    * @param assignee
     * @throws Exception
     */
    public void setAssignee(String stateName, User assignee) throws OseeCoreException {
@@ -222,7 +215,6 @@ public class StateManager {
    /**
     * Sets the assignee AND writes to SMA. Does not persist.
     * 
-    * @param assignee
     * @throws Exception
     */
    public void setAssignee(User assignee) throws OseeCoreException {
@@ -234,8 +226,6 @@ public class StateManager {
    /**
     * Removes the assignee from stateName state AND writes to SMA. Does not persist.
     * 
-    * @param stateName
-    * @param assignee
     * @throws Exception
     */
    public void removeAssignee(String stateName, User assignee) throws OseeCoreException {
@@ -250,7 +240,6 @@ public class StateManager {
    /**
     * Removes the assignee AND writes to SMA. Does not persist.
     * 
-    * @param assignee
     * @throws Exception
     */
    public void removeAssignee(User assignee) throws OseeCoreException {
@@ -262,7 +251,6 @@ public class StateManager {
    /**
     * Adds the assignee AND writes to SMA. Does not persist. Will remove UnAssigned user if another assignee exists.
     * 
-    * @param assignee
     * @throws Exception
     */
    public void addAssignee(User assignee) throws OseeCoreException {
@@ -277,7 +265,6 @@ public class StateManager {
    /**
     * Removes ALL assignees AND writes to SMA. Does not persist.
     * 
-    * @param assignee
     * @throws Exception
     */
    public void clearAssignees() throws OseeCoreException {
@@ -309,7 +296,6 @@ public class StateManager {
    /**
     * Initializes state machine and sets the current state to stateName
     * 
-    * @param stateName
     * @throws Exception
     */
    public void initializeStateMachine(String stateName) throws OseeCoreException {
@@ -319,8 +305,6 @@ public class StateManager {
    /**
     * Initializes state machine and sets the current state to stateName
     * 
-    * @param stateName
-    * @param assignees
     * @throws Exception
     */
    public void initializeStateMachine(String stateName, Collection<User> assignees) throws OseeCoreException {

@@ -16,9 +16,6 @@ import net.jini.entry.AbstractEntry;
  * @author Ken J. Aguilar
  */
 public class TestEntry extends AbstractEntry {
-   /**
-    * 
-    */
    private static final long serialVersionUID = -2239353039479522642L;
    public final String data;
 
@@ -26,9 +23,6 @@ public class TestEntry extends AbstractEntry {
       data = "<none>";
    }
 
-   /**
-    * @param data
-    */
    public TestEntry(String data) {
       super();
       this.data = data;

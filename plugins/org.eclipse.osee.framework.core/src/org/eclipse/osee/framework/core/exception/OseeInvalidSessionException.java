@@ -17,24 +17,14 @@ public class OseeInvalidSessionException extends OseeCoreException {
 
    private static final long serialVersionUID = 5540912279421352009L;
 
-   /**
-    * @param message
-    */
    public OseeInvalidSessionException(String message) {
       super(message);
    }
 
-   /**
-    * @param message
-    * @param cause
-    */
    public OseeInvalidSessionException(String message, Throwable cause) {
       super(message, cause);
    }
 
-   /**
-    * @param cause
-    */
    public OseeInvalidSessionException(Throwable cause) {
       super(cause);
    }

@@ -103,7 +103,6 @@ public class OseeConsole {
    /**
     * Writes string to console without popping console forward
     * 
-    * @param str
     */
    public void write(String str) {
       write(str, false);
@@ -112,7 +111,6 @@ public class OseeConsole {
    /**
     * Writes string to console without popping console forward
     * 
-    * @param str
     */
    public void writeError(String str) {
       write(str, CONSOLE_ERROR, true);
@@ -121,7 +119,6 @@ public class OseeConsole {
    /**
     * Writes string to console
     * 
-    * @param str
     * @param popup bring console window forward
     */
    public void write(String str, boolean popup) {
@@ -131,7 +128,6 @@ public class OseeConsole {
    /**
     * Write string to console
     * 
-    * @param str
     * @param type CONSOLE_ERROR, CONSOLE_OUT, CONSOLE_PROMPT
     */
    public void write(String str, int type) {
@@ -141,7 +137,6 @@ public class OseeConsole {
    /**
     * Write string to console
     * 
-    * @param str
     * @param type CONSOLE_ERROR, CONSOLE_OUT, CONSOLE_PROMPT
     * @param popup bring console window forward
     */

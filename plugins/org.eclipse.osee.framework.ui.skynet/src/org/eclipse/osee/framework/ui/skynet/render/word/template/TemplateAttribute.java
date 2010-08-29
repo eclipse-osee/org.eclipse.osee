@@ -45,38 +45,23 @@ public class TemplateAttribute implements ITemplateTask {
       this.paragraphWrap = copyMe.paragraphWrap;
    }
 
-   /**
-    * @param group
-    */
    public void addName(String name) {
       trimTags.reset(name);
       this.name = trimTags.replaceAll("");
    }
 
-   /**
-    * @param group
-    */
    public void addLabel(String label) {
       this.label = label;
    }
 
-   /**
-    * @param group
-    */
    public void addEditable(String editable) {
       this.editable = editable;
    }
 
-   /**
-    * @param group
-    */
    public void addFormat(String format) {
       this.format = format;
    }
 
-   /**
-    * @param group
-    */
    public void addNOutline(String outline) {
       this.outline = outline;
    }
@@ -120,9 +105,6 @@ public class TemplateAttribute implements ITemplateTask {
       return getName().equals("*");
    }
 
-   /**
-    * @param group
-    */
    public void addParagraphWrap(String group) {
       trimTags.reset(group);
       String value = trimTags.replaceAll("");

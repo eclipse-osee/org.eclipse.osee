@@ -44,8 +44,6 @@ public final class RevisionChangeLoader {
    }
 
    /**
-    * @param artifact
-    * @param monitor
     * @return Returns artifact, relation and attribute changes from a specific artifact
     * @throws OseeCoreException
     */
@@ -98,8 +96,6 @@ public final class RevisionChangeLoader {
     * Not Part of Change Report Acquires artifact, relation and attribute changes from a source branch since its
     * creation.
     * 
-    * @param sourceBranch
-    * @param baselineTransactionId
     * @return
     * @throws OseeCoreException
     */

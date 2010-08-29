@@ -29,11 +29,6 @@ class TestHostConnection {
    private final UserTestSessionKey sessionKey;
    private final IHostTestEnvironment host;
 
-   /**
-    * @param connectedTestHost
-    * @param connectEnvironment
-    * @param sessionKey
-    */
    TestHostConnection(IServiceConnector connector, IHostTestEnvironment host, ITestEnvironment connectEnvironment, UserTestSessionKey sessionKey) {
       // intentionally package-private
       if (connector == null) {

@@ -18,9 +18,6 @@ import org.xml.sax.Attributes;
  */
 public class SoftKeyInfoGroup extends ElementHandlers {
 
-   /**
-    * @param name
-    */
    public SoftKeyInfoGroup() {
       super("SoftKeyInfoGroup");
    }

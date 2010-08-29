@@ -18,9 +18,6 @@ import org.eclipse.osee.ote.core.log.TestLevel;
  */
 public class RequirementRecord extends TestRecord {
 
-   /**
-	 * 
-	 */
    private static final long serialVersionUID = -3533522844275324310L;
 
    /**

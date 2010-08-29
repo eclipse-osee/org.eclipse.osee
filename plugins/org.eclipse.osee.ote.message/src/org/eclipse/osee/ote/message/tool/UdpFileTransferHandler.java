@@ -50,11 +50,6 @@ public class UdpFileTransferHandler {
       private final TransferConfig config;
       private final FileLock lock;
 
-      /**
-       * @param key
-       * @param config
-       * @param lock
-       */
       public Handle(SelectionKey key, TransferConfig config, FileLock lock) {
          if (key == null) {
             throw new IllegalArgumentException("The selection key cannot be null");
@@ -127,7 +122,6 @@ public class UdpFileTransferHandler {
    }
 
    /**
-    * @param config
     * @return true if successful or false if a lock on the file was not obtained
     * @throws IOException
     * @throws FileNotFoundException

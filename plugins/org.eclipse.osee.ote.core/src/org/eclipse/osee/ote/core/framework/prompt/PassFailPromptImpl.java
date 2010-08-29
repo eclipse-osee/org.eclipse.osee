@@ -20,10 +20,6 @@ import org.eclipse.osee.ote.core.TestScript;
  */
 public class PassFailPromptImpl extends AbstractInteractivePrompt<PassFailPromptResult> implements IPassFailPromptResponse {
 
-   /**
-    * @param id
-    * @param message
-    */
    public PassFailPromptImpl(IServiceConnector connector, TestScript script, String id, String message) throws UnknownHostException {
       super(connector, script, id, message);
    }

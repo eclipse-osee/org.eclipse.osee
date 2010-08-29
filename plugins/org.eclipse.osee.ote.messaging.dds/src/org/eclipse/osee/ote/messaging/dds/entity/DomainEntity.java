@@ -22,10 +22,6 @@ import org.eclipse.osee.ote.messaging.dds.listener.Listener;
  */
 public abstract class DomainEntity extends Entity {
 
-   /**
-    * @param enabled
-    * @param parentFactory
-    */
    public DomainEntity(boolean enabled, Listener listener, EntityFactory parentFactory) {
       super(enabled, listener, parentFactory);
    }

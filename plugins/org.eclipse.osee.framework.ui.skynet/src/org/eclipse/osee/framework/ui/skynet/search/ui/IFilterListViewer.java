@@ -17,21 +17,18 @@ public interface IFilterListViewer {
    /**
     * Update the view to reflect the fact that a FilterModel was added to the FilterModel list
     * 
-    * @param filter
     */
    public void addFilter(FilterModel filter);
 
    /**
     * Update the view to reflect the fact that a FilterModel was removed from the FilterModel list
     * 
-    * @param filter
     */
    public void removeFilter(FilterModel filter);
 
    /**
     * Update the view to reflect the fact that one of the FilterModels was modified
     * 
-    * @param filter
     */
    public void updateFilter(FilterModel filter);
 }

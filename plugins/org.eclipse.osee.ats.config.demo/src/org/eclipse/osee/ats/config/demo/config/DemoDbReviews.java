@@ -58,8 +58,6 @@ public class DemoDbReviews {
     * 3) Decision in Complete state w Joe Smith assignee and completed<br>
     * <br>
     * 
-    * @param transaction
-    * @param codeWorkflows
     * @throws Exception
     */
    public static void createDecisionReviews(SkynetTransaction transaction) throws Exception {
@@ -115,8 +113,6 @@ public class DemoDbReviews {
     * 3) PeerToPeer in Prepare state w Joe Smith assignee and completed<br>
     * <br>
     * 
-    * @param transaction
-    * @param codeWorkflows
     * @throws Exception
     */
    public static void createPeerToPeerReviews(SkynetTransaction transaction) throws Exception {

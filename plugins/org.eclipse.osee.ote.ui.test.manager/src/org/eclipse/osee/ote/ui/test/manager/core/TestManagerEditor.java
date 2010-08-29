@@ -588,9 +588,6 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
 
    public abstract void createHostWidget(Composite parent);
 
-   /**
-    * @param array
-    */
    public void addFiles(String[] files) {
       pageManager.getScriptPage().addFiles(files);
    }

@@ -101,9 +101,6 @@ public abstract class AbstractOperation implements IOperation {
     * Executes a nested operation and calls monitor begin and done. The parentMonitor will be wrapped into a
     * SubProgressMonitor and set to the appropriate number of ticks to consume from the main monitor.
     * 
-    * @param operation
-    * @param monitor
-    * @param workPercentage
     * @throws OseeCoreException
     * @throws Exception
     */

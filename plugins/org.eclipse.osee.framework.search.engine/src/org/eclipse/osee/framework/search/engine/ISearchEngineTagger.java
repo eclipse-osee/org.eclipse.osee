@@ -95,7 +95,6 @@ public interface ISearchEngineTagger {
    /**
     * Stop tagging items by queue query id
     * 
-    * @param queryId
     * @return number of items stopped
     */
    public int stopTaggingByQueueQueryId(int... queryId);
@@ -110,7 +109,6 @@ public interface ISearchEngineTagger {
    /**
     * Delete tags specified by join query id
     * 
-    * @param parseInt
     */
    public int deleteTags(int joinQueryId) throws Exception;
 

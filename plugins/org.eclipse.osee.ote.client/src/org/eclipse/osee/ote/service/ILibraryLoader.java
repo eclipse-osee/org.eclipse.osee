@@ -16,7 +16,6 @@ public interface ILibraryLoader {
     * {@link IMessageDictionaryListener#onDictionaryLoaded(IMessageDictionary)} method for all registered
     * {@link IMessageDictionaryListener}s.
     * 
-    * @param dictionary
     */
    void loadMessageDictionary(IMessageDictionary dictionary);
 

@@ -81,9 +81,6 @@ public class LibJarListener<T extends JarCollectionNature> implements IJarChange
       debugEcho(url);
    }
 
-   /**
-    * @param url
-    */
    private void debugEcho(URL url) {
       if (VERBOSE_DEBUG) {
          try {
@@ -147,7 +144,6 @@ public class LibJarListener<T extends JarCollectionNature> implements IJarChange
    }
 
    /**
-    * @param url
     * @return
     * @throws IOException
     */

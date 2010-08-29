@@ -18,9 +18,6 @@ import org.eclipse.jface.dialogs.IInputValidator;
 public class NonBlankValidator implements IInputValidator {
    private final String blankErrorMessage;
 
-   /**
-    * @param blankErrorMessage
-    */
    public NonBlankValidator(String blankErrorMessage) {
       this.blankErrorMessage = blankErrorMessage;
    }

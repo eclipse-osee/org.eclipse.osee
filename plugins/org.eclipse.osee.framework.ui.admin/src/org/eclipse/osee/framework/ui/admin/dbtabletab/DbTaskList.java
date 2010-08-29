@@ -45,9 +45,6 @@ public class DbTaskList {
       }
    }
 
-   /**
-    * @param task
-    */
    public void removeTask(DbModel task) {
       tasks.remove(task);
       Iterator<ITaskListViewer> iterator = changeListeners.iterator();
@@ -66,9 +63,6 @@ public class DbTaskList {
       return str + "\n\n";
    }
 
-   /**
-    * @param task
-    */
    public void taskChanged(DbModel task) {
       Iterator<ITaskListViewer> iterator = changeListeners.iterator();
       while (iterator.hasNext()) {
@@ -76,16 +70,10 @@ public class DbTaskList {
       }
    }
 
-   /**
-    * @param viewer
-    */
    public void removeChangeListener(ITaskListViewer viewer) {
       changeListeners.remove(viewer);
    }
 
-   /**
-    * @param viewer
-    */
    public void addChangeListener(ITaskListViewer viewer) {
       changeListeners.add(viewer);
    }

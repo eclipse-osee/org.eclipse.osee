@@ -76,7 +76,6 @@ public class RequirementData extends BaseTraceDataCache {
    /**
     * Get Requirement Artifact based on traceMark mark
     * 
-    * @param traceMark
     * @return requirement artifact
     */
    public Artifact getRequirementFromTraceMark(String traceMark) {
@@ -87,7 +86,6 @@ public class RequirementData extends BaseTraceDataCache {
     * Get Requirement Artifact based on traceMark mark if it fails, check if trace mark is a structured requirement and
     * try again
     * 
-    * @param traceMark
     * @return requirement artifact
     */
    public Artifact getRequirementFromTraceMarkIncludeStructuredRequirements(String traceMark) {

@@ -22,15 +22,6 @@ public class ScriptVersionData {
    private final String revision;
    private final String url;
 
-   /**
-    * @param string6
-    * @param string5
-    * @param string4
-    * @param string3
-    * @param string2
-    * @param string
-    * @param name
-    */
    ScriptVersionData(String lastAuthor, String lastModified, String modifiedFlag, String repositoryType, String revision, String url) {
       this.lastAuthor = lastAuthor;
       this.lastModified = lastModified;

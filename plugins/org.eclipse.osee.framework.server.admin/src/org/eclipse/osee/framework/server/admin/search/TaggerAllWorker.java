@@ -117,9 +117,6 @@ class TaggerAllWorker extends BaseServerCommand {
          this.queriesProcessed = 0;
       }
 
-      /**
-       * @param connection
-       */
       public void cancelProcessing(OseeConnection connection) {
          Set<Integer> list = queryIdMap.keySet();
          int[] toStop = new int[list.size()];

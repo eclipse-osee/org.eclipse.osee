@@ -32,11 +32,6 @@ public class ChildSelectCheckedTreeSelectionDialog extends CheckedTreeSelectionD
 
    private CheckboxTreeViewer viewer;
 
-   /**
-    * @param parent
-    * @param labelProvider
-    * @param contentProvider
-    */
    public ChildSelectCheckedTreeSelectionDialog(Shell parent, ILabelProvider labelProvider, ITreeContentProvider contentProvider) {
       super(parent, labelProvider, contentProvider);
    }

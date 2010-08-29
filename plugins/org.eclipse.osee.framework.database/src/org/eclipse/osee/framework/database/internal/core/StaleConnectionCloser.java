@@ -22,9 +22,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 public class StaleConnectionCloser extends TimerTask {
    private final OseeConnectionPoolImpl connectionPool;
 
-   /**
-    * @param connectionPool
-    */
    public StaleConnectionCloser(OseeConnectionPoolImpl connectionPool) {
       super();
       this.connectionPool = connectionPool;

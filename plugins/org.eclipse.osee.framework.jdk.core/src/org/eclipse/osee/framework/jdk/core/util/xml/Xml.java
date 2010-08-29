@@ -53,7 +53,6 @@ public class Xml {
    /**
     * TODO Optimize algorithm
     * 
-    * @param text
     * @return Returns a string with entity reference characters unescaped.
     */
    public static StringBuilder unescape(String text) {
@@ -96,7 +95,6 @@ public class Xml {
    /**
     * TODO Optimize algorithm
     * 
-    * @param text
     * @return Returns a string with entity reference characters escaped.
     */
    public static CharSequence escape(CharSequence text) {

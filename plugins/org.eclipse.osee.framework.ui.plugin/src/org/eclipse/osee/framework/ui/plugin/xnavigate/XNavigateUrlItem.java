@@ -34,7 +34,6 @@ public class XNavigateUrlItem extends XNavigateItemAction {
    /**
     * Creates a navigation item that will open the given url either internal or external to Eclipse.
     * 
-    * @param parent
     * @param name to use as display name
     * @param url to open
     * @param external true to open in system browser; false to open inside Eclipse

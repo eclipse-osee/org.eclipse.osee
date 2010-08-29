@@ -231,12 +231,6 @@ public final class Widgets {
    /**
     * Positions the specified control within a grid layout
     * 
-    * @param control
-    * @param grabHExcess
-    * @param grabVExcess
-    * @param halign
-    * @param valign
-    * @param hspan
     * @return Return grid data reference
     */
    public static GridData positionGridItem(Control control, boolean grabHExcess, boolean grabVExcess, int halign, int valign, int hspan) {
@@ -253,13 +247,6 @@ public final class Widgets {
    /**
     * Positions the specified control within a grid layout
     * 
-    * @param control
-    * @param grabHExcess
-    * @param grabVExcess
-    * @param halign
-    * @param valign
-    * @param hspan
-    * @param vspan
     * @return Return grid data reference
     */
    public static GridData positionGridItem(final Control control, final boolean grabHExcess, final boolean grabVExcess, final int halign, final int valign, final int hspan, final int vspan) {
@@ -278,11 +265,6 @@ public final class Widgets {
    /**
     * Positions the specified control within a grid layout
     * 
-    * @param control
-    * @param grabHExcess
-    * @param halign
-    * @param valign
-    * @param hspan
     * @return return grid data reference
     */
    public static GridData positionGridItem(Control control, boolean grabHExcess, int halign, int valign, int hspan) {
@@ -298,10 +280,6 @@ public final class Widgets {
    /**
     * Positions the specified control within a grid layout
     * 
-    * @param control
-    * @param grabHExcess
-    * @param halign
-    * @param valign
     * @return return grid data reference
     */
    public static GridData positionGridItem(final Control control, final boolean grabHExcess, final int halign, final int valign) {
@@ -316,12 +294,6 @@ public final class Widgets {
    /**
     * Positions the specified control within a grid layout
     * 
-    * @param control
-    * @param grabHExcess
-    * @param halign
-    * @param valign
-    * @param hspan
-    * @param vspan
     * @return return grid data reference
     */
    public static GridData positionGridItem(Control control, boolean grabHExcess, int halign, int valign, int hspan, int vspan) {
@@ -338,13 +310,6 @@ public final class Widgets {
    /**
     * Positions the specified control within a grid layout
     * 
-    * @param control
-    * @param grabHExcess
-    * @param halign
-    * @param valign
-    * @param hspan
-    * @param vspan
-    * @param width
     * @return return grid data reference
     */
    public static GridData positionGridItem(Control control, boolean grabHExcess, int halign, int valign, int hspan, int vspan, int width) {
@@ -362,14 +327,6 @@ public final class Widgets {
    /**
     * Positions the specified control within a grid layout
     * 
-    * @param control
-    * @param grabHExcess
-    * @param halign
-    * @param valign
-    * @param hspan
-    * @param vspan
-    * @param width
-    * @param height
     * @return return grid data reference
     */
    public static GridData positionGridItem(Control control, boolean grabHExcess, int halign, int valign, int hspan, int vspan, int width, int height) {
@@ -407,9 +364,6 @@ public final class Widgets {
    }
 
    /**
-    * @param comp
-    * @param defaultTxt
-    * @param limit
     * @return Return composite text
     */
    public static Text createTxt(Composite comp, String defaultTxt, int limit) {
@@ -435,9 +389,6 @@ public final class Widgets {
    /**
     * Creates a text box that only accepts numbers
     * 
-    * @param comp
-    * @param defaultTxt
-    * @param limit
     * @return Return numeric text
     */
    public static Text createNumericTxt(Composite comp, String defaultTxt, int limit) {
@@ -733,10 +684,6 @@ public final class Widgets {
    /**
     * Used in form layouts. Attaches the specified control to the specified edge of the item's parent
     * 
-    * @param control
-    * @param edge
-    * @param percent
-    * @param offset
     */
    public static void attachToParent(final Control control, final int edge, final int percent, final int offset) {
       attachToParent(control, edge, percent, offset, SWT.DEFAULT, SWT.DEFAULT);
@@ -779,15 +726,6 @@ public final class Widgets {
       attachToControl(control, itemToAttachTo, edge, itemToAttachToEdge, offset, SWT.DEFAULT, SWT.DEFAULT);
    }
 
-   /**
-    * @param control
-    * @param itemToAttachTo
-    * @param edge
-    * @param itemToAttachToEdge
-    * @param offset
-    * @param width
-    * @param height
-    */
    public static void attachToControl(final Control control, final Control itemToAttachTo, final int edge, final int itemToAttachToEdge, final int offset, final int width, final int height) {
       final Object ld = control.getLayoutData();
       final FormData fd = ld != null ? (FormData) ld : new FormData();
@@ -819,9 +757,6 @@ public final class Widgets {
    /**
     * sets the the layout of the specified composite to a form layout.
     * 
-    * @param composite
-    * @param marginWidth
-    * @param marginHeight
     */
    public static void setFormLayout(final Composite composite, final int marginWidth, final int marginHeight) {
       final FormLayout fl = new FormLayout();
@@ -834,7 +769,6 @@ public final class Widgets {
     * disposes all the supplied widgets if they are not null and not already disposed
     * 
     * @param <T>
-    * @param widgets
     */
    public static <T extends Widget> void disposeWidgets(final T... widgets) {
       if (widgets == null) {

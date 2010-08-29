@@ -105,7 +105,6 @@ public class TaskResolutionOptionRule extends WorkRuleDefinition {
     * Return the order index number of the given option name. Used for comparisons of resolutions like < and > by
     * getting both indexes and doing a mathmatical comparison.
     * 
-    * @param name
     * @return index number (starting at 1) or null if not found
     */
    public Integer getResolutionOptionOrderIndex(String name) {

@@ -48,10 +48,6 @@ import org.eclipse.osee.framework.ui.skynet.results.html.ResultsEditorHtmlTab;
 
 public class BarChartExample extends XNavigateItemAction {
 
-   /**
-    * @param parent
-    * @param action
-    */
    public BarChartExample(XNavigateItem parent) {
       super(parent, "Bar Chart Example", AtsImage.REPORT);
    }

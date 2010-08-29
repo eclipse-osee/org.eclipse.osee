@@ -20,9 +20,6 @@ public final class TransferConfig {
 
       private int accessType;
 
-      /**
-       * @param accessType
-       */
       private Direction(int accessType) {
          this.accessType = accessType;
       }
@@ -38,12 +35,6 @@ public final class TransferConfig {
    private final Direction direction;
    private final int blockCount;
 
-   /**
-    * @param fileChannel
-    * @param sourceAddress
-    * @param port
-    * @param direction
-    */
    public TransferConfig(final String fileName, final InetSocketAddress sourceAddress, final InetSocketAddress destinationAddress, final Direction direction, final int blockCount) {
       super();
       this.fileName = fileName;

@@ -122,7 +122,6 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
    /**
     * If deCache, clears cache and reloads workflow data
     * 
-    * @param deCache
     * @throws OseeCoreException
     */
    public void loadPageData(boolean deCache) throws OseeCoreException {
@@ -170,7 +169,6 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
     * Since transitions can be defined by full ids or just page name (eg "Endorse"), check if pageId has namespace
     * characters and thus it's full name or add id to given pageId
     * 
-    * @param pageId
     * @return
     */
    private String getFullPageId(String pageId) {
@@ -232,9 +230,6 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
     * 1) fromPageId, toPageId, ToPage<br>
     * 2) toPageId, fromPageId, ToPageAsReturn
     * 
-    * @param fromPageId
-    * @param toPageId
-    * @param transitionType
     */
    public void addPageTransitionToPageAndReturn(String fromPageId, String toPageId) {
       addPageTransition(pageIdToPageIdsViaTransitionType, fromPageId, toPageId, TransitionType.ToPage);
@@ -273,7 +268,6 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
     * 
     * @param fromPageId either page Name "Endorse" or full namespace "osee.ats.Endorse"
     * @param toPageId either page Name "Endorse" or full namespace "osee.ats.Endorse"
-    * @param transitionType
     */
    public void addPageTransition(String fromPageId, String toPageId, TransitionType... transitionType) {
       WorkFlowDefinition.addPageTransition(pageIdToPageIdsViaTransitionType, fromPageId, toPageId, transitionType);
@@ -290,7 +284,6 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
     * 
     * @param fromPageId either page Name "Endorse" or full namespace "osee.ats.Endorse"
     * @param toPageId either page Name "Endorse" or full namespace "osee.ats.Endorse"
-    * @param transitionType
     */
    public static void addPageTransition(Map<String, Map<TransitionType, Set<String>>> pageIdToPageIdsViaTransitionType, String fromPageId, String toPageId, TransitionType... transitionType) {
       List<Object> transTypes = Collections.getAggregate((Object[]) transitionType);
@@ -332,8 +325,6 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
    /**
     * Return all registered page definitions including those inherited from parent(s)
     * 
-    * @param fromPageId
-    * @param transitionType
     * @return definitions
     * @throws Exception
     */

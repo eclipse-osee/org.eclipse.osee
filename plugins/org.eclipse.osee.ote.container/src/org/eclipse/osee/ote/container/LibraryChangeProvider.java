@@ -19,9 +19,6 @@ public class LibraryChangeProvider<T extends JarCollectionNature> {
 
    private final List<IUserLibListener> listeners;
 
-   /**
-    * 
-    */
    public LibraryChangeProvider() {
       listeners = new ArrayList<IUserLibListener>();
    }
@@ -36,9 +33,6 @@ public class LibraryChangeProvider<T extends JarCollectionNature> {
       resetClasspath();
    }
 
-   /**
-    * 
-    */
    @SuppressWarnings("restriction")
    private void resetClasspath() {
       for (IUserLibListener listener : listeners) {

@@ -25,10 +25,6 @@ public class DemoReqTeamWorkflowArtifact extends TeamWorkFlowArtifact {
    public static String ARTIFACT_NAME = DemoArtifactTypes.DemoReqTeamWorkflow.getName();
 
    /**
-    * @param parentFactory
-    * @param guid
-    * @param humanReadableId
-    * @param branch
     * @throws OseeDataStoreException
     */
    public DemoReqTeamWorkflowArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {

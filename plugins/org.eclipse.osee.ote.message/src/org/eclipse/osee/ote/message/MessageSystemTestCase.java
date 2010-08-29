@@ -33,8 +33,6 @@ public abstract class MessageSystemTestCase extends TestCase implements ITestAcc
    /**
     * TestCase Constructor.
     * 
-    * @param testScript
-    * @param standAlone
     */
    public MessageSystemTestCase(TestScript testScript, boolean standAlone) {
       this(testScript, standAlone, true);
@@ -43,7 +41,6 @@ public abstract class MessageSystemTestCase extends TestCase implements ITestAcc
    /**
     * TestCase Constructor.
     * 
-    * @param testScript
     */
    public MessageSystemTestCase(TestScript testScript) {
       this(testScript, false);

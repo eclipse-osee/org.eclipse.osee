@@ -18,9 +18,6 @@ import org.xml.sax.Attributes;
  */
 public class NumberOfTransmissions extends ElementHandlers {
 
-   /**
-    * @param name
-    */
    public NumberOfTransmissions() {
       super("NumberOfTransmissions");
    }

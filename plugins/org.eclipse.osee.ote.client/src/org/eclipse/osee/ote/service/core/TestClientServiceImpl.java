@@ -341,8 +341,6 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
    /**
     * compares the environment and its properties against all currently active filters
     * 
-    * @param env
-    * @param connector
     * @return true if the environment was accepted by all filters, false otherwise
     */
    private boolean isAcceptableTestEnvironment(IHostTestEnvironment env, OteServiceProperties props) {

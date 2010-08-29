@@ -22,9 +22,6 @@ public class CharChange implements CharacterChanger {
    private final char newChar;
    private CharacterChanger next;
 
-   /**
-    * 
-    */
    public CharChange(int srcStartIndex, int srcEndIndex, char newChar) {
       super();
       this.srcStartIndex = srcStartIndex;

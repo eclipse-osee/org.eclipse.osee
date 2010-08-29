@@ -25,9 +25,6 @@ public class ImportActionsViaSpreadsheet extends XNavigateItemAction {
 
    public static String strs[] = new String[] {};
 
-   /**
-    * @param parent
-    */
    public ImportActionsViaSpreadsheet(XNavigateItem parent) {
       super(parent, "Import Actions Via Spreadsheet", FrameworkImage.IMPORT);
    }

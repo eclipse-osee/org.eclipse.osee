@@ -20,9 +20,6 @@ public class CheckPointHelper implements Comparable<CheckPointHelper> {
       return String.format("%s[%s, %s]", testPointName, expected, actual);
    }
 
-   /**
-       * 
-       */
    public void increment() {
       count++;
    }

@@ -20,11 +20,6 @@ class Highlighter implements IHexTblHighlighter {
    private final HexTableContentProvider provider;
    private boolean displayAsAscii = false;
 
-   /**
-    * @param row
-    * @param endRow
-    * @param col
-    */
    Highlighter(HexTableContentProvider provider, int index, int length, Color color) {
       this.index = index;
       this.length = length;

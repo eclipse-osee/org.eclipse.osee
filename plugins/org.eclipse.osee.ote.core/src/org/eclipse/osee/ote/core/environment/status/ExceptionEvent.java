@@ -19,16 +19,9 @@ import org.eclipse.osee.ote.core.environment.command.CommandDescription;
  */
 public class ExceptionEvent extends CommandStatusEvent implements Serializable {
 
-   /**
-    * 
-    */
    private static final long serialVersionUID = -831107014787093973L;
    private final Throwable throwable;
 
-   /**
-    * @param description
-    * @param exception
-    */
    public ExceptionEvent(CommandDescription description, Throwable exception) {
       super(description);
       this.throwable = exception;

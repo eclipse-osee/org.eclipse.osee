@@ -22,9 +22,6 @@ import org.w3c.dom.Element;
  */
 public class AttentionRecord extends TestRecord {
 
-   /**
-	 * 
-	 */
    private static final long serialVersionUID = -6974833259038544176L;
 
    /**

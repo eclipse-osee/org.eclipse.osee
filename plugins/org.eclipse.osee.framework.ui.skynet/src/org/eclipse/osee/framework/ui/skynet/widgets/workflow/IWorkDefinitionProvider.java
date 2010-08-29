@@ -31,7 +31,6 @@ public interface IWorkDefinitionProvider {
    /**
     * Return WorkFlowDefinition to use for the given state machine artifact.
     * 
-    * @param artifact
     * @throws Exception
     */
    public WorkFlowDefinition getWorkFlowDefinition(Artifact artifact) throws OseeCoreException;

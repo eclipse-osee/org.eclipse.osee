@@ -18,9 +18,6 @@ import org.xml.sax.Attributes;
  */
 public class ScriptVersion extends ElementHandlers {
 
-   /**
-    * @param name
-    */
    public ScriptVersion() {
       super("ScriptVersion");
    }

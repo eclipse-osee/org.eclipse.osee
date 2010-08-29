@@ -30,7 +30,6 @@ public class AWorkbench {
    /**
     * Popup a workbench viewer eg: AWorkbench.popupView(IPageLayout.ID_PROBLEM_VIEW);
     * 
-    * @param iPageLayoutView
     * @return success
     */
    public static boolean popupView(String iPageLayoutView) {

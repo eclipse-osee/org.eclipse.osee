@@ -18,9 +18,6 @@ import org.xml.sax.Attributes;
  */
 public class VersionInformation extends ElementHandlers {
 
-   /**
-    * @param name
-    */
    public VersionInformation() {
       super("VersionInformation");
    }

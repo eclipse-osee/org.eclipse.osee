@@ -20,9 +20,6 @@ public class Group {
    private int childrenSize;
    private int numChildrenChecked;
 
-   /**
-    * 
-    */
    public Group(String groupName, int groupId) {
       super();
       this.groupName = groupName;

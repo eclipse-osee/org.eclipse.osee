@@ -46,9 +46,6 @@ public final class OseeSystemArtifacts {
    }
 
    /**
-    * @param artifactTypeName
-    * @param artifactName
-    * @param branch
     * @return the artifact specified by type, name, and branch from the cache if available otherwise the datastore is
     * accessed, and finally a new artifact is created if it can not be found
     * @throws OseeCoreException

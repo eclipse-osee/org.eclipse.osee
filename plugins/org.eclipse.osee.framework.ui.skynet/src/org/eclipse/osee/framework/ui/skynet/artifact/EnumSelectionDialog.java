@@ -47,10 +47,6 @@ public class EnumSelectionDialog extends CheckedTreeSelectionDialog {
    };
    private Selection selected = Selection.AddSelection;
 
-   /**
-    * @param parent
-    * @param artifacts
-    */
    public EnumSelectionDialog(IAttributeType attributeType, Collection<? extends Artifact> artifacts) {
       super(Displays.getActiveShell(), new StringLabelProvider(), new ArrayTreeContentProvider());
       setTitle("Select Options");

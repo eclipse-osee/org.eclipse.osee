@@ -18,9 +18,6 @@ import org.xml.sax.Attributes;
  */
 public class Tracability extends ElementHandlers {
 
-   /**
-    * @param name
-    */
    public Tracability() {
       super("Tracability");
    }

@@ -57,9 +57,6 @@ public class VisitedItems extends XNavigateItemAction {
       }
    }
 
-   /**
-    * @param parent
-    */
    public VisitedItems(XNavigateItem parent) {
       super(parent, "My Recently Visited", AtsImage.GLOBE);
    }

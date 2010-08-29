@@ -18,9 +18,6 @@ import org.xml.sax.Attributes;
  */
 public class Name extends ElementHandlers {
 
-   /**
-    * @param name
-    */
    public Name() {
       super("Name");
    }

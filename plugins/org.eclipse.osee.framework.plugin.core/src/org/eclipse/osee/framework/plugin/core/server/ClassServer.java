@@ -39,7 +39,6 @@ public class ClassServer extends Thread {
     * Construct a server
     * 
     * @param port the port to use
-    * @param address
     * @throws IOException if the server socket cannot be created
     */
    public ClassServer(int port, InetAddress address) throws IOException {

@@ -74,10 +74,6 @@ public final class SkyWalkerOptions {
    };
    private LinkName linkName = LinkName.Link_Name;
 
-   /**
-    * @param parent
-    * @param style
-    */
    public SkyWalkerOptions() {
       loadLayouts();
       layout = defaultLayout;

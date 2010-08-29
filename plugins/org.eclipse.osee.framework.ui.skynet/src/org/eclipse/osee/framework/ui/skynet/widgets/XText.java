@@ -244,9 +244,6 @@ public class XText extends XWidget {
       return text;
    }
 
-   /**
-    * @param text
-    */
    public void setText(String text) {
       this.text = text;
       if (sText != null) {

@@ -68,15 +68,11 @@ public class OteClasspathContainer implements IClasspathContainer {
       locator = (OteBundleLocator) obj;
    }
 
-   /**
-    * @param oteClasspathContainer
-    */
    public OteClasspathContainer(OteClasspathContainer oteClasspathContainer) {
       this(oteClasspathContainer.containerPath, oteClasspathContainer.javaProject);
    }
 
    /**
-    * @param fileForPath
     * @return
     */
    private File recursivelyFindProjectFile(File file) {
@@ -93,7 +89,6 @@ public class OteClasspathContainer implements IClasspathContainer {
    }
 
    /**
-    * @param file
     * @return
     */
    private boolean fileIsDirectoryWithBin(File file) {
@@ -152,7 +147,6 @@ public class OteClasspathContainer implements IClasspathContainer {
    }
 
    /**
-    * @param projectFilePath
     * @return
     */
    private boolean projectMatchesClasspathFile(File projectFilePath) {

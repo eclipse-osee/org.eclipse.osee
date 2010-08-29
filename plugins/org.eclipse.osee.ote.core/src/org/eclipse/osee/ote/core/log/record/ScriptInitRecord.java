@@ -21,9 +21,6 @@ import org.w3c.dom.Element;
  */
 public class ScriptInitRecord extends TestRecord {
 
-   /**
-    * 
-    */
    private static final long serialVersionUID = -8573603873316659237L;
    private final boolean startFlag;
 

@@ -19,10 +19,6 @@ public class NetworkCommitBranchEvent extends SkynetEventBase {
    private static final long serialVersionUID = 8339596149601667894L;
    private final int branchId;
 
-   /**
-    * @param branchId
-    * @param author
-    */
    public NetworkCommitBranchEvent(int branchId, NetworkSender networkSender) {
       super(networkSender);
       this.branchId = branchId;

@@ -39,10 +39,6 @@ public class Env extends Logger {
       return instance;
    }
 
-   /**
-    * @param handlerType
-    * @param level
-    */
    private Env(Class<?> handlerType, Level level) {
       super("osee.test.core.log.EnvServiceLogger", null);
       Handler handler;

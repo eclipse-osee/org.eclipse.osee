@@ -18,9 +18,6 @@ import org.xml.sax.Attributes;
  */
 public class ExecutedBy extends ElementHandlers {
 
-   /**
-    * @param name
-    */
    public ExecutedBy() {
       super("ExecutedBy");
    }

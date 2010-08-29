@@ -23,7 +23,6 @@ public interface IArtifactCheck {
    /**
     * Checks set of artifacts for validation prior to delete
     * 
-    * @param artifacts
     * @return Result with description of which artifact and why can't delete
     * @throws OseeCoreException
     */
@@ -32,7 +31,6 @@ public interface IArtifactCheck {
    /**
     * Checks set of artifacts for validation prior to rename
     * 
-    * @param artifacts
     * @return Result with description of which artifact and why can't rename
     * @throws OseeCoreException
     */

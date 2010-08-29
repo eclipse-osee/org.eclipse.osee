@@ -20,7 +20,6 @@ import org.osgi.framework.Version;
 
 public interface IRuntimeLibraryManager extends Xmlizable {
    /**
-    * @param version
     * @deprecated use isBundleAvailable
     */
    @Deprecated
@@ -35,7 +34,6 @@ public interface IRuntimeLibraryManager extends Xmlizable {
    void removeRuntimeLibraryListener(RuntimeLibraryListener listener);
 
    /**
-    * @param jarData
     * @throws IOException
     * @deprecated see loadBundle
     */

@@ -67,7 +67,6 @@ public class OteClasspathContainer implements IClasspathContainer, IUserLibListe
    }
 
    /**
-    * @param path
     * @return
     */
    private String findProjectRoot(String path) {
@@ -77,7 +76,6 @@ public class OteClasspathContainer implements IClasspathContainer, IUserLibListe
    }
 
    /**
-    * @param fileForPath
     * @return
     */
    private File recursivelyFindProjectFile(File file) {
@@ -94,7 +92,6 @@ public class OteClasspathContainer implements IClasspathContainer, IUserLibListe
    }
 
    /**
-    * @param file
     * @return
     */
    private boolean fileIsDirectoryWithBin(File file) {
@@ -108,7 +105,6 @@ public class OteClasspathContainer implements IClasspathContainer, IUserLibListe
    }
 
    /**
-    * @param absolutePath
     * @return
     */
    private String getWorkspaceRelativePath(String absolutePath) {
@@ -163,10 +159,6 @@ public class OteClasspathContainer implements IClasspathContainer, IUserLibListe
    private class ClassPathDescription {
       private final String sourcePath, binaryPath;
 
-      /**
-       * @param sourcePath
-       * @param binaryPath
-       */
       public ClassPathDescription(String binaryPath, String sourcePath) {
          super();
          this.sourcePath = sourcePath;

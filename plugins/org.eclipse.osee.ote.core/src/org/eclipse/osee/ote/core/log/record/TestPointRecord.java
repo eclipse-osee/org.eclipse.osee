@@ -30,9 +30,6 @@ import org.w3c.dom.Element;
  * @author Charles Shaw
  */
 public class TestPointRecord extends TestRecord {
-   /**
-	 * 
-	 */
    private static final long serialVersionUID = 921875066237859323L;
    private int testPointNumber;
    protected ITestPoint testPoint;
@@ -69,8 +66,6 @@ public class TestPointRecord extends TestRecord {
     * TestPointRecord Constructor. Sets up a test point record of the result of the test point
     * 
     * @param source The object requesting the logging.
-    * @param script
-    * @param testCase
     * @param testPoint The TestPoint object for the test point.
     */
    public TestPointRecord(ITestEnvironmentAccessor source, TestScript script, TestCase testCase, ITestPoint testPoint) {
@@ -114,9 +109,6 @@ public class TestPointRecord extends TestRecord {
       return testPointNumber;
    }
 
-   /**
-    * @param testPointNumber
-    */
    public void setTestPointNumber(int testPointNumber) {
       this.testPointNumber = testPointNumber;
    }

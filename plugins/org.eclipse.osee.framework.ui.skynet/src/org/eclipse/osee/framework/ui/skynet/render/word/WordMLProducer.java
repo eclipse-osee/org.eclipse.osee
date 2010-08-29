@@ -265,7 +265,6 @@ public class WordMLProducer extends Producer {
    /**
     * This method will escape the provided text.
     * 
-    * @param text
     * @throws OseeWrappedException
     */
    public void addTextInsideParagraph(CharSequence text) throws OseeCoreException {
@@ -310,9 +309,6 @@ public class WordMLProducer extends Producer {
       return outlineLevel < 9;
    }
 
-   /**
-    * @param nextOutlineNumber
-    */
    public void setNextParagraphNumberTo(String nextOutlineNumber) {
       String[] nextOutlineNumbers = nextOutlineNumber.split("\\.");
       Arrays.fill(outlineNumber, 0);

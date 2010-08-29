@@ -393,17 +393,12 @@ public class MemoryResource {
       _dataHasChanged = true;
    }
 
-   /**
-    * @param src
-    */
    public void copyData(ByteBuffer src) {
       copyData(0, src, src.remaining());
    }
 
    /**
     * @param destOffset offset in this memory resource in which the copy will begin
-    * @param src
-    * @param length
     */
    public void copyData(int destOffset, ByteBuffer src, int length) throws MessageSystemException {
       if (length + destOffset > byteArray.get().length) {

@@ -18,9 +18,6 @@ import org.xml.sax.Attributes;
  */
 public class Value extends ElementHandlers {
 
-   /**
-    * @param name
-    */
    public Value() {
       super("Value");
    }

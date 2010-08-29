@@ -19,9 +19,6 @@ import java.util.List;
  */
 public class ElementPath implements Serializable {
 
-   /**
-	 * 
-	 */
    private static final long serialVersionUID = 4928814252711879251L;
 
    private final List<Object> elementPath;

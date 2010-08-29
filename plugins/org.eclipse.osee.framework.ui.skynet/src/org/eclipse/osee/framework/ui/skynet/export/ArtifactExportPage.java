@@ -37,9 +37,6 @@ public class ArtifactExportPage extends WizardDataTransferPage {
    private final File exportPath;
    private final Collection<Artifact> selectedArtifacts;
 
-   /**
-    * @param pageName
-    */
    public ArtifactExportPage(IStructuredSelection selection) {
       super("Main");
 

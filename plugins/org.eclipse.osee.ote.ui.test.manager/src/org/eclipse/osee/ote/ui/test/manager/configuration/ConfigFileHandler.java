@@ -23,8 +23,6 @@ public class ConfigFileHandler {
     * the file. If the file does not exist, a new file will be created only containing the sourceDoc underneath a root
     * TestManagerConfig node.
     * 
-    * @param sourceDoc
-    * @param fileString
     * @throws Exception
     */
    public static void writeFile(Document sourceDoc, String fileString) throws Exception {

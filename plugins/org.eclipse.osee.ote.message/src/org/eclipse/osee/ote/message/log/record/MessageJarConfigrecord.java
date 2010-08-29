@@ -26,9 +26,6 @@ public class MessageJarConfigrecord extends TestRecord {
 
    private final String[] jarVersions;
 
-   /**
-    * 
-    */
    private static final long serialVersionUID = 6919229589873467398L;
 
    /**

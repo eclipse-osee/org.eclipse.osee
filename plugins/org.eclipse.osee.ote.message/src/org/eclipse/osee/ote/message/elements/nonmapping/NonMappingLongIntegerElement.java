@@ -26,7 +26,6 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
    /**
     * Copy constructor.
     * 
-    * @param element
     */
    public NonMappingLongIntegerElement(LongIntegerElement element) {
       super(element.getMessage(), element.getElementName(), element.getMsgData(), element.getByteOffset(),
@@ -36,39 +35,14 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
       }
    }
 
-   /**
-    * @param message
-    * @param elementName
-    * @param messageData
-    * @param byteOffset
-    * @param msb
-    * @param lsb
-    */
    public NonMappingLongIntegerElement(Message<?, ?, ?> message, String elementName, MessageData messageData, int byteOffset, int msb, int lsb) {
       super(message, elementName, messageData, byteOffset, msb, lsb);
    }
 
-   /**
-    * @param message
-    * @param elementName
-    * @param messageData
-    * @param bitOffset
-    * @param bitLength
-    */
    public NonMappingLongIntegerElement(Message<?, ?, ?> message, String elementName, MessageData messageData, int bitOffset, int bitLength) {
       super(message, elementName, messageData, bitOffset, bitLength);
    }
 
-   /**
-    * @param message
-    * @param elementName
-    * @param messageData
-    * @param byteOffset
-    * @param msb
-    * @param lsb
-    * @param originalLsb
-    * @param originalMsb
-    */
    public NonMappingLongIntegerElement(Message<?, ?, ?> message, String elementName, MessageData messageData, int byteOffset, int msb, int lsb, int originalLsb, int originalMsb) {
       super(message, elementName, messageData, byteOffset, msb, lsb, originalLsb, originalMsb);
    }
@@ -87,7 +61,6 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
    /**
     * Checks that this element correctly forwards a message sent from cause with the value passed.
     * 
-    * @param accessor
     * @param cause The originator of the signal
     * @param value The value sent by cause and being forwarded by this element
     * @throws InterruptedException
@@ -100,7 +73,6 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
    /**
     * Verifies that the element is set to "value".
     * 
-    * @param accessor
     * @param value Expected value
     * @return if the check passed
     */
@@ -112,7 +84,6 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
    /**
     * Verifies that the element is set to "value".
     * 
-    * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
     * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
     * logging a point.
@@ -131,7 +102,6 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * Verifies that the element is set to a value within the range specified. Assumes that both ends of the range are
     * inclusive.
     * 
-    * @param accessor
     * @param minValue The minimum value of the range.
     * @param maxValue The maximum value of the range.
     * @return if the check passed
@@ -145,7 +115,6 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * Verifies that the element is set to a value within the range specified. Assumes that both ends of the range are
     * inclusive.
     * 
-    * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
     * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
     * logging a point.
@@ -165,7 +134,6 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * Verifies that the element is set to a value within the range specified. Either end of the range can be set to be
     * inclusive or not.
     * 
-    * @param accessor
     * @param minValue The minimum value of the range.
     * @param minInclusive If the minumum value of the range is inclusive.
     * @param maxValue The maximum value of the range.
@@ -181,7 +149,6 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * Verifies that the element is set to a value within the range specified. Either end of the range can be set to be
     * inclusive or not.
     * 
-    * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
     * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
     * logging a point.
@@ -202,7 +169,6 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
    /**
     * Verifies that the element is NOT set to "value".
     * 
-    * @param accessor
     * @param value value to test against
     * @return if the check passed
     */
@@ -214,7 +180,6 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
    /**
     * Verifies that the element is NOT set to "value".
     * 
-    * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
     * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
     * logging a point.
@@ -233,7 +198,6 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * Verifies that the element is set to a value outside the range specified. Assumes that both ends of the range are
     * inclusive. Therefore observed value may not equal either of the range values.
     * 
-    * @param accessor
     * @param minValue The minimum value of the range.
     * @param maxValue The maximum value of the range.
     * @return if the check passed
@@ -247,7 +211,6 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * Verifies that the element is set to a value outside the range specified. Assumes that both ends of the range are
     * inclusive. Therefore observed value may not equal either of the range values.
     * 
-    * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
     * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
     * logging a point.
@@ -267,7 +230,6 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * Verifies that the element is set to a value outside the range specified. Either end of the range can be set to be
     * inclusive or not.
     * 
-    * @param accessor
     * @param minValue The minimum value of the range.
     * @param minInclusive If the minumum value of the range is inclusive. If true the actual value must not < and not =
     * to the range value.
@@ -285,7 +247,6 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * Verifies that the element is set to a value outside the range specified. Either end of the range can be set to be
     * inclusive or not.
     * 
-    * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
     * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
     * logging a point.
@@ -308,7 +269,6 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
    /**
     * Verifies that the element is set to "value" within the number of "milliseconds" passed.
     * 
-    * @param accessor
     * @param value Expected value.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
@@ -322,7 +282,6 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
    /**
     * Verifies that the element is set to "value" within the number of "milliseconds" passed.
     * 
-    * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
     * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
     * logging a point.
@@ -342,7 +301,6 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
    /**
     * This function will verify that this signal is pulsed for 2 cycles.
     * 
-    * @param accessor
     * @param value The value to be checked
     * @throws InterruptedException
     */
@@ -352,9 +310,6 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
    }
 
    /**
-    * @param accessor
-    * @param pulsedValue
-    * @param nonPulsedValue
     * @throws InterruptedException
     */
    public void checkPulse(ITestAccessor accessor, int pulsedValue, int nonPulsedValue) throws InterruptedException {
@@ -362,10 +317,6 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
    }
 
    /**
-    * @param accessor
-    * @param checkGroup
-    * @param pulsedValue
-    * @param nonPulsedValue
     * @throws InterruptedException
     */
    public void checkPulse(ITestAccessor accessor, CheckGroup checkGroup, int pulsedValue, int nonPulsedValue) throws InterruptedException {
@@ -377,11 +328,6 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
    }
 
    /**
-    * @param accessor
-    * @param checkGroup
-    * @param pulsedValue
-    * @param nonPulsedValue
-    * @param milliseconds
     * @throws InterruptedException
     */
    public void checkPulse(ITestAccessor accessor, CheckGroup checkGroup, int pulsedValue, int nonPulsedValue, int milliseconds) throws InterruptedException {
@@ -392,7 +338,6 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * Verifies that the element is set to a value within the range specified. Assumes that both ends of the range are
     * inclusive.
     * 
-    * @param accessor
     * @param minValue The minimum value of the range.
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait for the element to be within the range.
@@ -408,7 +353,6 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * Verifies that the element is set to a value within the range specified. Assumes that both ends of the range are
     * inclusive.
     * 
-    * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
     * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
     * logging a point.
@@ -430,7 +374,6 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * Verifies that the element is set to a value within the range specified. Either end of the range can be set to be
     * inclusive or not.
     * 
-    * @param accessor
     * @param minValue The minimum value of the range.
     * @param minInclusive If the minumum value of the range is inclusive.
     * @param maxValue The maximum value of the range.
@@ -448,7 +391,6 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * Verifies that the element is set to a value within the range specified. Either end of the range can be set to be
     * inclusive or not.
     * 
-    * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
     * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
     * logging a point.
@@ -472,7 +414,6 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * Verifies that the element is set to some value other than "value" within the number of "milliseconds" passed.
     * Passes if at any point with in the time allowed, the elment is set to a value other than "value".
     * 
-    * @param accessor
     * @param value value to test against.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
@@ -487,7 +428,6 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * Verifies that the element is set to some value other than "value" within the number of "milliseconds" passed.
     * Passes if at any point with in the time allowed, the elment is set to a value other than "value".
     * 
-    * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
     * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
     * logging a point.
@@ -508,7 +448,6 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * Verifies that the element is set to a value outside the range specified. Assumes that both ends of the range are
     * inclusive.
     * 
-    * @param accessor
     * @param minValue The minimum value of the range.
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait for the element to be outside the range.
@@ -524,7 +463,6 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * Verifies that the element is set to a value outside the range specified. Assumes that both ends of the range are
     * inclusive.
     * 
-    * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
     * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
     * logging a point.
@@ -546,7 +484,6 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * Verifies that the element is set to a value outside the range specified. Either end of the range can be set to be
     * inclusive or not.
     * 
-    * @param accessor
     * @param minValue The minimum value of the range.
     * @param minInclusive If the minumum value of the range is inclusive. If true the actual value must not < and not =
     * to the range value.
@@ -566,7 +503,6 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * Verifies that the element is set to a value outside the range specified. Either end of the range can be set to be
     * inclusive or not.
     * 
-    * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
     * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
     * logging a point.
@@ -592,9 +528,6 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * Verifies that the element is set to the "value" passed for the entire time passed into "milliseconds". Returns
     * value found that caused failure or last value observed if time expires.
     * 
-    * @param accessor
-    * @param value
-    * @param milliseconds
     * @return last value observed. Either value expected or value found at timeout.
     * @throws InterruptedException
     */
@@ -607,15 +540,12 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * Verifies that the element is set to the "value" passed for the entire time passed into "milliseconds". Returns
     * value found that caused failure or last value observed if time expires.
     * 
-    * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
     * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
     * logging a point.
     * <p>
     * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
     * will log the test point.
-    * @param value
-    * @param milliseconds
     * @return last value observed. Either value expected or value found at timeout.
     * @throws InterruptedException
     */
@@ -628,9 +558,6 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * Verifies that the element is set to the "value" passed for the entire time passed into "milliseconds". Returns
     * value found that caused failure or last value observed if time expires.
     * 
-    * @param accessor
-    * @param value
-    * @param milliseconds
     * @return last value observed
     * @throws InterruptedException
     */
@@ -643,15 +570,12 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * Verifies that the element is set to the "value" passed for the entire time passed into "milliseconds". Returns
     * value found that caused failure or last value observed if time expires.
     * 
-    * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
     * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
     * logging a point.
     * <p>
     * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
     * will log the test point.
-    * @param value
-    * @param milliseconds
     * @return last value observed
     * @throws InterruptedException
     */
@@ -664,7 +588,6 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * Verifies that the element is set to a value within the range specified for the entire time specified. Assumes
     * range is inclusive.
     * 
-    * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
     * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
     * logging a point.
@@ -685,7 +608,6 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
    /**
     * Verifies that the element is set to a value within the range specified for the entire time specified.
     * 
-    * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
     * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
     * logging a point.
@@ -709,7 +631,6 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * Verifies that the element is set to a value within the range specified for the entire time specified. Assumes
     * range is inclusive.
     * 
-    * @param accessor
     * @param minValue The minimum value of the range.
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait before failing.
@@ -724,7 +645,6 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
    /**
     * Verifies that the element is set to a value within the range specified for the entire time specified.
     * 
-    * @param accessor
     * @param minValue The minimum value of the range.
     * @param minInclusive If the minumum value of the range is inclusive.
     * @param maxValue The maximum value of the range.
@@ -742,8 +662,7 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
    // * Verifies that the element is set to a value within the range specified for the entire time
    // specified. Assumes range is inclusive.
    // *
-   // * @param accessor
-   // * @param minValue The minimum value of the range.
+   //   // * @param minValue The minimum value of the range.
    // * @param maxValue The maximum value of the range.
    // * @param milliseconds Number of milliseconds to wait before failing.
    // * @return last value observed
@@ -758,8 +677,7 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
    // * Verifies that the element is set to a value within the range specified for the entire time
    // specified.
    // *
-   // * @param accessor
-   // * @param minValue The minimum value of the range.
+   //   // * @param minValue The minimum value of the range.
    // * @param minInclusive If the minumum value of the range is inclusive.
    // * @param maxValue The maximum value of the range.
    // * @param maxInclusive If the maximum value of the range is inclusive.
@@ -778,7 +696,6 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
     * Verifies that the element is set to a value within the range specified for the entire time specified. Assumes
     * range is inclusive.
     * 
-    * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
     * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
     * logging a point.
@@ -799,7 +716,6 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
    /**
     * Verifies that the element is set to a value within the range specified for the entire time specified.
     * 
-    * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
     * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
     * logging a point.
@@ -835,7 +751,6 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
    /**
     * Sets the element to the "value" passed.
     * 
-    * @param accessor
     * @param value The value to set.
     */
    public void set(ITestEnvironmentAccessor accessor, int value) {
@@ -850,7 +765,6 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
    /**
     * Sets the element to the "value" passed.
     * 
-    * @param accessor
     * @param value The value to set.
     */
    public void setNoLog(ITestEnvironmentAccessor accessor, int value) {
@@ -860,7 +774,6 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
    /**
     * Waits until the element equals the "value" passed. Returns last value observed upon a timout.
     * 
-    * @param accessor
     * @param value The expected value to wait for.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value found. Either value expected or value found at timeout.
@@ -874,7 +787,6 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
    /**
     * Waits until the element has a value other than the "value" passed. Returns last value observed upon a timout.
     * 
-    * @param accessor
     * @param value The expected value to wait for.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
@@ -888,7 +800,6 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
    /**
     * Waits until the element has a value within the range specified. Assumes the range is inclusive.
     * 
-    * @param accessor
     * @param minValue The minimum value of the range.
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait before failing.
@@ -903,7 +814,6 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
    /**
     * Waits until the element has a value within the range specified. Either end of the range can be inclusive or not.
     * 
-    * @param accessor
     * @param minValue The minimum value of the range.
     * @param minInclusive If the minumum value of the range is inclusive. If true the actual value must not < and not =
     * to the range value.
@@ -922,7 +832,6 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
    /**
     * Waits until the element has a value within the range specified. Range is assumes to be inclusive.
     * 
-    * @param accessor
     * @param minValue The minimum value of the range.
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait before failing.
@@ -937,7 +846,6 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
    /**
     * Waits until the element has a value within the range specified. Either end of the range can be inclusive or not.
     * 
-    * @param accessor
     * @param minValue The minimum value of the range.
     * @param minInclusive If the minumum value of the range is inclusive. If true the actual value must not < and not =
     * to the range value.

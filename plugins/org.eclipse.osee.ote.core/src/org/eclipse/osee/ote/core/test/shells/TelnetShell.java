@@ -81,8 +81,6 @@ public class TelnetShell implements TelnetNotificationHandler {
    /**
     * Connects telnet to the specified ipAddress and port
     * 
-    * @param ipAddress
-    * @param port
     * @throws IOException
     * @throws SocketException
     */

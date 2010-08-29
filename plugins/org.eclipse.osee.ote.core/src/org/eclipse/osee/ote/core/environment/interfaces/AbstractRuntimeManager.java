@@ -55,9 +55,6 @@ import org.w3c.dom.Element;
 
 public class AbstractRuntimeManager implements IRuntimeLibraryManager {
 
-   /**
-    * 
-    */
    private static final String OTE_ACTIVATION_POLICY = "OTE-ActivationPolicy";
    private final Collection<Bundle> installedBundles;
    private final Collection<Bundle> runningBundles;
@@ -259,7 +256,6 @@ public class AbstractRuntimeManager implements IRuntimeLibraryManager {
    }
 
    /**
-    * @param bundleDescription
     * @return
     * @throws IOException
     */
@@ -272,7 +268,6 @@ public class AbstractRuntimeManager implements IRuntimeLibraryManager {
    }
 
    /**
-    * @param bundleDescription
     * @return
     * @throws IOException
     */
@@ -281,7 +276,6 @@ public class AbstractRuntimeManager implements IRuntimeLibraryManager {
    }
 
    /**
-    * @param bundleDescription
     * @return
     * @throws IOException
     */

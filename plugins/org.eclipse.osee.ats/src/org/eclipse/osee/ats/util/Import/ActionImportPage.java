@@ -45,10 +45,6 @@ public class ActionImportPage extends WizardDataTransferPage {
    private Label actionLabel;
    private Button emailPocs;
 
-   /**
-    * @param pageName
-    * @param selection
-    */
    public ActionImportPage(String pageName, IStructuredSelection selection) {
       super(pageName);
       setTitle("Import Actions into ATS");

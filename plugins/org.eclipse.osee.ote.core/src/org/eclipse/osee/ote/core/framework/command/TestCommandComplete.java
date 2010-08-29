@@ -25,18 +25,12 @@ public class TestCommandComplete implements Callable<ITestCommandResult> {
    private Future<ITestCommandResult> future;
    private ITestServerCommand cmd;
 
-   /**
-    * @param future
-    */
    public TestCommandComplete(TestEnvironment env, ITestServerCommand cmd, Future<ITestCommandResult> future) {
       this.future = future;
       this.cmd = cmd;
       this.env = env;
    }
 
-   /**
-    * @param handle
-    */
    public TestCommandComplete(TestEnvironment env, ICommandHandle handle) {
       this.env = env;
       this.handle = handle;

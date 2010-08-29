@@ -18,9 +18,6 @@ import org.xml.sax.Attributes;
  */
 public class Config extends ElementHandlers {
 
-   /**
-    * @param name
-    */
    public Config() {
       super("Config");
    }

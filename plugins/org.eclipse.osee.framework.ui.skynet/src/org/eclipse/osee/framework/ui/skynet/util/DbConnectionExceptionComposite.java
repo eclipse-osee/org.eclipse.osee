@@ -20,10 +20,6 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class DbConnectionExceptionComposite extends ExceptionComposite {
 
-   /**
-    * @param parent
-    * @param style
-    */
    public DbConnectionExceptionComposite(Composite parent, Exception ex) {
       super(parent, ex);
    }
@@ -32,7 +28,6 @@ public class DbConnectionExceptionComposite extends ExceptionComposite {
     * Tests the DB Connection and returns true if ok. If exceptions and parent != null, the
     * DbConnectionExceptionComposite will be displayed in parent giving exception information.
     * 
-    * @param parent
     */
    public static boolean dbConnectionIsOk(Composite parent) {
       //      try {

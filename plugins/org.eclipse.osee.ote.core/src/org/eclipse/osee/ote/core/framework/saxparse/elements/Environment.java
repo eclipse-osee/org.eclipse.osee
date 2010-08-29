@@ -18,9 +18,6 @@ import org.xml.sax.Attributes;
  */
 public class Environment extends ElementHandlers {
 
-   /**
-    * @param name
-    */
    public Environment() {
       super("Environment");
    }

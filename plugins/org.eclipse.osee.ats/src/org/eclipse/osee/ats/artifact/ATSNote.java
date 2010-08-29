@@ -142,7 +142,6 @@ public class ATSNote {
     * Display Note Table; If state == null, only display non-state notes Otherwise, show only notes associated with
     * state
     * 
-    * @param state
     */
    public String getTable(String state) {
       ArrayList<NoteItem> showNotes = new ArrayList<NoteItem>();

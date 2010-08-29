@@ -37,13 +37,6 @@ public class TestRunThread extends OseeTestThread {
    private final ReentrantLock lock = new ReentrantLock();
    private final ResultBuilder rb = new ResultBuilder(false);
 
-   /**
-    * @param propertyStore
-    * @param test2
-    * @param env
-    * @param listenerProvider
-    * @param dataProvider
-    */
    public TestRunThread(IPropertyStore propertyStore, TestScript test, TestEnvironment env, ITestRunListenerProvider listenerProvider, ITestRunListenerDataProvider dataProvider) {
       super(test.getClass().getSimpleName(), env);
       this.test = test;
@@ -107,9 +100,6 @@ public class TestRunThread extends OseeTestThread {
       }
    }
 
-   /**
-    * 
-    */
    private void addAbortResult(Throwable th) {
       if (rb.isReturnStatusOK()) {
          MethodResultImpl methodresult = new MethodResultImpl(ReturnCode.ABORTED);

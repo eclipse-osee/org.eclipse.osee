@@ -22,16 +22,10 @@ import org.eclipse.osee.ote.core.environment.interfaces.IServiceCommand;
  * @author Andrew M. Finkbeiner
  */
 public abstract class TestEnvironmentCommand implements Serializable, IServiceCommand {
-   /**
-    * 
-    */
    private static final long serialVersionUID = -921447917279635626L;
    private final UserTestSessionKey key;
    private final CommandDescription commandDescription;
 
-   /**
-    * @param callback
-    */
    public TestEnvironmentCommand(UserTestSessionKey key, CommandDescription commandDescription) {
       this.key = key;
       this.commandDescription = commandDescription;
@@ -48,9 +42,6 @@ public abstract class TestEnvironmentCommand implements Serializable, IServiceCo
    @Override
    public abstract void execute(TestEnvironment environment) throws TestException;
 
-   /**
-    * 
-    */
    public CommandDescription getDescription() {
       return commandDescription;
    }

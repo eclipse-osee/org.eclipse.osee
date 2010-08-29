@@ -25,10 +25,6 @@ import org.eclipse.osee.ote.runtimemanager.SafeWorkspaceTracker;
 public class RuntimeLibResourceFinder extends ResourceFinder {
    private final SafeWorkspaceTracker safeWorkspaceTracker;
 
-   /**
-    * @param safeWorkspaceTracker
-    * @param runtimeManager
-    */
    public RuntimeLibResourceFinder(SafeWorkspaceTracker safeWorkspaceTracker) {
       super();
       this.safeWorkspaceTracker = safeWorkspaceTracker;

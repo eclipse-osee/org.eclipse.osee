@@ -22,9 +22,6 @@ public interface ISearchEngine {
     * Searches tagged items for matches meeting criteria specified. If branchId is less than 0, search will include all
     * branches in the system.
     * 
-    * @param searchString
-    * @param branchId
-    * @param options
     * @param attributeType search filter. When null, all types are searched.
     * @return search result
     * @throws Exception

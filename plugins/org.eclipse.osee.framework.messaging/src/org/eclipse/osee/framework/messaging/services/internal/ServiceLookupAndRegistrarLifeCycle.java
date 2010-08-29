@@ -35,11 +35,6 @@ public class ServiceLookupAndRegistrarLifeCycle extends ServiceTracker {
    private final ClassLoader contextClassLoader;
    private RemoteServiceLookupImpl lookup;
 
-   /**
-    * @param context
-    * @param filter
-    * @param customizer
-    */
    public ServiceLookupAndRegistrarLifeCycle(BundleContext context, ClassLoader contextClassLoader) {
       super(context, MessageService.class.getName(), null);
       this.contextClassLoader = contextClassLoader;

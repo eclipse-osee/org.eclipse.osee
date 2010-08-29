@@ -51,7 +51,6 @@ public class AttributeAnnotationManager {
    /**
     * Add an annotation to be stored in the "Annotation" attribute of this given artifact.
     * 
-    * @param newAnnotation
     * @throws OseeCoreException
     */
    public void addAnnotation(ArtifactAnnotation newAnnotation) throws OseeCoreException {
@@ -70,7 +69,6 @@ public class AttributeAnnotationManager {
    /**
     * Remove the annotation from the "Annotation" attribute of the given artifact.
     * 
-    * @param annotation
     * @throws OseeCoreException
     */
    public void removeAnnotation(ArtifactAnnotation annotation) throws OseeCoreException {

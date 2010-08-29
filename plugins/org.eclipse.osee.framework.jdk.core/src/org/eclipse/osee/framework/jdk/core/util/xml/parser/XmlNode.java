@@ -49,7 +49,6 @@ public class XmlNode {
    }
 
    /**
-    * @param qname
     * @return Returns the value of the attribute matching the qualified name.
     */
    public String getAttributeValue(String qname) {

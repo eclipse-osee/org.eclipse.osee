@@ -20,9 +20,6 @@ import org.eclipse.osee.ote.message.enums.DataType;
  */
 public class SubscriptionDetails implements Serializable {
 
-   /**
-    * 
-    */
    private static final long serialVersionUID = -3968654375167145281L;
 
    private final SubscriptionKey key;

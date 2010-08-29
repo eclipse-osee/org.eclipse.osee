@@ -51,7 +51,6 @@ public class TestManagerNewWizardPage extends WizardPage {
    /**
     * Constructor for SampleNewWizardPage.
     * 
-    * @param selection
     */
    public TestManagerNewWizardPage(ISelection selection) {
       super("wizardPage");

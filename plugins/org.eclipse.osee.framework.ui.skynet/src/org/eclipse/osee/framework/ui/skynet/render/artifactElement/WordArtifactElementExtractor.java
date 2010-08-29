@@ -109,7 +109,6 @@ public class WordArtifactElementExtractor implements IElementExtractor {
    }
 
    /**
-    * @param element
     * @return
     */
    private boolean elementHasGrandChildren(Node element) {
@@ -129,9 +128,7 @@ public class WordArtifactElementExtractor implements IElementExtractor {
    }
 
    /**
-    * @param element
     * @param keepSide TODO
-    * @param childNodes
     * @return
     */
    private Node cloneWithoutArtifactEditTag(Element element, Side keepSide) {
@@ -161,7 +158,6 @@ public class WordArtifactElementExtractor implements IElementExtractor {
    }
 
    /**
-    * @param element
     * @return
     */
    private boolean isEditLink(Node element) {
@@ -185,8 +181,6 @@ public class WordArtifactElementExtractor implements IElementExtractor {
    }
 
    /**
-    * @param newArtifactElement
-    * @param element
     * @throws DOMException
     * @throws OseeCoreException
     */
@@ -197,7 +191,6 @@ public class WordArtifactElementExtractor implements IElementExtractor {
    }
 
    /**
-    * @param element
     * @return
     */
    private boolean isArtifactEditTag(Element element) {
@@ -216,7 +209,6 @@ public class WordArtifactElementExtractor implements IElementExtractor {
    }
 
    /**
-    * @param element
     * @return
     */
    private boolean properLevelChild(Element element) {
@@ -264,7 +256,6 @@ public class WordArtifactElementExtractor implements IElementExtractor {
    }
 
    /**
-    * @param element
     * @return
     */
    private boolean properLevelChildWord2003(Element element) {
@@ -282,7 +273,6 @@ public class WordArtifactElementExtractor implements IElementExtractor {
    }
 
    /**
-    * @param element
     * @return
     */
    private boolean properLevelChildWord2007(Element element) {

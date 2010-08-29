@@ -18,9 +18,6 @@ import org.xml.sax.Attributes;
  */
 public class RetryGroup extends ElementHandlers {
 
-   /**
-    * @param name
-    */
    public RetryGroup() {
       super("RetryGroup");
    }

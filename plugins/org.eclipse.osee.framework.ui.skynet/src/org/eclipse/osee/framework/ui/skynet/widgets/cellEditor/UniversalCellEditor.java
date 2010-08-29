@@ -28,17 +28,10 @@ public class UniversalCellEditor extends CellEditor {
    private Control control;
    private boolean personCombo = false;
 
-   /**
-    * @param parent
-    */
    public UniversalCellEditor(Composite parent) {
       this(parent, SWT.NONE);
    }
 
-   /**
-    * @param parent
-    * @param style
-    */
    public UniversalCellEditor(Composite parent, int style) {
       super(parent, style);
       this.comboBox = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);

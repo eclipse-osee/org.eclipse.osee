@@ -21,10 +21,6 @@ public class SkyWalkerTabOptions {
 
    private final TabFolder tabFolder;
 
-   /**
-    * @param parent
-    * @param style
-    */
    public SkyWalkerTabOptions(Composite parent, int style, SkyWalkerOptions options) {
       tabFolder = new TabFolder(parent, SWT.BORDER);
 

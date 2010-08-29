@@ -18,9 +18,6 @@ import org.xml.sax.Attributes;
  */
 public class OfpErrorEntry extends ElementHandlers {
 
-   /**
-    * @param name
-    */
    public OfpErrorEntry() {
       super("OfpErrorEntry");
    }

@@ -16,17 +16,10 @@ package org.eclipse.osee.framework.core.exception;
 public class TransactionDoesNotExist extends OseeCoreException {
    private static final long serialVersionUID = -6197324585250025613L;
 
-   /**
-    * @param message
-    */
    public TransactionDoesNotExist(String message) {
       super(message);
    }
 
-   /**
-    * @param message
-    * @param cause
-    */
    public TransactionDoesNotExist(String message, Throwable cause) {
       super(message, cause);
    }

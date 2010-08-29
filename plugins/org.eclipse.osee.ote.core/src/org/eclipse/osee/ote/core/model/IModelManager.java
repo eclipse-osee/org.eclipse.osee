@@ -47,7 +47,6 @@ public interface IModelManager {
    /**
     * Releases a single reference of the model given by the class.
     * 
-    * @param key
     */
    void releaseReference(ModelKey key);
 }

@@ -168,9 +168,6 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       listOfThreadsToWaitOnInInit.add(execInitializationTasks.submit(callable));
    }
 
-   /**
-    * 
-    */
    private void setupDefaultConnector() {
       EnhancedProperties props = new EnhancedProperties();
       try {
@@ -614,8 +611,6 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
     * alerts the environment of an exception. The environment will take any necessary actions and alert any interested
     * entities of the problem. Any runing test script will be terminated
     * 
-    * @param t
-    * @param logLevel
     */
    public void handleException(Throwable t, Level logLevel) {
       handleException(t, "An exception has occurred in the environment", logLevel, true);
@@ -623,8 +618,6 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
 
    @Deprecated
    /**
-    * @param t
-    * @param logLevel
     * @param abortScript true will cause the currently running script to abort
     */
    public void handleException(Throwable t, Level logLevel, boolean abortScript) {

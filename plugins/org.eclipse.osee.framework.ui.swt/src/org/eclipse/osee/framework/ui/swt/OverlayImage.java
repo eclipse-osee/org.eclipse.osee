@@ -79,8 +79,6 @@ public class OverlayImage extends CompositeImageDescriptor {
    /**
     * Set x,y pixel to draw the overlay image eg: 8,8 for bottom right of a 16x16 image 0,0 for top left
     * 
-    * @param xValue
-    * @param yValue
     */
    public void setXY(int xValue, int yValue) {
       this.xValue = xValue;

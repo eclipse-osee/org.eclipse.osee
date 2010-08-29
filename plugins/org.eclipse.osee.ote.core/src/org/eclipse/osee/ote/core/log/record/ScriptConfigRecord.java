@@ -40,9 +40,6 @@ public class ScriptConfigRecord extends TestRecord {
 
    private String userId;
 
-   /**
-    * 
-    */
    private static final long serialVersionUID = 6919229589873467398L;
 
    /**

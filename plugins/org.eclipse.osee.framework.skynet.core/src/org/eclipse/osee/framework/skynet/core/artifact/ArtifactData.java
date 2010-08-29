@@ -18,10 +18,6 @@ public class ArtifactData {
    private String source = "";
    private final Artifact[] artifacts;
 
-   /**
-    * @param artifacts
-    * @param url
-    */
    public ArtifactData(Artifact[] artifacts, String url, String source) {
       this.artifacts = artifacts;
       this.url = url;

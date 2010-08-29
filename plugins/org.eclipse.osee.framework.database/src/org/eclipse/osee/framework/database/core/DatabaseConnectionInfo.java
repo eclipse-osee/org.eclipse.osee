@@ -27,13 +27,6 @@ public class DatabaseConnectionInfo implements IDatabaseInfo {
    private final boolean isProduction;
    private final Properties properties;
 
-   /**
-    * @param databaseLoginName
-    * @param databaseName
-    * @param driver
-    * @param id
-    * @param isProduction
-    */
    public DatabaseConnectionInfo(String databaseLoginName, String connectionPrefix, String databaseName, String driver, String id, Properties properties, boolean isProduction) {
       super();
       this.databaseLoginName = databaseLoginName;

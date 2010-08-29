@@ -96,7 +96,6 @@ public class AttributeTypeManager {
    }
 
    /**
-    * @param name
     * @return the attribute type with the given name or throws an OseeTypeDoesNotExist if it does not exist.
     * @throws OseeCoreException
     */
@@ -111,7 +110,6 @@ public class AttributeTypeManager {
    /**
     * Returns the attribute type with the given type id or throws an IllegalArgumentException if it does not exist.
     * 
-    * @param attrTypeId
     * @throws OseeCoreException
     */
    public static AttributeType getType(int attrTypeId) throws OseeCoreException {

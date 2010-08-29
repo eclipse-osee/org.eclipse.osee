@@ -27,11 +27,6 @@ class MessageingServiceToLookupTracker extends ServiceTracker {
    private MessageService messageService;
    private RemoteLookupServiceTracker remoteLookupServiceTracker;
 
-   /**
-    * @param context
-    * @param connectionService
-    * @param exportClassLoader
-    */
    MessageingServiceToLookupTracker(BundleContext context, IConnectionService connectionService, ExportClassLoader exportClassLoader) {
       super(context, MessageService.class.getName(), null);
       this.connectionService = connectionService;

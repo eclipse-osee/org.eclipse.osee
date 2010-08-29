@@ -20,9 +20,6 @@ public class DeleteChange implements CharacterChanger {
    private int srcEndIndex;
    private CharacterChanger next;
 
-   /**
-    * 
-    */
    public DeleteChange(int srcStartIndex, int srcEndIndex) {
       super();
       this.srcStartIndex = srcStartIndex;

@@ -72,8 +72,6 @@ public class XBarGraphLine {
    /**
     * Shows as white until completed, then green
     * 
-    * @param name
-    * @param value
     * @return XBarGraphLine
     */
    public static XBarGraphLine getPercentLine(String name, int value) {

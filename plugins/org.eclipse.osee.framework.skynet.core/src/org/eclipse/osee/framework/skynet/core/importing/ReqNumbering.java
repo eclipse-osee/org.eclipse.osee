@@ -27,7 +27,6 @@ public class ReqNumbering implements Comparable<ReqNumbering> {
    }
 
    /**
-    * @param numbering
     * @return returns whether the numbering argument is a child of this number
     */
    public boolean isChild(ReqNumbering numbering) {

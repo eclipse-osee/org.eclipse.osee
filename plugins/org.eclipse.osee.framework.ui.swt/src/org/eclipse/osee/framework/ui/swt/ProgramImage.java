@@ -20,9 +20,6 @@ import org.eclipse.swt.program.Program;
 public class ProgramImage implements KeyedImage {
    private final String extension;
 
-   /**
-    * @param extension
-    */
    public ProgramImage(String extension) {
       this.extension = extension;
    }

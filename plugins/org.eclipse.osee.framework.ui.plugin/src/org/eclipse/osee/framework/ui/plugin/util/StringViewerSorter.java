@@ -19,15 +19,9 @@ import org.eclipse.jface.viewers.ViewerSorter;
  */
 public class StringViewerSorter extends ViewerSorter {
 
-   /**
-    * 
-    */
    public StringViewerSorter() {
    }
 
-   /**
-    * @param collator
-    */
    public StringViewerSorter(Collator collator) {
       super(collator);
    }

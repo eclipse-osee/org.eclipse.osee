@@ -23,9 +23,6 @@ import org.w3c.dom.Element;
  * @author Ryan D. Brooks
  */
 public class TraceRecord extends TestRecord implements Xmlizable {
-   /**
-    * 
-    */
    private static final long serialVersionUID = 8567378567805515775L;
    private final String objectName;
    private final String methodName;
@@ -38,9 +35,6 @@ public class TraceRecord extends TestRecord implements Xmlizable {
     * TraceRecord Constructor. Sets up a Trace log message.
     * 
     * @param source The object requesting the logging.
-    * @param objectName
-    * @param methodName
-    * @param methodArguments
     * @param timeStamp <b>True </b> if a timestamp should be recorded, <b>False </b> if not.
     */
    public TraceRecord(ITestEnvironmentAccessor source, String objectName, String methodName, MethodFormatter methodArguments, boolean timeStamp, boolean startFlag) {

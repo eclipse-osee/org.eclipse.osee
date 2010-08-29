@@ -49,12 +49,6 @@ public class TestPointResultsData {
    private final String pass;
    private final String total;
 
-   /**
-    * @param value
-    * @param value2
-    * @param value3
-    * @param value4
-    */
    public TestPointResultsData(String aborted, String fail, String pass, String total) {
       this.aborted = aborted;
       this.fail = fail;

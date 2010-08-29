@@ -30,11 +30,6 @@ public class StateListAndTitleDialog extends StateListDialog {
    String reviewTitle;
    XText titleText;
 
-   /**
-    * @param title
-    * @param message
-    * @param values
-    */
    public StateListAndTitleDialog(String title, String message, Collection<String> values) {
       super(title, message, values);
    }

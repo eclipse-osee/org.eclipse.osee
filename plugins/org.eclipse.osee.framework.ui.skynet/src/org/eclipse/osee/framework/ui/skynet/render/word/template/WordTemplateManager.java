@@ -167,7 +167,6 @@ public class WordTemplateManager {
    }
 
    /**
-    * @param artifacts
     * @throws Exception
     */
    public void processArtifacts(WordMLProducer wordMl, List<Artifact> artifacts) throws OseeCoreException {
@@ -214,7 +213,6 @@ public class WordTemplateManager {
    }
 
    /**
-    * @param artifacts
     * @return
     * @throws OseeCoreException
     */
@@ -236,8 +234,6 @@ public class WordTemplateManager {
    /**
     * This method expands wildcard(*) attribute names into all of the attribute types of a particular artifact.
     * 
-    * @param tasks2
-    * @param artifact
     * @return
     * @throws OseeCoreException
     */

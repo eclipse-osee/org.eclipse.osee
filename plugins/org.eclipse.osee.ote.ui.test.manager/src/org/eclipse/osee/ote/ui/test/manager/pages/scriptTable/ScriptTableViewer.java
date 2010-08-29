@@ -64,9 +64,6 @@ public class ScriptTableViewer {
    final int POPUP_RESULTS = 3;
    private XScriptTable scriptTable;
 
-   /**
-    * @param parent
-    */
    public ScriptTableViewer(Composite parent, TestManagerEditor editor) {
       this.testManagerEditor = editor;
       createWidget(parent);
@@ -499,9 +496,6 @@ public class ScriptTableViewer {
       });
    }
 
-   /**
-    * @param files
-    */
    public void addFiles(String[] files) {
       processDroppedFiles(files);
    }

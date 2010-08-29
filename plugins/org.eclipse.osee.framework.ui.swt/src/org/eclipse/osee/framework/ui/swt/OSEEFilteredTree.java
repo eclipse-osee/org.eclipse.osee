@@ -28,11 +28,6 @@ public class OSEEFilteredTree extends FilteredTree {
       this(parent, SWT.BORDER | SWT.MULTI, new PatternFilter());
    }
 
-   /**
-    * @param parent
-    * @param treeStyle
-    * @param filter
-    */
    public OSEEFilteredTree(Composite parent, int treeStyle, PatternFilter filter) {
       super(parent, treeStyle, filter, false);
       setInitialText("");

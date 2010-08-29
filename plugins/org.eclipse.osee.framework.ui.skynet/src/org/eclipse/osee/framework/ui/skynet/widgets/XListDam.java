@@ -30,9 +30,6 @@ public class XListDam extends XList implements IAttributeWidget {
       return artifact;
    }
 
-   /**
-    * @param displayLabel
-    */
    public XListDam(String displayLabel) {
       super(displayLabel);
    }

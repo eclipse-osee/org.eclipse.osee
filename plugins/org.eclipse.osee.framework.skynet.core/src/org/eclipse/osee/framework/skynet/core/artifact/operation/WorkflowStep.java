@@ -23,8 +23,6 @@ public interface WorkflowStep {
     * &lt;step&gt; ::= &lt;artifact operation invocation&gt; | &lt;workflow invocation&gt; | &lt;exit&gt; | &lt;flow
     * control construct&gt;
     * 
-    * @param artifacts
-    * @param monitor
     * @return list of artifacts that are the result of this step (if null) engine with replace with the empty list
     * @throws Exception
     */

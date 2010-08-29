@@ -97,10 +97,6 @@ public abstract class EnumeratedCellEditor<T extends Enum<T>> extends CustomTabl
    /**
     * Constructs a new Combo Cell Editor
     * 
-    * @param table
-    * @param columnIndex
-    * @param comboStyle
-    * @param toolTip
     * @param clazz the Class of the <CODE>Enum</CODE> whose enumerations will appear as options in the cell editor's
     * combo box
     */
@@ -160,7 +156,6 @@ public abstract class EnumeratedCellEditor<T extends Enum<T>> extends CustomTabl
     * Either enables or disables this cell editor. A disabled cell editor will not edit any cells in the entire column
     * that this cell editor is attached to.
     * 
-    * @param enabled
     */
    public void setEnabled(boolean enabled) {
       // do nothing if already enabled/disabled

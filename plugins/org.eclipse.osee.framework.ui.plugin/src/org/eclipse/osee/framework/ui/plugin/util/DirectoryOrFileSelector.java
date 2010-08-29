@@ -40,10 +40,6 @@ public class DirectoryOrFileSelector extends Composite implements Listener {
    private final Button btnDirectory;
    private final Button btnSingleFile;
 
-   /**
-    * @param parent
-    * @param style
-    */
    public DirectoryOrFileSelector(Composite parent, int style, String name, Listener listener) {
       super(parent, style);
       GridLayout gdMain = new GridLayout();

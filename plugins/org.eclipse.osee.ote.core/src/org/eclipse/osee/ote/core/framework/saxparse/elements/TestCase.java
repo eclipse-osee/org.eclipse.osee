@@ -18,9 +18,6 @@ import org.xml.sax.Attributes;
  */
 public class TestCase extends ElementHandlers {
 
-   /**
-    * @param name
-    */
    public TestCase() {
       super("TestCase");
    }

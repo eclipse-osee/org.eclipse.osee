@@ -31,9 +31,6 @@ public interface IServiceStatusDataVisitor {
 
    public void asTestComplete(TestComplete testComplete);
 
-   /**
-    * @param testStart
-    */
    public void asTestStart(TestStart testStart);
 
 }

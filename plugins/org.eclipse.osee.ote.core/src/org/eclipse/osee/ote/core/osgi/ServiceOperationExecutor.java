@@ -68,7 +68,6 @@ public class ServiceOperationExecutor extends ServiceTracker {
    /**
     * executes the operation.
     * 
-    * @param operation
     * @return true if the operation completed or false if the dependent service was not acquired
     * @throws InterruptedException if the service operation was interrupted
     */

@@ -41,8 +41,6 @@ public class Find {
 
    /**
     * @param patterns a Collection of strings that are regular expressions
-    * @param files
-    * @param converter
     */
    public Find(Collection<String> patterns, Collection<File> files, FileToBufferConvert converter) {
       this.files = files;
@@ -132,8 +130,6 @@ public class Find {
     * the same file for the next pattern) otherwise up to a maxMatches for all patterns in a given file(then end search
     * of that file and start on the next one)
     * 
-    * @param maxMatches
-    * @param maxIsPerPattern
     */
    public void find(int maxMatches, boolean maxIsPerPattern) {
       for (Iterator<File> iter = files.iterator(); iter.hasNext();) { // for each file

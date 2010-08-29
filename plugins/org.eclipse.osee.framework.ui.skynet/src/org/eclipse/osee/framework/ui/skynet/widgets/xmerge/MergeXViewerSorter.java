@@ -25,9 +25,6 @@ public class MergeXViewerSorter extends XViewerSorter {
    protected final XViewer xViewer;
    protected final XMergeLabelProvider labelProvider;
 
-   /**
-    * @param xViewer
-    */
    public MergeXViewerSorter(XViewer xViewer, XMergeLabelProvider labelProvider) {
       super(xViewer);
       this.xViewer = xViewer;

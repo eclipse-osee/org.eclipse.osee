@@ -38,9 +38,6 @@ public class CharArrayChange implements CharacterChanger {
       this.length = length;
    }
 
-   /**
-    * 
-    */
    public CharArrayChange(int srcStartIndex, int srcEndIndex, char[] newChars, int offset, int length) {
       this(srcStartIndex, srcEndIndex, newChars, offset, length, false);
    }

@@ -28,8 +28,6 @@ public class RuntimeBundleServer {
    /**
     * Creates a new ClassServer which will serve all projects currently in the workspace
     * 
-    * @param safeWorkspaceTracker
-    * @param testManager
     */
    public RuntimeBundleServer(SafeWorkspaceTracker safeWorkspaceTracker) {
       try {

@@ -48,12 +48,6 @@ class OteJmsServiceConnector implements ServiceNotification, OseeMessagingStatus
    private final ExportClassLoader exportClassLoader;
    private final OseeMessagingListener myOteServiceRequestHandler;
 
-   /**
-    * @param remoteServiceLookup
-    * @param messageService
-    * @param connectionService
-    * @param exportClassLoader
-    */
    OteJmsServiceConnector(RemoteServiceLookup remoteServiceLookup, MessageService messageService, IConnectionService connectionService, ExportClassLoader exportClassLoader) {
       this.remoteServiceLookup = remoteServiceLookup;
       this.messageService = messageService;

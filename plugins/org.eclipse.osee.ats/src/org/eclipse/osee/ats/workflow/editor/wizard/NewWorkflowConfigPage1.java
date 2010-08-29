@@ -33,9 +33,6 @@ import org.eclipse.swt.widgets.Composite;
 public class NewWorkflowConfigPage1 extends WizardPage {
    private WorkPage page;
 
-   /**
-    * @param actionWizard
-    */
    public NewWorkflowConfigPage1(AtsWorkflowConfigCreationWizard actionWizard) {
       super("Create new ATS Workflow Configuration", "Create ATS Workflow Configuration", null);
       setMessage("Enter workflow namespace.");

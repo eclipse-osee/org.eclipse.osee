@@ -137,9 +137,6 @@ public class EditWFCAttributeWizardPage extends WizardPage {
       }
    };
 
-   /**
-    * @param pageName
-    */
 
    public EditWFCAttributeWizardPage(AttributeConflict conflict) {
       super(TITLE);

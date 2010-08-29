@@ -23,10 +23,6 @@ public class ConfigData {
       return machineName;
    }
 
-   /**
-    * @param machineName
-    * @param name
-    */
    public ConfigData(String machineName) {
       this.machineName = machineName;
    }

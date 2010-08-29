@@ -144,7 +144,6 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
    /**
     * adds a {@link Message} who are mapped to this data object
     * 
-    * @param message
     */
    @SuppressWarnings("unchecked")
    public void addMessage(Message message) {
@@ -196,9 +195,6 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
 
    public abstract void visit(IMessageDataVisitor visitor);
 
-   /**
-    * 
-    */
    public void dispose() {
       messages.clear();
       if (writer != null) {
@@ -270,7 +266,6 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
    /**
     * Override this method if you need to set some default data in the backing buffer.
     * 
-    * @param data
     */
    public void setNewBackingBuffer(byte[] data) {
       setCurrentLength(data.length);
@@ -592,9 +587,6 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
       this.isScheduled = isScheduled;
    }
 
-   /**
-    * 
-    */
    private void notifyPostSendListeners() {
       try {
          for (IMessageSendListener listener : messageSendListeners) {
@@ -605,9 +597,6 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
       }
    }
 
-   /**
-    * 
-    */
    private void notifyPreSendListeners() {
       try {
          for (IMessageSendListener listener : messageSendListeners) {

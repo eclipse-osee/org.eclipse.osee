@@ -180,9 +180,6 @@ public class OseeSequenceImpl implements IOseeSequence {
       private int prefetchSize;
       private final boolean aggressiveFetch;
 
-      /**
-       * @param aggressiveFetch
-       */
       public SequenceRange(boolean aggressiveFetch) {
          super();
          this.prefetchSize = 1;

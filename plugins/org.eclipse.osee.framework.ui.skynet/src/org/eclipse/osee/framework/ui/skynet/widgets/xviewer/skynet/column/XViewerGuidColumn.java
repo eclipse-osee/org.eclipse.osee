@@ -33,7 +33,6 @@ public class XViewerGuidColumn extends XViewerValueColumn {
     * XViewer uses copies of column definitions so originals that are registered are not corrupted. Classes extending
     * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
     * 
-    * @param col
     */
    @Override
    public XViewerGuidColumn copy() {

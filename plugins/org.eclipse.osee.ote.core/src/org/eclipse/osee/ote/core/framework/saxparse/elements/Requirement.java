@@ -18,9 +18,6 @@ import org.xml.sax.Attributes;
  */
 public class Requirement extends ElementHandlers {
 
-   /**
-    * @param name
-    */
    public Requirement() {
       super("Requirement");
    }

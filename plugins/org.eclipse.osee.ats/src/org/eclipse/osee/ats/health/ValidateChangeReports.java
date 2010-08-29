@@ -183,7 +183,6 @@ public class ValidateChangeReports extends XNavigateItemAction {
    /**
     * Return true if current change report is same as stored change report data
     * 
-    * @param teamArt
     * @return Result.TrueResult if same, else Result.FalseResult with comparison in resultData
     * @throws ParserConfigurationException
     */

@@ -43,8 +43,6 @@ public class ReturnCode {
    /**
     * Creates a new <code>ReturnCode</code> with a given value and description.
     * 
-    * @param value
-    * @param description
     */
    private ReturnCode(int value, String description) {
       super();

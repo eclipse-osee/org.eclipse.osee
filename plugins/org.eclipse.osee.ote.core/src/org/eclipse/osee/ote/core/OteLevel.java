@@ -23,10 +23,6 @@ public class OteLevel extends Level {
    public static final Level TEST_SEVERE = new OteLevel("TEST_SEVERE", SEVERE.intValue() + 100);
    public static final Level ENV_SEVERE = new OteLevel("ENV_SEVERE", SEVERE.intValue() + 200);
 
-   /**
-    * @param name
-    * @param value
-    */
    protected OteLevel(String name, int value) {
       super(name, value);
    }

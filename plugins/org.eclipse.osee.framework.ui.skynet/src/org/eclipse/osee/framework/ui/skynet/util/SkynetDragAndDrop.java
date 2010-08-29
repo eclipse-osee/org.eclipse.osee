@@ -196,7 +196,6 @@ public abstract class SkynetDragAndDrop {
     * override this method and its cousins rather than performDrop in order to have the drop data preprocessed and
     * passed in the desired form
     * 
-    * @param text
     */
    public void performTextDrop(String text) {
       // provided for subclass implementation
@@ -206,7 +205,6 @@ public abstract class SkynetDragAndDrop {
     * override this method and its cousins rather than performDrop in order to have the drop data preprocessed and
     * passed in the desired form
     * 
-    * @param dropArtifacts
     */
    public void performArtifactDrop(Artifact[] dropArtifacts) {
       // provided for subclass implementation
@@ -216,7 +214,6 @@ public abstract class SkynetDragAndDrop {
     * override this method and its cousins rather than performDrop in order to have the drop data preprocessed and
     * passed in the desired form
     * 
-    * @param fileNames
     */
    public void performFileDrop(String[] fileNames) {
       // provided for subclass implementation

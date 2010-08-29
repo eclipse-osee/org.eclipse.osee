@@ -16,9 +16,6 @@ package org.eclipse.osee.framework.messaging.event.skynet.event;
 public class ConfigurationModifiedEvent extends SkynetEventBase {
    private static final long serialVersionUID = 4199206743701390599L;
 
-   /**
-    * @param author
-    */
    public ConfigurationModifiedEvent(NetworkSender networkSender) {
       super(networkSender);
    }

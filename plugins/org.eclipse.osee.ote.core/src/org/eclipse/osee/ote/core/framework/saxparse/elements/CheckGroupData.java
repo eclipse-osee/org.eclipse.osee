@@ -24,9 +24,6 @@ public class CheckGroupData {
       return mode;
    }
 
-   /**
-    * @param name
-    */
    CheckGroupData(String mode) {
       this.mode = mode;
    }

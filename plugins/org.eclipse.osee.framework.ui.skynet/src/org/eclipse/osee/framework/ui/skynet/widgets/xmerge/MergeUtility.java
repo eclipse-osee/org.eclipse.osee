@@ -215,9 +215,6 @@ public class MergeUtility {
       return false;
    }
 
-   /**
-    * @param conflict
-    */
    public static boolean showAttributeDeletedConflict(Conflict conflict, Shell shell) {
       if (conflict.getConflictType().equals(ConflictType.ATTRIBUTE)) {
          MessageDialog dialog =

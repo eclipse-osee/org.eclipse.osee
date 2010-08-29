@@ -21,7 +21,6 @@ public interface IArtifactExtractorDelegate {
    /**
     * Determines whether this delegate can operate with the selected parser
     * 
-    * @param parser
     * @return whether this delegate is compatible with the parser
     */
    public boolean isApplicable(IArtifactExtractor parser);
@@ -50,13 +49,6 @@ public interface IArtifactExtractorDelegate {
     * and initialize it with data from the content, or to append the content to the last, or a prior created
     * RoughArtifact.
     * 
-    * @param forceBody
-    * @param forcePrimaryType
-    * @param headerNumber
-    * @param listIdentifier
-    * @param paragraphStyle
-    * @param content
-    * @param isParagraph
     * @throws OseeCoreException
     */
    public void processContent(RoughArtifactCollector collector, boolean forceBody, boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle, String content, boolean isParagraph) throws OseeCoreException;

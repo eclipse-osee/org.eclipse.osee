@@ -188,7 +188,6 @@ public class VersionArtifact extends Artifact implements ICommitConfigArtifact {
    /**
     * Refrain from using this method as Version Artifact names can be changed by the user.
     * 
-    * @param name
     * @return Version
     */
    public static VersionArtifact getSoleVersion(String name) throws OseeCoreException {

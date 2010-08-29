@@ -26,12 +26,6 @@ public class NetworkAccessControlArtifactsEvent extends SkynetArtifactsEventBase
       return accessControlModType;
    }
 
-   /**
-    * @param branchId
-    * @param artifactIds
-    * @param toArtifactTypeId
-    * @param author
-    */
    public NetworkAccessControlArtifactsEvent(String accessControlModType, int branchId, Collection<Integer> artifactIds, Collection<Integer> artifactTypeIds, NetworkSender networkSender) {
       super(branchId, artifactIds, artifactTypeIds, networkSender);
       this.accessControlModType = accessControlModType;

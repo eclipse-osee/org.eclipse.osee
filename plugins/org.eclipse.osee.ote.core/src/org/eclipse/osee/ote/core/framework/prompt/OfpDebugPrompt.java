@@ -21,9 +21,6 @@ import org.eclipse.osee.ote.core.TestScript;
 public class OfpDebugPrompt extends ScriptPausePromptImpl {
 
    /**
-    * @param script
-    * @param id
-    * @param message
     * @throws UnknownHostException
     */
    public OfpDebugPrompt(IServiceConnector connector, TestScript script, String id, String message) throws UnknownHostException {

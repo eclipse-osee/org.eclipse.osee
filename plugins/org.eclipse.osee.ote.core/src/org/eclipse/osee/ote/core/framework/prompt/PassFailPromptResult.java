@@ -14,10 +14,6 @@ public class PassFailPromptResult {
    private final boolean pass;
    private final String text;
 
-   /**
-    * @param pass
-    * @param text
-    */
    public PassFailPromptResult(boolean pass, String text) {
       this.pass = pass;
       this.text = text;

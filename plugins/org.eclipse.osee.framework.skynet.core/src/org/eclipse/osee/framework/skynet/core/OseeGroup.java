@@ -47,7 +47,6 @@ public class OseeGroup {
    /**
     * This does not persist the newly created relation that is the callers responsibility.
     * 
-    * @param user
     */
    public void addMember(User user) throws OseeCoreException {
       getGroupArtifact().addRelation(CoreRelationTypes.Users_User, user);

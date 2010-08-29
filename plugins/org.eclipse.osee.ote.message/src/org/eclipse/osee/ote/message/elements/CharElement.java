@@ -28,10 +28,6 @@ import org.eclipse.osee.ote.message.listener.MessageSystemListener;
  */
 public class CharElement extends DiscreteElement<Character> {
 
-   /**
-    * @param message
-    * @param elementName
-    */
    public CharElement(Message<?, ?, ?> message, String elementName, MessageData messageData, int byteOffset, int msb, int lsb) {
       this(message, elementName, messageData, byteOffset, msb, lsb, msb, lsb);
    }
@@ -52,7 +48,6 @@ public class CharElement extends DiscreteElement<Character> {
    /**
     * Checks that this element correctly forwards a message sent from cause with the value passed.
     * 
-    * @param accessor
     * @param cause The originator of the signal
     * @param value The value sent by cause and being forwarded by this element
     * @throws InterruptedException
@@ -84,7 +79,6 @@ public class CharElement extends DiscreteElement<Character> {
    /**
     * Verifies that the element is Not set to "value" within the number of "milliseconds" passed.
     * 
-    * @param accessor
     * @param value Expected value.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
@@ -97,7 +91,6 @@ public class CharElement extends DiscreteElement<Character> {
    /**
     * Verifies that the element is Not set to "value" within the number of "milliseconds" passed.
     * 
-    * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
     * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
     * logging a point.
@@ -161,7 +154,6 @@ public class CharElement extends DiscreteElement<Character> {
    /**
     * Verifies that the element is set to "value" within the number of "milliseconds" passed.
     * 
-    * @param accessor
     * @param value Expected value.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
@@ -174,7 +166,6 @@ public class CharElement extends DiscreteElement<Character> {
    /**
     * Verifies that the element is set to "value" within the number of "milliseconds" passed.
     * 
-    * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
     * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
     * logging a point.
@@ -236,8 +227,6 @@ public class CharElement extends DiscreteElement<Character> {
    }
 
    /**
-    * @param string
-    * @param value
     * @return
     */
    private boolean compareString(String string, String value) {
@@ -247,7 +236,6 @@ public class CharElement extends DiscreteElement<Character> {
    /**
     * Verifies that the string starting at the element is not set to "value".
     * 
-    * @param accessor
     * @param value Expected value
     * @return if the check passed
     */
@@ -258,7 +246,6 @@ public class CharElement extends DiscreteElement<Character> {
    /**
     * Verifies that the string starting at the element is not set to "value".
     * 
-    * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
     * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
     * logging a point.
@@ -295,7 +282,6 @@ public class CharElement extends DiscreteElement<Character> {
    /**
     * Verifies that the string starting at the element is set to "value".
     * 
-    * @param accessor
     * @param value Expected value
     * @return if the check passed
     */
@@ -306,7 +292,6 @@ public class CharElement extends DiscreteElement<Character> {
    /**
     * Verifies that the string starting at the element is set to "value".
     * 
-    * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
     * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
     * logging a point.
@@ -341,7 +326,6 @@ public class CharElement extends DiscreteElement<Character> {
    /**
     * Returns the string of length "stringLength" starting as the position of the element.
     * 
-    * @param accessor
     * @param stringLength the length of the string to return
     * @return the string starting with this element
     */
@@ -352,7 +336,6 @@ public class CharElement extends DiscreteElement<Character> {
    /**
     * Sets the element and the next ("value".length() -1) bytes to "value".charAt().
     * 
-    * @param accessor
     * @param value the string to set the bytes to
     */
    @Override
@@ -385,7 +368,6 @@ public class CharElement extends DiscreteElement<Character> {
     * Sets the element and the next ("value".length() -1) bytes to "value".charAt() and immediately sends the message
     * that contains it..
     * 
-    * @param accessor
     * @param value the string to set the bytes to
     */
    public void setAndSend(ITestEnvironmentAccessor accessor, String value) {
@@ -397,7 +379,6 @@ public class CharElement extends DiscreteElement<Character> {
     * Sets the element and the next ("value".length() -1) bytes to "value".charAt(). <b>No Log Record gets created in
     * the Script Log File.</b>
     * 
-    * @param accessor
     * @param value the string to set the bytes to
     */
    public void setNoLog(ITestEnvironmentAccessor accessor, String value) {
@@ -407,7 +388,6 @@ public class CharElement extends DiscreteElement<Character> {
    /**
     * Sets the element to the "value" passed and immediately sends the meessage that contains it..
     * 
-    * @param accessor
     * @param value The value to set.
     */
    public void setAndSend(ITestEnvironmentAccessor accessor, Character value) {
@@ -418,7 +398,6 @@ public class CharElement extends DiscreteElement<Character> {
    /**
     * Waits until the element equals the "value" passed. Returns last value observed upon a timout.
     * 
-    * @param accessor
     * @param value The expected value to wait for.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value found. Either value expected or value found at timeout.
@@ -464,7 +443,6 @@ public class CharElement extends DiscreteElement<Character> {
    /**
     * Waits until the element does not equal the "value" passed. Returns last value observed upon a timout.
     * 
-    * @param accessor
     * @param value The expected value to wait for.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value found. Either value expected or value found at timeout.

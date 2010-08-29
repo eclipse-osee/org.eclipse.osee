@@ -18,9 +18,6 @@ import org.xml.sax.Attributes;
  */
 public class GroupName extends ElementHandlers {
 
-   /**
-    * @param name
-    */
    public GroupName() {
       super("GroupName");
    }

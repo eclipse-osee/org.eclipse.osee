@@ -22,9 +22,6 @@ import org.eclipse.osee.ote.messaging.dds.NotImplementedException;
 public class Condition {
    protected boolean trigger;
 
-   /**
-    * 
-    */
    public Condition() {
       this.trigger = false;
 

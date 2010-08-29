@@ -155,18 +155,12 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       removableListenerHandler.dispose();
    }
 
-   /**
-    * 
-    */
    private void notifyPostDestroyListeners() {
       for (IMessageDisposeListener listener : postMessageDisposeListeners) {
          listener.onPostDispose(this);
       }
    }
 
-   /**
-    * 
-    */
    private void notifyPreDestroyListeners() {
       for (IMessageDisposeListener listener : preMessageDisposeListeners) {
          try {
@@ -327,7 +321,6 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    /**
     * Associates Messages to MemTypes based on the memType's physical availability
     * 
-    * @param accessor
     */
    //	public abstract void associateMessages(S accessor);
    /**
@@ -484,7 +477,6 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    }
 
    /**
-    * @param elementPath
     * @return boolean
     */
    public boolean hasElement(List<Object> elementPath) {
@@ -535,8 +527,6 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    }
 
    /**
-    * @param elementName
-    * @param type
     * @return the element associated with the given name
     * @throws IllegalArgumentException if an element doesn't exist with given name. Use {@link #hasElement(String)} with
     * any use of this function.
@@ -763,7 +753,6 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    /**
     * Verifies that the message is sent at least once using the default message timeout.
     * 
-    * @param accessor
     * @return if the check passed
     * @throws InterruptedException
     */
@@ -774,7 +763,6 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    /**
     * Verifies that the message is sent at least once within the time specified.
     * 
-    * @param accessor
     * @param milliseconds the amount to time (in milliseconds) to allow
     * @return if the check passed
     * @throws InterruptedException
@@ -786,7 +774,6 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    /**
     * Verifies that the message is sent at least "numTransmission" times within the default message timeout.
     * 
-    * @param accessor
     * @param numTransmissions the number of transmissions to look for
     * @return if the check passed
     * @throws InterruptedException
@@ -798,7 +785,6 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    /**
     * Verifies that the message is sent at least "numTransmission" times within the time specified.
     * 
-    * @param accessor
     * @param numTransmissions the number of transmission to look for
     * @param milliseconds the amount to time (in milliseconds) to allow
     * @return if the check passed
@@ -821,7 +807,6 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    /**
     * Verifies that the message is not sent within the time specified.
     * 
-    * @param accessor
     * @param milliseconds the amount to time (in milliseconds) to check
     * @return if the check passed
     * @throws InterruptedException
@@ -861,7 +846,6 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    /**
     * Waits until message is sent at least once within the default message timeout.
     * 
-    * @param accessor
     * @return if the check passed
     * @throws InterruptedException
     */
@@ -872,7 +856,6 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    /**
     * Waits until message is sent at least once within the time specified.
     * 
-    * @param accessor
     * @param milliseconds the amount to time (in milliseconds) to allow
     * @return if the check passed
     * @throws InterruptedException
@@ -884,7 +867,6 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    /**
     * Waits until message is sent at least "numTransmission" times within the default message timeout.
     * 
-    * @param accessor
     * @param numTransmissions the number of transmissions to look for
     * @return if the check passed
     * @throws InterruptedException
@@ -896,7 +878,6 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    /**
     * Waits until message is sent at least "numTransmission" times within the time specified.
     * 
-    * @param accessor
     * @param milliseconds the amount to time (in milliseconds) to allow
     * @return if the check passed
     * @throws InterruptedException
@@ -967,7 +948,6 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    /**
     * restores the state of this message. The state is intended to come from a remote instance of this message.
     * 
-    * @param state
     */
    public void setMessageState(final MessageState state) {
       checkState();
@@ -1040,9 +1020,6 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       return true;
    }
 
-   /**
-    * 
-    */
    private void notifyPostMemSourceChangeListeners(DataType old, DataType newtype, Message<?, ?, ?> message) {
       checkState();
       for (IMemSourceChangeListener listener : postMemSourceChangeListeners) {
@@ -1054,9 +1031,6 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       }
    }
 
-   /**
-    * 
-    */
    private void notifyPreMemSourceChangeListeners(DataType old, DataType newtype, Message<?, ?, ?> message) {
       checkState();
       for (IMemSourceChangeListener listener : preMemSourceChangeListeners) {
@@ -1195,7 +1169,6 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    }
 
    /**
-    * @param element
     * @return boolean
     */
    public boolean isValidElement(Element currentElement, Element proposedElement) {
@@ -1260,7 +1233,6 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
     * Changes the rate a message is being published at. NOTE: This is only going to be allowed to be used on periodic
     * message & users are not allowed to set rate to zero.
     * 
-    * @param accessor
     * @param newRate - hz
     */
    public void changeRate(double newRate) {
@@ -1281,7 +1253,6 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    /**
     * Changes the rate back to the default rate.
     * 
-    * @param accessor
     */
    public void changeRateToDefault(ITestEnvironmentMessageSystemAccessor accessor) {
       //      accessor.getMsgManager().changeMessageRate(this, defaultRate, rate);

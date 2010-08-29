@@ -125,9 +125,6 @@ public abstract class TextCellEditor extends CustomTableCellEditor<String> {
    /**
     * Called when the cell editor has lost focus.
     * 
-    * @param itemIndex
-    * @param value
-    * @param previousValue
     * @return String
     */
    @Override
@@ -137,7 +134,6 @@ public abstract class TextCellEditor extends CustomTableCellEditor<String> {
     * Either enables or disables this cell editor. A disabled cell editor will not edit any cells in the entire column
     * that this cell editor is attached to.
     * 
-    * @param enabled
     */
    public void setEnabled(boolean enabled) {
       // do nothing if already enabled/disabled

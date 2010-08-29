@@ -36,7 +36,6 @@ public class ScriptTask {
    private ScriptStatusEnum status = ScriptStatusEnum.INCOMPATIBLE;
 
    /**
-    * @param rawFilename
     * @param outputDir alternate output directory for tmo output files null will default to script directory
     */
    public ScriptTask(String rawFilename, String outputDir) {

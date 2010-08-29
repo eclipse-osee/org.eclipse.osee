@@ -25,10 +25,6 @@ public class QosPolicy {
    private final String policyName;
    private final long policyId;
 
-   /**
-    * @param policyName
-    * @param policyId
-    */
    private QosPolicy(String policyName, long policyId) {
       // DONT_NEED This method has not been implemented, but is called out in the spec
       if (true) {

@@ -17,9 +17,6 @@ package org.eclipse.osee.framework.skynet.core.artifact.format;
  */
 public class BaseStyleSheetArtifact implements IStyleSheetArtifact {
 
-   /**
-    * 
-    */
    public BaseStyleSheetArtifact() {
       super();
    }

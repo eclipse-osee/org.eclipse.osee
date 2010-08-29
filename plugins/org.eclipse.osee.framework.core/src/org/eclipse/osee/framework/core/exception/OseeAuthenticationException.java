@@ -27,26 +27,16 @@ public class OseeAuthenticationException extends OseeCoreException {
 
    private final AuthenticationErrorCode errorCode;
 
-   /**
-    * @param message
-    * @param cause
-    */
    public OseeAuthenticationException(String message, Throwable cause) {
       super(message, cause);
       this.errorCode = null;
    }
 
-   /**
-    * @param message
-    */
    public OseeAuthenticationException(String message) {
       super(message);
       this.errorCode = null;
    }
 
-   /**
-    * @param cause
-    */
    public OseeAuthenticationException(Throwable cause) {
       super(cause);
       this.errorCode = null;

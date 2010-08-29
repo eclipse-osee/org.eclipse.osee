@@ -18,19 +18,11 @@ import net.jini.core.lookup.ServiceItem;
 public interface IScheduleService extends Remote {
 
    /**
-    * @param startTime
-    * @param interval
-    * @param calendar
-    * @param type
-    * @param path
-    * @param dateStr
-    * @param bems
     * @throws RemoteException
     */
    public void addTask(int startTime, int interval, Calendar calendar, int type, String path, String dateStr, String bems, ServiceItem serviceItem) throws RemoteException;
 
    /**
-    * @param taskId
     * @throws RemoteException
     */
    public void removeTask(String taskId) throws RemoteException;

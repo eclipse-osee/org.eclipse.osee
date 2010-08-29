@@ -137,7 +137,6 @@ public class JarCollectionNature implements IProjectNature {
    }
 
    /**
-    * @param manifestFile
     * @return
     * @throws IOException
     * @throws FileNotFoundException

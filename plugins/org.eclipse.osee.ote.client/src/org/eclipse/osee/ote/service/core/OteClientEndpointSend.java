@@ -55,9 +55,6 @@ public class OteClientEndpointSend implements EndpointSend {
    public void start(Properties properties) {
    }
 
-   /**
-    * @param testClientServiceImpl
-    */
    public void setTestClientService(IOteClientService testClientServiceImpl) {
       this.clientService = testClientServiceImpl;
    }

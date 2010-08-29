@@ -54,9 +54,6 @@ public class FileWatchList {
       }
    }
 
-   /**
-    * 
-    */
    private void removeOldestWatchItem() {
       FileWatchItem oldest = null;
       for (FileWatchItem item : fileWatchItems) {
@@ -102,7 +99,6 @@ public class FileWatchList {
    }
 
    /**
-    * @param file
     * @return
     */
    private FileWatchItem findWatchItem(IFile file) {

@@ -48,9 +48,6 @@ public class XFileTextWithSelectionDialog extends XText {
       this("", Type.File);
    }
 
-   /**
-    * @param displayLabel
-    */
    public XFileTextWithSelectionDialog(String displayLabel) {
       this(displayLabel, Type.File);
    }

@@ -20,8 +20,6 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
 public class XNavigateItemFolder extends XNavigateItem {
 
    /**
-    * @param parent
-    * @param name
     * @throws OseeArgumentException
     */
    public XNavigateItemFolder(XNavigateItem parent, String name) throws OseeArgumentException {
@@ -29,9 +27,6 @@ public class XNavigateItemFolder extends XNavigateItem {
    }
 
    /**
-    * @param parent
-    * @param name
-    * @param image
     * @throws OseeArgumentException
     */
    public XNavigateItemFolder(XNavigateItem parent, String name, KeyedImage oseeImage) throws OseeArgumentException {

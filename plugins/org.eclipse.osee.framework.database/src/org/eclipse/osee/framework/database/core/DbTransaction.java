@@ -42,7 +42,6 @@ public abstract class DbTransaction {
    /**
     * Provides the transaction's work implementation.
     * 
-    * @param connection
     * @throws OseeCoreException
     */
    protected abstract void handleTxWork(OseeConnection connection) throws OseeCoreException;
@@ -52,7 +51,6 @@ public abstract class DbTransaction {
     * This convenience method is provided so child classes have access to the exception. <br/>
     * <b>Override to handle transaction exception</b>
     * 
-    * @param ex
     * @throws Exception
     */
    protected void handleTxException(Exception ex) {

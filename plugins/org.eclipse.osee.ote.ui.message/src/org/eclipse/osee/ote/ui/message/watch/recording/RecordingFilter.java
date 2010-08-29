@@ -43,9 +43,6 @@ public class RecordingFilter extends WizardPage {
    private CheckboxTreeViewer viewer;
    private final WatchList watchList;
 
-   /**
-    * @param rootNode
-    */
    public RecordingFilter(WatchList watchList) {
       super("Filter Recording");
       setTitle("Recording File");

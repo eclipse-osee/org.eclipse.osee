@@ -36,9 +36,6 @@ public class ArtifactGraphContentProvider implements IGraphEntityContentProvider
    // private static final Collection<Artifact>EMPTY_LIST = new ArrayList<Artifact>(0);
    private final SkyWalkerOptions options;
 
-   /**
-    * @param levels
-    */
    public ArtifactGraphContentProvider(SkyWalkerOptions options) {
       super();
       this.options = options;

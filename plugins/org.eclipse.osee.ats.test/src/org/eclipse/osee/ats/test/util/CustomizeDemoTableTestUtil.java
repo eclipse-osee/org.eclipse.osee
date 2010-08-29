@@ -23,9 +23,6 @@ import org.eclipse.swt.widgets.Control;
  */
 public class CustomizeDemoTableTestUtil extends XViewerCustomizeDialog {
 
-   /**
-    * @param viewer
-    */
    public CustomizeDemoTableTestUtil(XViewer viewer) {
       super(viewer);
    }

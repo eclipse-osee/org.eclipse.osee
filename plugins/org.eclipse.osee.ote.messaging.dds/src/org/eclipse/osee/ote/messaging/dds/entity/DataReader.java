@@ -601,7 +601,6 @@ public class DataReader extends DomainEntity {
     * This is intended to be called whenever new data is "published" to the Service. Calls onDataAvailable on the
     * attached <code>DataReaderListener</code> as appropriate.
     * 
-    * @param theData
     */
    void store(Data theData) { // package scope
       // Get the data portion from theData

@@ -18,9 +18,6 @@ import org.xml.sax.Attributes;
  */
 public class Debug extends ElementHandlers {
 
-   /**
-    * @param name
-    */
    public Debug() {
       super("Debug");
    }

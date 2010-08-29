@@ -62,10 +62,6 @@ public class XNavigateComposite extends Composite {
       DontCopySearchItem
    };
 
-   /**
-    * @param parent
-    * @param style
-    */
    public XNavigateComposite(XNavigateViewItems navigateViewItems, Composite parent, int style) {
       super(parent, style);
       this.navigateViewItems = navigateViewItems;

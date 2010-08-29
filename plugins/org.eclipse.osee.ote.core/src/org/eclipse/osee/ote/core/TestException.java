@@ -17,9 +17,6 @@ import org.eclipse.osee.framework.logging.IHealthStatus;
 
 public class TestException extends RuntimeException {
 
-   /**
-    * 
-    */
    private static final long serialVersionUID = -5628986844200418864L;
 
    private final String threadCauseName;
@@ -36,9 +33,6 @@ public class TestException extends RuntimeException {
       threadCauseName = Thread.currentThread().getName();
    }
 
-   /**
-    * @param status
-    */
    public TestException(String message, List<IHealthStatus> status) {
       this(message, Level.SEVERE);
       this.status = status;

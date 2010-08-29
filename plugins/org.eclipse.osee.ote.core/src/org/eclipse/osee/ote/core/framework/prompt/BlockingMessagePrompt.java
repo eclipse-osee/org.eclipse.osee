@@ -28,8 +28,6 @@ public class BlockingMessagePrompt extends AbstractRemotePrompt implements IResu
    private boolean responded;
 
    /**
-    * @param id
-    * @param message
     * @throws UnknownHostException
     */
    public BlockingMessagePrompt(IServiceConnector connector, String id, String message) throws UnknownHostException {
@@ -37,8 +35,6 @@ public class BlockingMessagePrompt extends AbstractRemotePrompt implements IResu
    }
 
    /**
-    * @param session
-    * @param timeout
     * @return true if the user did not respond within the time specified and false if the user responded in time
     * @throws Exception
     */

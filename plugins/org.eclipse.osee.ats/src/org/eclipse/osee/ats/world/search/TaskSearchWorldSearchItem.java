@@ -64,17 +64,10 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
    private XHyperlabelGroupSelection groupWidget = null;
    private XCombo versionCombo = null;
 
-   /**
-    * @param worldSearchItem
-    */
    public TaskSearchWorldSearchItem(WorldSearchItem worldSearchItem) {
       super(worldSearchItem);
    }
 
-   /**
-    * @param name
-    * @param loadView
-    */
    public TaskSearchWorldSearchItem() {
       super("Task Search");
    }

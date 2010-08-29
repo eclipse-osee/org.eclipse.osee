@@ -17,24 +17,14 @@ public class OseeInvalidAuthenticationProtocolException extends OseeAuthenticati
 
    private static final long serialVersionUID = 1890728724625261131L;
 
-   /**
-    * @param message
-    * @param cause
-    */
    public OseeInvalidAuthenticationProtocolException(String message, Throwable cause) {
       super(message, cause);
    }
 
-   /**
-    * @param message
-    */
    public OseeInvalidAuthenticationProtocolException(String message) {
       super(message);
    }
 
-   /**
-    * @param cause
-    */
    public OseeInvalidAuthenticationProtocolException(Throwable cause) {
       super(cause);
    }

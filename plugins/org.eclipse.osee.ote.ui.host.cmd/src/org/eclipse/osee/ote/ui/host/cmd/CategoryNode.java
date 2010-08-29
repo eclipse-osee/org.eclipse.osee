@@ -17,9 +17,6 @@ import org.eclipse.osee.framework.jdk.core.type.TreeParent;
  */
 public class CategoryNode extends TreeParent {
 
-   /**
-    * @param name
-    */
    public CategoryNode(String name) {
       super(name);
    }

@@ -24,10 +24,6 @@ public class ReggieMonitorServiceNode extends ServiceNode {
    private String spawnedReggieId;
    private String spawnedReggieOnHost;
 
-   /**
-    * @param serviceID
-    * @param serviceItem
-    */
    public ReggieMonitorServiceNode(ServiceID serviceID, ServiceItem serviceItem) {
       super(serviceID, serviceItem);
       spawnedReggieId = parseInfo(serviceItem, StartJini.SPAWNED_REGGIE_SERVICE_ID);

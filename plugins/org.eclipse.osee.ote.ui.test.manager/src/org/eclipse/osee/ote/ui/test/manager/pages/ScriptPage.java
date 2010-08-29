@@ -464,9 +464,6 @@ public abstract class ScriptPage extends TestManagerPage {
 
    public abstract ScriptManager getScriptManager();
 
-   /**
-    * @param files
-    */
    public void addFiles(String[] files) {
       scriptTable.addFiles(files);
    }

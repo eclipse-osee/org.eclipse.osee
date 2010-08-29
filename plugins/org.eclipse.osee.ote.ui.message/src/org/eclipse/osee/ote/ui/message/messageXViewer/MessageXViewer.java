@@ -19,9 +19,6 @@ import org.eclipse.swt.widgets.Menu;
  */
 public class MessageXViewer extends XViewer {
 
-   /**
-    * @param parent
-    */
    public MessageXViewer(Composite parent, int style) {
       super(parent, style, new MessageXViewerFactory());
    }

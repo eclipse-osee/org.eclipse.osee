@@ -32,11 +32,6 @@ public class OSEECheckedFilteredTree extends OSEEFilteredTree {
 
    private final Set<Object> checked = new HashSet<Object>();
 
-   /**
-    * @param parent
-    * @param treeStyle
-    * @param filter
-    */
    public OSEECheckedFilteredTree(Composite parent, int treeStyle, PatternFilter filter) {
       super(parent, treeStyle, filter);
    }

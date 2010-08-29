@@ -95,10 +95,6 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
    private final Map<Button, Boolean> traceUnitHandlers;
    private final Map<String, Button> optionButtons;
 
-   /**
-    * @param name
-    * @param selection
-    */
    public ImportTraceUnitPage(IStructuredSelection selection) {
       super(PAGE_NAME);
       setTitle(PAGE_TITLE);

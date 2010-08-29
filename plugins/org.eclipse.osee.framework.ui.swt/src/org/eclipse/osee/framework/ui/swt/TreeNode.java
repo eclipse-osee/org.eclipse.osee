@@ -38,11 +38,6 @@ public class TreeNode implements ITreeNode, Serializable {
       this(null, null, backingData);
    }
 
-   /**
-    * @param parent
-    * @param children
-    * @param backingData
-    */
    public TreeNode(ITreeNode parent, Object[] children, Object backingData) {
       this.parent = parent;
       this.children = children;
@@ -94,8 +89,6 @@ public class TreeNode implements ITreeNode, Serializable {
     * Recursively fill a node from a content provider runnable. If an exception is thrown from the provider then it will
     * be set as the child of the node.
     * 
-    * @param node
-    * @param provider
     */
    public static void fillNode(ITreeNode node, IContentProviderRunnable provider) {
       try {

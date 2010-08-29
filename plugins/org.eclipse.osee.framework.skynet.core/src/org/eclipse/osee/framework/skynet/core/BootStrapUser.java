@@ -22,10 +22,6 @@ public class BootStrapUser extends User {
    public static BootStrapUser instance;
 
    /**
-    * @param parentFactory
-    * @param guid
-    * @param humanReadableId
-    * @param tagId
     * @throws OseeDataStoreException
     */
    private BootStrapUser() throws OseeDataStoreException {

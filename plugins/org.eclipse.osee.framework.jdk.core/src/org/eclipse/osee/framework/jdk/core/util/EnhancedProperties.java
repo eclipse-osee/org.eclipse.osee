@@ -22,9 +22,6 @@ import java.util.Set;
  * @author Ken J. Aguilar
  */
 public class EnhancedProperties implements Serializable {
-   /**
-    * 
-    */
    private static final long serialVersionUID = 4105281128024379352L;
 
    private final HashMap<String, Serializable> map;

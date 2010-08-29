@@ -43,10 +43,6 @@ public class XResultsComposite extends Composite {
    private String htmlText;
    private String title = "";
 
-   /**
-    * @param parent
-    * @param style
-    */
    public XResultsComposite(Composite parent, int style) {
       super(parent, style);
 
@@ -163,10 +159,6 @@ public class XResultsComposite extends Composite {
       setHtmlText(htmlText, title);
    }
 
-   /**
-    * @param title
-    * @param htmlText
-    */
    public void setHtmlText(String htmlText, String title) {
       this.htmlText = htmlText;
       this.title = title;

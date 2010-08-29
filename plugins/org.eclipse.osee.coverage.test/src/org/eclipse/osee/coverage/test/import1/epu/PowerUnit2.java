@@ -25,10 +25,6 @@ public class PowerUnit2 extends Table {
 
    public Image image;
 
-   /**
-    * @param parent
-    * @param style
-    */
    public PowerUnit2(Composite parent, int style, Image image) {
       super(parent, style);
    }

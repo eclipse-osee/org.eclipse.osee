@@ -23,9 +23,6 @@ public final class XResultDataExample extends XNavigateItemAction {
 
    public static final String TITLE = "XResultData Example";
 
-   /**
-    * @param parent
-    */
    public XResultDataExample(XNavigateItem parent) {
       super(parent, TITLE, PluginUiImage.ADMIN);
    }

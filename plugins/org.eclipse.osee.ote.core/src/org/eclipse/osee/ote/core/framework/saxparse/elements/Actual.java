@@ -18,9 +18,6 @@ import org.xml.sax.Attributes;
  */
 public class Actual extends ElementHandlers {
 
-   /**
-    * @param name
-    */
    public Actual() {
       super("Actual");
    }

@@ -238,7 +238,6 @@ public final class AtsUtil {
    /**
     * Only to be used by browser. Use open (artifact) instead.
     * 
-    * @param guid
     * @throws OseeCoreException
     */
    public static void openArtifact(String guid, OseeEditor view) {

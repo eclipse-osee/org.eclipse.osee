@@ -25,11 +25,6 @@ public class MessageIoManagementStarter extends ServiceTracker {
 
    private ServiceRegistration registration;
 
-   /**
-    * @param context
-    * @param filter
-    * @param customizer
-    */
    public MessageIoManagementStarter(BundleContext context) {
       super(context, TestEnvironmentInterface.class.getName(), null);
    }

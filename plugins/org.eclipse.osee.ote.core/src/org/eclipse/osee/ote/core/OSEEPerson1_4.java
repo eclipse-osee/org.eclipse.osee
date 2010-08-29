@@ -14,9 +14,6 @@ import java.io.Serializable;
 
 public class OSEEPerson1_4 implements Serializable {
 
-   /**
-    * 
-    */
    private static final long serialVersionUID = 6345874159597384661L;
 
    private final String name;

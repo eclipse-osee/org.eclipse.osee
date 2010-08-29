@@ -21,11 +21,6 @@ public class BlamParameter {
    @SuppressWarnings("unused")
    private final String binding;
 
-   /**
-    * @param name
-    * @param clazz
-    * @param binding
-    */
    public BlamParameter(String name, Class<?> clazz, String binding) {
       super();
       this.name = name;

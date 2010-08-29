@@ -28,7 +28,6 @@ public abstract class ArtifactImageProvider {
     * call. Alternatively, providers that wish to defer to the basic implementation should call return
     * super.setupImage()
     * 
-    * @param artifact
     * @throws OseeCoreException
     */
    @SuppressWarnings("unused")

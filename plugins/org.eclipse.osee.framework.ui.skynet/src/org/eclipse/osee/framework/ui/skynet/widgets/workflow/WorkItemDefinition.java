@@ -95,7 +95,6 @@ public abstract class WorkItemDefinition {
     * Determine if this workItemDefinition is or has a parent definition of pageId. This will walk up the tree of
     * definition inheritance to answer the question
     * 
-    * @param pageId
     * @return boolean
     * @throws OseeCoreException
     */

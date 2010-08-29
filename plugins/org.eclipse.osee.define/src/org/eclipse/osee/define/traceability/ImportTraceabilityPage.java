@@ -36,10 +36,6 @@ public class ImportTraceabilityPage extends WizardDataTransferPage {
 
    private IResource currentResourceSelection;
 
-   /**
-    * @param name
-    * @param selection
-    */
    public ImportTraceabilityPage(IStructuredSelection selection) {
       super(PAGE_NAME);
 

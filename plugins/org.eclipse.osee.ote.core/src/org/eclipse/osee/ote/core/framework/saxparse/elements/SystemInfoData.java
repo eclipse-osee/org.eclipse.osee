@@ -56,13 +56,6 @@ public class SystemInfoData {
       return oseeServerTitle;
    }
 
-   /**
-    * @param osArch
-    * @param osName
-    * @param osVersion
-    * @param oseeVersion
-    * @param oseeServerTitle
-    */
    SystemInfoData(String osArch, String osName, String osVersion, String oseeVersion, String oseeServerTitle) {
       this.osArch = osArch;
       this.osName = osName;

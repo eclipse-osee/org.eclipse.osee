@@ -40,7 +40,6 @@ public interface IServiceConnector {
    /**
     * makes the callback accessible by this connector's service
     * 
-    * @param callback
     * @throws Exception
     */
    Object export(Object callback) throws ExportException;
@@ -50,7 +49,6 @@ public interface IServiceConnector {
    /**
     * finds the matching exported representation of supplied object
     * 
-    * @param callback
     * @throws Exception
     */
    Object findExport(Object callback);
@@ -64,7 +62,6 @@ public interface IServiceConnector {
    /**
     * uploads a file to a service and creates an {@link URI} that the service can access.
     * 
-    * @param file
     * @throws Exception
     */
    URI upload(File file) throws Exception;

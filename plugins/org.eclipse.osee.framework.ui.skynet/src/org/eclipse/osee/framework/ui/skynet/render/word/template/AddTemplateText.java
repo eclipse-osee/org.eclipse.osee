@@ -25,11 +25,6 @@ public class AddTemplateText implements ITemplateTask {
    private final int begin;
    private final int end;
 
-   /**
-    * @param last
-    * @param start
-    * @param template
-    */
    public AddTemplateText(int begin, int end, String template) {
       this.template = template;
       this.end = end;

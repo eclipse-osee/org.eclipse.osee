@@ -21,9 +21,6 @@ import org.eclipse.swt.graphics.Image;
  */
 public class DataItemLabelProvider extends XViewerLabelProvider {
 
-   /**
-    * @param viewer
-    */
    public DataItemLabelProvider(XViewer viewer) {
       super(viewer);
    }

@@ -18,9 +18,6 @@ import org.xml.sax.Attributes;
  */
 public class SystemInfo extends ElementHandlers {
 
-   /**
-    * @param name
-    */
    public SystemInfo() {
       super("SystemInfo");
    }

@@ -56,9 +56,6 @@ public class TagEncoder {
     * represent up to 12 characters (all that can be stuffed into 64-bits). Longer search tags will be turned into
     * consecutive search tags
     * 
-    * @param insertParameters
-    * @param attribute
-    * @param text
     */
    public static void encode(String text, ITagCollector collector) {
       int tagBitsPos = 0;

@@ -27,9 +27,6 @@ public class GCHelper {
    private final ConcurrentHashMap<String, WeakReference<Object>> map;
    private static GCHelper singleton;
 
-   /**
-    * 
-    */
    public GCHelper() {
       super();
       map = new ConcurrentHashMap<String, WeakReference<Object>>(1024);

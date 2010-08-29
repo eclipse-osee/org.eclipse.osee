@@ -30,7 +30,6 @@ public class RelationCriteria extends AbstractArtifactSearchCriteria {
     * Constructor for search criteria that follows the relation link ending on the given side
     * 
     * @param relationEnum the side to start following the link from
-    * @param value
     * @throws OseeCoreException
     */
    public RelationCriteria(IRelationEnumeration relationEnum) throws OseeCoreException {

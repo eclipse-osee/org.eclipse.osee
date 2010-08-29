@@ -26,7 +26,6 @@ public interface IResourceLocatorProvider {
    /**
     * Check if this provider is valid
     * 
-    * @param protocol
     * @return <b>true</b> if this provider is valid
     */
    public boolean isValid(String protocol);
@@ -34,8 +33,6 @@ public interface IResourceLocatorProvider {
    /**
     * Generate a resource locator based on seed and name
     * 
-    * @param seed
-    * @param name
     * @return a resource locator
     * @throws MalformedLocatorException
     */
@@ -44,7 +41,6 @@ public interface IResourceLocatorProvider {
    /**
     * Get resource locator
     * 
-    * @param path
     * @return a resource locator
     * @throws MalformedLocatorException
     */

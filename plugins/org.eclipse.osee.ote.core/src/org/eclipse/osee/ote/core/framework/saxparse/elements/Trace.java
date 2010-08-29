@@ -18,9 +18,6 @@ import org.xml.sax.Attributes;
  */
 public class Trace extends ElementHandlers {
 
-   /**
-    * @param name
-    */
    public Trace() {
       super("Trace");
    }

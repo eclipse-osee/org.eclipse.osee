@@ -64,7 +64,6 @@ public class EnumeratedElement<T extends Enum<T> & IEnumValue<T>> extends Discre
    /**
     * Sets the element to the "value" passed and immediately sends the meessage that contains it.
     * 
-    * @param accessor
     * @param enumeration The value to set.
     */
    public void setAndSend(ITestEnvironmentAccessor accessor, T enumeration) {
@@ -75,7 +74,6 @@ public class EnumeratedElement<T extends Enum<T> & IEnumValue<T>> extends Discre
    /**
     * Waits until the element is set to a value not in the "list" passed
     * 
-    * @param accessor
     * @param list The list of values to check against
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
@@ -88,7 +86,6 @@ public class EnumeratedElement<T extends Enum<T> & IEnumValue<T>> extends Discre
    /**
     * Waits until the element is set to a value in the "list" passed
     * 
-    * @param accessor
     * @param list The list of values to check against
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
@@ -101,7 +98,6 @@ public class EnumeratedElement<T extends Enum<T> & IEnumValue<T>> extends Discre
    /**
     * This function will verify that this signal is pulsed for 2 cycles.
     * 
-    * @param accessor
     * @param value The value to be checked
     * @throws InterruptedException
     */

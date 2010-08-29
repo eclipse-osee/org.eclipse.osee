@@ -17,10 +17,6 @@ import org.eclipse.draw2d.Graphics;
  */
 public class ReturnTransitionConnection extends TransitionConnection {
 
-   /**
-    * @param source
-    * @param target
-    */
    public ReturnTransitionConnection(Shape source, Shape target) {
       super(source, target);
    }

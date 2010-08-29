@@ -162,12 +162,6 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
    }
 
    /**
-    * @param sourceBranch
-    * @param transactionId
-    * @param artIds
-    * @param monitor
-    * @param attributesWasValueCache
-    * @param hasBranch
     * @throws OseeCoreException
     * @throws OseeDataStoreException
     */

@@ -222,7 +222,6 @@ public class AHTML {
    /**
     * Create target for hyperlink to jump to
     * 
-    * @param str
     * @return Return name target string
     */
    public static String nameTarget(String str) {
@@ -235,8 +234,6 @@ public class AHTML {
    /**
     * Create &lt;a href> hyperlink to nameTarget
     * 
-    * @param num
-    * @param text
     * @return Return name link string
     */
    public static String nameLink(int num, String text) {
@@ -246,8 +243,6 @@ public class AHTML {
    /**
     * Create &lt;a href> hyperlink to nameTarget
     * 
-    * @param name
-    * @param text
     * @return Return name link string
     */
    public static String nameLink(String name, String text) {
@@ -257,7 +252,6 @@ public class AHTML {
    /**
     * Create &lt;a href> hyperlink to nameTarget using name as hyperlink tag and display text
     * 
-    * @param name
     * @return Return name link string
     */
    public static String nameLink(String name) {
@@ -271,8 +265,6 @@ public class AHTML {
    /**
     * Create a table with one row/colum containing str
     * 
-    * @param str
-    * @param width
     * @return return simple table string
     */
    public static String simpleTable(String str, int width) {
@@ -282,9 +274,6 @@ public class AHTML {
    /**
     * Create a table with one row/colum containing str
     * 
-    * @param str
-    * @param width
-    * @param bgcolor
     * @return Return border table string
     */
    public static String borderTable(String str, int width, String bgcolor, String caption) {

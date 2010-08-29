@@ -64,9 +64,6 @@ import org.eclipse.osee.ote.message.tool.rec.MessageRecorder;
  */
 public class AbstractMessageToolService implements IRemoteMessageService {
 
-   /**
-	 * 
-	 */
    private static final int SEND_BUFFER_SIZE = 1024 * 512;
 
    private static final boolean debugEnabled = false;
@@ -142,10 +139,6 @@ public class AbstractMessageToolService implements IRemoteMessageService {
       /**
        * Creates a new listener. A listener is a one to one mapping of a message to a list of client addresses
        * 
-       * @param reader
-       * @param writer
-       * @param type
-       * @param clients
        */
       SubscriptionRecord(final Message<?, ?, ?> msg, final DataType type, final MessageMode mode, final ClientInfo... clients) {
          this.msg = msg;
@@ -217,7 +210,6 @@ public class AbstractMessageToolService implements IRemoteMessageService {
       /**
        * Adds a new client who will be notified when new updates occur
        * 
-       * @param client
        */
       public synchronized void addClient(final ClientInfo client) {
          clients.add(client);
@@ -352,7 +344,6 @@ public class AbstractMessageToolService implements IRemoteMessageService {
    /**
     * Constructs a new message manager service
     * 
-    * @param accessor
     * @throws IOException
     */
    public AbstractMessageToolService(IMessageManager messageManager) throws IOException {
@@ -851,9 +842,6 @@ public class AbstractMessageToolService implements IRemoteMessageService {
    /**
     * sends the message update buffer to all of the specified addresses data
     * 
-    * @param sendToList
-    * @param msgName
-    * @param buffer
     */
    private void xmitMsg(final Collection<ClientInfo> sendToList, final String msgName, final ByteBuffer buffer) throws IOException {
       assert buffer.position() == 0;

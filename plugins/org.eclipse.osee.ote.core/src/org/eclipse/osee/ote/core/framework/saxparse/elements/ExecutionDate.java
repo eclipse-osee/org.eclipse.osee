@@ -18,9 +18,6 @@ import org.xml.sax.Attributes;
  */
 public class ExecutionDate extends ElementHandlers {
 
-   /**
-    * @param name
-    */
    public ExecutionDate() {
       super("ExecutionDate");
    }

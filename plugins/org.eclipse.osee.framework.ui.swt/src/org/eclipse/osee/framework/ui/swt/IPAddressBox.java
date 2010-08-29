@@ -192,7 +192,6 @@ public class IPAddressBox extends Composite {
     * <P>
     * <I> ###.###.###.### or as ###-###-###-### where ### is an integer between 0 and 255 inclusive. </I>
     * 
-    * @param txt
     */
    public void setTextValue(final String txt) {
       final String[] bytes = txt.split("\\.|-");
@@ -216,7 +215,6 @@ public class IPAddressBox extends Composite {
     * sets the ip address when given an integer that represents 4 8-bit values. the leftmost 8 bits of the integer
     * represent the first byte of the ip address.
     * 
-    * @param value
     */
    public void setIntValue(final int value) {
       // System.out.println("set ip addr box value = " + value);

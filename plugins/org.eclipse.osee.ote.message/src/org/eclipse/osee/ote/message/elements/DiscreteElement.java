@@ -134,7 +134,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    /**
     * Verifies that the element is set to "value" within the number of "milliseconds" passed.
     * 
-    * @param accessor
     * @param value Expected value.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
@@ -206,7 +205,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * Verifies that the element is set to a value within the range specified. Assumes that both ends of the range are
     * inclusive.
     * 
-    * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
     * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
     * logging a point.
@@ -262,7 +260,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * Verifies that the element is set to a value within the range specified for the entire time specified. Assumes
     * range is inclusive.
     * 
-    * @param accessor
     * @param minValue The minimum value of the range.
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait before failing.
@@ -276,7 +273,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    /**
     * Verifies that the element is set to a value within the range specified for the entire time specified.
     * 
-    * @param accessor
     * @param minValue The minimum value of the range.
     * @param minInclusive If the minumum value of the range is inclusive.
     * @param maxValue The maximum value of the range.
@@ -294,7 +290,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * Verifies that the element is set to a value within the range specified for the entire time specified. Assumes
     * range is inclusive.
     * 
-    * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
     * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
     * logging a point.
@@ -314,7 +309,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    /**
     * Verifies that the element is not set to a value within the range specified for the entire time specified.
     * 
-    * @param accessor
     * @param minValue The minimum value of the range.
     * @param minInclusive If the minumum value of the range is inclusive.
     * @param maxValue The maximum value of the range.
@@ -332,7 +326,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * Verifies that the element is set to a value within the range specified for the entire time specified. Assumes
     * range is inclusive.
     * 
-    * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
     * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
     * logging a point.
@@ -353,7 +346,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * Verifies that the element is set to a value outside the range specified. Either end of the range can be set to be
     * inclusive or not.
     * 
-    * @param accessor
     * @param minValue The minimum value of the range.
     * @param minInclusive If the minumum value of the range is inclusive. If true the actual value must not < and not =
     * to the range value.
@@ -464,7 +456,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    /**
     * Waits until the element has a value within the range specified. Assumes the range is inclusive.
     * 
-    * @param accessor
     * @param minValue The minimum value of the range.
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait before failing.
@@ -508,7 +499,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    /**
     * Waits until the element has a value within the range specified. Assumes range is inclusive.
     * 
-    * @param accessor
     * @param minValue The minimum value of the range.
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait before failing.
@@ -522,7 +512,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    /**
     * Waits until the element has a value other than the "value" passed. Returns last value observed upon a timout.
     * 
-    * @param accessor
     * @param value The expected value to wait for.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
@@ -598,7 +587,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * Verifies that the element is set to a value within the range specified. Either end of the range can be set to be
     * inclusive or not.
     * 
-    * @param accessor
     * @param minValue The minimum value of the range.
     * @param minInclusive If the minimum value of the range is inclusive.
     * @param maxValue The maximum value of the range.
@@ -615,7 +603,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * Verifies that the element is set to a value within the range specified. Either end of the range can be set to be
     * inclusive or not.
     * 
-    * @param accessor
     * @param minValue The minimum value of the range.
     * @param minInclusive If the minumum value of the range is inclusive.
     * @param maxValue The maximum value of the range.
@@ -630,7 +617,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * Verifies that the element is set to a value within the range specified. Assumes that both ends of the range are
     * inclusive.
     * 
-    * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
     * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
     * logging a point.
@@ -651,7 +637,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * Verifies that the element is set to a value within the range specified. Assumes that both ends of the range are
     * inclusive.
     * 
-    * @param accessor
     * @param minValue The minimum value of the range.
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait for the element to be within the range.
@@ -666,7 +651,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * Verifies that the element is set to a value within the range specified. Assumes that both ends of the range are
     * inclusive.
     * 
-    * @param accessor
     * @param minValue The minimum value of the range.
     * @param maxValue The maximum value of the range.
     * @return if the check passed
@@ -705,7 +689,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    /**
     * Verifies that the element is NOT set to "value".
     * 
-    * @param accessor
     * @param value value to test against
     * @return if the check passed
     */
@@ -717,7 +700,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * Verifies that the element is set to some value other than "value" within the number of "milliseconds" passed.
     * Passes if at any point with in the time allowed, the element is set to a value other than "value".
     * 
-    * @param accessor
     * @param value value to test against.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
@@ -790,7 +772,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * Verifies that the element is set to a value outside the range specified. Assumes that both ends of the range are
     * inclusive. Therefore observed value may not equal either of the range values.
     * 
-    * @param accessor
     * @param minValue The minimum value of the range.
     * @param maxValue The maximum value of the range.
     * @return if the check passed
@@ -803,7 +784,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * Verifies that the element is set to a value outside the range specified. Assumes that both ends of the range are
     * inclusive.
     * 
-    * @param accessor
     * @param minValue The minimum value of the range.
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait for the element to be outside the range.
@@ -818,7 +798,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * Verifies that the element is set to a value outside the range specified. Assumes that both ends of the range are
     * inclusive.
     * 
-    * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
     * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
     * logging a point.
@@ -839,7 +818,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * Verifies that the element is set to a value outside the range specified. Assumes that both ends of the range are
     * inclusive. Therefore observed value may not equal either of the range values.
     * 
-    * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
     * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
     * logging a point.
@@ -858,7 +836,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * Verifies that the element is set to a value outside the range specified. Either end of the range can be set to be
     * inclusive or not.
     * 
-    * @param accessor
     * @param minValue The minimum value of the range.
     * @param minInclusive If the minumum value of the range is inclusive. If true the actual value must not < and not =
     * to the range value.
@@ -882,8 +859,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * <p>
     * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
     * will log the test point.
-    * @param value
-    * @param milliseconds
     * @return last value observed. Either value expected or value found at timeout.
     * @throws InterruptedException
     */
@@ -921,9 +896,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * Verifies that the element is set to the "value" passed for the entire time passed into "milliseconds". Returns
     * value found that caused failure or last value observed if time expires.
     * 
-    * @param accessor
-    * @param value
-    * @param milliseconds
     * @return last value observed. Either value expected or value found at timeout.
     * @throws InterruptedException
     */
@@ -942,8 +914,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * <p>
     * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
     * will log the test point.
-    * @param value
-    * @param milliseconds
     * @return last value observed
     * @throws InterruptedException
     */
@@ -964,9 +934,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * Verifies that the element is set to the "value" passed for the entire time passed into "milliseconds". Returns
     * value found that caused failure or last value observed if time expires.
     * 
-    * @param accessor
-    * @param value
-    * @param milliseconds
     * @return last value observed
     * @throws InterruptedException
     */
@@ -1067,7 +1034,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * Verifies that the element is set to a value within the range specified for the entire time specified. Assumes
     * range is inclusive.
     * 
-    * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
     * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
     * logging a point.
@@ -1109,9 +1075,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    }
 
    /**
-    * @param accessor
-    * @param value
-    * @param nonPulsedValue
     * @throws InterruptedException
     */
    public final boolean checkPulse(ITestAccessor accessor, T pulsedValue, T nonPulsedValue) throws InterruptedException {
@@ -1119,10 +1082,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    }
 
    /**
-    * @param accessor
-    * @param checkGroup
-    * @param pulsedValue
-    * @param nonPulsedValue
     * @throws InterruptedException
     */
    public final boolean checkPulse(ITestAccessor accessor, CheckGroup checkGroup, T pulsedValue, T nonPulsedValue) throws InterruptedException {
@@ -1149,7 +1108,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    /**
     * Verifies that the element is set to a value in the "list".
     * 
-    * @param accessor
     * @param list List of values to check for
     * @return if check passed
     */
@@ -1160,7 +1118,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    /**
     * Verifies that the element is set to a value NOT in the "list".
     * 
-    * @param accessor
     * @param list List of values to check for
     * @return if check passed
     */
@@ -1172,7 +1129,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * Verifies that the element is set to a value IN or NOT IN the "list" passed. "isInList" determines if checking for
     * IN the list or NOT.
     * 
-    * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
     * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
     * logging a point.
@@ -1210,7 +1166,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    /**
     * Verifies that the element is set to a value NOT in the "list".
     * 
-    * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
     * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
     * logging a point.
@@ -1227,7 +1182,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    /**
     * Verifies that the element is set to a value NOT in the "list".
     * 
-    * @param accessor
     * @param list List of values to check for
     * @param milliseconds Number of milliseconds to wait
     * @return if check passed
@@ -1241,7 +1195,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * Verifies that the element is set to a value IN or NOT IN the "list" passed. "wantInList" determines if checking
     * for IN the list or NOT.
     * 
-    * @param accessor
     * @param wantInList Determines if checking for the element's value to be in or not in the "list". Passing TRUE will
     * test for IN the "list".
     * @param list List of values to check for
@@ -1255,7 +1208,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * Verifies that the element is set to a value IN or NOT IN the "list" passed. "isInList" determines if checking for
     * IN the list or NOT.
     * 
-    * @param accessor
     * @param isInList Determines if checking for the element's value to be in or not in the "list". Passing TRUE will
     * test for IN the "list".
     * @param list List of values to check for
@@ -1271,7 +1223,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * Verifies that the element is set to a value IN or NOT IN the "list" passed. "wantInList" determines if checking
     * for IN the list or NOT.
     * 
-    * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
     * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
     * logging a point.
@@ -1302,7 +1253,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    /**
     * Verifies that the element is set to a value in the "list".
     * 
-    * @param accessor
     * @param list List of values to check for
     * @param milliseconds Number of milliseconds to wait
     * @return if check passed
@@ -1315,7 +1265,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    /**
     * Verifies that the element is set to a value NOT in the "list".
     * 
-    * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
     * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
     * logging a point.
@@ -1334,7 +1283,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    /**
     * Verifies that the element is set to a value in the list for the entire time passed into milliseconds.
     * 
-    * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
     * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
     * logging a point.
@@ -1353,7 +1301,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    /**
     * Verifies that the element is set to a value not in the list for the entire time passed into milliseconds.
     * 
-    * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
     * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
     * logging a point.
@@ -1372,7 +1319,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    /**
     * Verifies that the element is set to a value in the "list".
     * 
-    * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
     * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
     * logging a point.
@@ -1391,7 +1337,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    /**
     * Verifies that the element is set to a value in the "list".
     * 
-    * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
     * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
     * logging a point.
@@ -1408,7 +1353,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    /**
     * Waits until the element is set to a value either in or not in the "list" as determined by "isInList".
     * 
-    * @param accessor
     * @param list The list of values to check against
     * @param isInList If the value is expected to be in or not in the "list"
     * @param milliseconds Number of milliseconds to wait before failing.
@@ -1491,10 +1435,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    /**
     * Sets the element to the first enumeration for the wait time and then it sets it to the second enumeration.
     * 
-    * @param accessor
-    * @param value1
-    * @param value2
-    * @param milliseconds
     * @throws InterruptedException
     */
    public synchronized void toggle(ITestEnvironmentAccessor accessor, T value1, T value2, int milliseconds) throws InterruptedException {
@@ -1523,7 +1463,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    /**
     * gets this element's current value. Does logging
     * 
-    * @param accessor
     */
    public T get(ITestEnvironmentAccessor accessor) {
       accessor.getLogger().methodCalled(accessor, new MethodFormatter());

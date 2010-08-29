@@ -21,17 +21,11 @@ import org.eclipse.osee.ote.message.enums.DataType;
  */
 public class ZeroizeElement implements Serializable {
 
-   /**
-	 * 
-	 */
    private static final long serialVersionUID = 2245725475520729629L;
    private final String message;
    private final List<Object> element;
    private final DataType type;
 
-   /**
-	    * 
-	    */
    public ZeroizeElement(String message, DataType type, List<Object> elementPath) {
       super();
       this.message = message;

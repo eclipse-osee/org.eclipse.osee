@@ -177,7 +177,6 @@ public class Jaxp {
     * Obtains the character data for each element in the collection, return as a List. Each entry in the list
     * corresponding to the character data for one of the elements in the collection.
     * 
-    * @param elements
     */
    public static List<String> getElementsCharacterData(Collection<Element> elements) {
       List<String> result = new ArrayList<String>(elements.size());
@@ -437,8 +436,6 @@ public class Jaxp {
    /**
     * Adds the XSL style sheet processing instruction to the document.
     * 
-    * @param d
-    * @param xslPath
     */
    public static void setXslProperty(Document d, String xslPath) {
       ProcessingInstruction xsl = d.createProcessingInstruction("xml-stylesheet", //
@@ -449,8 +446,6 @@ public class Jaxp {
    /**
     * Adds an XML comment to a document
     * 
-    * @param d
-    * @param comment
     */
    public static void addComment(Document d, String comment) {
       d.appendChild(d.createComment(comment));

@@ -60,10 +60,6 @@ public class MergeXViewer extends XViewer {
    private XMergeLabelProvider labelProvider;
    private Action openMergeViewAction;
 
-   /**
-    * @param parent
-    * @param style
-    */
    public MergeXViewer(Composite parent, int style, MergeXWidget xMergeViewer) {
       super(parent, style, new MergeXViewerFactory());
       this.mergeXWidget = xMergeViewer;

@@ -24,10 +24,6 @@ public class ScreenBButton2 extends Button {
 
    public Image image;
 
-   /**
-    * @param parent
-    * @param style
-    */
    public ScreenBButton2(Composite parent, int style, Image image) {
       super(parent, style);
    }

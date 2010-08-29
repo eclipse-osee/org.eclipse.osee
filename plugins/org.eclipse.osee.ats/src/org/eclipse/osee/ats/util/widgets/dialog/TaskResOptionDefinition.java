@@ -69,8 +69,6 @@ public class TaskResOptionDefinition {
    }
 
    /**
-    * @param name
-    * @param desc
     * @param completeable true if option allows task to be transitioned to complete
     * @param color BLUE, RED, etc...; "" for black
     */

@@ -25,11 +25,6 @@ public class NetworkTransactionDeletedEvent extends SkynetEventBase {
       return transactionIds;
    }
 
-   /**
-    * @param branchId
-    * @param transactionId
-    * @param author
-    */
    public NetworkTransactionDeletedEvent(NetworkSender networkSender, int[] transactionIds) {
       super(networkSender);
       this.transactionIds = transactionIds;

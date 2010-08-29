@@ -26,7 +26,6 @@ public class OutlookCalendarEvent {
    /**
     * @param location - String the event location
     * @param event - String the scheduled event
-    * @param date
     * @param startTime - 0800 - 8am
     * @param endTime - 1300 - 1pm
     */

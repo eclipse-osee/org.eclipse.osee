@@ -22,9 +22,6 @@ public class TestPointStatusBoardRunnable extends StatusBoardRunnable {
 
    private final StatusBoard statusBoard;
 
-   /**
-    * 
-    */
    public TestPointStatusBoardRunnable(IServiceStatusData data, StatusBoard statusBoard) {
       super(data);
       this.statusBoard = statusBoard;

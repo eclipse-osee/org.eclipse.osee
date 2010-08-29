@@ -119,9 +119,6 @@ public class XListViewer extends XWidget {
       }
    }
 
-   /**
-    * @param input
-    */
    public void setInput(Object input) {
       if (listViewer != null) {
          listViewer.setInput(input);

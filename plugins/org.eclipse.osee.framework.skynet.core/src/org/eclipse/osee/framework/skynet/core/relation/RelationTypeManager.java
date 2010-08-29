@@ -57,7 +57,6 @@ public class RelationTypeManager {
    }
 
    /**
-    * @param branch
     * @return all the relation types that are valid for the given branch
     * @throws OseeCoreException
     */

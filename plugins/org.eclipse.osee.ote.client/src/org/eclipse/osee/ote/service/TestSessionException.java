@@ -15,22 +15,12 @@ package org.eclipse.osee.ote.service;
  */
 public class TestSessionException extends Exception {
 
-   /**
-    * 
-    */
    private static final long serialVersionUID = -2013110839832896588L;
 
-   /**
-    * @param message
-    * @param cause
-    */
    public TestSessionException(String message, Throwable cause) {
       super(message, cause);
    }
 
-   /**
-    * @param message
-    */
    public TestSessionException(String message) {
       super(message);
    }

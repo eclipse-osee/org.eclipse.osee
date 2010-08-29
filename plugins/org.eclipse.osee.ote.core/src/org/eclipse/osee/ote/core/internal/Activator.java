@@ -109,9 +109,6 @@ public class Activator implements BundleActivator {
          bundleContext.registerService(TestEnvironmentInterface.class.getName(), env, new Hashtable());
    }
 
-   /**
-    * 
-    */
    public void unregisterTestEnvironment() {
       if (testEnvironmentRegistration != null) {
          testEnvironmentRegistration.unregister();
@@ -119,10 +116,6 @@ public class Activator implements BundleActivator {
       }
    }
 
-   /**
-    * @param clazz
-    * @param customizer
-    */
    public ServiceTracker getServiceTracker(String clazz, ServiceTrackerCustomizer customizer) {
       ServiceTracker tracker = findServiceTracker(clazz, customizer);
       if (tracker == null) {

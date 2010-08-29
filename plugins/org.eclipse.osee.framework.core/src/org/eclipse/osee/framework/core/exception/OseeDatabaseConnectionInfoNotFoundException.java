@@ -17,24 +17,14 @@ public class OseeDatabaseConnectionInfoNotFoundException extends OseeDataStoreEx
 
    private static final long serialVersionUID = -2070849808510787374L;
 
-   /**
-    * @param message
-    * @param cause
-    */
    public OseeDatabaseConnectionInfoNotFoundException(String message, Throwable cause) {
       super(message, cause);
    }
 
-   /**
-    * @param message
-    */
    public OseeDatabaseConnectionInfoNotFoundException(String message) {
       super(message);
    }
 
-   /**
-    * @param cause
-    */
    public OseeDatabaseConnectionInfoNotFoundException(Throwable cause) {
       super(cause);
    }

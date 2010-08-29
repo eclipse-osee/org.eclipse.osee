@@ -29,9 +29,6 @@ import org.osgi.util.tracker.ServiceTracker;
  */
 public class MessageSelectionDialog extends ElementListSelectionDialog {
 
-   /**
-    * @param parent
-    */
    public MessageSelectionDialog(Shell parent) {
       super(parent, new ILabelProvider() {
 

@@ -28,10 +28,6 @@ public class FinishUpdateBranchOperation extends AbstractOperation {
    private final boolean archiveSourceBranch;
    private final boolean overwriteUnresolvedConflicts;
 
-   /**
-    * @param operationName
-    * @param pluginId
-    */
    public FinishUpdateBranchOperation(ConflictManagerExternal conflictManager, boolean archiveSourceBranch, boolean overwriteUnresolvedConflicts) {
       super(String.format("Complete Branch Update [%s]", conflictManager.getSourceBranch().getShortName()),
          Activator.PLUGIN_ID);

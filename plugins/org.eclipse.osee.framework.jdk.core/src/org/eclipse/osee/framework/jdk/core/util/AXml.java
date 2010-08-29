@@ -34,8 +34,6 @@ public class AXml {
    /**
     * Returns <elementName>data</elementName> NOTE: data is not sent through AXml.textToXml
     * 
-    * @param elementName
-    * @param data
     * @return String <elementName>data</elementName>
     */
    public static String addTagData(String elementName, String data) {
@@ -110,8 +108,6 @@ public class AXml {
    /**
     * Returns data between <xmlRoot> and </xmlRoot> from xmlStr
     * 
-    * @param xmlStr
-    * @param xmlRoot
     * @return Return tag string
     */
    public static String getTagData(String xmlStr, String xmlRoot) {
@@ -167,7 +163,6 @@ public class AXml {
     * Given xml strings containing xml reserved characters, replace with displayable characters > <= & gt; < <= & lt; &
     * <= & amp; ' <= & apos; " <= & quot;
     * 
-    * @param xml
     * @return displayable string
     */
    //TODO: remove this and use {@link ReservedCharacters}

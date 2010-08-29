@@ -71,7 +71,6 @@ public class IntegerElement extends NumericElement<Integer> {
    /**
     * Checks that this element correctly forwards a message sent from cause with the value passed.
     * 
-    * @param accessor
     * @param cause The originator of the signal
     * @param value The value sent by cause and being forwarded by this element
     * @throws InterruptedException
@@ -104,7 +103,6 @@ public class IntegerElement extends NumericElement<Integer> {
    /**
     * This function will verify that this signal is pulsed for 2 cycles.
     * 
-    * @param accessor
     * @param value The value to be checked
     * @throws InterruptedException
     */
@@ -122,7 +120,6 @@ public class IntegerElement extends NumericElement<Integer> {
    /**
     * Sets the element to the "value" passed.
     * 
-    * @param accessor
     * @param value The value to set.
     */
    @Override
@@ -133,7 +130,6 @@ public class IntegerElement extends NumericElement<Integer> {
    /**
     * Sets the element to the "value" passed and immediately sends the message that contains it..
     * 
-    * @param accessor
     * @param value The value to set.
     */
    public void setAndSend(ITestEnvironmentAccessor accessor, int value) {
@@ -144,7 +140,6 @@ public class IntegerElement extends NumericElement<Integer> {
    /**
     * Waits until the element has a value within the range specified. Assumes the range is inclusive.
     * 
-    * @param accessor
     * @param minValue The minimum value of the range.
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait before failing.
@@ -158,7 +153,6 @@ public class IntegerElement extends NumericElement<Integer> {
    /**
     * Waits until the element has a value within the range specified. Either end of the range can be inclusive or not.
     * 
-    * @param accessor
     * @param minValue The minimum value of the range.
     * @param minInclusive If the minumum value of the range is inclusive. If true the actual value must not < and not =
     * to the range value.
@@ -177,7 +171,6 @@ public class IntegerElement extends NumericElement<Integer> {
    /**
     * Waits until the element has a value within the range specified. Range is assumes to be inclusive.
     * 
-    * @param accessor
     * @param minValue The minimum value of the range.
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait before failing.
@@ -191,7 +184,6 @@ public class IntegerElement extends NumericElement<Integer> {
    /**
     * Waits until the element has a value within the range specified. Either end of the range can be inclusive or not.
     * 
-    * @param accessor
     * @param minValue The minimum value of the range.
     * @param minInclusive If the minumum value of the range is inclusive. If true the actual value must not < and not =
     * to the range value.

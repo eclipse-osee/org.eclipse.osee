@@ -17,9 +17,6 @@ import org.osgi.framework.BundleContext;
  */
 public interface RuntimeConfigurationInitilizer {
 
-   /**
-    * @param bundleContext
-    */
    void startRuntimeOsgiServices(BundleContext bundleContext);
 
    void stopRuntimeOsgiServices();

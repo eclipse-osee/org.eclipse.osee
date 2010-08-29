@@ -18,11 +18,6 @@ import org.osgi.framework.BundleContext;
  */
 public class OseeHttpServiceTracker extends InternalHttpServiceTracker {
 
-   /**
-    * @param context
-    * @param contextName
-    * @param servletClass
-    */
    public OseeHttpServiceTracker(BundleContext context, String contextName, OseeHttpServlet servletClass) {
       super(context, contextName, servletClass);
    }

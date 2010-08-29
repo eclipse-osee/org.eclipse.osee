@@ -21,8 +21,6 @@ public interface ConnectionNode {
    /**
     * Subscribes listener to updates to message/s with the given id.
     * 
-    * @param messageId
-    * @param listener
     * @param statusCallback Used to relay the status of the subscribe command ( success, failure, etc). Can not be null.
     */
    void subscribe(MessageID messageId, OseeMessagingListener listener, final OseeMessagingStatusCallback statusCallback);
@@ -30,8 +28,6 @@ public interface ConnectionNode {
    /**
     * Subscribes listener to updates to message/s with the given id.
     * 
-    * @param messageId
-    * @param listener
     * @param selector A string conforming to the SQL 92 syntax used for extra filtering of subscriptions
     * @param statusCallback Used to relay the status of the subscribe command ( success, failure, etc). Can not be null.
     */
@@ -41,16 +37,12 @@ public interface ConnectionNode {
     * Subscribes listener to updates to message/s with the given id. A default status handler will be used to log
     * failures.
     * 
-    * @param messageId
-    * @param listener
     */
    void subscribe(MessageID messageId, OseeMessagingListener listener);
 
    /**
     * Unsubscribes listener from updates for message with id equal to messageId.
     * 
-    * @param messageId
-    * @param listener
     * @param statusCallback Used to relay the status of the unsubscribe ( success, failure, etc). Can not be null.
     */
    void unsubscribe(MessageID messageId, OseeMessagingListener listener, final OseeMessagingStatusCallback statusCallback);
@@ -59,8 +51,6 @@ public interface ConnectionNode {
     * Unsubscribes listener from updates for message with id equal to messageId. A default status handler will be used
     * to log failures.
     * 
-    * @param messageId
-    * @param listener
     */
    void unsubscribe(MessageID messageId, OseeMessagingListener listener);
 
@@ -71,8 +61,6 @@ public interface ConnectionNode {
    /**
     * Sends given message.
     * 
-    * @param messageId
-    * @param message
     * @param statusCallback Used to relay the status of the sending of the message ( success, failure, etc). Can not be
     * null.
     * @throws OseeCoreException
@@ -82,8 +70,6 @@ public interface ConnectionNode {
    /**
     * Attaches the properties provided to the message before sending.
     * 
-    * @param messageId
-    * @param message
     * @param properties Set of properties to be attached to the message.
     * @param statusCallback Used to relay the status of the sending of the message ( success, failure, etc). Can not be
     * null.
@@ -94,8 +80,6 @@ public interface ConnectionNode {
    /**
     * Sends given message. Uses default status handler to log failures in sending given message.
     * 
-    * @param messageId
-    * @param message
     * @throws OseeCoreException
     */
    void send(MessageID messageId, Object message) throws OseeCoreException;

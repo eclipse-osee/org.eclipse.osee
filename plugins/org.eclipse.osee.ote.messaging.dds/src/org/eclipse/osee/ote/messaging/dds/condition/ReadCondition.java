@@ -27,12 +27,6 @@ public class ReadCondition {
    private final Collection<?> viewStateKinds;
    private final Collection<?> instanceStateKinds;
 
-   /**
-    * @param dataReader
-    * @param sampleStateKinds
-    * @param viewStateKinds
-    * @param instanceStateKinds
-    */
    public ReadCondition(DataReader dataReader, Collection<?> sampleStateKinds, Collection<?> viewStateKinds, Collection<?> instanceStateKinds) {
       super();
       this.dataReader = dataReader;

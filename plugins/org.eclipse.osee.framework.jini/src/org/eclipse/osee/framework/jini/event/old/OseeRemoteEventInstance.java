@@ -23,9 +23,6 @@ import java.io.Serializable;
  */
 public abstract class OseeRemoteEventInstance implements Serializable {
 
-   /**
-    * 
-    */
    private static final long serialVersionUID = -2226670843874819289L;
    public final String eventGuid;
    private final Class<? extends OseeRemoteEventInstance> myClass;

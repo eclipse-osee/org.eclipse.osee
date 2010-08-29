@@ -38,9 +38,6 @@ public class ArtifactExportJob extends Job {
    private final File rootExportPath;
    private final Collection<Artifact> exportArtifacts;
 
-   /**
-    * @param name
-    */
    public ArtifactExportJob(File exportPath, Collection<Artifact> exportArtifacts) {
       super("Artifact Export");
       this.rootExportPath = exportPath;

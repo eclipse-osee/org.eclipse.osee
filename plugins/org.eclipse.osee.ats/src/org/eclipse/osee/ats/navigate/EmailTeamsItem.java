@@ -43,7 +43,6 @@ public class EmailTeamsItem extends XNavigateItemAction {
    };
 
    /**
-    * @param parent
     * @param teamDefHoldingVersions Team Definition Artifact that is related to versions or null for popup selection
     */
    public EmailTeamsItem(XNavigateItem parent, TeamDefinitionArtifact teamDef, MemberType... memberType) {

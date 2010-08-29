@@ -18,9 +18,6 @@ import org.xml.sax.Attributes;
  */
 public class OteLog extends ElementHandlers {
 
-   /**
-    * @param name
-    */
    public OteLog() {
       super("OteLog");
    }

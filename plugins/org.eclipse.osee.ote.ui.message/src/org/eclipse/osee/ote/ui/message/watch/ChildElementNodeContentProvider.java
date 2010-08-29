@@ -60,7 +60,6 @@ public class ChildElementNodeContentProvider implements ITreeContentProvider {
    }
 
    /**
-    * @param element
     * @return
     */
    private boolean recordHasChildrenNotListening(RecordElement element) {

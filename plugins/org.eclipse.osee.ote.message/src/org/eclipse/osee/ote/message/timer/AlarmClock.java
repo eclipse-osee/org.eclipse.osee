@@ -21,9 +21,6 @@ import org.eclipse.osee.ote.core.environment.interfaces.ITimeout;
 public class AlarmClock extends TimerTask implements ICancelTimer {
    private final ITimeout sleeper;
 
-   /**
-    * @param sleeper
-    */
    public AlarmClock(ITimeout sleeper) {
       super();
       this.sleeper = sleeper;

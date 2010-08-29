@@ -28,8 +28,6 @@ public class Streams {
    /**
     * Converts a String into a InputStream using specifiec charSet
     * 
-    * @param string
-    * @param charSet
     * @return Return input stream reference
     * @throws UnsupportedEncodingException
     */

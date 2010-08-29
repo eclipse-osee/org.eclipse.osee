@@ -17,10 +17,6 @@ public class InfoGroupData {
 
    private final String title;
 
-   /**
-    * @param title
-    * @param name
-    */
    InfoGroupData(String title) {
       this.title = title;
    }

@@ -18,9 +18,6 @@ import org.xml.sax.Attributes;
  */
 public class Global extends ElementHandlers {
 
-   /**
-    * @param name
-    */
    public Global() {
       super("*");
    }

@@ -22,9 +22,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public abstract class BaseTestRecord extends LogRecord implements BaseTestTags, Xmlizable {
-   /**
-    * 
-    */
    private static final long serialVersionUID = -6279526539034138238L;
    private Object source;
    private long timeStamp;

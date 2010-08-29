@@ -97,8 +97,6 @@ public abstract class MessageSystemTestEnvironment extends TestEnvironment imple
    /**
     * provides a way for sub classes to instantiate test scripts in their own way.
     * 
-    * @param scriptClass
-    * @param connection
     * @return TestScript
     * @throws NoSuchMethodException
     * @throws InstantiationException

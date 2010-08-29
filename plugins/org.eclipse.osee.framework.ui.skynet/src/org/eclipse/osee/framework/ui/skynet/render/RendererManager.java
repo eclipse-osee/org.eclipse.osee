@@ -53,8 +53,6 @@ public final class RendererManager {
    }
 
    /**
-    * @param artifacts
-    * @param presentationType
     * @return Returns the intersection of renderers applicable for all of the artifacts
     * @throws OseeCoreException
     */

@@ -60,7 +60,6 @@ public class DbTableViewer {
    private final DbItem dbItem;
 
    /**
-    * @param parent
     * @throws OseeDataStoreException
     */
    public DbTableViewer(Composite parent, int numColumns, DbTableTab dbTab, DbItem dbItem) throws OseeDataStoreException {

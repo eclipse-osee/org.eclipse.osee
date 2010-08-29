@@ -25,9 +25,6 @@ import org.eclipse.swt.widgets.Item;
 public class RelationCellModifier implements ICellModifier {
    private final TreeViewer treeViewer;
 
-   /**
-    * 
-    */
    public RelationCellModifier(TreeViewer treeViewer) {
       super();
       this.treeViewer = treeViewer;

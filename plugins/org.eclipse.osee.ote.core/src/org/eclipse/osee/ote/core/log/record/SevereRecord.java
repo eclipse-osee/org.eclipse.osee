@@ -19,9 +19,6 @@ import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor
  */
 public class SevereRecord extends TestRecord {
 
-   /**
-	 * 
-	 */
    private static final long serialVersionUID = -2717539209163922501L;
 
    /**

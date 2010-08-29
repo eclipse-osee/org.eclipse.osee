@@ -17,9 +17,6 @@ import org.eclipse.osee.framework.jdk.core.util.EnumBase;
  * @author Robert A. Fisher
  */
 public class TestServerMode extends EnumBase {
-   /**
-	 * 
-	 */
    private static final long serialVersionUID = 6600576749632500352L;
    public static final TestServerMode MULTI = new TestServerMode(0);
    public static final TestServerMode SINGLE = new TestServerMode(1);

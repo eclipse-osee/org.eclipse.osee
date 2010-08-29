@@ -23,12 +23,6 @@ public abstract class SkynetArtifactsEventBase extends SkynetEventBase implement
    private final Collection<Integer> artifactIds;
    private final int branchId;
 
-   /**
-    * @param branchId
-    * @param artifactIds
-    * @param artifactTypeIds
-    * @param author
-    */
    public SkynetArtifactsEventBase(int branchId, Collection<Integer> artifactIds, Collection<Integer> artifactTypeIds, NetworkSender networkSender) {
       super(networkSender);
       this.branchId = branchId;

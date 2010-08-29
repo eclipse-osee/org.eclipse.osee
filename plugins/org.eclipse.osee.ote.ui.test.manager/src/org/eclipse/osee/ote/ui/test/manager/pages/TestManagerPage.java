@@ -26,10 +26,6 @@ public abstract class TestManagerPage extends ScrolledComposite {
    private final TestManagerEditor testManager;
    private Composite mainComposite;
 
-   /**
-    * @param parent
-    * @param style
-    */
    public TestManagerPage(Composite parent, int style, TestManagerEditor parentTestManager) {
       super(parent, style | SWT.H_SCROLL | SWT.V_SCROLL);
       this.testManager = parentTestManager;
@@ -74,7 +70,6 @@ public abstract class TestManagerPage extends ScrolledComposite {
     * called when test manager is connected to a test host. A return value of true will cause test manager to prompt the
     * user to check the log. Thus any problems that occur during connection processing should be handled and logged.
     * 
-    * @param event
     * @return true if there were problems during processing and false otherwise.
     */
    public abstract boolean onConnection(ConnectionEvent event);

@@ -19,9 +19,6 @@ import org.eclipse.osee.ote.core.enums.PromptResponseType;
  */
 public class TestPrompt implements Serializable {
 
-   /**
-	 * 
-	 */
    private static final long serialVersionUID = 5960067878239875110L;
    private final String prompt;
    private final boolean waitForResponse;
@@ -32,9 +29,6 @@ public class TestPrompt implements Serializable {
       this(prompt, PromptResponseType.NONE);
    }
 
-   /**
-    * 
-    */
    public TestPrompt(String prompt, PromptResponseType type) {
       super();
       this.prompt = prompt;

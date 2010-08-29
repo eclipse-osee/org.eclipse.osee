@@ -46,7 +46,6 @@ public class HashCollection<K, V> {
     * Collections.synchronizedMap & Collections.synchronizedCollection. otherwise, this class will not be synchronzied
     * and therefore not threadsafe.
     * @param collectionType The type of collection to use to as the values within the HashMap.
-    * @param initialCapacity
     * @see HashMap#HashMap(int, float)
     */
    @SuppressWarnings("unchecked")
@@ -67,7 +66,6 @@ public class HashCollection<K, V> {
     * Collections.synchronizedMap & Collections.synchronizedCollection. otherwise, this class will not be synchronzied
     * and therefore not threadsafe.
     * @param collectionType - The type of collection to use to as the values within the HashMap.
-    * @param initialCapacity
     * @see HashMap#HashMap(int)
     */
    @SuppressWarnings("unchecked")
@@ -209,7 +207,6 @@ public class HashCollection<K, V> {
    /**
     * Returns the Collection of items for this key, or null if the key does not exist.
     * 
-    * @param key
     * @return Return value collection reference
     */
    public Collection<V> getValues(K key) {
@@ -219,7 +216,6 @@ public class HashCollection<K, V> {
    /**
     * Returns the Collection all items
     * 
-    * @param key
     * @return Return value collection reference
     */
    public List<V> getValues() {
@@ -264,7 +260,6 @@ public class HashCollection<K, V> {
    }
 
    /**
-    * @param value
     * @return whether the map contains this value
     */
    public boolean containsValue(Object value) {

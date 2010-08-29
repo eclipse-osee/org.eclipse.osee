@@ -26,9 +26,6 @@ public class XmlDataSaxHandler extends AbstractSaxHandler {
    private final RoughArtifactCollector collector;
    private final ArtifactType primaryArtifactType;
 
-   /**
-    * @param branch
-    */
    public XmlDataSaxHandler(RoughArtifactCollector collector, ArtifactType primaryArtifactType) {
       super();
       this.collector = collector;

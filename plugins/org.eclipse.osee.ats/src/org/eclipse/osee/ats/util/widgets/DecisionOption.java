@@ -83,7 +83,6 @@ public class DecisionOption {
    /**
     * Sets the assigness but DOES NOT write to SMA. This method should NOT be called outside the StateMachineArtifact.
     * 
-    * @param assignees
     */
    public void setAssignees(Collection<User> assignees) {
       this.assignees.clear();
@@ -95,7 +94,6 @@ public class DecisionOption {
    /**
     * Sets the assignes but DOES NOT write to SMA. This method should NOT be called outside the StateMachineArtifact.
     * 
-    * @param assignee
     */
    public void setAssignee(User assignee) {
       this.assignees.clear();
@@ -104,9 +102,6 @@ public class DecisionOption {
       }
    }
 
-   /**
-    * @param assignee
-    */
    public void addAssignee(User assignee) {
       if (assignee != null) {
          this.assignees.add(assignee);

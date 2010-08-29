@@ -34,9 +34,6 @@ public class BundleInfo {
    private byte[] md5Digest;
 
    /**
-    * @param symbolicName
-    * @param version
-    * @param systemLocation
     * @throws IOException
     */
    public BundleInfo(URL systemLocation, String bundleServerBaseLocation, boolean systemLibrary) throws IOException {
@@ -80,7 +77,6 @@ public class BundleInfo {
    }
 
    /**
-    * @param jarManifest
     * @return the name of the bundle
     */
    public static String generateBundleName(Manifest jarManifest) {

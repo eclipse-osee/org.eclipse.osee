@@ -51,7 +51,6 @@ public class BaseExchangeData implements Serializable {
    /**
     * Write to output stream
     * 
-    * @param outputStream
     * @throws OseeWrappedException
     */
    public void write(OutputStream outputStream) throws OseeCoreException {

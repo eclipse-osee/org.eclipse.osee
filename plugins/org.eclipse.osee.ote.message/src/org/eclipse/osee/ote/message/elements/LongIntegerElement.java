@@ -71,7 +71,6 @@ public class LongIntegerElement extends NumericElement<Long> {
    /**
     * Checks that this element correctly forwards a message sent from cause with the value passed.
     * 
-    * @param accessor
     * @param cause The originator of the signal
     * @param value The value sent by cause and being forwarded by this element
     * @throws InterruptedException
@@ -104,7 +103,6 @@ public class LongIntegerElement extends NumericElement<Long> {
    /**
     * Verifies that the element is set to "value" within the number of "milliseconds" passed.
     * 
-    * @param accessor
     * @param value Expected value.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
@@ -117,7 +115,6 @@ public class LongIntegerElement extends NumericElement<Long> {
    /**
     * This function will verify that this signal is pulsed for 2 cycles.
     * 
-    * @param accessor
     * @param value The value to be checked
     * @throws InterruptedException
     */
@@ -134,7 +131,6 @@ public class LongIntegerElement extends NumericElement<Long> {
    /**
     * Sets the element to the "value" passed.
     * 
-    * @param accessor
     * @param value The value to set.
     */
    public void set(ITestEnvironmentAccessor accessor, long value) {
@@ -144,7 +140,6 @@ public class LongIntegerElement extends NumericElement<Long> {
    /**
     * Sets the element to the "value" passed.
     * 
-    * @param accessor
     * @param value The value to set.
     */
    @Deprecated
@@ -155,7 +150,6 @@ public class LongIntegerElement extends NumericElement<Long> {
    /**
     * Sets the element to the "value" passed and immediately sends the message that contains it..
     * 
-    * @param accessor
     * @param value The value to set.
     */
    public void setAndSend(ITestEnvironmentAccessor accessor, long value) {

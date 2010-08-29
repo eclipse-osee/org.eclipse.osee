@@ -117,7 +117,6 @@ public class AtsBranchManager {
    /**
     * Return true if merge branch exists in DB (whether archived or not)
     * 
-    * @param destinationBranch
     * @return true
     * @throws OseeCoreException
     */

@@ -17,9 +17,6 @@ import java.util.logging.Level;
  */
 public class TestLevel extends Level {
 
-   /**
-	 * 
-	 */
    private static final long serialVersionUID = -3898810954576373823L;
 
    public final static TestLevel TEST_POINT = new TestLevel("TestPoint", Level.SEVERE.intValue() + 10);

@@ -36,8 +36,6 @@ public interface IAtsWorldEditorItem {
     * Return menu item objects to add to the World Editor pull-down menu only if applicable for the given
     * worldSearchItem
     * 
-    * @param worldEditorProvider
-    * @param worldComposite
     * @return applicable pull-down actions
     * @throws OseeCoreException
     */

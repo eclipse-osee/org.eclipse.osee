@@ -28,9 +28,6 @@ public class DefaultBranchContentProvider implements ITreeContentProvider, IBran
    private final ITreeContentProvider provider;
    private final Branch branch;
 
-   /**
-    * @param provider
-    */
    public DefaultBranchContentProvider(final ITreeContentProvider provider, Branch branch) {
       if (provider == null) {
          throw new IllegalArgumentException("provider can not be null");

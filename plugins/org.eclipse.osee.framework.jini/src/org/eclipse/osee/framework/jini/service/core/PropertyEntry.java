@@ -21,9 +21,6 @@ import org.eclipse.osee.framework.jdk.core.util.EnhancedProperties;
  */
 public class PropertyEntry extends AbstractEntry {
 
-   /**
-    * 
-    */
    private static final long serialVersionUID = 8506398896518763116L;
    public HashMap<String, Serializable> map;
 
@@ -48,7 +45,6 @@ public class PropertyEntry extends AbstractEntry {
    /**
     * fills the supplied {@link EnhancedProperties} object with all the properties contained in this entry
     * 
-    * @param props
     */
    public void fillProps(Map<String, Serializable> props) {
       props.putAll(map);

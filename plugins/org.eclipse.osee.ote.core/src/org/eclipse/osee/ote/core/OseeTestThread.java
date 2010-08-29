@@ -36,7 +36,6 @@ public abstract class OseeTestThread {
    /**
     * Creates the thread with the given name and as a non daemon thread
     * 
-    * @param name
     */
    public OseeTestThread(String name, TestEnvironment env) {
       this(name, false, null, env);
@@ -107,9 +106,6 @@ public abstract class OseeTestThread {
    }
 
    private static final class Trace extends RuntimeException {
-      /**
-       * 
-       */
       private static final long serialVersionUID = 8520935964300439490L;
 
       Trace() {

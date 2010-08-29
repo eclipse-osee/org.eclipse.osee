@@ -63,7 +63,6 @@ public class ScriptModel extends FileModel {
    private TestScript testScript;
 
    /**
-    * @param rawFilename
     * @param outputDir alternate output directory for tmo output files null will default to script directory
     */
    public ScriptModel(String rawFilename, String outputDir) {

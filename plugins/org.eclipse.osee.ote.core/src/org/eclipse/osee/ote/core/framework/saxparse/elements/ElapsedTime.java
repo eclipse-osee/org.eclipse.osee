@@ -18,9 +18,6 @@ import org.xml.sax.Attributes;
  */
 public class ElapsedTime extends ElementHandlers {
 
-   /**
-    * @param name
-    */
    public ElapsedTime() {
       super("ElapsedTime");
    }

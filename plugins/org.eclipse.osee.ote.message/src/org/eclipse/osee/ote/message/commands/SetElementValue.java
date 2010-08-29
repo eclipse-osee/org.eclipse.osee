@@ -21,18 +21,12 @@ import org.eclipse.osee.ote.message.enums.DataType;
  */
 public class SetElementValue implements Serializable {
 
-   /**
-	    * 
-	    */
    private static final long serialVersionUID = -6696340729803635664L;
    private final String message;
    private final List<Object> element;
    private final String value;
    private final DataType type;
 
-   /**
-	    * 
-	    */
    public SetElementValue(String message, DataType type, List<Object> elementPath, String value) {
       super();
       this.message = message;

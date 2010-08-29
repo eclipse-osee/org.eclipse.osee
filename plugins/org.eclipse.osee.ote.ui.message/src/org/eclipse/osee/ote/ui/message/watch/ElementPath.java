@@ -55,9 +55,6 @@ public class ElementPath {
       this(false, elementPath);
    }
 
-   /**
-	 * 
-	 */
    public ElementPath() {
       this.elementPath = new ArrayList<Object>();
       modified = true;
@@ -136,9 +133,6 @@ public class ElementPath {
       return asString().hashCode();
    }
 
-   /**
-    * @param i
-    */
    public ElementPath subElementPath(int range) {
       recomputeStrings();
       ElementPath newElementPath = new ElementPath();

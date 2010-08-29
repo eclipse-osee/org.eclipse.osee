@@ -32,9 +32,6 @@ public class EmailWizard extends Wizard {
    private ArrayList<Object> initialAddress = null;
 
    /**
-    * @param htmlMessage
-    * @param subject
-    * @param emailableFields
     * @param initialAddress - User, AtsEmailGroup or String
     */
    public EmailWizard(String htmlMessage, String subject, ArrayList<EmailGroup> emailableGroups, ArrayList<Object> initialAddress) {

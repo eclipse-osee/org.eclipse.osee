@@ -19,10 +19,6 @@ public class FileChangeEvent {
    private final File file;
    private final FileChangeType changeType;
 
-   /**
-    * @param file
-    * @param changeType
-    */
    public FileChangeEvent(File file, FileChangeType changeType) {
       this.file = file;
       this.changeType = changeType;

@@ -24,8 +24,6 @@ import org.eclipse.osee.ote.core.environment.TestEnvironment;
 public class InformationalPrompt extends AbstractRemotePrompt {
 
    /**
-    * @param id
-    * @param message
     * @throws UnknownHostException
     */
    public InformationalPrompt(IServiceConnector connector, String id, String message) throws UnknownHostException {

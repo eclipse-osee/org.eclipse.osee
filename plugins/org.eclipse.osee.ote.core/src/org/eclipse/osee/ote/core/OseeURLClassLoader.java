@@ -21,10 +21,6 @@ public class OseeURLClassLoader extends URLClassLoader {
 
    private final String name;
 
-   /**
-    * @param urls
-    * @param parent
-    */
    public OseeURLClassLoader(String name, URL[] urls, ClassLoader parent) {
       super(urls, parent);
       this.name = name;
@@ -32,20 +28,12 @@ public class OseeURLClassLoader extends URLClassLoader {
 
    }
 
-   /**
-    * @param urls
-    */
    public OseeURLClassLoader(String name, URL[] urls) {
       super(urls);
       GCHelper.getGCHelper().addRefWatch(this);
       this.name = name;
    }
 
-   /**
-    * @param urls
-    * @param parent
-    * @param factory
-    */
    public OseeURLClassLoader(String name, URL[] urls, ClassLoader parent, URLStreamHandlerFactory factory) {
       super(urls, parent, factory);
       GCHelper.getGCHelper().addRefWatch(this);

@@ -19,9 +19,6 @@ import javax.print.attribute.EnumSyntax;
 public abstract class EnumBase extends EnumSyntax {
    //TODO We need to possibly refactor getEnum and rework the structure of the enums???
 
-   /**
-    * 
-    */
    private static final long serialVersionUID = -5380925813499901084L;
 
    @Override

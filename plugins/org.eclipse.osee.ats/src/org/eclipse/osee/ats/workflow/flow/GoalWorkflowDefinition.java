@@ -57,11 +57,6 @@ public class GoalWorkflowDefinition extends WorkFlowDefinition {
       return workItems;
    }
 
-   /**
-    * @param name
-    * @param id
-    * @param parentId
-    */
    public GoalWorkflowDefinition(String name, String id) {
       super(name, id, null);
       addPageTransition(GoalState.InWork.name(), GoalState.Completed.name(), TransitionType.ToPageAsDefault);

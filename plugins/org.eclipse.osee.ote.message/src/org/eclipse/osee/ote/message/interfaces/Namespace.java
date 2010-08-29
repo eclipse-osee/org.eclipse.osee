@@ -17,9 +17,6 @@ public class Namespace implements INamespace {
 
    private final String namespace;
 
-   /**
-    * @param string
-    */
    public Namespace(String string) {
       namespace = string;
    }

@@ -26,12 +26,6 @@ import org.eclipse.swt.widgets.TreeItem;
  */
 public class ResultsXViewer extends XViewer {
 
-   /**
-    * @param parent
-    * @param style
-    * @param namespace
-    * @param viewerFactory
-    */
    public ResultsXViewer(Composite parent, int style, List<XViewerColumn> xColumns) {
       super(parent, style, new ResultsXViewerFactory(xColumns));
    }

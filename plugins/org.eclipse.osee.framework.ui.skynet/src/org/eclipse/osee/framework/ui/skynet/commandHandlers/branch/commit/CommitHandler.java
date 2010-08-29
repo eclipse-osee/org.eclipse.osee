@@ -172,11 +172,6 @@ public abstract class CommitHandler extends CommandHandler {
       private final Branch destinationBranch;
       private final boolean archiveSourceBranch;
 
-      /**
-       * @param name
-       * @param destinationBranch
-       * @param sourceBranch
-       */
       public CommitJob(Branch sourceBranch, Branch destinationBranch, boolean archiveSourceBranch) {
          super("Commit Branch");
          this.destinationBranch = destinationBranch;

@@ -97,7 +97,6 @@ public class XDate extends XWidget {
    /**
     * Set the default format for the date ADate.MMMDDDYY or ADate MMMDDDYYYHHHMM or use java.util.date format string
     * 
-    * @param format
     */
    public void setFormat(String format) {
       defaultFormat = format;
@@ -136,7 +135,6 @@ public class XDate extends XWidget {
    /**
     * Create Date Widgets Label/DatePickerCombo
     * 
-    * @param parent
     * @param horizontalSpan - horizontalSpan takes up 4 columns, therefore horizontalSpan must be >=4
     */
    @Override

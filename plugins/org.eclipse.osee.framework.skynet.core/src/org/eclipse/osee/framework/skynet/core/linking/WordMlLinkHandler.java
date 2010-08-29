@@ -86,7 +86,6 @@ public class WordMlLinkHandler {
     * link call. Therefore we expect the input to have links that are recognized by this handler as identified by the
     * sourceLinkType.
     * 
-    * @param sourceLinkType
     * @param source artifact that produced the string content
     * @param content input
     * @return processed input
@@ -138,7 +137,6 @@ public class WordMlLinkHandler {
    /**
     * Find WordML links locations in content grouped by GUID
     * 
-    * @param content
     * @return locations where WordMlLinks were found grouped by GUID
     * @throws OseeWrappedException
     */

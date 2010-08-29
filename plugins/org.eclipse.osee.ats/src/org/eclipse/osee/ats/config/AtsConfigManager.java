@@ -76,7 +76,6 @@ public class AtsConfigManager extends AbstractOperation {
    private final Display display;
 
    /**
-    * @param namespace
     * @param teamDefName - name of team definition to use
     * @param versionNames - list of version names (if team is using versions)
     * @param actionableItems - list of actionable items

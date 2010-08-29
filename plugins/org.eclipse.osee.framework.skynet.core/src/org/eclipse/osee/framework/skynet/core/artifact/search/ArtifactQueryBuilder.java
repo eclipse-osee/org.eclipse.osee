@@ -71,8 +71,6 @@ public class ArtifactQueryBuilder {
    private CharJoinQuery guidJoinQuery;
 
    /**
-    * @param artId
-    * @param branch
     * @param allowDeleted set whether deleted artifacts should be included in the resulting artifact list
     */
    public ArtifactQueryBuilder(int artId, IOseeBranch branch, DeletionFlag allowDeleted, LoadLevel loadLevel) {
@@ -83,7 +81,6 @@ public class ArtifactQueryBuilder {
     * search for artifacts with the given ids
     * 
     * @param artifactIds list of artifact ids
-    * @param branch
     * @param allowDeleted set whether deleted artifacts should be included in the resulting artifact list
     */
    public ArtifactQueryBuilder(Collection<Integer> artifactIds, IOseeBranch branch, DeletionFlag allowDeleted, LoadLevel loadLevel) {

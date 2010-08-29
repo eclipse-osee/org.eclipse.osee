@@ -24,9 +24,6 @@ import org.w3c.dom.Element;
  * @author Andrew M. Finkbeiner
  */
 public class TestCaseRecord extends TestRecord {
-   /**
-	 * 
-	 */
    private static final long serialVersionUID = -5049608072548003705L;
    private final TestCase testCase;
 

@@ -19,10 +19,6 @@ import org.eclipse.swt.graphics.Color;
  */
 public class DefaultTransitionConnection extends TransitionConnection {
 
-   /**
-    * @param source
-    * @param target
-    */
    public DefaultTransitionConnection(Shape source, Shape target) {
       super(source, target);
    }

@@ -33,42 +33,14 @@ public class NonMappingEnumeratedElement<T extends Enum<T> & IEnumValue<T>> exte
       }
    }
 
-   /**
-    * @param msg
-    * @param elementName
-    * @param clazz
-    * @param messageData
-    * @param byteOffset
-    * @param msb
-    * @param lsb
-    * @param originalMsb
-    * @param originalLsb
-    */
    public NonMappingEnumeratedElement(Message<?, ?, ?> msg, String elementName, Class<T> clazz, MessageData messageData, int byteOffset, int msb, int lsb, int originalMsb, int originalLsb) {
       super(msg, elementName, clazz, messageData, byteOffset, msb, lsb, originalMsb, originalLsb);
    }
 
-   /**
-    * @param msg
-    * @param elementName
-    * @param clazz
-    * @param messageData
-    * @param byteOffset
-    * @param msb
-    * @param lsb
-    */
    public NonMappingEnumeratedElement(Message<?, ?, ?> msg, String elementName, Class<T> clazz, MessageData messageData, int byteOffset, int msb, int lsb) {
       super(msg, elementName, clazz, messageData, byteOffset, msb, lsb);
    }
 
-   /**
-    * @param message
-    * @param elementName
-    * @param clazz
-    * @param messageData
-    * @param bitOffset
-    * @param bitLength
-    */
    public NonMappingEnumeratedElement(Message<?, ?, ?> message, String elementName, Class<T> clazz, MessageData messageData, int bitOffset, int bitLength) {
       super(message, elementName, clazz, messageData, bitOffset, bitLength);
    }
@@ -77,7 +49,6 @@ public class NonMappingEnumeratedElement<T extends Enum<T> & IEnumValue<T>> exte
     * Verifies that the element is set to a value IN or NOT IN the "list" passed. "wantInList" determines if checking
     * for IN the list or NOT.
     * 
-    * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
     * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
     * logging a point.
@@ -99,7 +70,6 @@ public class NonMappingEnumeratedElement<T extends Enum<T> & IEnumValue<T>> exte
     * Verifies that the element is set to a value IN or NOT IN the "list" passed. "isInList" determines if checking for
     * IN the list or NOT.
     * 
-    * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
     * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
     * logging a point.
@@ -123,7 +93,6 @@ public class NonMappingEnumeratedElement<T extends Enum<T> & IEnumValue<T>> exte
     * Verifies that the element is set to a value in (or not in as determined by "isInList") the list for the entire
     * time passed into milliseconds.
     * 
-    * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
     * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
     * logging a point.
@@ -145,7 +114,6 @@ public class NonMappingEnumeratedElement<T extends Enum<T> & IEnumValue<T>> exte
    /**
     * Waits until the element is set to a value either in or not in the "list" as determined by "isInList".
     * 
-    * @param accessor
     * @param list The list of values to check against
     * @param isInList If the value is expected to be in or not in the "list"
     * @param milliseconds Number of milliseconds to wait before failing.
@@ -161,7 +129,6 @@ public class NonMappingEnumeratedElement<T extends Enum<T> & IEnumValue<T>> exte
    /**
     * Waits until the element has a value other than the "value" passed. Returns last value observed upon a time-out.
     * 
-    * @param accessor
     * @param enumeration The expected value to wait for.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
@@ -178,10 +145,6 @@ public class NonMappingEnumeratedElement<T extends Enum<T> & IEnumValue<T>> exte
     * Sets the element to the first enumeration for the wait time and then it sets it to the second
     * enumeration.
     * 
-    * @param accessor
-    * @param enumeration1
-    * @param enumeration2
-    * @param milliseconds
     * @throws InterruptedException
     */
    public void toggle(ITestEnvironmentAccessor accessor, T enumeration1, T enumeration2, int milliseconds) throws InterruptedException {
@@ -203,7 +166,6 @@ public class NonMappingEnumeratedElement<T extends Enum<T> & IEnumValue<T>> exte
    /**
     * Sets the element to the "value" passed.
     * 
-    * @param accessor
     * @param enumeration The value to set.
     */
    public void set(ITestEnvironmentAccessor accessor, T enumeration) {
@@ -219,7 +181,6 @@ public class NonMappingEnumeratedElement<T extends Enum<T> & IEnumValue<T>> exte
    /**
     * Waits until the element is set to a value not in the "list" passed
     * 
-    * @param accessor
     * @param list The list of values to check against
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
@@ -234,7 +195,6 @@ public class NonMappingEnumeratedElement<T extends Enum<T> & IEnumValue<T>> exte
    /**
     * Waits until the element is set to a value in the "list" passed
     * 
-    * @param accessor
     * @param list The list of values to check against
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
@@ -249,7 +209,6 @@ public class NonMappingEnumeratedElement<T extends Enum<T> & IEnumValue<T>> exte
    /**
     * Verifies that the element is set to "value".
     * 
-    * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is
     *           going to log then the reference to the CheckGroup must be passed and this method
     *           will add the result of the check to the group with out logging a point.
@@ -268,7 +227,6 @@ public class NonMappingEnumeratedElement<T extends Enum<T> & IEnumValue<T>> exte
    /**
     * Verifies that the element is NOT set to "value".
     * 
-    * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is
     *           going to log then the reference to the CheckGroup must be passed and this method
     *           will add the result of the check to the group with out logging a point.
@@ -287,7 +245,6 @@ public class NonMappingEnumeratedElement<T extends Enum<T> & IEnumValue<T>> exte
    /**
     * Verifies that the element is set to "value" within the number of "milliseconds" passed.
     * 
-    * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is
     *           going to log then the reference to the CheckGroup must be passed and this method
     *           will add the result of the check to the group with out logging a point.
@@ -310,7 +267,6 @@ public class NonMappingEnumeratedElement<T extends Enum<T> & IEnumValue<T>> exte
     * "milliseconds" passed. Passes if at any point with in the time allowed, the element is set to
     * a value other than "value".
     * 
-    * @param accessor
     * @param checkGroup If this check is part of a larger set of checks which another method is
     *           going to log then the reference to the CheckGroup must be passed and this method
     *           will add the result of the check to the group with out logging a point.
@@ -333,14 +289,12 @@ public class NonMappingEnumeratedElement<T extends Enum<T> & IEnumValue<T>> exte
     * "milliseconds". Returns value found that caused failure or last value observed if time
     * expires.
     * 
-    * @param enumeration
     * @param checkGroup If this check is part of a larger set of checks which another method is
     *           going to log then the reference to the CheckGroup must be passed and this method
     *           will add the result of the check to the group with out logging a point.
     *           <p>
     *           If an outside method is not going to log the check then a <b>null </b> reference
     *           should be passed and this method will log the test point.
-    * @param milliseconds
     * @return last value observed. Either value expected or value found at timeout.
     * @throws InterruptedException
     */
@@ -355,14 +309,12 @@ public class NonMappingEnumeratedElement<T extends Enum<T> & IEnumValue<T>> exte
     * passed into "milliseconds". Returns value found that caused failure or last value observed if
     * time expires.
     * 
-    * @param enumeration
     * @param checkGroup If this check is part of a larger set of checks which another method is
     *           going to log then the reference to the CheckGroup must be passed and this method
     *           will add the result of the check to the group with out logging a point.
     *           <p>
     *           If an outside method is not going to log the check then a <b>null </b> reference
     *           should be passed and this method will log the test point.
-    * @param milliseconds
     * @return last value observed
     * @throws InterruptedException
     */
@@ -374,7 +326,6 @@ public class NonMappingEnumeratedElement<T extends Enum<T> & IEnumValue<T>> exte
    /**
     * This function will verify that this signal is pulsed for 2 cycles.
     * 
-    * @param accessor
     * @param value The value to be checked
     * @throws InterruptedException
     */
@@ -384,11 +335,6 @@ public class NonMappingEnumeratedElement<T extends Enum<T> & IEnumValue<T>> exte
    }
 
    /**
-    * @param accessor
-    * @param checkGroup
-    * @param pulsedValue
-    * @param nonPulsedValue
-    * @param milliseconds
     * @throws InterruptedException
     */
    @Override

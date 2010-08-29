@@ -31,9 +31,6 @@ public class ActivatorHelper {
    private final BundleContext context;
    private final Plugin plugin;
 
-   /**
-    * 
-    */
    public ActivatorHelper(BundleContext context, Plugin plugin) {
       pluginIdToOseePlugin.put(plugin.getBundle().getSymbolicName(), plugin);
       this.context = context;
@@ -51,7 +48,6 @@ public class ActivatorHelper {
    /**
     * finds a resource in the plugin bundle and writes it out to the default persistent storage area as a regular file
     * 
-    * @param path
     * @return Return plugin file reference
     * @throws IOException
     */

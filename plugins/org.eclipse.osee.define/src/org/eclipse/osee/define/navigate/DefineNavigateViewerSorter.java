@@ -19,9 +19,6 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
  */
 public class DefineNavigateViewerSorter extends ViewerSorter {
 
-   /**
-    * @param treeViewer
-    */
    public DefineNavigateViewerSorter() {
       super();
    }

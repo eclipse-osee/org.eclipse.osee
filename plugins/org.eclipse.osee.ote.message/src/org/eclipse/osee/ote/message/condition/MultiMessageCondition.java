@@ -35,10 +35,6 @@ public class MultiMessageCondition {
       private final Message message;
       private int count;
 
-      /**
-       * @param count
-       * @param messageData
-       */
       public MessageCounter(Message message, int initialCount) {
          this.count = initialCount;
          this.message = message;

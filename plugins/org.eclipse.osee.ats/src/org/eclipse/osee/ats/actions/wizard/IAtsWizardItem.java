@@ -28,14 +28,11 @@ public interface IAtsWizardItem {
     * determine what (if any) widgets should be added. eg. <XWidget displayName=\"Description\" height=\"80\"
     * required=\"true\" xwidgetType=\"XText\" fill=\"Vertically\" \"/>");
     * 
-    * @param aias
-    * @param sb
     * @throws Exception
     */
    public void getWizardXWidgetExtensions(Collection<ActionableItemArtifact> aias, StringBuffer sb) throws Exception;
 
    /**
-    * @param aias
     * @return true if widgets will be added based on selected aias
     * @throws Exception
     */
@@ -45,7 +42,6 @@ public interface IAtsWizardItem {
     * Determine if Action is valid to create based on wizard data entered. hasWizardXWidgetExtenstions will be called to
     * determine if this method should be called.
     * 
-    * @param wizard
     * @return result of validation. if true, action will be created; if not, error will popup and action will not be
     * created
     */
@@ -55,9 +51,6 @@ public interface IAtsWizardItem {
     * Callback with created action upon completion and creation of the action and it's workflows.
     * hasWizardXWidgetExtenstions will be called to determine if this method should be called.
     * 
-    * @param actionArt
-    * @param wizard
-    * @param transaction
     * @throws Exception
     */
    public void wizardCompleted(ActionArtifact actionArt, NewActionWizard wizard, SkynetTransaction transaction) throws Exception;
@@ -68,7 +61,6 @@ public interface IAtsWizardItem {
     * be performed during isActionValidToCreate(). hasWizardXWidgetExtenstions will be called to determine if this
     * method should be called.
     * 
-    * @param wizard
     * @return true if widget data entered is valid
     */
    public Result isWizardXWidgetsComplete(NewActionWizard wizard);

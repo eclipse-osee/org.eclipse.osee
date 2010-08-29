@@ -24,10 +24,6 @@ import org.eclipse.osee.ote.message.interfaces.ITestAccessor;
  */
 public class EmptyEnum_Element extends DiscreteElement<EmptyEnum> {
 
-   /**
-    * @param message
-    * @param elementName
-    */
    public EmptyEnum_Element(Message<?, ?, ?> message, String elementName, MessageData messageData, int byteOffset, int msb, int lsb) {
       this(message, elementName, messageData, byteOffset, msb, lsb, msb, lsb);
    }
@@ -43,7 +39,6 @@ public class EmptyEnum_Element extends DiscreteElement<EmptyEnum> {
    /**
     * Checks that this element correctly forwards a message sent from cause with the value passed.
     * 
-    * @param accessor
     * @param cause The originator of the signal
     * @param value The value sent by cause and being forwarded by this element
     * @throws InterruptedException
@@ -80,7 +75,6 @@ public class EmptyEnum_Element extends DiscreteElement<EmptyEnum> {
    /**
     * Sets the element to the "value" passed and immediately sends the message that contains it.
     * 
-    * @param accessor
     * @param enumeration The value to set.
     */
    public void setAndSend(ITestEnvironmentAccessor accessor, EmptyEnum enumeration) {

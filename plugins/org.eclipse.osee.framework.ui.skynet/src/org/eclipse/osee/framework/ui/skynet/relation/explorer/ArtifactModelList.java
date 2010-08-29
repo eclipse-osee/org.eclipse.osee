@@ -82,16 +82,10 @@ public class ArtifactModelList {
       }
    }
 
-   /**
-    * @param viewer
-    */
    public void removeChangeListener(IArtifactListViewer viewer) {
       changeListeners.remove(viewer);
    }
 
-   /**
-    * @param viewer
-    */
    public void addChangeListener(IArtifactListViewer viewer) {
       changeListeners.add(viewer);
    }

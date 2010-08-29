@@ -75,9 +75,6 @@ public class TaskServerThread implements Runnable {
       }
    }
 
-   /**
-    * @param result
-    */
    private void sendResultToClient(Object result) {
       if (result == null) {
          return;
@@ -122,7 +119,6 @@ public class TaskServerThread implements Runnable {
     * double_array 16 unsigned 2-byte array element count, element data string_array 17 unsigned 2-byte array element
     * count, element data
     * 
-    * @param typeId
     * @return Return next parameter reference
     */
    private Object readNextParameter(Parameter typeId) {

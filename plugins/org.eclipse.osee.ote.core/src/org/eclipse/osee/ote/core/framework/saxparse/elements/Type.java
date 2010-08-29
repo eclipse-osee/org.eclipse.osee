@@ -18,9 +18,6 @@ import org.xml.sax.Attributes;
  */
 public class Type extends ElementHandlers {
 
-   /**
-    * @param name
-    */
    public Type() {
       super("Type");
    }

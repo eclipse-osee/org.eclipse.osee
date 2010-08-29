@@ -37,9 +37,6 @@ public class MessageRecordDetailContentProvider implements ITreeContentProvider 
    private final Map<Object, Object> childToParent = new HashMap<Object, Object>(1024);
    private final Map<Object, Object[]> parentToChildren = new HashMap<Object, Object[]>();
 
-   /**
-    * @param msgToolClient
-    */
    public MessageRecordDetailContentProvider() {
    }
 
@@ -155,9 +152,6 @@ public class MessageRecordDetailContentProvider implements ITreeContentProvider 
    }
 
    private static final class ElementByteComparator implements Comparator<Object>, Serializable {
-      /**
-		 * 
-		 */
       private static final long serialVersionUID = 7434564953521614526L;
 
       @Override

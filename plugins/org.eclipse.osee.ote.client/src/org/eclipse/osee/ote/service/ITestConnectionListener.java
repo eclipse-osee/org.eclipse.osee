@@ -23,8 +23,6 @@ public interface ITestConnectionListener {
     * the connection to the service is broken unexpectedly. The service is not considered valid and thus clients should
     * not try to communicate in any way with the OTE server. Clients are free to modify any local state.
     * 
-    * @param connector
-    * @param testHost
     */
    void onConnectionLost(IServiceConnector connector);
 
@@ -33,7 +31,6 @@ public interface ITestConnectionListener {
     * still valid. This allows clients to remove any listeners on the remote OTE server or set some state prior to the
     * actual disconnect.
     * 
-    * @param event
     */
    void onPreDisconnect(ConnectionEvent event);
 

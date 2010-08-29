@@ -165,7 +165,6 @@ public final class WordMLNewLineMaker extends Rule {
    /**
     * Grabs only the first <w:r><w:t> combination and looks for a dot. When found removes the dot
     * 
-    * @param chunk
     * @return
     */
    private StringBuilder cleanUpWtFromChunk(CharSequence chunk) {

@@ -27,37 +27,14 @@ public class NonMappingRecordElement extends RecordElement {
       }
    }
 
-   /**
-    * @param message
-    * @param elementName
-    * @param index
-    * @param messageData
-    * @param firstRecordBitOffset
-    * @param recordBitSize
-    */
    public NonMappingRecordElement(Message<?, ?, ?> message, String elementName, int index, MessageData messageData, int firstRecordBitOffset, int recordBitSize) {
       super(message, elementName, index, messageData, firstRecordBitOffset, recordBitSize);
    }
 
-   /**
-    * @param message
-    * @param elementName
-    * @param offset
-    * @param messageData
-    * @param firstRecordByteOffset
-    * @param recordByteSize
-    */
    public NonMappingRecordElement(RecordElement message, String elementName, int offset, MessageData messageData, int firstRecordByteOffset, int recordByteSize) {
       super(message, elementName, offset, messageData, firstRecordByteOffset, recordByteSize);
    }
 
-   /**
-    * @param message
-    * @param elementName
-    * @param messageData
-    * @param firstRecordByteOffset
-    * @param recordByteSize
-    */
    public NonMappingRecordElement(Message<?, ?, ?> message, String elementName, MessageData messageData, int firstRecordByteOffset, int recordByteSize) {
       super(message, elementName, messageData, firstRecordByteOffset, recordByteSize);
    }

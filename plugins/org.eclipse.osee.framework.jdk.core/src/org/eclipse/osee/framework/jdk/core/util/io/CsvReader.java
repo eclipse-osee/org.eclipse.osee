@@ -82,9 +82,6 @@ public class CsvReader {
    /**
     * inclusive range
     * 
-    * @param start
-    * @param end
-    * @param enable
     */
    public void setFieldsEnabled(int start, int end, boolean enable) {
       for (int i = start; i <= end; i++) {

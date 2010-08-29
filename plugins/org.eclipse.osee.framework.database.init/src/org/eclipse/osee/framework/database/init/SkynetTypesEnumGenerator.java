@@ -174,7 +174,6 @@ public class SkynetTypesEnumGenerator implements RowProcessor {
    /**
     * import Artifacts
     * 
-    * @param row
     */
    public void processRow(String[] row) {
       if (done) {
@@ -200,7 +199,6 @@ public class SkynetTypesEnumGenerator implements RowProcessor {
    }
 
    /**
-    * @param row
     * @throws ClassNotFoundException
     */
    private void addAttributeType(String[] row) throws ClassNotFoundException {
@@ -225,9 +223,6 @@ public class SkynetTypesEnumGenerator implements RowProcessor {
       attributes.add(nonJavaCharP.matcher(attributeName).replaceAll("_").toUpperCase() + "(\"" + attributeName + "\")");
    }
 
-   /**
-    * @param row
-    */
    private void addRelationType(String[] row) {
 
       String relationTypeName = row[0];
@@ -247,9 +242,6 @@ public class SkynetTypesEnumGenerator implements RowProcessor {
          relationTypeName, enumPrefix, sideBName, relationTypeName));
    }
 
-   /**
-    * @param row
-    */
    private void addArtifactType(String[] row) {
       // String factoryClassName = row[0];
       String artifactTypeName = row[1];

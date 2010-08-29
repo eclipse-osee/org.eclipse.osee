@@ -24,10 +24,6 @@ public class ComScrnAButton1 extends Button {
 
    public Image image;
 
-   /**
-    * @param parent
-    * @param style
-    */
    public ComScrnAButton1(Composite parent, int style, Image image) {
       super(parent, style);
    }

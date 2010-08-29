@@ -61,9 +61,6 @@ public class OverviewPage extends TestManagerPage implements IActionable {
    /**
     * Creates and populates the Overview Page
     * 
-    * @param parent
-    * @param style
-    * @param parentTestManager
     */
    public OverviewPage(Composite parent, int style, TestManagerEditor parentTestManager) {
       super(parent, style, parentTestManager);

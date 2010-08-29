@@ -18,9 +18,6 @@ import org.xml.sax.Attributes;
  */
 public class RuntimeVersions extends ElementHandlers {
 
-   /**
-    * @param name
-    */
    public RuntimeVersions() {
       super("RuntimeVersions");
    }

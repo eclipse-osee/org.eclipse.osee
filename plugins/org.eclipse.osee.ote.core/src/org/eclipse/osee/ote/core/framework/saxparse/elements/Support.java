@@ -18,9 +18,6 @@ import org.xml.sax.Attributes;
  */
 public class Support extends ElementHandlers {
 
-   /**
-    * @param name
-    */
    public Support() {
       super("Support");
    }

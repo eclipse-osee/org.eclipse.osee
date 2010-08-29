@@ -171,7 +171,6 @@ public class InputBufferThread extends Thread {
    }
 
    /**
-    * @param millis
     * @return true if a transmission occurred false otherwise
     * @throws InterruptedException
     */

@@ -40,8 +40,6 @@ public class InRelationSearch implements ISearchPrimitive {
     * <code>RelationSide</code>'s must be for the same side, that is all sideB or all sideA. This restriction is in
     * place to optimize SQL performance.
     * 
-    * @param firstSide
-    * @param sides
     * @throws IllegalArgumentException if the sides are a mixture of sideA and sideB relation sides.
     */
    public InRelationSearch(IRelationEnumeration firstSide, IRelationEnumeration... sides) {
@@ -53,9 +51,6 @@ public class InRelationSearch implements ISearchPrimitive {
     * <code>RelationSide</code>'s must be for the same side, that is all sideB or all sideA. This restriction is in
     * place to optimize SQL performance.
     * 
-    * @param otherArtifacts
-    * @param firstSide
-    * @param sides
     * @throws IllegalArgumentException if the sides are a mixture of sideA and sideB relation sides.
     */
    public InRelationSearch(FromArtifactsSearch otherArtifacts, IRelationEnumeration firstSide, IRelationEnumeration... sides) {

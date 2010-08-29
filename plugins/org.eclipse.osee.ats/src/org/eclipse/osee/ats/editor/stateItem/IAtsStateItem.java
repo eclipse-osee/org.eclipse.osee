@@ -50,10 +50,6 @@ public interface IAtsStateItem {
    public Collection<String> getIds() throws OseeCoreException;
 
    /**
-    * @param sma
-    * @param fromState
-    * @param toState
-    * @param toAssignees
     * @return Result of operation. If Result.isFalse(), transition will not continue and Result.popup will occur.
     * @throws Exception
     */
@@ -62,7 +58,6 @@ public interface IAtsStateItem {
    public void transitioned(StateMachineArtifact sma, String fromState, String toState, Collection<User> toAssignees, SkynetTransaction transaction) throws OseeCoreException;
 
    /**
-    * @param sma
     * @return Result of operation. If Result.isFalse(), commit will not continue and Result.popup will occur.
     * @throws Exception
     */

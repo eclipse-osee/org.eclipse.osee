@@ -57,10 +57,6 @@ public class DefectXViewer extends XViewer {
    private Action editLocationAction;
    private Action editResolutionAction;
 
-   /**
-    * @param parent
-    * @param style
-    */
    DefectXViewer(Composite parent, int style, XDefectViewer xDefectViewer) {
       this(parent, style, new DefectXViewerFactory(), xDefectViewer);
    }

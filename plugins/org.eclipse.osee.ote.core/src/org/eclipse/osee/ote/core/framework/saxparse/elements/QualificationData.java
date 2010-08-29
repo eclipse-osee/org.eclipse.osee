@@ -18,10 +18,6 @@ public class QualificationData {
    private final String buildId;
    private final String level;
 
-   /**
-    * @param value
-    * @param value2
-    */
    public QualificationData(String buildId, String level) {
       this.buildId = buildId;
       this.level = level;

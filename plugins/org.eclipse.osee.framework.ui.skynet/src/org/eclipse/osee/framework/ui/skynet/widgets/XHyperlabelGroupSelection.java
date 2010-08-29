@@ -28,9 +28,6 @@ public class XHyperlabelGroupSelection extends XHyperlinkLabelCmdValueSelection 
    public static final String WIDGET_ID = XHyperlabelGroupSelection.class.getSimpleName();
    Set<Artifact> selectedGroups = new HashSet<Artifact>();
 
-   /**
-    * @param label
-    */
    public XHyperlabelGroupSelection(String label) {
       super(label, true, 80);
    }

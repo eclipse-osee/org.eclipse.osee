@@ -17,10 +17,6 @@ public class SoftKeyInfoGroupData {
 
    private final String title;
 
-   /**
-    * @param title
-    * @param name
-    */
    SoftKeyInfoGroupData(String title) {
       this.title = title;
    }

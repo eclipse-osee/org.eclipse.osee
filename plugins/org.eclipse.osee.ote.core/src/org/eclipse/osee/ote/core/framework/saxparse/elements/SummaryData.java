@@ -23,16 +23,6 @@ public class SummaryData {
    private final String seriousCount;
    private final String startNumber;
 
-   /**
-    * @param startNumber
-    * @param seriousCount
-    * @param nodeId
-    * @param minorCount
-    * @param informationCount
-    * @param exceptionCount
-    * @param criticalCount
-    * @param name
-    */
    SummaryData(String criticalCount, String exceptionCount, String informationCount, String minorCount, String nodeId, String seriousCount, String startNumber) {
       this.criticalCount = criticalCount;
       this.exceptionCount = exceptionCount;

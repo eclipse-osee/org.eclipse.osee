@@ -24,7 +24,6 @@ public class Trees {
    /**
     * Pack all of the columns on a tree so that the columns fit the displayed data.
     * 
-    * @param tree
     */
    public static void packColumnData(Tree tree) {
       TreeColumn[] columns = tree.getColumns();

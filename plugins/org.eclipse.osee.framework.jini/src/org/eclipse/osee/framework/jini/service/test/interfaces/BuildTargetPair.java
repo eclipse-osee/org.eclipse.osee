@@ -14,9 +14,6 @@ import java.io.Serializable;
 
 public class BuildTargetPair implements Serializable {
 
-   /**
-    * 
-    */
    private static final long serialVersionUID = 8194125694292612082L;
    String buildMachineName;
    String buildMachineIP;

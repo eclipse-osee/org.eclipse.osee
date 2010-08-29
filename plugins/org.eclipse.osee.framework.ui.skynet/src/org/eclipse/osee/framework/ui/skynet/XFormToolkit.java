@@ -30,16 +30,10 @@ import org.eclipse.ui.forms.widgets.Section;
  */
 public class XFormToolkit extends FormToolkit {
 
-   /**
-    * @param display
-    */
    public XFormToolkit(Display display) {
       super(display);
    }
 
-   /**
-    * @param colors
-    */
    public XFormToolkit(FormColors colors) {
       super(colors);
    }

@@ -71,25 +71,16 @@ public class FilterModelList {
       return str + "\n\n";
    }
 
-   /**
-    * @param filter
-    */
    public void filterChanged(FilterModel filter) {
       for (IFilterListViewer flv : changeListeners) {
          flv.updateFilter(filter);
       }
    }
 
-   /**
-    * @param viewer
-    */
    public void removeChangeListener(IFilterListViewer viewer) {
       changeListeners.remove(viewer);
    }
 
-   /**
-    * @param viewer
-    */
    public void addChangeListener(IFilterListViewer viewer) {
       changeListeners.add(viewer);
    }

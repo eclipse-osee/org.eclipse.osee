@@ -23,8 +23,6 @@ public interface GlobalMenuListener {
    /**
     * Called prior to performing the menu event. May or may not be called in display thread.
     * 
-    * @param item
-    * @param artifacts
     * @return Result.False if action should NOT be performed Result.getText will be displayed as a popup to the user
     */
    public Result actioning(GlobalMenuItem item, Collection<Artifact> artifacts);
@@ -32,8 +30,6 @@ public interface GlobalMenuListener {
    /**
     * Called after performing the menu event.
     * 
-    * @param item
-    * @param artifacts
     */
    public void actioned(GlobalMenuItem item, Collection<Artifact> artifacts);
 

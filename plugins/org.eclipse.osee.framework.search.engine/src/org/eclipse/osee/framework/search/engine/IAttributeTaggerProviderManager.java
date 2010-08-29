@@ -22,14 +22,12 @@ public interface IAttributeTaggerProviderManager {
    /**
     * Add attribute tagger provider
     * 
-    * @param attributeTaggerProvider
     */
    public void addAttributeTaggerProvider(IAttributeTaggerProvider attributeTaggerProvider);
 
    /**
     * Remove attribute tagger provider
     * 
-    * @param attributeTaggerProvider
     */
    public void removeAttributeTaggerProvider(IAttributeTaggerProvider attributeTaggerProvider);
 
@@ -47,7 +45,6 @@ public interface IAttributeTaggerProviderManager {
     * 
     * @param attributeData attribute to search in
     * @param value to search in attribute content
-    * @param options
     * @return match location
     */
    public List<MatchLocation> find(AttributeData attributeData, String toSearch, SearchOptions options) throws Exception;

@@ -183,8 +183,6 @@ public class MessageSystemListener implements IOSEEMessageReaderListener, IOSEEM
    /**
     * Checks to see if the specified listener is registered
     * 
-    * @param listener
-    * @param listenerSpeed
     * @return true if the listener is register false otherwise
     */
    public boolean containsListener(final IOSEEMessageListener listener, final SPEED listenerSpeed) {
@@ -194,7 +192,6 @@ public class MessageSystemListener implements IOSEEMessageReaderListener, IOSEEM
    /**
     * Convience method.
     * 
-    * @param listener
     * @return Returns presence boolean indication.
     * @see #containsListener(IOSEEMessageListener, SPEED)
     */
